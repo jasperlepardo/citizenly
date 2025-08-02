@@ -275,7 +275,7 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
 
     if (!data) return null
 
-    const city = data.psgc_cities_municipalities
+    const city = data.psgc_cities_municipalities as any
     const province = city?.psgc_provinces
     const region = province?.psgc_regions
 
