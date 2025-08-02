@@ -20,7 +20,7 @@
     "@hookform/resolvers": "^3.3.0",
     "zod": "^3.22.0",
     "@headlessui/react": "^1.7.0",
-    "lucide-react": "^latest"
+    "lucide-react": "^0.294.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
