@@ -93,6 +93,7 @@
 |----------|---------|---------|
 | **[Operations README](docs/operations/README.md)** | Operations overview | ✅ Ready |
 | **[Free Tier Optimization](docs/operations/FREE_TIER_OPTIMIZATION.md)** | Performance guide | ✅ Ready |
+| **[Git Best Practices](docs/operations/GIT_BEST_PRACTICES.md)** | Development workflow standards | ✅ Ready |
 | **[Monitoring Guide](docs/operations/)** | System monitoring | 🚧 Coming Soon |
 | **[Troubleshooting](docs/operations/)** | Common issues | 🚧 Coming Soon |
 | **[Maintenance Procedures](docs/operations/)** | Regular maintenance | 🚧 Coming Soon |
