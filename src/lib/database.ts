@@ -241,7 +241,7 @@ export async function searchAddresses(searchTerm: string, limit: number = 50): P
  */
 export async function getCompleteAddress(barangayCode: string): Promise<AddressHierarchy | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error }: { data: any; error: any } = await supabase
       .from('psgc_barangays')
       .select(`
         code,
@@ -275,7 +275,7 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
 
     if (!data) return null
 
-    const city = data.psgc_cities_municipalities as any
+    const city = (data as any).psgc_cities_municipalities
     const province = city?.psgc_provinces
     const region = province?.psgc_regions
 
