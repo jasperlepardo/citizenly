@@ -1,0 +1,3108 @@
+code,title,unit_code
+111101,City/Municipal Councilor,1111
+111102,Congressman,1111
+111103,Member of the Barangay Council (Sangguniang Pambarangay),1111
+111104,Member of the Provincial Board (Sangguniang Panlalawigan),1111
+111105,Senator,1111
+111201,Administrator/Deputy administrator,1112
+111202,Ambassador,1112
+111203,Attaché,1112
+111204,City administrator,1112
+111205,Consul General,1112
+111206,Director general/Deputy director general/ Assistant director general,1112
+111207,Executive director/Deputy executive director,1112
+111208,Government chief of staff,1112
+111209,Government civil registrar,1112
+111210,Government commission chairperson,1112
+111211,Government director/assistant director,1112
+111212,Governor/Deputy governor of the Bangko Sentral ng Pilipinas,1112
+111213,Governor/Vice governor,1112
+111214,Mayor/Vice mayor,1112
+111215,National treasurer,1112
+111216,Ombudsman,1112
+111217,Police inspector-general,1112
+111218,Postmaster general,1112
+111219,President/Vice president of the Republic of the Philippines,1112
+111220,Solicitor general/Associate solicitor general,1112
+111301,Barangay Chairperson/Captain,1113
+111302,Barangay Kagawad,1113
+111303,Sangguniang Kabataan (SK) Chairperson,1113
+111304,Tribe Chieftain/Head,1113
+111401,Economic-interest organization senior official,1114
+111402,Employers' organization director-general,1114
+111403,Employers' organization president,1114
+111404,Employers' organization secretary-general,1114
+111405,Employers' organization senior official,1114
+111406,Humanitarian organization senior official,1114
+111407,Labor organization senior official,1114
+111408,Political party leader,1114
+111409,Political party senior official,1114
+111410,Special-interest organization senior official,1114
+111411,Trade union chairperson,1114
+111412,Trade union president,1114
+111413,Trade union secretary-general,1114
+111414,Trade union senior official,1114
+112001,Chief executive officer,1120
+112002,Chief operation officer,1120
+112003,Corporate director,1120
+112004,Corporation chief executive,1120
+112005,Managing director,1120
+112006,Regional manager,1120
+112007,University chancellor,1120
+121101,Accounting manager,1211
+121102,Administration manager,1211
+121103,Budgeting manager,1211
+121104,Company secretary,1211
+121105,Compensation manager,1211
+121106,Finance comptroller,1211
+121107,Finance manager,1211
+121108,Investment manager,1211
+121201,Assistant training manager,1212
+121202,Benefits/Rewards manager,1212
+121203,Employee welfare manager,1212
+121204,Industrial relations manager,1212
+121205,Labor relations manager,1212
+121206,Learning and development manager,1212
+121207,Personnel/human resource manager,1212
+121208,Recruitment manager,1212
+121209,Training manager,1212
+121301,Corporate compliance manager,1213
+121302,Corporate planning manager,1213
+121303,Corporate quality assurance manager,1213
+121304,Corporate services manager,1213
+121305,Policy manager,1213
+121306,Strategic planning manager,1213
+121901,Administrative services manager,1219
+121902,Business services manager,1219
+121903,Charging facility manager,1219
+121904,Cleaning manager,1219
+121905,Cleaning services manager,1219
+121906,Cleaning services managing-proprietor,1219
+121907,Corporate Service Manager,1219
+121908,Facilities manager,1219
+121909,Personal care manager,1219
+121910,Personal care services managing-proprietor,1219
+121911,Safety manager,1219
+121912,Utility manager,1219
+122101,Consumer credit manager,1221
+122102,Customer services manager,1221
+122103,Marketing director,1221
+122104,Marketing manager,1221
+122105,Sales director,1221
+122106,Sales manager,1221
+122107,Store manager,1221
+122108,Telemarketing manager,1221
+122201,Advertisement and promo assistant manager,1222
+122202,Advertising  manager,1222
+122203,Advertising director,1222
+122204,Circulation manager,1222
+122205,Communication development manager,1222
+122206,Promotions department manager,1222
+122207,Public relations manager,1222
+122301,Product development manager,1223
+122302,Research and development manager,1223
+122303,Research manager,1223
+122304,Research project manager,1223
+131101,Agricultural farm manager/overseers,1311
+131102,Agricultural general manager,1311
+131103,Agricultural production and operations manager,1311
+131104,Chicken farm operations manager,1311
+131105,Forestry general manager,1311
+131106,Game fowl farm operations manager,1311
+131107,Livestock farm operations manager,1311
+131108,Plantation manager,1311
+131109,Poultry farm operations manager,1311
+131110,Ranch manager,1311
+131201,Aquaculture production manager,1312
+131202,Fishing general manager,1312
+131203,Fishing operations manager,1312
+131204,Fishing shore captain,1312
+131205,Trawler manager,1312
+132101,Food production managers,1321
+132102,Manufacturer,1321
+132103,Manufacturing general manager,1321
+132104,Manufacturing manager,1321
+132105,Production and operations / manufacturing manager,1321
+132201,Mine manager,1322
+132202,Mining equipment manager,1322
+132203,Mining production manager,1322
+132204,Oil and gas exploration manager,1322
+132205,Oil and gas extraction production manager,1322
+132206,Quarry manager,1322
+132207,Quarry production manager,1322
+132301,Civil engineering project manager,1323
+132302,Construction manager,1323
+132303,Construction project manager,1323
+132304,Construction site manager,1323
+132305,Demolition manager,1323
+132306,Project builder,1323
+132401,Assistant shipping manager,1324
+132402,Bus Station Manager,1324
+132403,Distribution manager,1324
+132404,Electric vehicle fleet manager,1324
+132405,Freight forwarding manager,1324
+132406,Imports and exports manager,1324
+132407,Logistics manager,1324
+132408,Material resources manager,1324
+132409,Port captain,1324
+132410,Public Utility Vehicle (PUV) operations manager,1324
+132411,Purchasing manager,1324
+132412,Railway station manager,1324
+132413,Railway station master,1324
+132414,Shipping manager,1324
+132415,Supply chain manager,1324
+132416,Supply manager,1324
+132417,Transport general manager,1324
+132418,Transport network vehicle service (TNVS) vehicle manager,1324
+132419,Transport operations manager,1324
+132420,Truck-for-hire operations manager,1324
+132421,Warehouse manager,1324
+133001,Application development manager,1330
+133002,Chief information officer,1330
+133003,Data operations manager,1330
+133004,Data processing manager,1330
+133005,Electronic data processing (EDP) manager,1330
+133006,ICT development manager,1330
+133007,Information and communication technology manager,1330
+133008,Information systems director,1330
+133009,Information technology manager,1330
+133010,Internet service provider manager,1330
+133011,Management information system (MIS) manager,1330
+133012,Network manager,1330
+133013,Telecommunications services manager,1330
+134201,Chief public health officer,1342
+134202,Clinical director,1342
+134203,Community health care coordinator,1342
+134204,Director of nursing,1342
+134205,Health facility administrator,1342
+134206,Hospital matron,1342
+134207,Medical administrator,1342
+134301,Aged care home director,1343
+134302,Community aged care coordinator,1343
+134303,Nursing home director,1343
+134304,Retirement village coordinator,1343
+134401,Community center manager,1344
+134402,Family services manager,1344
+134403,Housing services manager,1344
+134404,Welfare center manager,1344
+134501,Assistant principal,1345
+134502,Chief education supervisor,1345
+134503,City school superintendent,1345
+134504,College administrator,1345
+134505,College dean,1345
+134506,College director,1345
+134507,Division school superintendent,1345
+134508,Head teacher,1345
+134509,Public school district supervisor,1345
+134510,School administrator,1345
+134511,School president,1345
+134512,School principal,1345
+134513,School supervisor,1345
+134514,Universities and Colleges president,1345
+134601,Bank manager,1346
+134602,Credit union manager,1346
+134603,Financial Institution branch manager,1346
+134604,Insurance agency branch manager,1346
+134605,Insurance area manager,1346
+134606,Insurance underwriting and claims branch manager,1346
+134607,Money changing branch manager,1346
+134901,Archives manager,1349
+134902,Art gallery manager,1349
+134903,Correctional services manager,1349
+134904,Legal service manager,1349
+134905,Library manager,1349
+134906,Museum manager,1349
+134907,Police superintendent,1349
+134908,Prison governor,1349
+141101,Hotel manager,1411
+141102,Hostel manager,1411
+141103,Motel manager,1411
+141201,Café manager,1412
+141202,Catering services manager,1412
+141203,Restaurant manager,1412
+142001,Commissary manager,1420
+142002,Grocery manager,1420
+142003,Retail trade manager,1420
+142004,Shop manager,1420
+142005,Specialized store manager,1420
+142006,Supermarket manager,1420
+142007,Wholesale trade manager,1420
+143101,Amusement and theme park manager,1431
+143102,Billiards or pool hall manager,1431
+143103,Casino manager,1431
+143104,Cinema manager,1431
+143105,Concert hall manager,1431
+143106,Dance studio manager,1431
+143107,Funfair (peryahan) operations manager,1431
+143108,Leisure center manager,1431
+143109,Lottery outlet manager,1431
+143110,Riding school manager,1431
+143111,Sports center manager,1431
+143112,Theater hall manager,1431
+143113,Theme park manager,1431
+143901,Auto repair shop manager,1439
+143902,Barbershop manager,1439
+143903,Beauty parlor/salon manager,1439
+143904,Camp site manager,1439
+143905,Caravan park manager,1439
+143906,Computer repair shop manager,1439
+143907,Computer/internet shop manager,1439
+143908,Conference center manager,1439
+143909,Contact center manager,1439
+143910,Laundry shop manager,1439
+143911,Shopping center manager,1439
+143912,Spa and wellness center manager,1439
+143913,Travel agency manager,1439
+211101,Astronomer,2111
+211102,Astronomical scientist,2111
+211103,Medical physicist,2111
+211104,Nuclear physicist,2111
+211105,Physicist,2111
+211201,Climatologist,2112
+211202,Hydrometeorologist,2112
+211203,Meteorological scientist,2112
+211204,Meteorologist,2112
+211205,Weather forecaster,2112
+211301,Analytical chemist,2113
+211302,Application chemist,2113
+211303,Chemists,2113
+211304,Food chemist,2113
+211305,Forensic chemist,2113
+211306,Laboratory chemist,2113
+211307,Pharmaceutical chemist,2113
+211308,Physical chemist,2113
+211309,Quality control chemist,2113
+211310,Research and development chemist,2113
+211401,Geological oceanographer,2114
+211402,Geological engineer,2114
+211403,Geologist,2114
+211404,Geophysical oceanographer,2114
+211405,Geophysical scientist,2114
+211406,Geophysicist,2114
+211407,Geothermal engineer,2114
+211408,Hydrogeologist,2114
+211409,Hydrographer,2114
+211410,Hydrologist,2114
+211411,Mineral analyst,2114
+211412,Mineralogist,2114
+211413,Petrologist,2114
+211414,Seismologist,2114
+211415,Volcanologist,2114
+212101,Mathematician,2121
+212102,Operations research analyst,2121
+212201,Biometrician,2122
+212202,Demographer,2122
+212203,Statistician,2122
+212301,Actuarial analyst,2123
+212302,Actuarial consultant,2123
+212303,Actuarial researcher,2123
+212304,Actuarial specialist,2123
+212305,Insurance actuary,2123
+212401,Big data research scientist,2124
+212402,Data science specialist,2124
+212403,Data scientist,2124
+212404,Predictive analytics specialists,2124
+213101,Aquatic biologist,2131
+213102,Bacteriologist,2131
+213103,Biochemist,2131
+213104,Biochemistry Technologist,2131
+213105,Bioinformatics specialist,2131
+213106,Biologist,2131
+213107,Biomedical Officer,2131
+213108,Biomedical researcher,2131
+213109,Biophysicist,2131
+213110,Biotechnologist,2131
+213111,Botanist,2131
+213112,Cell geneticist,2131
+213113,Entomologist,2131
+213114,Epidemiologist,2131
+213115,Genomicist,2131
+213116,Marine biologist,2131
+213117,Microbiologist,2131
+213118,Microbiology Technologist,2131
+213119,Molecular biologist,2131
+213120,Molecular geneticist,2131
+213121,Mycologist,2131
+213122,Nanotechnologist,2131
+213123,Parasitologist,2131
+213124,Pharmacologist,2131
+213125,Physiologist,2131
+213126,Plant entomologist,2131
+213127,Plant geneticist,2131
+213128,Plants and animals taxonomist,2131
+213129,Veterinary Microbiologist,2131
+213130,Virologist,2131
+213131,Zoologist,2131
+213201,Agriculturist,2132
+213202,Agroforester,2132
+213203,Agronomist,2132
+213204,Aquaculturist,2132
+213205,Farming adviser,2132
+213206,Fisheries adviser,2132
+213207,Forester,2132
+213208,Forestry adviser,2132
+213209,Forestry scientist,2132
+213210,Horticultural scientist,2132
+213211,Silviculturist,2132
+213212,Soil scientist,2132
+213301,Air pollution analyst,2133
+213302,Conservation officer,2133
+213303,Conservation scientist,2133
+213304,Ecologist,2133
+213305,Environment quality controller,2133
+213306,Environmental adviser,2133
+213307,Environmental auditor,2133
+213308,Environmental consultant,2133
+213309,Environmental impact assessment specialist,2133
+213310,Environmental planner,2133
+213311,Environmental research scientist,2133
+213312,Environmental scientist,2133
+213313,Environmentalist,2133
+213314,Water quality analyst,2133
+214101,Industrial and production plant engineer,2141
+214102,Industrial and production quality control engineer,2141
+214103,Industrial design engineer,2141
+214104,Industrial efficiency engineer,2141
+214105,Industrial engineer,2141
+214106,Methods engineer,2141
+214107,Production engineer,2141
+214108,Production planning engineer,2141
+214109,Time and motion engineer,2141
+214201,Civil engineer,2142
+214202,Construction engineer,2142
+214203,Construction site engineer,2142
+214204,Geotechnical engineer,2142
+214205,Hydraulics engineer,2142
+214206,Soil mechanics engineer,2142
+214207,Structural engineer,2142
+214208,Transportation Engineer,2142
+214301,Air pollution control engineer,2143
+214302,Environmental analyst,2143
+214303,Environmental engineer,2143
+214304,Environmental remediation specialist,2143
+214305,Wastewater process engineer,2143
+214401,Aeronautical engineer,2144
+214402,Aerospace engineer,2144
+214403,Agricultural machines engineer,2144
+214404,Automotive engineer,2144
+214405,Biosystems engineer,2144
+214406,Engine designer,2144
+214407,"Heating, ventilation and aircondition engineer",2144
+214408,Industrial machinery and tools engineer,2144
+214409,Machinery and equipment maintenance engineer,2144
+214410,Marine engineer,2144
+214411,Mechanical engineer,2144
+214412,Power plant engineer,2144
+214501,Chemical engineer,2145
+214502,Chemical process engineer,2145
+214503,Fuel technologist,2145
+214504,Petroleum and natural gas chemical engineer,2145
+214505,Plastic technologist,2145
+214506,Refinery process engineer,2145
+214601,Coal mining engineer,2146
+214602,Extractive metallurgist,2146
+214603,Metal mining engineer,2146
+214604,Metallurgical engineer,2146
+214605,Metallurgist,2146
+214606,Mining engineer,2146
+214607,Petroleum and natural gas extraction engineer,2146
+214901,Biomedical engineer,2149
+214902,Ceramics engineer,2149
+214903,Explosive ordinance engineer,2149
+214904,Marine salvage engineer,2149
+214905,Materials engineer,2149
+214906,Optical engineer,2149
+214907,Quantity surveyor,2149
+214908,Reservoir and drilling engineer,2149
+214909,Safety engineer,2149
+214910,Sanitary engineer,2149
+214911,Satellite engineer,2149
+214912,Test engineer,2149
+215101,Electric power generation engineer,2151
+215102,Electrical engineer,2151
+215103,Electrical failure analysis engineer,2151
+215104,Electromechanical engineer,2151
+215105,Photovoltaic (PV) system designer,2151
+215106,Power distribution and transmission engineer,2151
+215201,Computer hardware engineer,2152
+215202,Electronic product test engineer,2152
+215203,Electronics engineer,2152
+215204,Electronics engineering technologist,2152
+215205,Instrumentation engineer,2152
+215301,Broadcast engineer,2153
+215302,Radio engineer,2153
+215303,Telecommunications engineer,2153
+215304,Telecommunications engineering technologist,2153
+216101,Building architect,2161
+216102,Interior architect,2161
+216301,Costume designer,2163
+216302,Fashion designer,2163
+216303,Garment designer,2163
+216304,Industrial designer,2163
+216305,Jewelry designer,2163
+216401,City planner,2164
+216402,Land planner,2164
+216403,Town planner,2164
+216404,Traffic planner,2164
+216405,Urban planner,2164
+216501,Aerial surveyor,2165
+216502,Cadastral surveyor,2165
+216503,Cartographer,2165
+216504,Geodesist,2165
+216505,Hydrographic surveyor,2165
+216506,Land surveyor,2165
+216507,Mine surveyor,2165
+216508,Photogrammetrist,2165
+216601,2D animators,2166
+216602,2D designers,2166
+216603,3D animators,2166
+216604,3D designers,2166
+216605,Animator,2166
+216606,Caricature artists,2166
+216607,Computer games designer,2166
+216608,Digital artist,2166
+216609,Illustrator,2166
+216610,Infographic designers,2166
+216611,Multimedia designer,2166
+216612,Publication designer,2166
+216613,Website designer,2166
+221101,District medical doctor - therapist,2211
+221102,Family medical practitioner,2211
+221103,Medical doctor,2211
+221104,Medical officer,2211
+221105,Medical practitioner,2211
+221106,Physician,2211
+221107,Primary health care physician,2211
+221108,Resident medical officer specializing in general practice,2211
+221201,Allergologist,2212
+221202,Anesthesiologist,2212
+221203,Anesthetist,2212
+221204,Cardiologist,2212
+221205,Dermatologist,2212
+221206,"Ear, Nose, and Throat (ENT) physician",2212
+221207,Emergency medicine specialist,2212
+221208,Emergency physician,2212
+221209,Forensic pathologist,2212
+221210,Gynecologist,2212
+221211,Infectious diseases specialist,2212
+221212,Internal medicine physician,2212
+221213,Medical pathologist,2212
+221214,Medical specialist practitioner,2212
+221215,Nephrologist,2212
+221216,Neurologist,2212
+221217,Neurosurgeon,2212
+221218,Obstetrician,2212
+221219,Oncologist,2212
+221220,Ophthalmologist,2212
+221221,Pathologist,2212
+221222,Pediatrician,2212
+221223,Preventive medicine specialist,2212
+221224,Psychiatrist,2212
+221225,Radiologist,2212
+221226,Resident medical officer in specialist training,2212
+221227,Rheumatologist,2212
+221228,Surgeon,2212
+221229,Urologist,2212
+222101,Anesthetic nurse,2221
+222102,Audiometry nurse,2221
+222103,Cardiovascular nurse,2221
+222104,Chemotherapy nurse,2221
+222105,Clinical consultant nurse,2221
+222106,Clinical nurse,2221
+222107,Company nurse,2221
+222108,Coronary nurse,2221
+222109,Cosmetic nurse,2221
+222110,Dental nurse,2221
+222111,Dermatological nurse,2221
+222112,Dialysis nurse,2221
+222113,District nurse,2221
+222114,Emergency nurse,2221
+222115,Endocrinology nurse,2221
+222116,ENT nurse,2221
+222117,Fertility nurse,2221
+222118,Geriatric nurse,2221
+222119,Hematology nurse,2221
+222120,Hemodialysis nurse,2221
+222121,Home health care nurse,2221
+222122,Independent nurse practitioner,2221
+222123,Industrial nurse,2221
+222124,Intensive care unit nurse,2221
+222125,Labor and delivery nurse,2221
+222126,Medical ward nurse,2221
+222127,Medico-legal nurse,2221
+222128,Neonatal nurse,2221
+222129,Neurology/neurosurgeon nurse,2221
+222130,Nurse educator,2221
+222131,Nurse practitioner,2221
+222132,Obstetrics and gynecology (OB-GYN) nurse,2221
+222133,Occupational health nurse,2221
+222134,Oncology nurse,2221
+222135,Ophthalmology nurse,2221
+222136,Orthopedic nurse,2221
+222137,Pain clinic and oncology nurse,2221
+222138,Paramedic nurse,2221
+222139,Pediatric nurse,2221
+222140,Psychiatric nurse,2221
+222141,Public health nurse,2221
+222142,Pulmonary/respiratory nurse,2221
+222143,Radiation therapy nurse,2221
+222144,Radiotherapeutic nurse,2221
+222145,School nurse,2221
+222146,Surgical nurse,2221
+222147,Urology nurse,2221
+223001,Acupuncturist,2230
+223002,Ayuverdic practitioner,2230
+223003,Chinese herbal medicine practitioner,2230
+223004,Homeopath,2230
+223005,Naturopath,2230
+223006,Unani practitioner,2230
+224001,Advanced care paramedic,2240
+224002,Feldsher,2240
+224003,Paramedic clinical officer,2240
+224004,Primary care paramedic,2240
+224005,Surgical technician,2240
+225001,Animal nutritionist,2250
+225002,Animal pathologist,2250
+225003,Public health veterinarian,2250
+225004,Veterinarian,2250
+225005,Veterinary epidemiologist,2250
+225006,Veterinary intern,2250
+225007,Veterinary surgeon,2250
+226101,Dental practitioner,2261
+226102,Dental surgeon,2261
+226103,Dentist,2261
+226104,Endodontist,2261
+226105,Oral and maxillofacial surgeon,2261
+226106,Oral pathologist,2261
+226107,Orthodontist,2261
+226108,Pedodontist,2261
+226109,Periodontist,2261
+226110,Prosthodontist,2261
+226201,Dispensing chemist,2262
+226202,Hospital pharmacist,2262
+226203,Industrial pharmacist,2262
+226204,Pharmacist,2262
+226205,Retail pharmacist,2262
+226301,Environmental health officer,2263
+226302,Occupational health and safety adviser,2263
+226303,Occupational hygienist,2263
+226304,Radiation protection expert,2263
+226401,Geriatric physical therapist,2264
+226402,Orthopedic physical therapist,2264
+226403,Pediatric physical therapist,2264
+226404,Physical therapist,2264
+226405,Physiotherapist,2264
+226501,Clinical dietician,2265
+226502,Dietetic consultant,2265
+226503,Dietician,2265
+226504,Food and nutrition specialist,2265
+226505,Food service dietician,2265
+226506,Nutritionist,2265
+226507,Public health nutritionist,2265
+226508,Public health nutritionist,2265
+226509,Sports nutritionist,2265
+226510,Therapeutic/clinic dietician,2265
+226601,Audiologist,2266
+226602,Language therapist,2266
+226603,Speech pathologist,2266
+226604,Speech therapist,2266
+226701,Ophthalmic optician,2267
+226702,Optometrist,2267
+226703,Orthoptist,2267
+226901,Arts therapist,2269
+226902,Dance and movement therapist,2269
+226903,Occupational therapist,2269
+226904,Podiatrist,2269
+226905,Pulmonary or respiratory therapist,2269
+226906,Recreational therapist,2269
+231001,Assistant professor,2310
+231002,College professor,2310
+231003,Information technology professor,2310
+231004,Professor,2310
+231005,University lecturer,2310
+232001,Automotive technology instructor,2320
+232002,Cosmetology instructor,2320
+232003,Vocational education teacher,2320
+233001,High school teacher,2330
+233002,Secondary education teacher,2330
+234201,Early childhood educator,2342
+234202,Kindergarten teacher,2342
+234203,Nursery school teacher,2342
+234204,Pre-school teacher,2342
+235101,Audio-visual teaching aids specialist,2351
+235102,Curriculum coordinator,2351
+235103,Curriculum developer,2351
+235104,Education methods adviser,2351
+235105,Education methods specialist,2351
+235106,School inspector,2351
+235107,Teaching aids specialist,2351
+235201,Learning disabilities special education teacher,2352
+235202,Learning support teacher,2352
+235203,Remedial teacher,2352
+235204,Teacher for the mentally handicapped,2352
+235205,Teacher for the physically handicapped,2352
+235206,Teacher of gifted children,2352
+235207,Teacher of the hearing impaired,2352
+235208,Teacher of the sight impaired,2352
+235301,Intensive language teacher,2353
+235302,Language researcher,2353
+235303,Migrant education teacher,2353
+235304,Practical language teacher,2353
+235305,Second language teacher,2353
+235401,Guitar teacher,2354
+235402,Music teacher,2354
+235403,Piano teacher,2354
+235404,Voice teacher,2354
+235501,Cultural art teacher (instructor),2355
+235502,Dance instructor,2355
+235503,Dance teacher,2355
+235504,Drama teacher,2355
+235505,Painting teacher,2355
+235506,Sculpture teacher,2355
+235601,Computer trainer,2356
+235602,Information technology trainers,2356
+235603,Software trainer,2356
+235901,Adult literacy teacher,2359
+235902,Literacy tutor,2359
+235903,Mathematics coach,2359
+235904,Professional tutor,2359
+235905,School counselor,2359
+241101,Accountant,2411
+241102,Audit examiner,2411
+241103,Auditor,2411
+241104,Bank accountant,2411
+241105,Chartered accountant,2411
+241106,Cost accountant,2411
+241107,Financial accountant,2411
+241108,Financial controller,2411
+241109,Management accountant,2411
+241110,Tax accountant,2411
+241201,Estate planner,2412
+241202,Financial adviser,2412
+241203,Financial planner,2412
+241204,Investment adviser,2412
+241301,Bond analyst,2413
+241302,Budget analyst,2413
+241303,Equity research analyst,2413
+241304,Financial analyst,2413
+241305,Financial modelers,2413
+241306,Fiscal analyst,2413
+241307,Investment analyst,2413
+241308,Securities consultant,2413
+242101,Business consultant,2421
+242102,Management consultant,2421
+242103,Organization and methods analyst,2421
+242201,Intelligence officer,2422
+242202,Policy analyst,2422
+242203,Political adviser,2422
+242301,Careers adviser,2423
+242302,Human resource development specialist,2423
+242303,Human resources expert,2423
+242304,Industrial relations management specialist,2423
+242305,Job analyst,2423
+242306,Occupational analyst,2423
+242307,Outplacement consultant,2423
+242308,Personnel officer,2423
+242309,Personnel specialist,2423
+242310,Vocational guidance counsellor,2423
+242401,Staff development officer,2424
+242402,Training officer,2424
+242403,Workforce development specialist,2424
+243101,Advertising account executive,2431
+243102,Advertising specialist,2431
+243103,Market research analyst,2431
+243104,Marketing account executive,2431
+243105,Marketing consultant,2431
+243106,Marketing specialist,2431
+243107,Media production specialist,2431
+243108,Merchandising supervisor,2431
+243109,Sales promotion specialist,2431
+243201,Press liaison officer,2432
+243202,Public relations copywriter,2432
+243203,Public relations officer,2432
+243204,Publicity agent,2432
+243301,Industrial products sales representative,2433
+243302,Medical and pharmaceutical products sales representative,2433
+243303,Technical sales representative (except ICT),2433
+243401,Communications technology sales representative,2434
+243402,Computers sales representative,2434
+251101,Computer scientist,2511
+251102,Computer systems analyst,2511
+251103,Computer systems designer,2511
+251104,IT business analyst,2511
+251105,IT systems designer,2511
+251106,Systems consultant,2511
+251201,Artificial intelligence (AI) software developer,2512
+251202,Computer applications engineer,2512
+251203,Programmer analyst,2512
+251204,Software architect,2512
+251205,Software designer,2512
+251206,Software developer,2512
+251207,Software engineer,2512
+251301,Animation programmer,2513
+251302,Communications programmer,2513
+251303,Digital content developers,2513
+251304,Internet developer,2513
+251305,Multimedia developer,2513
+251306,Multimedia programmer,2513
+251307,Website architect,2513
+251308,Website developer,2513
+251309,Website game developers,2513
+251901,Computers quality assurance analyst,2519
+251902,Software tester,2519
+251903,Systems tester,2519
+252101,Data administrator,2521
+252102,Database administrator,2521
+252103,Database analyst,2521
+252104,Database architect,2521
+252105,Database designers,2521
+252201,Computer systems administrator,2522
+252202,Computer systems administrator,2522
+252203,Network administrator,2522
+252301,Computers communication analyst,2523
+252302,Network analyst,2523
+252901,Data miner,2529
+252902,Digital forensic specialist,2529
+252903,ICT security specialist,2529
+261101,Attorney,2611
+261102,Lawyer,2611
+261103,Legal adviser,2611
+261104,Legal counsel,2611
+261105,Legal officer,2611
+261106,Prosecutor,2611
+261107,Solicitor,2611
+261201,Associate judge,2612
+261202,Chief justice,2612
+261203,Judge,2612
+261204,Magistrate,2612
+261901,Coroner,2619
+261902,Jurist (except lawyer or judge),2619
+261903,Notary,2619
+262101,Archivist,2621
+262102,Art gallery curator,2621
+262103,Museum curator,2621
+262104,Records manager,2621
+262201,Bibliographer,2622
+262202,Cataloguer,2622
+262203,Librarian,2622
+263101,Econometrician,2631
+263102,Economic adviser,2631
+263103,Economic analyst,2631
+263104,Economist,2631
+263105,Labor economist,2631
+263106,Microeconomist,2631
+263201,Anthropologist,2632
+263202,Archaeologist,2632
+263203,Criminologist,2632
+263204,Ethnologist,2632
+263205,Geographer,2632
+263206,Sociologist,2632
+263301,Genealogist,2633
+263302,Historian,2633
+263303,Philosopher,2633
+263304,Political analyst,2633
+263305,Political scientist,2633
+263401,Clinical psychologist,2634
+263402,Developmental psychologist,2634
+263403,Educational psychologist,2634
+263404,Organizational psychologist,2634
+263405,Psychologist,2634
+263406,Psychometrician,2634
+263407,Psychotherapist,2634
+263408,Sports psychologist,2634
+263501,Addictions counselor,2635
+263502,Bereavement counselor,2635
+263503,Child and youth counselor,2635
+263504,Counseling professionals,2635
+263505,Family counselor,2635
+263506,Marriage counselor,2635
+263507,Parole officer,2635
+263508,Probation officer,2635
+263509,Social welfare officer,2635
+263510,Social worker,2635
+263511,Women's welfare organizer,2635
+263601,Chaplain,2636
+263602,Imam,2636
+263603,Missionary,2636
+263604,Pastor,2636
+263605,Priest,2636
+263606,Religion minister,2636
+264101,Author,2641
+264102,Book author,2641
+264103,Book editor,2641
+264104,Creative writer,2641
+264105,Essayist,2641
+264106,Indexer,2641
+264107,Interactive media writer,2641
+264108,Literary writer,2641
+264109,Novelist,2641
+264110,Playwright,2641
+264111,Poet,2641
+264112,Scriptwriter,2641
+264113,Speech writer,2641
+264114,Technical communicator,2641
+264115,Technical writer,2641
+264116,Writer,2641
+264201,Columnist,2642
+264202,Critic,2642
+264203,Editor-in-chief,2642
+264204,Journalist,2642
+264205,News analyst,2642
+264206,News media copywriter,2642
+264207,Newspaper editor,2642
+264208,Newspaper reporter,2642
+264209,Sports writer,2642
+264210,Sub editor,2642
+264211,TV/Radio news producer,2642
+264212,TV/Radio news reporter,2642
+264301,Interpreter,2643
+264302,Lexicographer,2643
+264303,Philologist,2643
+264304,Sign language interpreter,2643
+264305,Subtitler,2643
+264306,Translator,2643
+264307,Translator-reviser,2643
+265101,Artistic engraver and etcher,2651
+265102,Artistic painter,2651
+265103,Cartoonist,2651
+265104,Ceramic artist,2651
+265105,Graphic artist,2651
+265106,Murals painter,2651
+265107,Picture restorer,2651
+265108,Portrait painter,2651
+265109,Sculptor,2651
+265110,Sketch artist,2651
+265201,Band leader,2652
+265202,Bassoonist,2652
+265203,Drummer,2652
+265204,Flutist,2652
+265205,Guitarist,2652
+265206,Instrumentalist,2652
+265207,Keyboardist,2652
+265208,Music arranger,2652
+265209,Music composer,2652
+265210,Music conductor,2652
+265211,Musician,2652
+265212,Nightclub musician,2652
+265213,Nightclub singer,2652
+265214,Orchestra conductor,2652
+265215,Pianist,2652
+265216,Saxophonist,2652
+265217,Singer,2652
+265218,Street musician,2652
+265219,Street singer,2652
+265220,Trumpeter,2652
+265221,Violinist,2652
+265222,Vocal group conductor,2652
+265301,Ballet dancer,2653
+265302,Belly dancer,2653
+265303,Choreographer,2653
+265304,Cultural dancer,2653
+265305,Nightclub dancer,2653
+265306,Professional dancer,2653
+265307,Street dancer,2653
+265401,Director of photography,2654
+265402,Documentary director,2654
+265403,Film editor,2654
+265404,Motion picture director,2654
+265405,Stage director,2654
+265406,Technical television or radio director,2654
+265407,Theater producer,2654
+265408,Theatrical director,2654
+265501,Dubber or voice actor,2655
+265502,Mime artist,2655
+265503,Motion picture actor/actress,2655
+265504,Radio actor/actress,2655
+265505,Stage actor/actress,2655
+265506,Storyteller,2655
+265507,Theater actor/actress,2655
+265601,"Compere' (emcee, show host)",2656
+265602,News anchor,2656
+265603,Radio and television disc or video jockey,2656
+265604,Radio announcer,2656
+265605,Sports announcer,2656
+265606,Television announcer,2656
+265901,Acrobat,2659
+265902,Aerialist,2659
+265903,Clown,2659
+265904,Disc jockey (bar and clubs),2659
+265905,Hypnotist,2659
+265906,Magician,2659
+265907,Puppeteer,2659
+265908,Stand-up comedian,2659
+265909,Ventriloquist,2659
+265910,Vlogger,2659
+311101,Chemistry technician,3111
+311102,Geology technician,3111
+311103,Meteorology technician,3111
+311104,Physics technician,3111
+311201,Building inspector,3112
+311202,Building surveyor,3112
+311203,Civil engineering technician,3112
+311204,Clerk of works,3112
+311205,Fire inspector,3112
+311206,Fire prevention specialist,3112
+311207,Geotechnical technician,3112
+311208,Surveying technician,3112
+311301,Electric power transmission engineering technician,3113
+311302,Electric vehicle (EV) electrical service technician,3113
+311303,Electric vehicle supply equipment (EVSE) installation technician,3113
+311304,Electrical engineering technician,3113
+311305,Gas turbine electrical system technician,3113
+311306,High voltage electrical engineering technician,3113
+311307,Photovoltaic (PV) system installation technician,3113
+311308,Photovoltaic (PV) system maintenance technician,3113
+311401,Audio visual systems technician,3114
+311402,Electronics and communication equipment technician,3114
+311403,Electronics engineering technician,3114
+311404,Electronics system technician,3114
+311501,Aeronautics engineering technician,3115
+311502,Aircraft maintenance technician,3115
+311503,Auto service technician,3115
+311504,Boiler technician,3115
+311505,Electric vehicle (EV) mechanical service technician,3115
+311506,Elevator technician,3115
+311507,Gas turbine mechanical system technician,3115
+311508,Industrial machinery and tools technician,3115
+311509,Maintenance technician,3115
+311510,Marine engineering technician,3115
+311511,Marine surveyor,3115
+311512,Mechanical engineering estimator,3115
+311513,Mechanical engineering technician,3115
+311514,Power plant technician,3115
+311601,Chemical engineering estimator,3116
+311602,Chemical engineering technician,3116
+311603,Chemical laboratory technician,3116
+311604,Petroleum engineering technician,3116
+311701,Extractive engineering technician,3117
+311702,Metallurgical technician,3117
+311703,Mine inspector,3117
+311704,Mines safety inspector,3117
+311705,Mining engineering technician,3117
+311706,Oil and gas wells acidizer,3117
+311707,Petroleum and natural gas extraction technician,3117
+311801,Draftsman,3118
+311802,"Draftsman, architectural",3118
+311803,"Draftsman, cartographical",3118
+311804,"Draftsman, electrical",3118
+311805,"Draftsman, engineering/civil",3118
+311806,"Draftsman, hydrographic",3118
+311807,"Draftsman, lithographic",3118
+311808,"Draftsman, marine",3118
+311809,"Draftsman, mechanical",3118
+311810,"Draftsman, structural",3118
+311811,Technical illustrator,3118
+311901,Electric vehicle (EV) test technician,3119
+311902,Fire investigator,3119
+311903,Forensic science technician,3119
+311904,Health physics technician,3119
+311905,Industrial efficiency engineering technician,3119
+311906,Instrument technician,3119
+311907,Motor vehicle inspection system (MVIS) electric vehicle (EV) testing specialist,3119
+311908,Production engineering technician,3119
+311909,Quality control technician,3119
+311910,Quantity surveying technician,3119
+311911,Robotics technician,3119
+311912,Test technician,3119
+311913,Time and motion study technician,3119
+312101,Mine deputy,3121
+312102,Mine foreman,3121
+312103,Mine supervisor,3121
+312104,Mine under-manager,3121
+312105,Quarry supervisor,3121
+312201,"Area coordinator, manufacturing",3122
+312202,Assembly supervisor,3122
+312203,Finishing supervisor,3122
+312204,Production line leader,3122
+312205,"Production supervisor, manufacturing",3122
+312301,Building construction supervisor,3123
+312302,Construction foreman,3123
+312303,"Site manager, construction",3123
+313101,Distribution control operator,3131
+313102,Electric power plant operator,3131
+313103,Generating station operator,3131
+313104,Hydroelectric power plant operator,3131
+313105,Nuclear power plant operator,3131
+313106,Power system operator,3131
+313107,Renewable energy plant operator,3131
+313108,Solar power plant operator,3131
+313201,Incinerator operator,3132
+313202,Liquid waste process operator,3132
+313203,Pumping-station operator,3132
+313204,Sewage plant operator,3132
+313205,Wastewater operator,3132
+313206,Water treatment plant operator,3132
+313301,Chemical filtering and separating equipment operator,3133
+313302,Chemical heat treating plant operator,3133
+313303,Chemical process technician,3133
+313304,Chemical still and reactor operator,3133
+313401,Gas plant operator,3134
+313402,Paraffin plant operator,3134
+313403,Petroleum and natural gas refining blender operator,3134
+313404,Petroleum and natural gas refining still operator,3134
+313405,Petroleum process operator,3134
+313406,Refinery process technician,3134
+313501,Blast furnace operator,3135
+313502,Casting metal machine operator,3135
+313503,Central control caster,3135
+313504,Metal melting furnace operator,3135
+313505,Metal processing control operator,3135
+313506,Rolling mill control operator,3135
+313901,Automated assembly line operator,3139
+313902,Industrial robot controller,3139
+313903,Paper and pulp panel board operator,3139
+313904,Paper pulp refinery operator,3139
+313905,Pulping control operator,3139
+313906,Pulping technician,3139
+314101,Bacteriology technician,3141
+314102,Biochemistry technician,3141
+314103,Herbarium technician,3141
+314104,Pharmacology technician,3141
+314105,Serology technician,3141
+314106,Tissue culture technician,3141
+314107,Zoology technician,3141
+314201,Agronomy technician,3142
+314202,Aquaculture technician,3142
+314203,Dairy technician,3142
+314204,Farm demonstrator,3142
+314205,Field crop technician,3142
+314206,Fishery technician,3142
+314207,Herd tester,3142
+314208,Horticultural technician,3142
+314209,Orchard technician,3142
+314210,Pest control technician,3142
+314211,Plant propagation technician,3142
+314212,Poultry technician,3142
+314213,Prawn farm technician,3142
+314214,Rice farm technician,3142
+314215,Soil technician,3142
+314216,Sugar farm technician,3142
+314301,Forestry technician,3143
+314302,Silviculture technician,3143
+315101,Chief ship engineer,3151
+315102,Marine technical superintendent,3151
+315201,Deck cadet,3152
+315202,Inland waterways ship master,3152
+315203,Marine deck superintendent,3152
+315204,Sea ship captain,3152
+315205,Sea ship master,3152
+315206,Ship chief mate,3152
+315207,Ship navigation officer,3152
+315208,Ship pilot,3152
+315209,Shipping operations officer,3152
+315210,Yacht skipper,3152
+315301,Aerial crop sprayer,3153
+315302,Aircraft maintenance officer,3153
+315303,Aircraft pilot,3153
+315304,Aircraft pilot,3153
+315305,Astronaut,3153
+315306,Flight engineer,3153
+315307,Flight navigator,3153
+315308,Flying instructor,3153
+315309,Helicopter pilot,3153
+315401,Airways communicator,3154
+315402,Control tower officer,3154
+315403,Control tower radio operator,3154
+315404,Flight control tower operator,3154
+315405,Flight radio operator,3154
+315501,Air traffic safety engineer,3155
+315502,Air traffic safety technician,3155
+315503,Airfield power technician,3155
+315504,Ground signaling technician,3155
+321101,Cobalt machine technician,3211
+321102,Computed Tomography (CT) scan technologist,3211
+321103,Diagnostic medical radiographer,3211
+321104,Dialysis machine technician,3211
+321105,Electrocardiographic equipment technician,3211
+321106,Electroencephalographic equipment technician,3211
+321107,Endoscopic microscopy technician,3211
+321108,Mammographer,3211
+321109,Medical radiation therapist,3211
+321110,Medical scanning equipment technician,3211
+321111,Medical ultrasound machine technician,3211
+321112,Medical x-ray equipment technician,3211
+321113,Nuclear medicine technologist,3211
+321114,Radiographer,3211
+321115,Radiology technician,3211
+321116,Sonographer,3211
+321201,Biological laboratory technician,3212
+321202,Biomedical technician,3212
+321203,Blood-bank technician,3212
+321204,Cytology technician,3212
+321205,Medical laboratory technician,3212
+321206,Pathology laboratory technician,3212
+321301,Dispensing technician,3213
+321302,Pharmaceutical assistant,3213
+321303,Pharmaceutical technician,3213
+321401,Dental mechanic,3214
+321402,Dental technician,3214
+321403,Denturist,3214
+321404,Orthodontic technician,3214
+321405,Orthopedic appliance maker,3214
+321406,Orthotic technician,3214
+321407,Orthotist,3214
+321408,Prosthetic technician,3214
+321409,Prosthetist,3214
+322101,Assistant nurse,3221
+322102,Associate professional nurse,3221
+322201,Assistant midwife,3222
+322202,Traditional midwife,3222
+323001,Acupuncture technician,3230
+323002,Ayurvedic technician,3230
+323003,Bonesetter,3230
+323004,Drugless treatment healer,3230
+323005,Healer of indigenous people (e.g. Mansi-bok (Ibaloi),3230
+323006,Mansip-ok  (Kankana-ey) in Cordilleras),3230
+323007,Herbalist,3230
+323008,Homeopathy technician,3230
+323009,Scraping and cupping therapist,3230
+323010,Village healer,3230
+323011,Witch doctor,3230
+324001,Artificial inseminator,3240
+324002,Veterinary assistant,3240
+324003,Veterinary laboratory technician,3240
+324004,Veterinary nurse,3240
+324005,Veterinary vaccinator,3240
+325101,Dental assistant,3251
+325102,Dental hygienist,3251
+325103,Dental therapist,3251
+325201,Clinical coder,3252
+325202,Contact tracer,3252
+325203,Disease registry technician,3252
+325204,Health information clerk,3252
+325205,Medical records analyst,3252
+325206,Medical records clerk,3252
+325207,Medical records technician,3252
+325208,Medical records unit supervisor,3252
+325301,Community health aide,3253
+325302,Community health promoter,3253
+325303,Community health worker,3253
+325304,Village health worker,3253
+325401,Contact lens optician,3254
+325402,Contact lens technician,3254
+325403,Optical technician,3254
+325501,Acupressure therapist,3255
+325502,Electrotherapist,3255
+325503,Hydrotherapist,3255
+325504,Massage therapist,3255
+325505,Physical rehabilitation technician,3255
+325506,Physiotherapy assistant,3255
+325507,Physiotherapy technician,3255
+325508,Shiatsu therapist,3255
+325601,Clinical assistant,3256
+325602,Medical assistant,3256
+325603,Ophthalmic assistant,3256
+325701,Charging safety officer,3257
+325702,Electric vehicle (EV) fleet and depot safety officer,3257
+325703,Environmental sanitation inspector,3257
+325704,Food sanitation and safety inspector,3257
+325705,Health inspector,3257
+325706,Occupational health and safety inspector,3257
+325707,Pollution control associate,3257
+325708,Pollution inspector,3257
+325709,Pollution inspector,3257
+325710,Product safety inspector,3257
+325711,Safety and health inspector,3257
+325712,Sanitarian,3257
+325713,Sanitary inspector,3257
+325714,Zoning inspector,3257
+325801,Ambulance officer,3258
+325802,Ambulance paramedic,3258
+325803,Emergency medical technician,3258
+325804,Emergency paramedic,3258
+325805,Medical emergency service personnel,3258
+325901,Anesthesia technician,3259
+325902,Family planning counselor,3259
+325903,Human immunodeficiency virus (HIV) Counselor,3259
+325904,Occupational therapy technician,3259
+325905,Respiratory therapy technician,3259
+331101,Crypto currency trader,3311
+331102,Foreign exchange broker,3311
+331103,Foreign exchange dealer,3311
+331104,Securities broker,3311
+331105,Securities salesperson,3311
+331106,Stocks and shares broker,3311
+331201,Credit analyst,3312
+331202,Credit union officer,3312
+331203,Loans officer,3312
+331204,Mortgage officer,3312
+331301,Accounting assistant,3313
+331302,Accounting officer,3313
+331303,Accounting technician,3313
+331304,Associate auditor,3313
+331305,Audit assistant,3313
+331306,Bank reconciliation assistant,3313
+331307,Bookkeeper,3313
+331401,Actuarial assistant,3314
+331402,Mathematical assistant,3314
+331403,Statistical assistant,3314
+331501,Appraiser,3315
+331502,Claims assessor,3315
+331503,Claims inspector,3315
+331504,Insurance assessor,3315
+331505,Jewelry appraiser,3315
+331506,Real estate appraiser,3315
+331507,Valuer,3315
+332101,Assistant underwriter,3321
+332102,Insurance adviser,3321
+332103,Insurance agent,3321
+332104,Insurance broker,3321
+332105,Insurance dealer,3321
+332106,Insurance underwriter,3321
+332201,After-sale service adviser,3322
+332202,Canvasser,3322
+332203,Commercial sales agent,3322
+332204,Commercial traveler,3322
+332205,Franchise relation officer,3322
+332206,Manufacturing sales agent,3322
+332207,Manufacturing sales consultant,3322
+332301,Procurement officer,3323
+332302,Purchasing agent,3323
+332303,Purchasing merchandiser,3323
+332304,Purchasing officer,3323
+332401,Commodities broker,3324
+332402,Commodity futures dealer,3324
+332403,Shipping broker,3324
+332404,Trade broker,3324
+333201,Conference and event organizer,3332
+333202,Conference planner,3332
+333203,Events coordinator,3332
+333204,Wedding planner,3332
+333301,Employment agent,3333
+333302,Job placement officer,3333
+333303,Labor contractor,3333
+333401,Property manager,3334
+333402,Real estate broker,3334
+333403,Real estate salesperson,3334
+333404,Realtor,3334
+333901,Advertising salesperson,3339
+333902,Auctioneer,3339
+333903,Business services salesperson,3339
+333904,Literary agent,3339
+333905,Musical performance agent,3339
+333906,Sports agent,3339
+333907,Theatrical agent,3339
+333908,Tour operator,3339
+334101,Clerical supervisor,3341
+334102,Data entry supervisor,3341
+334103,Filing clerks supervisor,3341
+334104,Personnel clerks supervisor,3341
+334201,Legal practice manager,3342
+334202,Legal secretary,3342
+334301,Administrative assistant,3343
+334302,Administrative secretary,3343
+334303,Committee secretary,3343
+334304,Correspondence assistant,3343
+334305,Court reporter,3343
+334306,Executive assistant,3343
+334307,Executive secretary,3343
+334308,Personal assistant,3343
+334401,Dental secretary,3344
+334402,Hospital ward secretary,3344
+334403,Medical insurance billing secretary,3344
+334404,Medical office administrative assistant,3344
+334405,Medical practice manager,3344
+334406,Medical secretary,3344
+334407,Medical stenographer,3344
+334408,Medical transcriptionist,3344
+334409,Pathology secretary,3344
+334410,Patient care secretary,3344
+335101,Border inspector,3351
+335102,Customs inspector,3351
+335103,Customs officer,3351
+335104,Immigration officer,3351
+335105,Passport checking officer,3351
+335201,Excise officer,3352
+335202,Tax collector,3352
+335203,Tax examiner,3352
+335204,Tax officer,3352
+335205,Taxation inspector,3352
+335301,Pensions officer,3353
+335302,Social benefits officer,3353
+335303,Social insurance officer,3353
+335304,Social security claims officer,3353
+335401,Building permit licensing officer,3354
+335402,Business permit licensing officer,3354
+335403,Licensing officer,3354
+335404,Passport issuing officer,3354
+335501,Police detective,3355
+335502,Police inquiry agent,3355
+335503,Police inspector,3355
+335504,Police intelligence agent,3355
+335505,Police investigator,3355
+335901,Agricultural inspector,3359
+335902,Fisheries inspector,3359
+335903,Forest concession guard,3359
+335904,Forestry inspector,3359
+335905,Land management inspector,3359
+335906,Market inspector,3359
+335907,Prices inspector,3359
+335908,Public services inspector,3359
+335909,Wage inspector,3359
+335910,Weights and measures inspector,3359
+341101,Bailiff,3411
+341102,Clerk of court/judge/law,3411
+341103,Court clerk,3411
+341104,Judge's clerk,3411
+341105,Justice of the peace,3411
+341106,Law clerk,3411
+341107,Legal assistant,3411
+341108,Paralegal,3411
+341109,Private detective,3411
+341110,Private investigator,3411
+341111,Title searcher,3411
+341201,Barangay affairs worker,3412
+341202,Community development worker,3412
+341203,Community service worker,3412
+341204,Crisis intervention worker,3412
+341205,Culture center worker assistant,3412
+341206,Daycare worker,3412
+341207,Disability services officer,3412
+341208,Family service worker,3412
+341209,Life skills instructor,3412
+341210,Mental health support worker,3412
+341211,Outreach project worker,3412
+341212,Relief and rehabilitation worker,3412
+341213,Social welfare aide,3412
+341214,Social welfare assistant,3412
+341215,Welfare support worker,3412
+341216,Welfare worker,3412
+341217,Women's shelter supervisor,3412
+341218,Youth development assistant,3412
+341219,Youth services worker,3412
+341301,Catechist,3413
+341302,Faith healer,3413
+341303,Lay evangelist,3413
+341304,Lay minister,3413
+341305,Lay preacher,3413
+341306,Monk,3413
+341307,Nun,3413
+341308,Parish workers,3413
+341309,Religious workers,3413
+341310,"Tribal Ritualists (e.g. Mambunong, Mumbaki, Mabaki, Mensapo and Anituwan in Cordilleras)",3413
+342201,Referee,3422
+342202,Sports coach,3422
+342203,Sports instructor,3422
+342204,Sports official,3422
+342205,Sports trainer,3422
+342301,Aerobics instructor,3423
+342302,Fitness instructor,3423
+342303,Horse riding instructor,3423
+342304,Outdoor adventure guide,3423
+342305,Personal trainer,3423
+342306,Pilates instructor,3423
+342307,Sailing instructor,3423
+342308,Underwater diving instructor,3423
+342309,Zumba instructor,3423
+342401,Esport coaches,3424
+342402,Esport players,3424
+343101,Aerial photographer,3431
+343102,Commercial photographer,3431
+343103,Industrial photographer,3431
+343104,News photographer,3431
+343105,Photojournalist,3431
+343106,Portrait photographer,3431
+343107,Scientific photographer,3431
+343201,Building designer and decorator,3432
+343202,Display decorator,3432
+343203,Display designer,3432
+343204,Interior decorator,3432
+343205,Interior designer,3432
+343206,Set designer,3432
+343207,Visual merchandiser,3432
+343208,Window dresser,3432
+343301,Curatorial technician,3433
+343302,Gallery technician,3433
+343303,Library technician,3433
+343304,Museum technician,3433
+343305,Taxidermist,3433
+343401,Executive chef,3434
+343402,Head chef,3434
+343403,Pastry chef (pâtissier),3434
+343404,Saucier,3434
+343405,Sous-chef,3434
+343501,Body artist,3435
+343502,Broadcasting floor manager,3435
+343503,Broadcasting program coordinator,3435
+343504,Broadcasting property master,3435
+343505,Extra,3435
+343506,Lighting technician,3435
+343507,Prompter,3435
+343508,Special effects technician,3435
+343509,Stage manager,3435
+343510,Stage technician,3435
+343511,Stunt artist,3435
+343512,Stunt coordinator,3435
+343513,Tattoo artist,3435
+343514,Theater technician,3435
+343515,Theatrical dresser,3435
+351101,Computer aided design (CAD) operator,3511
+351102,Computer maintenance specialist,3511
+351103,Computer maintenance technologist,3511
+351104,Computer operator,3511
+351105,Computer peripheral equipment operator,3511
+351106,Electronic data processing operator,3511
+351107,High-speed computer printer operator,3511
+351201,Computer database assistant,3512
+351202,Computer engineering assistant,3512
+351203,Computer help desk operator,3512
+351204,Computer programming assistant,3512
+351205,Computer systems analysis assistant,3512
+351206,Electronic data processing assistant,3512
+351207,ICT communications assistant,3512
+351301,Computer network technician,3513
+351302,Network support technician,3513
+351401,Webmaster,3514
+351402,Website administrator,3514
+351403,Website technician,3514
+352101,Audiovisual operator,3521
+352102,Broadcasting equipment operator,3521
+352103,Broadcasting technician,3521
+352104,Camera control unit technician,3521
+352105,Camera operator,3521
+352106,CCTV operator,3521
+352107,Cinema projectionist,3521
+352108,Media production assistant,3521
+352109,Motion picture camera operator,3521
+352110,Radio broadcasting equipment operator,3521
+352111,Radio communication technician,3521
+352112,Radio operator,3521
+352113,Radio production technician,3521
+352114,Sound technician,3521
+352115,Transmitting equipment operator,3521
+352116,TV broadcasting equipment operator,3521
+352117,Video camera operator,3521
+352118,Video camera technician,3521
+352201,Satellite communication engineering technician,3522
+352202,Telecommunications engineering technician,3522
+352203,Telephone engineering technician,3522
+411001,Document receiving clerk,4110
+411002,Laboratory office clerk,4110
+411003,Livelihood office clerk,4110
+411004,Office clerk,4110
+411005,Office maintenance clerk,4110
+411006,Office record clerk,4110
+411007,Office records filing clerk,4110
+411008,Registrar clerk,4110
+412001,Marketing secretary,4120
+412002,Office secretary,4120
+412003,Parish secretary,4120
+412004,Sales secretary,4120
+412005,Secretary,4120
+412006,Typing secretary,4120
+412007,Word processing secretary,4120
+413101,Shorthand typist,4131
+413102,Stenographer,4131
+413103,Typing stenographer,4131
+413104,Typist,4131
+413105,Word processing clerk,4131
+413106,Word processor,4131
+413201,Computer clerk,4132
+413202,Computer data encoder,4132
+413203,Data encoder,4132
+413204,Data encoder clerk,4132
+413205,Data entry operator,4132
+413206,Data input clerk,4132
+413207,Encoder clerk,4132
+413208,Payment entry clerk,4132
+421101,Bank cashier,4211
+421102,Bank clerk,4211
+421103,Bank teller,4211
+421104,Money changer,4211
+421105,Post office counter clerk,4211
+421201,Bet collector,4212
+421202,Bookmaker,4212
+421203,Card dealer,4212
+421204,Croupier,4212
+421205,Gaming dealer,4212
+421301,Loan clerk,4213
+421302,Loan processor,4213
+421303,Mortgage clerk,4213
+421401,Bill and account collector,4214
+421402,Charity collector,4214
+421403,Credit collection clerk,4214
+421404,Credit collector,4214
+421405,Debt collector,4214
+421406,Lending collector,4214
+421407,Payment collection agent,4214
+421408,Rent collector,4214
+422101,Airline ticket agent,4221
+422102,Check-in attendant,4221
+422103,Tourism information clerk,4221
+422104,Tourism information counselor,4221
+422105,Travel agency clerk,4221
+422106,Travel agent,4221
+422107,Travel clerk,4221
+422108,Travel consultant,4221
+422109,Travel counselor,4221
+422110,Travel desk clerk,4221
+422111,Travel ticket issuing clerk,4221
+422201,Call center agent,4222
+422202,Call center assistant,4222
+422203,Call center representative,4222
+422204,Chat support agent,4222
+422205,Chat support representatives,4222
+422206,Customer contact center information clerk,4222
+422207,Customer service call center assistant,4222
+422208,Customer service call center associate,4222
+422209,Customer service representative,4222
+422210,Telephone service representative,4222
+422301,Answering service operator,4223
+422302,Communication telephone operator,4223
+422303,Telephone operator,4223
+422304,Telephone switchboard operator,4223
+422501,Counter inquiries clerk,4225
+422502,Information clerk,4225
+422503,Reservation inquiries clerk,4225
+422601,Medical office receptionist,4226
+422602,Medical receptionist,4226
+422603,Receptionist,4226
+422701,Data enumerator clerk,4227
+422702,Enumerator,4227
+422703,Enumerator clerk,4227
+422704,Market research interviewer,4227
+422705,Public opinion interviewer,4227
+422706,Survey interviewer,4227
+422901,Admissions clerk,4229
+422902,Eligibility interviewer,4229
+422903,Eligibility specialist,4229
+422904,Hospital admissions clerk,4229
+431101,Account-information clerk,4311
+431102,Accounting clerk,4311
+431103,Accounting sales clerk,4311
+431104,Accounting staff,4311
+431105,Accounts clerk,4311
+431106,Bookkeeping clerk,4311
+431107,Cost computing clerk,4311
+431201,Actuarial clerk,4312
+431202,Brokerage clerk,4312
+431203,Finance clerk,4312
+431204,Insurance clerk,4312
+431205,Mortgage clerk,4312
+431206,Securities clerk,4312
+431207,Statistical clerk,4312
+431208,Statistician aide,4312
+431209,Tax clerk,4312
+431210,Treasury clerk,4312
+431301,Payroll and timekeeping specialist,4313
+431302,Payroll clerk,4313
+431303,Wages clerk,4313
+432101,Cargo clerk,4321
+432102,Demurrage clerk,4321
+432103,Freight clerk,4321
+432104,Inventory clerk,4321
+432105,Stock checker clerk,4321
+432106,Stock controller clerk,4321
+432107,Stock custodian,4321
+432108,Stock dispatch clerk,4321
+432109,Storekeeper clerk,4321
+432110,Storeroom clerk,4321
+432111,Supply checker clerk,4321
+432112,Warehouse checker,4321
+432113,Warehouse clerk,4321
+432114,Warehouse dispatcher,4321
+432115,Warehouse man,4321
+432116,Weighing clerk,4321
+432201,Material control and handling clerk,4322
+432202,Materials order clerk,4322
+432203,Materials processing and control clerk,4322
+432204,Materials schedule clerk,4322
+432205,Production clerk,4322
+432301,Aircraft clerical dispatcher,4323
+432302,Incoming-freight clerk,4323
+432303,Ship boarding clerical inspector,4323
+432304,Train clerical dispatcher,4323
+432305,Transport service clerical controller,4323
+432306,Transport service clerical dispatcher,4323
+441101,Librarian aide,4411
+441102,Library assistant,4411
+441103,Library clerk,4411
+441104,Library filer,4411
+441201,Mail clerk,4412
+441202,Mail courier,4412
+441203,Mail dispatch clerk,4412
+441204,Mail messenger,4412
+441205,Mail sorting clerk,4412
+441206,Post carrier,4412
+441207,Postal clerk,4412
+441208,Postman,4412
+441301,Coding clerk,4413
+441302,Proofreading clerk,4413
+441501,Copying clerk,4415
+441502,Filing clerk,4415
+441601,Employee benefits service clerk,4416
+441602,Employee data management clerk,4416
+441603,Employment clerk,4416
+441604,Human resource assistant,4416
+441605,Human resource clerk,4416
+441606,Recruitment clerk,4416
+441901,Advertising clerk,4419
+441902,Correspondence clerk,4419
+441903,Directory compiler,4419
+441904,Press clipper,4419
+441905,Publication clerk,4419
+511101,Aircraft cabin attendant,5111
+511102,Airline steward,5111
+511103,Cabin attendant,5111
+511104,Flight attendant,5111
+511105,Flight steward,5111
+511106,Ship's steward,5111
+511201,Bus conductor,5112
+511202,Cable car conductor,5112
+511203,Jeepney conductor,5112
+511204,Passenger car conductor,5112
+511205,Public transport ticket inspector,5112
+511206,Train conductor,5112
+511301,Art gallery guide,5113
+511302,Mountaineering guide,5113
+511303,Museum guide,5113
+511304,Recreational attendant,5113
+511305,Sightseeing guide,5113
+511306,Tour escort,5113
+511307,Tourist guide,5113
+512001,Cook,5120
+512002,Head cook,5120
+512003,Preserving cook,5120
+512004,Private service cook,5120
+512005,Shipcook,5120
+513101,Back waiter,5131
+513102,Food attendant,5131
+513103,Food server,5131
+513104,General waiter,5131
+513105,Sommelier,5131
+513106,Waitress,5131
+513201,Barista,5132
+513202,Barkeeper,5132
+513203,Barmaid,5132
+514101,Barber,5141
+514102,Hair care specialist,5141
+514103,Hair beautician,5141
+514104,Hair colorist,5141
+514105,Hair preparer,5141
+514106,Hairstylist,5141
+514201,Assistant beautician,5142
+514202,Bath attendant,5142
+514203,Beautician,5142
+514204,Beauty consultant,5142
+514205,Cosmetologist,5142
+514206,Make-up artist,5142
+514207,Manicurist,5142
+514208,Mortuary beautician,5142
+514209,Nail technician,5142
+514210,Pedicurist,5142
+514211,Slimming consultant,5142
+515101,Cleaning supervisor,5151
+515102,Hospital housekeeper,5151
+515103,Hotel housekeeper,5151
+515104,Hotel housekeeping attendant,5151
+515105,Housekeeping matron,5151
+515106,Housekeeping supervisor,5151
+515201,Bed and breakfast operator,5152
+515202,Butler,5152
+515203,Domestic housekeeper,5152
+515204,House steward,5152
+515301,Caretaker,5153
+515302,Building concierge,5153
+515303,Dorm caretaker,5153
+515304,Lighthouse keeper,5153
+515305,Property caretaker,5153
+515306,Resort caretaker,5153
+515307,Skilled janitor,5153
+516101,Astrologer,5161
+516102,Feng shui master,5161
+516103,Fortune teller,5161
+516104,Numerologist,5161
+516105,Palmist,5161
+516106,Paranormal expert,5161
+516107,Psychic reader,5161
+516108,Tarot reader,5161
+516201,Chaperon,5162
+516202,Companion,5162
+516203,Personal maid,5162
+516204,Resident care companion,5162
+516205,Valet,5162
+516301,Cremator,5163
+516302,Funeral undertaker,5163
+516303,Grave digger,5163
+516304,Sepulturero,5163
+516401,Animal attendant,5164
+516402,Animal keeper,5164
+516403,Animal trainer,5164
+516404,Dog breeder,5164
+516405,Dog trainer,5164
+516406,Horse breaker,5164
+516407,Veterinary aide,5164
+516408,Zookeeper,5164
+516501,Driving instructor,5165
+516502,Motorcycle driving instructor,5165
+516901,Club hostess,5169
+516902,Dancing partner,5169
+516903,Escort,5169
+516904,Hostess,5169
+516905,Social escort,5169
+516906,Usher,5169
+516907,Usherette,5169
+521101,Kiosk salesperson,5211
+521102,Market salesperson,5211
+521103,Market stallholder,5211
+521104,Market vendor,5211
+521105,Stall salesperson,5211
+521106,Street stall sales assistant,5211
+521107,Street stall salesperson,5211
+521201,Food hawker,5212
+521202,Street food vendor,5212
+522101,Grocer,5221
+522102,Newsagent,5221
+522103,Shopkeeper,5221
+522104,Store keeper,5221
+522201,Checkout supervisor,5222
+522202,Shop supervisor,5222
+522203,Store supervisor,5222
+522204,Supermarket supervisor,5222
+522301,Retail establishment salesperson,5223
+522302,Sales clerk,5223
+522303,Shop assistant,5223
+522304,Store sales clerk,5223
+522305,Wholesale establishment salesperson,5223
+523001,Cash clerk,5230
+523002,Cash register clerk,5230
+523003,Cashier,5230
+523004,Checkout operator,5230
+523005,Service station cashier,5230
+523006,Store cashier,5230
+523007,Entertainment and sporting event ticket issuing clerk,5230
+523008,Toll collector,5230
+524101,Advertising model,5241
+524102,Artist's model,5241
+524103,Fashion model,5241
+524201,Demonstrator,5242
+524202,Product demonstrator,5242
+524203,Promodizer,5242
+524204,Sales merchandiser,5242
+524301,Door-to-door sales representative,5243
+524302,Party plan salesperson,5243
+524401,Call center salesperson,5244
+524402,Customer contact center salesperson,5244
+524403,Sales and marketing call center agent,5244
+524404,Telemarketer,5244
+524405,Telemarketing agent,5244
+524406,Telemarketing sales representative,5244
+524407,Telemarketing salesperson,5244
+524408,Telephone salesperson,5244
+524501,Electric vehicle (EV) charging service attendant,5245
+524502,Gas station attendant,5245
+524503,Marina attendant,5245
+524504,Service station attendant,5245
+524601,Cafeteria counter attendant,5246
+524602,Food counter attendant,5246
+524603,Food service assistant,5246
+524604,Salad bar attendant,5246
+524901,Rental salesperson,5249
+531101,Babysitter,5311
+531102,Child care attendant,5311
+531103,Child care provider,5311
+531104,Child care staff,5311
+531105,Child care worker,5311
+531106,Creche ayah,5311
+531107,Family day care worker,5311
+531108,Nanny,5311
+531201,Pre-school assistant,5312
+531202,Teacher's assistant,5312
+532101,Barangay health aide,5321
+532102,Clinic or hospital birth assistant,5321
+532103,Clinic or hospital nursing aide,5321
+532104,Hospital attendant,5321
+532105,Hospital nursing aide,5321
+532106,Institution-based caregiver,5321
+532107,Nursing attendant,5321
+532108,Patient care assistant,5321
+532109,Psychiatric aide,5321
+532201,Home birth assistant,5322
+532202,Home care aide,5322
+532203,Home nursing aide,5322
+532204,Home-based caregiver,5322
+532205,Personal care provider,5322
+532901,Dental aide,5329
+532902,First aid assistant,5329
+532903,First aid attendant,5329
+532904,Hospital orderly,5329
+532905,Medical imaging assistant,5329
+532906,Pharmacy aide,5329
+532907,Phlebotomist,5329
+532908,Sterilization aide,5329
+541101,Aircraft accidents firefighter,5411
+541102,Firefighter,5411
+541103,Fireman,5411
+541104,Forest firefighter,5411
+541201,Constable,5412
+541202,Police patrol officer,5412
+541203,Police patrolman,5412
+541204,Policeman,5412
+541301,Correctional guard,5413
+541302,Jail guard,5413
+541303,Prison guard,5413
+541304,Prison warden,5413
+541401,Aviation security guard,5414
+541402,Bodyguard,5414
+541403,Bouncer,5414
+541404,Civilian guard,5414
+541405,Customs gatekeeper,5414
+541406,Doorkeeper,5414
+541407,Gatekeeper,5414
+541408,Guard patrol,5414
+541409,Harbor patrol,5414
+541410,Museum guard,5414
+541411,Roving guard,5414
+541412,Security agent,5414
+541413,Security guard,5414
+541414,Security officer,5414
+541415,Security patrolman,5414
+541416,Surveillance officer,5414
+541417,Watchman,5414
+541901,Animal control officer,5419
+541902,Beach patrolman/patrolwoman,5419
+541903,Coastguard,5419
+541904,Crossing guard,5419
+541905,Forest protection officer,5419
+541906,Game warden,5419
+541907,Lifeguard,5419
+541908,Rescue service personnel,5419
+541909,Traffic aide,5419
+541910,Traffic enforcer,5419
+541911,Traffic warden,5419
+611101,"Irrigated, rice farmer",6111
+611102,"Lowland, rice farmer",6111
+611103,"Rainfed, rice farmer",6111
+611104,"Upland, rice farmer",6111
+611301,Cabbage farmer,6113
+611302,Cassava farmer,6113
+611303,Eggplant farmer,6113
+611304,Gabi farmer,6113
+611305,Mongo beans farmer,6113
+611306,Peanut farmer,6113
+611307,Pechay farmer,6113
+611308,Roots vegetable farmer,6113
+611309,Soybeans farmer,6113
+611310,Sweet potato farmer,6113
+611311,Tomato farmer,6113
+611312,Ubi farmer,6113
+611313,White potato (Irish potato) farmer,6113
+611601,Abaca farmer,6116
+611602,Achuete farmer,6116
+611603,Black pepper farmer,6116
+611604,Cotton farmer,6116
+611605,Garlic/onion (and other spices) farmer,6116
+611606,Jute farmer,6116
+611607,Laurel farmer,6116
+611608,Ramie farmer,6116
+611609,Sisal farmer,6116
+611610,Tobacco farmer,6116
+611701,Banana farmer,6117
+611702,Cacao farmer,6117
+611703,Cashew nut farmer,6117
+611704,Castañas farmer,6117
+611705,Citrus farmer,6117
+611706,Coffee farmer,6117
+611707,Fruit farmer,6117
+611708,Mango farmer,6117
+611709,Pili nut farmer,6117
+611710,Pineapple farmer,6117
+611711,Rubber tapper,6117
+611712,Rubber tree farmer,6117
+611713,Tea farmer,6117
+611714,Viticulturist,6117
+611801,Bamboo shoot grower,6118
+611802,Foliage propagator,6118
+611803,Horticulturist,6118
+611804,Landscape gardener,6118
+611805,Market gardener,6118
+611806,Mushroom cultivator,6118
+611807,Orchid plant grower,6118
+611808,Rose grower,6118
+612101,Carabao farmer,6121
+612102,Cattle farmer,6121
+612103,Cattle herder,6121
+612104,Drover,6121
+612105,Goat farmer,6121
+612106,Horse breeder,6121
+612107,Livestock stockman,6121
+612301,Egg collector,6123
+612302,Egg hatcher,6123
+612401,Chicken breeder,6124
+612402,Chicken farmer,6124
+612403,Chicken meat producer,6124
+612404,"Poultry tender, chicken",6124
+612501,Duck meat producer,6125
+612502,Duck breeder,6125
+612503,Duck farmer,6125
+612504,"Poultry tender, duck",6125
+612601,Poultry breeder (other than chicken and duck),6126
+612602,Poultry farmer (other than chicken and duck),6126
+612603,Poultry tender (other than chicken and duck),6126
+612604,Quail farmer,6126
+612605,Turkey farmer,6126
+612701,Hog farmer,6127
+612702,Hog raiser,6127
+612703,Pig farmer,6127
+612801,Apiary farmer (apiarist),6128
+612802,Beekeeper,6128
+612803,Beekeeping farmer,6128
+612804,Silkworm farmer (sericulturist),6128
+612901,Crocodile farmer,6129
+612902,Earthworm farmer (vermiculturist),6129
+612903,Fur farmer (non-domesticated animals),6129
+612904,Game bird breeder,6129
+612905,Game fowl raiser,6129
+612906,Ostrich farmer,6129
+612907,Reptile farmer,6129
+612908,Snail breeder,6129
+613001,Farmer (mixed farming),6130
+613002,Skilled farm worker (mixed farming),6130
+621101,Forest ranger,6211
+621102,Watershed forester,6211
+621301,Charcoal burner,6213
+621302,Charcoal maker,6213
+621401,Rattan gatherer,6214
+621402,Wild honey and beeswax gatherer,6214
+621403,Wild mushroom gatherer,6214
+621404,Wild orchids gatherer,6214
+622101,Bangus farm producer,6221
+622102,Bangus farmer,6221
+622103,Tilapia farm producer,6221
+622104,Tilapia farmer,6221
+622201,Agar-agar producers,6222
+622202,Carrageenan producers,6222
+622203,Seaweed cultivator,6222
+622401,Mussel cultivator,6224
+622402,Mussel farmer,6224
+622403,Oyster cultivator,6224
+622404,Oyster farmer,6224
+622501,Algae cultivator,6225
+622502,"Aquarium fish farm operator (goldfish, corals, etc.)",6225
+622503,Fish hatchery/nursery farm operator,6225
+622504,Frog raiser,6225
+622505,Pearl cultivator,6225
+622601,Coastal fishery skipper,6226
+622602,Coastal water fishery workers,6226
+622603,Coastal waters fisher,6226
+622604,Coastal waters fishing vessel skipper,6226
+622605,Inland water fishery workers,6226
+622606,Inland waters fisher,6226
+622701,Deep-sea fisher,6227
+622702,Trawler skipper,6227
+622901,Fish catcher for aquarium,6229
+622902,Oyster diver,6229
+622903,Pearl diver,6229
+622904,Sea moss gatherer,6229
+634001,Subsistence collector,6340
+634002,Subsistence diver,6340
+634003,Subsistence fisher,6340
+634004,Subsistence gatherer,6340
+711201,Block layer,7112
+711202,Bricklayer,7112
+711203,Chimney builder,7112
+711204,Paver,7112
+711205,Refractory bricklayer,7112
+711301,Granite cutter,7113
+711302,Monument mason,7113
+711303,Stone carver,7113
+711304,Stone cutter,7113
+711305,Stone lathe operator,7113
+711306,Stone polisher,7113
+711307,Stonemason,7113
+711401,Cement finisher,7114
+711402,Concrete finisher,7114
+711403,Concrete placer,7114
+711404,Concrete shutterer,7114
+711405,Reinforced concreter,7114
+711406,Terrazzo worker,7114
+711501,Carpenter,7115
+711502,Door installer,7115
+711503,Finish carpenter,7115
+711504,Framer,7115
+711505,Joiner,7115
+711506,Wood shipwright,7115
+711901,Building wrecker,7119
+711902,Prefabricated building assembler,7119
+711903,Scaffolder,7119
+711904,Skilled demolition worker,7119
+711905,Steeplejack,7119
+712101,Asphalt roofer,7121
+712102,Composite materials roofer,7121
+712103,Metal roofer,7121
+712104,Roof fixer,7121
+712105,Slate roofer,7121
+712106,Thatcher,7121
+712107,Tile roofer,7121
+712201,Carpet layer,7122
+712202,Floor layer,7122
+712203,Floor tiler,7122
+712204,Marble setter,7122
+712205,Parquetry worker,7122
+712206,Tile setter,7122
+712207,Wall tiler,7122
+712301,Dry wall plasterer,7123
+712302,Fibrous plasterer,7123
+712303,Ornamental plasterer,7123
+712304,Plasterer,7123
+712305,Solid plasterer,7123
+712306,Stucco plasterer,7123
+712401,Acoustic insulation worker,7124
+712402,Boiler and pipe insulation worker,7124
+712403,Insulation installer,7124
+712404,Insulation worker,7124
+712405,Refrigeration and air-conditioning equipment insulation worker,7124
+712501,Autoglazier,7125
+712502,Building glazier,7125
+712503,Glass decorator,7125
+712504,Glazier fabricator,7125
+712505,Leaded-glass glazier,7125
+712506,Plate-glass fitter,7125
+712507,Roofing glazier,7125
+712508,Vehicle glazier,7125
+712601,Aircraft pipe and tube fitter,7126
+712602,Drain technician,7126
+712603,Gas fitter,7126
+712604,Gas pipe fitter,7126
+712605,Marine pipe fitter,7126
+712606,Pipe fitter,7126
+712607,Pipe layer,7126
+712608,Pipeline inspector,7126
+712609,Plumber,7126
+712610,Ventilation pipe fitter,7126
+712701,Air conditioning equipment mechanic,7127
+712702,Air duct installer,7127
+712703,Refrigeration mechanic,7127
+713101,Building painter,7131
+713102,Construction painter,7131
+713103,House painter,7131
+713104,Paperhanger,7131
+713201,Aircraft painter,7132
+713202,Car painter,7132
+713203,Furniture spray painter,7132
+713204,Manufactured articles painter,7132
+713205,Manufactured articles varnisher,7132
+713206,Upholstery painter,7132
+713207,Varnisher,7132
+713208,Vehicle painter,7132
+713301,Building exteriors cleaner,7133
+713302,Building exteriors sandblasters,7133
+721101,Car parts molder,7211
+721102,Coremaker,7211
+721103,Filler metal molder,7211
+721104,Metal bench molder,7211
+721105,Metal castings molder,7211
+721106,Metal mold maker,7211
+721201,Auto body welder,7212
+721202,Brazier,7212
+721203,Construction welder,7212
+721204,"Electric arc welder, machine",7212
+721205,Electric welder,7212
+721206,Flux-cored arc welder,7212
+721207,Gas tungsten arc welder,7212
+721208,Orbital welder,7212
+721209,Pipe welder,7212
+721210,Resistance welder,7212
+721211,Shielded metal arc welder,7212
+721212,Thermite welder,7212
+721301,Aircraft sheet metal worker,7213
+721302,Boilersmith,7213
+721303,Coppersmith,7213
+721304,Ornamental sheet metal worker,7213
+721305,Panel beater,7213
+721306,Plate metal worker,7213
+721307,Sheet metal marker,7213
+721308,Tinsmith,7213
+721309,Vehicle sheet metal worker,7213
+721401,Constructional steel erector,7214
+721402,Iron works fabricator,7214
+721403,Metal shipwright,7214
+721404,Pneumatic riveter,7214
+721405,Reinforcing iron worker,7214
+721406,Riveter,7214
+721407,Ship plater,7214
+721408,Structural metal erector,7214
+721409,Structural metal marker,7214
+721410,Structural metal preparer,7214
+721501,Aircraft rigger,7215
+721502,Cable and rope splicer,7215
+721503,Gas-drilling rigger,7215
+721504,Hoisting equipment rigger,7215
+721505,Oil-drilling rigger,7215
+721506,Ship rigger,7215
+721507,Suspension bridge cable worker,7215
+721508,Theatrical rigger,7215
+721509,Tower rigger,7215
+722101,Blacksmith,7221
+722102,Drop-hammer worker,7221
+722103,Forging press worker,7221
+722104,Hammersmith,7221
+722105,Metal former,7221
+722106,Wire drawer,7221
+722201,Die maker,7222
+722202,Gauge maker,7222
+722203,Gunsmith,7222
+722204,Jig maker,7222
+722205,Locksmith,7222
+722206,Metal marker,7222
+722207,Metal patternmaker,7222
+722208,Patternmaker,7222
+722209,Toolmaker,7222
+722301,Boring machine operator,7223
+722302,Casting machine operator,7223
+722303,Machine tool operator,7223
+722304,Machine tool setter,7223
+722305,Machine tool setter-operator,7223
+722306,Metal turner,7223
+722307,Metal working drilling machine setter-operator,7223
+722308,Metal working honing machine setter-operator,7223
+722309,Metal working lathe setter-operator,7223
+722310,Metal working machine setter-operator,7223
+722311,Metal working milling machine setter-operator,7223
+722312,Metal working numerical control machine setter-operator,7223
+722313,Metal working planning machine setter-operator,7223
+722314,Metal working precision grinding-machine setter-operator,7223
+722315,Rivet production machine operator,7223
+722316,Tool production machine operator,7223
+722401,Cutting instrument sharpener,7224
+722402,Knife sharpener,7224
+722403,Metal buffer,7224
+722404,Metal finisher,7224
+722405,Metal grinder,7224
+722406,Metal polisher,7224
+722407,Metal wheel-grinder,7224
+722408,Saw repairer,7224
+722409,Saw sharpener,7224
+722410,Textile carding machine grinder,7224
+722411,Tool grinder,7224
+722412,Tool sharpener,7224
+723101,Automotive brakes systems service technician,7231
+723102,Automotive mechanic,7231
+723103,Moped repairer,7231
+723104,Motor truck mechanic,7231
+723105,Motor vehicle engine and fuel systems service technician,7231
+723106,Motor vehicle engine fitter,7231
+723107,Motor vehicle mechanic,7231
+723108,Motor vehicle mechatronics service technician,7231
+723109,Motor vehicle repairer,7231
+723110,Motor vehicle service technician,7231
+723111,Motorcycle mechanic,7231
+723112,Motorized rickshaw mechanic,7231
+723113,Road transport diesel fitter,7231
+723114,Small engine mechanic,7231
+723115,Train mechanic,7231
+723201,Aeromechanic,7232
+723202,Aircraft airframes maintenance engineer,7232
+723203,Aircraft engine fitter,7232
+723204,Aircraft engines maintenance engineer,7232
+723205,Aircraft maintenance assistant,7232
+723206,Aircraft maintenance supervisor,7232
+723207,Aircraft mechanic,7232
+723208,Aircraft pneudraulic systems mechanic,7232
+723209,Aircraft powerplant mechanic,7232
+723210,Aircraft restorer,7232
+723211,Aircraft service technician,7232
+723212,Airframe and power plant mechanic,7232
+723213,Airframe mechanic,7232
+723214,Aviation maintenance technician,7232
+723215,Helicopter mechanic,7232
+723216,Jet engine mechanic,7232
+723217,Rocket engine component mechanic,7232
+723301,Agricultural machinery erector-installer,7233
+723302,Agricultural machinery fitter,7233
+723303,Agricultural machinery greaser,7233
+723304,Agricultural machinery mechanic,7233
+723305,Agricultural machinery oiler,7233
+723306,Construction machinery mechanic,7233
+723307,Construction machinery repairer,7233
+723308,Diesel engine mechanic (except motor vehicle),7233
+723309,Earth-moving equipment fitter,7233
+723310,Farm machinery mechanic,7233
+723311,Farm machinery repairer,7233
+723312,Farm tractor mechanic,7233
+723313,Heavy equipment mechanic,7233
+723314,Hydraulic mechanic,7233
+723315,Industrial machinery erector-installer,7233
+723316,Industrial machinery fitter,7233
+723317,Industrial machinery greaser,7233
+723318,Industrial machinery oiler,7233
+723319,Industrial plant mechanic,7233
+723320,Industrial sewing machine mechanic,7233
+723321,Loomfixers,7233
+723322,Marine craft mechanic,7233
+723323,Marine engine fitter,7233
+723324,Marine machinery mechanic,7233
+723325,Metalworking machine-tool fitter,7233
+723326,Metalworking machine-tool mechanic,7233
+723327,Mining machinery fitter,7233
+723328,Mining machinery mechanic,7233
+723329,Mining machinery repairer,7233
+723330,Plant maintenance mechanic,7233
+723331,Power plant mechanic,7233
+723332,Printing machinery fitter,7233
+723333,Printing machinery mechanic,7233
+723334,Ship fitter,7233
+723335,Stationary engine fitter,7233
+723336,Stationary engine repairer,7233
+723337,Steam-engine mechanic,7233
+723338,Textile machinery fitter,7233
+723339,Train engine fitter,7233
+723340,Train engine repairer,7233
+723341,Turbine fitter,7233
+723342,Turbine mechanic,7233
+723343,Woodworking machinery fitter,7233
+723344,Woodworking machinery mechanic,7233
+723401,Bicycle mechanic,7234
+723402,Bicycle repairer,7234
+723403,Perambulator repairer,7234
+723404,Wheelchair repairer,7234
+731101,Cannon-pinion adjuster,7311
+731102,Instrument/meteorological maker,7311
+731103,"Maker and repairer, instrument/surgical",7311
+731104,Optical instrument maker,7311
+731105,Optical instrument repairer,7311
+731106,Photographic equipment repairer,7311
+731107,Precision instrument assembler,7311
+731108,Precision instrument maker,7311
+731109,Precision instrument repairer,7311
+731110,Surgical instrument maker,7311
+731111,Watch and clock assembler,7311
+731112,Watch and clock repairer,7311
+731113,Watchmaker,7311
+731201,Accordion maker,7312
+731202,Brass instrument maker,7312
+731203,Brass instrument repairer,7312
+731204,Metal wind instrument maker,7312
+731205,Musical instrument tuner,7312
+731206,Organ builder,7312
+731207,Piano maker,7312
+731208,Piano tuner,7312
+731209,Stringed instrument maker,7312
+731210,Woodwind instrument maker,7312
+731301,Jewelry enameller,7313
+731302,Gem cutter/faceter,7313
+731303,Gem setter,7313
+731304,Gold cutter,7313
+731305,Gold reclaimer,7313
+731306,Goldbeater,7313
+731307,Goldsmith,7313
+731308,Jeweler,7313
+731309,"Jewelry caster, by hand and machine",7313
+731310,Jewelry engraver,7313
+731311,"Jewelry finishers, by hand and machine",7313
+731312,Jewelry polisher,7313
+731313,Jewelry repairer,7313
+731314,Precious metal leaf maker,7313
+731315,Precious metal roller,7313
+731316,Silversmith,7313
+731401,Abrasive wheel molder,7314
+731402,Brick and tile molder,7314
+731403,Clay extruding-press operator,7314
+731404,Decorators/lazers,7314
+731405,Potter,7314
+731406,Pottery and porcelain caster,7314
+731407,Pottery and porcelain die-presser,7314
+731408,Pottery and porcelain jiggerman,7314
+731409,Pottery and porcelain maker,7314
+731410,Pottery and porcelain modeler,7314
+731411,"Pottery and porcelain presser, hand",7314
+731412,Pottery and porcelain thrower,7314
+731501,Glass blower,7315
+731502,Glass cutter,7315
+731503,Glass edge grinder,7315
+731504,Glass finisher,7315
+731505,Glass grinder,7315
+731506,Glass lens molder,7315
+731507,Glass polisher,7315
+731508,Glass scientific blower,7315
+731509,Glass tinter,7315
+731510,Glass tube bender,7315
+731511,Optical glass cutter,7315
+731601,Brush painter,7316
+731602,Ceramics decorator,7316
+731603,Ceramics dipper,7316
+731604,Ceramics painter,7316
+731605,Ceramics spray painter,7316
+731606,Decorative painter,7316
+731607,Glass enameller,7316
+731608,Glass engraver,7316
+731609,Glass etcher,7316
+731610,Glass painter,7316
+731611,Glass sandblaster,7316
+731612,Hand dipper,7316
+731613,"Linoleum block engraver, hand",7316
+731614,Lithographic stone engraver,7316
+731615,Metal engraving etcher,7316
+731616,"Metal printing die engraver, hand",7316
+731617,"Metal printing plate engraver, hand",7316
+731618,"Metal printing roller engraver, hand/machine",7316
+731619,Mirror silverer,7316
+731620,Photoengraver,7316
+731621,Printing engraver,7316
+731622,Printing plate retoucher,7316
+731623,"Rubber and wood engraver, hand",7316
+731624,Sign-maker,7316
+731625,Signwriter,7316
+731701,Basket maker,7317
+731702,Basketry weaver,7317
+731703,"Broom maker, hand",7317
+731704,Brush maker,7317
+731705,Handicraft designer,7317
+731706,Handicraft model maker,7317
+731707,"Paper box maker, hand",7317
+731708,Paper handicraft worker,7317
+731709,Rattan binder,7317
+731710,Reed weaving handicraft worker,7317
+731711,Wicker furniture maker,7317
+731712,Wood carver,7317
+731713,Wood cottage industry worker,7317
+731714,Wooden articles handicraft worker,7317
+731801,Carpet handicraft worker,7318
+731802,Carpet weaver,7318
+731803,Cloth weaver,7318
+731804,Fabric examiner,7318
+731805,Fiber aide,7318
+731806,Fiber blender,7318
+731807,Fiber carder,7318
+731808,Fiber classer,7318
+731809,Fiber grader,7318
+731810,Fiber lapper,7318
+731811,Fiber mixer,7318
+731812,Fiber picker,7318
+731813,Fiber preparer,7318
+731814,Hand braid maker,7318
+731815,Hand crocheter,7318
+731816,Hand-operated machine knitter,7318
+731817,Jacquard loom cloth weaver,7318
+731818,Knitter,7318
+731819,Leather handicraft worker,7318
+731820,Loom threader,7318
+731821,"Net maker, hand",7318
+731822,"Tapestry maker, hand",7318
+731823,Textiles fiber comber,7318
+731824,Textiles fiber drawer,7318
+731825,Textiles fiber rover,7318
+731826,Textiles handicraft worker,7318
+731827,Thread and yarn spinner,7318
+731828,Tie dye maker,7318
+731829,Weaver,7318
+731830,Wool dryer,7318
+731831,Wool scourer,7318
+731832,Wool washer,7318
+731901,Bar shampoo maker,7319
+731902,Handicraft candle-maker,7319
+731903,Metal toymaker,7319
+731904,Soap maker,7319
+731905,Stone articles handicraft worker,7319
+731906,Toymaker (except metal),7319
+732101,Compositor,7321
+732102,Data scanner,7321
+732103,Desktop publishing operator,7321
+732104,Digitizer,7321
+732105,Electronic pre-press technician,7321
+732106,Linotype operator,7321
+732107,Monotype keyboard operator,7321
+732108,Photogravurist,7321
+732109,Photolithographer,7321
+732110,Printing plate maker,7321
+732111,Screen maker,7321
+732112,Screen printing plate mounter,7321
+732113,Typesetter,7321
+732201,Block printer,7322
+732202,"Developer, black and white",7322
+732203,"Developer, color",7322
+732204,Digital press operator,7322
+732205,Digital printing operator,7322
+732206,Flexographic press operator,7322
+732207,Gravure press operator,7322
+732208,Large sheet-fed press operator,7322
+732209,Offset Pressman,7322
+732210,Offset printing press operator,7322
+732211,Press roller maker,7322
+732212,Printing feeder operator,7322
+732213,Printing machine operator,7322
+732214,Printing quality inspector,7322
+732215,Rotogravure pressman,7322
+732216,Screen printer,7322
+732217,Screen printing press operator,7322
+732218,Silk-screen printer,7322
+732219,Silk-screen stencil cutter,7322
+732220,Small press operator,7322
+732221,Tarpaulin printer,7322
+732222,Textile printer,7322
+732223,Wallpaper printer,7322
+732224,Web press operator,7322
+732301,Binding bench worker,7323
+732302,Book binder,7323
+732303,Collator operator,7323
+732304,Cutter operator,7323
+732305,Foil Stamp operator,7323
+732306,Folder operator,7323
+732307,Gatherer operator,7323
+732308,Multibinder operator,7323
+732309,Perfect binder operator,7323
+732310,Saddle stitch operator,7323
+732311,Small machine bindery worker,7323
+741101,Building electrician,7411
+741102,Building repairs electrician,7411
+741103,Building wiring electrician,7411
+741104,Electrical inspector,7411
+741105,Electrician,7411
+741106,Industrial electrician,7411
+741107,Industrial wiring electrician,7411
+741108,Maintenance electrician,7411
+741201,Armature builder,7412
+741202,Auto electrician,7412
+741203,Automotive electrician,7412
+741204,Electric meter repairman,7412
+741205,Electric motor and generator fitter,7412
+741206,Electric motor repairman,7412
+741207,Electrical  tester,7412
+741208,Electrical fitter (general),7412
+741209,Electrical generator fitter,7412
+741210,Electrical inspector,7412
+741211,Electrical mechanic,7412
+741212,Industrial electrician,7412
+741213,Lift mechanic,7412
+741214,Plant electrician,7412
+741215,Transformer repairman,7412
+741301,Cable jointers,7413
+741302,Cable puller,7413
+741303,Electric cable and line installer,7413
+741304,Electric cable jointer,7413
+741305,Electric power line worker,7413
+741306,Electrical line installer,7413
+741307,Lineman/electric power,7413
+741308,Ride maintenance mechanic,7413
+741401,Electric Vehicle (EV) mechanic,7414
+741402,Electric Vehicle (EV) repairer,7414
+742101,Automated teller machines mechanic,7421
+742102,Avionics aircraft maintenance engineer,7421
+742103,Avionics technician,7421
+742104,Electronic equipment servicer,7421
+742105,Electronic mechanic,7421
+742106,Office equipment technician,7421
+742107,Office machinery fitter,7421
+742108,Office machines mechanic,7421
+742109,Photocopy machine technician,7421
+742110,Radio mechanic,7421
+742111,Reprographic equipment technician,7421
+742112,Television repairer,7421
+742113,Video electronics service/repairer,7421
+742201,Communication rigger,7422
+742202,Communications technician,7422
+742203,Communications technology servicer,7422
+742204,Computer equipment fitter,7422
+742205,Computer hardware installer,7422
+742206,Computer servicer/repairer,7422
+742207,Data and telecommunications cabler,7422
+742208,Electronic products inspector,7422
+742209,Electronic products tester,7422
+742210,Hardware technician,7422
+742211,Private Automatic Branch Exchange (PABX) technician,7422
+742212,Radio equipment installer,7422
+742213,Telecommunication equipment installer,7422
+742214,Telecommunication equipment repairer,7422
+742215,Telecommunications line worker,7422
+742216,Telephone installer,7422
+742217,Telephone mechanic,7422
+751101,Butcher,7511
+751102,Fish deboner,7511
+751103,Fish filleter,7511
+751104,Fish processing worker,7511
+751105,Fishmonger,7511
+751106,Meat cutter,7511
+751107,Slaughterer,7511
+751201,Baker,7512
+751202,Bread baker,7512
+751203,Cake decorator,7512
+751204,Chocolate maker,7512
+751205,Confectioner,7512
+751206,Kakanin maker,7512
+751207,Noodle maker,7512
+751208,Pastry maker,7512
+751209,Pastry-cook,7512
+751301,Butter maker,7513
+751302,Cheese maker,7513
+751303,Ice cream maker,7513
+751401,Chutney maker,7514
+751402,Food preserver,7514
+751403,Fruit pickler,7514
+751404,Fruit preserver,7514
+751405,Jam maker,7514
+751406,Oil expeller,7514
+751407,Vegetable pickler,7514
+751408,Vegetable preserver,7514
+751501,Coffee taster,7515
+751502,Food grader,7515
+751503,Food taster,7515
+751504,Fruit grader,7515
+751505,Liquor taster,7515
+751506,Tea taster,7515
+751507,Vegetable grader,7515
+751508,Wine taster,7515
+751601,Cigar maker,7516
+751602,Cigarettes maker,7516
+751603,Snuff maker,7516
+751604,Tobacco blender,7516
+751605,Tobacco grader,7516
+751606,Tobacco stripper,7516
+752101,Dry kiln operator,7521
+752102,Lumber kiln operator,7521
+752103,Timber treating tank operator,7521
+752104,Veneer applier,7521
+752105,Veneer dryer tender,7521
+752106,Wood seasoner,7521
+752201,Cabinet-maker,7522
+752202,Cartwright,7522
+752203,Cooper,7522
+752204,Furniture cabinet-maker,7522
+752205,Marquetry inlayer,7522
+752206,Smoking wood pipe maker,7522
+752207,Wheelwright,7522
+752208,Wood patternmaker,7522
+752209,Wooden furniture finisher,7522
+752210,Wooden model maker,7522
+752301,Furniture production machine operator,7523
+752302,Precision woodworking sawyer,7523
+752303,Wood carving machine operator,7523
+752304,Wood production machine operator,7523
+752305,Wood products machine operator,7523
+752306,Wood turner,7523
+752307,Wood-planing machine setter-operator,7523
+752308,Wood-shaping machine setter-operator,7523
+752309,Woodworking lathe operator,7523
+752310,Woodworking machine setter,7523
+752311,Woodworking machine setter-operator,7523
+752312,Woodworking machine set-up operator,7523
+753101,Dressmaker,7531
+753102,Fur grader,7531
+753103,Fur trimmer,7531
+753104,Furrier,7531
+753105,Hatter,7531
+753106,Milliner,7531
+753107,Tailor,7531
+753201,Fur patternmaker,7532
+753202,Garment cutter,7532
+753203,Garment marker,7532
+753204,Garment patternmaker,7532
+753205,Glove cutter,7532
+753206,Hat and cap patternmaker,7532
+753207,Leather cutter,7532
+753208,Leather patternmaker,7532
+753209,Textile cutter,7532
+753210,Textile patternmaker,7532
+753301,Doormat maker,7533
+753302,Embroiderer,7533
+753303,"Fur sewer, hand",7533
+753304,Glove sewer,7533
+753305,Rug maker,7533
+753306,Stitcher,7533
+753307,Stuffed toy maker,7533
+753308,Umbrella maker,7533
+753401,Furniture upholsterer,7534
+753402,Mattress maker,7534
+753403,Orthopedic upholsterer,7534
+753404,Vehicle upholsterer,7534
+753501,Fellmonger,7535
+753502,Hide grader,7535
+753503,Hide splitter,7535
+753504,Leather currier,7535
+753505,Leather stainer,7535
+753506,Pelt dyer,7535
+753507,Pelt grader,7535
+753508,Skin grader,7535
+753509,Tanner,7535
+753601,Cobbler,7536
+753602,Footwear cutter,7536
+753603,Footwear finisher,7536
+753604,Footwear laster,7536
+753605,Footwear patternmaker,7536
+753606,Footwear repairer,7536
+753607,Leather goods maker,7536
+753608,Leather shoemaker,7536
+753609,Orthopedic footwear maker,7536
+753610,Orthopedic shoemaker,7536
+753611,Saddle and harness maker,7536
+753612,Saddler,7536
+753613,Shoemaker,7536
+754101,Salvage frogman,7541
+754102,Underwater welder,7541
+754103,Underwater worker,7541
+754201,Blaster,7542
+754202,Powder monkey,7542
+754203,Powderman,7542
+754204,Shotfirer,7542
+754301,Product grader,7543
+754302,Quality inspector,7543
+754303,Wool classer,7543
+754401,Fumigator,7544
+754402,Pest controller,7544
+754403,Weed controller,7544
+754901,Flower arranger,7549
+754902,Optical lens finisher,7549
+754903,Optical lens molder,7549
+811101,Bogger operator,8111
+811102,Continuous miner operator,8111
+811103,Drilling machine operator,8111
+811104,Jumbo operator,8111
+811105,Mining dragline operator,8111
+811106,Mining driller,8111
+811107,Mining plant operator,8111
+811108,Mining roof bolter,8111
+811201,Coal washer,8112
+811202,Crushing machine operator,8112
+811203,Cutting machine operator,8112
+811204,Gold precipitator,8112
+811205,Gold precipitator,8112
+811206,Grinding machine operator,8112
+811207,Mineral machine operator,8112
+811208,Mineral or stone processing crusher operator,8112
+811209,Mineral processing flotation worker,8112
+811210,Mineral-processing operator,8112
+811211,Minerals milling machine operator,8112
+811212,Silver precipitator,8112
+811213,Splitting machine operator,8112
+811214,Stone cutting or processing machine operator,8112
+811215,Stone machine operator,8112
+811301,Artesian well driller,8113
+811302,Bore sinker,8113
+811303,Boring equipment operator,8113
+811304,Derrick operator,8113
+811305,Derrickman,8113
+811306,Developmental driller,8113
+811307,Directional driller,8113
+811308,Drilling plant operator,8113
+811309,Drilling rig operator,8113
+811310,Oil or gas well driller,8113
+811311,Power-tong operator,8113
+811312,Toolpusher,8113
+811313,Tourpusher,8113
+811314,Well sinker,8113
+811401,Cast-concrete products machine operator,8114
+811402,Cast-stone products machine operator,8114
+811403,Cement production plant operator,8114
+811404,Concrete finishing machine operator,8114
+811405,Concrete production machine operator,8114
+811406,Concrete stone fabricator,8114
+811407,Industrial diamond polishing machine operator,8114
+811408,Mineral ore processing plant operator,8114
+811409,Stone polishing machine operator,8114
+811410,Stone products machine operator,8114
+812101,Aluminum cutting machine operator,8121
+812102,Annealer,8121
+812103,Ladle pourer,8121
+812104,Metal drawing machine operator,8121
+812105,Metal extruding machine operator,8121
+812106,Metal extrusion plant operator,8121
+812107,Metal hardening furnace operator,8121
+812108,Metal heat treating operator,8121
+812109,Steel roller,8121
+812201,Metal coating machine operator,8122
+812202,Metal finishing machine operator,8122
+812203,Metal painting machine operator,8122
+812204,Metal plating machine operator,8122
+812205,Metal polishing machine operator,8122
+813101,Candle production machine operator,8131
+813102,Chemical and related processes kiln operator,8131
+813103,Explosive products machine operator,8131
+813104,Pharmaceutical and toiletry products machine operators,8131
+813201,Colored film developer,8132
+813202,Darkroom technician,8132
+813203,Enlarging machine operator,8132
+813204,Photograph developing machine operator,8132
+813205,Photograph enlarger,8132
+813206,Photograph printer,8132
+813207,Photographic film machine operator,8132
+813208,Photographic film printer,8132
+813209,Photographic plate production machine operator,8132
+813210,Photographic processor,8132
+814101,Latex worker,8141
+814102,Rubber extruding machine operator,8141
+814103,Rubber milling machine operator,8141
+814104,Rubber molder,8141
+814105,Rubber products machine operator,8141
+814106,Tire maker,8141
+814107,Tire production machine operator,8141
+814108,Tire repairer,8141
+814109,Vulcanizer,8141
+814201,Optic fiber drawer,8142
+814202,Plastic cable making machine operator,8142
+814203,Plastic extrusion machine operator,8142
+814204,Plastic grinding machine operator,8142
+814205,Plastic molder,8142
+814206,Plastic products machine operator,8142
+814207,Plastics boat builder,8142
+814208,Plastics bottle blowing machine operator,8142
+814209,Plastics laminated press operator,8142
+814210,Plastics molding machine operator,8142
+814301,Cardboard products machine operator,8143
+814302,Envelope and paper bag production machine operator,8143
+814303,Paper box production machine operator,8143
+814304,Paper maché molder,8143
+814305,Paper products machine operator,8143
+815101,Fiber combining machine operator,8151
+815102,Fiber preparing machine operator,8151
+815103,Synthetic fiber spinning machine operator,8151
+815104,Textile fiber drawing-frame machine operator,8151
+815105,Thread and yarn spinning machine operator,8151
+815106,Thread and yarn twisting machine operator,8151
+815107,Thread and yarn winding machine operator,8151
+815201,Carpet weaving machine operator,8152
+815202,Crocheting machine operator,8152
+815203,Jacquard card cutter,8152
+815204,Knitting machine operator,8152
+815205,Knitting-machine setter,8152
+815206,Lace production machine operator,8152
+815207,Loom threading machine operator,8152
+815208,Net production machine operator,8152
+815209,Warping beam machine operator,8152
+815210,Weaving machine operator,8152
+815301,Embroidery machine operator,8153
+815302,Sewing machine operator,8153
+815401,Bleaching machine operator,8154
+815402,Dyeing machine operator,8154
+815403,Fabric bleaching machine operator,8154
+815404,Textile dyeing machine operator,8154
+815405,Textile fulling-mill operator,8154
+815406,Textile shrinking machine operator,8154
+815501,Hide dehairing machine operator,8155
+815502,Leather staining machine operator,8155
+815503,Tanning machine operator,8155
+815601,Footwear production machine operator,8156
+815602,Leather goods production machine operator,8156
+815603,Shoe production machine operator,8156
+815701,Dry-cleaning machine operator,8157
+815702,Laundry machine operator,8157
+815703,Laundry pressing machine operator,8157
+815901,Braid making machine operator,8159
+815902,Fur patternmaking machine operator,8159
+815903,Hat blocking machine operator,8159
+815904,Hat making machine operator,8159
+815905,Tent making machine operator,8159
+815906,Textile patternmaking machine operator,8159
+816001,Bakery products machine operator,8160
+816002,Bread production machine operator,8160
+816003,Chocolate production machine operator,8160
+816004,Cigar production machine operator,8160
+816005,Cigarettes production machine operator,8160
+816006,Dairy products machine operator,8160
+816007,Fish processing machine operator,8160
+816008,Meat processing machine operator,8160
+816009,Milk processing machine operator,8160
+816010,Noodle production machine operator,8160
+816011,Sugarcane processing machine operator,8160
+816012,Tobacco processing machine operator,8160
+817101,Paper pulp beater operator,8171
+817102,Paper pulp digester operator,8171
+817103,Papermaking plant operator,8171
+817104,Pulp and paper calendar operator,8171
+817105,Pulp and paper grinder operator,8171
+817106,Pulp and paper sheeter operator,8171
+817107,Repulper operator,8171
+817108,Wood grinding machine operator,8171
+817201,Circular saw operator,8172
+817202,Edge sawyer,8172
+817203,Log cut-off operator,8172
+817204,Plywood core laying machine operator,8172
+817205,Plywood press operator,8172
+817206,Sawmill operator,8172
+817207,Sawmill planer operator,8172
+817208,Sawmill sawyer,8172
+817209,Sawmill trimmer operator,8172
+817210,Veneer cutting lathe operator,8172
+817211,Veneer lathe operator,8172
+817212,Wood processing plant sawyer,8172
+818101,Brick kiln operator,8181
+818102,Ceramics kiln operator,8181
+818103,Ceramics painting machine operator,8181
+818104,Ceramics production machine operator,8181
+818105,Clay mixing machine operator,8181
+818106,Clay slips production machine operator,8181
+818107,Extruding clay press operator,8181
+818108,Float-glass bath kiln operator,8181
+818109,Glass blowing machine operator,8181
+818110,Glass cutting machine operator,8181
+818111,Glass finishing machine operator,8181
+818112,Glass mixing machine operator,8181
+818113,Glass production furnace operator,8181
+818114,Glass production furnace operator,8181
+818115,Glass-fiber production machine operator,8181
+818116,Glaze production machine operator,8181
+818117,Plate-glass rolling machine operator,8181
+818118,Pottery kiln operator,8181
+818119,Tile kiln operator,8181
+818201,Boiler plant fireman,8182
+818202,Boiler tender,8182
+818203,Ships' boiler operator,8182
+818204,Stationary engineer,8182
+818205,Steam boiler plant operator,8182
+818206,Steam engine operator,8182
+818207,Stoker,8182
+818301,Bottle filler,8183
+818302,Bottling machine operator,8183
+818303,Canning machine operator,8183
+818304,Labelling machine operator,8183
+818305,Packing machine operator,8183
+818306,Wrapping machine operator,8183
+818901,Cable and rope splicing machine operator,8189
+818902,Silicon chip production machine operator,8189
+821101,Agricultural machinery assembler,8211
+821102,Aircraft assembler,8211
+821103,Aircraft assembly-line machine operator,8211
+821104,Automotive assembly-line machine operator,8211
+821105,Engine assembler,8211
+821106,Engine installer,8211
+821107,Gearbox assembler,8211
+821108,Industrial machinery assembler,8211
+821109,Truck bench fitter,8211
+821110,Turbine assembler,8211
+821111,Vehicle assembler,8211
+821201,Armature assembler,8212
+821202,Coil winding machine operator,8212
+821203,Electrical assembler,8212
+821204,Electrical equipment assembler,8212
+821205,Electromechanical equipment assembler,8212
+821206,Electronic equipment assembler,8212
+821207,Printed circuit board etcher,8212
+821208,Telephone assembler,8212
+821209,Television assembler,8212
+821210,Watch assembler,8212
+821901,Ammunition assembler,8219
+821902,Bicycle assembler,8219
+821903,Box builder,8219
+821904,Door assembler,8219
+821905,Eyeglass frame assembler,8219
+821906,Faucets assembler,8219
+821907,Jewelry assembler,8219
+821908,Knife assembler,8219
+821909,Leather products assembler,8219
+821910,Luggage finisher,8219
+821911,Metal products assembler (except mechanical),8219
+821912,Musical instruments assembler,8219
+821913,Paperboard products assembler,8219
+821914,Pen and pencil assembler,8219
+821915,Photographic equipment assembler,8219
+821916,Plastic products assembler,8219
+821917,Plastic toy assembler,8219
+821918,Rubber products assembler,8219
+821919,Sun-blinds assembler,8219
+821920,Textile products assembler,8219
+821921,Thermos bottle assembler,8219
+821922,Wood furniture finisher,8219
+821923,Wood products assembler,8219
+831101,Locomotive engine driver,8311
+831102,Metropolitan railway driver,8311
+831103,Train driver,8311
+831201,Railway braker,8312
+831202,Railway shunter,8312
+831203,Railway signaler,8312
+832101,Dispatch rider,8321
+832102,Electric tricycle (e-trike) driver,8321
+832103,Habal-habal driver,8321
+832104,Motorcycle rider,8321
+832105,Motorcyclist,8321
+832106,Motorized rickshaw driver,8321
+832107,Motorized tricycle driver,8321
+832201,Ambulance driver,8322
+832202,Company driver,8322
+832203,Family driver,8322
+832204,Jeepney driver,8322
+832205,Multicab driver,8322
+832206,Parking valet,8322
+832207,Personal driver,8322
+832208,School van driver,8322
+832301,TNVS motorcycle driver,8323
+832302,TNVS tricycle driver,8323
+833101,Bus driver,8331
+833102,Motor coach driver,8331
+833103,School bus driver,8331
+833104,Tram driver,8331
+833105,Truck driver,8331
+833201,Concrete mixer driver,8332
+833202,Dump truck driver,8332
+833203,Fire truck driver,8332
+833204,Garbage truck driver,8332
+833205,Heavy truck driver,8332
+833206,Road train driver,8332
+833207,Trailer truck driver,8332
+834101,Agricultural machinery operator,8341
+834102,Harvester operator,8341
+834103,Logging plant operator,8341
+834104,Motorized farm equipment operator,8341
+834105,Motorized forestry equipment operator,8341
+834106,Timber carrier driver,8341
+834107,Tractor driver,8341
+834108,Tree faller operator,8341
+834201,Backhoe operator,8342
+834202,Bulldozer operator,8342
+834203,Construction grader and scraper operator,8342
+834204,Excavator operator,8342
+834205,Front-end loader operator,8342
+834206,Pile-driver operator,8342
+834207,Road surface laying machinery operator,8342
+834208,Road-roller operator,8342
+834301,Cable car operator,8343
+834302,Chair-lift operator,8343
+834303,Crane operator,8343
+834304,Funicular driver,8343
+834305,Hoist operator,8343
+834306,Mine cage operator,8343
+834307,Ski-lift operator,8343
+834308,Winch operator,8343
+834401,Forklift truck driver,8344
+834402,Forklift truck operator,8344
+835001,Bargeman,8350
+835002,Boatman,8350
+835003,Boatswain,8350
+835004,Deck cadet,8350
+835005,Ferry hand,8350
+835006,Lifeboat coxswain,8350
+835007,Reefer repairman,8350
+835008,Sailor,8350
+835009,Seaman,8350
+835010,Tug hand,8350
+835011,Yacht crew,8350
+911101,Domestic charworker,9111
+911102,Domestic cleaner,9111
+911103,Domestic helper or domestic worker (kasambahay),9111
+911201,Aircraft cleaner,9112
+911202,Hotel cleaner,9112
+911203,Janitor (unskilled),9112
+911204,Lavatory attendant,9112
+911205,Office cleaner,9112
+911206,Office utility worker,9112
+911207,Restaurant and food chain cleaner,9112
+911208,Room attendant,9112
+911209,Train and bus cleaner,9112
+912101,"Dry-cleaner, hand",9121
+912102,Dry-cleaning spotter,9121
+912103,Hand launderer,9121
+912104,Hand presser,9121
+912105,Ironer or presser,9121
+912201,Car detailer,9122
+912202,"Vehicle washer, hand",9122
+912901,Carpet cleaner,9129
+912902,Cooling tower cleaner,9129
+912903,Graffiti cleaner,9129
+912904,Swimming pool cleaner,9129
+912905,Water blaster,9129
+921101,Cane planter,9211
+921102,Coconut farm laborer,9211
+921103,Fruit picker,9211
+921104,Rice farm laborer,9211
+921105,Vegetable picker,9211
+921401,Garden laborer,9214
+921402,Horticultural laborer,9214
+921403,Lawn mower,9214
+921404,Nursery laborer,9214
+921501,Axeman/woman,9215
+921502,Forestry laborer,9215
+921503,Tree planter,9215
+921601,Aquaculture laborer,9216
+921602,Fishery laborer,9216
+921603,Fishpond laborer,9216
+921604,Prawn hatchery worker,9216
+931101,Gold panner,9311
+931102,Mining laborer,9311
+931103,Quarry laborer,9311
+931201,Civil engineering construction laborer,9312
+931202,Dams maintenance laborer,9312
+931203,Earthmoving laborer,9312
+931301,Bricklayer's assistant,9313
+931302,Building work construction laborer,9313
+931303,Demolition laborer,9313
+931304,Hod carrier,9313
+932101,Food packer,9321
+932102,Hand labeler,9321
+932103,Hand packer,9321
+932104,Hand wrapper,9321
+932901,Bottle sorter,9329
+932902,Factory hand,9329
+932903,Material handler,9329
+932904,Stacker,9329
+933101,Bicycle courier,9331
+933102,Cycle rickshaw driver,9331
+933103,Padyak driver,9331
+933104,Pedal vehicle driver,9331
+933105,Pedicab driver,9331
+933106,Rickshaw puller,9331
+933107,Sikad driver,9331
+933201,Animal-drawn vehicle driver,9332
+933202,Animal train driver,9332
+933203,Kalesa driver (kutsero),9332
+933301,Baggage handler,9333
+933302,Boat loader,9333
+933303,Freight handler,9333
+933304,Railway vehicle loader,9333
+933305,Road vehicle loader,9333
+933306,Stevedore (kargador),9333
+933307,Warehouse porter,9333
+933401,Night filler,9334
+933402,Stock filler,9334
+933403,Stock handler,9334
+941101,Fast food cook,9411
+941102,Hamburger maker,9411
+941103,Pizza maker,9411
+941104,Short order cook,9411
+941201,Carinderia helper,9412
+941202,Hand dishwasher,9412
+941203,Kitchen assistant,9412
+941204,Kitchen hand,9412
+941205,Kitchen helper,9412
+941206,Kitchen porter,9412
+941207,Kitchen steward,9412
+941208,Pantry attendant,9412
+941209,Snack haus or bar helper,9412
+951001,Barker,9510
+951002,Car guard,9510
+951003,Car window washer,9510
+951004,Errand boy,9510
+951005,Leaflet distributor,9510
+951006,Shoe polisher,9510
+952001,Ambulant non-food vendor,9520
+952002,Cigarette ambulant vendor,9520
+952003,Hawker,9520
+952004,Newspaper vendor,9520
+952005,Peddler,9520
+952006,Rug ambulant vendor,9520
+952007,Sampaguita ambulant vendor,9520
+961101,Dustman/woman,9611
+961102,Garbage collector,9611
+961103,Garbage dumper,9611
+961104,Recycling collector,9611
+961105,Refuse collector,9611
+961201,Garbage sorter,9612
+961202,Magbobote,9612
+961203,Mangangalakal,9612
+961204,Recycling worker,9612
+961205,Scrap merchant,9612
+961206,Waste picker,9612
+961301,Market sweeper,9613
+961302,Metro aide,9613
+961303,Park sweeper,9613
+961304,Street sweeper,9613
+962101,Baggage handler,9621
+962102,Bellboy or bellgirl,9621
+962103,Deliverer,9621
+962104,Delivery helper,9621
+962105,Hotel porter,9621
+962106,Luggage porter,9621
+962107,Messenger,9621
+962108,Newspaper deliverer,9621
+962109,Package deliverer,9621
+962110,Post-runner,9621
+962201,Handyperson,9622
+962202,Odd-job person,9622
+962301,Meter reader,9623
+962302,Vending-machine collector,9623
+962401,Firewood collector,9624
+962402,Water collector,9624
+962901,Cloak room attendant,9629
+962902,Fairground attendant,9629
+962903,Golf caddie,9629
+962904,Golf-range attendant,9629
+962905,Parking attendant,9629
+962906,Recreation facilities attendant,9629
+962907,Ticket collector,9629
+962908,Usher/Usherette,9629
