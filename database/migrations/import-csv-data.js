@@ -5,6 +5,8 @@
  * Imports PSGC and PSOC reference data from CSV files
  */
 
+require('dotenv').config();
+
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
