@@ -65,6 +65,8 @@ interface SidebarProps {
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const pathname = usePathname()
+  
+  console.log('Sidebar rendering, pathname:', pathname)
 
   // Update current navigation item based on pathname
   const currentNavigation = navigation.map(item => ({
