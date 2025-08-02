@@ -310,4 +310,4 @@ The RBI System uses a three-tier design approach:
 **Documentation**: Complete with step-by-step guides  
 **Support**: Comprehensive resources available
 
-Transform your barangay's resident management with the RBI System - from manual processes to digital efficiency in weeks, not months.
+Transform your barangay's resident management with the RBI System - from manual processes to digital efficiency in weeks, not months.# Trigger deployment
