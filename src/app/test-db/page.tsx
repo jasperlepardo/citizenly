@@ -40,7 +40,7 @@ export default function TestDatabasePage() {
           setRegions(regionsData)
         } else {
           setConnectionStatus('error')
-          setError(connectionTest.errors.map(e => e?.message).join(', ') || 'Unknown error')
+          setError('Database connection failed')
         }
       } catch (err) {
         setConnectionStatus('error')

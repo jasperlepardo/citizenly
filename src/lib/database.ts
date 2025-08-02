@@ -62,7 +62,7 @@ export async function testDatabaseConnection() {
       ])
 
     return {
-      success: true,
+      success: !regionsResult.error && !provincesResult.error && !citiesResult.error && !barangaysResult.error,
       data: {
         regions: regionsResult.count || 0,
         provinces: provincesResult.count || 0,
@@ -80,7 +80,7 @@ export async function testDatabaseConnection() {
     return {
       success: false,
       data: null,
-      errors: [error]
+      error: error instanceof Error ? error.message : 'Connection failed'
     }
   }
 }
@@ -168,36 +168,140 @@ export async function getBarangaysByCity(cityCode: string): Promise<Barangay[]> 
  * Search addresses using the complete hierarchy view
  */
 export async function searchAddresses(searchTerm: string, limit: number = 50): Promise<AddressHierarchy[]> {
-  const { data, error } = await supabase
-    .from('address_hierarchy')
-    .select('*')
-    .or(`region_name.ilike.%${searchTerm}%,province_name.ilike.%${searchTerm}%,city_municipality_name.ilike.%${searchTerm}%,barangay_name.ilike.%${searchTerm}%`)
-    .limit(limit)
+  try {
+    // Search across barangays with related data
+    const { data, error } = await supabase
+      .from('psgc_barangays')
+      .select(`
+        code,
+        name,
+        city_municipality_code,
+        urban_rural_status,
+        psgc_cities_municipalities (
+          code,
+          name,
+          type,
+          is_independent,
+          province_code,
+          psgc_provinces (
+            code,
+            name,
+            region_code,
+            psgc_regions (
+              code,
+              name
+            )
+          )
+        )
+      `)
+      .ilike('name', `%${searchTerm}%`)
+      .limit(limit)
 
-  if (error) {
+    if (error) {
+      console.error('Error searching addresses:', error)
+      return []
+    }
+
+    // Transform the data to match AddressHierarchy interface
+    const results: AddressHierarchy[] = (data || []).map((barangay: any) => {
+      const city = barangay.psgc_cities_municipalities
+      const province = city?.psgc_provinces
+      const region = province?.psgc_regions
+
+      return {
+        region_code: region?.code || '',
+        region_name: region?.name || '',
+        province_code: province?.code || null,
+        province_name: province?.name || null,
+        city_municipality_code: city?.code || '',
+        city_municipality_name: city?.name || '',
+        city_municipality_type: city?.type || '',
+        is_independent: city?.is_independent || false,
+        barangay_code: barangay.code,
+        barangay_name: barangay.name,
+        urban_rural_status: barangay.urban_rural_status,
+        full_address: [
+          barangay.name,
+          city?.name,
+          province?.name,
+          region?.name
+        ].filter(Boolean).join(', ')
+      }
+    })
+
+    return results
+  } catch (error) {
     console.error('Error searching addresses:', error)
     return []
   }
-
-  return data || []
 }
 
 /**
  * Get complete address hierarchy for a specific barangay
  */
 export async function getCompleteAddress(barangayCode: string): Promise<AddressHierarchy | null> {
-  const { data, error } = await supabase
-    .from('address_hierarchy')
-    .select('*')
-    .eq('barangay_code', barangayCode)
-    .single()
+  try {
+    const { data, error } = await supabase
+      .from('psgc_barangays')
+      .select(`
+        code,
+        name,
+        city_municipality_code,
+        urban_rural_status,
+        psgc_cities_municipalities (
+          code,
+          name,
+          type,
+          is_independent,
+          province_code,
+          psgc_provinces (
+            code,
+            name,
+            region_code,
+            psgc_regions (
+              code,
+              name
+            )
+          )
+        )
+      `)
+      .eq('code', barangayCode)
+      .single()
 
-  if (error) {
+    if (error) {
+      console.error('Error fetching complete address:', error)
+      return null
+    }
+
+    if (!data) return null
+
+    const city = data.psgc_cities_municipalities
+    const province = city?.psgc_provinces
+    const region = province?.psgc_regions
+
+    return {
+      region_code: region?.code || '',
+      region_name: region?.name || '',
+      province_code: province?.code || null,
+      province_name: province?.name || null,
+      city_municipality_code: city?.code || '',
+      city_municipality_name: city?.name || '',
+      city_municipality_type: city?.type || '',
+      is_independent: city?.is_independent || false,
+      barangay_code: data.code,
+      barangay_name: data.name,
+      urban_rural_status: data.urban_rural_status,
+      full_address: [
+        data.name,
+        city?.name,
+        province?.name,
+        region?.name
+      ].filter(Boolean).join(', ')
+    }
+  } catch (error) {
     console.error('Error fetching complete address:', error)
     return null
   }
-
-  return data || null
 }
 
 /**
