@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import MainLayout from '@/components/layout/MainLayout'
+import AppShell from '@/components/layout/AppShell'
 import StatsCard from '@/components/dashboard/StatsCard'
 import { testDatabaseConnection } from '@/lib/database'
 
@@ -43,7 +43,17 @@ export default function DashboardPage() {
   }, [])
 
   return (
-    <MainLayout title="Dashboard">
+    <AppShell>
+      {/* Page header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+          Dashboard
+        </h1>
+        <p className="mt-2 text-sm text-gray-700">
+          Overview of your RBI System with real-time statistics and quick actions.
+        </p>
+      </div>
+
       {/* Connection Status */}
       <div className="mb-6">
         {dbConnected === true ? (
@@ -192,6 +202,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </MainLayout>
+    </AppShell>
   )
 }

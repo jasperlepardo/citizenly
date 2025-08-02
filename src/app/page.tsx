@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { testDatabaseConnection } from '@/lib/database'
-import MainLayout from '@/components/layout/MainLayout'
+import AppShell from '@/components/layout/AppShell'
 import Link from 'next/link'
 
 interface DatabaseStats {
@@ -35,7 +35,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <MainLayout>
+    <AppShell>
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Welcome to RBI System
@@ -145,6 +145,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-    </MainLayout>
+    </AppShell>
   )
 }
