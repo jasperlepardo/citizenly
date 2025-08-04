@@ -55,7 +55,7 @@ const buttonVariants = cva(
       },
       iconOnly: {
         true: "aspect-square p-0",
-        false: "px-4"
+        false: ""
       },
       fullWidth: {
         true: "w-full",
@@ -116,6 +116,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
+        type="button"
         className={cn(buttonVariants({ variant, size, iconOnly, fullWidth, className }))}
         ref={ref}
         disabled={isDisabled}

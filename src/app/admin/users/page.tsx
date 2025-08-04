@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { supabase } from '@/lib/supabase'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/atoms'
 
 export const dynamic = 'force-dynamic'
 

@@ -225,10 +225,10 @@ export default function DashboardLayout({
                   </div>
                 </Link>
               </div>
-              <div className={`rounded p-2 ${currentPage === 'household' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/household">
-                  <div className={`font-montserrat text-base ${currentPage === 'household' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Household
+              <div className={`rounded p-2 ${currentPage === 'households' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
+                <Link href="/households">
+                  <div className={`font-montserrat text-base ${currentPage === 'households' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
+                    Households
                   </div>
                 </Link>
               </div>

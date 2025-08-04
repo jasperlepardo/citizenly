@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import Select from '../ui/Select'
+import Select from '../atoms/Select'
 import {
   getRegions,
   getProvincesByRegion,

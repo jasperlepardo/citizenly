@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { testDatabaseConnection } from '@/lib/database'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Link from 'next/link'
 

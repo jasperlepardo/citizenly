@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 
 
 export default function ReportsPage() {

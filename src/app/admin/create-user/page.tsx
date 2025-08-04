@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import Input from '@/components/ui/Input'
-import BarangaySelector from '@/components/ui/BarangaySelector'
-import AppShell from '@/components/layout/AppShell'
+import { Input } from '@/components/atoms'
+import { BarangaySelector } from '@/components/organisms'
+import { AppShell } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'

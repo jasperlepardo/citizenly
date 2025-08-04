@@ -1,7 +1,8 @@
 'use client'
 
-import AppShell from '@/components/layout/AppShell'
-import { Button, IconButton, ButtonGroup } from '@/components/ui'
+import { AppShell } from '@/components/templates'
+import { Button, IconButton } from '@/components/atoms'
+import { ButtonGroup } from '@/components/molecules'
 
 export default function ButtonDemoPage() {
   return (

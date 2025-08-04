@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { InputField } from '@/components/ui/InputField'
-import SimpleBarangaySelector from '@/components/ui/SimpleBarangaySelector'
+import { InputField } from '@/components/molecules'
+import { SimpleBarangaySelector } from '@/components/organisms'
 import Link from 'next/link'
 
 interface SignupFormData {

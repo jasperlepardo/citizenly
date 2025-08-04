@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import AppShell from '@/components/layout/AppShell'
+import { AppShell } from '@/components/templates'
 import Link from 'next/link'
 
 

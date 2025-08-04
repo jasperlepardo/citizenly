@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 
 export const dynamic = 'force-dynamic'
 
@@ -235,7 +235,7 @@ function HouseholdsContent() {
 
   return (
     <DashboardLayout 
-      currentPage="household"
+      currentPage="households"
       searchTerm={globalSearchTerm}
       onSearchChange={setGlobalSearchTerm}
     >
@@ -248,12 +248,20 @@ function HouseholdsContent() {
                 {totalCount} total households
               </p>
             </div>
-            <Link
-              href="/residents/create"
-              className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Add new resident
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/households/create"
+                className="bg-green-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                Create Household
+              </Link>
+              <Link
+                href="/residents/create"
+                className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Add new resident
+              </Link>
+            </div>
           </div>
 
           {/* Table */}

@@ -1,21 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import AppShell from '@/components/layout/AppShell'
-import { 
-  InputField, 
-  Textarea, 
-  SelectField, 
-  Checkbox, 
-  Radio, 
-  RadioGroup, 
-  Toggle, 
-  FileUpload,
-  FormField,
-  FormGroup,
-  Form,
-  Button
-} from '@/components/ui'
+import { AppShell } from '@/components/templates'
+import { Button, Checkbox, Radio, RadioGroup, Toggle, Textarea } from '@/components/atoms'
+import { InputField, SelectField, FileUpload, FormGroup, Form } from '@/components/molecules'
 
 export default function InputDemoPage() {
   const [inputValue, setInputValue] = useState('')
@@ -156,7 +144,7 @@ export default function InputDemoPage() {
                 label="Default Textarea"
                 placeholder="Enter your message here..."
                 value={textareaValue}
-                onChange={(e) => setTextareaValue(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setTextareaValue(e.target.value)}
                 helperText="Share your thoughts"
               />
               

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 
 // Tooltip Component
 const Tooltip = ({ children, content }: { children: React.ReactNode, content: string }) => {

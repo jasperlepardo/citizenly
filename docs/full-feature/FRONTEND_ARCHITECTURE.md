@@ -74,14 +74,17 @@ frontend/
 │   │   │   ├── FormTemplate/
 │   │   │   └── index.ts
 │   │   │
-│   │   └── 📁 rbi-specific/             # RBI System components
-│   │       ├── PSOCSearch/
-│   │       ├── SectoralInfo/
-│   │       ├── HouseholdTypeSelector/
-│   │       ├── FamilyPositionSelector/
-│   │       ├── IncomeClassBadge/
-│   │       ├── MigrantInfo/
-│   │       ├── PSGCAddressCascade/
+│   │   └── 📁 rbi-specific/             # RBI System components (✅ COMPLETED)
+│   │       ├── SectoralInfo/            # ✅ Auto-calculated sectoral groups
+│   │       ├── HouseholdTypeSelector/   # ✅ Visual household type selection
+│   │       ├── FamilyRelationshipSelector/ # ✅ Family position within household
+│   │       ├── MigrantInformation/      # ✅ Migration status and history
+│   │       ├── PhysicalCharacteristics/ # ✅ Physical description with BMI
+│   │       ├── ResidentStatusSelector/  # ✅ Legal status and voting eligibility
+│   │       ├── MotherMaidenName/        # ✅ Genealogy with privacy protection
+│   │       ├── PhilSysNumberInput/      # ✅ Encrypted PhilSys ID handling
+│   │       ├── PSOCSearch/              # 📋 Planned - Occupation search
+│   │       ├── PSGCAddressCascade/      # 📋 Planned - Geographic address
 │   │       └── index.ts
 │   │
 │   ├── 📁 lib/                          # Utilities and configurations

@@ -45,6 +45,7 @@
 | **[Design README](docs/design/README.md)** | Design system overview | ✅ Ready |
 | **[Design System](docs/design/DESIGN_SYSTEM.md)** | Figma integration guide | ✅ Ready |
 | **[UX Workflow](docs/design/UX_WORKFLOW.md)** | User journey documentation | ✅ Ready |
+| **[Component Library](docs/COMPONENT_LIBRARY.md)** | Complete component documentation | ✅ Ready |
 
 **🔗 Design References:**
 - [Citizenly App Layout](https://www.figma.com/design/srcDxfJEqx3qfPiQRrSR52/Citizenly?node-id=1-829&t=OndQULNKpeMqYE59-4)

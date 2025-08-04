@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
+import { DashboardLayout } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
 function JudiciaryContent() {
