@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
+export const dynamic = 'force-dynamic'
+
 interface Household {
   code: string
   street_name?: string

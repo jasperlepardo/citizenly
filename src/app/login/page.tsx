@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import LoginForm from '@/components/auth/LoginForm'
 import DevLogin from '@/components/auth/DevLogin'
 
+export const dynamic = 'force-dynamic'
+
 export default function LoginPage() {
   const { user, loading } = useAuth()
   const [showDevLogin, setShowDevLogin] = useState(false)

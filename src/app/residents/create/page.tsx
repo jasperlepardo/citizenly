@@ -9,6 +9,8 @@ import HouseholdSelector from '@/components/ui/HouseholdSelector'
 import { useUserBarangay } from '@/hooks/useUserBarangay'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
+export const dynamic = 'force-dynamic'
+
 interface ResidentFormData {
   // Personal Information
   firstName: string

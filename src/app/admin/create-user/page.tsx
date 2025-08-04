@@ -9,6 +9,8 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 
+export const dynamic = 'force-dynamic'
+
 interface CreateUserFormData {
   email: string
   password: string

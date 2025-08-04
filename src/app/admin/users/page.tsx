@@ -6,6 +6,8 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui'
 
+export const dynamic = 'force-dynamic'
+
 interface UserRequest {
   id: string
   email: string
