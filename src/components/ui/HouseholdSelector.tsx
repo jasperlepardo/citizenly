@@ -7,10 +7,35 @@ import CreateHouseholdModal from './CreateHouseholdModal'
 
 interface Household {
   code: string
-  head_name?: string
   street_name?: string
   house_number?: string
+  subdivision?: string
+  barangay_code: string
+  head_resident?: {
+    id: string
+    first_name: string
+    middle_name?: string
+    last_name: string
+  }
   member_count?: number
+  // Geographic information for display
+  region_info?: {
+    code: string
+    name: string
+  }
+  province_info?: {
+    code: string
+    name: string
+  }
+  city_municipality_info?: {
+    code: string
+    name: string
+    type: string
+  }
+  barangay_info?: {
+    code: string
+    name: string
+  }
 }
 
 interface HouseholdSelectorProps {
@@ -43,14 +68,17 @@ export default function HouseholdSelector({
       console.log('Loading households for barangay:', userProfile.barangay_code)
       setLoading(true)
       try {
-        // Get households with basic info and member count
+        // Get households with head resident info
         const { data: householdsData, error } = await supabase
           .from('households')
           .select(`
-            code,
-            street_name,
-            house_number,
-            household_head_id
+            *,
+            head_resident:residents!households_household_head_id_fkey(
+              id,
+              first_name,
+              middle_name,
+              last_name
+            )
           `)
           .eq('barangay_code', userProfile.barangay_code)
           .order('code', { ascending: true })
@@ -60,7 +88,7 @@ export default function HouseholdSelector({
           return
         }
 
-        // Get member counts and head info for each household
+        // Get member counts and geographic information for each household
         const householdsWithCounts = await Promise.all(
           (householdsData || []).map(async (household) => {
             // Get member count
@@ -69,26 +97,64 @@ export default function HouseholdSelector({
               .select('*', { count: 'exact', head: true })
               .eq('household_code', household.code)
 
-            // Get head info if household_head_id exists
-            let headName = 'No Head Assigned'
-            if (household.household_head_id) {
-              const { data: headData } = await supabase
-                .from('residents')
-                .select('first_name, last_name')
-                .eq('id', household.household_head_id)
+            // Get geographic information from PSGC tables
+            let geoInfo = {}
+            try {
+              const { data: barangayData } = await supabase
+                .from('psgc_barangays')
+                .select(`
+                  code,
+                  name,
+                  psgc_cities_municipalities!inner(
+                    code,
+                    name,
+                    type,
+                    psgc_provinces!inner(
+                      code,
+                      name,
+                      psgc_regions!inner(
+                        code,
+                        name
+                      )
+                    )
+                  )
+                `)
+                .eq('code', household.barangay_code)
                 .single()
-              
-              if (headData) {
-                headName = `${headData.first_name} ${headData.last_name}`
+
+              if (barangayData) {
+                const cityMun = barangayData.psgc_cities_municipalities as any
+                const province = cityMun.psgc_provinces as any
+                const region = province.psgc_regions as any
+
+                geoInfo = {
+                  barangay_info: {
+                    code: barangayData.code,
+                    name: barangayData.name
+                  },
+                  city_municipality_info: {
+                    code: cityMun.code,
+                    name: cityMun.name,
+                    type: cityMun.type
+                  },
+                  province_info: {
+                    code: province.code,
+                    name: province.name
+                  },
+                  region_info: {
+                    code: region.code,
+                    name: region.name
+                  }
+                }
               }
+            } catch (geoError) {
+              console.warn('Could not load geographic info for household:', household.code, geoError)
             }
 
             return {
-              code: household.code,
-              head_name: headName,
-              street_name: household.street_name,
-              house_number: household.house_number,
-              member_count: count || 0
+              ...household,
+              member_count: count || 0,
+              ...geoInfo
             }
           })
         )
@@ -107,12 +173,57 @@ export default function HouseholdSelector({
     loadHouseholds()
   }, [userProfile?.barangay_code])
 
+  // Helper function to format full name
+  const formatFullName = (person?: { first_name: string; middle_name?: string; last_name: string }) => {
+    if (!person) return 'No head assigned'
+    return [person.first_name, person.middle_name, person.last_name].filter(Boolean).join(' ')
+  }
+
+  // Helper function to format address
+  const formatAddress = (household: Household) => {
+    const parts = [household.house_number, household.street_name, household.subdivision].filter(Boolean)
+    return parts.length > 0 ? parts.join(', ') : 'No address'
+  }
+
+  // Helper function to format full address with geographic hierarchy
+  const formatFullAddress = (household: Household) => {
+    const localAddress = formatAddress(household)
+    const geoParts = []
+    
+    if (household.barangay_info?.name) {
+      geoParts.push(`Brgy. ${household.barangay_info.name}`)
+    }
+    
+    if (household.city_municipality_info?.name && household.city_municipality_info?.type) {
+      geoParts.push(`${household.city_municipality_info.name} (${household.city_municipality_info.type})`)
+    }
+    
+    if (household.province_info?.name) {
+      geoParts.push(household.province_info.name)
+    }
+
+    if (localAddress === 'No address' && geoParts.length === 0) {
+      return 'Address not available'
+    }
+    
+    if (localAddress === 'No address') {
+      return geoParts.join(', ')
+    }
+    
+    return geoParts.length > 0 ? `${localAddress}, ${geoParts.join(', ')}` : localAddress
+  }
+
   // Filter households based on search term
-  const filteredHouseholds = households.filter(household =>
-    household.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    household.head_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    household.street_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredHouseholds = households.filter(household => {
+    const searchLower = searchTerm.toLowerCase()
+    return (
+      household.code.toLowerCase().includes(searchLower) ||
+      formatFullName(household.head_resident).toLowerCase().includes(searchLower) ||
+      household.street_name?.toLowerCase().includes(searchLower) ||
+      household.house_number?.toLowerCase().includes(searchLower) ||
+      household.subdivision?.toLowerCase().includes(searchLower)
+    )
+  })
 
   const selectedHousehold = households.find(h => h.code === value)
   
@@ -121,7 +232,7 @@ export default function HouseholdSelector({
     console.log('HouseholdSelector state:', {
       value,
       householdsCount: households.length,
-      selectedHousehold: selectedHousehold ? `${selectedHousehold.code} - ${selectedHousehold.head_name}` : 'None found',
+      selectedHousehold: selectedHousehold ? `${selectedHousehold.code} - ${formatFullName(selectedHousehold.head_resident)}` : 'None found',
       households: households.map(h => ({ code: h.code }))
     })
   }, [value, households, selectedHousehold])
@@ -135,7 +246,7 @@ export default function HouseholdSelector({
       }`}>
         <input
           type="text"
-          value={selectedHousehold ? `#${selectedHousehold.code} - ${selectedHousehold.head_name}` : searchTerm}
+          value={selectedHousehold ? `#${selectedHousehold.code} - ${formatFullAddress(selectedHousehold)} (${formatFullName(selectedHousehold.head_resident)})` : searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value)
             setIsOpen(true)
@@ -214,14 +325,11 @@ export default function HouseholdSelector({
                         Household #{household.code}
                       </div>
                       <div className="text-sm text-neutral-600">
-                        Head: {household.head_name}
+                        Head: {formatFullName(household.head_resident)}
                       </div>
-                      {household.street_name && (
-                        <div className="text-xs text-neutral-500">
-                          {household.house_number && `${household.house_number} `}
-                          {household.street_name}
-                        </div>
-                      )}
+                      <div className="text-xs text-neutral-500">
+                        {formatFullAddress(household)}
+                      </div>
                     </div>
                     <div className="text-xs text-neutral-500 ml-2">
                       {household.member_count} member{household.member_count !== 1 ? 's' : ''}

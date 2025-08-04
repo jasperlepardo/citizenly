@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import AppShell from '@/components/layout/AppShell'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui'
@@ -30,6 +30,7 @@ function UsersManagementContent() {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'pending' | 'active'>('pending')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     loadUsers()
@@ -312,8 +313,12 @@ function UsersManagementContent() {
 
   if (loading) {
     return (
-      <AppShell>
-        <div className="flex items-center justify-center min-h-64">
+      <DashboardLayout 
+        currentPage="admin"
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      >
+        <div className="p-6 flex items-center justify-center min-h-64">
           <div className="text-center">
             <svg className="mx-auto h-12 w-12 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -322,12 +327,17 @@ function UsersManagementContent() {
             <p className="mt-4 text-sm text-gray-600">Loading users...</p>
           </div>
         </div>
-      </AppShell>
+      </DashboardLayout>
     )
   }
 
   return (
-    <AppShell>
+    <DashboardLayout 
+      currentPage="admin"
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+    >
+      <div className="p-6">
       <div className="flex flex-col gap-6 p-6">
         {/* Header */}
         <div className="flex flex-row gap-4 items-start justify-between w-full">
@@ -422,7 +432,8 @@ function UsersManagementContent() {
           )}
         </div>
       </div>
-    </AppShell>
+      </div>
+    </DashboardLayout>
   )
 }
 

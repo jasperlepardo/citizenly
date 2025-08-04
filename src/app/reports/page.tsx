@@ -6,12 +6,13 @@
  */
 
 import React, { useState } from 'react'
-import AppShell from '@/components/layout/AppShell'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 
 export default function ReportsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('monthly')
   const [selectedReport, setSelectedReport] = useState('overview')
+  const [searchTerm, setSearchTerm] = useState('')
 
   // Report categories
   const reportCategories = [
@@ -76,8 +77,12 @@ export default function ReportsPage() {
   }
 
   return (
-    <AppShell>
-      <div className="space-y-6">
+    <DashboardLayout 
+      currentPage="reports"
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+    >
+      <div className="p-6 space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-3xl p-8 border border-slate-200/60">
           <div className="md:flex md:items-center md:justify-between">
@@ -286,6 +291,6 @@ export default function ReportsPage() {
           </div>
         </div>
       </div>
-    </AppShell>
+    </DashboardLayout>
   )
 }

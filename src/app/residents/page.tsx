@@ -1,284 +1,360 @@
 'use client'
 
-/**
- * Residents Page
- * Comprehensive resident management with search, filtering, and registration
- */
-
-import React, { useState } from 'react'
-import AppShell from '@/components/layout/AppShell'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
+export const dynamic = 'force-dynamic'
 
-// Mock data for residents
-const mockResidents = [
-  {
-    id: 1,
-    name: 'Juan dela Cruz',
-    email: 'juan.delacruz@email.com',
-    phone: '+63 912 345 6789',
-    address: 'Barangay San Antonio, Makati City',
-    status: 'Active',
-    registeredDate: '2024-01-15',
-    avatar: null,
-    age: 34,
-    gender: 'Male'
-  },
-  {
-    id: 2,
-    name: 'Maria Santos',
-    email: 'maria.santos@email.com',
-    phone: '+63 917 234 5678',
-    address: 'Barangay Poblacion, Quezon City',
-    status: 'Active',
-    registeredDate: '2024-01-10',
-    avatar: null,
-    age: 28,
-    gender: 'Female'
-  },
-  {
-    id: 3,
-    name: 'Pedro Reyes',
-    email: 'pedro.reyes@email.com',
-    phone: '+63 920 345 6789',
-    address: 'Barangay Central, Manila',
-    status: 'Pending',
-    registeredDate: '2024-01-12',
-    avatar: null,
-    age: 45,
-    gender: 'Male'
-  },
-  {
-    id: 4,
-    name: 'Ana Garcia',
-    email: 'ana.garcia@email.com',
-    phone: '+63 915 456 7890',
-    address: 'Barangay East, Pasig City',
-    status: 'Active',
-    registeredDate: '2024-01-08',
-    avatar: null,
-    age: 31,
-    gender: 'Female'
+interface Resident {
+  id: string
+  first_name: string
+  middle_name?: string
+  last_name: string
+  extension_name?: string
+  email?: string
+  mobile_number?: string
+  sex: 'male' | 'female' | ''
+  birthdate: string
+  civil_status?: string
+  occupation?: string
+  job_title?: string
+  profession?: string
+  education_level?: string
+  household_code?: string
+  barangay_code: string
+  status?: string
+  created_at: string
+  household?: {
+    code: string
+    street_name?: string
+    house_number?: string
+    subdivision?: string
   }
-]
+}
 
-export default function ResidentsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+function ResidentsContent() {
+  const { user, loading: authLoading, userProfile } = useAuth()
+  const [residents, setResidents] = useState<Resident[]>([])
+  const [loading, setLoading] = useState(true)
+  const [totalCount, setTotalCount] = useState(0)
+  const [globalSearchTerm, setGlobalSearchTerm] = useState('')
+  const [localSearchTerm, setLocalSearchTerm] = useState('')
+  const [selectedAll, setSelectedAll] = useState(false)
+  const [selectedResidents, setSelectedResidents] = useState<Set<string>>(new Set())
 
-  const filteredResidents = mockResidents.filter(resident => {
-    const matchesSearch = resident.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resident.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resident.address.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || resident.status.toLowerCase() === statusFilter
-    return matchesSearch && matchesStatus
-  })
+  useEffect(() => {
+    if (!authLoading && user && userProfile?.barangay_code) {
+      loadResidents()
+    }
+  }, [user, authLoading, userProfile, localSearchTerm])
 
-  const stats = [
-    { name: 'Total Residents', value: '1,247', change: '+12%', changeType: 'increase' },
-    { name: 'Active', value: '1,180', change: '+8%', changeType: 'increase' },
-    { name: 'Pending Review', value: '67', change: '+4', changeType: 'increase' },
-    { name: 'This Month', value: '+23', change: '+15%', changeType: 'increase' },
-  ]
+  const loadResidents = async () => {
+    try {
+      setLoading(true)
+
+      let query = supabase
+        .from('residents')
+        .select(`
+          *,
+          household:households!residents_household_code_fkey(
+            code,
+            street_name,
+            house_number,
+            subdivision
+          )
+        `, { count: 'exact' })
+        .eq('barangay_code', userProfile?.barangay_code)
+        .order('created_at', { ascending: false })
+
+      if (localSearchTerm.trim()) {
+        query = query.or(`first_name.ilike.%${localSearchTerm}%,middle_name.ilike.%${localSearchTerm}%,last_name.ilike.%${localSearchTerm}%,email.ilike.%${localSearchTerm}%,occupation.ilike.%${localSearchTerm}%,job_title.ilike.%${localSearchTerm}%`)
+      }
+
+      const { data, error, count } = await query
+
+      if (error) {
+        throw error
+      }
+
+      setResidents(data || [])
+      setTotalCount(count || 0)
+    } catch (err) {
+      console.error('Error loading residents:', err)
+      setResidents([])
+      setTotalCount(0)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSelectAll = () => {
+    if (selectedAll) {
+      setSelectedResidents(new Set())
+    } else {
+      setSelectedResidents(new Set(residents.map(r => r.id)))
+    }
+    setSelectedAll(!selectedAll)
+  }
+
+  const handleSelectResident = (id: string) => {
+    const newSelected = new Set(selectedResidents)
+    if (newSelected.has(id)) {
+      newSelected.delete(id)
+    } else {
+      newSelected.add(id)
+    }
+    setSelectedResidents(newSelected)
+    setSelectedAll(newSelected.size === residents.length && residents.length > 0)
+  }
+
+  const formatFullName = (resident: Resident) => {
+    return [resident.first_name, resident.middle_name, resident.last_name, resident.extension_name].filter(Boolean).join(' ')
+  }
+
+  const formatAddress = (resident: Resident) => {
+    if (!resident.household) return 'No household assigned'
+    const parts = [resident.household.house_number, resident.household.street_name, resident.household.subdivision].filter(Boolean)
+    return parts.length > 0 ? parts.join(', ') : 'No address'
+  }
+
+  const calculateAge = (birthdate: string) => {
+    if (!birthdate) return 'N/A'
+    const today = new Date()
+    const birth = new Date(birthdate)
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDiff = today.getMonth() - birth.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--
+    }
+    return age.toString()
+  }
 
   return (
-    <AppShell>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-3xl p-8 border border-slate-200/60">
-          <div className="md:flex md:items-center md:justify-between">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                Residents
-              </h1>
-              <p className="mt-2 text-lg text-slate-600">
-                Manage and monitor all registered residents in your barangay
+    <DashboardLayout 
+      currentPage="residents"
+      searchTerm={globalSearchTerm}
+      onSearchChange={setGlobalSearchTerm}
+    >
+      <div className="p-6">
+          {/* Page Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">Residents</h1>
+              <p className="font-montserrat font-normal text-sm text-neutral-600">
+                {totalCount} total residents
               </p>
             </div>
-            <div className="mt-6 flex gap-4 md:ml-4 md:mt-0">
-              <button
-                type="button"
-                className="inline-flex items-center rounded-2xl bg-white/80 backdrop-blur-sm px-6 py-3 text-sm font-semibold text-slate-900 shadow-lg ring-1 ring-inset ring-slate-300/50 hover:bg-white hover:shadow-xl transition-all duration-200"
-              >
-                Filter
-              </button>
-              <Link
-                href="/residents/new"
-                className="inline-flex items-center rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-xl hover:shadow-2xl hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200"
-              >
-                New Resident
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((item, index) => (
-            <div key={item.name} className="group overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl p-6 shadow-xl shadow-slate-900/5 border border-slate-200/60 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex flex-col h-full">
-                <dt className="text-sm font-semibold text-slate-600 mb-3">{item.name}</dt>
-                <dd className="flex flex-col flex-grow">
-                  <div className="flex items-baseline mb-2">
-                    <span className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      {item.value}
-                    </span>
-                    <span className="ml-2 text-sm font-medium text-slate-500">residents</span>
-                  </div>
-                  <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 w-fit">
-                    {item.change}
-                  </div>
-                </dd>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Search and Filters */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 max-w-md">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <div className="h-5 w-5 text-slate-400">
-                <div className="h-4 w-4 rounded-full border border-current"></div>
-                <div className="absolute top-3 left-3 h-2 w-0.5 bg-current rotate-45"></div>
-              </div>
-            </div>
-            <input
-              type="text"
-              placeholder="Search residents..."
-              className="block w-full rounded-2xl border-0 py-3 pl-12 pr-4 text-slate-900 bg-slate-50 shadow-inner ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 focus:bg-white transition-all duration-200"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center space-x-4">
-            <select
-              className="rounded-2xl border-0 py-3 pl-4 pr-10 text-slate-900 bg-slate-50 shadow-inner ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all duration-200"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+            <Link
+              href="/residents/create"
+              className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="inactive">Inactive</option>
-            </select>
+              Add new resident
+            </Link>
           </div>
-        </div>
 
-        {/* Residents Table */}
-        <div className="bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-900/5 border border-slate-200/60 rounded-2xl">
-          <div className="p-8">
-            <div className="border-b border-slate-200 pb-6 mb-8">
-              <h3 className="text-2xl font-bold text-slate-900">
-                Resident Directory
-              </h3>
-              <p className="mt-2 text-slate-600">
-                A list of all residents including their contact information and status.
-              </p>
-            </div>
-            <div className="flow-root">
-              <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                  <table className="min-w-full">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th scope="col" className="py-4 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-0">
-                          Name
-                        </th>
-                        <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-slate-900">
-                          Contact
-                        </th>
-                        <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-slate-900">
-                          Address
-                        </th>
-                        <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-slate-900">
-                          Status
-                        </th>
-                        <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-slate-900">
-                          Registered
-                        </th>
-                        <th scope="col" className="relative py-4 pl-3 pr-4 sm:pr-0">
-                          <span className="sr-only">Actions</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {filteredResidents.map((resident) => (
-                        <tr key={resident.id} className="hover:bg-slate-50 transition-colors duration-200">
-                          <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-0">
-                            <div className="flex items-center">
-                              <div className="h-12 w-12 flex-shrink-0">
-                                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-                                  <span className="text-sm font-bold text-white">
-                                    {resident.name.split(' ').map(n => n[0]).join('')}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="ml-4">
-                                <div className="font-semibold text-slate-900">{resident.name}</div>
-                                <div className="text-slate-500 text-sm">{resident.age} years old • {resident.gender}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-600">
-                            <div className="font-medium">{resident.email}</div>
-                            <div className="text-slate-500">{resident.phone}</div>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-600">
-                            {resident.address}
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-600">
-                            <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
-                              resident.status === 'Active'
-                                ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
-                                : resident.status === 'Pending'
-                                ? 'bg-amber-50 text-amber-700 ring-amber-600/20'
-                                : 'bg-slate-50 text-slate-700 ring-slate-600/20'
-                            }`}>
-                              {resident.status}
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-600">
-                            {new Date(resident.registeredDate).toLocaleDateString()}
-                          </td>
-                          <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                            <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all duration-200">
-                              <div className="flex flex-col space-y-1">
-                                <div className="h-1 w-1 bg-current rounded-full"></div>
-                                <div className="h-1 w-1 bg-current rounded-full"></div>
-                                <div className="h-1 w-1 bg-current rounded-full"></div>
-                              </div>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {/* Table */}
+          <div className="bg-white overflow-hidden">
+            {/* Table Header */}
+            <div className="bg-white flex items-center p-0 border-b border-neutral-200">
+              {/* Select All */}
+              <div className="flex items-center p-2">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSelectAll}
+                    className="w-4 h-4 border border-neutral-300 rounded flex items-center justify-center"
+                  >
+                    {selectedAll && (
+                      <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
+                    )}
+                  </button>
+                  <span className="font-montserrat font-normal text-base text-neutral-800">Select all</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-1 ml-4">
+                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
+                  <div className="w-5 h-5 text-neutral-600">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    </svg>
+                  </div>
+                  <span className="font-montserrat font-medium text-base text-neutral-700">Properties</span>
+                </button>
+
+                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
+                  <div className="w-5 h-5 text-neutral-600">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                  </div>
+                  <span className="font-montserrat font-medium text-base text-neutral-700">Sort</span>
+                </button>
+
+                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
+                  <div className="w-5 h-5 text-neutral-600">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
+                    </svg>
+                  </div>
+                  <span className="font-montserrat font-medium text-base text-neutral-700">Filter</span>
+                </button>
+
+                <button className="bg-white border border-neutral-300 rounded p-1 hover:bg-neutral-50">
+                  <div className="w-5 h-5 text-neutral-600">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                    </svg>
+                  </div>
+                </button>
+              </div>
+
+              {/* Search Residents */}
+              <div className="ml-auto mr-0">
+                <div className="w-60 bg-white border border-neutral-300 rounded p-2 flex items-center gap-2">
+                  <div className="w-5 h-5 text-neutral-600">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search residents"
+                    value={localSearchTerm}
+                    onChange={(e) => setLocalSearchTerm(e.target.value)}
+                    className="flex-1 font-montserrat font-normal text-base text-neutral-400 placeholder-neutral-400 outline-none bg-transparent"
+                  />
                 </div>
               </div>
             </div>
+
+            {/* Table Column Headers */}
+            <div className="bg-neutral-50 flex items-center p-0 border-b border-neutral-200">
+              {/* Checkbox Column */}
+              <div className="p-2 w-12"></div>
+              
+              {/* Column Headers */}
+              <div className="flex-1 grid grid-cols-6 gap-4 p-2">
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Name</span>
+                </div>
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Email</span>
+                </div>
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Address</span>
+                </div>
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Age</span>
+                </div>
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Sex</span>
+                </div>
+                <div className="p-2">
+                  <span className="font-montserrat font-medium text-sm text-neutral-700">Occupation</span>
+                </div>
+              </div>
+              
+              {/* Actions Column */}
+              <div className="p-1 w-12"></div>
+            </div>
+
+            {/* Table Rows */}
+            <div className="divide-y divide-neutral-200">
+              {loading ? (
+                <div className="p-8 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-2 text-neutral-600">Loading residents...</p>
+                </div>
+              ) : residents.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-neutral-600">
+                    {localSearchTerm ? `No residents found matching "${localSearchTerm}"` : 'No residents found'}
+                  </p>
+                  <p className="text-sm text-neutral-500 mt-2">
+                    Click "Add new resident" to register your first resident.
+                  </p>
+                </div>
+              ) : (
+                residents.map((resident) => (
+                  <div key={resident.id} className="bg-white flex items-center p-0 hover:bg-neutral-50">
+                    {/* Checkbox */}
+                    <div className="p-2">
+                      <button
+                        onClick={() => handleSelectResident(resident.id)}
+                        className="w-4 h-4 border border-neutral-300 rounded flex items-center justify-center"
+                      >
+                        {selectedResidents.has(resident.id) && (
+                          <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Content Columns */}
+                    <div className="flex-1 grid grid-cols-6 gap-4 p-2">
+                      <div className="p-2">
+                        <Link 
+                          href={`/residents/${resident.id}`}
+                          className="font-montserrat font-normal text-base text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {formatFullName(resident)}
+                        </Link>
+                      </div>
+                      <div className="p-2">
+                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                          {resident.email || 'No email'}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                          {formatAddress(resident)}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                          {calculateAge(resident.birthdate)}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <div className="font-montserrat font-normal text-base text-neutral-800 capitalize">
+                          {resident.sex || 'N/A'}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                          {resident.occupation || resident.job_title || 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Menu */}
+                    <div className="p-1">
+                      <button className="bg-white border border-neutral-300 rounded p-2 hover:bg-neutral-50">
+                        <div className="w-5 h-5 text-neutral-600">
+                          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                          </svg>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
+      </DashboardLayout>
+  )
+}
 
-        {/* Empty State (when no results) */}
-        {filteredResidents.length === 0 && (
-          <div className="text-center py-16 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-900/5 border border-slate-200/60 rounded-2xl">
-            <div className="mx-auto h-16 w-16 rounded-3xl bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center mb-6">
-              <div className="h-8 w-8 bg-white rounded-2xl opacity-90"></div>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">No residents found</h3>
-            <p className="text-slate-600 mb-8">
-              Try adjusting your search criteria or add a new resident.
-            </p>
-            <Link
-              href="/residents/new"
-              className="inline-flex items-center rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200"
-            >
-              New Resident
-            </Link>
-          </div>
-        )}
-      </div>
-    </AppShell>
+export default function ResidentsPage() {
+  return (
+    <ProtectedRoute requirePermission="residents_view">
+      <ResidentsContent />
+    </ProtectedRoute>
   )
 }

@@ -8,6 +8,7 @@ import PSOCSelector from '@/components/ui/PSOCSelector'
 import HouseholdSelector from '@/components/ui/HouseholdSelector'
 import { useUserBarangay } from '@/hooks/useUserBarangay'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,6 +73,7 @@ function CreateResidentForm() {
   const [currentStep, setCurrentStep] = useState(1)
   const [errors, setErrors] = useState<Partial<Record<keyof ResidentFormData, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const [formData, setFormData] = useState<ResidentFormData>({
     // Personal Information
     firstName: '',
@@ -1288,118 +1290,12 @@ function CreateResidentForm() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-56 bg-neutral-50 border-r border-neutral-300">
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-300">
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900">Citizenly</h1>
-            <div className="flex gap-1">
-              <div className="bg-neutral-200 p-0.5 rounded">
-                <div className="w-5 h-5 bg-neutral-400 rounded"></div>
-              </div>
-              <div className="bg-neutral-200 p-0.5 rounded">
-                <div className="w-5 h-5 bg-neutral-400 rounded"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div className="flex-1 px-1 py-4">
-            <div className="space-y-1">
-              <Link href="/dashboard" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Dashboard</div>
-              </Link>
-              <div className="bg-blue-100 rounded p-2">
-                <div className="font-montserrat font-semibold text-base text-neutral-800">Residents</div>
-              </div>
-              <Link href="/household" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Household</div>
-              </Link>
-              <Link href="/business" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Business</div>
-              </Link>
-              <Link href="/judiciary" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Judiciary</div>
-              </Link>
-              <Link href="/certification" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Certification</div>
-              </Link>
-              <Link href="/reports" className="block bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Reports</div>
-              </Link>
-            </div>
-          </div>
-
-          {/* Bottom Navigation */}
-          <div className="px-2 py-4 border-t border-neutral-300">
-            <div className="space-y-1">
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Help</div>
-              </div>
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Notifications</div>
-              </div>
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Settings</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="ml-56">
-        {/* Top Header */}
-        <div className="bg-white border-b border-neutral-300 px-6 py-2">
-          <div className="flex items-center justify-between">
-            {/* Search */}
-            <div className="w-[497px]">
-              <div className="bg-neutral-100 rounded p-2 flex items-center gap-2">
-                <div className="w-4 h-4 text-neutral-400">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <div className="flex-1 font-montserrat font-normal text-sm text-neutral-400">
-                  Search Citizenly
-                </div>
-                <div className="w-4 h-4 text-neutral-400">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* User Section */}
-            <div className="flex items-center gap-2">
-              <div className="bg-neutral-200 p-2 rounded-full">
-                <div className="w-5 h-5 text-neutral-600">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                </div>
-              </div>
-              <div className="bg-neutral-200 p-2 rounded-full">
-                <div className="w-5 h-5 text-neutral-600">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="w-6 h-0 border-l border-neutral-300"></div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-center bg-cover bg-no-repeat" style={{backgroundImage: "url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face')"}}></div>
-                <div className="font-montserrat font-medium text-sm text-neutral-800">Jasper Lepardo</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Page Content */}
-        <div className="p-6">
+    <DashboardLayout 
+      currentPage="residents"
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+    >
+      <div className="p-6">
           <div className="mx-auto max-w-4xl">
             {/* Header */}
             <div className="mb-8 flex items-center gap-4">
@@ -1526,8 +1422,7 @@ function CreateResidentForm() {
         </div>
           </div>
         </div>
-      </div>
-    </div>
+    </DashboardLayout>
   )
 }
 

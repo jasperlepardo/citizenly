@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { testDatabaseConnection } from '@/lib/database'
-import MainLayout from '@/components/layout/MainLayout'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import Link from 'next/link'
 
@@ -16,6 +16,7 @@ interface DatabaseStats {
 function HomeContent() {
   const [dbStats, setDbStats] = useState<DatabaseStats | null>(null)
   const [dbConnected, setDbConnected] = useState<boolean | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     async function checkDatabase() {
@@ -36,7 +37,12 @@ function HomeContent() {
   }, [])
 
   return (
-    <MainLayout>
+    <DashboardLayout 
+      currentPage="dashboard"
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+    >
+      <div className="p-6">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Welcome to RBI System
@@ -146,7 +152,8 @@ function HomeContent() {
           </div>
         </div>
       </div>
-    </MainLayout>
+      </div>
+    </DashboardLayout>
   )
 }
 

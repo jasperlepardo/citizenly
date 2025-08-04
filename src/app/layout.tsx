@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import ClientProviders from '@/components/providers/ClientProviders'
+import Providers from '@/components/providers/Providers'
 
 export const metadata: Metadata = {
   title: 'RBI System - Records of Barangay Inhabitant System',
@@ -15,9 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ClientProviders>
+        <Providers>
           {children}
-        </ClientProviders>
+        </Providers>
       </body>
     </html>
   )
