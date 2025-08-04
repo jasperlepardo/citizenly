@@ -38,6 +38,13 @@ interface Household {
   total_members?: number
   household_head_id?: string
   created_at: string
+  head_resident?: {
+    id: string
+    first_name: string
+    middle_name?: string
+    last_name: string
+    extension_name?: string
+  }
 }
 
 interface AddressInfo {
@@ -45,6 +52,310 @@ interface AddressInfo {
   city_municipality_name: string
   province_name?: string
   region_name: string
+}
+
+function HouseholdSelector() {
+  const { userProfile } = useAuth()
+  const [households, setHouseholds] = useState<Household[]>([])
+  const [filteredHouseholds, setFilteredHouseholds] = useState<Household[]>([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [houseNumberFilter, setHouseNumberFilter] = useState('')
+  const [streetNameFilter, setStreetNameFilter] = useState('')
+  const [subdivisionFilter, setSubdivisionFilter] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [householdsWithHeads, setHouseholdsWithHeads] = useState<(Household & { headName?: string })[]>([])
+
+  useEffect(() => {
+    const loadHouseholds = async () => {
+      try {
+        setLoading(true)
+        console.log('Starting to load households...')
+        
+        // First, try a simple count query to check table access
+        const { count, error: countError } = await supabase
+          .from('households')
+          .select('*', { count: 'exact', head: true })
+        
+        console.log('Household count check:', { count, countError })
+        
+        const { data: householdData, error } = await supabase
+          .from('households')
+          .select(`
+            *,
+            head_resident:residents!households_household_head_id_fkey(
+              id,
+              first_name,
+              middle_name,
+              last_name,
+              extension_name
+            )
+          `)
+          .order('code')
+
+        console.log('Query result:', { householdData, error })
+        
+        if (error) {
+          console.error('Supabase error:', error)
+          throw error
+        }
+        
+        console.log('Loaded households:', householdData?.length, 'households')
+        if (householdData && householdData.length > 0) {
+          console.log('Sample household codes:', householdData.slice(0, 3).map(h => h.code))
+        }
+        
+        // Process households and extract head names from JOIN data
+        const householdsWithHeadNames = (householdData || []).map((household) => {
+          let headName = undefined
+          if (household.head_resident) {
+            headName = [
+              household.head_resident.first_name,
+              household.head_resident.middle_name,
+              household.head_resident.last_name,
+              household.head_resident.extension_name
+            ].filter(Boolean).join(' ')
+          }
+          
+          return {
+            ...household,
+            headName
+          }
+        })
+        
+        console.log('Final households with heads:', householdsWithHeadNames)
+        console.log('Search test - looking for "042114014-0000-0001-0001"')
+        const testHousehold = householdsWithHeadNames.find(h => h.code === '042114014-0000-0001-0001')
+        console.log('Found test household:', testHousehold)
+        
+        setHouseholds(householdData || [])
+        setHouseholdsWithHeads(householdsWithHeadNames)
+        setFilteredHouseholds(householdsWithHeadNames)
+      } catch (err) {
+        console.error('Error loading households:', err)
+        // Set an empty array so the UI shows "No households found" instead of loading forever
+        setHouseholds([])
+        setHouseholdsWithHeads([])
+        setFilteredHouseholds([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadHouseholds()
+  }, [])
+
+  useEffect(() => {
+    console.log('Filtering households. Search term:', searchTerm)
+    console.log('Total households to filter:', householdsWithHeads.length)
+    
+    let filtered = householdsWithHeads.filter(household => {
+      // Text search across multiple fields
+      const searchFields = [
+        household.code,
+        household.house_number,
+        household.street_name,
+        household.subdivision,
+        household.headName
+      ].filter(Boolean).join(' ').toLowerCase()
+      
+      console.log(`Household ${household.code} search fields:`, searchFields)
+      
+      const matchesSearch = !searchTerm || 
+        searchFields.includes(searchTerm.toLowerCase()) ||
+        household.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (household.house_number && household.house_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (household.street_name && household.street_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (household.subdivision && household.subdivision.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (household.headName && household.headName.toLowerCase().includes(searchTerm.toLowerCase()))
+      
+      // Individual field filters
+      const matchesHouseNumber = !houseNumberFilter || 
+        (household.house_number && household.house_number.toLowerCase().includes(houseNumberFilter.toLowerCase()))
+      
+      const matchesStreetName = !streetNameFilter || 
+        (household.street_name && household.street_name.toLowerCase().includes(streetNameFilter.toLowerCase()))
+      
+      const matchesSubdivision = !subdivisionFilter || 
+        (household.subdivision && household.subdivision.toLowerCase().includes(subdivisionFilter.toLowerCase()))
+      
+      const result = matchesSearch && matchesHouseNumber && matchesStreetName && matchesSubdivision
+      
+      if (searchTerm === '042114014-0000-0001-0001') {
+        console.log(`Household ${household.code} filter result:`, {
+          searchFields,
+          matchesSearch,
+          matchesHouseNumber,
+          matchesStreetName,
+          matchesSubdivision,
+          result
+        })
+      }
+      
+      return result
+    })
+    
+    console.log('Filtered households count:', filtered.length)
+    setFilteredHouseholds(filtered)
+  }, [searchTerm, houseNumberFilter, streetNameFilter, subdivisionFilter, householdsWithHeads])
+
+  const formatHeadName = (household: Household & { headName?: string }) => {
+    return household.headName || 'No head assigned'
+  }
+
+  const formatAddress = (household: Household) => {
+    const parts = [household.house_number, household.street_name, household.subdivision].filter(Boolean)
+    return parts.length > 0 ? parts.join(', ') : 'No address'
+  }
+
+  if (loading) {
+    return (
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-sm text-gray-600">Loading households...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      {/* Search and Filters */}
+      <div className="p-4 border-b border-gray-200 space-y-4">
+        {/* Main Search */}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search by household code, house number, street name, subdivision, or head name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        
+        {/* Individual Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">House Number</label>
+            <input
+              type="text"
+              placeholder="Filter by house number..."
+              value={houseNumberFilter}
+              onChange={(e) => setHouseNumberFilter(e.target.value)}
+              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Street Name</label>
+            <input
+              type="text"
+              placeholder="Filter by street name..."
+              value={streetNameFilter}
+              onChange={(e) => setStreetNameFilter(e.target.value)}
+              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Subdivision</label>
+            <input
+              type="text"
+              placeholder="Filter by subdivision..."
+              value={subdivisionFilter}
+              onChange={(e) => setSubdivisionFilter(e.target.value)}
+              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+        
+        {/* Clear Filters */}
+        {(searchTerm || houseNumberFilter || streetNameFilter || subdivisionFilter) && (
+          <div className="flex justify-end">
+            <button
+              onClick={() => {
+                setSearchTerm('')
+                setHouseNumberFilter('')
+                setStreetNameFilter('')
+                setSubdivisionFilter('')
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Results Counter */}
+      <div className="px-4 py-2 bg-gray-50 text-sm text-gray-600">
+        Showing {filteredHouseholds.length} of {householdsWithHeads.length} households
+      </div>
+
+      {/* Household List */}
+      <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+        {filteredHouseholds.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-600">
+              {(searchTerm || houseNumberFilter || streetNameFilter || subdivisionFilter) 
+                ? 'No households match your search criteria' 
+                : 'No households found in the database'}
+            </p>
+            {!(searchTerm || houseNumberFilter || streetNameFilter || subdivisionFilter) && (
+              <div className="mt-4 space-y-2">
+                <p className="text-sm text-gray-500">
+                  Households are created automatically when you add residents.
+                </p>
+                <div className="flex justify-center space-x-4 mt-4">
+                  <a 
+                    href="/residents/create" 
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
+                  >
+                    Add Resident
+                  </a>
+                  <a 
+                    href="/debug-households" 
+                    className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm font-medium"
+                  >
+                    Debug Households
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          filteredHouseholds.map((household) => (
+            <div key={household.id || household.code} className="p-4 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center space-x-3">
+                    <div className="font-mono text-sm font-medium text-blue-600">
+                      #{household.code}
+                    </div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {formatHeadName(household)}
+                    </div>
+                  </div>
+                  <div className="mt-1 text-sm text-gray-500">
+                    {formatAddress(household)}
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <a
+                    href={`/rbi-form?household=${household.code}`}
+                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    Generate RBI Form
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )
 }
 
 function RBIFormContent() {
@@ -94,7 +405,7 @@ function RBIFormContent() {
             // Load available households for debugging
             const { data: allHouseholds } = await supabase
               .from('households')
-              .select('id, code, household_number')
+              .select('id, code, household_number, barangay_code, created_at')
               .limit(10)
             
             setAvailableHouseholds(allHouseholds || [])
@@ -268,45 +579,25 @@ function RBIFormContent() {
     )
   }
 
-  if (error || !household) {
+  // Show household selection interface if no household is specified or not found
+  if (!householdId || (error && !household)) {
     return (
       <DashboardLayout currentPage="reports">
-        <div className="flex items-center justify-center min-h-64">
-          <div className="text-center max-w-2xl">
-            <p className="text-red-600 mb-4">{error || 'Household not found'}</p>
-            <p className="text-sm text-gray-600 mb-4">
-              Try accessing this page with ?household=HOUSEHOLD_CODE parameter
-            </p>
-            
-            {availableHouseholds.length > 0 && (
-              <div className="mb-4">
-                <h3 className="text-lg font-medium mb-2">Available Household Codes:</h3>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  {availableHouseholds.map((h) => (
-                    <div key={h.id} className="mb-2">
-                      <a 
-                        href={`/rbi-form?household=${h.code}`}
-                        className="text-blue-600 hover:text-blue-800 underline font-mono text-sm"
-                      >
-                        {h.code}
-                      </a>
-                      {h.household_number && (
-                        <span className="text-gray-500 ml-2">({h.household_number})</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+        <div className="p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-3">RBI Form A</h1>
+              <h2 className="text-xl font-semibold mb-4">RECORD OF BARANGAY INHABITANTS BY HOUSEHOLD</h2>
+              <p className="text-gray-600">Select a household to generate the RBI form</p>
+            </div>
+
+            {error && householdId && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <p className="text-red-800">{error}</p>
               </div>
             )}
-            
-            <div className="mt-4">
-              <a 
-                href="/household" 
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
-              >
-                View All Households
-              </a>
-            </div>
+
+            <HouseholdSelector />
           </div>
         </div>
       </DashboardLayout>
