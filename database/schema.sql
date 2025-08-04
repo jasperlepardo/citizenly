@@ -1,15 +1,16 @@
 -- =====================================================
--- RBI SYSTEM - SUPABASE FREE TIER OPTIMIZED SCHEMA
+-- RBI SYSTEM - PRODUCTION DATABASE SCHEMA
 -- Records of Barangay Inhabitant System
--- Optimized for 500MB database limit and minimal API calls
+-- Updated to reflect current implementation state
 -- =====================================================
 
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- =====================================================
--- 1. ENUMS (Lightweight Data Validation)
+-- 1. ENUMS (Current Production Enums)
 -- =====================================================
 
 -- Personal Information Enums
@@ -106,41 +107,78 @@ CREATE TYPE ethnicity_enum AS ENUM (
 -- 2. REFERENCE DATA TABLES (PSGC & PSOC)
 -- =====================================================
 
--- PSGC Major Groups (code: "1", title: "Managers")
-CREATE TABLE psoc_major_groups (
+-- PSGC Tables (Geographic Codes) - Production Structure
+CREATE TABLE psgc_regions (
     code VARCHAR(10) PRIMARY KEY,
-    title VARCHAR(200) NOT NULL
+    name VARCHAR(200) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- PSGC Sub-Major Groups (code: "11", title: "Chief Executives, Senior Officials And Legislators", major_code: "1")
+CREATE TABLE psgc_provinces (
+    code VARCHAR(10) PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE psgc_cities_municipalities (
+    code VARCHAR(10) PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    type VARCHAR(50) NOT NULL,
+    is_independent BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE psgc_barangays (
+    code VARCHAR(10) PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    urban_rural_status VARCHAR(20),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- PSOC Major Groups (code: "1", title: "Managers")
+CREATE TABLE psoc_major_groups (
+    code VARCHAR(10) PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- PSOC Sub-Major Groups (code: "11", title: "Chief Executives, Senior Officials And Legislators", major_code: "1")
 CREATE TABLE psoc_sub_major_groups (
     code VARCHAR(10) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    major_code VARCHAR(10) NOT NULL REFERENCES psoc_major_groups(code)
+    major_code VARCHAR(10) NOT NULL REFERENCES psoc_major_groups(code),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- PSGC Minor Groups (code: "111", title: "Legislators And Senior Officials", sub_major_code: "11")
+-- PSOC Minor Groups (code: "111", title: "Legislators And Senior Officials", sub_major_code: "11")
 CREATE TABLE psoc_minor_groups (
     code VARCHAR(10) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    sub_major_code VARCHAR(10) NOT NULL REFERENCES psoc_sub_major_groups(code)
+    sub_major_code VARCHAR(10) NOT NULL REFERENCES psoc_sub_major_groups(code),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- PSGC Unit Groups (code: "1111", title: "Legislators", minor_code: "111")
+-- PSOC Unit Groups (code: "1111", title: "Legislators", minor_code: "111")
 CREATE TABLE psoc_unit_groups (
     code VARCHAR(10) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    minor_code VARCHAR(10) NOT NULL REFERENCES psoc_minor_groups(code)
+    minor_code VARCHAR(10) NOT NULL REFERENCES psoc_minor_groups(code),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- PSGC Unit Sub-Groups (code: "111102", title: "Congressman", unit_code: "1111")
+-- PSOC Unit Sub-Groups (code: "111102", title: "Congressman", unit_code: "1111")
 CREATE TABLE psoc_unit_sub_groups (
     code VARCHAR(10) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    unit_code VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code)
+    unit_code VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Position Titles (lightweight - store as JSONB)
+-- Position Titles (as used in production)
 CREATE TABLE psoc_position_titles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     unit_group_code VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code),
@@ -152,49 +190,23 @@ CREATE TABLE psoc_position_titles (
 CREATE TABLE psoc_cross_references (
     unit_code VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code),
     related_titles TEXT NOT NULL, -- Comma-separated for simple search
+    created_at TIMESTAMPTZ DEFAULT NOW(),
     PRIMARY KEY (unit_code)
 );
 
--- PSGC Tables (Geographic Codes)
-CREATE TABLE psgc_regions (
-    code VARCHAR(10) PRIMARY KEY,
-    name VARCHAR(200) NOT NULL
-);
-
-CREATE TABLE psgc_provinces (
-    code VARCHAR(10) PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
-    is_active BOOLEAN DEFAULT true
-);
-
-CREATE TABLE psgc_cities_municipalities (
-    code VARCHAR(10) PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    province_code VARCHAR(10) NOT NULL REFERENCES psgc_provinces(code),
-    type VARCHAR(50) NOT NULL,
-    is_independent BOOLEAN DEFAULT false
-);
-
-CREATE TABLE psgc_barangays (
-    code VARCHAR(10) PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
-    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
-    urban_rural_status VARCHAR(20)
-);
-
 -- =====================================================
--- 3. ACCESS CONTROL (Simplified)
+-- 3. ACCESS CONTROL (Production Structure)
 -- =====================================================
 
 -- Roles table
 CREATE TABLE roles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(50) UNIQUE NOT NULL,
-    permissions JSONB DEFAULT '{}'
+    permissions JSONB DEFAULT '{}',
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- User Profiles (extends Supabase auth.users)
+-- User Profiles (extends Supabase auth.users) - Production Structure
 CREATE TABLE user_profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email VARCHAR(255) NOT NULL,
@@ -203,17 +215,19 @@ CREATE TABLE user_profiles (
     role_id UUID NOT NULL REFERENCES roles(id),
     barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
     is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- =====================================================
--- 4. CORE ENTITIES (Simplified)
+-- 4. CORE ENTITIES (Production Structure)
 -- =====================================================
 
--- Households
+-- Households - Production Structure with hierarchical codes
 CREATE TABLE households (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    household_number VARCHAR(50) NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
+    household_number VARCHAR(50), -- Human-readable number
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     region_code VARCHAR(10) REFERENCES psgc_regions(code),
     province_code VARCHAR(10) REFERENCES psgc_provinces(code),
@@ -223,12 +237,13 @@ CREATE TABLE households (
     subdivision VARCHAR(100),
     zip_code VARCHAR(10),
     household_head_id UUID, -- Will reference residents(id) after table creation
+    total_members INTEGER DEFAULT 0,
     created_by UUID REFERENCES user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Residents (Core table - optimized columns only)
+-- Residents - Production Structure with all current fields
 CREATE TABLE residents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     
@@ -238,61 +253,77 @@ CREATE TABLE residents (
     last_name VARCHAR(100) NOT NULL,
     extension_name VARCHAR(20),
     birthdate DATE NOT NULL,
+    place_of_birth VARCHAR(200), -- Used in RBI forms
     sex sex_enum NOT NULL,
     civil_status civil_status_enum NOT NULL,
     citizenship citizenship_enum DEFAULT 'filipino',
     
     -- Education & Employment (Essential only)
-    education_level education_level_enum NOT NULL,
-    education_status education_status_enum NOT NULL,
+    education_level education_level_enum,
+    education_status education_status_enum,
     employment_status employment_status_enum DEFAULT 'not_in_labor_force',
     
-    -- Occupation (Simplified - store only final code)
+    -- Occupation (Production fields - simplified from PSOC hierarchy)
     psoc_code VARCHAR(10), -- Single field for any PSOC level
     psoc_level VARCHAR(20) CHECK (psoc_level IN ('major_group', 'sub_major_group', 'minor_group', 'unit_group', 'unit_sub_group')),
     occupation_title VARCHAR(200), -- Denormalized for performance
+    occupation VARCHAR(200), -- Additional occupation field used in forms
+    job_title VARCHAR(200), -- Job title field used in forms
+    workplace VARCHAR(255), -- Workplace information
+    occupation_details TEXT, -- Additional occupation details
     
     -- Contact (Essential)
-    mobile_number VARCHAR(20) NOT NULL,
+    mobile_number VARCHAR(20),
+    telephone_number VARCHAR(20), -- Used in production forms
     email VARCHAR(255),
     
-    -- Security
+    -- Security (PhilSys)
     philsys_card_number_hash BYTEA,
     philsys_last4 VARCHAR(4),
     
-    -- Health (Optional)
+    -- Physical Attributes (Production fields)
+    height DECIMAL(5,2), -- Height in cm
+    weight DECIMAL(5,2), -- Weight in kg
+    complexion VARCHAR(50), -- Complexion description
     blood_type blood_type_enum DEFAULT 'unknown',
     
     -- Demographics (Optional)
     ethnicity ethnicity_enum DEFAULT 'not_reported',
     religion religion_enum DEFAULT 'other',
     
-    -- Voting
-    is_voter BOOLEAN DEFAULT false,
-    is_resident_voter BOOLEAN DEFAULT false,
+    -- Voting (Production field names)
+    voter_registration_status BOOLEAN DEFAULT false, -- Used instead of is_voter
+    resident_voter_status BOOLEAN DEFAULT false, -- Used instead of is_resident_voter
+    voter_id_number VARCHAR(20), -- Voter ID number
+    last_voted_year VARCHAR(4), -- Last voted year
     
-    -- Sectoral Information (LGU Demographics)
-    is_labor_force BOOLEAN DEFAULT false, -- Auto-computed from employment_status
-    is_employed BOOLEAN DEFAULT false, -- Auto-computed from employment_status  
-    is_unemployed BOOLEAN DEFAULT false, -- Auto-computed from employment_status
+    -- Sectoral Information (LGU Demographics) - Production Implementation
+    is_labor_force BOOLEAN DEFAULT false, -- Should be auto-computed from employment_status
+    is_employed BOOLEAN DEFAULT false, -- Should be auto-computed from employment_status  
+    is_unemployed BOOLEAN DEFAULT false, -- Should be auto-computed from employment_status
     is_ofw BOOLEAN DEFAULT false, -- Overseas Filipino Worker
     is_pwd BOOLEAN DEFAULT false, -- Person with Disability
-    is_out_of_school_children BOOLEAN DEFAULT false, -- Ages 6-15 not in school
-    is_out_of_school_youth BOOLEAN DEFAULT false, -- Ages 16-24 not in school
+    is_out_of_school_children BOOLEAN DEFAULT false, -- Ages 6-15 not in school, should be auto-computed
+    is_out_of_school_youth BOOLEAN DEFAULT false, -- Ages 16-24 not in school, should be auto-computed
     is_senior_citizen BOOLEAN DEFAULT false, -- Age 60+, auto-computed
     is_registered_senior_citizen BOOLEAN DEFAULT false, -- Officially registered
     is_solo_parent BOOLEAN DEFAULT false,
     is_indigenous_people BOOLEAN DEFAULT false,
     is_migrant BOOLEAN DEFAULT false,
     
-    -- Location (Required)  
-    household_id UUID REFERENCES households(id),
+    -- Location (Required) - Production uses household_code reference
+    household_code VARCHAR(50) REFERENCES households(code), -- Primary household reference
+    household_id UUID REFERENCES households(id), -- Secondary UUID reference
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    region_code VARCHAR(10) REFERENCES psgc_regions(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
     
     -- Full-text search (lightweight - computed column)
     search_text TEXT GENERATED ALWAYS AS (
         LOWER(first_name || ' ' || COALESCE(middle_name, '') || ' ' || last_name || ' ' || 
-              COALESCE(occupation_title, '') || ' ' || COALESCE(mobile_number, ''))
+              COALESCE(occupation_title, '') || ' ' || COALESCE(mobile_number, '') || ' ' ||
+              COALESCE(occupation, '') || ' ' || COALESCE(job_title, ''))
     ) STORED,
     
     -- System Fields
@@ -307,7 +338,7 @@ ALTER TABLE households
 ADD CONSTRAINT fk_households_head 
 FOREIGN KEY (household_head_id) REFERENCES residents(id);
 
--- Family Relationships (Simplified)
+-- Family Relationships (As defined in current schema)
 CREATE TABLE resident_relationships (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
@@ -318,30 +349,28 @@ CREATE TABLE resident_relationships (
 );
 
 -- =====================================================
--- 5. MINIMAL INDEXING (Free Tier Optimized)
+-- 5. PRODUCTION VIEWS
 -- =====================================================
 
--- Essential indexes only (12 total - still free tier friendly)
-CREATE INDEX idx_residents_barangay ON residents(barangay_code);
-CREATE INDEX idx_residents_household ON residents(household_id);
-CREATE INDEX idx_residents_name ON residents(last_name, first_name);
-CREATE INDEX idx_residents_mobile ON residents(mobile_number);
-CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4);
-
--- Lightweight full-text search (using trigram instead of GIN)
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE INDEX idx_residents_search_text ON residents USING GIN(search_text gin_trgm_ops);
-
-CREATE INDEX idx_households_barangay ON households(barangay_code);
-CREATE INDEX idx_households_number ON households(household_number, barangay_code);
-
-CREATE INDEX idx_user_profiles_barangay ON user_profiles(barangay_code);
-CREATE INDEX idx_relationships_resident ON resident_relationships(resident_id);
-CREATE INDEX idx_relationships_related ON resident_relationships(related_resident_id);
-
--- =====================================================
--- 6. UNIFIED OCCUPATION SEARCH (Optimized for Free Tier)
--- =====================================================
+-- PSGC Address Hierarchy View (Used by production code)
+CREATE VIEW psgc_address_hierarchy AS
+SELECT 
+    r.code as region_code,
+    r.name as region_name,
+    p.code as province_code,
+    p.name as province_name,
+    c.code as city_municipality_code,
+    c.name as city_municipality_name,
+    c.type as city_municipality_type,
+    c.is_independent,
+    b.code as barangay_code,
+    b.name as barangay_name,
+    b.urban_rural_status,
+    CONCAT(b.name, ', ', c.name, ', ', COALESCE(p.name, ''), ', ', r.name) as full_address
+FROM psgc_barangays b
+JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+LEFT JOIN psgc_provinces p ON c.province_code = p.code
+JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code;
 
 -- Complete PSOC search with cross-references and position titles
 CREATE VIEW psoc_occupation_search AS
@@ -427,7 +456,33 @@ FROM psoc_major_groups mg
 ORDER BY hierarchy_level, occupation_title;
 
 -- =====================================================
--- 7. ROW LEVEL SECURITY (Essential Only)
+-- 6. PRODUCTION INDEXES (Optimized)
+-- =====================================================
+
+-- Essential indexes for production performance
+CREATE INDEX idx_residents_barangay ON residents(barangay_code);
+CREATE INDEX idx_residents_household_code ON residents(household_code);
+CREATE INDEX idx_residents_household_id ON residents(household_id);
+CREATE INDEX idx_residents_name ON residents(last_name, first_name);
+CREATE INDEX idx_residents_mobile ON residents(mobile_number);
+CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4);
+CREATE INDEX idx_residents_search_text ON residents USING GIN(search_text gin_trgm_ops);
+
+CREATE INDEX idx_households_barangay ON households(barangay_code);
+CREATE INDEX idx_households_code ON households(code);
+CREATE INDEX idx_households_number ON households(household_number, barangay_code);
+
+CREATE INDEX idx_user_profiles_barangay ON user_profiles(barangay_code);
+CREATE INDEX idx_relationships_resident ON resident_relationships(resident_id);
+CREATE INDEX idx_relationships_related ON resident_relationships(related_resident_id);
+
+-- PSGC indexes for address lookups
+CREATE INDEX idx_psgc_provinces_region ON psgc_provinces(region_code);
+CREATE INDEX idx_psgc_cities_province ON psgc_cities_municipalities(province_code);
+CREATE INDEX idx_psgc_barangays_city ON psgc_barangays(city_municipality_code);
+
+-- =====================================================
+-- 7. ROW LEVEL SECURITY (Production Policies)
 -- =====================================================
 
 -- Enable RLS
@@ -466,15 +521,94 @@ INSERT INTO roles (name, permissions) VALUES
 ('resident', '{"residents": "read_own"}');
 
 -- =====================================================
+-- 9. PRODUCTION FUNCTIONS (Auto-calculation triggers)
+-- =====================================================
+
+-- Update household member count
+CREATE OR REPLACE FUNCTION update_household_member_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE households 
+        SET total_members = (
+            SELECT COUNT(*) FROM residents 
+            WHERE household_code = NEW.household_code
+        )
+        WHERE code = NEW.household_code;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE households 
+        SET total_members = (
+            SELECT COUNT(*) FROM residents 
+            WHERE household_code = OLD.household_code
+        )
+        WHERE code = OLD.household_code;
+        RETURN OLD;
+    ELSIF TG_OP = 'UPDATE' THEN
+        -- Handle household changes
+        IF OLD.household_code != NEW.household_code THEN
+            UPDATE households 
+            SET total_members = (
+                SELECT COUNT(*) FROM residents 
+                WHERE household_code = OLD.household_code
+            )
+            WHERE code = OLD.household_code;
+
+            UPDATE households 
+            SET total_members = (
+                SELECT COUNT(*) FROM residents 
+                WHERE household_code = NEW.household_code
+            )
+            WHERE code = NEW.household_code;
+        END IF;
+        RETURN NEW;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger for household member count
+CREATE TRIGGER trigger_update_household_member_count
+    AFTER INSERT OR UPDATE OR DELETE
+    ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION update_household_member_count();
+
+-- Auto-calculate senior citizen status
+CREATE OR REPLACE FUNCTION update_sectoral_status()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Auto-calculate senior citizen status (age 60+)
+    NEW.is_senior_citizen = (EXTRACT(YEAR FROM AGE(NEW.birthdate)) >= 60);
+    
+    -- Auto-calculate labor force status based on employment
+    NEW.is_labor_force = (NEW.employment_status IN ('employed', 'unemployed', 'underemployed', 'self_employed', 'looking_for_work'));
+    NEW.is_employed = (NEW.employment_status IN ('employed', 'self_employed'));
+    NEW.is_unemployed = (NEW.employment_status = 'unemployed');
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger for sectoral status updates
+CREATE TRIGGER trigger_update_sectoral_status
+    BEFORE INSERT OR UPDATE
+    ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION update_sectoral_status();
+
+-- =====================================================
 -- SCHEMA COMMENTS
 -- =====================================================
 
-COMMENT ON SCHEMA public IS 'RBI System - Free Tier Optimized Schema v1.0 - <500MB';
-COMMENT ON TABLE residents IS 'Core resident profiles (simplified for free tier)';
-COMMENT ON TABLE households IS 'Household entities with basic addressing';
-COMMENT ON VIEW psoc_occupation_search IS 'Complete 5-level PSOC search in single field (free tier optimized)';
+COMMENT ON SCHEMA public IS 'RBI System - Production Database Schema - Updated August 2025';
+COMMENT ON TABLE residents IS 'Core resident profiles (production structure with all fields)';
+COMMENT ON TABLE households IS 'Household entities with hierarchical codes and complete addressing';
+COMMENT ON VIEW psoc_occupation_search IS 'Complete 5-level PSOC search in single field (production optimized)';
+COMMENT ON VIEW psgc_address_hierarchy IS 'Complete PSGC address hierarchy for dropdown and search components';
 
 -- =====================================================
--- ESTIMATED SIZE: ~300MB with 10K residents
--- API CALLS: Reduced by 60% vs full schema
+-- PRODUCTION READY: Matches current implementation
+-- Hierarchical household codes, complete field set,
+-- proper geographic relationships, auto-calculations
 -- =====================================================
