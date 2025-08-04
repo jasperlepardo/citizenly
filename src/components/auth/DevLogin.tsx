@@ -1,0 +1,237 @@
+'use client'
+
+import React, { useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface DevLoginProps {
+  onSuccess?: () => void
+}
+
+export default function DevLogin({ onSuccess }: DevLoginProps) {
+  const [isCreating, setIsCreating] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const createDemoUser = async (email: string, password: string, userData: any) => {
+    try {
+      setMessage(`Creating user: ${email}...`)
+      
+      // Try to sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: userData
+        }
+      })
+
+      if (authError) {
+        // If user already exists, try to sign in
+        if (authError.message.includes('already')) {
+          setMessage(`User exists, trying to sign in: ${email}...`)
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          })
+          
+          if (signInError) {
+            throw signInError
+          }
+          
+          setMessage(`✅ Signed in successfully: ${email}`)
+          return true
+        }
+        throw authError
+      }
+
+      setMessage(`✅ Created and signed in: ${email}`)
+      return true
+    } catch (error: any) {
+      setMessage(`❌ Error with ${email}: ${error.message}`)
+      return false
+    }
+  }
+
+  const setupDemoData = async () => {
+    setIsCreating(true)
+    setMessage('Setting up demo authentication...')
+
+    try {
+      // First, ensure we have the required data in the database
+      const barangayCode = await setupDatabaseData()
+
+      // Create Barangay Admin user with proper metadata
+      const adminSuccess = await createDemoUser(
+        'admin@gmail.com',
+        'password123',
+        {
+          first_name: 'Maria',
+          last_name: 'Santos',
+          mobile_number: '09123456789',
+          barangay_code: barangayCode
+        }
+      )
+
+      if (adminSuccess) {
+        // After creating the user, we need to approve their barangay account
+        setMessage('✅ Setting up admin permissions...')
+        
+        // Wait a moment for the user profile to be created
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        // Get the created user
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if (user) {
+          // Update user profile status to active
+          await supabase
+            .from('user_profiles')
+            .update({ status: 'active' })
+            .eq('email', 'admin@gmail.com')
+
+          // Update barangay account to active with admin role
+          await supabase
+            .from('barangay_accounts')
+            .update({ 
+              status: 'active',
+              role_id: '550e8400-e29b-41d4-a716-446655440002', // barangay_admin
+              approved_at: new Date().toISOString(),
+              approved_by: user.id
+            })
+            .eq('user_id', user.id)
+        }
+        
+        setMessage('✅ Admin account created and activated!')
+        
+        if (onSuccess) {
+          setTimeout(() => {
+            onSuccess()
+          }, 2000)
+        }
+      }
+
+    } catch (error: any) {
+      setMessage(`❌ Setup failed: ${error.message}`)
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const setupDatabaseData = async () => {
+    setMessage('Setting up database data...')
+    
+    try {
+      // Get a sample barangay code for the admin
+      const { data: barangayData, error: barangayError } = await supabase
+        .from('psgc_barangays')
+        .select('code')
+        .limit(1)
+        .single()
+
+      if (barangayError) {
+        console.error('Failed to get barangay:', barangayError)
+        throw new Error('Failed to get barangay data')
+      }
+
+      const barangayCode = barangayData.code
+
+      setMessage('✅ Database data ready')
+      return barangayCode
+    } catch (error: any) {
+      console.error('Database setup error:', error)
+      throw new Error(`Database setup failed: ${error.message}`)
+    }
+  }
+
+  const directLogin = async (email: string) => {
+    try {
+      setMessage(`Attempting login: ${email}...`)
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: 'password123',
+      })
+
+      if (error) {
+        throw error
+      }
+
+      setMessage(`✅ Logged in successfully: ${email}`)
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess()
+        }, 1000)
+      }
+    } catch (error: any) {
+      setMessage(`❌ Login failed: ${error.message}`)
+    }
+  }
+
+  return (
+    <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-2">
+          Development Setup
+        </h2>
+        <p className="text-gray-600 text-sm">
+          Create demo users for testing the RBI System
+        </p>
+      </div>
+
+      <div className="space-y-4">
+        {/* Setup Button */}
+        <button
+          onClick={setupDemoData}
+          disabled={isCreating}
+          className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isCreating ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Setting up...
+            </>
+          ) : (
+            'Create Demo Users & Login'
+          )}
+        </button>
+
+        {/* Quick Login Buttons */}
+        <div className="border-t pt-4">
+          <p className="text-xs text-gray-500 mb-2">If users already exist:</p>
+          <div className="space-y-2">
+            <button
+              onClick={() => directLogin('admin@gmail.com')}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Login as Barangay Admin
+            </button>
+            <button
+              onClick={() => directLogin('clerk@gmail.com')}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Login as Clerk
+            </button>
+          </div>
+        </div>
+
+        {/* Status Message */}
+        {message && (
+          <div className="p-3 bg-gray-50 rounded-md border">
+            <p className="text-sm text-gray-700 font-mono">{message}</p>
+          </div>
+        )}
+
+        {/* Instructions */}
+        <div className="text-xs text-gray-500 space-y-1">
+          <p><strong>Demo Credentials:</strong></p>
+          <p>Email: admin@gmail.com</p>
+          <p>Password: password123</p>
+          <p className="pt-2 text-red-600">
+            <strong>Note:</strong> This is for development only!
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}

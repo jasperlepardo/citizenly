@@ -1,0 +1,276 @@
+'use client'
+
+import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+
+const fileUploadVariants = cva(
+  "relative border-2 border-dashed rounded-lg transition-colors font-['Montserrat'] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2",
+  {
+    variants: {
+      variant: {
+        default: "border-[#d4d4d4] bg-white hover:border-[#a3a3a3] focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20",
+        error: "border-[#dc2626] bg-white hover:border-[#dc2626] focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20",
+        success: "border-[#059669] bg-white hover:border-[#059669] focus-within:border-[#059669] focus-within:ring-[#059669]/20",
+        disabled: "border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed"
+      },
+      size: {
+        sm: "p-4",
+        md: "p-6",
+        lg: "p-8"
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "md"
+    }
+  }
+)
+
+export interface FileUploadProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
+    VariantProps<typeof fileUploadVariants> {
+  label?: string
+  helperText?: string
+  errorMessage?: string
+  dragText?: string
+  browseText?: string
+  acceptedFileTypes?: string
+  maxFileSize?: number // in MB
+  onFileSelect?: (files: FileList | null) => void
+  showPreview?: boolean
+}
+
+const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
+  ({ 
+    className,
+    variant = "default",
+    size = "md",
+    label,
+    helperText,
+    errorMessage,
+    dragText = "Drag and drop your files here",
+    browseText = "or click here to browse",
+    acceptedFileTypes,
+    maxFileSize,
+    onFileSelect,
+    showPreview = false,
+    disabled,
+    multiple = false,
+    ...props 
+  }, ref) => {
+    const [isDragOver, setIsDragOver] = useState(false)
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+    const inputRef = useRef<HTMLInputElement>(null)
+    
+    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant
+
+    const handleDragOver = (e: React.DragEvent) => {
+      e.preventDefault()
+      if (!disabled) {
+        setIsDragOver(true)
+      }
+    }
+
+    const handleDragLeave = (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(false)
+    }
+
+    const handleDrop = (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragOver(false)
+      
+      if (disabled) return
+      
+      const files = e.dataTransfer.files
+      handleFileSelection(files)
+    }
+
+    const handleFileSelection = (files: FileList | null) => {
+      if (!files) return
+      
+      let validFiles = Array.from(files)
+      
+      // Filter by file size if maxFileSize is specified
+      if (maxFileSize) {
+        validFiles = validFiles.filter(file => file.size <= maxFileSize * 1024 * 1024)
+      }
+      
+      setSelectedFiles(multiple ? [...selectedFiles, ...validFiles] : validFiles)
+      onFileSelect?.(files)
+    }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      handleFileSelection(e.target.files)
+    }
+
+    const handleBrowseClick = () => {
+      if (!disabled) {
+        inputRef.current?.click()
+      }
+    }
+
+    const removeFile = (index: number) => {
+      const newFiles = selectedFiles.filter((_, i) => i !== index)
+      setSelectedFiles(newFiles)
+    }
+
+    const formatFileSize = (bytes: number) => {
+      if (bytes === 0) return '0 Bytes'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    }
+
+    return (
+      <div className="w-full">
+        {/* Label */}
+        {label && (
+          <label className="block text-sm font-medium text-[#262626] mb-2 font-['Montserrat']">
+            {label}
+          </label>
+        )}
+        
+        {/* Upload Area */}
+        <div
+          className={cn(
+            fileUploadVariants({ variant: actualVariant, size }),
+            isDragOver && !disabled && "border-[#2563eb] bg-[#dbeafe]",
+            className
+          )}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <input
+            ref={ref || inputRef}
+            type="file"
+            className="sr-only"
+            disabled={disabled}
+            multiple={multiple}
+            accept={acceptedFileTypes}
+            onChange={handleInputChange}
+            {...props}
+          />
+          
+          <div className="text-center">
+            {/* Upload Icon */}
+            <div className="mx-auto mb-4">
+              <svg 
+                className={cn(
+                  "mx-auto",
+                  size === 'sm' && "w-8 h-8",
+                  size === 'md' && "w-12 h-12", 
+                  size === 'lg' && "w-16 h-16",
+                  disabled ? "text-[#a3a3a3]" : "text-[#737373]"
+                )} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="1"
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14,2 14,8 20,8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10,9 9,9 8,9"></polyline>
+              </svg>
+            </div>
+            
+            {/* Text */}
+            <div className={cn(
+              "space-y-1",
+              size === 'sm' && "text-sm",
+              size === 'md' && "text-base",
+              size === 'lg' && "text-lg"
+            )}>
+              <p className={cn(
+                "font-['Montserrat']",
+                disabled ? "text-[#a3a3a3]" : "text-[#525252]"
+              )}>
+                {dragText}
+              </p>
+              <button
+                type="button"
+                onClick={handleBrowseClick}
+                disabled={disabled}
+                className={cn(
+                  "font-['Montserrat'] font-medium underline hover:no-underline transition-all",
+                  disabled ? "text-[#a3a3a3] cursor-not-allowed" : "text-[#2563eb] hover:text-[#1d4ed8]"
+                )}
+              >
+                {browseText}
+              </button>
+            </div>
+            
+            {/* File Type and Size Info */}
+            {(acceptedFileTypes || maxFileSize) && (
+              <div className="mt-2 text-xs text-[#737373] font-['Montserrat']">
+                {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
+                {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* File Preview */}
+        {showPreview && selectedFiles.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <h4 className="text-sm font-medium text-[#262626] font-['Montserrat']">
+              Selected Files:
+            </h4>
+            {selectedFiles.map((file, index) => (
+              <div key={index} className="flex items-center justify-between p-2 bg-[#fafafa] rounded border border-[#d4d4d4]">
+                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                  <svg className="w-4 h-4 text-[#737373] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14,2 14,8 20,8"></polyline>
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[#262626] font-['Montserrat'] truncate">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-[#737373] font-['Montserrat']">
+                      {formatFileSize(file.size)}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeFile(index)}
+                  className="ml-2 p-1 text-[#737373] hover:text-[#dc2626] transition-colors"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {/* Helper Text / Error Message */}
+        {(helperText || errorMessage) && (
+          <div className="mt-2">
+            {errorMessage ? (
+              <p className="text-xs text-[#b91c1c] font-['Montserrat']">
+                {errorMessage}
+              </p>
+            ) : (
+              <p className="text-xs text-[#737373] font-['Montserrat']">
+                {helperText}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+)
+
+FileUpload.displayName = "FileUpload"
+
+export { FileUpload, fileUploadVariants }
