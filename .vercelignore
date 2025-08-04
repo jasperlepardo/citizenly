@@ -1,0 +1,15 @@
+# Exclude Storybook files from Vercel deployment
+**/*.stories.*
+**/*.story.*
+.storybook/
+src/stories/
+
+# Exclude other development files
+*.sql
+*.md
+!README.md
+temp-*
+
+# Exclude test files  
+**/*.test.*
+**/*.spec.*
