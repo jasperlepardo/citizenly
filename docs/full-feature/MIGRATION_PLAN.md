@@ -211,7 +211,7 @@ LIMIT 5;
 SELECT 'psoc_occupation_search' as view_name, COUNT(*) as record_count 
 FROM psoc_occupation_search
 UNION ALL
-SELECT 'address_hierarchy', COUNT(*) FROM address_hierarchy
+SELECT 'address_hierarchy', COUNT(*) FROM psgc_address_hierarchy
 UNION ALL  
 SELECT 'households_complete', COUNT(*) FROM households_complete
 UNION ALL

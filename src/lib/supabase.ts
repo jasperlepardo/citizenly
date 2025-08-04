@@ -21,7 +21,27 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
   },
+  db: {
+    schema: 'public'
+  },
+  global: {
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }
+  }
 })
+
+// Force schema refresh function
+export const refreshSchema = async () => {
+  try {
+    // Force a schema refresh by making a simple query
+    const { error } = await supabase.rpc('version')
+    if (error) console.log('Schema refresh attempt:', error.message)
+  } catch (e) {
+    console.log('Schema refresh completed')
+  }
+}
 
 // Database types for better TypeScript support
 export type Database = {
@@ -113,9 +133,172 @@ export type Database = {
           created_at?: string
         }
       }
+      households: {
+        Row: {
+          code: string
+          barangay_code: string
+          region_code: string | null
+          province_code: string | null
+          city_municipality_code: string | null
+          street_name: string | null
+          house_number: string | null
+          subdivision: string | null
+          zip_code: string | null
+          household_head_id: string | null
+          total_members: number
+          created_by: string | null
+          created_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          code: string
+          barangay_code: string
+          region_code?: string | null
+          province_code?: string | null
+          city_municipality_code?: string | null
+          street_name?: string | null
+          house_number?: string | null
+          subdivision?: string | null
+          zip_code?: string | null
+          household_head_id?: string | null
+          total_members?: number
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+        Update: {
+          code?: string
+          barangay_code?: string
+          region_code?: string | null
+          province_code?: string | null
+          city_municipality_code?: string | null
+          street_name?: string | null
+          house_number?: string | null
+          subdivision?: string | null
+          zip_code?: string | null
+          household_head_id?: string | null
+          total_members?: number
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+      }
+      residents: {
+        Row: {
+          id: string
+          first_name: string
+          middle_name: string | null
+          last_name: string
+          extension_name: string | null
+          birthdate: string
+          sex: 'male' | 'female'
+          civil_status: string
+          citizenship: string
+          mobile_number: string
+          email: string | null
+          household_code: string | null
+          barangay_code: string
+          education_level: string
+          education_status: string
+          employment_status: string
+          psoc_code: string | null
+          psoc_level: string | null
+          occupation_title: string | null
+          occupation_details: string | null
+          blood_type: string
+          height: number | null
+          weight: number | null
+          complexion: string | null
+          ethnicity: string
+          religion: string
+          voter_registration_status: boolean
+          resident_voter_status: boolean
+          last_voted_year: string | null
+          philsys_card_number: string | null
+          telephone_number: string | null
+          workplace: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          first_name: string
+          middle_name?: string | null
+          last_name: string
+          extension_name?: string | null
+          birthdate: string
+          sex: 'male' | 'female'
+          civil_status: string
+          citizenship?: string
+          mobile_number: string
+          email?: string | null
+          household_code?: string | null
+          barangay_code: string
+          education_level: string
+          education_status: string
+          employment_status?: string
+          psoc_code?: string | null
+          psoc_level?: string | null
+          occupation_title?: string | null
+          occupation_details?: string | null
+          blood_type?: string
+          height?: number | null
+          weight?: number | null
+          complexion?: string | null
+          ethnicity: string
+          religion: string
+          voter_registration_status?: boolean
+          resident_voter_status?: boolean
+          last_voted_year?: string | null
+          philsys_card_number?: string | null
+          telephone_number?: string | null
+          workplace?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          first_name?: string
+          middle_name?: string | null
+          last_name?: string
+          extension_name?: string | null
+          birthdate?: string
+          sex?: 'male' | 'female'
+          civil_status?: string
+          citizenship?: string
+          mobile_number?: string
+          email?: string | null
+          household_code?: string | null
+          barangay_code?: string
+          education_level?: string
+          education_status?: string
+          employment_status?: string
+          psoc_code?: string | null
+          psoc_level?: string | null
+          occupation_title?: string | null
+          occupation_details?: string | null
+          blood_type?: string
+          height?: number | null
+          weight?: number | null
+          complexion?: string | null
+          ethnicity?: string
+          religion?: string
+          voter_registration_status?: boolean
+          resident_voter_status?: boolean
+          last_voted_year?: string | null
+          philsys_card_number?: string | null
+          telephone_number?: string | null
+          workplace?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string | null
+        }
+      }
     }
     Views: {
-      address_hierarchy: {
+      psgc_address_hierarchy: {
         Row: {
           region_code: string
           region_name: string

@@ -246,7 +246,7 @@ async function runTestQueries() {
     
     // Test complete PSGC hierarchy
     const { data: psgcTest, error: e3 } = await supabase
-      .from('address_hierarchy')
+      .from('psgc_address_hierarchy')
       .select('*')
       .limit(5);
     

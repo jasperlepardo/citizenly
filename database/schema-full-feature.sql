@@ -1388,7 +1388,7 @@ JOIN psoc_major_groups mg ON smg.major_code = mg.code
 ORDER BY hierarchy_level, occupation_title;
 
 -- Complete address hierarchy view for Settings management
-CREATE VIEW address_hierarchy AS
+CREATE VIEW psgc_address_hierarchy AS
 SELECT 
     r.code as region_code,
     r.name as region_name,
@@ -1588,7 +1588,7 @@ COMMENT ON SCHEMA public IS 'RBI System - Records of Barangay Inhabitant System 
 COMMENT ON TABLE residents IS 'Core resident profiles with comprehensive demographic data (LGU Form 10 compliant)';
 COMMENT ON TABLE households IS 'Household entities with address and composition management';
 COMMENT ON TABLE psoc_occupation_search IS 'Flattened PSOC hierarchy view for unified occupation search UI';
-COMMENT ON TABLE address_hierarchy IS 'Complete address hierarchy view for settings management';
+COMMENT ON VIEW psgc_address_hierarchy IS 'Complete address hierarchy view for settings management';
 
 -- Column comments for key fields
 COMMENT ON COLUMN residents.philsys_card_number_hash IS 'Hashed PhilSys card number for security (use crypt/hmac)';

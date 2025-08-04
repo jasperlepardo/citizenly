@@ -204,7 +204,7 @@ CREATE TABLE psgc_barangays (
 -- =====================================================
 
 -- Complete address hierarchy for dropdowns and validation
-CREATE VIEW address_hierarchy AS
+CREATE VIEW psgc_address_hierarchy AS
 SELECT 
     r.code as region_code,
     r.name as region_name,
@@ -738,7 +738,7 @@ COMMENT ON SCHEMA public IS 'RBI System - Production Schema v2.0 - Updated based
 COMMENT ON TABLE residents IS 'Core resident profiles with complete demographic and sectoral information';
 COMMENT ON TABLE households IS 'Household entities with complete addressing and member management';
 COMMENT ON TABLE psgc_cities_municipalities IS 'Cities/Municipalities with independence constraint for Metro Manila and HUCs';
-COMMENT ON VIEW address_hierarchy IS 'Complete address hierarchy for dropdowns and validation';
+COMMENT ON VIEW psgc_address_hierarchy IS 'Complete address hierarchy for dropdowns and validation';
 COMMENT ON VIEW psoc_occupation_search IS 'Unified occupation search across all PSOC levels with cross-references';
 COMMENT ON CONSTRAINT independence_rule ON psgc_cities_municipalities IS 'Ensures independent cities have no province, non-independent cities have provinces';
 

@@ -376,7 +376,7 @@ residents, households, household_members, resident_relationships
 barangay_dashboard_summaries, audit_logs
 
 -- Views for UI
-psoc_occupation_search, address_hierarchy, settings_management_summary
+psoc_occupation_search, psgc_address_hierarchy, settings_management_summary
 ```
 
 #### 6.2.2 Key Design Patterns

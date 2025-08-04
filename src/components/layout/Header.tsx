@@ -7,9 +7,35 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useAuth } from '@/contexts/AuthContext'
+import UserProfile from '@/components/auth/UserProfile'
+
+// Simple logout button component
+function LogoutButton() {
+  const { signOut } = useAuth()
+  
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      window.location.href = '/login'
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleLogout}
+      className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+    >
+      Logout
+    </button>
+  )
+}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user } = useAuth()
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -61,12 +87,19 @@ export default function Header() {
 
           {/* User Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="text-sm text-gray-600">
-              Barangay Official
-            </div>
-            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-gray-600">BO</span>
-            </div>
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <UserProfile compact={true} showBarangay={false} />
+                <LogoutButton />
+              </div>
+            ) : (
+              <Link 
+                href="/login"
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -122,6 +155,27 @@ export default function Header() {
             >
               Demo
             </Link>
+            
+            {/* Mobile User Menu */}
+            {user ? (
+              <div className="border-t border-gray-200 mt-2 pt-2">
+                <div className="px-3 py-2">
+                  <UserProfile compact={false} showBarangay={false} className="w-full" />
+                </div>
+                <div className="px-3 py-2">
+                  <LogoutButton />
+                </div>
+              </div>
+            ) : (
+              <div className="border-t border-gray-200 mt-2 pt-2">
+                <Link 
+                  href="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                >
+                  Sign In
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}

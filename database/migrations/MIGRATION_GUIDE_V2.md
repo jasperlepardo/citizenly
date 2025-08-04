@@ -218,7 +218,7 @@ ORDER BY name;
 
 -- Check address hierarchy integrity
 SELECT COUNT(*) as total_complete_addresses
-FROM address_hierarchy;
+FROM psgc_address_hierarchy;
 ```
 
 ### Performance Verification
@@ -229,7 +229,7 @@ WHERE occupation_title ILIKE '%congressman%'
 ORDER BY hierarchy_level;
 
 -- Test geographic search
-SELECT * FROM address_hierarchy 
+SELECT * FROM psgc_address_hierarchy 
 WHERE region_name = 'National Capital Region'
 LIMIT 10;
 ```
