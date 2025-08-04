@@ -1,7 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { isDevFeatureEnabled, getDevCredentials, getDemoUserConfig, logDevModeWarning, validateDevEnvironment } from '@/lib/dev-config'
 
 interface DevLoginProps {
   onSuccess?: () => void
@@ -10,6 +11,19 @@ interface DevLoginProps {
 export default function DevLogin({ onSuccess }: DevLoginProps) {
   const [isCreating, setIsCreating] = useState(false)
   const [message, setMessage] = useState('')
+  const [devModeAvailable, setDevModeAvailable] = useState(false)
+  const [configErrors, setConfigErrors] = useState<string[]>([])
+
+  useEffect(() => {
+    // Check if development features are properly configured
+    const validation = validateDevEnvironment()
+    setDevModeAvailable(isDevFeatureEnabled() && validation.isValid)
+    setConfigErrors(validation.errors)
+    
+    if (isDevFeatureEnabled()) {
+      logDevModeWarning()
+    }
+  }, [])
 
   const createDemoUser = async (email: string, password: string, userData: any) => {
     try {
@@ -59,14 +73,18 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
       // First, ensure we have the required data in the database
       const barangayCode = await setupDatabaseData()
 
+      // Get secure development credentials
+      const devCredentials = getDevCredentials()
+      const demoUserConfig = getDemoUserConfig()
+      
       // Create Barangay Admin user with proper metadata
       const adminSuccess = await createDemoUser(
-        'admin@gmail.com',
-        'password123',
+        devCredentials.email,
+        devCredentials.password,
         {
-          first_name: 'Maria',
-          last_name: 'Santos',
-          mobile_number: '09123456789',
+          first_name: demoUserConfig.first_name,
+          last_name: demoUserConfig.last_name,
+          mobile_number: demoUserConfig.mobile_number,
           barangay_code: barangayCode
         }
       )
@@ -86,7 +104,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
           await supabase
             .from('user_profiles')
             .update({ status: 'active' })
-            .eq('email', 'admin@gmail.com')
+            .eq('email', devCredentials.email)
 
           // Update barangay account to active with admin role
           await supabase
@@ -144,10 +162,17 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
   const directLogin = async (email: string) => {
     try {
+      if (!devModeAvailable) {
+        setMessage('❌ Development mode not properly configured')
+        return
+      }
+
+      const devCredentials = getDevCredentials()
+      
       setMessage(`Attempting login: ${email}...`)
       const { error } = await supabase.auth.signInWithPassword({
         email,
-        password: 'password123',
+        password: devCredentials.password,
       })
 
       if (error) {
@@ -201,8 +226,14 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
           <p className="text-xs text-gray-500 mb-2">If users already exist:</p>
           <div className="space-y-2">
             <button
-              onClick={() => directLogin('admin@gmail.com')}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+              onClick={() => {
+                if (devModeAvailable) {
+                  const devCredentials = getDevCredentials()
+                  directLogin(devCredentials.email)
+                }
+              }}
+              disabled={!devModeAvailable}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
               Login as Barangay Admin
             </button>
@@ -224,12 +255,27 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Instructions */}
         <div className="text-xs text-gray-500 space-y-1">
-          <p><strong>Demo Credentials:</strong></p>
-          <p>Email: admin@gmail.com</p>
-          <p>Password: password123</p>
-          <p className="pt-2 text-red-600">
-            <strong>Note:</strong> This is for development only!
-          </p>
+          {!devModeAvailable ? (
+            <div className="text-red-600">
+              <p><strong>Development Mode Not Available</strong></p>
+              {configErrors.map((error, index) => (
+                <p key={index}>• {error}</p>
+              ))}
+              <p className="pt-2">
+                Check your .env file configuration and ensure NODE_ENV=development
+              </p>
+            </div>
+          ) : (
+            <>
+              <p><strong>Development Mode Active</strong></p>
+              <p className="text-yellow-600">
+                <strong>⚠️ Warning:</strong> This should only be used in development!
+              </p>
+              <p>
+                Credentials are loaded from environment variables
+              </p>
+            </>
+          )}
         </div>
       </div>
     </div>

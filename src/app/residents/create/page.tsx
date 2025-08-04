@@ -9,6 +9,10 @@ import HouseholdSelector from '@/components/ui/HouseholdSelector'
 import { useUserBarangay } from '@/hooks/useUserBarangay'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import { hashPhilSysNumber, extractPhilSysLast4, validatePhilSysFormat, logSecurityOperation } from '@/lib/crypto'
+import { validateResidentData } from '@/lib/validation'
+import { useCSRFToken } from '@/lib/csrf'
+import { logger, dbLogger } from '@/lib/secure-logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,8 +74,11 @@ interface ResidentFormData {
 
 function CreateResidentForm() {
   const router = useRouter()
+  const { getToken: getCSRFToken } = useCSRFToken()
+  
   const [currentStep, setCurrentStep] = useState(1)
   const [errors, setErrors] = useState<Partial<Record<keyof ResidentFormData, string>>>({})
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [formData, setFormData] = useState<ResidentFormData>({
@@ -366,9 +373,57 @@ function CreateResidentForm() {
     setIsSubmitting(true)
     
     try {
+      // Server-side validation of all form data
+      const validationResult = await validateResidentData(formData)
+      if (!validationResult.success) {
+        const errorMap: Record<string, string> = {}
+        validationResult.errors?.forEach(error => {
+          errorMap[error.field] = error.message
+        })
+        setValidationErrors(errorMap)
+        alert('Please correct the validation errors and try again')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Clear any previous validation errors
+      setValidationErrors({})
+
+      // Validate PhilSys card number format if provided
+      if (formData.philsysCardNumber && !validatePhilSysFormat(formData.philsysCardNumber)) {
+        alert('Invalid PhilSys card number format. Please use format: 1234-5678-9012-3456')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Securely hash PhilSys card number if provided
+      let philsysHash = null
+      let philsysLast4 = null
+      
+      if (formData.philsysCardNumber) {
+        try {
+          philsysHash = await hashPhilSysNumber(formData.philsysCardNumber)
+          philsysLast4 = extractPhilSysLast4(formData.philsysCardNumber)
+          
+          // Log security operation for audit trail
+          logSecurityOperation('PHILSYS_HASH_CREATED', 'current-user', {
+            action: 'resident_creation',
+            philsys_last4: philsysLast4
+          })
+        } catch (error) {
+          console.error('PhilSys encryption error:', error)
+          alert('Error processing PhilSys card number. Please try again.')
+          setIsSubmitting(false)
+          return
+        }
+      }
+      
+      // Get CSRF token for secure form submission
+      const csrfToken = getCSRFToken()
+      
       // Convert form data to match database schema
       // Geographic hierarchy is auto-populated from user's barangay assignment
-      console.log('Creating resident with household assignment:', formData.householdCode)
+      logger.info('Creating resident with household assignment', { householdCode: formData.householdCode })
       
       const residentData = {
         first_name: formData.firstName,
@@ -387,9 +442,9 @@ function CreateResidentForm() {
         employment_status: (formData.employmentStatus as any) || 'not_in_labor_force',
         mobile_number: formData.mobileNumber,
         email: formData.email || null,
-        // For PhilSys card number - create a proper hash as BYTEA expects
-        philsys_card_number_hash: formData.philsysCardNumber ? new TextEncoder().encode(formData.philsysCardNumber) : null,
-        philsys_last4: formData.philsysCardNumber ? formData.philsysCardNumber.slice(-4) : null,
+        // Securely hashed PhilSys card number
+        philsys_card_number_hash: philsysHash,
+        philsys_last4: philsysLast4,
         // Physical information
         blood_type: (formData.bloodType as any) || 'unknown',
         ethnicity: (formData.ethnicity as any) || 'not_reported', 
@@ -410,32 +465,53 @@ function CreateResidentForm() {
         subdivision: null,
       }
 
+      // Log security operation before database insert
+      logSecurityOperation('RESIDENT_CREATE_ATTEMPT', 'current-user', {
+        action: 'resident_creation',
+        has_philsys: !!formData.philsysCardNumber,
+        household_code: formData.householdCode,
+        barangay_code: barangayCode,
+        csrf_token_used: !!csrfToken
+      })
+
       const { data, error } = await supabase
         .from('residents')
         .insert([residentData])
         .select()
 
       if (error) {
-        console.error('Error creating resident:', error)
+        // Log failed creation attempt
+        logSecurityOperation('RESIDENT_CREATE_FAILED', 'current-user', {
+          error_message: error.message,
+          error_code: error.code
+        })
+        dbLogger.error('Failed to create resident', { error: error.message, code: error.code })
         alert(`Failed to create resident: ${error.message}`)
         return
       }
 
-      console.log('Resident created successfully:', data)
+      // Log successful creation
+      logSecurityOperation('RESIDENT_CREATED', 'current-user', {
+        resident_id: data[0]?.id,
+        household_code: formData.householdCode,
+        is_household_head: formData.householdRole === 'Head'
+      })
+
+      dbLogger.info('Resident created successfully', { recordId: data[0]?.id, householdCode: formData.householdCode })
       
       // If this resident is assigned as household head, update the household
       if (formData.householdRole === 'Head' && formData.householdCode && data?.[0]?.id) {
-        console.log('Updating household head assignment...')
+        logger.info('Updating household head assignment')
         const { error: householdUpdateError } = await supabase
           .from('households')
           .update({ household_head_id: data[0].id })
           .eq('code', formData.householdCode)
         
         if (householdUpdateError) {
-          console.error('Error updating household head:', householdUpdateError)
+          dbLogger.error('Error updating household head', { error: householdUpdateError.message })
           alert(`Resident created but failed to assign as household head: ${householdUpdateError.message}`)
         } else {
-          console.log('Household head updated successfully')
+          dbLogger.info('Household head updated successfully', { householdCode: formData.householdCode, headId: data[0].id })
         }
       }
       
@@ -445,7 +521,7 @@ function CreateResidentForm() {
       router.push('/residents')
       
     } catch (error) {
-      console.error('Unexpected error:', error)
+      logger.error('Unexpected error during resident creation', error)
       alert('An unexpected error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)

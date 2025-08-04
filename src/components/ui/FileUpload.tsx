@@ -3,6 +3,7 @@
 import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
+import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security'
 
 const fileUploadVariants = cva(
   "relative border-2 border-dashed rounded-lg transition-colors font-['Montserrat'] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2",
@@ -87,18 +88,72 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       handleFileSelection(files)
     }
 
-    const handleFileSelection = (files: FileList | null) => {
+    const handleFileSelection = async (files: FileList | null) => {
       if (!files) return
       
-      let validFiles = Array.from(files)
+      const fileArray = Array.from(files)
+      const validFiles: File[] = []
+      const errors: string[] = []
       
-      // Filter by file size if maxFileSize is specified
-      if (maxFileSize) {
-        validFiles = validFiles.filter(file => file.size <= maxFileSize * 1024 * 1024)
+      // Validate each file
+      for (const file of fileArray) {
+        try {
+          // Security validation
+          const validation = await validateUploadedFile(file)
+          
+          if (!validation.isValid) {
+            errors.push(`${file.name}: ${validation.errors.join(', ')}`)
+            logFileOperation('upload', file.name, 'current-user', 'blocked', {
+              errors: validation.errors,
+              fileSize: file.size,
+              fileType: file.type
+            })
+            continue
+          }
+          
+          // Virus scanning
+          const virusScan = await scanFileForViruses(file)
+          if (!virusScan.clean) {
+            errors.push(`${file.name}: Security threat detected - ${virusScan.threats.join(', ')}`)
+            logFileOperation('upload', file.name, 'current-user', 'blocked', {
+              threats: virusScan.threats
+            })
+            continue
+          }
+          
+          // Additional size check if maxFileSize is specified
+          if (maxFileSize && file.size > maxFileSize * 1024 * 1024) {
+            errors.push(`${file.name}: File size exceeds maximum allowed (${maxFileSize}MB)`)
+            continue
+          }
+          
+          validFiles.push(file)
+          logFileOperation('upload', file.name, 'current-user', 'success', {
+            fileSize: file.size,
+            fileType: file.type,
+            fileHash: validation.fileInfo?.hash
+          })
+          
+        } catch (error) {
+          errors.push(`${file.name}: Validation error occurred`)
+          logFileOperation('upload', file.name, 'current-user', 'failure', {
+            error: String(error)
+          })
+        }
       }
       
-      setSelectedFiles(multiple ? [...selectedFiles, ...validFiles] : validFiles)
-      onFileSelect?.(files)
+      // Show errors if any
+      if (errors.length > 0) {
+        console.error('[FILE_UPLOAD] Validation errors:', errors)
+        // You might want to show these errors in the UI
+        alert('File validation errors:\n' + errors.join('\n'))
+      }
+      
+      // Only proceed with valid files
+      if (validFiles.length > 0) {
+        setSelectedFiles(multiple ? [...selectedFiles, ...validFiles] : validFiles)
+        onFileSelect?.(files)
+      }
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
