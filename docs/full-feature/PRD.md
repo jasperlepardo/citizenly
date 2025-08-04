@@ -115,6 +115,26 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - **Health Demographics**: Blood type distribution, BMI analysis
 - **Address Distribution**: Population density by street, subdivision, and geographic hierarchy
 
+#### 4.1.4 Advanced Reporting System
+**Report Categories**
+- **Demographics Report**: Comprehensive population analysis with age distribution, gender ratios, and demographic trends
+- **Geographic Distribution**: Population mapping by address components (street, subdivision, household distribution)
+- **Registration Trends**: New resident registration patterns, growth metrics, and seasonal analysis
+- **System Analytics**: User activity tracking, data quality metrics, and system performance indicators
+
+**Interactive Features**
+- **Dynamic Charts**: Interactive visualizations with drill-down capabilities
+- **Export Options**: PDF, Excel, and CSV export for all reports
+- **Scheduled Reports**: Automated report generation and delivery
+- **Real-time Insights**: Live data updates with key performance indicators
+- **Comparative Analysis**: Period-over-period comparisons and trend analysis
+
+**Report Filtering & Customization**
+- **Date Range Selection**: Custom time periods for trend analysis
+- **Geographic Filtering**: Filter by street, subdivision, or address components
+- **Demographic Filters**: Age groups, gender, civil status, employment status
+- **Export Scheduling**: Daily, weekly, monthly automated report delivery
+
 ### 4.2 Residents Module
 
 #### 4.2.1 Profile Management
@@ -226,9 +246,79 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - Household composition patterns
 - Address distribution mapping
 
-### 4.4 Settings Module
+### 4.4 RBI Form Generation Module
 
-#### 4.4.1 User Management
+#### 4.4.1 Official Form A Generation
+**Form Generation Features**
+- **RBI Form A Creation**: Generate official Records of Barangay Inhabitants Form A with government-compliant formatting
+- **Household Selection Interface**: Advanced search and filtering system for household selection
+- **Real-time Data Population**: Automatic form population from resident and household database records
+- **Print-Optimized Layout**: Landscape A4 format with proper typography and spacing for official documents
+
+**Search & Selection Capabilities**
+- **Multi-criteria Search**: Search by household code, house number, street name, subdivision, or household head name
+- **Advanced Filtering**: Filter households by address components and membership criteria
+- **Real-time Results**: Instant search results with pagination and result counters
+- **Household Preview**: Display household composition before form generation
+
+**Form Output Features**
+- **Official Formatting**: Government-standard layout with proper headers, sections, and signature areas
+- **PSGC-Compliant Addresses**: Complete geographic hierarchy display (Region → Province → City/Municipality → Barangay)
+- **Signature Sections**: Designated areas for household head, barangay secretary, and punong barangay signatures
+- **Print Integration**: Browser-native print functionality with optimized CSS print styles
+
+#### 4.4.2 Document Management
+**Form Workflow**
+- **Household Selection**: Multi-step process for accurate household identification
+- **Form Preview**: Review generated form before printing
+- **Print Management**: Direct browser printing with proper page formatting
+- **Form Tracking**: Track which households have generated forms (future enhancement)
+
+### 4.5 Barangay Service Modules
+
+#### 4.5.1 Business Registration Module
+**Business Permit Management**
+- **Business Registration Tracking**: Monitor business permit applications and renewals
+- **Tax Record Management**: Track business tax compliance and payments
+- **Business Analytics**: Dashboard showing registration trends and business demographics
+- **Permit Status Workflow**: Track applications from submission to approval
+
+**Business Information Management**
+- **Business Profile Creation**: Comprehensive business information capture
+- **Owner Information**: Link business records to resident profiles
+- **Location Tracking**: Geographic distribution of businesses within barangay
+- **Renewal Management**: Automated tracking of permit expiration dates
+
+#### 4.5.2 Judiciary Services Module
+**Barangay Justice Administration**
+- **Case Management System**: Track mediation cases and legal proceedings
+- **Mediation Services**: Record dispute resolution sessions and outcomes
+- **Legal Records Management**: Maintain official records of barangay justice proceedings
+- **Case Status Tracking**: Monitor case progress from filing to resolution
+
+**Justice Analytics**
+- **Case Type Distribution**: Analytics on types of cases handled
+- **Resolution Rates**: Track success rates of mediation services
+- **Monthly Reporting**: Generate periodic justice administration reports
+
+#### 4.5.3 Certification Services Module
+**Certificate Types Supported**
+- **Barangay Certificate**: General barangay certification for residents
+- **Certificate of Residency**: Official proof of barangay residence
+- **Barangay Clearance**: Character clearance for employment or legal purposes
+- **Certificate of Indigency**: Economic status certification for social services
+- **Business Permit Certificate**: Business-related certifications
+- **Good Moral Certificate**: Character reference certifications
+
+**Certificate Management Workflow**
+- **Request Processing**: Digital certificate request system with status tracking
+- **Workflow States**: Pending → Processing → Ready for Release workflow
+- **Request Tracking**: Monitor certificate requests from submission to completion
+- **Certificate History**: Maintain records of issued certificates per resident
+
+### 4.7 Settings Module
+
+#### 4.7.1 User Management
 **User Accounts**
 - Create user profiles with role assignment
 - Jurisdiction scoping (barangay-level access control)
@@ -241,11 +331,20 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - Audit trail for role changes
 - Bulk user operations
 
-#### 4.4.2 Geographic Configuration
-**PSGC Hierarchy Management (Read-Only)**
-- Region, Province, City/Municipality, Barangay data (official PSA source)
-- Hierarchy validation and consistency checks
-- Reference data updates and synchronization
+#### 4.7.2 Enhanced Geographic Configuration
+**Advanced PSGC Hierarchy Management**
+- **Complete Geographic Coverage**: All 38,372+ barangays across the Philippines with official PSA data
+- **Real-time Address Search**: Instant search across complete Philippine geographic hierarchy
+- **Cascading Address Selection**: Dynamic dropdown system for Region → Province → City/Municipality → Barangay selection
+- **Independence City Support**: Proper handling of independent cities with direct provincial relationships
+- **Address Validation**: Real-time validation of PSGC codes and geographic hierarchy consistency
+
+**Enhanced Address Management Features**
+- **Geographic Code Derivation**: Automatic PSGC code generation from address selections
+- **Address Hierarchy Visualization**: Complete address structure display with geographic context
+- **Multi-level Search**: Search by region name, province name, city name, or barangay name
+- **Geographic Information Display**: Detailed region, province, city, and barangay information panels
+- **Address Auto-completion**: Smart address suggestions during data entry
 
 **Local Address Management (Barangay Admin)**
 - **Subdivision Management**: Create/edit Zones, Sitios, Puroks within barangay
@@ -256,7 +355,12 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - **Bulk Operations**: Import/export address data, mass updates
 - **Validation Rules**: Ensure address completeness and consistency
 
-#### 4.4.3 System Configuration
+**Geographic Demo & Testing**
+- **Address Demo Page**: Comprehensive testing environment for all PSGC features
+- **Geographic Data Integrity**: Real-time validation of address relationships
+- **Performance Testing**: Load testing for large-scale geographic data operations
+
+#### 4.7.3 System Configuration
 **Notification Settings**
 - Push notification templates
 - Email notification preferences
@@ -269,7 +373,7 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - Backup and recovery settings
 - System maintenance schedules
 
-#### 4.4.4 Reference Data Management
+#### 4.7.4 Reference Data Management
 **PSOC Occupation Codes (Read-Only)**
 - Official PSA hierarchical occupation classification (Major → Sub-Major → Minor → Unit → Unit Sub-Groups)
 - Position titles and job names under unit groups
@@ -284,16 +388,16 @@ Build a modern, mobile-first Progressive Web App (PWA) for barangay officials to
 - Automatic dropdown population and validation
 - Multi-language display support (future)
 
-### 4.5 Family Relationships Module
+### 4.8 Family Relationships Module
 
-#### 4.5.1 Relationship Types
+#### 4.8.1 Relationship Types
 - **Spouse**: Bidirectional relationship with automatic reciprocity
 - **Parent/Child**: Hierarchical relationships with age validation
 - **Sibling**: Peer relationships within households
 - **Guardian/Ward**: Legal guardian relationships
 - **Other**: Custom relationship types with descriptions
 
-#### 4.5.2 Relationship Management
+#### 4.8.2 Relationship Management
 - **Create Relationships**: Link residents with relationship types
 - **Validate Relationships**: Age-appropriate and logical consistency
 - **Relationship History**: Track changes over time
@@ -398,6 +502,49 @@ psoc_occupation_search, psgc_address_hierarchy, settings_management_summary
 - **Role-Based Access Control**: Granular permissions by user role
 - **API Rate Limiting**: Protection against abuse and DoS attacks
 
+### 6.4 UI Component Architecture
+
+#### 6.4.1 Storybook Design System Integration
+**Component Library Structure**
+- **Atomic Design Pattern**: Atoms (Button, Input) → Molecules (SearchBox, FormField) → Organisms (DataTable, FormGroup)
+- **TypeScript Integration**: Fully typed component interfaces with prop validation
+- **Tailwind CSS Standardization**: Consistent styling with design token system
+- **Accessibility First**: WCAG 2.1 AA compliant components with proper ARIA attributes
+
+**Specialized Components**
+- **PSOCSelector**: Advanced occupation search with 5-level PSOC hierarchy navigation
+- **AddressSelector/AddressSearch**: Cascading PSGC-compliant geographic selection
+- **HouseholdSelector**: Advanced household search with multi-criteria filtering
+- **CreateHouseholdModal**: PSGC-integrated household creation workflow
+- **PopulationPyramid**: Interactive demographic data visualization
+- **FileUpload**: Drag-and-drop file upload with validation and preview
+
+#### 6.4.2 Enhanced Form Components
+**Advanced Input Components**
+- **Smart Validation**: Real-time validation with user-friendly error messages
+- **Progressive Enhancement**: Graceful degradation for accessibility
+- **Mobile Optimization**: Touch-friendly interfaces with proper input types
+- **Data Integration**: Direct integration with Supabase for real-time data
+
+**Form Workflow Components**
+- **Multi-step Forms**: Wizard-style form progression with state management
+- **Conditional Fields**: Dynamic form sections based on user selections
+- **Auto-save Capability**: Draft saving for long forms with recovery options
+- **Validation Feedback**: Inline validation with clear error messaging
+
+#### 6.4.3 Print & Export System
+**Document Generation Features**
+- **Print-Optimized Layouts**: CSS print styles with proper page breaks and margins
+- **Multi-format Support**: Landscape and portrait orientation support
+- **Official Document Formatting**: Government-compliant form layouts and typography
+- **Export Integration**: PDF generation and Excel export capabilities
+
+**Print Management**
+- **Browser-native Printing**: Optimized print dialogs with preview functionality
+- **Print Preview**: Real-time preview of generated documents before printing
+- **Batch Printing**: Multiple document generation and printing workflows
+- **Print History**: Track printed documents for audit purposes
+
 ---
 
 ## 7. User Experience Design
@@ -429,13 +576,46 @@ psoc_occupation_search, psgc_address_hierarchy, settings_management_summary
 6. Review household composition
 7. Save and generate household profile
 
-#### 7.2.3 Dashboard Analytics Review
+#### 7.2.3 RBI Form Generation
+1. Navigate to RBI Form → Form A Generation
+2. Use advanced household search interface
+3. Filter by household code, address, or head name
+4. Select target household from results
+5. Review household composition and data
+6. Generate print-ready official form
+7. Print or save generated RBI Form A
+
+#### 7.2.4 Certificate Request Processing
+1. Navigate to Certification → Certificate Type
+2. Search and select resident for certification
+3. Select certificate type (Barangay Certificate, Residency, Clearance, Indigency, etc.)
+4. Review resident information and eligibility
+5. Process certificate request (Pending → Processing → Ready)
+6. Generate and print certificate
+7. Update request status and maintain records
+
+#### 7.2.5 Dashboard Analytics Review
 1. Login and view dashboard overview
-2. Review population statistics
-3. Analyze demographic trends
-4. Export reports as needed
-5. Drill down into specific segments
-6. Schedule automated reports
+2. Review population statistics and demographics
+3. Access advanced reporting system
+4. Generate reports (Demographics, Geographic, Registration Trends, System Analytics)
+5. Export reports in multiple formats (PDF, Excel, CSV)
+6. Schedule automated report delivery
+
+#### 7.2.6 Enhanced Navigation Workflow
+**Primary Navigation Structure**
+- **Dashboard**: Population overview with real-time statistics
+- **Residents**: Complete resident management with advanced search
+- **Households**: Household composition and address management
+- **Business**: Business registration and permit tracking
+- **Judiciary**: Case management and mediation services
+- **Certification**: Multi-type certificate generation and tracking
+- **Reports**: Advanced analytics with export capabilities
+
+**Sub-navigation Features**
+- **Reports → RBI Form A**: Direct access to official form generation
+- **Settings**: User management, geographic configuration, system settings
+- **Demo Access**: Address demo and component testing (development)
 
 ### 7.3 Responsive Design Strategy
 - **Mobile (320-768px)**: Single column, touch-optimized, collapsed navigation
@@ -475,6 +655,46 @@ psoc_occupation_search, psgc_address_hierarchy, settings_management_summary
 - **Security Tests**: All authentication and authorization flows
 - **Mobile Testing**: All major mobile browsers and devices
 
+### 9.3 Developer Tools & Testing Infrastructure
+
+#### 9.3.1 Storybook Design System
+**Component Documentation Platform**
+- **Interactive Component Library**: Complete UI component catalog with live examples
+- **Design System Standardization**: Consistent component behavior and styling documentation
+- **Component Testing**: Interactive testing environment for all UI components
+- **Documentation Generation**: Automated component API documentation
+- **Visual Testing**: Component visual regression testing capabilities
+
+**Storybook Features**
+- **Component Stories**: Individual component usage examples and variations
+- **Control Panel**: Interactive component property testing
+- **Accessibility Testing**: Built-in a11y compliance checking
+- **Responsive Testing**: Multi-device component preview
+- **Design Token Integration**: Consistent spacing, colors, and typography
+
+#### 9.3.2 Demo & Testing Pages
+**Development Testing Environment**
+- **Address Demo Page**: Comprehensive PSGC geographic component testing across 38,372+ barangays
+- **UI Component Demos**: Button, input, and form component testing pages
+- **Authentication Debugging**: Developer authentication flow testing and debugging
+- **Database Testing**: Connection testing and data integrity verification
+- **Household Data Debugging**: Specialized testing for household management features
+
+**Testing Capabilities**
+- **Real-time Component Testing**: Live component behavior verification
+- **Data Validation Testing**: Form validation and business logic testing
+- **Geographic Data Testing**: Complete Philippine address hierarchy testing
+- **Responsive Design Testing**: Multi-device layout and functionality testing
+- **Error Handling Testing**: Error state and edge case scenario testing
+
+#### 9.3.3 Development Workflow Tools
+**Developer Experience Features**
+- **Hot Reload Testing**: Real-time component and page updates
+- **Error Boundary Testing**: Comprehensive error handling and recovery testing
+- **Performance Monitoring**: Component rendering and API response time monitoring
+- **Accessibility Testing**: Screen reader compatibility and keyboard navigation testing
+- **Cross-browser Testing**: Multi-browser compatibility verification
+
 ---
 
 ## 10. Deployment & Operations
@@ -496,12 +716,39 @@ psoc_occupation_search, psgc_address_hierarchy, settings_management_summary
 ## 11. Success Criteria & KPIs
 
 ### 11.1 Launch Criteria
-- [ ] All core CRUD operations functional
-- [ ] Mobile responsive design complete
+**Core Functionality**
+- [x] ✅ All core CRUD operations functional (Residents, Households)
+- [x] ✅ Mobile responsive design complete
+- [x] ✅ Advanced search and filtering capabilities
+- [x] ✅ Role-based access control implementation
+- [x] ✅ PSGC-compliant address management (38,372+ barangays)
+
+**Government Form Compliance**
+- [x] ✅ RBI Form A generation with official formatting
+- [x] ✅ Print-optimized layouts for government documents
+- [x] ✅ PSOC occupation integration (5-level hierarchy)
+- [x] ✅ Household selection interface with advanced filtering
+
+**Service Modules**
+- [x] ✅ Certification services (6 certificate types)
+- [x] ✅ Business registration tracking framework
+- [x] ✅ Judiciary case management framework
+- [x] ✅ Advanced reporting system (4 report categories)
+
+**Technical Requirements**
+- [x] ✅ Storybook design system implementation
+- [x] ✅ Comprehensive UI component library (50+ components)
+- [x] ✅ Developer testing infrastructure
 - [ ] Security audit passed
 - [ ] Performance benchmarks met
 - [ ] User acceptance testing completed
 - [ ] Documentation and training materials ready
+
+**Enhanced Features (Beyond Original Scope)**
+- [x] ✅ Real-time address search across complete Philippine geography
+- [x] ✅ Interactive demographic visualizations
+- [x] ✅ Export capabilities (PDF, Excel, CSV)
+- [x] ✅ Advanced household management with composition tracking
 
 ### 11.2 Post-Launch KPIs
 - **Adoption**: 90% of target users actively using system within 3 months
