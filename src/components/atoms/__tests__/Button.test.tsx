@@ -19,8 +19,8 @@ describe('Button Component', () => {
       render(<Button>Default Button</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#2563eb]'); // primary variant
-      expect(button).toHaveClass('h-9'); // md size
+      expect(button).toHaveClass('bg-blue-600'); // primary variant
+      expect(button).toHaveClass('px-2'); // regular size
     });
 
     it('applies custom className', () => {
@@ -36,7 +36,7 @@ describe('Button Component', () => {
       render(<Button variant="primary">Primary</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#2563eb]');
+      expect(button).toHaveClass('bg-blue-600');
       expect(button).toHaveClass('text-white');
     });
 
@@ -44,7 +44,7 @@ describe('Button Component', () => {
       render(<Button variant="secondary">Secondary</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#7c3aed]');
+      expect(button).toHaveClass('bg-purple-600');
       expect(button).toHaveClass('text-white');
     });
 
@@ -52,7 +52,7 @@ describe('Button Component', () => {
       render(<Button variant="success">Success</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#059669]');
+      expect(button).toHaveClass('bg-green-600');
       expect(button).toHaveClass('text-white');
     });
 
@@ -60,7 +60,7 @@ describe('Button Component', () => {
       render(<Button variant="warning">Warning</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#ea580c]');
+      expect(button).toHaveClass('bg-orange-600');
       expect(button).toHaveClass('text-white');
     });
 
@@ -68,7 +68,7 @@ describe('Button Component', () => {
       render(<Button variant="danger">Danger</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[#dc2626]');
+      expect(button).toHaveClass('bg-red-600');
       expect(button).toHaveClass('text-white');
     });
 
@@ -77,15 +77,15 @@ describe('Button Component', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('border');
-      expect(button).toHaveClass('border-[#2563eb]');
-      expect(button).toHaveClass('bg-white');
+      expect(button).toHaveClass('border-blue-600');
+      expect(button).toHaveClass('bg-surface');
     });
 
     it('renders ghost variant correctly', () => {
       render(<Button variant="ghost">Ghost</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('text-[#404040]');
+      expect(button).toHaveClass('text-secondary');
       expect(button).not.toHaveClass('bg-');
     });
   });
@@ -146,7 +146,7 @@ describe('Button Component', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('aspect-square');
-      expect(button).toHaveClass('p-0');
+      expect(button).toHaveClass('p-2');
       expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
 
@@ -208,7 +208,7 @@ describe('Button Component', () => {
 
       const button = screen.getByRole('button');
       expect(button).toBeDisabled();
-      expect(button).toHaveClass('disabled:opacity-50');
+      expect(button).toHaveClass('disabled:bg-background-muted');
       expect(button).toHaveClass('disabled:pointer-events-none');
     });
 
@@ -342,7 +342,7 @@ describe('Button Component', () => {
       render(<Button>Design System Font</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass("font-['Montserrat']");
+      expect(button).toHaveClass('font-system');
     });
 
     it('uses consistent transition timing', () => {
@@ -356,7 +356,7 @@ describe('Button Component', () => {
       render(<Button variant="primary">Focus Ring Test</Button>);
 
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('focus-visible:ring-[#2563eb]');
+      expect(button).toHaveClass('focus-visible:ring-blue-600');
     });
   });
 });
