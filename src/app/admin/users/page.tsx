@@ -25,6 +25,113 @@ interface UserRequest {
   role_name?: string;
 }
 
+interface UserCardProps {
+  user: UserRequest;
+  showActions?: boolean;
+  actionLoading: string | null;
+  onApprove: (userId: string, userEmail: string) => void;
+  onReject: (userId: string, userEmail: string) => void;
+  onSuspend: (userId: string, userEmail: string) => void;
+}
+
+function UserCard({
+  user,
+  showActions = true,
+  actionLoading,
+  onApprove,
+  onReject,
+  onSuspend,
+}: Readonly<UserCardProps>) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    if (status === 'active') return 'bg-green-100 text-green-800';
+    if (status === 'pending_approval') return 'bg-yellow-100 text-yellow-800';
+    if (status === 'suspended') return 'bg-red-100 text-red-800';
+    return 'bg-gray-100 text-gray-800';
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-lg font-semibold text-primary">
+            {user.first_name} {user.last_name}
+          </h3>
+          <p className="text-sm text-secondary">{user.email}</p>
+          <p className="text-sm text-secondary">{user.mobile_number}</p>
+        </div>
+        <div className="text-right">
+          <span
+            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}
+          >
+            {user.status.replace('_', ' ').toUpperCase()}
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center text-sm text-secondary">
+          <span className="font-medium mr-2">Barangay:</span>
+          <span>
+            {user.barangay_name}, {user.city_municipality_name}, {user.province_name}
+          </span>
+        </div>
+        <div className="flex items-center text-sm text-secondary">
+          <span className="font-medium mr-2">Role:</span>
+          <span>{user.role_name || 'resident'}</span>
+        </div>
+        <div className="flex items-center text-sm text-secondary">
+          <span className="font-medium mr-2">Registered:</span>
+          <span>{formatDate(user.created_at)}</span>
+        </div>
+      </div>
+
+      {showActions && user.status === 'pending_approval' && (
+        <div className="flex gap-2">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => onApprove(user.id, user.email)}
+            disabled={actionLoading === user.id}
+          >
+            {actionLoading === user.id ? 'Processing...' : 'Approve'}
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => onReject(user.id, user.email)}
+            disabled={actionLoading === user.id}
+          >
+            Reject
+          </Button>
+        </div>
+      )}
+
+      {showActions && user.status === 'active' && (
+        <div className="flex gap-2">
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => onSuspend(user.id, user.email)}
+            disabled={actionLoading === user.id}
+          >
+            {actionLoading === user.id ? 'Processing...' : 'Suspend'}
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function UsersManagementContent() {
   const [pendingUsers, setPendingUsers] = useState<UserRequest[]>([]);
   const [activeUsers, setActiveUsers] = useState<UserRequest[]>([]);
@@ -93,8 +200,11 @@ function UsersManagementContent() {
 
       setPendingUsers(formattedUsers.filter(u => u.status === 'pending_approval'));
       setActiveUsers(formattedUsers.filter(u => u.status === 'active'));
-    } catch (error: any) {
-      logError(error, 'USERS_LOAD_ERROR');
+    } catch (error) {
+      logError(
+        error instanceof Error ? error : new Error('Failed to load users'),
+        'USERS_LOAD_ERROR'
+      );
     } finally {
       setLoading(false);
     }
@@ -130,14 +240,17 @@ function UsersManagementContent() {
       // Refresh users list
       await loadUsers();
 
-      // TODO: Send approval email notification
+      // Feature: Email notification on approval (tracked in issue #email-notifications)
       logger.info('User approved successfully', {
         userId,
         userEmail,
         context: 'user_approval',
       });
-    } catch (error: any) {
-      logError(error, 'USER_APPROVAL_ERROR');
+    } catch (error) {
+      logError(
+        error instanceof Error ? error : new Error('Failed to approve user'),
+        'USER_APPROVAL_ERROR'
+      );
       logger.error('User approval failed', { userId, userEmail });
       alert('Failed to approve user. Please try again.');
     } finally {
@@ -178,14 +291,17 @@ function UsersManagementContent() {
       // Refresh users list
       await loadUsers();
 
-      // TODO: Send rejection email notification
+      // Feature: Email notification on rejection (tracked in issue #email-notifications)
       logger.info('User rejected', {
         userId,
         userEmail,
         context: 'user_rejection',
       });
-    } catch (error: any) {
-      logError(error, 'USER_REJECTION_ERROR');
+    } catch (error) {
+      logError(
+        error instanceof Error ? error : new Error('Failed to reject user'),
+        'USER_REJECTION_ERROR'
+      );
       logger.error('User rejection failed', { userId, userEmail });
       alert('Failed to reject user. Please try again.');
     } finally {
@@ -231,104 +347,17 @@ function UsersManagementContent() {
         userEmail,
         context: 'user_suspension',
       });
-    } catch (error: any) {
-      logError(error, 'USER_SUSPENSION_ERROR');
+    } catch (error) {
+      logError(
+        error instanceof Error ? error : new Error('Failed to suspend user'),
+        'USER_SUSPENSION_ERROR'
+      );
       logger.error('User suspension failed', { userId, userEmail });
       alert('Failed to suspend user. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-PH', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const UserCard = ({ user, showActions = true }: { user: UserRequest; showActions?: boolean }) => (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-lg font-semibold text-primary">
-            {user.first_name} {user.last_name}
-          </h3>
-          <p className="text-sm text-secondary">{user.email}</p>
-          <p className="text-sm text-secondary">{user.mobile_number}</p>
-        </div>
-        <div className="text-right">
-          <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-              user.status === 'active'
-                ? 'bg-green-100 text-green-800'
-                : user.status === 'pending_approval'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : user.status === 'suspended'
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-gray-100 text-gray-800'
-            }`}
-          >
-            {user.status.replace('_', ' ').toUpperCase()}
-          </span>
-        </div>
-      </div>
-
-      <div className="space-y-2 mb-4">
-        <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Barangay:</span>
-          <span>
-            {user.barangay_name}, {user.city_municipality_name}, {user.province_name}
-          </span>
-        </div>
-        <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Role:</span>
-          <span>{user.role_name || 'resident'}</span>
-        </div>
-        <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Registered:</span>
-          <span>{formatDate(user.created_at)}</span>
-        </div>
-      </div>
-
-      {showActions && user.status === 'pending_approval' && (
-        <div className="flex gap-2">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => approveUser(user.id, user.email)}
-            disabled={actionLoading === user.id}
-          >
-            {actionLoading === user.id ? 'Processing...' : 'Approve'}
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => rejectUser(user.id, user.email)}
-            disabled={actionLoading === user.id}
-          >
-            Reject
-          </Button>
-        </div>
-      )}
-
-      {showActions && user.status === 'active' && (
-        <div className="flex gap-2">
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={() => suspendUser(user.id, user.email)}
-            disabled={actionLoading === user.id}
-          >
-            {actionLoading === user.id ? 'Processing...' : 'Suspend'}
-          </Button>
-        </div>
-      )}
-    </div>
-  );
 
   if (loading) {
     return (
@@ -439,7 +468,14 @@ function UsersManagementContent() {
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {pendingUsers.map(user => (
-                      <UserCard key={user.id} user={user} />
+                      <UserCard
+                        key={user.id}
+                        user={user}
+                        actionLoading={actionLoading}
+                        onApprove={approveUser}
+                        onReject={rejectUser}
+                        onSuspend={suspendUser}
+                      />
                     ))}
                   </div>
                 )}
@@ -471,7 +507,14 @@ function UsersManagementContent() {
                 ) : (
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {activeUsers.map(user => (
-                      <UserCard key={user.id} user={user} />
+                      <UserCard
+                        key={user.id}
+                        user={user}
+                        actionLoading={actionLoading}
+                        onApprove={approveUser}
+                        onReject={rejectUser}
+                        onSuspend={suspendUser}
+                      />
                     ))}
                   </div>
                 )}

@@ -29,6 +29,7 @@ function DashboardContent() {
     if (!profileLoading && userProfile?.barangay_code) {
       loadDashboardStats();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile, profileLoading]);
 
   const loadDashboardStats = async () => {

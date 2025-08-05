@@ -494,7 +494,7 @@ function ResidentDetailContent() {
     return updatedResident;
   };
 
-  const handleFieldChange = (field: keyof Resident, value: any) => {
+  const handleFieldChange = (field: keyof Resident, value: unknown) => {
     if (!editedResident) return;
 
     let updatedResident = {

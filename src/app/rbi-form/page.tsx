@@ -56,8 +56,6 @@ interface AddressInfo {
 }
 
 function HouseholdSelector() {
-  const { userProfile } = useAuth();
-  const [households, setHouseholds] = useState<Household[]>([]);
   const [filteredHouseholds, setFilteredHouseholds] = useState<Household[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [houseNumberFilter, setHouseNumberFilter] = useState('');
@@ -139,7 +137,6 @@ function HouseholdSelector() {
           context: 'household_processing',
         });
 
-        setHouseholds(householdData || []);
         setHouseholdsWithHeads(householdsWithHeadNames);
         setFilteredHouseholds(householdsWithHeadNames);
       } catch (err) {
@@ -149,7 +146,6 @@ function HouseholdSelector() {
           context: 'rbi_form_household_selector',
         });
         // Set an empty array so the UI shows "No households found" instead of loading forever
-        setHouseholds([]);
         setHouseholdsWithHeads([]);
         setFilteredHouseholds([]);
       } finally {
@@ -186,29 +182,23 @@ function HouseholdSelector() {
         !searchTerm ||
         searchFields.includes(searchTerm.toLowerCase()) ||
         household.code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (household.house_number &&
-          household.house_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (household.street_name &&
-          household.street_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (household.subdivision &&
-          household.subdivision.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (household.headName && household.headName.toLowerCase().includes(searchTerm.toLowerCase()));
+        household.house_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        household.street_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        household.subdivision?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        household.headName?.toLowerCase().includes(searchTerm.toLowerCase());
 
       // Individual field filters
       const matchesHouseNumber =
         !houseNumberFilter ||
-        (household.house_number &&
-          household.house_number.toLowerCase().includes(houseNumberFilter.toLowerCase()));
+        household.house_number?.toLowerCase().includes(houseNumberFilter.toLowerCase());
 
       const matchesStreetName =
         !streetNameFilter ||
-        (household.street_name &&
-          household.street_name.toLowerCase().includes(streetNameFilter.toLowerCase()));
+        household.street_name?.toLowerCase().includes(streetNameFilter.toLowerCase());
 
       const matchesSubdivision =
         !subdivisionFilter ||
-        (household.subdivision &&
-          household.subdivision.toLowerCase().includes(subdivisionFilter.toLowerCase()));
+        household.subdivision?.toLowerCase().includes(subdivisionFilter.toLowerCase());
 
       const result = matchesSearch && matchesHouseNumber && matchesStreetName && matchesSubdivision;
 
@@ -278,8 +268,14 @@ function HouseholdSelector() {
         {/* Individual Filters */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">House Number</label>
+            <label
+              htmlFor="house-number-filter"
+              className="block text-xs font-medium text-gray-700 mb-1"
+            >
+              House Number
+            </label>
             <input
+              id="house-number-filter"
               type="text"
               placeholder="Filter by house number..."
               value={houseNumberFilter}
@@ -288,8 +284,14 @@ function HouseholdSelector() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Street Name</label>
+            <label
+              htmlFor="street-name-filter"
+              className="block text-xs font-medium text-gray-700 mb-1"
+            >
+              Street Name
+            </label>
             <input
+              id="street-name-filter"
               type="text"
               placeholder="Filter by street name..."
               value={streetNameFilter}
@@ -298,8 +300,14 @@ function HouseholdSelector() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Subdivision</label>
+            <label
+              htmlFor="subdivision-filter"
+              className="block text-xs font-medium text-gray-700 mb-1"
+            >
+              Subdivision
+            </label>
             <input
+              id="subdivision-filter"
               type="text"
               placeholder="Filter by subdivision..."
               value={subdivisionFilter}
@@ -400,7 +408,6 @@ function RBIFormContent() {
   const [addressInfo, setAddressInfo] = useState<AddressInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [availableHouseholds, setAvailableHouseholds] = useState<Household[]>([]);
 
   // Get household ID from URL params or use a default
   const householdId = searchParams.get('household') || searchParams.get('id');
@@ -441,13 +448,6 @@ function RBIFormContent() {
               context: 'rbi_form_load',
             });
 
-            // Load available households for debugging
-            const { data: allHouseholds } = await supabase
-              .from('households')
-              .select('id, code, household_number, barangay_code, created_at')
-              .limit(10);
-
-            setAvailableHouseholds(allHouseholds || []);
             setError(`Household not found: ${householdId}`);
             return;
           }

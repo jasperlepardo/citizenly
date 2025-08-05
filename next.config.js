@@ -3,8 +3,7 @@ const nextConfig = {
   images: {
     domains: ['your-supabase-project.supabase.co'],
   },
-  // Optimize for Vercel deployment
-  output: 'standalone',
+  // Remove standalone output for Vercel deployment
   poweredByHeader: false,
   compress: true,
   // Environment variables for build
@@ -26,18 +25,15 @@ const nextConfig = {
     ];
   },
   // Exclude Storybook files from build
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  webpack: (config, { isServer }) => {
+  webpack: config => {
     config.module.rules.push({
       test: /\.stories\.(js|jsx|ts|tsx|mdx)$/,
       use: 'ignore-loader',
     });
     return config;
   },
-  // Exclude Storybook files and directories
-  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js', 'tsx', 'ts', 'jsx', 'js'].filter(
-    ext => !ext.includes('stories')
-  ),
+  // Use default page extensions but exclude stories files via webpack
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 };
 
 module.exports = nextConfig;

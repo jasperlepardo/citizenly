@@ -2,7 +2,7 @@ name: Deploy Storybook
 
 on:
   push:
-    branches: [develop]
+    branches: [main, develop]
     paths:
       - 'src/components/**'
       - 'src/stories/**'
@@ -11,6 +11,12 @@ on:
       - 'package-lock.json'
       - 'public/**'
       - '.gitignore'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/components/**'
+      - 'src/stories/**'
+      - '.storybook/**'
   workflow_dispatch:
 
 jobs:
@@ -32,11 +38,29 @@ jobs:
         
       - name: Build Storybook
         run: npm run build-storybook
+        env:
+          NODE_ENV: production
         
       - name: Deploy to Vercel
-        run: |
-          npm install -g vercel
-          cd storybook-static
-          echo "Storybook built successfully. Manual deployment required."
-          echo "Run: vercel --prod --yes to deploy"
-          echo "Or use existing deployment at: https://citizenly-storybook-pu6qrpcz8-jasper-lepardos-projects.vercel.app"
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_STORYBOOK_PROJECT_ID }}
+          working-directory: ./storybook-static
+          vercel-args: '--prod'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          scope: ${{ secrets.VERCEL_ORG_ID }}
+        
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment = process.env.VERCEL_URL || 'https://storybook-static-jasper-lepardos-projects.vercel.app';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🎨 **Storybook Preview**: ${deployment}\n\nComponent library has been updated and deployed automatically.`
+            });
