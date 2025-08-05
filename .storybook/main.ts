@@ -1,6 +1,5 @@
 import type { StorybookConfig } from '@storybook/nextjs-vite';
-import { resolve } from 'path';
-import { existsSync } from 'fs';
+import { join } from 'path';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -19,7 +18,8 @@ const config: StorybookConfig = {
       },
     },
   },
-  staticDirs: existsSync(resolve(__dirname, '../public')) ? ['../public'] : [],
+  // Use absolute path for static directories
+  staticDirs: [join(__dirname, '..', 'public')],
   async viteFinal(config) {
     // Ensure React is available globally
     config.define = {
@@ -38,7 +38,7 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
-        '@': resolve(__dirname, '../src'),
+        '@': join(__dirname, '../src'),
         crypto: 'crypto-browserify',
         stream: 'stream-browserify',
         util: 'util',
