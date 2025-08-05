@@ -44,7 +44,6 @@ function ResidentsContent() {
   const { user, loading: authLoading, userProfile } = useAuth();
   const [residents, setResidents] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
-  const [_unused] = useState(0);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
