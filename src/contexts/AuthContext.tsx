@@ -331,7 +331,11 @@ export function useAuth() {
       signOut: async () => {},
       signUp: async () => ({ error: new Error('AuthProvider not available') }),
       updateProfile: async () => ({ error: new Error('AuthProvider not available') }),
-      refreshProfile: async () => {}
+      refreshProfile: async () => {},
+      hasPermission: () => false,
+      isInRole: () => false,
+      canAccessBarangay: () => false,
+      isBarangayAdmin: () => false
     }
   }
   return context
