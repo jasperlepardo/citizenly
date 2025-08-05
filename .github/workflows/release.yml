@@ -58,6 +58,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+          CSRF_SECRET: placeholder-csrf-secret-32-characters-long
 
       - name: Run SonarCloud quality gate
         uses: SonarSource/sonarcloud-github-action@master
