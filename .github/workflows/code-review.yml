@@ -1,0 +1,203 @@
+name: Automated Code Review
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop, 'feature/**', 'release/**', 'hotfix/**']
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  security-events: write
+
+jobs:
+  code-quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint with reviewdog
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          eslint_flags: 'src/'
+          fail_on_error: false
+
+      - name: Run TypeScript check with reviewdog
+        run: |
+          npm run type-check 2>&1 | \
+          npx reviewdog -efm="%f(%l,%c): %t%n %m" \
+            -name="TypeScript" \
+            -reporter=github-pr-review \
+            -fail-on-error=false || true
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Security audit
+        run: npm audit --audit-level=high --production
+
+      - name: Check bundle size
+        run: |
+          npm run build
+          npx bundlesize2
+
+  complexity-analysis:
+    name: Code Complexity Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Analyze code complexity
+        run: |
+          npx complexity-report src --format json > complexity-report.json || true
+          npx jscpd src --reporters json --output ./jscpd-report.json || true
+
+      - name: Comment complexity report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 📊 Code Quality Report\n\n';
+            
+            // Add complexity analysis if available
+            try {
+              const complexity = JSON.parse(fs.readFileSync('complexity-report.json', 'utf8'));
+              comment += `### Complexity Analysis\n`;
+              comment += `- **Average Complexity**: ${complexity.summary?.average?.complexity || 'N/A'}\n`;
+              comment += `- **Maintainability Index**: ${complexity.summary?.average?.maintainability || 'N/A'}\n\n`;
+            } catch (e) {
+              console.log('No complexity report found');
+            }
+            
+            // Add duplication analysis if available  
+            try {
+              const jscpd = JSON.parse(fs.readFileSync('jscpd-report.json', 'utf8'));
+              const duplicatePercentage = jscpd.statistics?.total?.percentage || 0;
+              comment += `### Code Duplication\n`;
+              comment += `- **Duplication**: ${duplicatePercentage}%\n`;
+              comment += duplicatePercentage > 10 ? '⚠️ High duplication detected\n' : '✅ Low duplication\n';
+            } catch (e) {
+              console.log('No duplication report found');
+            }
+            
+            comment += '\n---\n*Automated by GitHub Actions*';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+            p/react
+            p/typescript
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      - name: Run our custom security checks
+        run: |
+          chmod +x ./scripts/security-check.sh
+          ./scripts/security-check.sh
+
+  performance-budget:
+    name: Performance Budget
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and analyze bundle
+        run: |
+          npm run build
+          npx webpack-bundle-analyzer .next/static/chunks/*.js --report --mode static --report-filename bundle-report.html
+
+      - name: Check performance budget
+        run: |
+          echo "## 📦 Bundle Analysis" > performance-report.md
+          
+          # Check bundle sizes
+          BUNDLE_SIZE=$(du -sh .next/static/chunks | cut -f1)
+          echo "- **Total Bundle Size**: $BUNDLE_SIZE" >> performance-report.md
+          
+          # Check for large dependencies
+          npx bundlesize2 || echo "- ⚠️ Bundle size exceeded threshold" >> performance-report.md
+
+      - name: Comment performance report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const report = fs.readFileSync('performance-report.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            } catch (e) {
+              console.log('No performance report found');
+            }
