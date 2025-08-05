@@ -444,24 +444,32 @@ function HouseholdsContent() {
 
           {/* Table Rows */}
           <div className="divide-y divide-border-light">
-            {loading ? (
-              <div className="p-8 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-2 text-secondary">Loading households...</p>
-              </div>
-            ) : households.length === 0 ? (
-              <div className="p-8 text-center">
-                <p className="text-secondary">
-                  {localSearchTerm
-                    ? `No households found matching "${localSearchTerm}"`
-                    : 'No households found'}
-                </p>
-                <p className="text-sm text-muted mt-2">
-                  Households are created automatically when you add residents.
-                </p>
-              </div>
-            ) : (
-              households.map(household => (
+            {(() => {
+              if (loading) {
+                return (
+                  <div className="p-8 text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-2 text-secondary">Loading households...</p>
+                  </div>
+                );
+              }
+
+              if (households.length === 0) {
+                const noResultsMessage = localSearchTerm
+                  ? `No households found matching "${localSearchTerm}"`
+                  : 'No households found';
+
+                return (
+                  <div className="p-8 text-center">
+                    <p className="text-secondary">{noResultsMessage}</p>
+                    <p className="text-sm text-muted mt-2">
+                      Households are created automatically when you add residents.
+                    </p>
+                  </div>
+                );
+              }
+
+              return households.map(household => (
                 <div
                   key={household.code}
                   className="bg-surface flex items-center p-0 hover:bg-surface-hover transition-colors"
@@ -531,8 +539,8 @@ function HouseholdsContent() {
                     </Button>
                   </div>
                 </div>
-              ))
-            )}
+              ));
+            })()}
           </div>
         </div>
       </div>
