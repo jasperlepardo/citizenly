@@ -73,7 +73,7 @@
     [
       "@semantic-release/github",
       {
-        "successComment": "🎉 This ${issue.pull_request ? 'pull request is included' : 'issue has been resolved'} in version [${nextRelease.version}](${releases.filter(release => /github\.com/.test(release.url))[0].url}) 🎉",
+        "successComment": "🎉 This ${issue.pull_request ? 'pull request is included' : 'issue has been resolved'} in version [${nextRelease.version}](${releases.filter(release => /github\\.com/.test(release.url))[0].url}) 🎉",
         "failTitle": "❌ The automated release from the `${branch.name}` branch failed",
         "labels": ["released"],
         "releasedLabels": ["released<%= branch.name === 'main' ? '' : `:${branch.name}` %>"]
