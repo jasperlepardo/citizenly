@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfile from '@/components/auth/UserProfile';
 import { Button } from '@/components/atoms';
+import { logError } from '@/lib/secure-logger';
 
 // Simple logout button component
 function LogoutButton() {
@@ -20,7 +21,7 @@ function LogoutButton() {
       await signOut();
       window.location.href = '/login';
     } catch (error) {
-      console.error('Error signing out:', error);
+      logError(error as Error, 'SIGN_OUT_ERROR');
     }
   };
 

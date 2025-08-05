@@ -6,6 +6,7 @@ import { InputField } from '@/components/molecules';
 import { SimpleBarangaySelector } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface SignupFormData {
   email: string;
@@ -34,7 +35,7 @@ export default function SignupPage() {
 
   const checkBarangayAdminExists = async (barangayCode: string): Promise<boolean> => {
     try {
-      console.log('Checking for existing admin in barangay:', barangayCode);
+      logger.debug('Checking for existing barangay admin', { barangayCode });
 
       const { data, error } = await supabase
         .from('user_profiles')
@@ -49,15 +50,18 @@ export default function SignupPage() {
         .eq('is_active', true);
 
       if (error) {
-        console.error('Error checking barangay admin:', error);
+        logError(new Error(error.message), 'BARANGAY_ADMIN_CHECK');
         return true; // Assume admin exists if we can't check
       }
 
       const hasAdmin = data && data.length > 0;
-      console.log('Existing admin found:', hasAdmin);
+      logger.debug('Barangay admin check completed', { hasAdmin });
       return hasAdmin;
     } catch (error) {
-      console.error('Exception in checkBarangayAdminExists:', error);
+      logError(
+        error instanceof Error ? error : new Error('Unknown error checking barangay admin'),
+        'BARANGAY_ADMIN_CHECK'
+      );
       return true; // Assume admin exists if we can't check
     }
   };
@@ -131,27 +135,27 @@ export default function SignupPage() {
 
     // Add timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {
-      console.error('Signup process timed out');
+      logger.error('Signup process timed out after 30 seconds');
       setIsSubmitting(false);
       setErrors({ general: 'Signup process timed out. Please try again.' });
     }, 30000); // 30 second timeout
 
     try {
       // Check if barangay already has an admin
-      console.log('Step 1: Checking for existing admin...');
+      logger.info('Starting signup process - checking for existing admin');
       const hasAdmin = await checkBarangayAdminExists(formData.barangayCode);
       const willBeAdmin = !hasAdmin;
-      console.log('Will be admin:', willBeAdmin);
+      logger.debug('Role assignment determined', { willBeAdmin });
 
       // Create auth user
-      console.log('Step 2: Creating auth user...');
+      logger.info('Creating authentication user account');
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
       });
 
       if (authError) {
-        console.error('Auth signup error:', authError);
+        logError(new Error(authError.message), 'AUTH_SIGNUP');
         if (authError.message.includes('already registered')) {
           setErrors({
             general: 'An account with this email already exists. Please sign in instead.',
@@ -163,15 +167,15 @@ export default function SignupPage() {
       }
 
       if (!authData.user) {
-        console.error('No user returned from signup');
+        logger.error('No user data returned from authentication signup');
         setErrors({ general: 'Failed to create account. Please try again.' });
         return;
       }
 
-      console.log('Auth user created:', authData.user.id);
+      logger.info('Authentication user created successfully', { userId: authData.user.id });
 
       // Get the appropriate role using our function
-      console.log('Step 3: Getting role assignment...');
+      logger.info('Assigning user role for barangay');
       const { data: roleData, error: roleError } = await supabase.rpc(
         'assign_user_role_for_barangay',
         {
@@ -181,8 +185,8 @@ export default function SignupPage() {
       );
 
       if (roleError) {
-        console.error('Error getting role:', roleError);
-        console.log('Step 3b: Using fallback role assignment...');
+        logError(new Error(roleError.message), 'ROLE_ASSIGNMENT');
+        logger.info('Using fallback role assignment method');
         // Fallback to manual role assignment
         const { data: roles } = await supabase
           .from('roles')
@@ -194,7 +198,7 @@ export default function SignupPage() {
           : roles?.find(r => r.name === 'resident');
 
         if (!role) {
-          console.error('No valid roles found');
+          logger.error('No valid roles found in fallback assignment');
           setErrors({
             general: 'System error: No valid roles found. Please contact administrator.',
           });
@@ -214,7 +218,7 @@ export default function SignupPage() {
         });
 
         if (profileError) {
-          console.error('Profile creation error:', profileError);
+          logError(new Error(profileError.message), 'PROFILE_CREATION');
           setErrors({
             general: 'Account created but profile setup failed: ' + profileError.message,
           });
@@ -228,7 +232,7 @@ export default function SignupPage() {
       }
 
       // Create user profile with successful role assignment
-      console.log('Step 4: Creating user profile...');
+      logger.info('Creating user profile with role assignment');
       const { error: profileError } = await supabase.from('user_profiles').insert({
         id: authData.user.id,
         email: formData.email,
@@ -241,17 +245,22 @@ export default function SignupPage() {
       });
 
       if (profileError) {
-        console.error('Profile creation error:', profileError);
+        logError(new Error(profileError.message), 'PROFILE_CREATION');
         setErrors({ general: 'Account created but profile setup failed: ' + profileError.message });
         return;
       }
 
       // Set assigned role for display
-      console.log('Step 5: Signup successful!');
+      logger.info('Signup process completed successfully', {
+        assignedRole: willBeAdmin ? 'barangay_admin' : 'resident',
+      });
       setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
       setStep('success');
     } catch (error: any) {
-      console.error('Signup error:', error);
+      logError(
+        error instanceof Error ? error : new Error('Unknown signup error'),
+        'SIGNUP_PROCESS'
+      );
       setErrors({ general: 'An unexpected error occurred. Please try again.' });
     } finally {
       clearTimeout(timeoutId);

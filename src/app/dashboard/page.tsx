@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface DashboardStats {
   residents: number;
@@ -53,7 +54,11 @@ function DashboardContent() {
         certifications: 0, // Placeholder - add when certifications table exists
       });
     } catch (error) {
-      console.error('Error loading dashboard stats:', error);
+      const err = error instanceof Error ? error : new Error(String(error));
+      logError(err, 'DASHBOARD_STATS_ERROR');
+      logger.error('Dashboard stats load failed', {
+        barangayCode: userProfile?.barangay_code,
+      });
     } finally {
       setLoading(false);
     }

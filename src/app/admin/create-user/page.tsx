@@ -8,6 +8,7 @@ import { AppShell } from '@/components/templates';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger, logError } from '@/lib/secure-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,7 +64,7 @@ function CreateUserContent() {
         .order('name', { ascending: true });
 
       if (error) {
-        console.error('Error loading roles:', error);
+        logError(new Error(error.message), 'ROLES_LOAD');
         // Set default roles if loading fails
         setRoles([{ id: 'default-resident', name: 'resident', description: 'Barangay resident' }]);
       } else {
@@ -81,7 +82,10 @@ function CreateUserContent() {
         }
       }
     } catch (error) {
-      console.error('Error loading roles:', error);
+      logError(
+        error instanceof Error ? error : new Error('Unknown error loading roles'),
+        'ROLES_LOAD'
+      );
       setRoles([{ id: 'default-resident', name: 'resident', description: 'Barangay resident' }]);
     } finally {
       setLoadingRoles(false);
@@ -169,7 +173,7 @@ function CreateUserContent() {
     setIsSubmitting(true);
 
     try {
-      console.log('Creating user account...');
+      logger.info('Starting user account creation process');
 
       // Create auth user using admin privileges
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
@@ -186,7 +190,7 @@ function CreateUserContent() {
       });
 
       if (authError) {
-        console.error('Auth user creation error:', authError);
+        logError(new Error(authError.message), 'AUTH_USER_CREATION');
         if (authError.message.includes('already registered')) {
           setErrors({ general: 'An account with this email already exists.' });
         } else {
@@ -200,7 +204,7 @@ function CreateUserContent() {
         return;
       }
 
-      console.log('Auth user created:', authData.user.id);
+      logger.info('Authentication user created successfully', { userId: authData.user.id });
 
       // Create user profile in database
       const profileData = {
@@ -214,19 +218,19 @@ function CreateUserContent() {
         status: 'active', // Admin-created users are automatically active
       };
 
-      console.log('Creating user profile:', profileData);
+      logger.debug('Creating user profile with data');
 
       const { error: profileError } = await supabase.from('user_profiles').insert(profileData);
 
       if (profileError) {
-        console.error('Profile creation error:', profileError);
+        logError(new Error(profileError.message), 'PROFILE_CREATION');
         setErrors({
           general: 'User account created but profile setup failed: ' + profileError.message,
         });
         return;
       }
 
-      console.log('Profile created successfully');
+      logger.info('User profile created successfully');
 
       // Create barangay account
       const { error: barangayAccountError } = await supabase.from('barangay_accounts').insert({
@@ -239,13 +243,13 @@ function CreateUserContent() {
       });
 
       if (barangayAccountError) {
-        console.error('Barangay account creation error:', barangayAccountError.message);
+        logError(new Error(barangayAccountError.message), 'BARANGAY_ACCOUNT_CREATION');
         // Don't fail if barangay_accounts table doesn't exist
         if (!barangayAccountError.message.includes('does not exist')) {
-          console.warn('Barangay account creation failed, but continuing...');
+          logger.warn('Barangay account creation failed, but continuing with user creation');
         }
       } else {
-        console.log('Barangay account created successfully');
+        logger.info('Barangay account created successfully');
       }
 
       // Success!
@@ -256,7 +260,10 @@ function CreateUserContent() {
       });
       setSuccess(true);
     } catch (error: any) {
-      console.error('User creation error:', error);
+      logError(
+        error instanceof Error ? error : new Error('Unknown user creation error'),
+        'USER_CREATION'
+      );
       setErrors({ general: 'An unexpected error occurred: ' + error.message });
     } finally {
       setIsSubmitting(false);

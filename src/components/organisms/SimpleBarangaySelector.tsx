@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface BarangayOption {
   code: string;
@@ -65,7 +66,7 @@ export default function SimpleBarangaySelector({
 
   const loadBarangays = async (search: string) => {
     try {
-      console.log('Loading barangays for search:', search);
+      logger.debug('Loading barangays for search', { search });
       setLoading(true);
 
       // First, test if we can access the table at all
@@ -73,17 +74,17 @@ export default function SimpleBarangaySelector({
         .from('psgc_barangays')
         .select('*', { count: 'exact', head: true });
 
-      console.log('Table access test:', { count, countError });
+      logger.debug('Table access test', { count, error: countError });
 
       if (countError) {
-        console.error('Cannot access psgc_barangays table:', countError);
-        console.error('PSGC data must be loaded in the database for barangay selection to work');
+        logger.error('Cannot access psgc_barangays table', { error: countError });
+        logger.warn('PSGC data must be loaded in the database for barangay selection to work');
         setOptions([]);
         return;
       }
 
       if (count === 0) {
-        console.warn('psgc_barangays table is empty');
+        logger.warn('psgc_barangays table is empty');
         setOptions([]);
         return;
       }
@@ -96,18 +97,18 @@ export default function SimpleBarangaySelector({
         .limit(10)
         .order('name', { ascending: true });
 
-      console.log('Barangay search result:', { data, error, count: data?.length });
+      logger.debug('Barangay search result', { hasData: !!data, error, count: data?.length });
 
       if (error) {
-        console.error('Barangay search error:', error);
+        logger.error('Barangay search error', { error });
         setOptions([]);
         return;
       }
 
       setOptions(data || []);
-      console.log('Set options:', data?.length || 0, 'items');
+      logger.debug('Set options', { itemCount: data?.length || 0 });
     } catch (error) {
-      console.error('Error loading barangays:', error);
+      logError(error as Error, 'BARANGAY_LOAD_ERROR');
       setOptions([]);
     } finally {
       setLoading(false);

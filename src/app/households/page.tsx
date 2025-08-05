@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
+import { logger, logError } from '@/lib/secure-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -156,7 +157,11 @@ function HouseholdsContent() {
               };
             }
           } catch (geoError) {
-            console.warn('Could not load geographic info for household:', household.code, geoError);
+            logger.warn('Geographic info load failed', {
+              householdCode: household.code,
+              error: geoError,
+              context: 'household_geo_info',
+            });
           }
 
           return {
@@ -170,7 +175,12 @@ function HouseholdsContent() {
       setHouseholds(householdsWithCounts);
       setTotalCount(count || 0);
     } catch (err) {
-      console.error('Error loading households:', err);
+      const error = err instanceof Error ? err : new Error(String(err));
+      logError(error, 'HOUSEHOLDS_LOAD_ERROR');
+      logger.error('Failed to load households', {
+        barangayCode: userProfile?.barangay_code,
+        searchTerm: localSearchTerm,
+      });
       setHouseholds([]);
       setTotalCount(0);
     } finally {

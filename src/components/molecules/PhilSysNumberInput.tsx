@@ -9,6 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import { InputField } from '../molecules';
 import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface PhilSysNumberInputProps {
   value?: string;
@@ -126,7 +127,7 @@ export default function PhilSysNumberInput({
         const hashedValue = await hashPhilSysNumber(formatted);
         onChange(formatted, hashedValue);
       } catch (error) {
-        console.error('Error hashing PhilSys number:', error);
+        logError(error as Error, 'PHILSYS_HASH_ERROR');
         onChange(formatted);
       }
     } else {

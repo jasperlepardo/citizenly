@@ -32,9 +32,9 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          CSRF_SECRET: ${{ secrets.CSRF_SECRET }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key'
 
       - name: Analyze bundle size
         run: npx bundlesize

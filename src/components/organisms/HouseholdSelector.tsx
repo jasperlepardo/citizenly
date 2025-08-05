@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import CreateHouseholdModal from './CreateHouseholdModal';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface Household {
   code: string;
@@ -61,11 +62,11 @@ export default function HouseholdSelector({
   // Load households for the user's barangay
   const loadHouseholds = async () => {
     if (!userProfile?.barangay_code) {
-      console.log('No barangay_code available, cannot load households');
+      logger.debug('No barangay_code available, cannot load households');
       return;
     }
 
-    console.log('Loading households for barangay:', userProfile.barangay_code);
+    logger.debug('Loading households for barangay', { barangayCode: userProfile.barangay_code });
     setLoading(true);
     try {
       // Get households with head resident info
@@ -86,7 +87,7 @@ export default function HouseholdSelector({
         .order('code', { ascending: true });
 
       if (error) {
-        console.error('Error loading households:', error);
+        logger.error('Error loading households', { error });
         return;
       }
 
@@ -152,7 +153,10 @@ export default function HouseholdSelector({
               };
             }
           } catch (geoError) {
-            console.warn('Could not load geographic info for household:', household.code, geoError);
+            logger.warn('Could not load geographic info for household', {
+              householdCode: household.code,
+              error: geoError,
+            });
           }
 
           return {
@@ -163,10 +167,10 @@ export default function HouseholdSelector({
         })
       );
 
-      console.log('Loaded households:', householdsWithCounts);
+      logger.debug('Loaded households', { count: householdsWithCounts.length });
       setHouseholds(householdsWithCounts);
     } catch (error) {
-      console.error('Error loading households:', error);
+      logError(error as Error, 'HOUSEHOLD_LOAD_ERROR');
     } finally {
       setLoading(false);
     }
@@ -241,13 +245,12 @@ export default function HouseholdSelector({
 
   // Debug logging for selection state
   React.useEffect(() => {
-    console.log('HouseholdSelector state:', {
+    logger.debug('HouseholdSelector state', {
       value,
       householdsCount: households.length,
       selectedHousehold: selectedHousehold
         ? `${selectedHousehold.code} - ${formatFullName(selectedHousehold.head_resident)}`
         : 'None found',
-      households: households.map(h => ({ code: h.code })),
     });
   }, [value, households, selectedHousehold]);
 
@@ -384,12 +387,12 @@ export default function HouseholdSelector({
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onHouseholdCreated={householdCode => {
-          console.log('Auto-selecting newly created household:', householdCode);
+          logger.info('Auto-selecting newly created household', { householdCode });
           onSelect(householdCode);
           setShowCreateModal(false);
           // Refresh households list after a small delay to ensure database consistency
           setTimeout(() => {
-            console.log('Refreshing households list...');
+            logger.debug('Refreshing households list');
             loadHouseholds();
           }, 500);
         }}

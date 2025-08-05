@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
+import { logger, logError } from '@/lib/secure-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,14 +72,14 @@ function HouseholdSelector() {
     const loadHouseholds = async () => {
       try {
         setLoading(true);
-        console.log('Starting to load households...');
+        logger.debug('Starting to load households', { context: 'rbi_form_household_load' });
 
         // First, try a simple count query to check table access
         const { count, error: countError } = await supabase
           .from('households')
           .select('*', { count: 'exact', head: true });
 
-        console.log('Household count check:', { count, countError });
+        logger.debug('Household count check', { count, error: countError });
 
         const { data: householdData, error } = await supabase
           .from('households')
@@ -96,20 +97,22 @@ function HouseholdSelector() {
           )
           .order('code');
 
-        console.log('Query result:', { householdData, error });
+        logger.debug('Household query result', {
+          householdCount: householdData?.length || 0,
+          hasError: !!error,
+        });
 
         if (error) {
-          console.error('Supabase error:', error);
+          logError(error, 'RBI_HOUSEHOLD_QUERY_ERROR');
+          logger.error('Household query failed in RBI form', { context: 'household_selector' });
           throw error;
         }
 
-        console.log('Loaded households:', householdData?.length, 'households');
-        if (householdData && householdData.length > 0) {
-          console.log(
-            'Sample household codes:',
-            householdData.slice(0, 3).map(h => h.code)
-          );
-        }
+        logger.info('Households loaded successfully', {
+          householdCount: householdData?.length || 0,
+          sampleCodes: householdData?.slice(0, 3).map(h => h.code) || [],
+          context: 'household_selector',
+        });
 
         // Process households and extract head names from JOIN data
         const householdsWithHeadNames = (householdData || []).map(household => {
@@ -131,18 +134,20 @@ function HouseholdSelector() {
           };
         });
 
-        console.log('Final households with heads:', householdsWithHeadNames);
-        console.log('Search test - looking for "042114014-0000-0001-0001"');
-        const testHousehold = householdsWithHeadNames.find(
-          h => h.code === '042114014-0000-0001-0001'
-        );
-        console.log('Found test household:', testHousehold);
+        logger.debug('Households processed with head names', {
+          processedCount: householdsWithHeadNames.length,
+          context: 'household_processing',
+        });
 
         setHouseholds(householdData || []);
         setHouseholdsWithHeads(householdsWithHeadNames);
         setFilteredHouseholds(householdsWithHeadNames);
       } catch (err) {
-        console.error('Error loading households:', err);
+        const error = err instanceof Error ? err : new Error(String(err));
+        logError(error, 'HOUSEHOLD_LOAD_ERROR');
+        logger.error('Failed to load households for RBI form', {
+          context: 'rbi_form_household_selector',
+        });
         // Set an empty array so the UI shows "No households found" instead of loading forever
         setHouseholds([]);
         setHouseholdsWithHeads([]);
@@ -156,8 +161,11 @@ function HouseholdSelector() {
   }, []);
 
   useEffect(() => {
-    console.log('Filtering households. Search term:', searchTerm);
-    console.log('Total households to filter:', householdsWithHeads.length);
+    logger.debug('Filtering households', {
+      searchTerm,
+      totalHouseholds: householdsWithHeads.length,
+      context: 'household_filter',
+    });
 
     const filtered = householdsWithHeads.filter(household => {
       // Text search across multiple fields
@@ -172,7 +180,7 @@ function HouseholdSelector() {
         .join(' ')
         .toLowerCase();
 
-      console.log(`Household ${household.code} search fields:`, searchFields);
+      // Debug logging removed for performance
 
       const matchesSearch =
         !searchTerm ||
@@ -204,21 +212,16 @@ function HouseholdSelector() {
 
       const result = matchesSearch && matchesHouseNumber && matchesStreetName && matchesSubdivision;
 
-      if (searchTerm === '042114014-0000-0001-0001') {
-        console.log(`Household ${household.code} filter result:`, {
-          searchFields,
-          matchesSearch,
-          matchesHouseNumber,
-          matchesStreetName,
-          matchesSubdivision,
-          result,
-        });
-      }
+      // Specific debug logging removed for performance
 
       return result;
     });
 
-    console.log('Filtered households count:', filtered.length);
+    logger.debug('Households filtered', {
+      filteredCount: filtered.length,
+      searchTerm,
+      context: 'household_filter_result',
+    });
     setFilteredHouseholds(filtered);
   }, [searchTerm, houseNumberFilter, streetNameFilter, subdivisionFilter, householdsWithHeads]);
 
@@ -432,7 +435,11 @@ function RBIFormContent() {
           }
 
           if (householdError) {
-            console.error('Household error:', householdError);
+            logError(householdError, 'RBI_HOUSEHOLD_LOOKUP_ERROR');
+            logger.error('Household lookup failed in RBI form', {
+              householdId,
+              context: 'rbi_form_load',
+            });
 
             // Load available households for debugging
             const { data: allHouseholds } = await supabase
@@ -456,7 +463,9 @@ function RBIFormContent() {
 
           // If no household in user's barangay, try to get any household
           if (householdError || !householdData) {
-            console.log('No households in user barangay, trying any household...');
+            logger.debug('No households in user barangay, trying any household', {
+              barangayCode: userProfile?.barangay_code,
+            });
             const { data: anyHousehold, error: anyError } = await supabase
               .from('households')
               .select('*')
@@ -464,7 +473,8 @@ function RBIFormContent() {
               .single();
 
             if (anyError || !anyHousehold) {
-              console.error('No households found anywhere:', anyError);
+              logError(anyError, 'NO_HOUSEHOLDS_FOUND');
+              logger.error('No households found anywhere', { context: 'rbi_form_fallback' });
               setError('No households found in the database');
               return;
             }
@@ -498,7 +508,9 @@ function RBIFormContent() {
 
         // If no results with household_id, try with household_code
         if ((!residentsData || residentsData.length === 0) && targetHousehold.code) {
-          console.log('Trying to find residents by household_code:', targetHousehold.code);
+          logger.debug('Searching residents by household_code', {
+            householdCode: targetHousehold.code,
+          });
           const result = await supabase
             .from('residents')
             .select('*')
@@ -510,7 +522,11 @@ function RBIFormContent() {
         }
 
         if (residentsError) {
-          console.error('Residents error:', residentsError);
+          logError(residentsError, 'RBI_RESIDENTS_ERROR');
+          logger.error('Failed to load residents for RBI form', {
+            householdId: targetHousehold.id,
+            householdCode: targetHousehold.code,
+          });
           setError('Failed to load residents');
           return;
         }
@@ -567,7 +583,12 @@ function RBIFormContent() {
           setAddressInfo(addressData);
         }
       } catch (err) {
-        console.error('Error loading household data:', err);
+        const error = err instanceof Error ? err : new Error(String(err));
+        logError(error, 'RBI_HOUSEHOLD_DATA_ERROR');
+        logger.error('Failed to load household data for RBI form', {
+          householdId,
+          barangayCode: userProfile?.barangay_code,
+        });
         setError('Failed to load household data');
       } finally {
         setLoading(false);

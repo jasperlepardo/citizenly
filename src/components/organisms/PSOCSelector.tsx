@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface PSOCOption {
   occupation_code: string;
@@ -46,7 +47,7 @@ export default function PSOCSelector({
 
     setLoading(true);
     try {
-      console.log('Searching PSOC for:', query);
+      logger.debug('Searching PSOC for', { query });
 
       // Try the view first
       const { data, error } = await supabase
@@ -57,11 +58,11 @@ export default function PSOCSelector({
         .order('occupation_title', { ascending: true })
         .limit(50);
 
-      console.log('PSOC view search result:', { data, error });
+      logger.debug('PSOC view search result', { hasData: !!data, error });
 
       // If view doesn't exist or has no data, try direct table queries
       if (error || !data || data.length === 0) {
-        console.log('Trying direct PSOC table queries...');
+        logger.debug('Trying direct PSOC table queries');
 
         // Try major groups first
         const { data: majorGroups, error: _majorError } = await supabase
@@ -123,13 +124,13 @@ export default function PSOCSelector({
           return;
         }
 
-        console.log('No PSOC data found in any table');
+        logger.warn('No PSOC data found in any table');
         setOptions([]);
       } else {
         setOptions(data || []);
       }
     } catch (error) {
-      console.error('PSOC search error:', error);
+      logError(error as Error, 'PSOC_SEARCH_ERROR');
       setOptions([]);
     } finally {
       setLoading(false);
@@ -202,7 +203,7 @@ export default function PSOCSelector({
             setSearchQuery(data.occupation_title);
           }
         } catch (error) {
-          console.error('Error loading PSOC option:', error);
+          logError(error as Error, 'PSOC_OPTION_LOAD_ERROR');
         }
       };
       loadSelectedOption();

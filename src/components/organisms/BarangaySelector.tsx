@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface BarangayOption {
   code: string;
@@ -101,7 +102,7 @@ export default function BarangaySelector({
         .order('name', { ascending: true });
 
       if (error) {
-        console.error('Barangay search error:', error);
+        logger.error('Barangay search error', { error });
         setOptions([]);
         return;
       }
@@ -123,7 +124,7 @@ export default function BarangaySelector({
 
       setOptions(formattedOptions);
     } catch (error) {
-      console.error('Error loading barangays:', error);
+      logError(error as Error, 'BARANGAY_LOAD_ERROR');
       setOptions([]);
     } finally {
       setLoading(false);
@@ -144,7 +145,7 @@ export default function BarangaySelector({
         .single();
 
       if (error || !data) {
-        console.error('Error loading selected barangay:', error);
+        logger.error('Error loading selected barangay', { error, code });
         return;
       }
 
@@ -160,7 +161,7 @@ export default function BarangaySelector({
       setSelectedOption(option);
       setSearchTerm(option.full_address);
     } catch (error) {
-      console.error('Error loading selected barangay:', error);
+      logError(error as Error, 'SELECTED_BARANGAY_LOAD_ERROR');
     }
   };
 

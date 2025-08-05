@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { SimpleSearchBar as SearchBar } from '@/components/molecules';
 import Navigation from '@/components/organisms/Navigation';
+import { logger, logError } from '@/lib/secure-logger';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
@@ -16,7 +17,7 @@ function UserDropdown() {
   // Load barangay information from database
   const loadBarangayInfo = async (barangayCode: string) => {
     try {
-      console.log('Loading barangay info for code:', barangayCode);
+      logger.debug('Loading barangay info', { barangayCode });
 
       // Query the PSGC tables to get full address hierarchy
       const { data: barangayData, error } = await supabase
@@ -40,7 +41,7 @@ function UserDropdown() {
         .single();
 
       if (error) {
-        console.error('Error loading barangay info:', error);
+        logger.error('Error loading barangay info', { error, barangayCode });
         setBarangayInfo(`Barangay ${barangayCode}`);
         return;
       }
@@ -51,13 +52,13 @@ function UserDropdown() {
         const region = province.psgc_regions;
 
         const fullAddress = `${barangayData.name}, ${cityMun.name} (${cityMun.type}), ${province.name}`;
-        console.log('Loaded barangay info from database:', fullAddress);
+        logger.debug('Loaded barangay info from database', { address: fullAddress });
         setBarangayInfo(fullAddress);
       } else {
         setBarangayInfo(`Barangay ${barangayCode}`);
       }
     } catch (error) {
-      console.error('Exception loading barangay info:', error);
+      logError(error as Error, 'BARANGAY_INFO_LOAD_ERROR');
       setBarangayInfo(`Barangay ${barangayCode}`);
     }
   };
@@ -74,7 +75,7 @@ function UserDropdown() {
       await signOut();
       window.location.href = '/login';
     } catch (error) {
-      console.error('Error signing out:', error);
+      logError(error as Error, 'SIGN_OUT_ERROR');
     }
   };
 
@@ -236,7 +237,7 @@ export default function DashboardLayout({
                 onClear={() => onSearchChange?.('')}
                 onSearch={value => {
                   // Handle search action (Enter key pressed)
-                  console.log('Searching for:', value);
+                  logger.debug('Search initiated', { searchValue: value });
                   // Add your search logic here
                 }}
                 variant="default"

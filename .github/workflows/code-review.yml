@@ -1,5 +1,9 @@
 name: Automated Code Review
 
+# Note: VS Code may show warnings about "Context access might be invalid" for optional secrets.
+# These are expected warnings for optional integrations (Codecov, Semgrep, SonarCloud, etc.).
+# The workflows will work correctly with or without these secrets configured.
+
 on:
   pull_request:
     branches: [main, develop]
@@ -38,7 +42,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           eslint_flags: 'src/'
-          fail_on_error: false
+          fail_level: error
 
       - name: Run TypeScript check with reviewdog
         run: |
@@ -54,8 +58,9 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN || '' }}
           fail_ci_if_error: false
+        continue-on-error: true
 
       - name: Security audit
         run: npm audit --audit-level=high --production
@@ -63,7 +68,12 @@ jobs:
       - name: Check bundle size
         run: |
           npm run build
-          npx bundlesize2
+          npx bundlesize
+        env:
+          NODE_ENV: production
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only-32-chars-long'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key-for-build-testing'
 
   complexity-analysis:
     name: Code Complexity Analysis
@@ -144,7 +154,8 @@ jobs:
             p/react
             p/typescript
         env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN || '' }}
+        continue-on-error: true
 
       - name: Run our custom security checks
         run: |
@@ -172,6 +183,11 @@ jobs:
         run: |
           npm run build
           npx webpack-bundle-analyzer .next/static/chunks/*.js --report --mode static --report-filename bundle-report.html
+        env:
+          NODE_ENV: production
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only-32-chars-long'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key-for-build-testing'
 
       - name: Check performance budget
         run: |
@@ -182,7 +198,7 @@ jobs:
           echo "- **Total Bundle Size**: $BUNDLE_SIZE" >> performance-report.md
           
           # Check for large dependencies
-          npx bundlesize2 || echo "- ⚠️ Bundle size exceeded threshold" >> performance-report.md
+          npx bundlesize || echo "- ⚠️ Bundle size exceeded threshold" >> performance-report.md
 
       - name: Comment performance report
         if: github.event_name == 'pull_request'
