@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && npm run build-storybook && node scripts/copy-storybook.js",
+    "build": "next build",
+    "build:full": "next build && npm run build-storybook && node scripts/copy-storybook.js",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

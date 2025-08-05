@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/nextjs-vite';
 import { resolve } from 'path';
+import { existsSync } from 'fs';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -18,7 +19,7 @@ const config: StorybookConfig = {
       },
     },
   },
-  staticDirs: ['../public'],
+  staticDirs: existsSync(resolve(__dirname, '../public')) ? ['../public'] : [],
   async viteFinal(config) {
     // Ensure React is available globally
     config.define = {
