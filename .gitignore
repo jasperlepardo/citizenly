@@ -228,3 +228,4 @@ docs/.doctrees/
 database/sample\ data/psgc/psgc_barangays.csv
 database/sample\ data/psgc/psgc_cities_municipalities.csv
 *storybook.log
+.vercel
