@@ -10,7 +10,6 @@ function BusinessContent() {
 
   return (
     <DashboardLayout 
-      currentPage="business"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

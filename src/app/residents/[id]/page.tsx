@@ -591,8 +591,7 @@ function ResidentDetailContent() {
   if (loading) {
     return (
       <DashboardLayout 
-        currentPage="residents"
-        searchTerm={globalSearchTerm}
+          searchTerm={globalSearchTerm}
         onSearchChange={setGlobalSearchTerm}
       >
         <div className="p-6">
@@ -610,8 +609,7 @@ function ResidentDetailContent() {
   if (error || !resident) {
     return (
       <DashboardLayout 
-        currentPage="residents"
-        searchTerm={globalSearchTerm}
+          searchTerm={globalSearchTerm}
         onSearchChange={setGlobalSearchTerm}
       >
         <div className="p-6">
@@ -639,7 +637,6 @@ function ResidentDetailContent() {
 
   return (
     <DashboardLayout 
-      currentPage="residents"
       searchTerm={globalSearchTerm}
       onSearchChange={setGlobalSearchTerm}
     >

@@ -568,7 +568,7 @@ function RBIFormContent() {
 
   if (loading) {
     return (
-      <DashboardLayout currentPage="reports">
+      <DashboardLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -582,7 +582,7 @@ function RBIFormContent() {
   // Show household selection interface if no household is specified or not found
   if (!householdId || (error && !household)) {
     return (
-      <DashboardLayout currentPage="reports">
+      <DashboardLayout>
         <div className="p-6">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
@@ -605,7 +605,7 @@ function RBIFormContent() {
   }
 
   return (
-    <DashboardLayout currentPage="reports">
+    <DashboardLayout>
       <div className="w-full min-h-screen bg-white p-6 print:p-2">
         {/* Header */}
         <div className="text-center mb-8">

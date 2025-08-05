@@ -104,7 +104,6 @@ function NotificationsContent() {
 
   return (
     <DashboardLayout 
-      currentPage="notifications"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

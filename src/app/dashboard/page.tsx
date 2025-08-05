@@ -60,7 +60,6 @@ function DashboardContent() {
 
   return (
     <DashboardLayout 
-      currentPage="dashboard"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

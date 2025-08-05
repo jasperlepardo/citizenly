@@ -314,7 +314,6 @@ function UsersManagementContent() {
   if (loading) {
     return (
       <DashboardLayout 
-        currentPage="admin"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
       >
@@ -333,7 +332,6 @@ function UsersManagementContent() {
 
   return (
     <DashboardLayout 
-      currentPage="admin"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

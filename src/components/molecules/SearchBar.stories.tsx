@@ -254,10 +254,9 @@ export const AllVariants: Story = {
 };
 
 // Interactive Example
-export const InteractiveExample: Story = {
-  render: () => {
-    const [searchResults, setSearchResults] = useState<string[]>([]);
-    const [searchValue, setSearchValue] = useState('');
+const InteractiveSearchDemo = () => {
+  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState('');
     
     // Mock search data
     const mockData = [
@@ -327,7 +326,10 @@ export const InteractiveExample: Story = {
         </div>
       </div>
     );
-  },
+};
+
+export const InteractiveExample: Story = {
+  render: () => <InteractiveSearchDemo />,
   parameters: {
     layout: 'padded',
   },

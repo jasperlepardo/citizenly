@@ -271,7 +271,6 @@ function ResidentsContent() {
 
   return (
     <DashboardLayout 
-      currentPage="residents"
       searchTerm={globalSearchTerm}
       onSearchChange={setGlobalSearchTerm}
     >

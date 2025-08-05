@@ -13,7 +13,6 @@ function CreateHouseholdForm() {
 
   return (
     <DashboardLayout 
-      currentPage="household"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

@@ -10,7 +10,6 @@ function JudiciaryContent() {
 
   return (
     <DashboardLayout 
-      currentPage="judiciary"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

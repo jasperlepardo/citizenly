@@ -115,7 +115,6 @@ function HouseholdDetailContent() {
   if (loading) {
     return (
       <DashboardLayout 
-        currentPage="households"
         searchTerm={globalSearchTerm}
         onSearchChange={setGlobalSearchTerm}
       >
@@ -134,7 +133,6 @@ function HouseholdDetailContent() {
   if (error || !household) {
     return (
       <DashboardLayout 
-        currentPage="households"
         searchTerm={globalSearchTerm}
         onSearchChange={setGlobalSearchTerm}
       >
@@ -163,7 +161,6 @@ function HouseholdDetailContent() {
 
   return (
     <DashboardLayout 
-      currentPage="households"
       searchTerm={globalSearchTerm}
       onSearchChange={setGlobalSearchTerm}
     >

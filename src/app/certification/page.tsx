@@ -49,7 +49,6 @@ function CertificationContent() {
 
   return (
     <DashboardLayout 
-      currentPage="certification"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

@@ -13,7 +13,6 @@ function CreateResidentForm() {
 
   return (
     <DashboardLayout 
-      currentPage="residents"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

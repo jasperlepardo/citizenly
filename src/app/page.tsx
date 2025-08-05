@@ -41,7 +41,6 @@ function HomeContent() {
 
   return (
     <DashboardLayout 
-      currentPage="dashboard"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

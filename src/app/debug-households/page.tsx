@@ -77,7 +77,7 @@ function DebugHouseholdsContent() {
 
   if (loading) {
     return (
-      <DashboardLayout currentPage="reports">
+      <DashboardLayout>
         <div className="p-6">
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
@@ -91,7 +91,7 @@ function DebugHouseholdsContent() {
   }
 
   return (
-    <DashboardLayout currentPage="reports">
+    <DashboardLayout>
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Database Debug Information</h1>
         

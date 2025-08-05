@@ -236,7 +236,6 @@ function HouseholdsContent() {
 
   return (
     <DashboardLayout 
-      currentPage="households"
       searchTerm={globalSearchTerm}
       onSearchChange={setGlobalSearchTerm}
     >

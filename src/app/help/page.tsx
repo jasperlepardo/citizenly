@@ -106,7 +106,6 @@ function HelpContent() {
 
   return (
     <DashboardLayout 
-      currentPage="help"
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
     >

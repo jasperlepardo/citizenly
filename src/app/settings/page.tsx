@@ -36,7 +36,7 @@ export default function SettingsPage() {
   ]
 
   return (
-    <DashboardLayout currentPage="settings">
+    <DashboardLayout>
       <div className="p-6">
         {/* Page Header */}
         <div className="flex items-start justify-between mb-6">
