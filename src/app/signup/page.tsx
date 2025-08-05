@@ -256,7 +256,7 @@ export default function SignupPage() {
       });
       setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
       setStep('success');
-    } catch (error: any) {
+    } catch (error: unknown) {
       logError(
         error instanceof Error ? error : new Error('Unknown signup error'),
         'SIGNUP_PROCESS'

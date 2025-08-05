@@ -93,7 +93,7 @@ function UsersManagementContent() {
 
       setPendingUsers(formattedUsers.filter(u => u.status === 'pending_approval'));
       setActiveUsers(formattedUsers.filter(u => u.status === 'active'));
-    } catch (error: any) {
+    } catch (error) {
       logError(error, 'USERS_LOAD_ERROR');
     } finally {
       setLoading(false);
@@ -136,7 +136,7 @@ function UsersManagementContent() {
         userEmail,
         context: 'user_approval',
       });
-    } catch (error: any) {
+    } catch (error) {
       logError(error, 'USER_APPROVAL_ERROR');
       logger.error('User approval failed', { userId, userEmail });
       alert('Failed to approve user. Please try again.');
@@ -184,7 +184,7 @@ function UsersManagementContent() {
         userEmail,
         context: 'user_rejection',
       });
-    } catch (error: any) {
+    } catch (error) {
       logError(error, 'USER_REJECTION_ERROR');
       logger.error('User rejection failed', { userId, userEmail });
       alert('Failed to reject user. Please try again.');
@@ -231,7 +231,7 @@ function UsersManagementContent() {
         userEmail,
         context: 'user_suspension',
       });
-    } catch (error: any) {
+    } catch (error) {
       logError(error, 'USER_SUSPENSION_ERROR');
       logger.error('User suspension failed', { userId, userEmail });
       alert('Failed to suspend user. Please try again.');

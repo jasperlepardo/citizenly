@@ -44,7 +44,7 @@ function ResidentsContent() {
   const { user, loading: authLoading, userProfile } = useAuth();
   const [residents, setResidents] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
-  const [,] = useState(0);
+  const [_unused] = useState(0);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
@@ -59,6 +59,7 @@ function ResidentsContent() {
     if (!authLoading && user && userProfile?.barangay_code) {
       loadResidents();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     user,
     authLoading,

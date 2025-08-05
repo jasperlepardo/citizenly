@@ -14,7 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface CustomRenderOptions extends RenderOptions {
   // Add custom options here
-  initialProps?: Record<string, any>;
+  initialProps?: Record<string, unknown>;
   queryClient?: QueryClient;
 }
 
@@ -84,7 +84,43 @@ function renderWithForm(
 /**
  * Create mock resident data
  */
-export const createMockResident = (overrides: Partial<any> = {}) => ({
+interface MockResident {
+  id: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  suffix: string | null;
+  birthdate: string;
+  age: number;
+  gender: string;
+  civil_status: string;
+  philsys_number: string;
+  household_code: string;
+  family_position: string;
+  region_code: string;
+  province_code: string;
+  city_municipality_code: string;
+  barangay_code: string;
+  is_labor_force: boolean;
+  is_employed: boolean;
+  is_unemployed: boolean;
+  is_ofw: boolean;
+  is_pwd: boolean;
+  is_out_of_school_children: boolean;
+  is_out_of_school_youth: boolean;
+  is_senior_citizen: boolean;
+  is_registered_senior_citizen: boolean;
+  is_solo_parent: boolean;
+  is_indigenous_people: boolean;
+  is_migrant: boolean;
+  mobile_number: string;
+  email_address: string;
+  employment_status: string;
+  occupation: string;
+  highest_educational_attainment: string;
+}
+
+export const createMockResident = (overrides: Partial<MockResident> = {}): MockResident => ({
   id: 'test-resident-id',
   first_name: 'Juan',
   middle_name: 'Cruz',
@@ -135,7 +171,26 @@ export const createMockResident = (overrides: Partial<any> = {}) => ({
 /**
  * Create mock household data
  */
-export const createMockHousehold = (overrides: Partial<any> = {}) => ({
+interface MockHousehold {
+  id: string;
+  code: string;
+  household_type:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'grandparents'
+    | 'stepfamily';
+  total_members: number;
+  head_name: string;
+  barangay_code: string;
+  street_name: string;
+  house_number: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const createMockHousehold = (overrides: Partial<MockHousehold> = {}): MockHousehold => ({
   id: 'test-household-id',
   code: 'RRPPMMBBB-SSSS-TTTT-HHHH',
   household_type: 'nuclear' as const,
@@ -152,7 +207,24 @@ export const createMockHousehold = (overrides: Partial<any> = {}) => ({
 /**
  * Create mock sectoral information
  */
-export const createMockSectoralInfo = (overrides: Partial<any> = {}) => ({
+interface MockSectoralInfo {
+  is_labor_force: boolean;
+  is_employed: boolean;
+  is_unemployed: boolean;
+  is_ofw: boolean;
+  is_pwd: boolean;
+  is_out_of_school_children: boolean;
+  is_out_of_school_youth: boolean;
+  is_senior_citizen: boolean;
+  is_registered_senior_citizen: boolean;
+  is_solo_parent: boolean;
+  is_indigenous_people: boolean;
+  is_migrant: boolean;
+}
+
+export const createMockSectoralInfo = (
+  overrides: Partial<MockSectoralInfo> = {}
+): MockSectoralInfo => ({
   is_labor_force: false,
   is_employed: false,
   is_unemployed: false,
@@ -171,7 +243,14 @@ export const createMockSectoralInfo = (overrides: Partial<any> = {}) => ({
 /**
  * Create mock address selection
  */
-export const createMockAddress = (overrides: Partial<any> = {}) => ({
+interface MockAddress {
+  region: string;
+  province: string;
+  city: string;
+  barangay: string;
+}
+
+export const createMockAddress = (overrides: Partial<MockAddress> = {}): MockAddress => ({
   region: '01',
   province: '0128',
   city: '012801',

@@ -62,6 +62,7 @@ function HouseholdsContent() {
     if (!authLoading && user && userProfile?.barangay_code) {
       loadHouseholds();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, userProfile, localSearchTerm]);
 
   const loadHouseholds = async () => {
@@ -132,9 +133,22 @@ function HouseholdsContent() {
               .single();
 
             if (barangayData) {
-              const cityMun = barangayData.psgc_cities_municipalities as any;
-              const province = cityMun.psgc_provinces as any;
-              const region = province.psgc_regions as any;
+              const cityMunData = barangayData.psgc_cities_municipalities as unknown;
+              const cityMun = cityMunData as {
+                code: string;
+                name: string;
+                type: string;
+                psgc_provinces: {
+                  code: string;
+                  name: string;
+                  psgc_regions: {
+                    code: string;
+                    name: string;
+                  };
+                };
+              };
+              const province = cityMun.psgc_provinces;
+              const region = province.psgc_regions;
 
               geoInfo = {
                 barangay_info: {

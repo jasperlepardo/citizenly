@@ -56,8 +56,8 @@ interface AddressInfo {
 }
 
 function HouseholdSelector() {
-  const { userProfile } = useAuth();
-  const [households, setHouseholds] = useState<Household[]>([]);
+  // const { userProfile } = useAuth();
+  // const [households, setHouseholds] = useState<Household[]>([]);
   const [filteredHouseholds, setFilteredHouseholds] = useState<Household[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [houseNumberFilter, setHouseNumberFilter] = useState('');
@@ -400,7 +400,7 @@ function RBIFormContent() {
   const [addressInfo, setAddressInfo] = useState<AddressInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [availableHouseholds, setAvailableHouseholds] = useState<Household[]>([]);
+  const [_availableHouseholds, setAvailableHouseholds] = useState<Household[]>([]);
 
   // Get household ID from URL params or use a default
   const householdId = searchParams.get('household') || searchParams.get('id');

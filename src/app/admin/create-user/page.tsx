@@ -46,11 +46,17 @@ function CreateUserContent() {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [createdUser, setCreatedUser] = useState<any>(null);
+  interface CreatedUser {
+    email: string;
+    name: string;
+    role: string;
+  }
+  const [createdUser, setCreatedUser] = useState<CreatedUser | null>(null);
 
   // Load available roles
   useEffect(() => {
     loadRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadRoles = async () => {
@@ -259,7 +265,7 @@ function CreateUserContent() {
         role: roles.find(r => r.id === formData.roleId)?.name || 'resident',
       });
       setSuccess(true);
-    } catch (error: any) {
+    } catch (error) {
       logError(
         error instanceof Error ? error : new Error('Unknown user creation error'),
         'USER_CREATION'
