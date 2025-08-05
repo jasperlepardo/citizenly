@@ -1,5 +1,6 @@
 'use client';
 
+// Button component - Testing Node.js 20 fix for Storybook deployment
 import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -186,3 +187,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
+// Test automated deployment - Wed Aug  6 04:41:55 PST 2025
+// Retry automated deployment - Wed Aug  6 04:47:14 PST 2025
+// Fix Vercel deployment - deploy static files - Wed Aug  6 04:54:41 PST 2025
+// Fixed Vercel config - disable build and serve static files - Mon Aug  5 17:45:12 PST 2025

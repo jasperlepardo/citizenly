@@ -88,21 +88,21 @@ export default function LoginForm({
 
   return (
     <div className={`w-full max-w-md mx-auto ${className}`}>
-      <div className="bg-white rounded-lg shadow-md p-8">
+      <div className="bg-surface rounded-lg shadow-lg border border-default p-8">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Sign In to RBI System</h1>
-          <p className="text-gray-600 text-sm">Records of Barangay Inhabitant System</p>
+          <h1 className="text-2xl font-bold text-primary mb-2">Sign In to RBI System</h1>
+          <p className="text-secondary text-sm">Records of Barangay Inhabitant System</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* General Error */}
           {errors.general && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="p-4 bg-danger-50 border border-danger-300 rounded-lg">
               <div className="flex items-start gap-3">
-                <span className="text-red-600 mt-0.5">⚠️</span>
+                <span className="text-danger-600 mt-0.5">⚠️</span>
                 <div>
-                  <h4 className="text-red-800 font-medium">Login Failed</h4>
-                  <p className="text-red-700 text-sm">{errors.general}</p>
+                  <h4 className="text-danger-800 font-medium">Login Failed</h4>
+                  <p className="text-danger-700 text-sm">{errors.general}</p>
                 </div>
               </div>
             </div>
@@ -177,13 +177,13 @@ export default function LoginForm({
 
         {/* Footer */}
         <div className="mt-6 text-center space-y-3">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-secondary">
             Don't have an account?{' '}
-            <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+            <a href="/signup" className="font-medium text-primary-400 hover:text-primary-300">
               Create one here
             </a>
           </p>
-          <p className="text-xs text-gray-500">Need help? Contact your Barangay Administrator</p>
+          <p className="text-xs text-muted">Need help? Contact your Barangay Administrator</p>
         </div>
       </div>
     </div>

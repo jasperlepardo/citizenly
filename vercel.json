@@ -1,7 +1,16 @@
 {
   "version": 2,
-  "framework": "nextjs",
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "outputDirectory": ".next"
+  "framework": "nextjs",
+  "github": {
+    "enabled": true,
+    "autoAlias": false
+  },
+  "git": {
+    "deploymentEnabled": {
+      "develop": true,
+      "feature/*": true
+    }
+  }
 }

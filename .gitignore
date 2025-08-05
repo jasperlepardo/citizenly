@@ -73,7 +73,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - allow public directory for Storybook static assets
 
 # Vuepress build output
 .vuepress/dist
@@ -228,3 +228,4 @@ docs/.doctrees/
 database/sample\ data/psgc/psgc_barangays.csv
 database/sample\ data/psgc/psgc_cities_municipalities.csv
 *storybook.log
+.vercel
