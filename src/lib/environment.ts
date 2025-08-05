@@ -95,10 +95,6 @@ export const getSupabaseConfig = () => {
         schema: 'public',
       },
 
-      realtime: {
-        enabled: config.database.enableRealtime,
-      },
-
       global: {
         headers: {
           'Cache-Control': isProduction() ? 'public, max-age=3600' : 'no-cache',
