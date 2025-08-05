@@ -235,7 +235,7 @@ export default function AddressSearch({
                 />
               </svg>
             </div>
-            <div>No addresses found for "{query}"</div>
+            <div>No addresses found for &quot;{query}&quot;</div>
             <div className="text-xs">
               Try searching for region, province, city, or barangay names
             </div>
