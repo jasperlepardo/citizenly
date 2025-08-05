@@ -5,15 +5,21 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Check if we're in a valid Supabase environment
+export const isSupabaseAvailable = () => {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co'
+  );
+};
+
 // Supabase configuration with fallback for build time
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
-// Only throw error at runtime, not build time
-if (
-  typeof window !== 'undefined' &&
-  (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-) {
+// Only throw error at runtime when Supabase is actually needed
+if (typeof window !== 'undefined' && !isSupabaseAvailable()) {
   throw new Error('Missing Supabase environment variables. Please check .env.local file.');
 }
 
@@ -33,15 +39,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     },
   },
 });
-
-// Check if we're in a valid runtime environment
-export const isSupabaseAvailable = () => {
-  return (
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co'
-  );
-};
 
 // Force schema refresh function
 export const refreshSchema = async () => {
