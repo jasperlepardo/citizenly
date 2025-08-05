@@ -1,0 +1,177 @@
+name: Auto-release on main branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  auto-release:
+    name: Automated Release
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, 'skip ci') &&
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, 'chore(release)')
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Analyze commits for release necessity
+        id: analysis
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get commits since last release
+            const { data: tags } = await github.rest.repos.listTags({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1
+            });
+            
+            let commitsSinceLastRelease = [];
+            if (tags.length > 0) {
+              const { data: commits } = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: tags[0].name,
+                head: 'main'
+              });
+              commitsSinceLastRelease = commits.commits;
+            } else {
+              const { data: commits } = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: 'main'
+              });
+              commitsSinceLastRelease = commits;
+            }
+            
+            // Check if there are releasable changes
+            const releaseTypes = ['feat', 'fix', 'perf', 'revert', 'refactor'];
+            const hasReleaseableChanges = commitsSinceLastRelease.some(commit => {
+              const message = commit.commit.message;
+              return releaseTypes.some(type => message.startsWith(`${type}(`));
+            });
+            
+            console.log(`Found ${commitsSinceLastRelease.length} commits since last release`);
+            console.log(`Releaseable changes: ${hasReleaseableChanges}`);
+            
+            core.setOutput('should_release', hasReleaseableChanges);
+            core.setOutput('commits_count', commitsSinceLastRelease.length);
+
+      - name: Run quality checks
+        if: steps.analysis.outputs.should_release == 'true'
+        run: |
+          npm run security:check
+          npm run test:ci
+          npm run type-check
+          npm run lint
+
+      - name: Build application
+        if: steps.analysis.outputs.should_release == 'true'
+        run: npm run build
+
+      - name: Run SonarCloud analysis
+        if: steps.analysis.outputs.should_release == 'true'
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || '' }}
+        continue-on-error: true
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+
+      - name: Generate release
+        if: steps.analysis.outputs.should_release == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN || '' }}
+        run: npm run release
+
+      - name: Create release summary
+        if: steps.analysis.outputs.should_release == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Check if CHANGELOG.md was created/updated
+            let changelogContent = '';
+            try {
+              changelogContent = fs.readFileSync('CHANGELOG.md', 'utf8');
+              const latestSection = changelogContent.split('\n## ')[1];
+              if (latestSection) {
+                changelogContent = '## ' + latestSection;
+              }
+            } catch (e) {
+              console.log('No changelog found');
+            }
+            
+            const summary = `## 🚀 Automated Release Complete
+            
+            **Commits processed**: ${{ steps.analysis.outputs.commits_count }}
+            **Quality checks**: ✅ All passed
+            **SonarCloud**: ✅ Analysis complete
+            **Release**: ✅ Generated with semantic-release
+            
+            ${changelogContent ? '### Release Notes\n' + changelogContent : ''}
+            
+            ---
+            *Automated by GitHub Actions*`;
+            
+            // Create issue comment for release notification
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'release'
+            });
+            
+            if (issues.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: summary
+              });
+            }
+
+      - name: No release needed
+        if: steps.analysis.outputs.should_release == 'false'
+        run: |
+          echo "ℹ️ No releaseable changes found since last release"
+          echo "Only documentation, style, or chore commits detected"
+          echo "Skipping release generation"

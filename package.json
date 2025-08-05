@@ -32,6 +32,7 @@
     "release:finish": "./scripts/git-flow-helpers.sh finish-release",
     "hotfix:start": "./scripts/git-flow-helpers.sh start-hotfix",
     "flow:status": "./scripts/git-flow-helpers.sh status",
+    "pr:create": "./scripts/create-pr.sh",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

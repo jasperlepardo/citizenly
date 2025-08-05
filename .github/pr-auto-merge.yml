@@ -1,0 +1,23 @@
+# Auto-merge configuration
+# Place this in repository settings > General > Pull Requests
+
+# Enable auto-merge for PRs that meet criteria:
+# 1. All required status checks pass
+# 2. At least 1 approval (when required)
+# 3. No changes requested
+# 4. Not a draft PR
+
+# Configuration steps:
+# 1. Go to Settings > General > Pull Requests
+# 2. Check "Allow auto-merge"
+# 3. Set up branch protection rules for main:
+#    - Require pull request reviews before merging
+#    - Require status checks to pass before merging
+#    - Require branches to be up to date before merging
+#    - Include administrators
+
+# Command to enable auto-merge on PRs:
+# gh pr merge --auto --squash
+
+# Or via GitHub CLI in workflows:
+# gh pr merge $PR_NUMBER --auto --squash --subject "Auto-merge: $TITLE"
