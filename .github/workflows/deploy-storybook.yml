@@ -47,8 +47,8 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_STORYBOOK_PROJECT_ID }}
-          working-directory: ./
-          vercel-args: '--local-config vercel-storybook.json --prod'
+          working-directory: ./storybook-static
+          vercel-args: '--prod'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           scope: ${{ secrets.VERCEL_ORG_ID }}
         
