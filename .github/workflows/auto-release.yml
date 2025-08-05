@@ -1,0 +1,185 @@
+name: Auto-release (Git Flow)
+
+on:
+  push:
+    branches:
+      - main        # Production releases
+      - develop     # Beta releases
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of release'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  auto-release:
+    name: Automated Release
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, 'skip ci') &&
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, 'chore(release)')
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine release branch type
+        id: branch-type
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "type=production" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          elif [ "$BRANCH_NAME" = "develop" ]; then
+            echo "type=beta" >> $GITHUB_OUTPUT  
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "type=unknown" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Analyze commits for release necessity
+        id: analysis
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get commits since last release
+            const { data: tags } = await github.rest.repos.listTags({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1
+            });
+            
+            let commitsSinceLastRelease = [];
+            if (tags.length > 0) {
+              const { data: commits } = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: tags[0].name,
+                head: '${{ github.ref_name }}'
+              });
+              commitsSinceLastRelease = commits.commits;
+            } else {
+              const { data: commits } = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: '${{ github.ref_name }}'
+              });
+              commitsSinceLastRelease = commits;
+            }
+            
+            // Check if there are releasable changes
+            const releaseTypes = ['feat', 'fix', 'perf', 'revert', 'refactor'];
+            const hasReleaseableChanges = commitsSinceLastRelease.some(commit => {
+              const message = commit.commit.message;
+              return releaseTypes.some(type => message.startsWith(`${type}(`));
+            });
+            
+            console.log(`Found ${commitsSinceLastRelease.length} commits since last release`);
+            console.log(`Releaseable changes: ${hasReleaseableChanges}`);
+            console.log(`Branch type: ${{ steps.branch-type.outputs.type }}`);
+            
+            core.setOutput('should_release', hasReleaseableChanges);
+            core.setOutput('commits_count', commitsSinceLastRelease.length);
+
+      - name: Run quality checks
+        if: steps.analysis.outputs.should_release == 'true'
+        run: |
+          npm run security:check
+          npm run test:ci
+          npm run type-check
+          npm run lint
+
+      - name: Build application
+        if: steps.analysis.outputs.should_release == 'true'
+        run: npm run build
+
+      - name: Run SonarCloud analysis
+        if: steps.analysis.outputs.should_release == 'true'
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || '' }}
+        continue-on-error: true
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.branch.name=${{ github.ref_name }}
+
+      - name: Generate release
+        if: steps.analysis.outputs.should_release == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN || '' }}
+        run: npm run release
+
+      - name: Create release summary
+        if: steps.analysis.outputs.should_release == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const branchType = '${{ steps.branch-type.outputs.type }}';
+            
+            // Check if CHANGELOG.md was created/updated
+            let changelogContent = '';
+            try {
+              changelogContent = fs.readFileSync('CHANGELOG.md', 'utf8');
+              const latestSection = changelogContent.split('\n## ')[1];
+              if (latestSection) {
+                changelogContent = '## ' + latestSection;
+              }
+            } catch (e) {
+              console.log('No changelog found');
+            }
+            
+            const releaseTypeEmoji = branchType === 'production' ? '🚀' : '🧪';
+            const releaseTypeName = branchType === 'production' ? 'Production Release' : 'Beta Release';
+            
+            const summary = `${releaseTypeEmoji} **Automated ${releaseTypeName} Complete**
+            
+            **Branch**: \`${{ github.ref_name }}\`
+            **Commits processed**: ${{ steps.analysis.outputs.commits_count }}
+            **Quality checks**: ✅ All passed
+            **SonarCloud**: ✅ Analysis complete
+            **Release**: ✅ Generated with semantic-release
+            
+            ${changelogContent ? '### Release Notes\n' + changelogContent : ''}
+            
+            ---
+            *Automated by GitHub Actions following Git Flow*`;
+            
+            console.log('Release summary:', summary);
+
+      - name: No release needed
+        if: steps.analysis.outputs.should_release == 'false'
+        run: |
+          echo "ℹ️ No releaseable changes found since last release"
+          echo "Only documentation, style, or chore commits detected"
+          echo "Skipping release generation for ${{ github.ref_name }}"

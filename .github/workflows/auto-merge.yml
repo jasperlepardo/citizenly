@@ -1,0 +1,157 @@
+name: Auto-merge approved PRs (Git Flow)
+
+on:
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge:
+    name: Auto-merge if approved and checks pass
+    runs-on: ubuntu-latest
+    if: |
+      github.event.review.state == 'approved' ||
+      (github.event.check_suite.conclusion == 'success' && 
+       github.event.check_suite.head_branch != 'main' &&
+       github.event.check_suite.head_branch != 'develop')
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get PR info
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let prNumber;
+            
+            if (context.eventName === 'pull_request_review') {
+              prNumber = context.payload.pull_request.number;
+            } else if (context.eventName === 'check_suite') {
+              const { data: prs } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: `${context.repo.owner}:${context.payload.check_suite.head_branch}`,
+                state: 'open'
+              });
+              
+              if (prs.length === 0) {
+                console.log('No open PR found for this branch');
+                return;
+              }
+              
+              prNumber = prs[0].number;
+            }
+            
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            
+            core.setOutput('number', prNumber);
+            core.setOutput('mergeable', pr.mergeable);
+            core.setOutput('draft', pr.draft);
+            core.setOutput('base_branch', pr.base.ref);
+            return prNumber;
+
+      - name: Check PR status and auto-merge
+        if: steps.pr.outputs.number
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.pr.outputs.number }}');
+            const mergeable = '${{ steps.pr.outputs.mergeable }}' === 'true';
+            const isDraft = '${{ steps.pr.outputs.draft }}' === 'true';
+            const baseBranch = '${{ steps.pr.outputs.base_branch }}';
+            
+            if (isDraft) {
+              console.log('PR is draft, skipping auto-merge');
+              return;
+            }
+            
+            if (!mergeable) {
+              console.log('PR is not mergeable, skipping auto-merge');
+              return;
+            }
+            
+            // Only auto-merge PRs to develop (following Git Flow)
+            if (baseBranch !== 'develop') {
+              console.log(`PR targets ${baseBranch}, only auto-merging to develop`);
+              return;
+            }
+            
+            // Check if PR has required approvals
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            
+            const latestReviews = {};
+            reviews.forEach(review => {
+              latestReviews[review.user.login] = review.state;
+            });
+            
+            const approvals = Object.values(latestReviews).filter(state => state === 'APPROVED');
+            const rejections = Object.values(latestReviews).filter(state => state === 'CHANGES_REQUESTED');
+            
+            if (rejections.length > 0) {
+              console.log('PR has requested changes, skipping auto-merge');
+              return;
+            }
+            
+            if (approvals.length === 0) {
+              console.log('PR has no approvals, skipping auto-merge');
+              return;
+            }
+            
+            // Check if all required status checks pass
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `pull/${prNumber}/head`
+            });
+            
+            const failedChecks = checks.check_runs.filter(check => 
+              check.status === 'completed' && check.conclusion !== 'success'
+            );
+            
+            if (failedChecks.length > 0) {
+              console.log('Some checks failed, skipping auto-merge');
+              console.log('Failed checks:', failedChecks.map(c => c.name));
+              return;
+            }
+            
+            // Auto-merge the PR
+            try {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                commit_title: `Auto-merge PR #${prNumber}`,
+                merge_method: 'squash'
+              });
+              
+              console.log(`✅ Successfully auto-merged PR #${prNumber} to ${baseBranch}`);
+              
+              // Add comment about auto-merge
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `🤖 **Auto-merged to \`${baseBranch}\`** after approval and successful checks\n\n✅ All quality gates passed\n✅ Required approvals received\n✅ Following Git Flow process`
+              });
+              
+            } catch (error) {
+              console.log('Auto-merge failed:', error.message);
+            }

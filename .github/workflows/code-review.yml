@@ -6,7 +6,7 @@ name: Automated Code Review
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop]  # Git Flow: features→develop, releases→main
   push:
     branches: [develop, 'feature/**', 'release/**', 'hotfix/**']
 
