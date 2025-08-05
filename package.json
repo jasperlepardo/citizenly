@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/prepare-storybook.js && npm run build-storybook",
+    "build": "next build",
+    "build:full": "next build && node scripts/prepare-storybook.js && npm run build-storybook",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -32,6 +33,13 @@
     "release:finish": "./scripts/git-flow-helpers.sh finish-release",
     "hotfix:start": "./scripts/git-flow-helpers.sh start-hotfix",
     "flow:status": "./scripts/git-flow-helpers.sh status",
+    "workflow": "./scripts/workflow.sh",
+    "new-feature": "./scripts/workflow.sh feature",
+    "commit": "./scripts/workflow.sh commit",
+    "create-pr": "./scripts/workflow.sh pr",
+    "git-status": "./scripts/workflow.sh status",
+    "git-cleanup": "./scripts/workflow.sh cleanup",
+    "complete-flow": "./scripts/workflow.sh complete",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
