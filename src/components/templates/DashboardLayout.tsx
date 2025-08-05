@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
-import { SearchBar } from '@/components/molecules'
+import { SimpleSearchBar as SearchBar } from '@/components/molecules'
 import Navigation from '@/components/organisms/Navigation'
 
 // User dropdown component with details (from original dashboard)
