@@ -5,11 +5,15 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Supabase configuration with fallback for build time
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseAnonKey) {
+// Only throw error at runtime, not build time
+if (
+  typeof window !== 'undefined' &&
+  (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+) {
   throw new Error('Missing Supabase environment variables. Please check .env.local file.');
 }
 
@@ -30,8 +34,22 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+// Check if we're in a valid runtime environment
+export const isSupabaseAvailable = () => {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co'
+  );
+};
+
 // Force schema refresh function
 export const refreshSchema = async () => {
+  if (!isSupabaseAvailable()) {
+    console.log('Supabase not available, skipping schema refresh');
+    return;
+  }
+
   try {
     // Force a schema refresh by making a simple query
     const { error } = await supabase.rpc('version');
