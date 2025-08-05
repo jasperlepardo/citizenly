@@ -7,8 +7,8 @@
  */
 
 import React, { useEffect } from 'react'
-import { Radio, RadioGroup, Input, Textarea } from '../atoms'
-import { FormGroup } from '../molecules'
+import { Radio, RadioGroup, Textarea } from '../atoms'
+import { FormGroup, InputField } from '../molecules'
 
 // Resident Status Interface (matches database schema)
 export interface ResidentStatus {
@@ -190,10 +190,10 @@ export default function ResidentStatusSelector({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="text-lg font-medium text-primary mb-2">
           <span className="text-base">🏠</span> Resident Status Classification
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-secondary">
           Legal and administrative classification of the resident's status in the barangay.
         </p>
       </div>
@@ -220,38 +220,30 @@ export default function ResidentStatusSelector({
       {(value.status_type === 'permanent' || value.status_type === 'temporary') && (
         <FormGroup title="Length of Residency in this Barangay">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Years
-              </label>
-              <Input
-                type="number"
-                value={value.length_of_residency_years || ''}
-                onChange={(e) => handleChange('length_of_residency_years', e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="0"
-                min={0}
-                max={100}
-                disabled={disabled}
-              />
-            </div>
+            <InputField
+              label="Years"
+              type="number"
+              value={value.length_of_residency_years || ''}
+              onChange={(e) => handleChange('length_of_residency_years', e.target.value ? parseInt(e.target.value) : undefined)}
+              placeholder="0"
+              min={0}
+              max={100}
+              disabled={disabled}
+            />
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Months
-              </label>
-              <Input
-                type="number"
-                value={value.length_of_residency_months || ''}
-                onChange={(e) => handleChange('length_of_residency_months', e.target.value ? parseInt(e.target.value) : undefined)}
-                placeholder="0"
-                min={0}
-                max={11}
-                disabled={disabled}
-              />
-            </div>
+            <InputField
+              label="Additional Months"
+              type="number"
+              value={value.length_of_residency_months || ''}
+              onChange={(e) => handleChange('length_of_residency_months', e.target.value ? parseInt(e.target.value) : undefined)}
+              placeholder="0"
+              min={0}
+              max={11}
+              disabled={disabled}
+            />
           </div>
           
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-secondary">
             <strong>Total residency:</strong> {getResidencyDisplay()}
           </div>
         </FormGroup>
@@ -300,10 +292,10 @@ export default function ResidentStatusSelector({
               className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <div className="flex-1">
-              <label htmlFor="is_registered_voter" className="text-sm font-medium text-gray-700">
+              <label htmlFor="is_registered_voter" className="text-sm font-medium text-primary">
                 Registered Voter
               </label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted">
                 Check if resident is registered to vote in this barangay
               </p>
             </div>
@@ -312,31 +304,23 @@ export default function ResidentStatusSelector({
           {/* Voter Details */}
           {value.is_registered_voter && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-7">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Voter ID Number
-                </label>
-                <Input
-                  type="text"
-                  value={value.voter_id_number || ''}
-                  onChange={(e) => handleChange('voter_id_number', e.target.value)}
-                  placeholder="Enter voter ID number"
-                  disabled={disabled}
-                />
-              </div>
+              <InputField
+                label="Voter ID Number"
+                type="text"
+                value={value.voter_id_number || ''}
+                onChange={(e) => handleChange('voter_id_number', e.target.value)}
+                placeholder="Enter voter ID number"
+                disabled={disabled}
+              />
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Precinct Number
-                </label>
-                <Input
-                  type="text"
-                  value={value.precinct_number || ''}
-                  onChange={(e) => handleChange('precinct_number', e.target.value)}
-                  placeholder="Enter precinct number"
-                  disabled={disabled}
-                />
-              </div>
+              <InputField
+                label="Precinct Number"
+                type="text"
+                value={value.precinct_number || ''}
+                onChange={(e) => handleChange('precinct_number', e.target.value)}
+                placeholder="Enter precinct number"
+                disabled={disabled}
+              />
             </div>
           )}
         </div>
@@ -355,10 +339,10 @@ export default function ResidentStatusSelector({
               className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <div className="flex-1">
-              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-gray-700">
+              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-primary">
                 Member of Indigenous Cultural Community
               </label>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted">
                 Check if resident belongs to an Indigenous Cultural Community (ICC) or Indigenous Peoples (IP) group
               </p>
             </div>
@@ -367,31 +351,23 @@ export default function ResidentStatusSelector({
           {/* Indigenous Details */}
           {value.is_indigenous_member && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-7">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tribal Affiliation
-                </label>
-                <Input
-                  type="text"
-                  value={value.tribal_affiliation || ''}
-                  onChange={(e) => handleChange('tribal_affiliation', e.target.value)}
-                  placeholder="e.g., Igorot, Lumad, Mangyan"
-                  disabled={disabled}
-                />
-              </div>
+              <InputField
+                label="Tribal Affiliation"
+                type="text"
+                value={value.tribal_affiliation || ''}
+                onChange={(e) => handleChange('tribal_affiliation', e.target.value)}
+                placeholder="e.g., Igorot, Lumad, Mangyan"
+                disabled={disabled}
+              />
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Indigenous Community
-                </label>
-                <Input
-                  type="text"
-                  value={value.indigenous_community || ''}
-                  onChange={(e) => handleChange('indigenous_community', e.target.value)}
-                  placeholder="e.g., Bontoc, T'boli, Hanunuo"
-                  disabled={disabled}
-                />
-              </div>
+              <InputField
+                label="Indigenous Community"
+                type="text"
+                value={value.indigenous_community || ''}
+                onChange={(e) => handleChange('indigenous_community', e.target.value)}
+                placeholder="e.g., Bontoc, T'boli, Hanunuo"
+                disabled={disabled}
+              />
             </div>
           )}
         </div>

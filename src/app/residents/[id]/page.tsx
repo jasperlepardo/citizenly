@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { DashboardLayout } from '@/components/templates'
+import { DropdownSelect } from '@/components/molecules'
 
 // Tooltip Component
 const Tooltip = ({ children, content }: { children: React.ReactNode, content: string }) => {
@@ -21,9 +22,9 @@ const Tooltip = ({ children, content }: { children: React.ReactNode, content: st
         {children}
       </div>
       {isVisible && (
-        <div className="absolute z-10 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm tooltip bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap">
+        <div className="absolute z-10 px-3 py-2 text-sm font-medium text-inverse bg-neutral-800 rounded-lg shadow-sm tooltip bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap">
           {content}
-          <div className="tooltip-arrow absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+          <div className="tooltip-arrow absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-neutral-800"></div>
         </div>
       )}
     </div>
@@ -493,16 +494,16 @@ function ResidentDetailContent() {
       if (type === 'checkbox') {
         return (
           <div>
-            <dt className="text-sm font-medium text-gray-500">{label}</dt>
+            <dt className="text-sm font-medium text-secondary">{label}</dt>
             <dd className="mt-1">
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={!!value}
                   onChange={(e) => handleFieldChange(field, e.target.checked)}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-default text-blue-600 focus:ring-blue-500"
                 />
-                <span className="ml-2 text-sm text-gray-900">{value ? 'Yes' : 'No'}</span>
+                <span className="ml-2 text-sm text-primary">{value ? 'Yes' : 'No'}</span>
               </label>
             </dd>
           </div>
@@ -512,18 +513,17 @@ function ResidentDetailContent() {
       if (type === 'select' && options) {
         return (
           <div>
-            <dt className="text-sm font-medium text-gray-500">{label}</dt>
+            <dt className="text-sm font-medium text-secondary">{label}</dt>
             <dd className="mt-1">
-              <select
+              <DropdownSelect
+                options={[
+                  { value: '', label: 'Select...' },
+                  ...options.map(option => ({ value: option, label: formatEnumValue(option) }))
+                ]}
                 value={(value as string) || ''}
-                onChange={(e) => handleFieldChange(field, e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
-              >
-                <option value="">Select...</option>
-                {options.map(option => (
-                  <option key={option} value={option}>{formatEnumValue(option)}</option>
-                ))}
-              </select>
+                onChange={(val) => handleFieldChange(field, val)}
+                size="sm"
+              />
             </dd>
           </div>
         )
@@ -537,7 +537,7 @@ function ResidentDetailContent() {
               type={type}
               value={(value as string) || ''}
               onChange={(e) => handleFieldChange(field, e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+              className="block w-full rounded-md border-default shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm bg-surface text-primary"
             />
           </dd>
         </div>
@@ -548,7 +548,7 @@ function ResidentDetailContent() {
     if (type === 'checkbox') {
       return (
         <div className="flex justify-between items-center">
-          <dt className={`text-sm font-medium ${isComputed ? 'text-gray-400' : 'text-gray-500'}`}>
+          <dt className={`text-sm font-medium ${isComputed ? 'text-muted' : 'text-secondary'}`}>
             {label}
             {isComputed && (
               <Tooltip content={getComputedFieldTooltip(field)}>
@@ -566,8 +566,8 @@ function ResidentDetailContent() {
     if (type === 'date') {
       return (
         <div>
-          <dt className="text-sm font-medium text-gray-500">{label}</dt>
-          <dd className="mt-1 text-sm text-gray-900">
+          <dt className="text-sm font-medium text-secondary">{label}</dt>
+          <dd className="mt-1 text-sm text-primary">
             {value ? (
               `${new Date(value as string).toLocaleDateString('en-US', { 
                 year: 'numeric', 
@@ -582,8 +582,8 @@ function ResidentDetailContent() {
     
     return (
       <div>
-        <dt className="text-sm font-medium text-gray-500">{label}</dt>
-        <dd className="mt-1 text-sm text-gray-900">{formatEnumValue(value as string)}</dd>
+        <dt className="text-sm font-medium text-secondary">{label}</dt>
+        <dd className="mt-1 text-sm text-primary">{formatEnumValue(value as string)}</dd>
       </div>
     )
   }
@@ -599,7 +599,7 @@ function ResidentDetailContent() {
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-sm text-neutral-600">Loading resident details...</p>
+              <p className="mt-4 text-sm text-secondary">Loading resident details...</p>
             </div>
           </div>
         </div>
@@ -616,17 +616,17 @@ function ResidentDetailContent() {
       >
         <div className="p-6">
           <div className="max-w-md mx-auto text-center">
-            <div className="bg-white rounded-lg shadow-md border border-neutral-200 p-6">
+            <div className="bg-surface rounded-lg shadow-md border border-default p-6">
               <div className="text-red-600 mb-4">
                 <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
-              <h1 className="font-montserrat font-semibold text-lg text-neutral-900 mb-2">Resident Not Found</h1>
-              <p className="font-montserrat text-neutral-600 text-sm mb-4">{error}</p>
+              <h1 className="font-montserrat font-semibold text-lg text-primary mb-2">Resident Not Found</h1>
+              <p className="font-montserrat text-secondary text-sm mb-4">{error}</p>
               <Link
                 href="/residents"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-neutral-600 border border-neutral-300 rounded-md hover:bg-neutral-50"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary border border-default rounded-md hover:bg-surface-hover"
               >
                 Back to Residents
               </Link>
@@ -645,12 +645,12 @@ function ResidentDetailContent() {
     >
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-        <div className="bg-white shadow-sm border-b border-gray-200 -mx-6 px-6 py-6 mb-8">
+        <div className="bg-surface shadow-sm border-b border-default -mx-6 px-6 py-6 mb-8">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <Link 
                 href="/residents"
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-3 py-2 border border-default shadow-sm text-sm font-medium rounded-md text-secondary bg-surface hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -664,8 +664,8 @@ function ResidentDetailContent() {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">{formatFullName(resident)}</h1>
-                  <p className="text-sm text-gray-500">
+                  <h1 className="text-2xl font-bold text-primary">{formatFullName(resident)}</h1>
+                  <p className="text-sm text-secondary">
                     {calculateAge(resident.birthdate)} years old • Member since {new Date(resident.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -689,9 +689,9 @@ function ResidentDetailContent() {
           {/* Left Column - Main Information */}
           <div className="lg:col-span-2 space-y-8">
             {/* Personal Information Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Personal Information</h3>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Personal Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -706,8 +706,8 @@ function ResidentDetailContent() {
                   {renderEditableField('Mobile Number', 'mobile_number', 'tel')}
                   {renderEditableField('Email Address', 'email', 'email')}
                   <div className="sm:col-span-2">
-                    <dt className="text-sm font-medium text-gray-500">Address</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dt className="text-sm font-medium text-secondary">Address</dt>
+                    <dd className="mt-1 text-sm text-primary">
                       {resident.household ? (
                         <div>
                           <Link 
@@ -729,7 +729,7 @@ function ResidentDetailContent() {
                         </div>
                       ) : (
                         <div>
-                          <div className="text-gray-500">
+                          <div className="text-secondary">
                             {resident.address_info ? (
                               [
                                 'No household assigned',
@@ -753,9 +753,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Education & Employment Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Education & Employment</h3>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Education & Employment</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -765,14 +765,14 @@ function ResidentDetailContent() {
                   {renderEditableField('Occupation Title', 'occupation_title', 'text')}
                   {resident.psoc_code && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">PSOC Code</dt>
-                      <dd className="mt-1 text-sm text-gray-900 font-mono">{resident.psoc_code}</dd>
+                      <dt className="text-sm font-medium text-secondary">PSOC Code</dt>
+                      <dd className="mt-1 text-sm text-primary font-mono">{resident.psoc_code}</dd>
                     </div>
                   )}
                   {resident.psoc_level && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">PSOC Level</dt>
-                      <dd className="mt-1 text-sm text-gray-900">{formatEnumValue(resident.psoc_level)}</dd>
+                      <dt className="text-sm font-medium text-secondary">PSOC Level</dt>
+                      <dd className="mt-1 text-sm text-primary">{formatEnumValue(resident.psoc_level)}</dd>
                     </div>
                   )}
                   <div className="sm:col-span-2">
@@ -784,14 +784,14 @@ function ResidentDetailContent() {
 
             {/* Household Information Card */}
             {resident.household && (
-              <div className="bg-white shadow rounded-lg border border-gray-200">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-medium text-gray-900">Household Information</h3>
+              <div className="bg-surface shadow rounded-lg border border-default">
+                <div className="px-6 py-4 border-b border-default">
+                  <h3 className="text-lg font-medium text-primary">Household Information</h3>
                 </div>
                 <div className="px-6 py-4">
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Household Code</dt>
+                      <dt className="text-sm font-medium text-secondary">Household Code</dt>
                       <dd className="mt-1">
                         <Link 
                           href={`/households/${resident.household.code}`} 
@@ -802,8 +802,8 @@ function ResidentDetailContent() {
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Address</dt>
-                      <dd className="mt-1 text-sm text-gray-900">
+                      <dt className="text-sm font-medium text-secondary">Address</dt>
+                      <dd className="mt-1 text-sm text-primary">
                         <Link 
                           href={`/households/${resident.household.code}`}
                           className="text-blue-600 hover:text-blue-800 hover:underline"
@@ -824,26 +824,26 @@ function ResidentDetailContent() {
                     </div>
                     {resident.household.household_number && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-500">Household Number</dt>
-                        <dd className="mt-1 text-sm text-gray-900 font-mono">{resident.household.household_number}</dd>
+                        <dt className="text-sm font-medium text-secondary">Household Number</dt>
+                        <dd className="mt-1 text-sm text-primary font-mono">{resident.household.household_number}</dd>
                       </div>
                     )}
                     {resident.household.zip_code && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-500">ZIP Code</dt>
-                        <dd className="mt-1 text-sm text-gray-900 font-mono">{resident.household.zip_code}</dd>
+                        <dt className="text-sm font-medium text-secondary">ZIP Code</dt>
+                        <dd className="mt-1 text-sm text-primary font-mono">{resident.household.zip_code}</dd>
                       </div>
                     )}
                     {resident.household.total_members && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-500">Total Members</dt>
-                        <dd className="mt-1 text-sm text-gray-900">{resident.household.total_members}</dd>
+                        <dt className="text-sm font-medium text-secondary">Total Members</dt>
+                        <dd className="mt-1 text-sm text-primary">{resident.household.total_members}</dd>
                       </div>
                     )}
                     {resident.household.head_resident && (
                       <div className="sm:col-span-2">
-                        <dt className="text-sm font-medium text-gray-500">Household Head</dt>
-                        <dd className="mt-1 text-sm text-gray-900">
+                        <dt className="text-sm font-medium text-secondary">Household Head</dt>
+                        <dd className="mt-1 text-sm text-primary">
                           {formatFullName(resident.household.head_resident)}
                         </dd>
                       </div>
@@ -857,9 +857,9 @@ function ResidentDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-8">
             {/* Quick Actions Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Quick Actions</h3>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
               </div>
               <div className="px-6 py-4 space-y-3">
                 {isEditing ? (
@@ -874,7 +874,7 @@ function ResidentDetailContent() {
                     <button 
                       onClick={handleCancel}
                       disabled={isSaving}
-                      className="w-full bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-neutral-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Cancel
                     </button>
@@ -892,10 +892,10 @@ function ResidentDetailContent() {
                     >
                       Edit Information
                     </button>
-                    <button className="w-full bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="w-full bg-surface border border-default text-secondary px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Generate Certificate
                     </button>
-                    <button className="w-full bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="w-full bg-surface border border-default text-secondary px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Export Data
                     </button>
                   </>
@@ -904,10 +904,10 @@ function ResidentDetailContent() {
             </div>
 
             {/* Classifications Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Classifications</h3>
-                <p className="text-xs text-gray-500 mt-1">Fields marked with <span className="text-blue-600 underline">(auto)</span> are calculated automatically. Hover for details.</p>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Classifications</h3>
+                <p className="text-xs text-muted mt-1">Fields marked with <span className="text-blue-600 underline">(auto)</span> are calculated automatically. Hover for details.</p>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
@@ -930,9 +930,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Additional Information Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Additional Information</h3>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Additional Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
@@ -942,8 +942,8 @@ function ResidentDetailContent() {
                   {renderEditableField('Voter ID Number', 'voter_id_number', 'text')}
                   {resident.philsys_last4 && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">PhilSys ID</dt>
-                      <dd className="mt-1 text-sm text-gray-900 font-mono">****-****-****-{resident.philsys_last4}</dd>
+                      <dt className="text-sm font-medium text-secondary">PhilSys ID</dt>
+                      <dd className="mt-1 text-sm text-primary font-mono">****-****-****-{resident.philsys_last4}</dd>
                     </div>
                   )}
                 </dl>
@@ -951,19 +951,19 @@ function ResidentDetailContent() {
             </div>
 
             {/* System Information Card */}
-            <div className="bg-white shadow rounded-lg border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">System Information</h3>
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">System Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Record ID</dt>
-                    <dd className="mt-1 text-xs text-gray-900 font-mono">{resident.id}</dd>
+                    <dt className="text-sm font-medium text-secondary">Record ID</dt>
+                    <dd className="mt-1 text-xs text-primary font-mono">{resident.id}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Created Date</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dt className="text-sm font-medium text-secondary">Created Date</dt>
+                    <dd className="mt-1 text-sm text-primary">
                       {new Date(resident.created_at).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'long', 
@@ -975,8 +975,8 @@ function ResidentDetailContent() {
                   </div>
                   {resident.updated_at && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
-                      <dd className="mt-1 text-sm text-gray-900">
+                      <dt className="text-sm font-medium text-secondary">Last Updated</dt>
+                      <dd className="mt-1 text-sm text-primary">
                         {new Date(resident.updated_at).toLocaleDateString('en-US', { 
                           year: 'numeric', 
                           month: 'long', 
@@ -989,12 +989,12 @@ function ResidentDetailContent() {
                   )}
                   {resident.household_id && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Household ID</dt>
-                      <dd className="mt-1 text-xs text-gray-900 font-mono">{resident.household_id}</dd>
+                      <dt className="text-sm font-medium text-secondary">Household ID</dt>
+                      <dd className="mt-1 text-xs text-primary font-mono">{resident.household_id}</dd>
                     </div>
                   )}
                   <div className="flex justify-between items-center">
-                    <dt className="text-sm font-medium text-gray-500">Active Status</dt>
+                    <dt className="text-sm font-medium text-secondary">Active Status</dt>
                     <dd className={`text-sm font-medium ${
                       resident.is_active ? 'text-green-600' : 'text-red-600'
                     }`}>

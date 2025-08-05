@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { SelectField } from './SelectField';
 
 const meta: Meta<typeof SelectField> = {
@@ -154,7 +154,7 @@ export const ReadOnly: Story = {
     label: 'Read Only Field',
     options: priorityOptions,
     value: 'high',
-    readOnly: true,
+    variant: 'readonly',
     helperText: 'This selection cannot be modified',
   },
 };
@@ -250,7 +250,7 @@ export const AllStates: Story = {
         label="Read Only State"
         options={priorityOptions}
         value="urgent"
-        readOnly
+        variant="readonly"
         helperText="This field is read only"
       />
     </div>

@@ -1,35 +1,63 @@
-import type { StorybookConfig } from '@storybook/nextjs';
+import type { StorybookConfig } from "@storybook/nextjs-vite";
+import { resolve } from "path";
 
 const config: StorybookConfig = {
-  stories: [
+  "stories": [
     "../src/**/*.mdx",
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
-  addons: [
-    "@storybook/addon-essentials",
+  "addons": [
+    "@chromatic-com/storybook",
     "@storybook/addon-docs",
-    "@storybook/addon-controls",
-    "@storybook/addon-actions",
-    "@storybook/addon-viewport",
-    "@storybook/addon-backgrounds",
-    "storybook-dark-mode"
+    "@storybook/addon-onboarding",
+    "@storybook/addon-a11y",
+    "@storybook/addon-vitest"
   ],
-  framework: {
-    name: "@storybook/nextjs",
-    options: {}
+  "framework": {
+    "name": "@storybook/nextjs-vite",
+    "options": {
+      builder: {
+        viteConfigPath: undefined
+      }
+    }
   },
-  staticDirs: ["../public"],
-  typescript: {
-    check: false,
-    reactDocgen: 'react-docgen-typescript',
-    reactDocgenTypescriptOptions: {
-      shouldExtractLiteralValuesFromEnum: true,
-      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
-    },
-  },
-  docs: {
-    defaultName: 'Documentation',
-  },
+  "staticDirs": [
+    "../public"
+  ],
+  async viteFinal(config) {
+    // Ensure React is available globally
+    config.define = {
+      ...config.define,
+      global: 'globalThis',
+    }
+    
+    // Make sure React is available in the global scope
+    config.optimizeDeps = {
+      ...config.optimizeDeps,
+      include: [...(config.optimizeDeps?.include ?? []), 'react', 'react-dom']
+    }
+    
+    // Configure Node.js polyfills for browser environment
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve?.alias,
+        '@': resolve(__dirname, '../src'),
+        crypto: 'crypto-browserify',
+        stream: 'stream-browserify',
+        util: 'util',
+        buffer: 'buffer',
+        process: 'process/browser'
+      }
+    }
+    
+    config.define = {
+      ...config.define,
+      global: 'globalThis',
+      'process.env': {},
+    }
+    
+    return config
+  }
 };
-
 export default config;

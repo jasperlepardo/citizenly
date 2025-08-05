@@ -5,53 +5,54 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center font-['Montserrat'] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 gap-1",
+  "inline-flex items-center justify-center font-system font-medium text-base leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed gap-1 rounded",
   {
     variants: {
       variant: {
         // Primary variants
-        primary: "bg-[#2563eb] text-white hover:bg-[#3b82f6] focus-visible:ring-[#2563eb]",
-        "primary-subtle": "bg-[#dbeafe] text-[#1d4ed8] hover:bg-[#bfdbfe] hover:text-[#1e40af] focus-visible:ring-[#1d4ed8]",
-        "primary-faded": "bg-[#bfdbfe] text-[#1d4ed8] hover:bg-[#93c5fd] hover:text-[#1e40af] focus-visible:ring-[#1d4ed8]",
-        "primary-outline": "border border-[#2563eb] bg-white text-[#1d4ed8] hover:bg-[#dbeafe] hover:text-[#1e40af] focus-visible:ring-[#1d4ed8]",
+        primary: "bg-blue-600 text-white hover:bg-blue-500 focus-visible:ring-blue-600 disabled:bg-background-muted disabled:text-muted",
+        "primary-subtle": "bg-blue-50 text-blue-800 hover:bg-blue-100 hover:text-blue-900 focus-visible:ring-blue-800",
+        "primary-faded": "bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900 focus-visible:ring-blue-800",
+        "primary-outline": "border border-blue-600 bg-surface text-blue-800 hover:bg-blue-50 hover:text-blue-900 focus-visible:ring-blue-800",
         
         // Secondary variants  
-        secondary: "bg-[#7c3aed] text-white hover:bg-[#8b5cf6] focus-visible:ring-[#7c3aed]",
-        "secondary-subtle": "bg-[#ede9fe] text-[#6d28d9] hover:bg-[#ddd6fe] hover:text-[#5b21b6] focus-visible:ring-[#6d28d9]",
-        "secondary-faded": "bg-[#ddd6fe] text-[#6d28d9] hover:bg-[#c4b5fd] hover:text-[#5b21b6] focus-visible:ring-[#6d28d9]",
-        "secondary-outline": "border border-[#7c3aed] bg-white text-[#6d28d9] hover:bg-[#ede9fe] hover:text-[#5b21b6] focus-visible:ring-[#6d28d9]",
+        secondary: "bg-purple-600 text-white hover:bg-purple-500 focus-visible:ring-purple-600",
+        "secondary-subtle": "bg-purple-50 text-purple-800 hover:bg-purple-100 hover:text-purple-900 focus-visible:ring-purple-800",
+        "secondary-faded": "bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900 focus-visible:ring-purple-800",
+        "secondary-outline": "border border-purple-600 bg-surface text-purple-800 hover:bg-purple-50 hover:text-purple-900 focus-visible:ring-purple-800",
         
         // Success variants
-        success: "bg-[#059669] text-white hover:bg-[#10b981] focus-visible:ring-[#059669]",
-        "success-subtle": "bg-[#d1fae5] text-[#047857] hover:bg-[#a7f3d0] hover:text-[#065f46] focus-visible:ring-[#047857]",
-        "success-faded": "bg-[#a7f3d0] text-[#047857] hover:bg-[#6ee7b7] hover:text-[#065f46] focus-visible:ring-[#047857]",
-        "success-outline": "border border-[#065f46] bg-white text-[#047857] hover:bg-[#d1fae5] hover:text-[#065f46] focus-visible:ring-[#047857]",
+        success: "bg-green-600 text-white hover:bg-green-500 focus-visible:ring-green-600",
+        "success-subtle": "bg-green-50 text-green-800 hover:bg-green-100 hover:text-green-900 focus-visible:ring-green-800",
+        "success-faded": "bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900 focus-visible:ring-green-800",
+        "success-outline": "border border-green-600 bg-surface text-green-800 hover:bg-green-50 hover:text-green-900 focus-visible:ring-green-800",
         
         // Warning variants
-        warning: "bg-[#ea580c] text-white hover:bg-[#f97316] focus-visible:ring-[#ea580c]",
-        "warning-subtle": "bg-[#ffedd5] text-[#c2410c] hover:bg-[#fed7aa] hover:text-[#9a3412] focus-visible:ring-[#c2410c]",
-        "warning-faded": "bg-[#fed7aa] text-[#c2410c] hover:bg-[#fdba74] hover:text-[#9a3412] focus-visible:ring-[#c2410c]",
-        "warning-outline": "border border-[#ea580c] bg-white text-[#c2410c] hover:bg-[#ffedd5] hover:text-[#9a3412] focus-visible:ring-[#c2410c]",
+        warning: "bg-orange-600 text-white hover:bg-orange-500 focus-visible:ring-orange-600",
+        "warning-subtle": "bg-orange-50 text-orange-800 hover:bg-orange-100 hover:text-orange-900 focus-visible:ring-orange-800",
+        "warning-faded": "bg-orange-100 text-orange-800 hover:bg-orange-200 hover:text-orange-900 focus-visible:ring-orange-800",
+        "warning-outline": "border border-orange-600 bg-surface text-orange-800 hover:bg-orange-50 hover:text-orange-900 focus-visible:ring-orange-800",
         
         // Danger variants
-        danger: "bg-[#dc2626] text-white hover:bg-[#ef4444] focus-visible:ring-[#dc2626]",
-        "danger-subtle": "bg-[#fee2e2] text-[#b91c1c] hover:bg-[#fecaca] hover:text-[#991b1b] focus-visible:ring-[#b91c1c]",
-        "danger-faded": "bg-[#fecaca] text-[#b91c1c] hover:bg-[#fca5a5] hover:text-[#991b1b] focus-visible:ring-[#b91c1c]",
-        "danger-outline": "border border-[#dc2626] bg-white text-[#b91c1c] hover:bg-[#fee2e2] hover:text-[#991b1b] focus-visible:ring-[#b91c1c]",
+        danger: "bg-red-600 text-white hover:bg-red-500 focus-visible:ring-red-600",
+        "danger-subtle": "bg-red-50 text-red-800 hover:bg-red-100 hover:text-red-900 focus-visible:ring-red-800",
+        "danger-faded": "bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900 focus-visible:ring-red-800",
+        "danger-outline": "border border-red-600 bg-surface text-red-800 hover:bg-red-50 hover:text-red-900 focus-visible:ring-red-800",
         
         // Neutral variants
-        neutral: "bg-[#d4d4d4] text-[#404040] hover:bg-[#e5e5e5] hover:text-[#262626] focus-visible:ring-[#404040]",
-        "neutral-subtle": "bg-[#e5e5e5] text-[#404040] hover:bg-[#d4d4d4] hover:text-[#262626] focus-visible:ring-[#404040]",
-        "neutral-faded": "bg-[#d4d4d4] text-[#404040] hover:bg-[#e5e5e5] hover:text-[#262626] focus-visible:ring-[#404040]",
-        "neutral-outline": "border border-[#d4d4d4] bg-white text-[#404040] hover:bg-[#e5e5e5] hover:text-[#262626] focus-visible:ring-[#404040]",
+        neutral: "bg-border-default text-secondary hover:bg-surface-hover hover:text-primary focus-visible:ring-secondary disabled:bg-background-muted disabled:text-muted",
+        "neutral-subtle": "bg-surface-hover text-secondary hover:bg-border-default hover:text-primary focus-visible:ring-secondary disabled:bg-background-muted disabled:text-muted",
+        "neutral-faded": "bg-border-default text-secondary hover:bg-surface-hover hover:text-primary focus-visible:ring-secondary disabled:bg-background-muted disabled:text-muted",
+        "neutral-outline": "border border-default bg-surface text-secondary hover:bg-surface-hover hover:text-primary focus-visible:ring-secondary disabled:bg-background-muted disabled:text-muted disabled:border-default",
         
         // Ghost variants
-        ghost: "text-[#404040] hover:bg-[#e5e5e5] hover:text-[#262626] focus-visible:ring-[#404040]",
+        ghost: "text-secondary hover:bg-surface-hover hover:text-primary focus-visible:ring-secondary disabled:text-muted",
       },
       size: {
-        sm: "h-8 px-3 text-sm rounded",
-        md: "h-9 px-4 text-base rounded",
-        lg: "h-10 px-6 text-base rounded",
+        sm: "h-8 px-3 text-sm",
+        md: "h-9 px-4 text-base", 
+        lg: "h-10 px-6 text-base",
+        regular: "px-2 py-2 text-base", // p=8 (2rem = 32px, but using px-2 py-2 for content padding)
       },
       iconOnly: {
         true: "aspect-square p-0",
@@ -77,11 +78,16 @@ const buttonVariants = cva(
         size: "lg",
         iconOnly: true,
         class: "h-10 w-10"
+      },
+      {
+        size: "regular",
+        iconOnly: true,
+        class: "h-9 w-9 p-2"
       }
     ],
     defaultVariants: {
       variant: "primary",
-      size: "md",
+      size: "regular",
       iconOnly: false,
       fullWidth: false
     }

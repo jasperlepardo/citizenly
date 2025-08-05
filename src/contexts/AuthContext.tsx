@@ -319,7 +319,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    // Provide a fallback during SSR or if used outside provider
+    return {
+      user: null,
+      session: null,
+      userProfile: null,
+      role: null,
+      loading: true,
+      signIn: async () => ({ error: new Error('AuthProvider not available') }),
+      signOut: async () => {},
+      signUp: async () => ({ error: new Error('AuthProvider not available') }),
+      updateProfile: async () => ({ error: new Error('AuthProvider not available') }),
+      refreshProfile: async () => {}
+    }
   }
   return context
 }

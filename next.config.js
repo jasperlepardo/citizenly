@@ -12,6 +12,19 @@ const nextConfig = {
     NEXT_PUBLIC_APP_NAME: 'RBI System',
     NEXT_PUBLIC_APP_VERSION: '1.0.0',
   },
+  // Serve Storybook at /storybook path
+  async rewrites() {
+    return [
+      {
+        source: '/storybook',
+        destination: '/storybook-static/index.html',
+      },
+      {
+        source: '/storybook/:path*',
+        destination: '/storybook-static/:path*',
+      },
+    ]
+  },
   // Exclude Storybook files from build
   webpack: (config, { isServer }) => {
     config.module.rules.push({

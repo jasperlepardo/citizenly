@@ -22,7 +22,7 @@ function CreateResidentForm() {
         <div className="mb-8 flex items-center gap-4">
           <Link 
             href="/residents"
-            className="inline-flex items-center gap-2 rounded-lg border border-zinc-950/10 bg-white px-3 py-2 text-sm/6 font-medium text-zinc-950 shadow-sm hover:bg-zinc-50 dark:border-white/15 dark:bg-zinc-900 dark:text-white dark:hover:bg-zinc-800"
+            className="inline-flex items-center gap-2 rounded-lg border border-default bg-surface px-3 py-2 text-sm/6 font-medium text-primary shadow-sm hover:bg-surface-hover"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -30,10 +30,10 @@ function CreateResidentForm() {
             Back
           </Link>
           <div>
-            <h1 className="text-2xl/8 font-semibold text-zinc-950 dark:text-white">
+            <h1 className="text-2xl/8 font-semibold text-primary">
               Add New Resident
             </h1>
-            <p className="mt-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+            <p className="mt-2 text-sm/6 text-secondary">
               Complete the form to register a new resident in the system
             </p>
           </div>

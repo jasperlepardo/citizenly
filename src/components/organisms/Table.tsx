@@ -40,7 +40,7 @@ interface TableRowProps {
 
 export function TableRow({ children, className = '' }: TableRowProps) {
   return (
-    <div className={`bg-white dark:bg-white/5 flex items-center ${className}`}>
+    <div className={`bg-surface hover:bg-surface-hover flex items-center transition-colors ${className}`}>
       {children}
     </div>
   )
@@ -67,7 +67,7 @@ export function TableCell({
       <div className={`p-2 ${className}`}>
         <button
           onClick={() => checkbox?.onChange?.(!checkbox.checked)}
-          className="flex items-center justify-center p-0 rounded border border-neutral-300"
+          className="flex items-center justify-center p-0 rounded border border-default"
         >
           <div className="w-4 h-4 flex items-center justify-center">
             {checkbox?.checked && (
@@ -84,7 +84,7 @@ export function TableCell({
   if (type === 'action') {
     return (
       <div className={`p-1 ${className}`}>
-        <button className="p-2 rounded border border-zinc-950/10 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors">
+        <button className="p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
           <div className="w-5 h-5">
             <img alt="actions" className="block w-full h-full" src={imgDots} />
           </div>
@@ -95,7 +95,7 @@ export function TableCell({
 
   return (
     <div className={`p-2 flex-1 ${className}`}>
-      <div className="font-['Montserrat'] text-base font-normal leading-5 text-zinc-900 dark:text-white">
+      <div className="font-['Montserrat'] text-base font-normal leading-5 text-primary">
         {children}
       </div>
     </div>
@@ -118,7 +118,7 @@ interface TableControlsProps {
 
 export function TableControls({ selectAll, actions, search }: TableControlsProps) {
   return (
-    <div className="bg-white dark:bg-white/5 flex items-center justify-between p-0">
+    <div className="bg-surface flex items-center justify-between p-0">
       <div className="flex items-center">
         {selectAll && (
           <div className="flex items-center gap-2 p-2">
@@ -126,7 +126,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
               onClick={() => selectAll.onChange(!selectAll.checked)}
               className="flex items-center gap-2"
             >
-              <div className="flex items-center justify-center p-0 rounded border border-zinc-950/10 dark:border-white/10">
+              <div className="flex items-center justify-center p-0 rounded border border-default">
                 <div className="w-4 h-4 flex items-center justify-center">
                   {selectAll.checked && (
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -135,7 +135,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
                   )}
                 </div>
               </div>
-              <span className="font-['Montserrat'] text-base font-normal text-zinc-900 dark:text-white">
+              <span className="font-['Montserrat'] text-base font-normal text-primary">
                 {selectAll.label || 'Select all'}
               </span>
             </button>
@@ -144,28 +144,28 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
 
         {/* Action Buttons */}
         <div className="flex items-center gap-0 p-1">
-          <button className="flex items-center gap-1 p-2 rounded border border-zinc-950/10 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors">
+          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
             <div className="w-5 h-5">
               <img alt="list" className="block w-full h-full" src={imgList} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-zinc-700 dark:text-zinc-300 px-1">Properties</span>
+            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">Properties</span>
           </button>
           
-          <button className="flex items-center gap-1 p-2 rounded border border-zinc-950/10 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors ml-1">
+          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
               <img alt="sort" className="block w-full h-full" src={imgSort} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-zinc-700 dark:text-zinc-300 px-1">Sort</span>
+            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">Sort</span>
           </button>
           
-          <button className="flex items-center gap-1 p-2 rounded border border-zinc-950/10 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors ml-1">
+          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
               <img alt="filter" className="block w-full h-full" src={imgFilter} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-zinc-700 dark:text-zinc-300 px-1">Filter</span>
+            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">Filter</span>
           </button>
           
-          <button className="p-1 rounded border border-zinc-950/10 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors ml-1">
+          <button className="p-1 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
               <img alt="more" className="block w-full h-full" src={imgMore} />
             </div>
@@ -178,7 +178,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
       {search && (
         <div className="p-1">
           <div className="w-60">
-            <div className="relative rounded bg-white">
+            <div className="relative rounded bg-surface">
               <div className="flex items-center p-2 gap-1">
                 <div className="shrink-0">
                   <div className="w-5 h-5 flex items-center justify-center">
@@ -203,7 +203,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
                 
                 <div className="flex-1 px-1">
                   <input
-                    className="w-full bg-transparent font-['Montserrat'] text-base font-normal leading-5 text-zinc-900 dark:text-white placeholder:text-zinc-500 dark:placeholder:text-zinc-400 border-none outline-none"
+                    className="w-full bg-transparent font-['Montserrat'] text-base font-normal leading-5 text-primary placeholder:text-muted border-none outline-none"
                     placeholder={search.placeholder || 'Search contact'}
                     value={search.value}
                     onChange={(e) => search.onChange(e.target.value)}
@@ -212,7 +212,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
               </div>
               <div 
                 aria-hidden="true" 
-                className="absolute border border-zinc-950/10 dark:border-white/10 border-solid inset-0 pointer-events-none rounded"
+                className="absolute border border-default border-solid inset-0 pointer-events-none rounded"
               />
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Input, Button, Select } from '@/components/atoms'
-import { InputField, SelectField } from '@/components/molecules'
+import { Button } from '@/components/atoms'
+import { InputField, DropdownSelect } from '@/components/molecules'
 
 export interface SearchFilter {
   field: string
@@ -115,20 +115,23 @@ export default function SearchBar({
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={placeholder}
             leftIcon={
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             }
             rightIcon={
               searchTerm && (
-                <button
+                <Button
                   onClick={() => setSearchTerm('')}
-                  className="text-gray-400 hover:text-gray-600"
+                  variant="ghost"
+                  size="sm"
+                  iconOnly
+                  className="text-muted hover:text-secondary h-4 w-4 p-0"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button>
+                </Button>
               )
             }
           />
@@ -160,9 +163,9 @@ export default function SearchBar({
 
       {/* Advanced Filters */}
       {showFilters && filterOptions.length > 0 && (
-        <div className="rounded-lg border border-gray-200 p-4 bg-gray-50 space-y-4">
+        <div className="rounded-lg border border-default p-4 bg-surface-hover space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-gray-900">Advanced Filters</h3>
+            <h3 className="text-sm font-medium text-primary">Advanced Filters</h3>
             <Button
               size="sm"
               variant="primary-outline"
@@ -173,7 +176,7 @@ export default function SearchBar({
           </div>
 
           {filters.length === 0 ? (
-            <p className="text-sm text-gray-500">No filters applied. Click "Add Filter" to add search criteria.</p>
+            <p className="text-sm text-muted">No filters applied. Click "Add Filter" to add search criteria.</p>
           ) : (
             <div className="space-y-3">
               {filters.map((filter, index) => {
@@ -181,16 +184,16 @@ export default function SearchBar({
                 const operatorOptions = getOperatorOptions(fieldOption?.type || 'text')
 
                 return (
-                  <div key={index} className="flex items-center gap-2 p-3 bg-white rounded border border-gray-200">
+                  <div key={index} className="flex items-center gap-2 p-3 bg-surface rounded border border-default">
                     {/* Field Selection */}
                     <div className="w-40">
-                      <SelectField
+                      <DropdownSelect
                         value={filter.field}
-                        onChange={(e) => {
-                          const selectedOption = filterOptions.find(opt => opt.field === e.target.value)
+                        onChange={(value) => {
+                          const selectedOption = filterOptions.find(opt => opt.field === value)
                           handleUpdateFilter(index, {
-                            field: e.target.value,
-                            label: selectedOption?.label || e.target.value,
+                            field: value,
+                            label: selectedOption?.label || value,
                             value: ''
                           })
                         }}
@@ -200,10 +203,10 @@ export default function SearchBar({
 
                     {/* Operator Selection */}
                     <div className="w-32">
-                      <SelectField
+                      <DropdownSelect
                         value={filter.operator}
-                        onChange={(e) => handleUpdateFilter(index, { 
-                          operator: e.target.value as SearchFilter['operator'],
+                        onChange={(value) => handleUpdateFilter(index, { 
+                          operator: value as SearchFilter['operator'],
                           value: '' 
                         })}
                         options={operatorOptions}
@@ -213,9 +216,9 @@ export default function SearchBar({
                     {/* Value Input */}
                     <div className="flex-1">
                       {fieldOption?.type === 'select' ? (
-                        <SelectField
+                        <DropdownSelect
                           value={filter.value.toString()}
-                          onChange={(e) => handleUpdateFilter(index, { value: e.target.value })}
+                          onChange={(value) => handleUpdateFilter(index, { value: value })}
                           options={fieldOption.options || []}
                           placeholder="Select value..."
                         />
@@ -230,7 +233,7 @@ export default function SearchBar({
                             }}
                             placeholder="From"
                           />
-                          <span className="text-gray-500">to</span>
+                          <span className="text-muted">to</span>
                           <InputField
                             type={fieldOption?.type === 'number' ? 'number' : fieldOption?.type === 'date' ? 'date' : 'text'}
                             value={Array.isArray(filter.value) ? filter.value[1]?.toString() || '' : ''}
@@ -286,14 +289,17 @@ export default function SearchBar({
                   : filter.value
                 }
               </span>
-              <button
+              <Button
                 onClick={() => handleRemoveFilter(index)}
-                className="ml-1 text-blue-600 hover:text-blue-800"
+                variant="ghost"
+                size="sm"
+                iconOnly
+                className="ml-1 text-blue-600 hover:text-blue-800 h-3 w-3 p-0"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
           ))}
         </div>

@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { DashboardLayout } from '@/components/templates'
+import { Button } from '@/components/atoms'
 
 export const dynamic = 'force-dynamic'
 
@@ -243,8 +244,8 @@ function HouseholdsContent() {
           {/* Page Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">Households</h1>
-              <p className="font-montserrat font-normal text-sm text-neutral-600">
+              <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">Households</h1>
+              <p className="font-montserrat font-normal text-sm text-secondary">
                 {totalCount} total households
               </p>
             </div>
@@ -265,66 +266,79 @@ function HouseholdsContent() {
           </div>
 
           {/* Table */}
-          <div className="bg-white overflow-hidden">
+          <div className="bg-surface overflow-hidden">
             {/* Table Header */}
-            <div className="bg-white flex items-center p-0 border-b border-neutral-200">
+            <div className="bg-surface flex items-center p-0 border-b border-default">
               {/* Select All */}
               <div className="flex items-center p-2">
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     onClick={handleSelectAll}
-                    className="w-4 h-4 border border-neutral-300 rounded flex items-center justify-center"
+                    variant="neutral-outline"
+                    size="sm"
+                    className="h-4 w-4 p-0 min-w-0"
                   >
                     {selectedAll && (
                       <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
                     )}
-                  </button>
-                  <span className="font-montserrat font-normal text-base text-neutral-800">Select all</span>
+                  </Button>
+                  <span className="font-montserrat font-normal text-base text-primary">Select all</span>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex items-center gap-1 ml-4">
-                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
-                  <div className="w-5 h-5 text-neutral-600">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Button
+                  variant="neutral-outline"
+                  size="sm"
+                  leftIcon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                  </div>
-                  <span className="font-montserrat font-medium text-base text-neutral-700">Properties</span>
-                </button>
+                  }
+                >
+                  Properties
+                </Button>
 
-                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
-                  <div className="w-5 h-5 text-neutral-600">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Button
+                  variant="neutral-outline"
+                  size="sm"
+                  leftIcon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                     </svg>
-                  </div>
-                  <span className="font-montserrat font-medium text-base text-neutral-700">Sort</span>
-                </button>
+                  }
+                >
+                  Sort
+                </Button>
 
-                <button className="bg-white border border-neutral-300 rounded p-2 flex items-center gap-1 hover:bg-neutral-50">
-                  <div className="w-5 h-5 text-neutral-600">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Button
+                  variant="neutral-outline"
+                  size="sm"
+                  leftIcon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
                     </svg>
-                  </div>
-                  <span className="font-montserrat font-medium text-base text-neutral-700">Filter</span>
-                </button>
+                  }
+                >
+                  Filter
+                </Button>
 
-                <button className="bg-white border border-neutral-300 rounded p-1 hover:bg-neutral-50">
-                  <div className="w-5 h-5 text-neutral-600">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                    </svg>
-                  </div>
-                </button>
+                <Button
+                  variant="neutral-outline"
+                  size="sm"
+                  iconOnly
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </Button>
               </div>
 
               {/* Search Households */}
               <div className="ml-auto mr-0">
-                <div className="w-60 bg-white border border-neutral-300 rounded p-2 flex items-center gap-2">
-                  <div className="w-5 h-5 text-neutral-600">
+                <div className="w-60 bg-surface border border-default rounded p-2 flex items-center gap-2">
+                  <div className="w-5 h-5 text-secondary">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -334,33 +348,33 @@ function HouseholdsContent() {
                     placeholder="Search households"
                     value={localSearchTerm}
                     onChange={(e) => setLocalSearchTerm(e.target.value)}
-                    className="flex-1 font-montserrat font-normal text-base text-neutral-400 placeholder-neutral-400 outline-none bg-transparent"
+                    className="flex-1 font-montserrat font-normal text-base text-primary placeholder-muted outline-none bg-transparent"
                   />
                 </div>
               </div>
             </div>
 
             {/* Table Column Headers */}
-            <div className="bg-neutral-50 flex items-center p-0 border-b border-neutral-200">
+            <div className="bg-background-muted flex items-center p-0 border-b border-default">
               {/* Checkbox Column */}
               <div className="p-2 w-12"></div>
               
               {/* Column Headers */}
               <div className="flex-1 grid grid-cols-5 gap-4 p-2">
                 <div className="p-2">
-                  <span className="font-montserrat font-medium text-sm text-neutral-700">Household #</span>
+                  <span className="font-montserrat font-medium text-sm text-secondary">Household #</span>
                 </div>
                 <div className="p-2">
-                  <span className="font-montserrat font-medium text-sm text-neutral-700">Head of Household</span>
+                  <span className="font-montserrat font-medium text-sm text-secondary">Head of Household</span>
                 </div>
                 <div className="p-2">
-                  <span className="font-montserrat font-medium text-sm text-neutral-700">Address</span>
+                  <span className="font-montserrat font-medium text-sm text-secondary">Address</span>
                 </div>
                 <div className="p-2">
-                  <span className="font-montserrat font-medium text-sm text-neutral-700">Members</span>
+                  <span className="font-montserrat font-medium text-sm text-secondary">Members</span>
                 </div>
                 <div className="p-2">
-                  <span className="font-montserrat font-medium text-sm text-neutral-700">Created</span>
+                  <span className="font-montserrat font-medium text-sm text-secondary">Created</span>
                 </div>
               </div>
               
@@ -369,34 +383,36 @@ function HouseholdsContent() {
             </div>
 
             {/* Table Rows */}
-            <div className="divide-y divide-neutral-200">
+            <div className="divide-y divide-border-light">
               {loading ? (
                 <div className="p-8 text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                  <p className="mt-2 text-neutral-600">Loading households...</p>
+                  <p className="mt-2 text-secondary">Loading households...</p>
                 </div>
               ) : households.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-neutral-600">
+                  <p className="text-secondary">
                     {localSearchTerm ? `No households found matching "${localSearchTerm}"` : 'No households found'}
                   </p>
-                  <p className="text-sm text-neutral-500 mt-2">
+                  <p className="text-sm text-muted mt-2">
                     Households are created automatically when you add residents.
                   </p>
                 </div>
               ) : (
                 households.map((household) => (
-                  <div key={household.code} className="bg-white flex items-center p-0 hover:bg-neutral-50">
+                  <div key={household.code} className="bg-surface flex items-center p-0 hover:bg-surface-hover transition-colors">
                     {/* Checkbox */}
                     <div className="p-2">
-                      <button
+                      <Button
                         onClick={() => handleSelectHousehold(household.code)}
-                        className="w-4 h-4 border border-neutral-300 rounded flex items-center justify-center"
+                        variant="neutral-outline"
+                        size="sm"
+                        className="h-4 w-4 p-0 min-w-0"
                       >
                         {selectedHouseholds.has(household.code) && (
                           <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
                         )}
-                      </button>
+                      </Button>
                     </div>
 
                     {/* Content Columns */}
@@ -410,22 +426,22 @@ function HouseholdsContent() {
                         </Link>
                       </div>
                       <div className="p-2">
-                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                        <div className="font-montserrat font-normal text-base text-primary">
                           {formatFullName(household.head_resident)}
                         </div>
                       </div>
                       <div className="p-2">
-                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                        <div className="font-montserrat font-normal text-base text-primary">
                           {formatFullAddress(household)}
                         </div>
                       </div>
                       <div className="p-2">
-                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                        <div className="font-montserrat font-normal text-base text-primary">
                           {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                         </div>
                       </div>
                       <div className="p-2">
-                        <div className="font-montserrat font-normal text-base text-neutral-800">
+                        <div className="font-montserrat font-normal text-base text-primary">
                           {new Date(household.created_at).toLocaleDateString()}
                         </div>
                       </div>
@@ -433,13 +449,15 @@ function HouseholdsContent() {
 
                     {/* Action Menu */}
                     <div className="p-1">
-                      <button className="bg-white border border-neutral-300 rounded p-2 hover:bg-neutral-50">
-                        <div className="w-5 h-5 text-neutral-600">
-                          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                          </svg>
-                        </div>
-                      </button>
+                      <Button
+                        variant="neutral-outline"
+                        size="sm"
+                        iconOnly
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                      </Button>
                     </div>
                   </div>
                 ))

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { Button } from '../atoms'
 
 interface CreateHouseholdModalProps {
   isOpen: boolean
@@ -408,15 +409,18 @@ export default function CreateHouseholdModal({
           <h2 className="font-montserrat font-semibold text-lg text-neutral-900">
             Create New Household
           </h2>
-          <button
+          <Button
             onClick={handleClose}
             disabled={isSubmitting}
-            className="text-neutral-400 hover:text-neutral-600 disabled:opacity-50"
+            variant="ghost"
+            size="sm"
+            iconOnly
+            className="text-neutral-400 hover:text-neutral-600"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Address Info Display */}
@@ -519,21 +523,26 @@ export default function CreateHouseholdModal({
 
           {/* Buttons */}
           <div className="flex gap-3 pt-4">
-            <button
+            <Button
               type="button"
               onClick={handleClose}
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 text-neutral-700 bg-neutral-100 rounded font-montserrat font-medium text-base hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="neutral"
+              size="regular"
+              fullWidth
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-4 py-2 text-white bg-blue-600 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              loading={isSubmitting}
+              variant="primary"
+              size="regular"
+              fullWidth
             >
-              {isSubmitting ? 'Creating...' : 'Create Household'}
-            </button>
+              Create Household
+            </Button>
           </div>
         </form>
       </div>

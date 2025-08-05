@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import Select from '../atoms/Select'
+import { DropdownSelect } from '../molecules'
 import {
   getRegions,
   getProvincesByRegion,
@@ -239,100 +239,68 @@ export default function AddressSelector({
   return (
     <div className={`${className}`}>
       {showLabels && !compact && (
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
+        <h3 className="text-lg font-medium text-primary mb-4">
           <span className="text-base">📍</span> Address Selection
         </h3>
       )}
 
       <div className={containerClass}>
         {/* Region Selection */}
-        <div className={compact ? "" : "space-y-1"}>
-          {showLabels && (
-            <label className="block text-sm font-medium text-gray-700">
-              Region {required && <span className="text-red-500">*</span>}
-            </label>
-          )}
-          <Select
-            options={regionOptions}
-            value={value.region}
-            onChange={handleRegionChange}
-            placeholder="Select Region"
-            disabled={disabled}
-            loading={loadingRegions}
-            error={errors.region}
-            required={required}
-            name="region"
-          />
-        </div>
+        <DropdownSelect
+          label={showLabels ? "Region" : undefined}
+          options={regionOptions}
+          value={value.region}
+          onChange={(val) => handleRegionChange(val)}
+          placeholder="Select Region"
+          disabled={disabled}
+          loading={loadingRegions}
+          errorMessage={errors.region}
+        />
 
         {/* Province Selection */}
         {showProvinceSelect && (
-          <div className={compact ? "" : "space-y-1"}>
-            {showLabels && (
-              <label className="block text-sm font-medium text-gray-700">
-                Province {required && <span className="text-red-500">*</span>}
-              </label>
-            )}
-            <Select
-              options={provinceOptions}
-              value={value.province}
-              onChange={handleProvinceChange}
-              placeholder={isNCR ? "Metro Manila" : "Select Province"}
-              disabled={disabled || !value.region}
-              loading={loadingProvinces}
-              error={errors.province}
-              required={required}
-              name="province"
-            />
-          </div>
+          <DropdownSelect
+            label={showLabels ? "Province" : undefined}
+            options={provinceOptions}
+            value={value.province}
+            onChange={(val) => handleProvinceChange(val)}
+            placeholder={isNCR ? "Metro Manila" : "Select Province"}
+            disabled={disabled || !value.region}
+            loading={loadingProvinces}
+            errorMessage={errors.province}
+          />
         )}
 
         {/* City Selection */}
-        <div className={compact ? "" : "space-y-1"}>
-          {showLabels && (
-            <label className="block text-sm font-medium text-gray-700">
-              City/Municipality {required && <span className="text-red-500">*</span>}
-            </label>
-          )}
-          <Select
-            options={cityOptions}
-            value={value.city}
-            onChange={handleCityChange}
-            placeholder="Select City/Municipality"
-            disabled={disabled || (!isNCR ? !value.province : !value.region)}
-            loading={loadingCities}
-            error={errors.city}
-            required={required}
-            name="city"
-          />
-        </div>
+        <DropdownSelect
+          label={showLabels ? "City/Municipality" : undefined}
+          options={cityOptions}
+          value={value.city}
+          onChange={(val) => handleCityChange(val)}
+          placeholder="Select City/Municipality"
+          disabled={disabled || (!isNCR ? !value.province : !value.region)}
+          loading={loadingCities}
+          errorMessage={errors.city}
+        />
 
         {/* Barangay Selection */}
-        <div className={compact ? "" : "space-y-1"}>
-          {showLabels && (
-            <label className="block text-sm font-medium text-gray-700">
-              Barangay {required && <span className="text-red-500">*</span>}
-            </label>
-          )}
-          <Select
-            options={barangayOptions}
-            value={value.barangay}
-            onChange={handleBarangayChange}
-            placeholder="Select Barangay"
-            disabled={disabled || !value.city}
-            loading={loadingBarangays}
-            error={errors.barangay}
-            required={required}
-            name="barangay"
-          />
-        </div>
+        <DropdownSelect
+          label={showLabels ? "Barangay" : undefined}
+          options={barangayOptions}
+          value={value.barangay}
+          onChange={(val) => handleBarangayChange(val)}
+          placeholder="Select Barangay"
+          disabled={disabled || !value.city}
+          loading={loadingBarangays}
+          errorMessage={errors.barangay}
+        />
       </div>
 
       {/* Address Summary */}
       {!compact && (value.region || value.province || value.city || value.barangay) && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-md">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Selected Address:</h4>
-          <div className="text-sm text-gray-600">
+        <div className="mt-4 p-3 bg-background-muted rounded-md">
+          <h4 className="text-sm font-medium text-primary mb-2">Selected Address:</h4>
+          <div className="text-sm text-secondary">
             {[
               regions.find(r => r.code === value.region)?.name,
               provinces.find(p => p.code === value.province)?.name,
@@ -345,7 +313,7 @@ export default function AddressSelector({
 
       {/* Coverage Info */}
       {!compact && (
-        <div className="mt-4 text-xs text-gray-500">
+        <div className="mt-4 text-xs text-muted">
           <span className="text-xs">🗺️</span> Coverage: 17 regions, 86 provinces, 1,637 cities, 38,372 barangays (91% nationwide)
         </div>
       )}

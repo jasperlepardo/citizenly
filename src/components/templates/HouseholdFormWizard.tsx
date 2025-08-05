@@ -15,7 +15,7 @@ import {
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms'
-import { FormGroup, InputField, SelectField } from '@/components/molecules'
+import { FormGroup, InputField, DropdownSelect } from '@/components/molecules'
 
 export interface HouseholdFormData {
   // Step 1: Basic Information
@@ -798,18 +798,18 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Economic Information</h4>
         
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
-          <SelectField
+          <DropdownSelect
             label="Monthly Household Income"
             value={formData.monthlyIncome}
-            onChange={(e) => onChange('monthlyIncome', e.target.value)}
+            onChange={(val) => onChange('monthlyIncome', val)}
             options={INCOME_RANGES}
             placeholder="Select income range"
           />
           
-          <SelectField
+          <DropdownSelect
             label="Primary Income Source"
             value={formData.incomeSource}
-            onChange={(e) => onChange('incomeSource', e.target.value)}
+            onChange={(val) => onChange('incomeSource', val)}
             options={INCOME_SOURCES}
             placeholder="Select income source"
           />
@@ -867,23 +867,21 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Dwelling Information</h4>
         
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
-          <SelectField
+          <DropdownSelect
             label="Dwelling Type"
             value={formData.dwellingType}
-            onChange={(e) => onChange('dwellingType', e.target.value)}
+            onChange={(val) => onChange('dwellingType', val)}
             options={DWELLING_TYPES}
             placeholder="Select dwelling type"
-            required
             errorMessage={errors.dwellingType}
           />
           
-          <SelectField
+          <DropdownSelect
             label="Dwelling Ownership"
             value={formData.dwellingOwnership}
-            onChange={(e) => onChange('dwellingOwnership', e.target.value)}
+            onChange={(val) => onChange('dwellingOwnership', val)}
             options={OWNERSHIP_TYPES}
             placeholder="Select ownership type"
-            required
             errorMessage={errors.dwellingOwnership}
           />
         </div>

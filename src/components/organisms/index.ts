@@ -23,6 +23,10 @@ export { default as EducationEmployment } from './EducationEmployment';
 export { default as SearchBar } from './SearchBar';
 export { default as DataTable } from './DataTable';
 
+// Navigation Components
+export { default as Navigation } from './Navigation';
+
 // Export types for SearchBar and DataTable
 export type { SearchFilter } from './SearchBar';
 export type { TableColumn, TableAction } from './DataTable';
+export type { NavigationItem, NavigationProps } from './Navigation';

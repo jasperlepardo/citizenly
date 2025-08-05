@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { testDatabaseConnection } from '@/lib/database'
 import { DashboardLayout } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { Button } from '@/components/atoms'
 import Link from 'next/link'
 
 interface DatabaseStats {
@@ -26,9 +27,11 @@ function HomeContent() {
           setDbStats(result.data)
           setDbConnected(true)
         } else {
+          console.warn('Database connection failed:', result)
           setDbConnected(false)
         }
       } catch (error) {
+        console.error('Database connection error:', error)
         setDbConnected(false)
       }
     }
@@ -106,11 +109,13 @@ function HomeContent() {
       
       {/* Quick Access */}
       <div className="text-center mb-8">
-        <Link 
-          href="/dashboard"
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Go to Dashboard
+        <Link href="/dashboard">
+          <Button
+            variant="primary"
+            size="lg"
+          >
+            Go to Dashboard
+          </Button>
         </Link>
       </div>
       
@@ -132,11 +137,14 @@ function HomeContent() {
             </p>
             {dbConnected && (
               <div className="mt-4">
-                <Link 
-                  href="/address-demo"
-                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  <span className="text-sm">📍</span> Try Address Demo
+                <Link href="/address-demo">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    leftIcon={<span className="text-sm">📍</span>}
+                  >
+                    Try Address Demo
+                  </Button>
                 </Link>
               </div>
             )}

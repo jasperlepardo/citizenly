@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Input } from '@/components/atoms'
+import { InputField, DropdownSelect } from '@/components/molecules'
 import { BarangaySelector } from '@/components/organisms'
 import { AppShell } from '@/components/templates'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
@@ -298,7 +298,7 @@ function CreateUserContent() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                <h2 className="text-2xl font-bold text-primary mb-4">
                   User Created Successfully!
                 </h2>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -337,10 +337,10 @@ function CreateUserContent() {
       <div className="flex flex-col gap-6 p-6">
         <div className="flex flex-row gap-4 items-start justify-between w-full">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900">
+            <h1 className="font-montserrat font-semibold text-xl text-primary">
               Create New User
             </h1>
-            <p className="font-montserrat font-normal text-sm text-neutral-600">
+            <p className="font-montserrat font-normal text-sm text-secondary">
               Create a new user account for your barangay
             </p>
           </div>
@@ -369,83 +369,67 @@ function CreateUserContent() {
 
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Personal Information</h3>
+                <h3 className="text-lg font-medium text-primary border-b pb-2">Personal Information</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      value={formData.firstName}
-                      onChange={(e) => handleChange('firstName', e.target.value)}
-                      placeholder="Juan"
-                      error={errors.firstName}
-                      disabled={isSubmitting}
-                      autoComplete="given-name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      value={formData.lastName}
-                      onChange={(e) => handleChange('lastName', e.target.value)}
-                      placeholder="Dela Cruz"
-                      error={errors.lastName}
-                      disabled={isSubmitting}
-                      autoComplete="family-name"
-                    />
-                  </div>
+                  <InputField
+                    label="First Name *"
+                    id="firstName"
+                    type="text"
+                    value={formData.firstName}
+                    onChange={(e) => handleChange('firstName', e.target.value)}
+                    placeholder="Juan"
+                    errorMessage={errors.firstName}
+                    disabled={isSubmitting}
+                    autoComplete="given-name"
+                  />
+                  <InputField
+                    label="Last Name *"
+                    id="lastName"
+                    type="text"
+                    value={formData.lastName}
+                    onChange={(e) => handleChange('lastName', e.target.value)}
+                    placeholder="Dela Cruz"
+                    errorMessage={errors.lastName}
+                    disabled={isSubmitting}
+                    autoComplete="family-name"
+                  />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <Input
+                  <InputField
+                    label="Email Address *"
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     placeholder="juan.delacruz@gmail.com"
-                    error={errors.email}
+                    errorMessage={errors.email}
                     disabled={isSubmitting}
                     autoComplete="email"
+                    helperText="User will receive login credentials at this email"
                   />
-                  <p className="mt-1 text-xs text-gray-500">
-                    User will receive login credentials at this email
-                  </p>
                 </div>
 
-                <div>
-                  <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-2">
-                    Mobile Number *
-                  </label>
-                  <Input
-                    id="mobileNumber"
-                    type="tel"
-                    value={formData.mobileNumber}
-                    onChange={(e) => handleChange('mobileNumber', e.target.value)}
-                    placeholder="09XX XXX XXXX"
-                    error={errors.mobileNumber}
-                    disabled={isSubmitting}
-                    autoComplete="tel"
-                  />
-                </div>
+                <InputField
+                  label="Mobile Number *"
+                  id="mobileNumber"
+                  type="tel"
+                  value={formData.mobileNumber}
+                  onChange={(e) => handleChange('mobileNumber', e.target.value)}
+                  placeholder="09XX XXX XXXX"
+                  errorMessage={errors.mobileNumber}
+                  disabled={isSubmitting}
+                  autoComplete="tel"
+                />
               </div>
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Location Information</h3>
+                <h3 className="text-lg font-medium text-primary border-b pb-2">Location Information</h3>
                 
                 <div>
-                  <label htmlFor="barangayCode" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="barangayCode" className="block text-sm font-medium text-secondary mb-2">
                     Barangay *
                   </label>
                   <BarangaySelector
@@ -460,78 +444,63 @@ function CreateUserContent() {
 
               {/* Role Selection */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Account Type</h3>
+                <h3 className="text-lg font-medium text-primary border-b pb-2">Account Type</h3>
                 
-                <div>
-                  <label htmlFor="roleId" className="block text-sm font-medium text-gray-700 mb-2">
-                    Role *
-                  </label>
-                  {loadingRoles ? (
+                {loadingRoles ? (
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-secondary">
+                      Role *
+                    </label>
                     <div className="p-3 border border-gray-300 rounded-md bg-gray-50">
-                      <span className="text-sm text-gray-500">Loading roles...</span>
+                      <span className="text-sm text-muted">Loading roles...</span>
                     </div>
-                  ) : (
-                    <select
-                      id="roleId"
-                      value={formData.roleId}
-                      onChange={(e) => handleChange('roleId', e.target.value)}
-                      className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 ${
-                        errors.roleId ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                      }`}
-                      disabled={isSubmitting}
-                    >
-                      <option value="">Select user role...</option>
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name.charAt(0).toUpperCase() + role.name.slice(1).replace('_', ' ')} - {role.description}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                  {errors.roleId && (
-                    <p className="mt-2 text-sm text-red-600">{errors.roleId}</p>
-                  )}
-                  <p className="mt-1 text-xs text-gray-500">
-                    Select the role that best describes the user's position
-                  </p>
-                </div>
+                  </div>
+                ) : (
+                  <DropdownSelect
+                    label="Role *"
+                    options={[
+                      { value: '', label: 'Select user role...' },
+                      ...roles.map((role) => ({
+                        value: role.id,
+                        label: `${role.name.charAt(0).toUpperCase() + role.name.slice(1).replace('_', ' ')} - ${role.description}`
+                      }))
+                    ]}
+                    value={formData.roleId}
+                    onChange={(val) => handleChange('roleId', val)}
+                    errorMessage={errors.roleId}
+                    helperText="Select the role that best describes the user's position"
+                    disabled={isSubmitting}
+                  />
+                )}
               </div>
 
               {/* Account Security */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Account Security</h3>
+                <h3 className="text-lg font-medium text-primary border-b pb-2">Account Security</h3>
                 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password *
-                  </label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => handleChange('password', e.target.value)}
-                    placeholder="Create a password for the user"
-                    error={errors.password}
-                    disabled={isSubmitting}
-                    autoComplete="new-password"
-                  />
-                </div>
+                <InputField
+                  label="Password *"
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => handleChange('password', e.target.value)}
+                  placeholder="Create a password for the user"
+                  errorMessage={errors.password}
+                  disabled={isSubmitting}
+                  autoComplete="new-password"
+                />
 
-                <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm Password *
-                  </label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={formData.confirmPassword}
-                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                    placeholder="Confirm the password"
-                    error={errors.confirmPassword}
-                    disabled={isSubmitting}
-                    autoComplete="new-password"
-                  />
-                </div>
+                <InputField
+                  label="Confirm Password *"
+                  id="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                  placeholder="Confirm the password"
+                  errorMessage={errors.confirmPassword}
+                  disabled={isSubmitting}
+                  autoComplete="new-password"
+                />
               </div>
 
               {/* Submit Button */}

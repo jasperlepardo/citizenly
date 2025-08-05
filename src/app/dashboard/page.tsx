@@ -55,7 +55,7 @@ function DashboardContent() {
   }
 
   if (profileLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>
+    return <div className="flex items-center justify-center h-screen text-primary">Loading...</div>
   }
 
   return (
@@ -67,7 +67,7 @@ function DashboardContent() {
       <div className="p-6">
         {/* Welcome Message */}
         <div className="mb-8">
-          <h1 className="font-['Montserrat'] font-semibold text-2xl text-neutral-900">
+          <h1 className="font-['Montserrat'] font-semibold text-2xl text-primary">
             Welcome back, {userProfile ? userProfile.first_name : 'User'}!
           </h1>
         </div>
@@ -75,33 +75,33 @@ function DashboardContent() {
         {/* Statistics Cards */}
         <div className="grid grid-cols-4 gap-6">
           {/* Residents Card */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-neutral-700 mb-2">Residents</div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-neutral-900">
+          <div className="bg-surface rounded-lg border border-default p-6">
+            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">Residents</div>
+            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
               {loading ? '...' : stats.residents.toLocaleString()}
             </div>
           </div>
 
           {/* Households Card */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-neutral-700 mb-2">Households</div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-neutral-900">
+          <div className="bg-surface rounded-lg border border-default p-6">
+            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">Households</div>
+            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
               {loading ? '...' : stats.households.toLocaleString()}
             </div>
           </div>
 
           {/* Businesses Card */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-neutral-700 mb-2">Businesses</div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-neutral-900">
+          <div className="bg-surface rounded-lg border border-default p-6">
+            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">Businesses</div>
+            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
               {loading ? '...' : stats.businesses.toLocaleString()}
             </div>
           </div>
 
           {/* Certifications Card */}
-          <div className="bg-white rounded-lg border border-neutral-200 p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-neutral-700 mb-2">Certifications</div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-neutral-900">
+          <div className="bg-surface rounded-lg border border-default p-6">
+            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">Certifications</div>
+            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
               {loading ? '...' : stats.certifications.toLocaleString()}
             </div>
           </div>

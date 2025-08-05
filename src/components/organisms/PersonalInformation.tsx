@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, InputField, SelectField } from '@/components/molecules'
+import { FormGroup, InputField, DropdownSelect } from '@/components/molecules'
 
 export interface PersonalInformationData {
   firstName: string
@@ -57,10 +57,10 @@ export default function PersonalInformation({
   return (
     <div className={`space-y-8 ${className}`}>
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-primary">
           Personal Information
         </h3>
-        <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm/6 text-secondary">
           Basic details and identification information.
         </p>
       </div>
@@ -111,35 +111,33 @@ export default function PersonalInformation({
           errorMessage={errors.birthdate}
         />
         
-        <SelectField
+        <DropdownSelect
           label="Sex"
           value={value.sex}
-          onChange={(e) => handleChange('sex', e.target.value)}
+          onChange={(val) => handleChange('sex', val)}
           options={SEX_OPTIONS}
           placeholder="Select sex"
-          required
+          searchable={true}
           errorMessage={errors.sex}
         />
         
-        <SelectField
+        <DropdownSelect
           label="Civil Status"
           value={value.civilStatus}
-          onChange={(e) => handleChange('civilStatus', e.target.value)}
+          onChange={(val) => handleChange('civilStatus', val)}
           options={CIVIL_STATUS_OPTIONS}
           placeholder="Select civil status"
-          required
           errorMessage={errors.civilStatus}
         />
       </div>
 
       {/* Citizenship */}
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
-        <SelectField
+        <DropdownSelect
           label="Citizenship"
           value={value.citizenship}
-          onChange={(e) => handleChange('citizenship', e.target.value)}
+          onChange={(val) => handleChange('citizenship', val)}
           options={CITIZENSHIP_OPTIONS}
-          required
           errorMessage={errors.citizenship}
         />
       </div>

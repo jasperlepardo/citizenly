@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import Select from '../atoms/Select'
+import { DropdownSelect } from '../molecules'
 import { FormGroup } from '../molecules'
 
 // Family position types (matches database enum)
@@ -226,25 +226,23 @@ export default function FamilyRelationshipSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="text-lg font-medium text-gray-900 mb-1">
+        <h3 className="text-lg font-medium text-primary mb-1">
           <span className="text-base">👨‍👩‍👧‍👦</span> Family Position
           {required && <span className="text-red-500 ml-1">*</span>}
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-secondary">
           Select this person's relationship to the household head and position in the family.
         </p>
       </div>
 
       <FormGroup>
-        <Select
+        <DropdownSelect
           options={selectOptions}
           value={value || ''}
-          onChange={handlePositionChange}
+          onChange={(val) => handlePositionChange(val)}
           placeholder="Select family position..."
           disabled={disabled}
-          error={error}
-          required={required}
-          name="family_position"
+          errorMessage={error}
         />
       </FormGroup>
 
@@ -286,7 +284,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Context Information */}
       {(personContext.age || personContext.gender) && (
-        <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+        <div className="text-xs text-muted bg-background-muted p-3 rounded-lg">
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}

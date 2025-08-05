@@ -240,11 +240,11 @@ function UsersManagementContent() {
     <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-primary">
             {user.first_name} {user.last_name}
           </h3>
-          <p className="text-sm text-gray-600">{user.email}</p>
-          <p className="text-sm text-gray-600">{user.mobile_number}</p>
+          <p className="text-sm text-secondary">{user.email}</p>
+          <p className="text-sm text-secondary">{user.mobile_number}</p>
         </div>
         <div className="text-right">
           <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
@@ -259,17 +259,17 @@ function UsersManagementContent() {
       </div>
       
       <div className="space-y-2 mb-4">
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-secondary">
           <span className="font-medium mr-2">Barangay:</span>
           <span>
             {user.barangay_name}, {user.city_municipality_name}, {user.province_name}
           </span>
         </div>
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-secondary">
           <span className="font-medium mr-2">Role:</span>
           <span>{user.role_name || 'resident'}</span>
         </div>
-        <div className="flex items-center text-sm text-gray-600">
+        <div className="flex items-center text-sm text-secondary">
           <span className="font-medium mr-2">Registered:</span>
           <span>{formatDate(user.created_at)}</span>
         </div>
@@ -324,7 +324,7 @@ function UsersManagementContent() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <p className="mt-4 text-sm text-gray-600">Loading users...</p>
+            <p className="mt-4 text-sm text-secondary">Loading users...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -342,10 +342,10 @@ function UsersManagementContent() {
         {/* Header */}
         <div className="flex flex-row gap-4 items-start justify-between w-full">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900">
+            <h1 className="font-montserrat font-semibold text-xl text-primary">
               User Management
             </h1>
-            <p className="font-montserrat font-normal text-sm text-neutral-600">
+            <p className="font-montserrat font-normal text-sm text-secondary">
               Manage user registrations and permissions
             </p>
           </div>
@@ -362,26 +362,30 @@ function UsersManagementContent() {
         {/* Tabs */}
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
-            <button
+            <Button
               onClick={() => setActiveTab('pending')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              variant="ghost"
+              size="sm"
+              className={`rounded-none border-b-2 ${
                 activeTab === 'pending'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-muted hover:text-gray-700 hover:border-gray-300'
               }`}
             >
               Pending Approvals ({pendingUsers.length})
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setActiveTab('active')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              variant="ghost"
+              size="sm"
+              className={`rounded-none border-b-2 ${
                 activeTab === 'active'
                   ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-muted hover:text-gray-700 hover:border-gray-300'
               }`}
             >
               Active Users ({activeUsers.length})
-            </button>
+            </Button>
           </nav>
         </div>
 
@@ -391,13 +395,13 @@ function UsersManagementContent() {
             <>
               {pendingUsers.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="text-gray-400 mb-4">
+                  <div className="text-muted mb-4">
                     <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Pending Registrations</h3>
-                  <p className="text-gray-500">All user registrations have been processed.</p>
+                  <h3 className="text-lg font-medium text-primary mb-2">No Pending Registrations</h3>
+                  <p className="text-muted">All user registrations have been processed.</p>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -413,13 +417,13 @@ function UsersManagementContent() {
             <>
               {activeUsers.length === 0 ? (
                 <div className="text-center py-12">
-                  <div className="text-gray-400 mb-4">
+                  <div className="text-muted mb-4">
                     <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Active Users</h3>
-                  <p className="text-gray-500">No users have been approved yet.</p>
+                  <h3 className="text-lg font-medium text-primary mb-2">No Active Users</h3>
+                  <p className="text-muted">No users have been approved yet.</p>
                 </div>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

@@ -128,13 +128,13 @@ export default function AddressSearch({
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full px-4 py-2 border border-default bg-surface text-primary rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
         />
         
         {/* Loading indicator only */}
         {isLoading && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+            <div className="animate-spin h-4 w-4 border-2 border-default border-t-blue-600 rounded-full"></div>
           </div>
         )}
 
@@ -147,7 +147,7 @@ export default function AddressSearch({
               setIsOpen(false)
               inputRef.current?.focus()
             }}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-secondary"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -158,33 +158,33 @@ export default function AddressSearch({
 
       {/* Search Results Dropdown */}
       {isOpen && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-96 overflow-y-auto">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg max-h-96 overflow-y-auto">
           {results.map((address, index) => (
             <button
               key={`${address.barangay_code}-${index}`}
               onClick={() => handleSelect(address)}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 focus:outline-none focus:bg-blue-50 ${
-                index === selectedIndex ? 'bg-blue-50' : ''
+              className={`w-full text-left px-4 py-3 hover:bg-surface-hover border-b border-default last:border-b-0 focus:outline-none focus:bg-blue-50 dark:focus:bg-blue-900/20 ${
+                index === selectedIndex ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
               <div className="space-y-1">
                 {/* Full Address */}
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-primary">
                   {highlightMatch(address.full_address, query)}
                 </div>
                 
                 {/* Geographic Details */}
-                <div className="text-xs text-gray-500 space-y-0.5">
+                <div className="text-xs text-secondary space-y-0.5">
                   <div>
                     <span className="text-xs">📍</span> {highlightMatch(address.barangay_name, query)}, {address.city_municipality_name}
                   </div>
                   <div className="flex items-center space-x-2">
                     <span><span className="text-xs">🏛️</span> {address.city_municipality_type}</span>
                     {address.is_independent && (
-                      <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">Independent</span>
+                      <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs">Independent</span>
                     )}
                     {address.urban_rural_status && (
-                      <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs">
+                      <span className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs">
                         {address.urban_rural_status}
                       </span>
                     )}
@@ -195,7 +195,7 @@ export default function AddressSearch({
           ))}
           
           {/* Search Stats */}
-          <div className="px-4 py-2 bg-gray-50 text-xs text-gray-500 border-t">
+          <div className="px-4 py-2 bg-background-muted text-xs text-muted border-t border-default">
             Found {results.length} result{results.length !== 1 ? 's' : ''} 
             {results.length === maxResults && ` (showing first ${maxResults})`}
           </div>
@@ -204,9 +204,9 @@ export default function AddressSearch({
 
       {/* No Results */}
       {isOpen && !isLoading && query.trim().length >= 2 && results.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4 text-center text-gray-500 text-sm">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4 text-center text-secondary text-sm">
           <div className="space-y-2">
-            <div className="text-gray-400">
+            <div className="text-muted">
               <svg className="h-5 w-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -221,7 +221,7 @@ export default function AddressSearch({
 
       {/* Search Help */}
       {!query && (
-        <div className="mt-2 text-xs text-gray-500">
+        <div className="mt-2 text-xs text-muted">
           <span className="text-xs">💡</span> Search across 38,372 barangays in 1,637 cities nationwide
         </div>
       )}

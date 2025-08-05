@@ -535,9 +535,9 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-zinc-600" />
+                      <div className="h-0.5 w-full bg-primary" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-zinc-600">
+                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                       <svg className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -546,19 +546,19 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
                 ) : currentStep === step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-zinc-200" />
+                      <div className="h-0.5 w-full bg-border-light" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-zinc-600 bg-white">
-                      <span className="text-sm font-medium text-zinc-600">{step.id}</span>
+                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-surface">
+                      <span className="text-sm font-medium text-primary">{step.id}</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-zinc-200" />
+                      <div className="h-0.5 w-full bg-border-light" />
                     </div>
-                    <div className="group relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-zinc-300 bg-white">
-                      <span className="text-sm font-medium text-zinc-500">{step.id}</span>
+                    <div className="group relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-default bg-surface">
+                      <span className="text-sm font-medium text-secondary">{step.id}</span>
                     </div>
                   </>
                 )}
@@ -567,17 +567,17 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
           </ol>
         </nav>
         <div className="mt-6">
-          <h2 className="text-lg/8 font-semibold text-zinc-950 dark:text-white">
+          <h2 className="text-lg/8 font-semibold text-primary">
             {steps[currentStep - 1].title}
           </h2>
-          <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-sm/6 text-secondary">
             {steps[currentStep - 1].description}
           </p>
         </div>
       </div>
 
       {/* Form Content */}
-      <div className="rounded-lg bg-white shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
+      <div className="rounded-lg bg-surface shadow-sm border border-default">
         <div className="px-6 py-8">
           {renderStepContent()}
         </div>
@@ -619,17 +619,17 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-primary">
           Contact & Physical Information
         </h3>
-        <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm/6 text-secondary">
           Contact details and physical attributes.
         </p>
       </div>
       
       {/* Contact Information */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Contact Details</h4>
+        <h4 className="text-sm/6 font-medium text-primary">Contact Details</h4>
         
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <InputField
@@ -703,7 +703,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
 
       {/* Voting Information */}
       <div className="space-y-4">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Voting Information</h4>
+        <h4 className="text-sm/6 font-medium text-primary">Voting Information</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center gap-3">
             <input
@@ -711,9 +711,9 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               id="voterRegistration"
               checked={formData.voterRegistrationStatus}
               onChange={(e) => onChange('voterRegistrationStatus', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
             />
-            <label htmlFor="voterRegistration" className="text-sm text-zinc-950 dark:text-white">
+            <label htmlFor="voterRegistration" className="text-sm text-primary">
               Registered Voter
             </label>
           </div>
@@ -723,9 +723,9 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               id="residentVoter"
               checked={formData.residentVoterStatus}
               onChange={(e) => onChange('residentVoterStatus', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
             />
-            <label htmlFor="residentVoter" className="text-sm text-zinc-950 dark:text-white">
+            <label htmlFor="residentVoter" className="text-sm text-primary">
               Resident Voter
             </label>
           </div>
@@ -747,10 +747,10 @@ function AdditionalInfoStep({ formData, onChange }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-primary">
           Additional Information
         </h3>
-        <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm/6 text-secondary">
           Migration status, family information, and sectoral classification.
         </p>
       </div>
@@ -811,67 +811,67 @@ function ReviewStep({ formData, userAddress }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-primary">
           Review & Submit
         </h3>
-        <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm/6 text-secondary">
           Please review all information before submitting.
         </p>
       </div>
       
-      <div className="rounded-lg bg-zinc-50 p-6 ring-1 ring-zinc-950/5 dark:bg-zinc-800/50 dark:ring-white/10">
+      <div className="rounded-lg bg-background-muted p-6 border border-default">
         <div className="space-y-6">
           {/* Personal Information Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white mb-3">Personal Information</h4>
+            <h4 className="text-sm/6 font-medium text-primary mb-3">Personal Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Name</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">
+                <dt className="text-sm/6 font-medium text-secondary">Name</dt>
+                <dd className="text-sm/6 text-primary">
                   {`${formData.firstName} ${formData.middleName} ${formData.lastName} ${formData.extensionName}`.trim()}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Birth Date</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.birthdate}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Birth Date</dt>
+                <dd className="text-sm/6 text-primary">{formData.birthdate}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Sex</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.sex}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Sex</dt>
+                <dd className="text-sm/6 text-primary">{formData.sex}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Civil Status</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.civilStatus}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Civil Status</dt>
+                <dd className="text-sm/6 text-primary">{formData.civilStatus}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Citizenship</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.citizenship}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Citizenship</dt>
+                <dd className="text-sm/6 text-primary">{formData.citizenship}</dd>
               </div>
             </dl>
           </div>
 
           {/* Education & Employment Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white mb-3">Education & Employment</h4>
+            <h4 className="text-sm/6 font-medium text-primary mb-3">Education & Employment</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Education Level</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.educationLevel || 'Not specified'}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Education Level</dt>
+                <dd className="text-sm/6 text-primary">{formData.educationLevel || 'Not specified'}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Education Status</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.educationStatus || 'Not specified'}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Education Status</dt>
+                <dd className="text-sm/6 text-primary">{formData.educationStatus || 'Not specified'}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Employment Status</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.employmentStatus || 'Not specified'}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Employment Status</dt>
+                <dd className="text-sm/6 text-primary">{formData.employmentStatus || 'Not specified'}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Occupation</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">
+                <dt className="text-sm/6 font-medium text-secondary">Occupation</dt>
+                <dd className="text-sm/6 text-primary">
                   {formData.occupationDescription || 'Not specified'}
                   {formData.psocCode && (
-                    <span className="block text-xs text-zinc-500 dark:text-zinc-400">
+                    <span className="block text-xs text-muted">
                       PSOC Code: {formData.psocCode} ({formData.psocLevel?.replace('_', ' ')})
                     </span>
                   )}
@@ -882,22 +882,22 @@ function ReviewStep({ formData, userAddress }: any) {
 
           {/* Contact Information Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white mb-3">Contact Information</h4>
+            <h4 className="text-sm/6 font-medium text-primary mb-3">Contact Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Mobile</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.mobileNumber}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Mobile</dt>
+                <dd className="text-sm/6 text-primary">{formData.mobileNumber}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-zinc-500 dark:text-zinc-400">Email</dt>
-                <dd className="text-sm/6 text-zinc-950 dark:text-white">{formData.email || 'Not provided'}</dd>
+                <dt className="text-sm/6 font-medium text-secondary">Email</dt>
+                <dd className="text-sm/6 text-primary">{formData.email || 'Not provided'}</dd>
               </div>
             </dl>
           </div>
         </div>
       </div>
 
-      <div className="rounded-lg bg-amber-50 p-4 ring-1 ring-amber-900/10 dark:bg-amber-400/10 dark:ring-amber-400/20">
+      <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">

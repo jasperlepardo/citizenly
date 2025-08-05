@@ -5,21 +5,22 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const inputVariants = cva(
-  "flex items-center w-full rounded border transition-colors font-['Montserrat'] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-1",
+  "flex items-center w-full transition-colors font-system focus-within:outline-none relative",
   {
     variants: {
       variant: {
-        default: "border-[#d4d4d4] bg-white focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20",
-        filled: "border-[#d4d4d4] bg-white focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20",
-        error: "border-[#dc2626] bg-white focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20",
-        success: "border-[#059669] bg-white focus-within:border-[#059669] focus-within:ring-[#059669]/20",
-        disabled: "border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed",
-        readonly: "border-[#d4d4d4] bg-[#fafafa]"
+        default: "border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]",
+        filled: "border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]",
+        error: "border border-red-600 bg-surface rounded focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]",
+        success: "border border-green-500 bg-surface rounded focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]",
+        disabled: "border border-default bg-background-muted rounded cursor-not-allowed",
+        readonly: "border-0 bg-background-muted rounded-none",
+        borderless: "border-0 bg-transparent rounded-none"
       },
       size: {
-        sm: "px-2 py-1 text-sm min-h-[32px]",
-        md: "px-3 py-2 text-base min-h-[40px]", 
-        lg: "px-4 py-3 text-lg min-h-[48px]"
+        sm: "p-1.5 text-sm min-h-[32px]",
+        md: "p-[8px] text-base min-h-[40px]", // Figma: exact 8px padding
+        lg: "p-3 text-lg min-h-[48px]"
       }
     },
     defaultVariants: {
@@ -69,70 +70,82 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-[#262626] mb-1 font-['Montserrat']">
+          <label className="block text-sm font-medium text-primary mb-2 font-system">
             {label}
           </label>
         )}
         
         {/* Input Container */}
-        <div className={cn(inputVariants({ variant: actualVariant, size }), className)}>
-          {/* Left Addon */}
-          {leftAddon && (
-            <div className="flex items-center px-3 bg-[#fafafa] border-r border-[#d4d4d4] text-[#737373] text-sm">
-              {leftAddon}
-            </div>
-          )}
-          
-          {/* Left Icon */}
+        <div className={cn(inputVariants({ variant: actualVariant, size }), "input-field-container", className)}>
+          {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="flex items-center justify-center px-2 text-[#737373]">
+            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
               {leftIcon}
             </div>
           )}
           
-          {/* Input */}
-          <input
-            ref={ref}
-            className={cn(
-              "flex-1 bg-transparent border-none outline-none font-['Montserrat'] text-[#262626] placeholder:text-[#a3a3a3]",
-              size === 'sm' && "text-sm py-1 px-2",
-              size === 'md' && "text-base py-2 px-3", 
-              size === 'lg' && "text-lg py-3 px-4",
-              leftIcon && "px-1",
-              rightIcon && "px-1",
-              disabled && "text-[#737373] cursor-not-allowed",
-              readOnly && "text-[#525252]"
-            )}
-            disabled={disabled}
-            readOnly={readOnly}
-            value={value}
-            {...props}
-          />
+          {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
+          <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+            {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
+            <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+              <input
+                ref={ref}
+                className={cn(
+                  "w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted",
+                  // Remove ALL borders and focus states
+                  "border-0 outline-0 ring-0 shadow-none",
+                  "focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none",
+                  "active:border-0 active:outline-0 active:ring-0 active:shadow-none",
+                  // Figma text-base-regular: 16px/20px (leading-5 = 20px)
+                  size === 'sm' && "text-sm leading-4",
+                  size === 'md' && "text-base leading-5", 
+                  size === 'lg' && "text-lg leading-6",
+                  disabled && "text-muted cursor-not-allowed",
+                  readOnly && "text-secondary"
+                )}
+                style={{
+                  border: 'none',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  appearance: 'none'
+                }}
+                disabled={disabled}
+                readOnly={readOnly}
+                value={value}
+                {...props}
+              />
+            </div>
+          </div>
           
-          {/* Clear Button */}
-          {showClearButton && (
-            <button
-              type="button"
-              onClick={onClear}
-              className="flex items-center justify-center px-2 text-[#737373] hover:text-[#404040] transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          )}
-          
-          {/* Right Icon */}
-          {rightIcon && (
-            <div className="flex items-center justify-center px-2 text-[#737373]">
-              {rightIcon}
+          {/* Right Icon - Figma: w-5 (20px width) */}
+          {(rightIcon || showClearButton) && (
+            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+              {showClearButton ? (
+                <button
+                  type="button"
+                  onClick={onClear}
+                  className="flex items-center justify-center w-full h-full text-secondary hover:text-primary transition-colors"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              ) : (
+                rightIcon
+              )}
             </div>
           )}
           
-          {/* Right Addon */}
+          {/* Addons for special cases */}
+          {leftAddon && (
+            <div className="flex items-center px-3 bg-background-muted border-r border-default text-muted text-sm">
+              {leftAddon}
+            </div>
+          )}
+          
           {rightAddon && (
-            <div className="flex items-center px-3 bg-[#fafafa] border-l border-[#d4d4d4] text-[#737373] text-sm">
+            <div className="flex items-center px-3 bg-background-muted border-l border-default text-muted text-sm">
               {rightAddon}
             </div>
           )}
@@ -140,13 +153,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         
         {/* Helper Text / Error Message */}
         {(helperText || errorMessage) && (
-          <div className="mt-1">
+          <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-[#b91c1c] font-['Montserrat']">
+              <p className="text-xs text-red-500 font-system leading-[14px]">
                 {errorMessage}
               </p>
             ) : (
-              <p className="text-xs text-[#737373] font-['Montserrat']">
+              <p className="text-xs text-muted font-system leading-[14px]">
                 {helperText}
               </p>
             )}

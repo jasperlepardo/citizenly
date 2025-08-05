@@ -7,8 +7,8 @@
  */
 
 import React, { useState } from 'react'
-import { Input, Select, Textarea, Radio, RadioGroup } from '../atoms'
-import { FormGroup } from '../molecules'
+import { Select, Textarea, Radio, RadioGroup } from '../atoms'
+import { FormGroup, InputField } from '../molecules'
 
 // Migration Information Interface (matches database schema)
 export interface MigrationInformation {
@@ -97,17 +97,17 @@ export default function MigrantInformation({
   if (!value.is_migrant) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="border-b border-gray-200 pb-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="border-b border-default pb-4">
+          <h3 className="text-lg font-medium text-primary mb-2">
             <span className="text-base">🧳</span> Migration Information
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-secondary">
             This resident is not classified as a migrant. Enable migration status to collect details.
           </p>
         </div>
         
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-sm text-gray-600 italic">
+        <div className="bg-background-muted p-4 rounded-lg">
+          <p className="text-sm text-secondary italic">
             Migration information is automatically collected when a resident is marked as a migrant in sectoral classifications.
           </p>
         </div>
@@ -118,11 +118,11 @@ export default function MigrantInformation({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="border-b border-default pb-4">
+        <h3 className="text-lg font-medium text-primary mb-2">
           <span className="text-base">🧳</span> Migration Information
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-secondary">
           Details about migration history and current status for this resident.
         </p>
       </div>
@@ -165,7 +165,7 @@ export default function MigrantInformation({
       {/* Previous Country (International only) */}
       {value.migration_type === 'international' && (
         <FormGroup title="Previous Country">
-          <Input
+          <InputField
             type="text"
             value={value.previous_country || ''}
             onChange={(e) => handleChange('previous_country', e.target.value)}
@@ -179,7 +179,7 @@ export default function MigrantInformation({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Year of Migration */}
         <FormGroup title="Year of Migration">
-          <Input
+          <InputField
             type="number"
             value={value.year_of_migration || ''}
             onChange={(e) => handleChange('year_of_migration', e.target.value ? parseInt(e.target.value) : undefined)}
@@ -192,7 +192,7 @@ export default function MigrantInformation({
 
         {/* Length of Stay */}
         <FormGroup title="Length of Stay (Months)">
-          <Input
+          <InputField
             type="number"
             value={value.length_of_stay_months || ''}
             onChange={(e) => handleChange('length_of_stay_months', e.target.value ? parseInt(e.target.value) : undefined)}

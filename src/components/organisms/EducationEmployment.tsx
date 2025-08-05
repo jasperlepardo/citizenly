@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, InputField, SelectField } from '@/components/molecules'
+import { FormGroup, InputField, DropdownSelect } from '@/components/molecules'
 import PSOCSelector from './PSOCSelector'
 
 export interface EducationEmploymentData {
@@ -97,23 +97,21 @@ export default function EducationEmployment({
       </div>
       
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
-        <SelectField
+        <DropdownSelect
           label="Education Level"
           value={value.educationLevel}
-          onChange={(e) => handleChange('educationLevel', e.target.value)}
+          onChange={(val) => handleChange('educationLevel', val)}
           options={EDUCATION_LEVEL_OPTIONS}
           placeholder="Select education level"
-          required
           errorMessage={errors.educationLevel}
         />
         
-        <SelectField
+        <DropdownSelect
           label="Education Status"
           value={value.educationStatus}
-          onChange={(e) => handleChange('educationStatus', e.target.value)}
+          onChange={(val) => handleChange('educationStatus', val)}
           options={EDUCATION_STATUS_OPTIONS}
           placeholder="Select education status"
-          required
           errorMessage={errors.educationStatus}
         />
       </div>
@@ -136,10 +134,10 @@ export default function EducationEmployment({
           </p>
         </div>
         
-        <SelectField
+        <DropdownSelect
           label="Employment Status"
           value={value.employmentStatus}
-          onChange={(e) => handleChange('employmentStatus', e.target.value)}
+          onChange={(val) => handleChange('employmentStatus', val)}
           options={EMPLOYMENT_STATUS_OPTIONS}
           placeholder="Select employment status"
         />

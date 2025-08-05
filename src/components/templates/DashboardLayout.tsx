@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
+import { SearchBar } from '@/components/molecules'
+import Navigation from '@/components/organisms/Navigation'
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
@@ -153,15 +155,13 @@ function UserDropdown() {
               >
                 Edit Profile
               </button>
-              <button
-                onClick={() => {
-                  // Add settings functionality later
-                  alert('Settings coming soon!')
-                }}
-                className="w-full text-left px-3 py-2 font-montserrat text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
-              >
-                Settings
-              </button>
+              <Link href="/settings">
+                <button
+                  className="w-full text-left px-3 py-2 font-montserrat text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                >
+                  Settings
+                </button>
+              </Link>
               <hr className="my-2 border-neutral-200" />
               <button
                 onClick={handleLogout}
@@ -179,25 +179,23 @@ function UserDropdown() {
 
 interface DashboardLayoutProps {
   children: React.ReactNode
-  currentPage?: string
   searchTerm?: string
   onSearchChange?: (value: string) => void
 }
 
 export default function DashboardLayout({ 
   children, 
-  currentPage = '', 
   searchTerm = '',
   onSearchChange 
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-56 bg-neutral-50 border-r border-neutral-300">
+      <div className="fixed left-0 top-0 h-full w-56 bg-background-secondary border-r border-default">
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-300">
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900">Citizenly</h1>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-default">
+            <h1 className="font-montserrat font-semibold text-xl text-primary">Citizenly</h1>
             <div className="flex gap-1">
               <div className="bg-neutral-200 p-0.5 rounded">
                 <div className="w-5 h-5 bg-neutral-400 rounded"></div>
@@ -209,85 +207,8 @@ export default function DashboardLayout({
           </div>
 
           {/* Navigation */}
-          <div className="flex-1 px-1 py-4">
-            <div className="space-y-1">
-              <div className={`rounded p-2 ${currentPage === 'dashboard' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/dashboard">
-                  <div className={`font-montserrat text-base ${currentPage === 'dashboard' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Dashboard
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'residents' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/residents">
-                  <div className={`font-montserrat text-base ${currentPage === 'residents' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Residents
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'households' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/households">
-                  <div className={`font-montserrat text-base ${currentPage === 'households' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Households
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'business' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/business">
-                  <div className={`font-montserrat text-base ${currentPage === 'business' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Business
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'judiciary' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/judiciary">
-                  <div className={`font-montserrat text-base ${currentPage === 'judiciary' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Judiciary
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'certification' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/certification">
-                  <div className={`font-montserrat text-base ${currentPage === 'certification' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Certification
-                  </div>
-                </Link>
-              </div>
-              <div className={`rounded p-2 ${currentPage === 'reports' ? 'bg-blue-100' : 'bg-neutral-50'}`}>
-                <Link href="/reports">
-                  <div className={`font-montserrat text-base ${currentPage === 'reports' ? 'font-semibold text-neutral-800' : 'font-medium text-neutral-700'}`}>
-                    Reports
-                  </div>
-                </Link>
-                {/* Reports submenu */}
-                {currentPage === 'reports' && (
-                  <div className="mt-2 ml-4 space-y-1">
-                    <div className="rounded p-2 bg-blue-50">
-                      <Link href="/rbi-form">
-                        <div className="font-montserrat text-sm font-medium text-blue-700">
-                          RBI Form A
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Navigation */}
-          <div className="px-2 py-4 border-t border-neutral-300">
-            <div className="space-y-1">
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Help</div>
-              </div>
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Notifications</div>
-              </div>
-              <div className="bg-neutral-50 rounded p-2">
-                <div className="font-montserrat font-medium text-base text-neutral-700">Settings</div>
-              </div>
-            </div>
+          <div className="flex-1 px-2 py-4">
+            <Navigation />
           </div>
         </div>
       </div>
@@ -295,29 +216,24 @@ export default function DashboardLayout({
       {/* Main Content */}
       <div className="ml-56">
         {/* Top Header */}
-        <div className="bg-white border-b border-neutral-300 px-6 py-2">
+        <div className="bg-background border-b border-default px-6 py-2">
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="w-[497px]">
-              <div className="bg-neutral-100 rounded p-2 flex items-center gap-2">
-                <div className="w-4 h-4 text-neutral-400">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search Citizenly"
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange?.(e.target.value)}
-                  className="flex-1 font-montserrat font-normal text-sm text-neutral-900 bg-transparent outline-none placeholder:text-neutral-400"
-                />
-                <div className="w-4 h-4 text-neutral-400">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-              </div>
+              <SearchBar
+                placeholder="Search Citizenly"
+                value={searchTerm}
+                onChange={(e) => onSearchChange?.(e.target.value)}
+                onClear={() => onSearchChange?.('')}
+                onSearch={(value) => {
+                  // Handle search action (Enter key pressed)
+                  console.log('Searching for:', value)
+                  // Add your search logic here
+                }}
+                variant="default"
+                size="md"
+                showClearButton={true}
+              />
             </div>
 
             {/* User Section */}

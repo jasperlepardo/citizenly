@@ -122,8 +122,8 @@ function HelpContent() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Categories Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-neutral-200 p-4">
-              <h3 className="font-montserrat font-semibold text-base text-neutral-900 mb-4">Categories</h3>
+            <div className="bg-surface rounded-lg border border-default p-4">
+              <h3 className="font-montserrat font-semibold text-base text-primary mb-4">Categories</h3>
               <div className="space-y-2">
                 {helpCategories.map((category) => (
                   <button
@@ -131,8 +131,8 @@ function HelpContent() {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedCategory === category.id
-                        ? 'bg-blue-100 text-blue-900 border border-blue-200'
-                        : 'hover:bg-neutral-50 text-neutral-700'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                        : 'hover:bg-surface-hover text-secondary'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -147,8 +147,8 @@ function HelpContent() {
 
           {/* Help Content */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg border border-neutral-200 p-6">
-              <h2 className="font-montserrat font-semibold text-lg text-neutral-900 mb-6">
+            <div className="bg-surface rounded-lg border border-default p-6">
+              <h2 className="font-montserrat font-semibold text-lg text-primary mb-6">
                 {helpCategories.find(cat => cat.id === selectedCategory)?.name}
               </h2>
               

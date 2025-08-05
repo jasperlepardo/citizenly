@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ButtonGroup } from './ButtonGroup';
-import { Button } from './Button';
+import { Button } from '../atoms/Button';
 
 const meta: Meta<typeof ButtonGroup> = {
   title: 'UI/ButtonGroup',

@@ -8,6 +8,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import { DashboardLayout } from '@/components/templates'
 import { SearchBar, DataTable } from '@/components/organisms'
 import type { SearchFilter, TableColumn, TableAction } from '@/components/organisms'
+import { Button } from '@/components/atoms'
 
 export const dynamic = 'force-dynamic'
 
@@ -278,16 +279,15 @@ function ResidentsContent() {
         {/* Page Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">Residents</h1>
-            <p className="font-montserrat font-normal text-sm text-neutral-600">
+            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">Residents</h1>
+            <p className="font-montserrat font-normal text-sm text-secondary">
               {pagination.total} total residents
             </p>
           </div>
-          <Link
-            href="/residents/create"
-            className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Add new resident
+          <Link href="/residents/create">
+            <Button variant="primary" size="md">
+              Add new resident
+            </Button>
           </Link>
         </div>
 

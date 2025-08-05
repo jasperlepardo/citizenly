@@ -7,6 +7,9 @@
  * Comprehensive design system for Philippine government digital services
  * ============================================================================= */
 
+/* =============================================================================
+ * LIGHT THEME (Default)
+ * ============================================================================= */
 :root {
   /* =============================================================================
    * PRIMARY COLOR SYSTEM - Government & Official Colors
@@ -71,6 +74,87 @@
   --color-neutral-900: #171717;
   
   /* =============================================================================
+   * THEME-AWARE SEMANTIC COLORS (Light Theme)
+   * ============================================================================= */
+  --color-background: #ffffff;
+  --color-background-secondary: #fafafa;
+  --color-background-muted: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9fafb;
+  --color-surface-active: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-text-inverse: #ffffff;
+}
+
+/* =============================================================================
+ * DARK THEME
+ * ============================================================================= */
+[data-theme="dark"], .dark {
+  /* =============================================================================
+   * PRIMARY COLOR SYSTEM - Adjusted for dark theme
+   * ============================================================================= */
+  --color-primary-50: #172554;
+  --color-primary-100: #1e3a8a;
+  --color-primary-200: #1e40af;
+  --color-primary-300: #1d4ed8;
+  --color-primary-400: #2563eb;
+  --color-primary-500: #3b82f6;   /* Base primary */
+  --color-primary-600: #60a5fa;
+  --color-primary-700: #93c5fd;
+  --color-primary-800: #bfdbfe;
+  --color-primary-900: #dbeafe;
+  --color-primary-950: #eff6ff;
+  
+  /* =============================================================================
+   * SECONDARY COLOR SYSTEM - Adjusted for dark theme
+   * ============================================================================= */
+  --color-secondary-50: #3b0764;
+  --color-secondary-100: #581c87;
+  --color-secondary-200: #6b21a8;
+  --color-secondary-300: #7c3aed;
+  --color-secondary-400: #9333ea;
+  --color-secondary-500: #a855f7;
+  --color-secondary-600: #c084fc;
+  --color-secondary-700: #d8b4fe;  /* Base secondary */
+  --color-secondary-800: #e9d5ff;
+  --color-secondary-900: #f3e8ff;
+  --color-secondary-950: #faf5ff;
+  
+  /* =============================================================================
+   * NEUTRAL COLORS - Dark theme specific
+   * ============================================================================= */
+  --color-neutral-50: #0f172a;
+  --color-neutral-100: #1e293b;
+  --color-neutral-200: #334155;
+  --color-neutral-300: #475569;
+  --color-neutral-400: #64748b;
+  --color-neutral-500: #94a3b8;
+  --color-neutral-600: #cbd5e1;
+  --color-neutral-700: #e2e8f0;   /* Base text */
+  --color-neutral-800: #f1f5f9;   /* Light text */
+  --color-neutral-900: #f8fafc;
+  
+  /* =============================================================================
+   * THEME-AWARE SEMANTIC COLORS (Dark Theme)
+   * ============================================================================= */
+  --color-background: #0f172a;
+  --color-background-secondary: #1e293b;
+  --color-background-muted: #334155;
+  --color-surface: #1e293b;
+  --color-surface-hover: #334155;
+  --color-surface-active: #475569;
+  --color-border: #334155;
+  --color-border-light: #475569;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-inverse: #0f172a;
+  
+  /* =============================================================================
    * RBI-SPECIFIC COLORS - Philippine Government & Sectoral
    * ============================================================================= */
   --color-rbi-flag-blue: #0038a8;
@@ -87,8 +171,8 @@
   /* =============================================================================
    * TYPOGRAPHY SYSTEM
    * ============================================================================= */
-  --font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-primary: var(--font-montserrat, 'Montserrat'), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-family-display: var(--font-montserrat, 'Montserrat'), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   --font-family-mono: ui-monospace, 'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
   
   /* =============================================================================
@@ -155,6 +239,13 @@
 /* =============================================================================
  * BASE STYLES
  * ============================================================================= */
+
+/* Override Tailwind's default border color for pseudo-elements to use semantic tokens */
+*,
+::before,
+::after {
+  border-color: var(--color-border);
+}
  
 html {
   /* Better font rendering */
@@ -167,13 +258,162 @@ html {
 
 body {
   font-family: var(--font-family-primary);
-  color: var(--color-neutral-800);
-  background-color: var(--color-neutral-50);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
   line-height: 1.5;
+  transition: var(--transition-colors);
   
   /* Better font rendering on retina displays */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* =============================================================================
+ * TYPOGRAPHY BASE CLASSES
+ * ============================================================================= */
+
+/* Ensure all text elements inherit the system font by default */
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, label,
+input, textarea, select, button,
+.text-base, .text-sm, .text-lg, .text-xl {
+  font-family: var(--font-family-primary);
+}
+
+/* Heading typography scale */
+h1 { 
+  @apply font-display text-4xl font-bold tracking-tight;
+}
+
+h2 { 
+  @apply font-display text-3xl font-semibold tracking-tight;
+}
+
+h3 { 
+  @apply font-display text-2xl font-semibold tracking-tight;
+}
+
+h4 { 
+  @apply font-display text-xl font-medium tracking-tight;
+}
+
+h5 { 
+  @apply font-display text-lg font-medium;
+}
+
+h6 { 
+  @apply font-display text-base font-medium;
+}
+
+/* Body text */
+p, .text-body {
+  @apply font-body;
+}
+
+/* Form elements */
+input, textarea, select {
+  @apply font-system;
+}
+
+/* Buttons */
+button, .btn {
+  @apply font-system font-medium;
+}
+
+/* Input field overrides - ensure no default borders */
+input[type="text"],
+input[type="email"], 
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Select field overrides - remove native dropdown arrow and borders */
+select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Remove IE/Edge dropdown arrow */
+select::-ms-expand {
+  display: none !important;
+}
+
+/* Focus state overrides for select */
+select:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+
+/* Input field overrides - remove native borders for components that manage their own */
+input[type="text"]:not(.preserve-native-styles),
+input[type="email"]:not(.preserve-native-styles),
+input[type="password"]:not(.preserve-native-styles),
+input[type="search"]:not(.preserve-native-styles),
+input[type="tel"]:not(.preserve-native-styles),
+input[type="url"]:not(.preserve-native-styles) {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Focus state overrides for input */
+input[type="text"]:not(.preserve-native-styles):focus,
+input[type="email"]:not(.preserve-native-styles):focus,
+input[type="password"]:not(.preserve-native-styles):focus,
+input[type="search"]:not(.preserve-native-styles):focus,
+input[type="tel"]:not(.preserve-native-styles):focus,
+input[type="url"]:not(.preserve-native-styles):focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+
+/* Specific override for our InputField component */
+.input-field-container input {
+  border: none !important;
+}
+
+/* Specific override for SearchBar component */
+.search-bar-input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* =============================================================================
+ * SEMANTIC UTILITIES
+ * Note: Semantic color utilities are now defined in tailwind.config.js
+ * ============================================================================= */
+
+.search-bar-input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
+}
+
+.input-field-container input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  ring: none !important;
 }
 
 /* =============================================================================
@@ -212,3 +452,67 @@ body {
 .focus-ring-success { box-shadow: var(--shadow-success-focus); }
 .focus-ring-warning { box-shadow: var(--shadow-warning-focus); }
 .focus-ring-danger { box-shadow: var(--shadow-danger-focus); }
+
+/* =============================================================================
+ * THEME-AWARE UTILITY CLASSES
+ * ============================================================================= */
+
+/* Background utilities */
+.bg-background { background-color: var(--color-background); }
+.bg-background-secondary { background-color: var(--color-background-secondary); }
+.bg-background-muted { background-color: var(--color-background-muted); }
+.bg-surface { background-color: var(--color-surface); }
+.bg-surface-hover { background-color: var(--color-surface-hover); }
+.bg-surface-active { background-color: var(--color-surface-active); }
+
+/* Border utilities */
+.border-default { border-color: var(--color-border); }
+.border-light { border-color: var(--color-border-light); }
+
+/* Text utilities */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-muted { color: var(--color-text-muted); }
+.text-inverse { color: var(--color-text-inverse); }
+
+/* Hover utilities */
+.hover\:bg-surface-hover:hover { background-color: var(--color-surface-hover); }
+.hover\:bg-surface-active:hover { background-color: var(--color-surface-active); }
+
+/* Focus utilities */
+.focus\:bg-surface:focus { background-color: var(--color-surface); }
+
+/* =============================================================================
+ * COMPONENT-SPECIFIC DARK MODE OVERRIDES
+ * ============================================================================= */
+
+/* Dark mode adjustments for specific components */
+[data-theme="dark"] .search-bar-input,
+.dark .search-bar-input {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .search-bar-input::placeholder,
+.dark .search-bar-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* =============================================================================
+ * INPUT PADDING RESET - Force zero padding on all custom inputs
+ * ============================================================================= */
+input[type="text"]:not([class*="p-"]):not([class*="px-"]):not([class*="py-"]) {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Specific reset for our custom input components */
+.input-field-container input,
+.search-bar-container input,
+input[style*="padding: 0"] {
+  padding: 0 !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

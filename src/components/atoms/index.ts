@@ -7,3 +7,5 @@ export { Toggle } from './Toggle';
 export { Textarea } from './Textarea';
 export { default as Select } from './Select';
 export { IconButton } from './IconButton';
+export { Typography, Heading1, Heading2, Heading3, BodyText, Caption } from './Typography';
+export { ThemeToggle } from './ThemeToggle';

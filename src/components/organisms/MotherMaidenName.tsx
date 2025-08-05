@@ -7,8 +7,8 @@
  */
 
 import React, { useState } from 'react'
-import { Input, Checkbox } from '../atoms'
-import { FormGroup } from '../molecules'
+import { Checkbox, Button } from '../atoms'
+import { FormGroup, InputField, DropdownSelect } from '../molecules'
 
 // Mother's Information Interface (matches database schema)
 export interface MotherInformation {
@@ -124,10 +124,8 @@ export default function MotherMaidenName({
           <FormGroup title="Mother's Full Name">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name *
-                </label>
-                <Input
+                <InputField
+                  label="First Name *"
                   type="text"
                   value={value.mother_first_name || ''}
                   onChange={(e) => handleChange('mother_first_name', e.target.value)}
@@ -138,10 +136,8 @@ export default function MotherMaidenName({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Middle Name
-                </label>
-                <Input
+                <InputField
+                  label="Middle Name"
                   type="text"
                   value={value.mother_middle_name || ''}
                   onChange={(e) => handleChange('mother_middle_name', e.target.value)}
@@ -150,53 +146,44 @@ export default function MotherMaidenName({
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Suffix
-                </label>
-                <select
-                  value={value.mother_suffix || ''}
-                  onChange={(e) => handleChange('mother_suffix', e.target.value || undefined)}
-                  disabled={disabled}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {SUFFIX_OPTIONS.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <DropdownSelect
+                label="Suffix"
+                options={SUFFIX_OPTIONS}
+                value={value.mother_suffix || ''}
+                onChange={(newValue) => handleChange('mother_suffix', newValue || undefined)}
+                disabled={disabled}
+              />
             </div>
           </FormGroup>
 
           <FormGroup title="Mother's Maiden Last Name">
-            <Input
+            <InputField
               type="text"
               value={value.mother_maiden_last_name || ''}
               onChange={(e) => handleChange('mother_maiden_last_name', e.target.value)}
               placeholder="Enter maiden last name (family name before marriage)"
               disabled={disabled}
               required
+              helperText="This should be the family name your mother had before marriage"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              This should be the family name your mother had before marriage
-            </p>
           </FormGroup>
 
           {/* Advanced Information Toggle */}
           <div className="border-t pt-4">
-            <button
+            <Button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
               disabled={disabled}
-              className="flex items-center text-sm text-blue-600 hover:text-blue-800 disabled:text-gray-400"
+              variant="ghost"
+              size="sm"
+              leftIcon={
+                <span className={`transition-transform ${showAdvanced ? 'rotate-90' : ''}`}>
+                  ▶
+                </span>
+              }
             >
-              <span className={`mr-2 transition-transform ${showAdvanced ? 'rotate-90' : ''}`}>
-                ▶
-              </span>
               {showAdvanced ? 'Hide' : 'Show'} Additional Information
-            </button>
+            </Button>
           </div>
 
           {/* Advanced Information */}
@@ -214,7 +201,7 @@ export default function MotherMaidenName({
                 </FormGroup>
 
                 <FormGroup title="Birth Year">
-                  <Input
+                  <InputField
                     type="number"
                     value={value.mother_birth_year || ''}
                     onChange={(e) => handleChange('mother_birth_year', e.target.value ? parseInt(e.target.value) : undefined)}
@@ -227,7 +214,7 @@ export default function MotherMaidenName({
               </div>
 
               <FormGroup title="Mother's Birthplace">
-                <Input
+                <InputField
                   type="text"
                   value={value.mother_birthplace || ''}
                   onChange={(e) => handleChange('mother_birthplace', e.target.value)}

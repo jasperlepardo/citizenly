@@ -191,7 +191,7 @@ export default function BarangaySelector({
     
     return parts.map((part, index) => 
       regex.test(part) ? (
-        <mark key={index} className="bg-yellow-200 text-gray-900 font-medium">
+        <mark key={index} className="bg-yellow-200 text-primary font-medium">
           {part}
         </mark>
       ) : part
@@ -215,7 +215,7 @@ export default function BarangaySelector({
         
         {loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-5 w-5 text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -224,7 +224,7 @@ export default function BarangaySelector({
 
         {!loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5 text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
@@ -233,7 +233,7 @@ export default function BarangaySelector({
 
       {/* Dropdown */}
       {isOpen && options.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option) => (
             <button
               key={option.code}
@@ -242,13 +242,13 @@ export default function BarangaySelector({
               className="w-full text-left px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none border-b border-gray-100 last:border-b-0"
             >
               <div className="flex flex-col">
-                <div className="font-medium text-gray-900">
+                <div className="font-medium text-primary">
                   {highlightMatch(option.name, searchTerm)}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-secondary">
                   {highlightMatch(`${option.city_name}, ${option.province_name}`, searchTerm)}
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-muted">
                   {option.region_name}
                 </div>
               </div>
@@ -259,9 +259,9 @@ export default function BarangaySelector({
 
       {/* No results message */}
       {isOpen && !loading && options.length === 0 && searchTerm.length >= 2 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4">
-          <div className="text-center text-gray-500">
-            <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4">
+          <div className="text-center text-muted">
+            <svg className="mx-auto h-8 w-8 text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <p className="text-sm">No barangays found for "{searchTerm}"</p>
@@ -272,9 +272,9 @@ export default function BarangaySelector({
 
       {/* Search instruction when focused but no search term */}
       {isOpen && !loading && searchTerm.length < 2 && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4">
-          <div className="text-center text-gray-500">
-            <svg className="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4">
+          <div className="text-center text-muted">
+            <svg className="mx-auto h-8 w-8 text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <p className="text-sm">Start typing to search barangays</p>
@@ -292,7 +292,7 @@ export default function BarangaySelector({
 
       {/* Helper text */}
       {!error && (
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-muted">
           Start typing to search by barangay name, city, or province (e.g., "Poblacion", "Manila", "Cebu City")
         </p>
       )}

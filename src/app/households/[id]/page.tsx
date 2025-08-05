@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { DashboardLayout } from '@/components/templates'
 
 interface Household {
   code: string
@@ -41,6 +42,7 @@ function HouseholdDetailContent() {
   const [members, setMembers] = useState<HouseholdMember[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [globalSearchTerm, setGlobalSearchTerm] = useState('')
 
   useEffect(() => {
     const loadHouseholdDetails = async () => {
@@ -112,64 +114,89 @@ function HouseholdDetailContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading household details...</p>
+      <DashboardLayout 
+        currentPage="households"
+        searchTerm={globalSearchTerm}
+        onSearchChange={setGlobalSearchTerm}
+      >
+        <div className="p-6">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-sm text-secondary">Loading household details...</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     )
   }
 
   if (error || !household) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="text-red-600 mb-4">
-              <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
+      <DashboardLayout 
+        currentPage="households"
+        searchTerm={globalSearchTerm}
+        onSearchChange={setGlobalSearchTerm}
+      >
+        <div className="p-6">
+          <div className="max-w-md mx-auto text-center">
+            <div className="bg-surface rounded-lg shadow-md border border-default p-6">
+              <div className="text-red-600 mb-4">
+                <svg className="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h1 className="font-montserrat font-semibold text-lg text-primary mb-2">Household Not Found</h1>
+              <p className="font-montserrat text-secondary text-sm mb-4">{error}</p>
+              <Link
+                href="/households"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary border border-default rounded-md hover:bg-surface-hover"
+              >
+                Back to Households
+              </Link>
             </div>
-            <h1 className="text-lg font-semibold text-gray-900 mb-2">Household Not Found</h1>
-            <p className="text-gray-600 text-sm mb-4">{error}</p>
-            <Link
-              href="/residents"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Back to Residents
-            </Link>
           </div>
         </div>
-      </div>
+      </DashboardLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-white border-b border-neutral-300 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link 
-              href="/residents"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-950/10 bg-white px-3 py-2 text-sm/6 font-medium text-zinc-950 shadow-sm hover:bg-zinc-50"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-              Back to Residents
-            </Link>
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Household #{household.code}
-              </h1>
-              <p className="text-sm text-gray-600">
-                {members.length} member{members.length !== 1 ? 's' : ''} • Created {new Date(household.created_at).toLocaleDateString()}
-              </p>
+    <DashboardLayout 
+      currentPage="households"
+      searchTerm={globalSearchTerm}
+      onSearchChange={setGlobalSearchTerm}
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="bg-surface shadow-sm border-b border-default -mx-6 px-6 py-6 mb-8">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/households"
+                className="inline-flex items-center px-3 py-2 border border-default shadow-sm text-sm font-medium rounded-md text-secondary bg-surface hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Households
+              </Link>
+              <div className="flex items-center space-x-2">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h2a2 2 0 012 2v0H8v0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-primary">Household #{household.code}</h1>
+                  <p className="text-sm text-secondary">
+                    {members.length} member{members.length !== 1 ? 's' : ''} • Created {new Date(household.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-          
           <div className="flex items-center gap-3">
             <Link 
               href={`/rbi-form?household=${household.code}`}
@@ -182,117 +209,187 @@ function HouseholdDetailContent() {
             </Link>
           </div>
         </div>
-      </div>
 
-      <div className="p-6 max-w-6xl mx-auto">
-        {/* Household Info */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Household Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Household Number:</span>
-                  <p className="text-base text-gray-900">#{household.code}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Head of Household:</span>
-                  <p className="text-base text-gray-900">
-                    {household.head_resident 
-                      ? formatFullName(household.head_resident)
-                      : 'No head assigned'
-                    }
-                  </p>
-                </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Main Information */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Household Information Card */}
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Household Information</h3>
+              </div>
+              <div className="px-6 py-4">
+                <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                  <div>
+                    <dt className="text-sm font-medium text-secondary">Household Number</dt>
+                    <dd className="mt-1 text-sm text-primary font-mono">#{household.code}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-secondary">Head of Household</dt>
+                    <dd className="mt-1 text-sm text-primary">
+                      {household.head_resident 
+                        ? formatFullName(household.head_resident)
+                        : 'No head assigned'
+                      }
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-secondary">Address</dt>
+                    <dd className="mt-1 text-sm text-primary">
+                      {[household.house_number, household.street_name, household.subdivision]
+                        .filter(Boolean)
+                        .join(', ') || 'No address specified'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-secondary">Total Members</dt>
+                    <dd className="mt-1 text-sm text-primary">{members.length}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-sm font-medium text-secondary">Created Date</dt>
+                    <dd className="mt-1 text-sm text-primary">
+                      {new Date(household.created_at).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric'
+                      })}
+                    </dd>
+                  </div>
+                </dl>
               </div>
             </div>
-            <div>
-              <div className="space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Address:</span>
-                  <p className="text-base text-gray-900">
-                    {[household.house_number, household.street_name, household.subdivision]
-                      .filter(Boolean)
-                      .join(', ') || 'No address specified'}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500">Total Members:</span>
-                  <p className="text-base text-gray-900">{members.length}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Household Members */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Household Members</h2>
+            {/* Household Members Card */}
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Household Members</h3>
+              </div>
+          
+              {members.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-secondary">No members found in this household.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-border-light">
+                    <thead className="bg-background-muted">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Age</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Sex</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Civil Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Contact</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-surface divide-y divide-border-light">
+                      {members.map((member) => (
+                        <tr key={member.id} className="hover:bg-surface-hover transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-primary">
+                              {formatFullName(member)}
+                              {household.head_resident?.id === member.id && (
+                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                  Head
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                            {calculateAge(member.birthdate)} years old
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary capitalize">
+                            {member.sex}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary capitalize">
+                            {member.civil_status.replace('_', ' ')}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                            <div>{member.mobile_number}</div>
+                            {member.email && (
+                              <div className="text-xs text-muted">{member.email}</div>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <Link
+                              href={`/residents/${member.id}`}
+                              className="text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              View Details
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
           
-          {members.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-gray-600">No members found in this household.</p>
+          {/* Right Column - Side Information */}
+          <div className="space-y-8">
+            {/* Quick Actions Card */}
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
+              </div>
+              <div className="px-6 py-4 space-y-3">
+                <Link 
+                  href={`/rbi-form?household=${household.code}`}
+                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-flex items-center justify-center"
+                >
+                  Generate RBI Form
+                </Link>
+                <button className="w-full bg-surface border border-default text-secondary px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  Export Household Data
+                </button>
+                <Link 
+                  href={`/residents/create?household=${household.code}`}
+                  className="w-full bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 inline-flex items-center justify-center"
+                >
+                  Add New Member
+                </Link>
+              </div>
             </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sex</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Civil Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {members.map((member) => (
-                    <tr key={member.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {formatFullName(member)}
-                          {household.head_resident?.id === member.id && (
-                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                              Head
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {calculateAge(member.birthdate)} years old
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                        {member.sex}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                        {member.civil_status.replace('_', ' ')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <div>{member.mobile_number}</div>
-                        {member.email && (
-                          <div className="text-xs text-gray-500">{member.email}</div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Link
-                          href={`/residents/${member.id}`}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            
+            {/* Household Statistics Card */}
+            <div className="bg-surface shadow rounded-lg border border-default">
+              <div className="px-6 py-4 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Statistics</h3>
+              </div>
+              <div className="px-6 py-4">
+                <dl className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <dt className="text-sm font-medium text-secondary">Total Members</dt>
+                    <dd className="text-sm font-medium text-primary">{members.length}</dd>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-sm font-medium text-secondary">Adults (18+)</dt>
+                    <dd className="text-sm font-medium text-primary">
+                      {members.filter(m => calculateAge(m.birthdate) >= 18).length}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-sm font-medium text-secondary">Minors (Under 18)</dt>
+                    <dd className="text-sm font-medium text-primary">
+                      {members.filter(m => calculateAge(m.birthdate) < 18).length}
+                    </dd>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <dt className="text-sm font-medium text-secondary">Senior Citizens (60+)</dt>
+                    <dd className="text-sm font-medium text-primary">
+                      {members.filter(m => calculateAge(m.birthdate) >= 60).length}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }
 

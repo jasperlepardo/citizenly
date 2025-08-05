@@ -4,9 +4,10 @@ import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security'
+import { Button } from '@/components/atoms'
 
 const fileUploadVariants = cva(
-  "relative border-2 border-dashed rounded-lg transition-colors font-['Montserrat'] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2",
+  "relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2",
   {
     variants: {
       variant: {
@@ -247,17 +248,15 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
               )}>
                 {dragText}
               </p>
-              <button
-                type="button"
+              <Button
                 onClick={handleBrowseClick}
                 disabled={disabled}
-                className={cn(
-                  "font-['Montserrat'] font-medium underline hover:no-underline transition-all",
-                  disabled ? "text-[#a3a3a3] cursor-not-allowed" : "text-[#2563eb] hover:text-[#1d4ed8]"
-                )}
+                variant="ghost"
+                size="sm"
+                className="font-medium underline hover:no-underline text-[#2563eb] hover:text-[#1d4ed8] p-0 h-auto disabled:text-[#a3a3a3]"
               >
                 {browseText}
-              </button>
+              </Button>
             </div>
             
             {/* File Type and Size Info */}
@@ -292,16 +291,18 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     </p>
                   </div>
                 </div>
-                <button
-                  type="button"
+                <Button
                   onClick={() => removeFile(index)}
-                  className="ml-2 p-1 text-[#737373] hover:text-[#dc2626] transition-colors"
+                  variant="ghost"
+                  size="sm"
+                  iconOnly
+                  className="ml-2 p-1 text-[#737373] hover:text-[#dc2626] transition-colors h-6 w-6"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
-                </button>
+                </Button>
               </div>
             ))}
           </div>

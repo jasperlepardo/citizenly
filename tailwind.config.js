@@ -96,8 +96,8 @@ const designTokens = {
   },
   typography: {
     fontFamily: {
-      primary: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-      display: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      primary: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      display: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       mono: ['ui-monospace', 'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
     },
     fontSize: {
@@ -205,6 +205,7 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       // Typography
@@ -229,5 +230,62 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
+    // Custom plugin to add font utilities and semantic colors
+    function({ addUtilities }) {
+      const newUtilities = {
+        // Font utilities
+        '.font-system': {
+          fontFamily: 'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+        },
+        '.font-display': {
+          fontFamily: 'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+          fontWeight: '600',
+        },
+        '.font-body': {
+          fontFamily: 'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+          fontWeight: '400',
+        },
+        '.font-mono': {
+          fontFamily: 'ui-monospace, "SFMono-Regular", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace',
+        },
+        // Semantic text color utilities
+        '.text-primary': {
+          color: 'var(--color-text-primary)',
+        },
+        '.text-secondary': {
+          color: 'var(--color-text-secondary)',
+        },
+        '.text-muted': {
+          color: 'var(--color-text-muted)',
+        },
+        '.text-inverse': {
+          color: 'var(--color-text-inverse)',
+        },
+        // Semantic background color utilities
+        '.bg-background': {
+          backgroundColor: 'var(--color-background)',
+        },
+        '.bg-background-muted': {
+          backgroundColor: 'var(--color-background-muted)',
+        },
+        '.bg-surface': {
+          backgroundColor: 'var(--color-surface)',
+        },
+        '.bg-surface-hover': {
+          backgroundColor: 'var(--color-surface-hover)',
+        },
+        '.bg-surface-active': {
+          backgroundColor: 'var(--color-surface-active)',
+        },
+        // Semantic border color utilities
+        '.border-default': {
+          borderColor: 'var(--color-border)',
+        },
+        '.border-light': {
+          borderColor: 'var(--color-border-light)',
+        }
+      }
+      addUtilities(newUtilities)
+    }
   ],
 }

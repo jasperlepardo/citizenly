@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Input } from '../atoms'
+import { InputField } from '../molecules'
 import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto'
 
 interface PhilSysNumberInputProps {
@@ -148,14 +148,14 @@ export default function PhilSysNumberInput({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-primary">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
       
       <div className="relative">
-        <Input
+        <InputField
           type="text"
           value={inputValue}
           onChange={handleInputChange}
@@ -163,7 +163,7 @@ export default function PhilSysNumberInput({
           onBlur={handleBlur}
           placeholder={placeholder}
           disabled={disabled}
-          error={error || validationError}
+          errorMessage={error || validationError}
           className={`font-mono ${isValid ? 'border-green-500' : ''}`}
           maxLength={14} // XXXX-XXXX-XXXX + potential extra char
         />
@@ -179,7 +179,7 @@ export default function PhilSysNumberInput({
               ⚠️
             </span>
           ) : (
-            <span className="text-gray-400" title="PhilSys number">
+            <span className="text-muted" title="PhilSys number">
               🆔
             </span>
           )}
@@ -187,7 +187,7 @@ export default function PhilSysNumberInput({
       </div>
 
       {/* Helper Text */}
-      <div className="text-xs text-gray-500">
+      <div className="text-xs text-muted">
         {!isFocused && displayValue && showLastFourDigits ? (
           <span>
             Number is masked for security. Click to edit. Last 4 digits: {displayValue.slice(-4)}
@@ -205,7 +205,7 @@ export default function PhilSysNumberInput({
           <span className="text-xs">✓</span>
           <span className="text-xs">Valid PhilSys number format</span>
           {autoHash && (
-            <span className="text-xs bg-green-100 px-2 py-1 rounded">
+            <span className="text-xs bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
               🔐 Auto-encrypted
             </span>
           )}
@@ -213,10 +213,10 @@ export default function PhilSysNumberInput({
       )}
 
       {/* Security Notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs">
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-xs">
         <div className="flex items-start space-x-2">
-          <span className="text-blue-600">🔐</span>
-          <div className="text-blue-700">
+          <span className="text-blue-600 dark:text-blue-400">🔐</span>
+          <div className="text-blue-700 dark:text-blue-300">
             <strong>Security Notice:</strong> PhilSys numbers are automatically encrypted 
             and masked for protection. Only the last 4 digits are shown when not editing.
             {autoHash && " Data is hashed before storage."}

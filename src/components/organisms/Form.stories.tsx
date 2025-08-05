@@ -1,13 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { Form, FormField, FormGroup } from './Form';
-import { InputField } from './InputField';
-import { Textarea } from './Textarea';
-import { SelectField } from './SelectField';
-import { Checkbox } from './Checkbox';
-import { Radio, RadioGroup } from './Radio';
-import { Toggle } from './Toggle';
-import { Button } from './Button';
+import { Form, FormField, FormGroup } from '../molecules/FormField';
+import { InputField, SelectField } from '../molecules';
+import { Textarea, Checkbox, Radio, RadioGroup, Toggle } from '../atoms';
+import { Button } from '../atoms/Button';
 
 const meta: Meta<typeof Form> = {
   title: 'UI/Form',

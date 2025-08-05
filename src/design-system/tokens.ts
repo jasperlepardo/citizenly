@@ -9,7 +9,7 @@
 // =============================================================================
 
 export const colors = {
-  // Primary (Blue) - Government/Official colors inspired by Philippine flag
+  // Primary (Blue) - JSPR Design System colors from Figma
   primary: {
     50: '#eff6ff',
     100: '#dbeafe', 
@@ -17,14 +17,14 @@ export const colors = {
     300: '#93c5fd',
     400: '#60a5fa',
     500: '#3b82f6', // Base primary
-    600: '#2563eb',
+    600: '#2563eb', // Figma primary button color
     700: '#1d4ed8',
     800: '#1e40af',
     900: '#1e3a8a',
     950: '#172554'
   },
   
-  // Secondary (Purple) - Administrative and system colors
+  // Secondary (Purple) - JSPR Design System colors from Figma
   secondary: {
     50: '#faf5ff',
     100: '#f3e8ff',
@@ -33,13 +33,13 @@ export const colors = {
     400: '#c084fc',
     500: '#a855f7',
     600: '#9333ea',
-    700: '#7c3aed', // Base secondary
+    700: '#7c3aed', // Figma secondary button color
     800: '#6b21a8',
     900: '#581c87',
     950: '#3b0764'
   },
   
-  // Success (Emerald) - Positive actions, completed states
+  // Success (Emerald) - JSPR Design System colors from Figma
   success: {
     50: '#ecfdf5',
     100: '#d1fae5',
@@ -47,14 +47,14 @@ export const colors = {
     300: '#6ee7b7', 
     400: '#34d399',
     500: '#10b981',
-    600: '#059669', // Base success
+    600: '#059669', // Figma success button color
     700: '#047857',
     800: '#065f46',
     900: '#064e3b',
     950: '#022c22'
   },
   
-  // Warning (Orange) - Caution, pending actions
+  // Warning (Orange) - JSPR Design System colors from Figma
   warning: {
     50: '#fff7ed',
     100: '#ffedd5',
@@ -62,14 +62,14 @@ export const colors = {
     300: '#fdba74',
     400: '#fb923c', 
     500: '#f97316',
-    600: '#ea580c', // Base warning
+    600: '#ea580c', // Figma warning button color
     700: '#c2410c',
     800: '#9a3412',
     900: '#7c2d12',
     950: '#431407'
   },
   
-  // Danger (Red) - Errors, destructive actions
+  // Danger (Red) - JSPR Design System colors from Figma
   danger: {
     50: '#fef2f2',
     100: '#fee2e2',
@@ -77,24 +77,24 @@ export const colors = {
     300: '#fca5a5',
     400: '#f87171',
     500: '#ef4444',
-    600: '#dc2626', // Base danger
+    600: '#dc2626', // Figma danger button color
     700: '#b91c1c',
     800: '#991b1b',
     900: '#7f1d1d',
     950: '#450a0a'
   },
   
-  // Neutral (Gray) - Text, backgrounds, borders
+  // Neutral (Gray) - JSPR Design System colors from Figma
   neutral: {
-    0: '#ffffff',   // Pure white
-    50: '#fafafa',
+    0: '#ffffff',   // Pure white - Figma background
+    50: '#fafafa',  // Figma disabled background
     100: '#f5f5f5',
     200: '#e5e5e5',
-    300: '#d4d4d4',
+    300: '#d4d4d4', // Figma neutral button colors
     400: '#a3a3a3',
-    500: '#737373',
+    500: '#737373', // Figma disabled text color
     600: '#525252',
-    700: '#404040', // Base text
+    700: '#404040', // Base text - Figma text colors
     800: '#262626', // Dark text
     900: '#171717',
     950: '#0a0a0a'
@@ -121,14 +121,14 @@ export const colors = {
 } as const;
 
 // =============================================================================
-// TYPOGRAPHY SYSTEM
+// TYPOGRAPHY SYSTEM (JSPR Design System - Figma)
 // =============================================================================
 
 export const typography = {
-  // Font families
+  // Font families - Based on Figma design system
   fontFamily: {
-    primary: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-    display: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+    primary: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+    display: ['Montserrat', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
     mono: ['ui-monospace', 'SFMono-Regular', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace']
   },
   
@@ -289,20 +289,23 @@ export const animation = {
 // =============================================================================
 
 export const components = {
-  // Button tokens
+  // Button tokens (JSPR Design System)
   button: {
     height: {
       sm: '32px',
       md: '36px', 
-      lg: '40px'
+      lg: '40px',
+      regular: '36px' // Figma regular size (p=8, approximately 36px height)
     },
     padding: {
-      sm: '8px 12px',
-      md: '10px 16px',
-      lg: '12px 20px'
+      sm: '6px 12px',
+      md: '8px 16px',
+      lg: '12px 20px',
+      regular: '8px 8px' // p=8 from Figma specifications
     },
-    borderRadius: borderRadius.md,
-    fontWeight: typography.fontWeight.medium
+    borderRadius: borderRadius.md, // 6px - matches Figma rounded corners
+    fontWeight: typography.fontWeight.medium, // 500 - Figma font weight
+    fontFamily: typography.fontFamily.primary // Montserrat from Figma
   },
   
   // Input tokens
@@ -345,29 +348,30 @@ export const components = {
 // =============================================================================
 
 export const semantic = {
-  // Text colors
+  // Text colors - Based on Figma design system
   text: {
     primary: colors.neutral[800],
     secondary: colors.neutral[600], 
     tertiary: colors.neutral[500],
-    disabled: colors.neutral[400],
-    inverse: colors.neutral[50],
+    disabled: colors.neutral[500], // #737373 from Figma disabled states
+    inverse: colors.neutral[0], // White text
     
-    // State colors
+    // State colors - Figma button text colors
     success: colors.success[700],
     warning: colors.warning[700],
     danger: colors.danger[700],
     info: colors.primary[700]
   },
   
-  // Background colors
+  // Background colors - Based on Figma design system
   background: {
     primary: colors.neutral[50],
     secondary: colors.neutral[100],
     tertiary: colors.neutral[200],
-    elevated: colors.neutral[0], // Pure white
+    elevated: colors.neutral[0], // Pure white - Figma background
+    disabled: colors.neutral[50], // #fafafa from Figma disabled states
     
-    // State backgrounds
+    // State backgrounds - Figma button backgrounds
     success: colors.success[50],
     warning: colors.warning[50], 
     danger: colors.danger[50],
@@ -448,6 +452,74 @@ export const zIndex = {
   tooltip: 1800
 } as const;
 
+// =============================================================================
+// FIGMA DESIGN SYSTEM MAPPINGS
+// =============================================================================
+
+// Direct mappings from Figma design system for easy reference
+export const figmaColors = {
+  // Exact Figma color values for Button component
+  button: {
+    primary: {
+      background: '#2563eb',
+      hover: '#3b82f6',
+      text: '#ffffff',
+      disabled: {
+        background: '#fafafa',
+        text: '#737373'
+      }
+    },
+    secondary: {
+      background: '#7c3aed',
+      hover: '#8b5cf6', 
+      text: '#ffffff'
+    },
+    success: {
+      background: '#059669',
+      hover: '#10b981',
+      text: '#ffffff'
+    },
+    warning: {
+      background: '#ea580c',
+      hover: '#f97316',
+      text: '#ffffff'
+    },
+    danger: {
+      background: '#dc2626',
+      hover: '#ef4444',
+      text: '#ffffff'
+    },
+    neutral: {
+      background: '#d4d4d4',
+      hover: '#e5e5e5',
+      text: '#404040'
+    },
+    ghost: {
+      background: 'transparent',
+      hover: '#e5e5e5',
+      text: '#404040'
+    }
+  },
+  // Figma typography
+  typography: {
+    fontFamily: 'Montserrat',
+    fontWeight: {
+      medium: '500'
+    },
+    fontSize: {
+      base: '16px'
+    },
+    lineHeight: {
+      base: '20px'
+    }
+  },
+  // Figma spacing
+  spacing: {
+    buttonPadding: '8px', // p=8 from Figma
+    borderRadius: '6px' // Default rounded corners
+  }
+} as const;
+
 // Export all tokens as a single object for easy access
 export const designTokens = {
   colors,
@@ -459,7 +531,8 @@ export const designTokens = {
   components,
   semantic,
   breakpoints,
-  zIndex
+  zIndex,
+  figmaColors
 } as const;
 
 export default designTokens;
