@@ -5,7 +5,19 @@ import { randomBytes, createHash, timingSafeEqual } from 'crypto';
  * Provides Cross-Site Request Forgery protection for forms
  */
 
-const CSRF_SECRET = process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production';
+const CSRF_SECRET = process.env.CSRF_SECRET;
+
+if (!CSRF_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'CSRF_SECRET environment variable must be set in production. Generate a secure random string of at least 32 characters.'
+  );
+}
+
+// Use a development-only fallback for non-production environments
+const SECRET =
+  CSRF_SECRET ||
+  (process.env.NODE_ENV !== 'production' ? 'dev-only-csrf-secret-do-not-use-in-production' : '');
+
 const TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export interface CSRFToken {
@@ -25,7 +37,7 @@ export function generateCSRFToken(): CSRFToken {
   // Create signature using HMAC
   const data = `${randomToken}:${timestamp}`;
   const signature = createHash('sha256')
-    .update(data + CSRF_SECRET)
+    .update(data + SECRET)
     .digest('base64url');
 
   return {
@@ -53,7 +65,7 @@ export function verifyCSRFToken(token: string, timestamp: number, signature: str
     // Recreate the signature
     const data = `${token}:${timestamp}`;
     const expectedSignature = createHash('sha256')
-      .update(data + CSRF_SECRET)
+      .update(data + SECRET)
       .digest('base64url');
 
     // Use timing-safe comparison to prevent timing attacks

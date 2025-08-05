@@ -18,6 +18,9 @@
     "format:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,json,css,md}' '*.{js,jsx,ts,tsx,json,md}' '.storybook/**/*.{js,jsx,ts,tsx,json}'",
     "cleanup": "npm run format && npm run lint:fix",
     "pre-push": "npm run type-check && npm run lint && npm run test:ci",
+    "security:check": "./scripts/security-check.sh",
+    "security:audit": "npm audit --production",
+    "security:audit-fix": "npm audit fix --production",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
