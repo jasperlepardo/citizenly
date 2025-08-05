@@ -1,5 +1,9 @@
 name: Automated Code Review
 
+# Note: VS Code may show warnings about "Context access might be invalid" for optional secrets.
+# These are expected warnings for optional integrations (Codecov, Semgrep, SonarCloud, etc.).
+# The workflows will work correctly with or without these secrets configured.
+
 on:
   pull_request:
     branches: [main, develop]
@@ -54,7 +58,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN || '' }}
           fail_ci_if_error: false
         continue-on-error: true
 
@@ -150,7 +154,7 @@ jobs:
             p/react
             p/typescript
         env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN || '' }}
         continue-on-error: true
 
       - name: Run our custom security checks
