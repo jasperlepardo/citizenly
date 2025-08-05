@@ -73,7 +73,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public - allow public directory for Storybook static assets
 
 # Vuepress build output
 .vuepress/dist
