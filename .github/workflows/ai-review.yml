@@ -113,21 +113,27 @@ jobs:
             }
             
             // Post summary comment
-            const summaryComment = `## 🤖 AI Code Review Summary
+            const consoleLogCount = reviewComments.filter(c => c.body.includes('console.log')).length;
+            const typeIssueCount = reviewComments.filter(c => c.body.includes('any')).length;
+            const todoCount = reviewComments.filter(c => c.body.includes('TODO')).length;
             
-**Files analyzed**: ${changedFiles.length}
-**Issues found**: ${reviewComments.length}
-
-### Quick Stats:
-- Console.log statements: ${reviewComments.filter(c => c.body.includes('console.log')).length}
-- Type safety issues: ${reviewComments.filter(c => c.body.includes('any')).length}
-- TODO/FIXME items: ${reviewComments.filter(c => c.body.includes('TODO')).length}
-
-${reviewComments.length === 0 ? '✅ **Great job!** No automated issues detected.' : ''}
-${reviewComments.length > 10 ? `\n⚠️ **Note**: Only showing first 10 issues. Total found: ${reviewComments.length}` : ''}
-
----
-*Automated review by GitHub Actions*`;
+            let summaryComment = '## 🤖 AI Code Review Summary\\n\\n';
+            summaryComment += '**Files analyzed**: ' + changedFiles.length + '\\n';
+            summaryComment += '**Issues found**: ' + reviewComments.length + '\\n\\n';
+            summaryComment += '### Quick Stats:\\n';
+            summaryComment += '- Console.log statements: ' + consoleLogCount + '\\n';
+            summaryComment += '- Type safety issues: ' + typeIssueCount + '\\n';
+            summaryComment += '- TODO/FIXME items: ' + todoCount + '\\n\\n';
+            
+            if (reviewComments.length === 0) {
+              summaryComment += '✅ **Great job!** No automated issues detected.\\n';
+            }
+            
+            if (reviewComments.length > 10) {
+              summaryComment += '⚠️ **Note**: Only showing first 10 issues. Total found: ' + reviewComments.length + '\\n';
+            }
+            
+            summaryComment += '\\n---\\n*Automated review by GitHub Actions*';
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
