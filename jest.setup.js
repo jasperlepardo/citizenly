@@ -235,6 +235,8 @@ beforeAll(() => {
     const expectedWarnings = [
       'Warning: ReactDOM.render is deprecated',
       'PhilSys number format warning',
+      "Color token 'invalid.path' not found. Using fallback.",
+      "Color token 'invalid.color' not found. Using fallback.",
     ];
 
     if (

@@ -9,8 +9,34 @@
   },
   "git": {
     "deploymentEnabled": {
+      "main": true,
       "develop": true,
-      "feature/*": true
+      "staging": true,
+      "feature/*": true,
+      "release/*": true,
+      "hotfix/*": true
     }
-  }
+  },
+  "env": {
+    "NEXT_PUBLIC_APP_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_APP_ENV": "production"
+    }
+  },
+  "alias": [
+    {
+      "src": "app.citizenly.co",
+      "dest": "main"
+    },
+    {
+      "src": "staging.citizenly.co",
+      "dest": "staging"
+    },
+    {
+      "src": "dev.citizenly.co",
+      "dest": "develop"
+    }
+  ]
 }

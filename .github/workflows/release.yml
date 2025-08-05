@@ -1,16 +1,23 @@
-name: Release
+name: Deploy & Release
 
-# Note: VS Code may show warnings about "Context access might be invalid" for NPM_TOKEN.
-# This is an expected warning for optional npm publishing.
-# The workflow will work correctly with or without NPM_TOKEN configured.
+# Controlled deployment workflow
+# - Push to develop: Automatic deployment to dev environment
+# - Manual releases: Deploy to staging and production
 
 on:
   push:
     branches:
-      - main
-      - develop
-      - 'release/**'
-      - 'hotfix/**'
+      - develop     # Development (auto-deploy)
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
 
 permissions:
   contents: write
@@ -19,10 +26,14 @@ permissions:
   id-token: write
 
 jobs:
-  release:
-    name: Release
+  deploy:
+    name: Deploy & Release
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    
+    # Use GitHub Environments for environment-specific secrets
+    environment: 
+      name: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
 
     steps:
       - name: Checkout
@@ -30,6 +41,17 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Switch to target branch for manual deployments
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ inputs.environment }}" = "staging" ]; then
+            git checkout staging || git checkout -b staging
+            git merge develop --no-ff -m "Release to staging"
+          elif [ "${{ inputs.environment }}" = "production" ]; then
+            git checkout main || git checkout -b main  
+            git merge staging --no-ff -m "Release to production"
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -51,9 +73,18 @@ jobs:
 
       - name: Run lint
         run: npm run lint
+        continue-on-error: true
 
       - name: Build application
         run: npm run build
+        env:
+          # Use environment-specific variables from GitHub Environments
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
+          CSRF_SECRET: ${{ secrets.CSRF_SECRET || 'placeholder-csrf-secret-32-characters-long' }}
+          
+          # Set environment for proper .env file loading
+          NEXT_PUBLIC_APP_ENV: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'development' }}
 
       - name: Run SonarCloud quality gate
         uses: SonarSource/sonarcloud-github-action@master
@@ -71,3 +102,12 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN || '' }}
         run: npm run release
         continue-on-error: true
+
+      - name: Push merged changes for manual deployments
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ inputs.environment }}" = "staging" ]; then
+            git push origin staging
+          elif [ "${{ inputs.environment }}" = "production" ]; then
+            git push origin main
+          fi

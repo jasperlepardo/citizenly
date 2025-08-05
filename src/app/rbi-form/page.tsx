@@ -454,12 +454,13 @@ function RBIFormContent() {
           targetHousehold = householdData;
         } else {
           // Load first household from user's barangay or any available household
-          let { data: householdData, error: householdError } = await supabase
+          const { data: initialHouseholdData, error: householdError } = await supabase
             .from('households')
             .select('*')
             .eq('barangay_code', userProfile?.barangay_code || '')
             .limit(1)
             .single();
+          let householdData = initialHouseholdData;
 
           // If no household in user's barangay, try to get any household
           if (householdError || !householdData) {

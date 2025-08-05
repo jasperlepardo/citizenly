@@ -1,43 +1,60 @@
 /**
  * Supabase Client Configuration
- * Connects to production RBI System database with complete PSGC data
+ * Multi-environment Supabase client for RBI System
  */
 
 import { createClient } from '@supabase/supabase-js';
+import {
+  getSupabaseConfig,
+  validateEnvironment,
+  createLogger,
+  isTest,
+  isProductionLike,
+} from './environment';
 
-// Supabase configuration
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const logger = createLogger('Supabase');
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check .env.local file.');
+// Get environment-specific Supabase configuration
+const { url, anonKey, options } = getSupabaseConfig();
+
+// Check if we're in a valid Supabase environment
+export const isSupabaseAvailable = () => {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
+  );
+};
+
+// Validate environment on startup (only in browser for production-like environments)
+if (typeof window !== 'undefined' && isProductionLike()) {
+  const validation = validateEnvironment();
+  if (!validation.isValid) {
+    logger.error('Environment validation failed:', validation.errors);
+    throw new Error(`Environment validation failed: ${validation.errors.join(', ')}`);
+  }
 }
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-  },
-  db: {
-    schema: 'public',
-  },
-  global: {
-    headers: {
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-    },
-  },
-});
+// Create Supabase client with environment-specific configuration
+export const supabase = createClient(url, anonKey, options);
 
 // Force schema refresh function
 export const refreshSchema = async () => {
+  if (!isSupabaseAvailable()) {
+    logger.debug('Supabase not available, skipping schema refresh');
+    return;
+  }
+
   try {
     // Force a schema refresh by making a simple query
     const { error } = await supabase.rpc('version');
-    if (error) console.log('Schema refresh attempt:', error.message);
+    if (error) {
+      logger.debug('Schema refresh attempt:', error.message);
+    } else {
+      logger.debug('Schema refresh completed successfully');
+    }
   } catch (e) {
-    console.log('Schema refresh completed');
+    logger.debug('Schema refresh completed with exception:', e);
   }
 };
 

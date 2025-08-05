@@ -178,7 +178,7 @@ export default function LoginForm({
         {/* Footer */}
         <div className="mt-6 text-center space-y-3">
           <p className="text-sm text-secondary">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <a href="/signup" className="font-medium text-primary-400 hover:text-primary-300">
               Create one here
             </a>
