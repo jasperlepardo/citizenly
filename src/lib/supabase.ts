@@ -1,58 +1,60 @@
 /**
  * Supabase Client Configuration
- * Connects to production RBI System database with complete PSGC data
+ * Multi-environment Supabase client for RBI System
  */
 
 import { createClient } from '@supabase/supabase-js';
+import {
+  getSupabaseConfig,
+  validateEnvironment,
+  createLogger,
+  isTest,
+  isProductionLike,
+} from './environment';
+
+const logger = createLogger('Supabase');
+
+// Get environment-specific Supabase configuration
+const { url, anonKey, options } = getSupabaseConfig();
 
 // Check if we're in a valid Supabase environment
 export const isSupabaseAvailable = () => {
   return (
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co'
+    !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder')
   );
 };
 
-// Supabase configuration with fallback for build time
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
-
-// Only throw error at runtime when Supabase is actually needed
-if (typeof window !== 'undefined' && !isSupabaseAvailable()) {
-  throw new Error('Missing Supabase environment variables. Please check .env.local file.');
+// Validate environment on startup (only in browser for production-like environments)
+if (typeof window !== 'undefined' && isProductionLike()) {
+  const validation = validateEnvironment();
+  if (!validation.isValid) {
+    logger.error('Environment validation failed:', validation.errors);
+    throw new Error(`Environment validation failed: ${validation.errors.join(', ')}`);
+  }
 }
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-  },
-  db: {
-    schema: 'public',
-  },
-  global: {
-    headers: {
-      'Cache-Control': 'no-cache',
-      Pragma: 'no-cache',
-    },
-  },
-});
+// Create Supabase client with environment-specific configuration
+export const supabase = createClient(url, anonKey, options);
 
 // Force schema refresh function
 export const refreshSchema = async () => {
   if (!isSupabaseAvailable()) {
-    console.log('Supabase not available, skipping schema refresh');
+    logger.debug('Supabase not available, skipping schema refresh');
     return;
   }
 
   try {
     // Force a schema refresh by making a simple query
     const { error } = await supabase.rpc('version');
-    if (error) console.log('Schema refresh attempt:', error.message);
+    if (error) {
+      logger.debug('Schema refresh attempt:', error.message);
+    } else {
+      logger.debug('Schema refresh completed successfully');
+    }
   } catch (e) {
-    console.log('Schema refresh completed');
+    logger.debug('Schema refresh completed with exception:', e);
   }
 };
 
