@@ -106,17 +106,15 @@ jobs:
             
             let comment = '## 📊 Code Quality Report\n\n';
             
-            // Add complexity analysis if available
             try {
               const complexity = JSON.parse(fs.readFileSync('complexity-report.json', 'utf8'));
               comment += `### Complexity Analysis\n`;
               comment += `- **Average Complexity**: ${complexity.summary?.average?.complexity || 'N/A'}\n`;
               comment += `- **Maintainability Index**: ${complexity.summary?.average?.maintainability || 'N/A'}\n\n`;
             } catch (e) {
-              console.log('No complexity report found');
+              // Complexity report not available
             }
             
-            // Add duplication analysis if available  
             try {
               const jscpd = JSON.parse(fs.readFileSync('jscpd-report.json', 'utf8'));
               const duplicatePercentage = jscpd.statistics?.total?.percentage || 0;
@@ -124,7 +122,7 @@ jobs:
               comment += `- **Duplication**: ${duplicatePercentage}%\n`;
               comment += duplicatePercentage > 10 ? '⚠️ High duplication detected\n' : '✅ Low duplication\n';
             } catch (e) {
-              console.log('No duplication report found');
+              // Duplication report not available
             }
             
             comment += '\n---\n*Automated by GitHub Actions*';
@@ -193,11 +191,9 @@ jobs:
         run: |
           echo "## 📦 Bundle Analysis" > performance-report.md
           
-          # Check bundle sizes
           BUNDLE_SIZE=$(du -sh .next/static/chunks | cut -f1)
           echo "- **Total Bundle Size**: $BUNDLE_SIZE" >> performance-report.md
           
-          # Check for large dependencies
           npx bundlesize || echo "- ⚠️ Bundle size exceeded threshold" >> performance-report.md
 
       - name: Comment performance report
@@ -215,7 +211,7 @@ jobs:
                 body: report
               });
             } catch (e) {
-              console.log('No performance report found');
+              // Performance report not available
             }
 
   sonarcloud:
