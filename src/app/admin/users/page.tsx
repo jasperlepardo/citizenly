@@ -359,16 +359,6 @@ function UsersManagementContent() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-PH', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   if (loading) {
     return (
       <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
