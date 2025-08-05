@@ -6,6 +6,7 @@ import { DashboardLayout } from '@/components/templates';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface DatabaseStats {
   regions: number;
@@ -27,11 +28,16 @@ function HomeContent() {
           setDbStats(result.data);
           setDbConnected(true);
         } else {
-          console.warn('Database connection failed:', result);
+          logger.warn('Database connection failed', {
+            result,
+            context: 'home_page_db_check',
+          });
           setDbConnected(false);
         }
       } catch (error) {
-        console.error('Database connection error:', error);
+        const err = error instanceof Error ? error : new Error(String(error));
+        logError(err, 'HOME_DB_CONNECTION_ERROR');
+        logger.error('Database connection failed on home page');
         setDbConnected(false);
       }
     }

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface Household {
   code: string;
@@ -83,12 +84,15 @@ function HouseholdDetailContent() {
           .order('birthdate', { ascending: true });
 
         if (membersError) {
-          console.error('Error loading members:', membersError);
+          logError(membersError, 'HOUSEHOLD_MEMBERS_ERROR');
+          logger.error('Failed to load household members', { householdCode });
         } else {
           setMembers(membersData || []);
         }
       } catch (err) {
-        console.error('Error loading household:', err);
+        const error = err instanceof Error ? err : new Error(String(err));
+        logError(error, 'HOUSEHOLD_LOAD_ERROR');
+        logger.error('Failed to load household details', { householdCode });
         setError('Failed to load household details');
       } finally {
         setLoading(false);

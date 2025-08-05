@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/templates';
 import { AddressSearch } from '@/components/address';
 import { testDatabaseConnection, type AddressHierarchy } from '@/lib/database';
+import { logger, logError } from '@/lib/secure-logger';
 
 export default function AddressesPage() {
   const [addressResults, setAddressResults] = useState<AddressHierarchy[]>([]);
@@ -36,7 +37,10 @@ export default function AddressesPage() {
             connected: true,
           });
         } else {
-          console.error('Database connection failed:', result.errors);
+          logger.warn('Database connection failed', {
+            errors: result.errors,
+            context: 'addresses_db_connection',
+          });
           // Fallback to estimated values if DB is not available
           setDbStats({
             regions: 17,
@@ -47,7 +51,9 @@ export default function AddressesPage() {
           });
         }
       } catch (error) {
-        console.error('Error testing database:', error);
+        const err = error instanceof Error ? error : new Error(String(error));
+        logError(err, 'DATABASE_CONNECTION_ERROR');
+        logger.error('Database connection failed on addresses page');
         setDbStats({
           regions: 17,
           provinces: 86,
@@ -103,7 +109,11 @@ export default function AddressesPage() {
 
   // Handle address selection
   const handleAddressSelect = (address: AddressHierarchy) => {
-    console.log('Selected address:', address);
+    logger.debug('Address selected', {
+      barangayCode: address.barangay_code,
+      barangayName: address.barangay_name,
+      context: 'address_selection',
+    });
     // Add the selected address to results for display
     setAddressResults(prev => {
       // Check if already exists

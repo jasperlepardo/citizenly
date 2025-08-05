@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/templates';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/atoms';
+import { logger, logError } from '@/lib/secure-logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,7 +94,7 @@ function UsersManagementContent() {
       setPendingUsers(formattedUsers.filter(u => u.status === 'pending_approval'));
       setActiveUsers(formattedUsers.filter(u => u.status === 'active'));
     } catch (error: any) {
-      console.error('Error loading users:', error);
+      logError(error, 'USERS_LOAD_ERROR');
     } finally {
       setLoading(false);
     }
@@ -130,9 +131,14 @@ function UsersManagementContent() {
       await loadUsers();
 
       // TODO: Send approval email notification
-      console.log(`User ${userEmail} approved successfully`);
+      logger.info('User approved successfully', {
+        userId,
+        userEmail,
+        context: 'user_approval',
+      });
     } catch (error: any) {
-      console.error('Error approving user:', error);
+      logError(error, 'USER_APPROVAL_ERROR');
+      logger.error('User approval failed', { userId, userEmail });
       alert('Failed to approve user. Please try again.');
     } finally {
       setActionLoading(null);
@@ -173,9 +179,14 @@ function UsersManagementContent() {
       await loadUsers();
 
       // TODO: Send rejection email notification
-      console.log(`User ${userEmail} rejected`);
+      logger.info('User rejected', {
+        userId,
+        userEmail,
+        context: 'user_rejection',
+      });
     } catch (error: any) {
-      console.error('Error rejecting user:', error);
+      logError(error, 'USER_REJECTION_ERROR');
+      logger.error('User rejection failed', { userId, userEmail });
       alert('Failed to reject user. Please try again.');
     } finally {
       setActionLoading(null);
@@ -215,9 +226,14 @@ function UsersManagementContent() {
       // Refresh users list
       await loadUsers();
 
-      console.log(`User ${userEmail} suspended`);
+      logger.info('User suspended', {
+        userId,
+        userEmail,
+        context: 'user_suspension',
+      });
     } catch (error: any) {
-      console.error('Error suspending user:', error);
+      logError(error, 'USER_SUSPENSION_ERROR');
+      logger.error('User suspension failed', { userId, userEmail });
       alert('Failed to suspend user. Please try again.');
     } finally {
       setActionLoading(null);
