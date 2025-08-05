@@ -52,7 +52,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     disabled,
     ...props 
   }, ref) => {
-    const [isFocused, setIsFocused] = useState(false)
+    const [_isFocused, setIsFocused] = useState(false)
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, InputField, DropdownSelect } from '@/components/molecules'
+import { InputField, DropdownSelect } from '@/components/molecules'
 
 export interface PersonalInformationData {
   firstName: string

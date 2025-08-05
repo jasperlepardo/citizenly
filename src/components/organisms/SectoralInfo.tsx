@@ -70,7 +70,7 @@ export default function SectoralInfo({
   disabled = false,
   className = ""
 }: SectoralInfoProps) {
-  const [autoCalculated, setAutoCalculated] = useState({
+  const [_autoCalculated, setAutoCalculated] = useState({
     is_labor_force: false,
     is_employed: false, 
     is_unemployed: false,

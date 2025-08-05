@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { InputField } from '@/components/molecules'
 import { SimpleBarangaySelector } from '@/components/organisms'
@@ -276,7 +276,7 @@ export default function SignupPage() {
                 </p>
                 {assignedRole.includes('Administrator') && (
                   <p className="text-sm text-blue-600 mt-2">
-                    You've been assigned as the first administrator for this barangay. You can now manage users and data for your barangay.
+                    You&apos;ve been assigned as the first administrator for this barangay. You can now manage users and data for your barangay.
                   </p>
                 )}
               </div>

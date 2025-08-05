@@ -6,7 +6,6 @@
  */
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { Button } from '@/components/atoms'
 import Navigation from '@/components/organisms/Navigation'
 

@@ -36,7 +36,7 @@ function JudiciaryContent() {
           </div>
           <h3 className="text-lg font-semibold text-primary mb-2">Barangay Justice System Coming Soon</h3>
           <p className="text-secondary mb-6 max-w-md mx-auto">
-            We're developing a comprehensive digital platform for barangay justice administration. 
+            We&apos;re developing a comprehensive digital platform for barangay justice administration. 
             This will streamline case management, mediation processes, and legal documentation.
           </p>
           

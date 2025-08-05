@@ -43,7 +43,7 @@ function ResidentsContent() {
   const { user, loading: authLoading, userProfile } = useAuth()
   const [residents, setResidents] = useState<Resident[]>([])
   const [loading, setLoading] = useState(true)
-  const [totalCount, setTotalCount] = useState(0)
+  const [, ] = useState(0)
   const [globalSearchTerm, setGlobalSearchTerm] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([])
@@ -138,7 +138,7 @@ function ResidentsContent() {
     setPagination(prev => ({ ...prev, current: 1 }))
   }, [])
 
-  const handleSelectionChange = (selectedKeys: string[], selectedRows: Resident[]) => {
+  const handleSelectionChange = (selectedKeys: string[], _selectedRows: Resident[]) => {
     setSelectedResidents(selectedKeys)
   }
 

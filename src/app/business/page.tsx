@@ -36,7 +36,7 @@ function BusinessContent() {
           </div>
           <h3 className="text-lg font-semibold text-primary mb-2">Business Management Coming Soon</h3>
           <p className="text-secondary mb-6 max-w-md mx-auto">
-            We're working on bringing you comprehensive business registration and permit management tools. 
+            We&apos;re working on bringing you comprehensive business registration and permit management tools. 
             This feature will allow you to track business licenses, permits, and compliance in your barangay.
           </p>
           

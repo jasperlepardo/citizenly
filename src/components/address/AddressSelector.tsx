@@ -42,7 +42,7 @@ export default function AddressSelector({
   value,
   onChange,
   disabled = false,
-  required = false,
+  required: _required = false,
   className = "",
   showLabels = true,
   compact = false

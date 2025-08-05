@@ -60,7 +60,7 @@ export default function LoginPage() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-sm font-medium text-blue-800 mb-2">Development Mode</h3>
             <div className="text-xs text-blue-700 space-y-2">
-              <div>If you can't login, the demo users may not exist yet.</div>
+              <div>If you can&apos;t login, the demo users may not exist yet.</div>
               <button
                 onClick={() => setShowDevLogin(!showDevLogin)}
                 className="text-blue-600 hover:text-blue-800 underline"

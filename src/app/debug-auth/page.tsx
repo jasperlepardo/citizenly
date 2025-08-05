@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function DebugAuthPage() {
@@ -20,7 +20,7 @@ export default function DebugAuthPage() {
       
       // Test 1: Basic connection
       addStatus('📡 Testing basic connection...')
-      const { data, error } = await supabase.from('roles').select('count').limit(1)
+      const { error } = await supabase.from('roles').select('count').limit(1)
       
       if (error) {
         addStatus(`❌ Basic connection failed: ${error.message}`)

@@ -43,7 +43,7 @@ function HelpContent() {
       },
       {
         question: 'Can I edit resident information?',
-        answer: 'Yes, click on a resident\'s name or use the action menu (three dots) to edit their information. Make sure you have the necessary permissions.'
+        answer: 'Yes, click on a resident&apos;s name or use the action menu (three dots) to edit their information. Make sure you have the necessary permissions.'
       }
     ],
     'households': [
@@ -90,7 +90,7 @@ function HelpContent() {
     ],
     'troubleshooting': [
       {
-        question: 'I can\'t access certain features. What should I do?',
+        question: 'I can&apos;t access certain features. What should I do?',
         answer: 'Check your user role and permissions. Some features are restricted to specific roles. Contact your system administrator if you need additional access.'
       },
       {
@@ -178,7 +178,7 @@ function HelpContent() {
                     Still need help?
                   </h3>
                   <p className="font-montserrat text-sm text-blue-800 mb-4">
-                    If you can't find the answer you're looking for, our support team is here to help.
+                    If you can&apos;t find the answer you&apos;re looking for, our support team is here to help.
                   </p>
                   <button className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Contact Support

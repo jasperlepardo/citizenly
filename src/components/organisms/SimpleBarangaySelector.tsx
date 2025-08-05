@@ -17,7 +17,7 @@ interface SimpleBarangaySelectorProps {
 }
 
 export default function SimpleBarangaySelector({ 
-  value, 
+  value: _value, 
   onChange, 
   error, 
   disabled = false,

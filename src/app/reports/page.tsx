@@ -13,7 +13,7 @@ import { Button } from '@/components/atoms'
 
 export default function ReportsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('monthly')
-  const [selectedReport, setSelectedReport] = useState('overview')
+  const [, setSelectedReport] = useState('overview')
 
   // Report categories
   const reportCategories = [

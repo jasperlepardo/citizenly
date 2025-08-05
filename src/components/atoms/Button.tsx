@@ -110,7 +110,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     size, 
     iconOnly,
     fullWidth, 
-    asChild = false, 
+    asChild: _asChild = false, 
     loading = false,
     leftIcon,
     rightIcon,

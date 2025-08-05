@@ -49,7 +49,7 @@ export default function PSOCSelector({
       console.log('Searching PSOC for:', query)
       
       // Try the view first
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from('psoc_occupation_search')
         .select('*')
         .or(`occupation_title.ilike.%${query}%, full_hierarchy.ilike.%${query}%`)
@@ -64,7 +64,7 @@ export default function PSOCSelector({
         console.log('Trying direct PSOC table queries...')
         
         // Try major groups first
-        const { data: majorGroups, error: majorError } = await supabase
+        const { data: majorGroups, error: _majorError } = await supabase
           .from('psoc_major_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -84,7 +84,7 @@ export default function PSOCSelector({
         }
 
         // Try unit groups
-        const { data: unitGroups, error: unitError } = await supabase
+        const { data: unitGroups, error: _unitError } = await supabase
           .from('psoc_unit_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -104,7 +104,7 @@ export default function PSOCSelector({
         }
 
         // Try unit sub-groups (most specific occupations like "Radiology technician")
-        const { data: unitSubGroups, error: unitSubError } = await supabase
+        const { data: unitSubGroups, error: _unitSubError } = await supabase
           .from('psoc_unit_sub_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)

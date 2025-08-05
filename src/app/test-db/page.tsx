@@ -16,7 +16,7 @@ interface DatabaseStats {
 }
 
 export default function TestDatabasePage() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'success' | 'error'>('connecting')
   const [stats, setStats] = useState<DatabaseStats | null>(null)
   const [regions, setRegions] = useState<Region[]>([])

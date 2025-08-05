@@ -213,9 +213,9 @@ interface NavigationProps {
 export default function Navigation({ 
   items = defaultNavigation,
   bottomItems = bottomNavigation,
-  showIcons = true,
+  showIcons: _showIcons = true,
   showSubmenu = true,
-  variant = 'default',
+  variant: _variant = 'default',
   className = ""
 }: NavigationProps) {
   const pathname = usePathname()

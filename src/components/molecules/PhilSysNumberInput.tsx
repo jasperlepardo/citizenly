@@ -26,7 +26,7 @@ interface PhilSysNumberInputProps {
 
 // PhilSys number format: XXXX-XXXX-XXXX (12 digits)
 const PHILSYS_REGEX = /^\d{4}-\d{4}-\d{4}$/;
-const PHILSYS_DIGITS_ONLY = /^\d{12}$/;
+// const PHILSYS_DIGITS_ONLY = /^\d{12}$/;
 
 export default function PhilSysNumberInput({
   value = '',

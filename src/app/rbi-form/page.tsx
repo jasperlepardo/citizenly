@@ -148,7 +148,7 @@ function HouseholdSelector() {
     console.log('Filtering households. Search term:', searchTerm)
     console.log('Total households to filter:', householdsWithHeads.length)
     
-    let filtered = householdsWithHeads.filter(household => {
+    const filtered = householdsWithHeads.filter(household => {
       // Text search across multiple fields
       const searchFields = [
         household.code,
@@ -493,7 +493,7 @@ function RBIFormContent() {
           .single()
 
         if (barangayData) {
-          let addressData: AddressInfo = {
+          const addressData: AddressInfo = {
             barangay_name: barangayData.name,
             city_municipality_name: 'Unknown',
             region_name: 'Unknown'
