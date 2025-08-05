@@ -9,7 +9,8 @@
   },
   "git": {
     "deploymentEnabled": {
-      "develop": true
+      "develop": true,
+      "feature/dark-mode-login": true
     }
   }
 }
