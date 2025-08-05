@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { logError } from '@/lib/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
@@ -137,7 +138,10 @@ function ResidentsContent() {
       setResidents(data || []);
       setPagination(prev => ({ ...prev, total: count || 0 }));
     } catch (err) {
-      console.error('Error loading residents:', err);
+      logError(
+        err instanceof Error ? err : new Error('Unknown error loading residents'),
+        'RESIDENTS_LOAD'
+      );
       setResidents([]);
       setPagination(prev => ({ ...prev, total: 0 }));
     } finally {

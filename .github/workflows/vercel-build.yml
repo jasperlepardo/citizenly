@@ -1,0 +1,85 @@
+name: Vercel Build Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  vercel-build:
+    name: Vercel Build Compatibility
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type check
+        run: npm run type-check
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Simulate Vercel build
+        run: npm run build
+        env:
+          # Use development-safe values for build testing
+          NODE_ENV: production
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only-32-chars-long'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key-for-build-testing'
+          VERCEL_ENV: 'production'
+
+      - name: Check build output
+        run: |
+          if [ -d ".next" ]; then
+            echo "✅ Build successful - .next directory created"
+            ls -la .next/
+          else
+            echo "❌ Build failed - no .next directory found"
+            exit 1
+          fi
+
+      - name: Analyze bundle
+        run: |
+          echo "Bundle analysis:"
+          du -sh .next/static/chunks/*.js | head -10 || echo "No JS chunks found"
+          echo "Total build size:"
+          du -sh .next/ || echo "Build directory not found"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 🚀 Vercel Build Check\\n\\n';
+            comment += '✅ Build completed successfully\\n';
+            comment += '✅ Type checking passed\\n';
+            comment += '✅ Linting passed\\n\\n';
+            comment += '### Build Output\\n';
+            comment += '- Build directory created successfully\\n';
+            comment += '- Ready for Vercel deployment\\n\\n';
+            comment += '---\\n*Vercel compatibility check by GitHub Actions*';
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });

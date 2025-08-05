@@ -64,6 +64,11 @@ jobs:
         run: |
           npm run build
           npx bundlesize2
+        env:
+          NODE_ENV: production
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only-32-chars-long'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key-for-build-testing'
 
   complexity-analysis:
     name: Code Complexity Analysis
@@ -172,6 +177,11 @@ jobs:
         run: |
           npm run build
           npx webpack-bundle-analyzer .next/static/chunks/*.js --report --mode static --report-filename bundle-report.html
+        env:
+          NODE_ENV: production
+          CSRF_SECRET: 'dev-csrf-secret-for-build-only-32-chars-long'
+          NEXT_PUBLIC_SUPABASE_URL: 'https://placeholder.supabase.co'
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: 'placeholder-key-for-build-testing'
 
       - name: Check performance budget
         run: |
