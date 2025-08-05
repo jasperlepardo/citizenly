@@ -12,7 +12,7 @@ import {
   logSecurityOperation,
 } from '@/lib/crypto';
 import { validateResidentData } from '@/lib/validation';
-import { logger, dbLogger } from '@/lib/secure-logger';
+import { logger, logError, dbLogger } from '@/lib/secure-logger';
 
 // Import our organism components
 import {
@@ -280,7 +280,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     } catch (error) {
-      console.error('Validation error:', error);
+      logError(error as Error, 'VALIDATION_ERROR');
       return false;
     }
   };
@@ -352,7 +352,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
             philsys_last4: philsysLast4,
           });
         } catch (error) {
-          console.error('PhilSys encryption error:', error);
+          logError(error as Error, 'PHILSYS_ENCRYPTION_ERROR');
           alert('Error processing PhilSys card number. Please try again.');
           setIsSubmitting(false);
           return;

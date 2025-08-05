@@ -5,6 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security';
 import { Button } from '@/components/atoms';
+import { logger, logError } from '@/lib/secure-logger';
 
 const fileUploadVariants = cva(
   'relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
@@ -150,7 +151,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
       // Show errors if any
       if (errors.length > 0) {
-        console.error('[FILE_UPLOAD] Validation errors:', errors);
+        logger.error('File upload validation errors', { errors, filesAttempted: fileArray.length });
         // You might want to show these errors in the UI
         alert('File validation errors:\n' + errors.join('\n'));
       }

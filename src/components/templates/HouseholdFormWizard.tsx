@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useUserBarangay } from '@/hooks/useUserBarangay';
 import { useCSRFToken } from '@/lib/csrf';
-import { logger, dbLogger } from '@/lib/secure-logger';
+import { logger, logError, dbLogger } from '@/lib/secure-logger';
 
 // Import our organism components
 import { HouseholdTypeSelector, FamilyRelationshipSelector } from '@/components/organisms';
@@ -229,7 +229,7 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     } catch (error) {
-      console.error('Validation error:', error);
+      logError(error as Error, 'VALIDATION_ERROR');
       return false;
     }
   };

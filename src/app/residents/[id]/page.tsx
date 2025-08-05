@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
 import { DropdownSelect } from '@/components/molecules';
+import { logger, logError } from '@/lib/secure-logger';
 
 // Tooltip Component
 const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
@@ -136,7 +137,7 @@ function ResidentDetailContent() {
       try {
         setLoading(true);
 
-        console.log('Loading resident with ID:', residentId);
+        logger.debug('Loading resident details', { residentId });
 
         // First, let's check if we can access the residents table at all
         const { data: allResidents, error: listError } = await supabase
@@ -144,8 +145,10 @@ function ResidentDetailContent() {
           .select('id, first_name, last_name')
           .limit(5);
 
-        console.log('Sample residents in database:', allResidents);
-        console.log('List error:', listError);
+        logger.debug('Sample residents query result', { count: allResidents?.length || 0 });
+        if (listError) {
+          logger.warn('Sample residents query failed', { error: listError.message });
+        }
 
         // Load resident details first without relationships
         const { data: residentData, error: residentError } = await supabase
@@ -154,10 +157,13 @@ function ResidentDetailContent() {
           .eq('id', residentId)
           .single();
 
-        console.log('Query result:', { residentData, residentError });
+        logger.debug('Resident query completed', {
+          found: !!residentData,
+          hasError: !!residentError,
+        });
 
         if (residentError) {
-          console.error('Resident error details:', residentError);
+          logError(new Error(residentError.message), 'RESIDENT_QUERY');
           if (residentError.code === 'PGRST116') {
             setError(`Resident with ID "${residentId}" not found`);
           } else {
@@ -173,11 +179,11 @@ function ResidentDetailContent() {
           return;
         }
 
-        console.log('Resident data loaded:', residentData);
+        logger.debug('Resident data loaded successfully', { residentId: residentData.id });
 
         // Load address information for the resident's barangay
         try {
-          console.log('Loading address for barangay code:', residentData.barangay_code);
+          logger.debug('Loading address information', { barangayCode: residentData.barangay_code });
 
           // Try to use the address hierarchy view first (if it exists)
           const { data: addressViewData, error: viewError } = await supabase
@@ -198,7 +204,7 @@ function ResidentDetailContent() {
             };
           } else {
             // Fallback: Try individual table queries
-            console.log('Address view not available, trying individual tables');
+            logger.debug('Address view not available, trying individual table queries');
 
             const { data: barangayData, error: barangayError } = await supabase
               .from('psgc_barangays')
@@ -206,7 +212,10 @@ function ResidentDetailContent() {
               .eq('code', residentData.barangay_code)
               .single();
 
-            console.log('Barangay query result:', { barangayData, barangayError });
+            logger.debug('Barangay query completed', {
+              found: !!barangayData,
+              hasError: !!barangayError,
+            });
 
             if (barangayData && !barangayError) {
               // Initialize with barangay data only - no fallback values
@@ -259,20 +268,22 @@ function ResidentDetailContent() {
             // No fallback creation - if no barangay data, leave address_info undefined
           }
         } catch (addressError) {
-          console.warn('Address data not available:', addressError);
+          logger.warn('Address data lookup failed', {
+            error: addressError instanceof Error ? addressError.message : 'Unknown error',
+          });
           // No fallback data - leave address_info undefined if query fails
         }
 
         // Try to load household information if resident has household_code or household_id
-        console.log('Checking household links:', {
-          household_code: residentData.household_code,
-          household_id: residentData.household_id,
+        logger.debug('Checking household associations', {
+          hasHouseholdCode: !!residentData.household_code,
+          hasHouseholdId: !!residentData.household_id,
         });
 
         if (residentData.household_code || residentData.household_id) {
           try {
             // Query by household_code or household_id directly
-            console.log('Attempting to query household with code:', residentData.household_code);
+            logger.debug('Querying household data', { hasCode: !!residentData.household_code });
             let householdQuery = supabase.from('households').select('*');
 
             if (residentData.household_code) {
@@ -283,8 +294,13 @@ function ResidentDetailContent() {
 
             const { data: householdData, error: householdError } = await householdQuery.single();
 
-            console.log('Household query result:', { householdData, householdError });
-            console.log('Household error details:', householdError);
+            logger.debug('Household query completed', {
+              found: !!householdData,
+              hasError: !!householdError,
+            });
+            if (householdError) {
+              logger.warn('Household query failed', { error: householdError.message });
+            }
 
             if (householdData && !householdError) {
               residentData.household = householdData;
@@ -303,10 +319,12 @@ function ResidentDetailContent() {
               }
             }
           } catch (householdError) {
-            console.warn('Household data not available:', householdError);
+            logger.warn('Household data lookup failed', {
+              error: householdError instanceof Error ? householdError.message : 'Unknown error',
+            });
           }
         } else {
-          console.log('No household_code or household_id found for resident');
+          logger.debug('Resident has no household association');
         }
 
         // Try to load PSOC information if available
@@ -322,14 +340,19 @@ function ResidentDetailContent() {
               residentData.psoc_info = psocData;
             }
           } catch (psocError) {
-            console.warn('PSOC data not available:', psocError);
+            logger.warn('PSOC data lookup failed', {
+              error: psocError instanceof Error ? psocError.message : 'Unknown error',
+            });
           }
         }
 
         setResident(residentData);
         setEditedResident(updateComputedFields({ ...residentData }));
       } catch (err) {
-        console.error('Error loading resident:', err);
+        logError(
+          err instanceof Error ? err : new Error('Unknown error loading resident'),
+          'RESIDENT_LOAD'
+        );
         setError('Failed to load resident details');
       } finally {
         setLoading(false);
@@ -438,7 +461,10 @@ function ResidentDetailContent() {
       setResident(editedResident);
       setIsEditing(false);
     } catch (err) {
-      console.error('Error saving resident:', err);
+      logError(
+        err instanceof Error ? err : new Error('Unknown error saving resident'),
+        'RESIDENT_SAVE'
+      );
       setSaveError('Failed to save changes. Please try again.');
     } finally {
       setIsSaving(false);

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '../atoms';
+import { logger, logError } from '@/lib/secure-logger';
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;
@@ -98,7 +99,7 @@ export default function CreateHouseholdModal({
   // Load address display info from database
   const loadAddressDisplayInfo = async (barangayCode: string) => {
     try {
-      console.log('Loading address display info for code:', barangayCode);
+      logger.debug('Loading address display info', { barangayCode });
 
       // Query the PSGC tables to get full address hierarchy
       const { data: barangayData, error } = await supabase
@@ -122,7 +123,7 @@ export default function CreateHouseholdModal({
         .single();
 
       if (error) {
-        console.error('Error loading address display info:', error);
+        logger.error('Error loading address display info', { error, barangayCode });
         setAddressDisplayInfo({
           region: 'Region information not available',
           province: 'Province information not available',
@@ -143,10 +144,10 @@ export default function CreateHouseholdModal({
           cityMunicipality: `${cityMun.name} (${cityMun.type})`,
           barangay: barangayData.name,
         });
-        console.log('Loaded address display info from database');
+        logger.debug('Loaded address display info from database');
       }
     } catch (error) {
-      console.error('Exception loading address display info:', error);
+      logError(error as Error, 'ADDRESS_INFO_LOAD_ERROR');
       setAddressDisplayInfo({
         region: 'Region information not available',
         province: 'Province information not available',
@@ -178,13 +179,13 @@ export default function CreateHouseholdModal({
     setIsSubmitting(true);
 
     try {
-      console.log('Creating household for barangay:', userProfile.barangay_code);
+      logger.info('Creating household', { barangayCode: userProfile.barangay_code });
 
       // Try to get address hierarchy info, fallback to direct table queries if view doesn't exist
       let addressInfo: any = null;
 
       try {
-        console.log('Attempting to query psgc_address_hierarchy view...');
+        logger.debug('Attempting to query psgc_address_hierarchy view');
         const { data, error } = await supabase
           .from('psgc_address_hierarchy')
           .select('*')
@@ -192,18 +193,20 @@ export default function CreateHouseholdModal({
           .single();
 
         if (error) {
-          console.log('View query error:', error);
+          logger.debug('View query error', { error });
         } else {
-          console.log('View query successful:', data);
+          logger.debug('View query successful', { hasData: !!data });
           addressInfo = data;
         }
       } catch (viewError) {
-        console.log('Address hierarchy view not available, using direct queries:', viewError);
+        logger.debug('Address hierarchy view not available, using direct queries', {
+          error: viewError,
+        });
       }
 
       // If view query failed, get address info from individual tables
       if (!addressInfo) {
-        console.log('Using fallback query to get address info...');
+        logger.debug('Using fallback query to get address info');
         try {
           // Get barangay info with related geographic data
           const { data: barangayData, error: barangayError } = await supabase
@@ -234,13 +237,13 @@ export default function CreateHouseholdModal({
             .single();
 
           if (barangayError) {
-            console.error('Error fetching barangay info:', barangayError);
-            console.log('Fallback query failed, will use minimal data approach');
+            logger.error('Error fetching barangay info', { error: barangayError });
+            logger.debug('Fallback query failed, will use minimal data approach');
             // Don't return here, let it fall through to minimal data approach
           }
 
           if (barangayData && !barangayError) {
-            console.log('Fallback query successful:', barangayData);
+            logger.debug('Fallback query successful', { hasData: !!barangayData });
 
             // Map the data to match expected format
             const cityMun = (barangayData as any).psgc_cities_municipalities;
@@ -260,13 +263,13 @@ export default function CreateHouseholdModal({
             };
           }
         } catch (fallbackError) {
-          console.error('Error with fallback address query:', fallbackError);
+          logError(fallbackError as Error, 'FALLBACK_ADDRESS_QUERY_ERROR');
         }
       }
 
       // If both queries failed, use minimal data approach
       if (!addressInfo) {
-        console.log('Creating household with minimal data - no PSGC lookup needed');
+        logger.debug('Creating household with minimal data - no PSGC lookup needed');
 
         // Final fallback - derive geographic codes from barangay code
         const derivedCodes = deriveGeographicCodes(userProfile.barangay_code);
@@ -276,19 +279,21 @@ export default function CreateHouseholdModal({
           province_code: derivedCodes?.province_code || null,
           city_municipality_code: derivedCodes?.city_municipality_code || null,
         };
-        console.log('Using minimal fallback data:', addressInfo);
+        logger.debug('Using minimal fallback data', { addressInfo });
       }
 
-      console.log('Final address info:', addressInfo);
+      logger.debug('Final address info', { addressInfo });
 
       // Debug: Check current user and auth state
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      console.log('Current authenticated user:', user?.id);
-      console.log('User profile ID:', userProfile.id);
-      console.log('User profile barangay_code:', userProfile.barangay_code);
-      console.log('Auth match:', user?.id === userProfile.id);
+      logger.debug('Authentication state', {
+        userId: user?.id,
+        profileId: userProfile.id,
+        barangayCode: userProfile.barangay_code,
+        authMatch: user?.id === userProfile.id,
+      });
 
       // Test RLS policy by checking if user can query their own profile
       const { data: testProfile, error: testProfileError } = await supabase
@@ -297,7 +302,7 @@ export default function CreateHouseholdModal({
         .eq('id', user?.id)
         .single();
 
-      console.log('User profile data:', testProfile, testProfileError);
+      logger.debug('User profile data', { hasProfile: !!testProfile, error: testProfileError });
 
       // Check if user has proper role
       if (testProfile?.role_id) {
@@ -307,21 +312,21 @@ export default function CreateHouseholdModal({
           .eq('id', testProfile.role_id)
           .single();
 
-        console.log('User role data:', roleData, roleError);
+        logger.debug('User role data', { hasRole: !!roleData, error: roleError });
       }
 
       // Fix: If user is not active, make them active
       if (testProfile && testProfile.is_active !== true) {
-        console.log('User is not active, updating profile to active status...');
+        logger.info('User is not active, updating profile to active status');
         const { error: updateError } = await supabase
           .from('user_profiles')
           .update({ is_active: true })
           .eq('id', user?.id);
 
         if (updateError) {
-          console.error('Failed to activate user:', updateError);
+          logger.error('Failed to activate user', { error: updateError });
         } else {
-          console.log('User successfully activated');
+          logger.info('User successfully activated');
         }
       }
 
@@ -330,7 +335,7 @@ export default function CreateHouseholdModal({
 
       // Derive geographic codes for the user's actual barangay
       const actualDerivedCodes = deriveGeographicCodes(actualBarangayCode);
-      console.log('Derived geographic codes:', actualDerivedCodes);
+      logger.debug('Derived geographic codes', { codes: actualDerivedCodes });
 
       // Generate PSGC-compliant household code
       const householdCode = await generateHouseholdCode();
@@ -349,7 +354,7 @@ export default function CreateHouseholdModal({
         created_by: userProfile.id,
       };
 
-      console.log('Creating household with data:', householdData);
+      logger.info('Creating household with data', { householdCode: householdData.code });
 
       const { data, error } = await supabase
         .from('households')
@@ -358,12 +363,12 @@ export default function CreateHouseholdModal({
         .single();
 
       if (error) {
-        console.error('Error creating household:', error);
+        logger.error('Error creating household', { error });
         alert(`Failed to create household: ${error.message}`);
         return;
       }
 
-      console.log('Household created successfully:', data);
+      logger.info('Household created successfully', { householdCode: data.code });
       onHouseholdCreated(data.code);
       onClose();
 
@@ -376,7 +381,7 @@ export default function CreateHouseholdModal({
       });
       setErrors({});
     } catch (error) {
-      console.error('Unexpected error:', error);
+      logError(error as Error, 'HOUSEHOLD_CREATION_ERROR');
       alert('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
