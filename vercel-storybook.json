@@ -1,20 +1,30 @@
 {
   "name": "citizenly-storybook",
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "buildCommand": "npm run build-storybook",
-        "outputDirectory": "storybook-static"
-      }
+  "buildCommand": "npm run build-storybook",
+  "outputDirectory": "storybook-static",
+  "installCommand": "npm ci",
+  "framework": null,
+  "public": true,
+  "github": {
+    "enabled": true,
+    "autoAlias": true
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "develop": true
     }
-  ],
-  "routes": [
+  },
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "/storybook-static/$1"
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }

@@ -40,6 +40,10 @@
     "git-status": "./scripts/workflow.sh status",
     "git-cleanup": "./scripts/workflow.sh cleanup",
     "complete-flow": "./scripts/workflow.sh complete",
+    "deploy:setup": "./scripts/setup-deployment.sh setup",
+    "deploy:status": "./scripts/setup-deployment.sh status",
+    "deploy:test": "./scripts/setup-deployment.sh test",
+    "deploy:storybook": "vercel --local-config vercel-storybook.json --prod",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
