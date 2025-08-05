@@ -1,3 +1,4 @@
+import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import DataTable, { type TableColumn, type TableAction } from './DataTable'
 import { useState } from 'react'
@@ -299,76 +300,80 @@ export const LargeSize: Story = {
 }
 
 // Interactive story with selection
-export const WithSelection: Story = {
-  render: () => {
-    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
-    const [selectedRows, setSelectedRows] = useState<SampleResident[]>([])
+const WithSelectionComponent = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
+  const [selectedRows, setSelectedRows] = useState<SampleResident[]>([])
 
-    return (
-      <div className="space-y-4">
-        {selectedRowKeys.length > 0 && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 dark:text-blue-200">Selected Items:</h3>
-            <p className="text-sm text-blue-700 dark:text-blue-300">
-              {selectedRowKeys.length} item(s) selected: {selectedRows.map(r => `${r.firstName} ${r.lastName}`).join(', ')}
-            </p>
-          </div>
-        )}
-        
-        <DataTable
-          data={sampleData}
-          columns={basicColumns}
-          actions={sampleActions}
-          rowKey="id"
-          selection={{
-            selectedRowKeys,
-            onChange: (keys, rows) => {
-              setSelectedRowKeys(keys)
-              setSelectedRows(rows)
-            }
-          }}
-        />
-      </div>
-    )
-  }
-}
-
-// Interactive story with pagination
-export const WithPagination: Story = {
-  render: () => {
-    const [currentPage, setCurrentPage] = useState(1)
-    const [pageSize] = useState(3)
-    
-    // Generate more data for pagination demo
-    const moreData = Array.from({ length: 12 }, (_, i) => ({
-      id: (i + 1).toString(),
-      firstName: `Person${i + 1}`,
-      lastName: `Lastname${i + 1}`,
-      email: `person${i + 1}@email.com`,
-      phone: `+63 9${(i + 1).toString().padStart(2, '0')} 123 456${i}`,
-      age: 25 + (i % 30),
-      address: `Barangay ${i + 1}, City ${i + 1}`,
-      status: (['Active', 'Inactive', 'Pending'] as const)[i % 3],
-      joinDate: `2023-0${(i % 9) + 1}-${(i % 28) + 1}`
-    }))
-
-    const paginatedData = moreData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-
-    return (
+  return (
+    <div className="space-y-4">
+      {selectedRowKeys.length > 0 && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <h3 className="font-semibold text-blue-800 dark:text-blue-200">Selected Items:</h3>
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            {selectedRowKeys.length} item(s) selected: {selectedRows.map(r => `${r.firstName} ${r.lastName}`).join(', ')}
+          </p>
+        </div>
+      )}
+      
       <DataTable
-        data={paginatedData}
+        data={sampleData}
         columns={basicColumns}
         actions={sampleActions}
         rowKey="id"
-        pagination={{
-          current: currentPage,
-          pageSize,
-          total: moreData.length,
-          onChange: (page) => setCurrentPage(page)
+        selection={{
+          selectedRowKeys,
+          onChange: (keys, rows) => {
+            setSelectedRowKeys(keys)
+            setSelectedRows(rows)
+          }
         }}
       />
-    )
-  }
+    </div>
+  )
+}
+
+export const WithSelection: Story = {
+  render: WithSelectionComponent
+}
+
+// Interactive story with pagination
+const WithPaginationComponent = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize] = useState(3)
+  
+  // Generate more data for pagination demo
+  const moreData = Array.from({ length: 12 }, (_, i) => ({
+    id: (i + 1).toString(),
+    firstName: `Person${i + 1}`,
+    lastName: `Lastname${i + 1}`,
+    email: `person${i + 1}@email.com`,
+    phone: `+63 9${(i + 1).toString().padStart(2, '0')} 123 456${i}`,
+    age: 25 + (i % 30),
+    address: `Barangay ${i + 1}, City ${i + 1}`,
+    status: (['Active', 'Inactive', 'Pending'] as const)[i % 3],
+    joinDate: `2023-0${(i % 9) + 1}-${(i % 28) + 1}`
+  }))
+
+  const paginatedData = moreData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
+  return (
+    <DataTable
+      data={paginatedData}
+      columns={basicColumns}
+      actions={sampleActions}
+      rowKey="id"
+      pagination={{
+        current: currentPage,
+        pageSize,
+        total: moreData.length,
+        onChange: (page) => setCurrentPage(page)
+      }}
+    />
+  )
+}
+
+export const WithPagination: Story = {
+  render: WithPaginationComponent
 }
 
 // Story showing different column features
@@ -445,31 +450,33 @@ export const ColumnFeatures: Story = {
 }
 
 // Row interaction story
-export const WithRowInteraction: Story = {
-  render: () => {
-    const [clickedRow, setClickedRow] = useState<string>('')
+const WithRowInteractionComponent = () => {
+  const [clickedRow, setClickedRow] = useState<string>('')
 
-    return (
-      <div className="space-y-4">
-        {clickedRow && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <p className="text-sm text-green-700 dark:text-green-300">
-              Row clicked: {clickedRow}
-            </p>
-          </div>
-        )}
-        
-        <DataTable
-          data={sampleData}
-          columns={basicColumns}
-          rowKey="id"
-          onRow={(record) => ({
-            onClick: () => setClickedRow(`${record.firstName} ${record.lastName}`),
-            onDoubleClick: () => alert(`Double clicked: ${record.firstName} ${record.lastName}`),
-            className: 'cursor-pointer'
-          })}
-        />
-      </div>
-    )
-  }
+  return (
+    <div className="space-y-4">
+      {clickedRow && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <p className="text-sm text-green-700 dark:text-green-300">
+            Row clicked: {clickedRow}
+          </p>
+        </div>
+      )}
+      
+      <DataTable
+        data={sampleData}
+        columns={basicColumns}
+        rowKey="id"
+        onRow={(record) => ({
+          onClick: () => setClickedRow(`${record.firstName} ${record.lastName}`),
+          onDoubleClick: () => alert(`Double clicked: ${record.firstName} ${record.lastName}`),
+          className: 'cursor-pointer'
+        })}
+      />
+    </div>
+  )
+}
+
+export const WithRowInteraction: Story = {
+  render: WithRowInteractionComponent
 }

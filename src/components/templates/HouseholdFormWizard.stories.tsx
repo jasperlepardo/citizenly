@@ -1,8 +1,8 @@
+import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import HouseholdFormWizard, { type HouseholdFormData } from './HouseholdFormWizard'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
-import { useState } from 'react'
 
 const meta = {
   title: 'Templates/HouseholdFormWizard',
@@ -43,72 +43,74 @@ export const Default: Story = {
 }
 
 // Interactive form demonstration
-export const Interactive: Story = {
-  render: () => {
-    const [submittedData, setSubmittedData] = useState<HouseholdFormData | null>(null)
-    const [isSubmitted, setIsSubmitted] = useState(false)
+const InteractiveComponent = () => {
+  const [submittedData, setSubmittedData] = useState<HouseholdFormData | null>(null)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-    const handleSubmit = async (data: HouseholdFormData) => {
-      console.log('Submitted household data:', data)
-      setSubmittedData(data)
-      setIsSubmitted(true)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      alert('Household registration submitted successfully!')
-    }
+  const handleSubmit = async (data: HouseholdFormData) => {
+    console.log('Submitted household data:', data)
+    setSubmittedData(data)
+    setIsSubmitted(true)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    alert('Household registration submitted successfully!')
+  }
 
-    const handleReset = () => {
-      setSubmittedData(null)
-      setIsSubmitted(false)
-    }
+  const handleReset = () => {
+    setSubmittedData(null)
+    setIsSubmitted(false)
+  }
 
-    if (isSubmitted && submittedData) {
-      return (
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-            <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">Household Created Successfully!</h3>
-            <p className="text-green-700 dark:text-green-300 mb-4">
-              The household has been successfully registered in the system with the following details:
-            </p>
-            
-            <div className="bg-background rounded-lg border border-default p-4 mb-4">
-              <h4 className="font-medium text-primary mb-3">Household Summary:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Household Code:</strong> {submittedData.householdCode}
-                </div>
-                <div>
-                  <strong>Household Type:</strong> {submittedData.householdType}
-                </div>
-                <div>
-                  <strong>Head of Household:</strong> {`${submittedData.headFirstName} ${submittedData.headMiddleName} ${submittedData.headLastName} ${submittedData.headExtensionName}`.trim()}
-                </div>
-                <div>
-                  <strong>Address:</strong> {submittedData.streetName}
-                </div>
-                <div>
-                  <strong>Total Members:</strong> {submittedData.totalMembers}
-                </div>
-                <div>
-                  <strong>Dwelling Type:</strong> {submittedData.dwellingType}
-                </div>
+  if (isSubmitted && submittedData) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+          <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">Household Created Successfully!</h3>
+          <p className="text-green-700 dark:text-green-300 mb-4">
+            The household has been successfully registered in the system with the following details:
+          </p>
+          
+          <div className="bg-background rounded-lg border border-default p-4 mb-4">
+            <h4 className="font-medium text-primary mb-3">Household Summary:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <strong>Household Code:</strong> {submittedData.householdCode}
+              </div>
+              <div>
+                <strong>Household Type:</strong> {submittedData.householdType}
+              </div>
+              <div>
+                <strong>Head of Household:</strong> {`${submittedData.headFirstName} ${submittedData.headMiddleName} ${submittedData.headLastName} ${submittedData.headExtensionName}`.trim()}
+              </div>
+              <div>
+                <strong>Address:</strong> {submittedData.streetName}
+              </div>
+              <div>
+                <strong>Total Members:</strong> {submittedData.totalMembers}
+              </div>
+              <div>
+                <strong>Dwelling Type:</strong> {submittedData.dwellingType}
               </div>
             </div>
-            
-            <button
-              onClick={handleReset}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Create Another Household
-            </button>
           </div>
+          
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Create Another Household
+          </button>
         </div>
-      )
-    }
-
-    return <HouseholdFormWizard onSubmit={handleSubmit} />
+      </div>
+    )
   }
+
+  return <HouseholdFormWizard onSubmit={handleSubmit} />
+}
+
+export const Interactive: Story = {
+  render: InteractiveComponent
 }
 
 // Form validation demonstration
@@ -219,117 +221,119 @@ export const FeatureShowcase: Story = {
 }
 
 // Step-by-step walkthrough
-export const StepWalkthrough: Story = {
-  render: () => {
-    const [currentStep, setCurrentStep] = useState(1)
-    
-    const steps = [
-      {
-        id: 1,
-        title: 'Basic Information',
-        description: 'Household details, automatic code generation, and head of household information.',
-        features: [
-          'Auto-generated unique household code',
-          'Household type selection',
-          'Head of household name fields',
-          'Required field validation',
-          'Code format standardization'
-        ]
-      },
-      {
-        id: 2,
-        title: 'Location Details',
-        description: 'Address information with PSGC integration and GPS coordinates.',
-        features: [
-          'Auto-populated barangay information',
-          'Street address entry',
-          'House number and subdivision',
-          'Landmark reference points',
-          'Optional GPS coordinates'
-        ]
-      },
-      {
-        id: 3,
-        title: 'Household Composition',
-        description: 'Member demographics and age group distribution.',
-        features: [
-          'Total household members',
-          'Gender distribution tracking',
-          'Age group categorization',
-          'Member count validation',
-          'Demographic consistency checks'
-        ]
-      },
-      {
-        id: 4,
-        title: 'Economic & Utilities',
-        description: 'Income assessment, utilities access, and dwelling information.',
-        features: [
-          'Monthly income range selection',
-          'Primary income source tracking',
-          'Utilities access checkboxes',
-          'Dwelling type classification',
-          'Ownership status documentation'
-        ]
-      }
-    ]
+const StepWalkthroughComponent = () => {
+  const [currentStep, setCurrentStep] = useState(1)
+  
+  const steps = [
+    {
+      id: 1,
+      title: 'Basic Information',
+      description: 'Household details, automatic code generation, and head of household information.',
+      features: [
+        'Auto-generated unique household code',
+        'Household type selection',
+        'Head of household name fields',
+        'Required field validation',
+        'Code format standardization'
+      ]
+    },
+    {
+      id: 2,
+      title: 'Location Details',
+      description: 'Address information with PSGC integration and GPS coordinates.',
+      features: [
+        'Auto-populated barangay information',
+        'Street address entry',
+        'House number and subdivision',
+        'Landmark reference points',
+        'Optional GPS coordinates'
+      ]
+    },
+    {
+      id: 3,
+      title: 'Household Composition',
+      description: 'Member demographics and age group distribution.',
+      features: [
+        'Total household members',
+        'Gender distribution tracking',
+        'Age group categorization',
+        'Member count validation',
+        'Demographic consistency checks'
+      ]
+    },
+    {
+      id: 4,
+      title: 'Economic & Utilities',
+      description: 'Income assessment, utilities access, and dwelling information.',
+      features: [
+        'Monthly income range selection',
+        'Primary income source tracking',
+        'Utilities access checkboxes',
+        'Dwelling type classification',
+        'Ownership status documentation'
+      ]
+    }
+  ]
 
-    return (
-      <div className="space-y-6">
-        <div className="bg-background rounded-lg border border-default p-6">
-          <h3 className="font-semibold text-primary mb-4">Household Form Steps Overview</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            {steps.map((step) => (
-              <button
-                key={step.id}
-                onClick={() => setCurrentStep(step.id)}
-                className={`p-4 rounded-lg border text-left transition-colors ${
+  return (
+    <div className="space-y-6">
+      <div className="bg-background rounded-lg border border-default p-6">
+        <h3 className="font-semibold text-primary mb-4">Household Form Steps Overview</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          {steps.map((step) => (
+            <button
+              key={step.id}
+              onClick={() => setCurrentStep(step.id)}
+              className={`p-4 rounded-lg border text-left transition-colors ${
+                currentStep === step.id
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  : 'border-default bg-surface hover:bg-surface-hover'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
                   currentStep === step.id
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-default bg-surface hover:bg-surface-hover'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
-                    currentStep === step.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                  }`}>
-                    {step.id}
-                  </span>
-                  <span className="font-medium text-primary text-sm">{step.title}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-          
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <h4 className="font-semibold text-primary mb-2">
-              Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
-            </h4>
-            <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
-            
-            <div>
-              <h5 className="font-medium text-primary mb-2">Key Features:</h5>
-              <ul className="text-sm text-secondary space-y-1">
-                {steps[currentStep - 1].features.map((feature, index) => (
-                  <li key={index}>• {feature}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }`}>
+                  {step.id}
+                </span>
+                <span className="font-medium text-primary text-sm">{step.title}</span>
+              </div>
+            </button>
+          ))}
         </div>
         
-        <HouseholdFormWizard
-          onSubmit={async (data) => {
-            console.log('Step walkthrough submitted:', data)
-            alert('Household created successfully!')
-          }}
-        />
+        <div className="bg-surface rounded-lg border border-default p-6">
+          <h4 className="font-semibold text-primary mb-2">
+            Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
+          </h4>
+          <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
+          
+          <div>
+            <h5 className="font-medium text-primary mb-2">Key Features:</h5>
+            <ul className="text-sm text-secondary space-y-1">
+              {steps[currentStep - 1].features.map((feature, index) => (
+                <li key={index}>• {feature}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-    )
-  }
+      
+      <HouseholdFormWizard
+        onSubmit={async (data) => {
+          console.log('Step walkthrough submitted:', data)
+          alert('Household created successfully!')
+        }}
+      />
+    </div>
+  )
+}
+
+export const StepWalkthrough: Story = {
+  render: StepWalkthroughComponent
 }
 
 // Data collection showcase
@@ -396,178 +400,182 @@ export const DataCollection: Story = {
 }
 
 // Form state management demo
-export const StateManagement: Story = {
-  render: () => {
-    const [formStates, setFormStates] = useState<string[]>([])
-    const [currentData, setCurrentData] = useState<Partial<HouseholdFormData>>({})
+const StateManagementComponent = () => {
+  const [formStates, setFormStates] = useState<string[]>([])
+  const [currentData, setCurrentData] = useState<Partial<HouseholdFormData>>({})
 
-    const logFormState = (action: string, data?: any) => {
-      const timestamp = new Date().toLocaleTimeString()
-      setFormStates(prev => [...prev.slice(-4), `${timestamp}: ${action}`])
-      if (data) {
-        setCurrentData(data)
-      }
+  const logFormState = (action: string, data?: any) => {
+    const timestamp = new Date().toLocaleTimeString()
+    setFormStates(prev => [...prev.slice(-4), `${timestamp}: ${action}`])
+    if (data) {
+      setCurrentData(data)
     }
+  }
 
-    const mockDataUpdate = (field: keyof HouseholdFormData, value: any) => {
-      const newData = { ...currentData, [field]: value }
-      setCurrentData(newData)
-      logFormState(`Updated ${field}`)
-    }
+  const mockDataUpdate = (field: keyof HouseholdFormData, value: any) => {
+    const newData = { ...currentData, [field]: value }
+    setCurrentData(newData)
+    logFormState(`Updated ${field}`)
+  }
 
-    return (
-      <div className="space-y-6">
-        <div className="bg-background rounded-lg border border-default p-6">
-          <h3 className="font-semibold text-primary mb-4">Household Form State Management</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
-              {formStates.length > 0 ? (
-                <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                  <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
-                    {formStates.map((state, index) => (
-                      <li key={index}>• {state}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-sm text-secondary">No actions logged yet. Start filling the form to see state changes.</p>
-              )}
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-primary mb-2">Current Household Data:</h4>
+  return (
+    <div className="space-y-6">
+      <div className="bg-background rounded-lg border border-default p-6">
+        <h3 className="font-semibold text-primary mb-4">Household Form State Management</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
+            {formStates.length > 0 ? (
               <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                  <div>
-                    <strong>Household Code:</strong> {currentData.householdCode || 'Not generated'}
-                  </div>
-                  <div>
-                    <strong>Household Type:</strong> {currentData.householdType || 'Not selected'}
-                  </div>
-                  <div>
-                    <strong>Head Name:</strong> {currentData.headFirstName ? `${currentData.headFirstName} ${currentData.headLastName || ''}`.trim() : 'Not provided'}
-                  </div>
-                  <div>
-                    <strong>Street:</strong> {currentData.streetName || 'Not provided'}
-                  </div>
-                  <div>
-                    <strong>Total Members:</strong> {currentData.totalMembers || 1}
-                  </div>
+                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+                  {formStates.map((state, index) => (
+                    <li key={index}>• {state}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-secondary">No actions logged yet. Start filling the form to see state changes.</p>
+            )}
+          </div>
+          
+          <div>
+            <h4 className="font-medium text-primary mb-2">Current Household Data:</h4>
+            <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
+              <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                <div>
+                  <strong>Household Code:</strong> {currentData.householdCode || 'Not generated'}
+                </div>
+                <div>
+                  <strong>Household Type:</strong> {currentData.householdType || 'Not selected'}
+                </div>
+                <div>
+                  <strong>Head Name:</strong> {currentData.headFirstName ? `${currentData.headFirstName} ${currentData.headLastName || ''}`.trim() : 'Not provided'}
+                </div>
+                <div>
+                  <strong>Street:</strong> {currentData.streetName || 'Not provided'}
+                </div>
+                <div>
+                  <strong>Total Members:</strong> {currentData.totalMembers || 1}
                 </div>
               </div>
             </div>
           </div>
-          
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => mockDataUpdate('householdCode', 'HH-' + Date.now().toString(36).toUpperCase())}
-              className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-            >
-              Generate Code
-            </button>
-            <button
-              onClick={() => mockDataUpdate('headFirstName', 'Juan')}
-              className="px-3 py-1 text-sm bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
-            >
-              Set Head Name
-            </button>
-            <button
-              onClick={() => setFormStates([])}
-              className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-            >
-              Clear Log
-            </button>
-          </div>
         </div>
         
-        <HouseholdFormWizard
-          onSubmit={async (data) => {
-            logFormState('Form submitted', data)
-            alert('Household form submitted successfully!')
-          }}
-          onCancel={() => logFormState('Form cancelled')}
-        />
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={() => mockDataUpdate('householdCode', 'HH-' + Date.now().toString(36).toUpperCase())}
+            className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+          >
+            Generate Code
+          </button>
+          <button
+            onClick={() => mockDataUpdate('headFirstName', 'Juan')}
+            className="px-3 py-1 text-sm bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
+          >
+            Set Head Name
+          </button>
+          <button
+            onClick={() => setFormStates([])}
+            className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            Clear Log
+          </button>
+        </div>
       </div>
-    )
-  }
+      
+      <HouseholdFormWizard
+        onSubmit={async (data) => {
+          logFormState('Form submitted', data)
+          alert('Household form submitted successfully!')
+        }}
+        onCancel={() => logFormState('Form cancelled')}
+      />
+    </div>
+  )
+}
+
+export const StateManagement: Story = {
+  render: StateManagementComponent
 }
 
 // Code generation showcase
-export const CodeGeneration: Story = {
-  render: () => {
-    const [generatedCodes, setGeneratedCodes] = useState<string[]>([])
+const CodeGenerationComponent = () => {
+  const [generatedCodes, setGeneratedCodes] = useState<string[]>([])
 
-    const generateSampleCode = () => {
-      const timestamp = Date.now().toString(36)
-      const randomStr = Math.random().toString(36).substring(2, 8)
-      const newCode = `HH-${timestamp}-${randomStr}`.toUpperCase()
-      setGeneratedCodes(prev => [...prev.slice(-9), newCode])
-    }
+  const generateSampleCode = () => {
+    const timestamp = Date.now().toString(36)
+    const randomStr = Math.random().toString(36).substring(2, 8)
+    const newCode = `HH-${timestamp}-${randomStr}`.toUpperCase()
+    setGeneratedCodes(prev => [...prev.slice(-9), newCode])
+  }
 
-    return (
-      <div className="space-y-6">
-        <div className="bg-background rounded-lg border border-default p-6">
-          <h3 className="font-semibold text-primary mb-4">Household Code Generation</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium text-primary mb-2">Code Format:</h4>
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-4">
-                <div className="font-mono text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
-                  HH-&#123;timestamp&#125;-&#123;random&#125;
-                </div>
-                <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                  <li>• <strong>HH:</strong> Household prefix</li>
-                  <li>• <strong>&#123;timestamp&#125;:</strong> Base-36 timestamp</li>
-                  <li>• <strong>&#123;random&#125;:</strong> 6-character random string</li>
-                  <li>• Ensures uniqueness and traceability</li>
-                  <li>• Human-readable format</li>
-                </ul>
+  return (
+    <div className="space-y-6">
+      <div className="bg-background rounded-lg border border-default p-6">
+        <h3 className="font-semibold text-primary mb-4">Household Code Generation</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-medium text-primary mb-2">Code Format:</h4>
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-4">
+              <div className="font-mono text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                HH-&#123;timestamp&#125;-&#123;random&#125;
               </div>
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-primary mb-2">Sample Generated Codes:</h4>
-              <div className="space-y-2 mb-4">
-                <button
-                  onClick={generateSampleCode}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                >
-                  Generate Sample Code
-                </button>
-              </div>
-              
-              {generatedCodes.length > 0 && (
-                <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3 max-h-32 overflow-y-auto">
-                  <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
-                    {generatedCodes.map((code, index) => (
-                      <li key={index}>• {code}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                <li>• <strong>HH:</strong> Household prefix</li>
+                <li>• <strong>&#123;timestamp&#125;:</strong> Base-36 timestamp</li>
+                <li>• <strong>&#123;random&#125;:</strong> 6-character random string</li>
+                <li>• Ensures uniqueness and traceability</li>
+                <li>• Human-readable format</li>
+              </ul>
             </div>
           </div>
           
-          <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">Code Benefits</h4>
-            <p className="text-sm text-green-700 dark:text-green-300">
-              Each household receives a unique, automatically generated code that ensures proper identification 
-              and traceability throughout the system. The codes are designed to be collision-resistant and 
-              provide audit trail capabilities for household management and resident assignment.
-            </p>
+          <div>
+            <h4 className="font-medium text-primary mb-2">Sample Generated Codes:</h4>
+            <div className="space-y-2 mb-4">
+              <button
+                onClick={generateSampleCode}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+              >
+                Generate Sample Code
+              </button>
+            </div>
+            
+            {generatedCodes.length > 0 && (
+              <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3 max-h-32 overflow-y-auto">
+                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+                  {generatedCodes.map((code, index) => (
+                    <li key={index}>• {code}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
         
-        <HouseholdFormWizard
-          onSubmit={async (data) => {
-            console.log('Code generation demo submitted:', data)
-            alert(`Household created with code: ${data.householdCode}`)
-          }}
-        />
+        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">Code Benefits</h4>
+          <p className="text-sm text-green-700 dark:text-green-300">
+            Each household receives a unique, automatically generated code that ensures proper identification 
+            and traceability throughout the system. The codes are designed to be collision-resistant and 
+            provide audit trail capabilities for household management and resident assignment.
+          </p>
+        </div>
       </div>
-    )
-  }
+      
+      <HouseholdFormWizard
+        onSubmit={async (data) => {
+          console.log('Code generation demo submitted:', data)
+          alert(`Household created with code: ${data.householdCode}`)
+        }}
+      />
+    </div>
+  )
+}
+
+export const CodeGeneration: Story = {
+  render: CodeGenerationComponent
 }

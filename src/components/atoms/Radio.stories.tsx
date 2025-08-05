@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Radio, RadioGroup } from './Radio';
 
 const meta: Meta<typeof Radio> = {
@@ -172,64 +172,70 @@ const RadioGroupMeta: Meta<typeof RadioGroup> = {
   },
 };
 
+const GroupVerticalComponent = () => {
+  const [value, setValue] = useState('option1');
+  return (
+    <RadioGroup
+      label="Choose your plan"
+      description="Select the plan that best suits your needs"
+      value={value}
+      onChange={setValue}
+      orientation="vertical"
+    >
+      <Radio value="basic" label="Basic Plan" description="Perfect for individuals - $9/month" />
+      <Radio value="pro" label="Pro Plan" description="Great for small teams - $29/month" />
+      <Radio value="enterprise" label="Enterprise Plan" description="For large organizations - $99/month" />
+    </RadioGroup>
+  );
+};
+
 export const GroupVertical: StoryObj<typeof RadioGroup> = {
   ...RadioGroupMeta,
-  render: () => {
-    const [value, setValue] = useState('option1');
-    return (
-      <RadioGroup
-        label="Choose your plan"
-        description="Select the plan that best suits your needs"
-        value={value}
-        onChange={setValue}
-        orientation="vertical"
-      >
-        <Radio value="basic" label="Basic Plan" description="Perfect for individuals - $9/month" />
-        <Radio value="pro" label="Pro Plan" description="Great for small teams - $29/month" />
-        <Radio value="enterprise" label="Enterprise Plan" description="For large organizations - $99/month" />
-      </RadioGroup>
-    );
-  },
+  render: GroupVerticalComponent,
+};
+
+const GroupHorizontalComponent = () => {
+  const [value, setValue] = useState('medium');
+  return (
+    <RadioGroup
+      label="Size preference"
+      description="How would you like your coffee?"
+      value={value}
+      onChange={setValue}
+      orientation="horizontal"
+    >
+      <Radio value="small" label="Small" />
+      <Radio value="medium" label="Medium" />
+      <Radio value="large" label="Large" />
+    </RadioGroup>
+  );
 };
 
 export const GroupHorizontal: StoryObj<typeof RadioGroup> = {
   ...RadioGroupMeta,
-  render: () => {
-    const [value, setValue] = useState('medium');
-    return (
-      <RadioGroup
-        label="Size preference"
-        description="How would you like your coffee?"
-        value={value}
-        onChange={setValue}
-        orientation="horizontal"
-      >
-        <Radio value="small" label="Small" />
-        <Radio value="medium" label="Medium" />
-        <Radio value="large" label="Large" />
-      </RadioGroup>
-    );
-  },
+  render: GroupHorizontalComponent,
+};
+
+const GroupWithErrorComponent = () => {
+  const [value, setValue] = useState('');
+  return (
+    <RadioGroup
+      label="Required selection"
+      description="You must choose one option"
+      value={value}
+      onChange={setValue}
+      variant="error"
+      errorMessage="Please select an option to continue"
+    >
+      <Radio value="yes" label="Yes, I agree" />
+      <Radio value="no" label="No, I disagree" />
+    </RadioGroup>
+  );
 };
 
 export const GroupWithError: StoryObj<typeof RadioGroup> = {
   ...RadioGroupMeta,
-  render: () => {
-    const [value, setValue] = useState('');
-    return (
-      <RadioGroup
-        label="Required selection"
-        description="You must choose one option"
-        value={value}
-        onChange={setValue}
-        variant="error"
-        errorMessage="Please select an option to continue"
-      >
-        <Radio value="yes" label="Yes, I agree" />
-        <Radio value="no" label="No, I disagree" />
-      </RadioGroup>
-    );
-  },
+  render: GroupWithErrorComponent,
 };
 
 export const GroupDisabled: StoryObj<typeof RadioGroup> = {
@@ -288,60 +294,62 @@ export const AllVariants: Story = {
 };
 
 // Settings example
-export const SettingsExample: Story = {
-  render: () => {
-    const [theme, setTheme] = useState('light');
-    const [notifications, setNotifications] = useState('email');
-    const [privacy, setPrivacy] = useState('friends');
-    
-    return (
-      <div className="space-y-6 w-96">
-        <h3 className="text-lg font-semibold">User Preferences</h3>
-        
-        <RadioGroup
-          label="Theme Preference"
-          description="Choose your preferred theme"
-          value={theme}
-          onChange={setTheme}
-          orientation="vertical"
-        >
-          <Radio value="light" label="Light theme" description="Clean and bright interface" />
-          <Radio value="dark" label="Dark theme" description="Easy on the eyes" />
-          <Radio value="auto" label="System theme" description="Match your device settings" />
-        </RadioGroup>
-        
-        <RadioGroup
-          label="Notification Method"
-          description="How would you like to receive notifications?"
-          value={notifications}
-          onChange={setNotifications}
-          variant="primary"
-          orientation="vertical"
-        >
-          <Radio value="email" label="Email only" description="Receive notifications via email" />
-          <Radio value="push" label="Push notifications" description="Get instant alerts on your device" />
-          <Radio value="both" label="Email + Push" description="Get notified everywhere" />
-          <Radio value="none" label="No notifications" description="Stay focused, no interruptions" />
-        </RadioGroup>
-        
-        <RadioGroup
-          label="Privacy Level"
-          description="Who can see your profile?"
-          value={privacy}
-          onChange={setPrivacy}
-          orientation="horizontal"
-        >
-          <Radio value="public" label="Public" />
-          <Radio value="friends" label="Friends" />
-          <Radio value="private" label="Private" />
-        </RadioGroup>
-        
-        <div className="pt-4 border-t text-sm text-gray-600">
-          <p>Current settings: {theme} theme, {notifications} notifications, {privacy} profile</p>
-        </div>
+const SettingsExampleComponent = () => {
+  const [theme, setTheme] = useState('light');
+  const [notifications, setNotifications] = useState('email');
+  const [privacy, setPrivacy] = useState('friends');
+  
+  return (
+    <div className="space-y-6 w-96">
+      <h3 className="text-lg font-semibold">User Preferences</h3>
+      
+      <RadioGroup
+        label="Theme Preference"
+        description="Choose your preferred theme"
+        value={theme}
+        onChange={setTheme}
+        orientation="vertical"
+      >
+        <Radio value="light" label="Light theme" description="Clean and bright interface" />
+        <Radio value="dark" label="Dark theme" description="Easy on the eyes" />
+        <Radio value="auto" label="System theme" description="Match your device settings" />
+      </RadioGroup>
+      
+      <RadioGroup
+        label="Notification Method"
+        description="How would you like to receive notifications?"
+        value={notifications}
+        onChange={setNotifications}
+        variant="primary"
+        orientation="vertical"
+      >
+        <Radio value="email" label="Email only" description="Receive notifications via email" />
+        <Radio value="push" label="Push notifications" description="Get instant alerts on your device" />
+        <Radio value="both" label="Email + Push" description="Get notified everywhere" />
+        <Radio value="none" label="No notifications" description="Stay focused, no interruptions" />
+      </RadioGroup>
+      
+      <RadioGroup
+        label="Privacy Level"
+        description="Who can see your profile?"
+        value={privacy}
+        onChange={setPrivacy}
+        orientation="horizontal"
+      >
+        <Radio value="public" label="Public" />
+        <Radio value="friends" label="Friends" />
+        <Radio value="private" label="Private" />
+      </RadioGroup>
+      
+      <div className="pt-4 border-t text-sm text-gray-600">
+        <p>Current settings: {theme} theme, {notifications} notifications, {privacy} profile</p>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const SettingsExample: Story = {
+  render: SettingsExampleComponent,
   parameters: {
     layout: 'padded',
   },

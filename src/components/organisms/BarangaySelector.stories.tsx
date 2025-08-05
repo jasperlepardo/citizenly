@@ -69,10 +69,9 @@ export const PreselectedValue: Story = {
 }
 
 // Interactive example showing real-time updates
-export const Interactive: Story = {
-  render: () => {
-    const [selectedCode, setSelectedCode] = useState('')
-    const [error, setError] = useState('')
+const InteractiveComponent = () => {
+  const [selectedCode, setSelectedCode] = useState('')
+  const [error, setError] = useState('')
 
     const handleChange = (code: string) => {
       setSelectedCode(code)
@@ -120,14 +119,16 @@ export const Interactive: Story = {
         </div>
       </div>
     )
-  }
+}
+
+export const Interactive: Story = {
+  render: InteractiveComponent
 }
 
 // Search demonstration
-export const SearchDemo: Story = {
-  render: () => {
-    const [selectedCode, setSelectedCode] = useState('')
-    const [searchHistory, setSearchHistory] = useState<string[]>([])
+const SearchDemoComponent = () => {
+  const [selectedCode, setSelectedCode] = useState('')
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
 
     const handleChange = (code: string) => {
       setSelectedCode(code)
@@ -167,18 +168,20 @@ export const SearchDemo: Story = {
         )}
       </div>
     )
-  }
+}
+
+export const SearchDemo: Story = {
+  render: SearchDemoComponent
 }
 
 // Form integration example
-export const InForm: Story = {
-  render: () => {
-    const [formData, setFormData] = useState({
-      name: '',
-      barangayCode: '',
-      email: ''
-    })
-    const [errors, setErrors] = useState<{[key: string]: string}>({})
+const InFormComponent = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    barangayCode: '',
+    email: ''
+  })
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
 
     const handleBarangayChange = (code: string) => {
       setFormData(prev => ({ ...prev, barangayCode: code }))
@@ -258,7 +261,10 @@ export const InForm: Story = {
         </button>
       </form>
     )
-  }
+}
+
+export const InForm: Story = {
+  render: InFormComponent
 }
 
 // Different states showcase

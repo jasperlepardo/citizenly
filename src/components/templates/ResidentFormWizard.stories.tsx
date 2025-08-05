@@ -1,8 +1,8 @@
+import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import ResidentFormWizard, { type ResidentFormData } from './ResidentFormWizard'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
-import { useState } from 'react'
 
 const meta = {
   title: 'Templates/ResidentFormWizard',
@@ -43,72 +43,74 @@ export const Default: Story = {
 }
 
 // Interactive form demonstration
-export const Interactive: Story = {
-  render: () => {
-    const [submittedData, setSubmittedData] = useState<ResidentFormData | null>(null)
-    const [isSubmitted, setIsSubmitted] = useState(false)
+const InteractiveComponent = () => {
+  const [submittedData, setSubmittedData] = useState<ResidentFormData | null>(null)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
-    const handleSubmit = async (data: ResidentFormData) => {
-      console.log('Submitted resident data:', data)
-      setSubmittedData(data)
-      setIsSubmitted(true)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      alert('Resident registration submitted successfully!')
-    }
+  const handleSubmit = async (data: ResidentFormData) => {
+    console.log('Submitted resident data:', data)
+    setSubmittedData(data)
+    setIsSubmitted(true)
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    alert('Resident registration submitted successfully!')
+  }
 
-    const handleReset = () => {
-      setSubmittedData(null)
-      setIsSubmitted(false)
-    }
+  const handleReset = () => {
+    setSubmittedData(null)
+    setIsSubmitted(false)
+  }
 
-    if (isSubmitted && submittedData) {
-      return (
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-            <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">Registration Completed!</h3>
-            <p className="text-green-700 dark:text-green-300 mb-4">
-              The resident has been successfully registered in the system.
-            </p>
-            
-            <div className="bg-background rounded-lg border border-default p-4 mb-4">
-              <h4 className="font-medium text-primary mb-3">Submitted Information Summary:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Name:</strong> {`${submittedData.firstName} ${submittedData.middleName} ${submittedData.lastName} ${submittedData.extensionName}`.trim()}
-                </div>
-                <div>
-                  <strong>Birth Date:</strong> {submittedData.birthdate}
-                </div>
-                <div>
-                  <strong>Sex:</strong> {submittedData.sex}
-                </div>
-                <div>
-                  <strong>Mobile:</strong> {submittedData.mobileNumber}
-                </div>
-                <div>
-                  <strong>Education:</strong> {submittedData.educationLevel}
-                </div>
-                <div>
-                  <strong>Employment:</strong> {submittedData.employmentStatus}
-                </div>
+  if (isSubmitted && submittedData) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+          <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">Registration Completed!</h3>
+          <p className="text-green-700 dark:text-green-300 mb-4">
+            The resident has been successfully registered in the system.
+          </p>
+          
+          <div className="bg-background rounded-lg border border-default p-4 mb-4">
+            <h4 className="font-medium text-primary mb-3">Submitted Information Summary:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <strong>Name:</strong> {`${submittedData.firstName} ${submittedData.middleName} ${submittedData.lastName} ${submittedData.extensionName}`.trim()}
+              </div>
+              <div>
+                <strong>Birth Date:</strong> {submittedData.birthdate}
+              </div>
+              <div>
+                <strong>Sex:</strong> {submittedData.sex}
+              </div>
+              <div>
+                <strong>Mobile:</strong> {submittedData.mobileNumber}
+              </div>
+              <div>
+                <strong>Education:</strong> {submittedData.educationLevel}
+              </div>
+              <div>
+                <strong>Employment:</strong> {submittedData.employmentStatus}
               </div>
             </div>
-            
-            <button
-              onClick={handleReset}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Start New Registration
-            </button>
           </div>
+          
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Start New Registration
+          </button>
         </div>
-      )
-    }
-
-    return <ResidentFormWizard onSubmit={handleSubmit} />
+      </div>
+    )
   }
+
+  return <ResidentFormWizard onSubmit={handleSubmit} />
+}
+
+export const Interactive: Story = {
+  render: InteractiveComponent
 }
 
 // Form validation demonstration
@@ -220,129 +222,131 @@ export const FeatureShowcase: Story = {
 }
 
 // Step-by-step walkthrough
-export const StepWalkthrough: Story = {
-  render: () => {
-    const [currentStep, setCurrentStep] = useState(1)
-    
-    const steps = [
-      {
-        id: 1,
-        title: 'Personal Information',
-        description: 'Basic resident details including name, birth date, civil status, and citizenship information.',
-        features: [
-          'Required field validation',
-          'Name format validation',
-          'Birth date picker',
-          'Civil status dropdown',
-          'Citizenship selection'
-        ]
-      },
-      {
-        id: 2,
-        title: 'Education & Employment',
-        description: 'Academic background and work information with PSOC integration.',
-        features: [
-          'Education level selection',
-          'Education status tracking',
-          'PSOC occupation search',
-          'Employment status dropdown',
-          'Workplace information'
-        ]
-      },
-      {
-        id: 3,
-        title: 'Contact & Physical Details',
-        description: 'Contact information, physical characteristics, and family details.',
-        features: [
-          'Mobile number validation',
-          'Email format validation',
-          'PhilSys number handling',
-          'Physical characteristics form',
-          'Mother\'s maiden name'
-        ]
-      },
-      {
-        id: 4,
-        title: 'Additional Information',
-        description: 'Migration status, resident classification, and sectoral information.',
-        features: [
-          'Migration information form',
-          'Resident status selector',
-          'Sectoral classification',
-          'Auto-calculated fields',
-          'Conditional form sections'
-        ]
-      },
-      {
-        id: 5,
-        title: 'Review & Submit',
-        description: 'Final review of all entered information before submission.',
-        features: [
-          'Complete data summary',
-          'Validation status check',
-          'Edit capability',
-          'Security confirmation',
-          'Submission processing'
-        ]
-      }
-    ]
+const StepWalkthroughComponent = () => {
+  const [currentStep, setCurrentStep] = useState(1)
+  
+  const steps = [
+    {
+      id: 1,
+      title: 'Personal Information',
+      description: 'Basic resident details including name, birth date, civil status, and citizenship information.',
+      features: [
+        'Required field validation',
+        'Name format validation',
+        'Birth date picker',
+        'Civil status dropdown',
+        'Citizenship selection'
+      ]
+    },
+    {
+      id: 2,
+      title: 'Education & Employment',
+      description: 'Academic background and work information with PSOC integration.',
+      features: [
+        'Education level selection',
+        'Education status tracking',
+        'PSOC occupation search',
+        'Employment status dropdown',
+        'Workplace information'
+      ]
+    },
+    {
+      id: 3,
+      title: 'Contact & Physical Details',
+      description: 'Contact information, physical characteristics, and family details.',
+      features: [
+        'Mobile number validation',
+        'Email format validation',
+        'PhilSys number handling',
+        'Physical characteristics form',
+        'Mother\'s maiden name'
+      ]
+    },
+    {
+      id: 4,
+      title: 'Additional Information',
+      description: 'Migration status, resident classification, and sectoral information.',
+      features: [
+        'Migration information form',
+        'Resident status selector',
+        'Sectoral classification',
+        'Auto-calculated fields',
+        'Conditional form sections'
+      ]
+    },
+    {
+      id: 5,
+      title: 'Review & Submit',
+      description: 'Final review of all entered information before submission.',
+      features: [
+        'Complete data summary',
+        'Validation status check',
+        'Edit capability',
+        'Security confirmation',
+        'Submission processing'
+      ]
+    }
+  ]
 
-    return (
-      <div className="space-y-6">
-        <div className="bg-background rounded-lg border border-default p-6">
-          <h3 className="font-semibold text-primary mb-4">Form Wizard Steps Overview</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-            {steps.map((step) => (
-              <button
-                key={step.id}
-                onClick={() => setCurrentStep(step.id)}
-                className={`p-4 rounded-lg border text-left transition-colors ${
+  return (
+    <div className="space-y-6">
+      <div className="bg-background rounded-lg border border-default p-6">
+        <h3 className="font-semibold text-primary mb-4">Form Wizard Steps Overview</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          {steps.map((step) => (
+            <button
+              key={step.id}
+              onClick={() => setCurrentStep(step.id)}
+              className={`p-4 rounded-lg border text-left transition-colors ${
+                currentStep === step.id
+                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                  : 'border-default bg-surface hover:bg-surface-hover'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
                   currentStep === step.id
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-default bg-surface hover:bg-surface-hover'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
-                    currentStep === step.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                  }`}>
-                    {step.id}
-                  </span>
-                  <span className="font-medium text-primary text-sm">{step.title}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-          
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <h4 className="font-semibold text-primary mb-2">
-              Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
-            </h4>
-            <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
-            
-            <div>
-              <h5 className="font-medium text-primary mb-2">Key Features:</h5>
-              <ul className="text-sm text-secondary space-y-1">
-                {steps[currentStep - 1].features.map((feature, index) => (
-                  <li key={index}>• {feature}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                }`}>
+                  {step.id}
+                </span>
+                <span className="font-medium text-primary text-sm">{step.title}</span>
+              </div>
+            </button>
+          ))}
         </div>
         
-        <ResidentFormWizard
-          onSubmit={async (data) => {
-            console.log('Step walkthrough submitted:', data)
-            alert('Registration completed successfully!')
-          }}
-        />
+        <div className="bg-surface rounded-lg border border-default p-6">
+          <h4 className="font-semibold text-primary mb-2">
+            Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
+          </h4>
+          <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
+          
+          <div>
+            <h5 className="font-medium text-primary mb-2">Key Features:</h5>
+            <ul className="text-sm text-secondary space-y-1">
+              {steps[currentStep - 1].features.map((feature, index) => (
+                <li key={index}>• {feature}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-    )
-  }
+      
+      <ResidentFormWizard
+        onSubmit={async (data) => {
+          console.log('Step walkthrough submitted:', data)
+          alert('Registration completed successfully!')
+        }}
+      />
+    </div>
+  )
+}
+
+export const StepWalkthrough: Story = {
+  render: StepWalkthroughComponent
 }
 
 // Data integration showcase
@@ -409,77 +413,79 @@ export const DataIntegration: Story = {
 }
 
 // Form state management demo
-export const StateManagement: Story = {
-  render: () => {
-    const [formStates, setFormStates] = useState<string[]>([])
-    const [currentData, setCurrentData] = useState<Partial<ResidentFormData>>({})
+const StateManagementComponent = () => {
+  const [formStates, setFormStates] = useState<string[]>([])
+  const [currentData, setCurrentData] = useState<Partial<ResidentFormData>>({})
 
-    const logFormState = (action: string, data?: any) => {
-      const timestamp = new Date().toLocaleTimeString()
-      setFormStates(prev => [...prev.slice(-4), `${timestamp}: ${action}`])
-      if (data) {
-        setCurrentData(data)
-      }
+  const logFormState = (action: string, data?: any) => {
+    const timestamp = new Date().toLocaleTimeString()
+    setFormStates(prev => [...prev.slice(-4), `${timestamp}: ${action}`])
+    if (data) {
+      setCurrentData(data)
     }
+  }
 
-    return (
-      <div className="space-y-6">
-        <div className="bg-background rounded-lg border border-default p-6">
-          <h3 className="font-semibold text-primary mb-4">Form State Management</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
-              {formStates.length > 0 ? (
-                <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                  <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
-                    {formStates.map((state, index) => (
-                      <li key={index}>• {state}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-sm text-secondary">No actions logged yet. Start filling the form to see state changes.</p>
-              )}
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-primary mb-2">Current Form Data:</h4>
+  return (
+    <div className="space-y-6">
+      <div className="bg-background rounded-lg border border-default p-6">
+        <h3 className="font-semibold text-primary mb-4">Form State Management</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
+            {formStates.length > 0 ? (
               <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                  <div>
-                    <strong>Fields filled:</strong> {Object.keys(currentData).filter(k => currentData[k as keyof ResidentFormData]).length}
-                  </div>
-                  <div>
-                    <strong>Name:</strong> {currentData.firstName ? `${currentData.firstName} ${currentData.lastName || ''}`.trim() : 'Not provided'}
-                  </div>
-                  <div>
-                    <strong>Email:</strong> {currentData.email || 'Not provided'}
-                  </div>
-                  <div>
-                    <strong>Mobile:</strong> {currentData.mobileNumber || 'Not provided'}
-                  </div>
+                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+                  {formStates.map((state, index) => (
+                    <li key={index}>• {state}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <p className="text-sm text-secondary">No actions logged yet. Start filling the form to see state changes.</p>
+            )}
+          </div>
+          
+          <div>
+            <h4 className="font-medium text-primary mb-2">Current Form Data:</h4>
+            <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
+              <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                <div>
+                  <strong>Fields filled:</strong> {Object.keys(currentData).filter(k => currentData[k as keyof ResidentFormData]).length}
+                </div>
+                <div>
+                  <strong>Name:</strong> {currentData.firstName ? `${currentData.firstName} ${currentData.lastName || ''}`.trim() : 'Not provided'}
+                </div>
+                <div>
+                  <strong>Email:</strong> {currentData.email || 'Not provided'}
+                </div>
+                <div>
+                  <strong>Mobile:</strong> {currentData.mobileNumber || 'Not provided'}
                 </div>
               </div>
             </div>
           </div>
-          
-          <button
-            onClick={() => setFormStates([])}
-            className="mt-4 px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
-            Clear Log
-          </button>
         </div>
         
-        <ResidentFormWizard
-          onSubmit={async (data) => {
-            logFormState('Form submitted', data)
-            alert('Form submitted successfully!')
-          }}
-          onCancel={() => logFormState('Form cancelled')}
-        />
+        <button
+          onClick={() => setFormStates([])}
+          className="mt-4 px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          Clear Log
+        </button>
       </div>
-    )
-  }
+      
+      <ResidentFormWizard
+        onSubmit={async (data) => {
+          logFormState('Form submitted', data)
+          alert('Form submitted successfully!')
+        }}
+        onCancel={() => logFormState('Form cancelled')}
+      />
+    </div>
+  )
+}
+
+export const StateManagement: Story = {
+  render: StateManagementComponent
 }

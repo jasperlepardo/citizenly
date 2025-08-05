@@ -1,8 +1,8 @@
+import React, { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import AppShell from './AppShell'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
-import { useState } from 'react'
 
 const meta = {
   title: 'Templates/AppShell',
@@ -202,47 +202,49 @@ export const ResidentsPage: Story = {
 }
 
 // Interactive responsive demo
-export const ResponsiveDemo: Story = {
-  render: () => {
-    const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents'>('dashboard')
+const ResponsiveDemoComponent = () => {
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents'>('dashboard')
 
-    return (
-      <div className="space-y-4">
-        <div className="bg-background p-4 border-b border-default">
-          <h3 className="font-semibold text-primary mb-2">Responsive Layout Demo</h3>
-          <p className="text-sm text-secondary mb-3">
-            This shell adapts to different screen sizes. Try resizing your browser window to see the mobile sidebar in action.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentPage('dashboard')}
-              className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                currentPage === 'dashboard' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-surface text-primary hover:bg-surface-hover'
-              }`}
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => setCurrentPage('residents')}
-              className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                currentPage === 'residents' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-surface text-primary hover:bg-surface-hover'
-              }`}
-            >
-              Residents
-            </button>
-          </div>
+  return (
+    <div className="space-y-4">
+      <div className="bg-background p-4 border-b border-default">
+        <h3 className="font-semibold text-primary mb-2">Responsive Layout Demo</h3>
+        <p className="text-sm text-secondary mb-3">
+          This shell adapts to different screen sizes. Try resizing your browser window to see the mobile sidebar in action.
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentPage('dashboard')}
+            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+              currentPage === 'dashboard' 
+                ? 'bg-indigo-600 text-white' 
+                : 'bg-surface text-primary hover:bg-surface-hover'
+            }`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setCurrentPage('residents')}
+            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+              currentPage === 'residents' 
+                ? 'bg-indigo-600 text-white' 
+                : 'bg-surface text-primary hover:bg-surface-hover'
+            }`}
+          >
+            Residents
+          </button>
         </div>
-        
-        <AppShell>
-          {currentPage === 'dashboard' ? <SampleDashboardContent /> : <SampleResidentsContent />}
-        </AppShell>
       </div>
-    )
-  }
+      
+      <AppShell>
+        {currentPage === 'dashboard' ? <SampleDashboardContent /> : <SampleResidentsContent />}
+      </AppShell>
+    </div>
+  )
+}
+
+export const ResponsiveDemo: Story = {
+  render: ResponsiveDemoComponent
 }
 
 // Features showcase
@@ -316,121 +318,123 @@ export const FeaturesShowcase: Story = {
 }
 
 // Layout variations
-export const LayoutVariations: Story = {
-  render: () => {
-    const [currentLayout, setCurrentLayout] = useState<'dashboard' | 'list' | 'form'>('dashboard')
+const LayoutVariationsComponent = () => {
+  const [currentLayout, setCurrentLayout] = useState<'dashboard' | 'list' | 'form'>('dashboard')
 
-    const renderContent = () => {
-      switch (currentLayout) {
-        case 'dashboard':
-          return <SampleDashboardContent />
-        case 'list':
-          return <SampleResidentsContent />
-        case 'form':
-          return (
-            <div className="space-y-8">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-primary">Add New Resident</h1>
-                <p className="mt-2 text-lg text-secondary">
-                  Enter resident information and details
-                </p>
+  const renderContent = () => {
+    switch (currentLayout) {
+      case 'dashboard':
+        return <SampleDashboardContent />
+      case 'list':
+        return <SampleResidentsContent />
+      case 'form':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-primary">Add New Resident</h1>
+              <p className="mt-2 text-lg text-secondary">
+                Enter resident information and details
+              </p>
+            </div>
+
+            <div className="bg-surface rounded-2xl shadow-lg border border-default">
+              <div className="px-6 py-5 border-b border-default">
+                <h3 className="text-lg font-medium text-primary">Personal Information</h3>
               </div>
-
-              <div className="bg-surface rounded-2xl shadow-lg border border-default">
-                <div className="px-6 py-5 border-b border-default">
-                  <h3 className="text-lg font-medium text-primary">Personal Information</h3>
-                </div>
-                <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-primary mb-2">First Name</label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter first name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-primary mb-2">Last Name</label>
-                      <input
-                        type="text"
-                        className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                        placeholder="Enter last name"
-                      />
-                    </div>
-                  </div>
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-primary mb-2">First Name</label>
                     <input
-                      type="email"
+                      type="text"
                       className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                      placeholder="Enter email address"
+                      placeholder="Enter first name"
                     />
                   </div>
-                  <div className="flex justify-end space-x-3">
-                    <button className="px-6 py-3 border border-default rounded-lg text-secondary hover:text-primary hover:bg-surface-hover transition-colors">
-                      Cancel
-                    </button>
-                    <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-                      Save Resident
-                    </button>
+                  <div>
+                    <label className="block text-sm font-medium text-primary mb-2">Last Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      placeholder="Enter last name"
+                    />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-primary mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    placeholder="Enter email address"
+                  />
+                </div>
+                <div className="flex justify-end space-x-3">
+                  <button className="px-6 py-3 border border-default rounded-lg text-secondary hover:text-primary hover:bg-surface-hover transition-colors">
+                    Cancel
+                  </button>
+                  <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+                    Save Resident
+                  </button>
                 </div>
               </div>
             </div>
-          )
-        default:
-          return <SampleDashboardContent />
-      }
-    }
-
-    return (
-      <div className="space-y-4">
-        <div className="bg-background p-4 border-b border-default">
-          <h3 className="font-semibold text-primary mb-2">Layout Content Variations</h3>
-          <p className="text-sm text-secondary mb-3">
-            The AppShell template adapts to different content types while maintaining consistent navigation and structure.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setCurrentLayout('dashboard')}
-              className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                currentLayout === 'dashboard' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-surface text-primary hover:bg-surface-hover'
-              }`}
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => setCurrentLayout('list')}
-              className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                currentLayout === 'list' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-surface text-primary hover:bg-surface-hover'
-              }`}
-            >
-              List View
-            </button>
-            <button
-              onClick={() => setCurrentLayout('form')}
-              className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-                currentLayout === 'form' 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-surface text-primary hover:bg-surface-hover'
-              }`}
-            >
-              Form View
-            </button>
           </div>
-        </div>
-        
-        <AppShell>
-          {renderContent()}
-        </AppShell>
-      </div>
-    )
+        )
+      default:
+        return <SampleDashboardContent />
+    }
   }
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-background p-4 border-b border-default">
+        <h3 className="font-semibold text-primary mb-2">Layout Content Variations</h3>
+        <p className="text-sm text-secondary mb-3">
+          The AppShell template adapts to different content types while maintaining consistent navigation and structure.
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentLayout('dashboard')}
+            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+              currentLayout === 'dashboard' 
+                ? 'bg-indigo-600 text-white' 
+                : 'bg-surface text-primary hover:bg-surface-hover'
+            }`}
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => setCurrentLayout('list')}
+            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+              currentLayout === 'list' 
+                ? 'bg-indigo-600 text-white' 
+                : 'bg-surface text-primary hover:bg-surface-hover'
+            }`}
+          >
+            List View
+          </button>
+          <button
+            onClick={() => setCurrentLayout('form')}
+            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+              currentLayout === 'form' 
+                ? 'bg-indigo-600 text-white' 
+                : 'bg-surface text-primary hover:bg-surface-hover'
+            }`}
+          >
+            Form View
+          </button>
+        </div>
+      </div>
+      
+      <AppShell>
+        {renderContent()}
+      </AppShell>
+    </div>
+  )
+}
+
+export const LayoutVariations: Story = {
+  render: LayoutVariationsComponent
 }
 
 // Mobile interaction demo

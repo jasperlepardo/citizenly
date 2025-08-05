@@ -260,147 +260,151 @@ export const AllStates: Story = {
   },
 };
 
-export const FormExample: Story = {
-  render: () => {
-    const [formData, setFormData] = useState({
-      country: '',
-      priority: '',
-      size: 'md',
-      category: '',
-    });
-    
-    const handleChange = (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFormData(prev => ({ ...prev, [field]: e.target.value }));
-    };
-    
-    const categoryOptions = [
-      { value: '', label: 'Select category' },
-      { value: 'bug', label: 'Bug Report' },
-      { value: 'feature', label: 'Feature Request' },
-      { value: 'support', label: 'Support' },
-      { value: 'question', label: 'Question' },
-    ];
-    
-    return (
-      <div className="space-y-4 w-96">
-        <h3 className="text-lg font-semibold">Issue Report Form</h3>
-        
-        <SelectField
-          label="Country"
-          placeholder="Select your country"
-          options={countryOptions}
-          value={formData.country}
-          onChange={handleChange('country')}
-          helperText="This helps us provide localized support"
-        />
-        
-        <SelectField
-          label="Issue Category"
-          placeholder="What type of issue is this?"
-          options={categoryOptions}
-          value={formData.category}
-          onChange={handleChange('category')}
-          variant={!formData.category ? 'error' : 'default'}
-          errorMessage={!formData.category ? 'Please select a category' : undefined}
-        />
-        
-        <SelectField
-          label="Priority Level"
-          options={priorityOptions}
-          value={formData.priority}
-          onChange={handleChange('priority')}
-          helperText="How urgent is this issue?"
-        />
-        
-        <SelectField
-          label="Affected Component Size"
-          options={sizeOptions}
-          value={formData.size}
-          onChange={handleChange('size')}
-          size="sm"
-          helperText="Size of the affected component"
-        />
-        
-        <div className="pt-4 border-t text-sm text-gray-600">
-          <p>Form data: {JSON.stringify(formData, null, 2)}</p>
-        </div>
+const FormExampleComponent = () => {
+  const [formData, setFormData] = useState({
+    country: '',
+    priority: '',
+    size: 'md',
+    category: '',
+  });
+  
+  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+  
+  const categoryOptions = [
+    { value: '', label: 'Select category' },
+    { value: 'bug', label: 'Bug Report' },
+    { value: 'feature', label: 'Feature Request' },
+    { value: 'support', label: 'Support' },
+    { value: 'question', label: 'Question' },
+  ];
+  
+  return (
+    <div className="space-y-4 w-96">
+      <h3 className="text-lg font-semibold">Issue Report Form</h3>
+      
+      <SelectField
+        label="Country"
+        placeholder="Select your country"
+        options={countryOptions}
+        value={formData.country}
+        onChange={handleChange('country')}
+        helperText="This helps us provide localized support"
+      />
+      
+      <SelectField
+        label="Issue Category"
+        placeholder="What type of issue is this?"
+        options={categoryOptions}
+        value={formData.category}
+        onChange={handleChange('category')}
+        variant={!formData.category ? 'error' : 'default'}
+        errorMessage={!formData.category ? 'Please select a category' : undefined}
+      />
+      
+      <SelectField
+        label="Priority Level"
+        options={priorityOptions}
+        value={formData.priority}
+        onChange={handleChange('priority')}
+        helperText="How urgent is this issue?"
+      />
+      
+      <SelectField
+        label="Affected Component Size"
+        options={sizeOptions}
+        value={formData.size}
+        onChange={handleChange('size')}
+        size="sm"
+        helperText="Size of the affected component"
+      />
+      
+      <div className="pt-4 border-t text-sm text-gray-600">
+        <p>Form data: {JSON.stringify(formData, null, 2)}</p>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const FormExample: Story = {
+  render: FormExampleComponent,
   parameters: {
     layout: 'padded',
   },
 };
 
-export const NestedOptions: Story = {
-  render: () => {
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedItem, setSelectedItem] = useState('');
-    
-    const categories = [
-      { value: '', label: 'Select category' },
-      { value: 'electronics', label: 'Electronics' },
-      { value: 'clothing', label: 'Clothing' },
-      { value: 'books', label: 'Books' },
-    ];
-    
-    const getItemsForCategory = (category: string) => {
-      const items: Record<string, Array<{value: string, label: string}>> = {
-        electronics: [
-          { value: '', label: 'Select item' },
-          { value: 'laptop', label: 'Laptop' },
-          { value: 'phone', label: 'Smartphone' },
-          { value: 'tablet', label: 'Tablet' },
-        ],
-        clothing: [
-          { value: '', label: 'Select item' },
-          { value: 'shirt', label: 'T-Shirt' },
-          { value: 'jeans', label: 'Jeans' },
-          { value: 'jacket', label: 'Jacket' },
-        ],
-        books: [
-          { value: '', label: 'Select item' },
-          { value: 'fiction', label: 'Fiction' },
-          { value: 'nonfiction', label: 'Non-Fiction' },
-          { value: 'textbook', label: 'Textbook' },
-        ],
-      };
-      return items[category] || [{ value: '', label: 'Select category first' }];
+const NestedOptionsComponent = () => {
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedItem, setSelectedItem] = useState('');
+  
+  const categories = [
+    { value: '', label: 'Select category' },
+    { value: 'electronics', label: 'Electronics' },
+    { value: 'clothing', label: 'Clothing' },
+    { value: 'books', label: 'Books' },
+  ];
+  
+  const getItemsForCategory = (category: string) => {
+    const items: Record<string, Array<{value: string, label: string}>> = {
+      electronics: [
+        { value: '', label: 'Select item' },
+        { value: 'laptop', label: 'Laptop' },
+        { value: 'phone', label: 'Smartphone' },
+        { value: 'tablet', label: 'Tablet' },
+      ],
+      clothing: [
+        { value: '', label: 'Select item' },
+        { value: 'shirt', label: 'T-Shirt' },
+        { value: 'jeans', label: 'Jeans' },
+        { value: 'jacket', label: 'Jacket' },
+      ],
+      books: [
+        { value: '', label: 'Select item' },
+        { value: 'fiction', label: 'Fiction' },
+        { value: 'nonfiction', label: 'Non-Fiction' },
+        { value: 'textbook', label: 'Textbook' },
+      ],
     };
-    
-    return (
-      <div className="space-y-4 w-96">
-        <h3 className="text-lg font-semibold">Dependent Dropdowns</h3>
-        
-        <SelectField
-          label="Product Category"
-          options={categories}
-          value={selectedCategory}
-          onChange={(e) => {
-            setSelectedCategory(e.target.value);
-            setSelectedItem(''); // Reset item when category changes
-          }}
-          placeholder="Choose a category"
-        />
-        
-        <SelectField
-          label="Product Item"
-          options={getItemsForCategory(selectedCategory)}
-          value={selectedItem}
-          onChange={(e) => setSelectedItem(e.target.value)}
-          disabled={!selectedCategory}
-          placeholder={selectedCategory ? "Choose an item" : "Select category first"}
-          helperText={selectedCategory ? "Select a specific item" : "Choose a category above first"}
-        />
-        
-        {selectedCategory && selectedItem && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm">
-            Selected: {selectedCategory} → {selectedItem}
-          </div>
-        )}
-      </div>
-    );
-  },
+    return items[category] || [{ value: '', label: 'Select category first' }];
+  };
+  
+  return (
+    <div className="space-y-4 w-96">
+      <h3 className="text-lg font-semibold">Dependent Dropdowns</h3>
+      
+      <SelectField
+        label="Product Category"
+        options={categories}
+        value={selectedCategory}
+        onChange={(e) => {
+          setSelectedCategory(e.target.value);
+          setSelectedItem(''); // Reset item when category changes
+        }}
+        placeholder="Choose a category"
+      />
+      
+      <SelectField
+        label="Product Item"
+        options={getItemsForCategory(selectedCategory)}
+        value={selectedItem}
+        onChange={(e) => setSelectedItem(e.target.value)}
+        disabled={!selectedCategory}
+        placeholder={selectedCategory ? "Choose an item" : "Select category first"}
+        helperText={selectedCategory ? "Select a specific item" : "Choose a category above first"}
+      />
+      
+      {selectedCategory && selectedItem && (
+        <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm">
+          Selected: {selectedCategory} → {selectedItem}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const NestedOptions: Story = {
+  render: NestedOptionsComponent,
   parameters: {
     layout: 'padded',
   },

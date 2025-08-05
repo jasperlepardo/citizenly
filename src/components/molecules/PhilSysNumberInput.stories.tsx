@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import React, { useState } from 'react'
 import PhilSysNumberInput from './PhilSysNumberInput'
-import { useState } from 'react'
 
 const meta = {
   title: 'Molecules/PhilSysNumberInput',
@@ -133,81 +133,85 @@ export const PrefilledInvalid: Story = {
 }
 
 // Interactive example showing real-time validation
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState('')
-    const [hashedValue, setHashedValue] = useState('')
-    const [isValid, setIsValid] = useState(false)
-    const [error, setError] = useState('')
+const InteractiveComponent = () => {
+  const [value, setValue] = useState('')
+  const [hashedValue, setHashedValue] = useState('')
+  const [isValid, setIsValid] = useState(false)
+  const [error, setError] = useState('')
 
-    return (
-      <div className="space-y-4">
-        <PhilSysNumberInput
-          value={value}
-          required
-          onChange={(newValue, newHashedValue) => {
-            setValue(newValue)
-            setHashedValue(newHashedValue || '')
-          }}
-          onValidation={(valid, validationError) => {
-            setIsValid(valid)
-            setError(validationError || '')
-          }}
-        />
-        
-        <div className="bg-background rounded-lg p-4 border border-default">
-          <h3 className="font-semibold text-primary mb-2">Real-time Status:</h3>
-          <div className="space-y-2 text-sm">
-            <div>
-              <strong>Current Value:</strong> <code className="bg-background-muted px-2 py-1 rounded">{value || 'empty'}</code>
-            </div>
-            <div>
-              <strong>Is Valid:</strong> <span className={isValid ? 'text-green-600' : 'text-red-600'}>{isValid ? 'Yes' : 'No'}</span>
-            </div>
-            {error && (
-              <div>
-                <strong>Error:</strong> <span className="text-red-600">{error}</span>
-              </div>
-            )}
-            {hashedValue && (
-              <div>
-                <strong>Hashed Value:</strong> <code className="bg-background-muted px-2 py-1 rounded text-xs break-all">{hashedValue.substring(0, 20)}...</code>
-              </div>
-            )}
+  return (
+    <div className="space-y-4">
+      <PhilSysNumberInput
+        value={value}
+        required
+        onChange={(newValue, newHashedValue) => {
+          setValue(newValue)
+          setHashedValue(newHashedValue || '')
+        }}
+        onValidation={(valid, validationError) => {
+          setIsValid(valid)
+          setError(validationError || '')
+        }}
+      />
+      
+      <div className="bg-background rounded-lg p-4 border border-default">
+        <h3 className="font-semibold text-primary mb-2">Real-time Status:</h3>
+        <div className="space-y-2 text-sm">
+          <div>
+            <strong>Current Value:</strong> <code className="bg-background-muted px-2 py-1 rounded">{value || 'empty'}</code>
           </div>
+          <div>
+            <strong>Is Valid:</strong> <span className={isValid ? 'text-green-600' : 'text-red-600'}>{isValid ? 'Yes' : 'No'}</span>
+          </div>
+          {error && (
+            <div>
+              <strong>Error:</strong> <span className="text-red-600">{error}</span>
+            </div>
+          )}
+          {hashedValue && (
+            <div>
+              <strong>Hashed Value:</strong> <code className="bg-background-muted px-2 py-1 rounded text-xs break-all">{hashedValue.substring(0, 20)}...</code>
+            </div>
+          )}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
+
+export const Interactive: Story = {
+  render: InteractiveComponent
 }
 
 // Example showing masking behavior
-export const MaskingDemo: Story = {
-  render: () => {
-    const [value, setValue] = useState('1234567890123')
+const MaskingDemoComponent = () => {
+  const [value, setValue] = useState('1234567890123')
 
-    return (
-      <div className="space-y-4">
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Masking Demo</h3>
-          <p className="text-sm text-yellow-700 dark:text-yellow-300">
-            Click on the input field to see the full number. When you click away, it will be masked for security.
-          </p>
-        </div>
-        
-        <PhilSysNumberInput
-          value={value}
-          label="PhilSys Number (Try focusing/unfocusing)"
-          showLastFourDigits={true}
-          onChange={(newValue) => setValue(newValue)}
-        />
-        
-        <div className="text-sm text-muted">
-          <strong>Tip:</strong> The input automatically formats as you type and masks the number when not focused.
-        </div>
+  return (
+    <div className="space-y-4">
+      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Masking Demo</h3>
+        <p className="text-sm text-yellow-700 dark:text-yellow-300">
+          Click on the input field to see the full number. When you click away, it will be masked for security.
+        </p>
       </div>
-    )
-  }
+      
+      <PhilSysNumberInput
+        value={value}
+        label="PhilSys Number (Try focusing/unfocusing)"
+        showLastFourDigits={true}
+        onChange={(newValue) => setValue(newValue)}
+      />
+      
+      <div className="text-sm text-muted">
+        <strong>Tip:</strong> The input automatically formats as you type and masks the number when not focused.
+      </div>
+    </div>
+  )
+}
+
+export const MaskingDemo: Story = {
+  render: MaskingDemoComponent
 }
 
 // Security features showcase

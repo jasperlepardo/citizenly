@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { FileUpload } from './FileUpload';
 
 const meta: Meta<typeof FileUpload> = {
@@ -140,116 +140,120 @@ export const Large: Story = {
 };
 
 // Interactive Examples
+const WithFilePreviewComponent = () => {
+  const [files, setFiles] = useState<File[]>([]);
+  
+  const handleFilesChange = (newFiles: File[]) => {
+    setFiles(newFiles);
+  };
+  
+  return (
+    <div className="w-96">
+      <FileUpload
+        label="Upload with Preview"
+        helperText="Select files to see previews"
+        multiple
+        showPreview
+        accept="image/*,.pdf,.txt"
+        maxFileSize={5 * 1024 * 1024}
+        onFilesChange={handleFilesChange}
+      />
+      
+      {files.length > 0 && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <h4 className="text-sm font-medium mb-2">Selected Files:</h4>
+          <ul className="text-sm space-y-1">
+            {files.map((file, index) => (
+              <li key={index} className="flex justify-between">
+                <span>{file.name}</span>
+                <span className="text-gray-500">
+                  {(file.size / 1024).toFixed(1)} KB
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const WithFilePreview: Story = {
-  render: () => {
-    const [files, setFiles] = useState<File[]>([]);
-    
-    const handleFilesChange = (newFiles: File[]) => {
-      setFiles(newFiles);
-    };
-    
-    return (
-      <div className="w-96">
-        <FileUpload
-          label="Upload with Preview"
-          helperText="Select files to see previews"
-          multiple
-          showPreview
-          accept="image/*,.pdf,.txt"
-          maxFileSize={5 * 1024 * 1024}
-          onFilesChange={handleFilesChange}
-        />
-        
-        {files.length > 0 && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <h4 className="text-sm font-medium mb-2">Selected Files:</h4>
-            <ul className="text-sm space-y-1">
-              {files.map((file, index) => (
-                <li key={index} className="flex justify-between">
-                  <span>{file.name}</span>
-                  <span className="text-gray-500">
-                    {(file.size / 1024).toFixed(1)} KB
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  },
+  render: WithFilePreviewComponent,
   parameters: {
     layout: 'padded',
   },
 };
 
+const DocumentUploadComponent = () => {
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [files, setFiles] = useState<File[]>([]);
+  
+  const handleFilesChange = (newFiles: File[]) => {
+    setFiles(newFiles);
+    if (newFiles.length > 0) {
+      // Simulate upload
+      setUploadStatus('uploading');
+      setTimeout(() => {
+        setUploadStatus('success');
+      }, 2000);
+    }
+  };
+  
+  const getVariant = () => {
+    switch (uploadStatus) {
+      case 'error': return 'error';
+      case 'success': return 'success';
+      default: return 'default';
+    }
+  };
+  
+  const getHelperText = () => {
+    switch (uploadStatus) {
+      case 'uploading': return 'Uploading files, please wait...';
+      case 'success': return 'Files uploaded successfully!';
+      case 'error': return 'Upload failed, please try again';
+      default: return 'Select PDF, Word, or text documents';
+    }
+  };
+  
+  return (
+    <div className="w-96 space-y-4">
+      <FileUpload
+        label="Document Upload"
+        helperText={getHelperText()}
+        variant={getVariant()}
+        accept=".pdf,.doc,.docx,.txt"
+        multiple
+        maxFileSize={10 * 1024 * 1024} // 10MB
+        onFilesChange={handleFilesChange}
+        disabled={uploadStatus === 'uploading'}
+      />
+      
+      {uploadStatus === 'uploading' && (
+        <div className="flex items-center space-x-2 text-sm text-blue-600">
+          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25"/>
+            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+          </svg>
+          <span>Uploading...</span>
+        </div>
+      )}
+      
+      {files.length > 0 && uploadStatus === 'success' && (
+        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+          <h4 className="text-sm font-medium text-green-800 mb-1">Upload Complete</h4>
+          <p className="text-sm text-green-600">
+            {files.length} file{files.length > 1 ? 's' : ''} uploaded successfully
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const DocumentUpload: Story = {
-  render: () => {
-    const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
-    const [files, setFiles] = useState<File[]>([]);
-    
-    const handleFilesChange = (newFiles: File[]) => {
-      setFiles(newFiles);
-      if (newFiles.length > 0) {
-        // Simulate upload
-        setUploadStatus('uploading');
-        setTimeout(() => {
-          setUploadStatus('success');
-        }, 2000);
-      }
-    };
-    
-    const getVariant = () => {
-      switch (uploadStatus) {
-        case 'error': return 'error';
-        case 'success': return 'success';
-        default: return 'default';
-      }
-    };
-    
-    const getHelperText = () => {
-      switch (uploadStatus) {
-        case 'uploading': return 'Uploading files, please wait...';
-        case 'success': return 'Files uploaded successfully!';
-        case 'error': return 'Upload failed, please try again';
-        default: return 'Select PDF, Word, or text documents';
-      }
-    };
-    
-    return (
-      <div className="w-96 space-y-4">
-        <FileUpload
-          label="Document Upload"
-          helperText={getHelperText()}
-          variant={getVariant()}
-          accept=".pdf,.doc,.docx,.txt"
-          multiple
-          maxFileSize={10 * 1024 * 1024} // 10MB
-          onFilesChange={handleFilesChange}
-          disabled={uploadStatus === 'uploading'}
-        />
-        
-        {uploadStatus === 'uploading' && (
-          <div className="flex items-center space-x-2 text-sm text-blue-600">
-            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25"/>
-              <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-            </svg>
-            <span>Uploading...</span>
-          </div>
-        )}
-        
-        {files.length > 0 && uploadStatus === 'success' && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-            <h4 className="text-sm font-medium text-green-800 mb-1">Upload Complete</h4>
-            <p className="text-sm text-green-600">
-              {files.length} file{files.length > 1 ? 's' : ''} uploaded successfully
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  },
+  render: DocumentUploadComponent,
   parameters: {
     layout: 'padded',
   },
@@ -329,68 +333,70 @@ export const AllStates: Story = {
   },
 };
 
-export const FormExample: Story = {
-  render: () => {
-    const [formData, setFormData] = useState({
-      avatar: [] as File[],
-      resume: [] as File[],
-      portfolio: [] as File[],
-      certificates: [] as File[],
-    });
-    
-    return (
-      <div className="space-y-6 w-full max-w-2xl">
-        <h3 className="text-lg font-semibold">Job Application Form</h3>
+const FormExampleComponent = () => {
+  const [formData, setFormData] = useState({
+    avatar: [] as File[],
+    resume: [] as File[],
+    portfolio: [] as File[],
+    certificates: [] as File[],
+  });
+  
+  return (
+    <div className="space-y-6 w-full max-w-2xl">
+      <h3 className="text-lg font-semibold">Job Application Form</h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FileUpload
+          label="Profile Picture"
+          helperText="Upload your profile photo (max 2MB)"
+          accept="image/*"
+          maxFileSize={2 * 1024 * 1024}
+          showPreview
+          onFilesChange={(files) => setFormData(prev => ({ ...prev, avatar: files }))}
+        />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FileUpload
-            label="Profile Picture"
-            helperText="Upload your profile photo (max 2MB)"
-            accept="image/*"
-            maxFileSize={2 * 1024 * 1024}
-            showPreview
-            onFilesChange={(files) => setFormData(prev => ({ ...prev, avatar: files }))}
-          />
-          
-          <FileUpload
-            label="Resume/CV"
-            helperText="Upload your resume in PDF format"
-            accept=".pdf"
-            maxFileSize={5 * 1024 * 1024}
-            onFilesChange={(files) => setFormData(prev => ({ ...prev, resume: files }))}
-          />
-          
-          <FileUpload
-            label="Portfolio Files"
-            helperText="Upload your work samples (multiple files allowed)"
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            multiple
-            maxFileSize={10 * 1024 * 1024}
-            onFilesChange={(files) => setFormData(prev => ({ ...prev, portfolio: files }))}
-          />
-          
-          <FileUpload
-            label="Certificates"
-            helperText="Upload relevant certificates or qualifications"
-            accept=".pdf,.jpg,.jpeg,.png"
-            multiple
-            maxFileSize={5 * 1024 * 1024}
-            onFilesChange={(files) => setFormData(prev => ({ ...prev, certificates: files }))}
-          />
-        </div>
+        <FileUpload
+          label="Resume/CV"
+          helperText="Upload your resume in PDF format"
+          accept=".pdf"
+          maxFileSize={5 * 1024 * 1024}
+          onFilesChange={(files) => setFormData(prev => ({ ...prev, resume: files }))}
+        />
         
-        <div className="pt-4 border-t text-sm text-gray-600">
-          <h4 className="font-medium mb-2">Uploaded Files Summary:</h4>
-          <ul className="space-y-1">
-            <li>Profile Picture: {formData.avatar.length} file</li>
-            <li>Resume: {formData.resume.length} file</li>
-            <li>Portfolio: {formData.portfolio.length} files</li>
-            <li>Certificates: {formData.certificates.length} files</li>
-          </ul>
-        </div>
+        <FileUpload
+          label="Portfolio Files"
+          helperText="Upload your work samples (multiple files allowed)"
+          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+          multiple
+          maxFileSize={10 * 1024 * 1024}
+          onFilesChange={(files) => setFormData(prev => ({ ...prev, portfolio: files }))}
+        />
+        
+        <FileUpload
+          label="Certificates"
+          helperText="Upload relevant certificates or qualifications"
+          accept=".pdf,.jpg,.jpeg,.png"
+          multiple
+          maxFileSize={5 * 1024 * 1024}
+          onFilesChange={(files) => setFormData(prev => ({ ...prev, certificates: files }))}
+        />
       </div>
-    );
-  },
+      
+      <div className="pt-4 border-t text-sm text-gray-600">
+        <h4 className="font-medium mb-2">Uploaded Files Summary:</h4>
+        <ul className="space-y-1">
+          <li>Profile Picture: {formData.avatar.length} file</li>
+          <li>Resume: {formData.resume.length} file</li>
+          <li>Portfolio: {formData.portfolio.length} files</li>
+          <li>Certificates: {formData.certificates.length} files</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export const FormExample: Story = {
+  render: FormExampleComponent,
   parameters: {
     layout: 'padded',
   },

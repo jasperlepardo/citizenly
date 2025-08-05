@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Toggle } from './Toggle';
 
 const meta: Meta<typeof Toggle> = {
@@ -190,69 +190,71 @@ export const AllVariants: Story = {
 };
 
 // Settings panel example
-export const SettingsExample: Story = {
-  render: () => {
-    const [settings, setSettings] = useState({
-      notifications: true,
-      darkMode: false,
-      autoSave: true,
-      analytics: false,
-      beta: false,
-    });
-    
-    const handleToggle = (key: string) => (checked: boolean) => {
-      setSettings(prev => ({ ...prev, [key]: checked }));
-    };
-    
-    return (
-      <div className="space-y-4 w-96">
-        <h3 className="text-lg font-semibold">Application Settings</h3>
+const SettingsExampleComponent = () => {
+  const [settings, setSettings] = useState({
+    notifications: true,
+    darkMode: false,
+    autoSave: true,
+    analytics: false,
+    beta: false,
+  });
+  
+  const handleToggle = (key: string) => (checked: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: checked }));
+  };
+  
+  return (
+    <div className="space-y-4 w-96">
+      <h3 className="text-lg font-semibold">Application Settings</h3>
+      
+      <div className="space-y-4">
+        <Toggle
+          label="Push Notifications"
+          description="Receive notifications about important updates"
+          checked={settings.notifications}
+          onToggle={handleToggle('notifications')}
+        />
         
-        <div className="space-y-4">
-          <Toggle
-            label="Push Notifications"
-            description="Receive notifications about important updates"
-            checked={settings.notifications}
-            onToggle={handleToggle('notifications')}
-          />
-          
-          <Toggle
-            label="Dark Mode"
-            description="Use dark theme across the application"
-            variant="primary"
-            checked={settings.darkMode}
-            onToggle={handleToggle('darkMode')}
-          />
-          
-          <Toggle
-            label="Auto Save"
-            description="Automatically save your work every 30 seconds"
-            checked={settings.autoSave}
-            onToggle={handleToggle('autoSave')}
-          />
-          
-          <Toggle
-            label="Usage Analytics"
-            description="Help improve the app by sharing anonymous usage data"
-            checked={settings.analytics}
-            onToggle={handleToggle('analytics')}
-          />
-          
-          <Toggle
-            label="Beta Features"
-            description="Enable experimental features (may be unstable)"
-            variant="error"
-            checked={settings.beta}
-            onToggle={handleToggle('beta')}
-          />
-        </div>
+        <Toggle
+          label="Dark Mode"
+          description="Use dark theme across the application"
+          variant="primary"
+          checked={settings.darkMode}
+          onToggle={handleToggle('darkMode')}
+        />
         
-        <div className="pt-4 border-t text-sm text-gray-600">
-          <p>Active settings: {Object.values(settings).filter(Boolean).length} of {Object.keys(settings).length}</p>
-        </div>
+        <Toggle
+          label="Auto Save"
+          description="Automatically save your work every 30 seconds"
+          checked={settings.autoSave}
+          onToggle={handleToggle('autoSave')}
+        />
+        
+        <Toggle
+          label="Usage Analytics"
+          description="Help improve the app by sharing anonymous usage data"
+          checked={settings.analytics}
+          onToggle={handleToggle('analytics')}
+        />
+        
+        <Toggle
+          label="Beta Features"
+          description="Enable experimental features (may be unstable)"
+          variant="error"
+          checked={settings.beta}
+          onToggle={handleToggle('beta')}
+        />
       </div>
-    );
-  },
+      
+      <div className="pt-4 border-t text-sm text-gray-600">
+        <p>Active settings: {Object.values(settings).filter(Boolean).length} of {Object.keys(settings).length}</p>
+      </div>
+    </div>
+  );
+};
+
+export const SettingsExample: Story = {
+  render: SettingsExampleComponent,
   parameters: {
     layout: 'padded',
   },

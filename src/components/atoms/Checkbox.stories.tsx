@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Checkbox } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
@@ -207,61 +207,63 @@ export const AllVariants: Story = {
 };
 
 // Form example
-export const FormExample: Story = {
-  render: () => {
-    const [preferences, setPreferences] = useState({
-      newsletter: false,
-      sms: false,
-      email: true,
-      terms: false,
-    });
-    
-    const handleChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPreferences(prev => ({ ...prev, [key]: e.target.checked }));
-    };
-    
-    return (
-      <div className="space-y-4 w-96">
-        <h3 className="text-lg font-semibold">Communication Preferences</h3>
-        
+const FormExampleComponent = () => {
+  const [preferences, setPreferences] = useState({
+    newsletter: false,
+    sms: false,
+    email: true,
+    terms: false,
+  });
+  
+  const handleChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPreferences(prev => ({ ...prev, [key]: e.target.checked }));
+  };
+  
+  return (
+    <div className="space-y-4 w-96">
+      <h3 className="text-lg font-semibold">Communication Preferences</h3>
+      
+      <Checkbox
+        label="Email notifications"
+        description="Receive important updates via email"
+        checked={preferences.email}
+        onChange={handleChange('email')}
+      />
+      
+      <Checkbox
+        label="SMS notifications"
+        description="Get urgent alerts via text message"
+        checked={preferences.sms}
+        onChange={handleChange('sms')}
+      />
+      
+      <Checkbox
+        label="Newsletter subscription"
+        description="Weekly newsletter with tips and updates"
+        checked={preferences.newsletter}
+        onChange={handleChange('newsletter')}
+      />
+      
+      <div className="pt-4 border-t">
         <Checkbox
-          label="Email notifications"
-          description="Receive important updates via email"
-          checked={preferences.email}
-          onChange={handleChange('email')}
+          label="I accept the terms and conditions"
+          description="Required to proceed with registration"
+          variant={!preferences.terms ? 'error' : 'default'}
+          errorMessage={!preferences.terms ? 'You must accept the terms' : undefined}
+          checked={preferences.terms}
+          onChange={handleChange('terms')}
         />
-        
-        <Checkbox
-          label="SMS notifications"
-          description="Get urgent alerts via text message"
-          checked={preferences.sms}
-          onChange={handleChange('sms')}
-        />
-        
-        <Checkbox
-          label="Newsletter subscription"
-          description="Weekly newsletter with tips and updates"
-          checked={preferences.newsletter}
-          onChange={handleChange('newsletter')}
-        />
-        
-        <div className="pt-4 border-t">
-          <Checkbox
-            label="I accept the terms and conditions"
-            description="Required to proceed with registration"
-            variant={!preferences.terms ? 'error' : 'default'}
-            errorMessage={!preferences.terms ? 'You must accept the terms' : undefined}
-            checked={preferences.terms}
-            onChange={handleChange('terms')}
-          />
-        </div>
-        
-        <div className="pt-2 text-sm text-gray-600">
-          Selected: {Object.values(preferences).filter(Boolean).length} of {Object.keys(preferences).length}
-        </div>
       </div>
-    );
-  },
+      
+      <div className="pt-2 text-sm text-gray-600">
+        Selected: {Object.values(preferences).filter(Boolean).length} of {Object.keys(preferences).length}
+      </div>
+    </div>
+  );
+};
+
+export const FormExample: Story = {
+  render: FormExampleComponent,
   parameters: {
     layout: 'padded',
   },

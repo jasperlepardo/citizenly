@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Textarea } from './Textarea';
 
 const meta: Meta<typeof Textarea> = {
@@ -313,134 +313,138 @@ export const AllStates: Story = {
   },
 };
 
-export const FormExample: Story = {
-  render: () => {
-    const [formData, setFormData] = useState({
-      summary: '',
-      description: '',
-      notes: '',
-      feedback: '',
-    });
-    
-    const handleChange = (field: string) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setFormData(prev => ({ ...prev, [field]: e.target.value }));
-    };
-    
-    return (
-      <div className="space-y-6 w-full max-w-2xl">
-        <h3 className="text-lg font-semibold">Project Report Form</h3>
-        
-        <Textarea
-          label="Executive Summary"
-          placeholder="Provide a brief overview of the project..."
-          value={formData.summary}
-          onChange={handleChange('summary')}
-          maxLength={300}
-          showCount
-          rows={3}
-          helperText="Keep this concise and high-level"
-        />
-        
-        <Textarea
-          label="Detailed Description"
-          placeholder="Provide detailed information about the project, including objectives, methodology, and key findings..."
-          value={formData.description}
-          onChange={handleChange('description')}
-          maxLength={1000}
-          showCount
-          rows={6}
-          resize="vertical"
-          helperText="Include as much detail as necessary"
-        />
-        
-        <Textarea
-          label="Additional Notes"
-          placeholder="Any additional notes or observations..."
-          value={formData.notes}
-          onChange={handleChange('notes')}
-          rows={4}
-          size="sm"
-          helperText="Optional field for extra information"
-        />
-        
-        <Textarea
-          label="Feedback"
-          placeholder="Share your thoughts on the process or outcomes..."
-          value={formData.feedback}
-          onChange={handleChange('feedback')}
-          maxLength={500}
-          showCount
-          rows={4}
-          resize="both"
-          helperText="Your feedback helps us improve"
-        />
-        
-        <div className="pt-4 border-t text-sm text-gray-600">
-          <h4 className="font-medium mb-2">Content Summary:</h4>
-          <ul className="space-y-1">
-            <li>Summary: {formData.summary.length} characters</li>
-            <li>Description: {formData.description.length} characters</li>
-            <li>Notes: {formData.notes.length} characters</li>
-            <li>Feedback: {formData.feedback.length} characters</li>
-          </ul>
-        </div>
+const FormExampleComponent = () => {
+  const [formData, setFormData] = useState({
+    summary: '',
+    description: '',
+    notes: '',
+    feedback: '',
+  });
+  
+  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [field]: e.target.value }));
+  };
+  
+  return (
+    <div className="space-y-6 w-full max-w-2xl">
+      <h3 className="text-lg font-semibold">Project Report Form</h3>
+      
+      <Textarea
+        label="Executive Summary"
+        placeholder="Provide a brief overview of the project..."
+        value={formData.summary}
+        onChange={handleChange('summary')}
+        maxLength={300}
+        showCount
+        rows={3}
+        helperText="Keep this concise and high-level"
+      />
+      
+      <Textarea
+        label="Detailed Description"
+        placeholder="Provide detailed information about the project, including objectives, methodology, and key findings..."
+        value={formData.description}
+        onChange={handleChange('description')}
+        maxLength={1000}
+        showCount
+        rows={6}
+        resize="vertical"
+        helperText="Include as much detail as necessary"
+      />
+      
+      <Textarea
+        label="Additional Notes"
+        placeholder="Any additional notes or observations..."
+        value={formData.notes}
+        onChange={handleChange('notes')}
+        rows={4}
+        size="sm"
+        helperText="Optional field for extra information"
+      />
+      
+      <Textarea
+        label="Feedback"
+        placeholder="Share your thoughts on the process or outcomes..."
+        value={formData.feedback}
+        onChange={handleChange('feedback')}
+        maxLength={500}
+        showCount
+        rows={4}
+        resize="both"
+        helperText="Your feedback helps us improve"
+      />
+      
+      <div className="pt-4 border-t text-sm text-gray-600">
+        <h4 className="font-medium mb-2">Content Summary:</h4>
+        <ul className="space-y-1">
+          <li>Summary: {formData.summary.length} characters</li>
+          <li>Description: {formData.description.length} characters</li>
+          <li>Notes: {formData.notes.length} characters</li>
+          <li>Feedback: {formData.feedback.length} characters</li>
+        </ul>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const FormExample: Story = {
+  render: FormExampleComponent,
   parameters: {
     layout: 'padded',
   },
 };
 
-export const BlogEditor: Story = {
-  render: () => {
-    const [content, setContent] = useState('');
-    const [title, setTitle] = useState('');
-    
-    return (
-      <div className="space-y-4 w-full max-w-4xl">
-        <h3 className="text-lg font-semibold">Blog Post Editor</h3>
+const BlogEditorComponent = () => {
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  
+  return (
+    <div className="space-y-4 w-full max-w-4xl">
+      <h3 className="text-lg font-semibold">Blog Post Editor</h3>
+      
+      <div className="space-y-4">
+        <input
+          type="text"
+          placeholder="Blog post title..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full text-2xl font-bold border-none outline-none bg-transparent placeholder-gray-400"
+        />
         
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Blog post title..."
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full text-2xl font-bold border-none outline-none bg-transparent placeholder-gray-400"
-          />
-          
-          <Textarea
-            label="Content"
-            placeholder="Start writing your blog post..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={15}
-            resize="vertical"
-            maxLength={5000}
-            showCount
-            size="lg"
-            helperText="Write your blog post content here. Markdown formatting is supported."
-          />
-          
-          <div className="flex justify-between items-center pt-4 border-t">
-            <div className="text-sm text-gray-500">
-              Words: {content.split(/\s+/).filter(Boolean).length} | 
-              Characters: {content.length}
-            </div>
-            <div className="space-x-3">
-              <button className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
-                Save Draft
-              </button>
-              <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Publish
-              </button>
-            </div>
+        <Textarea
+          label="Content"
+          placeholder="Start writing your blog post..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={15}
+          resize="vertical"
+          maxLength={5000}
+          showCount
+          size="lg"
+          helperText="Write your blog post content here. Markdown formatting is supported."
+        />
+        
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div className="text-sm text-gray-500">
+            Words: {content.split(/\s+/).filter(Boolean).length} | 
+            Characters: {content.length}
+          </div>
+          <div className="space-x-3">
+            <button className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+              Save Draft
+            </button>
+            <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              Publish
+            </button>
           </div>
         </div>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const BlogEditor: Story = {
+  render: BlogEditorComponent,
   parameters: {
     layout: 'padded',
   },
