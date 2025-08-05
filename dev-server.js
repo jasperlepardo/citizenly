@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawn } = require('child_process');
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unused-vars
 const path = require('path');
 
 console.log('🚀 Starting Citizenly Development Server with Enhanced Live Reload...\n');
@@ -10,16 +12,14 @@ const killExisting = spawn('pkill', ['-f', 'next dev'], { stdio: 'ignore' });
 
 killExisting.on('close', () => {
   // Start Next.js with Turbo and enhanced options
-  const nextDev = spawn('npx', [
-    'next', 
-    'dev', 
-    '--turbo',
-    '--port', '3000',
-    '--hostname', '0.0.0.0'
-  ], {
-    stdio: 'inherit',
-    cwd: process.cwd()
-  });
+  const nextDev = spawn(
+    'npx',
+    ['next', 'dev', '--turbo', '--port', '3000', '--hostname', '0.0.0.0'],
+    {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    }
+  );
 
   // Handle process termination
   process.on('SIGINT', () => {
@@ -33,7 +33,7 @@ killExisting.on('close', () => {
     process.exit(0);
   });
 
-  nextDev.on('close', (code) => {
+  nextDev.on('close', code => {
     if (code !== 0) {
       console.log(`❌ Development server exited with code ${code}`);
     } else {

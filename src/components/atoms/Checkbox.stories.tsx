@@ -9,7 +9,8 @@ const meta: Meta<typeof Checkbox> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile checkbox component with multiple variants, sizes, and states including indeterminate.',
+        component:
+          'A versatile checkbox component with multiple variants, sizes, and states including indeterminate.',
       },
     },
   },
@@ -58,7 +59,7 @@ export const Default: Story = {
     label: 'Accept terms and conditions',
     description: 'By checking this box, you agree to our terms',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -71,7 +72,7 @@ export const Primary: Story = {
     variant: 'primary',
     description: 'This uses the primary color scheme',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -82,7 +83,7 @@ export const WithoutDescription: Story = {
   args: {
     label: 'Simple checkbox',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -96,7 +97,7 @@ export const ErrorState: Story = {
     variant: 'error',
     errorMessage: 'You must accept the terms to continue',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -126,7 +127,7 @@ export const Indeterminate: Story = {
     description: 'Some items are selected',
     indeterminate: true,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -140,7 +141,7 @@ export const Small: Story = {
     size: 'sm',
     description: 'This is a small checkbox',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -153,7 +154,7 @@ export const Medium: Story = {
     size: 'md',
     description: 'This is a medium checkbox (default)',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -166,7 +167,7 @@ export const Large: Story = {
     size: 'lg',
     description: 'This is a large checkbox',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Checkbox />
     </InteractiveWrapper>
@@ -183,7 +184,7 @@ export const AllVariants: Story = {
         <Checkbox label="Primary variant" variant="primary" />
         <Checkbox label="Error variant" variant="error" />
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">States</h3>
         <Checkbox label="Unchecked" />
@@ -192,7 +193,7 @@ export const AllVariants: Story = {
         <Checkbox label="Disabled unchecked" disabled />
         <Checkbox label="Disabled checked" disabled checked />
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Sizes</h3>
         <Checkbox label="Small size" size="sm" />
@@ -214,36 +215,36 @@ const FormExampleComponent = () => {
     email: true,
     terms: false,
   });
-  
+
   const handleChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setPreferences(prev => ({ ...prev, [key]: e.target.checked }));
   };
-  
+
   return (
     <div className="space-y-4 w-96">
       <h3 className="text-lg font-semibold">Communication Preferences</h3>
-      
+
       <Checkbox
         label="Email notifications"
         description="Receive important updates via email"
         checked={preferences.email}
         onChange={handleChange('email')}
       />
-      
+
       <Checkbox
         label="SMS notifications"
         description="Get urgent alerts via text message"
         checked={preferences.sms}
         onChange={handleChange('sms')}
       />
-      
+
       <Checkbox
         label="Newsletter subscription"
         description="Weekly newsletter with tips and updates"
         checked={preferences.newsletter}
         onChange={handleChange('newsletter')}
       />
-      
+
       <div className="pt-4 border-t">
         <Checkbox
           label="I accept the terms and conditions"
@@ -254,9 +255,10 @@ const FormExampleComponent = () => {
           onChange={handleChange('terms')}
         />
       </div>
-      
+
       <div className="pt-2 text-sm text-gray-600">
-        Selected: {Object.values(preferences).filter(Boolean).length} of {Object.keys(preferences).length}
+        Selected: {Object.values(preferences).filter(Boolean).length} of{' '}
+        {Object.keys(preferences).length}
       </div>
     </div>
   );

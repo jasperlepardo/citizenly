@@ -39,7 +39,7 @@ export async function hashPhilSysNumber(philsysNumber: string): Promise<string> 
  * @returns Promise<boolean> - Whether the numbers match
  */
 export async function verifyPhilSysNumber(
-  philsysNumber: string, 
+  philsysNumber: string,
   hashedNumber: string
 ): Promise<boolean> {
   if (!philsysNumber || !hashedNumber) {
@@ -66,7 +66,7 @@ export function extractPhilSysLast4(philsysNumber: string): string {
 
   // Remove all non-digit characters and get last 4 digits
   const digitsOnly = philsysNumber.replace(/\D/g, '');
-  
+
   if (digitsOnly.length < 4) {
     throw new Error('PhilSys card number must contain at least 4 digits');
   }
@@ -125,7 +125,7 @@ export function logSecurityOperation(
 
   // For now, log to console (should be replaced with proper audit logging)
   console.info('[SECURITY AUDIT]', JSON.stringify(auditLog));
-  
+
   // TODO: Implement proper audit logging to secure database/service
   // - Store in audit_logs table
   // - Send to security monitoring service

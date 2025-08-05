@@ -10,6 +10,7 @@ The signup process was failing because the database tables and permissions weren
 4. Click **Run** to execute the SQL
 
 This will:
+
 - ✅ Add missing columns to `user_profiles` table (`mobile_number`, `barangay_code`, `status`)
 - ✅ Create the `barangay_accounts` table if it doesn't exist
 - ✅ Set up proper Row Level Security (RLS) policies
@@ -26,11 +27,13 @@ After running the database setup:
 ## What Was Fixed
 
 ### Issues Found:
+
 1. **Missing columns**: `mobile_number`, `barangay_code`, `status` didn't exist in `user_profiles`
 2. **Missing table**: `barangay_accounts` table didn't exist
 3. **RLS Policies**: Row Level Security was blocking profile creation
 
 ### Solutions Applied:
+
 1. **Database Schema**: Added all required columns safely using conditional SQL
 2. **RLS Policies**: Updated to allow users to create their own profiles during signup
 3. **Error Handling**: Improved signup form to show detailed error messages
@@ -39,6 +42,7 @@ After running the database setup:
 ## Verification
 
 After setup, you should see:
+
 - ✅ Successful user account creation
 - ✅ Profile data saved to database
 - ✅ Barangay assignment (if table exists)

@@ -1,15 +1,7 @@
-'use client'
+'use client';
 
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/AuthContext';
 
-export default function ClientProviders({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <AuthProvider>
-      {children}
-    </AuthProvider>
-  )
+export default function ClientProviders({ children }: { children: React.ReactNode }) {
+  return <AuthProvider>{children}</AuthProvider>;
 }

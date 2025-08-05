@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import React from 'react'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 export interface FormFieldProps {
-  children: React.ReactNode
-  label?: string
-  required?: boolean
-  helperText?: string
-  errorMessage?: string
-  className?: string
-  orientation?: 'vertical' | 'horizontal'
-  labelWidth?: string
+  children: React.ReactNode;
+  label?: string;
+  required?: boolean;
+  helperText?: string;
+  errorMessage?: string;
+  className?: string;
+  orientation?: 'vertical' | 'horizontal';
+  labelWidth?: string;
 }
 
 export const FormField = ({
@@ -22,59 +22,49 @@ export const FormField = ({
   errorMessage,
   className,
   orientation = 'vertical',
-  labelWidth = 'w-32'
+  labelWidth = 'w-32',
 }: FormFieldProps) => {
-  const isHorizontal = orientation === 'horizontal'
+  const isHorizontal = orientation === 'horizontal';
 
   return (
-    <div className={cn("w-full", isHorizontal && "flex items-start space-x-4", className)}>
+    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
-        <div className={cn(
-          isHorizontal ? `${labelWidth} flex-shrink-0 pt-2` : "mb-1"
-        )}>
+        <div className={cn(isHorizontal ? `${labelWidth} flex-shrink-0 pt-2` : 'mb-1')}>
           <label className="block text-sm font-medium text-primary font-['Montserrat']">
             {label}
-            {required && (
-              <span className="text-red-500 ml-1">*</span>
-            )}
+            {required && <span className="text-red-500 ml-1">*</span>}
           </label>
         </div>
       )}
-      
+
       {/* Field Container */}
-      <div className={cn(isHorizontal && "flex-1")}>
+      <div className={cn(isHorizontal && 'flex-1')}>
         {/* Input/Field */}
-        <div>
-          {children}
-        </div>
-        
+        <div>{children}</div>
+
         {/* Helper Text / Error Message */}
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="text-xs text-red-500 font-['Montserrat']">
-                {errorMessage}
-              </p>
+              <p className="text-xs text-red-500 font-['Montserrat']">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-muted font-['Montserrat']">
-                {helperText}
-              </p>
+              <p className="text-xs text-muted font-['Montserrat']">{helperText}</p>
             )}
           </div>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Form Group for organizing multiple fields
 export interface FormGroupProps {
-  children: React.ReactNode
-  title?: string
-  description?: string
-  className?: string
-  spacing?: 'sm' | 'md' | 'lg'
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+  className?: string;
+  spacing?: 'sm' | 'md' | 'lg';
 }
 
 export const FormGroup = ({
@@ -82,61 +72,48 @@ export const FormGroup = ({
   title,
   description,
   className,
-  spacing = 'md'
+  spacing = 'md',
 }: FormGroupProps) => {
   const spacingClasses = {
     sm: 'space-y-3',
-    md: 'space-y-4', 
-    lg: 'space-y-6'
-  }
+    md: 'space-y-4',
+    lg: 'space-y-6',
+  };
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn('w-full', className)}>
       {/* Title and Description */}
       {(title || description) && (
         <div className="mb-4">
           {title && (
-            <h3 className="text-lg font-semibold text-primary font-['Montserrat'] mb-1">
-              {title}
-            </h3>
+            <h3 className="text-lg font-semibold text-primary font-['Montserrat'] mb-1">{title}</h3>
           )}
-          {description && (
-            <p className="text-sm text-muted font-['Montserrat']">
-              {description}
-            </p>
-          )}
+          {description && <p className="text-sm text-muted font-['Montserrat']">{description}</p>}
         </div>
       )}
-      
+
       {/* Fields */}
-      <div className={spacingClasses[spacing]}>
-        {children}
-      </div>
+      <div className={spacingClasses[spacing]}>{children}</div>
     </div>
-  )
-}
+  );
+};
 
 // Form Container for the entire form
 export interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
-  children: React.ReactNode
-  spacing?: 'sm' | 'md' | 'lg'
+  children: React.ReactNode;
+  spacing?: 'sm' | 'md' | 'lg';
 }
 
-export const Form = ({
-  children,
-  className,
-  spacing = 'md',
-  ...props
-}: FormProps) => {
+export const Form = ({ children, className, spacing = 'md', ...props }: FormProps) => {
   const spacingClasses = {
     sm: 'space-y-4',
     md: 'space-y-6',
-    lg: 'space-y-8'
-  }
+    lg: 'space-y-8',
+  };
 
   return (
-    <form className={cn("w-full", spacingClasses[spacing], className)} {...props}>
+    <form className={cn('w-full', spacingClasses[spacing], className)} {...props}>
       {children}
     </form>
-  )
-}
+  );
+};

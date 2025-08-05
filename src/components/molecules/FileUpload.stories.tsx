@@ -9,7 +9,8 @@ const meta: Meta<typeof FileUpload> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile file upload component with drag-and-drop support, file previews, and various states.',
+        component:
+          'A versatile file upload component with drag-and-drop support, file previews, and various states.',
       },
     },
   },
@@ -142,11 +143,11 @@ export const Large: Story = {
 // Interactive Examples
 const WithFilePreviewComponent = () => {
   const [files, setFiles] = useState<File[]>([]);
-  
+
   const handleFilesChange = (newFiles: File[]) => {
     setFiles(newFiles);
   };
-  
+
   return (
     <div className="w-96">
       <FileUpload
@@ -158,7 +159,7 @@ const WithFilePreviewComponent = () => {
         maxFileSize={5 * 1024 * 1024}
         onFilesChange={handleFilesChange}
       />
-      
+
       {files.length > 0 && (
         <div className="mt-4 p-3 bg-gray-50 rounded-lg">
           <h4 className="text-sm font-medium mb-2">Selected Files:</h4>
@@ -166,9 +167,7 @@ const WithFilePreviewComponent = () => {
             {files.map((file, index) => (
               <li key={index} className="flex justify-between">
                 <span>{file.name}</span>
-                <span className="text-gray-500">
-                  {(file.size / 1024).toFixed(1)} KB
-                </span>
+                <span className="text-gray-500">{(file.size / 1024).toFixed(1)} KB</span>
               </li>
             ))}
           </ul>
@@ -186,9 +185,11 @@ export const WithFilePreview: Story = {
 };
 
 const DocumentUploadComponent = () => {
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>(
+    'idle'
+  );
   const [files, setFiles] = useState<File[]>([]);
-  
+
   const handleFilesChange = (newFiles: File[]) => {
     setFiles(newFiles);
     if (newFiles.length > 0) {
@@ -199,24 +200,31 @@ const DocumentUploadComponent = () => {
       }, 2000);
     }
   };
-  
+
   const getVariant = () => {
     switch (uploadStatus) {
-      case 'error': return 'error';
-      case 'success': return 'success';
-      default: return 'default';
+      case 'error':
+        return 'error';
+      case 'success':
+        return 'success';
+      default:
+        return 'default';
     }
   };
-  
+
   const getHelperText = () => {
     switch (uploadStatus) {
-      case 'uploading': return 'Uploading files, please wait...';
-      case 'success': return 'Files uploaded successfully!';
-      case 'error': return 'Upload failed, please try again';
-      default: return 'Select PDF, Word, or text documents';
+      case 'uploading':
+        return 'Uploading files, please wait...';
+      case 'success':
+        return 'Files uploaded successfully!';
+      case 'error':
+        return 'Upload failed, please try again';
+      default:
+        return 'Select PDF, Word, or text documents';
     }
   };
-  
+
   return (
     <div className="w-96 space-y-4">
       <FileUpload
@@ -229,17 +237,28 @@ const DocumentUploadComponent = () => {
         onFilesChange={handleFilesChange}
         disabled={uploadStatus === 'uploading'}
       />
-      
+
       {uploadStatus === 'uploading' && (
         <div className="flex items-center space-x-2 text-sm text-blue-600">
           <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25"/>
-            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+              opacity="0.25"
+            />
+            <path
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
           <span>Uploading...</span>
         </div>
       )}
-      
+
       {files.length > 0 && uploadStatus === 'success' && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
           <h4 className="text-sm font-medium text-green-800 mb-1">Upload Complete</h4>
@@ -264,7 +283,7 @@ export const AllStates: Story = {
     <div className="space-y-6">
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">File Upload States</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FileUpload
             label="Default State"
@@ -272,7 +291,7 @@ export const AllStates: Story = {
             accept="*"
             size="sm"
           />
-          
+
           <FileUpload
             label="Error State"
             helperText="Something went wrong"
@@ -281,7 +300,7 @@ export const AllStates: Story = {
             accept="*"
             size="sm"
           />
-          
+
           <FileUpload
             label="Success State"
             helperText="Upload completed successfully"
@@ -289,7 +308,7 @@ export const AllStates: Story = {
             accept="*"
             size="sm"
           />
-          
+
           <FileUpload
             label="Disabled State"
             helperText="Upload is currently disabled"
@@ -299,31 +318,21 @@ export const AllStates: Story = {
           />
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Different Sizes</h3>
-        
+
         <div className="space-y-4">
-          <FileUpload
-            label="Small Size"
-            size="sm"
-            helperText="Compact upload area"
-            accept="*"
-          />
-          
+          <FileUpload label="Small Size" size="sm" helperText="Compact upload area" accept="*" />
+
           <FileUpload
             label="Medium Size (Default)"
             size="md"
             helperText="Standard upload area"
             accept="*"
           />
-          
-          <FileUpload
-            label="Large Size"
-            size="lg"
-            helperText="Spacious upload area"
-            accept="*"
-          />
+
+          <FileUpload label="Large Size" size="lg" helperText="Spacious upload area" accept="*" />
         </div>
       </div>
     </div>
@@ -340,11 +349,11 @@ const FormExampleComponent = () => {
     portfolio: [] as File[],
     certificates: [] as File[],
   });
-  
+
   return (
     <div className="space-y-6 w-full max-w-2xl">
       <h3 className="text-lg font-semibold">Job Application Form</h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FileUpload
           label="Profile Picture"
@@ -352,36 +361,36 @@ const FormExampleComponent = () => {
           accept="image/*"
           maxFileSize={2 * 1024 * 1024}
           showPreview
-          onFilesChange={(files) => setFormData(prev => ({ ...prev, avatar: files }))}
+          onFilesChange={files => setFormData(prev => ({ ...prev, avatar: files }))}
         />
-        
+
         <FileUpload
           label="Resume/CV"
           helperText="Upload your resume in PDF format"
           accept=".pdf"
           maxFileSize={5 * 1024 * 1024}
-          onFilesChange={(files) => setFormData(prev => ({ ...prev, resume: files }))}
+          onFilesChange={files => setFormData(prev => ({ ...prev, resume: files }))}
         />
-        
+
         <FileUpload
           label="Portfolio Files"
           helperText="Upload your work samples (multiple files allowed)"
           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
           multiple
           maxFileSize={10 * 1024 * 1024}
-          onFilesChange={(files) => setFormData(prev => ({ ...prev, portfolio: files }))}
+          onFilesChange={files => setFormData(prev => ({ ...prev, portfolio: files }))}
         />
-        
+
         <FileUpload
           label="Certificates"
           helperText="Upload relevant certificates or qualifications"
           accept=".pdf,.jpg,.jpeg,.png"
           multiple
           maxFileSize={5 * 1024 * 1024}
-          onFilesChange={(files) => setFormData(prev => ({ ...prev, certificates: files }))}
+          onFilesChange={files => setFormData(prev => ({ ...prev, certificates: files }))}
         />
       </div>
-      
+
       <div className="pt-4 border-t text-sm text-gray-600">
         <h4 className="font-medium mb-2">Uploaded Files Summary:</h4>
         <ul className="space-y-1">

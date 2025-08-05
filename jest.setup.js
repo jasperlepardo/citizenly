@@ -3,7 +3,7 @@
  * Global test configuration and utilities for Citizenly RBI System
  */
 
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 // Mock Next.js router
 jest.mock('next/router', () => ({
@@ -24,9 +24,9 @@ jest.mock('next/router', () => ({
         off: jest.fn(),
         emit: jest.fn(),
       },
-    }
+    };
   },
-}))
+}));
 
 // Mock Next.js navigation (App Router)
 jest.mock('next/navigation', () => ({
@@ -38,17 +38,17 @@ jest.mock('next/navigation', () => ({
       back: jest.fn(),
       forward: jest.fn(),
       refresh: jest.fn(),
-    }
+    };
   },
   useSearchParams() {
-    return new URLSearchParams()
+    return new URLSearchParams();
   },
   usePathname() {
-    return '/'
+    return '/';
   },
   notFound: jest.fn(),
   redirect: jest.fn(),
-}))
+}));
 
 // Create mock objects that will be used by jest.mock calls
 const mockSupabase = {
@@ -70,13 +70,13 @@ const mockSupabase = {
     limit: jest.fn(),
     single: jest.fn(),
   })),
-}
+};
 
 const mockCrypto = {
   hashPhilSysNumber: jest.fn().mockResolvedValue('hashed_philsys_number'),
   maskPhilSysNumber: jest.fn().mockReturnValue('****-****-1234'),
   validatePhilSysNumber: jest.fn().mockReturnValue(true),
-}
+};
 
 const mockDatabase = {
   getRegions: jest.fn().mockResolvedValue([
@@ -108,7 +108,7 @@ const mockDatabase = {
       barangays: 38372,
     },
   }),
-}
+};
 
 const mockAuthContext = {
   user: null,
@@ -117,7 +117,7 @@ const mockAuthContext = {
   signIn: jest.fn(),
   signUp: jest.fn(),
   signOut: jest.fn(),
-}
+};
 
 const mockDesignSystem = {
   getColor: jest.fn().mockReturnValue('#3b82f6'),
@@ -139,17 +139,17 @@ const mockDesignSystem = {
     icon: '👪',
     color: '#3b82f6',
   }),
-}
+};
 
 // Set up module mocks that will be used across tests
-jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }))
-jest.mock('@/lib/crypto', () => mockCrypto)
-jest.mock('@/lib/database', () => mockDatabase)
+jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+jest.mock('@/lib/crypto', () => mockCrypto);
+jest.mock('@/lib/database', () => mockDatabase);
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: () => mockAuthContext,
   AuthProvider: ({ children }) => children,
-}))
-jest.mock('@/design-system', () => mockDesignSystem)
+}));
+jest.mock('@/design-system', () => mockDesignSystem);
 
 // Global test utilities
 global.testUtils = {
@@ -160,7 +160,7 @@ global.testUtils = {
     role: 'barangay_admin',
     barangay_code: '01280101',
   },
-  
+
   // Mock resident data
   mockResident: {
     id: 'test-resident-id',
@@ -179,7 +179,7 @@ global.testUtils = {
     is_senior_citizen: false,
     is_pwd: false,
   },
-  
+
   // Mock household data
   mockHousehold: {
     id: 'test-household-id',
@@ -189,7 +189,7 @@ global.testUtils = {
     head_name: 'Juan Dela Cruz',
     barangay_code: '01280101',
   },
-  
+
   // Common test props
   mockProps: {
     disabled: false,
@@ -199,11 +199,11 @@ global.testUtils = {
     onSubmit: jest.fn(),
     onError: jest.fn(),
   },
-}
+};
 
 // Console warnings and errors should fail tests in CI
-const originalError = console.error
-const originalWarn = console.warn
+const originalError = console.error;
+const originalWarn = console.warn;
 
 beforeAll(() => {
   // Suppress expected warnings in tests
@@ -213,80 +213,86 @@ beforeAll(() => {
       'Warning: ReactDOM.render is deprecated',
       'Warning: An invalid form control',
       'Warning: validateDOMNesting',
-    ]
-    
-    if (typeof message === 'string' && expectedWarnings.some(warning => message.includes(warning))) {
-      return
+    ];
+
+    if (
+      typeof message === 'string' &&
+      expectedWarnings.some(warning => message.includes(warning))
+    ) {
+      return;
     }
-    
-    originalError(message, ...args)
-    
+
+    originalError(message, ...args);
+
     // Fail tests on unexpected console errors in CI
     if (process.env.CI) {
-      throw new Error(`Unexpected console.error: ${message}`)
+      throw new Error(`Unexpected console.error: ${message}`);
     }
-  }
-  
+  };
+
   console.warn = (message, ...args) => {
     // Allow specific expected warnings
     const expectedWarnings = [
       'Warning: ReactDOM.render is deprecated',
       'PhilSys number format warning',
-    ]
-    
-    if (typeof message === 'string' && expectedWarnings.some(warning => message.includes(warning))) {
-      return
+    ];
+
+    if (
+      typeof message === 'string' &&
+      expectedWarnings.some(warning => message.includes(warning))
+    ) {
+      return;
     }
-    
-    originalWarn(message, ...args)
-    
+
+    originalWarn(message, ...args);
+
     // Fail tests on unexpected console warnings in CI
     if (process.env.CI) {
-      throw new Error(`Unexpected console.warn: ${message}`)
+      throw new Error(`Unexpected console.warn: ${message}`);
     }
-  }
-})
+  };
+});
 
 afterAll(() => {
-  console.error = originalError
-  console.warn = originalWarn
-})
+  console.error = originalError;
+  console.warn = originalWarn;
+});
 
 // Clear all mocks after each test
 afterEach(() => {
-  jest.clearAllMocks()
-})
+  jest.clearAllMocks();
+});
 
 // Increase timeout for integration tests
-jest.setTimeout(10000)
+jest.setTimeout(10000);
 
 // Mock IntersectionObserver for components that use it
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
   observe() {
-    return null
+    return null;
   }
   disconnect() {
-    return null
+    return null;
   }
   unobserve() {
-    return null
+    return null;
   }
-}
+};
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
   constructor() {}
   observe() {
-    return null
+    return null;
   }
   disconnect() {
-    return null
+    return null;
   }
   unobserve() {
-    return null
+    return null;
   }
-}
+};
 
 // Mock window.matchMedia for responsive components
 Object.defineProperty(window, 'matchMedia', {
@@ -301,4 +307,4 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
   })),
-})
+});

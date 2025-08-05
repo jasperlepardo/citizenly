@@ -29,7 +29,7 @@ const meta: Meta<typeof IconButton> = {
         'warning',
         'danger',
         'neutral',
-        'ghost'
+        'ghost',
       ],
     },
     size: {
@@ -160,7 +160,7 @@ export const AllVariants: Story = {
           <IconButton variant="primary-outline" icon={PlusIcon} aria-label="Add" />
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Secondary Variants</h3>
         <div className="flex gap-2">
@@ -170,7 +170,7 @@ export const AllVariants: Story = {
           <IconButton variant="secondary-outline" icon={SettingsIcon} aria-label="Settings" />
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Status Variants</h3>
         <div className="flex gap-2">
@@ -181,7 +181,7 @@ export const AllVariants: Story = {
           <IconButton variant="ghost" icon={HeartIcon} aria-label="Ghost" />
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">Sizes</h3>
         <div className="flex items-center gap-2">

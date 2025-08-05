@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * FamilyRelationshipSelector Component - RBI Family Position/Relationship
@@ -6,35 +6,35 @@
  * Handles relationship to household head and position in family
  */
 
-import React, { useState, useEffect } from 'react'
-import { DropdownSelect } from '../molecules'
-import { FormGroup } from '../molecules'
+import React, { useState, useEffect } from 'react';
+import { DropdownSelect } from '../molecules';
+import { FormGroup } from '../molecules';
 
 // Family position types (matches database enum)
-export type FamilyPosition = 
-  | 'head'           // Household Head (only one per household)
-  | 'spouse'         // Spouse of head
-  | 'father'         // Father 
-  | 'mother'         // Mother
-  | 'son'            // Son
-  | 'daughter'       // Daughter
-  | 'grandfather'    // Grandfather
-  | 'grandmother'    // Grandmother
-  | 'grandson'       // Grandson
-  | 'granddaughter'  // Granddaughter
-  | 'father_in_law'  // Father-in-law
-  | 'mother_in_law'  // Mother-in-law
-  | 'son_in_law'     // Son-in-law
-  | 'daughter_in_law'// Daughter-in-law
-  | 'brother'        // Brother
-  | 'sister'         // Sister
-  | 'uncle'          // Uncle
-  | 'aunt'           // Aunt
-  | 'nephew'         // Nephew
-  | 'niece'          // Niece
-  | 'cousin'         // Cousin
+export type FamilyPosition =
+  | 'head' // Household Head (only one per household)
+  | 'spouse' // Spouse of head
+  | 'father' // Father
+  | 'mother' // Mother
+  | 'son' // Son
+  | 'daughter' // Daughter
+  | 'grandfather' // Grandfather
+  | 'grandmother' // Grandmother
+  | 'grandson' // Grandson
+  | 'granddaughter' // Granddaughter
+  | 'father_in_law' // Father-in-law
+  | 'mother_in_law' // Mother-in-law
+  | 'son_in_law' // Son-in-law
+  | 'daughter_in_law' // Daughter-in-law
+  | 'brother' // Brother
+  | 'sister' // Sister
+  | 'uncle' // Uncle
+  | 'aunt' // Aunt
+  | 'nephew' // Nephew
+  | 'niece' // Niece
+  | 'cousin' // Cousin
   | 'other_relative' // Other relative
-  | 'non_relative';  // Non-relative/Boarder
+  | 'non_relative'; // Non-relative/Boarder
 
 interface FamilyPositionOption {
   value: FamilyPosition;
@@ -48,25 +48,67 @@ interface FamilyPositionOption {
 
 const FAMILY_POSITION_OPTIONS: FamilyPositionOption[] = [
   // Immediate Family
-  { value: 'head', label: 'Household Head', category: 'immediate', minAge: 18, description: 'Primary decision maker of the household' },
-  { value: 'spouse', label: 'Spouse', category: 'immediate', minAge: 18, description: 'Husband or wife of household head' },
+  {
+    value: 'head',
+    label: 'Household Head',
+    category: 'immediate',
+    minAge: 18,
+    description: 'Primary decision maker of the household',
+  },
+  {
+    value: 'spouse',
+    label: 'Spouse',
+    category: 'immediate',
+    minAge: 18,
+    description: 'Husband or wife of household head',
+  },
   { value: 'father', label: 'Father', category: 'immediate', gender: 'male', minAge: 18 },
   { value: 'mother', label: 'Mother', category: 'immediate', gender: 'female', minAge: 18 },
   { value: 'son', label: 'Son', category: 'immediate', gender: 'male' },
   { value: 'daughter', label: 'Daughter', category: 'immediate', gender: 'female' },
-  
+
   // Grandparents/Grandchildren
   { value: 'grandfather', label: 'Grandfather', category: 'extended', gender: 'male', minAge: 45 },
-  { value: 'grandmother', label: 'Grandmother', category: 'extended', gender: 'female', minAge: 45 },
+  {
+    value: 'grandmother',
+    label: 'Grandmother',
+    category: 'extended',
+    gender: 'female',
+    minAge: 45,
+  },
   { value: 'grandson', label: 'Grandson', category: 'extended', gender: 'male', maxAge: 25 },
-  { value: 'granddaughter', label: 'Granddaughter', category: 'extended', gender: 'female', maxAge: 25 },
-  
+  {
+    value: 'granddaughter',
+    label: 'Granddaughter',
+    category: 'extended',
+    gender: 'female',
+    maxAge: 25,
+  },
+
   // In-laws
-  { value: 'father_in_law', label: 'Father-in-law', category: 'in_law', gender: 'male', minAge: 35 },
-  { value: 'mother_in_law', label: 'Mother-in-law', category: 'in_law', gender: 'female', minAge: 35 },
+  {
+    value: 'father_in_law',
+    label: 'Father-in-law',
+    category: 'in_law',
+    gender: 'male',
+    minAge: 35,
+  },
+  {
+    value: 'mother_in_law',
+    label: 'Mother-in-law',
+    category: 'in_law',
+    gender: 'female',
+    minAge: 35,
+  },
   { value: 'son_in_law', label: 'Son-in-law', category: 'in_law', gender: 'male', minAge: 18 },
-  { value: 'daughter_in_law', label: 'Daughter-in-law', category: 'in_law', gender: 'female', minAge: 18 },
-  
+  {
+    value: 'daughter_in_law',
+    label: 'Daughter-in-law',
+    category: 'in_law',
+    gender: 'female',
+    minAge: 18,
+  },
+
   // Siblings and Extended
   { value: 'brother', label: 'Brother', category: 'extended', gender: 'male' },
   { value: 'sister', label: 'Sister', category: 'extended', gender: 'female' },
@@ -75,10 +117,20 @@ const FAMILY_POSITION_OPTIONS: FamilyPositionOption[] = [
   { value: 'nephew', label: 'Nephew', category: 'extended', gender: 'male', maxAge: 30 },
   { value: 'niece', label: 'Niece', category: 'extended', gender: 'female', maxAge: 30 },
   { value: 'cousin', label: 'Cousin', category: 'extended' },
-  
+
   // Other
-  { value: 'other_relative', label: 'Other Relative', category: 'other', description: 'Related by blood or marriage' },
-  { value: 'non_relative', label: 'Non-relative/Boarder', category: 'other', description: 'Not related, e.g., boarder, helper' }
+  {
+    value: 'other_relative',
+    label: 'Other Relative',
+    category: 'other',
+    description: 'Related by blood or marriage',
+  },
+  {
+    value: 'non_relative',
+    label: 'Non-relative/Boarder',
+    category: 'other',
+    description: 'Not related, e.g., boarder, helper',
+  },
 ];
 
 // Context for validation
@@ -113,7 +165,7 @@ export default function FamilyRelationshipSelector({
   disabled = false,
   required = false,
   error,
-  className = ""
+  className = '',
 }: FamilyRelationshipSelectorProps) {
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [availableOptions, setAvailableOptions] = useState<FamilyPositionOption[]>([]);
@@ -122,7 +174,7 @@ export default function FamilyRelationshipSelector({
   useEffect(() => {
     let filtered = [...FAMILY_POSITION_OPTIONS];
     const warnings: string[] = [];
-    
+
     // Filter by age constraints
     if (personContext.age !== undefined) {
       filtered = filtered.filter(option => {
@@ -135,71 +187,101 @@ export default function FamilyRelationshipSelector({
         return true;
       });
     }
-    
+
     // Filter by gender constraints
     if (personContext.gender) {
       filtered = filtered.filter(option => {
         return !option.gender || option.gender === personContext.gender;
       });
     }
-    
+
     // Filter out positions that already exist (except for some that can have multiple)
     const uniquePositions = ['head', 'spouse'];
     filtered = filtered.filter(option => {
-      if (uniquePositions.includes(option.value) && 
-          householdContext.existingPositions.includes(option.value) &&
-          value !== option.value) {
+      if (
+        uniquePositions.includes(option.value) &&
+        householdContext.existingPositions.includes(option.value) &&
+        value !== option.value
+      ) {
         return false;
       }
       return true;
     });
-    
+
     // Add warnings for potentially problematic selections
     if (value) {
       const selectedOption = FAMILY_POSITION_OPTIONS.find(opt => opt.value === value);
       if (selectedOption) {
         // Age warnings
-        if (selectedOption.minAge && personContext.age && personContext.age < selectedOption.minAge) {
-          warnings.push(`Age ${personContext.age} is younger than typical for ${selectedOption.label} (min ${selectedOption.minAge})`);
+        if (
+          selectedOption.minAge &&
+          personContext.age &&
+          personContext.age < selectedOption.minAge
+        ) {
+          warnings.push(
+            `Age ${personContext.age} is younger than typical for ${selectedOption.label} (min ${selectedOption.minAge})`
+          );
         }
-        if (selectedOption.maxAge && personContext.age && personContext.age > selectedOption.maxAge) {
-          warnings.push(`Age ${personContext.age} is older than typical for ${selectedOption.label} (max ${selectedOption.maxAge})`);
+        if (
+          selectedOption.maxAge &&
+          personContext.age &&
+          personContext.age > selectedOption.maxAge
+        ) {
+          warnings.push(
+            `Age ${personContext.age} is older than typical for ${selectedOption.label} (max ${selectedOption.maxAge})`
+          );
         }
-        
+
         // Gender warnings
-        if (selectedOption.gender && personContext.gender && selectedOption.gender !== personContext.gender) {
-          warnings.push(`Gender mismatch: ${selectedOption.label} typically refers to ${selectedOption.gender}`);
+        if (
+          selectedOption.gender &&
+          personContext.gender &&
+          selectedOption.gender !== personContext.gender
+        ) {
+          warnings.push(
+            `Gender mismatch: ${selectedOption.label} typically refers to ${selectedOption.gender}`
+          );
         }
-        
+
         // Logical warnings
-        if (value === 'spouse' && householdContext.existingPositions.includes('head') && personContext.age && householdContext.householdHeadAge) {
+        if (
+          value === 'spouse' &&
+          householdContext.existingPositions.includes('head') &&
+          personContext.age &&
+          householdContext.householdHeadAge
+        ) {
           const ageDiff = Math.abs(personContext.age - householdContext.householdHeadAge);
           if (ageDiff > 20) {
-            warnings.push(`Large age difference (${ageDiff} years) between spouse and household head`);
+            warnings.push(
+              `Large age difference (${ageDiff} years) between spouse and household head`
+            );
           }
         }
       }
     }
-    
+
     setAvailableOptions(filtered);
     setValidationWarnings(warnings);
   }, [personContext, householdContext, value]);
 
   // Group options by category
-  const groupedOptions = availableOptions.reduce((groups, option) => {
-    const category = option.category;
-    if (!groups[category]) {
-      groups[category] = [];
-    }
-    groups[category].push(option);
-    return groups;
-  }, {} as Record<string, FamilyPositionOption[]>);
+  const groupedOptions = availableOptions.reduce(
+    (groups, option) => {
+      const category = option.category;
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(option);
+      return groups;
+    },
+    {} as Record<string, FamilyPositionOption[]>
+  );
 
   const categoryLabels = {
     immediate: 'Immediate Family',
-    extended: 'Extended Family', 
+    extended: 'Extended Family',
     in_law: 'In-laws',
-    other: 'Other'
+    other: 'Other',
   };
 
   // Create select options with categories
@@ -208,13 +290,13 @@ export default function FamilyRelationshipSelector({
     {
       value: `header_${category}`,
       label: `— ${categoryLabels[category as keyof typeof categoryLabels]} —`,
-      disabled: true
+      disabled: true,
     },
     // Category options
     ...options.map(option => ({
       value: option.value,
-      label: option.label + (option.description ? ` - ${option.description}` : '')
-    }))
+      label: option.label + (option.description ? ` - ${option.description}` : ''),
+    })),
   ]);
 
   const handlePositionChange = (position: string) => {
@@ -239,7 +321,7 @@ export default function FamilyRelationshipSelector({
         <DropdownSelect
           options={selectOptions}
           value={value || ''}
-          onChange={(val) => handlePositionChange(val)}
+          onChange={val => handlePositionChange(val)}
           placeholder="Select family position..."
           disabled={disabled}
           errorMessage={error}
@@ -288,9 +370,8 @@ export default function FamilyRelationshipSelector({
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}
-          {householdContext.existingPositions.length > 0 && 
-            ` • Existing positions: ${householdContext.existingPositions.join(', ')}`
-          }
+          {householdContext.existingPositions.length > 0 &&
+            ` • Existing positions: ${householdContext.existingPositions.join(', ')}`}
         </div>
       )}
     </div>

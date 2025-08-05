@@ -1,39 +1,39 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
+import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
 
 interface BarangayOption {
-  code: string
-  name: string
-  city_name: string
-  province_name: string
-  region_name: string
-  full_address: string
+  code: string;
+  name: string;
+  city_name: string;
+  province_name: string;
+  region_name: string;
+  full_address: string;
 }
 
 interface BarangaySelectorProps {
-  value: string
-  onChange: (code: string) => void
-  error?: string
-  disabled?: boolean
-  placeholder?: string
+  value: string;
+  onChange: (code: string) => void;
+  error?: string;
+  disabled?: boolean;
+  placeholder?: string;
 }
 
-export default function BarangaySelector({ 
-  value, 
-  onChange, 
-  error, 
+export default function BarangaySelector({
+  value,
+  onChange,
+  error,
   disabled = false,
-  placeholder = "Search for your barangay..."
+  placeholder = 'Search for your barangay...',
 }: BarangaySelectorProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [options, setOptions] = useState<BarangayOption[]>([])
-  const [loading, setLoading] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<BarangayOption | null>(null)
-  const debounceRef = useRef<NodeJS.Timeout>()
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [options, setOptions] = useState<BarangayOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<BarangayOption | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout>();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Don't load initial barangays - only load when user searches
   // This prevents overwhelming the UI with thousands of barangays
@@ -41,107 +41,111 @@ export default function BarangaySelector({
   // Handle search debouncing
   useEffect(() => {
     if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
+      clearTimeout(debounceRef.current);
     }
 
     debounceRef.current = setTimeout(() => {
       if (searchTerm.length >= 2) {
-        loadBarangays(searchTerm)
+        loadBarangays(searchTerm);
       } else if (searchTerm === '') {
-        setOptions([]) // Clear options when search is cleared
+        setOptions([]); // Clear options when search is cleared
       }
-    }, 300)
+    }, 300);
 
     return () => {
       if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
+        clearTimeout(debounceRef.current);
       }
-    }
-  }, [searchTerm])
+    };
+  }, [searchTerm]);
 
   // Load selected option when value changes
   useEffect(() => {
     if (value && !selectedOption) {
-      loadSelectedBarangay(value)
+      loadSelectedBarangay(value);
     }
-  }, [value, selectedOption])
+  }, [value, selectedOption]);
 
   // Click outside handler
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const loadBarangays = async (search: string) => {
     try {
-      setLoading(true)
-      
+      setLoading(true);
+
       if (!search.trim()) {
-        setOptions([])
-        return
+        setOptions([]);
+        return;
       }
 
       // Simplified query to prevent infinite loop
       const { data, error } = await supabase
         .from('psgc_barangays')
-        .select(`
+        .select(
+          `
           code,
           name
-        `)
+        `
+        )
         .ilike('name', `%${search}%`)
         .limit(20)
-        .order('name', { ascending: true })
+        .order('name', { ascending: true });
 
       if (error) {
-        console.error('Barangay search error:', error)
-        setOptions([])
-        return
+        console.error('Barangay search error:', error);
+        setOptions([]);
+        return;
       }
 
-      let formattedOptions: BarangayOption[] = []
+      let formattedOptions: BarangayOption[] = [];
 
       if (data && data.length > 0) {
         formattedOptions = data.map(item => ({
           code: item.code,
           name: item.name,
           city_name: 'Unknown City',
-          province_name: 'Unknown Province', 
+          province_name: 'Unknown Province',
           region_name: 'Unknown Region',
-          full_address: `${item.name}, Unknown City, Unknown Province, Unknown Region`
-        }))
+          full_address: `${item.name}, Unknown City, Unknown Province, Unknown Region`,
+        }));
       }
 
       // Simplified - no additional city search to prevent complexity issues
 
-      setOptions(formattedOptions)
+      setOptions(formattedOptions);
     } catch (error) {
-      console.error('Error loading barangays:', error)
-      setOptions([])
+      console.error('Error loading barangays:', error);
+      setOptions([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const loadSelectedBarangay = async (code: string) => {
     try {
       const { data, error } = await supabase
         .from('psgc_barangays')
-        .select(`
+        .select(
+          `
           code,
           name
-        `)
+        `
+        )
         .eq('code', code)
-        .single()
+        .single();
 
       if (error || !data) {
-        console.error('Error loading selected barangay:', error)
-        return
+        console.error('Error loading selected barangay:', error);
+        return;
       }
 
       const option: BarangayOption = {
@@ -150,53 +154,55 @@ export default function BarangaySelector({
         city_name: 'Unknown City',
         province_name: 'Unknown Province',
         region_name: 'Unknown Region',
-        full_address: `${data.name}, Unknown City, Unknown Province, Unknown Region`
-      }
+        full_address: `${data.name}, Unknown City, Unknown Province, Unknown Region`,
+      };
 
-      setSelectedOption(option)
-      setSearchTerm(option.full_address)
+      setSelectedOption(option);
+      setSearchTerm(option.full_address);
     } catch (error) {
-      console.error('Error loading selected barangay:', error)
+      console.error('Error loading selected barangay:', error);
     }
-  }
+  };
 
   const handleSelect = (option: BarangayOption) => {
-    setSelectedOption(option)
-    setSearchTerm(option.full_address)
-    setIsOpen(false)
-    onChange(option.code)
-  }
+    setSelectedOption(option);
+    setSearchTerm(option.full_address);
+    setIsOpen(false);
+    onChange(option.code);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
-    setSearchTerm(newValue)
-    setIsOpen(true)
-    
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+    setIsOpen(true);
+
     // Clear selection if user is typing
     if (selectedOption && newValue !== selectedOption.full_address) {
-      setSelectedOption(null)
-      onChange('')
+      setSelectedOption(null);
+      onChange('');
     }
-  }
+  };
 
   const handleInputFocus = () => {
-    setIsOpen(true)
-  }
+    setIsOpen(true);
+  };
 
   const highlightMatch = (text: string, search: string) => {
-    if (!search.trim()) return text
-    
-    const regex = new RegExp(`(${search})`, 'gi')
-    const parts = text.split(regex)
-    
-    return parts.map((part, index) => 
+    if (!search.trim()) return text;
+
+    const regex = new RegExp(`(${search})`, 'gi');
+    const parts = text.split(regex);
+
+    return parts.map((part, index) =>
       regex.test(part) ? (
         <mark key={index} className="bg-yellow-200 text-primary font-medium">
           {part}
         </mark>
-      ) : part
-    )
-  }
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <div ref={containerRef} className="relative">
@@ -212,20 +218,47 @@ export default function BarangaySelector({
             error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
           }`}
         />
-        
+
         {loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg className="animate-spin h-5 w-5 text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg
+              className="animate-spin h-5 w-5 text-muted"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           </div>
         )}
 
         {!loading && (
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg className="h-5 w-5 text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="h-5 w-5 text-muted"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </div>
         )}
@@ -234,7 +267,7 @@ export default function BarangaySelector({
       {/* Dropdown */}
       {isOpen && options.length > 0 && (
         <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg max-h-60 overflow-auto">
-          {options.map((option) => (
+          {options.map(option => (
             <button
               key={option.code}
               type="button"
@@ -248,9 +281,7 @@ export default function BarangaySelector({
                 <div className="text-sm text-secondary">
                   {highlightMatch(`${option.city_name}, ${option.province_name}`, searchTerm)}
                 </div>
-                <div className="text-xs text-muted">
-                  {option.region_name}
-                </div>
+                <div className="text-xs text-muted">{option.region_name}</div>
               </div>
             </button>
           ))}
@@ -261,11 +292,23 @@ export default function BarangaySelector({
       {isOpen && !loading && options.length === 0 && searchTerm.length >= 2 && (
         <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4">
           <div className="text-center text-muted">
-            <svg className="mx-auto h-8 w-8 text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="mx-auto h-8 w-8 text-muted mb-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             <p className="text-sm">No barangays found for "{searchTerm}"</p>
-            <p className="text-xs mt-1">Try searching with a different term or check your spelling</p>
+            <p className="text-xs mt-1">
+              Try searching with a different term or check your spelling
+            </p>
           </div>
         </div>
       )}
@@ -274,11 +317,23 @@ export default function BarangaySelector({
       {isOpen && !loading && searchTerm.length < 2 && (
         <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4">
           <div className="text-center text-muted">
-            <svg className="mx-auto h-8 w-8 text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className="mx-auto h-8 w-8 text-muted mb-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             <p className="text-sm">Start typing to search barangays</p>
-            <p className="text-xs mt-1">Type at least 2 characters (e.g., "San", "Manila", "Cebu")</p>
+            <p className="text-xs mt-1">
+              Type at least 2 characters (e.g., "San", "Manila", "Cebu")
+            </p>
           </div>
         </div>
       )}
@@ -293,9 +348,10 @@ export default function BarangaySelector({
       {/* Helper text */}
       {!error && (
         <p className="mt-1 text-xs text-muted">
-          Start typing to search by barangay name, city, or province (e.g., "Poblacion", "Manila", "Cebu City")
+          Start typing to search by barangay name, city, or province (e.g., "Poblacion", "Manila",
+          "Cebu City")
         </p>
       )}
     </div>
-  )
+  );
 }

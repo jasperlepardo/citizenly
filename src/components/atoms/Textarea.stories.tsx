@@ -9,7 +9,8 @@ const meta: Meta<typeof Textarea> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile textarea component with character counting, resize options, and various states.',
+        component:
+          'A versatile textarea component with character counting, resize options, and various states.',
       },
     },
   },
@@ -77,7 +78,7 @@ export const Default: Story = {
     helperText: 'Please provide as much detail as possible',
     rows: 4,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -93,7 +94,7 @@ export const WithCharacterCount: Story = {
     showCount: true,
     rows: 4,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -109,7 +110,7 @@ export const ErrorState: Story = {
     value: 'Too short',
     rows: 3,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -119,12 +120,13 @@ export const ErrorState: Story = {
 export const SuccessState: Story = {
   args: {
     label: 'Feedback',
-    value: 'Thank you for the excellent service! Everything was perfect and exceeded my expectations.',
+    value:
+      'Thank you for the excellent service! Everything was perfect and exceeded my expectations.',
     variant: 'success',
     helperText: 'Thank you for your feedback!',
     rows: 3,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -144,7 +146,8 @@ export const Disabled: Story = {
 export const ReadOnly: Story = {
   args: {
     label: 'Terms and Conditions',
-    value: 'These are the terms and conditions that cannot be modified. By using this service, you agree to these terms...',
+    value:
+      'These are the terms and conditions that cannot be modified. By using this service, you agree to these terms...',
     readOnly: true,
     helperText: 'Please read carefully',
     rows: 4,
@@ -159,7 +162,7 @@ export const Small: Story = {
     placeholder: 'Enter text...',
     rows: 3,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -173,7 +176,7 @@ export const Medium: Story = {
     placeholder: 'Enter text (default size)...',
     rows: 4,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -187,7 +190,7 @@ export const Large: Story = {
     placeholder: 'Enter text...',
     rows: 5,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -203,7 +206,7 @@ export const NoResize: Story = {
     rows: 4,
     helperText: 'Resize is disabled',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -218,7 +221,7 @@ export const VerticalResize: Story = {
     rows: 3,
     helperText: 'Try dragging the bottom-right corner',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -233,7 +236,7 @@ export const HorizontalResize: Story = {
     rows: 4,
     helperText: 'Try dragging the bottom-right corner',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -248,7 +251,7 @@ export const BothResize: Story = {
     rows: 4,
     helperText: 'Try dragging the bottom-right corner',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Textarea />
     </InteractiveWrapper>
@@ -260,21 +263,21 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-6 w-96">
       <h3 className="text-lg font-semibold">Textarea States</h3>
-      
+
       <Textarea
         label="Default State"
         placeholder="Enter your text..."
         helperText="This is a helper text"
         rows={3}
       />
-      
+
       <Textarea
         label="Filled State"
         value="This textarea has content"
         helperText="Content has been entered"
         rows={3}
       />
-      
+
       <Textarea
         label="Error State"
         value="Invalid content"
@@ -282,7 +285,7 @@ export const AllStates: Story = {
         errorMessage="This content is not valid"
         rows={3}
       />
-      
+
       <Textarea
         label="Success State"
         value="Perfect! This looks great."
@@ -290,7 +293,7 @@ export const AllStates: Story = {
         helperText="Content is valid"
         rows={3}
       />
-      
+
       <Textarea
         label="Disabled State"
         value="This is disabled"
@@ -298,9 +301,9 @@ export const AllStates: Story = {
         helperText="This field is disabled"
         rows={3}
       />
-      
+
       <Textarea
-        label="Read Only State" 
+        label="Read Only State"
         value="This is read only content that cannot be modified"
         readOnly
         helperText="This field is read only"
@@ -320,15 +323,15 @@ const FormExampleComponent = () => {
     notes: '',
     feedback: '',
   });
-  
+
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   };
-  
+
   return (
     <div className="space-y-6 w-full max-w-2xl">
       <h3 className="text-lg font-semibold">Project Report Form</h3>
-      
+
       <Textarea
         label="Executive Summary"
         placeholder="Provide a brief overview of the project..."
@@ -339,7 +342,7 @@ const FormExampleComponent = () => {
         rows={3}
         helperText="Keep this concise and high-level"
       />
-      
+
       <Textarea
         label="Detailed Description"
         placeholder="Provide detailed information about the project, including objectives, methodology, and key findings..."
@@ -351,7 +354,7 @@ const FormExampleComponent = () => {
         resize="vertical"
         helperText="Include as much detail as necessary"
       />
-      
+
       <Textarea
         label="Additional Notes"
         placeholder="Any additional notes or observations..."
@@ -361,7 +364,7 @@ const FormExampleComponent = () => {
         size="sm"
         helperText="Optional field for extra information"
       />
-      
+
       <Textarea
         label="Feedback"
         placeholder="Share your thoughts on the process or outcomes..."
@@ -373,7 +376,7 @@ const FormExampleComponent = () => {
         resize="both"
         helperText="Your feedback helps us improve"
       />
-      
+
       <div className="pt-4 border-t text-sm text-gray-600">
         <h4 className="font-medium mb-2">Content Summary:</h4>
         <ul className="space-y-1">
@@ -397,25 +400,25 @@ export const FormExample: Story = {
 const BlogEditorComponent = () => {
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
-  
+
   return (
     <div className="space-y-4 w-full max-w-4xl">
       <h3 className="text-lg font-semibold">Blog Post Editor</h3>
-      
+
       <div className="space-y-4">
         <input
           type="text"
           placeholder="Blog post title..."
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={e => setTitle(e.target.value)}
           className="w-full text-2xl font-bold border-none outline-none bg-transparent placeholder-gray-400"
         />
-        
+
         <Textarea
           label="Content"
           placeholder="Start writing your blog post..."
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={e => setContent(e.target.value)}
           rows={15}
           resize="vertical"
           maxLength={5000}
@@ -423,11 +426,10 @@ const BlogEditorComponent = () => {
           size="lg"
           helperText="Write your blog post content here. Markdown formatting is supported."
         />
-        
+
         <div className="flex justify-between items-center pt-4 border-t">
           <div className="text-sm text-gray-500">
-            Words: {content.split(/\s+/).filter(Boolean).length} | 
-            Characters: {content.length}
+            Words: {content.split(/\s+/).filter(Boolean).length} | Characters: {content.length}
           </div>
           <div className="space-x-3">
             <button className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">

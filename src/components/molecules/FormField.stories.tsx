@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { FormField, FormGroup, Form } from './FormField'
-import { InputField } from './InputField'
-import { DropdownSelect } from './DropdownSelect'
-import { Button } from '../atoms/Button'
+import type { Meta, StoryObj } from '@storybook/react';
+import { FormField, FormGroup, Form } from './FormField';
+import { InputField } from './InputField';
+import { DropdownSelect } from './DropdownSelect';
+import { Button } from '../atoms/Button';
 
 const meta = {
   title: 'Molecules/FormField',
@@ -11,112 +11,116 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A flexible form field wrapper that provides consistent labeling, error handling, and layout options. Includes FormGroup for organizing fields and Form container for complete forms.'
-      }
-    }
+        component:
+          'A flexible form field wrapper that provides consistent labeling, error handling, and layout options. Includes FormGroup for organizing fields and Form container for complete forms.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     orientation: {
       control: 'select',
-      options: ['vertical', 'horizontal']
+      options: ['vertical', 'horizontal'],
     },
     labelWidth: {
-      control: 'text'
+      control: 'text',
     },
     required: {
-      control: 'boolean'
-    }
-  }
-} satisfies Meta<typeof FormField>
+      control: 'boolean',
+    },
+  },
+} satisfies Meta<typeof FormField>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Sample dropdown options for examples
 const sampleOptions = [
   { value: 'option1', label: 'Option 1' },
   { value: 'option2', label: 'Option 2' },
-  { value: 'option3', label: 'Option 3' }
-]
+  { value: 'option3', label: 'Option 3' },
+];
 
 export const Default: Story = {
   args: {
     label: 'Full Name',
-    children: <InputField placeholder="Enter your full name" />
-  }
-}
+    children: <InputField placeholder="Enter your full name" />,
+  },
+};
 
 export const Required: Story = {
   args: {
     label: 'Email Address',
     required: true,
-    children: <InputField placeholder="Enter your email" type="email" />
-  }
-}
+    children: <InputField placeholder="Enter your email" type="email" />,
+  },
+};
 
 export const WithHelperText: Story = {
   args: {
     label: 'Password',
     helperText: 'Must be at least 8 characters long',
-    children: <InputField placeholder="Enter password" type="password" />
-  }
-}
+    children: <InputField placeholder="Enter password" type="password" />,
+  },
+};
 
 export const WithError: Story = {
   args: {
     label: 'Username',
     errorMessage: 'Username is already taken',
-    children: <InputField placeholder="Enter username" />
-  }
-}
+    children: <InputField placeholder="Enter username" />,
+  },
+};
 
 export const HorizontalLayout: Story = {
   args: {
     label: 'First Name',
     orientation: 'horizontal',
-    children: <InputField placeholder="Enter first name" />
-  }
-}
+    children: <InputField placeholder="Enter first name" />,
+  },
+};
 
 export const HorizontalWithCustomWidth: Story = {
   args: {
     label: 'Date of Birth',
     orientation: 'horizontal',
     labelWidth: 'w-40',
-    children: <InputField placeholder="MM/DD/YYYY" />
-  }
-}
+    children: <InputField placeholder="MM/DD/YYYY" />,
+  },
+};
 
 export const WithDropdown: Story = {
   args: {
     label: 'Country',
     required: true,
     helperText: 'Select your country of residence',
-    children: <DropdownSelect options={sampleOptions} placeholder="Select country" />
-  }
-}
+    children: <DropdownSelect options={sampleOptions} placeholder="Select country" />,
+  },
+};
 
 export const LongLabel: Story = {
   args: {
     label: 'Emergency Contact Information and Additional Details',
     required: true,
     helperText: 'Please provide a contact person in case of emergency',
-    children: <InputField placeholder="Contact name and phone number" />
-  }
-}
+    children: <InputField placeholder="Contact name and phone number" />,
+  },
+};
 
 export const NoLabel: Story = {
   args: {
     helperText: 'This field has no label but includes helper text',
-    children: <InputField placeholder="Field without label" />
-  }
-}
+    children: <InputField placeholder="Field without label" />,
+  },
+};
 
 // FormGroup Stories
 export const SimpleFormGroup: Story = {
   render: () => (
-    <FormGroup title="Personal Information" description="Please provide your basic personal details">
+    <FormGroup
+      title="Personal Information"
+      description="Please provide your basic personal details"
+    >
       <FormField label="First Name" required>
         <InputField placeholder="Enter first name" />
       </FormField>
@@ -127,8 +131,8 @@ export const SimpleFormGroup: Story = {
         <InputField placeholder="Enter email address" type="email" />
       </FormField>
     </FormGroup>
-  )
-}
+  ),
+};
 
 export const FormGroupWithSpacing: Story = {
   render: () => (
@@ -141,7 +145,7 @@ export const FormGroupWithSpacing: Story = {
           <InputField placeholder="Input 2" />
         </FormField>
       </FormGroup>
-      
+
       <FormGroup title="Large Spacing" spacing="lg">
         <FormField label="Field 1">
           <InputField placeholder="Input 1" />
@@ -151,8 +155,8 @@ export const FormGroupWithSpacing: Story = {
         </FormField>
       </FormGroup>
     </div>
-  )
-}
+  ),
+};
 
 // Complete Form Example
 export const CompleteForm: Story = {
@@ -180,13 +184,13 @@ export const CompleteForm: Story = {
           </FormField>
         </div>
         <FormField label="Role" required>
-          <DropdownSelect 
+          <DropdownSelect
             options={[
               { value: 'admin', label: 'Administrator' },
               { value: 'clerk', label: 'Barangay Clerk' },
-              { value: 'captain', label: 'Barangay Captain' }
-            ]} 
-            placeholder="Select your role" 
+              { value: 'captain', label: 'Barangay Captain' },
+            ]}
+            placeholder="Select your role"
           />
         </FormField>
       </FormGroup>
@@ -196,8 +200,8 @@ export const CompleteForm: Story = {
         <Button variant="primary">Create Account</Button>
       </div>
     </Form>
-  )
-}
+  ),
+};
 
 export const HorizontalFormLayout: Story = {
   render: () => (
@@ -206,19 +210,26 @@ export const HorizontalFormLayout: Story = {
         <FormField label="Display Name" orientation="horizontal" labelWidth="w-32">
           <InputField placeholder="Your display name" />
         </FormField>
-        <FormField label="Email" orientation="horizontal" labelWidth="w-32" helperText="Primary contact email">
+        <FormField
+          label="Email"
+          orientation="horizontal"
+          labelWidth="w-32"
+          helperText="Primary contact email"
+        >
           <InputField placeholder="email@example.com" type="email" />
         </FormField>
         <FormField label="Role" orientation="horizontal" labelWidth="w-32">
-          <DropdownSelect 
-            options={sampleOptions} 
-            placeholder="Select role" 
-          />
+          <DropdownSelect options={sampleOptions} placeholder="Select role" />
         </FormField>
-        <FormField label="Bio" orientation="horizontal" labelWidth="w-32" helperText="Brief description about yourself">
+        <FormField
+          label="Bio"
+          orientation="horizontal"
+          labelWidth="w-32"
+          helperText="Brief description about yourself"
+        >
           <InputField placeholder="Tell us about yourself..." />
         </FormField>
       </FormGroup>
     </Form>
-  )
-}
+  ),
+};

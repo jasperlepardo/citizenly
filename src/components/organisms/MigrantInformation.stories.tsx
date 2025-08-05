@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
-import MigrantInformation, { MigrationInformation } from './MigrantInformation'
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import MigrantInformation, { MigrationInformation } from './MigrantInformation';
 
 const meta: Meta<typeof MigrantInformation> = {
   title: 'RBI Components/Organisms/MigrantInformation',
@@ -9,33 +9,34 @@ const meta: Meta<typeof MigrantInformation> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Component for capturing detailed migration status and history information for RBI residents. Supports both domestic and international migration tracking with comprehensive data collection.'
-      }
-    }
+        component:
+          'Component for capturing detailed migration status and history information for RBI residents. Supports both domestic and international migration tracking with comprehensive data collection.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     value: {
       description: 'Current migration information data',
-      control: 'object'
+      control: 'object',
     },
     onChange: {
       description: 'Callback fired when migration information changes',
-      action: 'onChange'
+      action: 'onChange',
     },
     disabled: {
       description: 'Whether the form is disabled',
-      control: 'boolean'
+      control: 'boolean',
     },
     className: {
       description: 'Additional CSS classes',
-      control: 'text'
-    }
-  }
-}
+      control: 'text',
+    },
+  },
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Default empty state
 const defaultMigrationInfo: MigrationInformation = {
@@ -43,50 +44,51 @@ const defaultMigrationInfo: MigrationInformation = {
   migration_type: null,
   previous_address: '',
   migration_reason: null,
-  registration_status: 'not_applicable'
-}
+  registration_status: 'not_applicable',
+};
 
 // Template component for interactive stories
 const MigrantInformationTemplate = (args: any) => {
-  const [value, setValue] = useState<MigrationInformation>(args.value)
-  
+  const [value, setValue] = useState<MigrationInformation>(args.value);
+
   return (
     <MigrantInformation
       {...args}
       value={value}
-      onChange={(newValue) => {
-        setValue(newValue)
-        args.onChange?.(newValue)
+      onChange={newValue => {
+        setValue(newValue);
+        args.onChange?.(newValue);
       }}
     />
-  )
-}
+  );
+};
 
 export const Default: Story = {
   render: MigrantInformationTemplate,
   args: {
     value: defaultMigrationInfo,
-    disabled: false
-  }
-}
+    disabled: false,
+  },
+};
 
 export const NonMigrant: Story = {
   render: MigrantInformationTemplate,
   args: {
     value: {
       ...defaultMigrationInfo,
-      is_migrant: false
+      is_migrant: false,
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows the component when resident is not classified as migrant. Displays informational message.'
-      }
-    }
-  }
-}
+        story:
+          'Shows the component when resident is not classified as migrant. Displays informational message.',
+      },
+    },
+  },
+};
 
 export const DomesticMigrant: Story = {
   render: MigrantInformationTemplate,
@@ -98,18 +100,19 @@ export const DomesticMigrant: Story = {
       migration_reason: 'economic',
       year_of_migration: 2020,
       length_of_stay_months: 48,
-      registration_status: 'not_applicable'
+      registration_status: 'not_applicable',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a domestic migrant from within the Philippines with complete information.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a domestic migrant from within the Philippines with complete information.',
+      },
+    },
+  },
+};
 
 export const InternationalMigrant: Story = {
   render: MigrantInformationTemplate,
@@ -122,18 +125,18 @@ export const InternationalMigrant: Story = {
       migration_reason: 'family_reunification',
       year_of_migration: 2019,
       length_of_stay_months: 60,
-      registration_status: 'documented'
+      registration_status: 'documented',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of an international migrant with complete documentation status.'
-      }
-    }
-  }
-}
+        story: 'Example of an international migrant with complete documentation status.',
+      },
+    },
+  },
+};
 
 export const DisplacementMigrant: Story = {
   render: MigrantInformationTemplate,
@@ -143,21 +146,23 @@ export const DisplacementMigrant: Story = {
       migration_type: 'domestic',
       previous_address: 'Barangay Poblacion, Marawi City, Lanao del Sur',
       migration_reason: 'displacement',
-      migration_reason_details: 'Displaced due to Marawi siege in 2017. Seeking temporary refuge while rebuilding.',
+      migration_reason_details:
+        'Displaced due to Marawi siege in 2017. Seeking temporary refuge while rebuilding.',
       year_of_migration: 2017,
       length_of_stay_months: 84,
-      registration_status: 'not_applicable'
+      registration_status: 'not_applicable',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a displaced migrant with detailed circumstances. Shows the additional details field when "Other" reason is selected.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a displaced migrant with detailed circumstances. Shows the additional details field when "Other" reason is selected.',
+      },
+    },
+  },
+};
 
 export const UndocumentedMigrant: Story = {
   render: MigrantInformationTemplate,
@@ -170,18 +175,19 @@ export const UndocumentedMigrant: Story = {
       migration_reason: 'economic',
       year_of_migration: 2022,
       length_of_stay_months: 24,
-      registration_status: 'undocumented'
+      registration_status: 'undocumented',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of an undocumented international migrant. Shows documentation status tracking.'
-      }
-    }
-  }
-}
+        story:
+          'Example of an undocumented international migrant. Shows documentation status tracking.',
+      },
+    },
+  },
+};
 
 export const Disabled: Story = {
   render: MigrantInformationTemplate,
@@ -192,18 +198,18 @@ export const Disabled: Story = {
       previous_address: 'Cebu City, Cebu',
       migration_reason: 'education',
       year_of_migration: 2021,
-      registration_status: 'not_applicable'
+      registration_status: 'not_applicable',
     },
-    disabled: true
+    disabled: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows the component in disabled state for read-only viewing.'
-      }
-    }
-  }
-}
+        story: 'Shows the component in disabled state for read-only viewing.',
+      },
+    },
+  },
+};
 
 export const MinimalInformation: Story = {
   render: MigrantInformationTemplate,
@@ -213,18 +219,18 @@ export const MinimalInformation: Story = {
       migration_type: 'domestic',
       previous_address: 'Davao City',
       migration_reason: null,
-      registration_status: 'not_applicable'
+      registration_status: 'not_applicable',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows component with minimal required information filled.'
-      }
-    }
-  }
-}
+        story: 'Shows component with minimal required information filled.',
+      },
+    },
+  },
+};
 
 // Interactive playground story
 export const Playground: Story = {
@@ -232,13 +238,14 @@ export const Playground: Story = {
   args: {
     value: defaultMigrationInfo,
     disabled: false,
-    className: ''
+    className: '',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive playground to test different migration scenarios and field combinations.'
-      }
-    }
-  }
-}
+        story:
+          'Interactive playground to test different migration scenarios and field combinations.',
+      },
+    },
+  },
+};

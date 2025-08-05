@@ -1,13 +1,18 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { useUserBarangay } from '@/hooks/useUserBarangay'
-import { useCSRFToken } from '@/lib/csrf'
-import { hashPhilSysNumber, extractPhilSysLast4, validatePhilSysFormat, logSecurityOperation } from '@/lib/crypto'
-import { validateResidentData } from '@/lib/validation'
-import { logger, dbLogger } from '@/lib/secure-logger'
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useUserBarangay } from '@/hooks/useUserBarangay';
+import { useCSRFToken } from '@/lib/csrf';
+import {
+  hashPhilSysNumber,
+  extractPhilSysLast4,
+  validatePhilSysFormat,
+  logSecurityOperation,
+} from '@/lib/crypto';
+import { validateResidentData } from '@/lib/validation';
+import { logger, dbLogger } from '@/lib/secure-logger';
 
 // Import our organism components
 import {
@@ -17,93 +22,93 @@ import {
   MigrantInformation,
   MotherMaidenName,
   ResidentStatusSelector,
-  SectoralInfo
-} from '@/components/organisms'
+  SectoralInfo,
+} from '@/components/organisms';
 
 // Import molecules and atoms
-import { Button } from '@/components/atoms'
-import { FormGroup, InputField } from '@/components/molecules'
+import { Button } from '@/components/atoms';
+import { FormGroup, InputField } from '@/components/molecules';
 
 export interface ResidentFormData {
   // Personal Information - Step 1
-  firstName: string
-  middleName: string
-  lastName: string
-  extensionName: string
-  birthdate: string
-  sex: 'male' | 'female' | ''
-  civilStatus: string
-  citizenship: string
-  
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  extensionName: string;
+  birthdate: string;
+  sex: 'male' | 'female' | '';
+  civilStatus: string;
+  citizenship: string;
+
   // Education & Employment - Step 2
-  educationLevel: string
-  educationStatus: string
-  psocCode: string
-  psocLevel: string
-  positionTitleId: string
-  occupationDescription: string
-  employmentStatus: string
-  workplace: string
-  
+  educationLevel: string;
+  educationStatus: string;
+  psocCode: string;
+  psocLevel: string;
+  positionTitleId: string;
+  occupationDescription: string;
+  employmentStatus: string;
+  workplace: string;
+
   // Contact & Documentation - Step 3
-  email: string
-  mobileNumber: string
-  telephoneNumber: string
-  philsysCardNumber: string
-  
+  email: string;
+  mobileNumber: string;
+  telephoneNumber: string;
+  philsysCardNumber: string;
+
   // Physical & Identity Information - Step 3
-  bloodType: string
-  height: string
-  weight: string
-  complexion: string
-  ethnicity: string
-  religion: string
-  
+  bloodType: string;
+  height: string;
+  weight: string;
+  complexion: string;
+  ethnicity: string;
+  religion: string;
+
   // Voting Information - Step 3
-  voterRegistrationStatus: boolean
-  residentVoterStatus: boolean
-  lastVotedYear: string
-  
+  voterRegistrationStatus: boolean;
+  residentVoterStatus: boolean;
+  lastVotedYear: string;
+
   // Family Information - Step 3
-  motherMaidenFirstName: string
-  motherMaidenMiddleName: string
-  motherMaidenLastName: string
-  
+  motherMaidenFirstName: string;
+  motherMaidenMiddleName: string;
+  motherMaidenLastName: string;
+
   // Migration Information - Step 4
-  migrationInfo: any
-  
+  migrationInfo: any;
+
   // Address Information (PSGC Codes) - auto-populated
-  regionCode: string
-  provinceCode: string
-  cityMunicipalityCode: string
-  barangayCode: string
-  
+  regionCode: string;
+  provinceCode: string;
+  cityMunicipalityCode: string;
+  barangayCode: string;
+
   // Household Assignment - Step 5
-  householdCode: string
-  householdRole: 'Head' | 'Member'
+  householdCode: string;
+  householdRole: 'Head' | 'Member';
 }
 
 interface FormStep {
-  id: number
-  title: string
-  description: string
-  component: React.ComponentType<any>
+  id: number;
+  title: string;
+  description: string;
+  component: React.ComponentType<any>;
 }
 
 interface ResidentFormWizardProps {
-  onSubmit?: (data: ResidentFormData) => Promise<void>
-  onCancel?: () => void
+  onSubmit?: (data: ResidentFormData) => Promise<void>;
+  onCancel?: () => void;
 }
 
 export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormWizardProps) {
-  const router = useRouter()
-  const { getToken: getCSRFToken } = useCSRFToken()
-  
-  const [currentStep, setCurrentStep] = useState(1)
-  const [errors, setErrors] = useState<Partial<Record<keyof ResidentFormData, string>>>({})
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  
+  const router = useRouter();
+  const { getToken: getCSRFToken } = useCSRFToken();
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [errors, setErrors] = useState<Partial<Record<keyof ResidentFormData, string>>>({});
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState<ResidentFormData>({
     // Personal Information
     firstName: '',
@@ -114,23 +119,23 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
     sex: '',
     civilStatus: '',
     citizenship: 'filipino',
-    
+
     // Education & Employment
     educationLevel: '',
     educationStatus: '',
-    psocCode: '', 
+    psocCode: '',
     psocLevel: '',
     positionTitleId: '',
     occupationDescription: '',
     employmentStatus: '',
     workplace: '',
-    
+
     // Contact & Documentation
     email: '',
     mobileNumber: '',
     telephoneNumber: '',
     philsysCardNumber: '',
-    
+
     // Physical & Identity Information
     bloodType: '',
     height: '',
@@ -138,17 +143,17 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
     complexion: '',
     ethnicity: '',
     religion: '',
-    
+
     // Voting Information
     voterRegistrationStatus: false,
     residentVoterStatus: false,
     lastVotedYear: '',
-    
+
     // Family Information
     motherMaidenFirstName: '',
     motherMaidenMiddleName: '',
     motherMaidenLastName: '',
-    
+
     // Migration Information
     migrationInfo: {
       is_migrant: false,
@@ -158,22 +163,27 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
       migration_reason: null,
       migration_date: null,
       documentation_status: null,
-      is_returning_resident: false
+      is_returning_resident: false,
     },
-    
+
     // Address Information (PSGC Codes)
     regionCode: '',
     provinceCode: '',
     cityMunicipalityCode: '',
     barangayCode: '',
-    
+
     // Household Assignment
     householdCode: '',
-    householdRole: 'Member'
-  })
+    householdRole: 'Member',
+  });
 
   // User's assigned barangay address (auto-populated)
-  const { barangayCode, address: userAddress, loading: loadingAddress, error: addressError } = useUserBarangay()
+  const {
+    barangayCode,
+    address: userAddress,
+    loading: loadingAddress,
+    error: addressError,
+  } = useUserBarangay();
 
   // Auto-populate form data when user address is loaded
   useEffect(() => {
@@ -183,178 +193,180 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         regionCode: userAddress.region_code,
         provinceCode: userAddress.province_code || '',
         cityMunicipalityCode: userAddress.city_municipality_code,
-        barangayCode: userAddress.barangay_code
-      }))
+        barangayCode: userAddress.barangay_code,
+      }));
     }
-  }, [userAddress, barangayCode])
+  }, [userAddress, barangayCode]);
 
   const steps: FormStep[] = [
     {
       id: 1,
       title: 'Personal Information',
       description: 'Basic details and identification',
-      component: PersonalInformation
+      component: PersonalInformation,
     },
     {
       id: 2,
       title: 'Education & Employment',
       description: 'Academic and work information',
-      component: EducationEmployment
+      component: EducationEmployment,
     },
     {
       id: 3,
       title: 'Physical & Contact Details',
       description: 'Physical attributes and contact information',
-      component: ContactPhysicalStep
+      component: ContactPhysicalStep,
     },
     {
       id: 4,
       title: 'Additional Information',
       description: 'Migration, family, and sectoral information',
-      component: AdditionalInfoStep
+      component: AdditionalInfoStep,
     },
     {
       id: 5,
       title: 'Review & Submit',
       description: 'Confirm all information',
-      component: ReviewStep
-    }
-  ]
+      component: ReviewStep,
+    },
+  ];
 
   const handleInputChange = (field: keyof ResidentFormData, value: any) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
-    }))
-    
+      [field]: value,
+    }));
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
-        [field]: undefined
-      }))
+        [field]: undefined,
+      }));
     }
-  }
+  };
 
   const validateStep = (step: number): boolean => {
-    const newErrors: Partial<Record<keyof ResidentFormData, string>> = {}
-    
+    const newErrors: Partial<Record<keyof ResidentFormData, string>> = {};
+
     try {
       if (step === 1) {
         // Step 1: Personal Information
-        if (!formData.firstName?.trim()) newErrors.firstName = 'First name is required'
-        if (!formData.lastName?.trim()) newErrors.lastName = 'Last name is required'
-        if (!formData.birthdate) newErrors.birthdate = 'Birth date is required'
-        if (!formData.sex) newErrors.sex = 'Sex is required'
-        if (!formData.civilStatus) newErrors.civilStatus = 'Civil status is required'
-        if (!formData.citizenship) newErrors.citizenship = 'Citizenship is required'
+        if (!formData.firstName?.trim()) newErrors.firstName = 'First name is required';
+        if (!formData.lastName?.trim()) newErrors.lastName = 'Last name is required';
+        if (!formData.birthdate) newErrors.birthdate = 'Birth date is required';
+        if (!formData.sex) newErrors.sex = 'Sex is required';
+        if (!formData.civilStatus) newErrors.civilStatus = 'Civil status is required';
+        if (!formData.citizenship) newErrors.citizenship = 'Citizenship is required';
       }
-      
+
       if (step === 2) {
         // Step 2: Education Information
-        if (!formData.educationLevel) newErrors.educationLevel = 'Education level is required'
-        if (!formData.educationStatus) newErrors.educationStatus = 'Education status is required'
+        if (!formData.educationLevel) newErrors.educationLevel = 'Education level is required';
+        if (!formData.educationStatus) newErrors.educationStatus = 'Education status is required';
       }
-      
+
       if (step === 3) {
         // Step 3: Contact Information
-        if (!formData.mobileNumber?.trim()) newErrors.mobileNumber = 'Mobile number is required'
+        if (!formData.mobileNumber?.trim()) newErrors.mobileNumber = 'Mobile number is required';
         if (formData.mobileNumber && !/^09\d{9}$/.test(formData.mobileNumber)) {
-          newErrors.mobileNumber = 'Please enter a valid mobile number (09XXXXXXXXX)'
+          newErrors.mobileNumber = 'Please enter a valid mobile number (09XXXXXXXXX)';
         }
         if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-          newErrors.email = 'Please enter a valid email address'
+          newErrors.email = 'Please enter a valid email address';
         }
       }
-      
-      setErrors(newErrors)
-      return Object.keys(newErrors).length === 0
+
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
     } catch (error) {
-      console.error('Validation error:', error)
-      return false
+      console.error('Validation error:', error);
+      return false;
     }
-  }
+  };
 
   const handleNextStep = () => {
     if (validateStep(currentStep) && currentStep < 5) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   const handleSubmit = async () => {
     if (onSubmit) {
-      await onSubmit(formData)
-      return
+      await onSubmit(formData);
+      return;
     }
 
     // Validate all steps before submitting
-    const allStepsValid = [1, 2, 3, 4].every(step => validateStep(step))
-    
+    const allStepsValid = [1, 2, 3, 4].every(step => validateStep(step));
+
     if (!allStepsValid) {
-      alert('Please fill in all required fields correctly')
-      return
+      alert('Please fill in all required fields correctly');
+      return;
     }
 
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
       // Server-side validation of all form data
-      const validationResult = await validateResidentData(formData)
+      const validationResult = await validateResidentData(formData);
       if (!validationResult.success) {
-        const errorMap: Record<string, string> = {}
+        const errorMap: Record<string, string> = {};
         validationResult.errors?.forEach(error => {
-          errorMap[error.field] = error.message
-        })
-        setValidationErrors(errorMap)
-        alert('Please correct the validation errors and try again')
-        setIsSubmitting(false)
-        return
+          errorMap[error.field] = error.message;
+        });
+        setValidationErrors(errorMap);
+        alert('Please correct the validation errors and try again');
+        setIsSubmitting(false);
+        return;
       }
 
       // Clear any previous validation errors
-      setValidationErrors({})
+      setValidationErrors({});
 
       // Validate PhilSys card number format if provided
       if (formData.philsysCardNumber && !validatePhilSysFormat(formData.philsysCardNumber)) {
-        alert('Invalid PhilSys card number format. Please use format: 1234-5678-9012-3456')
-        setIsSubmitting(false)
-        return
+        alert('Invalid PhilSys card number format. Please use format: 1234-5678-9012-3456');
+        setIsSubmitting(false);
+        return;
       }
 
       // Securely hash PhilSys card number if provided
-      let philsysHash = null
-      let philsysLast4 = null
-      
+      let philsysHash = null;
+      let philsysLast4 = null;
+
       if (formData.philsysCardNumber) {
         try {
-          philsysHash = await hashPhilSysNumber(formData.philsysCardNumber)
-          philsysLast4 = extractPhilSysLast4(formData.philsysCardNumber)
-          
+          philsysHash = await hashPhilSysNumber(formData.philsysCardNumber);
+          philsysLast4 = extractPhilSysLast4(formData.philsysCardNumber);
+
           // Log security operation for audit trail
           logSecurityOperation('PHILSYS_HASH_CREATED', 'current-user', {
             action: 'resident_creation',
-            philsys_last4: philsysLast4
-          })
+            philsys_last4: philsysLast4,
+          });
         } catch (error) {
-          console.error('PhilSys encryption error:', error)
-          alert('Error processing PhilSys card number. Please try again.')
-          setIsSubmitting(false)
-          return
+          console.error('PhilSys encryption error:', error);
+          alert('Error processing PhilSys card number. Please try again.');
+          setIsSubmitting(false);
+          return;
         }
       }
-      
+
       // Get CSRF token for secure form submission
-      const csrfToken = getCSRFToken()
-      
+      const csrfToken = getCSRFToken();
+
       // Convert form data to match database schema
-      logger.info('Creating resident with household assignment', { householdCode: formData.householdCode })
-      
+      logger.info('Creating resident with household assignment', {
+        householdCode: formData.householdCode,
+      });
+
       const residentData = {
         first_name: formData.firstName,
         middle_name: formData.middleName || null,
@@ -377,7 +389,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         philsys_last4: philsysLast4,
         // Physical information
         blood_type: (formData.bloodType as any) || 'unknown',
-        ethnicity: (formData.ethnicity as any) || 'not_reported', 
+        ethnicity: (formData.ethnicity as any) || 'not_reported',
         religion: (formData.religion as any) || 'other',
         // Voting information
         is_voter: formData.voterRegistrationStatus,
@@ -393,7 +405,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         street_name: null,
         house_number: null,
         subdivision: null,
-      }
+      };
 
       // Log security operation before database insert
       logSecurityOperation('RESIDENT_CREATE_ATTEMPT', 'current-user', {
@@ -401,66 +413,70 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         has_philsys: !!formData.philsysCardNumber,
         household_code: formData.householdCode,
         barangay_code: barangayCode,
-        csrf_token_used: !!csrfToken
-      })
+        csrf_token_used: !!csrfToken,
+      });
 
-      const { data, error } = await supabase
-        .from('residents')
-        .insert([residentData])
-        .select()
+      const { data, error } = await supabase.from('residents').insert([residentData]).select();
 
       if (error) {
         // Log failed creation attempt
         logSecurityOperation('RESIDENT_CREATE_FAILED', 'current-user', {
           error_message: error.message,
-          error_code: error.code
-        })
-        dbLogger.error('Failed to create resident', { error: error.message, code: error.code })
-        alert(`Failed to create resident: ${error.message}`)
-        return
+          error_code: error.code,
+        });
+        dbLogger.error('Failed to create resident', { error: error.message, code: error.code });
+        alert(`Failed to create resident: ${error.message}`);
+        return;
       }
 
       // Log successful creation
       logSecurityOperation('RESIDENT_CREATED', 'current-user', {
         resident_id: data[0]?.id,
         household_code: formData.householdCode,
-        is_household_head: formData.householdRole === 'Head'
-      })
+        is_household_head: formData.householdRole === 'Head',
+      });
 
-      dbLogger.info('Resident created successfully', { recordId: data[0]?.id, householdCode: formData.householdCode })
-      
+      dbLogger.info('Resident created successfully', {
+        recordId: data[0]?.id,
+        householdCode: formData.householdCode,
+      });
+
       // If this resident is assigned as household head, update the household
       if (formData.householdRole === 'Head' && formData.householdCode && data?.[0]?.id) {
-        logger.info('Updating household head assignment')
+        logger.info('Updating household head assignment');
         const { error: householdUpdateError } = await supabase
           .from('households')
           .update({ household_head_id: data[0].id })
-          .eq('code', formData.householdCode)
-        
+          .eq('code', formData.householdCode);
+
         if (householdUpdateError) {
-          dbLogger.error('Error updating household head', { error: householdUpdateError.message })
-          alert(`Resident created but failed to assign as household head: ${householdUpdateError.message}`)
+          dbLogger.error('Error updating household head', { error: householdUpdateError.message });
+          alert(
+            `Resident created but failed to assign as household head: ${householdUpdateError.message}`
+          );
         } else {
-          dbLogger.info('Household head updated successfully', { householdCode: formData.householdCode, headId: data[0].id })
+          dbLogger.info('Household head updated successfully', {
+            householdCode: formData.householdCode,
+            headId: data[0].id,
+          });
         }
       }
-      
-      alert('Resident created successfully!')
-      
+
+      alert('Resident created successfully!');
+
       // Navigate to residents list using Next.js router
-      router.push('/residents')
-      
+      router.push('/residents');
     } catch (error) {
-      logger.error('Unexpected error during resident creation', error)
-      alert('An unexpected error occurred. Please try again.')
+      logger.error('Unexpected error during resident creation', error);
+      alert('An unexpected error occurred. Please try again.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const renderStepContent = () => {
-    const currentStepData = steps[currentStep - 1]
-    
+    const currentStepData = steps[currentStep - 1];
+
     if (currentStep === 1) {
       return (
         <PersonalInformation
@@ -472,19 +488,19 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
             birthdate: formData.birthdate,
             sex: formData.sex,
             civilStatus: formData.civilStatus,
-            citizenship: formData.citizenship
+            citizenship: formData.citizenship,
           }}
-          onChange={(personalData) => {
+          onChange={personalData => {
             setFormData(prev => ({
               ...prev,
-              ...personalData
-            }))
+              ...personalData,
+            }));
           }}
           errors={errors}
         />
-      )
+      );
     }
-    
+
     if (currentStep === 2) {
       return (
         <EducationEmployment
@@ -496,21 +512,21 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
             positionTitleId: formData.positionTitleId,
             occupationDescription: formData.occupationDescription,
             employmentStatus: formData.employmentStatus,
-            workplace: formData.workplace
+            workplace: formData.workplace,
           }}
-          onChange={(educationData) => {
+          onChange={educationData => {
             setFormData(prev => ({
               ...prev,
-              ...educationData
-            }))
+              ...educationData,
+            }));
           }}
           errors={errors}
         />
-      )
+      );
     }
-    
+
     // For other steps, use the component from steps array
-    const StepComponent = currentStepData.component
+    const StepComponent = currentStepData.component;
     return (
       <StepComponent
         formData={formData}
@@ -521,8 +537,8 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         loadingAddress={loadingAddress}
         addressError={addressError}
       />
-    )
-  }
+    );
+  };
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -531,7 +547,10 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
         <nav aria-label="Progress">
           <ol role="list" className="flex items-center">
             {steps.map((step, stepIdx) => (
-              <li key={step.id} className={stepIdx !== steps.length - 1 ? 'relative pr-8 sm:pr-20' : 'relative'}>
+              <li
+                key={step.id}
+                className={stepIdx !== steps.length - 1 ? 'relative pr-8 sm:pr-20' : 'relative'}
+              >
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -539,7 +558,11 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
                     </div>
                     <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                       <svg className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   </>
@@ -567,51 +590,34 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
           </ol>
         </nav>
         <div className="mt-6">
-          <h2 className="text-lg/8 font-semibold text-primary">
-            {steps[currentStep - 1].title}
-          </h2>
-          <p className="mt-1 text-sm/6 text-secondary">
-            {steps[currentStep - 1].description}
-          </p>
+          <h2 className="text-lg/8 font-semibold text-primary">{steps[currentStep - 1].title}</h2>
+          <p className="mt-1 text-sm/6 text-secondary">{steps[currentStep - 1].description}</p>
         </div>
       </div>
 
       {/* Form Content */}
       <div className="rounded-lg bg-surface shadow-sm border border-default">
-        <div className="px-6 py-8">
-          {renderStepContent()}
-        </div>
+        <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
       {/* Navigation Buttons */}
       <div className="mt-8 flex justify-between">
-        <Button
-          variant="secondary-outline"
-          onClick={handlePrevStep}
-          disabled={currentStep === 1}
-        >
+        <Button variant="secondary-outline" onClick={handlePrevStep} disabled={currentStep === 1}>
           Previous
         </Button>
-        
+
         {currentStep < 5 ? (
-          <Button
-            variant="primary"
-            onClick={handleNextStep}
-          >
+          <Button variant="primary" onClick={handleNextStep}>
             Continue
           </Button>
         ) : (
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
+          <Button variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit Registration'}
           </Button>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // Step 3: Contact & Physical Information Combined Step
@@ -619,51 +625,47 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">
-          Contact & Physical Information
-        </h3>
-        <p className="mt-1 text-sm/6 text-secondary">
-          Contact details and physical attributes.
-        </p>
+        <h3 className="text-base/7 font-semibold text-primary">Contact & Physical Information</h3>
+        <p className="mt-1 text-sm/6 text-secondary">Contact details and physical attributes.</p>
       </div>
-      
+
       {/* Contact Information */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-primary">Contact Details</h4>
-        
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <InputField
             label="Mobile Number"
             type="tel"
             value={formData.mobileNumber}
-            onChange={(e) => onChange('mobileNumber', e.target.value)}
+            onChange={e => onChange('mobileNumber', e.target.value)}
             placeholder="09XXXXXXXXX"
             required
             errorMessage={errors.mobileNumber}
           />
-          
+
           <InputField
             label="Telephone Number"
             type="tel"
             value={formData.telephoneNumber}
-            onChange={(e) => onChange('telephoneNumber', e.target.value)}
+            onChange={e => onChange('telephoneNumber', e.target.value)}
             placeholder="(02) XXX-XXXX"
           />
-          
+
           <InputField
             label="Email Address"
             type="email"
             value={formData.email}
-            onChange={(e) => onChange('email', e.target.value)}
+            onChange={e => onChange('email', e.target.value)}
             placeholder="email@example.com"
             errorMessage={errors.email}
           />
-          
+
           <InputField
             label="PhilSys Card Number"
             type="text"
             value={formData.philsysCardNumber}
-            onChange={(e) => onChange('philsysCardNumber', e.target.value)}
+            onChange={e => onChange('philsysCardNumber', e.target.value)}
             placeholder="XXXX-XXXX-XXXX"
           />
         </div>
@@ -675,13 +677,13 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
           height_cm: formData.height ? parseFloat(formData.height) : undefined,
           weight_kg: formData.weight ? parseFloat(formData.weight) : undefined,
           blood_type: formData.bloodType as any,
-          complexion: formData.complexion as any
+          complexion: formData.complexion as any,
         }}
-        onChange={(value) => {
-          if (value.height_cm !== undefined) onChange('height', value.height_cm.toString())
-          if (value.weight_kg !== undefined) onChange('weight', value.weight_kg.toString())
-          if (value.blood_type) onChange('bloodType', value.blood_type)
-          if (value.complexion !== undefined) onChange('complexion', value.complexion)
+        onChange={value => {
+          if (value.height_cm !== undefined) onChange('height', value.height_cm.toString());
+          if (value.weight_kg !== undefined) onChange('weight', value.weight_kg.toString());
+          if (value.blood_type) onChange('bloodType', value.blood_type);
+          if (value.complexion !== undefined) onChange('complexion', value.complexion);
         }}
       />
 
@@ -692,12 +694,12 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
           mother_middle_name: formData.motherMaidenMiddleName,
           mother_maiden_last_name: formData.motherMaidenLastName,
           is_unknown_mother: false,
-          is_confidential: false
+          is_confidential: false,
         }}
-        onChange={(value) => {
-          onChange('motherMaidenFirstName', value.mother_first_name || '')
-          onChange('motherMaidenMiddleName', value.mother_middle_name || '')
-          onChange('motherMaidenLastName', value.mother_maiden_last_name || '')
+        onChange={value => {
+          onChange('motherMaidenFirstName', value.mother_first_name || '');
+          onChange('motherMaidenMiddleName', value.mother_middle_name || '');
+          onChange('motherMaidenLastName', value.mother_maiden_last_name || '');
         }}
       />
 
@@ -710,7 +712,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               type="checkbox"
               id="voterRegistration"
               checked={formData.voterRegistrationStatus}
-              onChange={(e) => onChange('voterRegistrationStatus', e.target.checked)}
+              onChange={e => onChange('voterRegistrationStatus', e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
             />
             <label htmlFor="voterRegistration" className="text-sm text-primary">
@@ -722,7 +724,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               type="checkbox"
               id="residentVoter"
               checked={formData.residentVoterStatus}
-              onChange={(e) => onChange('residentVoterStatus', e.target.checked)}
+              onChange={e => onChange('residentVoterStatus', e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
             />
             <label htmlFor="residentVoter" className="text-sm text-primary">
@@ -733,13 +735,13 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
             label="Last Voted Year"
             type="number"
             value={formData.lastVotedYear}
-            onChange={(value) => onChange('lastVotedYear', value)}
+            onChange={value => onChange('lastVotedYear', value)}
             placeholder="2022"
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Step 4: Additional Information (Migration + Sectoral)
@@ -747,9 +749,7 @@ function AdditionalInfoStep({ formData, onChange }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">
-          Additional Information
-        </h3>
+        <h3 className="text-base/7 font-semibold text-primary">Additional Information</h3>
         <p className="mt-1 text-sm/6 text-secondary">
           Migration status, family information, and sectoral classification.
         </p>
@@ -758,7 +758,7 @@ function AdditionalInfoStep({ formData, onChange }: any) {
       {/* Migration Information */}
       <MigrantInformation
         value={formData.migrationInfo}
-        onChange={(value) => onChange('migrationInfo', value)}
+        onChange={value => onChange('migrationInfo', value)}
       />
 
       {/* Resident Status */}
@@ -771,9 +771,13 @@ function AdditionalInfoStep({ formData, onChange }: any) {
           is_indigenous_member: formData.ethnicity?.includes('indigenous') || false,
           tribal_affiliation: undefined,
           indigenous_community: undefined,
-          legal_status: formData.citizenship === 'filipino' ? 'citizen' : 
-                       formData.citizenship === 'dual_citizen' ? 'dual_citizen' : 'visitor',
-          documentation_status: 'complete'
+          legal_status:
+            formData.citizenship === 'filipino'
+              ? 'citizen'
+              : formData.citizenship === 'dual_citizen'
+                ? 'dual_citizen'
+                : 'visitor',
+          documentation_status: 'complete',
         }}
         onChange={() => {}} // Read-only for now, derived from other fields
         disabled
@@ -793,17 +797,22 @@ function AdditionalInfoStep({ formData, onChange }: any) {
           is_registered_senior_citizen: false,
           is_solo_parent: false,
           is_indigenous_people: false,
-          is_migrant: false
+          is_migrant: false,
         }}
         onChange={() => {}} // Auto-calculated
         context={{
-          age: formData.birthdate ? Math.floor((Date.now() - new Date(formData.birthdate).getTime()) / (365.25 * 24 * 60 * 60 * 1000)) : 0,
+          age: formData.birthdate
+            ? Math.floor(
+                (Date.now() - new Date(formData.birthdate).getTime()) /
+                  (365.25 * 24 * 60 * 60 * 1000)
+              )
+            : 0,
           employment_status: formData.employmentStatus,
-          highest_educational_attainment: formData.educationLevel
+          highest_educational_attainment: formData.educationLevel,
         }}
       />
     </div>
-  )
+  );
 }
 
 // Step 5: Review
@@ -811,14 +820,12 @@ function ReviewStep({ formData, userAddress }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">
-          Review & Submit
-        </h3>
+        <h3 className="text-base/7 font-semibold text-primary">Review & Submit</h3>
         <p className="mt-1 text-sm/6 text-secondary">
           Please review all information before submitting.
         </p>
       </div>
-      
+
       <div className="rounded-lg bg-background-muted p-6 border border-default">
         <div className="space-y-6">
           {/* Personal Information Summary */}
@@ -856,15 +863,21 @@ function ReviewStep({ formData, userAddress }: any) {
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Education Level</dt>
-                <dd className="text-sm/6 text-primary">{formData.educationLevel || 'Not specified'}</dd>
+                <dd className="text-sm/6 text-primary">
+                  {formData.educationLevel || 'Not specified'}
+                </dd>
               </div>
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Education Status</dt>
-                <dd className="text-sm/6 text-primary">{formData.educationStatus || 'Not specified'}</dd>
+                <dd className="text-sm/6 text-primary">
+                  {formData.educationStatus || 'Not specified'}
+                </dd>
               </div>
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Employment Status</dt>
-                <dd className="text-sm/6 text-primary">{formData.employmentStatus || 'Not specified'}</dd>
+                <dd className="text-sm/6 text-primary">
+                  {formData.employmentStatus || 'Not specified'}
+                </dd>
               </div>
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Occupation</dt>
@@ -901,22 +914,26 @@ function ReviewStep({ formData, userAddress }: any) {
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <div className="ml-3">
             <h3 className="text-sm/6 font-medium text-amber-800 dark:text-amber-200">
               Please review carefully
             </h3>
-            <div className="mt-2 text-sm/6 text-amber-700 dark:text-amber-300">  
+            <div className="mt-2 text-sm/6 text-amber-700 dark:text-amber-300">
               <p>
-                Once submitted, this resident profile will be created and a unique resident ID will be generated. 
-                You can edit the information later if needed.
+                Once submitted, this resident profile will be created and a unique resident ID will
+                be generated. You can edit the information later if needed.
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

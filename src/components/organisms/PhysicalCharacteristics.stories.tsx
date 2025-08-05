@@ -1,6 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
-import PhysicalCharacteristics, { PhysicalCharacteristics as PhysicalCharacteristicsType } from './PhysicalCharacteristics'
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import PhysicalCharacteristics, {
+  PhysicalCharacteristics as PhysicalCharacteristicsType,
+} from './PhysicalCharacteristics';
 
 const meta: Meta<typeof PhysicalCharacteristics> = {
   title: 'RBI Components/Organisms/PhysicalCharacteristics',
@@ -9,60 +11,61 @@ const meta: Meta<typeof PhysicalCharacteristics> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Component for capturing physical characteristics and health information for RBI residents. Includes body measurements, blood type, physical features, and medical conditions with automatic BMI calculation.'
-      }
-    }
+        component:
+          'Component for capturing physical characteristics and health information for RBI residents. Includes body measurements, blood type, physical features, and medical conditions with automatic BMI calculation.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     value: {
       description: 'Current physical characteristics data',
-      control: 'object'
+      control: 'object',
     },
     onChange: {
       description: 'Callback fired when physical characteristics change',
-      action: 'onChange'
+      action: 'onChange',
     },
     disabled: {
       description: 'Whether the form is disabled',
-      control: 'boolean'
+      control: 'boolean',
     },
     className: {
       description: 'Additional CSS classes',
-      control: 'text'
-    }
-  }
-}
+      control: 'text',
+    },
+  },
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Default empty state
-const defaultPhysicalCharacteristics: PhysicalCharacteristicsType = {}
+const defaultPhysicalCharacteristics: PhysicalCharacteristicsType = {};
 
 // Template component for interactive stories
 const PhysicalCharacteristicsTemplate = (args: any) => {
-  const [value, setValue] = useState<PhysicalCharacteristicsType>(args.value)
-  
+  const [value, setValue] = useState<PhysicalCharacteristicsType>(args.value);
+
   return (
     <PhysicalCharacteristics
       {...args}
       value={value}
-      onChange={(newValue) => {
-        setValue(newValue)
-        args.onChange?.(newValue)
+      onChange={newValue => {
+        setValue(newValue);
+        args.onChange?.(newValue);
       }}
     />
-  )
-}
+  );
+};
 
 export const Default: Story = {
   render: PhysicalCharacteristicsTemplate,
   args: {
     value: defaultPhysicalCharacteristics,
-    disabled: false
-  }
-}
+    disabled: false,
+  },
+};
 
 export const CompleteProfile: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -76,18 +79,18 @@ export const CompleteProfile: Story = {
       complexion: 'medium',
       distinguishing_marks: 'Small scar on left forearm, birthmark on right shoulder',
       medical_conditions: 'Mild hypertension, controlled with medication',
-      allergies: 'Shellfish, peanuts'
+      allergies: 'Shellfish, peanuts',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example with complete physical profile showing all available fields filled out.'
-      }
-    }
-  }
-}
+        story: 'Example with complete physical profile showing all available fields filled out.',
+      },
+    },
+  },
+};
 
 export const BasicMeasurements: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -95,18 +98,19 @@ export const BasicMeasurements: Story = {
     value: {
       height_cm: 170,
       weight_kg: 68.0,
-      blood_type: 'A+'
+      blood_type: 'A+',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows basic measurements with BMI calculation. Height: 170cm, Weight: 68kg results in BMI of 23.5 (Normal weight).'
-      }
-    }
-  }
-}
+        story:
+          'Shows basic measurements with BMI calculation. Height: 170cm, Weight: 68kg results in BMI of 23.5 (Normal weight).',
+      },
+    },
+  },
+};
 
 export const UnderweightBMI: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -116,18 +120,19 @@ export const UnderweightBMI: Story = {
       weight_kg: 52.0,
       blood_type: 'B+',
       eye_color: 'brown',
-      hair_color: 'dark_brown'
+      hair_color: 'dark_brown',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example showing underweight BMI classification. Height: 175cm, Weight: 52kg results in BMI of 17.0 (Underweight).'
-      }
-    }
-  }
-}
+        story:
+          'Example showing underweight BMI classification. Height: 175cm, Weight: 52kg results in BMI of 17.0 (Underweight).',
+      },
+    },
+  },
+};
 
 export const OverweightBMI: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -136,18 +141,19 @@ export const OverweightBMI: Story = {
       height_cm: 160,
       weight_kg: 72.0,
       blood_type: 'AB+',
-      complexion: 'olive'
+      complexion: 'olive',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example showing overweight BMI classification. Height: 160cm, Weight: 72kg results in BMI of 28.1 (Overweight).'
-      }
-    }
-  }
-}
+        story:
+          'Example showing overweight BMI classification. Height: 160cm, Weight: 72kg results in BMI of 28.1 (Overweight).',
+      },
+    },
+  },
+};
 
 export const FilipinoComplexions: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -157,18 +163,19 @@ export const FilipinoComplexions: Story = {
       hair_color: 'black',
       complexion: 'medium',
       height_cm: 158,
-      weight_kg: 55.0
+      weight_kg: 55.0,
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates Filipino-appropriate complexion options like Kayumanggi (medium), Moreno/Morena (olive/brown), etc.'
-      }
-    }
-  }
-}
+        story:
+          'Demonstrates Filipino-appropriate complexion options like Kayumanggi (medium), Moreno/Morena (olive/brown), etc.',
+      },
+    },
+  },
+};
 
 export const MedicalConditions: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -179,36 +186,37 @@ export const MedicalConditions: Story = {
       blood_type: 'O-',
       medical_conditions: 'Type 2 Diabetes (controlled), Asthma',
       allergies: 'Penicillin, dust mites, cat dander',
-      distinguishing_marks: 'Surgical scar on abdomen from appendectomy'
+      distinguishing_marks: 'Surgical scar on abdomen from appendectomy',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example focusing on medical conditions, allergies, and distinguishing marks for emergency and health tracking.'
-      }
-    }
-  }
-}
+        story:
+          'Example focusing on medical conditions, allergies, and distinguishing marks for emergency and health tracking.',
+      },
+    },
+  },
+};
 
 export const MinimalInformation: Story = {
   render: PhysicalCharacteristicsTemplate,
   args: {
     value: {
       height_cm: 168,
-      blood_type: 'A-'
+      blood_type: 'A-',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows component with minimal information - just height and blood type.'
-      }
-    }
-  }
-}
+        story: 'Shows component with minimal information - just height and blood type.',
+      },
+    },
+  },
+};
 
 export const Disabled: Story = {
   render: PhysicalCharacteristicsTemplate,
@@ -222,36 +230,37 @@ export const Disabled: Story = {
       complexion: 'fair',
       distinguishing_marks: 'Tattoo on right arm',
       medical_conditions: 'None',
-      allergies: 'None known'
+      allergies: 'None known',
     },
-    disabled: true
+    disabled: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows the component in disabled state for read-only viewing.'
-      }
-    }
-  }
-}
+        story: 'Shows the component in disabled state for read-only viewing.',
+      },
+    },
+  },
+};
 
 export const PrivacySensitive: Story = {
   render: PhysicalCharacteristicsTemplate,
   args: {
     value: {
       medical_conditions: 'Confidential - see medical records',
-      allergies: 'Multiple drug allergies - consult physician'
+      allergies: 'Multiple drug allergies - consult physician',
     },
-    disabled: false
+    disabled: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example showing privacy-sensitive medical information that might need special handling.'
-      }
-    }
-  }
-}
+        story:
+          'Example showing privacy-sensitive medical information that might need special handling.',
+      },
+    },
+  },
+};
 
 // Interactive playground story
 export const Playground: Story = {
@@ -259,13 +268,14 @@ export const Playground: Story = {
   args: {
     value: defaultPhysicalCharacteristics,
     disabled: false,
-    className: ''
+    className: '',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive playground to test different physical characteristics combinations and BMI calculations.'
-      }
-    }
-  }
-}
+        story:
+          'Interactive playground to test different physical characteristics combinations and BMI calculations.',
+      },
+    },
+  },
+};

@@ -1,184 +1,189 @@
-'use client'
+'use client';
 
-import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
-import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security'
-import { Button } from '@/components/atoms'
+import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security';
+import { Button } from '@/components/atoms';
 
 const fileUploadVariants = cva(
-  "relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2",
+  'relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
   {
     variants: {
       variant: {
-        default: "border-[#d4d4d4] bg-white hover:border-[#a3a3a3] focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20",
-        error: "border-[#dc2626] bg-white hover:border-[#dc2626] focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20",
-        success: "border-[#059669] bg-white hover:border-[#059669] focus-within:border-[#059669] focus-within:ring-[#059669]/20",
-        disabled: "border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed"
+        default:
+          'border-[#d4d4d4] bg-white hover:border-[#a3a3a3] focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20',
+        error:
+          'border-[#dc2626] bg-white hover:border-[#dc2626] focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20',
+        success:
+          'border-[#059669] bg-white hover:border-[#059669] focus-within:border-[#059669] focus-within:ring-[#059669]/20',
+        disabled: 'border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed',
       },
       size: {
-        sm: "p-4",
-        md: "p-6",
-        lg: "p-8"
-      }
+        sm: 'p-4',
+        md: 'p-6',
+        lg: 'p-8',
+      },
     },
     defaultVariants: {
-      variant: "default",
-      size: "md"
-    }
+      variant: 'default',
+      size: 'md',
+    },
   }
-)
+);
 
 export interface FileUploadProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof fileUploadVariants> {
-  label?: string
-  helperText?: string
-  errorMessage?: string
-  dragText?: string
-  browseText?: string
-  acceptedFileTypes?: string
-  maxFileSize?: number // in MB
-  onFileSelect?: (files: FileList | null) => void
-  showPreview?: boolean
+  label?: string;
+  helperText?: string;
+  errorMessage?: string;
+  dragText?: string;
+  browseText?: string;
+  acceptedFileTypes?: string;
+  maxFileSize?: number; // in MB
+  onFileSelect?: (files: FileList | null) => void;
+  showPreview?: boolean;
 }
 
 const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
-  ({ 
-    className,
-    variant = "default",
-    size = "md",
-    label,
-    helperText,
-    errorMessage,
-    dragText = "Drag and drop your files here",
-    browseText = "or click here to browse",
-    acceptedFileTypes,
-    maxFileSize,
-    onFileSelect,
-    showPreview = false,
-    disabled,
-    multiple = false,
-    ...props 
-  }, ref) => {
-    const [isDragOver, setIsDragOver] = useState(false)
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-    const inputRef = useRef<HTMLInputElement>(null)
-    
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'md',
+      label,
+      helperText,
+      errorMessage,
+      dragText = 'Drag and drop your files here',
+      browseText = 'or click here to browse',
+      acceptedFileTypes,
+      maxFileSize,
+      onFileSelect,
+      showPreview = false,
+      disabled,
+      multiple = false,
+      ...props
+    },
+    ref
+  ) => {
+    const [isDragOver, setIsDragOver] = useState(false);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
 
     const handleDragOver = (e: React.DragEvent) => {
-      e.preventDefault()
+      e.preventDefault();
       if (!disabled) {
-        setIsDragOver(true)
+        setIsDragOver(true);
       }
-    }
+    };
 
     const handleDragLeave = (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragOver(false)
-    }
+      e.preventDefault();
+      setIsDragOver(false);
+    };
 
     const handleDrop = (e: React.DragEvent) => {
-      e.preventDefault()
-      setIsDragOver(false)
-      
-      if (disabled) return
-      
-      const files = e.dataTransfer.files
-      handleFileSelection(files)
-    }
+      e.preventDefault();
+      setIsDragOver(false);
+
+      if (disabled) return;
+
+      const files = e.dataTransfer.files;
+      handleFileSelection(files);
+    };
 
     const handleFileSelection = async (files: FileList | null) => {
-      if (!files) return
-      
-      const fileArray = Array.from(files)
-      const validFiles: File[] = []
-      const errors: string[] = []
-      
+      if (!files) return;
+
+      const fileArray = Array.from(files);
+      const validFiles: File[] = [];
+      const errors: string[] = [];
+
       // Validate each file
       for (const file of fileArray) {
         try {
           // Security validation
-          const validation = await validateUploadedFile(file)
-          
+          const validation = await validateUploadedFile(file);
+
           if (!validation.isValid) {
-            errors.push(`${file.name}: ${validation.errors.join(', ')}`)
+            errors.push(`${file.name}: ${validation.errors.join(', ')}`);
             logFileOperation('upload', file.name, 'current-user', 'blocked', {
               errors: validation.errors,
               fileSize: file.size,
-              fileType: file.type
-            })
-            continue
+              fileType: file.type,
+            });
+            continue;
           }
-          
+
           // Virus scanning
-          const virusScan = await scanFileForViruses(file)
+          const virusScan = await scanFileForViruses(file);
           if (!virusScan.clean) {
-            errors.push(`${file.name}: Security threat detected - ${virusScan.threats.join(', ')}`)
+            errors.push(`${file.name}: Security threat detected - ${virusScan.threats.join(', ')}`);
             logFileOperation('upload', file.name, 'current-user', 'blocked', {
-              threats: virusScan.threats
-            })
-            continue
+              threats: virusScan.threats,
+            });
+            continue;
           }
-          
+
           // Additional size check if maxFileSize is specified
           if (maxFileSize && file.size > maxFileSize * 1024 * 1024) {
-            errors.push(`${file.name}: File size exceeds maximum allowed (${maxFileSize}MB)`)
-            continue
+            errors.push(`${file.name}: File size exceeds maximum allowed (${maxFileSize}MB)`);
+            continue;
           }
-          
-          validFiles.push(file)
+
+          validFiles.push(file);
           logFileOperation('upload', file.name, 'current-user', 'success', {
             fileSize: file.size,
             fileType: file.type,
-            fileHash: validation.fileInfo?.hash
-          })
-          
+            fileHash: validation.fileInfo?.hash,
+          });
         } catch (error) {
-          errors.push(`${file.name}: Validation error occurred`)
+          errors.push(`${file.name}: Validation error occurred`);
           logFileOperation('upload', file.name, 'current-user', 'failure', {
-            error: String(error)
-          })
+            error: String(error),
+          });
         }
       }
-      
+
       // Show errors if any
       if (errors.length > 0) {
-        console.error('[FILE_UPLOAD] Validation errors:', errors)
+        console.error('[FILE_UPLOAD] Validation errors:', errors);
         // You might want to show these errors in the UI
-        alert('File validation errors:\n' + errors.join('\n'))
+        alert('File validation errors:\n' + errors.join('\n'));
       }
-      
+
       // Only proceed with valid files
       if (validFiles.length > 0) {
-        setSelectedFiles(multiple ? [...selectedFiles, ...validFiles] : validFiles)
-        onFileSelect?.(files)
+        setSelectedFiles(multiple ? [...selectedFiles, ...validFiles] : validFiles);
+        onFileSelect?.(files);
       }
-    }
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      handleFileSelection(e.target.files)
-    }
+      handleFileSelection(e.target.files);
+    };
 
     const handleBrowseClick = () => {
       if (!disabled) {
-        inputRef.current?.click()
+        inputRef.current?.click();
       }
-    }
+    };
 
     const removeFile = (index: number) => {
-      const newFiles = selectedFiles.filter((_, i) => i !== index)
-      setSelectedFiles(newFiles)
-    }
+      const newFiles = selectedFiles.filter((_, i) => i !== index);
+      setSelectedFiles(newFiles);
+    };
 
     const formatFileSize = (bytes: number) => {
-      if (bytes === 0) return '0 Bytes'
-      const k = 1024
-      const sizes = ['Bytes', 'KB', 'MB', 'GB']
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
 
     return (
       <div className="w-full">
@@ -188,12 +193,12 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             {label}
           </label>
         )}
-        
+
         {/* Upload Area */}
         <div
           className={cn(
             fileUploadVariants({ variant: actualVariant, size }),
-            isDragOver && !disabled && "border-[#2563eb] bg-[#dbeafe]",
+            isDragOver && !disabled && 'border-[#2563eb] bg-[#dbeafe]',
             className
           )}
           onDragOver={handleDragOver}
@@ -210,21 +215,21 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             onChange={handleInputChange}
             {...props}
           />
-          
+
           <div className="text-center">
             {/* Upload Icon */}
             <div className="mx-auto mb-4">
-              <svg 
+              <svg
                 className={cn(
-                  "mx-auto",
-                  size === 'sm' && "w-8 h-8",
-                  size === 'md' && "w-12 h-12", 
-                  size === 'lg' && "w-16 h-16",
-                  disabled ? "text-[#a3a3a3]" : "text-[#737373]"
-                )} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
+                  'mx-auto',
+                  size === 'sm' && 'w-8 h-8',
+                  size === 'md' && 'w-12 h-12',
+                  size === 'lg' && 'w-16 h-16',
+                  disabled ? 'text-[#a3a3a3]' : 'text-[#737373]'
+                )}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
                 strokeWidth="1"
               >
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -234,18 +239,22 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                 <polyline points="10,9 9,9 8,9"></polyline>
               </svg>
             </div>
-            
+
             {/* Text */}
-            <div className={cn(
-              "space-y-1",
-              size === 'sm' && "text-sm",
-              size === 'md' && "text-base",
-              size === 'lg' && "text-lg"
-            )}>
-              <p className={cn(
-                "font-['Montserrat']",
-                disabled ? "text-[#a3a3a3]" : "text-[#525252]"
-              )}>
+            <div
+              className={cn(
+                'space-y-1',
+                size === 'sm' && 'text-sm',
+                size === 'md' && 'text-base',
+                size === 'lg' && 'text-lg'
+              )}
+            >
+              <p
+                className={cn(
+                  "font-['Montserrat']",
+                  disabled ? 'text-[#a3a3a3]' : 'text-[#525252]'
+                )}
+              >
                 {dragText}
               </p>
               <Button
@@ -258,7 +267,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                 {browseText}
               </Button>
             </div>
-            
+
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
               <div className="mt-2 text-xs text-[#737373] font-['Montserrat']">
@@ -268,7 +277,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             )}
           </div>
         </div>
-        
+
         {/* File Preview */}
         {showPreview && selectedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
@@ -276,9 +285,18 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
               Selected Files:
             </h4>
             {selectedFiles.map((file, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-[#fafafa] rounded border border-[#d4d4d4]">
+              <div
+                key={index}
+                className="flex items-center justify-between p-2 bg-[#fafafa] rounded border border-[#d4d4d4]"
+              >
                 <div className="flex items-center space-x-2 flex-1 min-w-0">
-                  <svg className="w-4 h-4 text-[#737373] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="w-4 h-4 text-[#737373] flex-shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
@@ -298,7 +316,13 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                   iconOnly
                   className="ml-2 p-1 text-[#737373] hover:text-[#dc2626] transition-colors h-6 w-6"
                 >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
@@ -307,26 +331,22 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             ))}
           </div>
         )}
-        
+
         {/* Helper Text / Error Message */}
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-[#b91c1c] font-['Montserrat']">
-                {errorMessage}
-              </p>
+              <p className="text-xs text-[#b91c1c] font-['Montserrat']">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-[#737373] font-['Montserrat']">
-                {helperText}
-              </p>
+              <p className="text-xs text-[#737373] font-['Montserrat']">{helperText}</p>
             )}
           </div>
         )}
       </div>
-    )
+    );
   }
-)
+);
 
-FileUpload.displayName = "FileUpload"
+FileUpload.displayName = 'FileUpload';
 
-export { FileUpload, fileUploadVariants }
+export { FileUpload, fileUploadVariants };

@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
-import AppShell from './AppShell'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
+import React, { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
+import AppShell from './AppShell';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const meta = {
   title: 'Templates/AppShell',
@@ -11,32 +11,31 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A comprehensive application shell template for the RBI System. Features responsive sidebar navigation, mobile-first design, advanced search functionality, notifications, and user profile management. Provides the foundational layout structure with modern UI patterns and accessibility features.'
-      }
-    }
+        component:
+          'A comprehensive application shell template for the RBI System. Features responsive sidebar navigation, mobile-first design, advanced search functionality, notifications, and user profile management. Provides the foundational layout structure with modern UI patterns and accessibility features.',
+      },
+    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <ThemeProvider>
         <AuthProvider>
           <Story />
         </AuthProvider>
       </ThemeProvider>
-    )
+    ),
   ],
-  tags: ['autodocs']
-} satisfies Meta<typeof AppShell>
+  tags: ['autodocs'],
+} satisfies Meta<typeof AppShell>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Sample dashboard content
 const SampleDashboardContent = () => (
   <div className="space-y-8">
     <div>
-      <h1 className="text-3xl font-bold tracking-tight text-primary">
-        RBI System Dashboard
-      </h1>
+      <h1 className="text-3xl font-bold tracking-tight text-primary">RBI System Dashboard</h1>
       <p className="mt-2 text-lg text-secondary">
         Welcome to the Records and Barangay Information System
       </p>
@@ -100,16 +99,37 @@ const SampleDashboardContent = () => (
       </div>
       <div className="divide-y divide-default">
         {[
-          { action: 'New resident registered', name: 'Maria Santos', time: '2 hours ago', type: 'user' },
+          {
+            action: 'New resident registered',
+            name: 'Maria Santos',
+            time: '2 hours ago',
+            type: 'user',
+          },
           { action: 'Household updated', name: 'Cruz Family', time: '4 hours ago', type: 'home' },
-          { action: 'Certificate issued', name: 'Barangay Clearance', time: '1 day ago', type: 'document' },
-          { action: 'Report generated', name: 'Monthly Statistics', time: '2 days ago', type: 'chart' }
+          {
+            action: 'Certificate issued',
+            name: 'Barangay Clearance',
+            time: '1 day ago',
+            type: 'document',
+          },
+          {
+            action: 'Report generated',
+            name: 'Monthly Statistics',
+            time: '2 days ago',
+            type: 'chart',
+          },
         ].map((item, index) => (
           <div key={index} className="px-6 py-4 flex items-center space-x-4">
             <div className="flex-shrink-0">
               <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                 <span className="text-sm font-medium text-white">
-                  {item.type === 'user' ? 'U' : item.type === 'home' ? 'H' : item.type === 'document' ? 'D' : 'C'}
+                  {item.type === 'user'
+                    ? 'U'
+                    : item.type === 'home'
+                      ? 'H'
+                      : item.type === 'document'
+                        ? 'D'
+                        : 'C'}
                 </span>
               </div>
             </div>
@@ -117,25 +137,21 @@ const SampleDashboardContent = () => (
               <p className="text-sm font-medium text-primary truncate">
                 {item.action}: {item.name}
               </p>
-              <p className="text-sm text-secondary">
-                {item.time}
-              </p>
+              <p className="text-sm text-secondary">{item.time}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
   </div>
-)
+);
 
 const SampleResidentsContent = () => (
   <div className="space-y-8">
     <div className="sm:flex sm:items-center">
       <div className="sm:flex-auto">
         <h1 className="text-3xl font-bold tracking-tight text-primary">Residents</h1>
-        <p className="mt-2 text-lg text-secondary">
-          Manage resident information and records
-        </p>
+        <p className="mt-2 text-lg text-secondary">Manage resident information and records</p>
       </div>
       <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button
@@ -153,10 +169,30 @@ const SampleResidentsContent = () => (
       </div>
       <div className="divide-y divide-default">
         {[
-          { name: 'Juan Dela Cruz', email: 'juan@example.com', status: 'Active', address: 'Purok 1, Brgy. San Jose' },
-          { name: 'Maria Santos', email: 'maria@example.com', status: 'Active', address: 'Purok 2, Brgy. San Jose' },
-          { name: 'Jose Rizal', email: 'jose@example.com', status: 'Inactive', address: 'Purok 3, Brgy. San Jose' },
-          { name: 'Ana Dela Cruz', email: 'ana@example.com', status: 'Active', address: 'Purok 1, Brgy. San Jose' }
+          {
+            name: 'Juan Dela Cruz',
+            email: 'juan@example.com',
+            status: 'Active',
+            address: 'Purok 1, Brgy. San Jose',
+          },
+          {
+            name: 'Maria Santos',
+            email: 'maria@example.com',
+            status: 'Active',
+            address: 'Purok 2, Brgy. San Jose',
+          },
+          {
+            name: 'Jose Rizal',
+            email: 'jose@example.com',
+            status: 'Inactive',
+            address: 'Purok 3, Brgy. San Jose',
+          },
+          {
+            name: 'Ana Dela Cruz',
+            email: 'ana@example.com',
+            status: 'Active',
+            address: 'Purok 1, Brgy. San Jose',
+          },
         ].map((resident, index) => (
           <div key={index} className="px-6 py-4">
             <div className="flex items-center justify-between">
@@ -164,7 +200,10 @@ const SampleResidentsContent = () => (
                 <div className="flex-shrink-0">
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                     <span className="text-sm font-medium text-white">
-                      {resident.name.split(' ').map(n => n[0]).join('')}
+                      {resident.name
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')}
                     </span>
                   </div>
                 </div>
@@ -174,11 +213,13 @@ const SampleResidentsContent = () => (
                   <p className="text-xs text-muted">{resident.address}</p>
                 </div>
               </div>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                resident.status === 'Active' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-              }`}>
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  resident.status === 'Active'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+                }`}
+              >
                 {resident.status}
               </span>
             </div>
@@ -187,37 +228,38 @@ const SampleResidentsContent = () => (
       </div>
     </div>
   </div>
-)
+);
 
 export const Default: Story = {
   args: {
-    children: <SampleDashboardContent />
-  }
-}
+    children: <SampleDashboardContent />,
+  },
+};
 
 export const ResidentsPage: Story = {
   args: {
-    children: <SampleResidentsContent />
-  }
-}
+    children: <SampleResidentsContent />,
+  },
+};
 
 // Interactive responsive demo
 const ResponsiveDemoComponent = () => {
-  const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents'>('dashboard')
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents'>('dashboard');
 
   return (
     <div className="space-y-4">
       <div className="bg-background p-4 border-b border-default">
         <h3 className="font-semibold text-primary mb-2">Responsive Layout Demo</h3>
         <p className="text-sm text-secondary mb-3">
-          This shell adapts to different screen sizes. Try resizing your browser window to see the mobile sidebar in action.
+          This shell adapts to different screen sizes. Try resizing your browser window to see the
+          mobile sidebar in action.
         </p>
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentPage('dashboard')}
             className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-              currentPage === 'dashboard' 
-                ? 'bg-indigo-600 text-white' 
+              currentPage === 'dashboard'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -226,8 +268,8 @@ const ResponsiveDemoComponent = () => {
           <button
             onClick={() => setCurrentPage('residents')}
             className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-              currentPage === 'residents' 
-                ? 'bg-indigo-600 text-white' 
+              currentPage === 'residents'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -235,17 +277,17 @@ const ResponsiveDemoComponent = () => {
           </button>
         </div>
       </div>
-      
+
       <AppShell>
         {currentPage === 'dashboard' ? <SampleDashboardContent /> : <SampleResidentsContent />}
       </AppShell>
     </div>
-  )
-}
+  );
+};
 
 export const ResponsiveDemo: Story = {
-  render: ResponsiveDemoComponent
-}
+  render: ResponsiveDemoComponent,
+};
 
 // Features showcase
 export const FeaturesShowcase: Story = {
@@ -253,7 +295,7 @@ export const FeaturesShowcase: Story = {
     <div className="space-y-6">
       <div className="bg-background p-6 border border-default rounded-lg">
         <h3 className="font-semibold text-primary mb-4">AppShell Features</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-medium text-primary mb-2">Responsive Design</h4>
@@ -265,7 +307,7 @@ export const FeaturesShowcase: Story = {
               <li>• Progressive enhancement patterns</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">Navigation System</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -276,7 +318,7 @@ export const FeaturesShowcase: Story = {
               <li>• Accessibility compliant</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">Advanced UI Elements</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -287,7 +329,7 @@ export const FeaturesShowcase: Story = {
               <li>• Consistent spacing and typography</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">Functionality</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -299,42 +341,40 @@ export const FeaturesShowcase: Story = {
             </ul>
           </div>
         </div>
-        
+
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Design Philosophy</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            The AppShell template follows modern design principles with emphasis on accessibility, 
-            performance, and user experience. It provides a consistent foundation for all RBI System 
+            The AppShell template follows modern design principles with emphasis on accessibility,
+            performance, and user experience. It provides a consistent foundation for all RBI System
             pages while maintaining flexibility for diverse content types and layouts.
           </p>
         </div>
       </div>
-      
+
       <AppShell>
         <SampleDashboardContent />
       </AppShell>
     </div>
-  )
-}
+  ),
+};
 
 // Layout variations
 const LayoutVariationsComponent = () => {
-  const [currentLayout, setCurrentLayout] = useState<'dashboard' | 'list' | 'form'>('dashboard')
+  const [currentLayout, setCurrentLayout] = useState<'dashboard' | 'list' | 'form'>('dashboard');
 
   const renderContent = () => {
     switch (currentLayout) {
       case 'dashboard':
-        return <SampleDashboardContent />
+        return <SampleDashboardContent />;
       case 'list':
-        return <SampleResidentsContent />
+        return <SampleResidentsContent />;
       case 'form':
         return (
           <div className="space-y-8">
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-primary">Add New Resident</h1>
-              <p className="mt-2 text-lg text-secondary">
-                Enter resident information and details
-              </p>
+              <p className="mt-2 text-lg text-secondary">Enter resident information and details</p>
             </div>
 
             <div className="bg-surface rounded-2xl shadow-lg border border-default">
@@ -344,7 +384,9 @@ const LayoutVariationsComponent = () => {
               <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-primary mb-2">
+                      First Name
+                    </label>
                     <input
                       type="text"
                       className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -361,7 +403,9 @@ const LayoutVariationsComponent = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-primary mb-2">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -379,25 +423,26 @@ const LayoutVariationsComponent = () => {
               </div>
             </div>
           </div>
-        )
+        );
       default:
-        return <SampleDashboardContent />
+        return <SampleDashboardContent />;
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
       <div className="bg-background p-4 border-b border-default">
         <h3 className="font-semibold text-primary mb-2">Layout Content Variations</h3>
         <p className="text-sm text-secondary mb-3">
-          The AppShell template adapts to different content types while maintaining consistent navigation and structure.
+          The AppShell template adapts to different content types while maintaining consistent
+          navigation and structure.
         </p>
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentLayout('dashboard')}
             className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-              currentLayout === 'dashboard' 
-                ? 'bg-indigo-600 text-white' 
+              currentLayout === 'dashboard'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -406,8 +451,8 @@ const LayoutVariationsComponent = () => {
           <button
             onClick={() => setCurrentLayout('list')}
             className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-              currentLayout === 'list' 
-                ? 'bg-indigo-600 text-white' 
+              currentLayout === 'list'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -416,8 +461,8 @@ const LayoutVariationsComponent = () => {
           <button
             onClick={() => setCurrentLayout('form')}
             className={`px-3 py-1 text-sm rounded-lg transition-colors ${
-              currentLayout === 'form' 
-                ? 'bg-indigo-600 text-white' 
+              currentLayout === 'form'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -425,37 +470,35 @@ const LayoutVariationsComponent = () => {
           </button>
         </div>
       </div>
-      
-      <AppShell>
-        {renderContent()}
-      </AppShell>
+
+      <AppShell>{renderContent()}</AppShell>
     </div>
-  )
-}
+  );
+};
 
 export const LayoutVariations: Story = {
-  render: LayoutVariationsComponent
-}
+  render: LayoutVariationsComponent,
+};
 
 // Mobile interaction demo
 export const MobileDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Mobile Interaction Demo</h3>
+        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+          Mobile Interaction Demo
+        </h3>
         <p className="text-sm text-yellow-700 dark:text-yellow-300">
-          To see the mobile sidebar in action, resize your browser window to mobile width (&lt; 1024px) 
-          or use your browser's responsive design mode. The hamburger menu will appear in the top bar, 
-          and clicking it will show the mobile sidebar overlay.
+          To see the mobile sidebar in action, resize your browser window to mobile width (&lt;
+          1024px) or use your browser's responsive design mode. The hamburger menu will appear in
+          the top bar, and clicking it will show the mobile sidebar overlay.
         </p>
       </div>
-      
+
       <AppShell>
         <div className="space-y-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary">
-              Mobile-First Design
-            </h1>
+            <h1 className="text-3xl font-bold tracking-tight text-primary">Mobile-First Design</h1>
             <p className="mt-2 text-lg text-secondary">
               This layout is optimized for mobile devices and scales up beautifully to desktop
             </p>
@@ -470,10 +513,12 @@ export const MobileDemo: Story = {
                 </div>
                 <div>
                   <h4 className="font-medium text-primary">Touch-Friendly Navigation</h4>
-                  <p className="text-sm text-secondary">Hamburger menu for small screens with slide-out sidebar</p>
+                  <p className="text-sm text-secondary">
+                    Hamburger menu for small screens with slide-out sidebar
+                  </p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white font-bold">2</span>
@@ -483,7 +528,7 @@ export const MobileDemo: Story = {
                   <p className="text-sm text-secondary">Search bar adapts to available space</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white font-bold">3</span>
@@ -498,5 +543,5 @@ export const MobileDemo: Story = {
         </div>
       </AppShell>
     </div>
-  )
-}
+  ),
+};

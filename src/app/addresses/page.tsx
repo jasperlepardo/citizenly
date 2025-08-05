@@ -1,74 +1,73 @@
-'use client'
+'use client';
 
 /**
  * Addresses Page
  * Philippine address management with location services and mapping
  */
 
-import React, { useState, useEffect } from 'react'
-import { DashboardLayout } from '@/components/templates'
-import { AddressSearch } from '@/components/address'
-import { testDatabaseConnection, type AddressHierarchy } from '@/lib/database'
-
+import React, { useState, useEffect } from 'react';
+import { DashboardLayout } from '@/components/templates';
+import { AddressSearch } from '@/components/address';
+import { testDatabaseConnection, type AddressHierarchy } from '@/lib/database';
 
 export default function AddressesPage() {
-  const [addressResults, setAddressResults] = useState<AddressHierarchy[]>([])
+  const [addressResults, setAddressResults] = useState<AddressHierarchy[]>([]);
   const [dbStats, setDbStats] = useState({
     regions: 0,
     provinces: 0,
     cities: 0,
     barangays: 0,
-    connected: false
-  })
-  const [loading, setLoading] = useState(true)
+    connected: false,
+  });
+  const [loading, setLoading] = useState(true);
 
   // Test database connection and get real stats
   useEffect(() => {
     async function loadDatabaseStats() {
       try {
-        setLoading(true)
-        const result = await testDatabaseConnection()
+        setLoading(true);
+        const result = await testDatabaseConnection();
         if (result.success && result.data) {
           setDbStats({
             regions: result.data.regions,
             provinces: result.data.provinces,
             cities: result.data.cities,
             barangays: result.data.barangays,
-            connected: true
-          })
+            connected: true,
+          });
         } else {
-          console.error('Database connection failed:', result.errors)
+          console.error('Database connection failed:', result.errors);
           // Fallback to estimated values if DB is not available
           setDbStats({
             regions: 17,
             provinces: 86,
             cities: 1637,
             barangays: 38372,
-            connected: false
-          })
+            connected: false,
+          });
         }
       } catch (error) {
-        console.error('Error testing database:', error)
+        console.error('Error testing database:', error);
         setDbStats({
           regions: 17,
           provinces: 86,
           cities: 1637,
           barangays: 38372,
-          connected: false
-        })
+          connected: false,
+        });
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    loadDatabaseStats()
-  }, [])
+    loadDatabaseStats();
+  }, []);
 
   // Calculate coverage percentage
   const calculateCoverage = (current: number, total: number) => {
-    if (total === 0) return '0%'
-    return `${Math.round((current / total) * 100)}%`
-  }
+    if (total === 0) return '0%';
+    return `${Math.round((current / total) * 100)}%`;
+  };
 
   // Address hierarchy statistics (dynamic based on real data)
   const addressStats = [
@@ -77,42 +76,42 @@ export default function AddressesPage() {
       value: loading ? '...' : dbStats.regions.toLocaleString(),
       description: 'Administrative regions',
       gradient: 'from-blue-500 to-indigo-600',
-      coverage: dbStats.connected ? '100%' : 'Offline'
+      coverage: dbStats.connected ? '100%' : 'Offline',
     },
     {
       name: 'Provinces',
       value: loading ? '...' : dbStats.provinces.toLocaleString(),
       description: 'Provinces and NCR',
       gradient: 'from-emerald-500 to-green-600',
-      coverage: dbStats.connected ? '100%' : 'Offline'
+      coverage: dbStats.connected ? '100%' : 'Offline',
     },
     {
       name: 'Cities/Municipalities',
       value: loading ? '...' : dbStats.cities.toLocaleString(),
       description: 'Cities and municipalities',
       gradient: 'from-purple-500 to-pink-600',
-      coverage: dbStats.connected ? '100%' : 'Offline'
+      coverage: dbStats.connected ? '100%' : 'Offline',
     },
     {
       name: 'Barangays',
       value: loading ? '...' : dbStats.barangays.toLocaleString(),
       description: 'Barangay coverage',
       gradient: 'from-orange-500 to-red-600',
-      coverage: dbStats.connected ? calculateCoverage(dbStats.barangays, 42028) : 'Offline'
-    }
-  ]
+      coverage: dbStats.connected ? calculateCoverage(dbStats.barangays, 42028) : 'Offline',
+    },
+  ];
 
   // Handle address selection
   const handleAddressSelect = (address: AddressHierarchy) => {
-    console.log('Selected address:', address)
+    console.log('Selected address:', address);
     // Add the selected address to results for display
     setAddressResults(prev => {
       // Check if already exists
-      const exists = prev.some(addr => addr.barangay_code === address.barangay_code)
-      if (exists) return prev
-      return [address, ...prev.slice(0, 9)] // Keep only 10 results
-    })
-  }
+      const exists = prev.some(addr => addr.barangay_code === address.barangay_code);
+      if (exists) return prev;
+      return [address, ...prev.slice(0, 9)]; // Keep only 10 results
+    });
+  };
 
   return (
     <DashboardLayout>
@@ -129,15 +128,19 @@ export default function AddressesPage() {
 
         {/* Address Statistics Cards - Dashboard Style */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {addressStats.map((stat) => (
+          {addressStats.map(stat => (
             <div key={stat.name} className="bg-surface rounded-lg border border-default p-6">
-              <div className="font-montserrat font-medium text-sm text-secondary mb-2">{stat.name}</div>
+              <div className="font-montserrat font-medium text-sm text-secondary mb-2">
+                {stat.name}
+              </div>
               <div className="font-montserrat font-bold text-4xl text-primary mb-1">
                 {stat.value}
               </div>
               <div className="flex items-center text-sm">
                 <div className="h-2 w-2 rounded-full bg-emerald-500 mr-2"></div>
-                <span className="text-emerald-600 dark:text-emerald-400 font-medium">{stat.coverage}</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                  {stat.coverage}
+                </span>
               </div>
               <p className="text-xs text-muted mt-2">{stat.description}</p>
             </div>
@@ -151,7 +154,8 @@ export default function AddressesPage() {
               Search Philippine Addresses
             </h3>
             <p className="mt-1 text-sm text-secondary font-montserrat">
-              Search across {loading ? '...' : dbStats.barangays.toLocaleString()} barangays nationwide
+              Search across {loading ? '...' : dbStats.barangays.toLocaleString()} barangays
+              nationwide
             </p>
           </div>
           <AddressSearch
@@ -171,7 +175,8 @@ export default function AddressesPage() {
                   Recent Selections
                 </h3>
                 <p className="mt-1 text-sm text-secondary font-montserrat">
-                  Recently selected {addressResults.length} address{addressResults.length !== 1 ? 'es' : ''}
+                  Recently selected {addressResults.length} address
+                  {addressResults.length !== 1 ? 'es' : ''}
                 </p>
               </div>
               <div className="flow-root">
@@ -180,32 +185,53 @@ export default function AddressesPage() {
                     <table className="min-w-full">
                       <thead>
                         <tr className="border-b border-default">
-                          <th scope="col" className="py-4 pl-4 pr-3 text-left text-sm font-semibold text-primary sm:pl-0">
+                          <th
+                            scope="col"
+                            className="py-4 pl-4 pr-3 text-left text-sm font-semibold text-primary sm:pl-0"
+                          >
                             Region
                           </th>
-                          <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-primary">
+                          <th
+                            scope="col"
+                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                          >
                             Province
                           </th>
-                          <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-primary">
+                          <th
+                            scope="col"
+                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                          >
                             City/Municipality
                           </th>
-                          <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-primary">
+                          <th
+                            scope="col"
+                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                          >
                             Barangay
                           </th>
-                          <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-primary">
+                          <th
+                            scope="col"
+                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                          >
                             Type
                           </th>
-                          <th scope="col" className="px-3 py-4 text-left text-sm font-semibold text-primary">
+                          <th
+                            scope="col"
+                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                          >
                             Status
                           </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-default">
                         {addressResults.map((address, index) => {
-                          const status = address.urban_rural_status ? 'complete' : 'partial'
-                          
+                          const status = address.urban_rural_status ? 'complete' : 'partial';
+
                           return (
-                            <tr key={`${address.barangay_code}-${index}`} className="hover:bg-surface-hover transition-colors duration-200">
+                            <tr
+                              key={`${address.barangay_code}-${index}`}
+                              className="hover:bg-surface-hover transition-colors duration-200"
+                            >
                               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-primary sm:pl-0">
                                 {address.region_name}
                               </td>
@@ -222,11 +248,13 @@ export default function AddressesPage() {
                                 {address.city_municipality_type}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
-                                <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
-                                  status === 'complete'
-                                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 ring-emerald-600/20'
-                                    : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 ring-amber-600/20'
-                                }`}>
+                                <span
+                                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
+                                    status === 'complete'
+                                      ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 ring-emerald-600/20'
+                                      : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 ring-amber-600/20'
+                                  }`}
+                                >
                                   {status === 'complete' ? 'Complete' : 'Partial'}
                                 </span>
                                 {address.is_independent && (
@@ -236,7 +264,7 @@ export default function AddressesPage() {
                                 )}
                               </td>
                             </tr>
-                          )
+                          );
                         })}
                       </tbody>
                     </table>
@@ -275,16 +303,12 @@ export default function AddressesPage() {
               </div>
             </div>
             <div className="bg-background rounded-lg p-4 border border-default">
-              <div className="text-2xl font-bold text-purple-600">
-                {loading ? '...' : '17'}
-              </div>
-              <div className="text-sm font-medium text-secondary mt-1">
-                Regions Covered
-              </div>
+              <div className="text-2xl font-bold text-purple-600">{loading ? '...' : '17'}</div>
+              <div className="text-sm font-medium text-secondary mt-1">Regions Covered</div>
             </div>
           </div>
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }

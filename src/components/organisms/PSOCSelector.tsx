@@ -1,53 +1,53 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useRef } from 'react'
-import { supabase } from '@/lib/supabase'
+import { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
 
 interface PSOCOption {
-  occupation_code: string
-  level_type: string
-  occupation_title: string
-  occupation_description: string | null
-  full_hierarchy: string
-  hierarchy_level: number
+  occupation_code: string;
+  level_type: string;
+  occupation_title: string;
+  occupation_description: string | null;
+  full_hierarchy: string;
+  hierarchy_level: number;
 }
 
 interface PSOCSelectorProps {
-  value?: string
-  onSelect: (option: PSOCOption | null) => void
-  placeholder?: string
-  className?: string
-  error?: string
+  value?: string;
+  onSelect: (option: PSOCOption | null) => void;
+  placeholder?: string;
+  className?: string;
+  error?: string;
 }
 
-export default function PSOCSelector({ 
-  value, 
-  onSelect, 
-  placeholder = "Search for occupation...",
-  className = "",
-  error 
+export default function PSOCSelector({
+  value,
+  onSelect,
+  placeholder = 'Search for occupation...',
+  className = '',
+  error,
 }: PSOCSelectorProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [options, setOptions] = useState<PSOCOption[]>([])
-  const [loading, setLoading] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<PSOCOption | null>(null)
-  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null)
-  
-  const inputRef = useRef<HTMLInputElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [options, setOptions] = useState<PSOCOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<PSOCOption | null>(null);
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Search PSOC occupations
   const searchOccupations = async (query: string) => {
     if (!query.trim()) {
-      setOptions([])
-      return
+      setOptions([]);
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
-      console.log('Searching PSOC for:', query)
-      
+      console.log('Searching PSOC for:', query);
+
       // Try the view first
       const { data, error } = await supabase
         .from('psoc_occupation_search')
@@ -55,20 +55,20 @@ export default function PSOCSelector({
         .or(`occupation_title.ilike.%${query}%, full_hierarchy.ilike.%${query}%`)
         .order('hierarchy_level', { ascending: true })
         .order('occupation_title', { ascending: true })
-        .limit(50)
+        .limit(50);
 
-      console.log('PSOC view search result:', { data, error })
+      console.log('PSOC view search result:', { data, error });
 
       // If view doesn't exist or has no data, try direct table queries
       if (error || !data || data.length === 0) {
-        console.log('Trying direct PSOC table queries...')
-        
+        console.log('Trying direct PSOC table queries...');
+
         // Try major groups first
         const { data: majorGroups, error: _majorError } = await supabase
           .from('psoc_major_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
-          .limit(10)
+          .limit(10);
 
         if (majorGroups && majorGroups.length > 0) {
           const formattedData = majorGroups.map(group => ({
@@ -77,10 +77,10 @@ export default function PSOCSelector({
             occupation_title: group.title,
             occupation_description: null,
             full_hierarchy: group.title,
-            hierarchy_level: 4
-          }))
-          setOptions(formattedData)
-          return
+            hierarchy_level: 4,
+          }));
+          setOptions(formattedData);
+          return;
         }
 
         // Try unit groups
@@ -88,7 +88,7 @@ export default function PSOCSelector({
           .from('psoc_unit_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
-          .limit(20)
+          .limit(20);
 
         if (unitGroups && unitGroups.length > 0) {
           const formattedData = unitGroups.map(group => ({
@@ -97,10 +97,10 @@ export default function PSOCSelector({
             occupation_title: group.title,
             occupation_description: null,
             full_hierarchy: group.title,
-            hierarchy_level: 1
-          }))
-          setOptions(formattedData)
-          return
+            hierarchy_level: 1,
+          }));
+          setOptions(formattedData);
+          return;
         }
 
         // Try unit sub-groups (most specific occupations like "Radiology technician")
@@ -108,7 +108,7 @@ export default function PSOCSelector({
           .from('psoc_unit_sub_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
-          .limit(30)
+          .limit(30);
 
         if (unitSubGroups && unitSubGroups.length > 0) {
           const formattedData = unitSubGroups.map(group => ({
@@ -117,73 +117,73 @@ export default function PSOCSelector({
             occupation_title: group.title,
             occupation_description: null,
             full_hierarchy: group.title,
-            hierarchy_level: 0
-          }))
-          setOptions(formattedData)
-          return
+            hierarchy_level: 0,
+          }));
+          setOptions(formattedData);
+          return;
         }
 
-        console.log('No PSOC data found in any table')
-        setOptions([])
+        console.log('No PSOC data found in any table');
+        setOptions([]);
       } else {
-        setOptions(data || [])
+        setOptions(data || []);
       }
     } catch (error) {
-      console.error('PSOC search error:', error)
-      setOptions([])
+      console.error('PSOC search error:', error);
+      setOptions([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Debounced search
   useEffect(() => {
     if (debounceTimer) {
-      clearTimeout(debounceTimer)
+      clearTimeout(debounceTimer);
     }
 
     const timer = setTimeout(() => {
-      searchOccupations(searchQuery)
-    }, 300)
+      searchOccupations(searchQuery);
+    }, 300);
 
-    setDebounceTimer(timer)
+    setDebounceTimer(timer);
 
     return () => {
-      if (timer) clearTimeout(timer)
-    }
-  }, [searchQuery])
+      if (timer) clearTimeout(timer);
+    };
+  }, [searchQuery]);
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value
-    setSearchQuery(query)
-    setIsOpen(true)
-    
+    const query = e.target.value;
+    setSearchQuery(query);
+    setIsOpen(true);
+
     if (!query.trim()) {
-      setSelectedOption(null)
-      onSelect(null)
+      setSelectedOption(null);
+      onSelect(null);
     }
-  }
+  };
 
   // Handle option selection
   const handleOptionSelect = (option: PSOCOption) => {
-    setSelectedOption(option)
-    setSearchQuery(option.occupation_title)
-    setIsOpen(false)
-    onSelect(option)
-  }
+    setSelectedOption(option);
+    setSearchQuery(option.occupation_title);
+    setIsOpen(false);
+    onSelect(option);
+  };
 
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Load initial value if provided
   useEffect(() => {
@@ -195,29 +195,30 @@ export default function PSOCSelector({
             .from('psoc_occupation_search')
             .select('*')
             .eq('occupation_code', value)
-            .single()
+            .single();
 
           if (data && !error) {
-            setSelectedOption(data)
-            setSearchQuery(data.occupation_title)
+            setSelectedOption(data);
+            setSearchQuery(data.occupation_title);
           }
         } catch (error) {
-          console.error('Error loading PSOC option:', error)
+          console.error('Error loading PSOC option:', error);
         }
-      }
-      loadSelectedOption()
+      };
+      loadSelectedOption();
     }
-  }, [value, selectedOption])
+  }, [value, selectedOption]);
 
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Input Container - Figma: exact 8px padding, structured like InputField */}
-      <div className={`flex items-center w-full transition-colors font-system focus-within:outline-none relative ${
-        error 
-          ? 'border border-red-600 bg-surface rounded focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]' 
-          : 'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
-      } p-[8px] text-base min-h-[40px] ${className}`}>
-        
+      <div
+        className={`flex items-center w-full transition-colors font-system focus-within:outline-none relative ${
+          error
+            ? 'border border-red-600 bg-surface rounded focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
+            : 'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+        } p-[8px] text-base min-h-[40px] ${className}`}
+      >
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
         <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
           {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
@@ -233,20 +234,31 @@ export default function PSOCSelector({
                 border: 'none',
                 outline: 'none',
                 boxShadow: 'none',
-                appearance: 'none'
+                appearance: 'none',
               }}
               placeholder={placeholder}
               aria-invalid={error ? 'true' : 'false'}
             />
           </div>
         </div>
-        
+
         {/* Loading indicator - Figma: w-5 (20px width) */}
         {loading && (
           <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
             <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
           </div>
         )}
@@ -258,14 +270,25 @@ export default function PSOCSelector({
           {loading ? (
             <div className="px-3 py-2 text-sm/6 text-muted flex items-center gap-2">
               <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Searching occupations...
             </div>
           ) : options.length > 0 ? (
             <ul className="py-1">
-              {options.map((option) => (
+              {options.map(option => (
                 <li key={option.occupation_code}>
                   <button
                     type="button"
@@ -274,7 +297,8 @@ export default function PSOCSelector({
                   >
                     <div className="font-medium">{option.occupation_title}</div>
                     <div className="text-xs text-muted">
-                      {option.full_hierarchy} • {option.occupation_code} • {option.level_type.replace('_', ' ')}
+                      {option.full_hierarchy} • {option.occupation_code} •{' '}
+                      {option.level_type.replace('_', ' ')}
                     </div>
                   </button>
                 </li>
@@ -304,5 +328,5 @@ export default function PSOCSelector({
         </div>
       )}
     </div>
-  )
+  );
 }

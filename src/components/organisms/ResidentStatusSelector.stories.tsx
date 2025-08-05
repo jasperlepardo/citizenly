@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { useState } from 'react'
-import ResidentStatusSelector, { ResidentStatus } from './ResidentStatusSelector'
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import ResidentStatusSelector, { ResidentStatus } from './ResidentStatusSelector';
 
 const meta: Meta<typeof ResidentStatusSelector> = {
   title: 'RBI Components/Organisms/ResidentStatusSelector',
@@ -9,37 +9,38 @@ const meta: Meta<typeof ResidentStatusSelector> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Component for determining resident status classification based on Philippine legal framework. Handles voting eligibility, length of residency, legal status, and indigenous peoples identification.'
-      }
-    }
+        component:
+          'Component for determining resident status classification based on Philippine legal framework. Handles voting eligibility, length of residency, legal status, and indigenous peoples identification.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     value: {
       description: 'Current resident status data',
-      control: 'object'
+      control: 'object',
     },
     onChange: {
       description: 'Callback fired when resident status changes',
-      action: 'onChange'
+      action: 'onChange',
     },
     disabled: {
       description: 'Whether the form is disabled',
-      control: 'boolean'
+      control: 'boolean',
     },
     className: {
       description: 'Additional CSS classes',
-      control: 'text'
+      control: 'text',
     },
     residentAge: {
       description: 'Age of resident (for voting eligibility checks)',
-      control: 'number'
-    }
-  }
-}
+      control: 'number',
+    },
+  },
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Default empty state
 const defaultResidentStatus: ResidentStatus = {
@@ -47,33 +48,33 @@ const defaultResidentStatus: ResidentStatus = {
   is_registered_voter: false,
   is_indigenous_member: false,
   legal_status: null,
-  documentation_status: null
-}
+  documentation_status: null,
+};
 
 // Template component for interactive stories
 const ResidentStatusTemplate = (args: any) => {
-  const [value, setValue] = useState<ResidentStatus>(args.value)
-  
+  const [value, setValue] = useState<ResidentStatus>(args.value);
+
   return (
     <ResidentStatusSelector
       {...args}
       value={value}
-      onChange={(newValue) => {
-        setValue(newValue)
-        args.onChange?.(newValue)
+      onChange={newValue => {
+        setValue(newValue);
+        args.onChange?.(newValue);
       }}
     />
-  )
-}
+  );
+};
 
 export const Default: Story = {
   render: ResidentStatusTemplate,
   args: {
     value: defaultResidentStatus,
     disabled: false,
-    residentAge: 25
-  }
-}
+    residentAge: 25,
+  },
+};
 
 export const PermanentResident: Story = {
   render: ResidentStatusTemplate,
@@ -87,19 +88,20 @@ export const PermanentResident: Story = {
       precinct_number: '0001A',
       is_indigenous_member: false,
       legal_status: 'citizen',
-      documentation_status: 'complete'
+      documentation_status: 'complete',
     },
     disabled: false,
-    residentAge: 35
+    residentAge: 35,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a permanent resident with complete voter registration and long-term residency.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a permanent resident with complete voter registration and long-term residency.',
+      },
+    },
+  },
+};
 
 export const TemporaryResident: Story = {
   render: ResidentStatusTemplate,
@@ -112,19 +114,21 @@ export const TemporaryResident: Story = {
       is_indigenous_member: false,
       legal_status: 'citizen',
       documentation_status: 'complete',
-      special_circumstances: 'Temporary assignment for work, planning to return to home province after contract ends.'
+      special_circumstances:
+        'Temporary assignment for work, planning to return to home province after contract ends.',
     },
     disabled: false,
-    residentAge: 28
+    residentAge: 28,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a temporary resident with specific circumstances and shorter residency period.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a temporary resident with specific circumstances and shorter residency period.',
+      },
+    },
+  },
+};
 
 export const MinorResident: Story = {
   render: ResidentStatusTemplate,
@@ -136,19 +140,20 @@ export const MinorResident: Story = {
       is_registered_voter: false,
       is_indigenous_member: false,
       legal_status: 'citizen',
-      documentation_status: 'not_required'
+      documentation_status: 'not_required',
     },
     disabled: false,
-    residentAge: 16
+    residentAge: 16,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a minor resident who is not eligible to vote (under 18). Shows voting eligibility warning.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a minor resident who is not eligible to vote (under 18). Shows voting eligibility warning.',
+      },
+    },
+  },
+};
 
 export const IndigenousMember: Story = {
   render: ResidentStatusTemplate,
@@ -163,19 +168,20 @@ export const IndigenousMember: Story = {
       tribal_affiliation: 'Igorot',
       indigenous_community: 'Bontoc',
       legal_status: 'citizen',
-      documentation_status: 'not_required'
+      documentation_status: 'not_required',
     },
     disabled: false,
-    residentAge: 42
+    residentAge: 42,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of an Indigenous Peoples member with tribal affiliation and community details.'
-      }
-    }
-  }
-}
+        story:
+          'Example of an Indigenous Peoples member with tribal affiliation and community details.',
+      },
+    },
+  },
+};
 
 export const ForeignResident: Story = {
   render: ResidentStatusTemplate,
@@ -188,19 +194,21 @@ export const ForeignResident: Story = {
       is_indigenous_member: false,
       legal_status: 'permanent_resident',
       documentation_status: 'complete',
-      special_circumstances: 'US citizen with permanent residence visa. Married to Filipino citizen.'
+      special_circumstances:
+        'US citizen with permanent residence visa. Married to Filipino citizen.',
     },
     disabled: false,
-    residentAge: 38
+    residentAge: 38,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a foreign national with permanent residence status. Cannot register to vote but has complete documentation.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a foreign national with permanent residence status. Cannot register to vote but has complete documentation.',
+      },
+    },
+  },
+};
 
 export const DualCitizen: Story = {
   render: ResidentStatusTemplate,
@@ -214,19 +222,20 @@ export const DualCitizen: Story = {
       is_indigenous_member: false,
       legal_status: 'dual_citizen',
       documentation_status: 'complete',
-      special_circumstances: 'Filipino-American dual citizen. Maintains both Philippine and US citizenship.'
+      special_circumstances:
+        'Filipino-American dual citizen. Maintains both Philippine and US citizenship.',
     },
     disabled: false,
-    residentAge: 45
+    residentAge: 45,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a dual citizen who can vote and has complete legal documentation.'
-      }
-    }
-  }
-}
+        story: 'Example of a dual citizen who can vote and has complete legal documentation.',
+      },
+    },
+  },
+};
 
 export const VisitorStatus: Story = {
   render: ResidentStatusTemplate,
@@ -237,19 +246,19 @@ export const VisitorStatus: Story = {
       is_indigenous_member: false,
       legal_status: 'visitor',
       documentation_status: 'complete',
-      special_circumstances: 'Tourist visiting family. Staying for 3 months on visitor visa.'
+      special_circumstances: 'Tourist visiting family. Staying for 3 months on visitor visa.',
     },
     disabled: false,
-    residentAge: 30
+    residentAge: 30,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a visitor/tourist with temporary status. Cannot register to vote.'
-      }
-    }
-  }
-}
+        story: 'Example of a visitor/tourist with temporary status. Cannot register to vote.',
+      },
+    },
+  },
+};
 
 export const TransientResident: Story = {
   render: ResidentStatusTemplate,
@@ -260,19 +269,20 @@ export const TransientResident: Story = {
       is_indigenous_member: false,
       legal_status: 'citizen',
       documentation_status: 'incomplete',
-      special_circumstances: 'Seasonal worker, stays during harvest season only. No fixed address.'
+      special_circumstances: 'Seasonal worker, stays during harvest season only. No fixed address.',
     },
     disabled: false,
-    residentAge: 24
+    residentAge: 24,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example of a transient resident with incomplete documentation and seasonal presence.'
-      }
-    }
-  }
-}
+        story:
+          'Example of a transient resident with incomplete documentation and seasonal presence.',
+      },
+    },
+  },
+};
 
 export const IncompleteDocumentation: Story = {
   render: ResidentStatusTemplate,
@@ -285,19 +295,21 @@ export const IncompleteDocumentation: Story = {
       is_indigenous_member: false,
       legal_status: 'temporary_resident',
       documentation_status: 'pending',
-      special_circumstances: 'Work visa renewal in process. Temporary resident permit expired, awaiting new documentation.'
+      special_circumstances:
+        'Work visa renewal in process. Temporary resident permit expired, awaiting new documentation.',
     },
     disabled: false,
-    residentAge: 29
+    residentAge: 29,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Example showing pending documentation status with special circumstances explanation.'
-      }
-    }
-  }
-}
+        story:
+          'Example showing pending documentation status with special circumstances explanation.',
+      },
+    },
+  },
+};
 
 export const Disabled: Story = {
   render: ResidentStatusTemplate,
@@ -310,19 +322,19 @@ export const Disabled: Story = {
       precinct_number: '0007A',
       is_indigenous_member: false,
       legal_status: 'citizen',
-      documentation_status: 'complete'
+      documentation_status: 'complete',
     },
     disabled: true,
-    residentAge: 40
+    residentAge: 40,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows the component in disabled state for read-only viewing.'
-      }
-    }
-  }
-}
+        story: 'Shows the component in disabled state for read-only viewing.',
+      },
+    },
+  },
+};
 
 // Interactive playground story
 export const Playground: Story = {
@@ -331,13 +343,14 @@ export const Playground: Story = {
     value: defaultResidentStatus,
     disabled: false,
     residentAge: 25,
-    className: ''
+    className: '',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive playground to test different resident status combinations and voting eligibility scenarios.'
-      }
-    }
-  }
-}
+        story:
+          'Interactive playground to test different resident status combinations and voting eligibility scenarios.',
+      },
+    },
+  },
+};

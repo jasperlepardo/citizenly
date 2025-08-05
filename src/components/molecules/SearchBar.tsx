@@ -1,94 +1,105 @@
-'use client'
+'use client';
 
-import React, { useState, forwardRef, InputHTMLAttributes } from 'react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import React, { useState, forwardRef, InputHTMLAttributes } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 const searchBarVariants = cva(
-  "flex items-center w-full transition-colors font-system focus-within:outline-none relative",
+  'flex items-center w-full transition-colors font-system focus-within:outline-none relative',
   {
     variants: {
       variant: {
-        default: "border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]",
-        filled: "border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]",
-        outlined: "border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]"
+        default:
+          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+        filled:
+          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+        outlined:
+          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
       },
       size: {
-        sm: "p-1.5 text-sm min-h-[32px]",
-        md: "p-[8px] text-base min-h-[40px]", // Figma: exact 8px padding
-        lg: "p-3 text-lg min-h-[48px]"
-      }
+        sm: 'p-1.5 text-sm min-h-[32px]',
+        md: 'p-[8px] text-base min-h-[40px]', // Figma: exact 8px padding
+        lg: 'p-3 text-lg min-h-[48px]',
+      },
     },
     defaultVariants: {
-      variant: "default",
-      size: "md"
-    }
+      variant: 'default',
+      size: 'md',
+    },
   }
-)
+);
 
 export interface SearchBarProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof searchBarVariants> {
-  onClear?: () => void
-  showClearButton?: boolean
-  leftIcon?: React.ReactNode
-  onSearch?: (value: string) => void
-  className?: string
+  onClear?: () => void;
+  showClearButton?: boolean;
+  leftIcon?: React.ReactNode;
+  onSearch?: (value: string) => void;
+  className?: string;
 }
 
 const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
-  ({ 
-    className,
-    variant = "default",
-    size = "md",
-    placeholder = "Search...",
-    value = "",
-    onChange,
-    onClear,
-    onSearch,
-    showClearButton = true,
-    leftIcon,
-    onKeyDown,
-    disabled,
-    ...props 
-  }, ref) => {
-    const [_isFocused, setIsFocused] = useState(false)
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'md',
+      placeholder = 'Search...',
+      value = '',
+      onChange,
+      onClear,
+      onSearch,
+      showClearButton = true,
+      leftIcon,
+      onKeyDown,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const [_isFocused, setIsFocused] = useState(false);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        e.preventDefault()
-        onSearch?.(e.currentTarget.value)
+        e.preventDefault();
+        onSearch?.(e.currentTarget.value);
       } else if (e.key === 'Escape') {
-        e.preventDefault()
-        e.currentTarget.blur()
-        onClear?.()
+        e.preventDefault();
+        e.currentTarget.blur();
+        onClear?.();
       }
-      onKeyDown?.(e)
-    }
+      onKeyDown?.(e);
+    };
 
     const handleClear = () => {
-      onClear?.()
+      onClear?.();
       // Focus back to input after clearing
       if (ref && 'current' in ref && ref.current) {
-        ref.current.focus()
+        ref.current.focus();
       }
-    }
+    };
 
-    const hasValue = value && value.toString().length > 0
+    const hasValue = value && value.toString().length > 0;
 
     return (
-      <div className={cn(searchBarVariants({ variant, size }), "search-bar-container", className)}>
+      <div className={cn(searchBarVariants({ variant, size }), 'search-bar-container', className)}>
         {/* Left Icon - Figma: w-5 (20px width) */}
         {(leftIcon || true) && (
           <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
             {leftIcon || (
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             )}
           </div>
         )}
-        
+
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
         <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
           {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
@@ -97,22 +108,22 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               ref={ref}
               type="text"
               className={cn(
-                "w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted",
+                'w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted',
                 // Remove ALL borders and focus states
-                "border-0 outline-0 ring-0 shadow-none",
-                "focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none",
-                "active:border-0 active:outline-0 active:ring-0 active:shadow-none",
+                'border-0 outline-0 ring-0 shadow-none',
+                'focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none',
+                'active:border-0 active:outline-0 active:ring-0 active:shadow-none',
                 // Figma text-base-regular: 16px/20px (leading-5 = 20px)
-                size === 'sm' && "text-sm leading-4",
-                size === 'md' && "text-base leading-5", 
-                size === 'lg' && "text-lg leading-6",
-                disabled && "text-muted cursor-not-allowed"
+                size === 'sm' && 'text-sm leading-4',
+                size === 'md' && 'text-base leading-5',
+                size === 'lg' && 'text-lg leading-6',
+                disabled && 'text-muted cursor-not-allowed'
               )}
               style={{
                 border: 'none',
                 outline: 'none',
                 boxShadow: 'none',
-                appearance: 'none'
+                appearance: 'none',
               }}
               placeholder={placeholder}
               value={value}
@@ -126,7 +137,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             />
           </div>
         </div>
-        
+
         {/* Clear Button - Figma: w-5 (20px width) */}
         {showClearButton && hasValue && (
           <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
@@ -138,16 +149,21 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               tabIndex={-1}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
         )}
       </div>
-    )
+    );
   }
-)
+);
 
-SearchBar.displayName = "SearchBar"
+SearchBar.displayName = 'SearchBar';
 
-export { SearchBar, searchBarVariants }
+export { SearchBar, searchBarVariants };

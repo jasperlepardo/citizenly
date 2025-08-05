@@ -9,7 +9,8 @@ const meta: Meta<typeof InputField> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A comprehensive input field component with labels, validation, icons, and various states.',
+        component:
+          'A comprehensive input field component with labels, validation, icons, and various states.',
       },
     },
   },
@@ -67,7 +68,7 @@ export const Default: Story = {
     placeholder: 'Enter your email',
     helperText: 'We will never share your email',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -79,13 +80,20 @@ export const WithLeftIcon: Story = {
     label: 'Search',
     placeholder: 'Search...',
     leftIcon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <circle cx="11" cy="11" r="8"></circle>
         <path d="m21 21-4.35-4.35"></path>
       </svg>
     ),
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -98,13 +106,20 @@ export const WithRightIcon: Story = {
     placeholder: 'your.email@example.com',
     type: 'email',
     rightIcon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
         <polyline points="22,6 12,13 2,6"></polyline>
       </svg>
     ),
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -119,7 +134,7 @@ export const WithAddons: Story = {
     rightAddon: '.com',
     helperText: 'Enter your website domain',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -133,7 +148,7 @@ export const Clearable: Story = {
     clearable: true,
     value: 'Sample text',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -147,7 +162,7 @@ export const ErrorState: Story = {
     value: 'invalid-email',
     errorMessage: 'Please enter a valid email address',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -162,7 +177,7 @@ export const SuccessState: Story = {
     variant: 'success',
     helperText: 'Username is available!',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -195,7 +210,7 @@ export const Small: Story = {
     placeholder: 'Small size',
     size: 'sm',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -208,7 +223,7 @@ export const Medium: Story = {
     placeholder: 'Medium size (default)',
     size: 'md',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -221,7 +236,7 @@ export const Large: Story = {
     placeholder: 'Large size',
     size: 'lg',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <InputField />
     </InteractiveWrapper>
@@ -233,39 +248,39 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-6 w-96">
       <h3 className="text-lg font-semibold">Input Field States</h3>
-      
+
       <InputField
         label="Default State"
         placeholder="Enter text..."
         helperText="This is a helper text"
       />
-      
+
       <InputField
         label="Filled State"
         value="Some entered text"
         helperText="Text has been entered"
       />
-      
+
       <InputField
         label="Error State"
         value="invalid input"
         errorMessage="This field has an error"
       />
-      
+
       <InputField
         label="Success State"
         value="valid input"
         variant="success"
         helperText="Input is valid!"
       />
-      
+
       <InputField
         label="Disabled State"
         value="Cannot edit"
         disabled
         helperText="This field is disabled"
       />
-      
+
       <InputField
         label="Read Only State"
         value="Read only text"
@@ -283,25 +298,32 @@ export const FormExample: Story = {
   render: () => (
     <div className="space-y-4 w-96">
       <h3 className="text-lg font-semibold">Contact Form Example</h3>
-      
+
       <InputField
         label="Full Name"
         placeholder="John Doe"
         helperText="Enter your first and last name"
       />
-      
+
       <InputField
         label="Email Address"
         type="email"
         placeholder="john@example.com"
         rightIcon={
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
             <polyline points="22,6 12,13 2,6"></polyline>
           </svg>
         }
       />
-      
+
       <InputField
         label="Phone Number"
         type="tel"
@@ -309,7 +331,7 @@ export const FormExample: Story = {
         leftAddon="+1"
         helperText="Include country code"
       />
-      
+
       <InputField
         label="Website"
         type="url"
@@ -318,7 +340,7 @@ export const FormExample: Story = {
         rightAddon=".com"
         helperText="Your personal or business website"
       />
-      
+
       <InputField
         label="Search Tags"
         placeholder="Type and clear..."

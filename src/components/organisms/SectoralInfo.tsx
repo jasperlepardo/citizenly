@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * SectoralInfo Component - RBI Sectoral Group Classification
@@ -6,24 +6,24 @@
  * Integrates with age, employment status, and education data
  */
 
-import React, { useEffect, useState } from 'react'
-import { Checkbox } from '../atoms'
-import { FormGroup } from '../molecules'
+import React, { useEffect, useState } from 'react';
+import { Checkbox } from '../atoms';
+import { FormGroup } from '../molecules';
 
 // Sectoral Information Interface (matches database schema)
 export interface SectoralInformation {
-  is_labor_force: boolean;           // Auto from employment_status
-  is_employed: boolean;              // Auto from employment_status  
-  is_unemployed: boolean;            // Auto from employment_status
-  is_ofw: boolean;                   // Manual - Overseas Filipino Worker
-  is_pwd: boolean;                   // Manual - Person with Disability
+  is_labor_force: boolean; // Auto from employment_status
+  is_employed: boolean; // Auto from employment_status
+  is_unemployed: boolean; // Auto from employment_status
+  is_ofw: boolean; // Manual - Overseas Filipino Worker
+  is_pwd: boolean; // Manual - Person with Disability
   is_out_of_school_children: boolean; // Auto from age + education (5-17)
-  is_out_of_school_youth: boolean;   // Auto from age + education + employment (18-30)
-  is_senior_citizen: boolean;        // Auto from age (60+)
+  is_out_of_school_youth: boolean; // Auto from age + education + employment (18-30)
+  is_senior_citizen: boolean; // Auto from age (60+)
   is_registered_senior_citizen: boolean; // Manual, conditional on is_senior_citizen
-  is_solo_parent: boolean;           // Manual
-  is_indigenous_people: boolean;     // Manual
-  is_migrant: boolean;               // Manual
+  is_solo_parent: boolean; // Manual
+  is_indigenous_people: boolean; // Manual
+  is_migrant: boolean; // Manual
 }
 
 // Context data needed for auto-calculations
@@ -46,51 +46,48 @@ interface SectoralInfoProps {
 // Employment statuses that qualify as labor force
 const LABOR_FORCE_STATUSES = [
   'employed_full_time',
-  'employed_part_time', 
+  'employed_part_time',
   'self_employed',
   'unemployed_looking',
-  'underemployed'
+  'underemployed',
 ];
 
-const EMPLOYED_STATUSES = [
-  'employed_full_time',
-  'employed_part_time',
-  'self_employed'
-];
+const EMPLOYED_STATUSES = ['employed_full_time', 'employed_part_time', 'self_employed'];
 
-const UNEMPLOYED_STATUSES = [
-  'unemployed_looking',
-  'underemployed'
-];
+const UNEMPLOYED_STATUSES = ['unemployed_looking', 'underemployed'];
 
 export default function SectoralInfo({
   value,
   onChange,
   context,
   disabled = false,
-  className = ""
+  className = '',
 }: SectoralInfoProps) {
   const [_autoCalculated, setAutoCalculated] = useState({
     is_labor_force: false,
-    is_employed: false, 
+    is_employed: false,
     is_unemployed: false,
     is_out_of_school_children: false,
     is_out_of_school_youth: false,
-    is_senior_citizen: false
+    is_senior_citizen: false,
   });
 
   // Auto-calculate sectoral flags based on context
   useEffect(() => {
     const age = context.age || (context.birthdate ? calculateAge(context.birthdate) : 0);
     const employment = context.employment_status || '';
-    
+
     const calculated = {
       is_labor_force: LABOR_FORCE_STATUSES.includes(employment),
       is_employed: EMPLOYED_STATUSES.includes(employment),
       is_unemployed: UNEMPLOYED_STATUSES.includes(employment),
       is_out_of_school_children: isOutOfSchoolChildren(age, context.highest_educational_attainment),
-      is_out_of_school_youth: isOutOfSchoolYouth(age, context.highest_educational_attainment, employment),
-      is_senior_citizen: age >= 60
+      is_out_of_school_youth: isOutOfSchoolYouth(
+        age,
+        context.highest_educational_attainment,
+        employment
+      ),
+      is_senior_citizen: age >= 60,
     };
 
     setAutoCalculated(calculated);
@@ -100,14 +97,21 @@ export default function SectoralInfo({
       ...value,
       ...calculated,
       // Reset registered senior citizen if no longer senior
-      is_registered_senior_citizen: calculated.is_senior_citizen ? value.is_registered_senior_citizen : false
+      is_registered_senior_citizen: calculated.is_senior_citizen
+        ? value.is_registered_senior_citizen
+        : false,
     };
 
     // Only trigger onChange if values actually changed
     if (JSON.stringify(updatedSectoral) !== JSON.stringify(value)) {
       onChange(updatedSectoral);
     }
-  }, [context.age, context.birthdate, context.employment_status, context.highest_educational_attainment]);
+  }, [
+    context.age,
+    context.birthdate,
+    context.employment_status,
+    context.highest_educational_attainment,
+  ]);
 
   // Calculate age from birthdate
   function calculateAge(birthdate: string): number {
@@ -115,52 +119,61 @@ export default function SectoralInfo({
     const birth = new Date(birthdate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-    
+
     return age;
   }
 
   // Check if person qualifies as out-of-school children (5-17 years old, not in school)
   function isOutOfSchoolChildren(age: number, education?: string): boolean {
     if (age < 5 || age > 17) return false;
-    
+
     // If still in elementary/high school, not out-of-school
-    const inSchoolEducation = ['elementary_graduate', 'high_school_graduate', 'senior_high_graduate'];
+    const inSchoolEducation = [
+      'elementary_graduate',
+      'high_school_graduate',
+      'senior_high_graduate',
+    ];
     return !inSchoolEducation.some(level => education?.includes(level));
   }
 
   // Check if person qualifies as out-of-school youth (18-30 years old, not in school, not employed)
   function isOutOfSchoolYouth(age: number, education?: string, employment?: string): boolean {
     if (age < 18 || age > 30) return false;
-    
+
     // Must not be in tertiary education
-    const inTertiaryEducation = ['college_undergraduate', 'college_graduate', 'vocational_graduate'];
+    const inTertiaryEducation = [
+      'college_undergraduate',
+      'college_graduate',
+      'vocational_graduate',
+    ];
     const isInSchool = inTertiaryEducation.some(level => education?.includes(level));
-    
+
     // Must not be employed
     const isEmployed = EMPLOYED_STATUSES.includes(employment || '');
-    
+
     return !isInSchool && !isEmployed;
   }
 
   // Handle manual flag changes
-  const handleFlagChange = (flag: keyof SectoralInformation) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    const updatedSectoral = {
-      ...value,
-      [flag]: checked
+  const handleFlagChange =
+    (flag: keyof SectoralInformation) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const checked = e.target.checked;
+      const updatedSectoral = {
+        ...value,
+        [flag]: checked,
+      };
+
+      // Handle conditional logic for registered senior citizen
+      if (flag === 'is_senior_citizen' && !checked) {
+        updatedSectoral.is_registered_senior_citizen = false;
+      }
+
+      onChange(updatedSectoral);
     };
-
-    // Handle conditional logic for registered senior citizen
-    if (flag === 'is_senior_citizen' && !checked) {
-      updatedSectoral.is_registered_senior_citizen = false;
-    }
-
-    onChange(updatedSectoral);
-  };
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -183,7 +196,7 @@ export default function SectoralInfo({
             disabled={true}
             size="md"
           />
-          
+
           <Checkbox
             label="Employed"
             description="Currently employed (full/part-time, self-employed)"
@@ -191,7 +204,7 @@ export default function SectoralInfo({
             disabled={true}
             size="md"
           />
-          
+
           <Checkbox
             label="Unemployed"
             description="Unemployed but looking for work"
@@ -199,7 +212,7 @@ export default function SectoralInfo({
             disabled={true}
             size="md"
           />
-          
+
           <Checkbox
             label="Out-of-School Children"
             description="Ages 5-17, not attending school"
@@ -207,7 +220,7 @@ export default function SectoralInfo({
             disabled={true}
             size="md"
           />
-          
+
           <Checkbox
             label="Out-of-School Youth"
             description="Ages 18-30, not in school/employed"
@@ -215,7 +228,7 @@ export default function SectoralInfo({
             disabled={true}
             size="md"
           />
-          
+
           <Checkbox
             label="Senior Citizen"
             description="Age 60 and above"
@@ -237,7 +250,7 @@ export default function SectoralInfo({
             disabled={disabled}
             size="md"
           />
-          
+
           <Checkbox
             label="Person with Disability (PWD)"
             description="Has physical, mental, or sensory disability"
@@ -246,7 +259,7 @@ export default function SectoralInfo({
             disabled={disabled}
             size="md"
           />
-          
+
           <Checkbox
             label="Solo Parent"
             description="Single parent raising children alone"
@@ -255,7 +268,7 @@ export default function SectoralInfo({
             disabled={disabled}
             size="md"
           />
-          
+
           <Checkbox
             label="Indigenous People"
             description="Belongs to indigenous cultural community"
@@ -264,7 +277,7 @@ export default function SectoralInfo({
             disabled={disabled}
             size="md"
           />
-          
+
           <Checkbox
             label="Migrant"
             description="Recently moved to this barangay"
@@ -273,7 +286,7 @@ export default function SectoralInfo({
             disabled={disabled}
             size="md"
           />
-          
+
           {/* Conditional: Registered Senior Citizen */}
           {value.is_senior_citizen && (
             <Checkbox

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * HouseholdTypeSelector Component - RBI Household Composition Type
@@ -6,17 +6,17 @@
  * Matches database enum household_type_enum
  */
 
-import React from 'react'
-import { Radio, RadioGroup } from '../atoms'
+import React from 'react';
+import { Radio, RadioGroup } from '../atoms';
 
 // Household types (matches database enum)
-export type HouseholdType = 
-  | 'nuclear'        // Parents with children
-  | 'single_parent'  // Single parent with children  
-  | 'extended'       // Multiple generations/relatives
-  | 'childless'      // Couple without children
-  | 'grandparents'   // Grandparents with grandchildren
-  | 'stepfamily';    // Blended family
+export type HouseholdType =
+  | 'nuclear' // Parents with children
+  | 'single_parent' // Single parent with children
+  | 'extended' // Multiple generations/relatives
+  | 'childless' // Couple without children
+  | 'grandparents' // Grandparents with grandchildren
+  | 'stepfamily'; // Blended family
 
 interface HouseholdTypeOption {
   value: HouseholdType;
@@ -30,38 +30,39 @@ const HOUSEHOLD_TYPE_OPTIONS: HouseholdTypeOption[] = [
     value: 'nuclear',
     label: 'Nuclear Family',
     description: 'Parents living with their biological or adopted children',
-    icon: '👪'
+    icon: '👪',
   },
   {
     value: 'single_parent',
     label: 'Single Parent Family',
     description: 'One parent living with their children (divorced, widowed, or unmarried)',
-    icon: '👩‍👧‍👦'
+    icon: '👩‍👧‍👦',
   },
   {
     value: 'extended',
     label: 'Extended Family',
-    description: 'Multiple generations or relatives living together (grandparents, aunts, uncles, cousins)',
-    icon: '🏠'
+    description:
+      'Multiple generations or relatives living together (grandparents, aunts, uncles, cousins)',
+    icon: '🏠',
   },
   {
     value: 'childless',
     label: 'Childless Couple',
     description: 'Married or cohabiting couple without children',
-    icon: '👫'
+    icon: '👫',
   },
   {
     value: 'grandparents',
     label: 'Grandparent Family',
     description: 'Grandparents as primary caregivers for grandchildren',
-    icon: '👴👵'
+    icon: '👴👵',
   },
   {
     value: 'stepfamily',
     label: 'Stepfamily/Blended Family',
     description: 'Couple with children from previous relationships',
-    icon: '👨‍👩‍👧‍👧'
-  }
+    icon: '👨‍👩‍👧‍👧',
+  },
 ];
 
 interface HouseholdTypeSelectorProps {
@@ -80,10 +81,9 @@ export default function HouseholdTypeSelector({
   disabled = false,
   required = false,
   error,
-  className = "",
-  orientation = 'vertical'
+  className = '',
+  orientation = 'vertical',
 }: HouseholdTypeSelectorProps) {
-
   const handleTypeChange = (selectedValue: string) => {
     onChange(selectedValue as HouseholdType);
   };
@@ -108,14 +108,15 @@ export default function HouseholdTypeSelector({
         errorMessage={error}
         className="space-y-3"
       >
-        {HOUSEHOLD_TYPE_OPTIONS.map((option) => (
+        {HOUSEHOLD_TYPE_OPTIONS.map(option => (
           <div
             key={option.value}
             className={`
               relative border rounded-lg p-4 transition-all duration-200
-              ${value === option.value 
-                ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500' 
-                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+              ${
+                value === option.value
+                  ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
               }
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
@@ -126,24 +127,28 @@ export default function HouseholdTypeSelector({
               variant={value === option.value ? 'primary' : 'default'}
               className="absolute top-4 right-4"
             />
-            
+
             <div className="pr-8">
               <div className="flex items-center space-x-3 mb-2">
                 <span className="text-xl" role="img" aria-label={option.label}>
                   {option.icon}
                 </span>
-                <h4 className={`
+                <h4
+                  className={`
                   font-medium text-base
                   ${value === option.value ? 'text-blue-900' : 'text-primary'}
-                `}>
+                `}
+                >
                   {option.label}
                 </h4>
               </div>
-              
-              <p className={`
+
+              <p
+                className={`
                 text-sm leading-relaxed
                 ${value === option.value ? 'text-blue-700' : 'text-secondary'}
-              `}>
+              `}
+              >
                 {option.description}
               </p>
             </div>
@@ -165,9 +170,9 @@ export default function HouseholdTypeSelector({
 
       {/* Additional Information */}
       <div className="text-xs text-muted bg-background-muted p-3 rounded-lg">
-        <span className="font-medium">📋 Note:</span> This classification helps determine 
-        household demographics and social services eligibility. You can change this selection 
-        later if the family composition changes.
+        <span className="font-medium">📋 Note:</span> This classification helps determine household
+        demographics and social services eligibility. You can change this selection later if the
+        family composition changes.
       </div>
     </div>
   );

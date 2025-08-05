@@ -55,7 +55,7 @@ export const Default: Story = {
     label: 'Enable notifications',
     description: 'Receive push notifications on your device',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -68,7 +68,7 @@ export const Primary: Story = {
     description: 'This uses primary color when active',
     variant: 'primary',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -79,7 +79,7 @@ export const WithoutDescription: Story = {
   args: {
     label: 'Simple toggle',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -93,7 +93,7 @@ export const ErrorState: Story = {
     variant: 'error',
     errorMessage: 'This feature is required for the application to work',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -124,7 +124,7 @@ export const Small: Story = {
     size: 'sm',
     description: 'Compact size for tight spaces',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -137,7 +137,7 @@ export const Medium: Story = {
     size: 'md',
     description: 'Default size for most use cases',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -150,7 +150,7 @@ export const Large: Story = {
     size: 'lg',
     description: 'Larger size for accessibility',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <Toggle />
     </InteractiveWrapper>
@@ -167,7 +167,7 @@ export const AllVariants: Story = {
         <Toggle label="Primary variant" variant="primary" description="Blue when active" />
         <Toggle label="Error variant" variant="error" description="Red when active" />
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">States</h3>
         <Toggle label="Off state" />
@@ -175,7 +175,7 @@ export const AllVariants: Story = {
         <Toggle label="Disabled off" disabled />
         <Toggle label="Disabled on" disabled checked />
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Sizes</h3>
         <Toggle label="Small size" size="sm" />
@@ -198,15 +198,15 @@ const SettingsExampleComponent = () => {
     analytics: false,
     beta: false,
   });
-  
+
   const handleToggle = (key: string) => (checked: boolean) => {
     setSettings(prev => ({ ...prev, [key]: checked }));
   };
-  
+
   return (
     <div className="space-y-4 w-96">
       <h3 className="text-lg font-semibold">Application Settings</h3>
-      
+
       <div className="space-y-4">
         <Toggle
           label="Push Notifications"
@@ -214,7 +214,7 @@ const SettingsExampleComponent = () => {
           checked={settings.notifications}
           onToggle={handleToggle('notifications')}
         />
-        
+
         <Toggle
           label="Dark Mode"
           description="Use dark theme across the application"
@@ -222,21 +222,21 @@ const SettingsExampleComponent = () => {
           checked={settings.darkMode}
           onToggle={handleToggle('darkMode')}
         />
-        
+
         <Toggle
           label="Auto Save"
           description="Automatically save your work every 30 seconds"
           checked={settings.autoSave}
           onToggle={handleToggle('autoSave')}
         />
-        
+
         <Toggle
           label="Usage Analytics"
           description="Help improve the app by sharing anonymous usage data"
           checked={settings.analytics}
           onToggle={handleToggle('analytics')}
         />
-        
+
         <Toggle
           label="Beta Features"
           description="Enable experimental features (may be unstable)"
@@ -245,9 +245,12 @@ const SettingsExampleComponent = () => {
           onToggle={handleToggle('beta')}
         />
       </div>
-      
+
       <div className="pt-4 border-t text-sm text-gray-600">
-        <p>Active settings: {Object.values(settings).filter(Boolean).length} of {Object.keys(settings).length}</p>
+        <p>
+          Active settings: {Object.values(settings).filter(Boolean).length} of{' '}
+          {Object.keys(settings).length}
+        </p>
       </div>
     </div>
   );

@@ -9,7 +9,8 @@ const meta: Meta<typeof SelectField> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A dropdown select field component with various states and customization options.',
+        component:
+          'A dropdown select field component with various states and customization options.',
       },
     },
   },
@@ -88,7 +89,7 @@ export const Default: Story = {
     helperText: 'Select your country of residence',
     options: countryOptions,
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -102,7 +103,7 @@ export const WithValue: Story = {
     options: priorityOptions,
     value: 'medium',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -117,7 +118,7 @@ export const ErrorState: Story = {
     variant: 'error',
     errorMessage: 'This field is required',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -132,7 +133,7 @@ export const SuccessState: Story = {
     variant: 'success',
     helperText: 'Perfect choice!',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -167,7 +168,7 @@ export const Small: Story = {
     options: sizeOptions,
     placeholder: 'Choose size',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -181,7 +182,7 @@ export const Medium: Story = {
     options: sizeOptions,
     placeholder: 'Choose size (default)',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -195,7 +196,7 @@ export const Large: Story = {
     options: sizeOptions,
     placeholder: 'Choose size',
   },
-  render: (args) => (
+  render: args => (
     <InteractiveWrapper {...args}>
       <SelectField />
     </InteractiveWrapper>
@@ -207,21 +208,21 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-6 w-96">
       <h3 className="text-lg font-semibold">Select Field States</h3>
-      
+
       <SelectField
         label="Default State"
         placeholder="Choose an option..."
         options={priorityOptions}
         helperText="This is a helper text"
       />
-      
+
       <SelectField
         label="Filled State"
         options={priorityOptions}
         value="medium"
         helperText="An option has been selected"
       />
-      
+
       <SelectField
         label="Error State"
         placeholder="Select required option"
@@ -229,7 +230,7 @@ export const AllStates: Story = {
         variant="error"
         errorMessage="This field is required"
       />
-      
+
       <SelectField
         label="Success State"
         options={priorityOptions}
@@ -237,7 +238,7 @@ export const AllStates: Story = {
         variant="success"
         helperText="Great choice!"
       />
-      
+
       <SelectField
         label="Disabled State"
         options={priorityOptions}
@@ -245,7 +246,7 @@ export const AllStates: Story = {
         disabled
         helperText="This field is disabled"
       />
-      
+
       <SelectField
         label="Read Only State"
         options={priorityOptions}
@@ -267,11 +268,11 @@ const FormExampleComponent = () => {
     size: 'md',
     category: '',
   });
-  
+
   const handleChange = (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   };
-  
+
   const categoryOptions = [
     { value: '', label: 'Select category' },
     { value: 'bug', label: 'Bug Report' },
@@ -279,11 +280,11 @@ const FormExampleComponent = () => {
     { value: 'support', label: 'Support' },
     { value: 'question', label: 'Question' },
   ];
-  
+
   return (
     <div className="space-y-4 w-96">
       <h3 className="text-lg font-semibold">Issue Report Form</h3>
-      
+
       <SelectField
         label="Country"
         placeholder="Select your country"
@@ -292,7 +293,7 @@ const FormExampleComponent = () => {
         onChange={handleChange('country')}
         helperText="This helps us provide localized support"
       />
-      
+
       <SelectField
         label="Issue Category"
         placeholder="What type of issue is this?"
@@ -302,7 +303,7 @@ const FormExampleComponent = () => {
         variant={!formData.category ? 'error' : 'default'}
         errorMessage={!formData.category ? 'Please select a category' : undefined}
       />
-      
+
       <SelectField
         label="Priority Level"
         options={priorityOptions}
@@ -310,7 +311,7 @@ const FormExampleComponent = () => {
         onChange={handleChange('priority')}
         helperText="How urgent is this issue?"
       />
-      
+
       <SelectField
         label="Affected Component Size"
         options={sizeOptions}
@@ -319,7 +320,7 @@ const FormExampleComponent = () => {
         size="sm"
         helperText="Size of the affected component"
       />
-      
+
       <div className="pt-4 border-t text-sm text-gray-600">
         <p>Form data: {JSON.stringify(formData, null, 2)}</p>
       </div>
@@ -337,16 +338,16 @@ export const FormExample: Story = {
 const NestedOptionsComponent = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedItem, setSelectedItem] = useState('');
-  
+
   const categories = [
     { value: '', label: 'Select category' },
     { value: 'electronics', label: 'Electronics' },
     { value: 'clothing', label: 'Clothing' },
     { value: 'books', label: 'Books' },
   ];
-  
+
   const getItemsForCategory = (category: string) => {
-    const items: Record<string, Array<{value: string, label: string}>> = {
+    const items: Record<string, Array<{ value: string; label: string }>> = {
       electronics: [
         { value: '', label: 'Select item' },
         { value: 'laptop', label: 'Laptop' },
@@ -368,32 +369,32 @@ const NestedOptionsComponent = () => {
     };
     return items[category] || [{ value: '', label: 'Select category first' }];
   };
-  
+
   return (
     <div className="space-y-4 w-96">
       <h3 className="text-lg font-semibold">Dependent Dropdowns</h3>
-      
+
       <SelectField
         label="Product Category"
         options={categories}
         value={selectedCategory}
-        onChange={(e) => {
+        onChange={e => {
           setSelectedCategory(e.target.value);
           setSelectedItem(''); // Reset item when category changes
         }}
         placeholder="Choose a category"
       />
-      
+
       <SelectField
         label="Product Item"
         options={getItemsForCategory(selectedCategory)}
         value={selectedItem}
-        onChange={(e) => setSelectedItem(e.target.value)}
+        onChange={e => setSelectedItem(e.target.value)}
         disabled={!selectedCategory}
-        placeholder={selectedCategory ? "Choose an item" : "Select category first"}
-        helperText={selectedCategory ? "Select a specific item" : "Choose a category above first"}
+        placeholder={selectedCategory ? 'Choose an item' : 'Select category first'}
+        helperText={selectedCategory ? 'Select a specific item' : 'Choose a category above first'}
       />
-      
+
       {selectedCategory && selectedItem && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm">
           Selected: {selectedCategory} → {selectedItem}

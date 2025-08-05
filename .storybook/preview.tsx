@@ -1,25 +1,27 @@
-import type { Preview } from '@storybook/nextjs-vite'
-import React from 'react'
-import '../src/app/globals.css'
+import type { Preview } from '@storybook/nextjs-vite';
+import React from 'react';
+import '../src/app/globals.css';
 
 // Make React available globally for components that might not import it
-;(globalThis as any).React = React
+(globalThis as any).React = React;
 
 // Global decorator to add Montserrat font
 const withGoogleFonts = (StoryFn: any) => {
   React.useEffect(() => {
     // Add Google Fonts link for Montserrat
-    const link = document.createElement('link')
-    link.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap'
-    link.rel = 'stylesheet'
-    document.head.appendChild(link)
-    
+    const link = document.createElement('link');
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
     // Add font-family to body
-    document.body.style.fontFamily = "'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif"
-  }, [])
-  
-  return <StoryFn />
-}
+    document.body.style.fontFamily =
+      "'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif";
+  }, []);
+
+  return <StoryFn />;
+};
 
 const preview: Preview = {
   decorators: [withGoogleFonts],
@@ -38,7 +40,7 @@ const preview: Preview = {
           value: '#ffffff',
         },
         {
-          name: 'dark', 
+          name: 'dark',
           value: '#0f172a',
         },
       ],

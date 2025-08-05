@@ -23,18 +23,21 @@ const nextConfig = {
         source: '/storybook/:path*',
         destination: '/storybook-static/:path*',
       },
-    ]
+    ];
   },
   // Exclude Storybook files from build
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.stories\.(js|jsx|ts|tsx|mdx)$/,
       use: 'ignore-loader',
-    })
-    return config
+    });
+    return config;
   },
   // Exclude Storybook files and directories
-  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js', 'tsx', 'ts', 'jsx', 'js'].filter(ext => !ext.includes('stories')),
-}
+  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js', 'tsx', 'ts', 'jsx', 'js'].filter(
+    ext => !ext.includes('stories')
+  ),
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

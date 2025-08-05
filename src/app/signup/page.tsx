@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { InputField } from '@/components/molecules'
-import { SimpleBarangaySelector } from '@/components/organisms'
-import { Button } from '@/components/atoms'
-import Link from 'next/link'
+import React, { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { InputField } from '@/components/molecules';
+import { SimpleBarangaySelector } from '@/components/organisms';
+import { Button } from '@/components/atoms';
+import Link from 'next/link';
 
 interface SignupFormData {
-  email: string
-  password: string
-  confirmPassword: string
-  firstName: string
-  lastName: string
-  mobileNumber: string
-  barangayCode: string
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+  barangayCode: string;
 }
 
 export default function SignupPage() {
@@ -25,233 +25,239 @@ export default function SignupPage() {
     firstName: '',
     lastName: '',
     mobileNumber: '',
-    barangayCode: ''
-  })
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [step, setStep] = useState<'form' | 'success'>('form')
-  const [assignedRole, setAssignedRole] = useState<string>('')
+    barangayCode: '',
+  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [step, setStep] = useState<'form' | 'success'>('form');
+  const [assignedRole, setAssignedRole] = useState<string>('');
 
   const checkBarangayAdminExists = async (barangayCode: string): Promise<boolean> => {
     try {
-      console.log('Checking for existing admin in barangay:', barangayCode)
-      
+      console.log('Checking for existing admin in barangay:', barangayCode);
+
       const { data, error } = await supabase
         .from('user_profiles')
-        .select(`
+        .select(
+          `
           id,
           roles!inner(name)
-        `)
+        `
+        )
         .eq('barangay_code', barangayCode)
         .eq('roles.name', 'barangay_admin')
-        .eq('is_active', true)
+        .eq('is_active', true);
 
       if (error) {
-        console.error('Error checking barangay admin:', error)
-        return true // Assume admin exists if we can't check
+        console.error('Error checking barangay admin:', error);
+        return true; // Assume admin exists if we can't check
       }
 
-      const hasAdmin = (data && data.length > 0)
-      console.log('Existing admin found:', hasAdmin)
-      return hasAdmin
+      const hasAdmin = data && data.length > 0;
+      console.log('Existing admin found:', hasAdmin);
+      return hasAdmin;
     } catch (error) {
-      console.error('Exception in checkBarangayAdminExists:', error)
-      return true // Assume admin exists if we can't check
+      console.error('Exception in checkBarangayAdminExists:', error);
+      return true; // Assume admin exists if we can't check
     }
-  }
+  };
 
   const handleChange = (field: keyof SignupFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    
+    setFormData(prev => ({ ...prev, [field]: value }));
+
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }))
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
-  }
+  };
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {}
+    const newErrors: { [key: string]: string } = {};
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+      newErrors.password = 'Password must be at least 8 characters';
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      newErrors.password =
+        'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
 
     // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password'
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     // Name validation
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required'
+      newErrors.firstName = 'First name is required';
     }
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required'
+      newErrors.lastName = 'Last name is required';
     }
 
     // Mobile number validation
     if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = 'Mobile number is required'
+      newErrors.mobileNumber = 'Mobile number is required';
     } else if (!/^(09|\+639)\d{9}$/.test(formData.mobileNumber.replace(/\s+/g, ''))) {
-      newErrors.mobileNumber = 'Please enter a valid Philippine mobile number'
+      newErrors.mobileNumber = 'Please enter a valid Philippine mobile number';
     }
 
     // Barangay validation
     if (!formData.barangayCode) {
-      newErrors.barangayCode = 'Please select your barangay'
+      newErrors.barangayCode = 'Please select your barangay';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
+    e.preventDefault();
 
-    setIsSubmitting(true)
-    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
     // Add timeout to prevent infinite loading
     const timeoutId = setTimeout(() => {
-      console.error('Signup process timed out')
-      setIsSubmitting(false)
-      setErrors({ general: 'Signup process timed out. Please try again.' })
-    }, 30000) // 30 second timeout
-    
+      console.error('Signup process timed out');
+      setIsSubmitting(false);
+      setErrors({ general: 'Signup process timed out. Please try again.' });
+    }, 30000); // 30 second timeout
+
     try {
       // Check if barangay already has an admin
-      console.log('Step 1: Checking for existing admin...')
-      const hasAdmin = await checkBarangayAdminExists(formData.barangayCode)
-      const willBeAdmin = !hasAdmin
-      console.log('Will be admin:', willBeAdmin)
+      console.log('Step 1: Checking for existing admin...');
+      const hasAdmin = await checkBarangayAdminExists(formData.barangayCode);
+      const willBeAdmin = !hasAdmin;
+      console.log('Will be admin:', willBeAdmin);
 
       // Create auth user
-      console.log('Step 2: Creating auth user...')
+      console.log('Step 2: Creating auth user...');
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-      })
+      });
 
       if (authError) {
-        console.error('Auth signup error:', authError)
+        console.error('Auth signup error:', authError);
         if (authError.message.includes('already registered')) {
-          setErrors({ general: 'An account with this email already exists. Please sign in instead.' })
+          setErrors({
+            general: 'An account with this email already exists. Please sign in instead.',
+          });
         } else {
-          setErrors({ general: authError.message })
+          setErrors({ general: authError.message });
         }
-        return
+        return;
       }
 
       if (!authData.user) {
-        console.error('No user returned from signup')
-        setErrors({ general: 'Failed to create account. Please try again.' })
-        return
+        console.error('No user returned from signup');
+        setErrors({ general: 'Failed to create account. Please try again.' });
+        return;
       }
-      
-      console.log('Auth user created:', authData.user.id)
+
+      console.log('Auth user created:', authData.user.id);
 
       // Get the appropriate role using our function
-      console.log('Step 3: Getting role assignment...')
-      const { data: roleData, error: roleError } = await supabase
-        .rpc('assign_user_role_for_barangay', {
+      console.log('Step 3: Getting role assignment...');
+      const { data: roleData, error: roleError } = await supabase.rpc(
+        'assign_user_role_for_barangay',
+        {
           p_user_id: authData.user.id,
-          p_barangay_code: formData.barangayCode
-        })
+          p_barangay_code: formData.barangayCode,
+        }
+      );
 
       if (roleError) {
-        console.error('Error getting role:', roleError)
-        console.log('Step 3b: Using fallback role assignment...')
+        console.error('Error getting role:', roleError);
+        console.log('Step 3b: Using fallback role assignment...');
         // Fallback to manual role assignment
         const { data: roles } = await supabase
           .from('roles')
           .select('id, name')
-          .in('name', ['barangay_admin', 'resident'])
+          .in('name', ['barangay_admin', 'resident']);
 
-        const role = willBeAdmin 
+        const role = willBeAdmin
           ? roles?.find(r => r.name === 'barangay_admin')
-          : roles?.find(r => r.name === 'resident')
+          : roles?.find(r => r.name === 'resident');
 
         if (!role) {
-          console.error('No valid roles found')
-          setErrors({ general: 'System error: No valid roles found. Please contact administrator.' })
-          return
+          console.error('No valid roles found');
+          setErrors({
+            general: 'System error: No valid roles found. Please contact administrator.',
+          });
+          return;
         }
-        
+
         // Update roleData to use the role.id from fallback
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            id: authData.user.id,
-            email: formData.email,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            mobile_number: formData.mobileNumber,
-            barangay_code: formData.barangayCode,
-            role_id: role.id,
-            is_active: true
-          })
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError)
-          setErrors({ general: 'Account created but profile setup failed: ' + profileError.message })
-          return
-        }
-
-        // Set assigned role for display
-        setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident')
-        setStep('success')
-        return
-      }
-
-      // Create user profile with successful role assignment
-      console.log('Step 4: Creating user profile...')
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert({
+        const { error: profileError } = await supabase.from('user_profiles').insert({
           id: authData.user.id,
           email: formData.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
           mobile_number: formData.mobileNumber,
           barangay_code: formData.barangayCode,
-          role_id: roleData,
-          is_active: true
-        })
+          role_id: role.id,
+          is_active: true,
+        });
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+          setErrors({
+            general: 'Account created but profile setup failed: ' + profileError.message,
+          });
+          return;
+        }
+
+        // Set assigned role for display
+        setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
+        setStep('success');
+        return;
+      }
+
+      // Create user profile with successful role assignment
+      console.log('Step 4: Creating user profile...');
+      const { error: profileError } = await supabase.from('user_profiles').insert({
+        id: authData.user.id,
+        email: formData.email,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        mobile_number: formData.mobileNumber,
+        barangay_code: formData.barangayCode,
+        role_id: roleData,
+        is_active: true,
+      });
 
       if (profileError) {
-        console.error('Profile creation error:', profileError)
-        setErrors({ general: 'Account created but profile setup failed: ' + profileError.message })
-        return
+        console.error('Profile creation error:', profileError);
+        setErrors({ general: 'Account created but profile setup failed: ' + profileError.message });
+        return;
       }
 
       // Set assigned role for display
-      console.log('Step 5: Signup successful!')
-      setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident')
-      setStep('success')
-      
+      console.log('Step 5: Signup successful!');
+      setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
+      setStep('success');
     } catch (error: any) {
-      console.error('Signup error:', error)
-      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      console.error('Signup error:', error);
+      setErrors({ general: 'An unexpected error occurred. Please try again.' });
     } finally {
-      clearTimeout(timeoutId)
-      setIsSubmitting(false)
+      clearTimeout(timeoutId);
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // No auth loading check needed for signup page
 
@@ -263,12 +269,24 @@ export default function SignupPage() {
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                <svg
+                  className="h-6 w-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
                 </svg>
               </div>
-              <h2 className="mt-6 text-2xl font-bold text-gray-900">Account Created Successfully!</h2>
-              
+              <h2 className="mt-6 text-2xl font-bold text-gray-900">
+                Account Created Successfully!
+              </h2>
+
               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h3 className="text-sm font-medium text-blue-800 mb-2">Your Role Assignment:</h3>
                 <p className="text-blue-700">
@@ -276,7 +294,8 @@ export default function SignupPage() {
                 </p>
                 {assignedRole.includes('Administrator') && (
                   <p className="text-sm text-blue-600 mt-2">
-                    You&apos;ve been assigned as the first administrator for this barangay. You can now manage users and data for your barangay.
+                    You&apos;ve been assigned as the first administrator for this barangay. You can
+                    now manage users and data for your barangay.
                   </p>
                 )}
               </div>
@@ -295,10 +314,7 @@ export default function SignupPage() {
 
               <div className="mt-6">
                 <Link href="/login">
-                  <Button
-                    variant="primary"
-                    size="regular"
-                  >
+                  <Button variant="primary" size="regular">
                     Go to Login
                   </Button>
                 </Link>
@@ -307,21 +323,19 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Create RBI Account
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create RBI Account</h1>
           <p className="text-gray-600 text-sm mb-8">
             Join the Records of Barangay Inhabitant System
           </p>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* General Error */}
@@ -339,21 +353,30 @@ export default function SignupPage() {
 
             {/* Personal Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Personal Information</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                Personal Information
+              </h3>
+
               <div className="grid grid-cols-2 gap-4">
                 <InputField
                   id="firstName"
                   type="text"
                   label="First Name *"
                   value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  onChange={e => handleChange('firstName', e.target.value)}
                   placeholder="Juan"
                   errorMessage={errors.firstName}
                   disabled={isSubmitting}
                   autoComplete="given-name"
                   leftIcon={
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -364,13 +387,20 @@ export default function SignupPage() {
                   type="text"
                   label="Last Name *"
                   value={formData.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  onChange={e => handleChange('lastName', e.target.value)}
                   placeholder="Dela Cruz"
                   errorMessage={errors.lastName}
                   disabled={isSubmitting}
                   autoComplete="family-name"
                   leftIcon={
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -383,14 +413,21 @@ export default function SignupPage() {
                 type="email"
                 label="Email Address *"
                 value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
+                onChange={e => handleChange('email', e.target.value)}
                 placeholder="juan.delacruz@gmail.com"
                 errorMessage={errors.email}
                 helperText="Use a valid email address for account verification"
                 disabled={isSubmitting}
                 autoComplete="email"
                 leftIcon={
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
@@ -402,13 +439,20 @@ export default function SignupPage() {
                 type="tel"
                 label="Mobile Number *"
                 value={formData.mobileNumber}
-                onChange={(e) => handleChange('mobileNumber', e.target.value)}
+                onChange={e => handleChange('mobileNumber', e.target.value)}
                 placeholder="09XX XXX XXXX"
                 errorMessage={errors.mobileNumber}
                 disabled={isSubmitting}
                 autoComplete="tel"
                 leftIcon={
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                   </svg>
                 }
@@ -417,15 +461,20 @@ export default function SignupPage() {
 
             {/* Location Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Location Information</h3>
-              
+              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+                Location Information
+              </h3>
+
               <div>
-                <label htmlFor="barangayCode" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="barangayCode"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Barangay *
                 </label>
                 <SimpleBarangaySelector
                   value={formData.barangayCode}
-                  onChange={(code) => handleChange('barangayCode', code)}
+                  onChange={code => handleChange('barangayCode', code)}
                   error={errors.barangayCode}
                   disabled={isSubmitting}
                   placeholder="Search for your barangay..."
@@ -437,13 +486,20 @@ export default function SignupPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Role Assignment</h3>
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-sm font-medium text-blue-800 mb-2">Automatic Role Assignment</h4>
+                <h4 className="text-sm font-medium text-blue-800 mb-2">
+                  Automatic Role Assignment
+                </h4>
                 <p className="text-sm text-blue-700">
                   Your role will be automatically assigned based on your barangay:
                 </p>
                 <ul className="text-sm text-blue-600 mt-2 list-disc list-inside">
-                  <li>If no administrator exists for your barangay → <strong>Barangay Administrator</strong></li>
-                  <li>If an administrator already exists → <strong>Resident</strong></li>
+                  <li>
+                    If no administrator exists for your barangay →{' '}
+                    <strong>Barangay Administrator</strong>
+                  </li>
+                  <li>
+                    If an administrator already exists → <strong>Resident</strong>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -451,19 +507,26 @@ export default function SignupPage() {
             {/* Account Security */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Account Security</h3>
-              
+
               <InputField
                 id="password"
                 type="password"
                 label="Password *"
                 value={formData.password}
-                onChange={(e) => handleChange('password', e.target.value)}
+                onChange={e => handleChange('password', e.target.value)}
                 placeholder="Create a strong password"
                 errorMessage={errors.password}
                 disabled={isSubmitting}
                 autoComplete="new-password"
                 leftIcon={
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <circle cx="12" cy="16" r="1"></circle>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -476,13 +539,20 @@ export default function SignupPage() {
                 type="password"
                 label="Confirm Password *"
                 value={formData.confirmPassword}
-                onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                onChange={e => handleChange('confirmPassword', e.target.value)}
                 placeholder="Confirm your password"
                 errorMessage={errors.confirmPassword}
                 disabled={isSubmitting}
                 autoComplete="new-password"
                 leftIcon={
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <circle cx="12" cy="16" r="1"></circle>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -513,11 +583,12 @@ export default function SignupPage() {
               </Link>
             </p>
             <p className="mt-2 text-xs text-gray-500">
-              By creating an account, you agree to follow barangay policies and data privacy guidelines.
+              By creating an account, you agree to follow barangay policies and data privacy
+              guidelines.
             </p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

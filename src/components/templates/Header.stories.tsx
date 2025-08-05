@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import Header from './Header'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
+import type { Meta, StoryObj } from '@storybook/react';
+import Header from './Header';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const meta = {
   title: 'Templates/Header',
@@ -10,40 +10,41 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Main navigation header template for the RBI System. Provides responsive navigation, user authentication state, and mobile-friendly menu functionality. Includes branding, main navigation links, user profile integration, and theme-aware styling.'
-      }
-    }
+        component:
+          'Main navigation header template for the RBI System. Provides responsive navigation, user authentication state, and mobile-friendly menu functionality. Includes branding, main navigation links, user profile integration, and theme-aware styling.',
+      },
+    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <ThemeProvider>
         <AuthProvider>
           <Story />
         </AuthProvider>
       </ThemeProvider>
-    )
+    ),
   ],
-  tags: ['autodocs']
-} satisfies Meta<typeof Header>
+  tags: ['autodocs'],
+} satisfies Meta<typeof Header>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {}
+export const Default: Story = {};
 
 export const WithMockUser: Story = {
   decorators: [
-    (Story) => {
+    Story => {
       // Mock the useAuth hook for this story
       const mockUser = {
         id: '1',
         email: 'juan.delacruz@rbi.gov.ph',
         user_metadata: {
           first_name: 'Juan',
-          last_name: 'Dela Cruz'
-        }
-      }
-      
+          last_name: 'Dela Cruz',
+        },
+      };
+
       return (
         <ThemeProvider>
           <div>
@@ -55,19 +56,19 @@ export const WithMockUser: Story = {
             </div>
           </div>
         </ThemeProvider>
-      )
-    }
-  ]
-}
+      );
+    },
+  ],
+};
 
 export const MobileView: Story = {
   parameters: {
     viewport: {
-      defaultViewport: 'mobile1'
-    }
+      defaultViewport: 'mobile1',
+    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <ThemeProvider>
         <AuthProvider>
           <div>
@@ -80,18 +81,18 @@ export const MobileView: Story = {
           </div>
         </AuthProvider>
       </ThemeProvider>
-    )
-  ]
-}
+    ),
+  ],
+};
 
 export const TabletView: Story = {
   parameters: {
     viewport: {
-      defaultViewport: 'tablet'
-    }
+      defaultViewport: 'tablet',
+    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <ThemeProvider>
         <AuthProvider>
           <div>
@@ -104,9 +105,9 @@ export const TabletView: Story = {
           </div>
         </AuthProvider>
       </ThemeProvider>
-    )
-  ]
-}
+    ),
+  ],
+};
 
 // Show header in different page contexts
 export const InPageContext: Story = {
@@ -115,7 +116,7 @@ export const InPageContext: Story = {
       <AuthProvider>
         <div className="min-h-screen bg-background">
           <Header />
-          
+
           {/* Sample page content */}
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="space-y-6">
@@ -123,33 +124,35 @@ export const InPageContext: Story = {
                 <h1 className="text-3xl font-bold text-primary">Dashboard</h1>
                 <p className="mt-2 text-secondary">Welcome to the RBI System dashboard</p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-surface border border-default rounded-lg p-6">
                   <h3 className="font-semibold text-primary mb-2">Residents</h3>
                   <p className="text-2xl font-bold text-blue-600">1,247</p>
                   <p className="text-sm text-secondary">Total registered</p>
                 </div>
-                
+
                 <div className="bg-surface border border-default rounded-lg p-6">
                   <h3 className="font-semibold text-primary mb-2">Households</h3>
                   <p className="text-2xl font-bold text-green-600">342</p>
                   <p className="text-sm text-secondary">Active households</p>
                 </div>
-                
+
                 <div className="bg-surface border border-default rounded-lg p-6">
                   <h3 className="font-semibold text-primary mb-2">Reports</h3>
                   <p className="text-2xl font-bold text-purple-600">15</p>
                   <p className="text-sm text-secondary">Generated this month</p>
                 </div>
               </div>
-              
+
               <div className="bg-surface border border-default rounded-lg p-6">
                 <h3 className="font-semibold text-primary mb-4">Recent Activity</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-background rounded">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm text-primary">New resident registered: Maria Santos</span>
+                    <span className="text-sm text-primary">
+                      New resident registered: Maria Santos
+                    </span>
                     <span className="text-xs text-secondary ml-auto">2 hours ago</span>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-background rounded">
@@ -159,7 +162,9 @@ export const InPageContext: Story = {
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-background rounded">
                     <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm text-primary">Report generated: Monthly Demographics</span>
+                    <span className="text-sm text-primary">
+                      Report generated: Monthly Demographics
+                    </span>
                     <span className="text-xs text-secondary ml-auto">1 day ago</span>
                   </div>
                 </div>
@@ -169,8 +174,8 @@ export const InPageContext: Story = {
         </div>
       </AuthProvider>
     </ThemeProvider>
-  )
-}
+  ),
+};
 
 // Show both light and dark modes
 export const ThemeComparison: Story = {
@@ -186,7 +191,7 @@ export const ThemeComparison: Story = {
           </ThemeProvider>
         </div>
       </div>
-      
+
       <div className="dark">
         <h3 className="text-lg font-semibold mb-4 text-white">Dark Theme</h3>
         <div className="border border-gray-700 rounded-lg overflow-hidden">
@@ -198,8 +203,8 @@ export const ThemeComparison: Story = {
         </div>
       </div>
     </div>
-  )
-}
+  ),
+};
 
 // Interactive states demonstration
 export const InteractiveStates: Story = {
@@ -208,10 +213,10 @@ export const InteractiveStates: Story = {
       <AuthProvider>
         <div className="space-y-4">
           <Header />
-          
+
           <div className="max-w-4xl mx-auto p-6 bg-background">
             <h2 className="text-xl font-semibold text-primary mb-4">Header Interactive Elements</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <h3 className="font-medium text-primary">Desktop Features:</h3>
@@ -223,7 +228,7 @@ export const InteractiveStates: Story = {
                   <li>• Theme-aware styling</li>
                 </ul>
               </div>
-              
+
               <div className="space-y-3">
                 <h3 className="font-medium text-primary">Mobile Features:</h3>
                 <ul className="text-sm text-secondary space-y-1">
@@ -235,17 +240,18 @@ export const InteractiveStates: Story = {
                 </ul>
               </div>
             </div>
-            
+
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
               <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Usage Notes:</h4>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                This header template is designed to be used across all pages in the RBI System. 
-                It automatically adapts to authentication state and provides consistent navigation experience.
+                This header template is designed to be used across all pages in the RBI System. It
+                automatically adapts to authentication state and provides consistent navigation
+                experience.
               </p>
             </div>
           </div>
         </div>
       </AuthProvider>
     </ThemeProvider>
-  )
-}
+  ),
+};

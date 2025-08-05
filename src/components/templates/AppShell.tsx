@@ -1,28 +1,31 @@
-'use client'
+'use client';
 
 /**
  * Application Shell Component
  * Modern Tailwind UI application shell with advanced design patterns
  */
 
-import React, { useState } from 'react'
-import { Button } from '@/components/atoms'
-import Navigation from '@/components/organisms/Navigation'
+import React, { useState } from 'react';
+import { Button } from '@/components/atoms';
+import Navigation from '@/components/organisms/Navigation';
 
 interface AppShellProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function AppShell({ children }: AppShellProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="relative z-50 lg:hidden" role="dialog" aria-modal="true">
-          <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-          
+          <div
+            className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+
           <div className="fixed inset-0 flex">
             <div className="relative mr-16 flex w-full max-w-xs flex-1">
               <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
@@ -34,12 +37,18 @@ export default function AppShell({ children }: AppShellProps) {
                   className="-m-2.5 p-2.5 text-white hover:text-gray-200"
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                   </svg>
                 </Button>
               </div>
-              
+
               <div className="flex grow flex-col overflow-y-auto bg-surface/95 backdrop-blur-xl border-r border-default/60">
                 <div className="px-6 py-8">
                   <div className="flex items-center gap-3">
@@ -52,7 +61,7 @@ export default function AppShell({ children }: AppShellProps) {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex-1 px-6 pb-6">
                   <Navigation />
                 </div>
@@ -76,7 +85,7 @@ export default function AppShell({ children }: AppShellProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="flex-1 px-6 pb-6">
             <Navigation />
           </div>
@@ -118,7 +127,7 @@ export default function AppShell({ children }: AppShellProps) {
                 type="search"
               />
             </div>
-            
+
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               {/* Notifications */}
               <Button
@@ -152,7 +161,9 @@ export default function AppShell({ children }: AppShellProps) {
                     <span className="text-sm font-bold text-white">BO</span>
                   </div>
                   <span className="hidden lg:flex lg:items-center lg:ml-3">
-                    <span className="text-sm font-semibold text-primary group-hover:text-indigo-600 transition-colors duration-200">Barangay Official</span>
+                    <span className="text-sm font-semibold text-primary group-hover:text-indigo-600 transition-colors duration-200">
+                      Barangay Official
+                    </span>
                     <div className="ml-2 h-4 w-4 text-muted group-hover:text-secondary transition-colors duration-200">
                       <div className="h-1 w-1 bg-current rounded-full"></div>
                       <div className="h-1 w-1 bg-current rounded-full ml-1 -mt-0.5"></div>
@@ -168,12 +179,10 @@ export default function AppShell({ children }: AppShellProps) {
         {/* Main content */}
         <main className="py-8 lg:py-12 min-h-screen">
           <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-            <div className="space-y-8">
-              {children}
-            </div>
+            <div className="space-y-8">{children}</div>
           </div>
         </main>
       </div>
     </div>
-  )
+  );
 }

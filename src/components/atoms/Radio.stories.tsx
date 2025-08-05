@@ -184,7 +184,11 @@ const GroupVerticalComponent = () => {
     >
       <Radio value="basic" label="Basic Plan" description="Perfect for individuals - $9/month" />
       <Radio value="pro" label="Pro Plan" description="Great for small teams - $29/month" />
-      <Radio value="enterprise" label="Enterprise Plan" description="For large organizations - $99/month" />
+      <Radio
+        value="enterprise"
+        label="Enterprise Plan"
+        description="For large organizations - $99/month"
+      />
     </RadioGroup>
   );
 };
@@ -246,7 +250,7 @@ export const GroupDisabled: StoryObj<typeof RadioGroup> = {
     disabled: true,
     value: 'option2',
   },
-  render: (args) => (
+  render: args => (
     <RadioGroup {...args}>
       <Radio value="option1" label="First option" />
       <Radio value="option2" label="Second option" />
@@ -267,17 +271,23 @@ export const AllVariants: Story = {
           <Radio label="Error variant" variant="error" value="error" name="variants" />
         </div>
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">States</h3>
         <div className="space-y-2">
           <Radio label="Unselected" value="unselected" name="states" />
           <Radio label="Selected" value="selected" name="states" checked />
           <Radio label="Disabled unselected" disabled value="disabled" name="states" />
-          <Radio label="Disabled selected" disabled checked value="disabled-selected" name="states" />
+          <Radio
+            label="Disabled selected"
+            disabled
+            checked
+            value="disabled-selected"
+            name="states"
+          />
         </div>
       </div>
-      
+
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Sizes</h3>
         <div className="space-y-2">
@@ -298,11 +308,11 @@ const SettingsExampleComponent = () => {
   const [theme, setTheme] = useState('light');
   const [notifications, setNotifications] = useState('email');
   const [privacy, setPrivacy] = useState('friends');
-  
+
   return (
     <div className="space-y-6 w-96">
       <h3 className="text-lg font-semibold">User Preferences</h3>
-      
+
       <RadioGroup
         label="Theme Preference"
         description="Choose your preferred theme"
@@ -314,7 +324,7 @@ const SettingsExampleComponent = () => {
         <Radio value="dark" label="Dark theme" description="Easy on the eyes" />
         <Radio value="auto" label="System theme" description="Match your device settings" />
       </RadioGroup>
-      
+
       <RadioGroup
         label="Notification Method"
         description="How would you like to receive notifications?"
@@ -324,11 +334,15 @@ const SettingsExampleComponent = () => {
         orientation="vertical"
       >
         <Radio value="email" label="Email only" description="Receive notifications via email" />
-        <Radio value="push" label="Push notifications" description="Get instant alerts on your device" />
+        <Radio
+          value="push"
+          label="Push notifications"
+          description="Get instant alerts on your device"
+        />
         <Radio value="both" label="Email + Push" description="Get notified everywhere" />
         <Radio value="none" label="No notifications" description="Stay focused, no interruptions" />
       </RadioGroup>
-      
+
       <RadioGroup
         label="Privacy Level"
         description="Who can see your profile?"
@@ -340,9 +354,11 @@ const SettingsExampleComponent = () => {
         <Radio value="friends" label="Friends" />
         <Radio value="private" label="Private" />
       </RadioGroup>
-      
+
       <div className="pt-4 border-t text-sm text-gray-600">
-        <p>Current settings: {theme} theme, {notifications} notifications, {privacy} profile</p>
+        <p>
+          Current settings: {theme} theme, {notifications} notifications, {privacy} profile
+        </p>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 /**
  * Citizenly Design System - Main Export
  * Comprehensive design system for Philippine government digital services
- * 
+ *
  * This design system provides:
  * - Complete color palette (Primary, Secondary, Semantic, RBI-specific)
  * - Typography scale with proper line heights and letter spacing
@@ -13,7 +13,19 @@
  */
 
 // Export design tokens
-export { designTokens, colors, typography, spacing, borderRadius, boxShadow, animation, components, semantic, breakpoints, zIndex } from './tokens';
+export {
+  designTokens,
+  colors,
+  typography,
+  spacing,
+  borderRadius,
+  boxShadow,
+  animation,
+  components,
+  semantic,
+  breakpoints,
+  zIndex,
+} from './tokens';
 
 // Export utility functions
 export {
@@ -30,7 +42,7 @@ export {
   getFocusRing,
   validateDesignTokenUsage,
   getSectoralBadgeColor,
-  getHouseholdTypeStyle
+  getHouseholdTypeStyle,
 } from './utils';
 
 // Re-export default utils
@@ -42,32 +54,32 @@ export const DESIGN_SYSTEM_NAME = 'Citizenly RBI Design System';
 
 /**
  * Design System Quick Reference
- * 
+ *
  * ## Color Usage:
  * ```tsx
  * import { getColor, getRBIColor } from '@/design-system';
- * 
+ *
  * const primaryColor = getColor('primary.500');        // #3b82f6
  * const successColor = getColor('success.600');        // #059669
  * const sectoralColor = getRBIColor('laborForce');     // #059669
  * ```
- * 
+ *
  * ## Spacing Usage:
  * ```tsx
  * import { getSpacing, getResponsiveSpacing } from '@/design-system';
- * 
+ *
  * const spacing = getSpacing('4');                     // 16px
  * const responsive = getResponsiveSpacing('4');        // { base: '16px', sm: '16px', md: '20px', lg: '24px' }
  * ```
- * 
+ *
  * ## Component Styles:
  * ```tsx
  * import { getButtonStyles, getInputStyles } from '@/design-system';
- * 
+ *
  * const buttonStyles = getButtonStyles('primary', 'md');
  * const inputStyles = getInputStyles('focus');
  * ```
- * 
+ *
  * ## Tailwind Classes:
  * The design tokens are automatically available as Tailwind classes:
  * ```tsx
@@ -75,20 +87,19 @@ export const DESIGN_SYSTEM_NAME = 'Citizenly RBI Design System';
  * <div className="bg-rbi-labor-force text-white p-2 rounded">
  * <div className="focus-ring-primary border-primary-500">
  * ```
- * 
+ *
  * ## RBI-Specific Usage:
  * ```tsx
  * import { getSectoralBadgeColor, getHouseholdTypeStyle } from '@/design-system';
- * 
+ *
  * const badgeColor = getSectoralBadgeColor('seniorCitizen', 'solid');
  * const householdStyle = getHouseholdTypeStyle('nuclear');
  * ```
  */
 
 // Type exports for better developer experience
-export type {
-  // Color types
-} from './tokens';
+export type {} from // Color types
+'./tokens';
 
 // Constants for common use cases
 export const COMMON_COLORS = {
@@ -96,43 +107,43 @@ export const COMMON_COLORS = {
   FLAG_BLUE: '#0038a8',
   FLAG_RED: '#ce1126',
   FLAG_YELLOW: '#fcd116',
-  
+
   // Government official colors
   GOV_BLUE: '#1e40af',
   GOV_GOLD: '#f59e0b',
-  
+
   // Status colors
   SUCCESS: '#059669',
-  WARNING: '#ea580c', 
+  WARNING: '#ea580c',
   DANGER: '#dc2626',
   INFO: '#3b82f6',
-  
+
   // Text colors
   TEXT_PRIMARY: '#262626',
   TEXT_SECONDARY: '#525252',
-  TEXT_MUTED: '#737373'
+  TEXT_MUTED: '#737373',
 } as const;
 
 export const COMMON_SPACING = {
-  XS: '4px',    // spacing-1
-  SM: '8px',    // spacing-2
-  MD: '16px',   // spacing-4
-  LG: '24px',   // spacing-6
-  XL: '32px',   // spacing-8
-  XXL: '48px'   // spacing-12
+  XS: '4px', // spacing-1
+  SM: '8px', // spacing-2
+  MD: '16px', // spacing-4
+  LG: '24px', // spacing-6
+  XL: '32px', // spacing-8
+  XXL: '48px', // spacing-12
 } as const;
 
 export const COMMON_RADIUS = {
-  SM: '4px',    // radius-sm
-  MD: '6px',    // radius-md (default)
-  LG: '8px',    // radius-lg
-  XL: '12px',   // radius-xl
-  FULL: '9999px' // radius-full
+  SM: '4px', // radius-sm
+  MD: '6px', // radius-md (default)
+  LG: '8px', // radius-lg
+  XL: '12px', // radius-xl
+  FULL: '9999px', // radius-full
 } as const;
 
 /**
  * Design System Best Practices
- * 
+ *
  * 1. **Always use design tokens** instead of hardcoded values
  * 2. **Use semantic colors** (success, warning, danger) for states
  * 3. **Use RBI-specific colors** for sectoral classifications

@@ -1,17 +1,17 @@
-import { randomBytes, createHash, timingSafeEqual } from 'crypto'
+import { randomBytes, createHash, timingSafeEqual } from 'crypto';
 
 /**
  * CSRF Protection Implementation
  * Provides Cross-Site Request Forgery protection for forms
  */
 
-const CSRF_SECRET = process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production'
-const TOKEN_EXPIRY = 60 * 60 * 1000 // 1 hour in milliseconds
+const CSRF_SECRET = process.env.CSRF_SECRET || 'default-csrf-secret-change-in-production';
+const TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export interface CSRFToken {
-  token: string
-  timestamp: number
-  signature: string
+  token: string;
+  timestamp: number;
+  signature: string;
 }
 
 /**
@@ -19,20 +19,20 @@ export interface CSRFToken {
  * @returns Object containing the token and its signature
  */
 export function generateCSRFToken(): CSRFToken {
-  const timestamp = Date.now()
-  const randomToken = randomBytes(32).toString('base64url')
-  
+  const timestamp = Date.now();
+  const randomToken = randomBytes(32).toString('base64url');
+
   // Create signature using HMAC
-  const data = `${randomToken}:${timestamp}`
+  const data = `${randomToken}:${timestamp}`;
   const signature = createHash('sha256')
     .update(data + CSRF_SECRET)
-    .digest('base64url')
+    .digest('base64url');
 
   return {
     token: randomToken,
     timestamp,
-    signature
-  }
+    signature,
+  };
 }
 
 /**
@@ -42,36 +42,32 @@ export function generateCSRFToken(): CSRFToken {
  * @param signature - The signature to verify
  * @returns boolean indicating if token is valid
  */
-export function verifyCSRFToken(
-  token: string, 
-  timestamp: number, 
-  signature: string
-): boolean {
+export function verifyCSRFToken(token: string, timestamp: number, signature: string): boolean {
   try {
     // Check if token has expired
     if (Date.now() - timestamp > TOKEN_EXPIRY) {
-      console.warn('[CSRF] Token expired')
-      return false
+      console.warn('[CSRF] Token expired');
+      return false;
     }
 
     // Recreate the signature
-    const data = `${token}:${timestamp}`
+    const data = `${token}:${timestamp}`;
     const expectedSignature = createHash('sha256')
       .update(data + CSRF_SECRET)
-      .digest('base64url')
+      .digest('base64url');
 
     // Use timing-safe comparison to prevent timing attacks
-    const expectedBuffer = Buffer.from(expectedSignature, 'base64url')
-    const actualBuffer = Buffer.from(signature, 'base64url')
+    const expectedBuffer = Buffer.from(expectedSignature, 'base64url');
+    const actualBuffer = Buffer.from(signature, 'base64url');
 
     if (expectedBuffer.length !== actualBuffer.length) {
-      return false
+      return false;
     }
 
-    return timingSafeEqual(expectedBuffer, actualBuffer)
+    return timingSafeEqual(expectedBuffer, actualBuffer);
   } catch (error) {
-    console.error('[CSRF] Token verification error:', error)
-    return false
+    console.error('[CSRF] Token verification error:', error);
+    return false;
   }
 }
 
@@ -80,8 +76,8 @@ export function verifyCSRFToken(
  * @returns String token that can be embedded in forms
  */
 export function createCSRFTokenString(): string {
-  const csrfData = generateCSRFToken()
-  return `${csrfData.token}:${csrfData.timestamp}:${csrfData.signature}`
+  const csrfData = generateCSRFToken();
+  return `${csrfData.token}:${csrfData.timestamp}:${csrfData.signature}`;
 }
 
 /**
@@ -91,22 +87,22 @@ export function createCSRFTokenString(): string {
  */
 export function verifyCSRFTokenString(tokenString: string): boolean {
   try {
-    const parts = tokenString.split(':')
+    const parts = tokenString.split(':');
     if (parts.length !== 3) {
-      return false
+      return false;
     }
 
-    const [token, timestampStr, signature] = parts
-    const timestamp = parseInt(timestampStr, 10)
+    const [token, timestampStr, signature] = parts;
+    const timestamp = parseInt(timestampStr, 10);
 
     if (isNaN(timestamp)) {
-      return false
+      return false;
     }
 
-    return verifyCSRFToken(token, timestamp, signature)
+    return verifyCSRFToken(token, timestamp, signature);
   } catch (error) {
-    console.error('[CSRF] Token parsing error:', error)
-    return false
+    console.error('[CSRF] Token parsing error:', error);
+    return false;
   }
 }
 
@@ -117,33 +113,33 @@ export function useCSRFToken() {
   // In a real implementation, this would be stored in session or secure cookie
   const getToken = (): string => {
     if (typeof window !== 'undefined') {
-      let token = sessionStorage.getItem('csrf_token')
+      let token = sessionStorage.getItem('csrf_token');
       if (!token) {
-        token = createCSRFTokenString()
-        sessionStorage.setItem('csrf_token', token)
+        token = createCSRFTokenString();
+        sessionStorage.setItem('csrf_token', token);
       }
-      return token
+      return token;
     }
-    return createCSRFTokenString()
-  }
+    return createCSRFTokenString();
+  };
 
   const validateToken = (token: string): boolean => {
-    return verifyCSRFTokenString(token)
-  }
+    return verifyCSRFTokenString(token);
+  };
 
   const refreshToken = (): string => {
-    const newToken = createCSRFTokenString()
+    const newToken = createCSRFTokenString();
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('csrf_token', newToken)
+      sessionStorage.setItem('csrf_token', newToken);
     }
-    return newToken
-  }
+    return newToken;
+  };
 
   return {
     getToken,
     validateToken,
-    refreshToken
-  }
+    refreshToken,
+  };
 }
 
 /**
@@ -152,23 +148,20 @@ export function useCSRFToken() {
  * @param method - HTTP method
  * @returns boolean indicating if request should be allowed
  */
-export function validateCSRFMiddleware(
-  token: string | undefined,
-  method: string
-): boolean {
+export function validateCSRFMiddleware(token: string | undefined, method: string): boolean {
   // Only validate POST, PUT, DELETE, PATCH requests
-  const protectedMethods = ['POST', 'PUT', 'DELETE', 'PATCH']
-  
+  const protectedMethods = ['POST', 'PUT', 'DELETE', 'PATCH'];
+
   if (!protectedMethods.includes(method.toUpperCase())) {
-    return true // GET requests don't need CSRF protection
+    return true; // GET requests don't need CSRF protection
   }
 
   if (!token) {
-    console.warn('[CSRF] Missing CSRF token for protected request')
-    return false
+    console.warn('[CSRF] Missing CSRF token for protected request');
+    return false;
   }
 
-  return verifyCSRFTokenString(token)
+  return verifyCSRFTokenString(token);
 }
 
 /**
@@ -176,9 +169,9 @@ export function validateCSRFMiddleware(
  * @returns Object with CSRF token data for meta tags
  */
 export function getCSRFMetaTags() {
-  const csrfData = generateCSRFToken()
+  const csrfData = generateCSRFToken();
   return {
     'csrf-token': `${csrfData.token}:${csrfData.timestamp}:${csrfData.signature}`,
-    'csrf-param': '_csrf'
-  }
+    'csrf-param': '_csrf',
+  };
 }

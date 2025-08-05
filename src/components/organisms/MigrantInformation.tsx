@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * MigrantInformation Component - RBI Migration Status and History
@@ -6,9 +6,9 @@
  * Supports both internal (domestic) and international migration tracking
  */
 
-import React, { useState } from 'react'
-import { Select, Textarea, Radio, RadioGroup } from '../atoms'
-import { FormGroup, InputField } from '../molecules'
+import React, { useState } from 'react';
+import { Select, Textarea, Radio, RadioGroup } from '../atoms';
+import { FormGroup, InputField } from '../molecules';
 
 // Migration Information Interface (matches database schema)
 export interface MigrationInformation {
@@ -16,7 +16,13 @@ export interface MigrationInformation {
   migration_type: 'domestic' | 'international' | null;
   previous_address: string;
   previous_country?: string;
-  migration_reason: 'economic' | 'family_reunification' | 'education' | 'displacement' | 'other' | null;
+  migration_reason:
+    | 'economic'
+    | 'family_reunification'
+    | 'education'
+    | 'displacement'
+    | 'other'
+    | null;
   migration_reason_details?: string;
   year_of_migration?: number;
   length_of_stay_months?: number;
@@ -35,64 +41,83 @@ interface MigrantInformationProps {
 
 // Migration reason options
 const MIGRATION_REASONS = [
-  { value: 'economic', label: 'Economic Opportunities', description: 'Employment, business, or livelihood' },
-  { value: 'family_reunification', label: 'Family Reunification', description: 'To join family members' },
+  {
+    value: 'economic',
+    label: 'Economic Opportunities',
+    description: 'Employment, business, or livelihood',
+  },
+  {
+    value: 'family_reunification',
+    label: 'Family Reunification',
+    description: 'To join family members',
+  },
   { value: 'education', label: 'Education', description: 'Study or training purposes' },
-  { value: 'displacement', label: 'Displacement', description: 'Conflict, disaster, or forced migration' },
-  { value: 'other', label: 'Other', description: 'Please specify in details' }
-] as const
+  {
+    value: 'displacement',
+    label: 'Displacement',
+    description: 'Conflict, disaster, or forced migration',
+  },
+  { value: 'other', label: 'Other', description: 'Please specify in details' },
+] as const;
 
 // Registration status options
 const REGISTRATION_STATUS_OPTIONS = [
   { value: 'documented', label: 'Documented', description: 'Has proper migration documents' },
   { value: 'undocumented', label: 'Undocumented', description: 'Lacks proper documentation' },
   { value: 'pending', label: 'Pending', description: 'Documentation in process' },
-  { value: 'not_applicable', label: 'Not Applicable', description: 'Domestic migration or born locally' }
-] as const
+  {
+    value: 'not_applicable',
+    label: 'Not Applicable',
+    description: 'Domestic migration or born locally',
+  },
+] as const;
 
 export default function MigrantInformation({
   value,
   onChange,
   disabled = false,
-  className = ""
+  className = '',
 }: MigrantInformationProps) {
-  const [showDetails, setShowDetails] = useState(value.migration_reason === 'other')
+  const [showDetails, setShowDetails] = useState(value.migration_reason === 'other');
 
   const handleChange = (field: keyof MigrationInformation, newValue: any) => {
-    const updated = { ...value, [field]: newValue }
-    
+    const updated = { ...value, [field]: newValue };
+
     // Auto-reset dependent fields when migration type changes
     if (field === 'migration_type') {
       if (newValue === 'domestic') {
-        updated.previous_country = undefined
-        updated.registration_status = 'not_applicable'
+        updated.previous_country = undefined;
+        updated.registration_status = 'not_applicable';
       } else if (newValue === 'international') {
-        updated.origin_region_code = undefined
-        updated.origin_province_code = undefined
-        updated.origin_city_code = undefined
+        updated.origin_region_code = undefined;
+        updated.origin_province_code = undefined;
+        updated.origin_city_code = undefined;
       }
     }
-    
+
     // Show/hide details field based on reason
     if (field === 'migration_reason') {
-      setShowDetails(newValue === 'other')
+      setShowDetails(newValue === 'other');
       if (newValue !== 'other') {
-        updated.migration_reason_details = undefined
+        updated.migration_reason_details = undefined;
       }
     }
-    
+
     // Reset all fields when is_migrant becomes false
     if (field === 'is_migrant' && !newValue) {
       Object.keys(updated).forEach(key => {
         if (key !== 'is_migrant') {
-          (updated as any)[key] = key.includes('registration_status') ? 'not_applicable' : 
-                                  key.includes('type') ? null : undefined
+          (updated as any)[key] = key.includes('registration_status')
+            ? 'not_applicable'
+            : key.includes('type')
+              ? null
+              : undefined;
         }
-      })
+      });
     }
-    
-    onChange(updated)
-  }
+
+    onChange(updated);
+  };
 
   if (!value.is_migrant) {
     return (
@@ -102,17 +127,19 @@ export default function MigrantInformation({
             <span className="text-base">🧳</span> Migration Information
           </h3>
           <p className="text-sm text-secondary">
-            This resident is not classified as a migrant. Enable migration status to collect details.
+            This resident is not classified as a migrant. Enable migration status to collect
+            details.
           </p>
         </div>
-        
+
         <div className="bg-background-muted p-4 rounded-lg">
           <p className="text-sm text-secondary italic">
-            Migration information is automatically collected when a resident is marked as a migrant in sectoral classifications.
+            Migration information is automatically collected when a resident is marked as a migrant
+            in sectoral classifications.
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -132,7 +159,7 @@ export default function MigrantInformation({
         <RadioGroup
           name="migration_type"
           value={value.migration_type || ''}
-          onChange={(newValue) => handleChange('migration_type', newValue || null)}
+          onChange={newValue => handleChange('migration_type', newValue || null)}
         >
           <Radio
             value="domestic"
@@ -151,11 +178,11 @@ export default function MigrantInformation({
       <FormGroup title="Previous Address">
         <Textarea
           value={value.previous_address || ''}
-          onChange={(e) => handleChange('previous_address', e.target.value)}
+          onChange={e => handleChange('previous_address', e.target.value)}
           placeholder={
-            value.migration_type === 'international' 
-              ? "Enter complete address including city and country"
-              : "Enter complete address including barangay, city/municipality, and province"
+            value.migration_type === 'international'
+              ? 'Enter complete address including city and country'
+              : 'Enter complete address including barangay, city/municipality, and province'
           }
           disabled={disabled}
           rows={3}
@@ -168,7 +195,7 @@ export default function MigrantInformation({
           <InputField
             type="text"
             value={value.previous_country || ''}
-            onChange={(e) => handleChange('previous_country', e.target.value)}
+            onChange={e => handleChange('previous_country', e.target.value)}
             placeholder="Enter country name"
             disabled={disabled}
           />
@@ -182,7 +209,12 @@ export default function MigrantInformation({
           <InputField
             type="number"
             value={value.year_of_migration || ''}
-            onChange={(e) => handleChange('year_of_migration', e.target.value ? parseInt(e.target.value) : undefined)}
+            onChange={e =>
+              handleChange(
+                'year_of_migration',
+                e.target.value ? parseInt(e.target.value) : undefined
+              )
+            }
             placeholder="YYYY"
             min={1900}
             max={new Date().getFullYear()}
@@ -195,7 +227,12 @@ export default function MigrantInformation({
           <InputField
             type="number"
             value={value.length_of_stay_months || ''}
-            onChange={(e) => handleChange('length_of_stay_months', e.target.value ? parseInt(e.target.value) : undefined)}
+            onChange={e =>
+              handleChange(
+                'length_of_stay_months',
+                e.target.value ? parseInt(e.target.value) : undefined
+              )
+            }
             placeholder="Number of months"
             min={0}
             disabled={disabled}
@@ -208,7 +245,7 @@ export default function MigrantInformation({
         <RadioGroup
           name="migration_reason"
           value={value.migration_reason || ''}
-          onChange={(newValue) => handleChange('migration_reason', newValue || null)}
+          onChange={newValue => handleChange('migration_reason', newValue || null)}
         >
           {MIGRATION_REASONS.map(reason => (
             <Radio
@@ -226,7 +263,7 @@ export default function MigrantInformation({
         <FormGroup title="Migration Reason Details">
           <Textarea
             value={value.migration_reason_details || ''}
-            onChange={(e) => handleChange('migration_reason_details', e.target.value)}
+            onChange={e => handleChange('migration_reason_details', e.target.value)}
             placeholder="Please provide specific details about the reason for migration"
             disabled={disabled}
             rows={3}
@@ -240,7 +277,7 @@ export default function MigrantInformation({
           <RadioGroup
             name="registration_status"
             value={value.registration_status}
-            onChange={(newValue) => handleChange('registration_status', newValue)}
+            onChange={newValue => handleChange('registration_status', newValue)}
           >
             {REGISTRATION_STATUS_OPTIONS.map(status => (
               <Radio
@@ -258,21 +295,40 @@ export default function MigrantInformation({
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 className="font-medium text-blue-900 mb-2">Migration Summary</h4>
         <div className="text-sm text-blue-800 space-y-1">
-          <p><strong>Type:</strong> {value.migration_type ? value.migration_type.replace('_', ' ').toUpperCase() : 'Not specified'}</p>
+          <p>
+            <strong>Type:</strong>{' '}
+            {value.migration_type
+              ? value.migration_type.replace('_', ' ').toUpperCase()
+              : 'Not specified'}
+          </p>
           {value.year_of_migration && (
-            <p><strong>Migrated:</strong> {value.year_of_migration} ({value.length_of_stay_months ? `${value.length_of_stay_months} months ago` : 'duration not specified'})</p>
+            <p>
+              <strong>Migrated:</strong> {value.year_of_migration} (
+              {value.length_of_stay_months
+                ? `${value.length_of_stay_months} months ago`
+                : 'duration not specified'}
+              )
+            </p>
           )}
           {value.migration_reason && (
-            <p><strong>Reason:</strong> {MIGRATION_REASONS.find(r => r.value === value.migration_reason)?.label}</p>
+            <p>
+              <strong>Reason:</strong>{' '}
+              {MIGRATION_REASONS.find(r => r.value === value.migration_reason)?.label}
+            </p>
           )}
           {value.previous_country && (
-            <p><strong>From:</strong> {value.previous_country}</p>
+            <p>
+              <strong>From:</strong> {value.previous_country}
+            </p>
           )}
           {value.migration_type === 'international' && (
-            <p><strong>Status:</strong> {REGISTRATION_STATUS_OPTIONS.find(s => s.value === value.registration_status)?.label}</p>
+            <p>
+              <strong>Status:</strong>{' '}
+              {REGISTRATION_STATUS_OPTIONS.find(s => s.value === value.registration_status)?.label}
+            </p>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

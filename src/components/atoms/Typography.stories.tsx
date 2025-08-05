@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import React from 'react'
-import { Typography, Heading1, Heading2, Heading3, BodyText, Caption } from './Typography'
+import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+import { Typography, Heading1, Heading2, Heading3, BodyText, Caption } from './Typography';
 
 const meta: Meta<typeof Typography> = {
   title: 'Atoms/Typography',
@@ -13,10 +13,24 @@ const meta: Meta<typeof Typography> = {
     variant: {
       control: 'select',
       options: [
-        'system', 'display', 'body', 'mono',
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'bodyLarge', 'bodyMedium', 'bodySmall', 'caption',
-        'button', 'input', 'label', 'code'
+        'system',
+        'display',
+        'body',
+        'mono',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'bodyLarge',
+        'bodyMedium',
+        'bodySmall',
+        'caption',
+        'button',
+        'input',
+        'label',
+        'code',
       ],
     },
     as: {
@@ -24,17 +38,17 @@ const meta: Meta<typeof Typography> = {
       options: ['p', 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
     },
   },
-}
+};
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     children: 'The quick brown fox jumps over the lazy dog',
     variant: 'bodyMedium',
   },
-}
+};
 
 export const AllVariants: Story = {
   render: () => (
@@ -45,18 +59,20 @@ export const AllVariants: Story = {
       <Typography variant="h4">Heading 4 - Card Title</Typography>
       <Typography variant="h5">Heading 5 - Small Title</Typography>
       <Typography variant="h6">Heading 6 - Micro Title</Typography>
-      
+
       <Typography variant="bodyLarge">Body Large - Introduction text</Typography>
       <Typography variant="bodyMedium">Body Medium - Regular paragraph text</Typography>
       <Typography variant="bodySmall">Body Small - Secondary text</Typography>
       <Typography variant="caption">Caption - Help text and captions</Typography>
-      
+
       <Typography variant="button">Button Text - Action labels</Typography>
       <Typography variant="label">Label Text - Form field labels</Typography>
-      <Typography variant="code" as="code">Code Text - Monospace content</Typography>
+      <Typography variant="code" as="code">
+        Code Text - Monospace content
+      </Typography>
     </div>
   ),
-}
+};
 
 export const ConvenienceComponents: Story = {
   render: () => (
@@ -68,7 +84,7 @@ export const ConvenienceComponents: Story = {
       <Caption>Caption component for help text</Caption>
     </div>
   ),
-}
+};
 
 export const WithCustomStyling: Story = {
   render: () => (
@@ -84,7 +100,7 @@ export const WithCustomStyling: Story = {
       </Typography>
     </div>
   ),
-}
+};
 
 export const FontSystemExample: Story = {
   render: () => (
@@ -95,7 +111,7 @@ export const FontSystemExample: Story = {
           These classes are available globally through the improved font management system:
         </p>
       </div>
-      
+
       <div className="space-y-3">
         <div className="font-system p-3 bg-white rounded border">
           <strong>.font-system</strong> - System font (default for UI elements)
@@ -112,4 +128,4 @@ export const FontSystemExample: Story = {
       </div>
     </div>
   ),
-}
+};

@@ -8,7 +8,8 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A versatile button component with multiple variants, sizes, and states based on the Figma design system.',
+        component:
+          'A versatile button component with multiple variants, sizes, and states based on the Figma design system.',
       },
     },
   },
@@ -19,7 +20,7 @@ const meta: Meta<typeof Button> = {
       options: [
         'primary',
         'primary-subtle',
-        'primary-faded', 
+        'primary-faded',
         'primary-outline',
         'secondary',
         'secondary-subtle',
@@ -41,7 +42,7 @@ const meta: Meta<typeof Button> = {
         'neutral-subtle',
         'neutral-faded',
         'neutral-outline',
-        'ghost'
+        'ghost',
       ],
       description: 'The visual variant of the button',
     },
@@ -164,7 +165,14 @@ export const WithLeftIcon: Story = {
     variant: 'primary',
     children: 'Add Item',
     leftIcon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <line x1="12" y1="5" x2="12" y2="19"></line>
         <line x1="5" y1="12" x2="19" y2="12"></line>
       </svg>
@@ -177,7 +185,14 @@ export const WithRightIcon: Story = {
     variant: 'primary',
     children: 'Next',
     rightIcon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <polyline points="9,18 15,12 9,6"></polyline>
       </svg>
     ),
@@ -219,20 +234,36 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-blue-700">Primary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
-            <Button variant="primary" size="regular">+ Primary</Button>
-            <Button variant="primary" size="regular" disabled>+ Primary</Button>
+            <Button variant="primary" size="regular">
+              + Primary
+            </Button>
+            <Button variant="primary" size="regular" disabled>
+              + Primary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="primary-subtle" size="regular">+ Primary</Button>
-            <Button variant="primary-subtle" size="regular" disabled>+ Primary</Button>
+            <Button variant="primary-subtle" size="regular">
+              + Primary
+            </Button>
+            <Button variant="primary-subtle" size="regular" disabled>
+              + Primary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="primary-faded" size="regular">+ Primary</Button>
-            <Button variant="primary-faded" size="regular" disabled>+ Primary</Button>
+            <Button variant="primary-faded" size="regular">
+              + Primary
+            </Button>
+            <Button variant="primary-faded" size="regular" disabled>
+              + Primary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="primary-outline" size="regular">+ Primary</Button>
-            <Button variant="primary-outline" size="regular" disabled>+ Primary</Button>
+            <Button variant="primary-outline" size="regular">
+              + Primary
+            </Button>
+            <Button variant="primary-outline" size="regular" disabled>
+              + Primary
+            </Button>
           </div>
         </div>
       </div>
@@ -242,20 +273,36 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-purple-700">Secondary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
-            <Button variant="secondary" size="regular">+ Secondary</Button>
-            <Button variant="secondary" size="regular" disabled>+ Secondary</Button>
+            <Button variant="secondary" size="regular">
+              + Secondary
+            </Button>
+            <Button variant="secondary" size="regular" disabled>
+              + Secondary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="secondary-subtle" size="regular">+ Secondary</Button>
-            <Button variant="secondary-subtle" size="regular" disabled>+ Secondary</Button>
+            <Button variant="secondary-subtle" size="regular">
+              + Secondary
+            </Button>
+            <Button variant="secondary-subtle" size="regular" disabled>
+              + Secondary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="secondary-faded" size="regular">+ Secondary</Button>
-            <Button variant="secondary-faded" size="regular" disabled>+ Secondary</Button>
+            <Button variant="secondary-faded" size="regular">
+              + Secondary
+            </Button>
+            <Button variant="secondary-faded" size="regular" disabled>
+              + Secondary
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="secondary-outline" size="regular">+ Secondary</Button>
-            <Button variant="secondary-outline" size="regular" disabled>+ Secondary</Button>
+            <Button variant="secondary-outline" size="regular">
+              + Secondary
+            </Button>
+            <Button variant="secondary-outline" size="regular" disabled>
+              + Secondary
+            </Button>
           </div>
         </div>
       </div>
@@ -265,20 +312,36 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-green-700">Success Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
-            <Button variant="success" size="regular">+ Success</Button>
-            <Button variant="success" size="regular" disabled>+ Success</Button>
+            <Button variant="success" size="regular">
+              + Success
+            </Button>
+            <Button variant="success" size="regular" disabled>
+              + Success
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="success-subtle" size="regular">+ Success</Button>
-            <Button variant="success-subtle" size="regular" disabled>+ Success</Button>
+            <Button variant="success-subtle" size="regular">
+              + Success
+            </Button>
+            <Button variant="success-subtle" size="regular" disabled>
+              + Success
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="success-faded" size="regular">+ Success</Button>
-            <Button variant="success-faded" size="regular" disabled>+ Success</Button>
+            <Button variant="success-faded" size="regular">
+              + Success
+            </Button>
+            <Button variant="success-faded" size="regular" disabled>
+              + Success
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="success-outline" size="regular">+ Success</Button>
-            <Button variant="success-outline" size="regular" disabled>+ Success</Button>
+            <Button variant="success-outline" size="regular">
+              + Success
+            </Button>
+            <Button variant="success-outline" size="regular" disabled>
+              + Success
+            </Button>
           </div>
         </div>
       </div>
@@ -288,20 +351,36 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-orange-700">Warning Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
-            <Button variant="warning" size="regular">+ Warning</Button>
-            <Button variant="warning" size="regular" disabled>+ Warning</Button>
+            <Button variant="warning" size="regular">
+              + Warning
+            </Button>
+            <Button variant="warning" size="regular" disabled>
+              + Warning
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="warning-subtle" size="regular">+ Warning</Button>
-            <Button variant="warning-subtle" size="regular" disabled>+ Warning</Button>
+            <Button variant="warning-subtle" size="regular">
+              + Warning
+            </Button>
+            <Button variant="warning-subtle" size="regular" disabled>
+              + Warning
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="warning-faded" size="regular">+ Warning</Button>
-            <Button variant="warning-faded" size="regular" disabled>+ Warning</Button>
+            <Button variant="warning-faded" size="regular">
+              + Warning
+            </Button>
+            <Button variant="warning-faded" size="regular" disabled>
+              + Warning
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="warning-outline" size="regular">+ Warning</Button>
-            <Button variant="warning-outline" size="regular" disabled>+ Warning</Button>
+            <Button variant="warning-outline" size="regular">
+              + Warning
+            </Button>
+            <Button variant="warning-outline" size="regular" disabled>
+              + Warning
+            </Button>
           </div>
         </div>
       </div>
@@ -311,20 +390,36 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-red-700">Danger Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
-            <Button variant="danger" size="regular">+ Danger</Button>
-            <Button variant="danger" size="regular" disabled>+ Danger</Button>
+            <Button variant="danger" size="regular">
+              + Danger
+            </Button>
+            <Button variant="danger" size="regular" disabled>
+              + Danger
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="danger-subtle" size="regular">+ Danger</Button>
-            <Button variant="danger-subtle" size="regular" disabled>+ Danger</Button>
+            <Button variant="danger-subtle" size="regular">
+              + Danger
+            </Button>
+            <Button variant="danger-subtle" size="regular" disabled>
+              + Danger
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="danger-faded" size="regular">+ Danger</Button>
-            <Button variant="danger-faded" size="regular" disabled>+ Danger</Button>
+            <Button variant="danger-faded" size="regular">
+              + Danger
+            </Button>
+            <Button variant="danger-faded" size="regular" disabled>
+              + Danger
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="danger-outline" size="regular">+ Danger</Button>
-            <Button variant="danger-outline" size="regular" disabled>+ Danger</Button>
+            <Button variant="danger-outline" size="regular">
+              + Danger
+            </Button>
+            <Button variant="danger-outline" size="regular" disabled>
+              + Danger
+            </Button>
           </div>
         </div>
       </div>
@@ -334,24 +429,44 @@ export const FigmaDesignSystem: Story = {
         <h3 className="text-lg font-semibold text-gray-700">Neutral & Ghost Variants</h3>
         <div className="grid grid-cols-5 gap-3">
           <div className="space-y-2">
-            <Button variant="neutral" size="regular">+ Neutral</Button>
-            <Button variant="neutral" size="regular" disabled>+ Neutral</Button>
+            <Button variant="neutral" size="regular">
+              + Neutral
+            </Button>
+            <Button variant="neutral" size="regular" disabled>
+              + Neutral
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="neutral-subtle" size="regular">+ Neutral</Button>
-            <Button variant="neutral-subtle" size="regular" disabled>+ Neutral</Button>
+            <Button variant="neutral-subtle" size="regular">
+              + Neutral
+            </Button>
+            <Button variant="neutral-subtle" size="regular" disabled>
+              + Neutral
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="neutral-faded" size="regular">+ Neutral</Button>
-            <Button variant="neutral-faded" size="regular" disabled>+ Neutral</Button>
+            <Button variant="neutral-faded" size="regular">
+              + Neutral
+            </Button>
+            <Button variant="neutral-faded" size="regular" disabled>
+              + Neutral
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="neutral-outline" size="regular">+ Neutral</Button>
-            <Button variant="neutral-outline" size="regular" disabled>+ Neutral</Button>
+            <Button variant="neutral-outline" size="regular">
+              + Neutral
+            </Button>
+            <Button variant="neutral-outline" size="regular" disabled>
+              + Neutral
+            </Button>
           </div>
           <div className="space-y-2">
-            <Button variant="ghost" size="regular">+ Ghost</Button>
-            <Button variant="ghost" size="regular" disabled>+ Ghost</Button>
+            <Button variant="ghost" size="regular">
+              + Ghost
+            </Button>
+            <Button variant="ghost" size="regular" disabled>
+              + Ghost
+            </Button>
           </div>
         </div>
       </div>
@@ -360,19 +475,33 @@ export const FigmaDesignSystem: Story = {
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Icon Only Buttons</h3>
         <div className="flex gap-3">
-          <Button variant="primary" iconOnly size="regular">+</Button>
-          <Button variant="secondary" iconOnly size="regular">+</Button>
-          <Button variant="success" iconOnly size="regular">+</Button>
-          <Button variant="warning" iconOnly size="regular">+</Button>
-          <Button variant="danger" iconOnly size="regular">+</Button>
-          <Button variant="ghost" iconOnly size="regular">+</Button>
+          <Button variant="primary" iconOnly size="regular">
+            +
+          </Button>
+          <Button variant="secondary" iconOnly size="regular">
+            +
+          </Button>
+          <Button variant="success" iconOnly size="regular">
+            +
+          </Button>
+          <Button variant="warning" iconOnly size="regular">
+            +
+          </Button>
+          <Button variant="danger" iconOnly size="regular">
+            +
+          </Button>
+          <Button variant="ghost" iconOnly size="regular">
+            +
+          </Button>
         </div>
       </div>
 
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <p className="text-sm text-gray-600">
-          <strong>Design System Notes:</strong> All variants match the Figma design specifications including exact colors, spacing (p=8 for regular), 
-          Montserrat font, hover states, disabled states, and border radius. The "regular" size follows the Figma button component specifications.
+          <strong>Design System Notes:</strong> All variants match the Figma design specifications
+          including exact colors, spacing (p=8 for regular), Montserrat font, hover states, disabled
+          states, and border radius. The "regular" size follows the Figma button component
+          specifications.
         </p>
       </div>
     </div>

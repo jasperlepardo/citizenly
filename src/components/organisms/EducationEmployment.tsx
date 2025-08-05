@@ -1,23 +1,23 @@
-import React from 'react'
-import { InputField, DropdownSelect } from '@/components/molecules'
-import PSOCSelector from './PSOCSelector'
+import React from 'react';
+import { InputField, DropdownSelect } from '@/components/molecules';
+import PSOCSelector from './PSOCSelector';
 
 export interface EducationEmploymentData {
-  educationLevel: string
-  educationStatus: string
-  psocCode: string
-  psocLevel: string
-  positionTitleId: string
-  occupationDescription: string
-  employmentStatus: string
-  workplace: string
+  educationLevel: string;
+  educationStatus: string;
+  psocCode: string;
+  psocLevel: string;
+  positionTitleId: string;
+  occupationDescription: string;
+  employmentStatus: string;
+  workplace: string;
 }
 
 interface EducationEmploymentProps {
-  value: EducationEmploymentData
-  onChange: (value: EducationEmploymentData) => void
-  errors?: Partial<Record<keyof EducationEmploymentData, string>>
-  className?: string
+  value: EducationEmploymentData;
+  onChange: (value: EducationEmploymentData) => void;
+  errors?: Partial<Record<keyof EducationEmploymentData, string>>;
+  className?: string;
 }
 
 const EDUCATION_LEVEL_OPTIONS = [
@@ -28,15 +28,15 @@ const EDUCATION_LEVEL_OPTIONS = [
   { value: 'post_graduate', label: 'Post-Graduate' },
   { value: 'vocational', label: 'Vocational' },
   { value: 'graduate', label: 'Graduate' },
-  { value: 'undergraduate', label: 'Undergraduate' }
-]
+  { value: 'undergraduate', label: 'Undergraduate' },
+];
 
 const EDUCATION_STATUS_OPTIONS = [
   { value: 'currently_studying', label: 'Currently Studying' },
   { value: 'not_studying', label: 'Not Studying' },
   { value: 'graduated', label: 'Graduated' },
-  { value: 'dropped_out', label: 'Dropped Out' }
-]
+  { value: 'dropped_out', label: 'Dropped Out' },
+];
 
 const EMPLOYMENT_STATUS_OPTIONS = [
   { value: 'employed', label: 'Employed' },
@@ -48,21 +48,21 @@ const EMPLOYMENT_STATUS_OPTIONS = [
   { value: 'homemaker', label: 'Homemaker' },
   { value: 'unable_to_work', label: 'Unable to Work' },
   { value: 'looking_for_work', label: 'Looking for Work' },
-  { value: 'not_in_labor_force', label: 'Not in Labor Force' }
-]
+  { value: 'not_in_labor_force', label: 'Not in Labor Force' },
+];
 
-export default function EducationEmployment({ 
-  value, 
-  onChange, 
-  errors = {}, 
-  className = "" 
+export default function EducationEmployment({
+  value,
+  onChange,
+  errors = {},
+  className = '',
 }: EducationEmploymentProps) {
   const handleChange = (field: keyof EducationEmploymentData, newValue: string) => {
     onChange({
       ...value,
-      [field]: newValue
-    })
-  }
+      [field]: newValue,
+    });
+  };
 
   const handleOccupationSelect = (option: any) => {
     if (option) {
@@ -72,18 +72,18 @@ export default function EducationEmployment({
         psocLevel: option.level_type,
         occupationDescription: option.occupation_title,
         // Clear position title ID if not unit group level
-        positionTitleId: option.level_type !== 'unit_group' ? '' : value.positionTitleId
-      })
+        positionTitleId: option.level_type !== 'unit_group' ? '' : value.positionTitleId,
+      });
     } else {
       onChange({
         ...value,
         psocCode: '',
         psocLevel: '',
         occupationDescription: '',
-        positionTitleId: ''
-      })
+        positionTitleId: '',
+      });
     }
-  }
+  };
 
   return (
     <div className={`space-y-8 ${className}`}>
@@ -95,21 +95,21 @@ export default function EducationEmployment({
           Academic background and work information.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
         <DropdownSelect
           label="Education Level"
           value={value.educationLevel}
-          onChange={(val) => handleChange('educationLevel', val)}
+          onChange={val => handleChange('educationLevel', val)}
           options={EDUCATION_LEVEL_OPTIONS}
           placeholder="Select education level"
           errorMessage={errors.educationLevel}
         />
-        
+
         <DropdownSelect
           label="Education Status"
           value={value.educationStatus}
-          onChange={(val) => handleChange('educationStatus', val)}
+          onChange={val => handleChange('educationStatus', val)}
           options={EDUCATION_STATUS_OPTIONS}
           placeholder="Select education status"
           errorMessage={errors.educationStatus}
@@ -130,14 +130,15 @@ export default function EducationEmployment({
             />
           </div>
           <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-            Search by job title or occupation category. Uses Philippine Standard Occupational Classification (PSOC).
+            Search by job title or occupation category. Uses Philippine Standard Occupational
+            Classification (PSOC).
           </p>
         </div>
-        
+
         <DropdownSelect
           label="Employment Status"
           value={value.employmentStatus}
-          onChange={(val) => handleChange('employmentStatus', val)}
+          onChange={val => handleChange('employmentStatus', val)}
           options={EMPLOYMENT_STATUS_OPTIONS}
           placeholder="Select employment status"
         />
@@ -146,10 +147,10 @@ export default function EducationEmployment({
       <InputField
         label="Workplace"
         value={value.workplace}
-        onChange={(e) => handleChange('workplace', e.target.value)}
+        onChange={e => handleChange('workplace', e.target.value)}
         placeholder="Company or workplace name"
         helperText="Optional"
       />
     </div>
-  )
+  );
 }

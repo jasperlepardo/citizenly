@@ -1,72 +1,81 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useCallback } from 'react'
-import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/contexts/AuthContext'
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import { DashboardLayout } from '@/components/templates'
-import { SearchBar, DataTable } from '@/components/organisms'
-import type { SearchFilter, TableColumn, TableAction } from '@/components/organisms'
-import { Button } from '@/components/atoms'
+import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { DashboardLayout } from '@/components/templates';
+import { SearchBar, DataTable } from '@/components/organisms';
+import type { SearchFilter, TableColumn, TableAction } from '@/components/organisms';
+import { Button } from '@/components/atoms';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 interface Resident {
-  id: string
-  first_name: string
-  middle_name?: string
-  last_name: string
-  extension_name?: string
-  email?: string
-  mobile_number?: string
-  sex: 'male' | 'female' | ''
-  birthdate: string
-  civil_status?: string
-  occupation?: string
-  job_title?: string
-  profession?: string
-  education_level?: string
-  household_code?: string
-  barangay_code: string
-  status?: string
-  created_at: string
+  id: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  extension_name?: string;
+  email?: string;
+  mobile_number?: string;
+  sex: 'male' | 'female' | '';
+  birthdate: string;
+  civil_status?: string;
+  occupation?: string;
+  job_title?: string;
+  profession?: string;
+  education_level?: string;
+  household_code?: string;
+  barangay_code: string;
+  status?: string;
+  created_at: string;
   household?: {
-    code: string
-    street_name?: string
-    house_number?: string
-    subdivision?: string
-  }
+    code: string;
+    street_name?: string;
+    house_number?: string;
+    subdivision?: string;
+  };
 }
 
 function ResidentsContent() {
-  const { user, loading: authLoading, userProfile } = useAuth()
-  const [residents, setResidents] = useState<Resident[]>([])
-  const [loading, setLoading] = useState(true)
-  const [, ] = useState(0)
-  const [globalSearchTerm, setGlobalSearchTerm] = useState('')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([])
-  const [selectedResidents, setSelectedResidents] = useState<string[]>([])
+  const { user, loading: authLoading, userProfile } = useAuth();
+  const [residents, setResidents] = useState<Resident[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [,] = useState(0);
+  const [globalSearchTerm, setGlobalSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
+  const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 20,
-    total: 0
-  })
+    total: 0,
+  });
 
   useEffect(() => {
     if (!authLoading && user && userProfile?.barangay_code) {
-      loadResidents()
+      loadResidents();
     }
-  }, [user, authLoading, userProfile, searchTerm, searchFilters, pagination.current, pagination.pageSize])
+  }, [
+    user,
+    authLoading,
+    userProfile,
+    searchTerm,
+    searchFilters,
+    pagination.current,
+    pagination.pageSize,
+  ]);
 
   const loadResidents = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       let query = supabase
         .from('residents')
-        .select(`
+        .select(
+          `
           *,
           household:households!residents_household_code_fkey(
             code,
@@ -74,99 +83,109 @@ function ResidentsContent() {
             house_number,
             subdivision
           )
-        `, { count: 'exact' })
+        `,
+          { count: 'exact' }
+        )
         .eq('barangay_code', userProfile?.barangay_code)
         .order('created_at', { ascending: false })
         .range(
           (pagination.current - 1) * pagination.pageSize,
           pagination.current * pagination.pageSize - 1
-        )
+        );
 
       // Apply search term
       if (searchTerm.trim()) {
-        query = query.or(`first_name.ilike.%${searchTerm}%,middle_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%`)
+        query = query.or(
+          `first_name.ilike.%${searchTerm}%,middle_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%`
+        );
       }
 
       // Apply advanced filters
       searchFilters.forEach(filter => {
         switch (filter.operator) {
           case 'equals':
-            query = query.eq(filter.field, filter.value)
-            break
+            query = query.eq(filter.field, filter.value);
+            break;
           case 'contains':
-            query = query.ilike(filter.field, `%${filter.value}%`)
-            break
+            query = query.ilike(filter.field, `%${filter.value}%`);
+            break;
           case 'starts_with':
-            query = query.ilike(filter.field, `${filter.value}%`)
-            break
+            query = query.ilike(filter.field, `${filter.value}%`);
+            break;
           case 'ends_with':
-            query = query.ilike(filter.field, `%${filter.value}`)
-            break
+            query = query.ilike(filter.field, `%${filter.value}`);
+            break;
           case 'greater_than':
             if (typeof filter.value === 'number') {
-              query = query.gt(filter.field, filter.value)
+              query = query.gt(filter.field, filter.value);
             }
-            break
+            break;
           case 'less_than':
             if (typeof filter.value === 'number') {
-              query = query.lt(filter.field, filter.value)
+              query = query.lt(filter.field, filter.value);
             }
-            break
+            break;
         }
-      })
+      });
 
-      const { data, error, count } = await query
+      const { data, error, count } = await query;
 
       if (error) {
-        throw error
+        throw error;
       }
 
-      setResidents(data || [])
-      setPagination(prev => ({ ...prev, total: count || 0 }))
+      setResidents(data || []);
+      setPagination(prev => ({ ...prev, total: count || 0 }));
     } catch (err) {
-      console.error('Error loading residents:', err)
-      setResidents([])
-      setPagination(prev => ({ ...prev, total: 0 }))
+      console.error('Error loading residents:', err);
+      setResidents([]);
+      setPagination(prev => ({ ...prev, total: 0 }));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSearch = useCallback((term: string, filters: SearchFilter[]) => {
-    setSearchTerm(term)
-    setSearchFilters(filters)
-    setPagination(prev => ({ ...prev, current: 1 }))
-  }, [])
+    setSearchTerm(term);
+    setSearchFilters(filters);
+    setPagination(prev => ({ ...prev, current: 1 }));
+  }, []);
 
   const handleSelectionChange = (selectedKeys: string[], _selectedRows: Resident[]) => {
-    setSelectedResidents(selectedKeys)
-  }
+    setSelectedResidents(selectedKeys);
+  };
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({ current: page, pageSize, total: pagination.total })
-  }
+    setPagination({ current: page, pageSize, total: pagination.total });
+  };
 
   const formatFullName = (resident: Resident) => {
-    return [resident.first_name, resident.middle_name, resident.last_name, resident.extension_name].filter(Boolean).join(' ')
-  }
+    return [resident.first_name, resident.middle_name, resident.last_name, resident.extension_name]
+      .filter(Boolean)
+      .join(' ');
+  };
 
   const formatAddress = (resident: Resident) => {
-    if (!resident.household) return 'No household assigned'
-    const parts = [resident.household.house_number, resident.household.street_name, resident.household.subdivision].filter(Boolean)
-    return parts.length > 0 ? parts.join(', ') : 'No address'
-  }
+    if (!resident.household) return 'No household assigned';
+    const parts = [
+      resident.household.house_number,
+      resident.household.street_name,
+      resident.household.subdivision,
+    ].filter(Boolean);
+    return parts.length > 0 ? parts.join(', ') : 'No address';
+  };
 
   const calculateAge = (birthdate: string) => {
-    if (!birthdate) return 'N/A'
-    const today = new Date()
-    const birth = new Date(birthdate)
-    let age = today.getFullYear() - birth.getFullYear()
-    const monthDiff = today.getMonth() - birth.getMonth()
+    if (!birthdate) return 'N/A';
+    const today = new Date();
+    const birth = new Date(birthdate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--
+      age--;
     }
-    return age.toString()
-  }
+    return age.toString();
+  };
 
   // Define table columns
   const columns: TableColumn<Resident>[] = [
@@ -175,48 +194,48 @@ function ResidentsContent() {
       title: 'Name',
       dataIndex: (record: Resident) => formatFullName(record),
       render: (value: string, record: Resident) => (
-        <Link 
+        <Link
           href={`/residents/${record.id}`}
           className="font-montserrat font-normal text-base text-blue-600 hover:text-blue-800 hover:underline"
         >
           {value}
         </Link>
       ),
-      sortable: true
+      sortable: true,
     },
     {
       key: 'email',
       title: 'Email',
       dataIndex: 'email',
       render: (value: string) => value || 'No email',
-      sortable: true
+      sortable: true,
     },
     {
       key: 'address',
       title: 'Address',
       dataIndex: (record: Resident) => formatAddress(record),
-      sortable: false
+      sortable: false,
     },
     {
       key: 'age',
       title: 'Age',
       dataIndex: (record: Resident) => calculateAge(record.birthdate),
-      sortable: true
+      sortable: true,
     },
     {
       key: 'sex',
       title: 'Sex',
       dataIndex: 'sex',
-      render: (value: string) => value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A',
-      sortable: true
+      render: (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'),
+      sortable: true,
     },
     {
       key: 'occupation',
       title: 'Occupation',
       dataIndex: (record: Resident) => record.occupation || record.job_title || 'N/A',
-      sortable: true
-    }
-  ]
+      sortable: true,
+    },
+  ];
 
   // Define table actions
   const actions: TableAction<Resident>[] = [
@@ -224,15 +243,15 @@ function ResidentsContent() {
       key: 'view',
       label: 'View',
       href: (record: Resident) => `/residents/${record.id}`,
-      variant: 'primary'
+      variant: 'primary',
     },
     {
       key: 'edit',
       label: 'Edit',
       href: (record: Resident) => `/residents/${record.id}/edit`,
-      variant: 'secondary'
-    }
-  ]
+      variant: 'secondary',
+    },
+  ];
 
   // Define filter options for search
   const filterOptions = [
@@ -242,8 +261,8 @@ function ResidentsContent() {
       type: 'select' as const,
       options: [
         { value: 'male', label: 'Male' },
-        { value: 'female', label: 'Female' }
-      ]
+        { value: 'female', label: 'Female' },
+      ],
     },
     {
       field: 'civil_status',
@@ -254,26 +273,23 @@ function ResidentsContent() {
         { value: 'married', label: 'Married' },
         { value: 'widowed', label: 'Widowed' },
         { value: 'divorced', label: 'Divorced' },
-        { value: 'separated', label: 'Separated' }
-      ]
+        { value: 'separated', label: 'Separated' },
+      ],
     },
     {
       field: 'occupation',
       label: 'Occupation',
-      type: 'text' as const
+      type: 'text' as const,
     },
     {
       field: 'email',
       label: 'Email',
-      type: 'text' as const
-    }
-  ]
+      type: 'text' as const,
+    },
+  ];
 
   return (
-    <DashboardLayout 
-      searchTerm={globalSearchTerm}
-      onSearchChange={setGlobalSearchTerm}
-    >
+    <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
         <div className="flex items-start justify-between mb-6">
@@ -313,19 +329,23 @@ function ResidentsContent() {
             total: pagination.total,
             onChange: handlePaginationChange,
             showSizeChanger: true,
-            pageSizeOptions: ['10', '20', '50', '100']
+            pageSizeOptions: ['10', '20', '50', '100'],
           }}
           selection={{
             selectedRowKeys: selectedResidents,
-            onChange: handleSelectionChange
+            onChange: handleSelectionChange,
           }}
           rowKey="id"
-          emptyText={searchTerm ? `No residents found matching "${searchTerm}"` : 'No residents found. Click "Add new resident" to register your first resident.'}
+          emptyText={
+            searchTerm
+              ? `No residents found matching "${searchTerm}"`
+              : 'No residents found. Click "Add new resident" to register your first resident.'
+          }
           size="middle"
         />
       </div>
     </DashboardLayout>
-  )
+  );
 }
 
 export default function ResidentsPage() {
@@ -333,5 +353,5 @@ export default function ResidentsPage() {
     <ProtectedRoute requirePermission="residents_view">
       <ResidentsContent />
     </ProtectedRoute>
-  )
+  );
 }

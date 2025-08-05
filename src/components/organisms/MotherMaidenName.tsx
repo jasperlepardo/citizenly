@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * MotherMaidenName Component - RBI Mother's Maiden Name Information
@@ -6,9 +6,9 @@
  * Follows Philippine naming conventions and cultural considerations
  */
 
-import React, { useState } from 'react'
-import { Checkbox, Button } from '../atoms'
-import { FormGroup, InputField, DropdownSelect } from '../molecules'
+import React, { useState } from 'react';
+import { Checkbox, Button } from '../atoms';
+import { FormGroup, InputField, DropdownSelect } from '../molecules';
 
 // Mother's Information Interface (matches database schema)
 export interface MotherInformation {
@@ -38,52 +38,52 @@ const SUFFIX_OPTIONS = [
   { value: 'Sr.', label: 'Sr.' },
   { value: 'II', label: 'II' },
   { value: 'III', label: 'III' },
-  { value: 'IV', label: 'IV' }
-]
+  { value: 'IV', label: 'IV' },
+];
 
 export default function MotherMaidenName({
   value,
   onChange,
   disabled = false,
-  className = ""
+  className = '',
 }: MotherMaidenNameProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleChange = (field: keyof MotherInformation, newValue: any) => {
-    const updated = { ...value, [field]: newValue }
+    const updated = { ...value, [field]: newValue };
 
     // Clear all fields when marking as unknown mother
     if (field === 'is_unknown_mother' && newValue) {
       Object.keys(updated).forEach(key => {
         if (key !== 'is_unknown_mother' && key !== 'is_confidential' && key !== 'notes') {
-          (updated as any)[key] = undefined
+          (updated as any)[key] = undefined;
         }
-      })
+      });
     }
 
     // Clear confidential flag when marking as unknown
     if (field === 'is_unknown_mother' && newValue) {
-      updated.is_confidential = false
+      updated.is_confidential = false;
     }
 
-    onChange(updated)
-  }
+    onChange(updated);
+  };
 
   // Check if essential information is provided
-  const hasEssentialInfo = value.mother_first_name && value.mother_maiden_last_name
+  const hasEssentialInfo = value.mother_first_name && value.mother_maiden_last_name;
 
   // Format full name for display
   const getFullMotherName = () => {
-    if (value.is_unknown_mother) return 'Unknown'
-    
-    const parts = []
-    if (value.mother_first_name) parts.push(value.mother_first_name)
-    if (value.mother_middle_name) parts.push(value.mother_middle_name)
-    if (value.mother_maiden_last_name) parts.push(value.mother_maiden_last_name)
-    if (value.mother_suffix) parts.push(value.mother_suffix)
-    
-    return parts.length > 0 ? parts.join(' ') : 'Not specified'
-  }
+    if (value.is_unknown_mother) return 'Unknown';
+
+    const parts = [];
+    if (value.mother_first_name) parts.push(value.mother_first_name);
+    if (value.mother_middle_name) parts.push(value.mother_middle_name);
+    if (value.mother_maiden_last_name) parts.push(value.mother_maiden_last_name);
+    if (value.mother_suffix) parts.push(value.mother_suffix);
+
+    return parts.length > 0 ? parts.join(' ') : 'Not specified';
+  };
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -93,7 +93,8 @@ export default function MotherMaidenName({
           <span className="text-base">👩‍👧‍👦</span> Mother's Information
         </h3>
         <p className="text-sm text-gray-600">
-          Mother's maiden name and related information for genealogical records and identity verification.
+          Mother's maiden name and related information for genealogical records and identity
+          verification.
         </p>
       </div>
 
@@ -101,7 +102,7 @@ export default function MotherMaidenName({
       <div className="space-y-3">
         <Checkbox
           checked={value.is_unknown_mother}
-          onChange={(e) => handleChange('is_unknown_mother', e.target.checked)}
+          onChange={e => handleChange('is_unknown_mother', e.target.checked)}
           label="Unknown Mother"
           description="Check if mother's information is unknown or unavailable"
           disabled={disabled}
@@ -110,7 +111,7 @@ export default function MotherMaidenName({
         {!value.is_unknown_mother && (
           <Checkbox
             checked={value.is_confidential}
-            onChange={(e) => handleChange('is_confidential', e.target.checked)}
+            onChange={e => handleChange('is_confidential', e.target.checked)}
             label="Confidential Information"
             description="Mark as confidential for privacy or security reasons"
             disabled={disabled}
@@ -128,7 +129,7 @@ export default function MotherMaidenName({
                   label="First Name *"
                   type="text"
                   value={value.mother_first_name || ''}
-                  onChange={(e) => handleChange('mother_first_name', e.target.value)}
+                  onChange={e => handleChange('mother_first_name', e.target.value)}
                   placeholder="Enter first name"
                   disabled={disabled}
                   required
@@ -140,7 +141,7 @@ export default function MotherMaidenName({
                   label="Middle Name"
                   type="text"
                   value={value.mother_middle_name || ''}
-                  onChange={(e) => handleChange('mother_middle_name', e.target.value)}
+                  onChange={e => handleChange('mother_middle_name', e.target.value)}
                   placeholder="Enter middle name"
                   disabled={disabled}
                 />
@@ -150,7 +151,7 @@ export default function MotherMaidenName({
                 label="Suffix"
                 options={SUFFIX_OPTIONS}
                 value={value.mother_suffix || ''}
-                onChange={(newValue) => handleChange('mother_suffix', newValue || undefined)}
+                onChange={newValue => handleChange('mother_suffix', newValue || undefined)}
                 disabled={disabled}
               />
             </div>
@@ -160,7 +161,7 @@ export default function MotherMaidenName({
             <InputField
               type="text"
               value={value.mother_maiden_last_name || ''}
-              onChange={(e) => handleChange('mother_maiden_last_name', e.target.value)}
+              onChange={e => handleChange('mother_maiden_last_name', e.target.value)}
               placeholder="Enter maiden last name (family name before marriage)"
               disabled={disabled}
               required
@@ -193,7 +194,7 @@ export default function MotherMaidenName({
                 <FormGroup title="Mother's Status">
                   <Checkbox
                     checked={value.mother_is_deceased || false}
-                    onChange={(e) => handleChange('mother_is_deceased', e.target.checked)}
+                    onChange={e => handleChange('mother_is_deceased', e.target.checked)}
                     label="Mother is deceased"
                     description="Check if mother has passed away"
                     disabled={disabled}
@@ -204,7 +205,12 @@ export default function MotherMaidenName({
                   <InputField
                     type="number"
                     value={value.mother_birth_year || ''}
-                    onChange={(e) => handleChange('mother_birth_year', e.target.value ? parseInt(e.target.value) : undefined)}
+                    onChange={e =>
+                      handleChange(
+                        'mother_birth_year',
+                        e.target.value ? parseInt(e.target.value) : undefined
+                      )
+                    }
                     placeholder="YYYY"
                     min={1900}
                     max={new Date().getFullYear()}
@@ -217,7 +223,7 @@ export default function MotherMaidenName({
                 <InputField
                   type="text"
                   value={value.mother_birthplace || ''}
-                  onChange={(e) => handleChange('mother_birthplace', e.target.value)}
+                  onChange={e => handleChange('mother_birthplace', e.target.value)}
                   placeholder="Enter city/municipality and province where mother was born"
                   disabled={disabled}
                 />
@@ -231,7 +237,7 @@ export default function MotherMaidenName({
       <FormGroup title="Additional Notes">
         <textarea
           value={value.notes || ''}
-          onChange={(e) => handleChange('notes', e.target.value)}
+          onChange={e => handleChange('notes', e.target.value)}
           placeholder="Any additional information or special circumstances regarding mother's information"
           disabled={disabled}
           rows={3}
@@ -248,25 +254,33 @@ export default function MotherMaidenName({
               🔒 This information is marked as confidential
             </p>
           )}
-          <p><strong>Mother's Name:</strong> {getFullMotherName()}</p>
+          <p>
+            <strong>Mother's Name:</strong> {getFullMotherName()}
+          </p>
           {!value.is_unknown_mother && (
             <>
               {value.mother_maiden_last_name && (
-                <p><strong>Maiden Name:</strong> {value.mother_maiden_last_name}</p>
+                <p>
+                  <strong>Maiden Name:</strong> {value.mother_maiden_last_name}
+                </p>
               )}
               {value.mother_birth_year && (
-                <p><strong>Birth Year:</strong> {value.mother_birth_year}</p>
+                <p>
+                  <strong>Birth Year:</strong> {value.mother_birth_year}
+                </p>
               )}
               {value.mother_birthplace && (
-                <p><strong>Birthplace:</strong> {value.mother_birthplace}</p>
+                <p>
+                  <strong>Birthplace:</strong> {value.mother_birthplace}
+                </p>
               )}
-              {value.mother_is_deceased && (
-                <p className="text-gray-600">📿 Mother is deceased</p>
-              )}
+              {value.mother_is_deceased && <p className="text-gray-600">📿 Mother is deceased</p>}
             </>
           )}
           {!hasEssentialInfo && !value.is_unknown_mother && (
-            <p className="text-orange-600">⚠️ Essential information (first name and maiden name) is required</p>
+            <p className="text-orange-600">
+              ⚠️ Essential information (first name and maiden name) is required
+            </p>
           )}
         </div>
       </div>
@@ -280,9 +294,9 @@ export default function MotherMaidenName({
           <div className="ml-3">
             <h4 className="text-sm font-medium text-yellow-800">Privacy Protection</h4>
             <p className="text-sm text-yellow-700 mt-1">
-              Mother's maiden name is sensitive information used for identity verification. 
-              This data is protected under the Data Privacy Act of 2012 and will only be used 
-              for official government purposes and genealogical records.
+              Mother's maiden name is sensitive information used for identity verification. This
+              data is protected under the Data Privacy Act of 2012 and will only be used for
+              official government purposes and genealogical records.
             </p>
           </div>
         </div>
@@ -297,14 +311,14 @@ export default function MotherMaidenName({
           <div className="ml-3">
             <h4 className="text-sm font-medium text-green-800">Filipino Naming Convention</h4>
             <p className="text-sm text-green-700 mt-1">
-              In Filipino culture, a woman's maiden name is the family name she had before marriage. 
-              This information helps establish family lineage and is important for various legal and 
-              genealogical purposes. If adoption or other special circumstances apply, please note them 
-              in the additional notes section.
+              In Filipino culture, a woman's maiden name is the family name she had before marriage.
+              This information helps establish family lineage and is important for various legal and
+              genealogical purposes. If adoption or other special circumstances apply, please note
+              them in the additional notes section.
             </p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

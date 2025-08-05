@@ -1,84 +1,81 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { useUserBarangay } from '@/hooks/useUserBarangay'
-import { useCSRFToken } from '@/lib/csrf'
-import { logger, dbLogger } from '@/lib/secure-logger'
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useUserBarangay } from '@/hooks/useUserBarangay';
+import { useCSRFToken } from '@/lib/csrf';
+import { logger, dbLogger } from '@/lib/secure-logger';
 
 // Import our organism components
-import {
-  HouseholdTypeSelector,
-  FamilyRelationshipSelector
-} from '@/components/organisms'
+import { HouseholdTypeSelector, FamilyRelationshipSelector } from '@/components/organisms';
 
 // Import molecules and atoms
-import { Button } from '@/components/atoms'
-import { FormGroup, InputField, DropdownSelect } from '@/components/molecules'
+import { Button } from '@/components/atoms';
+import { FormGroup, InputField, DropdownSelect } from '@/components/molecules';
 
 export interface HouseholdFormData {
   // Step 1: Basic Information
-  householdCode: string
-  householdType: string
-  headFirstName: string
-  headMiddleName: string
-  headLastName: string
-  headExtensionName: string
-  
+  householdCode: string;
+  householdType: string;
+  headFirstName: string;
+  headMiddleName: string;
+  headLastName: string;
+  headExtensionName: string;
+
   // Step 2: Location Details
-  streetName: string
-  houseNumber: string
-  subdivision: string
-  landmark: string
+  streetName: string;
+  houseNumber: string;
+  subdivision: string;
+  landmark: string;
   coordinates: {
-    latitude: string
-    longitude: string
-  }
-  
+    latitude: string;
+    longitude: string;
+  };
+
   // Step 3: Household Composition
-  totalMembers: number
-  totalMales: number
-  totalFemales: number
-  children: number
-  adults: number
-  seniors: number
-  
+  totalMembers: number;
+  totalMales: number;
+  totalFemales: number;
+  children: number;
+  adults: number;
+  seniors: number;
+
   // Step 4: Economic Information
-  monthlyIncome: string
-  incomeSource: string
-  hasElectricity: boolean
-  hasWater: boolean
-  hasInternet: boolean
-  dwellingType: string
-  dwellingOwnership: string
-  
+  monthlyIncome: string;
+  incomeSource: string;
+  hasElectricity: boolean;
+  hasWater: boolean;
+  hasInternet: boolean;
+  dwellingType: string;
+  dwellingOwnership: string;
+
   // Address Information (PSGC Codes) - auto-populated
-  regionCode: string
-  provinceCode: string
-  cityMunicipalityCode: string
-  barangayCode: string
+  regionCode: string;
+  provinceCode: string;
+  cityMunicipalityCode: string;
+  barangayCode: string;
 }
 
 interface FormStep {
-  id: number
-  title: string
-  description: string
+  id: number;
+  title: string;
+  description: string;
 }
 
 interface HouseholdFormWizardProps {
-  onSubmit?: (data: HouseholdFormData) => Promise<void>
-  onCancel?: () => void
+  onSubmit?: (data: HouseholdFormData) => Promise<void>;
+  onCancel?: () => void;
 }
 
 export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFormWizardProps) {
-  const router = useRouter()
-  const { getToken: getCSRFToken } = useCSRFToken()
-  
-  const [currentStep, setCurrentStep] = useState(1)
-  const [errors, setErrors] = useState<Partial<Record<keyof HouseholdFormData, string>>>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  
+  const router = useRouter();
+  const { getToken: getCSRFToken } = useCSRFToken();
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [errors, setErrors] = useState<Partial<Record<keyof HouseholdFormData, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState<HouseholdFormData>({
     // Step 1: Basic Information
     householdCode: '',
@@ -87,7 +84,7 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
     headMiddleName: '',
     headLastName: '',
     headExtensionName: '',
-    
+
     // Step 2: Location Details
     streetName: '',
     houseNumber: '',
@@ -95,9 +92,9 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
     landmark: '',
     coordinates: {
       latitude: '',
-      longitude: ''
+      longitude: '',
     },
-    
+
     // Step 3: Household Composition
     totalMembers: 1,
     totalMales: 0,
@@ -105,7 +102,7 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
     children: 0,
     adults: 1,
     seniors: 0,
-    
+
     // Step 4: Economic Information
     monthlyIncome: '',
     incomeSource: '',
@@ -114,16 +111,21 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
     hasInternet: false,
     dwellingType: '',
     dwellingOwnership: '',
-    
+
     // Address Information (PSGC Codes)
     regionCode: '',
     provinceCode: '',
     cityMunicipalityCode: '',
-    barangayCode: ''
-  })
+    barangayCode: '',
+  });
 
   // User's assigned barangay address (auto-populated)
-  const { barangayCode, address: userAddress, loading: loadingAddress, error: addressError } = useUserBarangay()
+  const {
+    barangayCode,
+    address: userAddress,
+    loading: loadingAddress,
+    error: addressError,
+  } = useUserBarangay();
 
   // Auto-populate form data when user address is loaded
   useEffect(() => {
@@ -133,138 +135,140 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
         regionCode: userAddress.region_code,
         provinceCode: userAddress.province_code || '',
         cityMunicipalityCode: userAddress.city_municipality_code,
-        barangayCode: userAddress.barangay_code
-      }))
+        barangayCode: userAddress.barangay_code,
+      }));
     }
-  }, [userAddress, barangayCode])
+  }, [userAddress, barangayCode]);
 
   // Generate household code when component mounts
   useEffect(() => {
     const generateHouseholdCode = () => {
-      const timestamp = Date.now().toString(36)
-      const randomStr = Math.random().toString(36).substring(2, 8)
-      return `HH-${timestamp}-${randomStr}`.toUpperCase()
-    }
-    
+      const timestamp = Date.now().toString(36);
+      const randomStr = Math.random().toString(36).substring(2, 8);
+      return `HH-${timestamp}-${randomStr}`.toUpperCase();
+    };
+
     if (!formData.householdCode) {
       setFormData(prev => ({
         ...prev,
-        householdCode: generateHouseholdCode()
-      }))
+        householdCode: generateHouseholdCode(),
+      }));
     }
-  }, [])
+  }, []);
 
   const steps: FormStep[] = [
     {
       id: 1,
       title: 'Basic Information',
-      description: 'Household details and head of household'
+      description: 'Household details and head of household',
     },
     {
       id: 2,
       title: 'Location Details',
-      description: 'Address and geographic information'
+      description: 'Address and geographic information',
     },
     {
       id: 3,
       title: 'Household Composition',
-      description: 'Family members and demographics'
+      description: 'Family members and demographics',
     },
     {
       id: 4,
       title: 'Economic & Utilities',
-      description: 'Income, utilities, and dwelling information'
-    }
-  ]
+      description: 'Income, utilities, and dwelling information',
+    },
+  ];
 
   const handleInputChange = (field: keyof HouseholdFormData, value: any) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
-    }))
-    
+      [field]: value,
+    }));
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
-        [field]: undefined
-      }))
+        [field]: undefined,
+      }));
     }
-  }
+  };
 
   const validateStep = (step: number): boolean => {
-    const newErrors: Partial<Record<keyof HouseholdFormData, string>> = {}
-    
+    const newErrors: Partial<Record<keyof HouseholdFormData, string>> = {};
+
     try {
       if (step === 1) {
         // Step 1: Basic Information
-        if (!formData.householdType) newErrors.householdType = 'Household type is required'
-        if (!formData.headFirstName?.trim()) newErrors.headFirstName = 'Head first name is required'
-        if (!formData.headLastName?.trim()) newErrors.headLastName = 'Head last name is required'
+        if (!formData.householdType) newErrors.householdType = 'Household type is required';
+        if (!formData.headFirstName?.trim())
+          newErrors.headFirstName = 'Head first name is required';
+        if (!formData.headLastName?.trim()) newErrors.headLastName = 'Head last name is required';
       }
-      
+
       if (step === 2) {
         // Step 2: Location Details
-        if (!formData.streetName?.trim()) newErrors.streetName = 'Street name is required'
+        if (!formData.streetName?.trim()) newErrors.streetName = 'Street name is required';
       }
-      
+
       if (step === 3) {
         // Step 3: Household Composition
-        if (formData.totalMembers < 1) newErrors.totalMembers = 'Total members must be at least 1'
+        if (formData.totalMembers < 1) newErrors.totalMembers = 'Total members must be at least 1';
         if (formData.totalMales + formData.totalFemales !== formData.totalMembers) {
-          newErrors.totalMales = 'Total male and female members must equal total members'
+          newErrors.totalMales = 'Total male and female members must equal total members';
         }
       }
-      
+
       if (step === 4) {
         // Step 4: Economic Information
-        if (!formData.dwellingType) newErrors.dwellingType = 'Dwelling type is required'
-        if (!formData.dwellingOwnership) newErrors.dwellingOwnership = 'Dwelling ownership is required'
+        if (!formData.dwellingType) newErrors.dwellingType = 'Dwelling type is required';
+        if (!formData.dwellingOwnership)
+          newErrors.dwellingOwnership = 'Dwelling ownership is required';
       }
-      
-      setErrors(newErrors)
-      return Object.keys(newErrors).length === 0
+
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
     } catch (error) {
-      console.error('Validation error:', error)
-      return false
+      console.error('Validation error:', error);
+      return false;
     }
-  }
+  };
 
   const handleNextStep = () => {
     if (validateStep(currentStep) && currentStep < 4) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   const handleSubmit = async () => {
     if (onSubmit) {
-      await onSubmit(formData)
-      return
+      await onSubmit(formData);
+      return;
     }
 
     // Validate all steps before submitting
-    const allStepsValid = [1, 2, 3, 4].every(step => validateStep(step))
-    
+    const allStepsValid = [1, 2, 3, 4].every(step => validateStep(step));
+
     if (!allStepsValid) {
-      alert('Please fill in all required fields correctly')
-      return
+      alert('Please fill in all required fields correctly');
+      return;
     }
 
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     try {
       // Get CSRF token for secure form submission
-      const csrfToken = getCSRFToken()
-      
+      const csrfToken = getCSRFToken();
+
       // Convert form data to match database schema
-      logger.info('Creating household', { householdCode: formData.householdCode })
-      
+      logger.info('Creating household', { householdCode: formData.householdCode });
+
       const householdData = {
         code: formData.householdCode,
         household_type: formData.householdType as any,
@@ -276,9 +280,10 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
         house_number: formData.houseNumber || null,
         subdivision: formData.subdivision || null,
         landmark: formData.landmark || null,
-        coordinates: formData.coordinates.latitude && formData.coordinates.longitude 
-          ? `POINT(${formData.coordinates.longitude} ${formData.coordinates.latitude})`
-          : null,
+        coordinates:
+          formData.coordinates.latitude && formData.coordinates.longitude
+            ? `POINT(${formData.coordinates.longitude} ${formData.coordinates.latitude})`
+            : null,
         total_members: formData.totalMembers,
         total_males: formData.totalMales,
         total_females: formData.totalFemales,
@@ -298,49 +303,71 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
         city_municipality_code: userAddress?.city_municipality_code || null,
         barangay_code: barangayCode || null,
         // No household head initially - will be set when first resident is added
-        household_head_id: null
-      }
+        household_head_id: null,
+      };
 
-      const { data, error } = await supabase
-        .from('households')
-        .insert([householdData])
-        .select()
+      const { data, error } = await supabase.from('households').insert([householdData]).select();
 
       if (error) {
-        dbLogger.error('Failed to create household', { error: error.message, code: error.code })
-        alert(`Failed to create household: ${error.message}`)
-        return
+        dbLogger.error('Failed to create household', { error: error.message, code: error.code });
+        alert(`Failed to create household: ${error.message}`);
+        return;
       }
 
-      dbLogger.info('Household created successfully', { recordId: data[0]?.id, householdCode: formData.householdCode })
-      
-      alert('Household created successfully!')
-      
+      dbLogger.info('Household created successfully', {
+        recordId: data[0]?.id,
+        householdCode: formData.householdCode,
+      });
+
+      alert('Household created successfully!');
+
       // Navigate to households list using Next.js router
-      router.push('/households')
-      
+      router.push('/households');
     } catch (error) {
-      logger.error('Unexpected error during household creation', error)
-      alert('An unexpected error occurred. Please try again.')
+      logger.error('Unexpected error during household creation', error);
+      alert('An unexpected error occurred. Please try again.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <BasicInformationStep formData={formData} onChange={handleInputChange} errors={errors} />
+        return (
+          <BasicInformationStep formData={formData} onChange={handleInputChange} errors={errors} />
+        );
       case 2:
-        return <LocationDetailsStep formData={formData} onChange={handleInputChange} errors={errors} userAddress={userAddress} loadingAddress={loadingAddress} addressError={addressError} />
+        return (
+          <LocationDetailsStep
+            formData={formData}
+            onChange={handleInputChange}
+            errors={errors}
+            userAddress={userAddress}
+            loadingAddress={loadingAddress}
+            addressError={addressError}
+          />
+        );
       case 3:
-        return <HouseholdCompositionStep formData={formData} onChange={handleInputChange} errors={errors} />
+        return (
+          <HouseholdCompositionStep
+            formData={formData}
+            onChange={handleInputChange}
+            errors={errors}
+          />
+        );
       case 4:
-        return <EconomicInformationStep formData={formData} onChange={handleInputChange} errors={errors} />
+        return (
+          <EconomicInformationStep
+            formData={formData}
+            onChange={handleInputChange}
+            errors={errors}
+          />
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -349,7 +376,10 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
         <nav aria-label="Progress">
           <ol role="list" className="flex items-center">
             {steps.map((step, stepIdx) => (
-              <li key={step.id} className={stepIdx !== steps.length - 1 ? 'relative pr-8 sm:pr-20' : 'relative'}>
+              <li
+                key={step.id}
+                className={stepIdx !== steps.length - 1 ? 'relative pr-8 sm:pr-20' : 'relative'}
+              >
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -357,7 +387,11 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
                     </div>
                     <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-zinc-600">
                       <svg className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                   </>
@@ -396,40 +430,27 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
 
       {/* Form Content */}
       <div className="rounded-lg bg-white shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
-        <div className="px-6 py-8">
-          {renderStepContent()}
-        </div>
+        <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
       {/* Navigation Buttons */}
       <div className="mt-8 flex justify-between">
-        <Button
-          variant="secondary-outline"
-          onClick={handlePrevStep}
-          disabled={currentStep === 1}
-        >
+        <Button variant="secondary-outline" onClick={handlePrevStep} disabled={currentStep === 1}>
           Previous
         </Button>
-        
+
         {currentStep < 4 ? (
-          <Button
-            variant="primary"
-            onClick={handleNextStep}
-          >
+          <Button variant="primary" onClick={handleNextStep}>
             Continue
           </Button>
         ) : (
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
+          <Button variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? 'Creating Household...' : 'Create Household'}
           </Button>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // Step 1: Basic Information
@@ -444,13 +465,17 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
           Household details and head of household information.
         </p>
       </div>
-      
+
       {/* Household Code */}
       <div className="rounded-lg bg-blue-50 p-4 ring-1 ring-blue-900/10 dark:bg-blue-400/10 dark:ring-blue-400/20">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <div className="ml-3">
@@ -468,54 +493,61 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
       {/* Household Type */}
       <HouseholdTypeSelector
         value={formData.householdType}
-        onChange={(value) => onChange('householdType', value)}
+        onChange={value => onChange('householdType', value)}
         error={errors.householdType}
       />
 
       {/* Head of Household */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Head of Household</h4>
-        
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <InputField
             label="First Name"
             value={formData.headFirstName}
-            onChange={(e) => onChange('headFirstName', e.target.value)}
+            onChange={e => onChange('headFirstName', e.target.value)}
             placeholder="Enter first name"
             required
             errorMessage={errors.headFirstName}
           />
-          
+
           <InputField
             label="Middle Name"
             value={formData.headMiddleName}
-            onChange={(e) => onChange('headMiddleName', e.target.value)}
+            onChange={e => onChange('headMiddleName', e.target.value)}
             placeholder="Enter middle name"
           />
-          
+
           <InputField
             label="Last Name"
             value={formData.headLastName}
-            onChange={(e) => onChange('headLastName', e.target.value)}
+            onChange={e => onChange('headLastName', e.target.value)}
             placeholder="Enter last name"
             required
             errorMessage={errors.headLastName}
           />
-          
+
           <InputField
             label="Extension Name"
             value={formData.headExtensionName}
-            onChange={(e) => onChange('headExtensionName', e.target.value)}
+            onChange={e => onChange('headExtensionName', e.target.value)}
             placeholder="Jr., Sr., III, etc."
           />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Step 2: Location Details
-function LocationDetailsStep({ formData, onChange, errors, userAddress, loadingAddress, addressError }: any) {
+function LocationDetailsStep({
+  formData,
+  onChange,
+  errors,
+  userAddress,
+  loadingAddress,
+  addressError,
+}: any) {
   return (
     <div className="space-y-8">
       <div>
@@ -529,29 +561,55 @@ function LocationDetailsStep({ formData, onChange, errors, userAddress, loadingA
 
       {/* Geographic Information */}
       <div className="space-y-4">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Geographic Information</h4>
-        
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+          Geographic Information
+        </h4>
+
         {loadingAddress ? (
           <div className="flex items-center gap-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <svg className="h-5 w-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
-            <span className="text-blue-700 text-sm font-medium">Loading your assigned barangay...</span>
+            <span className="text-blue-700 text-sm font-medium">
+              Loading your assigned barangay...
+            </span>
           </div>
         ) : userAddress ? (
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
             <div className="flex items-start gap-3">
               <span className="text-green-600 mt-0.5">📍</span>
               <div>
-                <h5 className="font-medium text-green-800 mb-2">Auto-populated from your assigned barangay</h5>
+                <h5 className="font-medium text-green-800 mb-2">
+                  Auto-populated from your assigned barangay
+                </h5>
                 <div className="space-y-1 text-sm text-green-700">
-                  <div><strong>Region:</strong> {userAddress.region_name}</div>
+                  <div>
+                    <strong>Region:</strong> {userAddress.region_name}
+                  </div>
                   {userAddress.province_name && (
-                    <div><strong>Province:</strong> {userAddress.province_name}</div>
+                    <div>
+                      <strong>Province:</strong> {userAddress.province_name}
+                    </div>
                   )}
-                  <div><strong>City/Municipality:</strong> {userAddress.city_municipality_name} ({userAddress.city_municipality_type})</div>
-                  <div><strong>Barangay:</strong> {userAddress.barangay_name}</div>
+                  <div>
+                    <strong>City/Municipality:</strong> {userAddress.city_municipality_name} (
+                    {userAddress.city_municipality_type})
+                  </div>
+                  <div>
+                    <strong>Barangay:</strong> {userAddress.barangay_name}
+                  </div>
                 </div>
               </div>
             </div>
@@ -565,10 +623,9 @@ function LocationDetailsStep({ formData, onChange, errors, userAddress, loadingA
                   {addressError || 'No barangay assignment found'}
                 </h5>
                 <p className="text-sm text-red-700">
-                  {addressError 
+                  {addressError
                     ? 'There was an error loading your barangay information. Please try refreshing the page.'
-                    : 'Please contact your system administrator to assign you to a barangay.'
-                  }
+                    : 'Please contact your system administrator to assign you to a barangay.'}
                 </p>
               </div>
             </div>
@@ -579,65 +636,71 @@ function LocationDetailsStep({ formData, onChange, errors, userAddress, loadingA
       {/* Address Details */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Address Details</h4>
-        
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <InputField
             label="Street Name"
             value={formData.streetName}
-            onChange={(e) => onChange('streetName', e.target.value)}
+            onChange={e => onChange('streetName', e.target.value)}
             placeholder="Enter street name"
             required
             errorMessage={errors.streetName}
           />
-          
+
           <InputField
             label="House Number"
             value={formData.houseNumber}
-            onChange={(e) => onChange('houseNumber', e.target.value)}
+            onChange={e => onChange('houseNumber', e.target.value)}
             placeholder="e.g., 123, Blk 4 Lot 5"
           />
-          
+
           <InputField
             label="Subdivision"
             value={formData.subdivision}
-            onChange={(e) => onChange('subdivision', e.target.value)}
+            onChange={e => onChange('subdivision', e.target.value)}
             placeholder="Subdivision/Village name"
           />
-          
+
           <InputField
             label="Landmark"
             value={formData.landmark}
-            onChange={(e) => onChange('landmark', e.target.value)}
+            onChange={e => onChange('landmark', e.target.value)}
             placeholder="Nearby landmark"
           />
         </div>
 
         {/* GPS Coordinates */}
         <div className="space-y-4">
-          <h5 className="text-sm/6 font-medium text-zinc-950 dark:text-white">GPS Coordinates (Optional)</h5>
+          <h5 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+            GPS Coordinates (Optional)
+          </h5>
           <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
             <InputField
               label="Latitude"
               type="number"
               step="any"
               value={formData.coordinates.latitude}
-              onChange={(e) => onChange('coordinates', { ...formData.coordinates, latitude: e.target.value })}
+              onChange={e =>
+                onChange('coordinates', { ...formData.coordinates, latitude: e.target.value })
+              }
               placeholder="e.g., 14.5995"
             />
-            
+
             <InputField
               label="Longitude"
               type="number"
               step="any"
               value={formData.coordinates.longitude}
-              onChange={(e) => onChange('coordinates', { ...formData.coordinates, longitude: e.target.value })}
+              onChange={e =>
+                onChange('coordinates', { ...formData.coordinates, longitude: e.target.value })
+              }
               placeholder="e.g., 120.9842"
             />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Step 3: Household Composition
@@ -656,33 +719,33 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
       {/* Total Members */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Total Members</h4>
-        
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-3">
           <InputField
             label="Total Members"
             type="number"
             min="1"
             value={formData.totalMembers.toString()}
-            onChange={(e) => onChange('totalMembers', parseInt(e.target.value) || 1)}
+            onChange={e => onChange('totalMembers', parseInt(e.target.value) || 1)}
             required
             errorMessage={errors.totalMembers}
           />
-          
+
           <InputField
             label="Male Members"
             type="number"
             min="0"
             value={formData.totalMales.toString()}
-            onChange={(e) => onChange('totalMales', parseInt(e.target.value) || 0)}
+            onChange={e => onChange('totalMales', parseInt(e.target.value) || 0)}
             errorMessage={errors.totalMales}
           />
-          
+
           <InputField
             label="Female Members"
             type="number"
             min="0"
             value={formData.totalFemales.toString()}
-            onChange={(e) => onChange('totalFemales', parseInt(e.target.value) || 0)}
+            onChange={e => onChange('totalFemales', parseInt(e.target.value) || 0)}
           />
         </div>
       </div>
@@ -690,41 +753,45 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
       {/* Age Groups */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Age Groups</h4>
-        
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-3">
           <InputField
             label="Children (0-17)"
             type="number"
             min="0"
             value={formData.children.toString()}
-            onChange={(e) => onChange('children', parseInt(e.target.value) || 0)}
+            onChange={e => onChange('children', parseInt(e.target.value) || 0)}
           />
-          
+
           <InputField
             label="Adults (18-59)"
             type="number"
             min="0"
             value={formData.adults.toString()}
-            onChange={(e) => onChange('adults', parseInt(e.target.value) || 0)}
+            onChange={e => onChange('adults', parseInt(e.target.value) || 0)}
           />
-          
+
           <InputField
             label="Seniors (60+)"
             type="number"
             min="0"
             value={formData.seniors.toString()}
-            onChange={(e) => onChange('seniors', parseInt(e.target.value) || 0)}
+            onChange={e => onChange('seniors', parseInt(e.target.value) || 0)}
           />
         </div>
       </div>
 
       {/* Validation Summary */}
-      {(formData.totalMales + formData.totalFemales !== formData.totalMembers) && (
+      {formData.totalMales + formData.totalFemales !== formData.totalMembers && (
         <div className="rounded-lg bg-amber-50 p-4 ring-1 ring-amber-900/10 dark:bg-amber-400/10 dark:ring-amber-400/20">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -733,7 +800,8 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
               </h3>
               <div className="mt-2 text-sm/6 text-amber-700 dark:text-amber-300">
                 <p>
-                  Total members ({formData.totalMembers}) should equal the sum of male ({formData.totalMales}) and female ({formData.totalFemales}) members.
+                  Total members ({formData.totalMembers}) should equal the sum of male (
+                  {formData.totalMales}) and female ({formData.totalFemales}) members.
                 </p>
               </div>
             </div>
@@ -741,7 +809,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // Step 4: Economic Information
@@ -751,8 +819,8 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
     { value: '10k_25k', label: '₱10,000 - ₱25,000' },
     { value: '25k_50k', label: '₱25,000 - ₱50,000' },
     { value: '50k_100k', label: '₱50,000 - ₱100,000' },
-    { value: 'above_100k', label: 'Above ₱100,000' }
-  ]
+    { value: 'above_100k', label: 'Above ₱100,000' },
+  ];
 
   const INCOME_SOURCES = [
     { value: 'employment', label: 'Employment/Salary' },
@@ -761,8 +829,8 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
     { value: 'remittances', label: 'Remittances (OFW)' },
     { value: 'pension', label: 'Pension/Retirement' },
     { value: 'government_aid', label: 'Government Aid' },
-    { value: 'other', label: 'Other' }
-  ]
+    { value: 'other', label: 'Other' },
+  ];
 
   const DWELLING_TYPES = [
     { value: 'single_detached', label: 'Single Detached House' },
@@ -771,16 +839,16 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
     { value: 'condominium', label: 'Condominium' },
     { value: 'townhouse', label: 'Townhouse' },
     { value: 'informal_dwelling', label: 'Informal Dwelling' },
-    { value: 'other', label: 'Other' }
-  ]
+    { value: 'other', label: 'Other' },
+  ];
 
   const OWNERSHIP_TYPES = [
     { value: 'owned', label: 'Owned' },
     { value: 'rented', label: 'Rented' },
     { value: 'shared', label: 'Shared with others' },
     { value: 'caretaker', label: 'Caretaker' },
-    { value: 'other', label: 'Other' }
-  ]
+    { value: 'other', label: 'Other' },
+  ];
 
   return (
     <div className="space-y-8">
@@ -795,21 +863,23 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
 
       {/* Economic Information */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Economic Information</h4>
-        
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+          Economic Information
+        </h4>
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <DropdownSelect
             label="Monthly Household Income"
             value={formData.monthlyIncome}
-            onChange={(val) => onChange('monthlyIncome', val)}
+            onChange={val => onChange('monthlyIncome', val)}
             options={INCOME_RANGES}
             placeholder="Select income range"
           />
-          
+
           <DropdownSelect
             label="Primary Income Source"
             value={formData.incomeSource}
-            onChange={(val) => onChange('incomeSource', val)}
+            onChange={val => onChange('incomeSource', val)}
             options={INCOME_SOURCES}
             placeholder="Select income source"
           />
@@ -819,40 +889,40 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
       {/* Utilities */}
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Utilities Access</h4>
-        
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="hasElectricity"
               checked={formData.hasElectricity}
-              onChange={(e) => onChange('hasElectricity', e.target.checked)}
+              onChange={e => onChange('hasElectricity', e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
             />
             <label htmlFor="hasElectricity" className="text-sm text-zinc-950 dark:text-white">
               Has Electricity
             </label>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="hasWater"
               checked={formData.hasWater}
-              onChange={(e) => onChange('hasWater', e.target.checked)}
+              onChange={e => onChange('hasWater', e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
             />
             <label htmlFor="hasWater" className="text-sm text-zinc-950 dark:text-white">
               Has Water Supply
             </label>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="hasInternet"
               checked={formData.hasInternet}
-              onChange={(e) => onChange('hasInternet', e.target.checked)}
+              onChange={e => onChange('hasInternet', e.target.checked)}
               className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
             />
             <label htmlFor="hasInternet" className="text-sm text-zinc-950 dark:text-white">
@@ -864,22 +934,24 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
 
       {/* Dwelling Information */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Dwelling Information</h4>
-        
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+          Dwelling Information
+        </h4>
+
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
           <DropdownSelect
             label="Dwelling Type"
             value={formData.dwellingType}
-            onChange={(val) => onChange('dwellingType', val)}
+            onChange={val => onChange('dwellingType', val)}
             options={DWELLING_TYPES}
             placeholder="Select dwelling type"
             errorMessage={errors.dwellingType}
           />
-          
+
           <DropdownSelect
             label="Dwelling Ownership"
             value={formData.dwellingOwnership}
-            onChange={(val) => onChange('dwellingOwnership', val)}
+            onChange={val => onChange('dwellingOwnership', val)}
             options={OWNERSHIP_TYPES}
             placeholder="Select ownership type"
             errorMessage={errors.dwellingOwnership}
@@ -887,5 +959,5 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
         </div>
       </div>
     </div>
-  )
+  );
 }

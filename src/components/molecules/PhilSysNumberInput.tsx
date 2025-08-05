@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * PhilSysNumberInput Component - Secure PhilSys Card Number Input
@@ -6,9 +6,9 @@
  * Integrates with crypto utilities for secure handling
  */
 
-import React, { useState, useEffect } from 'react'
-import { InputField } from '../molecules'
-import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto'
+import React, { useState, useEffect } from 'react';
+import { InputField } from '../molecules';
+import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto';
 
 interface PhilSysNumberInputProps {
   value?: string;
@@ -35,11 +35,11 @@ export default function PhilSysNumberInput({
   disabled = false,
   required = false,
   error,
-  className = "",
-  label = "PhilSys Card Number",
-  placeholder = "XXXX-XXXX-XXXX",
+  className = '',
+  label = 'PhilSys Card Number',
+  placeholder = 'XXXX-XXXX-XXXX',
   showLastFourDigits = true,
-  autoHash = true
+  autoHash = true,
 }: PhilSysNumberInputProps) {
   const [displayValue, setDisplayValue] = useState('');
   const [maskedDisplay, setMaskedDisplay] = useState('');
@@ -61,10 +61,10 @@ export default function PhilSysNumberInput({
   const formatPhilSysNumber = (input: string): string => {
     // Remove all non-digits
     const digits = input.replace(/\D/g, '');
-    
+
     // Limit to 12 digits
     const limited = digits.substring(0, 12);
-    
+
     // Add dashes: XXXX-XXXX-XXXX
     if (limited.length >= 8) {
       return `${limited.substring(0, 4)}-${limited.substring(4, 8)}-${limited.substring(8)}`;
@@ -96,7 +96,7 @@ export default function PhilSysNumberInput({
 
     setIsValid(valid);
     setValidationError(error);
-    
+
     if (onValidation) {
       onValidation(valid, error || undefined);
     }
@@ -108,17 +108,18 @@ export default function PhilSysNumberInput({
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const formatted = formatPhilSysNumber(rawValue);
-    
+
     setDisplayValue(formatted);
-    
+
     // Update masked display for when not focused
-    if (formatted.length === 13) { // Full format XXXX-XXXX-XXXX
+    if (formatted.length === 13) {
+      // Full format XXXX-XXXX-XXXX
       setMaskedDisplay(maskPhilSysNumber(formatted));
     }
-    
+
     // Validate
     const isValidNumber = validatePhilSysNumber(formatted);
-    
+
     // Hash and send to parent if valid and auto-hash is enabled
     if (isValidNumber && autoHash && formatted.length === 13) {
       try {
@@ -143,7 +144,11 @@ export default function PhilSysNumberInput({
   };
 
   // Determine what to show in input
-  const inputValue = isFocused ? displayValue : (showLastFourDigits && maskedDisplay ? maskedDisplay : displayValue);
+  const inputValue = isFocused
+    ? displayValue
+    : showLastFourDigits && maskedDisplay
+      ? maskedDisplay
+      : displayValue;
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -153,7 +158,7 @@ export default function PhilSysNumberInput({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         <InputField
           type="text"
@@ -167,7 +172,7 @@ export default function PhilSysNumberInput({
           className={`font-mono ${isValid ? 'border-green-500' : ''}`}
           maxLength={14} // XXXX-XXXX-XXXX + potential extra char
         />
-        
+
         {/* Security Icon */}
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
           {isValid ? (
@@ -193,9 +198,7 @@ export default function PhilSysNumberInput({
             Number is masked for security. Click to edit. Last 4 digits: {displayValue.slice(-4)}
           </span>
         ) : (
-          <span>
-            Enter 12-digit PhilSys card number. Format: XXXX-XXXX-XXXX
-          </span>
+          <span>Enter 12-digit PhilSys card number. Format: XXXX-XXXX-XXXX</span>
         )}
       </div>
 
@@ -217,9 +220,9 @@ export default function PhilSysNumberInput({
         <div className="flex items-start space-x-2">
           <span className="text-blue-600 dark:text-blue-400">🔐</span>
           <div className="text-blue-700 dark:text-blue-300">
-            <strong>Security Notice:</strong> PhilSys numbers are automatically encrypted 
-            and masked for protection. Only the last 4 digits are shown when not editing.
-            {autoHash && " Data is hashed before storage."}
+            <strong>Security Notice:</strong> PhilSys numbers are automatically encrypted and masked
+            for protection. Only the last 4 digits are shown when not editing.
+            {autoHash && ' Data is hashed before storage.'}
           </div>
         </div>
       </div>

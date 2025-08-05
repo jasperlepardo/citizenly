@@ -4,15 +4,15 @@
  */
 
 // Environment check
-const isDevelopment = process.env.NODE_ENV === 'development'
-const isDevModeEnabled = process.env.NEXT_PUBLIC_DEV_MODE === 'true'
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevModeEnabled = process.env.NEXT_PUBLIC_DEV_MODE === 'true';
 
 /**
  * Check if development features should be enabled
  * Only enable in development environment with explicit flag
  */
 export function isDevFeatureEnabled(): boolean {
-  return isDevelopment && isDevModeEnabled
+  return isDevelopment && isDevModeEnabled;
 }
 
 /**
@@ -21,25 +21,27 @@ export function isDevFeatureEnabled(): boolean {
  */
 export function getDevCredentials() {
   if (!isDevFeatureEnabled()) {
-    throw new Error('Development features are not enabled')
+    throw new Error('Development features are not enabled');
   }
 
-  const devEmail = process.env.DEV_ADMIN_EMAIL
-  const devPassword = process.env.DEV_ADMIN_PASSWORD
+  const devEmail = process.env.DEV_ADMIN_EMAIL;
+  const devPassword = process.env.DEV_ADMIN_PASSWORD;
 
   if (!devEmail || !devPassword) {
-    throw new Error('Development credentials not configured. Please set DEV_ADMIN_EMAIL and DEV_ADMIN_PASSWORD in your .env file')
+    throw new Error(
+      'Development credentials not configured. Please set DEV_ADMIN_EMAIL and DEV_ADMIN_PASSWORD in your .env file'
+    );
   }
 
   // Validate minimum password requirements even for dev
   if (devPassword.length < 12) {
-    throw new Error('Development password must be at least 12 characters long')
+    throw new Error('Development password must be at least 12 characters long');
   }
 
   return {
     email: devEmail,
-    password: devPassword
-  }
+    password: devPassword,
+  };
 }
 
 /**
@@ -47,14 +49,14 @@ export function getDevCredentials() {
  */
 export function getDemoUserConfig() {
   if (!isDevFeatureEnabled()) {
-    throw new Error('Development features are not enabled')
+    throw new Error('Development features are not enabled');
   }
 
   return {
     first_name: process.env.DEV_ADMIN_FIRST_NAME || 'Demo',
     last_name: process.env.DEV_ADMIN_LAST_NAME || 'Administrator',
     mobile_number: process.env.DEV_ADMIN_MOBILE || '09000000000',
-  }
+  };
 }
 
 /**
@@ -62,8 +64,8 @@ export function getDemoUserConfig() {
  */
 export function logDevModeWarning(): void {
   if (isDevFeatureEnabled()) {
-    console.warn('🚨 DEVELOPMENT MODE ENABLED - This should NOT be enabled in production!')
-    console.warn('🔒 Make sure NEXT_PUBLIC_DEV_MODE is set to "false" in production')
+    console.warn('🚨 DEVELOPMENT MODE ENABLED - This should NOT be enabled in production!');
+    console.warn('🔒 Make sure NEXT_PUBLIC_DEV_MODE is set to "false" in production');
   }
 }
 
@@ -71,22 +73,22 @@ export function logDevModeWarning(): void {
  * Validate development environment setup
  */
 export function validateDevEnvironment(): { isValid: boolean; errors: string[] } {
-  const errors: string[] = []
+  const errors: string[] = [];
 
   if (!isDevelopment && isDevModeEnabled) {
-    errors.push('DEV_MODE should not be enabled in production')
+    errors.push('DEV_MODE should not be enabled in production');
   }
 
   if (isDevFeatureEnabled()) {
     try {
-      getDevCredentials()
+      getDevCredentials();
     } catch (error) {
-      errors.push(`Dev credentials error: ${error}`)
+      errors.push(`Dev credentials error: ${error}`);
     }
   }
 
   return {
     isValid: errors.length === 0,
-    errors
-  }
+    errors,
+  };
 }

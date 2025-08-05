@@ -5,6 +5,7 @@ A comprehensive design system for the Records of Barangay Inhabitants (RBI) syst
 ## 🎨 Design Philosophy
 
 This design system is built on the principles of:
+
 - **Accessibility**: WCAG 2.1 AA compliance by default
 - **Consistency**: Unified visual language across all interfaces
 - **Philippine Identity**: Colors and patterns inspired by Philippine government standards
@@ -20,22 +21,22 @@ import { designTokens, getColor, getRBIColor } from '@/design-system';
 const primaryBlue = designTokens.colors.primary[500]; // #3b82f6
 
 // Use utility functions
-const textColor = getColor('neutral.800');           // #262626
-const sectoralColor = getRBIColor('laborForce');     // #059669
+const textColor = getColor('neutral.800'); // #262626
+const sectoralColor = getRBIColor('laborForce'); // #059669
 ```
 
 ## 🎨 Color System
 
 ### Core Color Palette
 
-| Color Family | Base Token | Usage |
-|--------------|------------|--------|
-| Primary (Blue) | `primary.500` | Government actions, links, primary CTAs |
+| Color Family       | Base Token      | Usage                                       |
+| ------------------ | --------------- | ------------------------------------------- |
+| Primary (Blue)     | `primary.500`   | Government actions, links, primary CTAs     |
 | Secondary (Purple) | `secondary.700` | Administrative functions, secondary actions |
-| Success (Emerald) | `success.600` | Positive states, completed actions |
-| Warning (Orange) | `warning.600` | Caution states, pending actions |
-| Danger (Red) | `danger.600` | Error states, destructive actions |
-| Neutral (Gray) | `neutral.700` | Text, borders, backgrounds |
+| Success (Emerald)  | `success.600`   | Positive states, completed actions          |
+| Warning (Orange)   | `warning.600`   | Caution states, pending actions             |
+| Danger (Red)       | `danger.600`    | Error states, destructive actions           |
+| Neutral (Gray)     | `neutral.700`   | Text, borders, backgrounds                  |
 
 ### RBI-Specific Colors
 
@@ -43,16 +44,16 @@ Special colors for Philippine government and sectoral classifications:
 
 ```tsx
 // Philippine flag colors
-bg-rbi-flag-blue    // #0038a8
-bg-rbi-flag-red     // #ce1126
-bg-rbi-flag-yellow  // #fcd116
+bg - rbi - flag - blue; // #0038a8
+bg - rbi - flag - red; // #ce1126
+bg - rbi - flag - yellow; // #fcd116
 
 // Sectoral classification colors
-text-rbi-labor-force // Green for employed residents
-text-rbi-senior      // Purple for senior citizens
-text-rbi-youth       // Blue for youth demographics
-text-rbi-pwd         // Orange for PWD classification
-text-rbi-migrant     // Indigo for migrant status
+text - rbi - labor - force; // Green for employed residents
+text - rbi - senior; // Purple for senior citizens
+text - rbi - youth; // Blue for youth demographics
+text - rbi - pwd; // Orange for PWD classification
+text - rbi - migrant; // Indigo for migrant status
 ```
 
 ### Usage Examples
@@ -73,21 +74,22 @@ const styles = {
 ## ✍️ Typography
 
 ### Font Stack
+
 - **Primary**: Inter (with system fallbacks)
 - **Display**: Inter (for headings)
 - **Monospace**: System monospace stack
 
 ### Type Scale
 
-| Size | Token | Usage |
-|------|-------|--------|
-| 72px | `7xl` | Statistical displays (StatCard) |
-| 36px | `4xl` | Page headers (H1) |
-| 24px | `2xl` | Section headers (H2) |
-| 18px | `lg` | Subsection headers (H3) |
-| 16px | `base` | Body text (default) |
-| 14px | `sm` | Helper text, captions |
-| 12px | `xs` | Fine print, labels |
+| Size | Token  | Usage                           |
+| ---- | ------ | ------------------------------- |
+| 72px | `7xl`  | Statistical displays (StatCard) |
+| 36px | `4xl`  | Page headers (H1)               |
+| 24px | `2xl`  | Section headers (H2)            |
+| 18px | `lg`   | Subsection headers (H3)         |
+| 16px | `base` | Body text (default)             |
+| 14px | `sm`   | Helper text, captions           |
+| 12px | `xs`   | Fine print, labels              |
 
 ### Usage Examples
 
@@ -106,15 +108,15 @@ const fontSize = getFontSize('lg');      // Returns ['18px', { lineHeight: '28px
 
 Based on a **4px grid system** for consistent layout:
 
-| Token | Value | Usage |
-|-------|--------|--------|
-| `1` | 4px | Minimal spacing, borders |
-| `2` | 8px | Small gaps, tight padding |
-| `4` | 16px | **Base unit** - default spacing |
-| `6` | 24px | Medium spacing, card padding |
-| `8` | 32px | Large spacing, section gaps |
-| `12` | 48px | Extra large spacing |
-| `20` | 80px | Page-level spacing |
+| Token | Value | Usage                           |
+| ----- | ----- | ------------------------------- |
+| `1`   | 4px   | Minimal spacing, borders        |
+| `2`   | 8px   | Small gaps, tight padding       |
+| `4`   | 16px  | **Base unit** - default spacing |
+| `6`   | 24px  | Medium spacing, card padding    |
+| `8`   | 32px  | Large spacing, section gaps     |
+| `12`  | 48px  | Extra large spacing             |
+| `20`  | 80px  | Page-level spacing              |
 
 ### Usage Examples
 
@@ -132,20 +134,21 @@ const responsive = getResponsiveSpacing('4');       // Responsive spacing object
 
 Consistent shadow system for elevation and focus states:
 
-| Token | Usage |
-|-------|--------|
-| `shadow-sm` | Subtle cards, input borders |
-| `shadow-md` | **Default cards**, dropdown menus |
-| `shadow-lg` | Modal overlays, important cards |
-| `shadow-xl` | Major modals, toast notifications |
-| `shadow-soft` | Custom subtle elevation |
-| `shadow-primary-focus` | Primary button/input focus |
+| Token                  | Usage                             |
+| ---------------------- | --------------------------------- |
+| `shadow-sm`            | Subtle cards, input borders       |
+| `shadow-md`            | **Default cards**, dropdown menus |
+| `shadow-lg`            | Modal overlays, important cards   |
+| `shadow-xl`            | Major modals, toast notifications |
+| `shadow-soft`          | Custom subtle elevation           |
+| `shadow-primary-focus` | Primary button/input focus        |
 
 ## 🧩 Component Tokens
 
 Pre-configured tokens for common UI patterns:
 
 ### Buttons
+
 ```tsx
 const buttonStyles = getButtonStyles('primary', 'md');
 // Returns complete button configuration including:
@@ -155,6 +158,7 @@ const buttonStyles = getButtonStyles('primary', 'md');
 ```
 
 ### Form Inputs
+
 ```tsx
 const inputStyles = getInputStyles('focus');
 // Returns complete input configuration for different states:
@@ -183,8 +187,8 @@ Visual indicators for different household compositions:
 ```tsx
 import { getHouseholdTypeStyle } from '@/design-system';
 
-const nuclearFamily = getHouseholdTypeStyle('nuclear');        // { icon: '👪', color: '#3b82f6' }
-const singleParent = getHouseholdTypeStyle('single_parent');   // { icon: '👩‍👧‍👦', color: '#7c3aed' }
+const nuclearFamily = getHouseholdTypeStyle('nuclear'); // { icon: '👪', color: '#3b82f6' }
+const singleParent = getHouseholdTypeStyle('single_parent'); // { icon: '👩‍👧‍👦', color: '#7c3aed' }
 ```
 
 ## 🛠️ Development Tools
@@ -195,9 +199,9 @@ const singleParent = getHouseholdTypeStyle('single_parent');   // { icon: '👩�
 import { validateDesignTokenUsage } from '@/design-system';
 
 const componentStyles = {
-  backgroundColor: '#ff0000',  // ❌ Hardcoded color
-  padding: '15px',             // ❌ Non-standard spacing
-  borderRadius: '6px'          // ✅ Uses design token
+  backgroundColor: '#ff0000', // ❌ Hardcoded color
+  padding: '15px', // ❌ Non-standard spacing
+  borderRadius: '6px', // ✅ Uses design token
 };
 
 const validation = validateDesignTokenUsage(componentStyles);
@@ -229,6 +233,7 @@ All tokens work seamlessly with Tailwind's responsive prefixes:
 ## 🎯 Best Practices
 
 ### ✅ Do
+
 - Use design tokens instead of hardcoded values
 - Use semantic colors (success, warning, danger) for states
 - Follow the 4px spacing grid
@@ -237,6 +242,7 @@ All tokens work seamlessly with Tailwind's responsive prefixes:
 - Use utility functions for complex styling logic
 
 ### ❌ Don't
+
 - Hardcode colors, spacing, or typography values
 - Create custom shadows or border radius values
 - Use non-standard spacing (not on 4px grid)
@@ -246,7 +252,7 @@ All tokens work seamlessly with Tailwind's responsive prefixes:
 ## 🔗 Related Files
 
 - [`tokens.ts`](./tokens.ts) - Core design token definitions
-- [`utils.ts`](./utils.ts) - Utility functions and helpers  
+- [`utils.ts`](./utils.ts) - Utility functions and helpers
 - [`index.ts`](./index.ts) - Main exports and quick reference
 - [`../app/globals.css`](../app/globals.css) - CSS custom properties
 - [`../../tailwind.config.js`](../../tailwind.config.js) - Tailwind configuration
@@ -260,26 +266,21 @@ import { getButtonStyles, getSectoralBadgeColor, getSpacing } from '@/design-sys
 
 function ResidentCard({ resident }) {
   const badgeColor = getSectoralBadgeColor(resident.classification, 'subtle');
-  
+
   return (
     <div className="bg-neutral-0 p-6 rounded-lg shadow-md border border-neutral-200">
       <div className="flex items-start justify-between mb-4">
-        <h3 className="text-lg font-semibold text-neutral-800">
-          {resident.name}
-        </h3>
-        <span 
-          className="px-2 py-1 text-xs font-medium rounded"
-          style={badgeColor}
-        >
+        <h3 className="text-lg font-semibold text-neutral-800">{resident.name}</h3>
+        <span className="px-2 py-1 text-xs font-medium rounded" style={badgeColor}>
           {resident.classification}
         </span>
       </div>
-      
+
       <div className="space-y-2 text-sm text-neutral-600">
         <div>Age: {resident.age}</div>
         <div>Household: {resident.householdCode}</div>
       </div>
-      
+
       <div className="mt-4 flex gap-2">
         <button className="bg-primary-500 hover:bg-primary-600 text-neutral-50 px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
           View Details

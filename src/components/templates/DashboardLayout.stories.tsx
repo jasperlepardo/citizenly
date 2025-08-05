@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
-import DashboardLayout from './DashboardLayout'
-import { AuthProvider } from '@/contexts/AuthContext'
-import { ThemeProvider } from '@/contexts/ThemeContext'
+import React, { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
+import DashboardLayout from './DashboardLayout';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const meta = {
   title: 'Templates/DashboardLayout',
@@ -11,40 +11,37 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'A comprehensive dashboard layout template for the RBI System. Includes sidebar navigation, search functionality, user profile management, and responsive design. Provides the main layout structure for all dashboard pages with consistent navigation and user interface elements.'
-      }
-    }
+        component:
+          'A comprehensive dashboard layout template for the RBI System. Includes sidebar navigation, search functionality, user profile management, and responsive design. Provides the main layout structure for all dashboard pages with consistent navigation and user interface elements.',
+      },
+    },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <ThemeProvider>
         <AuthProvider>
           <Story />
         </AuthProvider>
       </ThemeProvider>
-    )
+    ),
   ],
   tags: ['autodocs'],
   argTypes: {
     searchTerm: {
-      control: 'text'
-    }
-  }
-} satisfies Meta<typeof DashboardLayout>
+      control: 'text',
+    },
+  },
+} satisfies Meta<typeof DashboardLayout>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Sample dashboard content
 const SampleDashboardContent = () => (
   <div className="p-6 space-y-6">
     <div className="mb-8">
-      <h1 className="font-montserrat font-semibold text-2xl text-primary">
-        Dashboard Overview
-      </h1>
-      <p className="mt-1 text-secondary font-montserrat">
-        Welcome to the RBI System dashboard
-      </p>
+      <h1 className="font-montserrat font-semibold text-2xl text-primary">Dashboard Overview</h1>
+      <p className="mt-1 text-secondary font-montserrat">Welcome to the RBI System dashboard</p>
     </div>
 
     {/* Statistics Cards */}
@@ -68,7 +65,9 @@ const SampleDashboardContent = () => (
       </div>
 
       <div className="bg-surface rounded-lg border border-default p-6">
-        <div className="font-montserrat font-medium text-sm text-secondary mb-2">Certifications</div>
+        <div className="font-montserrat font-medium text-sm text-secondary mb-2">
+          Certifications
+        </div>
         <div className="font-montserrat font-bold text-4xl text-primary">89</div>
         <div className="flex items-center text-sm mt-2">
           <div className="h-2 w-2 rounded-full bg-purple-500 mr-2"></div>
@@ -108,17 +107,13 @@ const SampleDashboardContent = () => (
       </div>
     </div>
   </div>
-)
+);
 
 const SampleResidentsContent = () => (
   <div className="p-6 space-y-6">
     <div className="mb-8">
-      <h1 className="font-montserrat font-semibold text-2xl text-primary">
-        Residents Management
-      </h1>
-      <p className="mt-1 text-secondary font-montserrat">
-        Manage resident information and records
-      </p>
+      <h1 className="font-montserrat font-semibold text-2xl text-primary">Residents Management</h1>
+      <p className="mt-1 text-secondary font-montserrat">Manage resident information and records</p>
     </div>
 
     <div className="bg-surface rounded-lg border border-default">
@@ -130,24 +125,29 @@ const SampleResidentsContent = () => (
           </button>
         </div>
       </div>
-      
+
       <div className="p-6">
         <div className="space-y-4">
           {[
             { name: 'Juan Dela Cruz', email: 'juan@example.com', status: 'Active' },
             { name: 'Maria Santos', email: 'maria@example.com', status: 'Active' },
-            { name: 'Jose Rizal', email: 'jose@example.com', status: 'Inactive' }
+            { name: 'Jose Rizal', email: 'jose@example.com', status: 'Inactive' },
           ].map((resident, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-background rounded border border-default">
+            <div
+              key={index}
+              className="flex items-center justify-between p-4 bg-background rounded border border-default"
+            >
               <div>
                 <div className="font-medium text-primary">{resident.name}</div>
                 <div className="text-sm text-secondary">{resident.email}</div>
               </div>
-              <span className={`px-2 py-1 text-xs rounded-full ${
-                resident.status === 'Active' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-              }`}>
+              <span
+                className={`px-2 py-1 text-xs rounded-full ${
+                  resident.status === 'Active'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                    : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+                }`}
+              >
                 {resident.status}
               </span>
             </div>
@@ -156,37 +156,34 @@ const SampleResidentsContent = () => (
       </div>
     </div>
   </div>
-)
+);
 
 export const Default: Story = {
   args: {
-    children: <SampleDashboardContent />
-  }
-}
+    children: <SampleDashboardContent />,
+  },
+};
 
 export const WithSearchTerm: Story = {
   args: {
     children: <SampleDashboardContent />,
     searchTerm: 'residents',
-    onSearchChange: (value) => console.log('Search changed:', value)
-  }
-}
+    onSearchChange: value => console.log('Search changed:', value),
+  },
+};
 
 export const ResidentsPage: Story = {
   args: {
-    children: <SampleResidentsContent />
-  }
-}
+    children: <SampleResidentsContent />,
+  },
+};
 
 // Interactive example with search
 const InteractiveComponent = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <DashboardLayout
-      searchTerm={searchTerm}
-      onSearchChange={setSearchTerm}
-    >
+    <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
       <div className="p-6 space-y-6">
         <div className="mb-8">
           <h1 className="font-montserrat font-semibold text-2xl text-primary">
@@ -213,14 +210,15 @@ const InteractiveComponent = () => {
               Use the sidebar to navigate between different sections of the RBI System.
             </p>
           </div>
-          
+
           <div className="bg-surface rounded-lg border border-default p-6">
             <h3 className="font-semibold text-primary mb-2">Search</h3>
             <p className="text-sm text-secondary">
-              The global search bar allows you to quickly find residents, households, and other data.
+              The global search bar allows you to quickly find residents, households, and other
+              data.
             </p>
           </div>
-          
+
           <div className="bg-surface rounded-lg border border-default p-6">
             <h3 className="font-semibold text-primary mb-2">User Profile</h3>
             <p className="text-sm text-secondary">
@@ -230,23 +228,25 @@ const InteractiveComponent = () => {
         </div>
       </div>
     </DashboardLayout>
-  )
-}
+  );
+};
 
 export const Interactive: Story = {
-  render: InteractiveComponent
-}
+  render: InteractiveComponent,
+};
 
 // Different page content examples
 const DifferentPagesComponent = () => {
-  const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents' | 'reports'>('dashboard')
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'residents' | 'reports'>(
+    'dashboard'
+  );
 
   const renderContent = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <SampleDashboardContent />
+        return <SampleDashboardContent />;
       case 'residents':
-        return <SampleResidentsContent />
+        return <SampleResidentsContent />;
       case 'reports':
         return (
           <div className="p-6 space-y-6">
@@ -263,7 +263,9 @@ const DifferentPagesComponent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 border border-default rounded">
                   <h4 className="font-medium text-primary">Demographics Report</h4>
-                  <p className="text-sm text-secondary mt-1">Population statistics and demographics</p>
+                  <p className="text-sm text-secondary mt-1">
+                    Population statistics and demographics
+                  </p>
                 </div>
                 <div className="p-4 border border-default rounded">
                   <h4 className="font-medium text-primary">Monthly Activity</h4>
@@ -272,11 +274,11 @@ const DifferentPagesComponent = () => {
               </div>
             </div>
           </div>
-        )
+        );
       default:
-        return <SampleDashboardContent />
+        return <SampleDashboardContent />;
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -286,8 +288,8 @@ const DifferentPagesComponent = () => {
           <button
             onClick={() => setCurrentPage('dashboard')}
             className={`px-3 py-1 text-sm rounded ${
-              currentPage === 'dashboard' 
-                ? 'bg-blue-600 text-white' 
+              currentPage === 'dashboard'
+                ? 'bg-blue-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -296,8 +298,8 @@ const DifferentPagesComponent = () => {
           <button
             onClick={() => setCurrentPage('residents')}
             className={`px-3 py-1 text-sm rounded ${
-              currentPage === 'residents' 
-                ? 'bg-blue-600 text-white' 
+              currentPage === 'residents'
+                ? 'bg-blue-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -306,8 +308,8 @@ const DifferentPagesComponent = () => {
           <button
             onClick={() => setCurrentPage('reports')}
             className={`px-3 py-1 text-sm rounded ${
-              currentPage === 'reports' 
-                ? 'bg-blue-600 text-white' 
+              currentPage === 'reports'
+                ? 'bg-blue-600 text-white'
                 : 'bg-surface text-primary hover:bg-surface-hover'
             }`}
           >
@@ -315,17 +317,15 @@ const DifferentPagesComponent = () => {
           </button>
         </div>
       </div>
-      
-      <DashboardLayout>
-        {renderContent()}
-      </DashboardLayout>
+
+      <DashboardLayout>{renderContent()}</DashboardLayout>
     </div>
-  )
-}
+  );
+};
 
 export const DifferentPages: Story = {
-  render: DifferentPagesComponent
-}
+  render: DifferentPagesComponent,
+};
 
 // Features showcase
 export const FeaturesShowcase: Story = {
@@ -333,7 +333,7 @@ export const FeaturesShowcase: Story = {
     <div className="space-y-6">
       <div className="bg-background p-6 border border-default rounded-lg">
         <h3 className="font-semibold text-primary mb-4">DashboardLayout Features</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-medium text-primary mb-2">Navigation</h4>
@@ -345,7 +345,7 @@ export const FeaturesShowcase: Story = {
               <li>• Icon and text-based menu items</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">Search Functionality</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -356,7 +356,7 @@ export const FeaturesShowcase: Story = {
               <li>• Search action triggers</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">User Management</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -367,7 +367,7 @@ export const FeaturesShowcase: Story = {
               <li>• Settings access</li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-medium text-primary mb-2">Layout Structure</h4>
             <ul className="text-sm text-secondary space-y-1">
@@ -379,20 +379,20 @@ export const FeaturesShowcase: Story = {
             </ul>
           </div>
         </div>
-        
+
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Usage Notes</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            This layout template provides the foundation for all dashboard pages in the RBI System. 
-            It includes authentication context, navigation state management, and consistent UI patterns 
-            that ensure a unified user experience across the application.
+            This layout template provides the foundation for all dashboard pages in the RBI System.
+            It includes authentication context, navigation state management, and consistent UI
+            patterns that ensure a unified user experience across the application.
           </p>
         </div>
       </div>
-      
+
       <DashboardLayout>
         <SampleDashboardContent />
       </DashboardLayout>
     </div>
-  )
-}
+  ),
+};

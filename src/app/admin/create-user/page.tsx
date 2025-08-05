@@ -1,35 +1,35 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { InputField, DropdownSelect } from '@/components/molecules'
-import { BarangaySelector } from '@/components/organisms'
-import { AppShell } from '@/components/templates'
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
-import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { InputField, DropdownSelect } from '@/components/molecules';
+import { BarangaySelector } from '@/components/organisms';
+import { AppShell } from '@/components/templates';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 interface CreateUserFormData {
-  email: string
-  password: string
-  confirmPassword: string
-  firstName: string
-  lastName: string
-  mobileNumber: string
-  barangayCode: string
-  roleId: string
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+  barangayCode: string;
+  roleId: string;
 }
 
 interface Role {
-  id: string
-  name: string
-  description?: string
+  id: string;
+  name: string;
+  description?: string;
 }
 
 function CreateUserContent() {
-  const { user: currentUser } = useAuth()
+  const { user: currentUser } = useAuth();
   const [formData, setFormData] = useState<CreateUserFormData>({
     email: '',
     password: '',
@@ -38,143 +38,139 @@ function CreateUserContent() {
     lastName: '',
     mobileNumber: '',
     barangayCode: '',
-    roleId: ''
-  })
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [roles, setRoles] = useState<Role[]>([])
-  const [loadingRoles, setLoadingRoles] = useState(true)
-  const [success, setSuccess] = useState(false)
-  const [createdUser, setCreatedUser] = useState<any>(null)
+    roleId: '',
+  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loadingRoles, setLoadingRoles] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [createdUser, setCreatedUser] = useState<any>(null);
 
   // Load available roles
   useEffect(() => {
-    loadRoles()
-  }, [])
+    loadRoles();
+  }, []);
 
   const loadRoles = async () => {
     try {
-      setLoadingRoles(true)
-      
+      setLoadingRoles(true);
+
       const { data, error } = await supabase
         .from('roles')
         .select('id, name, permissions')
         .in('name', ['resident', 'clerk']) // Admins can only create residents and clerks
-        .order('name', { ascending: true })
+        .order('name', { ascending: true });
 
       if (error) {
-        console.error('Error loading roles:', error)
+        console.error('Error loading roles:', error);
         // Set default roles if loading fails
-        setRoles([
-          { id: 'default-resident', name: 'resident', description: 'Barangay resident' }
-        ])
+        setRoles([{ id: 'default-resident', name: 'resident', description: 'Barangay resident' }]);
       } else {
         const formattedRoles = data.map(role => ({
           id: role.id,
           name: role.name,
-          description: getRoleDescription(role.name)
-        }))
-        setRoles(formattedRoles)
-        
+          description: getRoleDescription(role.name),
+        }));
+        setRoles(formattedRoles);
+
         // Set default role to resident if available
-        const residentRole = formattedRoles.find(r => r.name === 'resident')
+        const residentRole = formattedRoles.find(r => r.name === 'resident');
         if (residentRole) {
-          setFormData(prev => ({ ...prev, roleId: residentRole.id }))
+          setFormData(prev => ({ ...prev, roleId: residentRole.id }));
         }
       }
     } catch (error) {
-      console.error('Error loading roles:', error)
-      setRoles([
-        { id: 'default-resident', name: 'resident', description: 'Barangay resident' }
-      ])
+      console.error('Error loading roles:', error);
+      setRoles([{ id: 'default-resident', name: 'resident', description: 'Barangay resident' }]);
     } finally {
-      setLoadingRoles(false)
+      setLoadingRoles(false);
     }
-  }
+  };
 
   const getRoleDescription = (roleName: string) => {
     switch (roleName) {
       case 'resident':
-        return 'Barangay resident with basic access'
+        return 'Barangay resident with basic access';
       case 'clerk':
-        return 'Data entry clerk with resident management access'
+        return 'Data entry clerk with resident management access';
       default:
-        return 'System user'
+        return 'System user';
     }
-  }
+  };
 
   const handleChange = (field: keyof CreateUserFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    
+    setFormData(prev => ({ ...prev, [field]: value }));
+
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }))
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
-  }
+  };
 
   const validateForm = () => {
-    const newErrors: { [key: string]: string } = {}
+    const newErrors: { [key: string]: string } = {};
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required'
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+      newErrors.password = 'Password must be at least 8 characters';
     }
 
     // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm the password'
+      newErrors.confirmPassword = 'Please confirm the password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     // Name validation
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required'
+      newErrors.firstName = 'First name is required';
     }
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required'
+      newErrors.lastName = 'Last name is required';
     }
 
     // Mobile number validation
     if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = 'Mobile number is required'
+      newErrors.mobileNumber = 'Mobile number is required';
     } else if (!/^(09|\+639)\d{9}$/.test(formData.mobileNumber.replace(/\s+/g, ''))) {
-      newErrors.mobileNumber = 'Please enter a valid Philippine mobile number'
+      newErrors.mobileNumber = 'Please enter a valid Philippine mobile number';
     }
 
     // Barangay validation
     if (!formData.barangayCode) {
-      newErrors.barangayCode = 'Please select a barangay'
+      newErrors.barangayCode = 'Please select a barangay';
     }
 
     // Role validation
     if (!formData.roleId) {
-      newErrors.roleId = 'Please select a role'
+      newErrors.roleId = 'Please select a role';
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
+    e.preventDefault();
 
-    setIsSubmitting(true)
-    
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+
     try {
-      console.log('Creating user account...')
-      
+      console.log('Creating user account...');
+
       // Create auth user using admin privileges
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: formData.email,
@@ -185,26 +181,26 @@ function CreateUserContent() {
           last_name: formData.lastName,
           mobile_number: formData.mobileNumber,
           barangay_code: formData.barangayCode,
-          created_by: currentUser?.id
-        }
-      })
+          created_by: currentUser?.id,
+        },
+      });
 
       if (authError) {
-        console.error('Auth user creation error:', authError)
+        console.error('Auth user creation error:', authError);
         if (authError.message.includes('already registered')) {
-          setErrors({ general: 'An account with this email already exists.' })
+          setErrors({ general: 'An account with this email already exists.' });
         } else {
-          setErrors({ general: authError.message })
+          setErrors({ general: authError.message });
         }
-        return
+        return;
       }
 
       if (!authData.user) {
-        setErrors({ general: 'Failed to create user account. Please try again.' })
-        return
+        setErrors({ general: 'Failed to create user account. Please try again.' });
+        return;
       }
 
-      console.log('Auth user created:', authData.user.id)
+      console.log('Auth user created:', authData.user.id);
 
       // Create user profile in database
       const profileData = {
@@ -215,60 +211,57 @@ function CreateUserContent() {
         mobile_number: formData.mobileNumber,
         barangay_code: formData.barangayCode,
         role_id: formData.roleId,
-        status: 'active' // Admin-created users are automatically active
-      }
+        status: 'active', // Admin-created users are automatically active
+      };
 
-      console.log('Creating user profile:', profileData)
+      console.log('Creating user profile:', profileData);
 
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .insert(profileData)
+      const { error: profileError } = await supabase.from('user_profiles').insert(profileData);
 
       if (profileError) {
-        console.error('Profile creation error:', profileError)
-        setErrors({ general: 'User account created but profile setup failed: ' + profileError.message })
-        return
+        console.error('Profile creation error:', profileError);
+        setErrors({
+          general: 'User account created but profile setup failed: ' + profileError.message,
+        });
+        return;
       }
 
-      console.log('Profile created successfully')
+      console.log('Profile created successfully');
 
       // Create barangay account
-      const { error: barangayAccountError } = await supabase
-        .from('barangay_accounts')
-        .insert({
-          user_id: authData.user.id,
-          barangay_code: formData.barangayCode,
-          role_id: formData.roleId,
-          status: 'active', // Admin-created accounts are automatically active
-          approved_by: currentUser?.id,
-          approved_at: new Date().toISOString()
-        })
+      const { error: barangayAccountError } = await supabase.from('barangay_accounts').insert({
+        user_id: authData.user.id,
+        barangay_code: formData.barangayCode,
+        role_id: formData.roleId,
+        status: 'active', // Admin-created accounts are automatically active
+        approved_by: currentUser?.id,
+        approved_at: new Date().toISOString(),
+      });
 
       if (barangayAccountError) {
-        console.error('Barangay account creation error:', barangayAccountError.message)
+        console.error('Barangay account creation error:', barangayAccountError.message);
         // Don't fail if barangay_accounts table doesn't exist
         if (!barangayAccountError.message.includes('does not exist')) {
-          console.warn('Barangay account creation failed, but continuing...')
+          console.warn('Barangay account creation failed, but continuing...');
         }
       } else {
-        console.log('Barangay account created successfully')
+        console.log('Barangay account created successfully');
       }
 
       // Success!
       setCreatedUser({
         email: formData.email,
         name: `${formData.firstName} ${formData.lastName}`,
-        role: roles.find(r => r.id === formData.roleId)?.name || 'resident'
-      })
-      setSuccess(true)
-      
+        role: roles.find(r => r.id === formData.roleId)?.name || 'resident',
+      });
+      setSuccess(true);
     } catch (error: any) {
-      console.error('User creation error:', error)
-      setErrors({ general: 'An unexpected error occurred: ' + error.message })
+      console.error('User creation error:', error);
+      setErrors({ general: 'An unexpected error occurred: ' + error.message });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -279,12 +272,12 @@ function CreateUserContent() {
       lastName: '',
       mobileNumber: '',
       barangayCode: '',
-      roleId: roles.find(r => r.name === 'resident')?.id || ''
-    })
-    setErrors({})
-    setSuccess(false)
-    setCreatedUser(null)
-  }
+      roleId: roles.find(r => r.name === 'resident')?.id || '',
+    });
+    setErrors({});
+    setSuccess(false);
+    setCreatedUser(null);
+  };
 
   if (success) {
     return (
@@ -294,20 +287,36 @@ function CreateUserContent() {
             <div className="bg-white rounded-lg shadow-md p-8">
               <div className="text-center">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    className="h-6 w-6 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-primary mb-4">
-                  User Created Successfully!
-                </h2>
+                <h2 className="text-2xl font-bold text-primary mb-4">User Created Successfully!</h2>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
                   <h3 className="text-sm font-medium text-green-800 mb-2">User Details:</h3>
                   <div className="text-sm text-green-700 space-y-1">
-                    <p><strong>Name:</strong> {createdUser?.name}</p>
-                    <p><strong>Email:</strong> {createdUser?.email}</p>
-                    <p><strong>Role:</strong> {createdUser?.role}</p>
-                    <p><strong>Status:</strong> Active (ready to login)</p>
+                    <p>
+                      <strong>Name:</strong> {createdUser?.name}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {createdUser?.email}
+                    </p>
+                    <p>
+                      <strong>Role:</strong> {createdUser?.role}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> Active (ready to login)
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-3 justify-center">
@@ -317,7 +326,7 @@ function CreateUserContent() {
                   >
                     Create Another User
                   </button>
-                  <Link 
+                  <Link
                     href="/admin/users"
                     className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                   >
@@ -329,7 +338,7 @@ function CreateUserContent() {
           </div>
         </div>
       </AppShell>
-    )
+    );
   }
 
   return (
@@ -337,9 +346,7 @@ function CreateUserContent() {
       <div className="flex flex-col gap-6 p-6">
         <div className="flex flex-row gap-4 items-start justify-between w-full">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-montserrat font-semibold text-xl text-primary">
-              Create New User
-            </h1>
+            <h1 className="font-montserrat font-semibold text-xl text-primary">Create New User</h1>
             <p className="font-montserrat font-normal text-sm text-secondary">
               Create a new user account for your barangay
             </p>
@@ -369,15 +376,17 @@ function CreateUserContent() {
 
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">Personal Information</h3>
-                
+                <h3 className="text-lg font-medium text-primary border-b pb-2">
+                  Personal Information
+                </h3>
+
                 <div className="grid grid-cols-2 gap-4">
                   <InputField
                     label="First Name *"
                     id="firstName"
                     type="text"
                     value={formData.firstName}
-                    onChange={(e) => handleChange('firstName', e.target.value)}
+                    onChange={e => handleChange('firstName', e.target.value)}
                     placeholder="Juan"
                     errorMessage={errors.firstName}
                     disabled={isSubmitting}
@@ -388,7 +397,7 @@ function CreateUserContent() {
                     id="lastName"
                     type="text"
                     value={formData.lastName}
-                    onChange={(e) => handleChange('lastName', e.target.value)}
+                    onChange={e => handleChange('lastName', e.target.value)}
                     placeholder="Dela Cruz"
                     errorMessage={errors.lastName}
                     disabled={isSubmitting}
@@ -402,7 +411,7 @@ function CreateUserContent() {
                     id="email"
                     type="email"
                     value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
+                    onChange={e => handleChange('email', e.target.value)}
                     placeholder="juan.delacruz@gmail.com"
                     errorMessage={errors.email}
                     disabled={isSubmitting}
@@ -416,7 +425,7 @@ function CreateUserContent() {
                   id="mobileNumber"
                   type="tel"
                   value={formData.mobileNumber}
-                  onChange={(e) => handleChange('mobileNumber', e.target.value)}
+                  onChange={e => handleChange('mobileNumber', e.target.value)}
                   placeholder="09XX XXX XXXX"
                   errorMessage={errors.mobileNumber}
                   disabled={isSubmitting}
@@ -426,15 +435,20 @@ function CreateUserContent() {
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">Location Information</h3>
-                
+                <h3 className="text-lg font-medium text-primary border-b pb-2">
+                  Location Information
+                </h3>
+
                 <div>
-                  <label htmlFor="barangayCode" className="block text-sm font-medium text-secondary mb-2">
+                  <label
+                    htmlFor="barangayCode"
+                    className="block text-sm font-medium text-secondary mb-2"
+                  >
                     Barangay *
                   </label>
                   <BarangaySelector
                     value={formData.barangayCode}
-                    onChange={(code) => handleChange('barangayCode', code)}
+                    onChange={code => handleChange('barangayCode', code)}
                     error={errors.barangayCode}
                     disabled={isSubmitting}
                     placeholder="Search for the user's barangay..."
@@ -445,12 +459,10 @@ function CreateUserContent() {
               {/* Role Selection */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium text-primary border-b pb-2">Account Type</h3>
-                
+
                 {loadingRoles ? (
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-secondary">
-                      Role *
-                    </label>
+                    <label className="block text-sm font-medium text-secondary">Role *</label>
                     <div className="p-3 border border-gray-300 rounded-md bg-gray-50">
                       <span className="text-sm text-muted">Loading roles...</span>
                     </div>
@@ -460,13 +472,13 @@ function CreateUserContent() {
                     label="Role *"
                     options={[
                       { value: '', label: 'Select user role...' },
-                      ...roles.map((role) => ({
+                      ...roles.map(role => ({
                         value: role.id,
-                        label: `${role.name.charAt(0).toUpperCase() + role.name.slice(1).replace('_', ' ')} - ${role.description}`
-                      }))
+                        label: `${role.name.charAt(0).toUpperCase() + role.name.slice(1).replace('_', ' ')} - ${role.description}`,
+                      })),
                     ]}
                     value={formData.roleId}
-                    onChange={(val) => handleChange('roleId', val)}
+                    onChange={val => handleChange('roleId', val)}
                     errorMessage={errors.roleId}
                     helperText="Select the role that best describes the user's position"
                     disabled={isSubmitting}
@@ -477,13 +489,13 @@ function CreateUserContent() {
               {/* Account Security */}
               <div className="space-y-4">
                 <h3 className="text-lg font-medium text-primary border-b pb-2">Account Security</h3>
-                
+
                 <InputField
                   label="Password *"
                   id="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) => handleChange('password', e.target.value)}
+                  onChange={e => handleChange('password', e.target.value)}
                   placeholder="Create a password for the user"
                   errorMessage={errors.password}
                   disabled={isSubmitting}
@@ -495,7 +507,7 @@ function CreateUserContent() {
                   id="confirmPassword"
                   type="password"
                   value={formData.confirmPassword}
-                  onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                  onChange={e => handleChange('confirmPassword', e.target.value)}
                   placeholder="Confirm the password"
                   errorMessage={errors.confirmPassword}
                   disabled={isSubmitting}
@@ -511,9 +523,25 @@ function CreateUserContent() {
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Creating User...
                   </>
@@ -526,7 +554,7 @@ function CreateUserContent() {
         </div>
       </div>
     </AppShell>
-  )
+  );
 }
 
 export default function CreateUserPage() {
@@ -534,5 +562,5 @@ export default function CreateUserPage() {
     <ProtectedRoute requirePermission="manage_users">
       <CreateUserContent />
     </ProtectedRoute>
-  )
+  );
 }

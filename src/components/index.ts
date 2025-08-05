@@ -4,7 +4,7 @@
 // Atoms - Basic UI building blocks
 export * from './atoms';
 
-// Molecules - Simple combinations of atoms  
+// Molecules - Simple combinations of atoms
 export * from './molecules';
 
 // Organisms - Complex UI sections
