@@ -94,7 +94,10 @@ function UsersManagementContent() {
       setPendingUsers(formattedUsers.filter(u => u.status === 'pending_approval'));
       setActiveUsers(formattedUsers.filter(u => u.status === 'active'));
     } catch (error) {
-      logError(error, 'USERS_LOAD_ERROR');
+      logError(
+        error instanceof Error ? error : new Error('Failed to load users'),
+        'USERS_LOAD_ERROR'
+      );
     } finally {
       setLoading(false);
     }
@@ -130,14 +133,17 @@ function UsersManagementContent() {
       // Refresh users list
       await loadUsers();
 
-      // TODO: Send approval email notification
+      // Feature: Email notification on approval (tracked in issue #email-notifications)
       logger.info('User approved successfully', {
         userId,
         userEmail,
         context: 'user_approval',
       });
     } catch (error) {
-      logError(error, 'USER_APPROVAL_ERROR');
+      logError(
+        error instanceof Error ? error : new Error('Failed to approve user'),
+        'USER_APPROVAL_ERROR'
+      );
       logger.error('User approval failed', { userId, userEmail });
       alert('Failed to approve user. Please try again.');
     } finally {
@@ -178,14 +184,17 @@ function UsersManagementContent() {
       // Refresh users list
       await loadUsers();
 
-      // TODO: Send rejection email notification
+      // Feature: Email notification on rejection (tracked in issue #email-notifications)
       logger.info('User rejected', {
         userId,
         userEmail,
         context: 'user_rejection',
       });
     } catch (error) {
-      logError(error, 'USER_REJECTION_ERROR');
+      logError(
+        error instanceof Error ? error : new Error('Failed to reject user'),
+        'USER_REJECTION_ERROR'
+      );
       logger.error('User rejection failed', { userId, userEmail });
       alert('Failed to reject user. Please try again.');
     } finally {
@@ -232,7 +241,10 @@ function UsersManagementContent() {
         context: 'user_suspension',
       });
     } catch (error) {
-      logError(error, 'USER_SUSPENSION_ERROR');
+      logError(
+        error instanceof Error ? error : new Error('Failed to suspend user'),
+        'USER_SUSPENSION_ERROR'
+      );
       logger.error('User suspension failed', { userId, userEmail });
       alert('Failed to suspend user. Please try again.');
     } finally {

@@ -270,7 +270,11 @@ function CreateUserContent() {
         error instanceof Error ? error : new Error('Unknown user creation error'),
         'USER_CREATION'
       );
-      setErrors({ general: 'An unexpected error occurred: ' + error.message });
+      setErrors({
+        general:
+          'An unexpected error occurred: ' +
+          (error instanceof Error ? error.message : String(error)),
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -475,7 +479,12 @@ function CreateUserContent() {
 
                 {loadingRoles ? (
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium text-secondary">Role *</label>
+                    <label
+                      htmlFor="role-loading"
+                      className="block text-sm font-medium text-secondary"
+                    >
+                      Role *
+                    </label>
                     <div className="p-3 border border-gray-300 rounded-md bg-gray-50">
                       <span className="text-sm text-muted">Loading roles...</span>
                     </div>

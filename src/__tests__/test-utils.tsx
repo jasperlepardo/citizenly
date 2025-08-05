@@ -41,7 +41,7 @@ function customRender(
   } = options;
 
   // Create wrapper with all providers
-  function Wrapper({ children }: { children: React.ReactNode }) {
+  function Wrapper({ children }: Readonly<{ children: React.ReactNode }>) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
 
@@ -60,13 +60,13 @@ function renderWithForm(
   ui: ReactElement,
   options: CustomRenderOptions = {}
 ): RenderResult & { user: ReturnType<typeof userEvent.setup> } {
-  const FormWrapper = ({ children }: { children: React.ReactNode }) => (
+  const FormWrapper = ({ children }: Readonly<{ children: React.ReactNode }>) => (
     <form data-testid="test-form">{children}</form>
   );
 
   const { wrapper: ExistingWrapper, ...restOptions } = options;
 
-  const CombinedWrapper = ({ children }: { children: React.ReactNode }) => {
+  const CombinedWrapper = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     const content = <FormWrapper>{children}</FormWrapper>;
     return ExistingWrapper ? <ExistingWrapper>{content}</ExistingWrapper> : content;
   };
