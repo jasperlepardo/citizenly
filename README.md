@@ -33,8 +33,12 @@ psql $SUPABASE_URL -f database/schema.sql
 # 3. Import reference data
 cd database/migrations && npm run import
 
-# 4. Deploy frontend (coming soon)
-# Follow docs/mvp/FRONTEND_ARCHITECTURE.md
+# 4. Frontend development
+npm install && npm run dev
+
+# 5. Quality assurance
+npm run quality:check  # Lint + TypeCheck + Test Coverage
+npm run sonar:scan     # Local SonarCloud analysis (requires SONAR_TOKEN)
 ```
 
 **⏱️ Setup Time**: 2.5 hours  
@@ -190,6 +194,15 @@ The RBI System uses a three-tier design approach:
 - **Role-based permissions** - Different access levels
 - **Secure PhilSys handling** - Hashed card numbers
 - **Audit trails** - Track all changes (Full version)
+
+### **Code Quality & Analysis**
+
+- **SonarCloud Integration** - Automated code quality analysis
+- **GitHub Actions CI/CD** - Comprehensive automated testing
+- **CodeQL Security Scanning** - Vulnerability detection
+- **Bundle Analysis** - Performance monitoring
+- **Test Coverage** - 85%+ coverage requirement
+- **ESLint + Prettier** - Consistent code formatting
 
 ---
 
