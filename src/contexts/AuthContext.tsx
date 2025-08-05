@@ -326,6 +326,7 @@ export function useAuth() {
       userProfile: null,
       role: null,
       loading: true,
+      profileLoading: true,
       signIn: async () => ({ error: new Error('AuthProvider not available') }),
       signOut: async () => {},
       signUp: async () => ({ error: new Error('AuthProvider not available') }),
