@@ -9,6 +9,8 @@ on:
       - '.storybook/**'
       - 'package.json'
       - 'package-lock.json'
+      - 'public/**'
+      - '.gitignore'
   workflow_dispatch:
 
 jobs:
@@ -32,10 +34,9 @@ jobs:
         run: npm run build-storybook
         
       - name: Deploy to Vercel
-        uses: vercel/action@v1
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./storybook-static
-          vercel-args: '--prod'
+        run: |
+          npm install -g vercel
+          cd storybook-static
+          echo "Storybook built successfully. Manual deployment required."
+          echo "Run: vercel --prod --yes to deploy"
+          echo "Or use existing deployment at: https://citizenly-storybook-pu6qrpcz8-jasper-lepardos-projects.vercel.app"
