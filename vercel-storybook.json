@@ -1,19 +1,18 @@
 {
   "name": "citizenly-storybook",
   "version": 2,
-  "buildCommand": "npm run build-storybook",
+  "buildCommand": null,
   "outputDirectory": "storybook-static",
-  "installCommand": "npm ci",
+  "installCommand": null,
   "framework": null,
   "public": true,
   "github": {
-    "enabled": true,
-    "autoAlias": true
+    "enabled": false
   },
   "git": {
     "deploymentEnabled": {
-      "main": true,
-      "develop": true
+      "main": false,
+      "develop": false
     }
   },
   "headers": [
