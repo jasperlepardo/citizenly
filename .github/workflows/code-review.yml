@@ -217,3 +217,66 @@ jobs:
             } catch (e) {
               console.log('No performance report found');
             }
+
+  sonarcloud:
+    name: SonarCloud Quality Gate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+        env:
+          CI: true
+
+      - name: Run ESLint for SonarCloud
+        run: npm run lint -- --format json --output-file eslint-report.json || true
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || '' }}
+        continue-on-error: true
+        with:
+          args: >
+            -Dsonar.javascript.eslint.reportPaths=eslint-report.json
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.pullrequest.key=${{ github.event.number }}
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
+
+      - name: Comment SonarCloud Results
+        if: github.event_name == 'pull_request' && !env.ACT
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sonarUrl = `https://sonarcloud.io/project/overview?id=jasperlepardo_citizenly`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📊 SonarCloud Analysis Complete
+              
+            View detailed code quality analysis: [SonarCloud Dashboard](${sonarUrl})
+            
+            - **Quality Gate**: Check the dashboard for pass/fail status
+            - **Coverage**: Test coverage metrics and trends  
+            - **Issues**: Code smells, bugs, and security hotspots
+            - **Maintainability**: Technical debt and complexity analysis`
+            });
+        continue-on-error: true

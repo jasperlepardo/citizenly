@@ -46,6 +46,8 @@ const checkboxInputVariants = cva(
   }
 );
 
+type CheckboxVariant = 'default' | 'primary' | 'error' | 'disabled';
+
 export interface CheckboxProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof checkboxVariants> {
@@ -53,8 +55,27 @@ export interface CheckboxProps
   description?: string;
   errorMessage?: string;
   indeterminate?: boolean;
-  variant?: 'default' | 'primary' | 'error' | 'disabled';
+  variant?: CheckboxVariant;
 }
+
+const getVariant = (
+  variant: string,
+  disabled?: boolean,
+  errorMessage?: string
+): CheckboxVariant => {
+  if (disabled) return 'disabled';
+  if (errorMessage) return 'error';
+  return variant as CheckboxVariant;
+};
+
+const getIconSizeClasses = (size: string) => {
+  const sizeMap = {
+    sm: 'w-2 h-2',
+    md: 'w-3 h-3',
+    lg: 'w-4 h-4',
+  };
+  return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
+};
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   (
@@ -68,13 +89,14 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       indeterminate = false,
       disabled,
       checked,
+      id,
       ...props
     },
     ref
   ) => {
-    const actualVariant = disabled ? 'disabled' : errorMessage ? 'error' : variant;
-
+    const actualVariant = getVariant(variant, disabled, errorMessage);
     const checkboxRef = React.useRef<HTMLInputElement>(null);
+    const checkboxId = id || `checkbox-${Math.random().toString(36).substring(2, 11)}`;
 
     React.useEffect(() => {
       if (checkboxRef.current) {
@@ -82,16 +104,49 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       }
     }, [indeterminate]);
 
-    // Use either the forwarded ref or our internal ref
     const inputRef = ref || checkboxRef;
+    const iconSizeClass = getIconSizeClasses(size || 'md');
+
+    const renderCheckIcon = () => {
+      if (indeterminate) {
+        return (
+          <svg
+            className={`text-white ${iconSizeClass}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+          >
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        );
+      }
+
+      if (checked) {
+        return (
+          <svg
+            className={`text-white ${iconSizeClass}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+          >
+            <polyline points="20,6 9,17 4,12"></polyline>
+          </svg>
+        );
+      }
+
+      return null;
+    };
 
     return (
       <div className="w-full">
-        <label className={cn(checkboxVariants({ size }), className)}>
+        <label htmlFor={checkboxId} className={cn(checkboxVariants({ size }), className)}>
           <div className="relative flex items-start">
             {/* Checkbox Input */}
             <input
               ref={inputRef}
+              id={checkboxId}
               type="checkbox"
               className={cn(
                 checkboxInputVariants({ variant: actualVariant, size }),
@@ -111,37 +166,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 size === 'lg' && 'w-6 h-6'
               )}
             >
-              {indeterminate ? (
-                <svg
-                  className={cn(
-                    'text-white',
-                    size === 'sm' && 'w-2 h-2',
-                    size === 'md' && 'w-3 h-3',
-                    size === 'lg' && 'w-4 h-4'
-                  )}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-              ) : checked ? (
-                <svg
-                  className={cn(
-                    'text-white',
-                    size === 'sm' && 'w-2 h-2',
-                    size === 'md' && 'w-3 h-3',
-                    size === 'lg' && 'w-4 h-4'
-                  )}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                >
-                  <polyline points="20,6 9,17 4,12"></polyline>
-                </svg>
-              ) : null}
+              {renderCheckIcon()}
             </div>
           </div>
 

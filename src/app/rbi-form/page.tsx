@@ -473,7 +473,9 @@ function RBIFormContent() {
               .single();
 
             if (anyError || !anyHousehold) {
-              logError(anyError, 'NO_HOUSEHOLDS_FOUND');
+              if (anyError) {
+                logError(anyError, 'NO_HOUSEHOLDS_FOUND');
+              }
               logger.error('No households found anywhere', { context: 'rbi_form_fallback' });
               setError('No households found in the database');
               return;

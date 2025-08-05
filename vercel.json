@@ -1,7 +1,16 @@
 {
   "version": 2,
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build-storybook",
+  "outputDirectory": "storybook-static",
   "installCommand": "npm install",
-  "outputDirectory": ".next"
+  "framework": null,
+  "github": {
+    "enabled": true,
+    "autoAlias": false
+  },
+  "git": {
+    "deploymentEnabled": {
+      "develop": true
+    }
+  }
 }

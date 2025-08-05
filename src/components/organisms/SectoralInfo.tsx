@@ -192,7 +192,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Labor Force"
             description="Based on employment status"
-            checked={value.is_labor_force}
+            checked={_autoCalculated.is_labor_force}
             disabled={true}
             size="md"
           />
@@ -200,7 +200,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Employed"
             description="Currently employed (full/part-time, self-employed)"
-            checked={value.is_employed}
+            checked={_autoCalculated.is_employed}
             disabled={true}
             size="md"
           />
@@ -208,7 +208,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Unemployed"
             description="Unemployed but looking for work"
-            checked={value.is_unemployed}
+            checked={_autoCalculated.is_unemployed}
             disabled={true}
             size="md"
           />
@@ -216,7 +216,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Out-of-School Children"
             description="Ages 5-17, not attending school"
-            checked={value.is_out_of_school_children}
+            checked={_autoCalculated.is_out_of_school_children}
             disabled={true}
             size="md"
           />
@@ -224,7 +224,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Out-of-School Youth"
             description="Ages 18-30, not in school/employed"
-            checked={value.is_out_of_school_youth}
+            checked={_autoCalculated.is_out_of_school_youth}
             disabled={true}
             size="md"
           />
@@ -232,7 +232,7 @@ export default function SectoralInfo({
           <Checkbox
             label="Senior Citizen"
             description="Age 60 and above"
-            checked={value.is_senior_citizen}
+            checked={_autoCalculated.is_senior_citizen}
             disabled={true}
             size="md"
           />
@@ -306,10 +306,15 @@ export default function SectoralInfo({
         <h4 className="text-sm font-medium text-blue-900 mb-2">Classification Summary</h4>
         <div className="text-xs text-blue-700">
           <span className="font-medium">Active Classifications:</span>{' '}
-          {Object.entries(value)
-            .filter(([, val]) => val === true)
-            .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
-            .join(', ') || 'None'}
+          {(() => {
+            const allClassifications = { ..._autoCalculated, ...value };
+            return (
+              Object.entries(allClassifications)
+                .filter(([, val]) => val === true)
+                .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
+                .join(', ') || 'None'
+            );
+          })()}
         </div>
       </div>
     </div>

@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { render, screen } from '@/__tests__/test-utils';
-import { createMockSectoralInfo } from '@/__tests__/test-utils';
+import { render, screen, createMockSectoralInfo } from '@/__tests__/test-utils';
 import SectoralInfo from '../SectoralInfo';
 
 describe('SectoralInfo Component', () => {
@@ -37,8 +36,8 @@ describe('SectoralInfo Component', () => {
     it('displays auto-calculated flags as disabled checkboxes', () => {
       render(<SectoralInfo {...defaultProps} />);
 
-      const laborForceCheckbox = screen.getByLabelText('Labor Force');
-      const employedCheckbox = screen.getByLabelText('Employed');
+      const laborForceCheckbox = screen.getByRole('checkbox', { name: /Labor Force/ });
+      const employedCheckbox = screen.getByRole('checkbox', { name: /Employed/ });
 
       expect(laborForceCheckbox).toBeDisabled();
       expect(employedCheckbox).toBeDisabled();
@@ -76,7 +75,7 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const laborForceCheckbox = screen.getByLabelText('Labor Force');
+      const laborForceCheckbox = screen.getByRole('checkbox', { name: /Labor Force/ });
       expect(laborForceCheckbox).toBeChecked();
     });
 
@@ -88,8 +87,8 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const employedCheckbox = screen.getByLabelText('Employed');
-      const unemployedCheckbox = screen.getByLabelText('Unemployed');
+      const employedCheckbox = screen.getByRole('checkbox', { name: /Employed/ });
+      const unemployedCheckbox = screen.getByRole('checkbox', { name: /Unemployed/ });
 
       expect(employedCheckbox).toBeChecked();
       expect(unemployedCheckbox).not.toBeChecked();
@@ -103,8 +102,8 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const unemployedCheckbox = screen.getByLabelText('Unemployed');
-      const employedCheckbox = screen.getByLabelText('Employed');
+      const unemployedCheckbox = screen.getByRole('checkbox', { name: /Unemployed/ });
+      const employedCheckbox = screen.getByRole('checkbox', { name: /Employed/ });
 
       expect(unemployedCheckbox).toBeChecked();
       expect(employedCheckbox).not.toBeChecked();
@@ -118,7 +117,7 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const seniorCheckbox = screen.getByLabelText('Senior Citizen');
+      const seniorCheckbox = screen.getByRole('checkbox', { name: /Senior Citizen/ });
       expect(seniorCheckbox).toBeChecked();
     });
 
@@ -130,7 +129,7 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const seniorCheckbox = screen.getByLabelText('Senior Citizen');
+      const seniorCheckbox = screen.getByRole('checkbox', { name: /Senior Citizen/ });
       expect(seniorCheckbox).toBeChecked();
     });
 
@@ -142,7 +141,7 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const outOfSchoolCheckbox = screen.getByLabelText('Out-of-School Children');
+      const outOfSchoolCheckbox = screen.getByRole('checkbox', { name: /Out-of-School Children/ });
       expect(outOfSchoolCheckbox).toBeChecked();
     });
 
@@ -155,7 +154,9 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} context={context} />);
 
-      const outOfSchoolYouthCheckbox = screen.getByLabelText('Out-of-School Youth');
+      const outOfSchoolYouthCheckbox = screen.getByRole('checkbox', {
+        name: /Out-of-School Youth/,
+      });
       expect(outOfSchoolYouthCheckbox).toBeChecked();
     });
   });
@@ -356,7 +357,8 @@ describe('SectoralInfo Component', () => {
 
       render(<SectoralInfo {...defaultProps} value={sectoralInfo} />);
 
-      expect(screen.getByText(/Active Classifications:.*None/)).toBeInTheDocument();
+      expect(screen.getByText('Active Classifications:')).toBeInTheDocument();
+      expect(screen.getByText('None')).toBeInTheDocument();
     });
   });
 
