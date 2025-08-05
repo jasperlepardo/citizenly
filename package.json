@@ -44,6 +44,7 @@
     "deploy:status": "./scripts/setup-deployment.sh status",
     "deploy:test": "./scripts/setup-deployment.sh test",
     "deploy:storybook": "vercel --local-config vercel-storybook.json --prod",
+    "setup-secrets": "./scripts/setup-secrets.sh",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
