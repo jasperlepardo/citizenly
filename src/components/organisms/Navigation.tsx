@@ -2,7 +2,7 @@
 
 /**
  * Unified Navigation Component
- * Consolidates navigation patterns from Sidebar, DashboardLayout, and AppShell
+ * Consolidates navigation patterns from DashboardLayout and AppShell
  */
 
 import React from 'react';

@@ -190,7 +190,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-[#262626] mb-2 font-['Montserrat']">
+          <label className="block text-sm font-medium text-[#262626] mb-2 font-body">
             {label}
           </label>
         )}
@@ -252,7 +252,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             >
               <p
                 className={cn(
-                  "font-['Montserrat']",
+                  "font-body",
                   disabled ? 'text-[#a3a3a3]' : 'text-[#525252]'
                 )}
               >
@@ -271,7 +271,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="mt-2 text-xs text-[#737373] font-['Montserrat']">
+              <div className="mt-2 text-xs text-[#737373] font-body">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -282,7 +282,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {/* File Preview */}
         {showPreview && selectedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h4 className="text-sm font-medium text-[#262626] font-['Montserrat']">
+            <h4 className="text-sm font-medium text-[#262626] font-body">
               Selected Files:
             </h4>
             {selectedFiles.map((file, index) => (
@@ -302,10 +302,10 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#262626] font-['Montserrat'] truncate">
+                    <p className="text-sm font-medium text-[#262626] font-body truncate">
                       {file.name}
                     </p>
-                    <p className="text-xs text-[#737373] font-['Montserrat']">
+                    <p className="text-xs text-[#737373] font-body">
                       {formatFileSize(file.size)}
                     </p>
                   </div>
@@ -337,9 +337,9 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-[#b91c1c] font-['Montserrat']">{errorMessage}</p>
+              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-[#737373] font-['Montserrat']">{helperText}</p>
+              <p className="text-xs text-[#737373] font-body">{helperText}</p>
             )}
           </div>
         )}

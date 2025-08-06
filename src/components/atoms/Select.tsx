@@ -29,7 +29,7 @@ const selectContainerVariants = cva(
 );
 
 const selectVariants = cva(
-  "w-full appearance-none font-['Montserrat'] text-base leading-5 font-normal bg-transparent border-none outline-none resize-none",
+  "w-full appearance-none font-body text-base leading-5 font-normal bg-transparent border-none outline-none resize-none",
   {
     variants: {
       variant: {
@@ -155,10 +155,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </div>
 
         {/* Helper Text */}
-        {helperText && !errorMessage && <p className="mt-1 text-xs text-[#737373]">{helperText}</p>}
+        {helperText && !errorMessage && <p className="mt-1 text-xs text-secondary">{helperText}</p>}
 
         {/* Error Message */}
-        {errorMessage && <p className="mt-1 text-xs text-[#dc2626]">{errorMessage}</p>}
+        {errorMessage && <p className="mt-1 text-xs text-danger-600">{errorMessage}</p>}
       </div>
     );
   }

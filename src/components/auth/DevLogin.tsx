@@ -194,10 +194,10 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <div className="max-w-md mx-auto bg-surface rounded-lg shadow-md p-6 border border-default">
       <div className="text-center mb-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Development Setup</h2>
-        <p className="text-gray-600 text-sm">Create demo users for testing the RBI System</p>
+        <h2 className="text-xl font-bold text-primary mb-2">Development Setup</h2>
+        <p className="text-secondary text-sm">Create demo users for testing the RBI System</p>
       </div>
 
       <div className="space-y-4">
@@ -205,12 +205,12 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         <button
           onClick={setupDemoData}
           disabled={isCreating}
-          className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-inverse bg-primary hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isCreating ? (
             <>
               <svg
-                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-inverse"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -237,8 +237,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         </button>
 
         {/* Quick Login Buttons */}
-        <div className="border-t pt-4">
-          <p className="text-xs text-gray-500 mb-2">If users already exist:</p>
+        <div className="border-t border-default pt-4">
+          <p className="text-xs text-secondary mb-2">If users already exist:</p>
           <div className="space-y-2">
             <button
               onClick={() => {
@@ -248,13 +248,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
                 }
               }}
               disabled={!devModeAvailable}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 text-sm border border-default rounded-md hover:bg-surface-hover disabled:bg-background-muted disabled:cursor-not-allowed text-primary"
             >
               Login as Barangay Admin
             </button>
             <button
               onClick={() => directLogin('clerk@gmail.com')}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+              className="w-full px-3 py-2 text-sm border border-default rounded-md hover:bg-surface-hover text-primary"
             >
               Login as Clerk
             </button>
@@ -263,15 +263,15 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Status Message */}
         {message && (
-          <div className="p-3 bg-gray-50 rounded-md border">
-            <p className="text-sm text-gray-700 font-mono">{message}</p>
+          <div className="p-3 bg-surface-hover rounded-md border border-default">
+            <p className="text-sm text-primary font-mono">{message}</p>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="text-xs text-gray-500 space-y-1">
+        <div className="text-xs text-secondary space-y-1">
           {!devModeAvailable ? (
-            <div className="text-red-600">
+            <div className="text-danger">
               <p>
                 <strong>Development Mode Not Available</strong>
               </p>
@@ -287,7 +287,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
               <p>
                 <strong>Development Mode Active</strong>
               </p>
-              <p className="text-yellow-600">
+              <p className="text-warning">
                 <strong>⚠️ Warning:</strong> This should only be used in development!
               </p>
               <p>Credentials are loaded from environment variables</p>

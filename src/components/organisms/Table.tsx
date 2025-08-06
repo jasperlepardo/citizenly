@@ -95,7 +95,7 @@ export function TableCell({
 
   return (
     <div className={`p-2 flex-1 ${className}`}>
-      <div className="font-['Montserrat'] text-base font-normal leading-5 text-primary">
+      <div className="font-body text-base font-normal leading-5 text-primary">
         {children}
       </div>
     </div>
@@ -141,7 +141,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
                   )}
                 </div>
               </div>
-              <span className="font-['Montserrat'] text-base font-normal text-primary">
+              <span className="font-body text-base font-normal text-primary">
                 {selectAll.label || 'Select all'}
               </span>
             </button>
@@ -154,7 +154,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
             <div className="w-5 h-5">
               <img alt="list" className="block w-full h-full" src={imgList} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">
+            <span className="font-body font-medium text-base text-secondary px-1">
               Properties
             </span>
           </button>
@@ -163,7 +163,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
             <div className="w-5 h-5">
               <img alt="sort" className="block w-full h-full" src={imgSort} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">
+            <span className="font-body font-medium text-base text-secondary px-1">
               Sort
             </span>
           </button>
@@ -172,7 +172,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
             <div className="w-5 h-5">
               <img alt="filter" className="block w-full h-full" src={imgFilter} />
             </div>
-            <span className="font-['Montserrat'] font-medium text-base text-secondary px-1">
+            <span className="font-body font-medium text-base text-secondary px-1">
               Filter
             </span>
           </button>
@@ -215,7 +215,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
 
                 <div className="flex-1 px-1">
                   <input
-                    className="w-full bg-transparent font-['Montserrat'] text-base font-normal leading-5 text-primary placeholder:text-muted border-none outline-none"
+                    className="w-full bg-transparent font-body text-base font-normal leading-5 text-primary placeholder:text-muted border-none outline-none"
                     placeholder={search.placeholder || 'Search contact'}
                     value={search.value}
                     onChange={e => search.onChange(e.target.value)}

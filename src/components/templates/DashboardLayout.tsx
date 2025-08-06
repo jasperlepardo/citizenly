@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { SimpleSearchBar as SearchBar } from '@/components/molecules';
+import { EnvironmentIndicator } from '@/components/atoms';
 import Navigation from '@/components/organisms/Navigation';
 import { logger, logError } from '@/lib/secure-logger';
 
@@ -219,6 +220,11 @@ export default function DashboardLayout({
           {/* Navigation */}
           <div className="flex-1 px-2 py-4">
             <Navigation />
+          </div>
+
+          {/* Environment Indicator */}
+          <div className="px-4 pb-4">
+            <EnvironmentIndicator />
           </div>
         </div>
       </div>
