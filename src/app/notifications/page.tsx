@@ -64,9 +64,9 @@ function NotificationsContent() {
     switch (type) {
       case 'success':
         return (
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-success-100 rounded-full flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-green-600"
+              className="w-5 h-5 text-success-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -82,9 +82,9 @@ function NotificationsContent() {
         );
       case 'warning':
         return (
-          <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-warning-100 rounded-full flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-amber-600"
+              className="w-5 h-5 text-warning-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -100,9 +100,9 @@ function NotificationsContent() {
         );
       case 'error':
         return (
-          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-danger-100 rounded-full flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-red-600"
+              className="w-5 h-5 text-danger-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -118,9 +118,9 @@ function NotificationsContent() {
         );
       default:
         return (
-          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-blue-600"
+              className="w-5 h-5 text-primary-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -151,26 +151,26 @@ function NotificationsContent() {
         {/* Page Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">
+            <h1 className="font-montserrat font-semibold text-xl text-foreground mb-0.5">
               Notifications
               {unreadCount > 0 && (
-                <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded-full">
+                <span className="ml-2 px-2 py-1 bg-danger-100 text-danger-800 text-xs font-medium rounded-full">
                   {unreadCount} unread
                 </span>
               )}
             </h1>
-            <p className="font-montserrat font-normal text-sm text-neutral-600">
+            <p className="font-montserrat font-normal text-sm text-secondary">
               Stay updated with system alerts, resident activities, and important announcements
             </p>
           </div>
-          <button className="text-blue-600 hover:text-blue-700 font-montserrat font-medium text-sm">
+          <button className="text-primary-600 hover:text-primary-700 font-montserrat font-medium text-sm">
             Mark all as read
           </button>
         </div>
 
         {/* Filter Tabs */}
         <div className="mb-6">
-          <div className="border-b border-neutral-200">
+          <div className="border-b border-default">
             <nav className="-mb-px flex space-x-8">
               {[
                 { id: 'all', name: 'All', count: notifications.length },
@@ -186,8 +186,8 @@ function NotificationsContent() {
                   onClick={() => setFilter(tab.id)}
                   className={`py-2 px-1 border-b-2 font-montserrat font-medium text-sm whitespace-nowrap ${
                     filter === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
+                      ? 'border-primary-500 text-primary-600'
+                      : 'border-transparent text-muted hover:text-secondary hover:border-muted'
                   }`}
                 >
                   {tab.name}
@@ -195,8 +195,8 @@ function NotificationsContent() {
                     <span
                       className={`ml-2 py-0.5 px-2 rounded-full text-xs ${
                         filter === tab.id
-                          ? 'bg-blue-100 text-blue-600'
-                          : 'bg-neutral-100 text-neutral-600'
+                          ? 'bg-primary-100 text-primary-600'
+                          : 'bg-background-muted text-muted'
                       }`}
                     >
                       {tab.count}
@@ -227,22 +227,20 @@ function NotificationsContent() {
                   />
                 </svg>
               </div>
-              <h3 className="font-montserrat font-medium text-neutral-900 mb-2">
-                No notifications
-              </h3>
-              <p className="font-montserrat text-sm text-neutral-600">
+              <h3 className="font-montserrat font-medium text-foreground mb-2">No notifications</h3>
+              <p className="font-montserrat text-sm text-secondary">
                 {filter === 'unread' && 'No unread notifications'}
                 {filter === 'important' && 'No important notifications'}
                 {filter === 'all' && "You're all caught up!"}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-neutral-100">
+            <div className="divide-y divide-default">
               {filteredNotifications.map(notification => (
                 <div
                   key={notification.id}
-                  className={`p-4 hover:bg-neutral-50 transition-colors ${
-                    !notification.read ? 'bg-blue-50/30' : ''
+                  className={`p-4 hover:bg-surface-hover transition-colors ${
+                    !notification.read ? 'bg-primary-50/30' : ''
                   }`}
                 >
                   <div className="flex space-x-4">
@@ -254,35 +252,35 @@ function NotificationsContent() {
                             <h4
                               className={`font-montserrat text-sm ${
                                 !notification.read
-                                  ? 'font-semibold text-neutral-900'
-                                  : 'font-medium text-neutral-800'
+                                  ? 'font-semibold text-foreground'
+                                  : 'font-medium text-secondary'
                               }`}
                             >
                               {notification.title}
                             </h4>
                             {notification.important && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-danger-100 text-danger-800">
                                 Important
                               </span>
                             )}
                             {!notification.read && (
-                              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                              <div className="w-2 h-2 bg-primary-600 rounded-full"></div>
                             )}
                           </div>
-                          <p className="mt-1 font-montserrat text-sm text-neutral-600">
+                          <p className="mt-1 font-montserrat text-sm text-secondary">
                             {notification.message}
                           </p>
-                          <p className="mt-2 font-montserrat text-xs text-neutral-500">
+                          <p className="mt-2 font-montserrat text-xs text-muted">
                             {notification.time}
                           </p>
                         </div>
                         <div className="flex space-x-2 ml-4">
                           {!notification.read && (
-                            <button className="text-blue-600 hover:text-blue-700 font-montserrat text-xs">
+                            <button className="text-primary-600 hover:text-primary-700 font-montserrat text-xs">
                               Mark as read
                             </button>
                           )}
-                          <button className="text-neutral-400 hover:text-neutral-600">
+                          <button className="text-muted hover:text-secondary">
                             <svg
                               className="w-4 h-4"
                               fill="none"
