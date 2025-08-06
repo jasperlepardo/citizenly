@@ -127,10 +127,10 @@ function HelpContent() {
       <div className="p-6">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">
+          <h1 className="font-montserrat font-semibold text-xl text-foreground mb-0.5">
             Help & Support
           </h1>
-          <p className="font-montserrat font-normal text-sm text-neutral-600">
+          <p className="font-montserrat font-normal text-sm text-secondary">
             Find answers to common questions and get help using Citizenly
           </p>
         </div>
@@ -149,7 +149,7 @@ function HelpContent() {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedCategory === category.id
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                        ? 'bg-primary-50 text-primary-900 border border-primary-200'
                         : 'hover:bg-surface-hover text-secondary'
                     }`}
                   >
@@ -174,12 +174,12 @@ function HelpContent() {
                 {helpContent[selectedCategory as keyof typeof helpContent]?.map((item, index) => (
                   <div
                     key={index}
-                    className="border-b border-neutral-100 pb-6 last:border-b-0 last:pb-0"
+                    className="border-b border-default pb-6 last:border-b-0 last:pb-0"
                   >
-                    <h4 className="font-montserrat font-semibold text-base text-neutral-900 mb-3">
+                    <h4 className="font-montserrat font-semibold text-base text-foreground mb-3">
                       {item.question}
                     </h4>
-                    <p className="font-montserrat text-sm text-neutral-700 leading-relaxed">
+                    <p className="font-montserrat text-sm text-secondary leading-relaxed">
                       {item.answer}
                     </p>
                   </div>
@@ -188,11 +188,11 @@ function HelpContent() {
             </div>
 
             {/* Contact Support Card */}
-            <div className="mt-6 bg-blue-50 rounded-lg border border-blue-200 p-6">
+            <div className="mt-6 bg-primary-50 rounded-lg border border-primary-200 p-6">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <svg
-                    className="w-6 h-6 text-blue-600"
+                    className="w-6 h-6 text-primary-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -206,14 +206,14 @@ function HelpContent() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-montserrat font-semibold text-base text-blue-900 mb-2">
+                  <h3 className="font-montserrat font-semibold text-base text-primary-900 mb-2">
                     Still need help?
                   </h3>
-                  <p className="font-montserrat text-sm text-blue-800 mb-4">
+                  <p className="font-montserrat text-sm text-primary-800 mb-4">
                     If you can&apos;t find the answer you&apos;re looking for, our support team is
                     here to help.
                   </p>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  <button className="bg-primary-600 text-white px-4 py-2 rounded font-montserrat font-medium text-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors">
                     Contact Support
                   </button>
                 </div>
