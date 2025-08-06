@@ -45,7 +45,7 @@ const defaultMotherInfo: MotherInformation = {
 };
 
 // Template component for interactive stories
-const MotherMaidenNameTemplate = (args: any) => {
+const MotherMaidenNameTemplate = (args: { value: MotherInformation; [key: string]: unknown }) => {
   const [value, setValue] = useState<MotherInformation>(args.value);
 
   return (

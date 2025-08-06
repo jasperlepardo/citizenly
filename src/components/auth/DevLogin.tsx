@@ -31,12 +31,16 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
     }
   }, []);
 
-  const createDemoUser = async (email: string, password: string, userData: any) => {
+  const createDemoUser = async (
+    email: string,
+    password: string,
+    userData: Record<string, unknown>
+  ) => {
     try {
       setMessage(`Creating user: ${email}...`);
 
       // Try to sign up the user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -65,8 +69,10 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
       setMessage(`✅ Created and signed in: ${email}`);
       return true;
-    } catch (error: any) {
-      setMessage(`❌ Error with ${email}: ${error.message}`);
+    } catch (error: unknown) {
+      setMessage(
+        `❌ Error with ${email}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return false;
     }
   };
@@ -130,8 +136,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
           }, 2000);
         }
       }
-    } catch (error: any) {
-      setMessage(`❌ Setup failed: ${error.message}`);
+    } catch (error: unknown) {
+      setMessage(`❌ Setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsCreating(false);
     }
@@ -157,9 +163,11 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
       setMessage('✅ Database data ready');
       return barangayCode;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Database setup error:', error);
-      throw new Error(`Database setup failed: ${error.message}`);
+      throw new Error(
+        `Database setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   };
 
@@ -188,8 +196,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
           onSuccess();
         }, 1000);
       }
-    } catch (error: any) {
-      setMessage(`❌ Login failed: ${error.message}`);
+    } catch (error: unknown) {
+      setMessage(`❌ Login failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

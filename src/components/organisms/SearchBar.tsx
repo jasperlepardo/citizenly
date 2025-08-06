@@ -59,7 +59,7 @@ export default function SearchBar({
   // Trigger search when debounced term or filters change
   useEffect(() => {
     onSearch(debouncedSearchTerm, filters);
-  }, [debouncedSearchTerm, filters]);
+  }, [debouncedSearchTerm, filters, onSearch]);
 
   const handleAddFilter = () => {
     if (filterOptions.length > 0) {
@@ -197,7 +197,7 @@ export default function SearchBar({
 
           {filters.length === 0 ? (
             <p className="text-sm text-muted">
-              No filters applied. Click "Add Filter" to add search criteria.
+              No filters applied. Click &quot;Add Filter&quot; to add search criteria.
             </p>
           ) : (
             <div className="space-y-3">

@@ -18,7 +18,13 @@ export default function UserProfile({
   const [showDropdown, setShowDropdown] = useState(false);
 
   // For now, mock barangay accounts until the full implementation is available
-  const barangayAccounts: any[] = [];
+  const barangayAccounts: {
+    id: string;
+    barangay_code: string;
+    role: string;
+    status: string;
+    is_primary: boolean;
+  }[] = [];
   const address = null;
 
   if (loading || profileLoading) {

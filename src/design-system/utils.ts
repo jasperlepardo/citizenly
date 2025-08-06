@@ -292,7 +292,7 @@ export function getInputStyles(
 export function checkContrast(
   foreground: string,
   background: string,
-  level: 'AA' | 'AAA' = 'AA'
+  _level: 'AA' | 'AAA' = 'AA'
 ): boolean {
   // This is a simplified implementation
   // In production, you would use a proper contrast calculation library
@@ -306,8 +306,8 @@ export function checkContrast(
 
   const key = `${foreground}_${background}`;
 
-  // Use level for future implementation of different contrast requirements
-  const minRatio = level === 'AAA' ? 7 : 4.5;
+  // Use _level for future implementation of different contrast requirements
+  // const minRatio = _level === 'AAA' ? 7 : 4.5;
 
   return compliantCombinations[key] || false;
 }
@@ -423,7 +423,7 @@ export function getHouseholdTypeStyle(householdType: string) {
   return styles[householdType as keyof typeof styles] || styles.nuclear;
 }
 
-export default {
+const designSystemUtils = {
   getColor,
   getRBIColor,
   getColorVariant,
@@ -439,3 +439,5 @@ export default {
   getSectoralBadgeColor,
   getHouseholdTypeStyle,
 };
+
+export default designSystemUtils;

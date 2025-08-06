@@ -25,7 +25,7 @@ export interface Role {
   id: string;
   name: string;
   description: string;
-  permissions: Record<string, any>;
+  permissions: Record<string, boolean | string>;
 }
 
 // Simplified for original schema - no barangay_accounts needed
@@ -42,7 +42,7 @@ interface AuthContextType {
   profileLoading: boolean;
 
   // Methods
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: profile, error: profileError } = (await Promise.race([
           profilePromise,
           timeoutPromise,
-        ])) as any;
+        ])) as { data: UserProfile | null; error: Error | null };
 
         const queryTime = Date.now() - startTime;
         console.log(`Profile query completed successfully in ${queryTime}ms`);
@@ -223,7 +223,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [user]);
 
   // Sign in method
   const signIn = async (email: string, password: string) => {
@@ -367,7 +367,7 @@ export function useRequireRole(requiredRole: string) {
       // Redirect to unauthorized page
       window.location.href = '/unauthorized';
     }
-  }, [auth.loading, auth.profileLoading, auth.user, auth.role, requiredRole]);
+  }, [auth, requiredRole]);
 
   return auth;
 }
@@ -381,7 +381,7 @@ export function useRequirePermission(permission: string) {
       // Redirect to unauthorized page
       window.location.href = '/unauthorized';
     }
-  }, [auth.loading, auth.profileLoading, auth.user, auth.role, permission]);
+  }, [auth, permission]);
 
   return auth;
 }

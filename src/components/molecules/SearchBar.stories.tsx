@@ -40,7 +40,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Interactive wrapper for stories that need state
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState(props.value || '');
   return React.cloneElement(children, {
     ...props,
@@ -326,7 +332,8 @@ const InteractiveSearchDemo = () => {
 
       <div className="text-xs text-gray-500 mt-4">
         <p>
-          <strong>Try:</strong> Type "John", "Barangay 1", or press Enter to search
+          <strong>Try:</strong> Type &quot;John&quot;, &quot;Barangay 1&quot;, or press Enter to
+          search
         </p>
         <p>
           <strong>Keyboard:</strong> Press Escape to clear, Enter to search

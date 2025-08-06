@@ -44,7 +44,10 @@ type Story = StoryObj<typeof meta>;
 const defaultPhysicalCharacteristics: PhysicalCharacteristicsType = {};
 
 // Template component for interactive stories
-const PhysicalCharacteristicsTemplate = (args: any) => {
+const PhysicalCharacteristicsTemplate = (args: {
+  value: PhysicalCharacteristics;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState<PhysicalCharacteristicsType>(args.value);
 
   return (

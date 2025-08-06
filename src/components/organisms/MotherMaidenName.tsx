@@ -49,14 +49,14 @@ export default function MotherMaidenName({
 }: MotherMaidenNameProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const handleChange = (field: keyof MotherInformation, newValue: any) => {
+  const handleChange = (field: keyof MotherInformation, newValue: unknown) => {
     const updated = { ...value, [field]: newValue };
 
     // Clear all fields when marking as unknown mother
     if (field === 'is_unknown_mother' && newValue) {
       Object.keys(updated).forEach(key => {
         if (key !== 'is_unknown_mother' && key !== 'is_confidential' && key !== 'notes') {
-          (updated as any)[key] = undefined;
+          (updated as Record<string, unknown>)[key] = undefined;
         }
       });
     }
@@ -90,10 +90,10 @@ export default function MotherMaidenName({
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
         <h3 className="text-lg font-medium text-gray-900 mb-2">
-          <span className="text-base">👩‍👧‍👦</span> Mother's Information
+          <span className="text-base">👩‍👧‍👦</span> Mother&apos;s Information
         </h3>
         <p className="text-sm text-gray-600">
-          Mother's maiden name and related information for genealogical records and identity
+          Mother&apos;s maiden name and related information for genealogical records and identity
           verification.
         </p>
       </div>
@@ -247,7 +247,7 @@ export default function MotherMaidenName({
 
       {/* Information Summary */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Mother's Information Summary</h4>
+        <h4 className="font-medium text-blue-900 mb-2">Mother&apos;s Information Summary</h4>
         <div className="text-sm text-blue-800 space-y-1">
           {value.is_confidential && (
             <p className="text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
@@ -255,7 +255,7 @@ export default function MotherMaidenName({
             </p>
           )}
           <p>
-            <strong>Mother's Name:</strong> {getFullMotherName()}
+            <strong>Mother&apos;s Name:</strong> {getFullMotherName()}
           </p>
           {!value.is_unknown_mother && (
             <>
@@ -294,8 +294,8 @@ export default function MotherMaidenName({
           <div className="ml-3">
             <h4 className="text-sm font-medium text-yellow-800">Privacy Protection</h4>
             <p className="text-sm text-yellow-700 mt-1">
-              Mother's maiden name is sensitive information used for identity verification. This
-              data is protected under the Data Privacy Act of 2012 and will only be used for
+              Mother&apos;s maiden name is sensitive information used for identity verification.
+              This data is protected under the Data Privacy Act of 2012 and will only be used for
               official government purposes and genealogical records.
             </p>
           </div>
@@ -311,10 +311,10 @@ export default function MotherMaidenName({
           <div className="ml-3">
             <h4 className="text-sm font-medium text-green-800">Filipino Naming Convention</h4>
             <p className="text-sm text-green-700 mt-1">
-              In Filipino culture, a woman's maiden name is the family name she had before marriage.
-              This information helps establish family lineage and is important for various legal and
-              genealogical purposes. If adoption or other special circumstances apply, please note
-              them in the additional notes section.
+              In Filipino culture, a woman&apos;s maiden name is the family name she had before
+              marriage. This information helps establish family lineage and is important for various
+              legal and genealogical purposes. If adoption or other special circumstances apply,
+              please note them in the additional notes section.
             </p>
           </div>
         </div>

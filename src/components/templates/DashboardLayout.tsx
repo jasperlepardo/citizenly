@@ -49,7 +49,6 @@ function UserDropdown() {
       if (barangayData) {
         const cityMun = (barangayData as any).psgc_cities_municipalities;
         const province = cityMun.psgc_provinces;
-        const region = province.psgc_regions;
 
         const fullAddress = `${barangayData.name}, ${cityMun.name} (${cityMun.type}), ${province.name}`;
         logger.debug('Loaded barangay info from database', { address: fullAddress });

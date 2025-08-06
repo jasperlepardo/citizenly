@@ -376,9 +376,9 @@ const ValidationDemoComponent = () => {
         <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
           <li>• Education level is always required</li>
           <li>• Employment status is always required</li>
-          <li>• Occupation is required if employment status is "Employed"</li>
-          <li>• Workplace is required if employment status is "Employed"</li>
-          <li>• Students typically don't need occupation details</li>
+          <li>• Occupation is required if employment status is &quot;Employed&quot;</li>
+          <li>• Workplace is required if employment status is &quot;Employed&quot;</li>
+          <li>• Students typically don&apos;t need occupation details</li>
         </ul>
 
         <button

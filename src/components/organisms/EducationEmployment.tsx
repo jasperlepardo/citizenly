@@ -64,7 +64,9 @@ export default function EducationEmployment({
     });
   };
 
-  const handleOccupationSelect = (option: any) => {
+  const handleOccupationSelect = (
+    option: { occupation_code: string; level_type: string; occupation_title: string } | null
+  ) => {
     if (option) {
       onChange({
         ...value,

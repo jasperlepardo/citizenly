@@ -6,10 +6,10 @@
  * Integrates with crypto utilities for secure handling
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { InputField } from '../molecules';
 import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto';
-import { logger, logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/secure-logger';
 
 interface PhilSysNumberInputProps {
   value?: string;
@@ -48,6 +48,38 @@ export default function PhilSysNumberInput({
   const [isFocused, setIsFocused] = useState(false);
   const [validationError, setValidationError] = useState<string>('');
 
+  // Validate PhilSys number format
+  const validatePhilSysNumber = useCallback(
+    (philsysNumber: string): boolean => {
+      let error = '';
+      let valid = false;
+
+      if (!philsysNumber && required) {
+        error = 'PhilSys card number is required';
+      } else if (philsysNumber && !PHILSYS_REGEX.test(philsysNumber)) {
+        if (philsysNumber.replace(/\D/g, '').length < 12) {
+          error = 'PhilSys number must be 12 digits';
+        } else {
+          error = 'Invalid PhilSys number format (XXXX-XXXX-XXXX)';
+        }
+      } else if (philsysNumber) {
+        // Additional validation logic can be added here
+        // For now, just check format
+        valid = true;
+      }
+
+      setIsValid(valid);
+      setValidationError(error);
+
+      if (onValidation) {
+        onValidation(valid, error || undefined);
+      }
+
+      return valid;
+    },
+    [required, onValidation]
+  );
+
   // Initialize display value
   useEffect(() => {
     if (value) {
@@ -56,7 +88,7 @@ export default function PhilSysNumberInput({
       setMaskedDisplay(maskPhilSysNumber(formatted));
       validatePhilSysNumber(formatted);
     }
-  }, [value]);
+  }, [value, validatePhilSysNumber]);
 
   // Format PhilSys number with dashes
   const formatPhilSysNumber = (input: string): string => {
@@ -74,35 +106,6 @@ export default function PhilSysNumberInput({
     } else {
       return limited;
     }
-  };
-
-  // Validate PhilSys number format
-  const validatePhilSysNumber = (philsysNumber: string): boolean => {
-    let error = '';
-    let valid = false;
-
-    if (!philsysNumber && required) {
-      error = 'PhilSys card number is required';
-    } else if (philsysNumber && !PHILSYS_REGEX.test(philsysNumber)) {
-      if (philsysNumber.replace(/\D/g, '').length < 12) {
-        error = 'PhilSys number must be 12 digits';
-      } else {
-        error = 'Invalid PhilSys number format (XXXX-XXXX-XXXX)';
-      }
-    } else if (philsysNumber) {
-      // Additional validation logic can be added here
-      // For now, just check format
-      valid = true;
-    }
-
-    setIsValid(valid);
-    setValidationError(error);
-
-    if (onValidation) {
-      onValidation(valid, error || undefined);
-    }
-
-    return valid;
   };
 
   // Handle input change

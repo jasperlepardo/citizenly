@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 const imgDots = 'http://localhost:3845/assets/ab2f4963fe08a77bf05c65af4e1be5c6eb4c8d1d.svg';
 const imgList = 'http://localhost:3845/assets/446e2a5e5c3189109c4e06042fc9f4d68e425e77.svg';
@@ -86,7 +87,13 @@ export function TableCell({
       <div className={`p-1 ${className}`}>
         <button className="p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
           <div className="w-5 h-5">
-            <img alt="actions" className="block w-full h-full" src={imgDots} />
+            <Image
+              alt="actions"
+              className="block w-full h-full"
+              src={imgDots}
+              width={20}
+              height={20}
+            />
           </div>
         </button>
       </div>
@@ -95,9 +102,7 @@ export function TableCell({
 
   return (
     <div className={`p-2 flex-1 ${className}`}>
-      <div className="font-body text-base font-normal leading-5 text-primary">
-        {children}
-      </div>
+      <div className="font-body text-base font-normal leading-5 text-primary">{children}</div>
     </div>
   );
 }
@@ -152,34 +157,52 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
         <div className="flex items-center gap-0 p-1">
           <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
             <div className="w-5 h-5">
-              <img alt="list" className="block w-full h-full" src={imgList} />
+              <Image
+                alt="list"
+                className="block w-full h-full"
+                src={imgList}
+                width={20}
+                height={20}
+              />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">
-              Properties
-            </span>
+            <span className="font-body font-medium text-base text-secondary px-1">Properties</span>
           </button>
 
           <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
-              <img alt="sort" className="block w-full h-full" src={imgSort} />
+              <Image
+                alt="sort"
+                className="block w-full h-full"
+                src={imgSort}
+                width={20}
+                height={20}
+              />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">
-              Sort
-            </span>
+            <span className="font-body font-medium text-base text-secondary px-1">Sort</span>
           </button>
 
           <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
-              <img alt="filter" className="block w-full h-full" src={imgFilter} />
+              <Image
+                alt="filter"
+                className="block w-full h-full"
+                src={imgFilter}
+                width={20}
+                height={20}
+              />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">
-              Filter
-            </span>
+            <span className="font-body font-medium text-base text-secondary px-1">Filter</span>
           </button>
 
           <button className="p-1 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
             <div className="w-5 h-5">
-              <img alt="more" className="block w-full h-full" src={imgMore} />
+              <Image
+                alt="more"
+                className="block w-full h-full"
+                src={imgMore}
+                width={20}
+                height={20}
+              />
             </div>
           </button>
         </div>

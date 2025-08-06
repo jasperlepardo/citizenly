@@ -19,7 +19,7 @@ interface GenericPieChartProps {
 export default function GenericPieChart({
   data,
   title,
-  baseColor = '#3b82f6',
+  baseColor: _baseColor = '#3b82f6',
   className = '',
 }: GenericPieChartProps) {
   const [hoveredSlice, setHoveredSlice] = useState<string | null>(null);

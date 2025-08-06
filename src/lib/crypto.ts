@@ -112,7 +112,7 @@ export function validatePhilSysFormat(philsysNumber: string): boolean {
 export function logSecurityOperation(
   operation: string,
   userId: string,
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 ): void {
   // In production, this should log to a secure audit system
   const auditLog = {

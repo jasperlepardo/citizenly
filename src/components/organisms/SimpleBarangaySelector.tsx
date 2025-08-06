@@ -170,7 +170,7 @@ export default function SimpleBarangaySelector({
             ))
           ) : (
             <div className="px-4 py-2 text-gray-500">
-              No barangays found matching "{searchTerm}"
+              No barangays found matching &quot;{searchTerm}&quot;
             </div>
           )}
         </div>

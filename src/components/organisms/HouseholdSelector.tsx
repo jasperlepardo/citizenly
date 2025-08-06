@@ -1,10 +1,28 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import CreateHouseholdModal from './CreateHouseholdModal';
 import { logger, logError } from '@/lib/secure-logger';
+
+interface Region {
+  code: string;
+  name: string;
+}
+
+interface Province {
+  code: string;
+  name: string;
+  psgc_regions: Region;
+}
+
+interface CityMunicipality {
+  code: string;
+  name: string;
+  type: string;
+  psgc_provinces: Province;
+}
 
 interface Household {
   code: string;
@@ -60,7 +78,7 @@ export default function HouseholdSelector({
   const [isOpen, setIsOpen] = useState(false);
 
   // Load households for the user's barangay
-  const loadHouseholds = async () => {
+  const loadHouseholds = useCallback(async () => {
     if (!userProfile?.barangay_code) {
       logger.debug('No barangay_code available, cannot load households');
       return;
@@ -128,9 +146,10 @@ export default function HouseholdSelector({
               .single();
 
             if (barangayData) {
-              const cityMun = barangayData.psgc_cities_municipalities as any;
-              const province = cityMun.psgc_provinces as any;
-              const region = province.psgc_regions as any;
+              const cityMun =
+                barangayData.psgc_cities_municipalities as unknown as CityMunicipality;
+              const province = cityMun.psgc_provinces as Province;
+              const region = province.psgc_regions as Region;
 
               geoInfo = {
                 barangay_info: {
@@ -174,12 +193,12 @@ export default function HouseholdSelector({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userProfile?.barangay_code]);
 
   // Load households when barangay changes
   useEffect(() => {
     loadHouseholds();
-  }, [userProfile?.barangay_code]);
+  }, [loadHouseholds]);
 
   // Helper function to format full name
   const formatFullName = (person?: {

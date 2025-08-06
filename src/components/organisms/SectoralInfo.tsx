@@ -111,6 +111,8 @@ export default function SectoralInfo({
     context.birthdate,
     context.employment_status,
     context.highest_educational_attainment,
+    onChange,
+    value,
   ]);
 
   // Calculate age from birthdate

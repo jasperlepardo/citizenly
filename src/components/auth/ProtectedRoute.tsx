@@ -246,7 +246,7 @@ export default function ProtectedRoute({
             </div>
             <h1 className="text-lg font-semibold text-primary mb-2">Insufficient Permissions</h1>
             <p className="text-secondary text-sm mb-2">
-              You don't have permission to access this page.
+              You don&apos;t have permission to access this page.
             </p>
             <p className="text-muted text-xs mb-4">
               Required permission: <strong>{requirePermission}</strong>

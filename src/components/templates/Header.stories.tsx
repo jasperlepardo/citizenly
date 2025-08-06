@@ -36,14 +36,6 @@ export const WithMockUser: Story = {
   decorators: [
     Story => {
       // Mock the useAuth hook for this story
-      const mockUser = {
-        id: '1',
-        email: 'juan.delacruz@rbi.gov.ph',
-        user_metadata: {
-          first_name: 'Juan',
-          last_name: 'Dela Cruz',
-        },
-      };
 
       return (
         <ThemeProvider>

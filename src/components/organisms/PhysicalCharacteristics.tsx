@@ -114,7 +114,7 @@ export default function PhysicalCharacteristics({
   disabled = false,
   className = '',
 }: PhysicalCharacteristicsProps) {
-  const handleChange = (field: keyof PhysicalCharacteristics, newValue: any) => {
+  const handleChange = (field: keyof PhysicalCharacteristics, newValue: unknown) => {
     onChange({ ...value, [field]: newValue || undefined });
   };
 
