@@ -16,16 +16,7 @@ export default function LoginForm({
   redirectTo = '/dashboard',
   className = '',
 }: LoginFormProps) {
-  // Use auth with error handling
-  let authData;
-  try {
-    authData = useAuth();
-  } catch (error) {
-    console.error('Auth context error in LoginForm:', error);
-    authData = { signIn: async () => ({ error: 'Auth context not available' }), loading: false };
-  }
-  
-  const { signIn, loading } = authData;
+  const { signIn, loading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
