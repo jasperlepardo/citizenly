@@ -69,7 +69,7 @@
     "lucide-react": "^0.294.0",
     "next": "^14.0.0",
     "react": "^18.0.0",
-    "react-dom": "^19.1.1",
+    "react-dom": "^18.0.0",
     "react-hook-form": "^7.47.0",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.0.14"
@@ -91,7 +91,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.2.0",
     "@types/react": "^18.0.0",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
     "@vitest/browser": "^3.2.4",
