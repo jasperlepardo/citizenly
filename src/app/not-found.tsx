@@ -1,6 +1,4 @@
-import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/atoms/Button';
 
 export default function NotFound() {
   return (
@@ -15,16 +13,18 @@ export default function NotFound() {
         </div>
 
         <div className="space-y-4">
-          <Link href="/dashboard">
-            <Button variant="primary" size="md" className="w-full">
-              Go to Dashboard
-            </Button>
+          <Link
+            href="/dashboard"
+            className="block w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors text-center"
+          >
+            Go to Dashboard
           </Link>
 
-          <Link href="/">
-            <Button variant="secondary" size="md" className="w-full">
-              Go to Home
-            </Button>
+          <Link
+            href="/"
+            className="block w-full px-4 py-2 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 transition-colors text-center"
+          >
+            Go to Home
           </Link>
         </div>
 

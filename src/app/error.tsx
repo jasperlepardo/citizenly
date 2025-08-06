@@ -1,18 +1,11 @@
 'use client';
 
-import React from 'react';
-import { Button } from '@/components/atoms/Button';
-
-interface ErrorProps {
+export default function Error({
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
-}
-
-export default function Error({ error, reset }: ErrorProps) {
-  React.useEffect(() => {
-    console.error('Application error:', error);
-  }, [error]);
-
+}) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="max-w-md mx-auto text-center p-6">
@@ -22,31 +15,20 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         <div className="space-y-4">
-          <Button onClick={reset} variant="primary" size="md" className="w-full">
+          <button
+            onClick={reset}
+            className="w-full px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+          >
             Try again
-          </Button>
+          </button>
 
-          <Button
+          <button
             onClick={() => (window.location.href = '/dashboard')}
-            variant="secondary"
-            size="md"
-            className="w-full"
+            className="w-full px-4 py-2 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 transition-colors"
           >
             Return to Dashboard
-          </Button>
+          </button>
         </div>
-
-        {process.env.NODE_ENV === 'development' && (
-          <details className="mt-6 text-left">
-            <summary className="cursor-pointer text-sm text-secondary">
-              Error Details (Development Only)
-            </summary>
-            <pre className="mt-2 p-4 bg-background-muted rounded text-xs overflow-auto">
-              {error.message}
-              {error.stack && '\n\n' + error.stack}
-            </pre>
-          </details>
-        )}
       </div>
     </div>
   );
