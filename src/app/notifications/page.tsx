@@ -163,7 +163,7 @@ function NotificationsContent() {
               Stay updated with system alerts, resident activities, and important announcements
             </p>
           </div>
-          <button className="text-primary-600 hover:text-primary-700 font-montserrat font-medium text-sm">
+          <button className="text-primary-600 hover:text-primary-700 focus:text-primary-800 font-montserrat font-medium text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-background rounded px-2 py-1 transition-colors">
             Mark all as read
           </button>
         </div>
@@ -276,11 +276,14 @@ function NotificationsContent() {
                         </div>
                         <div className="flex space-x-2 ml-4">
                           {!notification.read && (
-                            <button className="text-primary-600 hover:text-primary-700 font-montserrat text-xs">
+                            <button className="text-primary-600 hover:text-primary-700 focus:text-primary-800 font-montserrat text-xs focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 focus:ring-offset-surface rounded px-2 py-1 transition-colors">
                               Mark as read
                             </button>
                           )}
-                          <button className="text-muted hover:text-secondary">
+                          <button
+                            className="text-muted hover:text-secondary focus:text-danger-600 focus:outline-none focus:ring-2 focus:ring-danger-500 focus:ring-offset-1 focus:ring-offset-surface rounded p-1 transition-colors"
+                            title="Delete notification"
+                          >
                             <svg
                               className="w-4 h-4"
                               fill="none"
