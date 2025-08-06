@@ -128,13 +128,6 @@ export default function UserProfile({
                 {role?.name}
               </span>
             </div>
-
-            {userProfile.phone && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-secondary">Phone:</span>
-                <span className="text-sm text-primary">{userProfile.phone}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>

@@ -447,7 +447,7 @@ function DashboardContent() {
                 <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
               </svg>
             }
-            color="blue"
+            color="primary"
           />
 
           <StatsCard
@@ -458,7 +458,7 @@ function DashboardContent() {
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
             }
-            color="green"
+            color="success"
           />
 
           <StatsCard
@@ -473,7 +473,7 @@ function DashboardContent() {
                 />
               </svg>
             }
-            color="purple"
+            color="secondary"
           />
 
           <StatsCard
@@ -489,7 +489,7 @@ function DashboardContent() {
                 <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
               </svg>
             }
-            color="orange"
+            color="warning"
           />
         </div>
 
