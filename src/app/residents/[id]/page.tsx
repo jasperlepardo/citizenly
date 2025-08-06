@@ -690,69 +690,36 @@ function ResidentDetailContent() {
 
   return (
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="bg-surface shadow-sm border-b border-default -mx-6 px-6 py-6 mb-8">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/residents"
-                className="inline-flex items-center px-3 py-2 border border-default shadow-sm text-sm font-medium rounded-md text-secondary bg-surface hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                Back to Residents
-              </Link>
-              <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-primary">{formatFullName(resident)}</h1>
-                  <p className="text-sm text-secondary">
-                    {calculateAge(resident.birthdate)} years old • Member since{' '}
-                    {new Date(resident.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div
-              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                resident.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-              }`}
+      <div className="p-6">
+        {/* Page Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/residents"
+              className="inline-flex items-center px-3 py-2 border border-default shadow-sm text-sm font-medium rounded-md text-secondary bg-surface hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              <div
-                className={`w-2 h-2 rounded-full mr-2 ${
-                  resident.is_active ? 'bg-green-400' : 'bg-red-400'
-                }`}
-              />
-              {resident.is_active ? 'Active' : 'Inactive'}
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to Residents
+            </Link>
+            <div>
+              <h1 className="font-montserrat font-semibold text-xl text-primary">
+                {formatFullName(resident)}
+              </h1>
+              <p className="font-montserrat font-normal text-sm text-secondary">Resident Details</p>
             </div>
           </div>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Information */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6">
             {/* Personal Information Card */}
             <div className="bg-surface shadow rounded-lg border border-default">
               <div className="px-6 py-4 border-b border-default">
@@ -973,7 +940,7 @@ function ResidentDetailContent() {
           </div>
 
           {/* Right Column - Side Information */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Quick Actions Card */}
             <div className="bg-surface shadow rounded-lg border border-default">
               <div className="px-6 py-4 border-b border-default">
