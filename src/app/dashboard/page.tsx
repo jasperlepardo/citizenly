@@ -5,6 +5,14 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/templates';
+import {
+  StatsCard,
+  PopulationPyramid,
+  DependencyRatioPieChart,
+  SexDistributionPieChart,
+  CivilStatusPieChart,
+  EmploymentStatusPieChart,
+} from '@/components/dashboard';
 import { logger, logError } from '@/lib/secure-logger';
 
 interface DashboardStats {
@@ -12,6 +20,49 @@ interface DashboardStats {
   households: number;
   businesses: number;
   certifications: number;
+  seniorCitizens: number;
+  employedResidents: number;
+}
+
+interface AgeGroup {
+  ageRange: string;
+  male: number;
+  female: number;
+  malePercentage: number;
+  femalePercentage: number;
+}
+
+interface DependencyData {
+  youngDependents: number; // 0-14
+  workingAge: number; // 15-64
+  oldDependents: number; // 65+
+}
+
+interface SexData {
+  male: number;
+  female: number;
+}
+
+interface CivilStatusData {
+  single: number;
+  married: number;
+  widowed: number;
+  divorced: number;
+  separated: number;
+  annulled: number;
+  registeredPartnership: number;
+  liveIn: number;
+}
+
+interface EmploymentStatusData {
+  employed: number;
+  unemployed: number;
+  selfEmployed: number;
+  student: number;
+  retired: number;
+  homemaker: number;
+  disabled: number;
+  other: number;
 }
 
 function DashboardContent() {
@@ -21,6 +72,38 @@ function DashboardContent() {
     households: 0,
     businesses: 0,
     certifications: 0,
+    seniorCitizens: 0,
+    employedResidents: 0,
+  });
+  const [populationData, setPopulationData] = useState<AgeGroup[]>([]);
+  const [dependencyData, setDependencyData] = useState<DependencyData>({
+    youngDependents: 0,
+    workingAge: 0,
+    oldDependents: 0,
+  });
+  const [sexData, setSexData] = useState<SexData>({
+    male: 0,
+    female: 0,
+  });
+  const [civilStatusData, setCivilStatusData] = useState<CivilStatusData>({
+    single: 0,
+    married: 0,
+    widowed: 0,
+    divorced: 0,
+    separated: 0,
+    annulled: 0,
+    registeredPartnership: 0,
+    liveIn: 0,
+  });
+  const [employmentData, setEmploymentData] = useState<EmploymentStatusData>({
+    employed: 0,
+    unemployed: 0,
+    selfEmployed: 0,
+    student: 0,
+    retired: 0,
+    homemaker: 0,
+    disabled: 0,
+    other: 0,
   });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,24 +119,69 @@ function DashboardContent() {
     try {
       setLoading(true);
 
-      // Load residents count
-      const { count: residentsCount } = await supabase
-        .from('residents')
-        .select('*', { count: 'exact', head: true })
-        .eq('barangay_code', userProfile?.barangay_code);
+      const barangayCode = userProfile?.barangay_code;
+      if (!barangayCode) return;
 
-      // Load households count
-      const { count: householdsCount } = await supabase
-        .from('households')
-        .select('*', { count: 'exact', head: true })
-        .eq('barangay_code', userProfile?.barangay_code);
+      // Load basic counts in parallel
+      const [
+        residentsResult,
+        householdsResult,
+        seniorCitizensResult,
+        employedResult,
+        populationResult,
+      ] = await Promise.all([
+        // Total residents
+        supabase
+          .from('residents')
+          .select('*', { count: 'exact', head: true })
+          .eq('barangay_code', barangayCode),
+
+        // Total households
+        supabase
+          .from('households')
+          .select('*', { count: 'exact', head: true })
+          .eq('barangay_code', barangayCode),
+
+        // Senior citizens
+        supabase
+          .from('residents')
+          .select('*', { count: 'exact', head: true })
+          .eq('barangay_code', barangayCode)
+          .eq('is_senior_citizen', true),
+
+        // Employed residents
+        supabase
+          .from('residents')
+          .select('*', { count: 'exact', head: true })
+          .eq('barangay_code', barangayCode)
+          .eq('is_employed', true),
+
+        // Demographics for population pyramid and other charts
+        supabase
+          .from('residents')
+          .select('birthdate, sex, civil_status, employment_status')
+          .eq('barangay_code', barangayCode),
+      ]);
+
+      // Process population data for pyramid
+      const ageGroupData = processPopulationData(populationResult.data || []);
+
+      // Process other chart data
+      const residentData = populationResult.data || [];
+      processSexData(residentData);
+      processCivilStatusData(residentData);
+      processEmploymentData(residentData);
 
       setStats({
-        residents: residentsCount || 0,
-        households: householdsCount || 0,
-        businesses: 0, // Placeholder - add when businesses table exists
-        certifications: 0, // Placeholder - add when certifications table exists
+        residents: residentsResult.count || 0,
+        households: householdsResult.count || 0,
+        businesses: 0, // TODO: Add when businesses table exists
+        certifications: 0, // TODO: Add when certifications table exists
+        seniorCitizens: seniorCitizensResult.count || 0,
+        employedResidents: employedResult.count || 0,
       });
+
+      setPopulationData(ageGroupData);
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       logError(err, 'DASHBOARD_STATS_ERROR');
@@ -65,6 +193,236 @@ function DashboardContent() {
     }
   };
 
+  const processSexData = (residents: { sex: string }[]) => {
+    let maleCount = 0;
+    let femaleCount = 0;
+
+    residents.forEach(resident => {
+      const gender = resident.sex?.toLowerCase();
+      if (gender === 'male') {
+        maleCount++;
+      } else if (gender === 'female') {
+        femaleCount++;
+      }
+    });
+
+    setSexData({
+      male: maleCount,
+      female: femaleCount,
+    });
+  };
+
+  const processCivilStatusData = (residents: { civil_status: string }[]) => {
+    const statusCounts = {
+      single: 0,
+      married: 0,
+      widowed: 0,
+      divorced: 0,
+      separated: 0,
+      annulled: 0,
+      registeredPartnership: 0,
+      liveIn: 0,
+    };
+
+    residents.forEach(resident => {
+      const status = resident.civil_status?.toLowerCase()?.replace(/[^a-z]/g, '') || '';
+
+      switch (status) {
+        case 'single':
+          statusCounts.single++;
+          break;
+        case 'married':
+          statusCounts.married++;
+          break;
+        case 'widowed':
+          statusCounts.widowed++;
+          break;
+        case 'divorced':
+          statusCounts.divorced++;
+          break;
+        case 'separated':
+          statusCounts.separated++;
+          break;
+        case 'annulled':
+          statusCounts.annulled++;
+          break;
+        case 'registeredpartnership':
+          statusCounts.registeredPartnership++;
+          break;
+        case 'livein':
+          statusCounts.liveIn++;
+          break;
+        default:
+          // Handle other cases or leave uncategorized
+          break;
+      }
+    });
+
+    setCivilStatusData(statusCounts);
+  };
+
+  const processEmploymentData = (residents: { employment_status: string }[]) => {
+    const employmentCounts = {
+      employed: 0,
+      unemployed: 0,
+      selfEmployed: 0,
+      student: 0,
+      retired: 0,
+      homemaker: 0,
+      disabled: 0,
+      other: 0,
+    };
+
+    residents.forEach(resident => {
+      const status = resident.employment_status?.toLowerCase()?.replace(/[^a-z]/g, '') || '';
+
+      switch (status) {
+        case 'employed':
+          employmentCounts.employed++;
+          break;
+        case 'unemployed':
+          employmentCounts.unemployed++;
+          break;
+        case 'selfemployed':
+          employmentCounts.selfEmployed++;
+          break;
+        case 'student':
+          employmentCounts.student++;
+          break;
+        case 'retired':
+          employmentCounts.retired++;
+          break;
+        case 'homemaker':
+          employmentCounts.homemaker++;
+          break;
+        case 'disabled':
+          employmentCounts.disabled++;
+          break;
+        default:
+          employmentCounts.other++;
+          break;
+      }
+    });
+
+    setEmploymentData(employmentCounts);
+  };
+
+  const processPopulationData = (residents: { birthdate: string; sex: string }[]): AgeGroup[] => {
+    const ageGroups = [
+      '0-4',
+      '5-9',
+      '10-14',
+      '15-19',
+      '20-24',
+      '25-29',
+      '30-34',
+      '35-39',
+      '40-44',
+      '45-49',
+      '50-54',
+      '55-59',
+      '60-64',
+      '65-69',
+      '70-74',
+      '75-79',
+      '80-84',
+      '85-89',
+      '90-94',
+      '95-99',
+      '100+',
+    ];
+
+    const counts: Record<string, { male: number; female: number }> = {};
+    let youngDependents = 0; // 0-14
+    let workingAge = 0; // 15-64
+    let oldDependents = 0; // 65+
+
+    // Initialize age groups
+    ageGroups.forEach(group => {
+      counts[group] = { male: 0, female: 0 };
+    });
+
+    // Calculate ages and categorize
+    residents.forEach(resident => {
+      const age = calculateAge(resident.birthdate);
+      const ageGroup = getAgeGroup(age);
+      const gender = resident.sex?.toLowerCase() === 'male' ? 'male' : 'female';
+
+      if (counts[ageGroup]) {
+        counts[ageGroup][gender]++;
+      }
+
+      // Categorize for dependency ratios
+      if (age <= 14) {
+        youngDependents++;
+      } else if (age <= 64) {
+        workingAge++;
+      } else {
+        oldDependents++;
+      }
+    });
+
+    // Update dependency data
+
+    setDependencyData({
+      youngDependents,
+      workingAge,
+      oldDependents,
+    });
+
+    const totalPopulation = residents.length;
+
+    return ageGroups.map(ageRange => {
+      const male = counts[ageRange].male;
+      const female = counts[ageRange].female;
+
+      return {
+        ageRange,
+        male,
+        female,
+        malePercentage: totalPopulation > 0 ? (male / totalPopulation) * 100 : 0,
+        femalePercentage: totalPopulation > 0 ? (female / totalPopulation) * 100 : 0,
+      };
+    });
+  };
+
+  const calculateAge = (birthdate: string): number => {
+    const birth = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
+  const getAgeGroup = (age: number): string => {
+    if (age < 5) return '0-4';
+    if (age < 10) return '5-9';
+    if (age < 15) return '10-14';
+    if (age < 20) return '15-19';
+    if (age < 25) return '20-24';
+    if (age < 30) return '25-29';
+    if (age < 35) return '30-34';
+    if (age < 40) return '35-39';
+    if (age < 45) return '40-44';
+    if (age < 50) return '45-49';
+    if (age < 55) return '50-54';
+    if (age < 60) return '55-59';
+    if (age < 65) return '60-64';
+    if (age < 70) return '65-69';
+    if (age < 75) return '70-74';
+    if (age < 80) return '75-79';
+    if (age < 85) return '80-84';
+    if (age < 90) return '85-89';
+    if (age < 95) return '90-94';
+    if (age < 100) return '95-99';
+    return '100+';
+  };
+
   if (profileLoading) {
     return <div className="flex items-center justify-center h-screen text-primary">Loading...</div>;
   }
@@ -74,52 +432,61 @@ function DashboardContent() {
       <div className="p-6">
         {/* Welcome Message */}
         <div className="mb-8">
-          <h1 className="font-['Montserrat'] font-semibold text-2xl text-primary">
+          <h1 className="font-display font-semibold text-2xl text-primary">
             Welcome back, {userProfile ? userProfile.first_name : 'User'}!
           </h1>
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-4 gap-6">
-          {/* Residents Card */}
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">
-              Residents
-            </div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
-              {loading ? '...' : stats.residents.toLocaleString()}
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatsCard
+            title="Total Residents"
+            value={loading ? '...' : stats.residents.toLocaleString()}
+          />
 
-          {/* Households Card */}
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">
-              Households
-            </div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
-              {loading ? '...' : stats.households.toLocaleString()}
-            </div>
-          </div>
+          <StatsCard
+            title="Households"
+            value={loading ? '...' : stats.households.toLocaleString()}
+          />
 
-          {/* Businesses Card */}
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">
-              Businesses
-            </div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
-              {loading ? '...' : stats.businesses.toLocaleString()}
-            </div>
-          </div>
+          <StatsCard
+            title="Senior Citizens"
+            value={loading ? '...' : stats.seniorCitizens.toLocaleString()}
+          />
 
-          {/* Certifications Card */}
-          <div className="bg-surface rounded-lg border border-default p-6">
-            <div className="font-['Montserrat'] font-medium text-sm text-secondary mb-2">
-              Certifications
-            </div>
-            <div className="font-['Montserrat'] font-bold text-4xl text-primary">
-              {loading ? '...' : stats.certifications.toLocaleString()}
-            </div>
+          <StatsCard
+            title="Employed"
+            value={loading ? '...' : stats.employedResidents.toLocaleString()}
+          />
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div>
+            <DependencyRatioPieChart title="Age Distribution" data={dependencyData} />
           </div>
+          <div>
+            <SexDistributionPieChart data={sexData} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div>
+            <CivilStatusPieChart data={civilStatusData} />
+          </div>
+          <div>
+            <EmploymentStatusPieChart data={employmentData} />
+          </div>
+        </div>
+
+        {/* Population Pyramid */}
+        <div className="mb-8">
+          <PopulationPyramid
+            data={populationData}
+            onAgeGroupClick={ageGroup => {
+              logger.info('Age group selected', { ageGroup: ageGroup.ageRange });
+            }}
+          />
         </div>
       </div>
     </DashboardLayout>
