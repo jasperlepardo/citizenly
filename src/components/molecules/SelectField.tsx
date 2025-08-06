@@ -74,7 +74,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-primary mb-1 font-['Montserrat']">
+          <label className="block text-sm font-medium text-primary mb-1 font-body">
             {label}
           </label>
         )}
@@ -181,9 +181,9 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="text-xs text-red-500 font-['Montserrat']">{errorMessage}</p>
+              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-muted font-['Montserrat']">{helperText}</p>
+              <p className="text-xs text-muted font-body">{helperText}</p>
             )}
           </div>
         )}

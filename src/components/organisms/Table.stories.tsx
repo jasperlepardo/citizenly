@@ -326,7 +326,7 @@ const InteractiveExampleComponent = () => {
         <TableBody>
           {filteredData.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-secondary">No results found for "{searchTerm}"</p>
+              <p className="text-secondary">No results found for &quot;{searchTerm}&quot;</p>
             </div>
           ) : (
             filteredData.map(row => (
@@ -367,7 +367,7 @@ const InteractiveExampleComponent = () => {
         <ul className="text-sm text-secondary space-y-1">
           <li>• Search by name, email, or phone number</li>
           <li>• Click checkboxes to select individual items</li>
-          <li>• Use "Select all" to select all visible items</li>
+          <li>• Use &quot;Select all&quot; to select all visible items</li>
           <li>• Click status badges to toggle between Active/Inactive</li>
           <li>• Action buttons provide contextual operations</li>
         </ul>

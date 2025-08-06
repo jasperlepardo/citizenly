@@ -313,7 +313,7 @@ export default function FamilyRelationshipSelector({
           {required && <span className="text-red-500 ml-1">*</span>}
         </h3>
         <p className="text-sm text-secondary">
-          Select this person's relationship to the household head and position in the family.
+          Select this person&apos;s relationship to the household head and position in the family.
         </p>
       </div>
 

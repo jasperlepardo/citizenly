@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
@@ -90,6 +90,9 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
     const searchInputRef = useRef<HTMLInputElement>(null);
     const optionsListRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    // Generate unique IDs for ARIA attributes
+    const listboxId = `dropdown-listbox-${Math.random().toString(36).substr(2, 9)}`;
 
     const actualVariant = errorMessage ? 'error' : variant;
     const selectedOption = options.find(opt => opt.value === value);
@@ -181,6 +184,29 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         }
       }
     }, [highlightedIndex]);
+
+    // Define handleSelect before it's used in useEffect
+    const handleSelect = useCallback(
+      (option: DropdownOption) => {
+        if (option.disabled) return;
+
+        onChange?.(option.value);
+        setIsOpen(false);
+        // Don't clear search term if searchable - show selected value
+        if (!searchable) {
+          setSearchTerm('');
+        } else {
+          setSearchTerm(option.label);
+        }
+        setHighlightedIndex(-1);
+
+        // Blur the input if searchable to prevent cursor showing
+        if (searchable && searchInputRef.current) {
+          searchInputRef.current.blur();
+        }
+      },
+      [onChange, searchable]
+    );
 
     // Handle keyboard navigation
     useEffect(() => {
@@ -290,26 +316,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
       document.addEventListener('keydown', handleKeyDown);
       return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, highlightedIndex, filteredOptions]);
-
-    const handleSelect = (option: DropdownOption) => {
-      if (option.disabled) return;
-
-      onChange?.(option.value);
-      setIsOpen(false);
-      // Don't clear search term if searchable - show selected value
-      if (!searchable) {
-        setSearchTerm('');
-      } else {
-        setSearchTerm(option.label);
-      }
-      setHighlightedIndex(-1);
-
-      // Blur the input if searchable to prevent cursor showing
-      if (searchable && searchInputRef.current) {
-        searchInputRef.current.blur();
-      }
-    };
+    }, [isOpen, highlightedIndex, filteredOptions, searchable, handleSelect]);
 
     const handleClear = (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -336,6 +343,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
           role="combobox"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          aria-controls={listboxId}
           {...props}
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
@@ -476,7 +484,12 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
             style={{ maxHeight: `${maxHeight}px` }}
           >
             {/* Options List */}
-            <div ref={optionsListRef} className="max-h-60 overflow-auto py-1">
+            <div
+              ref={optionsListRef}
+              id={listboxId}
+              role="listbox"
+              className="max-h-60 overflow-auto py-1"
+            >
               {filteredOptions.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-muted">
                   {searchable && searchTerm ? 'No options found' : 'No options available'}

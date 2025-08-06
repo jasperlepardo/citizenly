@@ -306,7 +306,7 @@ export default function BarangaySelector({
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            <p className="text-sm">No barangays found for "{searchTerm}"</p>
+            <p className="text-sm">No barangays found for &quot;{searchTerm}&quot;</p>
             <p className="text-xs mt-1">
               Try searching with a different term or check your spelling
             </p>
@@ -333,7 +333,8 @@ export default function BarangaySelector({
             </svg>
             <p className="text-sm">Start typing to search barangays</p>
             <p className="text-xs mt-1">
-              Type at least 2 characters (e.g., "San", "Manila", "Cebu")
+              Type at least 2 characters (e.g., &quot;San&quot;, &quot;Manila&quot;,
+              &quot;Cebu&quot;)
             </p>
           </div>
         </div>
@@ -349,8 +350,8 @@ export default function BarangaySelector({
       {/* Helper text */}
       {!error && (
         <p className="mt-1 text-xs text-muted">
-          Start typing to search by barangay name, city, or province (e.g., "Poblacion", "Manila",
-          "Cebu City")
+          Start typing to search by barangay name, city, or province (e.g., &quot;Poblacion&quot;,
+          &quot;Manila&quot;, &quot;Cebu City&quot;)
         </p>
       )}
     </div>

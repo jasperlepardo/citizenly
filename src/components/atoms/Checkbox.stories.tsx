@@ -45,7 +45,13 @@ const meta: Meta<typeof Checkbox> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [checked, setChecked] = useState(props.checked || false);
   return React.cloneElement(children, {
     ...props,

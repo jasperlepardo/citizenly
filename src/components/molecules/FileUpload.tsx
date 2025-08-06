@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security';
 import { Button } from '@/components/atoms';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger } from '@/lib/secure-logger';
 
 const fileUploadVariants = cva(
   'relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
@@ -190,9 +190,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-[#262626] mb-2 font-['Montserrat']">
-            {label}
-          </label>
+          <label className="block text-sm font-medium text-[#262626] mb-2 font-body">{label}</label>
         )}
 
         {/* Upload Area */}
@@ -250,12 +248,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                 size === 'lg' && 'text-lg'
               )}
             >
-              <p
-                className={cn(
-                  "font-['Montserrat']",
-                  disabled ? 'text-[#a3a3a3]' : 'text-[#525252]'
-                )}
-              >
+              <p className={cn('font-body', disabled ? 'text-[#a3a3a3]' : 'text-[#525252]')}>
                 {dragText}
               </p>
               <Button
@@ -271,7 +264,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="mt-2 text-xs text-[#737373] font-['Montserrat']">
+              <div className="mt-2 text-xs text-[#737373] font-body">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -282,9 +275,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {/* File Preview */}
         {showPreview && selectedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h4 className="text-sm font-medium text-[#262626] font-['Montserrat']">
-              Selected Files:
-            </h4>
+            <h4 className="text-sm font-medium text-[#262626] font-body">Selected Files:</h4>
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
@@ -302,12 +293,10 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#262626] font-['Montserrat'] truncate">
+                    <p className="text-sm font-medium text-[#262626] font-body truncate">
                       {file.name}
                     </p>
-                    <p className="text-xs text-[#737373] font-['Montserrat']">
-                      {formatFileSize(file.size)}
-                    </p>
+                    <p className="text-xs text-[#737373] font-body">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
                 <Button
@@ -337,9 +326,9 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-[#b91c1c] font-['Montserrat']">{errorMessage}</p>
+              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-[#737373] font-['Montserrat']">{helperText}</p>
+              <p className="text-xs text-[#737373] font-body">{helperText}</p>
             )}
           </div>
         )}

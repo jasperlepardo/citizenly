@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, forwardRef, InputHTMLAttributes } from 'react';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
@@ -58,8 +58,6 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     },
     ref
   ) => {
-    const [_isFocused, setIsFocused] = useState(false);
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -129,8 +127,6 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               value={value}
               onChange={onChange}
               onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               disabled={disabled}
               aria-label="Search"
               {...props}

@@ -1,6 +1,15 @@
 /**
  * Statistics Card Component
  * Displays key metrics in dashboard cards
+ *
+ * Design System Usage (matching chart components):
+ * - Background: bg-surface (semantic surface color)
+ * - Border: border-default (semantic border color)
+ * - Text: text-primary (main value), text-secondary (labels)
+ * - Typography: font-display (value), font-body (title)
+ * - Spacing: p-6 (24px) for card padding
+ * - Border Radius: rounded-lg (8px)
+ * - No shadow to match chart components
  */
 
 import React from 'react';
@@ -14,7 +23,7 @@ interface StatsCardProps {
     isPositive: boolean;
   };
   description?: string;
-  color?: 'blue' | 'green' | 'purple' | 'orange' | 'red';
+  color?: 'primary' | 'success' | 'secondary' | 'warning' | 'danger';
 }
 
 export default function StatsCard({
@@ -23,29 +32,32 @@ export default function StatsCard({
   icon,
   trend,
   description,
-  color = 'blue',
+  color = 'primary',
 }: StatsCardProps) {
+  // Map design system colors to Tailwind classes
   const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
-    orange: 'bg-orange-50 text-orange-600 border-orange-200',
-    red: 'bg-red-50 text-red-600 border-red-200',
+    primary: `bg-primary-50 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-800`,
+    success: `bg-success-50 dark:bg-success-950/30 text-success-600 dark:text-success-400 border-success-200 dark:border-success-800`,
+    secondary: `bg-secondary-50 dark:bg-secondary-950/30 text-secondary-600 dark:text-secondary-400 border-secondary-200 dark:border-secondary-800`,
+    warning: `bg-warning-50 dark:bg-warning-950/30 text-warning-600 dark:text-warning-400 border-warning-200 dark:border-warning-800`,
+    danger: `bg-danger-50 dark:bg-danger-950/30 text-danger-600 dark:text-danger-400 border-danger-200 dark:border-danger-800`,
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-surface rounded-lg border border-default p-6">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-semibold text-gray-900 mt-1">{value}</p>
+          <p className="text-sm font-medium text-secondary font-body">{title}</p>
+          <p className="text-2xl font-semibold text-primary mt-1 font-display">{value}</p>
 
-          {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
+          {description && <p className="text-sm text-secondary mt-1">{description}</p>}
 
           {trend && (
             <div
               className={`flex items-center mt-2 text-sm ${
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
+                trend.isPositive
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
               }`}
             >
               <svg

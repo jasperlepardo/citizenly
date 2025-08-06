@@ -7,7 +7,7 @@
  */
 
 import React, { useState } from 'react';
-import { Select, Textarea, Radio, RadioGroup } from '../atoms';
+import { Textarea, Radio, RadioGroup } from '../atoms';
 import { FormGroup, InputField } from '../molecules';
 
 // Migration Information Interface (matches database schema)
@@ -80,7 +80,10 @@ export default function MigrantInformation({
 }: MigrantInformationProps) {
   const [showDetails, setShowDetails] = useState(value.migration_reason === 'other');
 
-  const handleChange = (field: keyof MigrationInformation, newValue: any) => {
+  const handleChange = (
+    field: keyof MigrationInformation,
+    newValue: MigrationInformation[keyof MigrationInformation]
+  ) => {
     const updated = { ...value, [field]: newValue };
 
     // Auto-reset dependent fields when migration type changes
@@ -107,7 +110,7 @@ export default function MigrantInformation({
     if (field === 'is_migrant' && !newValue) {
       Object.keys(updated).forEach(key => {
         if (key !== 'is_migrant') {
-          (updated as any)[key] = key.includes('registration_status')
+          (updated as Record<string, unknown>)[key] = key.includes('registration_status')
             ? 'not_applicable'
             : key.includes('type')
               ? null

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger, logError } from '@/lib/secure-logger';
 
@@ -38,8 +38,11 @@ export default function PSOCSelector({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Generate unique ID for ARIA attributes
+  const listboxId = `psoc-listbox-${Math.random().toString(36).substr(2, 9)}`;
+
   // Search PSOC occupations
-  const searchOccupations = async (query: string) => {
+  const searchOccupations = useCallback(async (query: string) => {
     if (!query.trim()) {
       setOptions([]);
       return;
@@ -65,7 +68,7 @@ export default function PSOCSelector({
         logger.debug('Trying direct PSOC table queries');
 
         // Try major groups first
-        const { data: majorGroups, error: _majorError } = await supabase
+        const { data: majorGroups } = await supabase
           .from('psoc_major_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -85,7 +88,7 @@ export default function PSOCSelector({
         }
 
         // Try unit groups
-        const { data: unitGroups, error: _unitError } = await supabase
+        const { data: unitGroups } = await supabase
           .from('psoc_unit_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -105,7 +108,7 @@ export default function PSOCSelector({
         }
 
         // Try unit sub-groups (most specific occupations like "Radiology technician")
-        const { data: unitSubGroups, error: _unitSubError } = await supabase
+        const { data: unitSubGroups } = await supabase
           .from('psoc_unit_sub_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -135,7 +138,7 @@ export default function PSOCSelector({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Debounced search
   useEffect(() => {
@@ -152,7 +155,8 @@ export default function PSOCSelector({
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, searchOccupations]);
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,6 +242,10 @@ export default function PSOCSelector({
                 appearance: 'none',
               }}
               placeholder={placeholder}
+              role="combobox"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+              aria-controls={listboxId}
               aria-invalid={error ? 'true' : 'false'}
             />
           </div>
@@ -267,7 +275,11 @@ export default function PSOCSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-lg bg-surface shadow-lg ring-1 ring-border-default max-h-60 overflow-auto">
+        <div
+          id={listboxId}
+          role="listbox"
+          className="absolute z-10 mt-1 w-full rounded-lg bg-surface shadow-lg ring-1 ring-border-default max-h-60 overflow-auto"
+        >
           {loading ? (
             <div className="px-3 py-2 text-sm/6 text-muted flex items-center gap-2">
               <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -294,6 +306,8 @@ export default function PSOCSelector({
                   <button
                     type="button"
                     onClick={() => handleOptionSelect(option)}
+                    role="option"
+                    aria-selected={selectedOption?.occupation_code === option.occupation_code}
                     className="w-full px-3 py-2 text-left text-sm/6 text-primary hover:bg-surface-hover focus:bg-surface-hover focus:outline-none"
                   >
                     <div className="font-medium">{option.occupation_title}</div>
@@ -307,7 +321,7 @@ export default function PSOCSelector({
             </ul>
           ) : searchQuery.trim() ? (
             <div className="px-3 py-2 text-sm/6 text-muted">
-              <div>No occupations found for "{searchQuery}"</div>
+              <div>No occupations found for &quot;{searchQuery}&quot;</div>
               <div className="text-xs mt-1 text-muted">
                 Note: PSOC data may not be loaded in the database yet.
               </div>

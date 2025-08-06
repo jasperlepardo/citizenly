@@ -6,7 +6,6 @@
 import {
   getColor,
   getRBIColor,
-  getColorVariant,
   getSpacing,
   getResponsiveSpacing,
   getFontSize,

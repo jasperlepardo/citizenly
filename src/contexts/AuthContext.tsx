@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -10,13 +10,9 @@ export interface UserProfile {
   email: string;
   first_name: string;
   last_name: string;
-  middle_name?: string;
-  phone?: string;
-  mobile_number?: string;
   barangay_code: string;
   role_id: string;
   is_active: boolean;
-  last_login?: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,8 +20,7 @@ export interface UserProfile {
 export interface Role {
   id: string;
   name: string;
-  description: string;
-  permissions: Record<string, any>;
+  permissions: Record<string, boolean | string>;
 }
 
 // Simplified for original schema - no barangay_accounts needed
@@ -40,10 +35,12 @@ interface AuthContextType {
   // Loading states
   loading: boolean;
   profileLoading: boolean;
+  profileError: string | null;
 
   // Methods
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  loadProfile: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 
   // Helper methods
@@ -65,11 +62,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileCache, setProfileCache] = useState<
+    Map<string, { profile: UserProfile; role: Role; timestamp: number }>
+  >(new Map());
+  const [lastProfileLoad, setLastProfileLoad] = useState<number>(0);
+
+  // Retry helper with exponential backoff
+  const retryWithBackoff = async (
+    operation: () => Promise<any>,
+    maxRetries = 3,
+    baseDelay = 1000
+  ): Promise<any> => {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        if (attempt === maxRetries) throw error;
+
+        const delay = baseDelay * Math.pow(2, attempt);
+        console.log(`Retry attempt ${attempt + 1}/${maxRetries + 1} in ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+    throw new Error('Max retries exceeded');
+  };
 
   // Load user profile and related data (simplified for original schema)
-  const loadUserProfile = async (userId: string) => {
+  const loadUserProfile = async (userId: string, force = false) => {
     try {
+      // Check cache first (cache for 5 minutes)
+      const cacheKey = userId;
+      const cached = profileCache.get(cacheKey);
+      const now = Date.now();
+      const cacheTimeout = 5 * 60 * 1000; // 5 minutes
+
+      if (!force && cached && now - cached.timestamp < cacheTimeout) {
+        console.log('Using cached profile data');
+        setUserProfile(cached.profile);
+        setRole(cached.role);
+        return;
+      }
+
+      // Prevent multiple simultaneous requests for the same user
+      if (profileLoading && now - lastProfileLoad < 1000) {
+        console.log('Profile already loading, skipping duplicate request');
+        return;
+      }
+
       setProfileLoading(true);
+      setProfileError(null);
+      setLastProfileLoad(now);
       console.log('Loading user profile for:', userId);
 
       // Try real database query first
@@ -78,56 +121,81 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Set a shorter timeout for this specific query
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Profile query timeout')), 5000); // 5 second timeout
+        setTimeout(() => reject(new Error('Profile query timeout')), 15000); // 15 second timeout
       });
 
-      const profilePromise = supabase.from('user_profiles').select('*').eq('id', userId).single();
-
       try {
-        // Race between the query and timeout
-        const { data: profile, error: profileError } = (await Promise.race([
-          profilePromise,
-          timeoutPromise,
-        ])) as any;
+        // Use retry logic for optimized combined query
+        const { data: profileWithRole, error: queryError } = await retryWithBackoff(async () => {
+          const result = await Promise.race([
+            supabase
+              .from('user_profiles')
+              .select(
+                `
+                *,
+                roles!inner(
+                  *
+                )
+              `
+              )
+              .eq('id', userId)
+              .single(),
+            timeoutPromise,
+          ]);
+          return result;
+        });
 
         const queryTime = Date.now() - startTime;
         console.log(`Profile query completed successfully in ${queryTime}ms`);
 
-        if (profileError) {
-          console.error('Profile query error:', profileError);
-          throw profileError;
+        if (queryError) {
+          console.error('Profile query error:', queryError);
+          throw queryError;
         }
 
-        if (!profile) {
+        if (!profileWithRole) {
           console.error('No profile found for user:', userId);
           throw new Error('Profile not found');
         }
 
-        // Now get the role separately
-        console.log('Loading role for role_id:', profile.role_id);
-        const { data: role, error: roleError } = await supabase
-          .from('roles')
-          .select('*')
-          .eq('id', profile.role_id)
-          .single();
+        // Log the actual data structure to understand what fields exist
+        console.log('Raw profile data from database:', profileWithRole);
 
-        if (roleError) {
-          console.warn('Role query error (using default permissions):', roleError);
-          // Continue with profile but default permissions
-        }
+        // Map the database fields to our interface, using defaults for missing fields
+        const profile: UserProfile = {
+          id: profileWithRole.id || userId,
+          email: profileWithRole.email || '',
+          first_name: profileWithRole.first_name || '',
+          last_name: profileWithRole.last_name || '',
+          barangay_code: profileWithRole.barangay_code || '',
+          role_id: profileWithRole.role_id || '',
+          is_active: profileWithRole.is_active !== undefined ? profileWithRole.is_active : true,
+          created_at: profileWithRole.created_at || new Date().toISOString(),
+          updated_at: profileWithRole.updated_at || new Date().toISOString(),
+        };
+
+        const role = profileWithRole.roles || null;
 
         console.log('Profile loaded successfully:', profile);
         console.log('Role loaded:', role);
 
+        const finalRole = role || {
+          id: 'default-role',
+          name: 'User',
+          permissions: { residents_view: true },
+        };
+
+        // Cache the results
+        const newCache = new Map(profileCache);
+        newCache.set(cacheKey, {
+          profile,
+          role: finalRole,
+          timestamp: Date.now(),
+        });
+        setProfileCache(newCache);
+
         setUserProfile(profile);
-        setRole(
-          role || {
-            id: 'default-role',
-            name: 'User',
-            description: 'Default role',
-            permissions: { residents_view: true },
-          }
-        );
+        setRole(finalRole);
       } catch (dbError) {
         console.error('Database query failed and no fallback available:', dbError);
         console.error('User must have a valid profile in the database to use the system');
@@ -139,6 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error('Error in loadUserProfile:', error);
+      setProfileError(error instanceof Error ? error.message : 'Failed to load profile');
       setUserProfile(null);
       setRole(null);
     } finally {
@@ -166,13 +235,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('Session retrieved:', session?.user?.id ? 'User found' : 'No user');
         setSession(session);
         setUser(session?.user ?? null);
-
-        if (session?.user) {
-          // Load profile in background, don't block main loading
-          loadUserProfile(session.user.id).catch(err => {
-            console.error('Profile loading failed:', err);
-          });
-        }
 
         console.log('Auth initialization complete');
         setLoading(false);
@@ -208,11 +270,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
 
-      if (event === 'SIGNED_IN' && session?.user) {
-        await loadUserProfile(session.user.id);
-      } else if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT') {
         setUserProfile(null);
         setRole(null);
+        setProfileError(null);
       }
 
       // Always ensure loading is false after auth state change
@@ -227,10 +288,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Sign in method
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    // Preload profile data immediately after successful sign-in
+    if (!error && data.user) {
+      loadUserProfile(data.user.id).catch(err => {
+        console.error('Profile preloading failed:', err);
+      });
+    }
 
     return { error };
   };
@@ -243,12 +311,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Load profile method (separate from auth)
+  const loadProfile = useCallback(async () => {
+    if (user?.id) {
+      await loadUserProfile(user.id);
+    }
+  }, [user?.id]);
+
   // Refresh profile method
   const refreshProfile = async () => {
     if (user) {
       await loadUserProfile(user.id);
     }
   };
+
+  // Auto-load profile when user is authenticated
+  useEffect(() => {
+    if (user?.id && !userProfile && !profileLoading) {
+      loadProfile();
+    }
+  }, [user?.id, userProfile, profileLoading, loadProfile]);
 
   // Permission helpers
   const hasPermission = (permission: string): boolean => {
@@ -298,10 +380,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     role,
     loading,
     profileLoading,
+    profileError,
 
     // Methods
     signIn,
     signOut,
+    loadProfile,
     refreshProfile,
 
     // Helpers
@@ -326,10 +410,10 @@ export function useAuth() {
       role: null,
       loading: true,
       profileLoading: true,
+      profileError: null,
       signIn: async () => ({ error: new Error('AuthProvider not available') }),
       signOut: async () => {},
-      signUp: async () => ({ error: new Error('AuthProvider not available') }),
-      updateProfile: async () => ({ error: new Error('AuthProvider not available') }),
+      loadProfile: async () => {},
       refreshProfile: async () => {},
       hasPermission: () => false,
       isInRole: () => false,
@@ -367,7 +451,7 @@ export function useRequireRole(requiredRole: string) {
       // Redirect to unauthorized page
       window.location.href = '/unauthorized';
     }
-  }, [auth.loading, auth.profileLoading, auth.user, auth.role, requiredRole]);
+  }, [auth, requiredRole]);
 
   return auth;
 }
@@ -381,7 +465,7 @@ export function useRequirePermission(permission: string) {
       // Redirect to unauthorized page
       window.location.href = '/unauthorized';
     }
-  }, [auth.loading, auth.profileLoading, auth.user, auth.role, permission]);
+  }, [auth, permission]);
 
   return auth;
 }

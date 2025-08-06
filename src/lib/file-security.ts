@@ -181,7 +181,7 @@ async function validateFileContent(file: File): Promise<string[]> {
         }
       }
     }
-  } catch (error) {
+  } catch {
     errors.push('Unable to validate file content');
   }
 
@@ -241,7 +241,7 @@ export async function validateUploadedFile(file: File): Promise<FileValidationRe
   if (errors.length === 0) {
     try {
       fileHash = await generateFileHash(file);
-    } catch (error) {
+    } catch {
       errors.push('Unable to generate file hash');
     }
   }

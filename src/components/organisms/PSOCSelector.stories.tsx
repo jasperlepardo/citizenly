@@ -147,7 +147,7 @@ export const Interactive: Story = {
 
 // Search demonstration with examples
 const SearchDemoComponent = () => {
-  const [selectedOption, setSelectedOption] = useState<PSOCOption | null>(null);
+  const [, setSelectedOption] = useState<PSOCOption | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const handleSelect = (option: PSOCOption | null) => {
@@ -175,7 +175,9 @@ const SearchDemoComponent = () => {
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Search Tips</h3>
         <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-          <li>• Type occupation names in English (e.g., "doctor", "teacher")</li>
+          <li>
+            • Type occupation names in English (e.g., &quot;doctor&quot;, &quot;teacher&quot;)
+          </li>
           <li>• Search works across all hierarchy levels</li>
           <li>• Results show occupation title, code, and classification level</li>
           <li>• More specific occupations have lower hierarchy levels</li>

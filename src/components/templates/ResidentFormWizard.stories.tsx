@@ -413,9 +413,9 @@ export const DataIntegration: Story = {
           </h4>
           <p className="text-sm text-gray-700 dark:text-gray-300">
             The form wizard seamlessly integrates with the RBI System database, automatically
-            populating geographic codes from the user's barangay assignment, validating against PSOC
-            occupation classifications, and maintaining referential integrity with household and
-            address management systems.
+            populating geographic codes from the user&apos;s barangay assignment, validating against
+            PSOC occupation classifications, and maintaining referential integrity with household
+            and address management systems.
           </p>
         </div>
       </div>

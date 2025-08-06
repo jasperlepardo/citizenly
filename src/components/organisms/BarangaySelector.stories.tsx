@@ -127,6 +127,10 @@ const InteractiveComponent = () => {
 };
 
 export const Interactive: Story = {
+  args: {
+    value: '',
+    onChange: () => {},
+  },
   render: InteractiveComponent,
 };
 
@@ -148,7 +152,7 @@ const SearchDemoComponent = () => {
         <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Search Instructions</h3>
         <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
           <li>• Type at least 2 characters to start searching</li>
-          <li>• Search by barangay name (e.g., "Poblacion", "San Antonio")</li>
+          <li>• Search by barangay name (e.g., &quot;Poblacion&quot;, &quot;San Antonio&quot;)</li>
           <li>• Results show barangay name, city, province, and region</li>
           <li>• Click on a result to select it</li>
           <li>• Search terms are highlighted in results</li>
@@ -176,6 +180,10 @@ const SearchDemoComponent = () => {
 };
 
 export const SearchDemo: Story = {
+  args: {
+    value: '',
+    onChange: () => {},
+  },
   render: SearchDemoComponent,
 };
 
@@ -269,11 +277,19 @@ const InFormComponent = () => {
 };
 
 export const InForm: Story = {
+  args: {
+    value: '',
+    onChange: () => {},
+  },
   render: InFormComponent,
 };
 
 // Different states showcase
 export const AllStates: Story = {
+  args: {
+    value: '',
+    onChange: () => {},
+  },
   render: () => (
     <div className="space-y-8">
       <div>
@@ -305,6 +321,10 @@ export const AllStates: Story = {
 
 // Performance and features showcase
 export const FeaturesShowcase: Story = {
+  args: {
+    value: '',
+    onChange: () => {},
+  },
   render: () => (
     <div className="space-y-6">
       <div className="bg-background rounded-lg border border-default p-6">
@@ -326,7 +346,7 @@ export const FeaturesShowcase: Story = {
             <h4 className="font-medium text-primary mb-2">User Experience</h4>
             <ul className="text-sm text-secondary space-y-1">
               <li>• Loading indicators during search</li>
-              <li>• Clear "no results" messaging</li>
+              <li>• Clear &quot;no results&quot; messaging</li>
               <li>• Helpful search instructions</li>
               <li>• Click outside to close dropdown</li>
               <li>• Accessible keyboard navigation</li>

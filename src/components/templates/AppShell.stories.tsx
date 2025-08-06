@@ -490,8 +490,8 @@ export const MobileDemo: Story = {
         </h3>
         <p className="text-sm text-yellow-700 dark:text-yellow-300">
           To see the mobile sidebar in action, resize your browser window to mobile width (&lt;
-          1024px) or use your browser's responsive design mode. The hamburger menu will appear in
-          the top bar, and clicking it will show the mobile sidebar overlay.
+          1024px) or use your browser&apos;s responsive design mode. The hamburger menu will appear
+          in the top bar, and clicking it will show the mobile sidebar overlay.
         </p>
       </div>
 

@@ -27,7 +27,7 @@ import {
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { FormGroup, InputField } from '@/components/molecules';
+import { InputField } from '@/components/molecules';
 
 export interface ResidentFormData {
   // Personal Information - Step 1
@@ -100,7 +100,10 @@ interface ResidentFormWizardProps {
   onCancel?: () => void;
 }
 
-export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormWizardProps) {
+export default function ResidentFormWizard({
+  onSubmit,
+  onCancel: _onCancel,
+}: ResidentFormWizardProps) {
   const router = useRouter();
   const { getToken: getCSRFToken } = useCSRFToken();
 
@@ -318,7 +321,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
       const validationResult = await validateResidentData(formData);
       if (!validationResult.success) {
         const errorMap: Record<string, string> = {};
-        validationResult.errors?.forEach(error => {
+        validationResult.errors?.forEach((error: { field: string; message: string }) => {
           errorMap[error.field] = error.message;
         });
         setValidationErrors(errorMap);
@@ -816,7 +819,13 @@ function AdditionalInfoStep({ formData, onChange }: any) {
 }
 
 // Step 5: Review
-function ReviewStep({ formData, userAddress }: any) {
+function ReviewStep({
+  formData,
+  userAddress: _userAddress,
+}: {
+  formData: ResidentFormData;
+  userAddress: unknown;
+}) {
   return (
     <div className="space-y-8">
       <div>

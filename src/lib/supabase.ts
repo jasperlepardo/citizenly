@@ -8,7 +8,6 @@ import {
   getSupabaseConfig,
   validateEnvironment,
   createLogger,
-  isTest,
   isProductionLike,
 } from './environment';
 

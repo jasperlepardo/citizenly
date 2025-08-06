@@ -6,7 +6,7 @@
  * Handles voting eligibility, length of residency, and legal status
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Radio, RadioGroup, Textarea } from '../atoms';
 import { FormGroup, InputField } from '../molecules';
 
@@ -124,7 +124,10 @@ export default function ResidentStatusSelector({
   className = '',
   residentAge,
 }: ResidentStatusSelectorProps) {
-  const handleChange = (field: keyof ResidentStatus, newValue: any) => {
+  const handleChange = (
+    field: keyof ResidentStatus,
+    newValue: ResidentStatus[keyof ResidentStatus]
+  ) => {
     const updated = { ...value, [field]: newValue };
 
     // Auto-reset dependent fields based on status changes
@@ -200,7 +203,7 @@ export default function ResidentStatusSelector({
           <span className="text-base">🏠</span> Resident Status Classification
         </h3>
         <p className="text-sm text-secondary">
-          Legal and administrative classification of the resident's status in the barangay.
+          Legal and administrative classification of the resident&apos;s status in the barangay.
         </p>
       </div>
 

@@ -142,7 +142,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                 {label && (
                   <div
                     className={cn(
-                      "font-['Montserrat'] font-medium leading-tight",
+                      "font-body font-medium leading-tight",
                       disabled ? 'text-[#737373]' : 'text-[#262626]',
                       size === 'sm' && 'text-sm',
                       size === 'md' && 'text-base',
@@ -155,7 +155,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                 {description && (
                   <div
                     className={cn(
-                      "font-['Montserrat'] leading-tight mt-0.5",
+                      "font-body leading-tight mt-0.5",
                       disabled ? 'text-[#a3a3a3]' : 'text-[#737373]',
                       size === 'sm' && 'text-xs',
                       size === 'md' && 'text-sm',
@@ -172,7 +172,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
 
         {/* Error Message */}
         {errorMessage && (
-          <p className="text-xs text-[#b91c1c] font-['Montserrat'] mt-1 ml-12">{errorMessage}</p>
+          <p className="text-xs text-danger-600 font-body mt-1 ml-12">{errorMessage}</p>
         )}
       </div>
     );

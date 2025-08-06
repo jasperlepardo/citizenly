@@ -73,7 +73,13 @@ const sizeOptions = [
 ];
 
 // Interactive wrapper for stories that need state
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState(props.value || '');
   return React.cloneElement(children, {
     ...props,

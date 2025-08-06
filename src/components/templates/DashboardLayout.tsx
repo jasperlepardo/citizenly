@@ -49,7 +49,6 @@ function UserDropdown() {
       if (barangayData) {
         const cityMun = (barangayData as any).psgc_cities_municipalities;
         const province = cityMun.psgc_provinces;
-        const region = province.psgc_regions;
 
         const fullAddress = `${barangayData.name}, ${cityMun.name} (${cityMun.type}), ${province.name}`;
         logger.debug('Loaded barangay info from database', { address: fullAddress });
@@ -92,7 +91,7 @@ function UserDropdown() {
           className="w-8 h-8 rounded-full bg-center bg-cover bg-no-repeat"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face')",
+              'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23e5e7eb"%2F%3E%3Ctext x="16" y="20" text-anchor="middle" fill="%236b7280" font-size="14"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
           }}
         ></div>
         <div className="font-montserrat font-medium text-sm text-neutral-800">
@@ -125,7 +124,7 @@ function UserDropdown() {
                   className="w-12 h-12 rounded-full bg-center bg-cover bg-no-repeat"
                   style={{
                     backgroundImage:
-                      "url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=48&h=48&fit=crop&crop=face')",
+                      'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"%3E%3Ccircle cx="24" cy="24" r="24" fill="%23e5e7eb"%2F%3E%3Ctext x="24" y="30" text-anchor="middle" fill="%236b7280" font-size="20"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
                   }}
                 ></div>
                 <div>
@@ -220,6 +219,9 @@ export default function DashboardLayout({
           <div className="flex-1 px-2 py-4">
             <Navigation />
           </div>
+
+          {/* Environment Indicator */}
+          <div className="px-4 pb-4"></div>
         </div>
       </div>
 

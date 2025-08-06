@@ -48,7 +48,10 @@ const defaultMigrationInfo: MigrationInformation = {
 };
 
 // Template component for interactive stories
-const MigrantInformationTemplate = (args: any) => {
+const MigrantInformationTemplate = (args: {
+  value: MigrationInformation;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState<MigrationInformation>(args.value);
 
   return (

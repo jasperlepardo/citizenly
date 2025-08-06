@@ -113,21 +113,21 @@ export const createLogger = (module: string) => {
   const config = getEnvironmentConfig();
 
   return {
-    debug: (...args: any[]) => {
+    debug: (...args: unknown[]) => {
       if (config.features.debug) {
         console.log(`[${config.environment.toUpperCase()}][${module}]`, ...args);
       }
     },
 
-    info: (...args: any[]) => {
+    info: (...args: unknown[]) => {
       console.info(`[${config.environment.toUpperCase()}][${module}]`, ...args);
     },
 
-    warn: (...args: any[]) => {
+    warn: (...args: unknown[]) => {
       console.warn(`[${config.environment.toUpperCase()}][${module}]`, ...args);
     },
 
-    error: (...args: any[]) => {
+    error: (...args: unknown[]) => {
       console.error(`[${config.environment.toUpperCase()}][${module}]`, ...args);
     },
   };

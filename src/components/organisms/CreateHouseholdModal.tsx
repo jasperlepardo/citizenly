@@ -12,6 +12,42 @@ interface CreateHouseholdModalProps {
   onHouseholdCreated: (householdCode: string) => void;
 }
 
+interface RegionData {
+  code: string;
+  name: string;
+}
+
+interface ProvinceData {
+  code: string;
+  name: string;
+  psgc_regions: RegionData;
+}
+
+interface CityMunicipalityData {
+  code: string;
+  name: string;
+  type: string;
+  psgc_provinces: ProvinceData;
+}
+
+interface BarangayData {
+  code: string;
+  name: string;
+  psgc_cities_municipalities: CityMunicipalityData;
+}
+
+interface AddressHierarchy {
+  barangay_code: string;
+  barangay_name?: string;
+  city_municipality_code: string | null;
+  city_municipality_name?: string;
+  city_municipality_type?: string;
+  province_code: string | null;
+  province_name?: string;
+  region_code: string | null;
+  region_name?: string;
+}
+
 interface HouseholdFormData {
   house_number: string;
   street_name: string;
@@ -134,7 +170,7 @@ export default function CreateHouseholdModal({
       }
 
       if (barangayData) {
-        const cityMun = (barangayData as any).psgc_cities_municipalities;
+        const cityMun = (barangayData as unknown as BarangayData).psgc_cities_municipalities;
         const province = cityMun.psgc_provinces;
         const region = province.psgc_regions;
 
@@ -182,7 +218,7 @@ export default function CreateHouseholdModal({
       logger.info('Creating household', { barangayCode: userProfile.barangay_code });
 
       // Try to get address hierarchy info, fallback to direct table queries if view doesn't exist
-      let addressInfo: any = null;
+      let addressInfo: AddressHierarchy | null = null;
 
       try {
         logger.debug('Attempting to query psgc_address_hierarchy view');
@@ -246,7 +282,7 @@ export default function CreateHouseholdModal({
             logger.debug('Fallback query successful', { hasData: !!barangayData });
 
             // Map the data to match expected format
-            const cityMun = (barangayData as any).psgc_cities_municipalities;
+            const cityMun = (barangayData as unknown as BarangayData).psgc_cities_municipalities;
             const province = cityMun.psgc_provinces;
             const region = province.psgc_regions;
 

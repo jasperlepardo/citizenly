@@ -8,11 +8,11 @@ import { useCSRFToken } from '@/lib/csrf';
 import { logger, logError, dbLogger } from '@/lib/secure-logger';
 
 // Import our organism components
-import { HouseholdTypeSelector, FamilyRelationshipSelector } from '@/components/organisms';
+import { HouseholdTypeSelector } from '@/components/organisms';
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { FormGroup, InputField, DropdownSelect } from '@/components/molecules';
+import { InputField, DropdownSelect } from '@/components/molecules';
 
 export interface HouseholdFormData {
   // Step 1: Basic Information
@@ -68,7 +68,10 @@ interface HouseholdFormWizardProps {
   onCancel?: () => void;
 }
 
-export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFormWizardProps) {
+export default function HouseholdFormWizard({
+  onSubmit,
+  onCancel: _onCancel,
+}: HouseholdFormWizardProps) {
   const router = useRouter();
   const { getToken: getCSRFToken } = useCSRFToken();
 
@@ -154,7 +157,7 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
         householdCode: generateHouseholdCode(),
       }));
     }
-  }, []);
+  }, [formData.householdCode]);
 
   const steps: FormStep[] = [
     {
@@ -264,7 +267,7 @@ export default function HouseholdFormWizard({ onSubmit, onCancel }: HouseholdFor
 
     try {
       // Get CSRF token for secure form submission
-      const csrfToken = getCSRFToken();
+      getCSRFToken();
 
       // Convert form data to match database schema
       logger.info('Creating household', { householdCode: formData.householdCode });
