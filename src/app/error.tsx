@@ -1,34 +1,24 @@
 'use client';
 
-export default function Error({
-  reset,
-}: {
+interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}
+
+export default function Error({ error, reset }: ErrorProps) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="mx-auto max-w-md p-6 text-center">
-        <div className="mb-6">
-          <h1 className="text-danger mb-2 text-2xl font-bold">Something went wrong</h1>
-          <p className="text-secondary">An unexpected error occurred. Please try again.</p>
-        </div>
-
-        <div className="space-y-4">
-          <button
-            onClick={reset}
-            className="w-full rounded-md bg-primary-600 px-4 py-2 text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          >
-            Try again
-          </button>
-
-          <button
-            onClick={() => (window.location.href = '/dashboard')}
-            className="w-full rounded-md bg-neutral-200 px-4 py-2 text-neutral-700 transition-colors hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2"
-          >
-            Return to Dashboard
-          </button>
-        </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+      <div className="text-center">
+        <h1 className="mb-4 text-4xl font-bold text-red-600">Something went wrong!</h1>
+        <p className="mb-6 max-w-md text-secondary">
+          {error?.message || 'An unexpected error occurred. Please try again.'}
+        </p>
+        <button
+          onClick={() => reset()}
+          className="rounded bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+        >
+          Try again
+        </button>
       </div>
     </div>
   );

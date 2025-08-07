@@ -1,10 +1,9 @@
-export default function Loading() {
+export default function Loading(): JSX.Element {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="flex flex-col items-center space-y-4">
-        <div className="border-primary size-12 animate-spin rounded-full border-b-2"></div>
-        <p className="font-medium text-secondary">Loading...</p>
-        <p className="text-sm text-muted">RBI System</p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+      <div className="text-center">
+        <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+        <p className="mt-4 text-secondary">Loading...</p>
       </div>
     </div>
   );
