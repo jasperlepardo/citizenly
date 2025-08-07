@@ -2,24 +2,5 @@
   "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "framework": "nextjs",
-  "github": {
-    "enabled": true,
-    "autoAlias": false
-  },
-  "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "develop": true,
-      "staging": true,
-      "feature/*": true,
-      "release/*": true,
-      "hotfix/*": true
-    }
-  },
-  "build": {
-    "env": {
-      "CSRF_SECRET": "@csrf-secret"
-    }
-  }
+  "framework": "nextjs"
 }
