@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+/* eslint-disable @typescript-eslint/no-require-imports */
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
 const nextConfig = {
   images: {
     domains: ['your-supabase-project.supabase.co'],
@@ -6,6 +9,19 @@ const nextConfig = {
   // Remove standalone output for Vercel deployment
   poweredByHeader: false,
   compress: true,
+
+  // Build optimizations
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  experimental: {
+    optimizeCss: true,
+    scrollRestoration: true,
+    legacyBrowsers: false,
+    browsersListForSwc: true,
+  },
+
   // Environment variables for build
   env: {
     NEXT_PUBLIC_APP_NAME: 'RBI System',
@@ -25,11 +41,37 @@ const nextConfig = {
     ];
   },
   // Exclude Storybook files from build
-  webpack: config => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.stories\.(js|jsx|ts|tsx|mdx)$/,
       use: 'ignore-loader',
     });
+
+    // Add bundle analyzer plugin when ANALYZE=true
+    if (process.env.ANALYZE === 'true') {
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'server',
+          openAnalyzer: true,
+        })
+      );
+    }
+
+    // Webpack optimizations
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+
+    // Tree shaking improvements
+    config.optimization = {
+      ...config.optimization,
+      usedExports: true,
+      sideEffects: false,
+    };
+
     return config;
   },
   // Use default page extensions but exclude stories files via webpack

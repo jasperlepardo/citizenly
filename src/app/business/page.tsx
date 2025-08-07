@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 
 function BusinessContent() {
   const [searchTerm, setSearchTerm] = useState('');

@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { logError } from '@/lib/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
-import { SearchBar, DataTable } from '@/components/organisms';
+import { AdvancedSearchBar as SearchBar, DataTable } from '@/components/organisms';
 import type { SearchFilter, TableColumn, TableAction } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 
@@ -73,70 +73,154 @@ function ResidentsContent() {
     try {
       setLoading(true);
 
-      let query = supabase
-        .from('residents')
-        .select(
-          `
-          *,
-          household:households!residents_household_code_fkey(
-            code,
-            street_name,
-            house_number,
-            subdivision
-          )
-        `,
-          { count: 'exact' }
-        )
-        .eq('barangay_code', userProfile?.barangay_code)
-        .order('created_at', { ascending: false })
-        .range(
-          (pagination.current - 1) * pagination.pageSize,
-          pagination.current * pagination.pageSize - 1
-        );
+      if (!userProfile?.barangay_code) {
+        throw new Error('No barangay code available');
+      }
 
-      // Apply search term
+      // Use optimized search function if there's a search term
       if (searchTerm.trim()) {
-        query = query.or(
-          `first_name.ilike.%${searchTerm}%,middle_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%`
+        const { data: searchResults, error: searchError } = await supabase.rpc(
+          'search_residents_optimized',
+          {
+            search_term: searchTerm.trim(),
+            user_barangay: userProfile.barangay_code,
+            limit_results: pagination.pageSize,
+          }
         );
-      }
 
-      // Apply advanced filters
-      searchFilters.forEach(filter => {
-        switch (filter.operator) {
-          case 'equals':
-            query = query.eq(filter.field, filter.value);
-            break;
-          case 'contains':
-            query = query.ilike(filter.field, `%${filter.value}%`);
-            break;
-          case 'starts_with':
-            query = query.ilike(filter.field, `${filter.value}%`);
-            break;
-          case 'ends_with':
-            query = query.ilike(filter.field, `%${filter.value}`);
-            break;
-          case 'greater_than':
-            if (typeof filter.value === 'number') {
-              query = query.gt(filter.field, filter.value);
-            }
-            break;
-          case 'less_than':
-            if (typeof filter.value === 'number') {
-              query = query.lt(filter.field, filter.value);
-            }
-            break;
+        if (searchError) {
+          throw searchError;
         }
-      });
 
-      const { data, error, count } = await query;
+        // Get full resident data for search results
+        const residentIds = searchResults.map((r: any) => r.resident_id);
 
-      if (error) {
-        throw error;
+        if (residentIds.length === 0) {
+          setResidents([]);
+          setPagination(prev => ({ ...prev, total: 0 }));
+          return;
+        }
+
+        let query = supabase
+          .from('residents')
+          .select(
+            `
+            *,
+            household:households!residents_household_code_fkey(
+              code,
+              street_name,
+              house_number,
+              subdivision
+            )
+          `,
+            { count: 'exact' }
+          )
+          .in('id', residentIds);
+
+        // Apply advanced filters to search results
+        searchFilters.forEach(filter => {
+          switch (filter.operator) {
+            case 'equals':
+              query = query.eq(filter.field, filter.value);
+              break;
+            case 'contains':
+              query = query.ilike(filter.field, `%${filter.value}%`);
+              break;
+            case 'starts_with':
+              query = query.ilike(filter.field, `${filter.value}%`);
+              break;
+            case 'ends_with':
+              query = query.ilike(filter.field, `%${filter.value}`);
+              break;
+            case 'greater_than':
+              if (typeof filter.value === 'number') {
+                query = query.gt(filter.field, filter.value);
+              }
+              break;
+            case 'less_than':
+              if (typeof filter.value === 'number') {
+                query = query.lt(filter.field, filter.value);
+              }
+              break;
+          }
+        });
+
+        const { data, error, count } = await query;
+
+        if (error) {
+          throw error;
+        }
+
+        // Sort results based on search ranking from the optimized function
+        const sortedData = data?.sort((a, b) => {
+          const aIndex = residentIds.indexOf(a.id);
+          const bIndex = residentIds.indexOf(b.id);
+          return aIndex - bIndex;
+        });
+
+        setResidents(sortedData || []);
+        setPagination(prev => ({ ...prev, total: count || 0 }));
+      } else {
+        // No search term - use standard query with pagination
+        let query = supabase
+          .from('residents')
+          .select(
+            `
+            *,
+            household:households!residents_household_code_fkey(
+              code,
+              street_name,
+              house_number,
+              subdivision
+            )
+          `,
+            { count: 'exact' }
+          )
+          .eq('barangay_code', userProfile.barangay_code)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .range(
+            (pagination.current - 1) * pagination.pageSize,
+            pagination.current * pagination.pageSize - 1
+          );
+
+        // Apply advanced filters
+        searchFilters.forEach(filter => {
+          switch (filter.operator) {
+            case 'equals':
+              query = query.eq(filter.field, filter.value);
+              break;
+            case 'contains':
+              query = query.ilike(filter.field, `%${filter.value}%`);
+              break;
+            case 'starts_with':
+              query = query.ilike(filter.field, `${filter.value}%`);
+              break;
+            case 'ends_with':
+              query = query.ilike(filter.field, `%${filter.value}`);
+              break;
+            case 'greater_than':
+              if (typeof filter.value === 'number') {
+                query = query.gt(filter.field, filter.value);
+              }
+              break;
+            case 'less_than':
+              if (typeof filter.value === 'number') {
+                query = query.lt(filter.field, filter.value);
+              }
+              break;
+          }
+        });
+
+        const { data, error, count } = await query;
+
+        if (error) {
+          throw error;
+        }
+
+        setResidents(data || []);
+        setPagination(prev => ({ ...prev, total: count || 0 }));
       }
-
-      setResidents(data || []);
-      setPagination(prev => ({ ...prev, total: count || 0 }));
     } catch (err) {
       logError(
         err instanceof Error ? err : new Error('Unknown error loading residents'),

@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
-import HouseholdFormWizard from '@/components/templates/HouseholdFormWizard';
+import { HouseholdFormWizard } from '@/components/templates/HouseholdFormWizard';
 
 export const dynamic = 'force-dynamic';
 

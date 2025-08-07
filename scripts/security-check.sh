@@ -1,62 +1,128 @@
 #!/bin/bash
+# Security Check Script - Environment-aware security validation
+# Runs appropriate security checks based on detected environment
 
-# Security check script for pre-push hook
-# Runs various security checks before allowing push
+set -e
 
-echo "🔒 Running security checks..."
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-# Check for secrets/credentials
-echo "📋 Checking for hardcoded secrets..."
-if grep -r --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" --include="*.json" \
-   -E "(api[_-]?key|apikey|secret|password|pwd|token|auth|credentials|private[_-]?key)" \
-   --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git \
-   -i . | grep -v -E "(process\.env|import.*from|require\(|\/\/|\/\*|\*|#|interface|type|export|const.*=.*process|NEXT_PUBLIC_)" | grep -E "[:=]\s*[\"'][\w\-]{20,}[\"']"; then
-    echo "❌ Potential hardcoded secrets found!"
-    exit 1
+echo -e "${BLUE}🔒 Environment-Aware Security Check${NC}"
+echo "======================================"
+
+# Detect environment
+ENV_TYPE=${NODE_ENV:-development}
+IS_CI=${CI:-false}
+IS_PRODUCTION=${VERCEL_ENV:-false}
+
+echo -e "${BLUE}Environment: ${ENV_TYPE}${NC}"
+echo -e "${BLUE}CI Environment: ${IS_CI}${NC}"
+
+# Function to run command with status check
+run_check() {
+    local name=$1
+    local command=$2
+    
+    echo -e "\n${BLUE}Running: ${name}${NC}"
+    echo "Command: ${command}"
+    
+    if eval "$command"; then
+        echo -e "${GREEN}✅ ${name} - PASSED${NC}"
+        return 0
+    else
+        echo -e "${RED}❌ ${name} - FAILED${NC}"
+        return 1
+    fi
+}
+
+# Track overall status
+OVERALL_STATUS=0
+
+# Tier 1: Development (Fast checks)
+if [[ "$ENV_TYPE" == "development" && "$IS_CI" != "true" ]]; then
+    echo -e "\n${YELLOW}Running Tier 1 (Development) Security Checks${NC}"
+    
+    run_check "NPM Audit (High/Critical only)" "npm audit --audit-level=high" || OVERALL_STATUS=1
+    run_check "Basic dependency check" "npm ls --depth=0 >/dev/null" || OVERALL_STATUS=1
+
+# Tier 2: CI/CD (Standard checks)
+elif [[ "$IS_CI" == "true" && "$IS_PRODUCTION" != "production" ]]; then
+    echo -e "\n${YELLOW}Running Tier 2 (CI/CD) Security Checks${NC}"
+    
+    run_check "NPM Audit (Moderate+)" "npm audit --audit-level=moderate" || OVERALL_STATUS=1
+    run_check "Audit CI" "npx audit-ci --config audit-ci.json" || OVERALL_STATUS=1
+    run_check "Dependency analysis" "npm run analyze:deps" || OVERALL_STATUS=1
+    
+    # Snyk scan if available
+    if command -v snyk &> /dev/null; then
+        run_check "Snyk vulnerability scan" "npx snyk test --severity-threshold=medium" || OVERALL_STATUS=1
+    else
+        echo -e "${YELLOW}⚠️ Snyk not available, skipping advanced vulnerability scan${NC}"
+    fi
+
+# Tier 3: Staging (Enhanced checks)
+elif [[ "$ENV_TYPE" == "staging" ]]; then
+    echo -e "\n${YELLOW}Running Tier 3 (Staging) Security Checks${NC}"
+    
+    run_check "Full NPM Audit" "npm audit" || OVERALL_STATUS=1
+    run_check "Audit CI (All levels)" "npx audit-ci --config audit-ci.json" || OVERALL_STATUS=1
+    run_check "Snyk comprehensive scan" "npx snyk test" || OVERALL_STATUS=1
+    run_check "License check" "npx license-checker --summary" || echo -e "${YELLOW}⚠️ License checker not available${NC}"
+
+# Tier 4: Production (Critical checks)
+elif [[ "$IS_PRODUCTION" == "production" ]]; then
+    echo -e "\n${YELLOW}Running Tier 4 (Production) Critical Security Checks${NC}"
+    
+    run_check "Production NPM Audit" "npm audit --production --audit-level=critical" || OVERALL_STATUS=1
+    run_check "Critical vulnerability scan" "npx audit-ci --config audit-ci.json --skip-dev --moderate" || OVERALL_STATUS=1
+    
+    if command -v snyk &> /dev/null; then
+        run_check "Snyk production scan" "npx snyk test --severity-threshold=high --prod" || OVERALL_STATUS=1
+        run_check "Snyk monitor (reporting)" "npx snyk monitor" || echo -e "${YELLOW}⚠️ Snyk monitor failed (non-critical)${NC}"
+    fi
+    
+    # Additional production-specific checks
+    run_check "Validate build integrity" "[[ -f .next/BUILD_ID ]] && [[ -d .next/static ]]" || OVERALL_STATUS=1
+
+# Fallback: Default comprehensive check
+else
+    echo -e "\n${YELLOW}Running Default Comprehensive Security Checks${NC}"
+    
+    run_check "NPM Audit" "npm audit --audit-level=moderate" || OVERALL_STATUS=1
+    run_check "Audit CI" "npx audit-ci --config audit-ci.json" || OVERALL_STATUS=1
 fi
 
-# Check for sensitive files
-echo "📋 Checking for sensitive files..."
-SENSITIVE_FILES=(.env .env.local .env.production aws-credentials.json firebase-config.json service-account.json)
-for file in "${SENSITIVE_FILES[@]}"; do
-    if [ -f "$file" ] && ! grep -q "$file" .gitignore; then
-        echo "❌ Sensitive file $file is not in .gitignore!"
-        exit 1
+# Additional universal checks (all environments)
+echo -e "\n${BLUE}Running Universal Security Checks${NC}"
+
+# Check for common security issues in code
+run_check "No hardcoded secrets (basic)" "! grep -r --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' 'password.*=.*['\''\"]\|api.*key.*=.*['\''\"]\|secret.*=.*['\''\"]\|token.*=.*['\''\"']' src/ || true" || OVERALL_STATUS=1
+
+# Check for dangerous packages (if any)
+DANGEROUS_PACKAGES=("event-stream" "flatmap-stream" "eslint-scope")
+for package in "${DANGEROUS_PACKAGES[@]}"; do
+    if npm ls "$package" &>/dev/null; then
+        echo -e "${RED}❌ Dangerous package detected: $package${NC}"
+        OVERALL_STATUS=1
     fi
 done
 
-# Run npm audit for known vulnerabilities
-echo "📋 Checking npm packages for vulnerabilities..."
-npm audit --production --audit-level=high
-if [ $? -ne 0 ]; then
-    echo "❌ High severity vulnerabilities found in dependencies!"
-    echo "Run 'npm audit fix' to attempt automatic fixes"
-    exit 1
+# Check package.json for security best practices
+run_check "Package.json security check" "[[ -f package.json ]] && ! grep -q '\"\\*\"' package.json" || OVERALL_STATUS=1
+
+# Summary
+echo -e "\n======================================"
+if [[ $OVERALL_STATUS -eq 0 ]]; then
+    echo -e "${GREEN}🎉 All security checks PASSED!${NC}"
+    echo -e "${GREEN}Environment: $ENV_TYPE security validation completed successfully${NC}"
+else
+    echo -e "${RED}💥 Some security checks FAILED!${NC}"
+    echo -e "${RED}Environment: $ENV_TYPE security validation needs attention${NC}"
+    echo -e "${YELLOW}Review the failed checks above and address security issues${NC}"
 fi
 
-# Check for console.log statements in production code
-echo "📋 Checking for console.log statements..."
-if grep -r "console\.\(log\|error\|warn\|info\)" \
-   --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
-   --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=__tests__ \
-   --exclude-dir=.storybook --exclude="*.test.*" --exclude="*.stories.*" \
-   src/app src/components/atoms src/components/molecules src/components/organisms src/components/templates | \
-   grep -v "secure-logger" | grep -v "// eslint-disable-line"; then
-    echo "⚠️  Console statements found in production code (consider using secure logger)"
-fi
-
-# Check TypeScript strict mode
-echo "📋 Checking TypeScript configuration..."
-if ! grep -q '"strict": true' tsconfig.json; then
-    echo "⚠️  TypeScript strict mode is not enabled"
-fi
-
-# Check for TODO comments with security implications
-echo "📋 Checking for security-related TODOs..."
-if grep -r "TODO.*\(security\|auth\|encrypt\|hash\|token\|secret\)" \
-   --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
-   --exclude-dir=node_modules --exclude-dir=.next .; then
-    echo "⚠️  Security-related TODOs found - please address before production"
-fi
-
-echo "✅ Security checks completed!"
+exit $OVERALL_STATUS

@@ -69,11 +69,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [lastProfileLoad, setLastProfileLoad] = useState<number>(0);
 
   // Retry helper with exponential backoff
-  const retryWithBackoff = async (
-    operation: () => Promise<any>,
+  const retryWithBackoff = async <T,>(
+    operation: () => Promise<T>,
     maxRetries = 3,
     baseDelay = 1000
-  ): Promise<any> => {
+  ): Promise<T> => {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         return await operation();
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         // Use retry logic for optimized combined query
-        const { data: profileWithRole, error: queryError } = await retryWithBackoff(async () => {
+        const response = await retryWithBackoff(async () => {
           const result = await Promise.race([
             supabase
               .from('user_profiles')
@@ -145,6 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return result;
         });
 
+        const { data: profileWithRole, error: queryError } = response as any;
         const queryTime = Date.now() - startTime;
         console.log(`Profile query completed successfully in ${queryTime}ms`);
 
@@ -284,7 +285,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [loadUserProfile]);
 
   // Sign in method
   const signIn = async (email: string, password: string) => {
@@ -316,7 +317,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (user?.id) {
       await loadUserProfile(user.id);
     }
-  }, [user?.id]);
+  }, [user?.id, loadUserProfile]);
 
   // Refresh profile method
   const refreshProfile = async () => {

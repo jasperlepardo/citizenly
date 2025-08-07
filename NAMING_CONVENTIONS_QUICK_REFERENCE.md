@@ -104,13 +104,13 @@ test(api): add unit tests for authentication service
 
 ```bash
 # Feature branch
-./scripts/create-branch.sh feature user-authentication AUTH-123
+npm run new-feature user-authentication "User authentication feature"
 
 # Bug fix
-./scripts/create-branch.sh fix csrf-validation BUG-456
+npm run new-feature csrf-validation "Fix CSRF validation bug"
 
 # Chore
-./scripts/create-branch.sh chore update-dependencies
+npm run new-feature update-dependencies "Update project dependencies"
 ```
 
 ### Manual Branch Creation
@@ -182,4 +182,4 @@ git commit -m "chore(deps): update React to v18.3.0"
 
 ---
 
-💡 **Tip**: Use the helper script `./scripts/create-branch.sh` to automatically create properly named branches!
+💡 **Tip**: Use `npm run new-feature <name> "<description>"` to automatically create properly named branches!

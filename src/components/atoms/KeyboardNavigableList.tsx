@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 interface ListItem {
   id: string;
   label: string;
-  value?: any;
+  value?: unknown;
   disabled?: boolean;
   icon?: React.ReactNode;
 }
@@ -36,7 +36,7 @@ export default function KeyboardNavigableList({
   itemClassName,
   role = 'listbox',
   orientation = 'vertical',
-  wrap = true,
+  wrap: _wrap = true,
 }: KeyboardNavigableListProps) {
   const handleSelect = useCallback(
     (index: number) => {

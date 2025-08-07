@@ -32,6 +32,19 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+
+      # Advanced caching for faster builds
+      - name: Cache Storybook build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/storybook-static
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-storybook-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/components/**', 'src/stories/**', '.storybook/**') }}
+          restore-keys: |
+            ${{ runner.os }}-storybook-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-storybook-
           
       - name: Install dependencies
         run: npm ci

@@ -14,7 +14,4 @@ export * from './organisms';
 export * from './templates';
 
 // Other specialized components
-export * from './auth';
-export * from './address';
-export * from './dashboard';
 export * from './providers';

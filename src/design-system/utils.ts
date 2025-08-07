@@ -16,17 +16,17 @@ import { designTokens } from './tokens';
  */
 export function getColor(colorPath: string): string {
   const keys = colorPath.split('.');
-  let current: any = designTokens.colors;
+  let current: unknown = designTokens.colors;
 
   for (const key of keys) {
-    if (current[key] === undefined) {
+    if (!current || typeof current !== 'object' || !(key in current)) {
       console.warn(`Color token '${colorPath}' not found. Using fallback.`);
       return designTokens.colors.neutral[500];
     }
-    current = current[key];
+    current = (current as Record<string, unknown>)[key];
   }
 
-  return current;
+  return current as string;
 }
 
 /**

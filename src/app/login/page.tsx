@@ -6,7 +6,7 @@ import dynamicImport from 'next/dynamic';
 export const dynamic = 'force-dynamic';
 
 // Dynamically import components that use context to prevent SSR issues
-const LoginForm = dynamicImport(() => import('@/components/auth/LoginForm'), {
+const LoginForm = dynamicImport(() => import('@/components/organisms/LoginForm'), {
   ssr: false,
   loading: () => (
     <div className="p-8 text-center">
@@ -16,7 +16,7 @@ const LoginForm = dynamicImport(() => import('@/components/auth/LoginForm'), {
   ),
 });
 
-const DevLogin = dynamicImport(() => import('@/components/auth/DevLogin'), {
+const DevLogin = dynamicImport(() => import('@/components/organisms/DevLogin'), {
   ssr: false,
   loading: () => (
     <div className="p-8 text-center">
@@ -51,7 +51,11 @@ export default function LoginPage() {
         </div>
 
         {showDevLogin ? (
-          <DevLogin onSuccess={() => (window.location.href = '/dashboard')} />
+          <DevLogin
+            onSuccess={() => {
+              window.location.href = '/dashboard';
+            }}
+          />
         ) : (
           <LoginForm />
         )}

@@ -1,13 +1,14 @@
 -- =====================================================
--- RBI SYSTEM DATABASE SCHEMA - PRODUCTION READY
+-- RBI SYSTEM FULL-FEATURE DATABASE SCHEMA
 -- Records of Barangay Inhabitant System
--- PostgreSQL Schema for Supabase
--- Version: 1.0
+-- Based on consolidated current implementation + enterprise features
+-- Updated: December 2024
 -- =====================================================
 
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- =====================================================
 -- 1. ENUMS AND CUSTOM TYPES
@@ -203,11 +204,17 @@ CREATE TABLE psgc_provinces (
 
 CREATE TABLE psgc_cities_municipalities (
     code VARCHAR(10) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(20) NOT NULL CHECK (type IN ('City', 'Municipality')),
-    province_code VARCHAR(10) NOT NULL REFERENCES psgc_provinces(code),
+    name VARCHAR(200) NOT NULL,
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    type VARCHAR(50) NOT NULL,
+    is_independent BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    -- Enhanced: Independence constraint from current implementation
+    CONSTRAINT independence_rule CHECK (
+        (is_independent = true AND province_code IS NULL) 
+        OR 
+        (is_independent = false AND province_code IS NOT NULL)
+    )
 );
 
 CREATE TABLE psgc_barangays (
@@ -303,6 +310,11 @@ CREATE TABLE user_profiles (
     middle_name VARCHAR(100),
     phone VARCHAR(20),
     role_id UUID NOT NULL REFERENCES roles(id),
+    -- Enhanced: Complete geographic hierarchy from current implementation
+    barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
+    region_code VARCHAR(10) REFERENCES psgc_regions(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
     is_active BOOLEAN DEFAULT true,
     last_login TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -423,12 +435,18 @@ $$ LANGUAGE plpgsql;
 
 -- Households (core entity)
 CREATE TABLE households (
-    id VARCHAR(22) PRIMARY KEY,
-    household_number VARCHAR(20) NOT NULL, -- Unique per barangay
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    -- Enhanced: Retain hierarchical code from current implementation
+    code VARCHAR(50) NOT NULL UNIQUE, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
+    household_number VARCHAR(50) NOT NULL, -- Enhanced: Required from current implementation
     household_head_id UUID, -- Will reference residents(id) - forward reference
-    household_size INTEGER DEFAULT 0,
+    total_members INTEGER DEFAULT 0, -- Enhanced: Renamed from household_size
     creation_date DATE DEFAULT CURRENT_DATE,
+    -- Enhanced: Required geographic fields from current implementation
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- Required except independent cities
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
     
     -- Address relationships
     subdivision_id UUID REFERENCES subdivisions(id),
@@ -466,55 +484,65 @@ CREATE TABLE households (
 
 -- Residents (core entity) - Enhanced schema
 CREATE TABLE residents (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-    -- PhilSys Card Number (secure storage)
-    philsys_card_number_hash BYTEA NOT NULL,
-    philsys_last4 TEXT,
+    -- PhilSys Card Number (secure storage) - Optional from current implementation
+    philsys_card_number_hash BYTEA,
+    philsys_last4 VARCHAR(4),
     
     -- Personal Information
-    first_name TEXT NOT NULL,
-    middle_name TEXT,
-    last_name TEXT NOT NULL,
-    extension_name TEXT,
+    first_name VARCHAR(100) NOT NULL,
+    middle_name VARCHAR(100),
+    last_name VARCHAR(100) NOT NULL,
+    extension_name VARCHAR(20),
     birthdate DATE NOT NULL,
-    birthplace TEXT,
+    place_of_birth VARCHAR(200), -- Enhanced: From current implementation
     sex sex_enum NOT NULL,
     civil_status civil_status_enum NOT NULL,
+    citizenship citizenship_enum DEFAULT 'filipino',
     
-    -- Education
-    education_level education_level_enum NOT NULL,
-    education_status education_status_enum NOT NULL,
+    -- Enhanced Education Information - Optional from current implementation
+    education_level education_level_enum,
+    education_status education_status_enum,
     
-    -- Occupation (PSOC compliant)
-    psoc_code VARCHAR(10), -- Can reference any PSOC level
+    -- Occupation (Enhanced from current implementation)
+    psoc_code VARCHAR(10), -- Single field for any PSOC level
     psoc_level VARCHAR(20) CHECK (psoc_level IN ('major_group', 'sub_major_group', 'minor_group', 'unit_group', 'unit_sub_group')),
-    position_title_id UUID REFERENCES psoc_position_titles(id), -- Specific job title if unit_group selected
-    occupation_description TEXT,
+    occupation_title VARCHAR(200), -- Denormalized for performance
+    occupation VARCHAR(200), -- Additional occupation field used in forms
+    job_title VARCHAR(200), -- Job title field used in forms
+    workplace VARCHAR(255), -- Workplace information
+    occupation_details TEXT, -- Additional occupation details
     employment_status employment_status_enum DEFAULT 'not_in_labor_force',
-    workplace TEXT,
-    salary DECIMAL(12,2) DEFAULT 0.00,
     
-    -- Contact Information
-    email TEXT,
-    mobile_number TEXT NOT NULL,
-    telephone_number TEXT,
+    -- Contact Information (Enhanced) - Optional from current implementation
+    mobile_number VARCHAR(20),
+    telephone_number VARCHAR(20), -- Enhanced: From current implementation
+    email VARCHAR(255),
 
-    -- Address (auto-populated from user's barangay assignment)
-    household_id VARCHAR(22) REFERENCES households(id) ON DELETE SET NULL,
-    barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
-    city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    -- Enhanced: Location with household code reference from current implementation
+    household_code VARCHAR(50) REFERENCES households(code), -- Primary household reference
+    household_id UUID REFERENCES households(id), -- Secondary UUID reference
+    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     region_code VARCHAR(10) REFERENCES psgc_regions(code),
-    zip_code TEXT, -- Optional override
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
    
-    -- Identity Information
+    -- Physical Characteristics (Enhanced: Retained from current implementation)
+    height DECIMAL(5,2), -- Height in cm
+    weight DECIMAL(5,2), -- Weight in kg
+    complexion VARCHAR(50), -- Complexion description
     blood_type blood_type_enum DEFAULT 'unknown',
-    height_m NUMERIC(4,2),
-    weight_kg NUMERIC(5,2),
-    complexion TEXT,
-    citizenship citizenship_enum NOT NULL DEFAULT 'filipino',
-    is_voter BOOLEAN DEFAULT false,
+    
+    -- Demographics (Optional)
+    ethnicity ethnicity_enum DEFAULT 'not_reported',
+    religion religion_enum DEFAULT 'other',
+    
+    -- Enhanced: Voting Information from current implementation
+    voter_registration_status BOOLEAN DEFAULT false, -- Used instead of is_voter
+    resident_voter_status BOOLEAN DEFAULT false, -- Used instead of is_resident_voter
+    voter_id_number VARCHAR(20), -- Voter ID number
+    last_voted_year VARCHAR(4), -- Last voted year
     is_resident_voter BOOLEAN DEFAULT false,
     last_voted_year INTEGER,
     ethnicity ethnicity_enum DEFAULT 'not_reported',
@@ -530,7 +558,21 @@ CREATE TABLE residents (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     
-    -- Full text search
+    -- Enhanced: Full-text search from current implementation with improved null handling
+    search_text TEXT GENERATED ALWAYS AS (
+        LOWER(CONCAT_WS(' ',
+              first_name,
+              COALESCE(middle_name, ''),
+              last_name,
+              COALESCE(occupation_title, ''),
+              COALESCE(mobile_number, ''),
+              COALESCE(occupation, ''),
+              COALESCE(job_title, ''),
+              COALESCE(workplace, ''),
+              COALESCE(extension_name, '')))
+    ) STORED,
+    
+    -- Full text search vector for advanced search
     search_vector tsvector GENERATED ALWAYS AS (
         to_tsvector('english', 
             COALESCE(first_name, '') || ' ' ||
@@ -538,7 +580,7 @@ CREATE TABLE residents (
             COALESCE(last_name, '') || ' ' ||
             COALESCE(email, '') || ' ' ||
             COALESCE(mobile_number, '') || ' ' ||
-            COALESCE(occupation_description, '') || ' ' ||
+            COALESCE(occupation_details, '') || ' ' ||
             COALESCE(workplace, '')
         )
     ) STORED
@@ -710,9 +752,14 @@ CREATE TABLE audit_logs (
 
 -- Primary search indexes
 CREATE INDEX idx_residents_search_vector ON residents USING GIN(search_vector);
+-- Enhanced: Search text index from current implementation
+CREATE INDEX idx_residents_search_text ON residents USING GIN(search_text gin_trgm_ops);
 CREATE INDEX idx_residents_barangay ON residents(barangay_code);
 CREATE INDEX idx_residents_household ON residents(household_id);
-CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4);
+-- Enhanced: Conditional index for storage optimization from current implementation
+CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4) WHERE philsys_last4 IS NOT NULL;
+-- Enhanced: Birthdate index for age-based calculations from current implementation
+CREATE INDEX idx_residents_birthdate ON residents(birthdate);
 CREATE INDEX idx_residents_sex ON residents(sex);
 CREATE INDEX idx_residents_civil_status ON residents(civil_status);
 CREATE INDEX idx_residents_citizenship ON residents(citizenship);
@@ -952,6 +999,41 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Enhanced: Direct sectoral field updates from current implementation
+CREATE OR REPLACE FUNCTION update_resident_sectoral_status()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Enhanced: Better PL/pgSQL syntax with :=
+    -- Auto-calculate senior citizen status (age 60+)
+    NEW.is_senior_citizen := (EXTRACT(YEAR FROM AGE(NEW.birthdate)) >= 60);
+    
+    -- Auto-calculate labor force status based on employment
+    NEW.is_labor_force := (NEW.employment_status IN ('employed', 'unemployed', 'underemployed', 'self_employed', 'looking_for_work'));
+    NEW.is_employed := (NEW.employment_status IN ('employed', 'self_employed'));
+    NEW.is_unemployed := (NEW.employment_status = 'unemployed');
+    
+    -- Enhanced: Auto-calculate out-of-school classifications
+    -- Out-of-school children (ages 6-15)
+    IF EXTRACT(YEAR FROM AGE(NEW.birthdate)) BETWEEN 6 AND 15 THEN
+        NEW.is_out_of_school_children := (NEW.education_status != 'currently_studying');
+    ELSE
+        NEW.is_out_of_school_children := false;
+    END IF;
+    
+    -- Out-of-school youth (ages 16-24)
+    IF EXTRACT(YEAR FROM AGE(NEW.birthdate)) BETWEEN 16 AND 24 THEN
+        NEW.is_out_of_school_youth := (NEW.education_status NOT IN ('currently_studying', 'graduated'));
+    ELSE
+        NEW.is_out_of_school_youth := false;
+    END IF;
+    
+    -- Enhanced: Auto-update timestamp
+    NEW.updated_at := NOW();
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Function to auto-populate household barangay and generate ID
 CREATE OR REPLACE FUNCTION generate_household_id_trigger()
 RETURNS TRIGGER AS $$
@@ -1046,6 +1128,12 @@ CREATE TRIGGER trigger_auto_populate_sectoral_info
     AFTER INSERT OR UPDATE ON residents
     FOR EACH ROW
     EXECUTE FUNCTION auto_populate_sectoral_info();
+
+-- Enhanced: Trigger for direct resident sectoral field updates from current implementation
+CREATE TRIGGER trigger_update_resident_sectoral_status
+    BEFORE INSERT OR UPDATE ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION update_resident_sectoral_status();
 
 -- Function to create audit log entries
 CREATE OR REPLACE FUNCTION create_audit_log()
@@ -1388,6 +1476,7 @@ JOIN psoc_major_groups mg ON smg.major_code = mg.code
 ORDER BY hierarchy_level, occupation_title;
 
 -- Complete address hierarchy view for Settings management
+-- Enhanced: PSGC address hierarchy with smart formatting from current implementation
 CREATE VIEW psgc_address_hierarchy AS
 SELECT 
     r.code as region_code,
@@ -1397,15 +1486,24 @@ SELECT
     cm.code as city_municipality_code,
     cm.name as city_municipality_name,
     cm.type as city_municipality_type,
+    cm.is_independent,
     b.code as barangay_code,
     b.name as barangay_name,
+    b.urban_rural_status,
     s.id as subdivision_id,
     s.name as subdivision_name,
     s.type as subdivision_type,
-    s.is_active as subdivision_active
+    s.is_active as subdivision_active,
+    -- Enhanced: Smart address formatting for independent cities
+    CASE 
+        WHEN cm.is_independent = true THEN 
+            CONCAT(b.name, ', ', cm.name, ', ', r.name)
+        ELSE 
+            CONCAT(b.name, ', ', cm.name, ', ', p.name, ', ', r.name)
+    END as full_address
 FROM psgc_regions r
-JOIN psgc_provinces p ON r.code = p.region_code
-JOIN psgc_cities_municipalities cm ON p.code = cm.province_code
+LEFT JOIN psgc_provinces p ON r.code = p.region_code
+JOIN psgc_cities_municipalities cm ON COALESCE(p.code, r.code) = COALESCE(cm.province_code, cm.province_code)
 JOIN psgc_barangays b ON cm.code = b.city_municipality_code
 LEFT JOIN subdivisions s ON b.code = s.barangay_code;
 
@@ -1657,10 +1755,10 @@ CREATE TABLE schema_version (
 );
 
 INSERT INTO schema_version (version, description) 
-VALUES ('1.0', 'Initial production schema with hierarchical household IDs, sectoral information, and income classification');
+VALUES ('2.0', 'Enhanced full-feature schema with current implementation optimizations: independence constraints, enhanced auto-calculations, improved search, conditional indexes, smart address formatting');
 
 -- Production readiness indicator
-COMMENT ON SCHEMA public IS 'RBI System v1.0 - Production Ready Schema - Records of Barangay Inhabitant System';
+COMMENT ON SCHEMA public IS 'RBI System v2.0 - Full-Feature Schema with Current Implementation Enhancements - Records of Barangay Inhabitant System';
 
 -- =====================================================
 -- END OF SCHEMA

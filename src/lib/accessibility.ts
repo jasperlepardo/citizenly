@@ -133,7 +133,7 @@ export function useArrowKeyNavigation(itemsCount: number, onSelect?: (index: num
         items[nextIndex]?.focus();
       }
     },
-    [itemsCount, onSelect]
+    [onSelect]
   );
 
   useEffect(() => {

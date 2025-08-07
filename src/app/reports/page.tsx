@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 
 function ReportsContent() {
   const [searchTerm, setSearchTerm] = useState('');

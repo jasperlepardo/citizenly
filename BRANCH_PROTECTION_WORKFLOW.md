@@ -299,8 +299,14 @@ git push origin v1.2.0
 # Set your GitHub Personal Access Token
 export GITHUB_TOKEN=your_github_token_here
 
-# Run the branch protection setup script
-./scripts/setup-branch-protection.sh
+# Set up branch protection rules manually through GitHub UI
+# Go to Settings > Branches in your GitHub repository
+# Or use GitHub CLI:
+gh api repos/jasperlepardo/citizenly/branches/main/protection \
+  --method PUT \
+  --field required_status_checks=null \
+  --field enforce_admins=true \
+  --field required_pull_request_reviews=null
 ```
 
 ### 2. Update Repository Settings

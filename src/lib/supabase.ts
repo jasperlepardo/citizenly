@@ -57,7 +57,7 @@ export const refreshSchema = async () => {
   }
 };
 
-// Database types for better TypeScript support
+// Database types for better TypeScript support - Generated from actual database structure
 export type Database = {
   public: {
     Tables: {
@@ -65,17 +65,14 @@ export type Database = {
         Row: {
           code: string;
           name: string;
-          created_at: string;
         };
         Insert: {
           code: string;
           name: string;
-          created_at?: string;
         };
         Update: {
           code?: string;
           name?: string;
-          created_at?: string;
         };
       };
       psgc_provinces: {
@@ -83,19 +80,19 @@ export type Database = {
           code: string;
           name: string;
           region_code: string;
-          created_at: string;
+          is_active: boolean | null;
         };
         Insert: {
           code: string;
           name: string;
           region_code: string;
-          created_at?: string;
+          is_active?: boolean | null;
         };
         Update: {
           code?: string;
           name?: string;
           region_code?: string;
-          created_at?: string;
+          is_active?: boolean | null;
         };
       };
       psgc_cities_municipalities: {
@@ -105,15 +102,13 @@ export type Database = {
           type: string;
           province_code: string | null;
           is_independent: boolean;
-          created_at: string;
         };
         Insert: {
           code: string;
           name: string;
-          type?: string;
+          type: string;
           province_code?: string | null;
-          is_independent?: boolean;
-          created_at?: string;
+          is_independent: boolean;
         };
         Update: {
           code?: string;
@@ -121,7 +116,6 @@ export type Database = {
           type?: string;
           province_code?: string | null;
           is_independent?: boolean;
-          created_at?: string;
         };
       };
       psgc_barangays: {
@@ -130,21 +124,18 @@ export type Database = {
           name: string;
           city_municipality_code: string;
           urban_rural_status: string | null;
-          created_at: string;
         };
         Insert: {
           code: string;
           name: string;
           city_municipality_code: string;
           urban_rural_status?: string | null;
-          created_at?: string;
         };
         Update: {
           code?: string;
           name?: string;
           city_municipality_code?: string;
           urban_rural_status?: string | null;
-          created_at?: string;
         };
       };
       households: {
@@ -159,9 +150,9 @@ export type Database = {
           subdivision: string | null;
           zip_code: string | null;
           household_head_id: string | null;
-          total_members: number;
+          total_members: number | null;
           created_by: string | null;
-          created_at: string;
+          created_at: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -175,9 +166,9 @@ export type Database = {
           subdivision?: string | null;
           zip_code?: string | null;
           household_head_id?: string | null;
-          total_members?: number;
+          total_members?: number | null;
           created_by?: string | null;
-          created_at?: string;
+          created_at?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -191,9 +182,9 @@ export type Database = {
           subdivision?: string | null;
           zip_code?: string | null;
           household_head_id?: string | null;
-          total_members?: number;
+          total_members?: number | null;
           created_by?: string | null;
-          created_at?: string;
+          created_at?: string | null;
           updated_at?: string | null;
         };
       };
@@ -207,32 +198,46 @@ export type Database = {
           birthdate: string;
           sex: 'male' | 'female';
           civil_status: string;
-          citizenship: string;
-          mobile_number: string;
-          email: string | null;
-          household_code: string | null;
-          barangay_code: string;
+          citizenship: string | null;
           education_level: string;
           education_status: string;
-          employment_status: string;
+          employment_status: string | null;
           psoc_code: string | null;
           psoc_level: string | null;
           occupation_title: string | null;
-          occupation_details: string | null;
-          blood_type: string;
-          height: number | null;
-          weight: number | null;
-          complexion: string | null;
-          ethnicity: string;
-          religion: string;
-          voter_registration_status: boolean;
-          resident_voter_status: boolean;
-          last_voted_year: string | null;
-          philsys_card_number: string | null;
-          telephone_number: string | null;
-          workplace: string | null;
-          is_active: boolean;
-          created_at: string;
+          mobile_number: string;
+          email: string | null;
+          philsys_card_number_hash: string | null;
+          philsys_last4: string | null;
+          blood_type: string | null;
+          ethnicity: string | null;
+          religion: string | null;
+          is_voter: boolean | null;
+          is_resident_voter: boolean | null;
+          is_labor_force: boolean | null;
+          is_employed: boolean | null;
+          is_unemployed: boolean | null;
+          is_ofw: boolean | null;
+          is_pwd: boolean | null;
+          is_out_of_school_children: boolean | null;
+          is_out_of_school_youth: boolean | null;
+          is_senior_citizen: boolean | null;
+          is_registered_senior_citizen: boolean | null;
+          is_solo_parent: boolean | null;
+          is_indigenous_people: boolean | null;
+          is_migrant: boolean | null;
+          barangay_code: string;
+          region_code: string | null;
+          province_code: string | null;
+          city_municipality_code: string | null;
+          street_name: string | null;
+          house_number: string | null;
+          subdivision: string | null;
+          household_code: string | null;
+          search_text: string | null;
+          is_active: boolean | null;
+          created_by: string | null;
+          created_at: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -244,32 +249,46 @@ export type Database = {
           birthdate: string;
           sex: 'male' | 'female';
           civil_status: string;
-          citizenship?: string;
-          mobile_number: string;
-          email?: string | null;
-          household_code?: string | null;
-          barangay_code: string;
+          citizenship?: string | null;
           education_level: string;
           education_status: string;
-          employment_status?: string;
+          employment_status?: string | null;
           psoc_code?: string | null;
           psoc_level?: string | null;
           occupation_title?: string | null;
-          occupation_details?: string | null;
-          blood_type?: string;
-          height?: number | null;
-          weight?: number | null;
-          complexion?: string | null;
-          ethnicity: string;
-          religion: string;
-          voter_registration_status?: boolean;
-          resident_voter_status?: boolean;
-          last_voted_year?: string | null;
-          philsys_card_number?: string | null;
-          telephone_number?: string | null;
-          workplace?: string | null;
-          is_active?: boolean;
-          created_at?: string;
+          mobile_number: string;
+          email?: string | null;
+          philsys_card_number_hash?: string | null;
+          philsys_last4?: string | null;
+          blood_type?: string | null;
+          ethnicity?: string | null;
+          religion?: string | null;
+          is_voter?: boolean | null;
+          is_resident_voter?: boolean | null;
+          is_labor_force?: boolean | null;
+          is_employed?: boolean | null;
+          is_unemployed?: boolean | null;
+          is_ofw?: boolean | null;
+          is_pwd?: boolean | null;
+          is_out_of_school_children?: boolean | null;
+          is_out_of_school_youth?: boolean | null;
+          is_senior_citizen?: boolean | null;
+          is_registered_senior_citizen?: boolean | null;
+          is_solo_parent?: boolean | null;
+          is_indigenous_people?: boolean | null;
+          is_migrant?: boolean | null;
+          barangay_code: string;
+          region_code?: string | null;
+          province_code?: string | null;
+          city_municipality_code?: string | null;
+          street_name?: string | null;
+          house_number?: string | null;
+          subdivision?: string | null;
+          household_code?: string | null;
+          search_text?: string | null;
+          is_active?: boolean | null;
+          created_by?: string | null;
+          created_at?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -281,51 +300,264 @@ export type Database = {
           birthdate?: string;
           sex?: 'male' | 'female';
           civil_status?: string;
-          citizenship?: string;
-          mobile_number?: string;
-          email?: string | null;
-          household_code?: string | null;
-          barangay_code?: string;
+          citizenship?: string | null;
           education_level?: string;
           education_status?: string;
-          employment_status?: string;
+          employment_status?: string | null;
           psoc_code?: string | null;
           psoc_level?: string | null;
           occupation_title?: string | null;
-          occupation_details?: string | null;
-          blood_type?: string;
-          height?: number | null;
-          weight?: number | null;
-          complexion?: string | null;
-          ethnicity?: string;
-          religion?: string;
-          voter_registration_status?: boolean;
-          resident_voter_status?: boolean;
-          last_voted_year?: string | null;
-          philsys_card_number?: string | null;
-          telephone_number?: string | null;
-          workplace?: string | null;
-          is_active?: boolean;
-          created_at?: string;
+          mobile_number?: string;
+          email?: string | null;
+          philsys_card_number_hash?: string | null;
+          philsys_last4?: string | null;
+          blood_type?: string | null;
+          ethnicity?: string | null;
+          religion?: string | null;
+          is_voter?: boolean | null;
+          is_resident_voter?: boolean | null;
+          is_labor_force?: boolean | null;
+          is_employed?: boolean | null;
+          is_unemployed?: boolean | null;
+          is_ofw?: boolean | null;
+          is_pwd?: boolean | null;
+          is_out_of_school_children?: boolean | null;
+          is_out_of_school_youth?: boolean | null;
+          is_senior_citizen?: boolean | null;
+          is_registered_senior_citizen?: boolean | null;
+          is_solo_parent?: boolean | null;
+          is_indigenous_people?: boolean | null;
+          is_migrant?: boolean | null;
+          barangay_code?: string;
+          region_code?: string | null;
+          province_code?: string | null;
+          city_municipality_code?: string | null;
+          street_name?: string | null;
+          house_number?: string | null;
+          subdivision?: string | null;
+          household_code?: string | null;
+          search_text?: string | null;
+          is_active?: boolean | null;
+          created_by?: string | null;
+          created_at?: string | null;
           updated_at?: string | null;
+        };
+      };
+      psoc_major_groups: {
+        Row: {
+          code: string;
+          title: string;
+        };
+        Insert: {
+          code: string;
+          title: string;
+        };
+        Update: {
+          code?: string;
+          title?: string;
+        };
+      };
+      psoc_sub_major_groups: {
+        Row: {
+          code: string;
+          title: string;
+          major_code: string;
+        };
+        Insert: {
+          code: string;
+          title: string;
+          major_code: string;
+        };
+        Update: {
+          code?: string;
+          title?: string;
+          major_code?: string;
+        };
+      };
+      psoc_minor_groups: {
+        Row: {
+          code: string;
+          title: string;
+          sub_major_code: string;
+        };
+        Insert: {
+          code: string;
+          title: string;
+          sub_major_code: string;
+        };
+        Update: {
+          code?: string;
+          title?: string;
+          sub_major_code?: string;
+        };
+      };
+      psoc_unit_groups: {
+        Row: {
+          code: string;
+          title: string;
+          minor_code: string;
+        };
+        Insert: {
+          code: string;
+          title: string;
+          minor_code: string;
+        };
+        Update: {
+          code?: string;
+          title?: string;
+          minor_code?: string;
+        };
+      };
+      psoc_unit_sub_groups: {
+        Row: {
+          code: string;
+          title: string;
+          unit_code: string;
+        };
+        Insert: {
+          code: string;
+          title: string;
+          unit_code: string;
+        };
+        Update: {
+          code?: string;
+          title?: string;
+          unit_code?: string;
+        };
+      };
+      psoc_cross_references: {
+        Row: {
+          unit_code: string;
+          related_titles: string;
+        };
+        Insert: {
+          unit_code: string;
+          related_titles: string;
+        };
+        Update: {
+          unit_code?: string;
+          related_titles?: string;
+        };
+      };
+      psoc_position_titles: {
+        Row: {
+          id: string;
+          unit_group_code: string;
+          titles: any; // jsonb
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          unit_group_code: string;
+          titles: any; // jsonb
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          unit_group_code?: string;
+          titles?: any; // jsonb
+          created_at?: string | null;
+        };
+      };
+      resident_relationships: {
+        Row: {
+          id: string;
+          resident_id: string;
+          related_resident_id: string;
+          relationship_type: string;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          resident_id: string;
+          related_resident_id: string;
+          relationship_type: string;
+          created_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          resident_id?: string;
+          related_resident_id?: string;
+          relationship_type?: string;
+          created_at?: string | null;
+        };
+      };
+      roles: {
+        Row: {
+          id: string;
+          name: string;
+          permissions: any | null; // jsonb
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          permissions?: any | null; // jsonb
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          permissions?: any | null; // jsonb
+        };
+      };
+      user_profiles: {
+        Row: {
+          id: string;
+          email: string;
+          first_name: string;
+          last_name: string;
+          role_id: string;
+          barangay_code: string | null;
+          is_active: boolean | null;
+          created_at: string | null;
+          mobile_number: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          first_name: string;
+          last_name: string;
+          role_id: string;
+          barangay_code?: string | null;
+          is_active?: boolean | null;
+          created_at?: string | null;
+          mobile_number?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          first_name?: string;
+          last_name?: string;
+          role_id?: string;
+          barangay_code?: string | null;
+          is_active?: boolean | null;
+          created_at?: string | null;
+          mobile_number?: string | null;
         };
       };
     };
     Views: {
-      psgc_address_hierarchy: {
+      address_hierarchy: {
         Row: {
-          region_code: string;
-          region_name: string;
+          region_code: string | null;
+          region_name: string | null;
           province_code: string | null;
           province_name: string | null;
-          city_municipality_code: string;
-          city_municipality_name: string;
-          city_municipality_type: string;
-          is_independent: boolean;
-          barangay_code: string;
-          barangay_name: string;
-          urban_rural_status: string | null;
-          full_address: string;
+          city_code: string | null;
+          city_name: string | null;
+          city_type: string | null;
+          barangay_code: string | null;
+          barangay_name: string | null;
+          full_address: string | null;
+        };
+      };
+      psoc_occupation_search: {
+        Row: {
+          occupation_code: string | null;
+          occupation_title: string | null;
+          level_type: string | null;
+          hierarchy_level: number | null;
+          unit_code: string | null;
+          searchable_text: string | null;
         };
       };
     };
