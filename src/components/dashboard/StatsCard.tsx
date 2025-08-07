@@ -44,24 +44,24 @@ export default function StatsCard({
   };
 
   return (
-    <div className="bg-surface rounded-lg border border-default p-6">
+    <div className="rounded-lg border p-6 bg-surface border-default">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-secondary font-body">{title}</p>
-          <p className="text-2xl font-semibold text-primary mt-1 font-display">{value}</p>
+          <p className="text-sm font-medium font-body text-secondary">{title}</p>
+          <p className="mt-1 font-display text-2xl font-semibold text-primary">{value}</p>
 
-          {description && <p className="text-sm text-secondary mt-1">{description}</p>}
+          {description && <p className="mt-1 text-sm text-secondary">{description}</p>}
 
           {trend && (
             <div
-              className={`flex items-center mt-2 text-sm ${
+              className={`mt-2 flex items-center text-sm ${
                 trend.isPositive
                   ? 'text-green-600 dark:text-green-400'
                   : 'text-red-600 dark:text-red-400'
               }`}
             >
               <svg
-                className={`w-4 h-4 mr-1 ${trend.isPositive ? 'rotate-0' : 'rotate-180'}`}
+                className={`mr-1 size-4 ${trend.isPositive ? 'rotate-0' : 'rotate-180'}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -76,7 +76,7 @@ export default function StatsCard({
           )}
         </div>
 
-        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>{icon}</div>
+        <div className={`rounded-lg p-3 ${colorClasses[color]}`}>{icon}</div>
       </div>
     </div>
   );

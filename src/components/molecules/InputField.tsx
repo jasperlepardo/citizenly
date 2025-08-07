@@ -3,7 +3,6 @@
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-import { Input } from '@/components/atoms/Input';
 
 const inputVariants = cva(
   'relative flex w-full items-center transition-colors font-system focus-within:outline-none',
@@ -67,7 +66,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       disabled,
       readOnly,
       value,
-      id,
       ...props
     },
     ref
@@ -81,21 +79,11 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           : variant;
     const showClearButton = clearable && value && !disabled && !readOnly;
 
-    // Generate IDs for accessibility
-    const inputId = id || `input-${Math.random().toString(36).substring(2, 11)}`;
-    const errorId = `${inputId}-error`;
-    const helperId = `${inputId}-helper`;
-
     return (
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label
-            htmlFor={inputId}
-            className="mb-2 block text-sm font-medium font-system text-primary"
-          >
-            {label}
-          </label>
+          <label className="mb-2 block text-sm font-medium font-system text-primary">{label}</label>
         )}
 
         {/* Input Container */}
@@ -116,13 +104,28 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
           <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
             {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-            <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-5">
-              <Input
+            <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-[0]">
+              <input
                 ref={ref}
-                id={inputId}
-                size={size}
-                aria-invalid={errorMessage ? 'true' : undefined}
-                aria-describedby={errorMessage ? errorId : helperText ? helperId : undefined}
+                className={cn(
+                  'font-montserrat w-full bg-transparent font-normal text-primary placeholder:text-muted',
+                  // Remove ALL borders and focus states
+                  'border-0 shadow-none outline-0 ring-0',
+                  'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
+                  'active:border-0 active:shadow-none active:outline-0 active:ring-0',
+                  // Figma text-base-regular: 16px/20px (leading-5 = 20px)
+                  size === 'sm' && 'text-sm leading-4',
+                  size === 'md' && 'text-base leading-5',
+                  size === 'lg' && 'text-lg leading-6',
+                  disabled && 'cursor-not-allowed text-muted',
+                  readOnly && 'text-secondary'
+                )}
+                style={{
+                  border: 'none',
+                  outline: 'none',
+                  boxShadow: 'none',
+                  appearance: 'none',
+                }}
                 disabled={disabled}
                 readOnly={readOnly}
                 value={value}
@@ -173,20 +176,14 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         </div>
 
         {/* Helper Text / Error Message */}
-        {errorMessage && (
-          <p
-            id={errorId}
-            role="alert"
-            aria-live="polite"
-            className="mt-2 text-xs leading-[14px] text-red-500 font-system"
-          >
-            {errorMessage}
-          </p>
-        )}
-        {helperText && !errorMessage && (
-          <p id={helperId} className="mt-2 text-xs leading-[14px] font-system text-muted">
-            {helperText}
-          </p>
+        {(helperText || errorMessage) && (
+          <div className="mt-2">
+            {errorMessage ? (
+              <p className="text-xs leading-[14px] text-red-500 font-system">{errorMessage}</p>
+            ) : (
+              <p className="text-xs leading-[14px] font-system text-muted">{helperText}</p>
+            )}
+          </div>
         )}
       </div>
     );

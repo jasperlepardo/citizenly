@@ -123,7 +123,7 @@ const ContactFormComponent = () => {
         }}
       >
         <FormGroup title="Contact Information" description="How can we reach you?">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField>
               <InputField
                 label="Full Name"
@@ -277,7 +277,7 @@ const UserProfileFormComponent = () => {
         }}
       >
         <FormGroup title="Basic Information" description="Your basic profile information">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField>
               <InputField
                 label="Username"
@@ -330,7 +330,7 @@ const UserProfileFormComponent = () => {
         </FormGroup>
 
         <FormGroup title="Professional Information" description="Information about your work">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField>
               <InputField
                 label="Company"
@@ -352,7 +352,7 @@ const UserProfileFormComponent = () => {
         </FormGroup>
 
         <FormGroup title="Location & Time" description="Help us provide localized content">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField>
               <SelectField
                 label="Country"

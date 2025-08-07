@@ -9,33 +9,28 @@ const meta = {
     docs: {
       description: {
         component:
-          'A flexible input component with customizable icons and states. Part of the RBI System atomic design components.',
+          'A minimal, reusable input atom. This is the base HTML input element with consistent styling. For more complex inputs with labels, icons, and validation, use InputField from molecules.',
       },
     },
   },
   tags: ['autodocs'],
   argTypes: {
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+    },
     state: {
       control: 'select',
-      options: ['default', 'active', 'filled', 'error', 'disabled'],
-    },
-    showBefore: {
-      control: 'boolean',
-    },
-    showAfter: {
-      control: 'boolean',
-    },
-    beforeIcon: {
-      control: false,
-    },
-    afterIcon: {
-      control: false,
+      options: ['default', 'disabled', 'readonly'],
     },
     placeholder: {
       control: 'text',
     },
-    error: {
-      control: 'text',
+    disabled: {
+      control: 'boolean',
+    },
+    readOnly: {
+      control: 'boolean',
     },
   },
 } satisfies Meta<typeof Input>;
@@ -46,116 +41,49 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     placeholder: 'Enter text...',
-    showBefore: true,
-    showAfter: true,
-    state: 'default',
+    size: 'md',
   },
 };
 
-export const WithPlaceholder: Story = {
+export const SmallSize: Story = {
   args: {
-    placeholder: 'Search for residents...',
-    showBefore: true,
-    showAfter: true,
-    state: 'default',
+    placeholder: 'Small input',
+    size: 'sm',
   },
 };
 
-export const NoIcons: Story = {
+export const MediumSize: Story = {
   args: {
-    placeholder: 'Simple input',
-    showBefore: false,
-    showAfter: false,
-    state: 'default',
+    placeholder: 'Medium input (default)',
+    size: 'md',
   },
 };
 
-export const BeforeIconOnly: Story = {
+export const LargeSize: Story = {
   args: {
-    placeholder: 'Search...',
-    showBefore: true,
-    showAfter: false,
-    state: 'default',
+    placeholder: 'Large input',
+    size: 'lg',
   },
 };
 
-export const AfterIconOnly: Story = {
-  args: {
-    placeholder: 'Type and clear',
-    showBefore: false,
-    showAfter: true,
-    state: 'default',
-  },
-};
-
-export const ErrorState: Story = {
-  args: {
-    placeholder: 'Enter valid email',
-    showBefore: true,
-    showAfter: true,
-    state: 'error',
-    error: 'Please enter a valid email address',
-  },
-};
-
-export const WithErrorMessage: Story = {
-  args: {
-    placeholder: 'Required field',
-    showBefore: true,
-    showAfter: true,
-    error: 'This field is required',
-  },
-};
-
-export const DisabledState: Story = {
+export const Disabled: Story = {
   args: {
     placeholder: 'Disabled input',
-    showBefore: true,
-    showAfter: true,
-    state: 'disabled',
     disabled: true,
   },
 };
 
-export const CustomIcons: Story = {
+export const ReadOnly: Story = {
   args: {
-    placeholder: 'Custom icons example',
-    showBefore: true,
-    showAfter: true,
-    beforeIcon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-        />
-      </svg>
-    ),
-    afterIcon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-      </svg>
-    ),
+    placeholder: 'Read only input',
+    readOnly: true,
+    defaultValue: 'This is read-only',
   },
 };
 
-export const Filled: Story = {
+export const WithValue: Story = {
   args: {
+    defaultValue: 'Input with value',
     placeholder: 'Enter text...',
-    showBefore: true,
-    showAfter: true,
-    state: 'filled',
-    defaultValue: 'John Doe',
-  },
-};
-
-export const Active: Story = {
-  args: {
-    placeholder: 'Focused input',
-    showBefore: true,
-    showAfter: true,
-    state: 'active',
-    autoFocus: true,
   },
 };

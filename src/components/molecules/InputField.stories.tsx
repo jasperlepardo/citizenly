@@ -252,7 +252,7 @@ export const Large: Story = {
 // All States Showcase
 export const AllStates: Story = {
   render: () => (
-    <div className="space-y-6 w-96">
+    <div className="w-96 space-y-6">
       <h3 className="text-lg font-semibold">Input Field States</h3>
 
       <InputField
@@ -302,7 +302,7 @@ export const AllStates: Story = {
 
 export const FormExample: Story = {
   render: () => (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Contact Form Example</h3>
 
       <InputField

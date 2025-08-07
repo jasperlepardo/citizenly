@@ -71,10 +71,10 @@ const buttonVariants = cva(
           'focus-visible:ring-secondary text-secondary hover:text-primary hover:bg-surface-hover disabled:text-muted',
       },
       size: {
-        sm: 'p-0.5 text-base',
-        md: 'p-1 text-base',
-        default: 'p-2 text-base', // p=8 (2rem = 32px, but using px-2 py-2 for content padding)
-        lg: 'p-3 text-base',
+        sm: 'h-8 px-3 text-sm',
+        md: 'h-9 px-4 text-base',
+        lg: 'h-10 px-6 text-base',
+        regular: 'p-2 text-base', // p=8 (2rem = 32px, but using px-2 py-2 for content padding)
       },
       iconOnly: {
         true: 'aspect-square p-0',
@@ -102,14 +102,14 @@ const buttonVariants = cva(
         class: 'size-10',
       },
       {
-        size: 'default',
+        size: 'regular',
         iconOnly: true,
         class: 'size-9 p-2',
       },
     ],
     defaultVariants: {
       variant: 'primary',
-      size: 'default',
+      size: 'regular',
       iconOnly: false,
       fullWidth: false,
     },

@@ -267,7 +267,7 @@ export const BothResize: Story = {
 // All States Showcase
 export const AllStates: Story = {
   render: () => (
-    <div className="space-y-6 w-96">
+    <div className="w-96 space-y-6">
       <h3 className="text-lg font-semibold">Textarea States</h3>
 
       <Textarea
@@ -335,7 +335,7 @@ const FormExampleComponent = () => {
   };
 
   return (
-    <div className="space-y-6 w-full max-w-2xl">
+    <div className="w-full max-w-2xl space-y-6">
       <h3 className="text-lg font-semibold">Project Report Form</h3>
 
       <Textarea
@@ -383,8 +383,8 @@ const FormExampleComponent = () => {
         helperText="Your feedback helps us improve"
       />
 
-      <div className="pt-4 border-t text-sm text-gray-600">
-        <h4 className="font-medium mb-2">Content Summary:</h4>
+      <div className="border-t pt-4 text-sm text-gray-600">
+        <h4 className="mb-2 font-medium">Content Summary:</h4>
         <ul className="space-y-1">
           <li>Summary: {formData.summary.length} characters</li>
           <li>Description: {formData.description.length} characters</li>
@@ -408,7 +408,7 @@ const BlogEditorComponent = () => {
   const [title, setTitle] = useState('');
 
   return (
-    <div className="space-y-4 w-full max-w-4xl">
+    <div className="w-full max-w-4xl space-y-4">
       <h3 className="text-lg font-semibold">Blog Post Editor</h3>
 
       <div className="space-y-4">
@@ -417,7 +417,7 @@ const BlogEditorComponent = () => {
           placeholder="Blog post title..."
           value={title}
           onChange={e => setTitle(e.target.value)}
-          className="w-full text-2xl font-bold border-none outline-none bg-transparent placeholder-gray-400"
+          className="w-full border-none bg-transparent text-2xl font-bold outline-none placeholder:text-gray-400"
         />
 
         <Textarea
@@ -433,15 +433,15 @@ const BlogEditorComponent = () => {
           helperText="Write your blog post content here. Markdown formatting is supported."
         />
 
-        <div className="flex justify-between items-center pt-4 border-t">
+        <div className="flex items-center justify-between border-t pt-4">
           <div className="text-sm text-gray-500">
             Words: {content.split(/\s+/).filter(Boolean).length} | Characters: {content.length}
           </div>
           <div className="space-x-3">
-            <button className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50">
+            <button className="rounded-md border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50">
               Save Draft
             </button>
-            <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <button className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
               Publish
             </button>
           </div>

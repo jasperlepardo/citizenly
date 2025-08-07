@@ -21,19 +21,5 @@
     "env": {
       "CSRF_SECRET": "@csrf-secret"
     }
-  },
-  "alias": [
-    {
-      "src": "app.citizenly.co",
-      "dest": "main"
-    },
-    {
-      "src": "staging.citizenly.co",
-      "dest": "staging"
-    },
-    {
-      "src": "dev.citizenly.co",
-      "dest": "develop"
-    }
-  ]
+  }
 }

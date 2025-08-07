@@ -125,8 +125,8 @@ export default function MigrantInformation({
   if (!value.is_migrant) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="border-b border-default pb-4">
-          <h3 className="text-lg font-medium text-primary mb-2">
+        <div className="border-b pb-4 border-default">
+          <h3 className="mb-2 text-lg font-medium text-primary">
             <span className="text-base">🧳</span> Migration Information
           </h3>
           <p className="text-sm text-secondary">
@@ -135,8 +135,8 @@ export default function MigrantInformation({
           </p>
         </div>
 
-        <div className="bg-background-muted p-4 rounded-lg">
-          <p className="text-sm text-secondary italic">
+        <div className="rounded-lg p-4 bg-background-muted">
+          <p className="text-sm italic text-secondary">
             Migration information is automatically collected when a resident is marked as a migrant
             in sectoral classifications.
           </p>
@@ -148,8 +148,8 @@ export default function MigrantInformation({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-default pb-4">
-        <h3 className="text-lg font-medium text-primary mb-2">
+      <div className="border-b pb-4 border-default">
+        <h3 className="mb-2 text-lg font-medium text-primary">
           <span className="text-base">🧳</span> Migration Information
         </h3>
         <p className="text-sm text-secondary">
@@ -206,7 +206,7 @@ export default function MigrantInformation({
       )}
 
       {/* Migration Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Year of Migration */}
         <FormGroup title="Year of Migration">
           <InputField
@@ -295,9 +295,9 @@ export default function MigrantInformation({
       )}
 
       {/* Summary Card */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Migration Summary</h4>
-        <div className="text-sm text-blue-800 space-y-1">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h4 className="mb-2 font-medium text-blue-900">Migration Summary</h4>
+        <div className="space-y-1 text-sm text-blue-800">
           <p>
             <strong>Type:</strong>{' '}
             {value.migration_type

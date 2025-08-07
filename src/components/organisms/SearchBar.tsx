@@ -116,14 +116,14 @@ export default function SearchBar({
     <div className={`space-y-4 ${className}`}>
       {/* Main Search Bar */}
       <div className="flex items-center gap-2">
-        <div className="flex-1 relative">
+        <div className="relative flex-1">
           <InputField
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder={placeholder}
             leftIcon={
               <svg
-                className="w-5 h-5 text-muted"
+                className="size-5 text-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -143,9 +143,9 @@ export default function SearchBar({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="text-muted hover:text-secondary h-4 w-4 p-0"
+                  className="size-4 p-0 text-muted hover:text-secondary"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -164,7 +164,7 @@ export default function SearchBar({
             variant={showFilters ? 'primary' : 'secondary-outline'}
             onClick={() => setShowFilters(!showFilters)}
             leftIcon={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -187,7 +187,7 @@ export default function SearchBar({
 
       {/* Advanced Filters */}
       {showFilters && filterOptions.length > 0 && (
-        <div className="rounded-lg border border-default p-4 bg-surface-hover space-y-4">
+        <div className="space-y-4 rounded-lg border p-4 bg-surface-hover border-default">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-primary">Advanced Filters</h3>
             <Button size="sm" variant="primary-outline" onClick={handleAddFilter}>
@@ -208,7 +208,7 @@ export default function SearchBar({
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 p-3 bg-surface rounded border border-default"
+                    className="flex items-center gap-2 rounded border p-3 bg-surface border-default"
                   >
                     {/* Field Selection */}
                     <div className="w-40">
@@ -318,12 +318,7 @@ export default function SearchBar({
                       onClick={() => handleRemoveFilter(index)}
                       iconOnly
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -346,7 +341,7 @@ export default function SearchBar({
           {filters.map((filter, index) => (
             <div
               key={index}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+              className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
             >
               <span className="font-medium">{filter.label}</span>
               <span className="text-blue-600">{filter.operator.replace('_', ' ')}</span>
@@ -360,9 +355,9 @@ export default function SearchBar({
                 variant="ghost"
                 size="sm"
                 iconOnly
-                className="ml-1 text-blue-600 hover:text-blue-800 h-3 w-3 p-0"
+                className="ml-1 size-3 p-0 text-blue-600 hover:text-blue-800"
               >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

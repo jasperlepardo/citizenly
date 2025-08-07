@@ -300,12 +300,12 @@ function CreateUserContent() {
     return (
       <AppShell>
         <div className="flex flex-col gap-6 p-6">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="mx-auto max-w-2xl">
+            <div className="rounded-lg bg-white p-8 shadow-md">
               <div className="text-center">
-                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-green-100">
                   <svg
-                    className="h-6 w-6 text-green-600"
+                    className="size-6 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -318,10 +318,10 @@ function CreateUserContent() {
                     ></path>
                   </svg>
                 </div>
-                <h2 className="text-2xl font-bold text-primary mb-4">User Created Successfully!</h2>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                  <h3 className="text-sm font-medium text-green-800 mb-2">User Details:</h3>
-                  <div className="text-sm text-green-700 space-y-1">
+                <h2 className="mb-4 text-2xl font-bold text-primary">User Created Successfully!</h2>
+                <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
+                  <h3 className="mb-2 text-sm font-medium text-green-800">User Details:</h3>
+                  <div className="space-y-1 text-sm text-green-700">
                     <p>
                       <strong>Name:</strong> {createdUser?.name}
                     </p>
@@ -336,16 +336,16 @@ function CreateUserContent() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-3 justify-center">
+                <div className="flex justify-center gap-3">
                   <button
                     onClick={resetForm}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
                     Create Another User
                   </button>
                   <Link
                     href="/admin/users"
-                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    className="rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                   >
                     View All Users
                   </Link>
@@ -361,31 +361,31 @@ function CreateUserContent() {
   return (
     <AppShell>
       <div className="flex flex-col gap-6 p-6">
-        <div className="flex flex-row gap-4 items-start justify-between w-full">
+        <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-montserrat font-semibold text-xl text-primary">Create New User</h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <h1 className="font-montserrat text-xl font-semibold text-primary">Create New User</h1>
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Create a new user account for your barangay
             </p>
           </div>
           <Link href="/admin/users">
-            <button className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+            <button className="rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700">
               Back to Users
             </button>
           </Link>
         </div>
 
-        <div className="max-w-2xl mx-auto w-full">
-          <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="mx-auto w-full max-w-2xl">
+          <div className="rounded-lg bg-white p-8 shadow-md">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* General Error */}
               {errors.general && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                   <div className="flex items-start gap-3">
-                    <span className="text-red-600 mt-0.5">⚠️</span>
+                    <span className="mt-0.5 text-red-600">⚠️</span>
                     <div>
-                      <h4 className="text-red-800 font-medium">User Creation Failed</h4>
-                      <p className="text-red-700 text-sm">{errors.general}</p>
+                      <h4 className="font-medium text-red-800">User Creation Failed</h4>
+                      <p className="text-sm text-red-700">{errors.general}</p>
                     </div>
                   </div>
                 </div>
@@ -393,7 +393,7 @@ function CreateUserContent() {
 
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">
+                <h3 className="border-b pb-2 text-lg font-medium text-primary">
                   Personal Information
                 </h3>
 
@@ -452,14 +452,14 @@ function CreateUserContent() {
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">
+                <h3 className="border-b pb-2 text-lg font-medium text-primary">
                   Location Information
                 </h3>
 
                 <div>
                   <label
                     htmlFor="barangayCode"
-                    className="block text-sm font-medium text-secondary mb-2"
+                    className="mb-2 block text-sm font-medium text-secondary"
                   >
                     Barangay *
                   </label>
@@ -475,7 +475,7 @@ function CreateUserContent() {
 
               {/* Role Selection */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">Account Type</h3>
+                <h3 className="border-b pb-2 text-lg font-medium text-primary">Account Type</h3>
 
                 {loadingRoles ? (
                   <div className="space-y-2">
@@ -485,7 +485,7 @@ function CreateUserContent() {
                     >
                       Role *
                     </label>
-                    <div className="p-3 border border-gray-300 rounded-md bg-gray-50">
+                    <div className="rounded-md border border-gray-300 bg-gray-50 p-3">
                       <span className="text-sm text-muted">Loading roles...</span>
                     </div>
                   </div>
@@ -510,7 +510,7 @@ function CreateUserContent() {
 
               {/* Account Security */}
               <div className="space-y-4">
-                <h3 className="text-lg font-medium text-primary border-b pb-2">Account Security</h3>
+                <h3 className="border-b pb-2 text-lg font-medium text-primary">Account Security</h3>
 
                 <InputField
                   label="Password *"
@@ -541,12 +541,12 @@ function CreateUserContent() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex w-full items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      className="-ml-1 mr-3 size-5 animate-spin text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
