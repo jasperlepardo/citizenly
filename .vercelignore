@@ -6,4 +6,4 @@ temp-*
 
 # Exclude test files  
 **/*.test.*
-**/*.spec.*
+**/*.spec.*# Trigger Vercel deployment with updated environment variables
