@@ -13,5 +13,8 @@ export * from './organisms';
 // Templates - Page-level layouts
 export * from './templates';
 
-// Other specialized components
+// Utils - HOCs and utility components
+export * from './utils';
+
+// Providers - React context providers
 export * from './providers';
