@@ -7,10 +7,13 @@ import { randomBytes, createHash, timingSafeEqual } from 'crypto';
 
 const CSRF_SECRET = process.env.CSRF_SECRET;
 
-if (!CSRF_SECRET && process.env.NODE_ENV === 'production') {
-  throw new Error(
-    'CSRF_SECRET environment variable must be set in production. Generate a secure random string of at least 32 characters.'
-  );
+// Only validate CSRF_SECRET if we're in a production environment AND it's needed
+function validateCSRFSecret() {
+  if (!CSRF_SECRET && process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'CSRF_SECRET environment variable must be set in production. Generate a secure random string of at least 32 characters.'
+    );
+  }
 }
 
 // Use a development-only fallback for non-production environments
@@ -31,6 +34,7 @@ export interface CSRFToken {
  * @returns Object containing the token and its signature
  */
 export function generateCSRFToken(): CSRFToken {
+  validateCSRFSecret();
   const timestamp = Date.now();
   const randomToken = randomBytes(32).toString('base64url');
 
@@ -56,6 +60,7 @@ export function generateCSRFToken(): CSRFToken {
  */
 export function verifyCSRFToken(token: string, timestamp: number, signature: string): boolean {
   try {
+    validateCSRFSecret();
     // Check if token has expired
     if (Date.now() - timestamp > TOKEN_EXPIRY) {
       console.warn('[CSRF] Token expired');
