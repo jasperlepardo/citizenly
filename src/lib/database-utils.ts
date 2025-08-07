@@ -94,7 +94,6 @@ export const shouldRefreshStats = async (maxAgeHours: number = 24): Promise<bool
 
     // For now, we'll use a simple time-based refresh strategy
     // You could enhance this by storing last refresh time in a separate table
-    const now = new Date();
     const refreshKey = `last_refresh_${maxAgeHours}h`;
     const lastRefreshTime = localStorage.getItem(refreshKey);
 

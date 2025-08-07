@@ -1,1 +1,1 @@
-export { PopulationPyramid } from './PopulationPyramid';
+export { default as PopulationPyramid } from './PopulationPyramid';

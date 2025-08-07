@@ -7,8 +7,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { DropdownSelect } from '../molecules';
-import { FormGroup } from '../molecules';
+import { DropdownSelect } from '../../../molecules';
+import { FormGroup } from '../../../molecules';
 
 // Family position types (matches database enum)
 export type FamilyPosition =

@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import UserProfile from '@/components/auth/UserProfile';
+import { UserProfile } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 import { logError } from '@/lib/secure-logger';
 

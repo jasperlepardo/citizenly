@@ -46,7 +46,7 @@ const MockThemeProvider = ({ children, initialTheme = 'system' }: { children: Re
 
 // Note: This story requires the ThemeContext implementation
 const meta = {
-  title: 'Atoms/ThemeToggle',
+  title: 'Molecules/ThemeToggle',
   component: ThemeToggle,
   parameters: {
     layout: 'centered',

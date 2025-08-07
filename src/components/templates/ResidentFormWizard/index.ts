@@ -1,1 +1,1 @@
-export { ResidentFormWizard } from './ResidentFormWizard';
+export { default as ResidentFormWizard } from './ResidentFormWizard';

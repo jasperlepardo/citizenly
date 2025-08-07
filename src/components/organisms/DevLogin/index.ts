@@ -1,1 +1,1 @@
-export { DevLogin } from './DevLogin';
+export { default as DevLogin } from './DevLogin';

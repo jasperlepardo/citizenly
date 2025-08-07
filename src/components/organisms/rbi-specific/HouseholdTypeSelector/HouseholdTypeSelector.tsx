@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { Radio, RadioGroup } from '../atoms';
+import { Radio, RadioGroup } from '../../../atoms';
 
 // Household types (matches database enum)
 export type HouseholdType =

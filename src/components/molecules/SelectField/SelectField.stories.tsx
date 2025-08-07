@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { SelectField } from './SelectField';
 
 const meta: Meta<typeof SelectField> = {
-  title: 'UI/SelectField',
+  title: 'Molecules/SelectField',
   component: SelectField,
   parameters: {
     layout: 'centered',

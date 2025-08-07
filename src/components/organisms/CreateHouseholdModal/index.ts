@@ -1,1 +1,1 @@
-export { CreateHouseholdModal } from './CreateHouseholdModal';
+export { default as CreateHouseholdModal } from './CreateHouseholdModal';

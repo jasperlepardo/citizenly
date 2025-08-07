@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import GenericPieChart from './GenericPieChart';
+import GenericPieChart from '../GenericPieChart/GenericPieChart';
 
 interface CivilStatusData {
   single: number;

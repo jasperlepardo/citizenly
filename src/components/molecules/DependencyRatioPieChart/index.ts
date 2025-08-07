@@ -1,1 +1,1 @@
-export { DependencyRatioPieChart } from './DependencyRatioPieChart';
+export { default as DependencyRatioPieChart } from './DependencyRatioPieChart';

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { DashboardLayout } from '@/components/templates';
 import { ProtectedRoute } from '@/components/organisms';
-import { InputField } from '@/components/molecules/InputField';
+import { InputField } from '@/components/molecules';
 
 function HelpContent() {
   const [searchTerm, setSearchTerm] = useState('');

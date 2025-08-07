@@ -1,0 +1,247 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Organisms/Overview" />
+
+# Organisms
+
+## Complex UI Components
+
+Organisms are complex UI components composed of groups of molecules, atoms, and other organisms. They form distinct sections of an interface and represent complete functional areas of the user experience.
+
+## Characteristics of Organisms
+
+### 🦠 **Complex Composition**
+- Built from molecules, atoms, and other organisms
+- Handle multiple related functionalities
+- Represent complete interface sections
+
+### 🎭 **Context-Aware**
+- Understand their role within the larger application
+- May contain business logic and data management
+- Adapt behavior based on application state
+
+### 🏗️ **Structural Components**
+- Form major sections of pages and layouts
+- Provide the scaffolding for user workflows
+- Connect multiple user interactions into coherent experiences
+
+## Organisms in This System
+
+### Authentication & User Management
+- **LoginForm** - Complete login interface with validation
+- **DevLogin** - Development environment login
+- **UserProfile** - User information display and editing
+- **ProtectedRoute** - Route protection and authentication checking
+
+### Data Management & Display
+- **DataTable** - Complete table with sorting, filtering, and pagination
+- **Table** - Basic table organism for structured data
+- **PopulationPyramid** - Complex demographic data visualization
+
+### Navigation & Layout
+- **Navigation** - Main application navigation system
+
+### Forms & Data Entry
+- **PersonalInformation** - Complete personal data form section
+- **EducationEmployment** - Education and work information form
+- **SectoralInfo** - Sectoral classification form section
+- **PhysicalCharacteristics** - Physical attributes form
+- **MigrantInformation** - Migration status and history
+- **MotherMaidenName** - Family information section
+
+### Selection & Search
+- **AddressSearch** - Location search with geocoding
+- **AddressSelector** - Hierarchical address selection
+- **BarangaySelector** - Barangay (district) selection interface
+- **SimpleBarangaySelector** - Simplified district selector
+- **PSOCSelector** - Occupation classification selector
+- **HouseholdSelector** - Household selection interface
+- **HouseholdTypeSelector** - Household type classification
+- **ResidentStatusSelector** - Resident status determination
+- **FamilyRelationshipSelector** - Family relationship selection
+
+### Advanced Search & Filtering
+- **AdvancedSearchBar** - Complex search with multiple filters
+
+### Modals & Overlays
+- **CreateHouseholdModal** - Household creation workflow
+
+## Design Principles
+
+### 🧠 **Smart Components**
+Organisms can contain business logic and understand application context.
+
+### 🔗 **Integration Points**
+They connect with external systems, APIs, and global application state.
+
+### 📐 **Layout Responsibility**
+Organisms handle the arrangement and spacing of their constituent parts.
+
+### 🔄 **Workflow Management**
+They orchestrate multi-step processes and complex user interactions.
+
+## Usage Guidelines
+
+### ✅ **Do:**
+- Group related functionality into cohesive organisms
+- Handle complex state management within organisms
+- Connect to external data sources and APIs
+- Provide clear loading and error states
+- Make organisms configurable for different contexts
+
+### ❌ **Don't:**
+- Create organisms that are too generic or too specific
+- Duplicate functionality across similar organisms
+- Make organisms too large or unwieldy
+- Ignore accessibility in complex interactions
+- Hard-code business rules that should be configurable
+
+## Example Usage
+
+```tsx
+// ✅ Good: Complete functional section
+<PersonalInformation
+  value={personalData}
+  onChange={setPersonalData}
+  errors={validationErrors}
+  onValidate={validatePersonalInfo}
+/>
+
+// ✅ Good: Data management organism
+<DataTable
+  data={residents}
+  columns={residentColumns}
+  onSort={handleSort}
+  onFilter={handleFilter}
+  onRowClick={viewResident}
+  loading={isLoading}
+  error={error}
+/>
+
+// ✅ Good: Complex search interface
+<AdvancedSearchBar
+  onSearch={performSearch}
+  filters={availableFilters}
+  savedSearches={userSavedSearches}
+  onSaveSearch={saveSearch}
+/>
+
+// ❌ Bad: Too simple (should be a molecule)
+<SimpleCard>
+  <CardTitle>Title</CardTitle>
+  <CardContent>Content</CardContent>
+</SimpleCard>
+
+// ❌ Bad: Too complex (should be broken into multiple organisms)
+<MegaForm>
+  <PersonalInfo />
+  <AddressInfo />
+  <EmploymentInfo />
+  <FamilyInfo />
+  <HealthInfo />
+  <FinancialInfo />
+  <DocumentsInfo />
+</MegaForm>
+```
+
+## State Management
+
+Organisms typically handle:
+- **Complex local state** (form data, UI state, temporary data)
+- **External data** (API calls, database queries)
+- **Business logic** (validation, calculations, workflows)
+- **Error handling** (user-friendly error messages, retry logic)
+- **Loading states** (spinners, skeleton screens, progress indicators)
+
+Communication patterns:
+- **Props down** - Configuration and data from parent components
+- **Events up** - User actions and state changes to parent components
+- **Context** - Shared state and global application data
+- **External APIs** - Direct communication with backend services
+
+## Testing Organisms
+
+Each organism should be tested for:
+- **Integration** - All constituent parts work together
+- **User Workflows** - Complete user tasks function correctly
+- **Data Handling** - API integration and data transformation
+- **Error Scenarios** - Network failures, validation errors, edge cases
+- **Performance** - Loading times and responsiveness
+- **Accessibility** - Complex interactions remain accessible
+- **Responsive Design** - Behavior on different screen sizes
+
+## Common Patterns
+
+### Form Organisms
+```tsx
+interface FormOrganismProps {
+  data: FormData;
+  onChange: (data: FormData) => void;
+  onSubmit: () => Promise<void>;
+  errors?: ValidationErrors;
+  loading?: boolean;
+  disabled?: boolean;
+}
+```
+
+### Data Display Organisms
+```tsx
+interface DataOrganismProps {
+  data: DataItem[];
+  loading?: boolean;
+  error?: string;
+  onAction: (action: string, item: DataItem) => void;
+  configuration?: DisplayConfig;
+}
+```
+
+### Interactive Organisms
+```tsx
+interface InteractiveOrganismProps {
+  onComplete: (result: Result) => void;
+  initialState?: InitialState;
+  options?: OrganismOptions;
+  context?: ApplicationContext;
+}
+```
+
+## Best Practices
+
+### 📊 **Data Management**
+- Use proper loading states and error handling
+- Implement optimistic updates where appropriate
+- Cache data to improve performance
+- Handle offline scenarios gracefully
+
+### 🎨 **User Experience**
+- Provide clear feedback for all user actions
+- Use skeleton screens for loading content
+- Implement proper focus management
+- Support keyboard navigation
+
+### 🧪 **Development**
+- Break complex organisms into smaller, focused ones
+- Use composition over inheritance
+- Write comprehensive integration tests
+- Document complex business logic
+
+### ♿ **Accessibility**
+- Provide proper ARIA labels for complex interactions
+- Manage focus for dynamic content
+- Support screen readers with live regions
+- Test with assistive technologies
+
+## Contributing
+
+When creating new organisms:
+
+1. **Define the scope** - What complete functionality does this provide?
+2. **Identify components** - What molecules and atoms are needed?
+3. **Design data flow** - How will state and events be managed?
+4. **Plan for edge cases** - Loading, error, empty, and offline states
+5. **Consider accessibility** - Complex interactions need special attention
+6. **Write integration tests** - Test the complete user workflow
+7. **Document thoroughly** - Complex components need detailed documentation
+8. **Performance test** - Ensure responsive behavior with real data
+
+Remember: Organisms should provide complete, meaningful functionality while remaining focused on their specific domain.

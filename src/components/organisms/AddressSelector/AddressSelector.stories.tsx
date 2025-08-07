@@ -3,7 +3,7 @@ import { useState } from 'react';
 import AddressSelector, { type AddressSelection } from './AddressSelector';
 
 const meta = {
-  title: 'Address/AddressSelector',
+  title: 'Organisms/AddressSelector',
   component: AddressSelector,
   parameters: {
     layout: 'centered',

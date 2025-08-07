@@ -1,1 +1,1 @@
-export { SectoralInfo } from './SectoralInfo';
+export { default as SectoralInfo } from './SectoralInfo';

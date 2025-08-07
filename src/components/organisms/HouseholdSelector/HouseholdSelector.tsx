@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import CreateHouseholdModal from './CreateHouseholdModal';
+import { CreateHouseholdModal } from '../CreateHouseholdModal';
 import { logger, logError } from '@/lib/secure-logger';
 
 interface Region {

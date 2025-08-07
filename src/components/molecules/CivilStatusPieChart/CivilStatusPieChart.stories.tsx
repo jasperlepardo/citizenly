@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import CivilStatusPieChart from './CivilStatusPieChart';
 
 const meta = {
-  title: 'Dashboard/CivilStatusPieChart',
+  title: 'Molecules/CivilStatusPieChart',
   component: CivilStatusPieChart,
   parameters: {
     layout: 'centered',

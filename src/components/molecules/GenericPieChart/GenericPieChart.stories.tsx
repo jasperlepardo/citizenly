@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import GenericPieChart from './GenericPieChart';
 
 const meta = {
-  title: 'Dashboard/GenericPieChart',
+  title: 'Molecules/GenericPieChart',
   component: GenericPieChart,
   parameters: {
     layout: 'centered',

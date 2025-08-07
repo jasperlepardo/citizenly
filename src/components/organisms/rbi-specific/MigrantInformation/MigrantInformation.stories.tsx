@@ -3,7 +3,7 @@ import { useState } from 'react';
 import MigrantInformation, { MigrationInformation } from './MigrantInformation';
 
 const meta: Meta<typeof MigrantInformation> = {
-  title: 'RBI Components/Organisms/MigrantInformation',
+  title: 'Organisms/MigrantInformation',
   component: MigrantInformation,
   parameters: {
     layout: 'padded',

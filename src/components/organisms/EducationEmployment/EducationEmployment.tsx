@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputField, DropdownSelect } from '@/components/molecules';
-import PSOCSelector from './PSOCSelector';
+import { PSOCSelector } from '../PSOCSelector';
 
 export interface EducationEmploymentData {
   educationLevel: string;

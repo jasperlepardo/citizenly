@@ -52,7 +52,7 @@ const mockDecorator = (Story: any, context: any) => {
 };
 
 const meta: Meta<typeof DevLogin> = {
-  title: 'Auth/DevLogin',
+  title: 'Organisms/DevLogin',
   component: DevLogin,
   parameters: {
     layout: 'centered',

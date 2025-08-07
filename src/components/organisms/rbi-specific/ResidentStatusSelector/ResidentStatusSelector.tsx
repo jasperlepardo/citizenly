@@ -7,8 +7,8 @@
  */
 
 import React from 'react';
-import { Radio, RadioGroup, Textarea } from '../atoms';
-import { FormGroup, InputField } from '../molecules';
+import { Radio, RadioGroup, Textarea } from '../../../atoms';
+import { FormGroup, InputField } from '../../../molecules';
 
 // Resident Status Interface (matches database schema)
 export interface ResidentStatus {

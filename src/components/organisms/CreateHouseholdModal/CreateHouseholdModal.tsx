@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '../atoms';
+import { Button } from '../../atoms';
 import { logger, logError } from '@/lib/secure-logger';
 
 interface CreateHouseholdModalProps {

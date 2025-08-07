@@ -7,8 +7,8 @@
  */
 
 import React, { useState } from 'react';
-import { Checkbox, Button } from '../atoms';
-import { FormGroup, InputField, DropdownSelect } from '../molecules';
+import { Checkbox, Button } from '../../../atoms';
+import { FormGroup, InputField, DropdownSelect } from '../../../molecules';
 
 // Mother's Information Interface (matches database schema)
 export interface MotherInformation {

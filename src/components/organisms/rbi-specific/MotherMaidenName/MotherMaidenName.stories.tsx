@@ -3,7 +3,7 @@ import { useState } from 'react';
 import MotherMaidenName, { MotherInformation } from './MotherMaidenName';
 
 const meta: Meta<typeof MotherMaidenName> = {
-  title: 'RBI Components/Organisms/MotherMaidenName',
+  title: 'Organisms/MotherMaidenName',
   component: MotherMaidenName,
   parameters: {
     layout: 'padded',

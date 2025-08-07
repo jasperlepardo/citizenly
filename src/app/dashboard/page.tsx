@@ -7,12 +7,12 @@ import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import {
   StatsCard,
-  PopulationPyramid,
   DependencyRatioPieChart,
   SexDistributionPieChart,
   CivilStatusPieChart,
   EmploymentStatusPieChart,
 } from '@/components/molecules';
+import { PopulationPyramid } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
 import { getBarangayStatsOptimized } from '@/lib/database-utils';
 
@@ -171,13 +171,13 @@ function DashboardContent() {
       // If using cached stats, we still need household count
       let householdCount = summaryData.total_households;
       if (cachedStats && householdCount === 0) {
-        const { data: householdsData, error: householdsError } = await supabase
+        const { count: householdsCount, error: householdsError } = await supabase
           .from('households')
           .select('*', { count: 'exact', head: true })
           .eq('barangay_code', barangayCode);
 
         if (!householdsError) {
-          householdCount = householdsData?.count || 0;
+          householdCount = householdsCount || 0;
         }
       }
 

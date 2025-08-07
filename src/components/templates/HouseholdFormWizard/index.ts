@@ -1,1 +1,1 @@
-export { HouseholdFormWizard } from './HouseholdFormWizard';
+export { default as HouseholdFormWizard } from './HouseholdFormWizard';

@@ -1,1 +1,1 @@
-export { SexDistributionPieChart } from './SexDistributionPieChart';
+export { default as SexDistributionPieChart } from './SexDistributionPieChart';

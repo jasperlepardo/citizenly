@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import EmploymentStatusPieChart from './EmploymentStatusPieChart';
 
 const meta = {
-  title: 'Dashboard/EmploymentStatusPieChart',
+  title: 'Molecules/EmploymentStatusPieChart',
   component: EmploymentStatusPieChart,
   parameters: {
     layout: 'centered',

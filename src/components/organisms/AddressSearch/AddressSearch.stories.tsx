@@ -4,7 +4,7 @@ import AddressSearch from './AddressSearch';
 import { type AddressHierarchy } from '@/lib/database';
 
 const meta = {
-  title: 'Address/AddressSearch',
+  title: 'Organisms/AddressSearch',
   component: AddressSearch,
   parameters: {
     layout: 'centered',

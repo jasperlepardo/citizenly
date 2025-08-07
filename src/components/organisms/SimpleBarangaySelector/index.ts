@@ -1,1 +1,1 @@
-export { SimpleBarangaySelector } from './SimpleBarangaySelector';
+export { default as SimpleBarangaySelector } from './SimpleBarangaySelector';

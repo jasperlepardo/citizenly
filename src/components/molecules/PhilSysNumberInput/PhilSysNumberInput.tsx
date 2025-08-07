@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { InputField } from '../molecules';
+import { InputField } from '../InputField';
 import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto';
 import { logError } from '@/lib/secure-logger';
 

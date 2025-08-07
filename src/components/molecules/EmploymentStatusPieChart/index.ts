@@ -1,1 +1,1 @@
-export { EmploymentStatusPieChart } from './EmploymentStatusPieChart';
+export { default as EmploymentStatusPieChart } from './EmploymentStatusPieChart';

@@ -1,1 +1,1 @@
-export { GenericPieChart } from './GenericPieChart';
+export { default as GenericPieChart } from './GenericPieChart';

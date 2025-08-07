@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { DropdownSelect } from '../molecules';
+import { DropdownSelect } from '../../molecules';
 import {
   getRegions,
   getProvincesByRegion,

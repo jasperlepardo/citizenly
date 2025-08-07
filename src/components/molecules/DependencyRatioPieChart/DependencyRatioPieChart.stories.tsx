@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import DependencyRatioPieChart from './DependencyRatioPieChart';
 
 const meta = {
-  title: 'Dashboard/DependencyRatioPieChart',
+  title: 'Molecules/DependencyRatioPieChart',
   component: DependencyRatioPieChart,
   parameters: {
     layout: 'centered',

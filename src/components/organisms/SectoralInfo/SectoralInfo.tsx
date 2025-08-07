@@ -7,8 +7,8 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Checkbox } from '../atoms';
-import { FormGroup } from '../molecules';
+import { Checkbox } from '../../atoms';
+import { FormGroup } from '../../molecules';
 
 // Sectoral Information Interface (matches database schema)
 export interface SectoralInformation {

@@ -5,7 +5,7 @@ import PhysicalCharacteristics, {
 } from './PhysicalCharacteristics';
 
 const meta: Meta<typeof PhysicalCharacteristics> = {
-  title: 'RBI Components/Organisms/PhysicalCharacteristics',
+  title: 'Organisms/PhysicalCharacteristics',
   component: PhysicalCharacteristics,
   parameters: {
     layout: 'padded',

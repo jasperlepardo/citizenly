@@ -3,7 +3,7 @@ import { useState } from 'react';
 import HouseholdTypeSelector from './HouseholdTypeSelector';
 
 const meta: Meta<typeof HouseholdTypeSelector> = {
-  title: 'RBI Components/Organisms/HouseholdTypeSelector',
+  title: 'Organisms/HouseholdTypeSelector',
   component: HouseholdTypeSelector,
   parameters: {
     layout: 'padded',

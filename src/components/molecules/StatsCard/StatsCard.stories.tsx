@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import StatsCard from './StatsCard';
 
 const meta = {
-  title: 'Dashboard/StatsCard',
+  title: 'Molecules/StatsCard',
   component: StatsCard,
   parameters: {
     layout: 'centered',

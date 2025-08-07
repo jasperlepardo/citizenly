@@ -7,9 +7,9 @@
  */
 
 import React from 'react';
-import { Textarea } from '../atoms';
-import { DropdownSelect } from '../molecules';
-import { FormGroup, InputField } from '../molecules';
+import { Textarea } from '../../../atoms';
+import { DropdownSelect } from '../../../molecules';
+import { FormGroup, InputField } from '../../../molecules';
 
 // Physical Characteristics Interface (matches database schema)
 export interface PhysicalCharacteristics {

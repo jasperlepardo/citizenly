@@ -18,14 +18,14 @@ interface ListItem {
 }
 
 interface KeyboardNavigableListProps {
-  items: ListItem[];
-  onSelect: (item: ListItem) => void;
-  selectedId?: string;
-  className?: string;
-  itemClassName?: string;
-  role?: 'listbox' | 'menu' | 'tablist';
-  orientation?: 'horizontal' | 'vertical';
-  wrap?: boolean;
+  readonly items: ListItem[];
+  readonly onSelect: (item: ListItem) => void;
+  readonly selectedId?: string;
+  readonly className?: string;
+  readonly itemClassName?: string;
+  readonly role?: 'listbox' | 'menu' | 'tablist';
+  readonly orientation?: 'horizontal' | 'vertical';
+  readonly wrap?: boolean;
 }
 
 export default function KeyboardNavigableList({
@@ -105,11 +105,11 @@ export default function KeyboardNavigableList({
 
 // Composable list item component
 interface ListItemComponentProps {
-  children: React.ReactNode;
-  selected?: boolean;
-  disabled?: boolean;
-  onClick?: () => void;
-  className?: string;
+  readonly children: React.ReactNode;
+  readonly selected?: boolean;
+  readonly disabled?: boolean;
+  readonly onClick?: () => void;
+  readonly className?: string;
 }
 
 export function ListItem({

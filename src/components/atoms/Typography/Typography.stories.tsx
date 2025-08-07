@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Typography, Heading1, Heading2, Heading3, BodyText, Caption } from './Typography';
+import { Typography, Heading1, Heading2, Heading3, BodyText as BodyTextComponent, Caption } from './Typography';
 
 const meta = {
   title: 'Atoms/Typography',
@@ -56,7 +56,7 @@ export const AllHeadings: Story = {
   ),
 };
 
-export const BodyText: Story = {
+export const BodyTextVariants: Story = {
   render: () => (
     <div className="space-y-4 max-w-2xl">
       <Typography variant="bodyLarge">
@@ -127,10 +127,10 @@ export const ConvenienceComponents: Story = {
       <Heading2>Convenience Component - H2</Heading2>
       <Heading3>Convenience Component - H3</Heading3>
       
-      <BodyText>
+      <BodyTextComponent>
         Convenience Component - Body Text. This uses the BodyText component 
         which automatically applies the bodyMedium variant and paragraph element.
-      </BodyText>
+      </BodyTextComponent>
       
       <Caption>
         Convenience Component - Caption. This uses the Caption component 
@@ -152,23 +152,23 @@ export const SemanticUsage: Story = {
       
       <Heading2>Section Heading</Heading2>
       
-      <BodyText>
+      <BodyTextComponent>
         This is a regular paragraph with standard body text. It's designed for 
         optimal readability and comfortable reading experience.
-      </BodyText>
+      </BodyTextComponent>
       
-      <BodyText>
+      <BodyTextComponent>
         Here's another paragraph to show proper spacing and typography hierarchy. 
         Notice how the text flows naturally and maintains good readability.
-      </BodyText>
+      </BodyTextComponent>
       
       <Heading3>Subsection</Heading3>
       
-      <BodyText>
+      <BodyTextComponent>
         You can also use <Typography variant="code" as="code">inline code</Typography> within 
         paragraphs, or <Typography as="strong" className="font-semibold">strong emphasis</Typography> for 
         important information.
-      </BodyText>
+      </BodyTextComponent>
       
       <Caption>
         Figure 1: This would be a caption for an image or diagram, 

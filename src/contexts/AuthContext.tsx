@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -52,7 +52,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { readonly children: React.ReactNode }) {
   // Core auth state
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -285,7 +285,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (timeoutId) clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, [loadUserProfile]);
+  }, []);
 
   // Sign in method
   const signIn = async (email: string, password: string) => {
@@ -373,7 +373,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return role?.name === 'barangay_admin';
   };
 
-  const value: AuthContextType = {
+  const value: AuthContextType = useMemo(() => ({
     // State
     session,
     user,
@@ -394,7 +394,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isInRole,
     canAccessBarangay,
     isBarangayAdmin,
-  };
+  }), [
+    session,
+    user,
+    userProfile,
+    role,
+    loading,
+    profileLoading,
+    profileError,
+    signIn,
+    signOut,
+    loadProfile,
+    refreshProfile,
+    hasPermission,
+    isInRole,
+    canAccessBarangay,
+    isBarangayAdmin,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

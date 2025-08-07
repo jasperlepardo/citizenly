@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import PopulationPyramid from './PopulationPyramid';
 
 const meta = {
-  title: 'Dashboard/PopulationPyramid',
+  title: 'Organisms/PopulationPyramid',
   component: PopulationPyramid,
   parameters: {
     layout: 'centered',

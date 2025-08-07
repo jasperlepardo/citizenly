@@ -3,7 +3,7 @@ import { useState } from 'react';
 import FamilyRelationshipSelector from './FamilyRelationshipSelector';
 
 const meta: Meta<typeof FamilyRelationshipSelector> = {
-  title: 'RBI Components/Organisms/FamilyRelationshipSelector',
+  title: 'Organisms/FamilyRelationshipSelector',
   component: FamilyRelationshipSelector,
   parameters: {
     layout: 'padded',

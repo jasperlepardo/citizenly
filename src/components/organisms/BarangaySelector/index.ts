@@ -1,1 +1,1 @@
-export { BarangaySelector } from './BarangaySelector';
+export { default as BarangaySelector } from './BarangaySelector';

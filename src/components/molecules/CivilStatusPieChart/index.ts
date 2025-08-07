@@ -1,1 +1,1 @@
-export { CivilStatusPieChart } from './CivilStatusPieChart';
+export { default as CivilStatusPieChart } from './CivilStatusPieChart';

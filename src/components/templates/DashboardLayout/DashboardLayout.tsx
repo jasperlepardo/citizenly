@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { SimpleSearchBar as SearchBar } from '@/components/molecules';
-import Navigation from '@/components/organisms/Navigation';
+import { SearchBar } from '@/components/molecules';
+import { Navigation } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
-import { SkipNavigation } from '@/components/atoms/SkipNavigation';
+import SkipNavigation from '@/components/atoms/SkipNavigation';
 import { getEnvironment, isDevelopment, isStaging } from '@/lib/environment';
 
 // User dropdown component with details (from original dashboard)

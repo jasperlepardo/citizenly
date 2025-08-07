@@ -101,7 +101,7 @@ const sampleProfiles = {
 };
 
 const meta: Meta<typeof UserProfile> = {
-  title: 'Auth/UserProfile',
+  title: 'Organisms/UserProfile',
   component: UserProfile,
   parameters: {
     layout: 'centered',

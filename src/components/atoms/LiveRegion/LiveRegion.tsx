@@ -8,10 +8,10 @@
 import React, { useEffect, useState } from 'react';
 
 interface LiveRegionProps {
-  message: string;
-  type?: 'polite' | 'assertive';
-  visible?: boolean;
-  clearAfter?: number; // milliseconds
+  readonly message: string;
+  readonly type?: 'polite' | 'assertive';
+  readonly visible?: boolean;
+  readonly clearAfter?: number; // milliseconds
 }
 
 export default function LiveRegion({

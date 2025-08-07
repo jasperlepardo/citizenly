@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ResidentStatusSelector, { ResidentStatus } from './ResidentStatusSelector';
 
 const meta: Meta<typeof ResidentStatusSelector> = {
-  title: 'RBI Components/Organisms/ResidentStatusSelector',
+  title: 'Organisms/ResidentStatusSelector',
   component: ResidentStatusSelector,
   parameters: {
     layout: 'padded',
@@ -52,7 +52,7 @@ const defaultResidentStatus: ResidentStatus = {
 };
 
 // Template component for interactive stories
-const ResidentStatusTemplate = (args: { value: ResidentStatus; [key: string]: unknown }) => {
+const ResidentStatusTemplate = (args: { value: ResidentStatus; onChange?: (value: ResidentStatus) => void; [key: string]: unknown }) => {
   const [value, setValue] = useState<ResidentStatus>(args.value);
 
   return (
@@ -61,7 +61,9 @@ const ResidentStatusTemplate = (args: { value: ResidentStatus; [key: string]: un
       value={value}
       onChange={newValue => {
         setValue(newValue);
-        args.onChange?.(newValue);
+        if (typeof args.onChange === 'function') {
+          args.onChange(newValue);
+        }
       }}
     />
   );

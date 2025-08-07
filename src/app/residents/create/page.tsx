@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
-import { ResidentFormWizard } from '@/components/templates/ResidentFormWizard';
+import { ResidentFormWizard } from '@/components/templates';
 
 export const dynamic = 'force-dynamic';
 

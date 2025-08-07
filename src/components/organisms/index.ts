@@ -2,6 +2,7 @@
 
 // General UI Organisms
 export { DataTable } from './DataTable';
+export type { TableColumn, TableAction, DataTableProps } from './DataTable';
 export { Navigation } from './Navigation';
 export { Table } from './Table';
 export { CreateHouseholdModal } from './CreateHouseholdModal';
@@ -11,6 +12,10 @@ export { PopulationPyramid } from './PopulationPyramid';
 // Address Components
 export { AddressSearch } from './AddressSearch';
 export { AddressSelector } from './AddressSelector';
+
+// Search Components
+export { AdvancedSearchBar } from './AdvancedSearchBar';
+export type { SearchFilter } from './AdvancedSearchBar';
 
 // Authentication Components
 export { DevLogin } from './DevLogin';

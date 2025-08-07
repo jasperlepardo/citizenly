@@ -27,7 +27,7 @@ const MockAuthProvider = ({ children, authValue }: { children: React.ReactNode; 
 };
 
 const meta: Meta<typeof LoginForm> = {
-  title: 'Auth/LoginForm',
+  title: 'Organisms/LoginForm',
   component: LoginForm,
   parameters: {
     layout: 'centered',

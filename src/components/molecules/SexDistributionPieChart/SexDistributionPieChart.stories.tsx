@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SexDistributionPieChart from './SexDistributionPieChart';
 
 const meta = {
-  title: 'Dashboard/SexDistributionPieChart',
+  title: 'Molecules/SexDistributionPieChart',
   component: SexDistributionPieChart,
   parameters: {
     layout: 'centered',

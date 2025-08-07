@@ -7,8 +7,8 @@
  */
 
 import React, { useState } from 'react';
-import { Textarea, Radio, RadioGroup } from '../atoms';
-import { FormGroup, InputField } from '../molecules';
+import { Textarea, Radio, RadioGroup } from '../../../atoms';
+import { FormGroup, InputField } from '../../../molecules';
 
 // Migration Information Interface (matches database schema)
 export interface MigrationInformation {

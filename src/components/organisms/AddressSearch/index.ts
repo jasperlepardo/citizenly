@@ -1,1 +1,1 @@
-export { AddressSearch } from './AddressSearch';
+export { default as AddressSearch } from './AddressSearch';

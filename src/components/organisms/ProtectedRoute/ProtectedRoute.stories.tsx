@@ -51,7 +51,7 @@ const ProtectedContent = () => (
 );
 
 const meta: Meta<typeof ProtectedRoute> = {
-  title: 'Auth/ProtectedRoute',
+  title: 'Organisms/ProtectedRoute',
   component: ProtectedRoute,
   parameters: {
     layout: 'centered',

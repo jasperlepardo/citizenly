@@ -1,1 +1,1 @@
-export { PSOCSelector } from './PSOCSelector';
+export { default as PSOCSelector } from './PSOCSelector';
