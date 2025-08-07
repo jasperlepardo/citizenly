@@ -220,6 +220,7 @@ function NavigationItemComponent({
         className={`${navigationStyles.base} ${
           isActive ? navigationStyles.active : navigationStyles.inactive
         }`}
+        aria-current={isActive ? 'page' : undefined}
       >
         {item.icon && (
           <item.icon

@@ -275,25 +275,25 @@ function HouseholdsContent() {
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
               Households
             </h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <p className="font-montserrat text-sm font-normal text-secondary">
               {totalCount} total households
             </p>
           </div>
           <div className="flex gap-3">
             <Link
               href="/households/create"
-              className="bg-green-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              className="font-montserrat rounded bg-green-600 px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
             >
               Create Household
             </Link>
             <Link
               href="/residents/create"
-              className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-base hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="font-montserrat rounded bg-blue-600 px-4 py-2 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Add new resident
             </Link>
@@ -301,9 +301,9 @@ function HouseholdsContent() {
         </div>
 
         {/* Table */}
-        <div className="bg-surface overflow-hidden">
+        <div className="overflow-hidden bg-surface">
           {/* Table Header */}
-          <div className="bg-surface flex items-center p-0 border-b border-default">
+          <div className="flex items-center border-b p-0 bg-surface border-default">
             {/* Select All */}
             <div className="flex items-center p-2">
               <div className="flex items-center gap-2">
@@ -311,23 +311,23 @@ function HouseholdsContent() {
                   onClick={handleSelectAll}
                   variant="neutral-outline"
                   size="sm"
-                  className="h-4 w-4 p-0 min-w-0"
+                  className="size-4 min-w-0 p-0"
                 >
-                  {selectedAll && <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>}
+                  {selectedAll && <div className="size-2 rounded-sm bg-blue-600"></div>}
                 </Button>
-                <span className="font-montserrat font-normal text-base text-primary">
+                <span className="font-montserrat text-base font-normal text-primary">
                   Select all
                 </span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-1 ml-4">
+            <div className="ml-4 flex items-center gap-1">
               <Button
                 variant="neutral-outline"
                 size="sm"
                 leftIcon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -344,7 +344,7 @@ function HouseholdsContent() {
                 variant="neutral-outline"
                 size="sm"
                 leftIcon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -361,7 +361,7 @@ function HouseholdsContent() {
                 variant="neutral-outline"
                 size="sm"
                 leftIcon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -375,7 +375,7 @@ function HouseholdsContent() {
               </Button>
 
               <Button variant="neutral-outline" size="sm" iconOnly>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -388,8 +388,8 @@ function HouseholdsContent() {
 
             {/* Search Households */}
             <div className="ml-auto mr-0">
-              <div className="w-60 bg-surface border border-default rounded p-2 flex items-center gap-2">
-                <div className="w-5 h-5 text-secondary">
+              <div className="flex w-60 items-center gap-2 rounded border p-2 bg-surface border-default">
+                <div className="size-5 text-secondary">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -404,51 +404,51 @@ function HouseholdsContent() {
                   placeholder="Search households"
                   value={localSearchTerm}
                   onChange={e => setLocalSearchTerm(e.target.value)}
-                  className="flex-1 font-montserrat font-normal text-base text-primary placeholder-muted outline-none bg-transparent"
+                  className="font-montserrat flex-1 bg-transparent text-base font-normal outline-none text-primary placeholder:text-muted"
                 />
               </div>
             </div>
           </div>
 
           {/* Table Column Headers */}
-          <div className="bg-background-muted flex items-center p-0 border-b border-default">
+          <div className="flex items-center border-b p-0 bg-background-muted border-default">
             {/* Checkbox Column */}
-            <div className="p-2 w-12"></div>
+            <div className="w-12 p-2"></div>
 
             {/* Column Headers */}
-            <div className="flex-1 grid grid-cols-5 gap-4 p-2">
+            <div className="grid flex-1 grid-cols-5 gap-4 p-2">
               <div className="p-2">
-                <span className="font-montserrat font-medium text-sm text-secondary">
+                <span className="font-montserrat text-sm font-medium text-secondary">
                   Household #
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat font-medium text-sm text-secondary">
+                <span className="font-montserrat text-sm font-medium text-secondary">
                   Head of Household
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat font-medium text-sm text-secondary">Address</span>
+                <span className="font-montserrat text-sm font-medium text-secondary">Address</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat font-medium text-sm text-secondary">Members</span>
+                <span className="font-montserrat text-sm font-medium text-secondary">Members</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat font-medium text-sm text-secondary">Created</span>
+                <span className="font-montserrat text-sm font-medium text-secondary">Created</span>
               </div>
             </div>
 
             {/* Actions Column */}
-            <div className="p-1 w-12"></div>
+            <div className="w-12 p-1"></div>
           </div>
 
           {/* Table Rows */}
-          <div className="divide-y divide-border-light">
+          <div className="divide-border-light divide-y">
             {(() => {
               if (loading) {
                 return (
                   <div className="p-8 text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
                     <p className="mt-2 text-secondary">Loading households...</p>
                   </div>
                 );
@@ -462,7 +462,7 @@ function HouseholdsContent() {
                 return (
                   <div className="p-8 text-center">
                     <p className="text-secondary">{noResultsMessage}</p>
-                    <p className="text-sm text-muted mt-2">
+                    <p className="mt-2 text-sm text-muted">
                       Households are created automatically when you add residents.
                     </p>
                   </div>
@@ -472,7 +472,7 @@ function HouseholdsContent() {
               return households.map(household => (
                 <div
                   key={household.code}
-                  className="bg-surface flex items-center p-0 hover:bg-surface-hover transition-colors"
+                  className="flex items-center p-0 transition-colors bg-surface hover:bg-surface-hover"
                 >
                   {/* Checkbox */}
                   <div className="p-2">
@@ -480,41 +480,41 @@ function HouseholdsContent() {
                       onClick={() => handleSelectHousehold(household.code)}
                       variant="neutral-outline"
                       size="sm"
-                      className="h-4 w-4 p-0 min-w-0"
+                      className="size-4 min-w-0 p-0"
                     >
                       {selectedHouseholds.has(household.code) && (
-                        <div className="w-2 h-2 bg-blue-600 rounded-sm"></div>
+                        <div className="size-2 rounded-sm bg-blue-600"></div>
                       )}
                     </Button>
                   </div>
 
                   {/* Content Columns */}
-                  <div className="flex-1 grid grid-cols-5 gap-4 p-2">
+                  <div className="grid flex-1 grid-cols-5 gap-4 p-2">
                     <div className="p-2">
                       <Link
                         href={`/households/${household.code}`}
-                        className="font-montserrat font-normal text-base text-blue-600 hover:text-blue-800 hover:underline"
+                        className="font-montserrat text-base font-normal text-blue-600 hover:text-blue-800 hover:underline"
                       >
                         #{household.code}
                       </Link>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat font-normal text-base text-primary">
+                      <div className="font-montserrat text-base font-normal text-primary">
                         {formatFullName(household.head_resident)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat font-normal text-base text-primary">
+                      <div className="font-montserrat text-base font-normal text-primary">
                         {formatFullAddress(household)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat font-normal text-base text-primary">
+                      <div className="font-montserrat text-base font-normal text-primary">
                         {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat font-normal text-base text-primary">
+                      <div className="font-montserrat text-base font-normal text-primary">
                         {new Date(household.created_at).toLocaleDateString()}
                       </div>
                     </div>
@@ -524,7 +524,7 @@ function HouseholdsContent() {
                   <div className="p-1">
                     <Button variant="neutral-outline" size="sm" iconOnly>
                       <svg
-                        className="w-5 h-5"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

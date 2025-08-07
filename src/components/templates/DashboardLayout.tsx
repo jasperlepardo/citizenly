@@ -7,12 +7,15 @@ import { supabase } from '@/lib/supabase';
 import { SimpleSearchBar as SearchBar } from '@/components/molecules';
 import Navigation from '@/components/organisms/Navigation';
 import { logger, logError } from '@/lib/secure-logger';
+import { SkipNavigation } from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
   const { userProfile, role, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [barangayInfo, setBarangayInfo] = useState<string>('Loading...');
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   // Load barangay information from database
   const loadBarangayInfo = async (barangayCode: string) => {
@@ -69,6 +72,32 @@ function UserDropdown() {
     }
   }, [userProfile?.barangay_code]);
 
+  // Handle click outside and Escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -81,23 +110,27 @@ function UserDropdown() {
   if (!userProfile) return null;
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       {/* Dropdown trigger */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 hover:bg-neutral-100 px-2 py-1 rounded transition-colors"
+        className="flex items-center gap-2 rounded px-2 py-1 transition-colors hover:bg-neutral-100"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label="User menu"
       >
         <div
-          className="w-8 h-8 rounded-full bg-center bg-cover bg-no-repeat"
+          className="size-8 rounded-full bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage:
               'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23e5e7eb"%2F%3E%3Ctext x="16" y="20" text-anchor="middle" fill="%236b7280" font-size="14"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
           }}
         ></div>
-        <div className="font-montserrat font-medium text-sm text-neutral-800">
+        <div className="font-montserrat text-sm font-medium text-neutral-800">
           {`${userProfile.first_name} ${userProfile.last_name}`}
         </div>
-        <div className="w-4 h-4 text-neutral-600">
+        <div className="size-4 text-neutral-600">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -112,16 +145,18 @@ function UserDropdown() {
       {/* Dropdown menu */}
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
-
-          {/* Dropdown content */}
-          <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-neutral-200 z-20">
+          {/* Dropdown content - no backdrop needed with proper event handling */}
+          <div
+            className="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-neutral-200 bg-white shadow-xl"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="user-menu-button"
+          >
             {/* User info header */}
-            <div className="p-4 border-b border-neutral-100">
+            <div className="border-b border-neutral-100 p-4">
               <div className="flex items-center gap-3">
                 <div
-                  className="w-12 h-12 rounded-full bg-center bg-cover bg-no-repeat"
+                  className="size-12 rounded-full bg-cover bg-center bg-no-repeat"
                   style={{
                     backgroundImage:
                       'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"%3E%3Ccircle cx="24" cy="24" r="24" fill="%23e5e7eb"%2F%3E%3Ctext x="24" y="30" text-anchor="middle" fill="%236b7280" font-size="20"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
@@ -134,7 +169,7 @@ function UserDropdown() {
                   <div className="font-montserrat text-sm text-neutral-600">
                     {userProfile.email}
                   </div>
-                  <div className="font-montserrat text-xs text-blue-600 mt-1">
+                  <div className="font-montserrat mt-1 text-xs text-blue-600">
                     {role?.name || 'User'}
                   </div>
                 </div>
@@ -142,15 +177,15 @@ function UserDropdown() {
             </div>
 
             {/* Barangay info */}
-            <div className="p-4 border-b border-neutral-100">
-              <div className="text-xs font-montserrat font-medium text-neutral-500 mb-2">
+            <div className="border-b border-neutral-100 p-4">
+              <div className="font-montserrat mb-2 text-xs font-medium text-neutral-500">
                 BARANGAY ASSIGNMENT
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="size-2 rounded-full bg-green-500"></div>
                 <div className="font-montserrat text-sm text-neutral-800">{barangayInfo}</div>
               </div>
-              <div className="font-montserrat text-xs text-neutral-500 mt-1">
+              <div className="font-montserrat mt-1 text-xs text-neutral-500">
                 Code: {userProfile.barangay_code}
               </div>
             </div>
@@ -162,19 +197,19 @@ function UserDropdown() {
                   // Add profile editing functionality later
                   alert('Profile editing coming soon!');
                 }}
-                className="w-full text-left px-3 py-2 font-montserrat text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors"
+                className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-neutral-700 transition-colors hover:bg-neutral-100"
               >
                 Edit Profile
               </button>
               <Link href="/settings">
-                <button className="w-full text-left px-3 py-2 font-montserrat text-sm text-neutral-700 hover:bg-neutral-100 rounded transition-colors">
+                <button className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-neutral-700 transition-colors hover:bg-neutral-100">
                   Settings
                 </button>
               </Link>
               <hr className="my-2 border-neutral-200" />
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-3 py-2 font-montserrat text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
+                className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
               >
                 Sign Out
               </button>
@@ -199,18 +234,25 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip Navigation */}
+      <SkipNavigation skipTo="#main-content" />
+
       {/* Sidebar */}
-      <div className="fixed left-0 top-0 h-full w-56 bg-background-secondary border-r border-default">
-        <div className="flex flex-col h-full">
+      <aside
+        id="navigation"
+        className="bg-background-secondary fixed left-0 top-0 h-full w-56 border-r border-default"
+        aria-label="Main navigation"
+      >
+        <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-default">
-            <h1 className="font-montserrat font-semibold text-xl text-primary">Citizenly</h1>
+          <div className="flex items-center justify-between border-b px-4 py-3 border-default">
+            <h1 className="font-montserrat text-xl font-semibold text-primary">Citizenly</h1>
             <div className="flex gap-1">
-              <div className="bg-neutral-200 p-0.5 rounded">
-                <div className="w-5 h-5 bg-neutral-400 rounded"></div>
+              <div className="rounded bg-neutral-200 p-0.5">
+                <div className="size-5 rounded bg-neutral-400"></div>
               </div>
-              <div className="bg-neutral-200 p-0.5 rounded">
-                <div className="w-5 h-5 bg-neutral-400 rounded"></div>
+              <div className="rounded bg-neutral-200 p-0.5">
+                <div className="size-5 rounded bg-neutral-400"></div>
               </div>
             </div>
           </div>
@@ -223,12 +265,12 @@ export default function DashboardLayout({
           {/* Environment Indicator */}
           <div className="px-4 pb-4"></div>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="ml-56">
+      <main className="ml-56">
         {/* Top Header */}
-        <div className="bg-background border-b border-default px-6 py-2">
+        <header className="border-b px-6 py-2 bg-background border-default">
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="w-[497px]">
@@ -250,8 +292,8 @@ export default function DashboardLayout({
 
             {/* User Section */}
             <div className="flex items-center gap-2">
-              <div className="bg-neutral-200 p-2 rounded-full">
-                <div className="w-5 h-5 text-neutral-600">
+              <div className="rounded-full bg-neutral-200 p-2">
+                <div className="size-5 text-neutral-600">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -262,8 +304,8 @@ export default function DashboardLayout({
                   </svg>
                 </div>
               </div>
-              <div className="bg-neutral-200 p-2 rounded-full">
-                <div className="w-5 h-5 text-neutral-600">
+              <div className="rounded-full bg-neutral-200 p-2">
+                <div className="size-5 text-neutral-600">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -274,15 +316,17 @@ export default function DashboardLayout({
                   </svg>
                 </div>
               </div>
-              <div className="w-6 h-0 border-l border-neutral-300"></div>
+              <div className="h-0 w-6 border-l border-neutral-300"></div>
               <UserDropdown />
             </div>
           </div>
-        </div>
+        </header>
 
         {/* Page Content */}
-        {children}
-      </div>
+        <div id="main-content" role="main" tabIndex={-1}>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

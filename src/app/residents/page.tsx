@@ -200,7 +200,7 @@ function ResidentsContent() {
       render: (value: string, record: Resident) => (
         <Link
           href={`/residents/${record.id}`}
-          className="font-montserrat font-normal text-base text-blue-600 hover:text-blue-800 hover:underline"
+          className="font-montserrat text-base font-normal text-blue-600 hover:text-blue-800 hover:underline"
         >
           {value}
         </Link>
@@ -296,15 +296,15 @@ function ResidentsContent() {
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">Residents</h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">Residents</h1>
+            <p className="font-montserrat text-sm font-normal text-secondary">
               {pagination.total} total residents
             </p>
           </div>
           <Link href="/residents/create">
-            <Button variant="primary" size="md">
+            <Button variant="primary" size="default">
               Add new resident
             </Button>
           </Link>

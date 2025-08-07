@@ -196,18 +196,18 @@ function HelpContent() {
       <div className="p-6">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="font-montserrat font-semibold text-xl text-foreground mb-0.5">
+          <h1 className="font-montserrat text-foreground mb-0.5 text-xl font-semibold">
             Help & Support
           </h1>
-          <p className="font-montserrat font-normal text-sm text-secondary">
+          <p className="font-montserrat text-sm font-normal text-secondary">
             Find answers to common questions and get help using Citizenly
           </p>
         </div>
 
         {/* Help Content */}
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-montserrat font-semibold text-lg text-primary">
+        <div className="rounded-lg border p-6 bg-surface border-default">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="font-montserrat text-lg font-semibold text-primary">
               Frequently Asked Questions
             </h2>
             <div className="text-sm text-muted">
@@ -226,7 +226,7 @@ function HelpContent() {
               clearable
               onClear={() => setFaqSearchTerm('')}
               leftIcon={
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -241,9 +241,9 @@ function HelpContent() {
           {/* FAQ Sections by Category */}
           <div className="space-y-8">
             {Object.keys(groupedContent).length === 0 ? (
-              <div className="text-center py-8">
+              <div className="py-8 text-center">
                 <svg
-                  className="w-12 h-12 text-muted mx-auto mb-4"
+                  className="mx-auto mb-4 size-12 text-muted"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -255,7 +255,7 @@ function HelpContent() {
                     d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.034 0-3.91.616-5.471 1.661M12 3a9 9 0 11-7.99 14.045l1.45 1.45A7.966 7.966 0 0012 21a7.966 7.966 0 006.54-3.505l1.45-1.45A9 9 0 0012 3z"
                   />
                 </svg>
-                <h3 className="font-montserrat font-medium text-foreground mb-2">
+                <h3 className="font-montserrat text-foreground mb-2 font-medium">
                   No results found
                 </h3>
                 <p className="font-montserrat text-sm text-secondary">
@@ -266,8 +266,8 @@ function HelpContent() {
               Object.entries(groupedContent).map(([category, items]) => (
                 <div key={category} className="space-y-4">
                   {/* Category Header */}
-                  <div className="border-b border-default pb-2">
-                    <h3 className="font-montserrat font-semibold text-lg text-primary flex items-center space-x-2">
+                  <div className="border-b pb-2 border-default">
+                    <h3 className="font-montserrat flex items-center space-x-2 text-lg font-semibold text-primary">
                       <span className="text-primary-600">{getCategoryIcon(category)}</span>
                       <span>{category}</span>
                       <span className="text-sm font-normal text-muted">({items.length})</span>
@@ -281,21 +281,21 @@ function HelpContent() {
                       return (
                         <div
                           key={globalIndex}
-                          className="border border-default rounded-lg overflow-hidden"
+                          className="overflow-hidden rounded-lg border border-default"
                         >
                           <button
                             onClick={() => toggleAccordion(globalIndex)}
-                            className="w-full px-4 py-4 text-left bg-background-muted hover:bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-inset"
+                            className="w-full p-4 text-left transition-colors bg-background-muted hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex-1 pr-4">
-                                <h4 className="font-montserrat font-semibold text-base text-foreground">
+                                <h4 className="font-montserrat text-foreground text-base font-semibold">
                                   {item.question}
                                 </h4>
                               </div>
                               <svg
-                                className={`w-5 h-5 text-muted transition-transform flex-shrink-0 ${
-                                  isAccordionOpen(globalIndex) ? 'transform rotate-180' : ''
+                                className={`size-5 shrink-0 transition-transform text-muted ${
+                                  isAccordionOpen(globalIndex) ? 'rotate-180' : ''
                                 }`}
                                 fill="none"
                                 stroke="currentColor"
@@ -311,8 +311,8 @@ function HelpContent() {
                             </div>
                           </button>
                           {isAccordionOpen(globalIndex) && (
-                            <div className="px-4 py-4 bg-surface border-t border-default">
-                              <p className="font-montserrat text-sm text-secondary leading-relaxed">
+                            <div className="border-t p-4 bg-surface border-default">
+                              <p className="font-montserrat text-sm leading-relaxed text-secondary">
                                 {item.answer}
                               </p>
                             </div>
@@ -328,11 +328,11 @@ function HelpContent() {
         </div>
 
         {/* Contact Support Card */}
-        <div className="mt-6 bg-primary-50 rounded-lg border border-primary-200 p-6">
+        <div className="mt-6 rounded-lg border border-primary-200 bg-primary-50 p-6">
           <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-100">
               <svg
-                className="w-6 h-6 text-primary-600"
+                className="size-6 text-primary-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -346,14 +346,14 @@ function HelpContent() {
               </svg>
             </div>
             <div>
-              <h3 className="font-montserrat font-semibold text-base text-primary-900 mb-2">
+              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary-900">
                 Still need help?
               </h3>
-              <p className="font-montserrat text-sm text-primary-800 mb-4">
+              <p className="font-montserrat mb-4 text-sm text-primary-800">
                 If you can&apos;t find the answer you&apos;re looking for, our support team is here
                 to help.
               </p>
-              <button className="bg-primary-600 text-white px-4 py-2 rounded font-montserrat font-medium text-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors">
+              <button className="font-montserrat rounded bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                 Contact Support
               </button>
             </div>

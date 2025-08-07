@@ -12,12 +12,12 @@ function JudiciaryContent() {
     <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
               Judiciary Services
             </h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Barangay justice system, mediation, and dispute resolution services
             </p>
           </div>
@@ -27,10 +27,10 @@ function JudiciaryContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="bg-surface rounded-lg border border-default p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+        <div className="rounded-lg border p-8 text-center bg-surface border-default">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-amber-100">
             <svg
-              className="w-8 h-8 text-amber-600"
+              className="size-8 text-amber-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -43,21 +43,21 @@ function JudiciaryContent() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-primary mb-2">
+          <h3 className="mb-2 text-lg font-semibold text-primary">
             Barangay Justice System Coming Soon
           </h3>
-          <p className="text-secondary mb-6 max-w-md mx-auto">
+          <p className="mx-auto mb-6 max-w-md text-secondary">
             We&apos;re developing a comprehensive digital platform for barangay justice
             administration. This will streamline case management, mediation processes, and legal
             documentation.
           </p>
 
           {/* Feature Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-red-100 rounded-full flex items-center justify-center">
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-red-100">
                 <svg
-                  className="w-4 h-4 text-red-600"
+                  className="size-4 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -70,16 +70,16 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Case Management</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Case Management</h4>
               <p className="text-xs text-secondary">
                 Track cases, hearings, and legal proceedings digitally
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-green-100">
                 <svg
-                  className="w-4 h-4 text-green-600"
+                  className="size-4 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -92,16 +92,16 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Mediation Services</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Mediation Services</h4>
               <p className="text-xs text-secondary">
                 Facilitate dispute resolution and community mediation
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-blue-100">
                 <svg
-                  className="w-4 h-4 text-blue-600"
+                  className="size-4 text-blue-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -114,7 +114,7 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Legal Records</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Legal Records</h4>
               <p className="text-xs text-secondary">
                 Maintain comprehensive legal documentation and archives
               </p>
@@ -122,10 +122,10 @@ function JudiciaryContent() {
           </div>
 
           {/* Additional Info */}
-          <div className="mt-8 bg-amber-50 rounded-lg p-4 border border-amber-200">
-            <div className="flex items-center justify-center mb-2">
+          <div className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <div className="mb-2 flex items-center justify-center">
               <svg
-                className="w-5 h-5 text-amber-600 mr-2"
+                className="mr-2 size-5 text-amber-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -137,7 +137,7 @@ function JudiciaryContent() {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span className="font-medium text-sm text-amber-800">Important Note</span>
+              <span className="text-sm font-medium text-amber-800">Important Note</span>
             </div>
             <p className="text-xs text-amber-700">
               This system will comply with Barangay Justice System guidelines and ensure proper
