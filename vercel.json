@@ -23,7 +23,7 @@
   "build": {
     "env": {
       "NEXT_PUBLIC_APP_ENV": "production",
-      "CSRF_SECRET": "vercel-build-csrf-secret-32-chars-long-placeholder"
+      "CSRF_SECRET": "@csrf-secret"
     }
   },
   "alias": [
