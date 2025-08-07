@@ -17,12 +17,9 @@
       "hotfix/*": true
     }
   },
-  "env": {
-    "NEXT_PUBLIC_APP_ENV": "production"
-  },
   "build": {
     "env": {
-      "NEXT_PUBLIC_APP_ENV": "production"
+      "CSRF_SECRET": "@csrf-secret"
     }
   },
   "alias": [
