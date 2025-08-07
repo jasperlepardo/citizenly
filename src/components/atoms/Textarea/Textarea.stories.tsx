@@ -109,7 +109,8 @@ export const ReadOnly: Story = {
   args: {
     label: 'Terms and Conditions',
     readOnly: true,
-    value: 'These are the terms and conditions that you have agreed to. This content is read-only and cannot be modified.',
+    value:
+      'These are the terms and conditions that you have agreed to. This content is read-only and cannot be modified.',
     helperText: 'Please review the terms above.',
   },
 };
@@ -117,10 +118,10 @@ export const ReadOnly: Story = {
 export const WithCharacterCount: Story = {
   args: {
     label: 'Tweet',
-    placeholder: 'What\'s happening?',
+    placeholder: "What's happening?",
     maxLength: 280,
     showCharCount: true,
-    helperText: 'Share what\'s on your mind!',
+    helperText: "Share what's on your mind!",
   },
 };
 
@@ -135,34 +136,18 @@ export const Resizable: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div className="flex flex-col gap-6 w-full max-w-md">
-      <Textarea
-        size="sm"
-        label="Small textarea"
-        placeholder="Small size textarea..."
-      />
-      <Textarea
-        size="md"
-        label="Medium textarea"
-        placeholder="Medium size textarea..."
-      />
-      <Textarea
-        size="lg"
-        label="Large textarea"
-        placeholder="Large size textarea..."
-      />
+    <div className="flex w-full max-w-md flex-col gap-6">
+      <Textarea size="sm" label="Small textarea" placeholder="Small size textarea..." />
+      <Textarea size="md" label="Medium textarea" placeholder="Medium size textarea..." />
+      <Textarea size="lg" label="Large textarea" placeholder="Large size textarea..." />
     </div>
   ),
 };
 
 export const Variants: Story = {
   render: () => (
-    <div className="flex flex-col gap-6 w-full max-w-md">
-      <Textarea
-        variant="default"
-        label="Default"
-        value="Default textarea variant"
-      />
+    <div className="flex w-full max-w-md flex-col gap-6">
+      <Textarea variant="default" label="Default" value="Default textarea variant" />
       <Textarea
         variant="error"
         label="Error"
@@ -175,69 +160,66 @@ export const Variants: Story = {
         value="Success textarea variant"
         helperText="Everything looks good!"
       />
-      <Textarea
-        variant="disabled"
-        label="Disabled"
-        value="Disabled textarea variant"
-        disabled
-      />
-      <Textarea
-        variant="readonly"
-        label="Read-only"
-        value="Read-only textarea variant"
-        readOnly
-      />
+      <Textarea variant="disabled" label="Disabled" value="Disabled textarea variant" disabled />
+      <Textarea variant="readonly" label="Read-only" value="Read-only textarea variant" readOnly />
     </div>
   ),
 };
 
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    const [showError, setShowError] = useState(false);
-    
-    const maxLength = 200;
-    const isNearLimit = value.length > maxLength * 0.8;
-    const isOverLimit = value.length > maxLength;
+const InteractiveTextareaComponent = () => {
+  const [value, setValue] = useState('');
+  const [showError, setShowError] = useState(false);
 
-    return (
-      <div className="w-full max-w-md">
-        <Textarea
-          label="Interactive Textarea"
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setShowError(e.target.value.length === 0);
-          }}
-          placeholder="Start typing to see character count..."
-          maxLength={maxLength}
-          showCharCount={true}
-          errorMessage={showError ? 'This field cannot be empty' : undefined}
-          helperText={
-            isOverLimit
-              ? `You've exceeded the limit by ${value.length - maxLength} characters`
-              : isNearLimit
-              ? 'You\'re approaching the character limit'
+  const maxLength = 200;
+  const isNearLimit = value.length > maxLength * 0.8;
+  const isOverLimit = value.length > maxLength;
+
+  return (
+    <div className="w-full max-w-md">
+      <Textarea
+        label="Interactive Textarea"
+        value={value}
+        onChange={e => {
+          setValue(e.target.value);
+          setShowError(e.target.value.length === 0);
+        }}
+        placeholder="Start typing to see character count..."
+        maxLength={maxLength}
+        showCharCount={true}
+        errorMessage={showError ? 'This field cannot be empty' : undefined}
+        helperText={
+          isOverLimit
+            ? `You've exceeded the limit by ${value.length - maxLength} characters`
+            : isNearLimit
+              ? "You're approaching the character limit"
               : 'Share your thoughts with us'
+        }
+        resizable
+      />
+
+      <div className="mt-4 flex gap-2">
+        <button
+          onClick={() => setValue('')}
+          className="rounded bg-gray-500 px-3 py-1 text-sm text-white"
+        >
+          Clear
+        </button>
+        <button
+          onClick={() =>
+            setValue('This is a sample text to demonstrate the textarea functionality.')
           }
-          resizable
-        />
-        
-        <div className="mt-4 flex gap-2">
-          <button
-            onClick={() => setValue('')}
-            className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
-          >
-            Clear
-          </button>
-          <button
-            onClick={() => setValue('This is a sample text to demonstrate the textarea functionality.')}
-            className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
-          >
-            Fill Sample
-          </button>
-        </div>
+          className="rounded bg-blue-500 px-3 py-1 text-sm text-white"
+        >
+          Fill Sample
+        </button>
       </div>
-    );
+    </div>
+  );
+};
+
+export const Interactive: Story = {
+  args: {
+    placeholder: 'Interactive demo',
   },
+  render: () => <InteractiveTextareaComponent />,
 };

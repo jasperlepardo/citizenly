@@ -119,131 +119,133 @@ export const Sizes: Story = {
   ),
 };
 
-export const RadioGroupExample: Story = {
-  render: () => {
-    const [value, setValue] = useState('option1');
+const RadioGroupExampleComponent = () => {
+  const [value, setValue] = useState('option1');
 
-    return (
-      <RadioGroup
-        name="example-group"
-        value={value}
-        onChange={setValue}
-        orientation="vertical"
-      >
-        <Radio
-          value="option1"
-          label="Option 1"
-          description="This is the first option"
-        />
-        <Radio
-          value="option2"
-          label="Option 2"
-          description="This is the second option"
-        />
-        <Radio
-          value="option3"
-          label="Option 3"
-          description="This is the third option"
-        />
-      </RadioGroup>
-    );
+  return (
+    <RadioGroup name="example-group" value={value} onChange={setValue} orientation="vertical">
+      <Radio value="option1" label="Option 1" description="This is the first option" />
+      <Radio value="option2" label="Option 2" description="This is the second option" />
+      <Radio value="option3" label="Option 3" description="This is the third option" />
+    </RadioGroup>
+  );
+};
+
+export const RadioGroupExample: Story = {
+  args: {
+    label: 'Radio group example',
+    value: 'option1',
+    name: 'example-group',
   },
+  render: () => <RadioGroupExampleComponent />,
+};
+
+const RadioGroupHorizontalComponent = () => {
+  const [value, setValue] = useState('small');
+
+  return (
+    <RadioGroup name="size-group" value={value} onChange={setValue} orientation="horizontal">
+      <Radio value="small" label="Small" />
+      <Radio value="medium" label="Medium" />
+      <Radio value="large" label="Large" />
+    </RadioGroup>
+  );
 };
 
 export const RadioGroupHorizontal: Story = {
-  render: () => {
-    const [value, setValue] = useState('small');
-
-    return (
-      <RadioGroup
-        name="size-group"
-        value={value}
-        onChange={setValue}
-        orientation="horizontal"
-      >
-        <Radio value="small" label="Small" />
-        <Radio value="medium" label="Medium" />
-        <Radio value="large" label="Large" />
-      </RadioGroup>
-    );
+  args: {
+    label: 'Horizontal radio group',
+    value: 'small',
+    name: 'size-group',
   },
+  render: () => <RadioGroupHorizontalComponent />,
+};
+
+const RadioGroupWithErrorComponent = () => {
+  const [value, setValue] = useState('');
+
+  return (
+    <RadioGroup
+      name="error-group"
+      value={value}
+      onChange={setValue}
+      errorMessage="Please select an option"
+    >
+      <Radio value="yes" label="Yes" />
+      <Radio value="no" label="No" />
+      <Radio value="maybe" label="Maybe" />
+    </RadioGroup>
+  );
 };
 
 export const RadioGroupWithError: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-
-    return (
-      <RadioGroup
-        name="error-group"
-        value={value}
-        onChange={setValue}
-        errorMessage="Please select an option"
-      >
-        <Radio value="yes" label="Yes" />
-        <Radio value="no" label="No" />
-        <Radio value="maybe" label="Maybe" />
-      </RadioGroup>
-    );
+  args: {
+    label: 'Radio group with error',
+    value: '',
+    name: 'error-group',
   },
+  render: () => <RadioGroupWithErrorComponent />,
+};
+
+const InteractiveRadioComponent = () => {
+  const [selectedValue, setSelectedValue] = useState('');
+  const [variant, setVariant] = useState<'default' | 'primary' | 'error'>('default');
+
+  const options = [
+    { value: 'apple', label: 'Apple', description: 'A sweet red fruit' },
+    { value: 'banana', label: 'Banana', description: 'A yellow curved fruit' },
+    { value: 'cherry', label: 'Cherry', description: 'A small red stone fruit' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="mb-4 flex gap-2">
+        <button
+          onClick={() => setVariant('default')}
+          className={`rounded px-3 py-1 text-sm ${variant === 'default' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          Default
+        </button>
+        <button
+          onClick={() => setVariant('primary')}
+          className={`rounded px-3 py-1 text-sm ${variant === 'primary' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          Primary
+        </button>
+        <button
+          onClick={() => setVariant('error')}
+          className={`rounded px-3 py-1 text-sm ${variant === 'error' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+        >
+          Error
+        </button>
+      </div>
+
+      <RadioGroup name="interactive-group" value={selectedValue} onChange={setSelectedValue}>
+        {options.map(option => (
+          <Radio
+            key={option.value}
+            value={option.value}
+            label={option.label}
+            description={option.description}
+            variant={variant}
+          />
+        ))}
+      </RadioGroup>
+
+      {selectedValue && (
+        <p className="mt-4 rounded bg-gray-100 p-3">
+          Selected: {options.find(opt => opt.value === selectedValue)?.label}
+        </p>
+      )}
+    </div>
+  );
 };
 
 export const Interactive: Story = {
-  render: () => {
-    const [selectedValue, setSelectedValue] = useState('');
-    const [variant, setVariant] = useState<'default' | 'primary' | 'error'>('default');
-
-    const options = [
-      { value: 'apple', label: 'Apple', description: 'A sweet red fruit' },
-      { value: 'banana', label: 'Banana', description: 'A yellow curved fruit' },
-      { value: 'cherry', label: 'Cherry', description: 'A small red stone fruit' },
-    ];
-
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setVariant('default')}
-            className={`px-3 py-1 rounded text-sm ${variant === 'default' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            Default
-          </button>
-          <button
-            onClick={() => setVariant('primary')}
-            className={`px-3 py-1 rounded text-sm ${variant === 'primary' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            Primary
-          </button>
-          <button
-            onClick={() => setVariant('error')}
-            className={`px-3 py-1 rounded text-sm ${variant === 'error' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            Error
-          </button>
-        </div>
-
-        <RadioGroup
-          name="interactive-group"
-          value={selectedValue}
-          onChange={setSelectedValue}
-        >
-          {options.map((option) => (
-            <Radio
-              key={option.value}
-              value={option.value}
-              label={option.label}
-              description={option.description}
-              variant={variant}
-            />
-          ))}
-        </RadioGroup>
-
-        {selectedValue && (
-          <p className="mt-4 p-3 bg-gray-100 rounded">
-            Selected: {options.find(opt => opt.value === selectedValue)?.label}
-          </p>
-        )}
-      </div>
-    );
+  args: {
+    label: 'Interactive radio demo',
+    value: '',
+    name: 'interactive-group',
   },
+  render: () => <InteractiveRadioComponent />,
 };

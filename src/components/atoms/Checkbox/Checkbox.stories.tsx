@@ -119,41 +119,43 @@ export const Sizes: Story = {
   ),
 };
 
-export const Interactive: Story = {
-  render: () => {
-    const [checked, setChecked] = useState(false);
-    const [indeterminate, setIndeterminate] = useState(false);
+const InteractiveCheckbox = () => {
+  const [checked, setChecked] = useState(false);
+  const [indeterminate, setIndeterminate] = useState(false);
 
-    return (
-      <div className="flex flex-col gap-4">
-        <Checkbox
-          label="Interactive checkbox"
-          description="Click to toggle the state"
-          checked={checked}
-          indeterminate={indeterminate}
-          onChange={(e) => {
-            setChecked(e.target.checked);
+  return (
+    <div className="flex flex-col gap-4">
+      <Checkbox
+        label="Interactive checkbox"
+        description="Click to toggle the state"
+        checked={checked}
+        indeterminate={indeterminate}
+        onChange={e => {
+          setChecked(e.target.checked);
+          setIndeterminate(false);
+        }}
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={() => setIndeterminate(!indeterminate)}
+          className="rounded bg-blue-500 px-3 py-1 text-sm text-white"
+        >
+          Toggle Indeterminate
+        </button>
+        <button
+          onClick={() => {
+            setChecked(false);
             setIndeterminate(false);
           }}
-        />
-        <div className="flex gap-2">
-          <button
-            onClick={() => setIndeterminate(!indeterminate)}
-            className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
-          >
-            Toggle Indeterminate
-          </button>
-          <button
-            onClick={() => {
-              setChecked(false);
-              setIndeterminate(false);
-            }}
-            className="px-3 py-1 bg-gray-500 text-white rounded text-sm"
-          >
-            Reset
-          </button>
-        </div>
+          className="rounded bg-gray-500 px-3 py-1 text-sm text-white"
+        >
+          Reset
+        </button>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const Interactive: Story = {
+  render: () => <InteractiveCheckbox />,
 };
