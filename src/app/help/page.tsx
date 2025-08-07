@@ -127,19 +127,19 @@ function HelpContent() {
       <div className="p-6">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="font-montserrat font-semibold text-xl text-neutral-900 mb-0.5">
+          <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-neutral-900">
             Help & Support
           </h1>
-          <p className="font-montserrat font-normal text-sm text-neutral-600">
+          <p className="font-montserrat text-sm font-normal text-neutral-600">
             Find answers to common questions and get help using Citizenly
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           {/* Categories Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-surface rounded-lg border border-default p-4">
-              <h3 className="font-montserrat font-semibold text-base text-primary mb-4">
+            <div className="rounded-lg border p-4 bg-surface border-default">
+              <h3 className="font-montserrat mb-4 text-base font-semibold text-primary">
                 Categories
               </h3>
               <div className="space-y-2">
@@ -147,10 +147,10 @@ function HelpContent() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    className={`w-full rounded-lg p-3 text-left transition-colors ${
                       selectedCategory === category.id
-                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
-                        : 'hover:bg-surface-hover text-secondary'
+                        ? 'border border-blue-200 bg-blue-100 text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'text-secondary hover:bg-surface-hover'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -165,8 +165,8 @@ function HelpContent() {
 
           {/* Help Content */}
           <div className="lg:col-span-3">
-            <div className="bg-surface rounded-lg border border-default p-6">
-              <h2 className="font-montserrat font-semibold text-lg text-primary mb-6">
+            <div className="rounded-lg border p-6 bg-surface border-default">
+              <h2 className="font-montserrat mb-6 text-lg font-semibold text-primary">
                 {helpCategories.find(cat => cat.id === selectedCategory)?.name}
               </h2>
 
@@ -176,10 +176,10 @@ function HelpContent() {
                     key={index}
                     className="border-b border-neutral-100 pb-6 last:border-b-0 last:pb-0"
                   >
-                    <h4 className="font-montserrat font-semibold text-base text-neutral-900 mb-3">
+                    <h4 className="font-montserrat mb-3 text-base font-semibold text-neutral-900">
                       {item.question}
                     </h4>
-                    <p className="font-montserrat text-sm text-neutral-700 leading-relaxed">
+                    <p className="font-montserrat text-sm leading-relaxed text-neutral-700">
                       {item.answer}
                     </p>
                   </div>
@@ -188,11 +188,11 @@ function HelpContent() {
             </div>
 
             {/* Contact Support Card */}
-            <div className="mt-6 bg-blue-50 rounded-lg border border-blue-200 p-6">
+            <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-6">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-blue-100">
                   <svg
-                    className="w-6 h-6 text-blue-600"
+                    className="size-6 text-blue-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -206,14 +206,14 @@ function HelpContent() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-montserrat font-semibold text-base text-blue-900 mb-2">
+                  <h3 className="font-montserrat mb-2 text-base font-semibold text-blue-900">
                     Still need help?
                   </h3>
-                  <p className="font-montserrat text-sm text-blue-800 mb-4">
+                  <p className="font-montserrat mb-4 text-sm text-blue-800">
                     If you can&apos;t find the answer you&apos;re looking for, our support team is
                     here to help.
                   </p>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded font-montserrat font-medium text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                  <button className="font-montserrat rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Contact Support
                   </button>
                 </div>

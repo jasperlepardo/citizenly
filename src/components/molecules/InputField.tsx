@@ -5,26 +5,26 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const inputVariants = cva(
-  'flex items-center w-full transition-colors font-system focus-within:outline-none relative',
+  'relative flex w-full items-center transition-colors font-system focus-within:outline-none',
   {
     variants: {
       variant: {
         default:
-          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         filled:
-          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         error:
-          'border border-red-600 bg-surface rounded focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
+          'rounded border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
-          'border border-green-500 bg-surface rounded focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'border border-default bg-background-muted rounded cursor-not-allowed',
-        readonly: 'border-0 bg-background-muted rounded-none',
-        borderless: 'border-0 bg-transparent rounded-none',
+          'rounded border border-green-500 bg-surface focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
+        disabled: 'cursor-not-allowed rounded border bg-background-muted border-default',
+        readonly: 'rounded-none border-0 bg-background-muted',
+        borderless: 'rounded-none border-0 bg-transparent',
       },
       size: {
-        sm: 'p-1.5 text-sm min-h-[32px]',
-        md: 'p-[8px] text-base min-h-[40px]', // Figma: exact 8px padding
-        lg: 'p-3 text-lg min-h-[48px]',
+        sm: 'min-h-8 p-1.5 text-sm',
+        md: 'min-h-10 p-2 text-base', // Figma: exact 8px padding
+        lg: 'min-h-12 p-3 text-lg',
       },
     },
     defaultVariants: {
@@ -83,7 +83,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-primary mb-2 font-system">{label}</label>
+          <label className="mb-2 block text-sm font-medium font-system text-primary">{label}</label>
         )}
 
         {/* Input Container */}
@@ -96,28 +96,28 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               {leftIcon}
             </div>
           )}
 
           {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
-          <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+          <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
             {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-            <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+            <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-[0]">
               <input
                 ref={ref}
                 className={cn(
-                  'w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted',
+                  'font-montserrat w-full bg-transparent font-normal text-primary placeholder:text-muted',
                   // Remove ALL borders and focus states
-                  'border-0 outline-0 ring-0 shadow-none',
-                  'focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none',
-                  'active:border-0 active:outline-0 active:ring-0 active:shadow-none',
+                  'border-0 shadow-none outline-0 ring-0',
+                  'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
+                  'active:border-0 active:shadow-none active:outline-0 active:ring-0',
                   // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                   size === 'sm' && 'text-sm leading-4',
                   size === 'md' && 'text-base leading-5',
                   size === 'lg' && 'text-lg leading-6',
-                  disabled && 'text-muted cursor-not-allowed',
+                  disabled && 'cursor-not-allowed text-muted',
                   readOnly && 'text-secondary'
                 )}
                 style={{
@@ -136,12 +136,12 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {/* Right Icon - Figma: w-5 (20px width) */}
           {(rightIcon || showClearButton) && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               {showClearButton ? (
                 <button
                   type="button"
                   onClick={onClear}
-                  className="flex items-center justify-center w-full h-full text-secondary hover:text-primary transition-colors"
+                  className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
                 >
                   <svg
                     width="16"
@@ -163,13 +163,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {/* Addons for special cases */}
           {leftAddon && (
-            <div className="flex items-center px-3 bg-background-muted border-r border-default text-muted text-sm">
+            <div className="flex items-center border-r px-3 text-sm text-muted bg-background-muted border-default">
               {leftAddon}
             </div>
           )}
 
           {rightAddon && (
-            <div className="flex items-center px-3 bg-background-muted border-l border-default text-muted text-sm">
+            <div className="flex items-center border-l px-3 text-sm text-muted bg-background-muted border-default">
               {rightAddon}
             </div>
           )}
@@ -179,9 +179,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-red-500 font-system leading-[14px]">{errorMessage}</p>
+              <p className="text-xs leading-[14px] text-red-500 font-system">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-muted font-system leading-[14px]">{helperText}</p>
+              <p className="text-xs leading-[14px] font-system text-muted">{helperText}</p>
             )}
           </div>
         )}

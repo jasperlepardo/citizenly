@@ -80,7 +80,7 @@ export default function ReportsPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="bg-gradient-to-r from-background-muted to-surface rounded-3xl p-8 border border-default">
+        <div className="from-background-muted to-surface rounded-3xl border bg-gradient-to-r p-8 border-default">
           <div className="md:flex md:items-center md:justify-between">
             <div className="min-w-0 flex-1">
               <h1 className="text-3xl font-bold tracking-tight text-primary">
@@ -111,15 +111,15 @@ export default function ReportsPage() {
           {reportCategories.map(category => (
             <div
               key={category.id}
-              className="group relative bg-surface rounded-lg border border-default p-4 cursor-pointer hover:bg-surface-hover transition-colors"
+              className="group relative cursor-pointer rounded-lg border p-4 transition-colors bg-surface border-default hover:bg-surface-hover"
               onClick={() => setSelectedReport(category.id)}
             >
-              <div className="flex flex-col h-full">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-3">
-                  <div className="w-5 h-5 bg-blue-600 rounded opacity-90"></div>
+              <div className="flex h-full flex-col">
+                <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                  <div className="size-5 rounded bg-blue-600 opacity-90"></div>
                 </div>
-                <h3 className="text-base font-semibold text-primary mb-2">{category.name}</h3>
-                <p className="text-secondary text-sm flex-grow">{category.description}</p>
+                <h3 className="mb-2 text-base font-semibold text-primary">{category.name}</h3>
+                <p className="grow text-sm text-secondary">{category.description}</p>
                 <div className="mt-3">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
@@ -139,9 +139,9 @@ export default function ReportsPage() {
         {/* Main Report Content */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Demographics Chart */}
-          <div className="lg:col-span-2 bg-surface rounded-lg border border-default">
+          <div className="rounded-lg border bg-surface border-default lg:col-span-2">
             <div className="p-6">
-              <div className="border-b border-default pb-4 mb-6">
+              <div className="mb-6 border-b pb-4 border-default">
                 <h3 className="text-lg font-bold text-primary">Demographics Overview</h3>
                 <p className="mt-1 text-sm text-secondary">
                   Population distribution by age groups and gender
@@ -150,23 +150,23 @@ export default function ReportsPage() {
 
               {/* Age Groups Chart */}
               <div>
-                <h4 className="text-base font-semibold text-primary mb-4">Age Distribution</h4>
+                <h4 className="mb-4 text-base font-semibold text-primary">Age Distribution</h4>
                 <div className="space-y-3">
                   {mockChartData.demographics.ageGroups.map(group => (
                     <div
                       key={group.range}
-                      className="flex items-center p-3 bg-background rounded-lg border border-default"
+                      className="flex items-center rounded-lg border p-3 bg-background border-default"
                     >
                       <div className="w-16 text-sm font-medium text-primary">{group.range}</div>
-                      <div className="flex-1 mx-4">
-                        <div className="bg-background-muted rounded-full h-3">
+                      <div className="mx-4 flex-1">
+                        <div className="h-3 rounded-full bg-background-muted">
                           <div
-                            className="bg-blue-600 h-3 rounded-full transition-all duration-1000 ease-out"
+                            className="h-3 rounded-full bg-blue-600 transition-all duration-1000 ease-out"
                             style={{ width: `${group.percentage}%` }}
                           ></div>
                         </div>
                       </div>
-                      <div className="w-16 text-sm font-medium text-secondary text-right">
+                      <div className="w-16 text-right text-sm font-medium text-secondary">
                         {group.count} ({group.percentage}%)
                       </div>
                     </div>
@@ -176,12 +176,12 @@ export default function ReportsPage() {
 
               {/* Gender Distribution */}
               <div className="mt-8">
-                <h4 className="text-base font-semibold text-primary mb-4">Gender Distribution</h4>
+                <h4 className="mb-4 text-base font-semibold text-primary">Gender Distribution</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {mockChartData.demographics.gender.map((item, index) => (
                     <div
                       key={item.type}
-                      className="text-center p-4 bg-background rounded-lg border border-default"
+                      className="rounded-lg border p-4 text-center bg-background border-default"
                     >
                       <div
                         className={`text-2xl font-bold ${
@@ -190,7 +190,7 @@ export default function ReportsPage() {
                       >
                         {item.count}
                       </div>
-                      <div className="text-sm font-medium text-secondary mt-1">
+                      <div className="mt-1 text-sm font-medium text-secondary">
                         {item.type} ({item.percentage}%)
                       </div>
                     </div>
@@ -203,9 +203,9 @@ export default function ReportsPage() {
           {/* Summary Statistics */}
           <div className="space-y-6">
             {/* Registration Trends */}
-            <div className="bg-surface rounded-lg border border-default">
+            <div className="rounded-lg border bg-surface border-default">
               <div className="p-4">
-                <div className="border-b border-default pb-3 mb-4">
+                <div className="mb-4 border-b pb-3 border-default">
                   <h3 className="text-base font-bold text-primary">Registration Trends</h3>
                   <p className="mt-1 text-sm text-secondary">Monthly registration activity</p>
                 </div>
@@ -213,28 +213,28 @@ export default function ReportsPage() {
                   {mockChartData.monthly.slice(-3).map(item => (
                     <div
                       key={item.month}
-                      className="flex items-center justify-between p-2 bg-background rounded border border-default"
+                      className="flex items-center justify-between rounded border p-2 bg-background border-default"
                     >
                       <span className="text-sm font-medium text-primary">{item.month}</span>
-                      <span className="text-sm font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded">
+                      <span className="rounded bg-blue-100 px-2 py-1 text-sm font-bold text-blue-600 dark:bg-blue-900/30">
                         +{item.registrations}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 pt-4 border-t border-default">
-                  <div className="text-center bg-background rounded-lg p-4">
+                <div className="mt-4 border-t pt-4 border-default">
+                  <div className="rounded-lg p-4 text-center bg-background">
                     <div className="text-2xl font-bold text-blue-600">134</div>
-                    <div className="text-sm font-medium text-secondary mt-1">This month (+37%)</div>
+                    <div className="mt-1 text-sm font-medium text-secondary">This month (+37%)</div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Geographic Summary */}
-            <div className="bg-surface rounded-lg border border-default">
+            <div className="rounded-lg border bg-surface border-default">
               <div className="p-4">
-                <div className="border-b border-default pb-3 mb-4">
+                <div className="mb-4 border-b pb-3 border-default">
                   <h3 className="text-base font-bold text-primary">Geographic Distribution</h3>
                   <p className="mt-1 text-sm text-secondary">Residents by region</p>
                 </div>
@@ -242,7 +242,7 @@ export default function ReportsPage() {
                   {mockChartData.geographic.map(region => (
                     <div
                       key={region.region}
-                      className="flex items-center justify-between p-2 bg-background rounded border border-default"
+                      className="flex items-center justify-between rounded border p-2 bg-background border-default"
                     >
                       <span className="text-sm font-medium text-primary">{region.region}</span>
                       <div className="text-right">
@@ -258,9 +258,9 @@ export default function ReportsPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-surface rounded-lg border border-default">
+        <div className="rounded-lg border bg-surface border-default">
           <div className="p-6">
-            <div className="border-b border-default pb-4 mb-6">
+            <div className="mb-6 border-b pb-4 border-default">
               <h3 className="text-lg font-bold text-primary">Report Actions</h3>
               <p className="mt-1 text-sm text-secondary">Generate and export detailed reports</p>
             </div>
@@ -268,7 +268,7 @@ export default function ReportsPage() {
               <Button
                 variant="primary"
                 leftIcon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -284,7 +284,7 @@ export default function ReportsPage() {
               <Button
                 variant="success"
                 leftIcon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -300,7 +300,7 @@ export default function ReportsPage() {
               <Button
                 variant="secondary"
                 leftIcon={
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -318,27 +318,27 @@ export default function ReportsPage() {
         </div>
 
         {/* Insights Panel */}
-        <div className="bg-surface rounded-lg border border-default">
+        <div className="rounded-lg border bg-surface border-default">
           <div className="p-6">
-            <div className="border-b border-default pb-4 mb-6">
+            <div className="mb-6 border-b pb-4 border-default">
               <h3 className="text-lg font-bold text-primary">Key Insights</h3>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="bg-background rounded-lg p-4 border border-default">
+              <div className="rounded-lg border p-4 bg-background border-default">
                 <div className="text-2xl font-bold text-green-600">+37%</div>
-                <div className="text-sm font-medium text-secondary mt-1">
+                <div className="mt-1 text-sm font-medium text-secondary">
                   Registration growth this month
                 </div>
               </div>
-              <div className="bg-background rounded-lg p-4 border border-default">
+              <div className="rounded-lg border p-4 bg-background border-default">
                 <div className="text-2xl font-bold text-blue-600">91.3%</div>
-                <div className="text-sm font-medium text-secondary mt-1">
+                <div className="mt-1 text-sm font-medium text-secondary">
                   Nationwide address coverage
                 </div>
               </div>
-              <div className="bg-background rounded-lg p-4 border border-default">
+              <div className="rounded-lg border p-4 bg-background border-default">
                 <div className="text-2xl font-bold text-purple-600">1,247</div>
-                <div className="text-sm font-medium text-secondary mt-1">
+                <div className="mt-1 text-sm font-medium text-secondary">
                   Total registered residents
                 </div>
               </div>

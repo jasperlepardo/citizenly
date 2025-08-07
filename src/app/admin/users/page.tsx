@@ -60,8 +60,8 @@ function UserCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-      <div className="flex justify-between items-start mb-4">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="mb-4 flex items-start justify-between">
         <div>
           <h3 className="text-lg font-semibold text-primary">
             {user.first_name} {user.last_name}
@@ -71,26 +71,26 @@ function UserCard({
         </div>
         <div className="text-right">
           <span
-            className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}
+            className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(user.status)}`}
           >
             {user.status.replace('_', ' ').toUpperCase()}
           </span>
         </div>
       </div>
 
-      <div className="space-y-2 mb-4">
+      <div className="mb-4 space-y-2">
         <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Barangay:</span>
+          <span className="mr-2 font-medium">Barangay:</span>
           <span>
             {user.barangay_name}, {user.city_municipality_name}, {user.province_name}
           </span>
         </div>
         <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Role:</span>
+          <span className="mr-2 font-medium">Role:</span>
           <span>{user.role_name || 'resident'}</span>
         </div>
         <div className="flex items-center text-sm text-secondary">
-          <span className="font-medium mr-2">Registered:</span>
+          <span className="mr-2 font-medium">Registered:</span>
           <span>{formatDate(user.created_at)}</span>
         </div>
       </div>
@@ -362,10 +362,10 @@ function UsersManagementContent() {
   if (loading) {
     return (
       <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
-        <div className="p-6 flex items-center justify-center min-h-64">
+        <div className="flex min-h-64 items-center justify-center p-6">
           <div className="text-center">
             <svg
-              className="mx-auto h-12 w-12 animate-spin text-blue-600"
+              className="mx-auto size-12 animate-spin text-blue-600"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -395,12 +395,12 @@ function UsersManagementContent() {
       <div className="p-6">
         <div className="flex flex-col gap-6 p-6">
           {/* Header */}
-          <div className="flex flex-row gap-4 items-start justify-between w-full">
+          <div className="flex w-full flex-row items-start justify-between gap-4">
             <div className="flex flex-col gap-0.5">
-              <h1 className="font-montserrat font-semibold text-xl text-primary">
+              <h1 className="font-montserrat text-xl font-semibold text-primary">
                 User Management
               </h1>
-              <p className="font-montserrat font-normal text-sm text-secondary">
+              <p className="font-montserrat text-sm font-normal text-secondary">
                 Manage user registrations and permissions
               </p>
             </div>
@@ -419,7 +419,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'pending'
                     ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-muted hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-muted hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Pending Approvals ({pendingUsers.length})
@@ -431,7 +431,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'active'
                     ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-muted hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-muted hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Active Users ({activeUsers.length})
@@ -444,10 +444,10 @@ function UsersManagementContent() {
             {activeTab === 'pending' && (
               <>
                 {pendingUsers.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="text-muted mb-4">
+                  <div className="py-12 text-center">
+                    <div className="mb-4 text-muted">
                       <svg
-                        className="mx-auto h-12 w-12"
+                        className="mx-auto size-12"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -460,7 +460,7 @@ function UsersManagementContent() {
                         ></path>
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-primary mb-2">
+                    <h3 className="mb-2 text-lg font-medium text-primary">
                       No Pending Registrations
                     </h3>
                     <p className="text-muted">All user registrations have been processed.</p>
@@ -485,10 +485,10 @@ function UsersManagementContent() {
             {activeTab === 'active' && (
               <>
                 {activeUsers.length === 0 ? (
-                  <div className="text-center py-12">
-                    <div className="text-muted mb-4">
+                  <div className="py-12 text-center">
+                    <div className="mb-4 text-muted">
                       <svg
-                        className="mx-auto h-12 w-12"
+                        className="mx-auto size-12"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -501,7 +501,7 @@ function UsersManagementContent() {
                         ></path>
                       </svg>
                     </div>
-                    <h3 className="text-lg font-medium text-primary mb-2">No Active Users</h3>
+                    <h3 className="mb-2 text-lg font-medium text-primary">No Active Users</h3>
                     <p className="text-muted">No users have been approved yet.</p>
                   </div>
                 ) : (

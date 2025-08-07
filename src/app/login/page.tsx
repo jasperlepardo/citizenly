@@ -9,8 +9,8 @@ export const dynamic = 'force-dynamic';
 const LoginForm = dynamicImport(() => import('@/components/auth/LoginForm'), {
   ssr: false,
   loading: () => (
-    <div className="text-center p-8">
-      <div className="animate-spin h-8 w-8 border-4 border-primary-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+    <div className="p-8 text-center">
+      <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-4 border-primary-400 border-t-transparent"></div>
       <p className="text-secondary">Loading...</p>
     </div>
   ),
@@ -19,34 +19,35 @@ const LoginForm = dynamicImport(() => import('@/components/auth/LoginForm'), {
 const DevLogin = dynamicImport(() => import('@/components/auth/DevLogin'), {
   ssr: false,
   loading: () => (
-    <div className="text-center p-8">
-      <div className="animate-spin h-8 w-8 border-4 border-primary-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+    <div className="p-8 text-center">
+      <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-4 border-primary-400 border-t-transparent"></div>
       <p className="text-secondary">Loading...</p>
     </div>
   ),
 });
 
-const ThemeToggle = dynamicImport(() => import('@/components/atoms/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })), {
-  ssr: false,
-  loading: () => (
-    <div className="w-9 h-9 animate-pulse bg-surface-hover rounded-md"></div>
-  ),
-});
+const ThemeToggle = dynamicImport(
+  () => import('@/components/atoms/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })),
+  {
+    ssr: false,
+    loading: () => <div className="size-9 animate-pulse rounded-md bg-surface-hover"></div>,
+  }
+);
 
 export default function LoginPage() {
   const [showDevLogin, setShowDevLogin] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    <div className="relative flex min-h-screen flex-col justify-center py-12 bg-background sm:px-6 lg:px-8">
       {/* Theme Toggle - positioned in top right */}
-      <div className="absolute top-4 right-4">
+      <div className="absolute right-4 top-4">
         <ThemeToggle variant="ghost" size="md" />
       </div>
-      
+
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-primary mb-2">Citizenly</h1>
-          <p className="text-secondary text-sm mb-8">Records of Barangay Inhabitant System</p>
+          <h1 className="mb-2 text-3xl font-bold text-primary">Citizenly</h1>
+          <p className="mb-8 text-sm text-secondary">Records of Barangay Inhabitant System</p>
         </div>
 
         {showDevLogin ? (
@@ -56,13 +57,13 @@ export default function LoginPage() {
         )}
 
         <div className="mt-8 text-center">
-          <div className="bg-surface border border-default rounded-lg p-4">
-            <h3 className="text-sm font-medium text-primary-400 mb-2">Development Mode</h3>
-            <div className="text-xs text-secondary space-y-2">
+          <div className="rounded-lg border p-4 bg-surface border-default">
+            <h3 className="mb-2 text-sm font-medium text-primary-400">Development Mode</h3>
+            <div className="space-y-2 text-xs text-secondary">
               <div>If you can&apos;t login, the demo users may not exist yet.</div>
               <button
                 onClick={() => setShowDevLogin(!showDevLogin)}
-                className="text-primary-400 hover:text-primary-300 underline"
+                className="text-primary-400 underline hover:text-primary-300"
               >
                 {showDevLogin ? 'Back to Login Form' : 'Setup Demo Users'}
               </button>

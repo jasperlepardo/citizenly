@@ -51,12 +51,12 @@ function CertificationContent() {
     <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
               Certification Services
             </h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Generate and manage barangay certificates and official documents
             </p>
           </div>
@@ -66,20 +66,20 @@ function CertificationContent() {
         </div>
 
         {/* Certificate Types Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {certificateTypes.map((cert, index) => (
             <div
               key={index}
-              className={`bg-surface rounded-lg border p-6 hover:shadow-md transition-shadow ${
+              className={`rounded-lg border p-6 transition-shadow bg-surface hover:shadow-md ${
                 cert.status === 'Available'
                   ? 'border-default hover:border-blue-300'
-                  : 'border-default opacity-75'
+                  : 'opacity-75 border-default'
               }`}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="mb-4 flex items-start justify-between">
                 <div className="text-2xl">{cert.icon}</div>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 text-xs font-medium ${
                     cert.status === 'Available'
                       ? 'bg-green-100 text-green-800'
                       : 'bg-amber-100 text-amber-800'
@@ -88,10 +88,10 @@ function CertificationContent() {
                   {cert.status}
                 </span>
               </div>
-              <h3 className="font-montserrat font-semibold text-base text-primary mb-2">
+              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary">
                 {cert.name}
               </h3>
-              <p className="font-montserrat text-sm text-secondary mb-4">{cert.description}</p>
+              <p className="font-montserrat mb-4 text-sm text-secondary">{cert.description}</p>
               <Button
                 variant={cert.status === 'Available' ? 'primary' : 'ghost'}
                 size="sm"
@@ -105,9 +105,9 @@ function CertificationContent() {
         </div>
 
         {/* Recent Requests Section */}
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-montserrat font-semibold text-lg text-primary">
+        <div className="rounded-lg border p-6 bg-surface border-default">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-montserrat text-lg font-semibold text-primary">
               Recent Certificate Requests
             </h2>
             <Button variant="ghost" size="sm">
@@ -117,13 +117,13 @@ function CertificationContent() {
 
           <div className="space-y-4">
             {/* Sample Request Items */}
-            <div className="flex items-center justify-between p-4 bg-surface-hover rounded-lg">
+            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-medium text-sm">#001</span>
+                <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                  <span className="text-sm font-medium text-blue-600">#001</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-medium text-sm text-primary">
+                  <h4 className="font-montserrat text-sm font-medium text-primary">
                     Barangay Certificate
                   </h4>
                   <p className="font-montserrat text-xs text-secondary">
@@ -132,20 +132,20 @@ function CertificationContent() {
                 </div>
               </div>
               <div className="text-right">
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                   Ready
                 </span>
-                <p className="font-montserrat text-xs text-muted mt-1">Dec 15, 2024</p>
+                <p className="font-montserrat mt-1 text-xs text-muted">Dec 15, 2024</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-surface-hover rounded-lg">
+            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-medium text-sm">#002</span>
+                <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                  <span className="text-sm font-medium text-blue-600">#002</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-medium text-sm text-primary">
+                  <h4 className="font-montserrat text-sm font-medium text-primary">
                     Certificate of Residency
                   </h4>
                   <p className="font-montserrat text-xs text-secondary">
@@ -154,20 +154,20 @@ function CertificationContent() {
                 </div>
               </div>
               <div className="text-right">
-                <span className="px-2 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-medium">
+                <span className="rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-800">
                   Processing
                 </span>
-                <p className="font-montserrat text-xs text-neutral-500 mt-1">Dec 14, 2024</p>
+                <p className="font-montserrat mt-1 text-xs text-neutral-500">Dec 14, 2024</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-surface-hover rounded-lg">
+            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-medium text-sm">#003</span>
+                <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                  <span className="text-sm font-medium text-blue-600">#003</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-medium text-sm text-primary">
+                  <h4 className="font-montserrat text-sm font-medium text-primary">
                     Barangay Clearance
                   </h4>
                   <p className="font-montserrat text-xs text-secondary">
@@ -176,10 +176,10 @@ function CertificationContent() {
                 </div>
               </div>
               <div className="text-right">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                   Pending
                 </span>
-                <p className="font-montserrat text-xs text-neutral-500 mt-1">Dec 13, 2024</p>
+                <p className="font-montserrat mt-1 text-xs text-neutral-500">Dec 13, 2024</p>
               </div>
             </div>
           </div>
