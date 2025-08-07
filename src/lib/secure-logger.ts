@@ -10,7 +10,7 @@ interface LogEntry {
   level: LogLevel;
   message: string;
   context?: string;
-  sanitizedData?: Record<string, any>;
+  sanitizedData?: Record<string, unknown>;
 }
 
 // Sensitive field patterns to redact
@@ -43,7 +43,7 @@ const RESTRICTED_FIELDS = [
 /**
  * Sanitize data for logging by removing/masking sensitive information
  */
-function sanitizeForLogging(data: any): any {
+function sanitizeForLogging(data: unknown): unknown {
   if (data === null || data === undefined) {
     return data;
   }
@@ -63,7 +63,7 @@ function sanitizeForLogging(data: any): any {
   }
 
   if (typeof data === 'object') {
-    const sanitized: Record<string, any> = {};
+    const sanitized: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(data)) {
       // Remove completely restricted fields
@@ -90,13 +90,18 @@ function sanitizeForLogging(data: any): any {
 /**
  * Create a secure log entry
  */
-function createLogEntry(level: LogLevel, message: string, data?: any, context?: string): LogEntry {
+function createLogEntry(
+  level: LogLevel,
+  message: string,
+  data?: unknown,
+  context?: string
+): LogEntry {
   return {
     timestamp: new Date().toISOString(),
     level,
     message,
     context,
-    sanitizedData: data ? sanitizeForLogging(data) : undefined,
+    sanitizedData: data ? (sanitizeForLogging(data) as Record<string, unknown>) : undefined,
   };
 }
 
@@ -124,28 +129,28 @@ class SecureLogger {
     this.context = context;
   }
 
-  debug(message: string, data?: any): void {
+  debug(message: string, data?: unknown): void {
     if (shouldLog('debug')) {
       const entry = createLogEntry('debug', message, data, this.context);
       console.debug('[DEBUG]', entry.message, entry.sanitizedData || '');
     }
   }
 
-  info(message: string, data?: any): void {
+  info(message: string, data?: unknown): void {
     if (shouldLog('info')) {
       const entry = createLogEntry('info', message, data, this.context);
       console.info('[INFO]', entry.message, entry.sanitizedData || '');
     }
   }
 
-  warn(message: string, data?: any): void {
+  warn(message: string, data?: unknown): void {
     if (shouldLog('warn')) {
       const entry = createLogEntry('warn', message, data, this.context);
       console.warn('[WARN]', entry.message, entry.sanitizedData || '');
     }
   }
 
-  error(message: string, data?: any): void {
+  error(message: string, data?: unknown): void {
     if (shouldLog('error')) {
       const entry = createLogEntry('error', message, data, this.context);
       console.error('[ERROR]', entry.message, entry.sanitizedData || '');
@@ -155,7 +160,7 @@ class SecureLogger {
   /**
    * Log user operations with automatic sanitization
    */
-  userOperation(operation: string, userId?: string, data?: any): void {
+  userOperation(operation: string, userId?: string, data?: unknown): void {
     this.info(`User operation: ${operation}`, {
       userId: userId || 'anonymous',
       operation,
@@ -227,7 +232,7 @@ export function logApiRequest(method: string, path: string, userId?: string): vo
 export function logSecurityEvent(
   event: string,
   severity: 'low' | 'medium' | 'high',
-  details?: any
+  details?: Record<string, unknown>
 ): void {
   const logLevel = severity === 'high' ? 'error' : severity === 'medium' ? 'warn' : 'info';
   logger[logLevel](`Security event: ${event}`, {
@@ -239,13 +244,13 @@ export function logSecurityEvent(
 }
 
 // Replace console.log for development debugging
-export function debugLog(message: string, data?: any): void {
+export function debugLog(message: string, data?: unknown): void {
   if (process.env.NODE_ENV === 'development') {
     logger.debug(message, data);
   }
 }
 
 // Safe replacement for console.log in production
-export function safeLog(message: string, data?: any): void {
+export function safeLog(message: string, data?: unknown): void {
   logger.info(message, data);
 }

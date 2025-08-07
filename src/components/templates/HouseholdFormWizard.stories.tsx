@@ -20,7 +20,7 @@ const meta = {
     Story => (
       <ThemeProvider>
         <AuthProvider>
-          <div className="min-h-screen bg-background p-6">
+          <div className="min-h-screen p-6 bg-background">
             <Story />
           </div>
         </AuthProvider>
@@ -65,18 +65,18 @@ const InteractiveComponent = () => {
 
   if (isSubmitted && submittedData) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-          <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-900/20">
+          <h3 className="mb-4 font-semibold text-green-800 dark:text-green-200">
             Household Created Successfully!
           </h3>
-          <p className="text-green-700 dark:text-green-300 mb-4">
+          <p className="mb-4 text-green-700 dark:text-green-300">
             The household has been successfully registered in the system with the following details:
           </p>
 
-          <div className="bg-background rounded-lg border border-default p-4 mb-4">
-            <h4 className="font-medium text-primary mb-3">Household Summary:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div className="mb-4 rounded-lg border p-4 bg-background border-default">
+            <h4 className="mb-3 font-medium text-primary">Household Summary:</h4>
+            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
               <div>
                 <strong>Household Code:</strong> {submittedData.householdCode}
               </div>
@@ -101,7 +101,7 @@ const InteractiveComponent = () => {
 
           <button
             onClick={handleReset}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
           >
             Create Another Household
           </button>
@@ -122,18 +122,18 @@ export const ValidationDemo: Story = {
   render: () => {
     return (
       <div className="space-y-6">
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+          <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">
             Form Validation Demo
           </h3>
-          <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+          <p className="mb-3 text-sm text-yellow-700 dark:text-yellow-300">
             This wizard includes step-by-step validation. Try proceeding without filling required
             fields to see the validation in action.
           </p>
 
-          <div className="bg-background rounded-lg border border-default p-4 mt-4">
-            <h4 className="font-medium text-primary mb-2">Validation Rules:</h4>
-            <ul className="text-sm text-secondary space-y-1">
+          <div className="mt-4 rounded-lg border p-4 bg-background border-default">
+            <h4 className="mb-2 font-medium text-primary">Validation Rules:</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Step 1: Household type and head of household name are required</li>
               <li>• Step 2: Street name is required for address</li>
               <li>• Step 3: Total members must equal sum of male and female members</li>
@@ -158,13 +158,13 @@ export const ValidationDemo: Story = {
 export const FeatureShowcase: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Household Form Wizard Features</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Household Form Wizard Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Automatic Code Generation</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Automatic Code Generation</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Unique household code generation</li>
               <li>• Timestamp-based unique identifiers</li>
               <li>• Human-readable format</li>
@@ -174,8 +174,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Geographic Integration</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Geographic Integration</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Auto-population from user barangay</li>
               <li>• PSGC code validation</li>
               <li>• Address hierarchy display</li>
@@ -185,8 +185,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Demographics Tracking</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Demographics Tracking</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Total household members</li>
               <li>• Gender distribution tracking</li>
               <li>• Age group categorization</li>
@@ -196,8 +196,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Economic Assessment</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Economic Assessment</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Income range classification</li>
               <li>• Primary income source tracking</li>
               <li>• Utilities access assessment</li>
@@ -207,8 +207,8 @@ export const FeatureShowcase: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Data Integration</h4>
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">Data Integration</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
             This household wizard seamlessly integrates with the resident management system,
             allowing for complete household-resident relationships and comprehensive demographic
@@ -285,45 +285,45 @@ const StepWalkthroughComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Household Form Steps Overview</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Household Form Steps Overview</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
           {steps.map(step => (
             <button
               key={step.id}
               onClick={() => setCurrentStep(step.id)}
-              className={`p-4 rounded-lg border text-left transition-colors ${
+              className={`rounded-lg border p-4 text-left transition-colors ${
                 currentStep === step.id
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-default bg-surface hover:bg-surface-hover'
+                  : 'bg-surface border-default hover:bg-surface-hover'
               }`}
             >
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2 flex items-center gap-2">
                 <span
-                  className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
+                  className={`flex size-6 items-center justify-center rounded-full text-xs font-medium ${
                     currentStep === step.id
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                      : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                   }`}
                 >
                   {step.id}
                 </span>
-                <span className="font-medium text-primary text-sm">{step.title}</span>
+                <span className="text-sm font-medium text-primary">{step.title}</span>
               </div>
             </button>
           ))}
         </div>
 
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <h4 className="font-semibold text-primary mb-2">
+        <div className="rounded-lg border p-6 bg-surface border-default">
+          <h4 className="mb-2 font-semibold text-primary">
             Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
           </h4>
-          <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
+          <p className="mb-4 text-secondary">{steps[currentStep - 1].description}</p>
 
           <div>
-            <h5 className="font-medium text-primary mb-2">Key Features:</h5>
-            <ul className="text-sm text-secondary space-y-1">
+            <h5 className="mb-2 font-medium text-primary">Key Features:</h5>
+            <ul className="space-y-1 text-sm text-secondary">
               {steps[currentStep - 1].features.map((feature, index) => (
                 <li key={index}>• {feature}</li>
               ))}
@@ -350,15 +350,15 @@ export const StepWalkthrough: Story = {
 export const DataCollection: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Comprehensive Data Collection</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Comprehensive Data Collection</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+            <h4 className="mb-2 font-semibold text-green-800 dark:text-green-200">
               Household Identity
             </h4>
-            <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+            <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
               <li>• Unique household codes</li>
               <li>• Household type classification</li>
               <li>• Head of household information</li>
@@ -367,9 +367,9 @@ export const DataCollection: Story = {
             </ul>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Geographic Data</h4>
-            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+            <h4 className="mb-2 font-semibold text-blue-800 dark:text-blue-200">Geographic Data</h4>
+            <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
               <li>• PSGC-compliant addressing</li>
               <li>• GPS coordinate tracking</li>
               <li>• Address hierarchy validation</li>
@@ -378,11 +378,11 @@ export const DataCollection: Story = {
             </ul>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
-            <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-2">
+          <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+            <h4 className="mb-2 font-semibold text-purple-800 dark:text-purple-200">
               Socioeconomic Profile
             </h4>
-            <ul className="text-sm text-purple-700 dark:text-purple-300 space-y-1">
+            <ul className="space-y-1 text-sm text-purple-700 dark:text-purple-300">
               <li>• Income range assessment</li>
               <li>• Employment sector tracking</li>
               <li>• Utilities access mapping</li>
@@ -392,8 +392,8 @@ export const DataCollection: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded-lg">
-          <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">
+        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/20">
+          <h4 className="mb-2 font-medium text-gray-800 dark:text-gray-200">
             Statistical Analysis Support
           </h4>
           <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -436,15 +436,15 @@ const StateManagementComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Household Form State Management</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Household Form State Management</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
+            <h4 className="mb-2 font-medium text-primary">Recent Form Actions:</h4>
             {formStates.length > 0 ? (
-              <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+              <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/20">
+                <ul className="space-y-1 font-mono text-sm text-gray-700 dark:text-gray-300">
                   {formStates.map((state, index) => (
                     <li key={index}>• {state}</li>
                   ))}
@@ -458,9 +458,9 @@ const StateManagementComponent = () => {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Current Household Data:</h4>
-            <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-              <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Current Household Data:</h4>
+            <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/20">
+              <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                 <div>
                   <strong>Household Code:</strong> {currentData.householdCode || 'Not generated'}
                 </div>
@@ -489,19 +489,19 @@ const StateManagementComponent = () => {
             onClick={() =>
               mockDataUpdate('householdCode', 'HH-' + Date.now().toString(36).toUpperCase())
             }
-            className="px-3 py-1 text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+            className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
           >
             Generate Code
           </button>
           <button
             onClick={() => mockDataUpdate('headFirstName', 'Juan')}
-            className="px-3 py-1 text-sm bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors"
+            className="rounded bg-green-100 px-3 py-1 text-sm text-green-700 transition-colors hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50"
           >
             Set Head Name
           </button>
           <button
             onClick={() => setFormStates([])}
-            className="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className="rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Clear Log
           </button>
@@ -536,17 +536,17 @@ const CodeGenerationComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Household Code Generation</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Household Code Generation</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Code Format:</h4>
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-4">
-              <div className="font-mono text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+            <h4 className="mb-2 font-medium text-primary">Code Format:</h4>
+            <div className="rounded border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+              <div className="mb-2 font-mono text-lg font-semibold text-blue-800 dark:text-blue-200">
                 HH-&#123;timestamp&#125;-&#123;random&#125;
               </div>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
                 <li>
                   • <strong>HH:</strong> Household prefix
                 </li>
@@ -563,19 +563,19 @@ const CodeGenerationComponent = () => {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Sample Generated Codes:</h4>
-            <div className="space-y-2 mb-4">
+            <h4 className="mb-2 font-medium text-primary">Sample Generated Codes:</h4>
+            <div className="mb-4 space-y-2">
               <button
                 onClick={generateSampleCode}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                className="rounded bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
               >
                 Generate Sample Code
               </button>
             </div>
 
             {generatedCodes.length > 0 && (
-              <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3 max-h-32 overflow-y-auto">
-                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+              <div className="max-h-32 overflow-y-auto rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/20">
+                <ul className="space-y-1 font-mono text-sm text-gray-700 dark:text-gray-300">
                   {generatedCodes.map((code, index) => (
                     <li key={index}>• {code}</li>
                   ))}
@@ -585,8 +585,8 @@ const CodeGenerationComponent = () => {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">Code Benefits</h4>
+        <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">Code Benefits</h4>
           <p className="text-sm text-green-700 dark:text-green-300">
             Each household receives a unique, automatically generated code that ensures proper
             identification and traceability throughout the system. The codes are designed to be

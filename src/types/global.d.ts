@@ -20,8 +20,8 @@ declare global {
       toContainElement(element: HTMLElement | null): R;
       toHaveDisplayValue(value: string | RegExp | (string | RegExp)[]): R;
       toHaveFocus(): R;
-      toHaveFormValues(expectedFormValues: Record<string, any>): R;
-      toHaveStyle(css: string | Record<string, any>): R;
+      toHaveFormValues(expectedFormValues: Record<string, unknown>): R;
+      toHaveStyle(css: string | Record<string, unknown>): R;
       toBeInvalid(): R;
       toBeRequired(): R;
       toBeValid(): R;

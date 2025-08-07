@@ -496,11 +496,11 @@ export const FigmaDesignSystem: Story = {
         </div>
       </div>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div className="mt-6 rounded-lg bg-gray-50 p-4">
         <p className="text-sm text-gray-600">
           <strong>Design System Notes:</strong> All variants match the Figma design specifications
           including exact colors, spacing (p=8 for regular), Montserrat font, hover states, disabled
-          states, and border radius. The "regular" size follows the Figma button component
+          states, and border radius. The &quot;regular&quot; size follows the Figma button component
           specifications.
         </p>
       </div>

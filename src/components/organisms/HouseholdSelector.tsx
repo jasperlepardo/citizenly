@@ -1,10 +1,28 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import CreateHouseholdModal from './CreateHouseholdModal';
 import { logger, logError } from '@/lib/secure-logger';
+
+interface Region {
+  code: string;
+  name: string;
+}
+
+interface Province {
+  code: string;
+  name: string;
+  psgc_regions: Region;
+}
+
+interface CityMunicipality {
+  code: string;
+  name: string;
+  type: string;
+  psgc_provinces: Province;
+}
 
 interface Household {
   code: string;
@@ -60,7 +78,7 @@ export default function HouseholdSelector({
   const [isOpen, setIsOpen] = useState(false);
 
   // Load households for the user's barangay
-  const loadHouseholds = async () => {
+  const loadHouseholds = useCallback(async () => {
     if (!userProfile?.barangay_code) {
       logger.debug('No barangay_code available, cannot load households');
       return;
@@ -128,9 +146,10 @@ export default function HouseholdSelector({
               .single();
 
             if (barangayData) {
-              const cityMun = barangayData.psgc_cities_municipalities as any;
-              const province = cityMun.psgc_provinces as any;
-              const region = province.psgc_regions as any;
+              const cityMun =
+                barangayData.psgc_cities_municipalities as unknown as CityMunicipality;
+              const province = cityMun.psgc_provinces as Province;
+              const region = province.psgc_regions as Region;
 
               geoInfo = {
                 barangay_info: {
@@ -174,12 +193,12 @@ export default function HouseholdSelector({
     } finally {
       setLoading(false);
     }
-  };
+  }, [userProfile?.barangay_code]);
 
   // Load households when barangay changes
   useEffect(() => {
     loadHouseholds();
-  }, [userProfile?.barangay_code]);
+  }, [loadHouseholds]);
 
   // Helper function to format full name
   const formatFullName = (person?: {
@@ -257,7 +276,7 @@ export default function HouseholdSelector({
   return (
     <div className="relative">
       <div
-        className={`relative border rounded font-montserrat text-base focus-within:ring-2 focus-within:border-transparent ${
+        className={`font-montserrat relative rounded border text-base focus-within:border-transparent focus-within:ring-2 ${
           error
             ? 'border-red-500 focus-within:ring-red-500'
             : 'border-neutral-300 focus-within:ring-blue-500'
@@ -278,16 +297,16 @@ export default function HouseholdSelector({
             }
           }}
           onFocus={() => setIsOpen(true)}
-          className="w-full px-3 py-2 bg-transparent outline-none"
+          className="w-full bg-transparent px-3 py-2 outline-none"
           placeholder={placeholder}
         />
 
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -300,7 +319,7 @@ export default function HouseholdSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg">
           {loading ? (
             <div className="p-3 text-center text-neutral-500">
               <div className="animate-pulse">Loading households...</div>
@@ -314,7 +333,7 @@ export default function HouseholdSelector({
                   setIsOpen(false);
                   setShowCreateModal(true);
                 }}
-                className="w-full p-3 text-left hover:bg-blue-50 border-b border-neutral-100"
+                className="w-full border-b border-neutral-100 p-3 text-left hover:bg-blue-50"
               >
                 <div className="font-medium text-blue-600">+ Create New Household</div>
                 <div className="text-xs text-blue-500">
@@ -326,7 +345,7 @@ export default function HouseholdSelector({
               {filteredHouseholds.length === 0 && !searchTerm && (
                 <div className="p-3 text-center text-neutral-500">
                   <div className="text-sm">No existing households in this barangay</div>
-                  <div className="text-xs mt-1 text-green-600">
+                  <div className="mt-1 text-xs text-green-600">
                     ✓ Perfect! This will be the first household
                   </div>
                 </div>
@@ -349,9 +368,9 @@ export default function HouseholdSelector({
                     setSearchTerm('');
                     setIsOpen(false);
                   }}
-                  className="w-full p-3 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
+                  className="w-full border-b border-neutral-100 p-3 text-left last:border-b-0 hover:bg-neutral-50"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="font-medium text-neutral-900">
                         Household #{household.code}
@@ -361,7 +380,7 @@ export default function HouseholdSelector({
                       </div>
                       <div className="text-xs text-neutral-500">{formatFullAddress(household)}</div>
                     </div>
-                    <div className="text-xs text-neutral-500 ml-2">
+                    <div className="ml-2 text-xs text-neutral-500">
                       {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                     </div>
                   </div>

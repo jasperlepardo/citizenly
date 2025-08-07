@@ -27,7 +27,7 @@ import {
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { FormGroup, InputField } from '@/components/molecules';
+import { InputField } from '@/components/molecules';
 
 export interface ResidentFormData {
   // Personal Information - Step 1
@@ -100,7 +100,10 @@ interface ResidentFormWizardProps {
   onCancel?: () => void;
 }
 
-export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormWizardProps) {
+export default function ResidentFormWizard({
+  onSubmit,
+  onCancel: _onCancel,
+}: ResidentFormWizardProps) {
   const router = useRouter();
   const { getToken: getCSRFToken } = useCSRFToken();
 
@@ -318,7 +321,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
       const validationResult = await validateResidentData(formData);
       if (!validationResult.success) {
         const errorMap: Record<string, string> = {};
-        validationResult.errors?.forEach(error => {
+        validationResult.errors?.forEach((error: { field: string; message: string }) => {
           errorMap[error.field] = error.message;
         });
         setValidationErrors(errorMap);
@@ -554,10 +557,10 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-primary" />
+                      <div className="bg-primary h-0.5 w-full" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-                      <svg className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <div className="bg-primary relative flex size-8 items-center justify-center rounded-full">
+                      <svg className="size-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -569,18 +572,18 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
                 ) : currentStep === step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-border-light" />
+                      <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-surface">
+                    <div className="border-primary relative flex size-8 items-center justify-center rounded-full border-2 bg-surface">
                       <span className="text-sm font-medium text-primary">{step.id}</span>
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-border-light" />
+                      <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="group relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-default bg-surface">
+                    <div className="group relative flex size-8 items-center justify-center rounded-full border-2 bg-surface border-default">
                       <span className="text-sm font-medium text-secondary">{step.id}</span>
                     </div>
                   </>
@@ -596,7 +599,7 @@ export default function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormW
       </div>
 
       {/* Form Content */}
-      <div className="rounded-lg bg-surface shadow-sm border border-default">
+      <div className="rounded-lg border shadow-sm bg-surface border-default">
         <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
@@ -633,7 +636,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-primary">Contact Details</h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="Mobile Number"
             type="tel"
@@ -706,14 +709,14 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
       {/* Voting Information */}
       <div className="space-y-4">
         <h4 className="text-sm/6 font-medium text-primary">Voting Information</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="voterRegistration"
               checked={formData.voterRegistrationStatus}
               onChange={e => onChange('voterRegistrationStatus', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
+              className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
             />
             <label htmlFor="voterRegistration" className="text-sm text-primary">
               Registered Voter
@@ -725,7 +728,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               id="residentVoter"
               checked={formData.residentVoterStatus}
               onChange={e => onChange('residentVoterStatus', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-surface border-default rounded focus:ring-blue-500"
+              className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
             />
             <label htmlFor="residentVoter" className="text-sm text-primary">
               Resident Voter
@@ -816,7 +819,13 @@ function AdditionalInfoStep({ formData, onChange }: any) {
 }
 
 // Step 5: Review
-function ReviewStep({ formData, userAddress }: any) {
+function ReviewStep({
+  formData,
+  userAddress: _userAddress,
+}: {
+  formData: ResidentFormData;
+  userAddress: unknown;
+}) {
   return (
     <div className="space-y-8">
       <div>
@@ -826,11 +835,11 @@ function ReviewStep({ formData, userAddress }: any) {
         </p>
       </div>
 
-      <div className="rounded-lg bg-background-muted p-6 border border-default">
+      <div className="rounded-lg border p-6 bg-background-muted border-default">
         <div className="space-y-6">
           {/* Personal Information Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-primary mb-3">Personal Information</h4>
+            <h4 className="mb-3 text-sm/6 font-medium text-primary">Personal Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Name</dt>
@@ -859,7 +868,7 @@ function ReviewStep({ formData, userAddress }: any) {
 
           {/* Education & Employment Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-primary mb-3">Education & Employment</h4>
+            <h4 className="mb-3 text-sm/6 font-medium text-primary">Education & Employment</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Education Level</dt>
@@ -895,7 +904,7 @@ function ReviewStep({ formData, userAddress }: any) {
 
           {/* Contact Information Summary */}
           <div>
-            <h4 className="text-sm/6 font-medium text-primary mb-3">Contact Information</h4>
+            <h4 className="mb-3 text-sm/6 font-medium text-primary">Contact Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
                 <dt className="text-sm/6 font-medium text-secondary">Mobile</dt>
@@ -910,10 +919,10 @@ function ReviewStep({ formData, userAddress }: any) {
         </div>
       </div>
 
-      <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 p-4 border border-amber-200 dark:border-amber-800">
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
         <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+          <div className="shrink-0">
+            <svg className="size-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"

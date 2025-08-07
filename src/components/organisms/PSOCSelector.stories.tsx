@@ -98,8 +98,8 @@ const InteractiveComponent = () => {
         placeholder="Search for occupation (e.g., 'doctor', 'teacher', 'engineer')..."
       />
 
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Selection Details</h3>
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Selection Details</h3>
         {selectedOption ? (
           <div className="space-y-2 text-sm">
             <div>
@@ -107,7 +107,7 @@ const InteractiveComponent = () => {
             </div>
             <div>
               <strong>Code:</strong>{' '}
-              <code className="bg-background-muted px-2 py-1 rounded">
+              <code className="rounded px-2 py-1 bg-background-muted">
                 {selectedOption.occupation_code}
               </code>
             </div>
@@ -127,12 +127,12 @@ const InteractiveComponent = () => {
             )}
           </div>
         ) : (
-          <p className="text-secondary text-sm">No occupation selected</p>
+          <p className="text-sm text-secondary">No occupation selected</p>
         )}
 
         <button
           onClick={handleValidate}
-          className="mt-3 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+          className="mt-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
         >
           Validate Selection
         </button>
@@ -147,7 +147,7 @@ export const Interactive: Story = {
 
 // Search demonstration with examples
 const SearchDemoComponent = () => {
-  const [selectedOption, setSelectedOption] = useState<PSOCOption | null>(null);
+  const [, setSelectedOption] = useState<PSOCOption | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const handleSelect = (option: PSOCOption | null) => {
@@ -172,17 +172,19 @@ const SearchDemoComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Search Tips</h3>
-        <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-          <li>• Type occupation names in English (e.g., "doctor", "teacher")</li>
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+        <h3 className="mb-2 font-semibold text-blue-800 dark:text-blue-200">Search Tips</h3>
+        <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
+          <li>
+            • Type occupation names in English (e.g., &quot;doctor&quot;, &quot;teacher&quot;)
+          </li>
           <li>• Search works across all hierarchy levels</li>
           <li>• Results show occupation title, code, and classification level</li>
           <li>• More specific occupations have lower hierarchy levels</li>
         </ul>
 
         <div className="mt-3">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Try these searches:</h4>
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">Try these searches:</h4>
           <div className="flex flex-wrap gap-2">
             {suggestedSearches.map(search => (
               <button
@@ -197,7 +199,7 @@ const SearchDemoComponent = () => {
                     input.focus();
                   }
                 }}
-                className="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-full hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors"
+                className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700"
               >
                 {search}
               </button>
@@ -212,9 +214,9 @@ const SearchDemoComponent = () => {
       />
 
       {searchHistory.length > 0 && (
-        <div className="bg-background rounded-lg border border-default p-4">
-          <h3 className="font-semibold text-primary mb-3">Recent Selections</h3>
-          <ul className="text-sm text-secondary space-y-1">
+        <div className="rounded-lg border p-4 bg-background border-default">
+          <h3 className="mb-3 font-semibold text-primary">Recent Selections</h3>
+          <ul className="space-y-1 text-sm text-secondary">
             {searchHistory.map((item, index) => (
               <li key={index}>• {item}</li>
             ))}
@@ -270,12 +272,12 @@ const InEmploymentFormComponent = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-primary mb-2">Employer Name *</label>
+        <label className="mb-2 block text-sm font-medium text-primary">Employer Name *</label>
         <input
           type="text"
           value={formData.employerName}
           onChange={e => setFormData(prev => ({ ...prev, employerName: e.target.value }))}
-          className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+          className={`w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 ${
             errors.employerName ? 'border-red-300' : 'border-default'
           }`}
           placeholder="Enter employer name"
@@ -284,7 +286,7 @@ const InEmploymentFormComponent = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-primary mb-2">Occupation *</label>
+        <label className="mb-2 block text-sm font-medium text-primary">Occupation *</label>
         <PSOCSelector
           onSelect={option => {
             setFormData(prev => ({ ...prev, occupation: option }));
@@ -297,14 +299,14 @@ const InEmploymentFormComponent = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-primary mb-2">Monthly Salary *</label>
+          <label className="mb-2 block text-sm font-medium text-primary">Monthly Salary *</label>
           <input
             type="number"
             value={formData.salary}
             onChange={e => setFormData(prev => ({ ...prev, salary: e.target.value }))}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 ${
               errors.salary ? 'border-red-300' : 'border-default'
             }`}
             placeholder="Enter monthly salary"
@@ -313,12 +315,12 @@ const InEmploymentFormComponent = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-primary mb-2">Start Date *</label>
+          <label className="mb-2 block text-sm font-medium text-primary">Start Date *</label>
           <input
             type="date"
             value={formData.startDate}
             onChange={e => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-            className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 ${
               errors.startDate ? 'border-red-300' : 'border-default'
             }`}
           />
@@ -328,21 +330,21 @@ const InEmploymentFormComponent = () => {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition-colors"
+        className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
       >
         Submit Employment Information
       </button>
 
       {formData.occupation && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">
             Selected Occupation:
           </h4>
           <p className="text-sm text-green-700 dark:text-green-300">
             <strong>{formData.occupation.occupation_title}</strong> (Code:{' '}
             {formData.occupation.occupation_code})
           </p>
-          <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+          <p className="mt-1 text-xs text-green-600 dark:text-green-400">
             Classification: {formData.occupation.level_type.replace('_', ' ')} • Level:{' '}
             {formData.occupation.hierarchy_level}
           </p>
@@ -361,25 +363,25 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Default State</h3>
+        <h3 className="mb-4 font-semibold text-primary">Default State</h3>
         <PSOCSelector onSelect={() => {}} />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Error</h3>
+        <h3 className="mb-4 font-semibold text-primary">With Error</h3>
         <PSOCSelector onSelect={() => {}} error="This field is required" />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Custom Placeholder</h3>
+        <h3 className="mb-4 font-semibold text-primary">With Custom Placeholder</h3>
         <PSOCSelector onSelect={() => {}} placeholder="What is your profession?" />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Custom Styling</h3>
+        <h3 className="mb-4 font-semibold text-primary">With Custom Styling</h3>
         <PSOCSelector
           onSelect={() => {}}
-          className="border-2 border-purple-300 rounded-lg"
+          className="rounded-lg border-2 border-purple-300"
           placeholder="Custom styled PSOC selector"
         />
       </div>
@@ -391,39 +393,39 @@ export const AllStates: Story = {
 export const FeaturesShowcase: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">PSOC Hierarchy Levels</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">PSOC Hierarchy Levels</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Classification Levels</h4>
-            <ul className="text-sm text-secondary space-y-2">
+            <h4 className="mb-2 font-medium text-primary">Classification Levels</h4>
+            <ul className="space-y-2 text-sm text-secondary">
               <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                <span className="size-2 rounded-full bg-purple-500"></span>
                 <strong>Major Groups (Level 4):</strong> Broad occupational categories
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                <span className="size-2 rounded-full bg-blue-500"></span>
                 <strong>Sub-Major Groups (Level 3):</strong> More specific groupings
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                <span className="size-2 rounded-full bg-green-500"></span>
                 <strong>Minor Groups (Level 2):</strong> Detailed occupational groups
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                <span className="size-2 rounded-full bg-orange-500"></span>
                 <strong>Unit Groups (Level 1):</strong> Specific job categories
               </li>
               <li className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                <span className="size-2 rounded-full bg-red-500"></span>
                 <strong>Unit Sub-Groups (Level 0):</strong> Most specific occupations
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Search Features</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Search Features</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Real-time search with 300ms debouncing</li>
               <li>• Multi-table search across PSOC hierarchy</li>
               <li>• Intelligent fallback to different classification levels</li>
@@ -434,8 +436,8 @@ export const FeaturesShowcase: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <h4 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2">
+        <div className="mt-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+          <h4 className="mb-2 font-medium text-yellow-800 dark:text-yellow-200">
             Database Integration
           </h4>
           <p className="text-sm text-yellow-700 dark:text-yellow-300">

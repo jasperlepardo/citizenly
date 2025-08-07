@@ -40,7 +40,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Template component for interactive stories
-const HouseholdTypeSelectorTemplate = (args: any) => {
+const HouseholdTypeSelectorTemplate = (args: { value: string; [key: string]: unknown }) => {
   const [value, setValue] = useState<string>(args.value);
 
   return (

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import SectoralInfo, { SectoralInformation, SectoralContext } from './SectoralInfo';
+import SectoralInfo, { SectoralInformation } from './SectoralInfo';
 
 const meta: Meta<typeof SectoralInfo> = {
   title: 'RBI Components/Organisms/SectoralInfo',
@@ -59,7 +59,12 @@ const defaultSectoralInfo: SectoralInformation = {
 };
 
 // Template component for interactive stories
-const SectoralInfoTemplate = (args: any) => {
+const SectoralInfoTemplate = (
+  args: Record<string, unknown> & {
+    value: SectoralInformation;
+    onChange?: (newValue: SectoralInformation) => void;
+  }
+) => {
   const [value, setValue] = useState<SectoralInformation>(args.value);
 
   return (
@@ -68,7 +73,7 @@ const SectoralInfoTemplate = (args: any) => {
       value={value}
       onChange={newValue => {
         setValue(newValue);
-        args.onChange?.(newValue);
+        (args.onChange as ((newValue: SectoralInformation) => void) | undefined)?.(newValue);
       }}
     />
   );

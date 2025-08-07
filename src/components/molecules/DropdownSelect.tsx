@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const dropdownVariants = cva(
-  'flex items-center w-full bg-surface rounded transition-all duration-200 font-montserrat focus-within:outline-none relative cursor-pointer',
+  'font-montserrat relative flex w-full cursor-pointer items-center rounded transition-all duration-200 bg-surface focus-within:outline-none',
   {
     variants: {
       variant: {
@@ -15,13 +15,13 @@ const dropdownVariants = cva(
           'border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
           'border border-green-500 focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'border border-default bg-background-muted cursor-not-allowed',
-        readonly: 'border border-default bg-background-muted',
+        disabled: 'cursor-not-allowed border bg-background-muted border-default',
+        readonly: 'border bg-background-muted border-default',
       },
       size: {
-        sm: 'p-1.5 text-sm min-h-[32px]',
-        md: 'p-[8px] text-base min-h-[40px]', // Figma: exact 8px padding
-        lg: 'p-3 text-lg min-h-[48px]',
+        sm: 'min-h-8 p-1.5 text-sm',
+        md: 'min-h-10 p-2 text-base', // Figma: exact 8px padding
+        lg: 'min-h-12 p-3 text-lg',
       },
     },
     defaultVariants: {
@@ -39,6 +39,7 @@ export interface DropdownOption {
 }
 
 export interface DropdownSelectProps extends VariantProps<typeof dropdownVariants> {
+  id?: string;
   label?: string;
   helperText?: string;
   errorMessage?: string;
@@ -60,6 +61,7 @@ export interface DropdownSelectProps extends VariantProps<typeof dropdownVariant
 const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
   (
     {
+      id,
       className,
       dropdownClassName,
       variant = 'default',
@@ -90,6 +92,10 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
     const searchInputRef = useRef<HTMLInputElement>(null);
     const optionsListRef = useRef<HTMLDivElement>(null);
     const optionRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    // Generate unique IDs for ARIA attributes
+    const listboxId = `dropdown-listbox-${Math.random().toString(36).substring(2, 11)}`;
+    const labelId = `dropdown-label-${Math.random().toString(36).substring(2, 11)}`;
 
     const actualVariant = errorMessage ? 'error' : variant;
     const selectedOption = options.find(opt => opt.value === value);
@@ -181,6 +187,29 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         }
       }
     }, [highlightedIndex]);
+
+    // Define handleSelect before it's used in useEffect
+    const handleSelect = useCallback(
+      (option: DropdownOption) => {
+        if (option.disabled) return;
+
+        onChange?.(option.value);
+        setIsOpen(false);
+        // Don't clear search term if searchable - show selected value
+        if (!searchable) {
+          setSearchTerm('');
+        } else {
+          setSearchTerm(option.label);
+        }
+        setHighlightedIndex(-1);
+
+        // Blur the input if searchable to prevent cursor showing
+        if (searchable && searchInputRef.current) {
+          searchInputRef.current.blur();
+        }
+      },
+      [onChange, searchable]
+    );
 
     // Handle keyboard navigation
     useEffect(() => {
@@ -290,26 +319,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
       document.addEventListener('keydown', handleKeyDown);
       return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, highlightedIndex, filteredOptions]);
-
-    const handleSelect = (option: DropdownOption) => {
-      if (option.disabled) return;
-
-      onChange?.(option.value);
-      setIsOpen(false);
-      // Don't clear search term if searchable - show selected value
-      if (!searchable) {
-        setSearchTerm('');
-      } else {
-        setSearchTerm(option.label);
-      }
-      setHighlightedIndex(-1);
-
-      // Blur the input if searchable to prevent cursor showing
-      if (searchable && searchInputRef.current) {
-        searchInputRef.current.blur();
-      }
-    };
+    }, [isOpen, highlightedIndex, filteredOptions, searchable, handleSelect]);
 
     const handleClear = (e: React.MouseEvent) => {
       e.stopPropagation();
@@ -327,40 +337,86 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
     return (
       <div className={cn('relative', className)} ref={dropdownRef}>
         {/* Label */}
-        {label && <label className="block text-sm font-medium text-primary mb-1">{label}</label>}
+        {label && (
+          <div
+            id={labelId}
+            className="mb-1 block cursor-pointer text-sm font-medium text-primary"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (!disabled && !loading) {
+                setIsOpen(prev => !prev);
+                // Focus the dropdown element
+                if (ref && 'current' in ref && ref.current) {
+                  ref.current.focus();
+                }
+              }
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!disabled && !loading) {
+                  setIsOpen(!isOpen);
+                  // Focus the dropdown element
+                  if (ref && 'current' in ref && ref.current) {
+                    ref.current.focus();
+                  }
+                }
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            aria-label={`${label}, click to open dropdown`}
+            aria-controls={id}
+          >
+            {label}
+          </div>
+        )}
 
         {/* Dropdown Trigger */}
         <div
           ref={ref}
+          id={id}
           className={cn(dropdownVariants({ variant: actualVariant, size }), 'relative')}
           role="combobox"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
+          aria-controls={listboxId}
+          aria-labelledby={labelId}
+          tabIndex={0}
+          onClick={toggleDropdown}
+          onFocus={() => {
+            // If focused programmatically (like from a label click), open the dropdown
+            if (!isOpen) {
+              setIsOpen(true);
+            }
+          }}
           {...props}
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               {leftIcon}
             </div>
           )}
 
           {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
-          <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+          <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
             {/* Input/Display Field - Figma: flex flex-col justify-center */}
-            <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+            <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-5">
               {searchable ? (
                 <input
                   ref={searchInputRef}
                   type="text"
                   className={cn(
-                    'w-full bg-transparent font-montserrat font-normal placeholder:text-muted border-0 outline-0 ring-0 shadow-none focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none active:border-0 active:outline-0 active:ring-0 active:shadow-none',
+                    'font-montserrat w-full border-0 bg-transparent font-normal shadow-none outline-0 ring-0 placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0',
                     // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                     size === 'sm' && 'text-sm leading-4',
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
                     'text-primary',
-                    disabled && 'text-muted cursor-not-allowed'
+                    disabled && 'cursor-not-allowed text-muted'
                   )}
                   style={{
                     border: 'none',
@@ -412,15 +468,14 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
               ) : (
                 <span
                   className={cn(
-                    'w-full text-left cursor-pointer',
+                    'w-full cursor-pointer text-left',
                     // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                     size === 'sm' && 'text-sm leading-4',
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
                     selectedOption ? 'text-primary' : 'text-muted',
-                    disabled && 'text-muted cursor-not-allowed'
+                    disabled && 'cursor-not-allowed text-muted'
                   )}
-                  onClick={toggleDropdown}
                 >
                   {loading ? 'Loading...' : selectedOption?.label || placeholder}
                 </span>
@@ -430,11 +485,11 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
           {/* Clear Button */}
           {clearable && selectedOption && !disabled && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex items-center justify-center w-full h-full text-secondary hover:text-primary transition-colors"
+                className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
               >
                 <svg
                   width="16"
@@ -452,9 +507,9 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
           )}
 
           {/* Dropdown Icon - Figma: w-5 (20px width) */}
-          <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
             <svg
-              className={cn('w-4 h-4 transition-transform duration-200', isOpen && 'rotate-180')}
+              className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -469,14 +524,19 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {isOpen && (
           <div
             className={cn(
-              'absolute z-50 w-full mt-1 bg-surface rounded-md shadow-xl border border-default',
+              'absolute z-50 mt-1 w-full rounded-md border shadow-xl bg-surface border-default',
               'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-100',
               dropdownClassName
             )}
             style={{ maxHeight: `${maxHeight}px` }}
           >
             {/* Options List */}
-            <div ref={optionsListRef} className="max-h-60 overflow-auto py-1">
+            <div
+              ref={optionsListRef}
+              id={listboxId}
+              role="listbox"
+              className="max-h-60 overflow-auto py-1"
+            >
               {filteredOptions.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-muted">
                   {searchable && searchTerm ? 'No options found' : 'No options available'}
@@ -489,12 +549,12 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                       optionRefs.current[index] = el;
                     }}
                     className={cn(
-                      'flex items-center px-3 py-2 text-sm cursor-pointer transition-colors',
+                      'flex cursor-pointer items-center px-3 py-2 text-sm transition-colors',
                       'hover:bg-surface-hover',
                       highlightedIndex === index && 'bg-surface-hover',
                       option.value === value &&
-                        'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-                      option.disabled && 'text-muted cursor-not-allowed opacity-50'
+                        'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
+                      option.disabled && 'cursor-not-allowed opacity-50 text-muted'
                     )}
                     onClick={() => handleSelect(option)}
                     role="option"
@@ -504,13 +564,13 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     <div className="flex-1">
                       <div className="font-medium">{option.label}</div>
                       {option.description && (
-                        <div className="text-xs text-muted mt-1">{option.description}</div>
+                        <div className="mt-1 text-xs text-muted">{option.description}</div>
                       )}
                     </div>
 
                     {/* Selected Checkmark */}
                     {option.value === value && (
-                      <div className="flex items-center justify-center w-5 h-5 text-blue-600 dark:text-blue-400">
+                      <div className="flex size-5 items-center justify-center text-blue-600 dark:text-blue-400">
                         <svg
                           width="16"
                           height="16"
@@ -534,9 +594,9 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="text-xs text-red-500 font-montserrat">{errorMessage}</p>
+              <p className="font-montserrat text-xs text-red-500">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-muted font-montserrat">{helperText}</p>
+              <p className="font-montserrat text-xs text-muted">{helperText}</p>
             )}
           </div>
         )}

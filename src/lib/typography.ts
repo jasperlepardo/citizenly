@@ -13,7 +13,7 @@ export const fontStacks = {
   mono: 'ui-monospace, "SFMono-Regular", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace',
 } as const;
 
-// Typography class utilities
+// Typography class utilities - Aligned with Figma specifications
 export const typography = {
   // System font classes (preferred approach)
   system: 'font-system',
@@ -21,27 +21,27 @@ export const typography = {
   body: 'font-body',
   mono: 'font-mono',
 
-  // Heading classes
-  h1: 'font-display text-4xl font-bold tracking-tight',
-  h2: 'font-display text-3xl font-semibold tracking-tight',
-  h3: 'font-display text-2xl font-semibold tracking-tight',
-  h4: 'font-display text-xl font-medium tracking-tight',
-  h5: 'font-display text-lg font-medium',
-  h6: 'font-display text-base font-medium',
+  // Heading classes - Figma aligned line heights
+  h1: 'font-display text-4xl font-bold leading-[3rem] tracking-tight', // 48px/48px
+  h2: 'font-display text-3xl font-semibold leading-[2.5rem] tracking-tight', // 30px/40px
+  h3: 'font-display text-2xl font-semibold leading-8 tracking-tight', // 24px/32px
+  h4: 'font-display text-xl font-medium leading-7 tracking-tight', // 20px/28px
+  h5: 'font-display text-lg font-medium leading-6', // 18px/24px
+  h6: 'font-display text-base font-medium leading-5', // 16px/20px
 
-  // Body text classes
-  bodyLarge: 'font-body text-lg',
-  bodyMedium: 'font-body text-base',
-  bodySmall: 'font-body text-sm',
-  caption: 'font-body text-xs',
+  // Body text classes - Figma aligned (16px/20px standard)
+  bodyLarge: 'font-body text-lg leading-6', // 18px/24px
+  bodyMedium: 'font-body text-base leading-5', // 16px/20px - Figma standard
+  bodySmall: 'font-body text-sm leading-4', // 14px/16px
+  caption: 'font-body text-xs leading-[14px]', // 12px/14px
 
-  // UI element classes
-  button: 'font-system font-medium',
-  input: 'font-system',
-  label: 'font-system font-medium',
+  // UI element classes - Figma standard
+  button: 'font-system font-medium text-base leading-5', // 16px/20px as per Figma
+  input: 'font-system text-base leading-5', // 16px/20px as per Figma
+  label: 'font-system font-medium text-sm leading-4', // 14px/16px
 
   // Special purpose
-  code: 'font-mono text-sm',
+  code: 'font-mono text-sm leading-5',
 } as const;
 
 // Helper function to combine typography classes - moved to utils.ts

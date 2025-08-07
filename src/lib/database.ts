@@ -243,7 +243,7 @@ export async function searchAddresses(
  */
 export async function getCompleteAddress(barangayCode: string): Promise<AddressHierarchy | null> {
   try {
-    const { data, error }: { data: any; error: any } = await supabase
+    const { data, error } = await supabase
       .from('psgc_barangays')
       .select(
         `

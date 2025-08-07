@@ -111,6 +111,8 @@ export default function SectoralInfo({
     context.birthdate,
     context.employment_status,
     context.highest_educational_attainment,
+    onChange,
+    value,
   ]);
 
   // Calculate age from birthdate
@@ -178,7 +180,7 @@ export default function SectoralInfo({
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="mb-2 text-lg font-medium text-gray-900">
           <span className="text-base">👥</span> Sectoral Group Classification
         </h3>
         <p className="text-sm text-gray-600">
@@ -187,8 +189,8 @@ export default function SectoralInfo({
       </div>
 
       {/* Auto-Calculated Flags (Read-only) */}
-      <FormGroup title="Auto-Calculated Classifications" className="bg-gray-50 p-4 rounded-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <FormGroup title="Auto-Calculated Classifications" className="rounded-lg bg-gray-50 p-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Checkbox
             label="Labor Force"
             description="Based on employment status"
@@ -241,7 +243,7 @@ export default function SectoralInfo({
 
       {/* Manual Flags */}
       <FormGroup title="Manual Classifications">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Checkbox
             label="Overseas Filipino Worker (OFW)"
             description="Currently working abroad"
@@ -302,8 +304,8 @@ export default function SectoralInfo({
       </FormGroup>
 
       {/* Summary */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h4 className="text-sm font-medium text-blue-900 mb-2">Classification Summary</h4>
+      <div className="rounded-lg bg-blue-50 p-4">
+        <h4 className="mb-2 text-sm font-medium text-blue-900">Classification Summary</h4>
         <div className="text-xs text-blue-700">
           <span className="font-medium">Active Classifications:</span>{' '}
           {(() => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger, logError } from '@/lib/secure-logger';
 
@@ -38,8 +38,11 @@ export default function PSOCSelector({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Generate unique ID for ARIA attributes
+  const listboxId = `psoc-listbox-${Math.random().toString(36).substr(2, 9)}`;
+
   // Search PSOC occupations
-  const searchOccupations = async (query: string) => {
+  const searchOccupations = useCallback(async (query: string) => {
     if (!query.trim()) {
       setOptions([]);
       return;
@@ -65,7 +68,7 @@ export default function PSOCSelector({
         logger.debug('Trying direct PSOC table queries');
 
         // Try major groups first
-        const { data: majorGroups, error: _majorError } = await supabase
+        const { data: majorGroups } = await supabase
           .from('psoc_major_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -85,7 +88,7 @@ export default function PSOCSelector({
         }
 
         // Try unit groups
-        const { data: unitGroups, error: _unitError } = await supabase
+        const { data: unitGroups } = await supabase
           .from('psoc_unit_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -105,7 +108,7 @@ export default function PSOCSelector({
         }
 
         // Try unit sub-groups (most specific occupations like "Radiology technician")
-        const { data: unitSubGroups, error: _unitSubError } = await supabase
+        const { data: unitSubGroups } = await supabase
           .from('psoc_unit_sub_groups')
           .select('code, title')
           .ilike('title', `%${query}%`)
@@ -135,7 +138,7 @@ export default function PSOCSelector({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Debounced search
   useEffect(() => {
@@ -152,7 +155,8 @@ export default function PSOCSelector({
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, searchOccupations]);
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,23 +218,23 @@ export default function PSOCSelector({
     <div className="relative" ref={dropdownRef}>
       {/* Input Container - Figma: exact 8px padding, structured like InputField */}
       <div
-        className={`flex items-center w-full transition-colors font-system focus-within:outline-none relative ${
+        className={`relative flex w-full items-center transition-colors font-system focus-within:outline-none ${
           error
-            ? 'border border-red-600 bg-surface rounded focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
-            : 'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
-        } p-[8px] text-base min-h-[40px] ${className}`}
+            ? 'rounded border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
+            : 'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+        } min-h-10 p-2 text-base ${className}`}
       >
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
-        <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+        <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
           {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-          <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+          <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-5">
             <input
               ref={inputRef}
               type="text"
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => setIsOpen(true)}
-              className="w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted border-0 outline-0 ring-0 shadow-none focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none active:border-0 active:outline-0 active:ring-0 active:shadow-none text-base leading-5"
+              className="font-montserrat w-full border-0 bg-transparent text-base font-normal leading-5 shadow-none outline-0 ring-0 text-primary placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
               style={{
                 border: 'none',
                 outline: 'none',
@@ -238,6 +242,10 @@ export default function PSOCSelector({
                 appearance: 'none',
               }}
               placeholder={placeholder}
+              role="combobox"
+              aria-expanded={isOpen}
+              aria-haspopup="listbox"
+              aria-controls={listboxId}
               aria-invalid={error ? 'true' : 'false'}
             />
           </div>
@@ -245,8 +253,8 @@ export default function PSOCSelector({
 
         {/* Loading indicator - Figma: w-5 (20px width) */}
         {loading && (
-          <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
-            <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+            <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -267,10 +275,14 @@ export default function PSOCSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-lg bg-surface shadow-lg ring-1 ring-border-default max-h-60 overflow-auto">
+        <div
+          id={listboxId}
+          role="listbox"
+          className="ring-border-default absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg shadow-lg ring-1 bg-surface"
+        >
           {loading ? (
-            <div className="px-3 py-2 text-sm/6 text-muted flex items-center gap-2">
-              <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 px-3 py-2 text-sm/6 text-muted">
+              <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle
                   className="opacity-25"
                   cx="12"
@@ -294,7 +306,9 @@ export default function PSOCSelector({
                   <button
                     type="button"
                     onClick={() => handleOptionSelect(option)}
-                    className="w-full px-3 py-2 text-left text-sm/6 text-primary hover:bg-surface-hover focus:bg-surface-hover focus:outline-none"
+                    role="option"
+                    aria-selected={selectedOption?.occupation_code === option.occupation_code}
+                    className="w-full px-3 py-2 text-left text-sm/6 text-primary hover:bg-surface-hover focus:outline-none focus:bg-surface-hover"
                   >
                     <div className="font-medium">{option.occupation_title}</div>
                     <div className="text-xs text-muted">
@@ -307,8 +321,8 @@ export default function PSOCSelector({
             </ul>
           ) : searchQuery.trim() ? (
             <div className="px-3 py-2 text-sm/6 text-muted">
-              <div>No occupations found for "{searchQuery}"</div>
-              <div className="text-xs mt-1 text-muted">
+              <div>No occupations found for &quot;{searchQuery}&quot;</div>
+              <div className="mt-1 text-xs text-muted">
                 Note: PSOC data may not be loaded in the database yet.
               </div>
             </div>
@@ -323,7 +337,7 @@ export default function PSOCSelector({
       {/* Error message styled like InputField */}
       {error && (
         <div className="mt-2">
-          <p className="text-xs text-red-500 font-system leading-[14px]" role="alert">
+          <p className="text-xs leading-[14px] text-red-500 font-system" role="alert">
             {error}
           </p>
         </div>

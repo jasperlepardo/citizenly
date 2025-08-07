@@ -114,7 +114,7 @@ export default function PhysicalCharacteristics({
   disabled = false,
   className = '',
 }: PhysicalCharacteristicsProps) {
-  const handleChange = (field: keyof PhysicalCharacteristics, newValue: any) => {
+  const handleChange = (field: keyof PhysicalCharacteristics, newValue: unknown) => {
     onChange({ ...value, [field]: newValue || undefined });
   };
 
@@ -141,8 +141,8 @@ export default function PhysicalCharacteristics({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-default pb-4">
-        <h3 className="text-lg font-medium text-primary mb-2">
+      <div className="border-b pb-4 border-default">
+        <h3 className="mb-2 text-lg font-medium text-primary">
           <span className="text-base">👤</span> Physical Characteristics
         </h3>
         <p className="text-sm text-secondary">
@@ -153,7 +153,7 @@ export default function PhysicalCharacteristics({
 
       {/* Body Measurements */}
       <FormGroup title="Body Measurements">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <InputField
             label="Height (cm)"
             type="number"
@@ -184,7 +184,7 @@ export default function PhysicalCharacteristics({
 
         {/* BMI Display */}
         {bmiValue && bmiCategory && (
-          <div className="mt-3 p-3 bg-background-muted rounded-lg">
+          <div className="mt-3 rounded-lg p-3 bg-background-muted">
             <div className="flex items-center justify-between text-sm">
               <span className="text-secondary">Body Mass Index (BMI):</span>
               <span className="font-medium">
@@ -208,7 +208,7 @@ export default function PhysicalCharacteristics({
 
       {/* Physical Features */}
       <FormGroup title="Physical Features">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <DropdownSelect
             label="Eye Color"
             options={EYE_COLOR_OPTIONS}
@@ -244,13 +244,13 @@ export default function PhysicalCharacteristics({
           disabled={disabled}
           rows={3}
         />
-        <p className="text-xs text-muted mt-1">
+        <p className="mt-1 text-xs text-muted">
           Include scars, birthmarks, tattoos, or other identifying features
         </p>
       </FormGroup>
 
       {/* Medical Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <FormGroup title="Medical Conditions">
           <Textarea
             value={value.medical_conditions || ''}
@@ -259,7 +259,7 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="text-xs text-muted mt-1">
+          <p className="mt-1 text-xs text-muted">
             List any chronic conditions or ongoing medical issues
           </p>
         </FormGroup>
@@ -272,21 +272,21 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="text-xs text-muted mt-1">
+          <p className="mt-1 text-xs text-muted">
             List any known allergies to food, medicine, or other substances
           </p>
         </FormGroup>
       </div>
 
       {/* Privacy Notice */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
         <div className="flex items-start">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <span className="text-yellow-400">⚠️</span>
           </div>
           <div className="ml-3">
             <h4 className="text-sm font-medium text-yellow-800">Privacy Notice</h4>
-            <p className="text-sm text-yellow-700 mt-1">
+            <p className="mt-1 text-sm text-yellow-700">
               Physical characteristics and medical information are collected for identification and
               emergency purposes only. This information is protected under the Data Privacy Act of
               2012 and will not be shared without proper consent.
@@ -302,9 +302,9 @@ export default function PhysicalCharacteristics({
         value.eye_color ||
         value.hair_color ||
         value.complexion) && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-medium text-blue-900 mb-2">Physical Profile Summary</h4>
-          <div className="text-sm text-blue-800 space-y-1">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h4 className="mb-2 font-medium text-blue-900">Physical Profile Summary</h4>
+          <div className="space-y-1 text-sm text-blue-800">
             {value.height_cm && value.weight_kg && (
               <p>
                 <strong>Physical:</strong> {value.height_cm}cm, {value.weight_kg}kg{' '}

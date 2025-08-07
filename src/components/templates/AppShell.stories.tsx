@@ -43,7 +43,7 @@ const SampleDashboardContent = () => (
 
     {/* Quick stats */}
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-      <div className="overflow-hidden rounded-2xl bg-surface shadow-lg border border-default">
+      <div className="overflow-hidden rounded-2xl border shadow-lg bg-surface border-default">
         <div className="p-6">
           <dt className="truncate text-sm font-medium text-secondary">Total Residents</dt>
           <dd className="mt-2 text-3xl font-bold text-primary">1,247</dd>
@@ -55,7 +55,7 @@ const SampleDashboardContent = () => (
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-surface shadow-lg border border-default">
+      <div className="overflow-hidden rounded-2xl border shadow-lg bg-surface border-default">
         <div className="p-6">
           <dt className="truncate text-sm font-medium text-secondary">Households</dt>
           <dd className="mt-2 text-3xl font-bold text-primary">342</dd>
@@ -67,7 +67,7 @@ const SampleDashboardContent = () => (
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-surface shadow-lg border border-default">
+      <div className="overflow-hidden rounded-2xl border shadow-lg bg-surface border-default">
         <div className="p-6">
           <dt className="truncate text-sm font-medium text-secondary">Certifications</dt>
           <dd className="mt-2 text-3xl font-bold text-primary">89</dd>
@@ -79,7 +79,7 @@ const SampleDashboardContent = () => (
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-surface shadow-lg border border-default">
+      <div className="overflow-hidden rounded-2xl border shadow-lg bg-surface border-default">
         <div className="p-6">
           <dt className="truncate text-sm font-medium text-secondary">Active Users</dt>
           <dd className="mt-2 text-3xl font-bold text-primary">23</dd>
@@ -93,11 +93,11 @@ const SampleDashboardContent = () => (
     </div>
 
     {/* Recent activity */}
-    <div className="bg-surface rounded-2xl shadow-lg border border-default">
-      <div className="px-6 py-5 border-b border-default">
+    <div className="rounded-2xl border shadow-lg bg-surface border-default">
+      <div className="border-b px-6 py-5 border-default">
         <h3 className="text-lg font-medium text-primary">Recent Activity</h3>
       </div>
-      <div className="divide-y divide-default">
+      <div className="divide-default divide-y">
         {[
           {
             action: 'New resident registered',
@@ -119,9 +119,9 @@ const SampleDashboardContent = () => (
             type: 'chart',
           },
         ].map((item, index) => (
-          <div key={index} className="px-6 py-4 flex items-center space-x-4">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <div key={index} className="flex items-center space-x-4 px-6 py-4">
+            <div className="shrink-0">
+              <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
                 <span className="text-sm font-medium text-white">
                   {item.type === 'user'
                     ? 'U'
@@ -133,8 +133,8 @@ const SampleDashboardContent = () => (
                 </span>
               </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-primary truncate">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-primary">
                 {item.action}: {item.name}
               </p>
               <p className="text-sm text-secondary">{item.time}</p>
@@ -156,18 +156,18 @@ const SampleResidentsContent = () => (
       <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button
           type="button"
-          className="block rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-center text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="block rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-center text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Add Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-surface shadow-lg rounded-2xl border border-default">
-      <div className="px-6 py-5 border-b border-default">
+    <div className="rounded-2xl border shadow-lg bg-surface border-default">
+      <div className="border-b px-6 py-5 border-default">
         <h3 className="text-lg font-medium text-primary">All Residents</h3>
       </div>
-      <div className="divide-y divide-default">
+      <div className="divide-default divide-y">
         {[
           {
             name: 'Juan Dela Cruz',
@@ -197,8 +197,8 @@ const SampleResidentsContent = () => (
           <div key={index} className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                <div className="shrink-0">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600">
                     <span className="text-sm font-medium text-white">
                       {resident.name
                         .split(' ')
@@ -214,7 +214,7 @@ const SampleResidentsContent = () => (
                 </div>
               </div>
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
                   resident.status === 'Active'
                     ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                     : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
@@ -248,29 +248,29 @@ const ResponsiveDemoComponent = () => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-background p-4 border-b border-default">
-        <h3 className="font-semibold text-primary mb-2">Responsive Layout Demo</h3>
-        <p className="text-sm text-secondary mb-3">
+      <div className="border-b p-4 bg-background border-default">
+        <h3 className="mb-2 font-semibold text-primary">Responsive Layout Demo</h3>
+        <p className="mb-3 text-sm text-secondary">
           This shell adapts to different screen sizes. Try resizing your browser window to see the
           mobile sidebar in action.
         </p>
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentPage('dashboard')}
-            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            className={`rounded-lg px-3 py-1 text-sm transition-colors ${
               currentPage === 'dashboard'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-surface text-primary hover:bg-surface-hover'
+                : 'text-primary bg-surface hover:bg-surface-hover'
             }`}
           >
             Dashboard
           </button>
           <button
             onClick={() => setCurrentPage('residents')}
-            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            className={`rounded-lg px-3 py-1 text-sm transition-colors ${
               currentPage === 'residents'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-surface text-primary hover:bg-surface-hover'
+                : 'text-primary bg-surface hover:bg-surface-hover'
             }`}
           >
             Residents
@@ -293,13 +293,13 @@ export const ResponsiveDemo: Story = {
 export const FeaturesShowcase: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background p-6 border border-default rounded-lg">
-        <h3 className="font-semibold text-primary mb-4">AppShell Features</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">AppShell Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Responsive Design</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Responsive Design</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Mobile-first approach with adaptive layouts</li>
               <li>• Collapsible sidebar for mobile devices</li>
               <li>• Touch-friendly interface elements</li>
@@ -309,8 +309,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Navigation System</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Navigation System</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Unified navigation component integration</li>
               <li>• Persistent sidebar for desktop</li>
               <li>• Mobile overlay with backdrop</li>
@@ -320,8 +320,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Advanced UI Elements</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Advanced UI Elements</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Gradient branding and visual hierarchy</li>
               <li>• Backdrop blur effects for modern appeal</li>
               <li>• Shadow and depth layering</li>
@@ -331,8 +331,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Functionality</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Functionality</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Global search with placeholder text</li>
               <li>• Notification system with badge counts</li>
               <li>• User profile management</li>
@@ -342,8 +342,8 @@ export const FeaturesShowcase: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Design Philosophy</h4>
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">Design Philosophy</h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
             The AppShell template follows modern design principles with emphasis on accessibility,
             performance, and user experience. It provides a consistent foundation for all RBI System
@@ -377,46 +377,46 @@ const LayoutVariationsComponent = () => {
               <p className="mt-2 text-lg text-secondary">Enter resident information and details</p>
             </div>
 
-            <div className="bg-surface rounded-2xl shadow-lg border border-default">
-              <div className="px-6 py-5 border-b border-default">
+            <div className="rounded-2xl border shadow-lg bg-surface border-default">
+              <div className="border-b px-6 py-5 border-default">
                 <h3 className="text-lg font-medium text-primary">Personal Information</h3>
               </div>
-              <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-6 p-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">
+                    <label className="mb-2 block text-sm font-medium text-primary">
                       First Name
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full rounded-lg border px-4 py-3 border-default focus:border-transparent focus:ring-2 focus:ring-indigo-500"
                       placeholder="Enter first name"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary mb-2">Last Name</label>
+                    <label className="mb-2 block text-sm font-medium text-primary">Last Name</label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full rounded-lg border px-4 py-3 border-default focus:border-transparent focus:ring-2 focus:ring-indigo-500"
                       placeholder="Enter last name"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary mb-2">
+                  <label className="mb-2 block text-sm font-medium text-primary">
                     Email Address
                   </label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 border border-default rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full rounded-lg border px-4 py-3 border-default focus:border-transparent focus:ring-2 focus:ring-indigo-500"
                     placeholder="Enter email address"
                   />
                 </div>
                 <div className="flex justify-end space-x-3">
-                  <button className="px-6 py-3 border border-default rounded-lg text-secondary hover:text-primary hover:bg-surface-hover transition-colors">
+                  <button className="rounded-lg border px-6 py-3 transition-colors text-secondary border-default hover:text-primary hover:bg-surface-hover">
                     Cancel
                   </button>
-                  <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+                  <button className="rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-3 text-white shadow-lg transition-all duration-200 hover:shadow-xl">
                     Save Resident
                   </button>
                 </div>
@@ -431,39 +431,39 @@ const LayoutVariationsComponent = () => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-background p-4 border-b border-default">
-        <h3 className="font-semibold text-primary mb-2">Layout Content Variations</h3>
-        <p className="text-sm text-secondary mb-3">
+      <div className="border-b p-4 bg-background border-default">
+        <h3 className="mb-2 font-semibold text-primary">Layout Content Variations</h3>
+        <p className="mb-3 text-sm text-secondary">
           The AppShell template adapts to different content types while maintaining consistent
           navigation and structure.
         </p>
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentLayout('dashboard')}
-            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            className={`rounded-lg px-3 py-1 text-sm transition-colors ${
               currentLayout === 'dashboard'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-surface text-primary hover:bg-surface-hover'
+                : 'text-primary bg-surface hover:bg-surface-hover'
             }`}
           >
             Dashboard
           </button>
           <button
             onClick={() => setCurrentLayout('list')}
-            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            className={`rounded-lg px-3 py-1 text-sm transition-colors ${
               currentLayout === 'list'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-surface text-primary hover:bg-surface-hover'
+                : 'text-primary bg-surface hover:bg-surface-hover'
             }`}
           >
             List View
           </button>
           <button
             onClick={() => setCurrentLayout('form')}
-            className={`px-3 py-1 text-sm rounded-lg transition-colors ${
+            className={`rounded-lg px-3 py-1 text-sm transition-colors ${
               currentLayout === 'form'
                 ? 'bg-indigo-600 text-white'
-                : 'bg-surface text-primary hover:bg-surface-hover'
+                : 'text-primary bg-surface hover:bg-surface-hover'
             }`}
           >
             Form View
@@ -484,14 +484,14 @@ export const LayoutVariations: Story = {
 export const MobileDemo: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+        <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">
           Mobile Interaction Demo
         </h3>
         <p className="text-sm text-yellow-700 dark:text-yellow-300">
           To see the mobile sidebar in action, resize your browser window to mobile width (&lt;
-          1024px) or use your browser's responsive design mode. The hamburger menu will appear in
-          the top bar, and clicking it will show the mobile sidebar overlay.
+          1024px) or use your browser&apos;s responsive design mode. The hamburger menu will appear
+          in the top bar, and clicking it will show the mobile sidebar overlay.
         </p>
       </div>
 
@@ -504,12 +504,12 @@ export const MobileDemo: Story = {
             </p>
           </div>
 
-          <div className="bg-surface rounded-2xl shadow-lg border border-default p-6">
-            <h3 className="text-lg font-medium text-primary mb-4">Mobile Features</h3>
+          <div className="rounded-2xl border p-6 shadow-lg bg-surface border-default">
+            <h3 className="mb-4 text-lg font-medium text-primary">Mobile Features</h3>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">1</span>
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-indigo-500">
+                  <span className="text-xs font-bold text-white">1</span>
                 </div>
                 <div>
                   <h4 className="font-medium text-primary">Touch-Friendly Navigation</h4>
@@ -520,8 +520,8 @@ export const MobileDemo: Story = {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">2</span>
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-indigo-500">
+                  <span className="text-xs font-bold text-white">2</span>
                 </div>
                 <div>
                   <h4 className="font-medium text-primary">Responsive Search</h4>
@@ -530,8 +530,8 @@ export const MobileDemo: Story = {
               </div>
 
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-bold">3</span>
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-indigo-500">
+                  <span className="text-xs font-bold text-white">3</span>
                 </div>
                 <div>
                   <h4 className="font-medium text-primary">Backdrop Overlay</h4>

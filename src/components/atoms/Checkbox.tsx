@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const checkboxVariants = cva(
-  'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
+  'relative inline-flex cursor-pointer items-center disabled:cursor-not-allowed',
   {
     variants: {
       size: {
@@ -21,22 +21,22 @@ const checkboxVariants = cva(
 );
 
 const checkboxInputVariants = cva(
-  'relative border rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1',
+  'relative rounded border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1',
   {
     variants: {
       variant: {
         default:
-          'border-[#d4d4d4] bg-white checked:bg-[#7c3aed] checked:border-[#7c3aed] focus:ring-[#7c3aed]/20',
+          'border-[#d4d4d4] bg-white checked:border-[#7c3aed] checked:bg-[#7c3aed] focus:ring-[#7c3aed]/20',
         primary:
-          'border-[#d4d4d4] bg-white checked:bg-[#2563eb] checked:border-[#2563eb] focus:ring-[#2563eb]/20',
+          'border-[#d4d4d4] bg-white checked:border-[#2563eb] checked:bg-[#2563eb] focus:ring-[#2563eb]/20',
         error:
-          'border-[#dc2626] bg-white checked:bg-[#dc2626] checked:border-[#dc2626] focus:ring-[#dc2626]/20',
-        disabled: 'border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed checked:bg-[#d4d4d4]',
+          'border-[#dc2626] bg-white checked:border-[#dc2626] checked:bg-[#dc2626] focus:ring-[#dc2626]/20',
+        disabled: 'cursor-not-allowed border-[#d4d4d4] bg-[#fafafa] checked:bg-[#d4d4d4]',
       },
       size: {
-        sm: 'w-4 h-4',
-        md: 'w-5 h-5',
-        lg: 'w-6 h-6',
+        sm: 'size-4',
+        md: 'size-5',
+        lg: 'size-6',
       },
     },
     defaultVariants: {
@@ -150,7 +150,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               type="checkbox"
               className={cn(
                 checkboxInputVariants({ variant: actualVariant, size }),
-                'appearance-none flex-shrink-0'
+                'flex-shrink-0 appearance-none'
               )}
               disabled={disabled}
               checked={checked}
@@ -160,10 +160,10 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {/* Custom Checkmark */}
             <div
               className={cn(
-                'absolute inset-0 flex items-center justify-center pointer-events-none',
-                size === 'sm' && 'w-4 h-4',
-                size === 'md' && 'w-5 h-5',
-                size === 'lg' && 'w-6 h-6'
+                'pointer-events-none absolute inset-0 flex items-center justify-center',
+                size === 'sm' && 'h-4 w-4',
+                size === 'md' && 'h-5 w-5',
+                size === 'lg' && 'h-6 w-6'
               )}
             >
               {renderCheckIcon()}
@@ -176,7 +176,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               {label && (
                 <div
                   className={cn(
-                    "font-['Montserrat'] font-medium leading-tight",
+                    'font-medium leading-tight font-body',
                     disabled ? 'text-[#737373]' : 'text-[#262626]',
                     size === 'sm' && 'text-sm',
                     size === 'md' && 'text-base',
@@ -189,7 +189,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
               {description && (
                 <div
                   className={cn(
-                    "font-['Montserrat'] leading-tight mt-0.5",
+                    'mt-0.5 leading-tight font-body',
                     disabled ? 'text-[#a3a3a3]' : 'text-[#737373]',
                     size === 'sm' && 'text-xs',
                     size === 'md' && 'text-sm',
@@ -205,7 +205,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
         {/* Error Message */}
         {errorMessage && (
-          <p className="text-xs text-[#b91c1c] font-['Montserrat'] mt-1 ml-6">{errorMessage}</p>
+          <p className="ml-6 mt-1 text-xs text-danger-600 font-body">{errorMessage}</p>
         )}
       </div>
     );

@@ -251,7 +251,7 @@ export const residentSchema = personalInfoSchema
   .merge(householdSchema);
 
 // Server-side validation function
-export async function validateResidentData(data: any) {
+export async function validateResidentData(data: unknown) {
   try {
     const validatedData = await residentSchema.parseAsync(data);
     return {
@@ -264,7 +264,7 @@ export async function validateResidentData(data: any) {
       return {
         success: false,
         data: null,
-        errors: error.errors.map(err => ({
+        errors: error.issues.map(err => ({
           field: err.path.join('.'),
           message: err.message,
         })),

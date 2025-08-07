@@ -125,9 +125,9 @@ function HouseholdDetailContent() {
     return (
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
-          <div className="flex items-center justify-center h-64">
+          <div className="flex h-64 items-center justify-center">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
               <p className="mt-4 text-sm text-secondary">Loading household details...</p>
             </div>
           </div>
@@ -140,11 +140,11 @@ function HouseholdDetailContent() {
     return (
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
-          <div className="max-w-md mx-auto text-center">
-            <div className="bg-surface rounded-lg shadow-md border border-default p-6">
-              <div className="text-red-600 mb-4">
+          <div className="mx-auto max-w-md text-center">
+            <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+              <div className="mb-4 text-red-600">
                 <svg
-                  className="mx-auto h-12 w-12"
+                  className="mx-auto size-12"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -157,13 +157,13 @@ function HouseholdDetailContent() {
                   />
                 </svg>
               </div>
-              <h1 className="font-montserrat font-semibold text-lg text-primary mb-2">
+              <h1 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                 Household Not Found
               </h1>
-              <p className="font-montserrat text-secondary text-sm mb-4">{error}</p>
+              <p className="font-montserrat mb-4 text-sm text-secondary">{error}</p>
               <Link
                 href="/households"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-secondary border border-default rounded-md hover:bg-surface-hover"
+                className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium text-secondary border-default hover:bg-surface-hover"
               >
                 Back to Households
               </Link>
@@ -176,16 +176,16 @@ function HouseholdDetailContent() {
 
   return (
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto max-w-7xl">
         {/* Header Section */}
-        <div className="bg-surface shadow-sm border-b border-default -mx-6 px-6 py-6 mb-8">
+        <div className="-mx-6 mb-8 border-b p-6 shadow-sm bg-surface border-default">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <Link
                 href="/households"
-                className="inline-flex items-center px-3 py-2 border border-default shadow-sm text-sm font-medium rounded-md text-secondary bg-surface hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -196,9 +196,9 @@ function HouseholdDetailContent() {
                 Back to Households
               </Link>
               <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <div className="flex size-12 items-center justify-center rounded-full bg-green-100">
                   <svg
-                    className="w-6 h-6 text-green-600"
+                    className="size-6 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -233,7 +233,7 @@ function HouseholdDetailContent() {
               className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <svg
-                className="h-4 w-4"
+                className="size-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
@@ -251,19 +251,19 @@ function HouseholdDetailContent() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Column - Main Information */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-8 lg:col-span-2">
             {/* Household Information Card */}
-            <div className="bg-surface shadow rounded-lg border border-default">
-              <div className="px-6 py-4 border-b border-default">
+            <div className="rounded-lg border shadow bg-surface border-default">
+              <div className="border-b px-6 py-4 border-default">
                 <h3 className="text-lg font-medium text-primary">Household Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   <div>
                     <dt className="text-sm font-medium text-secondary">Household Number</dt>
-                    <dd className="mt-1 text-sm text-primary font-mono">#{household.code}</dd>
+                    <dd className="mt-1 font-mono text-sm text-primary">#{household.code}</dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-secondary">Head of Household</dt>
@@ -300,8 +300,8 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Members Card */}
-            <div className="bg-surface shadow rounded-lg border border-default">
-              <div className="px-6 py-4 border-b border-default">
+            <div className="rounded-lg border shadow bg-surface border-default">
+              <div className="border-b px-6 py-4 border-default">
                 <h3 className="text-lg font-medium text-primary">Household Members</h3>
               </div>
 
@@ -311,58 +311,58 @@ function HouseholdDetailContent() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-border-light">
+                  <table className="divide-border-light min-w-full divide-y">
                     <thead className="bg-background-muted">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Age
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Sex
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Civil Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Contact
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-surface divide-y divide-border-light">
+                    <tbody className="divide-border-light divide-y bg-surface">
                       {members.map(member => (
-                        <tr key={member.id} className="hover:bg-surface-hover transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap">
+                        <tr key={member.id} className="transition-colors hover:bg-surface-hover">
+                          <td className="whitespace-nowrap px-6 py-4">
                             <div className="text-sm font-medium text-primary">
                               {formatFullName(member)}
                               {household.head_resident?.id === member.id && (
-                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
                                   Head
                                 </span>
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-primary">
                             {calculateAge(member.birthdate)} years old
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary capitalize">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-primary">
                             {member.sex}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary capitalize">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-primary">
                             {member.civil_status.replace('_', ' ')}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-primary">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-primary">
                             <div>{member.mobile_number}</div>
                             {member.email && (
                               <div className="text-xs text-muted">{member.email}</div>
                             )}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                             <Link
                               href={`/residents/${member.id}`}
                               className="text-blue-600 hover:text-blue-800 hover:underline"
@@ -382,23 +382,23 @@ function HouseholdDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-8">
             {/* Quick Actions Card */}
-            <div className="bg-surface shadow rounded-lg border border-default">
-              <div className="px-6 py-4 border-b border-default">
+            <div className="rounded-lg border shadow bg-surface border-default">
+              <div className="border-b px-6 py-4 border-default">
                 <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
               </div>
-              <div className="px-6 py-4 space-y-3">
+              <div className="space-y-3 px-6 py-4">
                 <Link
                   href={`/rbi-form?household=${household.code}`}
-                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-flex items-center justify-center"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   Generate RBI Form
                 </Link>
-                <button className="w-full bg-surface border border-default text-secondary px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <button className="w-full rounded-md border px-4 py-2 text-sm font-medium text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                   Export Household Data
                 </button>
                 <Link
                   href={`/residents/create?household=${household.code}`}
-                  className="w-full bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 inline-flex items-center justify-center"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                 >
                   Add New Member
                 </Link>
@@ -406,29 +406,29 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Statistics Card */}
-            <div className="bg-surface shadow rounded-lg border border-default">
-              <div className="px-6 py-4 border-b border-default">
+            <div className="rounded-lg border shadow bg-surface border-default">
+              <div className="border-b px-6 py-4 border-default">
                 <h3 className="text-lg font-medium text-primary">Statistics</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <dt className="text-sm font-medium text-secondary">Total Members</dt>
                     <dd className="text-sm font-medium text-primary">{members.length}</dd>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <dt className="text-sm font-medium text-secondary">Adults (18+)</dt>
                     <dd className="text-sm font-medium text-primary">
                       {members.filter(m => calculateAge(m.birthdate) >= 18).length}
                     </dd>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <dt className="text-sm font-medium text-secondary">Minors (Under 18)</dt>
                     <dd className="text-sm font-medium text-primary">
                       {members.filter(m => calculateAge(m.birthdate) < 18).length}
                     </dd>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <dt className="text-sm font-medium text-secondary">Senior Citizens (60+)</dt>
                     <dd className="text-sm font-medium text-primary">
                       {members.filter(m => calculateAge(m.birthdate) >= 60).length}

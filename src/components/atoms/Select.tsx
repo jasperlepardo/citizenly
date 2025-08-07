@@ -8,17 +8,17 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const selectContainerVariants = cva(
-  'w-full bg-surface rounded transition-all duration-200 relative',
+  'relative w-full rounded transition-all duration-200 bg-surface',
   {
     variants: {
       variant: {
         default:
           'border border-default focus-within:border-blue-500 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         error: 'border border-red-500',
-        disabled: 'border border-default bg-background-muted',
+        disabled: 'border bg-background-muted border-default',
       },
       size: {
-        default: 'px-3 py-2 min-h-[40px]', // 12px + 8px padding from Figma
+        default: 'min-h-10 px-3 py-2', // 12px + 8px padding from Figma
       },
     },
     defaultVariants: {
@@ -29,13 +29,13 @@ const selectContainerVariants = cva(
 );
 
 const selectVariants = cva(
-  "w-full appearance-none font-['Montserrat'] text-base leading-5 font-normal bg-transparent border-none outline-none resize-none",
+  'w-full resize-none appearance-none border-none bg-transparent text-base font-normal leading-5 outline-none font-body',
   {
     variants: {
       variant: {
         default: 'text-primary',
         error: 'text-primary',
-        disabled: 'text-muted cursor-not-allowed',
+        disabled: 'cursor-not-allowed text-muted',
       },
     },
     defaultVariants: {
@@ -133,12 +133,12 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </select>
 
           {/* Dropdown Arrow Icon */}
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
             {loading ? (
-              <div className="animate-spin h-4 w-4 border-2 border-border-light border-t-blue-600 rounded-full"></div>
+              <div className="border-border-light size-4 animate-spin rounded-full border-2 border-t-blue-600"></div>
             ) : (
               <svg
-                className="w-4 h-4 text-muted"
+                className="size-4 text-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -155,10 +155,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </div>
 
         {/* Helper Text */}
-        {helperText && !errorMessage && <p className="mt-1 text-xs text-[#737373]">{helperText}</p>}
+        {helperText && !errorMessage && <p className="mt-1 text-xs text-secondary">{helperText}</p>}
 
         {/* Error Message */}
-        {errorMessage && <p className="mt-1 text-xs text-[#dc2626]">{errorMessage}</p>}
+        {errorMessage && <p className="mt-1 text-xs text-danger-600">{errorMessage}</p>}
       </div>
     );
   }

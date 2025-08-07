@@ -6,10 +6,10 @@
  * Integrates with crypto utilities for secure handling
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { InputField } from '../molecules';
 import { hashPhilSysNumber, maskPhilSysNumber } from '@/lib/crypto';
-import { logger, logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/secure-logger';
 
 interface PhilSysNumberInputProps {
   value?: string;
@@ -48,6 +48,38 @@ export default function PhilSysNumberInput({
   const [isFocused, setIsFocused] = useState(false);
   const [validationError, setValidationError] = useState<string>('');
 
+  // Validate PhilSys number format
+  const validatePhilSysNumber = useCallback(
+    (philsysNumber: string): boolean => {
+      let error = '';
+      let valid = false;
+
+      if (!philsysNumber && required) {
+        error = 'PhilSys card number is required';
+      } else if (philsysNumber && !PHILSYS_REGEX.test(philsysNumber)) {
+        if (philsysNumber.replace(/\D/g, '').length < 12) {
+          error = 'PhilSys number must be 12 digits';
+        } else {
+          error = 'Invalid PhilSys number format (XXXX-XXXX-XXXX)';
+        }
+      } else if (philsysNumber) {
+        // Additional validation logic can be added here
+        // For now, just check format
+        valid = true;
+      }
+
+      setIsValid(valid);
+      setValidationError(error);
+
+      if (onValidation) {
+        onValidation(valid, error || undefined);
+      }
+
+      return valid;
+    },
+    [required, onValidation]
+  );
+
   // Initialize display value
   useEffect(() => {
     if (value) {
@@ -56,7 +88,7 @@ export default function PhilSysNumberInput({
       setMaskedDisplay(maskPhilSysNumber(formatted));
       validatePhilSysNumber(formatted);
     }
-  }, [value]);
+  }, [value, validatePhilSysNumber]);
 
   // Format PhilSys number with dashes
   const formatPhilSysNumber = (input: string): string => {
@@ -74,35 +106,6 @@ export default function PhilSysNumberInput({
     } else {
       return limited;
     }
-  };
-
-  // Validate PhilSys number format
-  const validatePhilSysNumber = (philsysNumber: string): boolean => {
-    let error = '';
-    let valid = false;
-
-    if (!philsysNumber && required) {
-      error = 'PhilSys card number is required';
-    } else if (philsysNumber && !PHILSYS_REGEX.test(philsysNumber)) {
-      if (philsysNumber.replace(/\D/g, '').length < 12) {
-        error = 'PhilSys number must be 12 digits';
-      } else {
-        error = 'Invalid PhilSys number format (XXXX-XXXX-XXXX)';
-      }
-    } else if (philsysNumber) {
-      // Additional validation logic can be added here
-      // For now, just check format
-      valid = true;
-    }
-
-    setIsValid(valid);
-    setValidationError(error);
-
-    if (onValidation) {
-      onValidation(valid, error || undefined);
-    }
-
-    return valid;
   };
 
   // Handle input change
@@ -156,7 +159,7 @@ export default function PhilSysNumberInput({
       {label && (
         <label className="block text-sm font-medium text-primary">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </label>
       )}
 
@@ -175,7 +178,7 @@ export default function PhilSysNumberInput({
         />
 
         {/* Security Icon */}
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
           {isValid ? (
             <span className="text-green-500" title="Valid PhilSys number">
               🔒
@@ -209,7 +212,7 @@ export default function PhilSysNumberInput({
           <span className="text-xs">✓</span>
           <span className="text-xs">Valid PhilSys number format</span>
           {autoHash && (
-            <span className="text-xs bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
+            <span className="rounded bg-green-100 px-2 py-1 text-xs dark:bg-green-900/20">
               🔐 Auto-encrypted
             </span>
           )}
@@ -217,7 +220,7 @@ export default function PhilSysNumberInput({
       )}
 
       {/* Security Notice */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-xs">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs dark:border-blue-800 dark:bg-blue-900/20">
         <div className="flex items-start space-x-2">
           <span className="text-blue-600 dark:text-blue-400">🔐</span>
           <div className="text-blue-700 dark:text-blue-300">

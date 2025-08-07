@@ -211,7 +211,7 @@ const sampleActions: TableAction<SampleResident>[] = [
     label: 'View',
     href: record => `/residents/${record.id}`,
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -232,7 +232,7 @@ const sampleActions: TableAction<SampleResident>[] = [
     label: 'Edit',
     onClick: record => alert(`Edit ${record.firstName} ${record.lastName}`),
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -248,7 +248,7 @@ const sampleActions: TableAction<SampleResident>[] = [
     label: 'Delete',
     onClick: record => alert(`Delete ${record.firstName} ${record.lastName}`),
     icon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -334,7 +334,7 @@ const WithSelectionComponent = () => {
   return (
     <div className="space-y-4">
       {selectedRowKeys.length > 0 && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
           <h3 className="font-semibold text-blue-800 dark:text-blue-200">Selected Items:</h3>
           <p className="text-sm text-blue-700 dark:text-blue-300">
             {selectedRowKeys.length} item(s) selected:{' '}
@@ -420,7 +420,7 @@ export const ColumnFeatures: Story = {
         title: 'Name (Custom Render)',
         render: (_, record) => (
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3">
+            <div className="mr-3 flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
               {record.firstName[0]}
               {record.lastName[0]}
             </div>
@@ -482,7 +482,7 @@ const WithRowInteractionComponent = () => {
   return (
     <div className="space-y-4">
       {clickedRow && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
           <p className="text-sm text-green-700 dark:text-green-300">Row clicked: {clickedRow}</p>
         </div>
       )}

@@ -211,7 +211,7 @@ const WithControlsComponent = () => {
       </Table>
 
       {selectedItems.length > 0 && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
           <p className="text-sm text-blue-700 dark:text-blue-300">
             {selectedItems.length} item(s) selected. You can perform bulk actions on these items.
           </p>
@@ -239,9 +239,9 @@ export const EmptyState: Story = {
       <Table>
         <TableBody>
           <div className="p-12 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-background-muted rounded-full flex items-center justify-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-background-muted">
               <svg
-                className="w-8 h-8 text-muted"
+                className="size-8 text-muted"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -254,7 +254,7 @@ export const EmptyState: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-primary mb-2">No residents found</h3>
+            <h3 className="mb-2 text-lg font-semibold text-primary">No residents found</h3>
             <p className="text-secondary">
               Get started by adding your first resident to the system.
             </p>
@@ -326,7 +326,7 @@ const InteractiveExampleComponent = () => {
         <TableBody>
           {filteredData.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-secondary">No results found for "{searchTerm}"</p>
+              <p className="text-secondary">No results found for &quot;{searchTerm}&quot;</p>
             </div>
           ) : (
             filteredData.map(row => (
@@ -344,7 +344,7 @@ const InteractiveExampleComponent = () => {
                 <TableCell>
                   <button
                     onClick={() => handleStatusToggle(row.id)}
-                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ring-1 ring-inset cursor-pointer transition-colors ${
+                    className={`inline-flex cursor-pointer items-center rounded-full px-2 py-1 text-xs font-semibold ring-1 ring-inset transition-colors ${
                       row.status === 'Active'
                         ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400'
                         : row.status === 'Inactive'
@@ -362,12 +362,12 @@ const InteractiveExampleComponent = () => {
         </TableBody>
       </Table>
 
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-2">Interactive Features Demo</h3>
-        <ul className="text-sm text-secondary space-y-1">
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-2 font-semibold text-primary">Interactive Features Demo</h3>
+        <ul className="space-y-1 text-sm text-secondary">
           <li>• Search by name, email, or phone number</li>
           <li>• Click checkboxes to select individual items</li>
-          <li>• Use "Select all" to select all visible items</li>
+          <li>• Use &quot;Select all&quot; to select all visible items</li>
           <li>• Click status badges to toggle between Active/Inactive</li>
           <li>• Action buttons provide contextual operations</li>
         </ul>
@@ -385,7 +385,7 @@ export const ComponentParts: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Table Controls Only</h3>
+        <h3 className="mb-4 font-semibold text-primary">Table Controls Only</h3>
         <TableControls
           selectAll={{
             checked: false,
@@ -401,7 +401,7 @@ export const ComponentParts: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Basic Table</h3>
+        <h3 className="mb-4 font-semibold text-primary">Basic Table</h3>
         <Table>
           <TableBody>
             <TableRow>
@@ -419,7 +419,7 @@ export const ComponentParts: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Different Cell Types</h3>
+        <h3 className="mb-4 font-semibold text-primary">Different Cell Types</h3>
         <Table>
           <TableBody>
             <TableRow>

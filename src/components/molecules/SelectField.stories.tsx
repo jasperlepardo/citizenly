@@ -73,7 +73,13 @@ const sizeOptions = [
 ];
 
 // Interactive wrapper for stories that need state
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState(props.value || '');
   return React.cloneElement(children, {
     ...props,
@@ -206,7 +212,7 @@ export const Large: Story = {
 // All States Showcase
 export const AllStates: Story = {
   render: () => (
-    <div className="space-y-6 w-96">
+    <div className="w-96 space-y-6">
       <h3 className="text-lg font-semibold">Select Field States</h3>
 
       <SelectField
@@ -282,7 +288,7 @@ const FormExampleComponent = () => {
   ];
 
   return (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Issue Report Form</h3>
 
       <SelectField
@@ -321,7 +327,7 @@ const FormExampleComponent = () => {
         helperText="Size of the affected component"
       />
 
-      <div className="pt-4 border-t text-sm text-gray-600">
+      <div className="border-t pt-4 text-sm text-gray-600">
         <p>Form data: {JSON.stringify(formData, null, 2)}</p>
       </div>
     </div>
@@ -371,7 +377,7 @@ const NestedOptionsComponent = () => {
   };
 
   return (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Dependent Dropdowns</h3>
 
       <SelectField
@@ -396,7 +402,7 @@ const NestedOptionsComponent = () => {
       />
 
       {selectedCategory && selectedItem && (
-        <div className="p-3 bg-green-50 border border-green-200 rounded-md text-sm">
+        <div className="rounded-md border border-green-200 bg-green-50 p-3 text-sm">
           Selected: {selectedCategory} → {selectedItem}
         </div>
       )}

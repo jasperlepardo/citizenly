@@ -54,10 +54,10 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
           <svg
-            className="mx-auto h-12 w-12 animate-spin text-blue-600"
+            className="mx-auto size-12 animate-spin text-blue-600"
             fill="none"
             viewBox="0 0 24 24"
           >
@@ -88,10 +88,10 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
           <svg
-            className="mx-auto h-12 w-12 animate-spin text-blue-600"
+            className="mx-auto size-12 animate-spin text-blue-600"
             fill="none"
             viewBox="0 0 24 24"
           >
@@ -121,10 +121,10 @@ export default function ProtectedRoute({
     // If profile is still loading, show loading state
     if (profileLoading) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex min-h-screen items-center justify-center bg-background">
           <div className="text-center">
             <svg
-              className="mx-auto h-12 w-12 animate-spin text-blue-600"
+              className="mx-auto size-12 animate-spin text-blue-600"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -150,12 +150,12 @@ export default function ProtectedRoute({
 
     // If not loading and no profile for permission checks, show error
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-surface rounded-lg shadow-md border border-default p-6">
-            <div className="text-yellow-600 mb-4">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md text-center">
+          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+            <div className="mb-4 text-yellow-600">
               <svg
-                className="mx-auto h-12 w-12"
+                className="mx-auto size-12"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -168,8 +168,8 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="text-lg font-semibold text-primary mb-2">Profile Loading Error</h1>
-            <p className="text-secondary text-sm mb-4">
+            <h1 className="mb-2 text-lg font-semibold text-primary">Profile Loading Error</h1>
+            <p className="mb-4 text-sm text-secondary">
               Unable to load your profile. Please try refreshing the page.
             </p>
             <Button onClick={() => window.location.reload()} variant="primary" size="sm" fullWidth>
@@ -184,12 +184,12 @@ export default function ProtectedRoute({
   // Check role requirement
   if (requireRole && !isInRole(requireRole)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-surface rounded-lg shadow-md border border-default p-6">
-            <div className="text-yellow-600 mb-4">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md text-center">
+          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+            <div className="mb-4 text-yellow-600">
               <svg
-                className="mx-auto h-12 w-12"
+                className="mx-auto size-12"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -202,11 +202,11 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="text-lg font-semibold text-primary mb-2">Access Denied</h1>
-            <p className="text-secondary text-sm mb-2">
+            <h1 className="mb-2 text-lg font-semibold text-primary">Access Denied</h1>
+            <p className="mb-2 text-sm text-secondary">
               You need the <strong>{requireRole}</strong> role to access this page.
             </p>
-            <p className="text-muted text-xs mb-4">
+            <p className="mb-4 text-xs text-muted">
               Your current role: <strong>{role?.name}</strong>
             </p>
             <Button
@@ -226,12 +226,12 @@ export default function ProtectedRoute({
   // Check permission requirement
   if (requirePermission && !hasPermission(requirePermission)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-surface rounded-lg shadow-md border border-default p-6">
-            <div className="text-red-600 mb-4">
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="w-full max-w-md text-center">
+          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+            <div className="mb-4 text-red-600">
               <svg
-                className="mx-auto h-12 w-12"
+                className="mx-auto size-12"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -244,11 +244,11 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="text-lg font-semibold text-primary mb-2">Insufficient Permissions</h1>
-            <p className="text-secondary text-sm mb-2">
-              You don't have permission to access this page.
+            <h1 className="mb-2 text-lg font-semibold text-primary">Insufficient Permissions</h1>
+            <p className="mb-2 text-sm text-secondary">
+              You don&apos;t have permission to access this page.
             </p>
-            <p className="text-muted text-xs mb-4">
+            <p className="mb-4 text-xs text-muted">
               Required permission: <strong>{requirePermission}</strong>
             </p>
             <Button

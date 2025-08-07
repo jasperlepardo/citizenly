@@ -40,7 +40,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Interactive wrapper for stories that need state
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState(props.value || '');
   return React.cloneElement(children, {
     ...props,
@@ -195,7 +201,7 @@ export const CustomIcon: Story = {
   args: {
     placeholder: 'Search with custom icon...',
     leftIcon: (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -217,39 +223,39 @@ export const CustomIcon: Story = {
 // All Variants Showcase
 export const AllVariants: Story = {
   render: () => (
-    <div className="space-y-6 w-96">
+    <div className="w-96 space-y-6">
       <h3 className="text-lg font-semibold">Search Bar Variants</h3>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Default</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Default</label>
         <InteractiveWrapper placeholder="Default search...">
           <SearchBar />
         </InteractiveWrapper>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Filled</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Filled</label>
         <InteractiveWrapper placeholder="Filled search..." variant="filled">
           <SearchBar />
         </InteractiveWrapper>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Outlined</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Outlined</label>
         <InteractiveWrapper placeholder="Outlined search..." variant="outlined">
           <SearchBar />
         </InteractiveWrapper>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">With Value</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">With Value</label>
         <InteractiveWrapper placeholder="Search..." value="Sample search text">
           <SearchBar />
         </InteractiveWrapper>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Disabled</label>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Disabled</label>
         <SearchBar placeholder="Disabled search..." value="Cannot edit" disabled />
       </div>
     </div>
@@ -289,7 +295,7 @@ const InteractiveSearchDemo = () => {
   };
 
   return (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Interactive Search Demo</h3>
 
       <SearchBar
@@ -305,14 +311,14 @@ const InteractiveSearchDemo = () => {
       />
 
       {searchResults.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-md max-h-48 overflow-y-auto">
-          <div className="p-2 text-sm text-gray-500 border-b">
+        <div className="max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-white">
+          <div className="border-b p-2 text-sm text-gray-500">
             {searchResults.length} result{searchResults.length !== 1 ? 's' : ''} found
           </div>
           {searchResults.map((result, index) => (
             <div
               key={index}
-              className="p-3 hover:bg-gray-50 border-b last:border-b-0 cursor-pointer text-sm"
+              className="cursor-pointer border-b p-3 text-sm last:border-b-0 hover:bg-gray-50"
               onClick={() => {
                 setSearchValue(result);
                 setSearchResults([]);
@@ -324,9 +330,10 @@ const InteractiveSearchDemo = () => {
         </div>
       )}
 
-      <div className="text-xs text-gray-500 mt-4">
+      <div className="mt-4 text-xs text-gray-500">
         <p>
-          <strong>Try:</strong> Type "John", "Barangay 1", or press Enter to search
+          <strong>Try:</strong> Type &quot;John&quot;, &quot;Barangay 1&quot;, or press Enter to
+          search
         </p>
         <p>
           <strong>Keyboard:</strong> Press Escape to clear, Enter to search

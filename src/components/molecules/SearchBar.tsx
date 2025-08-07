@@ -1,25 +1,25 @@
 'use client';
 
-import React, { useState, forwardRef, InputHTMLAttributes } from 'react';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const searchBarVariants = cva(
-  'flex items-center w-full transition-colors font-system focus-within:outline-none relative',
+  'relative flex w-full items-center transition-colors font-system focus-within:outline-none',
   {
     variants: {
       variant: {
         default:
-          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         filled:
-          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         outlined:
-          'border border-default bg-surface rounded focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
       },
       size: {
-        sm: 'p-1.5 text-sm min-h-[32px]',
-        md: 'p-[8px] text-base min-h-[40px]', // Figma: exact 8px padding
-        lg: 'p-3 text-lg min-h-[48px]',
+        sm: 'min-h-8 p-1.5 text-sm',
+        md: 'min-h-10 p-2 text-base', // Figma: exact 8px padding
+        lg: 'min-h-12 p-3 text-lg',
       },
     },
     defaultVariants: {
@@ -58,8 +58,6 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     },
     ref
   ) => {
-    const [_isFocused, setIsFocused] = useState(false);
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -86,9 +84,9 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
       <div className={cn(searchBarVariants({ variant, size }), 'search-bar-container', className)}>
         {/* Left Icon - Figma: w-5 (20px width) */}
         {(leftIcon || true) && (
-          <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
             {leftIcon || (
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -101,23 +99,23 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
         )}
 
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
-        <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+        <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
           {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-          <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+          <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-5">
             <input
               ref={ref}
               type="text"
               className={cn(
-                'w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted',
+                'font-montserrat w-full bg-transparent font-normal text-primary placeholder:text-muted',
                 // Remove ALL borders and focus states
-                'border-0 outline-0 ring-0 shadow-none',
-                'focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none',
-                'active:border-0 active:outline-0 active:ring-0 active:shadow-none',
+                'border-0 shadow-none outline-0 ring-0',
+                'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
+                'active:border-0 active:shadow-none active:outline-0 active:ring-0',
                 // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                 size === 'sm' && 'text-sm leading-4',
                 size === 'md' && 'text-base leading-5',
                 size === 'lg' && 'text-lg leading-6',
-                disabled && 'text-muted cursor-not-allowed'
+                disabled && 'cursor-not-allowed text-muted'
               )}
               style={{
                 border: 'none',
@@ -129,8 +127,6 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               value={value}
               onChange={onChange}
               onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               disabled={disabled}
               aria-label="Search"
               {...props}
@@ -140,15 +136,15 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
 
         {/* Clear Button - Figma: w-5 (20px width) */}
         {showClearButton && hasValue && (
-          <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
             <button
               type="button"
               onClick={handleClear}
-              className="flex items-center justify-center w-full h-full text-secondary hover:text-primary transition-colors"
+              className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
               aria-label="Clear search"
               tabIndex={-1}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

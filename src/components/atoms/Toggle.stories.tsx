@@ -41,7 +41,13 @@ const meta: Meta<typeof Toggle> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const InteractiveWrapper = ({ children, ...props }: any) => {
+const InteractiveWrapper = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   const [checked, setChecked] = useState(props.checked || false);
   return React.cloneElement(children, {
     ...props,
@@ -204,7 +210,7 @@ const SettingsExampleComponent = () => {
   };
 
   return (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Application Settings</h3>
 
       <div className="space-y-4">
@@ -246,7 +252,7 @@ const SettingsExampleComponent = () => {
         />
       </div>
 
-      <div className="pt-4 border-t text-sm text-gray-600">
+      <div className="border-t pt-4 text-sm text-gray-600">
         <p>
           Active settings: {Object.values(settings).filter(Boolean).length} of{' '}
           {Object.keys(settings).length}

@@ -5,20 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/file-security';
 import { Button } from '@/components/atoms';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger } from '@/lib/secure-logger';
 
 const fileUploadVariants = cva(
-  'relative border-2 border-dashed rounded-lg transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+  'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
   {
     variants: {
       variant: {
         default:
-          'border-[#d4d4d4] bg-white hover:border-[#a3a3a3] focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20',
+          'border-[#d4d4d4] bg-white focus-within:border-[#2563eb] focus-within:ring-[#2563eb]/20 hover:border-[#a3a3a3]',
         error:
-          'border-[#dc2626] bg-white hover:border-[#dc2626] focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20',
+          'border-[#dc2626] bg-white focus-within:border-[#dc2626] focus-within:ring-[#dc2626]/20 hover:border-[#dc2626]',
         success:
-          'border-[#059669] bg-white hover:border-[#059669] focus-within:border-[#059669] focus-within:ring-[#059669]/20',
-        disabled: 'border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed',
+          'border-[#059669] bg-white focus-within:border-[#059669] focus-within:ring-[#059669]/20 hover:border-[#059669]',
+        disabled: 'cursor-not-allowed border-[#d4d4d4] bg-[#fafafa]',
       },
       size: {
         sm: 'p-4',
@@ -190,9 +190,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="block text-sm font-medium text-[#262626] mb-2 font-['Montserrat']">
-            {label}
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[#262626] font-body">{label}</label>
         )}
 
         {/* Upload Area */}
@@ -223,9 +221,9 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
               <svg
                 className={cn(
                   'mx-auto',
-                  size === 'sm' && 'w-8 h-8',
-                  size === 'md' && 'w-12 h-12',
-                  size === 'lg' && 'w-16 h-16',
+                  size === 'sm' && 'h-8 w-8',
+                  size === 'md' && 'h-12 w-12',
+                  size === 'lg' && 'h-16 w-16',
                   disabled ? 'text-[#a3a3a3]' : 'text-[#737373]'
                 )}
                 viewBox="0 0 24 24"
@@ -250,12 +248,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                 size === 'lg' && 'text-lg'
               )}
             >
-              <p
-                className={cn(
-                  "font-['Montserrat']",
-                  disabled ? 'text-[#a3a3a3]' : 'text-[#525252]'
-                )}
-              >
+              <p className={cn('font-body', disabled ? 'text-[#a3a3a3]' : 'text-[#525252]')}>
                 {dragText}
               </p>
               <Button
@@ -263,7 +256,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                 disabled={disabled}
                 variant="ghost"
                 size="sm"
-                className="font-medium underline hover:no-underline text-[#2563eb] hover:text-[#1d4ed8] p-0 h-auto disabled:text-[#a3a3a3]"
+                className="h-auto p-0 font-medium text-[#2563eb] underline hover:text-[#1d4ed8] hover:no-underline disabled:text-[#a3a3a3]"
               >
                 {browseText}
               </Button>
@@ -271,7 +264,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="mt-2 text-xs text-[#737373] font-['Montserrat']">
+              <div className="mt-2 text-xs text-[#737373] font-body">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -282,17 +275,15 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {/* File Preview */}
         {showPreview && selectedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h4 className="text-sm font-medium text-[#262626] font-['Montserrat']">
-              Selected Files:
-            </h4>
+            <h4 className="text-sm font-medium text-[#262626] font-body">Selected Files:</h4>
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-2 bg-[#fafafa] rounded border border-[#d4d4d4]"
+                className="flex items-center justify-between rounded border border-[#d4d4d4] bg-[#fafafa] p-2"
               >
-                <div className="flex items-center space-x-2 flex-1 min-w-0">
+                <div className="flex min-w-0 flex-1 items-center space-x-2">
                   <svg
-                    className="w-4 h-4 text-[#737373] flex-shrink-0"
+                    className="size-4 shrink-0 text-[#737373]"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -301,13 +292,11 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#262626] font-['Montserrat'] truncate">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-[#262626] font-body">
                       {file.name}
                     </p>
-                    <p className="text-xs text-[#737373] font-['Montserrat']">
-                      {formatFileSize(file.size)}
-                    </p>
+                    <p className="text-xs text-[#737373] font-body">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
                 <Button
@@ -315,10 +304,10 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="ml-2 p-1 text-[#737373] hover:text-[#dc2626] transition-colors h-6 w-6"
+                  className="ml-2 size-6 p-1 text-[#737373] transition-colors hover:text-[#dc2626]"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="size-4"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -337,9 +326,9 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-[#b91c1c] font-['Montserrat']">{errorMessage}</p>
+              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-[#737373] font-['Montserrat']">{helperText}</p>
+              <p className="text-xs text-[#737373] font-body">{helperText}</p>
             )}
           </div>
         )}
