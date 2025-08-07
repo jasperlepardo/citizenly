@@ -34,7 +34,7 @@ interface TableRowProps {
 export function TableRow({ children, className = '' }: TableRowProps) {
   return (
     <div
-      className={`bg-surface hover:bg-surface-hover flex items-center transition-colors ${className}`}
+      className={`flex items-center transition-colors bg-surface hover:bg-surface-hover ${className}`}
     >
       {children}
     </div>
@@ -62,9 +62,9 @@ export function TableCell({
       <div className={`p-2 ${className}`}>
         <button
           onClick={() => checkbox?.onChange?.(!checkbox.checked)}
-          className="flex items-center justify-center p-0 rounded border border-default"
+          className="flex items-center justify-center rounded border p-0 border-default"
         >
-          <div className="w-4 h-4 flex items-center justify-center">
+          <div className="flex size-4 items-center justify-center">
             {checkbox?.checked && (
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
@@ -85,15 +85,9 @@ export function TableCell({
   if (type === 'action') {
     return (
       <div className={`p-1 ${className}`}>
-        <button className="p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
-          <div className="w-5 h-5">
-            <Image
-              alt="actions"
-              className="block w-full h-full"
-              src={imgDots}
-              width={20}
-              height={20}
-            />
+        <button className="rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
+          <div className="size-5">
+            <Image alt="actions" className="block size-full" src={imgDots} width={20} height={20} />
           </div>
         </button>
       </div>
@@ -101,8 +95,8 @@ export function TableCell({
   }
 
   return (
-    <div className={`p-2 flex-1 ${className}`}>
-      <div className="font-body text-base font-normal leading-5 text-primary">{children}</div>
+    <div className={`flex-1 p-2 ${className}`}>
+      <div className="text-base font-normal leading-5 font-body text-primary">{children}</div>
     </div>
   );
 }
@@ -123,7 +117,7 @@ interface TableControlsProps {
 
 export function TableControls({ selectAll, actions, search }: TableControlsProps) {
   return (
-    <div className="bg-surface flex items-center justify-between p-0">
+    <div className="flex items-center justify-between p-0 bg-surface">
       <div className="flex items-center">
         {selectAll && (
           <div className="flex items-center gap-2 p-2">
@@ -131,8 +125,8 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
               onClick={() => selectAll.onChange(!selectAll.checked)}
               className="flex items-center gap-2"
             >
-              <div className="flex items-center justify-center p-0 rounded border border-default">
-                <div className="w-4 h-4 flex items-center justify-center">
+              <div className="flex items-center justify-center rounded border p-0 border-default">
+                <div className="flex size-4 items-center justify-center">
                   {selectAll.checked && (
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path
@@ -146,7 +140,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
                   )}
                 </div>
               </div>
-              <span className="font-body text-base font-normal text-primary">
+              <span className="text-base font-normal font-body text-primary">
                 {selectAll.label || 'Select all'}
               </span>
             </button>
@@ -155,54 +149,36 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
 
         {/* Action Buttons */}
         <div className="flex items-center gap-0 p-1">
-          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors">
-            <div className="w-5 h-5">
-              <Image
-                alt="list"
-                className="block w-full h-full"
-                src={imgList}
-                width={20}
-                height={20}
-              />
+          <button className="flex items-center gap-1 rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
+            <div className="size-5">
+              <Image alt="list" className="block size-full" src={imgList} width={20} height={20} />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">Properties</span>
+            <span className="px-1 text-base font-medium font-body text-secondary">Properties</span>
           </button>
 
-          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
-            <div className="w-5 h-5">
-              <Image
-                alt="sort"
-                className="block w-full h-full"
-                src={imgSort}
-                width={20}
-                height={20}
-              />
+          <button className="ml-1 flex items-center gap-1 rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
+            <div className="size-5">
+              <Image alt="sort" className="block size-full" src={imgSort} width={20} height={20} />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">Sort</span>
+            <span className="px-1 text-base font-medium font-body text-secondary">Sort</span>
           </button>
 
-          <button className="flex items-center gap-1 p-2 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
-            <div className="w-5 h-5">
+          <button className="ml-1 flex items-center gap-1 rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
+            <div className="size-5">
               <Image
                 alt="filter"
-                className="block w-full h-full"
+                className="block size-full"
                 src={imgFilter}
                 width={20}
                 height={20}
               />
             </div>
-            <span className="font-body font-medium text-base text-secondary px-1">Filter</span>
+            <span className="px-1 text-base font-medium font-body text-secondary">Filter</span>
           </button>
 
-          <button className="p-1 rounded border border-default bg-surface hover:bg-surface-hover transition-colors ml-1">
-            <div className="w-5 h-5">
-              <Image
-                alt="more"
-                className="block w-full h-full"
-                src={imgMore}
-                width={20}
-                height={20}
-              />
+          <button className="ml-1 rounded border p-1 transition-colors bg-surface border-default hover:bg-surface-hover">
+            <div className="size-5">
+              <Image alt="more" className="block size-full" src={imgMore} width={20} height={20} />
             </div>
           </button>
         </div>
@@ -214,10 +190,10 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
         <div className="p-1">
           <div className="w-60">
             <div className="relative rounded bg-surface">
-              <div className="flex items-center p-2 gap-1">
+              <div className="flex items-center gap-1 p-2">
                 <div className="shrink-0">
-                  <div className="w-5 h-5 flex items-center justify-center">
-                    <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
+                  <div className="flex size-5 items-center justify-center">
+                    <svg className="size-3" viewBox="0 0 12 12" fill="none">
                       <path
                         d="M5.5 10C7.98528 10 10 7.98528 10 5.5C10 3.01472 7.98528 1 5.5 1C3.01472 1 1 3.01472 1 5.5C1 7.98528 3.01472 10 5.5 10Z"
                         stroke="rgba(0, 0, 0, 0.32)"
@@ -238,7 +214,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
 
                 <div className="flex-1 px-1">
                   <input
-                    className="w-full bg-transparent font-body text-base font-normal leading-5 text-primary placeholder:text-muted border-none outline-none"
+                    className="w-full border-none bg-transparent text-base font-normal leading-5 outline-none font-body text-primary placeholder:text-muted"
                     placeholder={search.placeholder || 'Search contact'}
                     value={search.value}
                     onChange={e => search.onChange(e.target.value)}
@@ -247,7 +223,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
               </div>
               <div
                 aria-hidden="true"
-                className="absolute border border-default border-solid inset-0 pointer-events-none rounded"
+                className="pointer-events-none absolute inset-0 rounded border border-solid border-default"
               />
             </div>
           </div>

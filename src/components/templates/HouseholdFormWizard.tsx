@@ -388,8 +388,8 @@ export default function HouseholdFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="h-0.5 w-full bg-zinc-600" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-zinc-600">
-                      <svg className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <div className="relative flex size-8 items-center justify-center rounded-full bg-zinc-600">
+                      <svg className="size-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -403,7 +403,7 @@ export default function HouseholdFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="h-0.5 w-full bg-zinc-200" />
                     </div>
-                    <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-zinc-600 bg-white">
+                    <div className="relative flex size-8 items-center justify-center rounded-full border-2 border-zinc-600 bg-white">
                       <span className="text-sm font-medium text-zinc-600">{step.id}</span>
                     </div>
                   </>
@@ -412,7 +412,7 @@ export default function HouseholdFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="h-0.5 w-full bg-zinc-200" />
                     </div>
-                    <div className="group relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-zinc-300 bg-white">
+                    <div className="group relative flex size-8 items-center justify-center rounded-full border-2 border-zinc-300 bg-white">
                       <span className="text-sm font-medium text-zinc-500">{step.id}</span>
                     </div>
                   </>
@@ -472,8 +472,8 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
       {/* Household Code */}
       <div className="rounded-lg bg-blue-50 p-4 ring-1 ring-blue-900/10 dark:bg-blue-400/10 dark:ring-blue-400/20">
         <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+          <div className="shrink-0">
+            <svg className="size-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
@@ -504,7 +504,7 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Head of Household</h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="First Name"
             value={formData.headFirstName}
@@ -569,8 +569,8 @@ function LocationDetailsStep({
         </h4>
 
         {loadingAddress ? (
-          <div className="flex items-center gap-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <svg className="h-5 w-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+          <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-4">
+            <svg className="size-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -585,16 +585,16 @@ function LocationDetailsStep({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-blue-700 text-sm font-medium">
+            <span className="text-sm font-medium text-blue-700">
               Loading your assigned barangay...
             </span>
           </div>
         ) : userAddress ? (
-          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+          <div className="rounded-lg border border-green-200 bg-green-50 p-4">
             <div className="flex items-start gap-3">
-              <span className="text-green-600 mt-0.5">📍</span>
+              <span className="mt-0.5 text-green-600">📍</span>
               <div>
-                <h5 className="font-medium text-green-800 mb-2">
+                <h5 className="mb-2 font-medium text-green-800">
                   Auto-populated from your assigned barangay
                 </h5>
                 <div className="space-y-1 text-sm text-green-700">
@@ -618,11 +618,11 @@ function LocationDetailsStep({
             </div>
           </div>
         ) : (
-          <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
             <div className="flex items-start gap-3">
-              <span className="text-red-600 mt-0.5">⚠️</span>
+              <span className="mt-0.5 text-red-600">⚠️</span>
               <div>
-                <h5 className="font-medium text-red-800 mb-1">
+                <h5 className="mb-1 font-medium text-red-800">
                   {addressError || 'No barangay assignment found'}
                 </h5>
                 <p className="text-sm text-red-700">
@@ -640,7 +640,7 @@ function LocationDetailsStep({
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Address Details</h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="Street Name"
             value={formData.streetName}
@@ -677,7 +677,7 @@ function LocationDetailsStep({
           <h5 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
             GPS Coordinates (Optional)
           </h5>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <InputField
               label="Latitude"
               type="number"
@@ -723,7 +723,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Total Members</h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="Total Members"
             type="number"
@@ -757,7 +757,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
       <div className="space-y-6">
         <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Age Groups</h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="Children (0-17)"
             type="number"
@@ -788,8 +788,8 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
       {formData.totalMales + formData.totalFemales !== formData.totalMembers && (
         <div className="rounded-lg bg-amber-50 p-4 ring-1 ring-amber-900/10 dark:bg-amber-400/10 dark:ring-amber-400/20">
           <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+            <div className="shrink-0">
+              <svg className="size-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
                   d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
@@ -870,7 +870,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
           Economic Information
         </h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <DropdownSelect
             label="Monthly Household Income"
             value={formData.monthlyIncome}
@@ -900,7 +900,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasElectricity"
               checked={formData.hasElectricity}
               onChange={e => onChange('hasElectricity', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
+              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="hasElectricity" className="text-sm text-zinc-950 dark:text-white">
               Has Electricity
@@ -913,7 +913,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasWater"
               checked={formData.hasWater}
               onChange={e => onChange('hasWater', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
+              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="hasWater" className="text-sm text-zinc-950 dark:text-white">
               Has Water Supply
@@ -926,7 +926,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasInternet"
               checked={formData.hasInternet}
               onChange={e => onChange('hasInternet', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-white border-neutral-300 rounded focus:ring-blue-500"
+              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="hasInternet" className="text-sm text-zinc-950 dark:text-white">
               Has Internet Access
@@ -941,7 +941,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
           Dwelling Information
         </h4>
 
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <DropdownSelect
             label="Dwelling Type"
             value={formData.dwellingType}

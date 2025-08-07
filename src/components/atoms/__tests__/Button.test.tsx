@@ -20,7 +20,7 @@ describe('Button Component', () => {
 
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-blue-600'); // primary variant
-      expect(button).toHaveClass('px-2'); // regular size
+      expect(button).toHaveClass('p-2'); // regular size
     });
 
     it('applies custom className', () => {
@@ -159,8 +159,7 @@ describe('Button Component', () => {
         </Button>
       );
       const smallButton = screen.getByRole('button');
-      expect(smallButton).toHaveClass('h-8');
-      expect(smallButton).toHaveClass('w-8');
+      expect(smallButton).toHaveClass('size-8');
 
       // Clean up and test large size
       unmount();
@@ -170,8 +169,7 @@ describe('Button Component', () => {
         </Button>
       );
       const largeButton = screen.getByRole('button');
-      expect(largeButton).toHaveClass('h-10');
-      expect(largeButton).toHaveClass('w-10');
+      expect(largeButton).toHaveClass('size-10');
     });
   });
 

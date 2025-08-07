@@ -12,12 +12,12 @@ function BusinessContent() {
     <DashboardLayout searchTerm={searchTerm} onSearchChange={setSearchTerm}>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
               Business Registration
             </h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Manage business permits, licenses, and registrations in your barangay
             </p>
           </div>
@@ -27,10 +27,10 @@ function BusinessContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="bg-surface rounded-lg border border-default p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+        <div className="rounded-lg border p-8 text-center bg-surface border-default">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
             <svg
-              className="w-8 h-8 text-blue-600"
+              className="size-8 text-blue-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -43,21 +43,21 @@ function BusinessContent() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-primary mb-2">
+          <h3 className="mb-2 text-lg font-semibold text-primary">
             Business Management Coming Soon
           </h3>
-          <p className="text-secondary mb-6 max-w-md mx-auto">
+          <p className="mx-auto mb-6 max-w-md text-secondary">
             We&apos;re working on bringing you comprehensive business registration and permit
             management tools. This feature will allow you to track business licenses, permits, and
             compliance in your barangay.
           </p>
 
           {/* Feature Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-green-100 rounded-full flex items-center justify-center">
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-green-100">
                 <svg
-                  className="w-4 h-4 text-green-600"
+                  className="size-4 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -70,16 +70,16 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Business Permits</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Business Permits</h4>
               <p className="text-xs text-secondary">
                 Track and manage business permit applications and renewals
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-blue-100">
                 <svg
-                  className="w-4 h-4 text-blue-600"
+                  className="size-4 text-blue-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -92,16 +92,16 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Tax Records</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Tax Records</h4>
               <p className="text-xs text-secondary">
                 Monitor business tax compliance and payment history
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
-              <div className="w-8 h-8 mx-auto mb-2 bg-purple-100 rounded-full flex items-center justify-center">
+            <div className="rounded-lg p-4 bg-surface-hover">
+              <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-purple-100">
                 <svg
-                  className="w-4 h-4 text-purple-600"
+                  className="size-4 text-purple-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -114,7 +114,7 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="font-medium text-sm text-primary mb-1">Analytics</h4>
+              <h4 className="mb-1 text-sm font-medium text-primary">Analytics</h4>
               <p className="text-xs text-secondary">
                 View business registration trends and statistics
               </p>

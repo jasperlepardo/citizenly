@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const toggleVariants = cva(
-  'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
+  'relative inline-flex cursor-pointer items-center disabled:cursor-not-allowed',
   {
     variants: {
       size: {
@@ -28,12 +28,12 @@ const toggleSwitchVariants = cva(
         default: 'border-transparent focus:ring-[#7c3aed]/20',
         primary: 'border-transparent focus:ring-[#2563eb]/20',
         error: 'border-transparent focus:ring-[#dc2626]/20',
-        disabled: 'border-transparent cursor-not-allowed',
+        disabled: 'cursor-not-allowed border-transparent',
       },
       size: {
         sm: 'h-5 w-9',
         md: 'h-6 w-11',
-        lg: 'h-7 w-13',
+        lg: 'w-13 h-7',
       },
     },
     defaultVariants: {
@@ -142,7 +142,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                 {label && (
                   <div
                     className={cn(
-                      "font-body font-medium leading-tight",
+                      'font-medium leading-tight font-body',
                       disabled ? 'text-[#737373]' : 'text-[#262626]',
                       size === 'sm' && 'text-sm',
                       size === 'md' && 'text-base',
@@ -155,7 +155,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
                 {description && (
                   <div
                     className={cn(
-                      "font-body leading-tight mt-0.5",
+                      'mt-0.5 leading-tight font-body',
                       disabled ? 'text-[#a3a3a3]' : 'text-[#737373]',
                       size === 'sm' && 'text-xs',
                       size === 'md' && 'text-sm',
@@ -172,7 +172,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
 
         {/* Error Message */}
         {errorMessage && (
-          <p className="text-xs text-danger-600 font-body mt-1 ml-12">{errorMessage}</p>
+          <p className="ml-12 mt-1 text-xs text-danger-600 font-body">{errorMessage}</p>
         )}
       </div>
     );

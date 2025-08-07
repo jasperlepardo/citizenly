@@ -446,10 +446,10 @@ export default function CreateHouseholdModal({
       <div className="absolute inset-0 bg-black bg-opacity-50" onClick={handleClose} />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-neutral-200">
-          <h2 className="font-montserrat font-semibold text-lg text-neutral-900">
+        <div className="flex items-center justify-between border-b border-neutral-200 p-6">
+          <h2 className="font-montserrat text-lg font-semibold text-neutral-900">
             Create New Household
           </h2>
           <Button
@@ -460,7 +460,7 @@ export default function CreateHouseholdModal({
             iconOnly
             className="text-neutral-400 hover:text-neutral-600"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -472,11 +472,11 @@ export default function CreateHouseholdModal({
         </div>
 
         {/* Address Info Display */}
-        <div className="p-6 bg-green-50 border-b border-green-200">
+        <div className="border-b border-green-200 bg-green-50 p-6">
           <div className="flex items-start gap-3">
-            <span className="text-green-600 mt-0.5">📍</span>
+            <span className="mt-0.5 text-green-600">📍</span>
             <div>
-              <h5 className="font-medium text-green-800 mb-2">Household Location</h5>
+              <h5 className="mb-2 font-medium text-green-800">Household Location</h5>
               <div className="space-y-1 text-sm text-green-700">
                 <div>
                   <strong>Region:</strong> {addressDisplayInfo.region}
@@ -490,10 +490,10 @@ export default function CreateHouseholdModal({
                 <div>
                   <strong>Barangay:</strong> {addressDisplayInfo.barangay}
                 </div>
-                <div className="text-xs text-neutral-500 mt-1">
+                <div className="mt-1 text-xs text-neutral-500">
                   Code: {userProfile?.barangay_code}
                 </div>
-                <div className="text-xs text-green-600 mt-2">
+                <div className="mt-2 text-xs text-green-600">
                   All household geographic details are auto-populated from your barangay assignment.
                 </div>
               </div>
@@ -502,10 +502,10 @@ export default function CreateHouseholdModal({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6">
           {/* House Number */}
           <div>
-            <label className="block font-montserrat font-medium text-sm text-neutral-700 mb-2">
+            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
               House/Block/Lot Number
             </label>
             <input
@@ -513,14 +513,14 @@ export default function CreateHouseholdModal({
               value={formData.house_number}
               onChange={e => handleInputChange('house_number', e.target.value)}
               placeholder="e.g., Blk 1 Lot 5, #123"
-              className="w-full px-3 py-2 border border-neutral-300 rounded font-montserrat text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isSubmitting}
             />
           </div>
 
           {/* Street Name */}
           <div>
-            <label className="block font-montserrat font-medium text-sm text-neutral-700 mb-2">
+            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
               Street Name *
             </label>
             <input
@@ -528,7 +528,7 @@ export default function CreateHouseholdModal({
               value={formData.street_name}
               onChange={e => handleInputChange('street_name', e.target.value)}
               placeholder="e.g., Main Street, Rizal Avenue"
-              className={`w-full px-3 py-2 border rounded font-montserrat text-base focus:outline-none focus:ring-2 focus:border-transparent ${
+              className={`font-montserrat w-full rounded border px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 ${
                 errors.street_name
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-neutral-300 focus:ring-blue-500'
@@ -543,7 +543,7 @@ export default function CreateHouseholdModal({
 
           {/* Subdivision */}
           <div>
-            <label className="block font-montserrat font-medium text-sm text-neutral-700 mb-2">
+            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
               Subdivision/Zone/Sitio/Purok
             </label>
             <input
@@ -551,14 +551,14 @@ export default function CreateHouseholdModal({
               value={formData.subdivision}
               onChange={e => handleInputChange('subdivision', e.target.value)}
               placeholder="e.g., Greenview Subdivision, Zone 1"
-              className="w-full px-3 py-2 border border-neutral-300 rounded font-montserrat text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isSubmitting}
             />
           </div>
 
           {/* ZIP Code */}
           <div>
-            <label className="block font-montserrat font-medium text-sm text-neutral-700 mb-2">
+            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
               ZIP Code
             </label>
             <input
@@ -566,13 +566,13 @@ export default function CreateHouseholdModal({
               value={formData.zip_code}
               onChange={e => handleInputChange('zip_code', e.target.value)}
               placeholder="e.g., 1234"
-              className="w-full px-3 py-2 border border-neutral-300 rounded font-montserrat text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isSubmitting}
             />
           </div>
 
           {/* Info Note */}
-          <div className="p-4 bg-blue-50 rounded border border-blue-200">
+          <div className="rounded border border-blue-200 bg-blue-50 p-4">
             <p className="font-montserrat text-sm text-blue-800">
               <strong>Note:</strong> This household will be created in your assigned barangay. You
               can assign a resident as the household head after creating the household.

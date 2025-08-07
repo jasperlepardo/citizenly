@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const radioVariants = cva(
-  'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
+  'relative inline-flex cursor-pointer items-center disabled:cursor-not-allowed',
   {
     variants: {
       size: {
@@ -21,19 +21,19 @@ const radioVariants = cva(
 );
 
 const radioInputVariants = cva(
-  'relative border rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1',
+  'relative rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1',
   {
     variants: {
       variant: {
         default: 'border-[#d4d4d4] bg-white checked:border-[#7c3aed] focus:ring-[#7c3aed]/20',
         primary: 'border-[#d4d4d4] bg-white checked:border-[#2563eb] focus:ring-[#2563eb]/20',
         error: 'border-[#dc2626] bg-white checked:border-[#dc2626] focus:ring-[#dc2626]/20',
-        disabled: 'border-[#d4d4d4] bg-[#fafafa] cursor-not-allowed',
+        disabled: 'cursor-not-allowed border-[#d4d4d4] bg-[#fafafa]',
       },
       size: {
-        sm: 'w-4 h-4',
-        md: 'w-5 h-5',
-        lg: 'w-6 h-6',
+        sm: 'size-4',
+        md: 'size-5',
+        lg: 'size-6',
       },
     },
     defaultVariants: {
@@ -79,7 +79,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               type="radio"
               className={cn(
                 radioInputVariants({ variant: actualVariant, size }),
-                'appearance-none flex-shrink-0'
+                'flex-shrink-0 appearance-none'
               )}
               disabled={disabled}
               checked={checked}
@@ -89,10 +89,10 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
             {/* Custom Radio Dot */}
             <div
               className={cn(
-                'absolute inset-0 flex items-center justify-center pointer-events-none',
-                size === 'sm' && 'w-4 h-4',
-                size === 'md' && 'w-5 h-5',
-                size === 'lg' && 'w-6 h-6'
+                'pointer-events-none absolute inset-0 flex items-center justify-center',
+                size === 'sm' && 'h-4 w-4',
+                size === 'md' && 'h-5 w-5',
+                size === 'lg' && 'h-6 w-6'
               )}
             >
               {checked && (
@@ -103,9 +103,9 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
                     actualVariant === 'primary' && 'bg-[#2563eb]',
                     actualVariant === 'error' && 'bg-[#dc2626]',
                     actualVariant === 'disabled' && 'bg-[#d4d4d4]',
-                    size === 'sm' && 'w-1.5 h-1.5',
-                    size === 'md' && 'w-2 h-2',
-                    size === 'lg' && 'w-2.5 h-2.5'
+                    size === 'sm' && 'h-1.5 w-1.5',
+                    size === 'md' && 'h-2 w-2',
+                    size === 'lg' && 'h-2.5 w-2.5'
                   )}
                 />
               )}
@@ -118,7 +118,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               {label && (
                 <div
                   className={cn(
-                    "font-body font-medium leading-tight",
+                    'font-medium leading-tight font-body',
                     disabled ? 'text-[#737373]' : 'text-[#262626]',
                     size === 'sm' && 'text-sm',
                     size === 'md' && 'text-base',
@@ -131,7 +131,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
               {description && (
                 <div
                   className={cn(
-                    "font-body leading-tight mt-0.5",
+                    'mt-0.5 leading-tight font-body',
                     disabled ? 'text-[#a3a3a3]' : 'text-[#737373]',
                     size === 'sm' && 'text-xs',
                     size === 'md' && 'text-sm',
@@ -147,7 +147,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
 
         {/* Error Message */}
         {errorMessage && (
-          <p className="text-xs text-danger-600 font-body mt-1 ml-6">{errorMessage}</p>
+          <p className="ml-6 mt-1 text-xs text-danger-600 font-body">{errorMessage}</p>
         )}
       </div>
     );
@@ -199,9 +199,7 @@ export const RadioGroup = ({
       </div>
 
       {/* Group Error Message */}
-      {errorMessage && (
-        <p className="text-xs text-danger-600 font-body mt-2">{errorMessage}</p>
-      )}
+      {errorMessage && <p className="mt-2 text-xs text-danger-600 font-body">{errorMessage}</p>}
     </div>
   );
 };

@@ -100,12 +100,12 @@ const InteractiveComponent = () => {
         placeholder="Search for your barangay..."
       />
 
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Selection Status</h3>
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Selection Status</h3>
         <div className="space-y-2 text-sm">
           <div>
             <strong>Selected Code:</strong>{' '}
-            <code className="bg-background-muted px-2 py-1 rounded">{selectedCode || 'None'}</code>
+            <code className="rounded px-2 py-1 bg-background-muted">{selectedCode || 'None'}</code>
           </div>
           <div>
             <strong>Status:</strong>{' '}
@@ -117,7 +117,7 @@ const InteractiveComponent = () => {
 
         <button
           onClick={handleValidate}
-          className="mt-3 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+          className="mt-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
         >
           Validate Selection
         </button>
@@ -148,9 +148,9 @@ const SearchDemoComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Search Instructions</h3>
-        <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+        <h3 className="mb-2 font-semibold text-blue-800 dark:text-blue-200">Search Instructions</h3>
+        <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
           <li>• Type at least 2 characters to start searching</li>
           <li>• Search by barangay name (e.g., &quot;Poblacion&quot;, &quot;San Antonio&quot;)</li>
           <li>• Results show barangay name, city, province, and region</li>
@@ -166,9 +166,9 @@ const SearchDemoComponent = () => {
       />
 
       {searchHistory.length > 0 && (
-        <div className="bg-background rounded-lg border border-default p-4">
-          <h3 className="font-semibold text-primary mb-3">Recent Selections</h3>
-          <ul className="text-sm text-secondary space-y-1">
+        <div className="rounded-lg border p-4 bg-background border-default">
+          <h3 className="mb-3 font-semibold text-primary">Recent Selections</h3>
+          <ul className="space-y-1 text-sm text-secondary">
             {searchHistory.map((item, index) => (
               <li key={index}>• {item}</li>
             ))}
@@ -230,12 +230,12 @@ const InFormComponent = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-primary mb-2">Full Name *</label>
+        <label className="mb-2 block text-sm font-medium text-primary">Full Name *</label>
         <input
           type="text"
           value={formData.name}
           onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-          className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+          className={`w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 ${
             errors.name ? 'border-red-300' : 'border-default'
           }`}
           placeholder="Enter your full name"
@@ -244,7 +244,7 @@ const InFormComponent = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-primary mb-2">Barangay *</label>
+        <label className="mb-2 block text-sm font-medium text-primary">Barangay *</label>
         <BarangaySelector
           value={formData.barangayCode}
           onChange={handleBarangayChange}
@@ -253,12 +253,12 @@ const InFormComponent = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-primary mb-2">Email Address *</label>
+        <label className="mb-2 block text-sm font-medium text-primary">Email Address *</label>
         <input
           type="email"
           value={formData.email}
           onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-          className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 ${
+          className={`w-full rounded-md border p-3 focus:ring-2 focus:ring-blue-500 ${
             errors.email ? 'border-red-300' : 'border-default'
           }`}
           placeholder="Enter your email address"
@@ -268,7 +268,7 @@ const InFormComponent = () => {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md font-medium transition-colors"
+        className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
       >
         Submit Registration
       </button>
@@ -293,22 +293,22 @@ export const AllStates: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Default State</h3>
+        <h3 className="mb-4 font-semibold text-primary">Default State</h3>
         <BarangaySelector value="" onChange={() => {}} />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Error</h3>
+        <h3 className="mb-4 font-semibold text-primary">With Error</h3>
         <BarangaySelector value="" onChange={() => {}} error="This field is required" />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Disabled</h3>
+        <h3 className="mb-4 font-semibold text-primary">Disabled</h3>
         <BarangaySelector value="" onChange={() => {}} disabled={true} />
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Custom Placeholder</h3>
+        <h3 className="mb-4 font-semibold text-primary">With Custom Placeholder</h3>
         <BarangaySelector
           value=""
           onChange={() => {}}
@@ -327,13 +327,13 @@ export const FeaturesShowcase: Story = {
   },
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Key Features</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Key Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Search Capabilities</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Search Capabilities</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Real-time search with debouncing</li>
               <li>• Minimum 2 characters to start search</li>
               <li>• Case-insensitive matching</li>
@@ -343,8 +343,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">User Experience</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">User Experience</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Loading indicators during search</li>
               <li>• Clear &quot;no results&quot; messaging</li>
               <li>• Helpful search instructions</li>
@@ -354,8 +354,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Data Display</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Data Display</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Hierarchical address display</li>
               <li>• Barangay name (primary)</li>
               <li>• City and province (secondary)</li>
@@ -365,8 +365,8 @@ export const FeaturesShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Integration</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Integration</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• PSGC database connectivity</li>
               <li>• Real-time Supabase queries</li>
               <li>• Error handling and fallbacks</li>

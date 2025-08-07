@@ -424,7 +424,7 @@ function DashboardContent() {
   };
 
   if (profileLoading) {
-    return <div className="flex items-center justify-center h-screen text-primary">Loading...</div>;
+    return <div className="flex h-screen items-center justify-center text-primary">Loading...</div>;
   }
 
   return (
@@ -432,18 +432,18 @@ function DashboardContent() {
       <div className="p-6">
         {/* Welcome Message */}
         <div className="mb-8">
-          <h1 className="font-display font-semibold text-2xl text-primary">
+          <h1 className="font-display text-2xl font-semibold text-primary">
             Welcome back, {userProfile ? userProfile.first_name : 'User'}!
           </h1>
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total Residents"
             value={loading ? '...' : stats.residents.toLocaleString()}
             icon={
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
               </svg>
             }
@@ -454,7 +454,7 @@ function DashboardContent() {
             title="Households"
             value={loading ? '...' : stats.households.toLocaleString()}
             icon={
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
             }
@@ -465,7 +465,7 @@ function DashboardContent() {
             title="Senior Citizens"
             value={loading ? '...' : stats.seniorCitizens.toLocaleString()}
             icon={
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
@@ -480,7 +480,7 @@ function DashboardContent() {
             title="Employed"
             value={loading ? '...' : stats.employedResidents.toLocaleString()}
             icon={
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
@@ -494,7 +494,7 @@ function DashboardContent() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
             <DependencyRatioPieChart title="Age Distribution" data={dependencyData} />
           </div>
@@ -503,7 +503,7 @@ function DashboardContent() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
             <CivilStatusPieChart data={civilStatusData} />
           </div>

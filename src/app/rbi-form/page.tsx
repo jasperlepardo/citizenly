@@ -228,22 +228,22 @@ function HouseholdSelector() {
 
   if (loading) {
     return (
-      <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <div className="py-8 text-center">
+        <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
         <p className="mt-4 text-sm text-gray-600">Loading households...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
       {/* Search and Filters */}
-      <div className="p-4 border-b border-gray-200 space-y-4">
+      <div className="space-y-4 border-b border-gray-200 p-4">
         {/* Main Search */}
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <svg
-              className="h-5 w-5 text-gray-400"
+              className="size-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -261,16 +261,16 @@ function HouseholdSelector() {
             placeholder="Search by household code, house number, street name, subdivision, or head name..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 leading-5 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:placeholder:text-gray-400"
           />
         </div>
 
         {/* Individual Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <div>
             <label
               htmlFor="house-number-filter"
-              className="block text-xs font-medium text-gray-700 mb-1"
+              className="mb-1 block text-xs font-medium text-gray-700"
             >
               House Number
             </label>
@@ -280,13 +280,13 @@ function HouseholdSelector() {
               placeholder="Filter by house number..."
               value={houseNumberFilter}
               onChange={e => setHouseNumberFilter(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div>
             <label
               htmlFor="street-name-filter"
-              className="block text-xs font-medium text-gray-700 mb-1"
+              className="mb-1 block text-xs font-medium text-gray-700"
             >
               Street Name
             </label>
@@ -296,13 +296,13 @@ function HouseholdSelector() {
               placeholder="Filter by street name..."
               value={streetNameFilter}
               onChange={e => setStreetNameFilter(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           <div>
             <label
               htmlFor="subdivision-filter"
-              className="block text-xs font-medium text-gray-700 mb-1"
+              className="mb-1 block text-xs font-medium text-gray-700"
             >
               Subdivision
             </label>
@@ -312,7 +312,7 @@ function HouseholdSelector() {
               placeholder="Filter by subdivision..."
               value={subdivisionFilter}
               onChange={e => setSubdivisionFilter(e.target.value)}
-              className="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -336,12 +336,12 @@ function HouseholdSelector() {
       </div>
 
       {/* Results Counter */}
-      <div className="px-4 py-2 bg-gray-50 text-sm text-gray-600">
+      <div className="bg-gray-50 px-4 py-2 text-sm text-gray-600">
         Showing {filteredHouseholds.length} of {householdsWithHeads.length} households
       </div>
 
       {/* Household List */}
-      <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+      <div className="max-h-96 divide-y divide-gray-200 overflow-y-auto">
         {filteredHouseholds.length === 0 ? (
           <div className="p-8 text-center">
             <p className="text-gray-600">
@@ -354,10 +354,10 @@ function HouseholdSelector() {
                 <p className="text-sm text-gray-500">
                   Households are created automatically when you add residents.
                 </p>
-                <div className="flex justify-center space-x-4 mt-4">
+                <div className="mt-4 flex justify-center space-x-4">
                   <a
                     href="/residents/create"
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
+                    className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                   >
                     Add Resident
                   </a>
@@ -369,10 +369,10 @@ function HouseholdSelector() {
           filteredHouseholds.map(household => (
             <div
               key={household.id || household.code}
-              className="p-4 hover:bg-gray-50 transition-colors"
+              className="p-4 transition-colors hover:bg-gray-50"
             >
               <div className="flex items-center justify-between">
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center space-x-3">
                     <div className="font-mono text-sm font-medium text-blue-600">
                       #{household.code}
@@ -386,7 +386,7 @@ function HouseholdSelector() {
                 <div className="ml-4">
                   <a
                     href={`/rbi-form?household=${household.code}`}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-3 py-2 text-sm font-medium leading-4 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
                     Generate RBI Form
                   </a>
@@ -625,9 +625,9 @@ function RBIFormContent() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
+        <div className="flex h-64 items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
             <p className="mt-4 text-sm text-neutral-600">Loading household data...</p>
           </div>
         </div>
@@ -640,17 +640,17 @@ function RBIFormContent() {
     return (
       <DashboardLayout>
         <div className="p-6">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-3">RBI Form A</h1>
-              <h2 className="text-xl font-semibold mb-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-8 text-center">
+              <h1 className="mb-3 text-2xl font-bold">RBI Form A</h1>
+              <h2 className="mb-4 text-xl font-semibold">
                 RECORD OF BARANGAY INHABITANTS BY HOUSEHOLD
               </h2>
               <p className="text-gray-600">Select a household to generate the RBI form</p>
             </div>
 
             {error && householdId && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
                 <p className="text-red-800">{error}</p>
               </div>
             )}
@@ -664,45 +664,45 @@ function RBIFormContent() {
 
   return (
     <DashboardLayout>
-      <div className="w-full min-h-screen bg-white p-6 print:p-2">
+      <div className="min-h-screen w-full bg-white p-6 print:p-2">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-3">RBI Form A</h1>
+        <div className="mb-8 text-center">
+          <h1 className="mb-3 text-2xl font-bold">RBI Form A</h1>
           <h2 className="text-xl font-semibold">RECORD OF BARANGAY INHABITANTS BY HOUSEHOLD</h2>
         </div>
 
         {/* Location Information */}
-        <div className="grid grid-cols-3 gap-8 mb-8 text-base">
+        <div className="mb-8 grid grid-cols-3 gap-8 text-base">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="font-semibold">A. REGION</span>
-              <span className="border-b border-black flex-1 px-2">
+              <span className="flex-1 border-b border-black px-2">
                 {addressInfo?.region_name || ''}
               </span>
               <span className="text-xs">PSG</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">B. PROVINCE</span>
-              <span className="border-b border-black flex-1 px-2">
+              <span className="flex-1 border-b border-black px-2">
                 {addressInfo?.province_name || ''}
               </span>
               <span className="text-xs">CODES</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">C. CITY/MUNICIPALITY</span>
-              <span className="border-b border-black flex-1 px-2">
+              <span className="flex-1 border-b border-black px-2">
                 {addressInfo?.city_municipality_name || ''}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">D. BARANGAY</span>
-              <span className="border-b border-black flex-1 px-2">
+              <span className="flex-1 border-b border-black px-2">
                 {addressInfo?.barangay_name || ''}
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-semibold">R. HOUSEHOLD NO.</span>
-              <span className="border-b border-black flex-1 px-2">
+              <span className="flex-1 border-b border-black px-2">
                 {household?.house_number || ''}
               </span>
             </div>
@@ -720,25 +720,25 @@ function RBIFormContent() {
 
         {/* Data Table */}
         <div className="mb-8 w-full overflow-x-auto">
-          <table className="w-full border-2 border-black border-collapse">
+          <table className="w-full border-collapse border-2 border-black">
             {/* Header Row - Main Categories */}
             <thead>
               <tr>
                 <th
                   colSpan={4}
-                  className="border border-black p-2 text-center font-semibold text-base"
+                  className="border border-black p-2 text-center text-base font-semibold"
                 >
                   NAME (1)
                 </th>
                 <th
                   colSpan={3}
-                  className="border border-black p-2 text-center font-semibold text-base"
+                  className="border border-black p-2 text-center text-base font-semibold"
                 >
                   ADDRESS (2)
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[120px]"
+                  className="min-w-[120px] border border-black p-2 text-center text-base font-semibold"
                 >
                   PLACE OF BIRTH
                   <br />
@@ -746,7 +746,7 @@ function RBIFormContent() {
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[120px]"
+                  className="min-w-[120px] border border-black p-2 text-center text-base font-semibold"
                 >
                   DATE OF BIRTH
                   <br />
@@ -754,7 +754,7 @@ function RBIFormContent() {
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[80px]"
+                  className="min-w-20 border border-black p-2 text-center text-base font-semibold"
                 >
                   SEX
                   <br />
@@ -762,7 +762,7 @@ function RBIFormContent() {
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[100px]"
+                  className="min-w-[100px] border border-black p-2 text-center text-base font-semibold"
                 >
                   CIVIL STATUS
                   <br />
@@ -770,13 +770,13 @@ function RBIFormContent() {
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[100px]"
+                  className="min-w-[100px] border border-black p-2 text-center text-base font-semibold"
                 >
                   CITIZENSHIP (7)
                 </th>
                 <th
                   rowSpan={2}
-                  className="border border-black p-2 text-center font-semibold text-base min-w-[120px]"
+                  className="min-w-[120px] border border-black p-2 text-center text-base font-semibold"
                 >
                   OCCUPATION
                   <br />
@@ -786,37 +786,37 @@ function RBIFormContent() {
 
               {/* Sub Header Row - Individual Fields */}
               <tr>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[120px]">
+                <th className="min-w-[120px] border border-black p-2 text-center text-base font-semibold">
                   LAST NAME
                   <br />
                   (1.1)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[120px]">
+                <th className="min-w-[120px] border border-black p-2 text-center text-base font-semibold">
                   FIRST NAME
                   <br />
                   (1.2)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[120px]">
+                <th className="min-w-[120px] border border-black p-2 text-center text-base font-semibold">
                   MIDDLE NAME
                   <br />
                   (1.3)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[80px]">
+                <th className="min-w-20 border border-black p-2 text-center text-base font-semibold">
                   EXT.
                   <br />
                   (1.4)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[100px]">
+                <th className="min-w-[100px] border border-black p-2 text-center text-base font-semibold">
                   HOUSE NO.
                   <br />
                   (2.1)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[150px]">
+                <th className="min-w-[150px] border border-black p-2 text-center text-base font-semibold">
                   STREET NAME
                   <br />
                   (2.2)
                 </th>
-                <th className="border border-black p-2 text-center font-semibold text-base min-w-[160px]">
+                <th className="min-w-40 border border-black p-2 text-center text-base font-semibold">
                   SUBDIVISION / ZONE / SITIO / PUROK
                   <br />
                   (if applicable)
@@ -877,10 +877,10 @@ function RBIFormContent() {
         </div>
 
         {/* Signature Section */}
-        <div className="grid grid-cols-3 gap-12 text-base mt-16">
+        <div className="mt-16 grid grid-cols-3 gap-12 text-base">
           <div className="text-center">
-            <div className="text-base font-medium mb-4">Prepared by:</div>
-            <div className="h-12 border-b border-black flex items-end justify-center mb-2">
+            <div className="mb-4 text-base font-medium">Prepared by:</div>
+            <div className="mb-2 flex h-12 items-end justify-center border-b border-black">
               <div className="text-base font-medium">
                 {residents.length > 0 && household?.household_head_id
                   ? (() => {
@@ -894,31 +894,31 @@ function RBIFormContent() {
                   : ''}
               </div>
             </div>
-            <div className="text-base mb-1">Name of Household head/member</div>
+            <div className="mb-1 text-base">Name of Household head/member</div>
             <div className="text-sm italic text-gray-600">(Signature over Printed name)</div>
           </div>
 
           <div className="text-center">
-            <div className="text-base font-medium mb-4">Certified correct:</div>
-            <div className="h-12 border-b border-black mb-2"></div>
-            <div className="text-base mb-1">Barangay Secretary</div>
+            <div className="mb-4 text-base font-medium">Certified correct:</div>
+            <div className="mb-2 h-12 border-b border-black"></div>
+            <div className="mb-1 text-base">Barangay Secretary</div>
             <div className="text-sm italic text-gray-600">(Signature over printed name)</div>
           </div>
 
           <div className="text-center">
-            <div className="text-base font-medium mb-4">Validated by:</div>
-            <div className="h-12 border-b border-black mb-2"></div>
-            <div className="text-base mb-1">Punong Barangay</div>
+            <div className="mb-4 text-base font-medium">Validated by:</div>
+            <div className="mb-2 h-12 border-b border-black"></div>
+            <div className="mb-1 text-base">Punong Barangay</div>
             <div className="text-sm italic text-gray-600">(Signature over printed name)</div>
           </div>
         </div>
       </div>
 
       {/* Print Button */}
-      <div className="text-center mt-8 print:hidden">
+      <div className="mt-8 text-center print:hidden">
         <button
           onClick={() => window.print()}
-          className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg"
+          className="rounded-lg bg-blue-600 px-8 py-3 text-lg font-medium text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Print Form
         </button>

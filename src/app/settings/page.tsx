@@ -38,10 +38,10 @@ export default function SettingsPage() {
     <DashboardLayout>
       <div className="p-6">
         {/* Page Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">Settings</h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">Settings</h1>
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Configure your system preferences and administrative settings
             </p>
           </div>
@@ -55,7 +55,7 @@ export default function SettingsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-2 px-1 border-b-2 font-montserrat font-medium text-sm whitespace-nowrap ${
+                  className={`font-montserrat whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-primary'
                       : 'border-transparent text-secondary hover:text-primary hover:border-default'
@@ -69,16 +69,16 @@ export default function SettingsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-surface border border-default rounded overflow-hidden">
+        <div className="overflow-hidden rounded border bg-surface border-default">
           <div className="p-6">
             {/* General Settings */}
             {activeTab === 'general' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     General Settings
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Basic system configuration and preferences
                   </p>
                 </div>
@@ -86,10 +86,10 @@ export default function SettingsPage() {
                 {/* Theme Selection */}
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-montserrat font-medium text-base text-primary mb-1">
+                    <h4 className="font-montserrat mb-1 text-base font-medium text-primary">
                       Appearance
                     </h4>
-                    <p className="font-montserrat font-normal text-sm text-secondary">
+                    <p className="font-montserrat text-sm font-normal text-secondary">
                       {theme === 'system'
                         ? `Following system preference (${actualTheme})`
                         : `Using ${theme} theme`}
@@ -100,15 +100,15 @@ export default function SettingsPage() {
                     {/* Light Theme */}
                     <button
                       onClick={() => setTheme('light')}
-                      className={`relative flex flex-col items-center p-4 rounded border transition-colors ${
+                      className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'light'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'border-default bg-surface hover:bg-surface-hover'
+                          : 'bg-surface border-default hover:bg-surface-hover'
                       }`}
                     >
-                      <div className="w-8 h-8 mb-2 rounded bg-surface border border-default flex items-center justify-center">
+                      <div className="mb-2 flex size-8 items-center justify-center rounded border bg-surface border-default">
                         <svg
-                          className="w-4 h-4 text-amber-500"
+                          className="size-4 text-amber-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -122,27 +122,27 @@ export default function SettingsPage() {
                         </svg>
                       </div>
                       <span
-                        className={`font-montserrat font-medium text-sm ${theme === 'light' ? 'text-blue-700' : 'text-primary'}`}
+                        className={`font-montserrat text-sm font-medium ${theme === 'light' ? 'text-blue-700' : 'text-primary'}`}
                       >
                         Light
                       </span>
                       {theme === 'light' && (
-                        <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="absolute right-2 top-2 size-2 rounded-full bg-blue-500"></div>
                       )}
                     </button>
 
                     {/* Dark Theme */}
                     <button
                       onClick={() => setTheme('dark')}
-                      className={`relative flex flex-col items-center p-4 rounded border transition-colors ${
+                      className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'dark'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'border-default bg-surface hover:bg-surface-hover'
+                          : 'bg-surface border-default hover:bg-surface-hover'
                       }`}
                     >
-                      <div className="w-8 h-8 mb-2 rounded bg-slate-800 border border-slate-600 flex items-center justify-center">
+                      <div className="mb-2 flex size-8 items-center justify-center rounded border border-slate-600 bg-slate-800">
                         <svg
-                          className="w-4 h-4 text-slate-300"
+                          className="size-4 text-slate-300"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -156,27 +156,27 @@ export default function SettingsPage() {
                         </svg>
                       </div>
                       <span
-                        className={`font-montserrat font-medium text-sm ${theme === 'dark' ? 'text-blue-700' : 'text-primary'}`}
+                        className={`font-montserrat text-sm font-medium ${theme === 'dark' ? 'text-blue-700' : 'text-primary'}`}
                       >
                         Dark
                       </span>
                       {theme === 'dark' && (
-                        <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="absolute right-2 top-2 size-2 rounded-full bg-blue-500"></div>
                       )}
                     </button>
 
                     {/* System Theme */}
                     <button
                       onClick={() => setTheme('system')}
-                      className={`relative flex flex-col items-center p-4 rounded border transition-colors ${
+                      className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'system'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'border-default bg-surface hover:bg-surface-hover'
+                          : 'bg-surface border-default hover:bg-surface-hover'
                       }`}
                     >
-                      <div className="w-8 h-8 mb-2 rounded bg-gradient-to-br from-surface to-slate-800 border border-default flex items-center justify-center">
+                      <div className="from-surface mb-2 flex size-8 items-center justify-center rounded border bg-gradient-to-br to-slate-800 border-default">
                         <svg
-                          className="w-4 h-4 text-secondary"
+                          className="size-4 text-secondary"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -190,30 +190,30 @@ export default function SettingsPage() {
                         </svg>
                       </div>
                       <span
-                        className={`font-montserrat font-medium text-sm ${theme === 'system' ? 'text-blue-700' : 'text-primary'}`}
+                        className={`font-montserrat text-sm font-medium ${theme === 'system' ? 'text-blue-700' : 'text-primary'}`}
                       >
                         System
                       </span>
                       {theme === 'system' && (
-                        <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div className="absolute right-2 top-2 size-2 rounded-full bg-blue-500"></div>
                       )}
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-6">
+                <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="block font-montserrat font-medium text-sm text-secondary">
+                    <label className="font-montserrat block text-sm font-medium text-secondary">
                       System Name
                     </label>
                     <input
                       type="text"
                       defaultValue="RBI System - Barangay Records"
-                      className="block w-full rounded border border-default py-2 px-3 text-primary bg-surface focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full rounded border px-3 py-2 text-primary bg-surface border-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block font-montserrat font-medium text-sm text-secondary">
+                    <label className="font-montserrat block text-sm font-medium text-secondary">
                       Timezone
                     </label>
                     <DropdownSelect
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block font-montserrat font-medium text-sm text-secondary">
+                    <label className="font-montserrat block text-sm font-medium text-secondary">
                       Default Language
                     </label>
                     <DropdownSelect
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="block font-montserrat font-medium text-sm text-secondary">
+                    <label className="font-montserrat block text-sm font-medium text-secondary">
                       Date Format
                     </label>
                     <DropdownSelect
@@ -254,38 +254,38 @@ export default function SettingsPage() {
             {activeTab === 'security' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     Security Settings
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Configure authentication and security policies
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Two-Factor Authentication
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary mt-1">
+                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
                         Require 2FA for all admin accounts
                       </p>
                     </div>
                     <button
                       type="button"
-                      className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
-                      <span className="translate-x-5 inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out"></span>
+                      <span className="inline-block size-4 translate-x-5 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200"></span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Session Timeout
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary mt-1">
+                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
                         Automatic logout after inactivity
                       </p>
                     </div>
@@ -301,20 +301,20 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Password Complexity
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary mt-1">
+                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
                         Enforce strong password requirements
                       </p>
                     </div>
                     <button
                       type="button"
-                      className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-blue-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
-                      <span className="translate-x-5 inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out"></span>
+                      <span className="inline-block size-4 translate-x-5 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200"></span>
                     </button>
                   </div>
                 </div>
@@ -325,26 +325,26 @@ export default function SettingsPage() {
             {activeTab === 'database' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     Database Configuration
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Database connection and maintenance settings
                   </p>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded p-4">
+                <div className="rounded border border-green-200 bg-green-50 p-4">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="h-8 w-8 rounded bg-green-500 flex items-center justify-center">
-                        <div className="h-2 w-2 bg-white dark:bg-neutral-200 rounded-full"></div>
+                    <div className="shrink-0">
+                      <div className="flex size-8 items-center justify-center rounded bg-green-500">
+                        <div className="size-2 rounded-full bg-white dark:bg-neutral-200"></div>
                       </div>
                     </div>
                     <div className="ml-3">
-                      <h4 className="font-montserrat font-medium text-base text-green-900">
+                      <h4 className="font-montserrat text-base font-medium text-green-900">
                         Database Connected
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-green-700">
+                      <p className="font-montserrat text-sm font-normal text-green-700">
                         Successfully connected to Supabase PostgreSQL database
                       </p>
                     </div>
@@ -352,64 +352,64 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="bg-surface-hover rounded border border-default p-4">
-                    <h4 className="font-montserrat font-medium text-base text-primary mb-4">
+                  <div className="rounded border p-4 bg-surface-hover border-default">
+                    <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
                       Connection Status
                     </h4>
                     <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Host:
                         </span>
-                        <span className="font-montserrat font-medium text-sm text-primary">
+                        <span className="font-montserrat text-sm font-medium text-primary">
                           Supabase
                         </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Database:
                         </span>
-                        <span className="font-montserrat font-medium text-sm text-primary">
+                        <span className="font-montserrat text-sm font-medium text-primary">
                           postgres
                         </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Status:
                         </span>
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                           Connected
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-surface-hover rounded border border-default p-4">
-                    <h4 className="font-montserrat font-medium text-base text-primary mb-4">
+                  <div className="rounded border p-4 bg-surface-hover border-default">
+                    <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
                       Performance
                     </h4>
                     <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Avg Response:
                         </span>
-                        <span className="font-montserrat font-medium text-sm text-primary">
+                        <span className="font-montserrat text-sm font-medium text-primary">
                           &lt;50ms
                         </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Uptime:
                         </span>
-                        <span className="font-montserrat font-medium text-sm text-primary">
+                        <span className="font-montserrat text-sm font-medium text-primary">
                           99.9%
                         </span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-montserrat font-normal text-sm text-secondary">
+                      <div className="flex items-center justify-between">
+                        <span className="font-montserrat text-sm font-normal text-secondary">
                           Coverage:
                         </span>
-                        <span className="font-montserrat font-medium text-sm text-primary">
+                        <span className="font-montserrat text-sm font-medium text-primary">
                           91.3%
                         </span>
                       </div>
@@ -423,21 +423,21 @@ export default function SettingsPage() {
             {activeTab === 'notifications' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     Notification Preferences
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Configure how you receive system notifications
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Email Notifications
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Receive updates via email
                       </p>
                     </div>
@@ -446,22 +446,22 @@ export default function SettingsPage() {
                       onClick={() =>
                         setNotifications({ ...notifications, email: !notifications.email })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         notifications.email ? 'bg-blue-600' : 'bg-neutral-300 dark:bg-neutral-600'
                       }`}
                     >
                       <span
-                        className={`${notifications.email ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${notifications.email ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         SMS Notifications
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Receive urgent alerts via SMS
                       </p>
                     </div>
@@ -470,22 +470,22 @@ export default function SettingsPage() {
                       onClick={() =>
                         setNotifications({ ...notifications, sms: !notifications.sms })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         notifications.sms ? 'bg-blue-600' : 'bg-neutral-300 dark:bg-neutral-600'
                       }`}
                     >
                       <span
-                        className={`${notifications.sms ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${notifications.sms ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Push Notifications
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Browser push notifications
                       </p>
                     </div>
@@ -494,12 +494,12 @@ export default function SettingsPage() {
                       onClick={() =>
                         setNotifications({ ...notifications, push: !notifications.push })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         notifications.push ? 'bg-blue-600' : 'bg-neutral-300 dark:bg-neutral-600'
                       }`}
                     >
                       <span
-                        className={`${notifications.push ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${notifications.push ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
@@ -511,28 +511,28 @@ export default function SettingsPage() {
             {activeTab === 'users' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     User Management
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Manage system users and access permissions
                   </p>
                 </div>
 
-                <div className="bg-amber-50 border border-amber-200 rounded p-4">
+                <div className="rounded border border-amber-200 bg-amber-50 p-4">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <div className="h-8 w-8 rounded bg-amber-500 flex items-center justify-center">
-                        <div className="h-1 w-1 bg-white dark:bg-neutral-200 rounded-full"></div>
-                        <div className="h-1 w-1 bg-white dark:bg-neutral-200 rounded-full ml-0.5"></div>
-                        <div className="h-1 w-1 bg-white dark:bg-neutral-200 rounded-full ml-0.5"></div>
+                    <div className="shrink-0">
+                      <div className="flex size-8 items-center justify-center rounded bg-amber-500">
+                        <div className="size-1 rounded-full bg-white dark:bg-neutral-200"></div>
+                        <div className="ml-0.5 size-1 rounded-full bg-white dark:bg-neutral-200"></div>
+                        <div className="ml-0.5 size-1 rounded-full bg-white dark:bg-neutral-200"></div>
                       </div>
                     </div>
                     <div className="ml-3">
-                      <h4 className="font-montserrat font-medium text-base text-amber-900">
+                      <h4 className="font-montserrat text-base font-medium text-amber-900">
                         Feature Coming Soon
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-amber-700">
+                      <p className="font-montserrat text-sm font-normal text-amber-700">
                         User management functionality will be available in the next release.
                       </p>
                     </div>
@@ -545,21 +545,21 @@ export default function SettingsPage() {
             {activeTab === 'system' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat font-semibold text-lg text-primary mb-2">
+                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
                     System Settings
                   </h3>
-                  <p className="font-montserrat font-normal text-sm text-secondary">
+                  <p className="font-montserrat text-sm font-normal text-secondary">
                     Advanced system configuration and maintenance
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Automatic Backup
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Daily database backups
                       </p>
                     </div>
@@ -571,22 +571,22 @@ export default function SettingsPage() {
                           autoBackup: !systemSettings.autoBackup,
                         })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         systemSettings.autoBackup ? 'bg-blue-600' : 'bg-gray-200'
                       }`}
                     >
                       <span
-                        className={`${systemSettings.autoBackup ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${systemSettings.autoBackup ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Maintenance Mode
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Temporarily disable public access
                       </p>
                     </div>
@@ -598,22 +598,22 @@ export default function SettingsPage() {
                           maintenance: !systemSettings.maintenance,
                         })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${
                         systemSettings.maintenance ? 'bg-red-600' : 'bg-gray-200'
                       }`}
                     >
                       <span
-                        className={`${systemSettings.maintenance ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${systemSettings.maintenance ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-surface-hover rounded border border-default">
+                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
                     <div>
-                      <h4 className="font-montserrat font-medium text-base text-primary">
+                      <h4 className="font-montserrat text-base font-medium text-primary">
                         Debug Mode
                       </h4>
-                      <p className="font-montserrat font-normal text-sm text-secondary">
+                      <p className="font-montserrat text-sm font-normal text-secondary">
                         Enable detailed error logging
                       </p>
                     </div>
@@ -625,18 +625,18 @@ export default function SettingsPage() {
                           debugMode: !systemSettings.debugMode,
                         })
                       }
-                      className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                         systemSettings.debugMode ? 'bg-blue-600' : 'bg-gray-200'
                       }`}
                     >
                       <span
-                        className={`${systemSettings.debugMode ? 'translate-x-5' : 'translate-x-0'} inline-block h-4 w-4 transform rounded-full bg-white dark:bg-neutral-200 shadow ring-0 transition duration-200 ease-in-out`}
+                        className={`${systemSettings.debugMode ? 'translate-x-5' : 'translate-x-0'} inline-block size-4 rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out dark:bg-neutral-200`}
                       ></span>
                     </button>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-default">
+                <div className="border-t pt-6 border-default">
                   <Button variant="danger" size="md">
                     Reset System Settings
                   </Button>
@@ -645,7 +645,7 @@ export default function SettingsPage() {
             )}
 
             {/* Save Button */}
-            <div className="pt-8 border-t border-default">
+            <div className="border-t pt-8 border-default">
               <div className="flex justify-end">
                 <Button variant="primary" size="md">
                   Save Changes

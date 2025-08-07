@@ -133,35 +133,35 @@ const InteractiveComponent = () => {
       <EducationEmployment value={data} onChange={handleChange} errors={errors} />
 
       {/* Real-time validation display */}
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Form Status</h3>
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Form Status</h3>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${hasRequiredFields ? 'bg-green-500' : 'bg-red-500'}`}
+              className={`size-2 rounded-full ${hasRequiredFields ? 'bg-green-500' : 'bg-red-500'}`}
             ></span>
             <span>Required Fields: {hasRequiredFields ? 'Complete' : 'Incomplete'}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${isValid ? 'bg-green-500' : 'bg-yellow-500'}`}
+              className={`size-2 rounded-full ${isValid ? 'bg-green-500' : 'bg-yellow-500'}`}
             ></span>
             <span>Validation: {isValid ? 'Passed' : 'Has Errors'}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${data.psocCode ? 'bg-green-500' : 'bg-gray-400'}`}
+              className={`size-2 rounded-full ${data.psocCode ? 'bg-green-500' : 'bg-gray-400'}`}
             ></span>
             <span>PSOC Classification: {data.psocCode ? 'Selected' : 'Not Selected'}</span>
           </div>
         </div>
 
         {Object.keys(errors).length > 0 && (
-          <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
-            <h4 className="font-medium text-red-800 dark:text-red-200 text-sm mb-2">
+          <div className="mt-3 rounded border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+            <h4 className="mb-2 text-sm font-medium text-red-800 dark:text-red-200">
               Validation Errors:
             </h4>
-            <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+            <ul className="space-y-1 text-sm text-red-700 dark:text-red-300">
               {Object.entries(errors).map(([field, error]) => (
                 <li key={field}>• {error}</li>
               ))}
@@ -171,9 +171,9 @@ const InteractiveComponent = () => {
       </div>
 
       {/* Current data display */}
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Current Data</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Current Data</h3>
+        <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
           <div>
             <strong>Education:</strong> {data.educationLevel || 'Not selected'} -{' '}
             {data.educationStatus || 'Not selected'}
@@ -208,7 +208,7 @@ export const EmploymentScenarios: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Healthcare Professional</h3>
+        <h3 className="mb-4 font-semibold text-primary">Healthcare Professional</h3>
         <EducationEmployment
           value={{
             educationLevel: 'college',
@@ -225,7 +225,7 @@ export const EmploymentScenarios: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Teacher</h3>
+        <h3 className="mb-4 font-semibold text-primary">Teacher</h3>
         <EducationEmployment
           value={{
             educationLevel: 'college',
@@ -242,7 +242,7 @@ export const EmploymentScenarios: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Engineering Student</h3>
+        <h3 className="mb-4 font-semibold text-primary">Engineering Student</h3>
         <EducationEmployment
           value={{
             educationLevel: 'college',
@@ -259,7 +259,7 @@ export const EmploymentScenarios: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Self-Employed Entrepreneur</h3>
+        <h3 className="mb-4 font-semibold text-primary">Self-Employed Entrepreneur</h3>
         <EducationEmployment
           value={{
             educationLevel: 'high_school',
@@ -284,11 +284,11 @@ const PSOCIntegrationComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+        <h3 className="mb-2 font-semibold text-blue-800 dark:text-blue-200">
           PSOC Integration Features
         </h3>
-        <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+        <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
           <li>• Real-time occupation search with PSOC database</li>
           <li>• Automatic PSOC code assignment</li>
           <li>• Classification level detection (major group, unit group, etc.)</li>
@@ -300,11 +300,11 @@ const PSOCIntegrationComponent = () => {
       <EducationEmployment value={data} onChange={setData} />
 
       {data.psocCode && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">
             PSOC Classification Details:
           </h4>
-          <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+          <div className="space-y-1 text-sm text-green-700 dark:text-green-300">
             <div>
               <strong>Code:</strong> {data.psocCode}
             </div>
@@ -369,11 +369,11 @@ const ValidationDemoComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+        <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">
           Validation Rules Demo
         </h3>
-        <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+        <ul className="space-y-1 text-sm text-yellow-700 dark:text-yellow-300">
           <li>• Education level is always required</li>
           <li>• Employment status is always required</li>
           <li>• Occupation is required if employment status is &quot;Employed&quot;</li>
@@ -383,7 +383,7 @@ const ValidationDemoComponent = () => {
 
         <button
           onClick={handleValidate}
-          className="mt-3 px-4 py-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 bg-yellow-100 dark:bg-yellow-900/30 hover:bg-yellow-200 dark:hover:bg-yellow-900/50 border border-yellow-300 dark:border-yellow-700 rounded-md transition-colors"
+          className="mt-3 rounded-md border border-yellow-300 bg-yellow-100 px-4 py-2 text-sm font-medium text-yellow-800 transition-colors hover:bg-yellow-200 dark:border-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200 dark:hover:bg-yellow-900/50"
         >
           Validate Current Form
         </button>
@@ -416,11 +416,11 @@ const FormIntegrationComponent = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Personal Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Personal Information</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">Full Name</label>
+            <label className="mb-2 block text-sm font-medium text-primary">Full Name</label>
             <input
               type="text"
               value={formData.personalInfo.name}
@@ -430,11 +430,11 @@ const FormIntegrationComponent = () => {
                   personalInfo: { ...prev.personalInfo, name: e.target.value },
                 }))
               }
-              className="w-full p-3 border border-default rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border p-3 border-default focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-primary mb-2">Age</label>
+            <label className="mb-2 block text-sm font-medium text-primary">Age</label>
             <input
               type="number"
               value={formData.personalInfo.age}
@@ -444,13 +444,13 @@ const FormIntegrationComponent = () => {
                   personalInfo: { ...prev.personalInfo, age: parseInt(e.target.value) },
                 }))
               }
-              className="w-full p-3 border border-default rounded-md focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border p-3 border-default focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-background rounded-lg border border-default p-6">
+      <div className="rounded-lg border p-6 bg-background border-default">
         <EducationEmployment
           value={formData.educationEmployment}
           onChange={data =>
@@ -471,13 +471,13 @@ const FormIntegrationComponent = () => {
               educationEmployment: defaultData,
             })
           }
-          className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border border-default rounded-md hover:bg-surface-hover transition-colors"
+          className="rounded-md border px-4 py-2 text-sm font-medium transition-colors text-secondary border-default hover:text-primary hover:bg-surface-hover"
         >
           Reset Form
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700"
         >
           Submit Complete Form
         </button>
