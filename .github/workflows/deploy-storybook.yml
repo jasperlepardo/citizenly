@@ -40,6 +40,10 @@ jobs:
         run: npm run build-storybook
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_APP_ENV: development
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-key
+          CSRF_SECRET: placeholder-secret-for-storybook
         
       - name: Install Vercel CLI
         run: npm i -g vercel@canary
