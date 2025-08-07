@@ -3,9 +3,9 @@ import { join } from 'path';
 
 const config: StorybookConfig = {
   stories: [
-    '../src/**/*.mdx', 
+    '../src/**/*.mdx',
     '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../src/stories/**/*.mdx'
+    '../src/stories/**/*.mdx',
   ],
   addons: [
     '@chromatic-com/storybook',
@@ -34,7 +34,7 @@ const config: StorybookConfig = {
     // Make sure React is available in the global scope
     config.optimizeDeps = {
       ...config.optimizeDeps,
-      include: [...(config.optimizeDeps?.include ?? []), 'react', 'react-dom'],
+      include: [...(config.optimizeDeps?.include ?? []), 'react', 'react-dom', '@storybook/blocks'],
     };
 
     // Configure Node.js polyfills for browser environment
@@ -55,6 +55,52 @@ const config: StorybookConfig = {
       ...config.define,
       global: 'globalThis',
       'process.env': {},
+    };
+
+    // Configure Rollup options to properly handle Storybook modules
+    const existingExternal = config.build?.rollupOptions?.external;
+    const externalArray: string[] = [];
+
+    if (Array.isArray(existingExternal)) {
+      externalArray.push(...existingExternal.filter(ext => typeof ext === 'string'));
+    } else if (typeof existingExternal === 'string') {
+      externalArray.push(existingExternal);
+    }
+
+    config.build = {
+      ...config.build,
+      rollupOptions: {
+        ...config.build?.rollupOptions,
+        external: (id: string) => {
+          // Allow Storybook's own modules but externalize addon imports
+          if (
+            id.includes('@storybook/') &&
+            (id.includes('blocks') ||
+              id.includes('test') ||
+              id.includes('addon-actions') ||
+              id.includes('addon-controls') ||
+              id.includes('testing-library'))
+          ) {
+            return true;
+          }
+          // Check existing external config
+          if (Array.isArray(existingExternal)) {
+            return existingExternal.some(ext => {
+              if (typeof ext === 'string') return ext === id;
+              if (ext instanceof RegExp) return ext.test(id);
+              if (typeof ext === 'function') return ext(id, undefined, false);
+              return false;
+            });
+          } else if (typeof existingExternal === 'string') {
+            return existingExternal === id;
+          } else if (existingExternal instanceof RegExp) {
+            return existingExternal.test(id);
+          } else if (typeof existingExternal === 'function') {
+            return existingExternal(id, undefined, false);
+          }
+          return false;
+        },
+      },
     };
 
     return config;
