@@ -59,7 +59,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
           eslint_flags: 'src/ --ignore-path .eslintignore'
-          fail_level: error
+          fail_level: warning
+          level: warning
 
       - name: Install reviewdog
         run: |
