@@ -1,6 +1,6 @@
 // Atomic Components - Basic UI building blocks
 export { Button } from './Button';
-export { Input } from './Input';
+export { default as Input } from './Input';
 export { Checkbox } from './Checkbox';
 export { Radio, RadioGroup } from './Radio';
 export { Toggle } from './Toggle';
