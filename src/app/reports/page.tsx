@@ -25,30 +25,30 @@ function ReportsContent() {
         {/* Page Header */}
         <div className="mb-6">
           <div>
-            <h1 className="font-montserrat font-semibold text-xl text-primary mb-0.5">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
               Reports & Analytics
             </h1>
-            <p className="font-montserrat font-normal text-sm text-secondary">
+            <p className="font-montserrat text-sm font-normal text-secondary">
               Generate and manage comprehensive reports and data analytics for your barangay
             </p>
           </div>
         </div>
 
         {/* Report Types Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {reportTypes.map((report, index) => (
             <div
               key={index}
-              className={`bg-surface rounded-lg border p-6 hover:shadow-md transition-shadow ${
+              className={`rounded-lg border p-6 transition-shadow bg-surface hover:shadow-md ${
                 report.status === 'Available'
                   ? 'border-default hover:border-blue-300'
-                  : 'border-default opacity-75'
+                  : 'opacity-75 border-default'
               }`}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="mb-4 flex items-start justify-between">
                 <div className="text-2xl">{report.icon}</div>
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`rounded-full px-2 py-1 text-xs font-medium ${
                     report.status === 'Available'
                       ? 'bg-green-100 text-green-800'
                       : 'bg-amber-100 text-amber-800'
@@ -57,10 +57,10 @@ function ReportsContent() {
                   {report.status}
                 </span>
               </div>
-              <h3 className="font-montserrat font-semibold text-base text-primary mb-2">
+              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary">
                 {report.name}
               </h3>
-              <p className="font-montserrat text-sm text-secondary mb-4">{report.description}</p>
+              <p className="font-montserrat mb-4 text-sm text-secondary">{report.description}</p>
               {report.link ? (
                 <Link href={report.link}>
                   <Button
