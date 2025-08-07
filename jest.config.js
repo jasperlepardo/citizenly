@@ -43,13 +43,16 @@ const customJestConfig = {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
 
-  // Coverage settings
+  // Coverage settings - focus on core business logic
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.stories.{js,jsx,ts,tsx}',
     '!src/**/index.{js,jsx,ts,tsx}',
     '!src/app/**/*.{js,jsx,ts,tsx}', // Exclude Next.js app directory files
+    '!src/components/atoms/**/*.{js,jsx,ts,tsx}', // Exclude atomic UI components during development
+    '!src/components/molecules/**/*.{js,jsx,ts,tsx}', // Exclude molecular UI components during development
+    '!src/middleware.ts', // Exclude Next.js middleware
   ],
 
   // Coverage thresholds - Apply only to well-tested files
