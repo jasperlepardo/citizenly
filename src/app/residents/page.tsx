@@ -304,7 +304,7 @@ function ResidentsContent() {
             </p>
           </div>
           <Link href="/residents/create">
-            <Button variant="primary" size="default">
+            <Button variant="primary" size="md">
               Add new resident
             </Button>
           </Link>
