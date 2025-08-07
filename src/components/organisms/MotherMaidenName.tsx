@@ -89,7 +89,7 @@ export default function MotherMaidenName({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <h3 className="mb-2 text-lg font-medium text-gray-900">
           <span className="text-base">👩‍👧‍👦</span> Mother&apos;s Information
         </h3>
         <p className="text-sm text-gray-600">
@@ -123,7 +123,7 @@ export default function MotherMaidenName({
       {!value.is_unknown_mother && (
         <>
           <FormGroup title="Mother's Full Name">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="md:col-span-2">
                 <InputField
                   label="First Name *"
@@ -189,8 +189,8 @@ export default function MotherMaidenName({
 
           {/* Advanced Information */}
           {showAdvanced && (
-            <div className="space-y-6 bg-gray-50 p-4 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-6 rounded-lg bg-gray-50 p-4">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <FormGroup title="Mother's Status">
                   <Checkbox
                     checked={value.mother_is_deceased || false}
@@ -241,16 +241,16 @@ export default function MotherMaidenName({
           placeholder="Any additional information or special circumstances regarding mother's information"
           disabled={disabled}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
         />
       </FormGroup>
 
       {/* Information Summary */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Mother&apos;s Information Summary</h4>
-        <div className="text-sm text-blue-800 space-y-1">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h4 className="mb-2 font-medium text-blue-900">Mother&apos;s Information Summary</h4>
+        <div className="space-y-1 text-sm text-blue-800">
           {value.is_confidential && (
-            <p className="text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+            <p className="rounded bg-yellow-100 px-2 py-1 text-yellow-800">
               🔒 This information is marked as confidential
             </p>
           )}
@@ -286,14 +286,14 @@ export default function MotherMaidenName({
       </div>
 
       {/* Privacy Notice */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
         <div className="flex items-start">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <span className="text-yellow-400">🛡️</span>
           </div>
           <div className="ml-3">
             <h4 className="text-sm font-medium text-yellow-800">Privacy Protection</h4>
-            <p className="text-sm text-yellow-700 mt-1">
+            <p className="mt-1 text-sm text-yellow-700">
               Mother&apos;s maiden name is sensitive information used for identity verification.
               This data is protected under the Data Privacy Act of 2012 and will only be used for
               official government purposes and genealogical records.
@@ -303,14 +303,14 @@ export default function MotherMaidenName({
       </div>
 
       {/* Cultural Note */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+      <div className="rounded-lg border border-green-200 bg-green-50 p-4">
         <div className="flex items-start">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <span className="text-green-400">ℹ️</span>
           </div>
           <div className="ml-3">
             <h4 className="text-sm font-medium text-green-800">Filipino Naming Convention</h4>
-            <p className="text-sm text-green-700 mt-1">
+            <p className="mt-1 text-sm text-green-700">
               In Filipino culture, a woman&apos;s maiden name is the family name she had before
               marriage. This information helps establish family lineage and is important for various
               legal and genealogical purposes. If adoption or other special circumstances apply,

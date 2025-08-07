@@ -37,7 +37,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                 >
                   <span className="sr-only">Close sidebar</span>
                   <svg
-                    className="h-6 w-6"
+                    className="size-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
@@ -48,11 +48,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                 </Button>
               </div>
 
-              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-surface px-6 pb-4">
+              <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-surface">
                 <div className="flex h-16 shrink-0 items-center">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">RBI</span>
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
+                      <span className="text-sm font-bold text-white">RBI</span>
                     </div>
                     <span className="text-xl font-semibold text-primary">RBI System</span>
                   </div>
@@ -66,11 +66,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
       {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-default bg-surface px-6 pb-4">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r px-6 pb-4 bg-surface border-default">
           <div className="flex h-16 shrink-0 items-center">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">RBI</span>
+              <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
+                <span className="text-sm font-bold text-white">RBI</span>
               </div>
               <span className="text-xl font-semibold text-primary">RBI System</span>
             </div>

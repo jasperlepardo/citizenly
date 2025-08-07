@@ -38,7 +38,7 @@ export default function AppShell({ children }: AppShellProps) {
                 >
                   <span className="sr-only">Close sidebar</span>
                   <svg
-                    className="h-6 w-6"
+                    className="size-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
@@ -49,15 +49,15 @@ export default function AppShell({ children }: AppShellProps) {
                 </Button>
               </div>
 
-              <div className="flex grow flex-col overflow-y-auto bg-surface/95 backdrop-blur-xl border-r border-default/60">
+              <div className="bg-surface/95 border-default/60 flex grow flex-col overflow-y-auto border-r backdrop-blur-xl">
                 <div className="px-6 py-8">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
-                      <span className="text-white font-bold text-lg">R</span>
+                    <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
+                      <span className="text-lg font-bold text-white">R</span>
                     </div>
                     <div>
                       <h1 className="text-xl font-bold tracking-tight text-primary">RBI System</h1>
-                      <p className="text-xs text-muted font-medium">Records Management</p>
+                      <p className="text-xs font-medium text-muted">Records Management</p>
                     </div>
                   </div>
                 </div>
@@ -73,15 +73,15 @@ export default function AppShell({ children }: AppShellProps) {
 
       {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex grow flex-col overflow-y-auto bg-surface/95 backdrop-blur-xl border-r border-default/60">
+        <div className="bg-surface/95 border-default/60 flex grow flex-col overflow-y-auto border-r backdrop-blur-xl">
           <div className="px-6 py-8">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
-                <span className="text-white font-bold text-lg">R</span>
+              <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
+                <span className="text-lg font-bold text-white">R</span>
               </div>
               <div>
                 <h1 className="text-xl font-bold tracking-tight text-primary">RBI System</h1>
-                <p className="text-xs text-muted font-medium">Records Management</p>
+                <p className="text-xs font-medium text-muted">Records Management</p>
               </div>
             </div>
           </div>
@@ -94,19 +94,19 @@ export default function AppShell({ children }: AppShellProps) {
 
       <div className="lg:pl-64">
         {/* Top navigation bar */}
-        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-default/40 bg-surface/90 backdrop-blur-2xl px-4 shadow-xl shadow-black/5 sm:px-6 lg:px-8">
+        <div className="border-default/40 bg-surface/90 sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b px-4 shadow-xl shadow-black/5 backdrop-blur-2xl sm:px-6 lg:px-8">
           <Button
             variant="ghost"
             size="sm"
             iconOnly
             onClick={() => setSidebarOpen(true)}
-            className="-m-2.5 p-2.5 text-secondary hover:text-primary hover:bg-surface-hover rounded-lg transition-all duration-200 lg:hidden"
+            className="-m-2.5 rounded-lg p-2.5 transition-all duration-200 text-secondary hover:text-primary hover:bg-surface-hover lg:hidden"
           >
             <span className="sr-only">Open sidebar</span>
-            <div className="h-5 w-5 flex flex-col justify-center space-y-1">
-              <div className="h-0.5 w-5 bg-current rounded-full"></div>
-              <div className="h-0.5 w-5 bg-current rounded-full"></div>
-              <div className="h-0.5 w-5 bg-current rounded-full"></div>
+            <div className="flex size-5 flex-col justify-center space-y-1">
+              <div className="h-0.5 w-5 rounded-full bg-current"></div>
+              <div className="h-0.5 w-5 rounded-full bg-current"></div>
+              <div className="h-0.5 w-5 rounded-full bg-current"></div>
             </div>
           </Button>
 
@@ -114,15 +114,15 @@ export default function AppShell({ children }: AppShellProps) {
 
           <div className="flex flex-1 gap-x-6 self-stretch">
             {/* Search */}
-            <div className="relative flex flex-1 max-w-lg">
+            <div className="relative flex max-w-lg flex-1">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                <div className="h-4 w-4 text-muted">
-                  <div className="h-4 w-4 rounded-full border border-current"></div>
-                  <div className="absolute top-3 left-3 h-2 w-0.5 bg-current rotate-45"></div>
+                <div className="size-4 text-muted">
+                  <div className="size-4 rounded-full border border-current"></div>
+                  <div className="absolute left-3 top-3 h-2 w-0.5 rotate-45 bg-current"></div>
                 </div>
               </div>
               <input
-                className="block h-full w-full rounded-2xl border-0 py-0 pl-11 pr-4 text-primary placeholder:text-muted focus:ring-2 focus:ring-inset focus:ring-indigo-500 bg-surface/80 hover:bg-surface-hover/80 focus:bg-surface transition-all duration-200 sm:text-sm shadow-inner"
+                className="bg-surface/80 hover:bg-surface-hover/80 block size-full rounded-2xl border-0 py-0 pl-11 pr-4 shadow-inner transition-all duration-200 text-primary placeholder:text-muted focus:ring-2 focus:ring-inset focus:ring-indigo-500 focus:bg-surface sm:text-sm"
                 placeholder="Search residents, addresses..."
                 type="search"
               />
@@ -134,15 +134,15 @@ export default function AppShell({ children }: AppShellProps) {
                 variant="ghost"
                 size="sm"
                 iconOnly
-                className="relative -m-2.5 p-2.5 text-muted hover:text-secondary hover:bg-surface-hover rounded-xl transition-all duration-200"
+                className="relative -m-2.5 rounded-xl p-2.5 transition-all duration-200 text-muted hover:text-secondary hover:bg-surface-hover"
               >
                 <span className="sr-only">View notifications</span>
-                <div className="relative h-5 w-5">
+                <div className="relative size-5">
                   <div className="absolute inset-0 rounded-lg border border-current"></div>
-                  <div className="absolute top-1 left-1 right-1 h-0.5 bg-current rounded-full"></div>
-                  <div className="absolute bottom-1 left-1 right-1 h-1 bg-current rounded-full"></div>
+                  <div className="absolute inset-x-1 top-1 h-0.5 rounded-full bg-current"></div>
+                  <div className="absolute inset-x-1 bottom-1 h-1 rounded-full bg-current"></div>
                 </div>
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center shadow-lg">
+                <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-pink-600 shadow-lg">
                   <span className="text-xs font-bold text-white">3</span>
                 </span>
               </Button>
@@ -154,20 +154,20 @@ export default function AppShell({ children }: AppShellProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="-m-1.5 flex items-center p-2 hover:bg-surface-hover rounded-2xl transition-all duration-200 group h-auto"
+                  className="group -m-1.5 flex h-auto items-center rounded-2xl p-2 transition-all duration-200 hover:bg-surface-hover"
                 >
                   <span className="sr-only">Open user menu</span>
-                  <div className="h-8 w-8 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-xl ring-2 ring-white group-hover:scale-105 transition-transform duration-200">
+                  <div className="flex size-8 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl ring-2 ring-white transition-transform duration-200 group-hover:scale-105">
                     <span className="text-sm font-bold text-white">BO</span>
                   </div>
-                  <span className="hidden lg:flex lg:items-center lg:ml-3">
-                    <span className="text-sm font-semibold text-primary group-hover:text-indigo-600 transition-colors duration-200">
+                  <span className="hidden lg:ml-3 lg:flex lg:items-center">
+                    <span className="text-sm font-semibold transition-colors duration-200 text-primary group-hover:text-indigo-600">
                       Barangay Official
                     </span>
-                    <div className="ml-2 h-4 w-4 text-muted group-hover:text-secondary transition-colors duration-200">
-                      <div className="h-1 w-1 bg-current rounded-full"></div>
-                      <div className="h-1 w-1 bg-current rounded-full ml-1 -mt-0.5"></div>
-                      <div className="h-1 w-1 bg-current rounded-full ml-2 -mt-0.5"></div>
+                    <div className="ml-2 size-4 transition-colors duration-200 text-muted group-hover:text-secondary">
+                      <div className="size-1 rounded-full bg-current"></div>
+                      <div className="-mt-0.5 ml-1 size-1 rounded-full bg-current"></div>
+                      <div className="-mt-0.5 ml-2 size-1 rounded-full bg-current"></div>
                     </div>
                   </span>
                 </Button>
@@ -177,8 +177,8 @@ export default function AppShell({ children }: AppShellProps) {
         </div>
 
         {/* Main content */}
-        <main className="py-8 lg:py-12 min-h-screen">
-          <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <main className="min-h-screen py-8 lg:py-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="space-y-8">{children}</div>
           </div>
         </main>

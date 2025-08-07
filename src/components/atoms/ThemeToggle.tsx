@@ -10,14 +10,14 @@ const themeToggleVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-surface hover:bg-surface-hover border border-default text-primary',
-        ghost: 'hover:bg-surface-hover text-primary',
-        outline: 'border border-default bg-transparent hover:bg-surface-hover text-primary',
+        default: 'border text-primary bg-surface border-default hover:bg-surface-hover',
+        ghost: 'text-primary hover:bg-surface-hover',
+        outline: 'border bg-transparent text-primary border-default hover:bg-surface-hover',
       },
       size: {
-        sm: 'h-8 w-8 p-1',
-        md: 'h-9 w-9 p-2',
-        lg: 'h-10 w-10 p-2.5',
+        sm: 'size-8 p-1',
+        md: 'size-9 p-2',
+        lg: 'size-10 p-2.5',
       },
     },
     defaultVariants: {
@@ -42,7 +42,7 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
       if (theme === 'system') {
         // Monitor/system icon for system theme
         return (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -54,7 +54,7 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
       } else if (actualTheme === 'dark') {
         // Moon icon for dark theme
         return (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -66,7 +66,7 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
       } else {
         // Sun icon for light theme
         return (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -105,11 +105,11 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, ThemeToggleProps>(
         {...props}
       >
         {showLabel && labelPosition === 'left' && (
-          <span className="font-montserrat text-sm font-medium mr-2">{getLabel()}</span>
+          <span className="font-montserrat mr-2 text-sm font-medium">{getLabel()}</span>
         )}
         {getIcon()}
         {showLabel && labelPosition === 'right' && (
-          <span className="font-montserrat text-sm font-medium ml-2">{getLabel()}</span>
+          <span className="font-montserrat ml-2 text-sm font-medium">{getLabel()}</span>
         )}
       </button>
     );

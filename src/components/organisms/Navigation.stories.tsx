@@ -122,15 +122,15 @@ export const WithActiveStates: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Dashboard Active</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">Dashboard Active</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation />
         </div>
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Reports with Submenu Active</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">Reports with Submenu Active</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation />
         </div>
       </div>
@@ -142,7 +142,7 @@ export const WithActiveStates: Story = {
 export const InSidebar: Story = {
   render: () => (
     <div className="flex h-96">
-      <div className="w-64 bg-surface border-r border-default p-4">
+      <div className="w-64 border-r p-4 bg-surface border-default">
         <div className="mb-4">
           <h2 className="text-lg font-semibold text-primary">RBI System</h2>
         </div>
@@ -158,8 +158,8 @@ export const InSidebar: Story = {
 export const InMobileMenu: Story = {
   render: () => (
     <div className="max-w-sm">
-      <div className="bg-surface border border-default rounded-lg p-4">
-        <div className="mb-4 pb-4 border-b border-default">
+      <div className="rounded-lg border p-4 bg-surface border-default">
+        <div className="mb-4 border-b pb-4 border-default">
           <h2 className="text-lg font-semibold text-primary">Menu</h2>
         </div>
         <Navigation showSubmenu={false} />
@@ -207,24 +207,24 @@ export const CustomStructure: Story = {
 // Navigation states showcase
 export const NavigationStates: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Icons</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">With Icons</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation items={sampleMainNavigation.slice(0, 3)} bottomItems={[]} showIcons={true} />
         </div>
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Without Icons</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">Without Icons</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation items={sampleMainNavigation.slice(0, 3)} bottomItems={[]} showIcons={false} />
         </div>
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">With Submenus</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">With Submenus</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation
             items={[sampleMainNavigation[3]]} // Reports item with children
             bottomItems={[]}
@@ -234,8 +234,8 @@ export const NavigationStates: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Without Submenus</h3>
-        <div className="bg-surface border border-default rounded-lg p-4">
+        <h3 className="mb-4 font-semibold text-primary">Without Submenus</h3>
+        <div className="rounded-lg border p-4 bg-surface border-default">
           <Navigation
             items={[sampleMainNavigation[3]]} // Reports item with children
             bottomItems={[]}
@@ -250,12 +250,12 @@ export const NavigationStates: Story = {
 // Full-height navigation example
 export const FullHeight: Story = {
   render: () => (
-    <div className="h-96 w-64 bg-surface border border-default rounded-lg overflow-hidden">
-      <div className="p-4 border-b border-default">
+    <div className="h-96 w-64 overflow-hidden rounded-lg border bg-surface border-default">
+      <div className="border-b p-4 border-default">
         <h2 className="text-lg font-semibold text-primary">RBI System</h2>
         <p className="text-sm text-secondary">Barangay Management</p>
       </div>
-      <div className="p-4 h-full">
+      <div className="h-full p-4">
         <Navigation />
       </div>
     </div>

@@ -161,9 +161,9 @@ const WithFilePreviewComponent = () => {
       />
 
       {files.length > 0 && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium mb-2">Selected Files:</h4>
-          <ul className="text-sm space-y-1">
+        <div className="mt-4 rounded-lg bg-gray-50 p-3">
+          <h4 className="mb-2 text-sm font-medium">Selected Files:</h4>
+          <ul className="space-y-1 text-sm">
             {files.map((file, index) => (
               <li key={index} className="flex justify-between">
                 <span>{file.name}</span>
@@ -240,7 +240,7 @@ const DocumentUploadComponent = () => {
 
       {uploadStatus === 'uploading' && (
         <div className="flex items-center space-x-2 text-sm text-blue-600">
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+          <svg className="size-4 animate-spin" viewBox="0 0 24 24">
             <circle
               cx="12"
               cy="12"
@@ -260,8 +260,8 @@ const DocumentUploadComponent = () => {
       )}
 
       {files.length > 0 && uploadStatus === 'success' && (
-        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-          <h4 className="text-sm font-medium text-green-800 mb-1">Upload Complete</h4>
+        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+          <h4 className="mb-1 text-sm font-medium text-green-800">Upload Complete</h4>
           <p className="text-sm text-green-600">
             {files.length} file{files.length > 1 ? 's' : ''} uploaded successfully
           </p>
@@ -284,7 +284,7 @@ export const AllStates: Story = {
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">File Upload States</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FileUpload
             label="Default State"
             helperText="Drag and drop or click to select"
@@ -351,10 +351,10 @@ const FormExampleComponent = () => {
   });
 
   return (
-    <div className="space-y-6 w-full max-w-2xl">
+    <div className="w-full max-w-2xl space-y-6">
       <h3 className="text-lg font-semibold">Job Application Form</h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <FileUpload
           label="Profile Picture"
           helperText="Upload your profile photo (max 2MB)"
@@ -391,8 +391,8 @@ const FormExampleComponent = () => {
         />
       </div>
 
-      <div className="pt-4 border-t text-sm text-gray-600">
-        <h4 className="font-medium mb-2">Uploaded Files Summary:</h4>
+      <div className="border-t pt-4 text-sm text-gray-600">
+        <h4 className="mb-2 font-medium">Uploaded Files Summary:</h4>
         <ul className="space-y-1">
           <li>Profile Picture: {formData.avatar.length} file</li>
           <li>Resume: {formData.resume.length} file</li>

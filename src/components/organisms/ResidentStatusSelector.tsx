@@ -199,7 +199,7 @@ export default function ResidentStatusSelector({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="text-lg font-medium text-primary mb-2">
+        <h3 className="mb-2 text-lg font-medium text-primary">
           <span className="text-base">🏠</span> Resident Status Classification
         </h3>
         <p className="text-sm text-secondary">
@@ -228,7 +228,7 @@ export default function ResidentStatusSelector({
       {/* Length of Residency */}
       {(value.status_type === 'permanent' || value.status_type === 'temporary') && (
         <FormGroup title="Length of Residency in this Barangay">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="Years"
               type="number"
@@ -292,7 +292,7 @@ export default function ResidentStatusSelector({
           {/* Voting eligibility notice */}
           {votingEligibility !== null && (
             <div
-              className={`p-3 rounded-lg ${votingEligibility ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}
+              className={`rounded-lg p-3 ${votingEligibility ? 'border border-green-200 bg-green-50' : 'border border-yellow-200 bg-yellow-50'}`}
             >
               <p className={`text-sm ${votingEligibility ? 'text-green-800' : 'text-yellow-800'}`}>
                 {votingEligibility
@@ -309,7 +309,7 @@ export default function ResidentStatusSelector({
               checked={value.is_registered_voter}
               onChange={e => handleChange('is_registered_voter', e.target.checked)}
               disabled={disabled || votingEligibility === false}
-              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="mt-1 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <div className="flex-1">
               <label htmlFor="is_registered_voter" className="text-sm font-medium text-primary">
@@ -323,7 +323,7 @@ export default function ResidentStatusSelector({
 
           {/* Voter Details */}
           {value.is_registered_voter && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-7">
+            <div className="ml-7 grid grid-cols-1 gap-4 md:grid-cols-2">
               <InputField
                 label="Voter ID Number"
                 type="text"
@@ -356,7 +356,7 @@ export default function ResidentStatusSelector({
               checked={value.is_indigenous_member}
               onChange={e => handleChange('is_indigenous_member', e.target.checked)}
               disabled={disabled}
-              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="mt-1 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <div className="flex-1">
               <label htmlFor="is_indigenous_member" className="text-sm font-medium text-primary">
@@ -371,7 +371,7 @@ export default function ResidentStatusSelector({
 
           {/* Indigenous Details */}
           {value.is_indigenous_member && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-7">
+            <div className="ml-7 grid grid-cols-1 gap-4 md:grid-cols-2">
               <InputField
                 label="Tribal Affiliation"
                 type="text"
@@ -424,9 +424,9 @@ export default function ResidentStatusSelector({
       </FormGroup>
 
       {/* Status Summary */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Resident Status Summary</h4>
-        <div className="text-sm text-blue-800 space-y-1">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h4 className="mb-2 font-medium text-blue-900">Resident Status Summary</h4>
+        <div className="space-y-1 text-sm text-blue-800">
           <p>
             <strong>Status:</strong>{' '}
             {value.status_type

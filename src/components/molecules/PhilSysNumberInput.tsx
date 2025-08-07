@@ -159,7 +159,7 @@ export default function PhilSysNumberInput({
       {label && (
         <label className="block text-sm font-medium text-primary">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </label>
       )}
 
@@ -178,7 +178,7 @@ export default function PhilSysNumberInput({
         />
 
         {/* Security Icon */}
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
           {isValid ? (
             <span className="text-green-500" title="Valid PhilSys number">
               🔒
@@ -212,7 +212,7 @@ export default function PhilSysNumberInput({
           <span className="text-xs">✓</span>
           <span className="text-xs">Valid PhilSys number format</span>
           {autoHash && (
-            <span className="text-xs bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
+            <span className="rounded bg-green-100 px-2 py-1 text-xs dark:bg-green-900/20">
               🔐 Auto-encrypted
             </span>
           )}
@@ -220,7 +220,7 @@ export default function PhilSysNumberInput({
       )}
 
       {/* Security Notice */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-xs">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs dark:border-blue-800 dark:bg-blue-900/20">
         <div className="flex items-start space-x-2">
           <span className="text-blue-600 dark:text-blue-400">🔐</span>
           <div className="text-blue-700 dark:text-blue-300">

@@ -345,7 +345,7 @@ select {
 /* Buttons */
 button,
 .btn {
-  @apply font-system font-medium;
+  @apply font-medium font-system;
 }
 
 /* Input field overrides - ensure no default borders */

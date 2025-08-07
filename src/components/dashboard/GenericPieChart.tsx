@@ -69,8 +69,8 @@ export default function GenericPieChart({
 
   if (total === 0) {
     return (
-      <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
-        <h3 className="text-lg font-semibold text-primary mb-4 font-display">{title}</h3>
+      <div className={`rounded-lg border p-6 bg-surface border-default ${className}`}>
+        <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
         <div className="text-center text-secondary">No data available</div>
       </div>
     );
@@ -130,12 +130,12 @@ export default function GenericPieChart({
   });
 
   return (
-    <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-primary mb-4 font-display">{title}</h3>
+    <div className={`rounded-lg border p-6 bg-surface border-default ${className}`}>
+      <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
 
       <div className="grid grid-cols-2 gap-6">
         {/* Pie Chart */}
-        <div className="flex justify-center items-center relative">
+        <div className="relative flex items-center justify-center">
           <svg width="240" height="240" viewBox="0 0 100 100">
             {/* Handle 100% case with full circle */}
             {dataWithColors.filter(item => item.value > 0).length === 1 ? (
@@ -147,7 +147,7 @@ export default function GenericPieChart({
                     cy="50"
                     r={hoveredSlice === singleItem.label ? '47' : '45'}
                     fill={singleItem.color}
-                    className={`transition-all duration-200 cursor-pointer ${
+                    className={`cursor-pointer transition-all duration-200 ${
                       hoveredSlice === singleItem.label ? 'drop-shadow-lg' : 'hover:opacity-90'
                     }`}
                     onMouseMove={e => handleMouseMove(e, singleItem.label)}
@@ -171,7 +171,7 @@ export default function GenericPieChart({
                           isHovered ? radius + 2 : radius
                         )}
                         fill={slice.color}
-                        className={`transition-all duration-200 cursor-pointer ${
+                        className={`cursor-pointer transition-all duration-200 ${
                           isHovered
                             ? 'drop-shadow-lg'
                             : isOtherHovered
@@ -199,11 +199,11 @@ export default function GenericPieChart({
             return (
               <div
                 key={index}
-                className={`flex items-center justify-between px-2 py-1 rounded-md transition-all duration-200 cursor-pointer ${
+                className={`flex cursor-pointer items-center justify-between rounded-md px-2 py-1 transition-all duration-200 ${
                   hasNoData
-                    ? 'opacity-50 cursor-default'
+                    ? 'cursor-default opacity-50'
                     : isHovered
-                      ? 'bg-surface-hover shadow-sm'
+                      ? 'shadow-sm bg-surface-hover'
                       : isOtherHovered
                         ? 'opacity-60'
                         : 'hover:bg-surface-hover'
@@ -213,7 +213,7 @@ export default function GenericPieChart({
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    className={`size-3 rounded-full transition-all duration-200 ${
                       hasNoData
                         ? ''
                         : isHovered
@@ -223,11 +223,11 @@ export default function GenericPieChart({
                     style={{ backgroundColor: item.color }}
                   ></div>
                   <span
-                    className={`text-sm font-body transition-all duration-200 ${
+                    className={`text-sm transition-all duration-200 font-body ${
                       hasNoData
                         ? 'text-gray-400 dark:text-gray-600'
                         : isHovered
-                          ? 'text-primary font-medium'
+                          ? 'font-medium text-primary'
                           : 'text-gray-700 dark:text-gray-300'
                     }`}
                   >
@@ -235,11 +235,11 @@ export default function GenericPieChart({
                   </span>
                 </div>
                 <div
-                  className={`text-sm font-semibold font-display transition-all duration-200 ${
+                  className={`font-display text-sm font-semibold transition-all duration-200 ${
                     hasNoData
                       ? 'text-gray-400 dark:text-gray-600'
                       : isHovered
-                        ? 'text-primary font-bold'
+                        ? 'font-bold text-primary'
                         : 'text-gray-900 dark:text-gray-100'
                   }`}
                 >
@@ -254,7 +254,7 @@ export default function GenericPieChart({
       {/* Tooltip */}
       {hoveredSlice && (
         <div
-          className="fixed z-50 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border-2 border-primary-200 dark:border-primary-700 px-4 py-3 pointer-events-none"
+          className="pointer-events-none fixed z-50 rounded-lg border-2 border-primary-200 bg-white px-4 py-3 shadow-2xl dark:border-primary-700 dark:bg-gray-900"
           style={{
             left: mousePosition.x + 10,
             top: mousePosition.y - 10,
@@ -269,9 +269,9 @@ export default function GenericPieChart({
 
             return (
               <div className="text-sm">
-                <div className="flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                <div className="mb-1 flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
                   <div
-                    className="w-3 h-3 rounded-full"
+                    className="size-3 rounded-full"
                     style={{ backgroundColor: item?.color }}
                   ></div>
                   {tooltipData.label}
