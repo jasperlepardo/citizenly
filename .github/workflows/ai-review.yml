@@ -101,16 +101,8 @@ jobs:
               });
             }
             
-            // Post review comments
-            if (reviewComments.length > 0) {
-              await github.rest.pulls.createReview({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                comments: reviewComments.slice(0, 10), // Limit to 10 comments
-                event: 'COMMENT'
-              });
-            }
+            // Skip inline comments for now to avoid GitHub API issues
+            // Just post a summary comment instead
             
             // Post summary comment
             const consoleLogCount = reviewComments.filter(c => c.body.includes('console.log')).length;

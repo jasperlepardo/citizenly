@@ -221,12 +221,7 @@ export default function AddressSearch({
         <div className="absolute z-50 mt-1 w-full rounded-md border p-4 text-center text-sm shadow-lg text-secondary bg-surface border-default">
           <div className="space-y-2">
             <div className="text-muted">
-              <svg
-                className="mx-auto size-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="mx-auto size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

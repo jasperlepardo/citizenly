@@ -87,13 +87,7 @@ export function TableCell({
       <div className={`p-1 ${className}`}>
         <button className="rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
           <div className="size-5">
-            <Image
-              alt="actions"
-              className="block size-full"
-              src={imgDots}
-              width={20}
-              height={20}
-            />
+            <Image alt="actions" className="block size-full" src={imgDots} width={20} height={20} />
           </div>
         </button>
       </div>
@@ -157,26 +151,14 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
         <div className="flex items-center gap-0 p-1">
           <button className="flex items-center gap-1 rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
             <div className="size-5">
-              <Image
-                alt="list"
-                className="block size-full"
-                src={imgList}
-                width={20}
-                height={20}
-              />
+              <Image alt="list" className="block size-full" src={imgList} width={20} height={20} />
             </div>
             <span className="px-1 text-base font-medium font-body text-secondary">Properties</span>
           </button>
 
           <button className="ml-1 flex items-center gap-1 rounded border p-2 transition-colors bg-surface border-default hover:bg-surface-hover">
             <div className="size-5">
-              <Image
-                alt="sort"
-                className="block size-full"
-                src={imgSort}
-                width={20}
-                height={20}
-              />
+              <Image alt="sort" className="block size-full" src={imgSort} width={20} height={20} />
             </div>
             <span className="px-1 text-base font-medium font-body text-secondary">Sort</span>
           </button>
@@ -196,13 +178,7 @@ export function TableControls({ selectAll, actions, search }: TableControlsProps
 
           <button className="ml-1 rounded border p-1 transition-colors bg-surface border-default hover:bg-surface-hover">
             <div className="size-5">
-              <Image
-                alt="more"
-                className="block size-full"
-                src={imgMore}
-                width={20}
-                height={20}
-              />
+              <Image alt="more" className="block size-full" src={imgMore} width={20} height={20} />
             </div>
           </button>
         </div>
