@@ -2,7 +2,7 @@ name: Deploy Storybook
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, staging]
     paths:
       - 'src/components/**'
       - 'src/stories/**'
@@ -12,7 +12,7 @@ on:
       - 'public/**'
       - '.gitignore'
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, staging]
     paths:
       - 'src/components/**'
       - 'src/stories/**'
