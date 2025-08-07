@@ -7,7 +7,7 @@
     "dev": "next dev",
     "dev:staging": "next dev --env .env.staging",
     "dev:production": "next dev --env .env.production",
-    "build": "next build",
+    "build": "node scripts/build-env.mjs && next build",
     "build:dev": "dotenv -e .env.development next build",
     "build:staging": "dotenv -e .env.staging next build",
     "build:prod": "dotenv -e .env.production next build",
