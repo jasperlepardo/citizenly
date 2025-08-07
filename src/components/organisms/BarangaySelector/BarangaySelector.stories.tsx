@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import BarangaySelector from './BarangaySelector';
 
@@ -88,7 +89,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default barangay selector ready for user input. Type at least 2 characters to trigger search.',
+        story:
+          'Default barangay selector ready for user input. Type at least 2 characters to trigger search.',
       },
     },
   },
@@ -102,7 +104,8 @@ export const WithSelectedValue: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Barangay selector with a pre-selected value. The component will load and display the selected barangay information.',
+        story:
+          'Barangay selector with a pre-selected value. The component will load and display the selected barangay information.',
       },
     },
   },
@@ -161,11 +164,12 @@ export const LoadingState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Loading state shown while searching for barangays. This appears after typing 2+ characters.',
+        story:
+          'Loading state shown while searching for barangays. This appears after typing 2+ characters.',
       },
     },
   },
-  render: (args) => {
+  render: args => {
     // This story simulates the loading state
     return (
       <div className="space-y-4">
@@ -189,37 +193,37 @@ export const SearchExamples: Story = {
   render: () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-3">Search Examples</h3>
+        <h3 className="mb-3 text-lg font-semibold">Search Examples</h3>
         <div className="space-y-4">
-          <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="rounded-lg bg-gray-50 p-4">
             <BarangaySelector
               value=""
               onChange={action('search-poblacion')}
               placeholder='Try typing "Poblacion"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Most common barangay name in the Philippines
             </p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
+
+          <div className="rounded-lg bg-gray-50 p-4">
             <BarangaySelector
               value=""
               onChange={action('search-makati')}
               placeholder='Try typing "Makati"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Search by city name to find all barangays in that city
             </p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
+
+          <div className="rounded-lg bg-gray-50 p-4">
             <BarangaySelector
               value=""
               onChange={action('search-san')}
               placeholder='Try typing "San"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Partial matches work - will show all barangays starting with "San"
             </p>
           </div>
@@ -229,53 +233,54 @@ export const SearchExamples: Story = {
   ),
 };
 
+const FormIntegrationComponent = () => {
+  const [selectedBarangay, setSelectedBarangay] = React.useState('');
+  const [error, setError] = React.useState('');
+
+  const handleSubmit = () => {
+    if (!selectedBarangay) {
+      setError('Please select your barangay');
+      return;
+    }
+    setError('');
+    action('form-submit')(selectedBarangay);
+    alert(`Form submitted with barangay: ${selectedBarangay}`);
+  };
+
+  return (
+    <div className="max-w-md space-y-4">
+      <div>
+        <label className="mb-2 block text-sm font-medium text-gray-700">Your Barangay *</label>
+        <BarangaySelector
+          value={selectedBarangay}
+          onChange={code => {
+            setSelectedBarangay(code);
+            if (error) setError(''); // Clear error when user makes selection
+          }}
+          error={error}
+          placeholder="Search and select your barangay"
+        />
+      </div>
+      <button
+        onClick={handleSubmit}
+        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Submit
+      </button>
+    </div>
+  );
+};
+
 export const FormIntegration: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Example of how the BarangaySelector integrates with form validation and submission.',
+        story:
+          'Example of how the BarangaySelector integrates with form validation and submission.',
       },
     },
   },
-  render: () => {
-    const [selectedBarangay, setSelectedBarangay] = React.useState('');
-    const [error, setError] = React.useState('');
-    
-    const handleSubmit = () => {
-      if (!selectedBarangay) {
-        setError('Please select your barangay');
-        return;
-      }
-      setError('');
-      action('form-submit')(selectedBarangay);
-      alert(`Form submitted with barangay: ${selectedBarangay}`);
-    };
-
-    return (
-      <div className="max-w-md space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Your Barangay *
-          </label>
-          <BarangaySelector
-            value={selectedBarangay}
-            onChange={(code) => {
-              setSelectedBarangay(code);
-              if (error) setError(''); // Clear error when user makes selection
-            }}
-            error={error}
-            placeholder="Search and select your barangay"
-          />
-        </div>
-        <button
-          onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Submit
-        </button>
-      </div>
-    );
-  },
+  render: () => <FormIntegrationComponent />,
 };
 
 export const ResponsiveDemo: Story = {
@@ -289,25 +294,25 @@ export const ResponsiveDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="w-full">
-        <h4 className="text-sm font-semibold mb-2">Desktop (Full Width)</h4>
+        <h4 className="mb-2 text-sm font-semibold">Desktop (Full Width)</h4>
         <BarangaySelector
           value=""
           onChange={action('desktop-change')}
           placeholder="Full width on desktop"
         />
       </div>
-      
+
       <div className="w-80">
-        <h4 className="text-sm font-semibold mb-2">Tablet (Medium Width)</h4>
+        <h4 className="mb-2 text-sm font-semibold">Tablet (Medium Width)</h4>
         <BarangaySelector
           value=""
           onChange={action('tablet-change')}
           placeholder="Medium width container"
         />
       </div>
-      
+
       <div className="w-64">
-        <h4 className="text-sm font-semibold mb-2">Mobile (Small Width)</h4>
+        <h4 className="mb-2 text-sm font-semibold">Mobile (Small Width)</h4>
         <BarangaySelector
           value=""
           onChange={action('mobile-change')}

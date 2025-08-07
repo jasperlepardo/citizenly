@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import EducationEmployment, { EducationEmploymentData } from './EducationEmployment';
 
@@ -90,7 +91,8 @@ export const WithData: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Form pre-filled with education and employment data showing a college graduate working in local government.',
+        story:
+          'Form pre-filled with education and employment data showing a college graduate working in local government.',
       },
     },
   },
@@ -268,6 +270,89 @@ export const HomebaseWorker: Story = {
   },
 };
 
+const ValidationDemoComponent = () => {
+  const [formData, setFormData] = React.useState<EducationEmploymentData>(defaultFormData);
+  const [errors, setErrors] = React.useState<
+    Partial<Record<keyof EducationEmploymentData, string>>
+  >({});
+
+  const validateForm = () => {
+    const newErrors: Partial<Record<keyof EducationEmploymentData, string>> = {};
+
+    if (!formData.educationLevel) {
+      newErrors.educationLevel = 'Education level is required';
+    }
+
+    if (!formData.educationStatus) {
+      newErrors.educationStatus = 'Education status is required';
+    }
+
+    if (formData.employmentStatus === 'employed' && !formData.occupationDescription) {
+      newErrors.occupationDescription = 'Occupation is required for employed residents';
+    }
+
+    if (!formData.employmentStatus) {
+      newErrors.employmentStatus = 'Employment status is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      action('form-submitted')(formData);
+      alert('Form is valid! Data: ' + JSON.stringify(formData, null, 2));
+    } else {
+      alert('Please fix the errors before submitting.');
+    }
+  };
+
+  const handleChange = (newData: EducationEmploymentData) => {
+    setFormData(newData);
+    // Clear errors for fields that are now valid
+    const newErrors = { ...errors };
+    Object.keys(newErrors).forEach(key => {
+      const fieldKey = key as keyof EducationEmploymentData;
+      if (newData[fieldKey]) {
+        delete newErrors[fieldKey];
+      }
+    });
+    setErrors(newErrors);
+  };
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-6">
+      <EducationEmployment value={formData} onChange={handleChange} errors={errors} />
+
+      <div className="flex gap-4 border-t pt-6">
+        <button
+          onClick={handleSubmit}
+          className="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+        >
+          Validate & Submit
+        </button>
+        <button
+          onClick={() => {
+            setFormData(defaultFormData);
+            setErrors({});
+          }}
+          className="rounded bg-gray-600 px-6 py-2 text-white hover:bg-gray-700"
+        >
+          Clear Form
+        </button>
+      </div>
+
+      <div className="rounded border bg-gray-50 p-4">
+        <h4 className="mb-2 font-semibold">Current Form Data:</h4>
+        <pre className="overflow-auto rounded border bg-white p-2 text-xs">
+          {JSON.stringify(formData, null, 2)}
+        </pre>
+      </div>
+    </div>
+  );
+};
+
 export const ValidationDemo: Story = {
   parameters: {
     docs: {
@@ -276,90 +361,108 @@ export const ValidationDemo: Story = {
       },
     },
   },
-  render: () => {
-    const [formData, setFormData] = React.useState<EducationEmploymentData>(defaultFormData);
-    const [errors, setErrors] = React.useState<Partial<Record<keyof EducationEmploymentData, string>>>({});
+  render: () => <ValidationDemoComponent />,
+};
 
-    const validateForm = () => {
-      const newErrors: Partial<Record<keyof EducationEmploymentData, string>> = {};
+const CommonOccupationsComponent = () => {
+  const [currentProfile, setCurrentProfile] = React.useState(0);
 
-      if (!formData.educationLevel) {
-        newErrors.educationLevel = 'Education level is required';
-      }
-      
-      if (!formData.educationStatus) {
-        newErrors.educationStatus = 'Education status is required';
-      }
-      
-      if (formData.employmentStatus === 'employed' && !formData.occupationDescription) {
-        newErrors.occupationDescription = 'Occupation is required for employed residents';
-      }
-      
-      if (!formData.employmentStatus) {
-        newErrors.employmentStatus = 'Employment status is required';
-      }
+  const profiles = [
+    {
+      title: 'Barangay Captain',
+      data: {
+        educationLevel: 'college',
+        educationStatus: 'graduated',
+        psocCode: '1112',
+        psocLevel: 'unit_group',
+        positionTitleId: '',
+        occupationDescription: 'Senior Government Officials',
+        employmentStatus: 'employed',
+        workplace: 'Barangay San Lorenzo',
+      },
+    },
+    {
+      title: 'Elementary Teacher',
+      data: {
+        educationLevel: 'college',
+        educationStatus: 'graduated',
+        psocCode: '2341',
+        psocLevel: 'unit_group',
+        positionTitleId: '',
+        occupationDescription: 'Primary School Teachers',
+        employmentStatus: 'employed',
+        workplace: 'San Lorenzo Elementary School',
+      },
+    },
+    {
+      title: 'Tricycle Driver',
+      data: {
+        educationLevel: 'high_school',
+        educationStatus: 'graduated',
+        psocCode: '8322',
+        psocLevel: 'unit_group',
+        positionTitleId: '',
+        occupationDescription: 'Car, Taxi and Van Drivers',
+        employmentStatus: 'self_employed',
+        workplace: 'San Lorenzo-Makati Route',
+      },
+    },
+    {
+      title: 'Store Owner',
+      data: {
+        educationLevel: 'high_school',
+        educationStatus: 'graduated',
+        psocCode: '5223',
+        psocLevel: 'unit_group',
+        positionTitleId: '',
+        occupationDescription: 'Shop Keepers',
+        employmentStatus: 'self_employed',
+        workplace: 'Sari-sari Store, San Lorenzo Street',
+      },
+    },
+    {
+      title: 'Call Center Agent',
+      data: {
+        educationLevel: 'college',
+        educationStatus: 'graduated',
+        psocCode: '4222',
+        psocLevel: 'unit_group',
+        positionTitleId: '',
+        occupationDescription: 'Contact Centre Information Clerks',
+        employmentStatus: 'employed',
+        workplace: 'Convergys Philippines, Makati',
+      },
+    },
+  ];
 
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = () => {
-      if (validateForm()) {
-        action('form-submitted')(formData);
-        alert('Form is valid! Data: ' + JSON.stringify(formData, null, 2));
-      } else {
-        alert('Please fix the errors before submitting.');
-      }
-    };
-
-    const handleChange = (newData: EducationEmploymentData) => {
-      setFormData(newData);
-      // Clear errors for fields that are now valid
-      const newErrors = { ...errors };
-      Object.keys(newErrors).forEach(key => {
-        const fieldKey = key as keyof EducationEmploymentData;
-        if (newData[fieldKey]) {
-          delete newErrors[fieldKey];
-        }
-      });
-      setErrors(newErrors);
-    };
-
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <EducationEmployment
-          value={formData}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
-        <div className="flex gap-4 pt-6 border-t">
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-2">
+        {profiles.map((profile, index) => (
           <button
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            key={profile.title}
+            onClick={() => setCurrentProfile(index)}
+            className={`rounded px-4 py-2 text-sm ${
+              currentProfile === index
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
           >
-            Validate & Submit
+            {profile.title}
           </button>
-          <button
-            onClick={() => {
-              setFormData(defaultFormData);
-              setErrors({});
-            }}
-            className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Clear Form
-          </button>
-        </div>
-        
-        <div className="p-4 bg-gray-50 rounded border">
-          <h4 className="font-semibold mb-2">Current Form Data:</h4>
-          <pre className="text-xs bg-white p-2 rounded border overflow-auto">
-            {JSON.stringify(formData, null, 2)}
-          </pre>
-        </div>
+        ))}
       </div>
-    );
-  },
+
+      <div className="rounded-lg border border-gray-200 p-6">
+        <h3 className="mb-4 text-lg font-semibold">{profiles[currentProfile].title} Profile</h3>
+        <EducationEmployment
+          value={profiles[currentProfile].data}
+          onChange={action('profile-changed')}
+          errors={{}}
+        />
+      </div>
+    </div>
+  );
 };
 
 export const CommonOccupations: Story = {
@@ -370,106 +473,7 @@ export const CommonOccupations: Story = {
       },
     },
   },
-  render: () => {
-    const [currentProfile, setCurrentProfile] = React.useState(0);
-    
-    const profiles = [
-      {
-        title: 'Barangay Captain',
-        data: {
-          educationLevel: 'college',
-          educationStatus: 'graduated',
-          psocCode: '1112',
-          psocLevel: 'unit_group',
-          positionTitleId: '',
-          occupationDescription: 'Senior Government Officials',
-          employmentStatus: 'employed',
-          workplace: 'Barangay San Lorenzo',
-        },
-      },
-      {
-        title: 'Elementary Teacher',
-        data: {
-          educationLevel: 'college',
-          educationStatus: 'graduated',
-          psocCode: '2341',
-          psocLevel: 'unit_group',
-          positionTitleId: '',
-          occupationDescription: 'Primary School Teachers',
-          employmentStatus: 'employed',
-          workplace: 'San Lorenzo Elementary School',
-        },
-      },
-      {
-        title: 'Tricycle Driver',
-        data: {
-          educationLevel: 'high_school',
-          educationStatus: 'graduated',
-          psocCode: '8322',
-          psocLevel: 'unit_group',
-          positionTitleId: '',
-          occupationDescription: 'Car, Taxi and Van Drivers',
-          employmentStatus: 'self_employed',
-          workplace: 'San Lorenzo-Makati Route',
-        },
-      },
-      {
-        title: 'Store Owner',
-        data: {
-          educationLevel: 'high_school',
-          educationStatus: 'graduated',
-          psocCode: '5223',
-          psocLevel: 'unit_group',
-          positionTitleId: '',
-          occupationDescription: 'Shop Keepers',
-          employmentStatus: 'self_employed',
-          workplace: 'Sari-sari Store, San Lorenzo Street',
-        },
-      },
-      {
-        title: 'Call Center Agent',
-        data: {
-          educationLevel: 'college',
-          educationStatus: 'graduated',
-          psocCode: '4222',
-          psocLevel: 'unit_group',
-          positionTitleId: '',
-          occupationDescription: 'Contact Centre Information Clerks',
-          employmentStatus: 'employed',
-          workplace: 'Convergys Philippines, Makati',
-        },
-      },
-    ];
-
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-wrap gap-2">
-          {profiles.map((profile, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentProfile(index)}
-              className={`px-4 py-2 rounded text-sm ${
-                currentProfile === index
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {profile.title}
-            </button>
-          ))}
-        </div>
-        
-        <div className="border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">{profiles[currentProfile].title} Profile</h3>
-          <EducationEmployment
-            value={profiles[currentProfile].data}
-            onChange={action('profile-changed')}
-            errors={{}}
-          />
-        </div>
-      </div>
-    );
-  },
+  render: () => <CommonOccupationsComponent />,
 };
 
 export const ResponsiveLayout: Story = {
@@ -483,8 +487,8 @@ export const ResponsiveLayout: Story = {
   render: () => (
     <div className="space-y-8">
       <div className="max-w-sm">
-        <h3 className="text-lg font-semibold mb-4">Mobile Layout</h3>
-        <div className="border border-gray-200 rounded p-4">
+        <h3 className="mb-4 text-lg font-semibold">Mobile Layout</h3>
+        <div className="rounded border border-gray-200 p-4">
           <EducationEmployment
             value={{
               educationLevel: 'college',
@@ -501,10 +505,10 @@ export const ResponsiveLayout: Story = {
           />
         </div>
       </div>
-      
+
       <div className="max-w-4xl">
-        <h3 className="text-lg font-semibold mb-4">Desktop Layout</h3>
-        <div className="border border-gray-200 rounded p-6">
+        <h3 className="mb-4 text-lg font-semibold">Desktop Layout</h3>
+        <div className="rounded border border-gray-200 p-6">
           <EducationEmployment
             value={{
               educationLevel: 'college',

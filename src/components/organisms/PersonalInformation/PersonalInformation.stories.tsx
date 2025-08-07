@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import PersonalInformation, { PersonalInformationData } from './PersonalInformation';
 
@@ -272,6 +273,127 @@ export const ForeignNational: Story = {
   },
 };
 
+const ValidationDemoComponent = () => {
+  const [formData, setFormData] = React.useState<PersonalInformationData>(defaultFormData);
+  const [errors, setErrors] = React.useState<
+    Partial<Record<keyof PersonalInformationData, string>>
+  >({});
+
+  const validateForm = () => {
+    const newErrors: Partial<Record<keyof PersonalInformationData, string>> = {};
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }
+
+    if (!formData.birthdate) {
+      newErrors.birthdate = 'Birth date is required';
+    } else {
+      const birthDate = new Date(formData.birthdate);
+      const today = new Date();
+      if (birthDate > today) {
+        newErrors.birthdate = 'Birth date cannot be in the future';
+      }
+      if (birthDate.getFullYear() < 1900) {
+        newErrors.birthdate = 'Please enter a valid birth date';
+      }
+    }
+
+    if (!formData.sex) {
+      newErrors.sex = 'Please select sex';
+    }
+
+    if (!formData.civilStatus) {
+      newErrors.civilStatus = 'Civil status is required';
+    }
+
+    if (!formData.citizenship) {
+      newErrors.citizenship = 'Citizenship is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const calculateAge = (birthdate: string) => {
+    if (!birthdate) return 0;
+    const today = new Date();
+    const birth = new Date(birthdate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      const age = calculateAge(formData.birthdate);
+      action('form-submitted')({ ...formData, age });
+      alert(`Form is valid! ${formData.firstName} ${formData.lastName} is ${age} years old.`);
+    } else {
+      alert('Please fix the errors before submitting.');
+    }
+  };
+
+  const handleChange = (newData: PersonalInformationData) => {
+    setFormData(newData);
+    // Clear errors for fields that are now valid
+    const newErrors = { ...errors };
+    Object.keys(newErrors).forEach(key => {
+      const fieldKey = key as keyof PersonalInformationData;
+      if (newData[fieldKey]) {
+        delete newErrors[fieldKey];
+      }
+    });
+    setErrors(newErrors);
+  };
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-6">
+      <PersonalInformation value={formData} onChange={handleChange} errors={errors} />
+
+      {formData.birthdate && (
+        <div className="rounded border border-blue-200 bg-blue-50 p-4">
+          <p className="text-sm text-blue-800">
+            <strong>Age:</strong> {calculateAge(formData.birthdate)} years old
+          </p>
+        </div>
+      )}
+
+      <div className="flex gap-4 border-t pt-6">
+        <button
+          onClick={handleSubmit}
+          className="rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700"
+        >
+          Validate & Submit
+        </button>
+        <button
+          onClick={() => {
+            setFormData(defaultFormData);
+            setErrors({});
+          }}
+          className="rounded bg-gray-600 px-6 py-2 text-white hover:bg-gray-700"
+        >
+          Clear Form
+        </button>
+      </div>
+
+      <div className="rounded border bg-gray-50 p-4">
+        <h4 className="mb-2 font-semibold">Current Form Data:</h4>
+        <pre className="overflow-auto rounded border bg-white p-2 text-xs">
+          {JSON.stringify(formData, null, 2)}
+        </pre>
+      </div>
+    </div>
+  );
+};
+
 export const ValidationDemo: Story = {
   parameters: {
     docs: {
@@ -280,128 +402,7 @@ export const ValidationDemo: Story = {
       },
     },
   },
-  render: () => {
-    const [formData, setFormData] = React.useState<PersonalInformationData>(defaultFormData);
-    const [errors, setErrors] = React.useState<Partial<Record<keyof PersonalInformationData, string>>>({});
-
-    const validateForm = () => {
-      const newErrors: Partial<Record<keyof PersonalInformationData, string>> = {};
-
-      if (!formData.firstName.trim()) {
-        newErrors.firstName = 'First name is required';
-      }
-      
-      if (!formData.lastName.trim()) {
-        newErrors.lastName = 'Last name is required';
-      }
-
-      if (!formData.birthdate) {
-        newErrors.birthdate = 'Birth date is required';
-      } else {
-        const birthDate = new Date(formData.birthdate);
-        const today = new Date();
-        if (birthDate > today) {
-          newErrors.birthdate = 'Birth date cannot be in the future';
-        }
-        if (birthDate.getFullYear() < 1900) {
-          newErrors.birthdate = 'Please enter a valid birth date';
-        }
-      }
-
-      if (!formData.sex) {
-        newErrors.sex = 'Please select sex';
-      }
-
-      if (!formData.civilStatus) {
-        newErrors.civilStatus = 'Civil status is required';
-      }
-
-      if (!formData.citizenship) {
-        newErrors.citizenship = 'Citizenship is required';
-      }
-
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-    const calculateAge = (birthdate: string) => {
-      if (!birthdate) return 0;
-      const today = new Date();
-      const birth = new Date(birthdate);
-      let age = today.getFullYear() - birth.getFullYear();
-      const monthDiff = today.getMonth() - birth.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-        age--;
-      }
-      return age;
-    };
-
-    const handleSubmit = () => {
-      if (validateForm()) {
-        const age = calculateAge(formData.birthdate);
-        action('form-submitted')({ ...formData, age });
-        alert(`Form is valid! ${formData.firstName} ${formData.lastName} is ${age} years old.`);
-      } else {
-        alert('Please fix the errors before submitting.');
-      }
-    };
-
-    const handleChange = (newData: PersonalInformationData) => {
-      setFormData(newData);
-      // Clear errors for fields that are now valid
-      const newErrors = { ...errors };
-      Object.keys(newErrors).forEach(key => {
-        const fieldKey = key as keyof PersonalInformationData;
-        if (newData[fieldKey]) {
-          delete newErrors[fieldKey];
-        }
-      });
-      setErrors(newErrors);
-    };
-
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <PersonalInformation
-          value={formData}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
-        {formData.birthdate && (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded">
-            <p className="text-sm text-blue-800">
-              <strong>Age:</strong> {calculateAge(formData.birthdate)} years old
-            </p>
-          </div>
-        )}
-        
-        <div className="flex gap-4 pt-6 border-t">
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Validate & Submit
-          </button>
-          <button
-            onClick={() => {
-              setFormData(defaultFormData);
-              setErrors({});
-            }}
-            className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Clear Form
-          </button>
-        </div>
-        
-        <div className="p-4 bg-gray-50 rounded border">
-          <h4 className="font-semibold mb-2">Current Form Data:</h4>
-          <pre className="text-xs bg-white p-2 rounded border overflow-auto">
-            {JSON.stringify(formData, null, 2)}
-          </pre>
-        </div>
-      </div>
-    );
-  },
+  render: () => <ValidationDemoComponent />,
 };
 
 export const ResponsiveLayout: Story = {
@@ -415,8 +416,8 @@ export const ResponsiveLayout: Story = {
   render: () => (
     <div className="space-y-8">
       <div className="max-w-sm">
-        <h3 className="text-lg font-semibold mb-4">Mobile Layout</h3>
-        <div className="border border-gray-200 rounded p-4">
+        <h3 className="mb-4 text-lg font-semibold">Mobile Layout</h3>
+        <div className="rounded border border-gray-200 p-4">
           <PersonalInformation
             value={{
               firstName: 'Juan',
@@ -433,10 +434,10 @@ export const ResponsiveLayout: Story = {
           />
         </div>
       </div>
-      
+
       <div className="max-w-4xl">
-        <h3 className="text-lg font-semibold mb-4">Desktop Layout</h3>
-        <div className="border border-gray-200 rounded p-6">
+        <h3 className="mb-4 text-lg font-semibold">Desktop Layout</h3>
+        <div className="rounded border border-gray-200 p-6">
           <PersonalInformation
             value={{
               firstName: 'Juan',
@@ -457,6 +458,94 @@ export const ResponsiveLayout: Story = {
   ),
 };
 
+const CommonScenariosComponent = () => {
+  const [currentProfile, setCurrentProfile] = React.useState(0);
+
+  const profiles = [
+    {
+      title: 'Typical Filipino Name',
+      data: {
+        firstName: 'Maria Clara',
+        middleName: 'Santos',
+        lastName: 'dela Cruz',
+        extensionName: '',
+        birthdate: '1992-06-12',
+        sex: 'female' as const,
+        civilStatus: 'married',
+        citizenship: 'filipino',
+      },
+    },
+    {
+      title: 'With Name Extension',
+      data: {
+        firstName: 'Juan',
+        middleName: 'Bautista',
+        lastName: 'Rodriguez',
+        extensionName: 'III',
+        birthdate: '1985-03-08',
+        sex: 'male' as const,
+        civilStatus: 'married',
+        citizenship: 'filipino',
+      },
+    },
+    {
+      title: 'Single Name (Mononym)',
+      data: {
+        firstName: 'Isko',
+        middleName: '',
+        lastName: 'Moreno',
+        extensionName: '',
+        birthdate: '1974-10-24',
+        sex: 'male' as const,
+        civilStatus: 'married',
+        citizenship: 'filipino',
+      },
+    },
+    {
+      title: 'Chinese-Filipino',
+      data: {
+        firstName: 'Li Wei',
+        middleName: '',
+        lastName: 'Tan',
+        extensionName: '',
+        birthdate: '1988-11-15',
+        sex: 'male' as const,
+        civilStatus: 'single',
+        citizenship: 'filipino',
+      },
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-2">
+        {profiles.map((profile, index) => (
+          <button
+            key={profile.title}
+            onClick={() => setCurrentProfile(index)}
+            className={`rounded px-4 py-2 text-sm ${
+              currentProfile === index
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {profile.title}
+          </button>
+        ))}
+      </div>
+
+      <div className="rounded-lg border border-gray-200 p-6">
+        <h3 className="mb-4 text-lg font-semibold">{profiles[currentProfile].title}</h3>
+        <PersonalInformation
+          value={profiles[currentProfile].data}
+          onChange={action('profile-changed')}
+          errors={{}}
+        />
+      </div>
+    </div>
+  );
+};
+
 export const CommonScenarios: Story = {
   parameters: {
     docs: {
@@ -465,91 +554,5 @@ export const CommonScenarios: Story = {
       },
     },
   },
-  render: () => {
-    const [currentProfile, setCurrentProfile] = React.useState(0);
-    
-    const profiles = [
-      {
-        title: 'Typical Filipino Name',
-        data: {
-          firstName: 'Maria Clara',
-          middleName: 'Santos',
-          lastName: 'dela Cruz',
-          extensionName: '',
-          birthdate: '1992-06-12',
-          sex: 'female' as const,
-          civilStatus: 'married',
-          citizenship: 'filipino',
-        },
-      },
-      {
-        title: 'With Name Extension',
-        data: {
-          firstName: 'Juan',
-          middleName: 'Bautista',
-          lastName: 'Rodriguez',
-          extensionName: 'III',
-          birthdate: '1985-03-08',
-          sex: 'male' as const,
-          civilStatus: 'married',
-          citizenship: 'filipino',
-        },
-      },
-      {
-        title: 'Single Name (Mononym)',
-        data: {
-          firstName: 'Isko',
-          middleName: '',
-          lastName: 'Moreno',
-          extensionName: '',
-          birthdate: '1974-10-24',
-          sex: 'male' as const,
-          civilStatus: 'married',
-          citizenship: 'filipino',
-        },
-      },
-      {
-        title: 'Chinese-Filipino',
-        data: {
-          firstName: 'Li Wei',
-          middleName: '',
-          lastName: 'Tan',
-          extensionName: '',
-          birthdate: '1988-11-15',
-          sex: 'male' as const,
-          civilStatus: 'single',
-          citizenship: 'filipino',
-        },
-      },
-    ];
-
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-wrap gap-2">
-          {profiles.map((profile, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentProfile(index)}
-              className={`px-4 py-2 rounded text-sm ${
-                currentProfile === index
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {profile.title}
-            </button>
-          ))}
-        </div>
-        
-        <div className="border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">{profiles[currentProfile].title}</h3>
-          <PersonalInformation
-            value={profiles[currentProfile].data}
-            onChange={action('profile-changed')}
-            errors={{}}
-          />
-        </div>
-      </div>
-    );
-  },
+  render: () => <CommonScenariosComponent />,
 };

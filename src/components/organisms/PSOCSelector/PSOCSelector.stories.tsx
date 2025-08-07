@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
 import { action } from '@storybook/addon-actions';
 import PSOCSelector from './PSOCSelector';
 
@@ -61,7 +62,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default PSOC selector ready for occupation search. Type at least 2 characters to begin searching.',
+        story:
+          'Default PSOC selector ready for occupation search. Type at least 2 characters to begin searching.',
       },
     },
   },
@@ -75,7 +77,8 @@ export const WithSelectedValue: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'PSOC selector with a pre-selected occupation code. The component will load and display the occupation details.',
+        story:
+          'PSOC selector with a pre-selected occupation code. The component will load and display the occupation details.',
       },
     },
   },
@@ -122,59 +125,155 @@ export const SearchExamples: Story = {
   render: () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-3">Search Examples</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">By Job Title</h4>
+        <h3 className="mb-3 text-lg font-semibold">Search Examples</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">By Job Title</h4>
             <PSOCSelector
               value=""
               onSelect={action('search-by-title')}
               placeholder='Try "Teacher" or "Manager"'
             />
-            <p className="text-sm text-gray-600 mt-2">
-              Search by common job titles
-            </p>
+            <p className="mt-2 text-sm text-gray-600">Search by common job titles</p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">By Industry</h4>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">By Industry</h4>
             <PSOCSelector
               value=""
               onSelect={action('search-by-industry')}
               placeholder='Try "Health" or "Education"'
             />
-            <p className="text-sm text-gray-600 mt-2">
-              Search by industry or field
-            </p>
+            <p className="mt-2 text-sm text-gray-600">Search by industry or field</p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">Skilled Trades</h4>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">Skilled Trades</h4>
             <PSOCSelector
               value=""
               onSelect={action('search-skilled')}
               placeholder='Try "Mechanic" or "Electrician"'
             />
-            <p className="text-sm text-gray-600 mt-2">
-              Search for skilled trade occupations
-            </p>
+            <p className="mt-2 text-sm text-gray-600">Search for skilled trade occupations</p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">Service Jobs</h4>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">Service Jobs</h4>
             <PSOCSelector
               value=""
               onSelect={action('search-service')}
               placeholder='Try "Security" or "Cook"'
             />
-            <p className="text-sm text-gray-600 mt-2">
-              Search for service industry jobs
-            </p>
+            <p className="mt-2 text-sm text-gray-600">Search for service industry jobs</p>
           </div>
         </div>
       </div>
     </div>
   ),
+};
+
+const FormIntegrationComponent = () => {
+  const [selectedOccupation, setSelectedOccupation] = React.useState<any>(null);
+  const [employmentStatus, setEmploymentStatus] = React.useState('');
+  const [workplace, setWorkplace] = React.useState('');
+  const [error, setError] = React.useState('');
+
+  const handleOccupationSelect = (occupation: any) => {
+    setSelectedOccupation(occupation);
+    if (error) setError('');
+  };
+
+  const handleSubmit = () => {
+    if (employmentStatus === 'employed' && !selectedOccupation) {
+      setError('Please select your occupation');
+      return;
+    }
+
+    const formData = {
+      occupation: selectedOccupation,
+      employmentStatus,
+      workplace,
+    };
+
+    action('employment-form-submitted')(formData);
+    alert('Employment information submitted successfully!');
+  };
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="space-y-4">
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Employment Status *
+          </label>
+          <select
+            value={employmentStatus}
+            onChange={e => setEmploymentStatus(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select employment status</option>
+            <option value="employed">Employed</option>
+            <option value="self_employed">Self-Employed</option>
+            <option value="unemployed">Unemployed</option>
+            <option value="student">Student</option>
+            <option value="retired">Retired</option>
+          </select>
+        </div>
+
+        {(employmentStatus === 'employed' || employmentStatus === 'self_employed') && (
+          <>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Occupation *</label>
+              <PSOCSelector
+                value={selectedOccupation?.occupation_code || ''}
+                onSelect={handleOccupationSelect}
+                placeholder="Search for your occupation"
+                error={error}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Search by job title, industry, or occupation category
+              </p>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Workplace</label>
+              <input
+                type="text"
+                value={workplace}
+                onChange={e => setWorkplace(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Company or workplace name"
+              />
+            </div>
+          </>
+        )}
+      </div>
+
+      {selectedOccupation && (
+        <div className="rounded border border-green-200 bg-green-50 p-4">
+          <h4 className="mb-2 font-semibold text-green-800">Selected Occupation</h4>
+          <div className="space-y-1 text-sm text-green-700">
+            <div>
+              <strong>Title:</strong> {selectedOccupation.occupation_title}
+            </div>
+            <div>
+              <strong>Code:</strong> {selectedOccupation.occupation_code}
+            </div>
+            <div>
+              <strong>Level:</strong> {selectedOccupation.level_type.replace('_', ' ')}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={handleSubmit}
+        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Submit Employment Information
+      </button>
+    </div>
+  );
 };
 
 export const FormIntegration: Story = {
@@ -185,107 +284,112 @@ export const FormIntegration: Story = {
       },
     },
   },
-  render: () => {
-    const [selectedOccupation, setSelectedOccupation] = React.useState<any>(null);
-    const [employmentStatus, setEmploymentStatus] = React.useState('');
-    const [workplace, setWorkplace] = React.useState('');
-    const [error, setError] = React.useState('');
+  render: () => <FormIntegrationComponent />,
+};
 
-    const handleOccupationSelect = (occupation: any) => {
-      setSelectedOccupation(occupation);
-      if (error) setError('');
-    };
+const CommonOccupationsComponent = () => {
+  const [selectedExample, setSelectedExample] = React.useState<any>(null);
 
-    const handleSubmit = () => {
-      if (employmentStatus === 'employed' && !selectedOccupation) {
-        setError('Please select your occupation');
-        return;
-      }
-      
-      const formData = {
-        occupation: selectedOccupation,
-        employmentStatus,
-        workplace,
-      };
-      
-      action('employment-form-submitted')(formData);
-      alert('Employment information submitted successfully!');
-    };
+  const commonOccupations = [
+    {
+      title: 'Elementary Teacher',
+      code: '2341',
+      level: 'unit_group',
+      description: 'Primary School Teachers',
+      category: 'Education',
+    },
+    {
+      title: 'Barangay Captain',
+      code: '1112',
+      level: 'unit_group',
+      description: 'Senior Government Officials',
+      category: 'Government',
+    },
+    {
+      title: 'Tricycle Driver',
+      code: '8322',
+      level: 'unit_group',
+      description: 'Car, Taxi and Van Drivers',
+      category: 'Transportation',
+    },
+    {
+      title: 'Store Keeper',
+      code: '5223',
+      level: 'unit_group',
+      description: 'Shop Keepers',
+      category: 'Retail',
+    },
+    {
+      title: 'Security Guard',
+      code: '5414',
+      level: 'unit_group',
+      description: 'Security Guards',
+      category: 'Security',
+    },
+    {
+      title: 'Call Center Agent',
+      code: '4222',
+      level: 'unit_group',
+      description: 'Contact Centre Information Clerks',
+      category: 'Business Process Outsourcing',
+    },
+  ];
 
-    return (
-      <div className="max-w-2xl space-y-6">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Employment Status *
-            </label>
-            <select
-              value={employmentStatus}
-              onChange={(e) => setEmploymentStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="mb-3 text-lg font-semibold">Common Occupations in Filipino Communities</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {commonOccupations.map((occupation, index) => (
+            <div
+              key={index}
+              className="cursor-pointer rounded-lg border border-gray-200 p-4 hover:bg-gray-50"
+              onClick={() => setSelectedExample(occupation)}
             >
-              <option value="">Select employment status</option>
-              <option value="employed">Employed</option>
-              <option value="self_employed">Self-Employed</option>
-              <option value="unemployed">Unemployed</option>
-              <option value="student">Student</option>
-              <option value="retired">Retired</option>
-            </select>
-          </div>
-
-          {(employmentStatus === 'employed' || employmentStatus === 'self_employed') && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Occupation *
-                </label>
-                <PSOCSelector
-                  value={selectedOccupation?.occupation_code || ''}
-                  onSelect={handleOccupationSelect}
-                  placeholder="Search for your occupation"
-                  error={error}
-                />
-                <p className="mt-1 text-xs text-gray-500">
-                  Search by job title, industry, or occupation category
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Workplace
-                </label>
-                <input
-                  type="text"
-                  value={workplace}
-                  onChange={(e) => setWorkplace(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Company or workplace name"
-                />
-              </div>
-            </>
-          )}
+              <h4 className="font-semibold text-gray-900">{occupation.title}</h4>
+              <p className="text-sm text-gray-600">{occupation.category}</p>
+              <p className="mt-1 text-xs text-gray-500">Code: {occupation.code}</p>
+            </div>
+          ))}
         </div>
+      </div>
 
-        {selectedOccupation && (
-          <div className="p-4 bg-green-50 border border-green-200 rounded">
-            <h4 className="font-semibold text-green-800 mb-2">Selected Occupation</h4>
-            <div className="text-green-700 text-sm space-y-1">
-              <div><strong>Title:</strong> {selectedOccupation.occupation_title}</div>
-              <div><strong>Code:</strong> {selectedOccupation.occupation_code}</div>
-              <div><strong>Level:</strong> {selectedOccupation.level_type.replace('_', ' ')}</div>
+      <div>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          Try selecting an occupation:
+        </label>
+        <PSOCSelector
+          value={selectedExample?.code || ''}
+          onSelect={occupation => {
+            action('common-occupation-selected')(occupation);
+            setSelectedExample(occupation);
+          }}
+          placeholder="Click an occupation above or search manually"
+        />
+      </div>
+
+      {selectedExample && (
+        <div className="rounded border border-blue-200 bg-blue-50 p-4">
+          <h4 className="mb-2 font-semibold text-blue-800">Occupation Details</h4>
+          <div className="space-y-1 text-sm text-blue-700">
+            <div>
+              <strong>Title:</strong> {selectedExample.occupation_title || selectedExample.title}
+            </div>
+            <div>
+              <strong>Description:</strong>{' '}
+              {selectedExample.occupation_description || selectedExample.description}
+            </div>
+            <div>
+              <strong>Code:</strong> {selectedExample.occupation_code || selectedExample.code}
+            </div>
+            <div>
+              <strong>Level:</strong> {selectedExample.level_type || selectedExample.level}
             </div>
           </div>
-        )}
-
-        <button
-          onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Submit Employment Information
-        </button>
-      </div>
-    );
-  },
+        </div>
+      )}
+    </div>
+  );
 };
 
 export const CommonOccupations: Story = {
@@ -296,101 +400,91 @@ export const CommonOccupations: Story = {
       },
     },
   },
-  render: () => {
-    const [selectedExample, setSelectedExample] = React.useState<any>(null);
-    
-    const commonOccupations = [
-      {
-        title: 'Elementary Teacher',
-        code: '2341',
-        level: 'unit_group',
-        description: 'Primary School Teachers',
-        category: 'Education',
-      },
-      {
-        title: 'Barangay Captain',
-        code: '1112',
-        level: 'unit_group', 
-        description: 'Senior Government Officials',
-        category: 'Government',
-      },
-      {
-        title: 'Tricycle Driver',
-        code: '8322',
-        level: 'unit_group',
-        description: 'Car, Taxi and Van Drivers',
-        category: 'Transportation',
-      },
-      {
-        title: 'Store Keeper',
-        code: '5223',
-        level: 'unit_group',
-        description: 'Shop Keepers',
-        category: 'Retail',
-      },
-      {
-        title: 'Security Guard',
-        code: '5414',
-        level: 'unit_group',
-        description: 'Security Guards',
-        category: 'Security',
-      },
-      {
-        title: 'Call Center Agent',
-        code: '4222',
-        level: 'unit_group',
-        description: 'Contact Centre Information Clerks',
-        category: 'Business Process Outsourcing',
-      },
-    ];
+  render: () => <CommonOccupationsComponent />,
+};
 
-    return (
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Common Occupations in Filipino Communities</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {commonOccupations.map((occupation, index) => (
-              <div 
-                key={index} 
-                className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
-                onClick={() => setSelectedExample(occupation)}
-              >
-                <h4 className="font-semibold text-gray-900">{occupation.title}</h4>
-                <p className="text-sm text-gray-600">{occupation.category}</p>
-                <p className="text-xs text-gray-500 mt-1">Code: {occupation.code}</p>
-              </div>
-            ))}
-          </div>
+const LoadingAndErrorStatesComponent = () => {
+  const [currentState, setCurrentState] = React.useState<
+    'default' | 'loading' | 'no_data' | 'error'
+  >('default');
+
+  const states = [
+    { key: 'default', label: 'Default' },
+    { key: 'loading', label: 'Loading' },
+    { key: 'no_data', label: 'No Results' },
+    { key: 'error', label: 'Error State' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="mb-3 text-lg font-semibold">Component States</h3>
+        <div className="flex flex-wrap gap-2">
+          {states.map(state => (
+            <button
+              key={state.key}
+              onClick={() => setCurrentState(state.key as any)}
+              className={`rounded px-4 py-2 text-sm ${
+                currentState === state.key
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {state.label}
+            </button>
+          ))}
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Try selecting an occupation:
-          </label>
+      </div>
+
+      <div>
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          PSOC Selector - {states.find(s => s.key === currentState)?.label} State
+        </label>
+
+        {currentState === 'default' && (
           <PSOCSelector
-            value={selectedExample?.code || ''}
-            onSelect={(occupation) => {
-              action('common-occupation-selected')(occupation);
-              setSelectedExample(occupation);
-            }}
-            placeholder="Click an occupation above or search manually"
+            value=""
+            onSelect={action('state-demo-select')}
+            placeholder="Normal state - type to search"
           />
-        </div>
+        )}
 
-        {selectedExample && (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded">
-            <h4 className="font-semibold text-blue-800 mb-2">Occupation Details</h4>
-            <div className="text-blue-700 text-sm space-y-1">
-              <div><strong>Title:</strong> {selectedExample.occupation_title || selectedExample.title}</div>
-              <div><strong>Description:</strong> {selectedExample.occupation_description || selectedExample.description}</div>
-              <div><strong>Code:</strong> {selectedExample.occupation_code || selectedExample.code}</div>
-              <div><strong>Level:</strong> {selectedExample.level_type || selectedExample.level}</div>
-            </div>
+        {currentState === 'loading' && (
+          <div>
+            <PSOCSelector
+              value=""
+              onSelect={action('state-demo-select')}
+              placeholder="Loading state simulation"
+            />
+            <p className="mt-2 text-sm text-gray-600">
+              💡 In real usage, this shows spinner while searching PSOC database
+            </p>
           </div>
         )}
+
+        {currentState === 'no_data' && (
+          <div>
+            <PSOCSelector
+              value=""
+              onSelect={action('state-demo-select')}
+              placeholder='Type "xyz123" to simulate no results'
+            />
+            <p className="mt-2 text-sm text-gray-600">
+              💡 Shows "No occupations found" message when search returns empty
+            </p>
+          </div>
+        )}
+
+        {currentState === 'error' && (
+          <PSOCSelector
+            value=""
+            onSelect={action('state-demo-select')}
+            error="Unable to connect to PSOC database. Please try again."
+          />
+        )}
       </div>
-    );
-  },
+    </div>
+  );
 };
 
 export const LoadingAndErrorStates: Story = {
@@ -401,87 +495,7 @@ export const LoadingAndErrorStates: Story = {
       },
     },
   },
-  render: () => {
-    const [currentState, setCurrentState] = React.useState<'default' | 'loading' | 'no_data' | 'error'>('default');
-    
-    const states = [
-      { key: 'default', label: 'Default' },
-      { key: 'loading', label: 'Loading' },
-      { key: 'no_data', label: 'No Results' },
-      { key: 'error', label: 'Error State' },
-    ];
-
-    return (
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-3">Component States</h3>
-          <div className="flex flex-wrap gap-2">
-            {states.map((state) => (
-              <button
-                key={state.key}
-                onClick={() => setCurrentState(state.key as any)}
-                className={`px-4 py-2 rounded text-sm ${
-                  currentState === state.key
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {state.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            PSOC Selector - {states.find(s => s.key === currentState)?.label} State
-          </label>
-          
-          {currentState === 'default' && (
-            <PSOCSelector
-              value=""
-              onSelect={action('state-demo-select')}
-              placeholder="Normal state - type to search"
-            />
-          )}
-          
-          {currentState === 'loading' && (
-            <div>
-              <PSOCSelector
-                value=""
-                onSelect={action('state-demo-select')}
-                placeholder="Loading state simulation"
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                💡 In real usage, this shows spinner while searching PSOC database
-              </p>
-            </div>
-          )}
-          
-          {currentState === 'no_data' && (
-            <div>
-              <PSOCSelector
-                value=""
-                onSelect={action('state-demo-select')}
-                placeholder='Type "xyz123" to simulate no results'
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                💡 Shows "No occupations found" message when search returns empty
-              </p>
-            </div>
-          )}
-          
-          {currentState === 'error' && (
-            <PSOCSelector
-              value=""
-              onSelect={action('state-demo-select')}
-              error="Unable to connect to PSOC database. Please try again."
-            />
-          )}
-        </div>
-      </div>
-    );
-  },
+  render: () => <LoadingAndErrorStatesComponent />,
 };
 
 export const ResponsiveLayout: Story = {
@@ -495,25 +509,17 @@ export const ResponsiveLayout: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="w-full max-w-sm">
-        <h4 className="text-sm font-semibold mb-2">Mobile Layout</h4>
-        <PSOCSelector
-          value=""
-          onSelect={action('mobile-select')}
-          placeholder="Mobile view"
-        />
+        <h4 className="mb-2 text-sm font-semibold">Mobile Layout</h4>
+        <PSOCSelector value="" onSelect={action('mobile-select')} placeholder="Mobile view" />
       </div>
-      
+
       <div className="w-full max-w-md">
-        <h4 className="text-sm font-semibold mb-2">Tablet Layout</h4>
-        <PSOCSelector
-          value=""
-          onSelect={action('tablet-select')}
-          placeholder="Tablet view"
-        />
+        <h4 className="mb-2 text-sm font-semibold">Tablet Layout</h4>
+        <PSOCSelector value="" onSelect={action('tablet-select')} placeholder="Tablet view" />
       </div>
-      
+
       <div className="w-full max-w-2xl">
-        <h4 className="text-sm font-semibold mb-2">Desktop Layout</h4>
+        <h4 className="mb-2 text-sm font-semibold">Desktop Layout</h4>
         <PSOCSelector
           value=""
           onSelect={action('desktop-select')}
