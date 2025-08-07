@@ -276,7 +276,7 @@ export default function HouseholdSelector({
   return (
     <div className="relative">
       <div
-        className={`relative border rounded font-montserrat text-base focus-within:ring-2 focus-within:border-transparent ${
+        className={`font-montserrat relative rounded border text-base focus-within:border-transparent focus-within:ring-2 ${
           error
             ? 'border-red-500 focus-within:ring-red-500'
             : 'border-neutral-300 focus-within:ring-blue-500'
@@ -297,16 +297,16 @@ export default function HouseholdSelector({
             }
           }}
           onFocus={() => setIsOpen(true)}
-          className="w-full px-3 py-2 bg-transparent outline-none"
+          className="w-full bg-transparent px-3 py-2 outline-none"
           placeholder={placeholder}
         />
 
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -319,7 +319,7 @@ export default function HouseholdSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg">
           {loading ? (
             <div className="p-3 text-center text-neutral-500">
               <div className="animate-pulse">Loading households...</div>
@@ -333,7 +333,7 @@ export default function HouseholdSelector({
                   setIsOpen(false);
                   setShowCreateModal(true);
                 }}
-                className="w-full p-3 text-left hover:bg-blue-50 border-b border-neutral-100"
+                className="w-full border-b border-neutral-100 p-3 text-left hover:bg-blue-50"
               >
                 <div className="font-medium text-blue-600">+ Create New Household</div>
                 <div className="text-xs text-blue-500">
@@ -345,7 +345,7 @@ export default function HouseholdSelector({
               {filteredHouseholds.length === 0 && !searchTerm && (
                 <div className="p-3 text-center text-neutral-500">
                   <div className="text-sm">No existing households in this barangay</div>
-                  <div className="text-xs mt-1 text-green-600">
+                  <div className="mt-1 text-xs text-green-600">
                     ✓ Perfect! This will be the first household
                   </div>
                 </div>
@@ -368,9 +368,9 @@ export default function HouseholdSelector({
                     setSearchTerm('');
                     setIsOpen(false);
                   }}
-                  className="w-full p-3 text-left hover:bg-neutral-50 border-b border-neutral-100 last:border-b-0"
+                  className="w-full border-b border-neutral-100 p-3 text-left last:border-b-0 hover:bg-neutral-50"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="font-medium text-neutral-900">
                         Household #{household.code}
@@ -380,7 +380,7 @@ export default function HouseholdSelector({
                       </div>
                       <div className="text-xs text-neutral-500">{formatFullAddress(household)}</div>
                     </div>
-                    <div className="text-xs text-neutral-500 ml-2">
+                    <div className="ml-2 text-xs text-neutral-500">
                       {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                     </div>
                   </div>

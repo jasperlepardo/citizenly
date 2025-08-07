@@ -523,12 +523,7 @@ function HouseholdsContent() {
                   {/* Action Menu */}
                   <div className="p-1">
                     <Button variant="neutral-outline" size="sm" iconOnly>
-                      <svg
-                        className="size-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
+                      <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"

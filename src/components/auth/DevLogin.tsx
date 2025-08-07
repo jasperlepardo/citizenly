@@ -202,10 +202,10 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-surface rounded-lg shadow-md p-6 border border-default">
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-bold text-primary mb-2">Development Setup</h2>
-        <p className="text-secondary text-sm">Create demo users for testing the RBI System</p>
+    <div className="mx-auto max-w-md rounded-lg border p-6 shadow-md bg-surface border-default">
+      <div className="mb-6 text-center">
+        <h2 className="mb-2 text-xl font-bold text-primary">Development Setup</h2>
+        <p className="text-sm text-secondary">Create demo users for testing the RBI System</p>
       </div>
 
       <div className="space-y-4">
@@ -213,12 +213,12 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         <button
           onClick={setupDemoData}
           disabled={isCreating}
-          className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-inverse bg-primary hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-primary flex w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-inverse hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isCreating ? (
             <>
               <svg
-                className="animate-spin -ml-1 mr-3 h-5 w-5 text-inverse"
+                className="-ml-1 mr-3 size-5 animate-spin text-inverse"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -245,8 +245,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         </button>
 
         {/* Quick Login Buttons */}
-        <div className="border-t border-default pt-4">
-          <p className="text-xs text-secondary mb-2">If users already exist:</p>
+        <div className="border-t pt-4 border-default">
+          <p className="mb-2 text-xs text-secondary">If users already exist:</p>
           <div className="space-y-2">
             <button
               onClick={() => {
@@ -256,13 +256,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
                 }
               }}
               disabled={!devModeAvailable}
-              className="w-full px-3 py-2 text-sm border border-default rounded-md hover:bg-surface-hover disabled:bg-background-muted disabled:cursor-not-allowed text-primary"
+              className="w-full rounded-md border px-3 py-2 text-sm text-primary border-default hover:bg-surface-hover disabled:cursor-not-allowed disabled:bg-background-muted"
             >
               Login as Barangay Admin
             </button>
             <button
               onClick={() => directLogin('clerk@gmail.com')}
-              className="w-full px-3 py-2 text-sm border border-default rounded-md hover:bg-surface-hover text-primary"
+              className="w-full rounded-md border px-3 py-2 text-sm text-primary border-default hover:bg-surface-hover"
             >
               Login as Clerk
             </button>
@@ -271,13 +271,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Status Message */}
         {message && (
-          <div className="p-3 bg-surface-hover rounded-md border border-default">
-            <p className="text-sm text-primary font-mono">{message}</p>
+          <div className="rounded-md border p-3 bg-surface-hover border-default">
+            <p className="font-mono text-sm text-primary">{message}</p>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="text-xs text-secondary space-y-1">
+        <div className="space-y-1 text-xs text-secondary">
           {!devModeAvailable ? (
             <div className="text-danger">
               <p>

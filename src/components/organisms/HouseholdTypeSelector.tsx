@@ -91,9 +91,9 @@ export default function HouseholdTypeSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="text-lg font-medium text-primary mb-1">
+        <h3 className="mb-1 text-lg font-medium text-primary">
           <span className="text-base">🏠</span> Household Type
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
         <p className="text-sm text-secondary">
           Select the household composition that best describes this family structure.
@@ -111,43 +111,33 @@ export default function HouseholdTypeSelector({
         {HOUSEHOLD_TYPE_OPTIONS.map(option => (
           <div
             key={option.value}
-            className={`
-              relative border rounded-lg p-4 transition-all duration-200
-              ${
-                value === option.value
-                  ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
-                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-              }
-              ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-            `}
+            className={`relative rounded-lg border p-4 transition-all duration-200 ${
+              value === option.value
+                ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+            } ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} `}
           >
             <Radio
               value={option.value}
               disabled={disabled}
               variant={value === option.value ? 'primary' : 'default'}
-              className="absolute top-4 right-4"
+              className="absolute right-4 top-4"
             />
 
             <div className="pr-8">
-              <div className="flex items-center space-x-3 mb-2">
+              <div className="mb-2 flex items-center space-x-3">
                 <span className="text-xl" role="img" aria-label={option.label}>
                   {option.icon}
                 </span>
                 <h4
-                  className={`
-                  font-medium text-base
-                  ${value === option.value ? 'text-blue-900' : 'text-primary'}
-                `}
+                  className={`text-base font-medium ${value === option.value ? 'text-blue-900' : 'text-primary'} `}
                 >
                   {option.label}
                 </h4>
               </div>
 
               <p
-                className={`
-                text-sm leading-relaxed
-                ${value === option.value ? 'text-blue-700' : 'text-secondary'}
-              `}
+                className={`text-sm leading-relaxed ${value === option.value ? 'text-blue-700' : 'text-secondary'} `}
               >
                 {option.description}
               </p>
@@ -158,7 +148,7 @@ export default function HouseholdTypeSelector({
 
       {/* Validation Summary */}
       {value && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-3">
           <div className="flex items-center space-x-2">
             <span className="text-green-600">✓</span>
             <span className="text-sm font-medium text-green-800">
@@ -169,7 +159,7 @@ export default function HouseholdTypeSelector({
       )}
 
       {/* Additional Information */}
-      <div className="text-xs text-muted bg-background-muted p-3 rounded-lg">
+      <div className="rounded-lg p-3 text-xs text-muted bg-background-muted">
         <span className="font-medium">📋 Note:</span> This classification helps determine household
         demographics and social services eligibility. You can change this selection later if the
         family composition changes.

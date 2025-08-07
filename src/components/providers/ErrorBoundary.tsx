@@ -4,7 +4,7 @@ import React from 'react';
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error: Error | null;
+  error?: Error;
 }
 
 interface ErrorBoundaryProps {
@@ -15,7 +15,7 @@ interface ErrorBoundaryProps {
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -27,37 +27,54 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   resetError = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false, error: undefined });
   };
 
   render() {
-    if (this.state.hasError && this.state.error) {
-      if (this.props.fallback) {
-        const FallbackComponent = this.props.fallback;
-        return <FallbackComponent error={this.state.error} resetError={this.resetError} />;
-      }
-
-      // Default error UI
-      return (
-        <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-          <div className="max-w-md text-center">
-            <h1 className="mb-4 text-2xl font-bold text-red-600">Something went wrong</h1>
-            <p className="mb-4 text-secondary">
-              {this.state.error.message || 'An unexpected error occurred'}
-            </p>
-            <button
-              onClick={this.resetError}
-              className="rounded bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
-            >
-              Try again
-            </button>
-          </div>
-        </div>
-      );
+    if (this.state.hasError) {
+      const FallbackComponent = this.props.fallback || DefaultErrorFallback;
+      return <FallbackComponent error={this.state.error!} resetError={this.resetError} />;
     }
 
     return this.props.children;
   }
+}
+
+function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="space-y-4 p-8 text-center">
+        <div className="space-y-2">
+          <h1 className="text-foreground text-2xl font-bold">Something went wrong</h1>
+          <p className="text-muted-foreground">An unexpected error occurred in the application.</p>
+        </div>
+
+        <div className="space-y-2">
+          <details className="bg-muted rounded-lg p-4 text-left">
+            <summary className="cursor-pointer font-medium">Error Details</summary>
+            <pre className="text-muted-foreground mt-2 whitespace-pre-wrap text-sm">
+              {error.message}
+            </pre>
+          </details>
+        </div>
+
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={resetError}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 transition-colors"
+          >
+            Try Again
+          </button>
+          <button
+            onClick={() => (window.location.href = '/')}
+            className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-md px-4 py-2 transition-colors"
+          >
+            Go to Homepage
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default ErrorBoundary;

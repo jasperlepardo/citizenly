@@ -64,28 +64,28 @@ const InteractiveComponent = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Create Household Modal Demo</h3>
-        <p className="text-secondary mb-4">
+    <div className="space-y-6 p-6">
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Create Household Modal Demo</h3>
+        <p className="mb-4 text-secondary">
           Click the button below to open the household creation modal. The modal includes form
           validation, address hierarchy display, and PSGC-compliant household code generation.
         </p>
 
         <button
           onClick={() => setIsOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          className="rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
         >
           Create New Household
         </button>
       </div>
 
       {createdHouseholds.length > 0 && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">
             Created Households:
           </h4>
-          <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+          <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
             {createdHouseholds.map((code, index) => (
               <li key={index}>• {code}</li>
             ))}
@@ -111,24 +111,24 @@ const ModalStatesComponent = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   return (
-    <div className="p-6 space-y-4">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Modal States</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4 p-6">
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Modal States</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <button
             onClick={() => setActiveModal('default')}
-            className="p-4 border border-default rounded-lg hover:bg-surface-hover transition-colors text-left"
+            className="rounded-lg border p-4 text-left transition-colors border-default hover:bg-surface-hover"
           >
             <h4 className="font-medium text-primary">Default State</h4>
-            <p className="text-sm text-secondary mt-1">Standard modal with empty form</p>
+            <p className="mt-1 text-sm text-secondary">Standard modal with empty form</p>
           </button>
 
           <button
             onClick={() => setActiveModal('prefilled')}
-            className="p-4 border border-default rounded-lg hover:bg-surface-hover transition-colors text-left"
+            className="rounded-lg border p-4 text-left transition-colors border-default hover:bg-surface-hover"
           >
             <h4 className="font-medium text-primary">With Sample Data</h4>
-            <p className="text-sm text-secondary mt-1">Modal with pre-filled sample data</p>
+            <p className="mt-1 text-sm text-secondary">Modal with pre-filled sample data</p>
           </button>
         </div>
       </div>
@@ -161,14 +161,14 @@ export const ModalStates: Story = {
 // Feature showcase
 export const FeatureShowcase: Story = {
   render: () => (
-    <div className="p-6 space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Create Household Modal Features</h3>
+    <div className="space-y-6 p-6">
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Create Household Modal Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Address Integration</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Address Integration</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Automatic barangay assignment from user profile</li>
               <li>• Real-time address hierarchy display</li>
               <li>• PSGC database integration</li>
@@ -178,8 +178,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Form Features</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Form Features</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Real-time form validation</li>
               <li>• Required field indicators</li>
               <li>• Error message display</li>
@@ -189,8 +189,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Code Generation</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Code Generation</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• PSGC-compliant household codes</li>
               <li>• Format: RRPPMMBBB-SSSS-TTTT-HHHH</li>
               <li>• Sequential numbering within barangay</li>
@@ -200,8 +200,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">User Experience</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">User Experience</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Modal overlay with backdrop</li>
               <li>• Responsive design</li>
               <li>• Keyboard navigation support</li>
@@ -211,11 +211,11 @@ export const FeatureShowcase: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">
             Address Hierarchy Example
           </h4>
-          <div className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+          <div className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
             <div>
               <strong>Format:</strong> RRPPMMBBB-SSSS-TTTT-HHHH
             </div>
@@ -259,19 +259,19 @@ const ValidationDemoComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Form Validation Demo</h3>
-        <p className="text-secondary mb-4">
+    <div className="space-y-6 p-6">
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Form Validation Demo</h3>
+        <p className="mb-4 text-secondary">
           This demo shows the form validation in action. Try submitting the form without filling
           required fields to see the validation errors.
         </p>
 
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
-          <h4 className="font-medium text-yellow-800 dark:text-yellow-200 mb-2">
+        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+          <h4 className="mb-2 font-medium text-yellow-800 dark:text-yellow-200">
             Validation Rules:
           </h4>
-          <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+          <ul className="space-y-1 text-sm text-yellow-700 dark:text-yellow-300">
             <li>
               • <strong>Street Name:</strong> Required field
             </li>
@@ -289,7 +289,7 @@ const ValidationDemoComponent = () => {
 
         <button
           onClick={() => setIsOpen(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          className="rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
         >
           Test Form Validation
         </button>
