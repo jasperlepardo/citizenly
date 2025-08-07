@@ -123,7 +123,25 @@ test: add user registration tests
 
 ## 🔀 Pull Request Strategy
 
-### Feature → Develop
+**🚨 CRITICAL RULE: All pull requests MUST follow this flow - NO EXCEPTIONS**
+
+```
+feature/* → develop → staging → main
+```
+
+### ❌ NEVER DO THIS
+
+- Direct PRs to `main` branch
+- Skip `develop` integration
+- Bypass code review process
+
+### ✅ ALWAYS DO THIS
+
+- Create feature branches from `develop`
+- PR feature branches to `develop` only
+- Let `develop` → `staging` → `main` happen via controlled releases
+
+### Feature → Develop (REQUIRED)
 
 ```markdown
 🚀 **Feature: User Authentication**
@@ -142,10 +160,29 @@ test: add user registration tests
 - [x] Manual testing completed
 ```
 
-### Release → Main
+### Develop → Staging (Controlled Release)
 
 ```markdown
-🎯 **Release: v1.2.0**
+🧪 **Staging Deploy: v1.2.0-beta**
+
+## Features Ready for Testing
+
+- User authentication system
+- Profile management
+- Dashboard improvements
+
+## Testing Checklist
+
+- [ ] Feature testing complete
+- [ ] Integration testing complete
+- [ ] Security review complete
+- [ ] Performance testing complete
+```
+
+### Staging → Main (Production Release)
+
+```markdown
+🎯 **Production Release: v1.2.0**
 
 ## Features
 
@@ -162,37 +199,79 @@ test: add user registration tests
 
 - All security checks passed
 - No vulnerabilities detected
+- Staging validation complete
 ```
 
 ## 🛡️ Branch Protection Rules
 
-Configure these in GitHub:
+**🔒 MANDATORY: Configure these branch protection rules in GitHub Settings**
 
-### Main Branch
+### Main Branch (PRODUCTION)
 
-- ✅ Require pull request reviews (2)
-- ✅ Require status checks (CI/CD)
-- ✅ Require branches to be up to date
-- ✅ Restrict pushes to admins only
+- ✅ **Require pull request reviews (2+ reviewers)**
+- ✅ **Require status checks (ALL CI/CD must pass)**
+- ✅ **Require branches to be up to date before merging**
+- ✅ **Restrict pushes to repository admins only**
+- ✅ **Only allow PRs from `staging` branch (CRITICAL)**
+- ✅ **Require linear history**
+- ✅ **Do not allow bypassing the above settings**
 
-### Develop Branch
+### Staging Branch (TESTING)
 
-- ✅ Require pull request reviews (1)
-- ✅ Require status checks (CI/CD)
-- ✅ Allow force pushes (for rebasing)
+- ✅ **Require pull request reviews (1+ reviewer)**
+- ✅ **Require status checks (ALL CI/CD must pass)**
+- ✅ **Only allow PRs from `develop` branch**
+- ✅ **Require branches to be up to date before merging**
+- ✅ **Do not allow force pushes**
+
+### Develop Branch (INTEGRATION)
+
+- ✅ **Require pull request reviews (1+ reviewer)**
+- ✅ **Require status checks (ALL CI/CD must pass)**
+- ✅ **Only allow PRs from `feature/*`, `hotfix/*`, `release/*` branches**
+- ✅ **Allow squash merging for cleaner history**
+- ✅ **Do not allow force pushes**
+
+## 🏗️ Three-Environment Deployment Strategy
+
+```
+ENVIRONMENTS:
+develop  → dev.citizenly.co     (Development)
+staging  → staging.citizenly.co (Testing)
+main     → app.citizenly.co     (Production)
+
+FLOW:
+feature/* → develop → staging → main
+```
+
+### Environment Purposes
+
+| Environment     | Branch    | URL                  | Purpose                                 |
+| --------------- | --------- | -------------------- | --------------------------------------- |
+| **Development** | `develop` | dev.citizenly.co     | Feature integration, continuous testing |
+| **Staging**     | `staging` | staging.citizenly.co | Pre-production testing, QA validation   |
+| **Production**  | `main`    | app.citizenly.co     | Live production application             |
+
+### Deployment Triggers
+
+- **Merge to `develop`** → Auto-deploy to Development
+- **Merge to `staging`** → Auto-deploy to Staging
+- **Merge to `main`** → Auto-deploy to Production
 
 ## 📊 Release Timeline
 
 ```
-develop    ●─●─●─────●─●─●─────●
+develop    ●─●─●─────●─●─●─────●  (dev.citizenly.co)
             \       /   \       /
 feature/*    ●─●─●─●     ●─●─●─●
 
-release/*              ●─●─●
-                      /     \
-main       ●─────────●───────●─────●
-                              \   /
-hotfix/*                       ●─●
+staging                ●─────●─────●  (staging.citizenly.co)
+                      /       \       \
+develop              ●─────────●─────●
+
+main                           ●─────●  (app.citizenly.co)
+                              /       \
+staging                      ●─────────●
 ```
 
 ## 🎯 Best Practices
