@@ -46,7 +46,7 @@ OVERALL_STATUS=0
 if [[ "$ENV_TYPE" == "development" && "$IS_CI" != "true" ]]; then
     echo -e "\n${YELLOW}Running Tier 1 (Development) Security Checks${NC}"
     
-    run_check "NPM Audit (High/Critical only)" "npm audit --audit-level=high" || OVERALL_STATUS=1
+    run_check "NPM Audit (High/Critical only)" "npx audit-ci --config audit-ci.json --high --critical" || OVERALL_STATUS=1
     run_check "Basic dependency check" "npm ls --depth=0 >/dev/null" || OVERALL_STATUS=1
 
 # Tier 2: CI/CD (Standard checks)

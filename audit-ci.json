@@ -3,7 +3,7 @@
   "high": true,
   "critical": true,
   "allowlist": ["GHSA-8hc4-vh64-cxmj", "GHSA-jr5f-v2jv-69x6"],
-  "report-type": "json",
+  "report-type": "important",
   "output-format": "text",
   "pass-enoaudit": false,
   "skip-dev": false,
