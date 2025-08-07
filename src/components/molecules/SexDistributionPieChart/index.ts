@@ -1,0 +1,1 @@
+export { SexDistributionPieChart } from './SexDistributionPieChart';

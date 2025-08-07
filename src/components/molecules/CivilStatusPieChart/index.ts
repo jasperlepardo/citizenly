@@ -1,0 +1,1 @@
+export { CivilStatusPieChart } from './CivilStatusPieChart';

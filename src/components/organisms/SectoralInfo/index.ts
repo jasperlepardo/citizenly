@@ -1,0 +1,1 @@
+export { SectoralInfo } from './SectoralInfo';

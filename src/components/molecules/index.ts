@@ -9,7 +9,7 @@ export * from './FileUpload';
 export * from './PhilSysNumberInput';
 
 // Dashboard/Chart Components
-export * from './PopulationPyramid';
+// PopulationPyramid - component file not found, only stories exist
 export * from './StatsCard';
 export * from './StatCard';
 export * from './DependencyRatioPieChart';
@@ -17,7 +17,6 @@ export * from './GenericPieChart';
 export * from './SexDistributionPieChart';
 export * from './CivilStatusPieChart';
 export * from './EmploymentStatusPieChart';
-export * from './KeyboardNavigableList';
 export * from './ThemeToggle';
 
 // Single file components

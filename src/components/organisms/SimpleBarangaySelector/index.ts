@@ -1,0 +1,1 @@
+export { SimpleBarangaySelector } from './SimpleBarangaySelector';

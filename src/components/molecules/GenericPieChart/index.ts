@@ -1,0 +1,1 @@
+export { GenericPieChart } from './GenericPieChart';

@@ -8,6 +8,7 @@ export * from './Toggle';
 export * from './Textarea';
 export * from './IconButton';
 export * from './Typography';
+export * from './KeyboardNavigableList';
 
 // Utility Components
 export * from './ErrorMessage';

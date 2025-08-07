@@ -1,0 +1,1 @@
+export { ResidentFormWizard } from './ResidentFormWizard';

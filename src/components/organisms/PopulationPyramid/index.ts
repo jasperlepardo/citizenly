@@ -1,0 +1,1 @@
+export { PopulationPyramid } from './PopulationPyramid';

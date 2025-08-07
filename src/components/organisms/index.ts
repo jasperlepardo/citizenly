@@ -4,13 +4,12 @@
 export { DataTable } from './DataTable';
 export { Navigation } from './Navigation';
 export { Table } from './Table';
-// export { Form } from './Form'; // Form is in molecules
 export { CreateHouseholdModal } from './CreateHouseholdModal';
 export { HouseholdSelector } from './HouseholdSelector';
-export { AdvancedSearchBar } from './AdvancedSearchBar';
+export { PopulationPyramid } from './PopulationPyramid';
 
 // Address Components
-export { default as AddressSearch } from './AddressSearch';
+export { AddressSearch } from './AddressSearch';
 export { AddressSelector } from './AddressSelector';
 
 // Authentication Components
@@ -23,10 +22,11 @@ export { UserProfile } from './UserProfile';
 export { EducationEmployment } from './EducationEmployment';
 export { PersonalInformation } from './PersonalInformation';
 
+// Barangay Components
+export { BarangaySelector } from './BarangaySelector';
+export { PSOCSelector } from './PSOCSelector';
+export { SimpleBarangaySelector } from './SimpleBarangaySelector';
+export { SectoralInfo } from './SectoralInfo';
+
 // RBI-Specific Components
 export * from './rbi-specific';
-
-// Export types
-export type { SearchFilter } from './AdvancedSearchBar';
-export type { TableColumn, TableAction } from './DataTable';
-export type { NavigationItem, NavigationProps } from './Navigation';

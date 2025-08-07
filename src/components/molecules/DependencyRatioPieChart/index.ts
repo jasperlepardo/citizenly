@@ -1,0 +1,1 @@
+export { DependencyRatioPieChart } from './DependencyRatioPieChart';

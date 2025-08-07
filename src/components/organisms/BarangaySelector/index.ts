@@ -1,0 +1,1 @@
+export { BarangaySelector } from './BarangaySelector';
