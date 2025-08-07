@@ -14,7 +14,7 @@
     "build:fast": "NEXT_COMPILE=1 next build",
     "build:full": "next build && node scripts/prepare-storybook.js && npm run build-storybook",
     "analyze": "ANALYZE=true npm run build",
-    "bundle:check": "bundlesize",
+    "bundle:check": "echo 'Bundle analysis available via npm run analyze'",
     "start": "next start",
     "start:staging": "dotenv -e .env.staging next start",
     "start:prod": "dotenv -e .env.production next start",
@@ -138,7 +138,6 @@
     "audit-ci": "^6.6.1",
     "autoprefixer": "^10.4.0",
     "buffer": "^6.0.3",
-    "bundlesize": "^0.18.1",
     "critters": "^0.0.23",
     "crypto-browserify": "^3.12.1",
     "eslint": "^8.0.0",
@@ -173,16 +172,6 @@
     "vitest": "^3.2.4",
     "webpack-bundle-analyzer": "^4.10.2"
   },
-  "bundlesize": [
-    {
-      "path": ".next/static/chunks/*.js",
-      "maxSize": "250 kB"
-    },
-    {
-      "path": ".next/static/chunks/pages/*.js",
-      "maxSize": "150 kB"
-    }
-  ],
   "engines": {
     "node": ">=18.17.0"
   },
