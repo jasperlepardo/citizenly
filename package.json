@@ -111,7 +111,7 @@
     "zod": "^4.0.14"
   },
   "devDependencies": {
-    "@axe-core/jest": "^4.8.2",
+    "jest-axe": "^8.0.0",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@chromatic-com/storybook": "^4.1.0",
@@ -120,6 +120,7 @@
     "license-checker": "^25.0.1",
     "madge": "^6.1.0",
     "snyk": "^1.1291.0",
+    "ts-node": "^10.9.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
