@@ -7,12 +7,15 @@ import { supabase } from '@/lib/supabase';
 import { SimpleSearchBar as SearchBar } from '@/components/molecules';
 import Navigation from '@/components/organisms/Navigation';
 import { logger, logError } from '@/lib/secure-logger';
+import { SkipNavigation } from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
   const { userProfile, role, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [barangayInfo, setBarangayInfo] = useState<string>('Loading...');
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   // Load barangay information from database
   const loadBarangayInfo = async (barangayCode: string) => {
@@ -69,6 +72,32 @@ function UserDropdown() {
     }
   }, [userProfile?.barangay_code]);
 
+  // Handle click outside and Escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -81,11 +110,15 @@ function UserDropdown() {
   if (!userProfile) return null;
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       {/* Dropdown trigger */}
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 rounded px-2 py-1 transition-colors hover:bg-neutral-100"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-label="User menu"
       >
         <div
           className="size-8 rounded-full bg-cover bg-center bg-no-repeat"
@@ -112,11 +145,13 @@ function UserDropdown() {
       {/* Dropdown menu */}
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
-
-          {/* Dropdown content */}
-          <div className="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-neutral-200 bg-white shadow-xl">
+          {/* Dropdown content - no backdrop needed with proper event handling */}
+          <div
+            className="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-neutral-200 bg-white shadow-xl"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="user-menu-button"
+          >
             {/* User info header */}
             <div className="border-b border-neutral-100 p-4">
               <div className="flex items-center gap-3">
@@ -199,8 +234,15 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip Navigation */}
+      <SkipNavigation skipTo="#main-content" />
+
       {/* Sidebar */}
-      <div className="bg-background-secondary fixed left-0 top-0 h-full w-56 border-r border-default">
+      <aside
+        id="navigation"
+        className="bg-background-secondary fixed left-0 top-0 h-full w-56 border-r border-default"
+        aria-label="Main navigation"
+      >
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b px-4 py-3 border-default">
@@ -223,12 +265,12 @@ export default function DashboardLayout({
           {/* Environment Indicator */}
           <div className="px-4 pb-4"></div>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="ml-56">
+      <main className="ml-56">
         {/* Top Header */}
-        <div className="border-b px-6 py-2 bg-background border-default">
+        <header className="border-b px-6 py-2 bg-background border-default">
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="w-[497px]">
@@ -278,11 +320,13 @@ export default function DashboardLayout({
               <UserDropdown />
             </div>
           </div>
-        </div>
+        </header>
 
         {/* Page Content */}
-        {children}
-      </div>
+        <div id="main-content" role="main" tabIndex={-1}>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }

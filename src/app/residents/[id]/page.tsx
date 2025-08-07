@@ -558,11 +558,18 @@ function ResidentDetailContent() {
       }
 
       if (type === 'select' && options) {
+        const selectId = `edit-select-${field}-${Date.now()}`;
         return (
           <div>
-            <dt className="text-sm font-medium text-secondary">{label}</dt>
-            <dd className="mt-1">
+            <label
+              htmlFor={selectId}
+              className="block cursor-pointer text-sm font-medium text-secondary"
+            >
+              {label}
+            </label>
+            <div className="mt-1">
               <DropdownSelect
+                id={selectId}
                 options={[
                   { value: '', label: 'Select...' },
                   ...options.map(option => ({ value: option, label: formatEnumValue(option) })),
@@ -571,22 +578,29 @@ function ResidentDetailContent() {
                 onChange={val => handleFieldChange(field, val)}
                 size="sm"
               />
-            </dd>
+            </div>
           </div>
         );
       }
 
+      const inputId = `edit-${field}-${Date.now()}`;
       return (
         <div>
-          <dt className="text-sm font-medium text-gray-500">{label}</dt>
-          <dd className="mt-1">
+          <label
+            htmlFor={inputId}
+            className="block cursor-pointer text-sm font-medium text-gray-500"
+          >
+            {label}
+          </label>
+          <div className="mt-1">
             <input
+              id={inputId}
               type={type}
               value={(value as string) || ''}
               onChange={e => handleFieldChange(field, e.target.value)}
-              className="block w-full rounded-md text-sm shadow-sm text-primary bg-surface border-default focus:border-blue-500 focus:ring-blue-500"
+              className="block w-full rounded-md border text-sm shadow-sm text-primary bg-surface border-default focus:border-blue-500 focus:ring-blue-500"
             />
-          </dd>
+          </div>
         </div>
       );
     }
