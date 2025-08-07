@@ -55,7 +55,7 @@ function ResidentsContent() {
 
   // Helper function to apply filters to a query
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const applyFiltersToQuery = (query: any, filters: SearchFilter[]) => {
+  const applyFiltersToQuery = useCallback((query: any, filters: SearchFilter[]) => {
     return filters.reduce((q, filter) => {
       switch (filter.operator) {
         case 'equals':
@@ -74,73 +74,78 @@ function ResidentsContent() {
           return q;
       }
     }, query);
-  };
+  }, []);
 
   // Helper function to load residents with search
-  const loadResidentsWithSearch = useCallback(async (barangayCode: string) => {
-    const { data: searchResults, error: searchError } = await supabase.rpc(
-      'search_residents_optimized',
-      {
-        search_term: searchTerm.trim(),
-        user_barangay: barangayCode,
-        limit_results: pagination.pageSize,
-      }
-    );
-
-    if (searchError) throw searchError;
-
-    const residentIds = searchResults?.map((r: { resident_id: string }) => r.resident_id) || [];
-    if (residentIds.length === 0) {
-      setResidents([]);
-      setPagination(prev => ({ ...prev, total: 0 }));
-      return;
-    }
-
-    let query = supabase
-      .from('residents')
-      .select(
-        `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
-        { count: 'exact' }
-      )
-      .in('id', residentIds);
-
-    query = applyFiltersToQuery(query, searchFilters);
-    const { data, error, count } = await query;
-    if (error) throw error;
-
-    const sortedData = data ? [...data].sort((a: Resident, b: Resident) => {
-      const aIndex = residentIds.indexOf(a.id);
-      const bIndex = residentIds.indexOf(b.id);
-      return aIndex - bIndex;
-    }) : [];
-
-    setResidents(sortedData);
-    setPagination(prev => ({ ...prev, total: count || 0 }));
-  }, [searchTerm, pagination.pageSize, searchFilters, applyFiltersToQuery]);
-
-  // Helper function to load residents without search
-  const loadResidentsStandard = useCallback(async (barangayCode: string) => {
-    let query = supabase
-      .from('residents')
-      .select(
-        `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
-        { count: 'exact' }
-      )
-      .eq('barangay_code', barangayCode)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .range(
-        (pagination.current - 1) * pagination.pageSize,
-        pagination.current * pagination.pageSize - 1
+  const loadResidentsWithSearch = useCallback(
+    async (barangayCode: string, pageSize: number) => {
+      const { data: searchResults, error: searchError } = await supabase.rpc(
+        'search_residents_optimized',
+        {
+          search_term: searchTerm.trim(),
+          user_barangay: barangayCode,
+          limit_results: pageSize,
+        }
       );
 
-    query = applyFiltersToQuery(query, searchFilters);
-    const { data, error, count } = await query;
-    if (error) throw error;
+      if (searchError) throw searchError;
 
-    setResidents(data || []);
-    setPagination(prev => ({ ...prev, total: count || 0 }));
-  }, [pagination.current, pagination.pageSize, searchFilters, applyFiltersToQuery]);
+      const residentIds = searchResults?.map((r: { resident_id: string }) => r.resident_id) || [];
+      if (residentIds.length === 0) {
+        setResidents([]);
+        setPagination(prev => ({ ...prev, total: 0 }));
+        return;
+      }
+
+      let query = supabase
+        .from('residents')
+        .select(
+          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
+          { count: 'exact' }
+        )
+        .in('id', residentIds);
+
+      query = applyFiltersToQuery(query, searchFilters);
+      const { data, error, count } = await query;
+      if (error) throw error;
+
+      const sortedData = data
+        ? [...data].sort((a: Resident, b: Resident) => {
+            const aIndex = residentIds.indexOf(a.id);
+            const bIndex = residentIds.indexOf(b.id);
+            return aIndex - bIndex;
+          })
+        : [];
+
+      setResidents(sortedData);
+      setPagination(prev => ({ ...prev, total: count || 0 }));
+    },
+    [searchTerm, searchFilters, applyFiltersToQuery]
+  );
+
+  // Helper function to load residents without search
+  const loadResidentsStandard = useCallback(
+    async (barangayCode: string, current: number, pageSize: number) => {
+      let query = supabase
+        .from('residents')
+        .select(
+          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
+          { count: 'exact' }
+        )
+        .eq('barangay_code', barangayCode)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .range((current - 1) * pageSize, current * pageSize - 1);
+
+      query = applyFiltersToQuery(query, searchFilters);
+      const { data, error, count } = await query;
+      if (error) throw error;
+
+      setResidents(data || []);
+      setPagination(prev => ({ ...prev, total: count || 0 }));
+    },
+    [searchFilters, applyFiltersToQuery]
+  );
 
   const loadResidents = useCallback(async () => {
     try {
@@ -151,9 +156,13 @@ function ResidentsContent() {
       }
 
       if (searchTerm.trim()) {
-        await loadResidentsWithSearch(userProfile.barangay_code);
+        await loadResidentsWithSearch(userProfile.barangay_code, pagination.pageSize);
       } else {
-        await loadResidentsStandard(userProfile.barangay_code);
+        await loadResidentsStandard(
+          userProfile.barangay_code,
+          pagination.current,
+          pagination.pageSize
+        );
       }
     } catch (err) {
       logError(
@@ -165,7 +174,14 @@ function ResidentsContent() {
     } finally {
       setLoading(false);
     }
-  }, [userProfile, searchTerm, loadResidentsWithSearch, loadResidentsStandard]);
+  }, [
+    userProfile,
+    searchTerm,
+    pagination.current,
+    pagination.pageSize,
+    loadResidentsWithSearch,
+    loadResidentsStandard,
+  ]);
 
   useEffect(() => {
     if (!authLoading && user && userProfile?.barangay_code) {

@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   };
 
   // Load user profile and related data (simplified for original schema)
-  const loadUserProfile = async (userId: string, force = false) => {
+  const loadUserProfile = useCallback(async (userId: string, force = false) => {
     try {
       // Check cache first (cache for 5 minutes)
       const cacheKey = userId;
@@ -214,7 +214,8 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     } finally {
       setProfileLoading(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Initialize auth state
   useEffect(() => {
@@ -288,29 +289,32 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   }, []);
 
   // Sign in method
-  const signIn = async (email: string, password: string) => {
-    const { error, data } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    // Preload profile data immediately after successful sign-in
-    if (!error && data.user) {
-      loadUserProfile(data.user.id).catch(err => {
-        console.error('Profile preloading failed:', err);
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-    }
 
-    return { error };
-  };
+      // Preload profile data immediately after successful sign-in
+      if (!error && data.user) {
+        loadUserProfile(data.user.id).catch(err => {
+          console.error('Profile preloading failed:', err);
+        });
+      }
+
+      return { error };
+    },
+    [loadUserProfile]
+  );
 
   // Sign out method
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error('Error signing out:', error);
     }
-  };
+  }, []);
 
   // Load profile method (separate from auth)
   const loadProfile = useCallback(async () => {
@@ -320,11 +324,11 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   }, [user?.id, loadUserProfile]);
 
   // Refresh profile method
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     if (user) {
       await loadUserProfile(user.id);
     }
-  };
+  }, [user, loadUserProfile]);
 
   // Auto-load profile when user is authenticated
   useEffect(() => {
@@ -334,83 +338,105 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   }, [user?.id, userProfile, profileLoading, loadProfile]);
 
   // Permission helpers
-  const hasPermission = (permission: string): boolean => {
-    if (!role?.permissions) return false;
-
-    // Super admin has all permissions
-    if (role.permissions.all === true) return true;
-
-    // Check specific permission (boolean style)
-    if (role.permissions[permission] === true) return true;
-
-    // Check CRUD-style permissions (e.g., "residents": "crud")
-    const [resource, action] = permission.split('_');
-    if (resource && action && role.permissions[resource]) {
-      const permissionValue = role.permissions[resource];
-      if (permissionValue === 'crud' || permissionValue === 'manage') return true;
-      if (action === 'view' && (permissionValue === 'read' || permissionValue === 'crud'))
-        return true;
-      if (action === 'create' && (permissionValue === 'write' || permissionValue === 'crud'))
-        return true;
-      if (action === 'update' && (permissionValue === 'write' || permissionValue === 'crud'))
-        return true;
-      if (action === 'delete' && (permissionValue === 'write' || permissionValue === 'crud'))
-        return true;
-    }
-
+  const checkCrudPermission = useCallback((action: string, permissionValue: string): boolean => {
+    if (permissionValue === 'crud' || permissionValue === 'manage') return true;
+    if (action === 'view' && (permissionValue === 'read' || permissionValue === 'crud'))
+      return true;
+    if (action === 'create' && (permissionValue === 'write' || permissionValue === 'crud'))
+      return true;
+    if (action === 'update' && (permissionValue === 'write' || permissionValue === 'crud'))
+      return true;
+    if (action === 'delete' && (permissionValue === 'write' || permissionValue === 'crud'))
+      return true;
     return false;
-  };
+  }, []);
 
-  const isInRole = (roleName: string): boolean => {
-    return role?.name === roleName;
-  };
+  const hasPermission = useCallback(
+    (permission: string): boolean => {
+      if (!role?.permissions) return false;
 
-  const canAccessBarangay = (barangayCode: string): boolean => {
-    return userProfile?.barangay_code === barangayCode;
-  };
+      // Super admin has all permissions
+      if (role.permissions.all === true) return true;
 
-  const isBarangayAdmin = (): boolean => {
+      // Check specific permission (boolean style)
+      if (role.permissions[permission] === true) return true;
+
+      // Check CRUD-style permissions (e.g., "residents_view")
+      const [resource, action] = permission.split('_');
+      if (resource && action && role.permissions[resource]) {
+        const resourcePermission = role.permissions[resource];
+        // If permission is boolean true, user has full access
+        if (resourcePermission === true) return true;
+        // If permission is a string, check CRUD permissions
+        if (typeof resourcePermission === 'string') {
+          return checkCrudPermission(action, resourcePermission);
+        }
+      }
+
+      return false;
+    },
+    [role, checkCrudPermission]
+  );
+
+  const isInRole = useCallback(
+    (roleName: string): boolean => {
+      return role?.name === roleName;
+    },
+    [role]
+  );
+
+  const canAccessBarangay = useCallback(
+    (barangayCode: string): boolean => {
+      return userProfile?.barangay_code === barangayCode;
+    },
+    [userProfile]
+  );
+
+  const isBarangayAdmin = useCallback((): boolean => {
     return role?.name === 'barangay_admin';
-  };
+  }, [role]);
 
-  const value: AuthContextType = useMemo(() => ({
-    // State
-    session,
-    user,
-    userProfile,
-    role,
-    loading,
-    profileLoading,
-    profileError,
+  const value: AuthContextType = useMemo(
+    () => ({
+      // State
+      session,
+      user,
+      userProfile,
+      role,
+      loading,
+      profileLoading,
+      profileError,
 
-    // Methods
-    signIn,
-    signOut,
-    loadProfile,
-    refreshProfile,
+      // Methods
+      signIn,
+      signOut,
+      loadProfile,
+      refreshProfile,
 
-    // Helpers
-    hasPermission,
-    isInRole,
-    canAccessBarangay,
-    isBarangayAdmin,
-  }), [
-    session,
-    user,
-    userProfile,
-    role,
-    loading,
-    profileLoading,
-    profileError,
-    signIn,
-    signOut,
-    loadProfile,
-    refreshProfile,
-    hasPermission,
-    isInRole,
-    canAccessBarangay,
-    isBarangayAdmin,
-  ]);
+      // Helpers
+      hasPermission,
+      isInRole,
+      canAccessBarangay,
+      isBarangayAdmin,
+    }),
+    [
+      session,
+      user,
+      userProfile,
+      role,
+      loading,
+      profileLoading,
+      profileError,
+      signIn,
+      signOut,
+      loadProfile,
+      refreshProfile,
+      hasPermission,
+      isInRole,
+      canAccessBarangay,
+      isBarangayAdmin,
+    ]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

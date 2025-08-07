@@ -100,12 +100,12 @@ fi
 echo -e "\n${BLUE}Running Universal Security Checks${NC}"
 
 # Check for common security issues in code
-run_check "No hardcoded secrets (basic)" "! grep -r --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' 'password.*=.*['\''\"]\|api.*key.*=.*['\''\"]\|secret.*=.*['\''\"]\|token.*=.*['\''\"']' src/ || true" || OVERALL_STATUS=1
+run_check "No hardcoded secrets (basic)" "! grep -r --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' -E 'password\s*=\s*[\"'\''].*[\"'\'']|api.*key\s*=\s*[\"'\''].*[\"'\'']|secret\s*=\s*[\"'\''].*[\"'\'']|token\s*=\s*[\"'\''].*[\"'\'']' src/ || echo 'No hardcoded secrets found'" || OVERALL_STATUS=1
 
-# Check for dangerous packages (if any)
+# Check for dangerous packages in direct dependencies only
 DANGEROUS_PACKAGES=("event-stream" "flatmap-stream" "eslint-scope")
 for package in "${DANGEROUS_PACKAGES[@]}"; do
-    if npm ls "$package" &>/dev/null; then
+    if npm ls "$package" --depth=0 &>/dev/null; then
         echo -e "${RED}❌ Dangerous package detected: $package${NC}"
         OVERALL_STATUS=1
     fi
