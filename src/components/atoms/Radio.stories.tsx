@@ -310,7 +310,7 @@ const SettingsExampleComponent = () => {
   const [privacy, setPrivacy] = useState('friends');
 
   return (
-    <div className="space-y-6 w-96">
+    <div className="w-96 space-y-6">
       <h3 className="text-lg font-semibold">User Preferences</h3>
 
       <RadioGroup
@@ -355,7 +355,7 @@ const SettingsExampleComponent = () => {
         <Radio value="private" label="Private" />
       </RadioGroup>
 
-      <div className="pt-4 border-t text-sm text-gray-600">
+      <div className="border-t pt-4 text-sm text-gray-600">
         <p>
           Current settings: {theme} theme, {notifications} notifications, {privacy} profile
         </p>

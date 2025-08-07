@@ -20,7 +20,7 @@ const meta = {
     Story => (
       <ThemeProvider>
         <AuthProvider>
-          <div className="min-h-screen bg-background p-6">
+          <div className="min-h-screen p-6 bg-background">
             <Story />
           </div>
         </AuthProvider>
@@ -65,18 +65,18 @@ const InteractiveComponent = () => {
 
   if (isSubmitted && submittedData) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-          <h3 className="font-semibold text-green-800 dark:text-green-200 mb-4">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-900/20">
+          <h3 className="mb-4 font-semibold text-green-800 dark:text-green-200">
             Registration Completed!
           </h3>
-          <p className="text-green-700 dark:text-green-300 mb-4">
+          <p className="mb-4 text-green-700 dark:text-green-300">
             The resident has been successfully registered in the system.
           </p>
 
-          <div className="bg-background rounded-lg border border-default p-4 mb-4">
-            <h4 className="font-medium text-primary mb-3">Submitted Information Summary:</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div className="mb-4 rounded-lg border p-4 bg-background border-default">
+            <h4 className="mb-3 font-medium text-primary">Submitted Information Summary:</h4>
+            <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
               <div>
                 <strong>Name:</strong>{' '}
                 {`${submittedData.firstName} ${submittedData.middleName} ${submittedData.lastName} ${submittedData.extensionName}`.trim()}
@@ -101,7 +101,7 @@ const InteractiveComponent = () => {
 
           <button
             onClick={handleReset}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
           >
             Start New Registration
           </button>
@@ -122,18 +122,18 @@ export const ValidationDemo: Story = {
   render: () => {
     return (
       <div className="space-y-6">
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+          <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">
             Form Validation Demo
           </h3>
-          <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-3">
+          <p className="mb-3 text-sm text-yellow-700 dark:text-yellow-300">
             This wizard includes comprehensive validation at each step. Try proceeding without
             filling required fields to see the validation in action.
           </p>
 
-          <div className="bg-background rounded-lg border border-default p-4 mt-4">
-            <h4 className="font-medium text-primary mb-2">Validation Features:</h4>
-            <ul className="text-sm text-secondary space-y-1">
+          <div className="mt-4 rounded-lg border p-4 bg-background border-default">
+            <h4 className="mb-2 font-medium text-primary">Validation Features:</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Progressive validation at each step</li>
               <li>• Real-time field validation</li>
               <li>• PhilSys number format validation</li>
@@ -159,13 +159,13 @@ export const ValidationDemo: Story = {
 export const FeatureShowcase: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Resident Form Wizard Features</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Resident Form Wizard Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Multi-Step Navigation</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Multi-Step Navigation</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• 5-step progressive form wizard</li>
               <li>• Visual progress indicator</li>
               <li>• Step validation before proceeding</li>
@@ -175,8 +175,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Data Integration</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Data Integration</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• PSOC occupation classification</li>
               <li>• PSGC geographic code integration</li>
               <li>• Household assignment system</li>
@@ -186,8 +186,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Security Features</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Security Features</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• PhilSys number encryption</li>
               <li>• CSRF token protection</li>
               <li>• Security operation logging</li>
@@ -197,8 +197,8 @@ export const FeatureShowcase: Story = {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Form Sections</h4>
-            <ul className="text-sm text-secondary space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Form Sections</h4>
+            <ul className="space-y-1 text-sm text-secondary">
               <li>• Personal information (Step 1)</li>
               <li>• Education & employment (Step 2)</li>
               <li>• Contact & physical details (Step 3)</li>
@@ -208,8 +208,8 @@ export const FeatureShowcase: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">
             Data Privacy & Security
           </h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -300,45 +300,45 @@ const StepWalkthroughComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Form Wizard Steps Overview</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Form Wizard Steps Overview</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-5">
           {steps.map(step => (
             <button
               key={step.id}
               onClick={() => setCurrentStep(step.id)}
-              className={`p-4 rounded-lg border text-left transition-colors ${
+              className={`rounded-lg border p-4 text-left transition-colors ${
                 currentStep === step.id
                   ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                  : 'border-default bg-surface hover:bg-surface-hover'
+                  : 'bg-surface border-default hover:bg-surface-hover'
               }`}
             >
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2 flex items-center gap-2">
                 <span
-                  className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium ${
+                  className={`flex size-6 items-center justify-center rounded-full text-xs font-medium ${
                     currentStep === step.id
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                      : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
                   }`}
                 >
                   {step.id}
                 </span>
-                <span className="font-medium text-primary text-sm">{step.title}</span>
+                <span className="text-sm font-medium text-primary">{step.title}</span>
               </div>
             </button>
           ))}
         </div>
 
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <h4 className="font-semibold text-primary mb-2">
+        <div className="rounded-lg border p-6 bg-surface border-default">
+          <h4 className="mb-2 font-semibold text-primary">
             Step {steps[currentStep - 1].id}: {steps[currentStep - 1].title}
           </h4>
-          <p className="text-secondary mb-4">{steps[currentStep - 1].description}</p>
+          <p className="mb-4 text-secondary">{steps[currentStep - 1].description}</p>
 
           <div>
-            <h5 className="font-medium text-primary mb-2">Key Features:</h5>
-            <ul className="text-sm text-secondary space-y-1">
+            <h5 className="mb-2 font-medium text-primary">Key Features:</h5>
+            <ul className="space-y-1 text-sm text-secondary">
               {steps[currentStep - 1].features.map((feature, index) => (
                 <li key={index}>• {feature}</li>
               ))}
@@ -365,15 +365,15 @@ export const StepWalkthrough: Story = {
 export const DataIntegration: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Data Integration Features</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Data Integration Features</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+            <h4 className="mb-2 font-semibold text-green-800 dark:text-green-200">
               PSOC Integration
             </h4>
-            <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+            <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
               <li>• Real-time occupation search</li>
               <li>• Automatic code assignment</li>
               <li>• Classification level detection</li>
@@ -382,9 +382,9 @@ export const DataIntegration: Story = {
             </ul>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">PSGC Compliance</h4>
-            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+            <h4 className="mb-2 font-semibold text-blue-800 dark:text-blue-200">PSGC Compliance</h4>
+            <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
               <li>• Geographic code validation</li>
               <li>• Barangay auto-assignment</li>
               <li>• Address hierarchy mapping</li>
@@ -393,11 +393,11 @@ export const DataIntegration: Story = {
             </ul>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
-            <h4 className="font-semibold text-purple-800 dark:text-purple-200 mb-2">
+          <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+            <h4 className="mb-2 font-semibold text-purple-800 dark:text-purple-200">
               Security Measures
             </h4>
-            <ul className="text-sm text-purple-700 dark:text-purple-300 space-y-1">
+            <ul className="space-y-1 text-sm text-purple-700 dark:text-purple-300">
               <li>• PhilSys number encryption</li>
               <li>• PII data protection</li>
               <li>• CSRF attack prevention</li>
@@ -407,8 +407,8 @@ export const DataIntegration: Story = {
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded-lg">
-          <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">
+        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/20">
+          <h4 className="mb-2 font-medium text-gray-800 dark:text-gray-200">
             Database Integration
           </h4>
           <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -445,15 +445,15 @@ const StateManagementComponent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-background rounded-lg border border-default p-6">
-        <h3 className="font-semibold text-primary mb-4">Form State Management</h3>
+      <div className="rounded-lg border p-6 bg-background border-default">
+        <h3 className="mb-4 font-semibold text-primary">Form State Management</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="font-medium text-primary mb-2">Recent Form Actions:</h4>
+            <h4 className="mb-2 font-medium text-primary">Recent Form Actions:</h4>
             {formStates.length > 0 ? (
-              <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-                <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 font-mono">
+              <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/20">
+                <ul className="space-y-1 font-mono text-sm text-gray-700 dark:text-gray-300">
                   {formStates.map((state, index) => (
                     <li key={index}>• {state}</li>
                   ))}
@@ -467,9 +467,9 @@ const StateManagementComponent = () => {
           </div>
 
           <div>
-            <h4 className="font-medium text-primary mb-2">Current Form Data:</h4>
-            <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded p-3">
-              <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+            <h4 className="mb-2 font-medium text-primary">Current Form Data:</h4>
+            <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900/20">
+              <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
                 <div>
                   <strong>Fields filled:</strong>{' '}
                   {
@@ -496,7 +496,7 @@ const StateManagementComponent = () => {
 
         <button
           onClick={() => setFormStates([])}
-          className="mt-4 px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="mt-4 rounded bg-gray-200 px-3 py-1 text-sm text-gray-700 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         >
           Clear Log
         </button>

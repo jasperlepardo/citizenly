@@ -308,9 +308,9 @@ export default function FamilyRelationshipSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="text-lg font-medium text-primary mb-1">
+        <h3 className="mb-1 text-lg font-medium text-primary">
           <span className="text-base">👨‍👩‍👧‍👦</span> Family Position
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
         <p className="text-sm text-secondary">
           Select this person&apos;s relationship to the household head and position in the family.
@@ -330,12 +330,12 @@ export default function FamilyRelationshipSelector({
 
       {/* Validation Warnings */}
       {validationWarnings.length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3">
           <div className="flex items-start space-x-2">
-            <span className="text-yellow-600 mt-0.5">⚠️</span>
+            <span className="mt-0.5 text-yellow-600">⚠️</span>
             <div className="flex-1">
-              <h4 className="text-sm font-medium text-yellow-800 mb-1">Validation Warnings</h4>
-              <ul className="text-xs text-yellow-700 space-y-1">
+              <h4 className="mb-1 text-sm font-medium text-yellow-800">Validation Warnings</h4>
+              <ul className="space-y-1 text-xs text-yellow-700">
                 {validationWarnings.map((warning, index) => (
                   <li key={index}>• {warning}</li>
                 ))}
@@ -347,7 +347,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Selection Summary */}
       {value && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
           <div className="flex items-center space-x-2">
             <span className="text-blue-600">✓</span>
             <div className="flex-1">
@@ -355,7 +355,7 @@ export default function FamilyRelationshipSelector({
                 Position: {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.label}
               </span>
               {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description && (
-                <p className="text-xs text-blue-600 mt-1">
+                <p className="mt-1 text-xs text-blue-600">
                   {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description}
                 </p>
               )}
@@ -366,7 +366,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Context Information */}
       {(personContext.age || personContext.gender) && (
-        <div className="text-xs text-muted bg-background-muted p-3 rounded-lg">
+        <div className="rounded-lg p-3 text-xs text-muted bg-background-muted">
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}

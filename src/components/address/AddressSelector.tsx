@@ -237,7 +237,7 @@ export default function AddressSelector({
   return (
     <div className={`${className}`}>
       {showLabels && !compact && (
-        <h3 className="text-lg font-medium text-primary mb-4">
+        <h3 className="mb-4 text-lg font-medium text-primary">
           <span className="text-base">📍</span> Address Selection
         </h3>
       )}
@@ -296,8 +296,8 @@ export default function AddressSelector({
 
       {/* Address Summary */}
       {!compact && (value.region || value.province || value.city || value.barangay) && (
-        <div className="mt-4 p-3 bg-background-muted rounded-md">
-          <h4 className="text-sm font-medium text-primary mb-2">Selected Address:</h4>
+        <div className="mt-4 rounded-md p-3 bg-background-muted">
+          <h4 className="mb-2 text-sm font-medium text-primary">Selected Address:</h4>
           <div className="text-sm text-secondary">
             {[
               regions.find(r => r.code === value.region)?.name,

@@ -123,9 +123,9 @@ const designTokens = {
       ],
     },
     fontSize: {
-      xs: ['12px', { lineHeight: '16px', letterSpacing: '0.05em' }],
-      sm: ['14px', { lineHeight: '20px', letterSpacing: '0.025em' }],
-      base: ['16px', { lineHeight: '24px', letterSpacing: '0em' }],
+      xs: ['12px', { lineHeight: '14px', letterSpacing: '0.05em' }],
+      sm: ['14px', { lineHeight: '16px', letterSpacing: '0.025em' }],
+      base: ['16px', { lineHeight: '20px', letterSpacing: '0em' }],
       lg: ['18px', { lineHeight: '28px', letterSpacing: '-0.025em' }],
       xl: ['20px', { lineHeight: '28px', letterSpacing: '-0.025em' }],
       '2xl': ['24px', { lineHeight: '32px', letterSpacing: '-0.05em' }],

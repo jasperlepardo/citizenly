@@ -141,27 +141,27 @@ export default function SimpleBarangaySelector({
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`w-full rounded-md border p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 ${
           error ? 'border-red-500' : 'border-gray-300'
-        } ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}`}
+        } ${disabled ? 'cursor-not-allowed bg-gray-100' : 'bg-white'}`}
       />
 
       {/* Loading indicator */}
       {loading && (
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          <div className="size-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
         </div>
       )}
 
       {/* Dropdown */}
       {isOpen && searchTerm.length >= 2 && !loading && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">
           {options.length > 0 ? (
             options.map(option => (
               <button
                 key={option.code}
                 type="button"
-                className="w-full text-left px-4 py-2 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
+                className="w-full px-4 py-2 text-left hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
                 onClick={() => handleSelect(option)}
               >
                 <div className="font-medium">{option.name}</div>
@@ -177,7 +177,7 @@ export default function SimpleBarangaySelector({
       )}
 
       {/* Error message */}
-      {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   );
 }

@@ -35,21 +35,21 @@ export default function StatCard({ title, value, trend, className = '' }: StatCa
 
   return (
     <div
-      className={`bg-white box-border content-stretch flex flex-col gap-4 items-start justify-start leading-[0] overflow-clip p-4 relative rounded border border-neutral-300 shrink-0 text-left text-neutral-900 text-nowrap w-80 hover:border-neutral-400 transition-colors ${className}`}
+      className={`relative box-border flex w-80 shrink-0 flex-col content-stretch items-start justify-start gap-4 text-clip text-nowrap rounded border border-neutral-300 bg-white p-4 text-left leading-5 text-neutral-900 transition-colors hover:border-neutral-400 ${className}`}
     >
-      <div className="flex items-center justify-between w-full">
-        <div className="flex flex-col font-montserrat font-semibold justify-center relative shrink-0 text-lg">
-          <p className="block leading-[22px] text-nowrap whitespace-pre">{title}</p>
+      <div className="flex w-full items-center justify-between">
+        <div className="font-montserrat relative flex shrink-0 flex-col justify-center text-lg font-semibold">
+          <p className="block whitespace-pre text-nowrap leading-[22px]">{title}</p>
         </div>
         {trend && (
-          <div className={`flex items-center gap-1 text-sm font-montserrat ${getTrendColor()}`}>
+          <div className={`font-montserrat flex items-center gap-1 text-sm ${getTrendColor()}`}>
             <span>{getTrendIcon()}</span>
             <span>{trend.percentage}%</span>
           </div>
         )}
       </div>
-      <div className="flex flex-col font-montserrat font-normal justify-center relative shrink-0 text-[72px]">
-        <p className="block leading-[80px] text-nowrap whitespace-pre">{value}</p>
+      <div className="font-montserrat relative flex shrink-0 flex-col justify-center text-[72px] font-normal">
+        <p className="block whitespace-pre text-nowrap leading-[80px]">{value}</p>
       </div>
     </div>
   );

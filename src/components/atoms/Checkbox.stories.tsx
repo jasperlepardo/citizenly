@@ -227,7 +227,7 @@ const FormExampleComponent = () => {
   };
 
   return (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <h3 className="text-lg font-semibold">Communication Preferences</h3>
 
       <Checkbox
@@ -251,7 +251,7 @@ const FormExampleComponent = () => {
         onChange={handleChange('newsletter')}
       />
 
-      <div className="pt-4 border-t">
+      <div className="border-t pt-4">
         <Checkbox
           label="I accept the terms and conditions"
           description="Required to proceed with registration"

@@ -143,29 +143,29 @@ const InteractiveComponent = () => {
       <PersonalInformation value={data} onChange={handleChange} errors={errors} />
 
       {/* Real-time validation display */}
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Form Status</h3>
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Form Status</h3>
         <div className="space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${hasRequiredFields ? 'bg-green-500' : 'bg-red-500'}`}
+              className={`size-2 rounded-full ${hasRequiredFields ? 'bg-green-500' : 'bg-red-500'}`}
             ></span>
             <span>Required Fields: {hasRequiredFields ? 'Complete' : 'Incomplete'}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
-              className={`w-2 h-2 rounded-full ${isValid ? 'bg-green-500' : 'bg-yellow-500'}`}
+              className={`size-2 rounded-full ${isValid ? 'bg-green-500' : 'bg-yellow-500'}`}
             ></span>
             <span>Validation: {isValid ? 'Passed' : 'Has Errors'}</span>
           </div>
         </div>
 
         {Object.keys(errors).length > 0 && (
-          <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded">
-            <h4 className="font-medium text-red-800 dark:text-red-200 text-sm mb-2">
+          <div className="mt-3 rounded border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+            <h4 className="mb-2 text-sm font-medium text-red-800 dark:text-red-200">
               Validation Errors:
             </h4>
-            <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+            <ul className="space-y-1 text-sm text-red-700 dark:text-red-300">
               {Object.entries(errors).map(([field, error]) => (
                 <li key={field}>• {error}</li>
               ))}
@@ -175,9 +175,9 @@ const InteractiveComponent = () => {
       </div>
 
       {/* Current data display */}
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="font-semibold text-primary mb-3">Current Data</h3>
-        <pre className="text-xs text-secondary bg-background-muted p-3 rounded overflow-x-auto">
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-3 font-semibold text-primary">Current Data</h3>
+        <pre className="overflow-x-auto rounded p-3 text-xs text-secondary bg-background-muted">
           {JSON.stringify(data, null, 2)}
         </pre>
       </div>
@@ -243,7 +243,7 @@ export const ValidationScenarios: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="font-semibold text-primary mb-4">Missing Required Fields</h3>
+        <h3 className="mb-4 font-semibold text-primary">Missing Required Fields</h3>
         <PersonalInformation
           value={{
             firstName: '',
@@ -266,7 +266,7 @@ export const ValidationScenarios: Story = {
       </div>
 
       <div>
-        <h3 className="font-semibold text-primary mb-4">Valid Complete Form</h3>
+        <h3 className="mb-4 font-semibold text-primary">Valid Complete Form</h3>
         <PersonalInformation value={sampleData} onChange={() => {}} />
       </div>
     </div>
@@ -293,7 +293,7 @@ const FormIntegrationComponent = () => {
     <div className="space-y-6">
       <PersonalInformation value={data} onChange={setData} />
 
-      <div className="flex items-center justify-between p-4 bg-background rounded-lg border border-default">
+      <div className="flex items-center justify-between rounded-lg border p-4 bg-background border-default">
         <div className="text-sm text-secondary">
           {isComplete
             ? '✅ All required fields completed'
@@ -303,7 +303,7 @@ const FormIntegrationComponent = () => {
           <button
             type="button"
             onClick={() => setData(defaultData)}
-            className="px-4 py-2 text-sm font-medium text-secondary hover:text-primary border border-default rounded-md hover:bg-surface-hover transition-colors"
+            className="rounded-md border px-4 py-2 text-sm font-medium transition-colors text-secondary border-default hover:text-primary hover:bg-surface-hover"
           >
             Reset
           </button>
@@ -311,7 +311,7 @@ const FormIntegrationComponent = () => {
             type="button"
             onClick={handleSubmit}
             disabled={!isComplete || isSubmitted}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-secondary disabled:cursor-not-allowed rounded-md transition-colors"
+            className="disabled:bg-secondary rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed"
           >
             {isSubmitted ? 'Saving...' : 'Save Information'}
           </button>

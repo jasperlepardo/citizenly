@@ -112,7 +112,7 @@ export default function AddressSearch({
 
     return parts.map((part, index) =>
       regex.test(part) ? (
-        <mark key={index} className="bg-yellow-200 px-0.5 rounded">
+        <mark key={index} className="rounded bg-yellow-200 px-0.5">
           {part}
         </mark>
       ) : (
@@ -132,13 +132,13 @@ export default function AddressSearch({
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full px-4 py-2 border border-default bg-surface text-primary rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          className="w-full rounded-md border px-4 py-2 outline-none text-primary bg-surface border-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         />
 
         {/* Loading indicator only */}
         {isLoading && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <div className="animate-spin h-4 w-4 border-2 border-default border-t-blue-600 rounded-full"></div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <div className="size-4 animate-spin rounded-full border-2 border-t-blue-600 border-default"></div>
           </div>
         )}
 
@@ -151,9 +151,9 @@ export default function AddressSearch({
               setIsOpen(false);
               inputRef.current?.focus();
             }}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-secondary"
+            className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary"
           >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -167,12 +167,12 @@ export default function AddressSearch({
 
       {/* Search Results Dropdown */}
       {isOpen && results.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg max-h-96 overflow-y-auto">
+        <div className="absolute z-50 mt-1 max-h-96 w-full overflow-y-auto rounded-md border shadow-lg bg-surface border-default">
           {results.map((address, index) => (
             <button
               key={`${address.barangay_code}-${index}`}
               onClick={() => handleSelect(address)}
-              className={`w-full text-left px-4 py-3 hover:bg-surface-hover border-b border-default last:border-b-0 focus:outline-none focus:bg-blue-50 dark:focus:bg-blue-900/20 ${
+              className={`w-full border-b px-4 py-3 text-left border-default last:border-b-0 hover:bg-surface-hover focus:bg-blue-50 focus:outline-none dark:focus:bg-blue-900/20 ${
                 index === selectedIndex ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
@@ -183,7 +183,7 @@ export default function AddressSearch({
                 </div>
 
                 {/* Geographic Details */}
-                <div className="text-xs text-secondary space-y-0.5">
+                <div className="space-y-0.5 text-xs text-secondary">
                   <div>
                     <span className="text-xs">📍</span>{' '}
                     {highlightMatch(address.barangay_name, query)}, {address.city_municipality_name}
@@ -193,12 +193,12 @@ export default function AddressSearch({
                       <span className="text-xs">🏛️</span> {address.city_municipality_type}
                     </span>
                     {address.is_independent && (
-                      <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs">
+                      <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                         Independent
                       </span>
                     )}
                     {address.urban_rural_status && (
-                      <span className="px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs">
+                      <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-300">
                         {address.urban_rural_status}
                       </span>
                     )}
@@ -209,7 +209,7 @@ export default function AddressSearch({
           ))}
 
           {/* Search Stats */}
-          <div className="px-4 py-2 bg-background-muted text-xs text-muted border-t border-default">
+          <div className="border-t px-4 py-2 text-xs text-muted bg-background-muted border-default">
             Found {results.length} result{results.length !== 1 ? 's' : ''}
             {results.length === maxResults && ` (showing first ${maxResults})`}
           </div>
@@ -218,11 +218,11 @@ export default function AddressSearch({
 
       {/* No Results */}
       {isOpen && !isLoading && query.trim().length >= 2 && results.length === 0 && (
-        <div className="absolute z-50 w-full mt-1 bg-surface border border-default rounded-md shadow-lg p-4 text-center text-secondary text-sm">
+        <div className="absolute z-50 mt-1 w-full rounded-md border p-4 text-center text-sm shadow-lg text-secondary bg-surface border-default">
           <div className="space-y-2">
             <div className="text-muted">
               <svg
-                className="h-5 w-5 mx-auto"
+                className="mx-auto size-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

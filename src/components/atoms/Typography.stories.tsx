@@ -92,10 +92,10 @@ export const WithCustomStyling: Story = {
       <Typography variant="h2" className="text-primary-600">
         Styled Heading with Primary Color
       </Typography>
-      <Typography variant="bodyMedium" className="text-neutral-500 italic">
+      <Typography variant="bodyMedium" className="italic text-neutral-500">
         Styled body text with neutral color and italic
       </Typography>
-      <Typography variant="caption" className="text-danger-600 font-semibold">
+      <Typography variant="caption" className="font-semibold text-danger-600">
         Error message styling
       </Typography>
     </div>
@@ -104,25 +104,25 @@ export const WithCustomStyling: Story = {
 
 export const FontSystemExample: Story = {
   render: () => (
-    <div className="space-y-6 p-6 bg-gray-50 rounded-lg">
+    <div className="space-y-6 rounded-lg bg-gray-50 p-6">
       <div>
-        <h4 className="text-lg font-semibold mb-2">Font System Classes</h4>
-        <p className="text-sm text-gray-600 mb-4">
+        <h4 className="mb-2 text-lg font-semibold">Font System Classes</h4>
+        <p className="mb-4 text-sm text-gray-600">
           These classes are available globally through the improved font management system:
         </p>
       </div>
 
       <div className="space-y-3">
-        <div className="font-system p-3 bg-white rounded border">
+        <div className="rounded border bg-white p-3 font-system">
           <strong>.font-system</strong> - System font (default for UI elements)
         </div>
-        <div className="font-display p-3 bg-white rounded border">
+        <div className="rounded border bg-white p-3 font-display">
           <strong>.font-display</strong> - Display font (headings and prominent text)
         </div>
-        <div className="font-body p-3 bg-white rounded border">
+        <div className="rounded border bg-white p-3 font-body">
           <strong>.font-body</strong> - Body font (paragraph text)
         </div>
-        <div className="font-mono p-3 bg-white rounded border">
+        <div className="rounded border bg-white p-3 font-mono">
           <strong>.font-mono</strong> - Monospace font (code and technical content)
         </div>
       </div>
