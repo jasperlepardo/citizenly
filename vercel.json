@@ -22,7 +22,8 @@
   },
   "build": {
     "env": {
-      "NEXT_PUBLIC_APP_ENV": "production"
+      "NEXT_PUBLIC_APP_ENV": "production",
+      "CSRF_SECRET": "@csrf-secret"
     }
   }
 }

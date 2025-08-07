@@ -273,13 +273,13 @@ export default function SignupPage() {
   // Success step
   if (step === 'success') {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="rounded-lg bg-white p-8 shadow-md">
             <div className="text-center">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-100">
                 <svg
-                  className="h-6 w-6 text-green-600"
+                  className="size-6 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -296,22 +296,22 @@ export default function SignupPage() {
                 Account Created Successfully!
               </h2>
 
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="text-sm font-medium text-blue-800 mb-2">Your Role Assignment:</h3>
+              <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <h3 className="mb-2 text-sm font-medium text-blue-800">Your Role Assignment:</h3>
                 <p className="text-blue-700">
                   <strong>{assignedRole}</strong>
                 </p>
                 {assignedRole.includes('Administrator') && (
-                  <p className="text-sm text-blue-600 mt-2">
+                  <p className="mt-2 text-sm text-blue-600">
                     You&apos;ve been assigned as the first administrator for this barangay. You can
                     now manage users and data for your barangay.
                   </p>
                 )}
               </div>
 
-              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h3 className="text-sm font-medium text-yellow-800 mb-2">Next Steps:</h3>
-                <ol className="text-sm text-yellow-700 space-y-1 list-decimal list-inside text-left">
+              <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                <h3 className="mb-2 text-sm font-medium text-yellow-800">Next Steps:</h3>
+                <ol className="list-inside list-decimal space-y-1 text-left text-sm text-yellow-700">
                   <li>Check your email for a verification link</li>
                   <li>Click the verification link to activate your account</li>
                   <li>Return to login and access your dashboard</li>
@@ -336,25 +336,25 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create RBI Account</h1>
-          <p className="text-gray-600 text-sm mb-8">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">Create RBI Account</h1>
+          <p className="mb-8 text-sm text-gray-600">
             Join the Records of Barangay Inhabitant System
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="rounded-lg bg-white p-8 shadow-md">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* General Error */}
             {errors.general && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                 <div className="flex items-start gap-3">
-                  <span className="text-red-600 mt-0.5">⚠️</span>
+                  <span className="mt-0.5 text-red-600">⚠️</span>
                   <div>
-                    <h4 className="text-red-800 font-medium">Registration Failed</h4>
-                    <p className="text-red-700 text-sm">{errors.general}</p>
+                    <h4 className="font-medium text-red-800">Registration Failed</h4>
+                    <p className="text-sm text-red-700">{errors.general}</p>
                   </div>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default function SignupPage() {
 
             {/* Personal Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+              <h3 className="border-b pb-2 text-lg font-medium text-gray-900">
                 Personal Information
               </h3>
 
@@ -470,14 +470,14 @@ export default function SignupPage() {
 
             {/* Location Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">
+              <h3 className="border-b pb-2 text-lg font-medium text-gray-900">
                 Location Information
               </h3>
 
               <div>
                 <label
                   htmlFor="barangayCode"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="mb-2 block text-sm font-medium text-gray-700"
                 >
                   Barangay *
                 </label>
@@ -493,15 +493,15 @@ export default function SignupPage() {
 
             {/* Barangay Selection Info */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Role Assignment</h3>
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-sm font-medium text-blue-800 mb-2">
+              <h3 className="border-b pb-2 text-lg font-medium text-gray-900">Role Assignment</h3>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <h4 className="mb-2 text-sm font-medium text-blue-800">
                   Automatic Role Assignment
                 </h4>
                 <p className="text-sm text-blue-700">
                   Your role will be automatically assigned based on your barangay:
                 </p>
-                <ul className="text-sm text-blue-600 mt-2 list-disc list-inside">
+                <ul className="mt-2 list-inside list-disc text-sm text-blue-600">
                   <li>
                     If no administrator exists for your barangay →{' '}
                     <strong>Barangay Administrator</strong>
@@ -515,7 +515,7 @@ export default function SignupPage() {
 
             {/* Account Security */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900 border-b pb-2">Account Security</h3>
+              <h3 className="border-b pb-2 text-lg font-medium text-gray-900">Account Security</h3>
 
               <InputField
                 id="password"

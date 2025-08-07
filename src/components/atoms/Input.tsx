@@ -28,8 +28,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     // Set state to error if error prop is provided
     const actualState = error ? 'error' : state;
     const defaultBeforeIcon = (
-      <div className="w-5 h-5 flex items-center justify-center text-secondary">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex size-5 items-center justify-center text-secondary">
+        <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -41,8 +41,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
 
     const defaultAfterIcon = (
-      <div className="w-5 h-5 flex items-center justify-center text-secondary">
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex size-5 items-center justify-center text-secondary">
+        <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -59,22 +59,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={`relative rounded transition-colors font-system focus-within:outline-none ${
             actualState === 'error'
               ? 'border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
-              : 'border border-default bg-surface focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
-          } p-[8px] text-base min-h-[40px] ${className}`}
+              : 'border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+          } min-h-10 p-2 text-base ${className}`}
         >
           {showBefore && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               {beforeIcon || defaultBeforeIcon}
             </div>
           )}
 
           {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
-          <div className="basis-0 grow flex flex-col gap-0.5 items-center justify-center min-h-0 min-w-0 px-1 py-0">
+          <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
             {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-            <div className="flex flex-col font-montserrat font-normal justify-center leading-[0] overflow-ellipsis overflow-hidden w-full text-nowrap">
+            <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-[0]">
               <input
                 ref={ref}
-                className="w-full bg-transparent font-montserrat font-normal text-primary placeholder:text-muted border-0 outline-0 ring-0 shadow-none focus:border-0 focus:outline-0 focus:ring-0 focus:shadow-none active:border-0 active:outline-0 active:ring-0 active:shadow-none text-base leading-5"
+                className="font-montserrat w-full border-0 bg-transparent text-base font-normal leading-5 shadow-none outline-0 ring-0 text-primary placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
                 style={{
                   border: 'none',
                   outline: 'none',
@@ -97,7 +97,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </div>
 
           {showAfter && (
-            <div className="flex items-center justify-center w-5 h-5 text-secondary shrink-0">
+            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
               {afterIcon || defaultAfterIcon}
             </div>
           )}
@@ -105,7 +105,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {/* Error Message */}
         {error && (
-          <p className="text-xs text-red-500 mt-2 font-montserrat leading-[14px]">{error}</p>
+          <p className="font-montserrat mt-2 text-xs leading-[14px] text-red-500">{error}</p>
         )}
       </div>
     );

@@ -15,10 +15,10 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
   return (
     <html>
       <body>
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="max-w-md mx-auto text-center p-6">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <div className="mx-auto max-w-md p-6 text-center">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-red-600 mb-2">Critical Error</h1>
+              <h1 className="mb-2 text-2xl font-bold text-red-600">Critical Error</h1>
               <p className="text-gray-600">
                 A critical error occurred. Please refresh the page or try again later.
               </p>
@@ -27,14 +27,14 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             <div className="space-y-4">
               <button
                 onClick={reset}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Try again
               </button>
 
               <button
                 onClick={() => (window.location.href = '/')}
-                className="w-full px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full rounded-md bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Reload Page
               </button>
@@ -45,7 +45,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 <summary className="cursor-pointer text-sm text-gray-600">
                   Error Details (Development Only)
                 </summary>
-                <pre className="mt-2 p-4 bg-gray-100 rounded text-xs overflow-auto">
+                <pre className="mt-2 overflow-auto rounded bg-gray-100 p-4 text-xs">
                   {error.message}
                   {error.stack && '\n\n' + error.stack}
                 </pre>

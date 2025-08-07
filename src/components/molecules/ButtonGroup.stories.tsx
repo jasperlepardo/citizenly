@@ -132,7 +132,7 @@ export const FormActions: Story = {
 
       <div className="space-y-4">
         <div>
-          <h4 className="text-sm font-medium mb-2">Save/Cancel</h4>
+          <h4 className="mb-2 text-sm font-medium">Save/Cancel</h4>
           <ButtonGroup spacing="sm">
             <Button variant="primary">Save Changes</Button>
             <Button variant="neutral-outline">Cancel</Button>
@@ -140,7 +140,7 @@ export const FormActions: Story = {
         </div>
 
         <div>
-          <h4 className="text-sm font-medium mb-2">Previous/Next</h4>
+          <h4 className="mb-2 text-sm font-medium">Previous/Next</h4>
           <ButtonGroup spacing="sm">
             <Button variant="neutral-outline">Previous</Button>
             <Button variant="primary">Next</Button>
@@ -148,7 +148,7 @@ export const FormActions: Story = {
         </div>
 
         <div>
-          <h4 className="text-sm font-medium mb-2">Attached Tabs</h4>
+          <h4 className="mb-2 text-sm font-medium">Attached Tabs</h4>
           <ButtonGroup attached>
             <Button variant="primary" size="sm">
               Active Tab
@@ -163,7 +163,7 @@ export const FormActions: Story = {
         </div>
 
         <div>
-          <h4 className="text-sm font-medium mb-2">Dangerous Actions</h4>
+          <h4 className="mb-2 text-sm font-medium">Dangerous Actions</h4>
           <ButtonGroup spacing="md">
             <Button variant="danger">Delete Forever</Button>
             <Button variant="neutral-outline">Keep Safe</Button>

@@ -155,12 +155,12 @@ const InteractiveComponent = () => {
         }}
       />
 
-      <div className="bg-background rounded-lg p-4 border border-default">
-        <h3 className="font-semibold text-primary mb-2">Real-time Status:</h3>
+      <div className="rounded-lg border p-4 bg-background border-default">
+        <h3 className="mb-2 font-semibold text-primary">Real-time Status:</h3>
         <div className="space-y-2 text-sm">
           <div>
             <strong>Current Value:</strong>{' '}
-            <code className="bg-background-muted px-2 py-1 rounded">{value || 'empty'}</code>
+            <code className="rounded px-2 py-1 bg-background-muted">{value || 'empty'}</code>
           </div>
           <div>
             <strong>Is Valid:</strong>{' '}
@@ -176,7 +176,7 @@ const InteractiveComponent = () => {
           {hashedValue && (
             <div>
               <strong>Hashed Value:</strong>{' '}
-              <code className="bg-background-muted px-2 py-1 rounded text-xs break-all">
+              <code className="break-all rounded px-2 py-1 text-xs bg-background-muted">
                 {hashedValue.substring(0, 20)}...
               </code>
             </div>
@@ -197,8 +197,8 @@ const MaskingDemoComponent = () => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-        <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Masking Demo</h3>
+      <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
+        <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">Masking Demo</h3>
         <p className="text-sm text-yellow-700 dark:text-yellow-300">
           Click on the input field to see the full number. When you click away, it will be masked
           for security.
@@ -228,9 +228,9 @@ export const MaskingDemo: Story = {
 export const SecurityFeatures: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <h3 className="font-semibold text-primary mb-3">With Auto-Hash (Default)</h3>
+          <h3 className="mb-3 font-semibold text-primary">With Auto-Hash (Default)</h3>
           <PhilSysNumberInput
             label="Secure PhilSys Input"
             autoHash={true}
@@ -241,7 +241,7 @@ export const SecurityFeatures: Story = {
         </div>
 
         <div>
-          <h3 className="font-semibold text-primary mb-3">No Auto-Hash</h3>
+          <h3 className="mb-3 font-semibold text-primary">No Auto-Hash</h3>
           <PhilSysNumberInput
             label="Manual Handling"
             autoHash={false}
@@ -252,9 +252,9 @@ export const SecurityFeatures: Story = {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <h3 className="font-semibold text-primary mb-3">Show Last 4 Digits</h3>
+          <h3 className="mb-3 font-semibold text-primary">Show Last 4 Digits</h3>
           <PhilSysNumberInput
             label="Partial Masking"
             showLastFourDigits={true}
@@ -264,7 +264,7 @@ export const SecurityFeatures: Story = {
         </div>
 
         <div>
-          <h3 className="font-semibold text-primary mb-3">Full Masking</h3>
+          <h3 className="mb-3 font-semibold text-primary">Full Masking</h3>
           <PhilSysNumberInput
             label="Complete Masking"
             showLastFourDigits={false}

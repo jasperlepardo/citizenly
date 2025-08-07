@@ -101,9 +101,9 @@ export const WithHelperText: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div className="space-y-6 w-80">
+    <div className="w-80 space-y-6">
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Default State</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">Default State</h3>
         <Select
           options={[
             { value: 'option1', label: 'Option 1' },
@@ -117,7 +117,7 @@ export const AllStates: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">With Selection</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">With Selection</h3>
         <Select
           options={[
             { value: 'option1', label: 'Option 1' },
@@ -131,7 +131,7 @@ export const AllStates: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Error State</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">Error State</h3>
         <Select
           options={[
             { value: 'option1', label: 'Option 1' },
@@ -146,7 +146,7 @@ export const AllStates: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Disabled State</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">Disabled State</h3>
         <Select
           options={[
             { value: 'option1', label: 'Option 1' },
@@ -161,12 +161,12 @@ export const AllStates: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">Loading State</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">Loading State</h3>
         <Select options={[]} value="" onChange={() => {}} placeholder="Loading..." loading={true} />
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-700 mb-2">With Helper Text</h3>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">With Helper Text</h3>
         <Select
           options={[
             { value: 'option1', label: 'Option 1' },
