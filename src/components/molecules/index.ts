@@ -11,7 +11,6 @@ export * from './PhilSysNumberInput';
 // Dashboard/Chart Components
 // PopulationPyramid - component file not found, only stories exist
 export * from './StatsCard';
-export * from './StatCard';
 export * from './DependencyRatioPieChart';
 export * from './GenericPieChart';
 export * from './SexDistributionPieChart';
