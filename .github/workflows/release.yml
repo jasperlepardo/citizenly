@@ -51,7 +51,13 @@ jobs:
           
           if [ "${{ inputs.environment }}" = "staging" ]; then
             git checkout staging || git checkout -b staging
-            git merge origin/develop --no-ff -m "Release to staging"
+            # Check if staging is ahead of develop
+            AHEAD=$(git rev-list --count origin/develop..staging)
+            if [ "$AHEAD" -gt 0 ]; then
+              echo "Staging is $AHEAD commits ahead of develop, skipping merge"
+            else
+              git merge origin/develop --no-ff -m "Release to staging"
+            fi
           elif [ "${{ inputs.environment }}" = "production" ]; then
             git checkout main || git checkout -b main  
             git merge origin/staging --no-ff -m "Release to production"
