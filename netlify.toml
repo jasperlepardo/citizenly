@@ -1,12 +1,12 @@
 [build]
-  # Build command for Storybook
-  command = "npm ci && npm run build-storybook"
+  # Build command for Storybook (install devDeps explicitly for Storybook build tools)
+  command = "npm ci --production=false && npm run build-storybook"
   
   # Output directory (where Storybook builds to)
   publish = "storybook-static"
 
 [build.environment]
-  NODE_ENV = "production"
+  NODE_ENV = "development"
   NEXT_PUBLIC_APP_ENV = "development"
   NEXT_PUBLIC_SUPABASE_URL = "https://placeholder.supabase.co"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "placeholder-key"
