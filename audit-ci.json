@@ -1,0 +1,15 @@
+{
+  "moderate": true,
+  "high": true,
+  "critical": true,
+  "allowlist": ["GHSA-8hc4-vh64-cxmj", "GHSA-jr5f-v2jv-69x6"],
+  "report-type": "important",
+  "output-format": "text",
+  "pass-enoaudit": false,
+  "skip-dev": false,
+  "advisories": [],
+  "whitelist": [],
+  "summary-format": "short",
+  "registry": "https://registry.npmjs.org/",
+  "extra-args": []
+}

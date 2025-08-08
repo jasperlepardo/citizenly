@@ -1,0 +1,131 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Atoms/Overview" />
+
+# Atoms
+
+## The Building Blocks of Our Design System
+
+Atoms are the basic building blocks of matter. In our interface, atoms are the fundamental HTML elements like buttons, inputs, labels, and other basic components that can't be broken down any further without losing their meaning.
+
+## Characteristics of Atoms
+
+### ⚛️ **Fundamental**
+- Cannot be broken down further without losing functionality
+- Represent the most basic interactive elements
+- Serve as the foundation for all larger components
+
+### 🎨 **Styled but Context-Free**
+- Have consistent visual styling
+- Work independently of specific use cases
+- Can be combined in various ways
+
+### 🔄 **Highly Reusable**
+- Used throughout the entire application
+- Form the basis of more complex components
+- Maintain consistency across all interfaces
+
+## Atoms in This System
+
+### Form Elements
+- **Button** - Primary interactive element with multiple variants
+- **Input** - Basic text input with validation states
+- **Checkbox** - Boolean selection with indeterminate state
+- **Radio** - Single selection from multiple options
+- **Select** - Dropdown selection component
+- **Textarea** - Multi-line text input
+
+### Typography
+- **Typography** - Consistent text styling and hierarchy
+- **ErrorMessage** - Standardized error display
+
+### Interactive Elements
+- **IconButton** - Button with icon-only content
+- **Toggle** - Binary state switcher
+- **KeyboardNavigableList** - Accessible list navigation
+
+### Accessibility
+- **SkipNavigation** - Skip links for keyboard users
+- **LiveRegion** - Screen reader announcements
+
+## Design Principles
+
+### 🎯 **Single Responsibility**
+Each atom has one clear purpose and does it well.
+
+### 🔧 **Configurable**
+Atoms accept props to modify their appearance and behavior while maintaining their core functionality.
+
+### ♿ **Accessible**
+All atoms include proper ARIA attributes, keyboard navigation, and screen reader support.
+
+### 📱 **Responsive**
+Atoms adapt to different screen sizes and device capabilities.
+
+## Usage Guidelines
+
+### ✅ **Do:**
+- Use atoms as building blocks for larger components
+- Keep atom styling consistent across the application
+- Provide necessary accessibility attributes
+- Use appropriate semantic HTML elements
+
+### ❌ **Don't:**
+- Add business logic to atoms
+- Make atoms dependent on specific contexts
+- Override atom styles in consuming components
+- Combine multiple responsibilities in a single atom
+
+## Example Usage
+
+```tsx
+// ✅ Good: Simple, focused usage
+<Button variant="primary" onClick={handleClick}>
+  Save Changes
+</Button>
+
+// ✅ Good: Combining atoms in a molecule
+<div className="form-field">
+  <Input
+    value={email}
+    onChange={setEmail}
+    placeholder="Enter your email"
+  />
+  <Button type="submit">Subscribe</Button>
+</div>
+
+// ❌ Bad: Adding business logic to atom
+<Button 
+  onClick={() => {
+    validateForm();
+    submitData();
+    redirectUser();
+    updateAnalytics();
+  }}
+>
+  Complex Action
+</Button>
+```
+
+## Testing Atoms
+
+Each atom should be tested for:
+- **Rendering** - Component renders without errors
+- **Props** - All prop variations work correctly
+- **Accessibility** - Screen readers and keyboard navigation
+- **Events** - Click, focus, and other interactions
+- **Styling** - Visual appearance matches design
+
+## Contributing
+
+When creating new atoms:
+
+1. **Identify the need** - Is this truly a fundamental building block?
+2. **Check existing atoms** - Can an existing atom be extended instead?
+3. **Define the API** - What props and events are needed?
+4. **Implement accessibility** - Add proper ARIA attributes and keyboard support
+5. **Write stories** - Document all variants and states
+6. **Add tests** - Cover functionality and accessibility
+7. **Update documentation** - Add to this overview if needed
+
+Remember: Atoms should be simple, reusable, and focused on a single responsibility.

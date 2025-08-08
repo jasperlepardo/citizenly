@@ -1,0 +1,251 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Templates/Overview" />
+
+# Templates
+
+## Page-Level Structure Components
+
+Templates are page-level objects that place components into a layout and articulate the design's underlying content structure. They focus on the page's structure rather than the page's final content, providing the scaffolding for consistent user experiences.
+
+## Characteristics of Templates
+
+### 📐 **Layout Structure**
+- Define the overall page structure and component placement
+- Establish consistent spacing, alignment, and proportions
+- Create responsive grid systems and breakpoint behavior
+
+### 🔄 **Content Agnostic**
+- Work with various types of content and data
+- Focus on structure rather than specific content
+- Provide slots and areas for content placement
+
+### 🎨 **Design System Enforcement**
+- Ensure consistent application of design principles
+- Maintain visual hierarchy and brand guidelines
+- Provide standardized spacing and typography scales
+
+## Templates in This System
+
+### Core Layout Templates
+- **AppShell** - Main application wrapper with navigation and content areas
+- **MainLayout** - Primary page layout with header, sidebar, and main content
+- **DashboardLayout** - Specialized layout for dashboard and analytics pages
+- **Header** - Top navigation and branding template
+
+### Form Templates
+- **HouseholdFormWizard** - Multi-step form for household registration
+- **ResidentFormWizard** - Complex form template for resident data collection
+
+## Design Principles
+
+### 🏗️ **Structural Focus**
+Templates define where content goes, not what the content is.
+
+### 📱 **Responsive Design**
+Templates handle layout changes across different screen sizes and devices.
+
+### ♻️ **Reusability**
+Templates can be used across multiple pages with different content.
+
+### 🎯 **Consistency**
+Templates enforce consistent layouts and user experience patterns.
+
+## Usage Guidelines
+
+### ✅ **Do:**
+- Use templates to maintain consistent page structure
+- Make templates flexible enough for various content types
+- Include proper responsive breakpoints and behavior
+- Provide clear content areas and slots
+- Handle common layout scenarios (loading, error, empty states)
+
+### ❌ **Don't:**
+- Hard-code specific content into templates
+- Create templates that are too rigid or inflexible
+- Duplicate layout logic across similar templates
+- Ignore accessibility in navigation and structure
+- Make templates dependent on specific business logic
+
+## Template Structure
+
+### Layout Areas
+Most templates define these common areas:
+- **Header** - Navigation, branding, user controls
+- **Sidebar** - Secondary navigation, filters, tools
+- **Main Content** - Primary page content area
+- **Footer** - Additional links, copyright, status information
+
+### Responsive Behavior
+Templates typically handle:
+- **Mobile-first** design with progressive enhancement
+- **Collapsible sidebars** on smaller screens
+- **Flexible grid systems** that adapt to content
+- **Touch-friendly** navigation and interactions
+
+## Example Usage
+
+```tsx
+// ✅ Good: Template with flexible content areas
+<MainLayout
+  header={<AppHeader user={currentUser} />}
+  sidebar={<NavigationSidebar />}
+  breadcrumbs={<Breadcrumbs items={breadcrumbItems} />}
+>
+  <PageContent>
+    {/* Any page content can go here */}
+    <ResidentsList />
+  </PageContent>
+</MainLayout>
+
+// ✅ Good: Form template with configurable steps
+<HouseholdFormWizard
+  steps={householdFormSteps}
+  initialData={initialHouseholdData}
+  onSubmit={handleHouseholdSubmit}
+  onCancel={handleCancel}
+/>
+
+// ✅ Good: Dashboard template with flexible widgets
+<DashboardLayout
+  title="Population Analytics"
+  actions={<DashboardActions />}
+  widgets={[
+    <PopulationChart key="chart" />,
+    <ResidentStats key="stats" />,
+    <RecentActivity key="activity" />
+  ]}
+/>
+
+// ❌ Bad: Template with hard-coded content
+<SpecificPageTemplate>
+  <h1>Residents Page</h1>
+  <p>Welcome to the residents management page</p>
+  <ResidentsList />
+</SpecificPageTemplate>
+
+// ❌ Bad: Template that's too specific
+<HouseholdRegistrationOnlyTemplate>
+  {/* Only works for one specific use case */}
+</HouseholdRegistrationOnlyTemplate>
+```
+
+## Common Template Patterns
+
+### App Shell Pattern
+```tsx
+interface AppShellProps {
+  navigation: React.ReactNode;
+  header: React.ReactNode;
+  sidebar?: React.ReactNode;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+}
+```
+
+### Form Wizard Pattern
+```tsx
+interface FormWizardProps {
+  steps: FormStep[];
+  currentStep: number;
+  onNext: () => void;
+  onPrevious: () => void;
+  onSubmit: (data: FormData) => Promise<void>;
+  data: FormData;
+}
+```
+
+### Dashboard Pattern
+```tsx
+interface DashboardProps {
+  title: string;
+  subtitle?: string;
+  actions?: React.ReactNode;
+  filters?: React.ReactNode;
+  widgets: React.ReactNode[];
+  layout?: 'grid' | 'list' | 'custom';
+}
+```
+
+## Responsive Design
+
+### Breakpoint Strategy
+Templates handle these common breakpoints:
+- **Mobile** (320px - 768px): Stack layouts, collapsible navigation
+- **Tablet** (768px - 1024px): Hybrid layouts, expandable sidebars
+- **Desktop** (1024px+): Full layouts with all areas visible
+
+### Layout Techniques
+- **CSS Grid** for complex two-dimensional layouts
+- **Flexbox** for component arrangement and alignment
+- **Container Queries** for responsive components
+- **Clamp()** for fluid typography and spacing
+
+## State Management
+
+Templates typically manage:
+- **Layout state** (sidebar open/closed, mobile menu state)
+- **Navigation state** (current page, breadcrumbs)
+- **UI preferences** (theme, layout density, sidebar width)
+- **Loading states** (page loading, content loading)
+
+They receive:
+- **Content components** via children or specific props
+- **Configuration** for layout options and behavior
+- **Event handlers** for layout interactions
+
+## Testing Templates
+
+Each template should be tested for:
+- **Layout rendering** - All areas render correctly
+- **Responsive behavior** - Layout adapts to different screen sizes
+- **Content placement** - Children and content slots work properly
+- **Navigation** - Links and navigation function correctly
+- **Accessibility** - Proper landmarks, heading hierarchy, focus management
+- **Performance** - Layout shifts, loading states, smooth transitions
+
+## Accessibility Considerations
+
+Templates must provide:
+- **Proper landmarks** (main, nav, header, footer, aside)
+- **Skip links** for keyboard navigation
+- **Heading hierarchy** (h1, h2, h3, etc. in logical order)
+- **Focus management** for dynamic content
+- **Screen reader support** with proper ARIA labels
+
+## Best Practices
+
+### 🎨 **Design Consistency**
+- Use consistent spacing and typography scales
+- Apply brand colors and styling systematically
+- Maintain visual hierarchy across all pages
+
+### 📱 **Mobile Experience**
+- Design mobile-first, then enhance for larger screens
+- Use touch-friendly interaction targets
+- Consider thumb reach and one-handed usage
+
+### ⚡ **Performance**
+- Minimize layout shifts during content loading
+- Use skeleton screens for loading states
+- Optimize images and assets for different screen densities
+
+### 🔧 **Maintenance**
+- Keep templates simple and focused
+- Use composition over complex prop interfaces
+- Document layout behavior and responsive breakpoints
+
+## Contributing
+
+When creating new templates:
+
+1. **Identify the pattern** - What layout structure is needed?
+2. **Define content areas** - Where will different types of content go?
+3. **Plan responsive behavior** - How should the layout adapt?
+4. **Design the API** - What props and content slots are needed?
+5. **Implement accessibility** - Proper landmarks and navigation
+6. **Test thoroughly** - All screen sizes and content types
+7. **Document usage** - Layout areas, responsive behavior, examples
+8. **Consider performance** - Loading states and smooth transitions
+
+Remember: Templates should be flexible enough to handle various content while maintaining consistent structure and user experience.

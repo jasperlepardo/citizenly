@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/templates';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/atoms';
 import { logger, logError } from '@/lib/secure-logger';

@@ -204,12 +204,19 @@ frontend/.env.production.local
 
 # Storybook
 storybook-static/
+public/storybook-static/
 
 # Test artifacts
 coverage/
 .nyc_output/
 test-results/
 playwright-report/
+
+# Temporary scripts and deployment files
+check-*.js
+deploy-*.js
+deploy-*.sql
+corrected-*.sql
 
 # Build artifacts
 dist/

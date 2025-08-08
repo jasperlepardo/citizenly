@@ -1,11 +1,11 @@
 'use client';
 
-interface ErrorProps {
-  error: Error & { digest?: string };
-  reset: () => void;
+interface ErrorPageProps {
+  readonly error: Error & { digest?: string };
+  readonly reset: () => void;
 }
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="text-center">

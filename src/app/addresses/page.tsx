@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/templates';
-import { AddressSearch } from '@/components/address';
+import { AddressSearch } from '@/components/organisms';
 import { testDatabaseConnection, type AddressHierarchy } from '@/lib/database';
 import { logger, logError } from '@/lib/secure-logger';
 

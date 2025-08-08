@@ -1,38 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import dynamicImport from 'next/dynamic';
+import { LoginForm, DevLogin } from '@/components/organisms';
+import { ThemeToggle } from '@/components/molecules';
 
 export const dynamic = 'force-dynamic';
-
-// Dynamically import components that use context to prevent SSR issues
-const LoginForm = dynamicImport(() => import('@/components/auth/LoginForm'), {
-  ssr: false,
-  loading: () => (
-    <div className="p-8 text-center">
-      <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-4 border-primary-400 border-t-transparent"></div>
-      <p className="text-secondary">Loading...</p>
-    </div>
-  ),
-});
-
-const DevLogin = dynamicImport(() => import('@/components/auth/DevLogin'), {
-  ssr: false,
-  loading: () => (
-    <div className="p-8 text-center">
-      <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-4 border-primary-400 border-t-transparent"></div>
-      <p className="text-secondary">Loading...</p>
-    </div>
-  ),
-});
-
-const ThemeToggle = dynamicImport(
-  () => import('@/components/atoms/ThemeToggle').then(mod => ({ default: mod.ThemeToggle })),
-  {
-    ssr: false,
-    loading: () => <div className="size-9 animate-pulse rounded-md bg-surface-hover"></div>,
-  }
-);
 
 export default function LoginPage() {
   const [showDevLogin, setShowDevLogin] = useState(false);
@@ -51,7 +23,11 @@ export default function LoginPage() {
         </div>
 
         {showDevLogin ? (
-          <DevLogin onSuccess={() => (window.location.href = '/dashboard')} />
+          <DevLogin
+            onSuccess={() => {
+              window.location.href = '/dashboard';
+            }}
+          />
         ) : (
           <LoginForm />
         )}

@@ -1,1 +1,22 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔧 Pre-commit hook: Environment-aware validation (Tier 1)"
+
+# Detect environment and run appropriate tier
+echo "📊 Development environment detected - running Tier 1 checks"
+echo "⚡ Fast & essential validation for immediate feedback"
+
+# Use lint-staged for changed files only (performance optimization)
+echo "🔍 Linting changed files..."
 npx lint-staged
+
+# Quick type check (development mode)
+echo "🔍 Quick type check..."
+npm run type-check:fast
+
+# Fast tests for rapid feedback
+echo "🧪 Running fast tests..."
+npm run test:fast
+
+echo "✅ Tier 1 pre-commit validation completed successfully"

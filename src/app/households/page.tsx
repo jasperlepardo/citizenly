@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
 import { logger, logError } from '@/lib/secure-logger';

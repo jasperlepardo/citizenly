@@ -1,6 +1,9 @@
 // Atomic Design System - Component Exports
 // Following Brad Frost's Atomic Design methodology
 
+// Design Tokens - Foundation of the design system
+export * from './tokens';
+
 // Atoms - Basic UI building blocks
 export * from './atoms';
 
@@ -13,8 +16,8 @@ export * from './organisms';
 // Templates - Page-level layouts
 export * from './templates';
 
-// Other specialized components
-export * from './auth';
-export * from './address';
-export * from './dashboard';
+// Utils - HOCs and utility components (currently empty)
+// export * from './utils';
+
+// Providers - React context providers
 export * from './providers';
