@@ -28,7 +28,7 @@ const nextConfig = {
   // Environment variables for build
   env: {
     NEXT_PUBLIC_APP_NAME: 'RBI System',
-    NEXT_PUBLIC_APP_VERSION: '1.0.0',
+    NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version || require('./package.json').version,
   },
   // Serve Storybook at /storybook path
   async rewrites() {

@@ -22,3 +22,4 @@ export * from './ThemeToggle';
 // Single file components
 export * from './AccessibleModal';
 export * from './FormSection';
+export * from './VersionTag';
