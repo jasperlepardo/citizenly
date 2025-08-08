@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import HouseholdSelector from './HouseholdSelector';
 
 const meta: Meta<typeof HouseholdSelector> = {
@@ -57,7 +57,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default household selector ready for user interaction. Shows search placeholder with create option.',
+        story:
+          'Default household selector ready for user interaction. Shows search placeholder with create option.',
       },
     },
   },
@@ -119,7 +120,7 @@ export const LoadingState: Story = {
       },
     },
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-4">
       <HouseholdSelector {...args} />
       <p className="text-sm text-gray-600">
@@ -161,20 +162,26 @@ export const WorkflowDemo: Story = {
     return (
       <div className="max-w-2xl space-y-6">
         <div className="flex items-center space-x-2 text-sm">
-          <div className={`px-3 py-1 rounded ${step === 'select' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}>
+          <div
+            className={`rounded px-3 py-1 ${step === 'select' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+          >
             1. Select Household
           </div>
-          <div className={`px-3 py-1 rounded ${step === 'confirm' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}>
+          <div
+            className={`rounded px-3 py-1 ${step === 'confirm' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+          >
             2. Confirm
           </div>
-          <div className={`px-3 py-1 rounded ${step === 'complete' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+          <div
+            className={`rounded px-3 py-1 ${step === 'complete' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}
+          >
             3. Complete
           </div>
         </div>
 
         {step === 'select' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-gray-700">
               Select Household for New Resident
             </label>
             <HouseholdSelector
@@ -183,33 +190,32 @@ export const WorkflowDemo: Story = {
               placeholder="Search for existing household or create new"
             />
             <p className="mt-2 text-sm text-gray-500">
-              Search by household code, head resident name, or address. Select "Create New Household" if none exist.
+              Search by household code, head resident name, or address. Select "Create New
+              Household" if none exist.
             </p>
           </div>
         )}
 
         {step === 'confirm' && selectedHousehold && (
           <div className="space-y-4">
-            <div className="p-4 bg-green-50 border border-green-200 rounded">
-              <h3 className="font-semibold text-green-800 mb-2">Household Selected</h3>
-              <p className="text-green-700 text-sm">
-                Selected Household: {selectedHousehold}
-              </p>
-              <p className="text-green-600 text-xs mt-1">
+            <div className="rounded border border-green-200 bg-green-50 p-4">
+              <h3 className="mb-2 font-semibold text-green-800">Household Selected</h3>
+              <p className="text-sm text-green-700">Selected Household: {selectedHousehold}</p>
+              <p className="mt-1 text-xs text-green-600">
                 The new resident will be added to this household.
               </p>
             </div>
-            
+
             <div className="flex gap-3">
               <button
                 onClick={handleConfirm}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
               >
                 Confirm Selection
               </button>
               <button
                 onClick={handleReset}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                className="rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
               >
                 Change Household
               </button>
@@ -218,18 +224,18 @@ export const WorkflowDemo: Story = {
         )}
 
         {step === 'complete' && (
-          <div className="text-center space-y-4">
-            <div className="p-6 bg-green-50 border border-green-200 rounded">
-              <div className="text-green-600 text-4xl mb-2">✅</div>
-              <h3 className="font-semibold text-green-800 mb-2">Household Assignment Complete</h3>
-              <p className="text-green-700 text-sm">
+          <div className="space-y-4 text-center">
+            <div className="rounded border border-green-200 bg-green-50 p-6">
+              <div className="mb-2 text-4xl text-green-600">✅</div>
+              <h3 className="mb-2 font-semibold text-green-800">Household Assignment Complete</h3>
+              <p className="text-sm text-green-700">
                 Household {selectedHousehold} has been selected for the new resident.
               </p>
             </div>
-            
+
             <button
               onClick={handleReset}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Start Over
             </button>
@@ -251,52 +257,52 @@ export const SearchExamples: Story = {
   render: () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold mb-3">Search Examples</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">By Household Code</h4>
+        <h3 className="mb-3 text-lg font-semibold">Search Examples</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">By Household Code</h4>
             <HouseholdSelector
               value=""
               onSelect={action('search-by-code')}
               placeholder='Try "HH-001" or "042109001"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Search using full or partial household codes
             </p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">By Head Resident Name</h4>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">By Head Resident Name</h4>
             <HouseholdSelector
               value=""
               onSelect={action('search-by-name')}
               placeholder='Try "Juan dela Cruz" or "Maria"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Search by household head's full or partial name
             </p>
           </div>
-          
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">By Address</h4>
+
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-medium">By Address</h4>
             <HouseholdSelector
               value=""
               onSelect={action('search-by-address')}
               placeholder='Try "Block 5" or "San Lorenzo St"'
             />
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="mt-2 text-sm text-gray-600">
               Search by house number, street, or subdivision
             </p>
           </div>
-          
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-medium mb-2 text-blue-800">Create New</h4>
+
+          <div className="rounded-lg bg-blue-50 p-4">
+            <h4 className="mb-2 font-medium text-blue-800">Create New</h4>
             <HouseholdSelector
               value=""
               onSelect={action('create-new')}
               placeholder="Click dropdown to see create option"
             />
-            <p className="text-sm text-blue-600 mt-2">
+            <p className="mt-2 text-sm text-blue-600">
               Always available option to create new household
             </p>
           </div>
@@ -324,12 +330,12 @@ export const FormIntegration: Story = {
         alert('Please enter resident name');
         return;
       }
-      
+
       if (!householdCode) {
         setError('Please select or create a household');
         return;
       }
-      
+
       setError('');
       action('form-submitted')({ residentName, householdCode });
       alert(`Resident "${residentName}" assigned to household: ${householdCode}`);
@@ -345,20 +351,18 @@ export const FormIntegration: Story = {
     return (
       <div className="max-w-md space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Resident Name *
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Resident Name *</label>
           <input
             type="text"
             value={residentName}
-            onChange={(e) => setResidentName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={e => setResidentName(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter full name"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-medium text-gray-700">
             Household Assignment *
           </label>
           <HouseholdSelector
@@ -371,13 +375,13 @@ export const FormIntegration: Story = {
 
         <button
           onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Add Resident to Household
         </button>
 
         {householdCode && (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+          <div className="rounded border border-blue-200 bg-blue-50 p-3">
             <p className="text-sm text-blue-800">
               <strong>Selected:</strong> {householdCode}
             </p>
@@ -399,25 +403,21 @@ export const ResponsiveLayout: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="w-full max-w-sm">
-        <h4 className="text-sm font-semibold mb-2">Mobile Layout</h4>
-        <HouseholdSelector
-          value=""
-          onSelect={action('mobile-select')}
-          placeholder="Mobile view"
-        />
+        <h4 className="mb-2 text-sm font-semibold">Mobile Layout</h4>
+        <HouseholdSelector value="" onSelect={action('mobile-select')} placeholder="Mobile view" />
       </div>
-      
+
       <div className="w-full max-w-md">
-        <h4 className="text-sm font-semibold mb-2">Tablet Layout</h4>
+        <h4 className="mb-2 text-sm font-semibold">Tablet Layout</h4>
         <HouseholdSelector
           value=""
           onSelect={action('tablet-select')}
           placeholder="Tablet view with more space"
         />
       </div>
-      
+
       <div className="w-full max-w-2xl">
-        <h4 className="text-sm font-semibold mb-2">Desktop Layout</h4>
+        <h4 className="mb-2 text-sm font-semibold">Desktop Layout</h4>
         <HouseholdSelector
           value=""
           onSelect={action('desktop-select')}

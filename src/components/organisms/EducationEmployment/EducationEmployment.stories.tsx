@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import EducationEmployment, { EducationEmploymentData } from './EducationEmployment';
 
 const meta: Meta<typeof EducationEmployment> = {

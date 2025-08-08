@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import SectoralInfo, { SectoralInformation, SectoralContext } from './SectoralInfo';
 
 const meta: Meta<typeof SectoralInfo> = {
@@ -326,12 +326,14 @@ export const InteractiveDemo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive demonstration showing how auto-calculations work with changing context.',
+        story:
+          'Interactive demonstration showing how auto-calculations work with changing context.',
       },
     },
   },
   render: () => {
-    const [sectoralInfo, setSectoralInfo] = React.useState<SectoralInformation>(defaultSectoralInfo);
+    const [sectoralInfo, setSectoralInfo] =
+      React.useState<SectoralInformation>(defaultSectoralInfo);
     const [context, setContext] = React.useState<SectoralContext>({
       age: 25,
       birthdate: '1998-06-15',
@@ -386,24 +388,26 @@ export const InteractiveDemo: Story = {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-semibold mb-3">Context Controls</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded border">
+          <h3 className="mb-3 text-lg font-semibold">Context Controls</h3>
+          <div className="grid grid-cols-1 gap-4 rounded border bg-gray-50 p-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Age</label>
               <input
                 type="number"
                 value={context.age || ''}
-                onChange={(e) => setContext({...context, age: parseInt(e.target.value) || 0})}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                onChange={e => setContext({ ...context, age: parseInt(e.target.value) || 0 })}
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Employment Status</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Employment Status
+              </label>
               <select
                 value={context.employment_status}
-                onChange={(e) => setContext({...context, employment_status: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                onChange={e => setContext({ ...context, employment_status: e.target.value })}
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="employed_full_time">Employed (Full-time)</option>
@@ -415,13 +419,17 @@ export const InteractiveDemo: Story = {
                 <option value="retired">Retired</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Education Level
+              </label>
               <select
                 value={context.highest_educational_attainment}
-                onChange={(e) => setContext({...context, highest_educational_attainment: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                onChange={e =>
+                  setContext({ ...context, highest_educational_attainment: e.target.value })
+                }
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="elementary_graduate">Elementary Graduate</option>
@@ -431,13 +439,13 @@ export const InteractiveDemo: Story = {
                 <option value="vocational_graduate">Vocational Graduate</option>
               </select>
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Marital Status</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Marital Status</label>
               <select
                 value={context.marital_status}
-                onChange={(e) => setContext({...context, marital_status: e.target.value})}
-                className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                onChange={e => setContext({ ...context, marital_status: e.target.value })}
+                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="single">Single</option>
@@ -447,15 +455,15 @@ export const InteractiveDemo: Story = {
               </select>
             </div>
           </div>
-          
+
           <div className="mt-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Quick Scenarios:</h4>
+            <h4 className="mb-2 text-sm font-medium text-gray-700">Quick Scenarios:</h4>
             <div className="flex flex-wrap gap-2">
-              {presetScenarios.map((scenario) => (
+              {presetScenarios.map(scenario => (
                 <button
                   key={scenario.name}
                   onClick={() => setContext(scenario.context)}
-                  className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                  className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700 hover:bg-blue-200"
                 >
                   {scenario.name}
                 </button>
@@ -464,24 +472,28 @@ export const InteractiveDemo: Story = {
           </div>
         </div>
 
-        <SectoralInfo
-          value={sectoralInfo}
-          onChange={setSectoralInfo}
-          context={context}
-        />
+        <SectoralInfo value={sectoralInfo} onChange={setSectoralInfo} context={context} />
 
-        <div className="p-4 bg-gray-50 rounded border">
-          <h4 className="font-semibold mb-2">Current Context & Results:</h4>
-          <div className="text-sm space-y-1">
-            <div><strong>Age:</strong> {context.age} years</div>
-            <div><strong>Employment:</strong> {context.employment_status || 'Not specified'}</div>
-            <div><strong>Education:</strong> {context.highest_educational_attainment || 'Not specified'}</div>
-            <div><strong>Active Flags:</strong> {
-              Object.entries(sectoralInfo)
+        <div className="rounded border bg-gray-50 p-4">
+          <h4 className="mb-2 font-semibold">Current Context & Results:</h4>
+          <div className="space-y-1 text-sm">
+            <div>
+              <strong>Age:</strong> {context.age} years
+            </div>
+            <div>
+              <strong>Employment:</strong> {context.employment_status || 'Not specified'}
+            </div>
+            <div>
+              <strong>Education:</strong>{' '}
+              {context.highest_educational_attainment || 'Not specified'}
+            </div>
+            <div>
+              <strong>Active Flags:</strong>{' '}
+              {Object.entries(sectoralInfo)
                 .filter(([_, value]) => value === true)
                 .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
-                .join(', ') || 'None'
-            }</div>
+                .join(', ') || 'None'}
+            </div>
           </div>
         </div>
       </div>
@@ -499,10 +511,14 @@ export const AgeBasedCalculations: Story = {
   },
   render: () => {
     const [currentAge, setCurrentAge] = React.useState(25);
-    
+
     const ageGroups = [
       { age: 8, label: 'Child (8 years)', description: 'Out-of-school children eligible' },
-      { age: 16, label: 'Teenager (16 years)', description: 'Out-of-school children/youth transition' },
+      {
+        age: 16,
+        label: 'Teenager (16 years)',
+        description: 'Out-of-school children/youth transition',
+      },
       { age: 22, label: 'Young Adult (22 years)', description: 'Out-of-school youth eligible' },
       { age: 35, label: 'Adult (35 years)', description: 'Working age' },
       { age: 65, label: 'Senior (65 years)', description: 'Senior citizen eligible' },
@@ -511,15 +527,15 @@ export const AgeBasedCalculations: Story = {
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-semibold mb-3">Age-Based Classification Demo</h3>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {ageGroups.map((group) => (
+          <h3 className="mb-3 text-lg font-semibold">Age-Based Classification Demo</h3>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {ageGroups.map(group => (
               <button
                 key={group.age}
                 onClick={() => setCurrentAge(group.age)}
-                className={`px-3 py-2 rounded text-sm ${
-                  currentAge === group.age 
-                    ? 'bg-blue-600 text-white' 
+                className={`rounded px-3 py-2 text-sm ${
+                  currentAge === group.age
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
@@ -527,8 +543,8 @@ export const AgeBasedCalculations: Story = {
               </button>
             ))}
           </div>
-          
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
+
+          <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
             <strong>Current:</strong> {ageGroups.find(g => g.age === currentAge)?.description}
           </div>
         </div>
@@ -538,7 +554,9 @@ export const AgeBasedCalculations: Story = {
           onChange={action('age-demo-changed')}
           context={{
             age: currentAge,
-            birthdate: new Date(new Date().getFullYear() - currentAge, 5, 15).toISOString().split('T')[0],
+            birthdate: new Date(new Date().getFullYear() - currentAge, 5, 15)
+              .toISOString()
+              .split('T')[0],
             employment_status: currentAge >= 18 ? 'unemployed_looking' : '',
             highest_educational_attainment: currentAge >= 18 ? 'high_school_graduate' : '',
             marital_status: 'single',

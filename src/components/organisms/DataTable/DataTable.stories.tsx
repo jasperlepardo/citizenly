@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import DataTable from './DataTable';
 
 const meta: Meta<typeof DataTable> = {
@@ -142,7 +142,9 @@ const basicColumns = [
         pending: 'bg-yellow-100 text-yellow-800',
       };
       return (
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[value as keyof typeof statusColors]}`}>
+        <span
+          className={`rounded-full px-2 py-1 text-xs font-medium ${statusColors[value as keyof typeof statusColors]}`}
+        >
           {value.charAt(0).toUpperCase() + value.slice(1)}
         </span>
       );
@@ -203,7 +205,8 @@ export const WithActions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Data table with action buttons. Edit and Delete buttons trigger actions, while View uses navigation.',
+        story:
+          'Data table with action buttons. Edit and Delete buttons trigger actions, while View uses navigation.',
       },
     },
   },
@@ -272,12 +275,10 @@ export const EmptyState: Story = {
     data: [],
     columns: basicColumns,
     emptyText: (
-      <div className="text-center py-8">
-        <div className="text-gray-400 text-4xl mb-2">📋</div>
-        <div className="text-gray-500 font-medium">No users found</div>
-        <div className="text-gray-400 text-sm mt-1">
-          Add some users to see them appear here
-        </div>
+      <div className="py-8 text-center">
+        <div className="mb-2 text-4xl text-gray-400">📋</div>
+        <div className="font-medium text-gray-500">No users found</div>
+        <div className="mt-1 text-sm text-gray-400">Add some users to see them appear here</div>
       </div>
     ),
   },
@@ -301,30 +302,18 @@ export const Sizes: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-semibold mb-3">Small</h3>
-        <DataTable
-          data={mockUsers.slice(0, 3)}
-          columns={basicColumns}
-          size="small"
-        />
+        <h3 className="mb-3 text-lg font-semibold">Small</h3>
+        <DataTable data={mockUsers.slice(0, 3)} columns={basicColumns} size="small" />
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-3">Medium (Default)</h3>
-        <DataTable
-          data={mockUsers.slice(0, 3)}
-          columns={basicColumns}
-          size="middle"
-        />
+        <h3 className="mb-3 text-lg font-semibold">Medium (Default)</h3>
+        <DataTable data={mockUsers.slice(0, 3)} columns={basicColumns} size="middle" />
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-3">Large</h3>
-        <DataTable
-          data={mockUsers.slice(0, 3)}
-          columns={basicColumns}
-          size="large"
-        />
+        <h3 className="mb-3 text-lg font-semibold">Large</h3>
+        <DataTable data={mockUsers.slice(0, 3)} columns={basicColumns} size="large" />
       </div>
     </div>
   ),
@@ -339,12 +328,15 @@ export const CustomRendering: Story = {
         title: 'User',
         render: (_, record: UserData) => (
           <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-              {record.name.split(' ').map(n => n[0]).join('')}
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">
+              {record.name
+                .split(' ')
+                .map(n => n[0])
+                .join('')}
             </div>
             <div>
               <div className="font-medium text-gray-900">{record.name}</div>
-              <div className="text-gray-500 text-sm">{record.email}</div>
+              <div className="text-sm text-gray-500">{record.email}</div>
             </div>
           </div>
         ),
@@ -356,11 +348,15 @@ export const CustomRendering: Story = {
         render: (_, record: UserData) => (
           <div>
             <div className="font-medium text-gray-900">{record.role}</div>
-            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-              record.status === 'active' ? 'bg-green-100 text-green-800' :
-              record.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
-              'bg-yellow-100 text-yellow-800'
-            }`}>
+            <span
+              className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                record.status === 'active'
+                  ? 'bg-green-100 text-green-800'
+                  : record.status === 'inactive'
+                    ? 'bg-gray-100 text-gray-800'
+                    : 'bg-yellow-100 text-yellow-800'
+              }`}
+            >
               {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
             </span>
           </div>
@@ -419,7 +415,8 @@ export const FullFeatured: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Full-featured data table with all features enabled: sorting, pagination, selection, actions, and row click events.',
+        story:
+          'Full-featured data table with all features enabled: sorting, pagination, selection, actions, and row click events.',
       },
     },
   },
@@ -471,15 +468,17 @@ export const ResidentsTable: Story = {
       {
         key: 'fullName',
         title: 'Full Name',
-        dataIndex: 'fullName' as keyof typeof residents[0],
+        dataIndex: 'fullName' as keyof (typeof residents)[0],
         sortable: true,
       },
       {
         key: 'demographics',
         title: 'Demographics',
-        render: (_, record: typeof residents[0]) => (
+        render: (_, record: (typeof residents)[0]) => (
           <div className="text-sm">
-            <div>{record.age} years old, {record.gender}</div>
+            <div>
+              {record.age} years old, {record.gender}
+            </div>
             <div className="text-gray-500">{record.civilStatus}</div>
           </div>
         ),
@@ -487,29 +486,27 @@ export const ResidentsTable: Story = {
       {
         key: 'occupation',
         title: 'Occupation',
-        dataIndex: 'occupation' as keyof typeof residents[0],
+        dataIndex: 'occupation' as keyof (typeof residents)[0],
         sortable: true,
       },
       {
         key: 'household',
         title: 'Household',
-        dataIndex: 'household' as keyof typeof residents[0],
+        dataIndex: 'household' as keyof (typeof residents)[0],
         render: (value: string) => (
-          <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-            {value}
-          </span>
+          <span className="rounded bg-gray-100 px-2 py-1 font-mono text-sm">{value}</span>
         ),
       },
       {
         key: 'status',
         title: 'Status',
-        dataIndex: 'status' as keyof typeof residents[0],
+        dataIndex: 'status' as keyof (typeof residents)[0],
         render: (value: string) => (
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-            value === 'active' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
+          <span
+            className={`rounded-full px-2 py-1 text-xs font-medium ${
+              value === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
             {value.charAt(0).toUpperCase() + value.slice(1)}
           </span>
         ),
@@ -520,19 +517,19 @@ export const ResidentsTable: Story = {
       {
         key: 'edit',
         label: 'Edit',
-        onClick: (record: typeof residents[0]) => action('edit-resident')(record),
+        onClick: (record: (typeof residents)[0]) => action('edit-resident')(record),
         variant: 'primary' as const,
       },
       {
         key: 'household',
         label: 'View Household',
-        href: (record: typeof residents[0]) => `/households/${record.household}`,
+        href: (record: (typeof residents)[0]) => `/households/${record.household}`,
         variant: 'secondary' as const,
       },
       {
         key: 'deactivate',
-        label: record => record.status === 'active' ? 'Deactivate' : 'Activate',
-        onClick: (record: typeof residents[0]) => action('toggle-status')(record),
+        label: record => (record.status === 'active' ? 'Deactivate' : 'Activate'),
+        onClick: (record: (typeof residents)[0]) => action('toggle-status')(record),
         variant: 'warning' as const,
       },
     ];

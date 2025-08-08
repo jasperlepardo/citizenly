@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import { Table, TableBody, TableRow, TableCell, TableControls } from './Table';
 
 const meta: Meta<typeof Table> = {
@@ -91,7 +91,7 @@ export const BasicTable: Story = {
             <strong>Role</strong>
           </TableCell>
         </TableRow>
-        {mockContacts.map((contact) => (
+        {mockContacts.map(contact => (
           <TableRow key={contact.id} className="border-b">
             <TableCell>{contact.name}</TableCell>
             <TableCell>{contact.email}</TableCell>
@@ -113,7 +113,7 @@ export const WithCheckboxes: Story = {
   },
   render: () => {
     const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
-    
+
     const handleSelectAll = (checked: boolean) => {
       if (checked) {
         setSelectedItems(mockContacts.map(contact => contact.id));
@@ -121,7 +121,7 @@ export const WithCheckboxes: Story = {
         setSelectedItems([]);
       }
     };
-    
+
     const handleSelectItem = (id: number, checked: boolean) => {
       if (checked) {
         setSelectedItems([...selectedItems, id]);
@@ -135,48 +135,54 @@ export const WithCheckboxes: Story = {
         <TableBody>
           {/* Header Row */}
           <TableRow className="border-b bg-gray-50">
-            <TableCell 
+            <TableCell
               type="checkbox"
               checkbox={{
                 checked: selectedItems.length === mockContacts.length,
                 onChange: handleSelectAll,
               }}
             />
-            <TableCell><strong>Name</strong></TableCell>
-            <TableCell><strong>Email</strong></TableCell>
-            <TableCell><strong>Status</strong></TableCell>
+            <TableCell>
+              <strong>Name</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Email</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Status</strong>
+            </TableCell>
           </TableRow>
-          
+
           {/* Data Rows */}
-          {mockContacts.map((contact) => (
+          {mockContacts.map(contact => (
             <TableRow key={contact.id} className="border-b">
-              <TableCell 
+              <TableCell
                 type="checkbox"
                 checkbox={{
                   checked: selectedItems.includes(contact.id),
-                  onChange: (checked) => handleSelectItem(contact.id, checked),
+                  onChange: checked => handleSelectItem(contact.id, checked),
                 }}
               />
               <TableCell>{contact.name}</TableCell>
               <TableCell>{contact.email}</TableCell>
               <TableCell>
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  contact.status === 'active' 
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-800'
-                }`}>
+                <span
+                  className={`rounded-full px-2 py-1 text-xs ${
+                    contact.status === 'active'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}
+                >
                   {contact.status}
                 </span>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        
+
         {selectedItems.length > 0 && (
-          <div className="p-3 bg-blue-50 border-t border-blue-200">
-            <p className="text-sm text-blue-800">
-              {selectedItems.length} item(s) selected
-            </p>
+          <div className="border-t border-blue-200 bg-blue-50 p-3">
+            <p className="text-sm text-blue-800">{selectedItems.length} item(s) selected</p>
           </div>
         )}
       </Table>
@@ -197,14 +203,22 @@ export const WithActions: Story = {
       <TableBody>
         {/* Header Row */}
         <TableRow className="border-b bg-gray-50">
-          <TableCell><strong>Name</strong></TableCell>
-          <TableCell><strong>Email</strong></TableCell>
-          <TableCell><strong>Phone</strong></TableCell>
-          <TableCell><strong>Actions</strong></TableCell>
+          <TableCell>
+            <strong>Name</strong>
+          </TableCell>
+          <TableCell>
+            <strong>Email</strong>
+          </TableCell>
+          <TableCell>
+            <strong>Phone</strong>
+          </TableCell>
+          <TableCell>
+            <strong>Actions</strong>
+          </TableCell>
         </TableRow>
-        
+
         {/* Data Rows */}
-        {mockContacts.map((contact) => (
+        {mockContacts.map(contact => (
           <TableRow key={contact.id} className="border-b hover:bg-gray-50">
             <TableCell>{contact.name}</TableCell>
             <TableCell>{contact.email}</TableCell>
@@ -228,12 +242,13 @@ export const WithControls: Story = {
   render: () => {
     const [searchTerm, setSearchTerm] = React.useState('');
     const [selectedItems, setSelectedItems] = React.useState<number[]>([]);
-    
-    const filteredContacts = mockContacts.filter(contact => 
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.email.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const filteredContacts = mockContacts.filter(
+      contact =>
+        contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     const handleSelectAll = (checked: boolean) => {
       if (checked) {
         setSelectedItems(filteredContacts.map(contact => contact.id));
@@ -241,7 +256,7 @@ export const WithControls: Story = {
         setSelectedItems([]);
       }
     };
-    
+
     const handleSelectItem = (id: number, checked: boolean) => {
       if (checked) {
         setSelectedItems([...selectedItems, id]);
@@ -254,7 +269,8 @@ export const WithControls: Story = {
       <div className="space-y-4">
         <TableControls
           selectAll={{
-            checked: selectedItems.length === filteredContacts.length && filteredContacts.length > 0,
+            checked:
+              selectedItems.length === filteredContacts.length && filteredContacts.length > 0,
             onChange: handleSelectAll,
             label: 'Select all contacts',
           }}
@@ -266,15 +282,15 @@ export const WithControls: Story = {
           actions={
             selectedItems.length > 0 && (
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => action('bulk-delete')(selectedItems)}
-                  className="px-3 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                  className="rounded bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700"
                 >
                   Delete Selected
                 </button>
-                <button 
+                <button
                   onClick={() => action('bulk-export')(selectedItems)}
-                  className="px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
                 >
                   Export Selected
                 </button>
@@ -282,33 +298,42 @@ export const WithControls: Story = {
             )
           }
         />
-        
+
         <Table>
           <TableBody>
             {/* Header Row */}
             <TableRow className="border-b bg-gray-50">
-              <TableCell 
+              <TableCell
                 type="checkbox"
                 checkbox={{
-                  checked: selectedItems.length === filteredContacts.length && filteredContacts.length > 0,
+                  checked:
+                    selectedItems.length === filteredContacts.length && filteredContacts.length > 0,
                   onChange: handleSelectAll,
                 }}
               />
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Email</strong></TableCell>
-              <TableCell><strong>Role</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
+              <TableCell>
+                <strong>Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Email</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Role</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
             </TableRow>
-            
+
             {/* Data Rows */}
             {filteredContacts.length > 0 ? (
-              filteredContacts.map((contact) => (
+              filteredContacts.map(contact => (
                 <TableRow key={contact.id} className="border-b hover:bg-gray-50">
-                  <TableCell 
+                  <TableCell
                     type="checkbox"
                     checkbox={{
                       checked: selectedItems.includes(contact.id),
-                      onChange: (checked) => handleSelectItem(contact.id, checked),
+                      onChange: checked => handleSelectItem(contact.id, checked),
                     }}
                   />
                   <TableCell>{contact.name}</TableCell>
@@ -319,16 +344,19 @@ export const WithControls: Story = {
               ))
             ) : (
               <TableRow>
-                <TableCell className="text-center py-8 text-gray-500" style={{ gridColumn: '1 / -1' }}>
+                <TableCell
+                  className="py-8 text-center text-gray-500"
+                  style={{ gridColumn: '1 / -1' }}
+                >
                   No contacts found matching "{searchTerm}"
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-        
+
         {selectedItems.length > 0 && (
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded">
+          <div className="rounded border border-blue-200 bg-blue-50 p-3">
             <p className="text-sm text-blue-800">
               {selectedItems.length} of {filteredContacts.length} contacts selected
             </p>
@@ -377,16 +405,16 @@ export const ResidentsTable: Story = {
 
     return (
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">Barangay San Lorenzo - Residents</h2>
-          <button 
+          <button
             onClick={() => action('add-resident')()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             + Add Resident
           </button>
         </div>
-        
+
         <TableControls
           search={{
             value: '',
@@ -394,48 +422,56 @@ export const ResidentsTable: Story = {
             placeholder: 'Search residents by name or address...',
           }}
         />
-        
-        <Table className="border border-gray-200 rounded-lg overflow-hidden">
+
+        <Table className="overflow-hidden rounded-lg border border-gray-200">
           <TableBody>
             {/* Header Row */}
             <TableRow className="border-b bg-gray-100">
-              <TableCell><strong>Full Name</strong></TableCell>
-              <TableCell><strong>Age</strong></TableCell>
-              <TableCell><strong>Address</strong></TableCell>
-              <TableCell><strong>Occupation</strong></TableCell>
-              <TableCell><strong>Household</strong></TableCell>
-              <TableCell><strong>Actions</strong></TableCell>
+              <TableCell>
+                <strong>Full Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Age</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Address</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Occupation</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Household</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Actions</strong>
+              </TableCell>
             </TableRow>
-            
+
             {/* Data Rows */}
-            {residents.map((resident) => (
+            {residents.map(resident => (
               <TableRow key={resident.id} className="border-b last:border-b-0 hover:bg-gray-50">
                 <TableCell>
-                  <div className="font-medium text-gray-900">
-                    {resident.name}
-                  </div>
+                  <div className="font-medium text-gray-900">{resident.name}</div>
                 </TableCell>
                 <TableCell>{resident.age} years old</TableCell>
-                <TableCell className="text-sm text-gray-600">
-                  {resident.address}
-                </TableCell>
+                <TableCell className="text-sm text-gray-600">{resident.address}</TableCell>
                 <TableCell>{resident.occupation}</TableCell>
                 <TableCell>
-                  <span className="font-mono text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  <span className="rounded bg-blue-100 px-2 py-1 font-mono text-sm text-blue-800">
                     {resident.household}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <button 
+                    <button
                       onClick={() => action('view-resident')(resident)}
-                      className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                      className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
                     >
                       View
                     </button>
-                    <button 
+                    <button
                       onClick={() => action('edit-resident')(resident)}
-                      className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                      className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 hover:bg-blue-200"
                     >
                       Edit
                     </button>
@@ -445,7 +481,7 @@ export const ResidentsTable: Story = {
             ))}
           </TableBody>
         </Table>
-        
+
         <div className="text-sm text-gray-500">
           Showing {residents.length} residents • Last updated: {new Date().toLocaleDateString()}
         </div>
@@ -466,16 +502,22 @@ export const EmptyState: Story = {
     <Table>
       <TableBody>
         <TableRow className="border-b bg-gray-50">
-          <TableCell><strong>Name</strong></TableCell>
-          <TableCell><strong>Email</strong></TableCell>
-          <TableCell><strong>Role</strong></TableCell>
+          <TableCell>
+            <strong>Name</strong>
+          </TableCell>
+          <TableCell>
+            <strong>Email</strong>
+          </TableCell>
+          <TableCell>
+            <strong>Role</strong>
+          </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className="text-center py-12 text-gray-500" style={{ gridColumn: '1 / -1' }}>
+          <TableCell className="py-12 text-center text-gray-500" style={{ gridColumn: '1 / -1' }}>
             <div>
-              <div className="text-4xl mb-2">📋</div>
+              <div className="mb-2 text-4xl">📋</div>
               <div className="font-medium">No data available</div>
-              <div className="text-sm mt-1">Add some items to see them here</div>
+              <div className="mt-1 text-sm">Add some items to see them here</div>
             </div>
           </TableCell>
         </TableRow>
@@ -496,46 +538,58 @@ export const CustomStyling: Story = {
     <div className="space-y-6">
       {/* Success Theme */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-green-800">Active Residents</h3>
-        <Table className="border-2 border-green-200 rounded-lg overflow-hidden">
+        <h3 className="mb-3 text-lg font-semibold text-green-800">Active Residents</h3>
+        <Table className="overflow-hidden rounded-lg border-2 border-green-200">
           <TableBody>
-            <TableRow className="bg-green-100 border-b border-green-200">
-              <TableCell><strong className="text-green-900">Name</strong></TableCell>
-              <TableCell><strong className="text-green-900">Status</strong></TableCell>
+            <TableRow className="border-b border-green-200 bg-green-100">
+              <TableCell>
+                <strong className="text-green-900">Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong className="text-green-900">Status</strong>
+              </TableCell>
             </TableRow>
-            {mockContacts.filter(c => c.status === 'active').map((contact) => (
-              <TableRow key={contact.id} className="border-b border-green-200 hover:bg-green-50">
-                <TableCell className="text-green-900">{contact.name}</TableCell>
-                <TableCell>
-                  <span className="bg-green-200 text-green-800 px-2 py-1 text-xs rounded-full">
-                    Active
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
+            {mockContacts
+              .filter(c => c.status === 'active')
+              .map(contact => (
+                <TableRow key={contact.id} className="border-b border-green-200 hover:bg-green-50">
+                  <TableCell className="text-green-900">{contact.name}</TableCell>
+                  <TableCell>
+                    <span className="rounded-full bg-green-200 px-2 py-1 text-xs text-green-800">
+                      Active
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
-      
+
       {/* Warning Theme */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-red-800">Inactive Residents</h3>
-        <Table className="border-2 border-red-200 rounded-lg overflow-hidden">
+        <h3 className="mb-3 text-lg font-semibold text-red-800">Inactive Residents</h3>
+        <Table className="overflow-hidden rounded-lg border-2 border-red-200">
           <TableBody>
-            <TableRow className="bg-red-100 border-b border-red-200">
-              <TableCell><strong className="text-red-900">Name</strong></TableCell>
-              <TableCell><strong className="text-red-900">Status</strong></TableCell>
+            <TableRow className="border-b border-red-200 bg-red-100">
+              <TableCell>
+                <strong className="text-red-900">Name</strong>
+              </TableCell>
+              <TableCell>
+                <strong className="text-red-900">Status</strong>
+              </TableCell>
             </TableRow>
-            {mockContacts.filter(c => c.status === 'inactive').map((contact) => (
-              <TableRow key={contact.id} className="border-b border-red-200 hover:bg-red-50">
-                <TableCell className="text-red-900">{contact.name}</TableCell>
-                <TableCell>
-                  <span className="bg-red-200 text-red-800 px-2 py-1 text-xs rounded-full">
-                    Inactive
-                  </span>
-                </TableCell>
-              </TableRow>
-            ))}
+            {mockContacts
+              .filter(c => c.status === 'inactive')
+              .map(contact => (
+                <TableRow key={contact.id} className="border-b border-red-200 hover:bg-red-50">
+                  <TableCell className="text-red-900">{contact.name}</TableCell>
+                  <TableCell>
+                    <span className="rounded-full bg-red-200 px-2 py-1 text-xs text-red-800">
+                      Inactive
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

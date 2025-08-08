@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import Navigation, { NavigationItem } from './Navigation';
 
 const meta: Meta<typeof Navigation> = {
@@ -95,42 +95,42 @@ const CogIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 // Mock navigation items
 const defaultNavItems: NavigationItem[] = [
-  { 
-    name: 'Dashboard', 
-    href: '/dashboard', 
+  {
+    name: 'Dashboard',
+    href: '/dashboard',
     icon: HomeIcon,
-    description: 'Main dashboard and overview' 
+    description: 'Main dashboard and overview',
   },
-  { 
-    name: 'Residents', 
-    href: '/residents', 
+  {
+    name: 'Residents',
+    href: '/residents',
     icon: UsersIcon,
     description: 'Manage resident records',
     children: [
       { name: 'All Residents', href: '/residents' },
       { name: 'Add Resident', href: '/residents/add' },
       { name: 'Import Data', href: '/residents/import' },
-    ]
+    ],
   },
-  { 
-    name: 'Reports', 
-    href: '/reports', 
+  {
+    name: 'Reports',
+    href: '/reports',
     icon: ChartBarIcon,
     description: 'Analytics and reports',
     children: [
       { name: 'Demographics', href: '/reports/demographics' },
       { name: 'Sectoral', href: '/reports/sectoral' },
       { name: 'Household', href: '/reports/household' },
-    ]
+    ],
   },
 ];
 
 const bottomNavItems: NavigationItem[] = [
-  { 
-    name: 'Settings', 
-    href: '/settings', 
+  {
+    name: 'Settings',
+    href: '/settings',
     icon: CogIcon,
-    description: 'Application settings' 
+    description: 'Application settings',
   },
 ];
 
@@ -142,7 +142,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default navigation with main items and bottom items. Shows icons and supports submenu expansion.',
+        story:
+          'Default navigation with main items and bottom items. Shows icons and supports submenu expansion.',
       },
     },
   },
@@ -156,7 +157,8 @@ export const WithActiveItem: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Navigation with an active item highlighted. The active state is automatically managed based on the current route.',
+        story:
+          'Navigation with an active item highlighted. The active state is automatically managed based on the current route.',
       },
     },
     nextjs: {
@@ -230,8 +232,8 @@ export const CompactLayout: Story = {
     },
   },
   decorators: [
-    (Story) => (
-      <div className="w-64 h-96 bg-gray-50 border border-gray-200 rounded-lg p-4">
+    Story => (
+      <div className="h-96 w-64 rounded-lg border border-gray-200 bg-gray-50 p-4">
         <Story />
       </div>
     ),
@@ -248,55 +250,52 @@ export const BarangayNavigation: Story = {
   },
   render: () => {
     const barangayNavItems: NavigationItem[] = [
-      { 
-        name: 'Dashboard', 
-        href: '/dashboard', 
+      {
+        name: 'Dashboard',
+        href: '/dashboard',
         icon: HomeIcon,
-        description: 'Barangay overview' 
+        description: 'Barangay overview',
       },
-      { 
-        name: 'Mga Residente', 
-        href: '/residents', 
+      {
+        name: 'Mga Residente',
+        href: '/residents',
         icon: UsersIcon,
         description: 'Resident management',
         children: [
           { name: 'Lahat ng Residente', href: '/residents' },
           { name: 'Dagdag Residente', href: '/residents/add' },
           { name: 'Pamilyang Records', href: '/residents/households' },
-        ]
+        ],
       },
-      { 
-        name: 'Mga Ulat', 
-        href: '/reports', 
+      {
+        name: 'Mga Ulat',
+        href: '/reports',
         icon: ChartBarIcon,
         description: 'Reports and analytics',
         children: [
           { name: 'Demographics', href: '/reports/demographics' },
           { name: 'Sectoral Groups', href: '/reports/sectoral' },
           { name: 'Barangay Profile', href: '/reports/profile' },
-        ]
+        ],
       },
     ];
 
     const barangayBottomItems: NavigationItem[] = [
-      { 
-        name: 'Settings', 
-        href: '/settings', 
-        icon: CogIcon 
+      {
+        name: 'Settings',
+        href: '/settings',
+        icon: CogIcon,
       },
     ];
 
     return (
-      <div className="w-72 h-96 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <div className="p-4 border-b border-gray-200">
+      <div className="h-96 w-72 rounded-lg border border-gray-200 bg-white shadow-sm">
+        <div className="border-b border-gray-200 p-4">
           <h2 className="text-lg font-semibold text-gray-900">Barangay San Lorenzo</h2>
           <p className="text-sm text-gray-500">Makati City, Metro Manila</p>
         </div>
         <div className="p-4">
-          <Navigation 
-            items={barangayNavItems}
-            bottomItems={barangayBottomItems}
-          />
+          <Navigation items={barangayNavItems} bottomItems={barangayBottomItems} />
         </div>
       </div>
     );
@@ -312,9 +311,9 @@ export const MobileNavigation: Story = {
     },
   },
   decorators: [
-    (Story) => (
-      <div className="w-80 h-screen bg-white border-r border-gray-200">
-        <div className="p-4 border-b border-gray-200">
+    Story => (
+      <div className="h-screen w-80 border-r border-gray-200 bg-white">
+        <div className="border-b border-gray-200 p-4">
           <h1 className="text-xl font-bold text-gray-900">Citizenly</h1>
           <p className="text-sm text-gray-500">Barangay Management</p>
         </div>
@@ -340,40 +339,36 @@ export const WithNotifications: Story = {
   },
   render: () => {
     const notificationNavItems: NavigationItem[] = [
-      { 
-        name: 'Dashboard', 
-        href: '/dashboard', 
-        icon: HomeIcon 
+      {
+        name: 'Dashboard',
+        href: '/dashboard',
+        icon: HomeIcon,
       },
-      { 
-        name: 'Residents', 
-        href: '/residents', 
+      {
+        name: 'Residents',
+        href: '/residents',
         icon: UsersIcon,
         children: [
           { name: 'All Residents (1,234)', href: '/residents' },
           { name: 'Pending Approval (5)', href: '/residents/pending' },
           { name: 'New Registrations (12)', href: '/residents/new' },
-        ]
+        ],
       },
-      { 
-        name: 'Reports', 
-        href: '/reports', 
+      {
+        name: 'Reports',
+        href: '/reports',
         icon: ChartBarIcon,
         children: [
           { name: 'Demographics', href: '/reports/demographics' },
           { name: 'Monthly Report (Due)', href: '/reports/monthly' },
-        ]
+        ],
       },
     ];
 
     return (
       <div className="w-80 space-y-4">
-        <Navigation 
-          items={notificationNavItems}
-          bottomItems={bottomNavItems}
-          showSubmenu={true}
-        />
-        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <Navigation items={notificationNavItems} bottomItems={bottomNavItems} showSubmenu={true} />
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3">
           <p className="text-sm text-yellow-800">
             <strong>5</strong> residents pending approval
           </p>
@@ -392,9 +387,9 @@ export const DarkTheme: Story = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="dark">
-        <div className="w-72 h-96 bg-gray-900 border border-gray-700 rounded-lg p-4">
+        <div className="h-96 w-72 rounded-lg border border-gray-700 bg-gray-900 p-4">
           <Story />
         </div>
       </div>

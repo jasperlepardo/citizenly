@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import CreateHouseholdModal from './CreateHouseholdModal';
 
 const meta: Meta<typeof CreateHouseholdModal> = {
@@ -75,7 +75,8 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default modal state ready for household creation. Shows the geographic location context and form fields.',
+        story:
+          'Default modal state ready for household creation. Shows the geographic location context and form fields.',
       },
     },
   },
@@ -95,19 +96,17 @@ export const Closed: Story = {
       },
     },
   },
-  render: (args) => (
+  render: args => (
     <div className="space-y-4">
       <CreateHouseholdModal {...args} />
       <div className="text-center">
-        <button 
+        <button
           onClick={() => args.onClose()}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Open Create Household Modal
         </button>
-        <p className="text-sm text-gray-500 mt-2">
-          Click the button above to open the modal
-        </p>
+        <p className="mt-2 text-sm text-gray-500">Click the button above to open the modal</p>
       </div>
     </div>
   ),
@@ -127,13 +126,15 @@ export const WithPrefilledData: Story = {
       },
     },
   },
-  render: (args) => {
+  render: args => {
     // This would be handled by the component's internal state in real usage
     React.useEffect(() => {
       // Simulate filling in some form data
-      const streetInput = document.querySelector('input[placeholder*="Main Street"]') as HTMLInputElement;
+      const streetInput = document.querySelector(
+        'input[placeholder*="Main Street"]'
+      ) as HTMLInputElement;
       const houseInput = document.querySelector('input[placeholder*="Blk 1"]') as HTMLInputElement;
-      
+
       if (streetInput) streetInput.value = 'San Lorenzo Street';
       if (houseInput) houseInput.value = 'Block 5 Lot 12';
     }, []);
@@ -146,13 +147,14 @@ export const GeographicContextDemo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates how the modal shows different geographic contexts based on the user\'s barangay assignment.',
+        story:
+          "Demonstrates how the modal shows different geographic contexts based on the user's barangay assignment.",
       },
     },
   },
   render: () => {
     const [currentModal, setCurrentModal] = React.useState<string | null>(null);
-    
+
     const locations = [
       {
         id: 'makati',
@@ -191,33 +193,41 @@ export const GeographicContextDemo: Story = {
 
     return (
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {locations.map((location) => (
-            <div key={location.id} className="border border-gray-200 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">{location.name}</h3>
-              <div className="text-sm text-gray-600 space-y-1 mb-3">
-                <div><strong>Region:</strong> {location.context.region}</div>
-                <div><strong>Province:</strong> {location.context.province}</div>
-                <div><strong>City:</strong> {location.context.cityMunicipality}</div>
-                <div><strong>Barangay:</strong> {location.context.barangay}</div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {locations.map(location => (
+            <div key={location.id} className="rounded-lg border border-gray-200 p-4">
+              <h3 className="mb-2 font-semibold text-gray-900">{location.name}</h3>
+              <div className="mb-3 space-y-1 text-sm text-gray-600">
+                <div>
+                  <strong>Region:</strong> {location.context.region}
+                </div>
+                <div>
+                  <strong>Province:</strong> {location.context.province}
+                </div>
+                <div>
+                  <strong>City:</strong> {location.context.cityMunicipality}
+                </div>
+                <div>
+                  <strong>Barangay:</strong> {location.context.barangay}
+                </div>
                 <div className="text-xs text-gray-500">Code: {location.context.code}</div>
               </div>
               <button
                 onClick={() => setCurrentModal(location.id)}
-                className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                className="w-full rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
               >
                 Create Household Here
               </button>
             </div>
           ))}
         </div>
-        
-        {locations.map((location) => (
+
+        {locations.map(location => (
           <CreateHouseholdModal
             key={location.id}
             isOpen={currentModal === location.id}
             onClose={() => setCurrentModal(null)}
-            onHouseholdCreated={(code) => {
+            onHouseholdCreated={code => {
               action('household-created')(code, location.context);
               setCurrentModal(null);
             }}
@@ -238,30 +248,31 @@ export const FormValidationDemo: Story = {
   },
   render: () => {
     const [isOpen, setIsOpen] = React.useState(true);
-    
+
     return (
       <div className="space-y-4">
         <CreateHouseholdModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          onHouseholdCreated={(code) => {
+          onHouseholdCreated={code => {
             action('household-created')(code);
             setIsOpen(false);
           }}
         />
-        
+
         {!isOpen && (
           <div className="text-center">
-            <button 
+            <button
               onClick={() => setIsOpen(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Reopen Modal
             </button>
-            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded text-left">
-              <h4 className="font-semibold text-yellow-800 mb-2">Form Validation Demo</h4>
+            <div className="mt-4 rounded border border-yellow-200 bg-yellow-50 p-4 text-left">
+              <h4 className="mb-2 font-semibold text-yellow-800">Form Validation Demo</h4>
               <p className="text-sm text-yellow-700">
-                Try submitting the form without filling in the required "Street Name" field to see validation in action.
+                Try submitting the form without filling in the required "Street Name" field to see
+                validation in action.
               </p>
             </div>
           </div>
@@ -279,8 +290,8 @@ export const MobileView: Story = {
   },
   decorators: [
     withMockAuth,
-    (Story) => (
-      <div className="max-w-sm mx-auto">
+    Story => (
+      <div className="mx-auto max-w-sm">
         <Story />
       </div>
     ),
@@ -306,17 +317,19 @@ export const LoadingStatesDemo: Story = {
     },
   },
   render: () => {
-    const [currentDemo, setCurrentDemo] = React.useState<'initial' | 'submitting' | 'success'>('initial');
+    const [currentDemo, setCurrentDemo] = React.useState<'initial' | 'submitting' | 'success'>(
+      'initial'
+    );
     const [isOpen, setIsOpen] = React.useState(true);
-    
+
     const handleSubmit = async () => {
       setCurrentDemo('submitting');
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       setCurrentDemo('success');
-      
+
       // Auto close after success
       setTimeout(() => {
         setIsOpen(false);
@@ -332,27 +345,33 @@ export const LoadingStatesDemo: Story = {
             setIsOpen(false);
             setCurrentDemo('initial');
           }}
-          onHouseholdCreated={(code) => {
+          onHouseholdCreated={code => {
             action('household-created')(code);
             handleSubmit();
           }}
         />
-        
+
         {!isOpen && (
-          <div className="text-center space-y-4">
-            <button 
+          <div className="space-y-4 text-center">
+            <button
               onClick={() => setIsOpen(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
             >
               Try Loading States Demo
             </button>
-            
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded text-left">
-              <h4 className="font-semibold text-blue-800 mb-2">Loading States Demo</h4>
-              <div className="text-sm text-blue-700 space-y-2">
-                <p><strong>1. Initial:</strong> Form ready for input</p>
-                <p><strong>2. Submitting:</strong> Shows loading spinner and disabled inputs</p>
-                <p><strong>3. Success:</strong> Confirmation and auto-close</p>
+
+            <div className="rounded border border-blue-200 bg-blue-50 p-4 text-left">
+              <h4 className="mb-2 font-semibold text-blue-800">Loading States Demo</h4>
+              <div className="space-y-2 text-sm text-blue-700">
+                <p>
+                  <strong>1. Initial:</strong> Form ready for input
+                </p>
+                <p>
+                  <strong>2. Submitting:</strong> Shows loading spinner and disabled inputs
+                </p>
+                <p>
+                  <strong>3. Success:</strong> Confirmation and auto-close
+                </p>
               </div>
             </div>
           </div>
@@ -372,7 +391,7 @@ export const RealWorldScenarios: Story = {
   },
   render: () => {
     const [selectedScenario, setSelectedScenario] = React.useState<string | null>(null);
-    
+
     const scenarios = [
       {
         id: 'subdivision',
@@ -411,35 +430,43 @@ export const RealWorldScenarios: Story = {
 
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {scenarios.map((scenario) => (
-            <div key={scenario.id} className="border border-gray-200 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-900 mb-2">{scenario.title}</h3>
-              <p className="text-sm text-gray-600 mb-3">{scenario.description}</p>
-              
-              <div className="text-xs text-gray-500 mb-3 space-y-1">
-                <div><strong>House:</strong> {scenario.example.houseNumber || 'None'}</div>
-                <div><strong>Street:</strong> {scenario.example.streetName}</div>
-                <div><strong>Subdivision:</strong> {scenario.example.subdivision || 'None'}</div>
-                <div><strong>ZIP:</strong> {scenario.example.zipCode || 'None'}</div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {scenarios.map(scenario => (
+            <div key={scenario.id} className="rounded-lg border border-gray-200 p-4">
+              <h3 className="mb-2 font-semibold text-gray-900">{scenario.title}</h3>
+              <p className="mb-3 text-sm text-gray-600">{scenario.description}</p>
+
+              <div className="mb-3 space-y-1 text-xs text-gray-500">
+                <div>
+                  <strong>House:</strong> {scenario.example.houseNumber || 'None'}
+                </div>
+                <div>
+                  <strong>Street:</strong> {scenario.example.streetName}
+                </div>
+                <div>
+                  <strong>Subdivision:</strong> {scenario.example.subdivision || 'None'}
+                </div>
+                <div>
+                  <strong>ZIP:</strong> {scenario.example.zipCode || 'None'}
+                </div>
               </div>
-              
+
               <button
                 onClick={() => setSelectedScenario(scenario.id)}
-                className="w-full px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                className="w-full rounded bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700"
               >
                 Try This Scenario
               </button>
             </div>
           ))}
         </div>
-        
-        {scenarios.map((scenario) => (
+
+        {scenarios.map(scenario => (
           <CreateHouseholdModal
             key={scenario.id}
             isOpen={selectedScenario === scenario.id}
             onClose={() => setSelectedScenario(null)}
-            onHouseholdCreated={(code) => {
+            onHouseholdCreated={code => {
               action('household-created')(code, scenario);
               setSelectedScenario(null);
             }}

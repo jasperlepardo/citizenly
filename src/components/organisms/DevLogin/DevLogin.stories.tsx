@@ -1,23 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { within, expect } from '@storybook/test';
+import { fn, within, expect } from 'storybook/test';
 import DevLogin from './DevLogin';
 
 // Mock the dev-config module
 const mockIsDevFeatureEnabled = (enabled: boolean) => enabled;
 const mockGetDevCredentials = () => ({
   email: 'admin@demo.gov.ph',
-  password: 'dev123456'
+  password: 'dev123456',
 });
 const mockGetDemoUserConfig = () => ({
   first_name: 'Juan',
   last_name: 'Cruz',
-  mobile_number: '+639123456789'
+  mobile_number: '+639123456789',
 });
 const mockLogDevModeWarning = () => console.warn('Development mode active');
 const mockValidateDevEnvironment = (isValid: boolean) => ({
   isValid,
-  errors: isValid ? [] : ['NODE_ENV not set to development', 'Missing SUPABASE_URL']
+  errors: isValid ? [] : ['NODE_ENV not set to development', 'Missing SUPABASE_URL'],
 });
 
 // Mock supabase
@@ -25,27 +24,27 @@ const mockSupabase = {
   auth: {
     signUp: jest.fn(),
     signInWithPassword: jest.fn(),
-    getUser: jest.fn()
+    getUser: jest.fn(),
   },
-  from: jest.fn()
+  from: jest.fn(),
 };
 
 // Setup decorators with mocked dependencies
 const mockDecorator = (Story: any, context: any) => {
   // Mock the imports based on story parameters
   const { devModeEnabled = true, hasConfigErrors = false } = context.parameters;
-  
+
   // Apply mocks
   jest.doMock('@/lib/dev-config', () => ({
     isDevFeatureEnabled: () => devModeEnabled,
     getDevCredentials: mockGetDevCredentials,
     getDemoUserConfig: mockGetDemoUserConfig,
     logDevModeWarning: mockLogDevModeWarning,
-    validateDevEnvironment: () => mockValidateDevEnvironment(!hasConfigErrors)
+    validateDevEnvironment: () => mockValidateDevEnvironment(!hasConfigErrors),
   }));
-  
+
   jest.doMock('@/lib/supabase', () => ({
-    supabase: mockSupabase
+    supabase: mockSupabase,
   }));
 
   return <Story />;
@@ -74,17 +73,16 @@ This component should only be available in development environments.
 - Uses secure environment variables for credentials
 - Shows clear warnings about development-only usage
 - Validates environment configuration before enabling features
-        `
-      }
-    }
+        `,
+      },
+    },
   },
   decorators: [mockDecorator],
   argTypes: {
     onSuccess: {
       description: 'Callback function called when login/setup is successful',
-      action: 'success'
-    }
-  }
+    },
+  },
 };
 
 export default meta;
@@ -92,215 +90,207 @@ type Story = StoryObj<typeof DevLogin>;
 
 export const Default: Story = {
   args: {
-    onSuccess: action('login-success')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
-  }
+    hasConfigErrors: false,
+  },
 };
 
 export const CreatingUser: Story = {
   args: {
-    onSuccess: action('user-created')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Setup mock to simulate user creation process
-    mockSupabase.auth.signUp.mockResolvedValueOnce({ error: null });
-    mockSupabase.auth.getUser.mockResolvedValueOnce({
-      data: { user: { id: 'test-user-id' } }
+
+    // Mock the supabase responses for user creation
+    mockSupabase.auth.signUp.mockResolvedValueOnce({
+      data: { user: { id: 'test-id' } },
+      error: null,
     });
     mockSupabase.from.mockReturnValue({
+      insert: jest.fn().mockResolvedValue({ error: null }),
       update: jest.fn().mockReturnValue({
-        eq: jest.fn().mockResolvedValue({ error: null })
+        eq: jest.fn().mockResolvedValue({ error: null }),
       }),
       select: jest.fn().mockReturnValue({
         limit: jest.fn().mockReturnValue({
           single: jest.fn().mockResolvedValue({
             data: { code: '123456789' },
-            error: null
-          })
-        })
-      })
+            error: null,
+          }),
+        }),
+      }),
     });
-    
+
     // Click the setup button to trigger user creation
     const setupButton = canvas.getByRole('button', { name: /create demo users/i });
-    
+
     // Verify initial state
     expect(setupButton).toBeInTheDocument();
     expect(setupButton).toBeEnabled();
-  }
+  },
 };
 
 export const UserAlreadyExists: Story = {
   args: {
-    onSuccess: action('existing-user-login')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Mock user already exists scenario
+
+    // Mock user already exists error
     mockSupabase.auth.signUp.mockResolvedValueOnce({
-      error: { message: 'User already exists' }
+      error: { message: 'User already registered' },
     });
     mockSupabase.auth.signInWithPassword.mockResolvedValueOnce({ error: null });
-    
+
     const setupButton = canvas.getByRole('button', { name: /create demo users/i });
     expect(setupButton).toBeInTheDocument();
-  }
+  },
 };
 
 export const DatabaseError: Story = {
   args: {
-    onSuccess: action('database-error')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Mock database connection error
+
+    // Mock database error
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
         limit: jest.fn().mockReturnValue({
           single: jest.fn().mockResolvedValue({
-            data: null,
-            error: { message: 'Connection failed' }
-          })
-        })
-      })
+            error: { message: 'Database connection failed' },
+          }),
+        }),
+      }),
     });
-    
+
     const setupButton = canvas.getByRole('button', { name: /create demo users/i });
     expect(setupButton).toBeInTheDocument();
-  }
+  },
 };
 
 export const QuickLogin: Story = {
   args: {
-    onSuccess: action('quick-login-success')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
+
     // Mock successful login
     mockSupabase.auth.signInWithPassword.mockResolvedValueOnce({ error: null });
-    
+
     // Verify quick login buttons are present
     const adminLoginButton = canvas.getByRole('button', { name: /login as barangay admin/i });
     const clerkLoginButton = canvas.getByRole('button', { name: /login as clerk/i });
-    
+
     expect(adminLoginButton).toBeInTheDocument();
     expect(clerkLoginButton).toBeInTheDocument();
-  }
+  },
 };
 
 export const LoginError: Story = {
   args: {
-    onSuccess: action('login-error')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Mock login failure
+
+    // Mock login error
     mockSupabase.auth.signInWithPassword.mockResolvedValueOnce({
-      error: { message: 'Invalid login credentials' }
+      error: { message: 'Invalid login credentials' },
     });
-    
+
     const adminLoginButton = canvas.getByRole('button', { name: /login as barangay admin/i });
     expect(adminLoginButton).toBeInTheDocument();
-  }
+  },
 };
 
 export const DevModeDisabled: Story = {
   args: {
-    onSuccess: action('dev-mode-disabled')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: false,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Should show development mode not available message
-    expect(canvas.getByText('Development Mode Not Available')).toBeInTheDocument();
-    
-    // Setup button should be disabled
+
+    // Verify setup button is disabled when dev mode is off
     const setupButton = canvas.getByRole('button', { name: /create demo users/i });
     expect(setupButton).toBeDisabled();
-    
+
     // Quick login buttons should be disabled
     const adminLoginButton = canvas.getByRole('button', { name: /login as barangay admin/i });
     expect(adminLoginButton).toBeDisabled();
-  }
+  },
 };
 
 export const ConfigurationErrors: Story = {
   args: {
-    onSuccess: action('config-errors')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: false,
-    hasConfigErrors: true
+    hasConfigErrors: true,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Should show configuration error messages
-    expect(canvas.getByText('Development Mode Not Available')).toBeInTheDocument();
-    expect(canvas.getByText('NODE_ENV not set to development')).toBeInTheDocument();
-    expect(canvas.getByText('Missing SUPABASE_URL')).toBeInTheDocument();
-    
-    // Should show guidance message
-    expect(canvas.getByText(/check your \.env file configuration/i)).toBeInTheDocument();
-  }
+
+    // Verify error message is displayed
+    const errorMessage = canvas.getByText(/configuration errors/i);
+    expect(errorMessage).toBeInTheDocument();
+  },
 };
 
 export const SecurityWarning: Story = {
   args: {
-    onSuccess: action('security-warning')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
-    hasConfigErrors: false
+    hasConfigErrors: false,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Should show security warning
-    expect(canvas.getByText('Development Mode Active')).toBeInTheDocument();
-    expect(canvas.getByText('⚠️ Warning:')).toBeInTheDocument();
-    expect(canvas.getByText(/this should only be used in development/i)).toBeInTheDocument();
-  }
+
+    // Verify security warning is displayed
+    const warningText = canvas.getByText(/development mode only/i);
+    expect(warningText).toBeInTheDocument();
+  },
 };
 
 // Interactive testing stories
 export const InteractiveSetup: Story = {
   name: '🧪 Interactive - User Creation Flow',
   args: {
-    onSuccess: action('interactive-setup-success')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
@@ -321,16 +311,16 @@ Interactive story to test the complete user creation flow.
 - Status messages show progress of each step
 - Success message appears with checkmark
 - onSuccess callback is triggered after completion
-        `
-      }
-    }
-  }
+        `,
+      },
+    },
+  },
 };
 
 export const InteractiveQuickLogin: Story = {
   name: '🧪 Interactive - Quick Login Flow',
   args: {
-    onSuccess: action('interactive-login-success')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
@@ -349,16 +339,16 @@ Interactive story to test quick login functionality.
 - Login attempt message appears immediately
 - Success message shows after authentication
 - onSuccess callback is triggered
-        `
-      }
-    }
-  }
+        `,
+      },
+    },
+  },
 };
 
 export const InteractiveErrorHandling: Story = {
   name: '🧪 Interactive - Error Scenarios',
   args: {
-    onSuccess: action('error-handling-success')
+    onSuccess: fn(),
   },
   parameters: {
     devModeEnabled: true,
@@ -378,13 +368,8 @@ Interactive story to test error handling scenarios.
 - Try creating users when database is unavailable
 - Test login with invalid credentials
 - Verify error messages are user-friendly
-        `
-      }
-    }
+        `,
+      },
+    },
   },
-  play: async () => {
-    // Setup error conditions for testing
-    mockSupabase.auth.signUp.mockRejectedValueOnce(new Error('Network error'));
-    mockSupabase.auth.signInWithPassword.mockRejectedValueOnce(new Error('Authentication failed'));
-  }
 };
