@@ -142,7 +142,7 @@
     "critters": "^0.0.23",
     "crypto-browserify": "^3.12.1",
     "eslint": "^8.0.0",
-    "eslint-config-next": "^14.2.31",
+    "eslint-config-next": "^15.4.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "eslint-plugin-storybook": "^9.1.1",
