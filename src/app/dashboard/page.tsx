@@ -3,17 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import {
   StatsCard,
-  PopulationPyramid,
   DependencyRatioPieChart,
   SexDistributionPieChart,
   CivilStatusPieChart,
   EmploymentStatusPieChart,
-} from '@/components/dashboard';
+} from '@/components/molecules';
+import { PopulationPyramid } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
+import { getBarangayStatsOptimized } from '@/lib/database-utils';
 
 interface DashboardStats {
   residents: number;
@@ -122,46 +123,63 @@ function DashboardContent() {
       const barangayCode = userProfile?.barangay_code;
       if (!barangayCode) return;
 
-      // Load basic counts in parallel
-      const [
-        residentsResult,
-        householdsResult,
-        seniorCitizensResult,
-        employedResult,
-        populationResult,
-      ] = await Promise.all([
-        // Total residents
-        supabase
-          .from('residents')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode),
+      // Try to get cached stats from materialized view first
+      const cachedStats = await getBarangayStatsOptimized(barangayCode, 6); // Allow 6-hour stale data
 
-        // Total households
-        supabase
-          .from('households')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode),
-
-        // Senior citizens
-        supabase
-          .from('residents')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode)
-          .eq('is_senior_citizen', true),
-
-        // Employed residents
-        supabase
-          .from('residents')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode)
-          .eq('is_employed', true),
+      const [householdSummaryResult, populationResult] = await Promise.all([
+        // Get optimized household summary (total_households, total_residents, senior_citizens, pwd_residents)
+        // Only fetch if we don't have cached stats
+        cachedStats
+          ? Promise.resolve({ data: null, error: null })
+          : supabase.rpc('get_household_summary', {
+              user_barangay: barangayCode,
+            }),
 
         // Demographics for population pyramid and other charts
         supabase
           .from('residents')
-          .select('birthdate, sex, civil_status, employment_status')
-          .eq('barangay_code', barangayCode),
+          .select('birthdate, sex, civil_status, employment_status, is_employed')
+          .eq('barangay_code', barangayCode)
+          .eq('is_active', true),
       ]);
+
+      if (householdSummaryResult.error) {
+        throw householdSummaryResult.error;
+      }
+
+      if (populationResult.error) {
+        throw populationResult.error;
+      }
+
+      // Use cached stats if available, otherwise use fresh function data
+      const summaryData = cachedStats
+        ? {
+            total_households: 0, // Not available in materialized view
+            total_residents: cachedStats.total_residents,
+            avg_household_size: 0, // Not available in materialized view
+            senior_citizens: cachedStats.senior_citizens,
+            pwd_residents: cachedStats.pwd_count,
+          }
+        : householdSummaryResult.data?.[0] || {
+            total_households: 0,
+            total_residents: 0,
+            avg_household_size: 0,
+            senior_citizens: 0,
+            pwd_residents: 0,
+          };
+
+      // If using cached stats, we still need household count
+      let householdCount = summaryData.total_households;
+      if (cachedStats && householdCount === 0) {
+        const { count: householdsCount, error: householdsError } = await supabase
+          .from('households')
+          .select('*', { count: 'exact', head: true })
+          .eq('barangay_code', barangayCode);
+
+        if (!householdsError) {
+          householdCount = householdsCount || 0;
+        }
+      }
 
       // Process population data for pyramid
       const ageGroupData = processPopulationData(populationResult.data || []);
@@ -170,15 +188,15 @@ function DashboardContent() {
       const residentData = populationResult.data || [];
       processSexData(residentData);
       processCivilStatusData(residentData);
-      processEmploymentData(residentData);
+      const employedCount = processEmploymentData(residentData);
 
       setStats({
-        residents: residentsResult.count || 0,
-        households: householdsResult.count || 0,
+        residents: Number(summaryData.total_residents) || 0,
+        households: Number(householdCount) || 0,
         businesses: 0, // TODO: Add when businesses table exists
         certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: seniorCitizensResult.count || 0,
-        employedResidents: employedResult.count || 0,
+        seniorCitizens: Number(summaryData.senior_citizens) || 0,
+        employedResidents: employedCount,
       });
 
       setPopulationData(ageGroupData);
@@ -261,7 +279,9 @@ function DashboardContent() {
     setCivilStatusData(statusCounts);
   };
 
-  const processEmploymentData = (residents: { employment_status: string }[]) => {
+  const processEmploymentData = (
+    residents: { employment_status: string; is_employed?: boolean }[]
+  ): number => {
     const employmentCounts = {
       employed: 0,
       unemployed: 0,
@@ -273,8 +293,15 @@ function DashboardContent() {
       other: 0,
     };
 
+    let totalEmployed = 0;
+
     residents.forEach(resident => {
       const status = resident.employment_status?.toLowerCase()?.replace(/[^a-z]/g, '') || '';
+
+      // Count employed residents using the computed is_employed field if available
+      if (resident.is_employed === true) {
+        totalEmployed++;
+      }
 
       switch (status) {
         case 'employed':
@@ -305,6 +332,7 @@ function DashboardContent() {
     });
 
     setEmploymentData(employmentCounts);
+    return totalEmployed;
   };
 
   const processPopulationData = (residents: { birthdate: string; sex: string }[]): AgeGroup[] => {

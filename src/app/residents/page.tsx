@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { logError } from '@/lib/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { DashboardLayout } from '@/components/templates';
-import { SearchBar, DataTable } from '@/components/organisms';
+import { ProtectedRoute, AdvancedSearchBar as SearchBar, DataTable } from '@/components/organisms';
 import type { SearchFilter, TableColumn, TableAction } from '@/components/organisms';
+import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
 
 export const dynamic = 'force-dynamic';
@@ -54,89 +53,117 @@ function ResidentsContent() {
     total: 0,
   });
 
-  useEffect(() => {
-    if (!authLoading && user && userProfile?.barangay_code) {
-      loadResidents();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    user,
-    authLoading,
-    userProfile,
-    searchTerm,
-    searchFilters,
-    pagination.current,
-    pagination.pageSize,
-  ]);
+  // Helper function to apply filters to a query
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const applyFiltersToQuery = useCallback((query: any, filters: SearchFilter[]) => {
+    return filters.reduce((q, filter) => {
+      switch (filter.operator) {
+        case 'equals':
+          return q.eq(filter.field, filter.value);
+        case 'contains':
+          return q.ilike(filter.field, `%${filter.value}%`);
+        case 'starts_with':
+          return q.ilike(filter.field, `${filter.value}%`);
+        case 'ends_with':
+          return q.ilike(filter.field, `%${filter.value}`);
+        case 'greater_than':
+          return typeof filter.value === 'number' ? q.gt(filter.field, filter.value) : q;
+        case 'less_than':
+          return typeof filter.value === 'number' ? q.lt(filter.field, filter.value) : q;
+        default:
+          return q;
+      }
+    }, query);
+  }, []);
 
-  const loadResidents = async () => {
-    try {
-      setLoading(true);
+  // Helper function to load residents with search
+  const loadResidentsWithSearch = useCallback(
+    async (barangayCode: string, pageSize: number) => {
+      const { data: searchResults, error: searchError } = await supabase.rpc(
+        'search_residents_optimized',
+        {
+          search_term: searchTerm.trim(),
+          user_barangay: barangayCode,
+          limit_results: pageSize,
+        }
+      );
+
+      if (searchError) throw searchError;
+
+      const residentIds = searchResults?.map((r: { resident_id: string }) => r.resident_id) || [];
+      if (residentIds.length === 0) {
+        setResidents([]);
+        setPagination(prev => ({ ...prev, total: 0 }));
+        return;
+      }
 
       let query = supabase
         .from('residents')
         .select(
-          `
-          *,
-          household:households!residents_household_code_fkey(
-            code,
-            street_name,
-            house_number,
-            subdivision
-          )
-        `,
+          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
           { count: 'exact' }
         )
-        .eq('barangay_code', userProfile?.barangay_code)
-        .order('created_at', { ascending: false })
-        .range(
-          (pagination.current - 1) * pagination.pageSize,
-          pagination.current * pagination.pageSize - 1
-        );
+        .in('id', residentIds);
 
-      // Apply search term
-      if (searchTerm.trim()) {
-        query = query.or(
-          `first_name.ilike.%${searchTerm}%,middle_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%,occupation.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%`
-        );
-      }
-
-      // Apply advanced filters
-      searchFilters.forEach(filter => {
-        switch (filter.operator) {
-          case 'equals':
-            query = query.eq(filter.field, filter.value);
-            break;
-          case 'contains':
-            query = query.ilike(filter.field, `%${filter.value}%`);
-            break;
-          case 'starts_with':
-            query = query.ilike(filter.field, `${filter.value}%`);
-            break;
-          case 'ends_with':
-            query = query.ilike(filter.field, `%${filter.value}`);
-            break;
-          case 'greater_than':
-            if (typeof filter.value === 'number') {
-              query = query.gt(filter.field, filter.value);
-            }
-            break;
-          case 'less_than':
-            if (typeof filter.value === 'number') {
-              query = query.lt(filter.field, filter.value);
-            }
-            break;
-        }
-      });
-
+      query = applyFiltersToQuery(query, searchFilters);
       const { data, error, count } = await query;
+      if (error) throw error;
 
-      if (error) {
-        throw error;
-      }
+      const sortedData = data
+        ? [...data].sort((a: Resident, b: Resident) => {
+            const aIndex = residentIds.indexOf(a.id);
+            const bIndex = residentIds.indexOf(b.id);
+            return aIndex - bIndex;
+          })
+        : [];
+
+      setResidents(sortedData);
+      setPagination(prev => ({ ...prev, total: count || 0 }));
+    },
+    [searchTerm, searchFilters, applyFiltersToQuery]
+  );
+
+  // Helper function to load residents without search
+  const loadResidentsStandard = useCallback(
+    async (barangayCode: string, current: number, pageSize: number) => {
+      let query = supabase
+        .from('residents')
+        .select(
+          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
+          { count: 'exact' }
+        )
+        .eq('barangay_code', barangayCode)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .range((current - 1) * pageSize, current * pageSize - 1);
+
+      query = applyFiltersToQuery(query, searchFilters);
+      const { data, error, count } = await query;
+      if (error) throw error;
 
       setResidents(data || []);
       setPagination(prev => ({ ...prev, total: count || 0 }));
+    },
+    [searchFilters, applyFiltersToQuery]
+  );
+
+  const loadResidents = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      if (!userProfile?.barangay_code) {
+        throw new Error('No barangay code available');
+      }
+
+      if (searchTerm.trim()) {
+        await loadResidentsWithSearch(userProfile.barangay_code, pagination.pageSize);
+      } else {
+        await loadResidentsStandard(
+          userProfile.barangay_code,
+          pagination.current,
+          pagination.pageSize
+        );
+      }
     } catch (err) {
       logError(
         err instanceof Error ? err : new Error('Unknown error loading residents'),
@@ -147,7 +174,20 @@ function ResidentsContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    userProfile,
+    searchTerm,
+    pagination.current,
+    pagination.pageSize,
+    loadResidentsWithSearch,
+    loadResidentsStandard,
+  ]);
+
+  useEffect(() => {
+    if (!authLoading && user && userProfile?.barangay_code) {
+      loadResidents();
+    }
+  }, [user, authLoading, userProfile, loadResidents]);
 
   const handleSearch = useCallback((term: string, filters: SearchFilter[]) => {
     setSearchTerm(term);

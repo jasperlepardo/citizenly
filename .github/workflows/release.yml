@@ -47,16 +47,16 @@ jobs:
         run: |
           if [ "${{ inputs.environment }}" = "staging" ]; then
             git checkout staging || git checkout -b staging
-            git merge develop --no-ff -m "Release to staging"
+            git merge origin/develop --no-ff -m "Release to staging"
           elif [ "${{ inputs.environment }}" = "production" ]; then
             git checkout main || git checkout -b main  
-            git merge staging --no-ff -m "Release to production"
+            git merge origin/staging --no-ff -m "Release to production"
           fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -79,6 +79,7 @@ jobs:
         run: npm run build
         env:
           # Use environment-specific variables from GitHub Environments
+          # IDE warnings expected: Environment-specific secrets with fallbacks
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
           CSRF_SECRET: ${{ secrets.CSRF_SECRET || 'placeholder-csrf-secret-32-characters-long' }}
@@ -90,6 +91,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # IDE warning expected: Optional integration secret with fallback
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN || '' }}
         continue-on-error: true
         with:
@@ -99,6 +101,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # IDE warning expected: Optional integration secret with fallback
           NPM_TOKEN: ${{ secrets.NPM_TOKEN || '' }}
         run: npm run release
         continue-on-error: true

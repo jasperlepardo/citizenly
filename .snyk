@@ -1,0 +1,30 @@
+# Snyk (https://snyk.io) policy file
+# Environment-aware security scanning configuration
+
+version: v1.25.0
+
+# Ignore specific vulnerabilities with justification
+ignore:
+  # Example: temporarily ignore low severity issues in dev dependencies
+  # SNYK-JS-EXAMPLE-123456:
+  #   - '*':
+  #       reason: Low severity dev dependency, scheduled for update in next sprint
+  #       expires: '2024-12-31T23:59:59.999Z'
+
+# Language-specific settings
+language-settings:
+  javascript:
+    # Fail build on high/critical vulnerabilities only
+    fail-on: "high"
+    # Include dev dependencies in CI environment
+    dev: true
+
+# Patch settings
+patch:
+  # Auto-patch when possible
+  auto-patch: true
+  # Exclude paths from patching (if needed)
+  exclude:
+    - 'test/**'
+    - '**/*.test.js'
+    - '**/*.spec.js'

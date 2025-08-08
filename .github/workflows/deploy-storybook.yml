@@ -1,26 +1,18 @@
-name: Deploy Storybook
+name: Deploy Storybook to Netlify
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, staging]
     paths:
       - 'src/components/**'
       - 'src/stories/**'
       - '.storybook/**'
       - 'package.json'
       - 'package-lock.json'
-      - 'public/**'
-      - '.gitignore'
-  pull_request:
-    branches: [main, develop]
-    paths:
-      - 'src/components/**'
-      - 'src/stories/**'
-      - '.storybook/**'
   workflow_dispatch:
 
 jobs:
-  deploy-storybook:
+  deploy-storybook-netlify:
     runs-on: ubuntu-latest
     
     steps:
@@ -32,11 +24,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
         
-      - name: Build Storybook
+      - name: Build Storybook Only
         run: npm run build-storybook
         env:
           NODE_ENV: production
@@ -45,26 +37,18 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-key
           CSRF_SECRET: placeholder-secret-for-storybook
         
-      - name: Install Vercel CLI
-        run: npm i -g vercel@canary
-        
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./storybook-static
-        
-      - name: Deploy to Vercel
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./storybook-static
-        
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+      - name: Deploy Storybook to Netlify
+        uses: nwtgck/actions-netlify@v3
         with:
-          script: |
-            const deployment = process.env.VERCEL_URL || 'https://storybook-static-jasper-lepardos-projects.vercel.app';
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🎨 **Storybook Preview**: ${deployment}\n\nComponent library has been updated and deployed automatically.`
-            });
+          publish-dir: './storybook-static'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy Storybook from commit ${{ github.sha }}"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          # IDE warnings expected: Required Netlify deployment secrets
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 10

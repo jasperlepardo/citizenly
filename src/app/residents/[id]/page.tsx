@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import { DropdownSelect } from '@/components/molecules';
 import { logger, logError } from '@/lib/secure-logger';

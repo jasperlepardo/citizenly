@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { InputField, DropdownSelect } from '@/components/molecules';
 import { BarangaySelector } from '@/components/organisms';
 import { AppShell } from '@/components/templates';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { ProtectedRoute } from '@/components/organisms';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger, logError } from '@/lib/secure-logger';
