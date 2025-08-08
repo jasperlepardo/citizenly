@@ -25,10 +25,10 @@ const nextConfig = {
     scrollRestoration: true,
   },
 
-  // Environment variables for build
+  // Environment variables for build and development
   env: {
     NEXT_PUBLIC_APP_NAME: 'RBI System',
-    NEXT_PUBLIC_APP_VERSION: '1.0.0',
+    NEXT_PUBLIC_APP_VERSION: require('./package.json').version,
   },
   // Serve Storybook at /storybook path
   async rewrites() {

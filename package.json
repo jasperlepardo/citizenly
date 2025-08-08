@@ -1,6 +1,6 @@
 {
   "name": "rbi-system-frontend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "RBI System - Records of Barangay Inhabitant System Frontend",
   "private": true,
   "scripts": {

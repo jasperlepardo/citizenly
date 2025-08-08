@@ -8,7 +8,6 @@ import { SearchBar } from '@/components/molecules';
 import { Navigation } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
-import { getEnvironment, isDevelopment, isStaging } from '@/lib/environment';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
@@ -261,28 +260,6 @@ export default function DashboardLayout({
           {/* Navigation */}
           <div className="flex-1 px-2 py-4">
             <Navigation />
-          </div>
-
-          {/* Environment Indicator */}
-          <div className="px-4 pb-4">
-            {(isDevelopment() || isStaging()) && (
-              <div
-                className={`rounded-md px-3 py-2 text-center text-xs font-medium ${
-                  isDevelopment()
-                    ? 'border border-green-200 bg-green-100 text-green-800'
-                    : 'border border-yellow-200 bg-yellow-100 text-yellow-800'
-                }`}
-              >
-                <div className="flex items-center justify-center gap-1">
-                  <div
-                    className={`size-2 rounded-full ${
-                      isDevelopment() ? 'bg-green-500' : 'bg-yellow-500'
-                    }`}
-                  />
-                  {getEnvironment().toUpperCase()}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </aside>
