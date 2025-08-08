@@ -33,7 +33,7 @@ export default function BarangaySelector({
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<BarangayOption | null>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Don't load initial barangays - only load when user searches

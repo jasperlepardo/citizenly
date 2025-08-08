@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { ReactElement } from 'react';
 
-export default function NotFound(): JSX.Element {
+export default function NotFound(): ReactElement {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="text-center">

@@ -28,7 +28,7 @@ export default function SimpleBarangaySelector({
   const [options, setOptions] = useState<BarangayOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Handle search with debouncing
