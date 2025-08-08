@@ -390,4 +390,4 @@ The RBI System uses a three-tier design approach:
 
 Transform your barangay's resident management with the RBI System - from manual processes to digital efficiency in weeks, not months.
 
-**Test custom domain**: Verify dev.citizenly.co deployment.
+**Test custom domain**: Verify dev.citizenly.co deployment - staging rebuild trigger.
