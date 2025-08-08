@@ -2,6 +2,8 @@
 
 ## Complete Digital Solution for Philippine Barangay Resident Management
 
+<!-- Build trigger: 2025-08-08 -->
+
 ---
 
 ## 🎯 **Project Overview**
