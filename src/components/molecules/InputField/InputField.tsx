@@ -1,5 +1,40 @@
 'use client';
 
+/**
+ * InputField Component
+ *
+ * A comprehensive input field component with label, helper text, error handling, and icon support.
+ * Built following design system patterns with consistent styling and accessibility.
+ *
+ * @example
+ * ```tsx
+ * // Basic input
+ * <InputField label="Email" placeholder="Enter your email" />
+ *
+ * // With validation
+ * <InputField
+ *   label="Password"
+ *   type="password"
+ *   errorMessage="Password is too short"
+ *   helperText="Must be at least 8 characters"
+ * />
+ *
+ * // With icons
+ * <InputField
+ *   label="Search"
+ *   leftIcon={<SearchIcon />}
+ *   rightIcon={<FilterIcon />}
+ *   clearable
+ * />
+ *
+ * // With addons
+ * <InputField
+ *   label="Price"
+ *   leftAddon="$"
+ *   rightAddon="USD"
+ * />
+ * ```
+ */
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -34,17 +69,37 @@ const inputVariants = cva(
   }
 );
 
+/**
+ * InputField component props
+ */
 export interface InputFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
+  /** Field label text displayed above the input */
   label?: string;
+
+  /** Helper text shown below the input when no error is present */
   helperText?: string;
+
+  /** Error message text that overrides helperText and shows error styling */
   errorMessage?: string;
+
+  /** Icon displayed on the left side of the input */
   leftIcon?: React.ReactNode;
+
+  /** Icon displayed on the right side of the input */
   rightIcon?: React.ReactNode;
+
+  /** Addon content displayed on the left side (e.g., currency symbol) */
   leftAddon?: React.ReactNode;
+
+  /** Addon content displayed on the right side (e.g., unit label) */
   rightAddon?: React.ReactNode;
+
+  /** Whether the input includes a clear button when it has a value */
   clearable?: boolean;
+
+  /** Callback function called when the clear button is clicked */
   onClear?: () => void;
 }
 
