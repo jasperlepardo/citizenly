@@ -45,6 +45,10 @@ jobs:
       - name: Switch to target branch for manual deployments
         if: github.event_name == 'workflow_dispatch'
         run: |
+          # Configure git identity for merge commits
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
           if [ "${{ inputs.environment }}" = "staging" ]; then
             git checkout staging || git checkout -b staging
             git merge origin/develop --no-ff -m "Release to staging"
