@@ -158,7 +158,7 @@ describe('Accessibility Tests - Tier 3/4 Environment Validation', () => {
 });
 
 // Helper function for component-specific accessibility testing
-export const testAccessibility = async (component: JSX.Element) => {
+export const testAccessibility = async (component: React.ReactElement) => {
   const { container } = render(component);
   const results = await axe(container);
   return results;

@@ -173,7 +173,7 @@ export function announceToScreenReader(
  * Generate unique IDs for form elements
  */
 export function useUniqueId(prefix: string = 'id'): string {
-  const idRef = useRef<string>();
+  const idRef = useRef<string | undefined>();
 
   if (!idRef.current) {
     idRef.current = `${prefix}-${Math.random().toString(36).substring(2, 11)}`;
