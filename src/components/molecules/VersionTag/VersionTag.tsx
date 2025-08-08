@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import packageJson from '../../../../package.json';
 
 export interface VersionTagProps {
   className?: string;
@@ -23,8 +24,8 @@ export const VersionTag: React.FC<VersionTagProps> = ({
   useEffect(() => {
     setMounted(true);
 
-    // Get version from environment
-    setVersion(process.env.NEXT_PUBLIC_APP_VERSION || '0.2.0');
+    // Get version from package.json directly or fallback to environment
+    setVersion(packageJson.version || process.env.NEXT_PUBLIC_APP_VERSION || '0.2.0');
 
     // Determine environment
     if (process.env.NEXT_PUBLIC_APP_ENV) {
