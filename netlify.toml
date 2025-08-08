@@ -1,0 +1,44 @@
+[build]
+  # Build command for Storybook
+  command = "npm run build-storybook"
+  
+  # Output directory (where Storybook builds to)
+  publish = "storybook-static"
+  
+  # Install command
+  command = "npm ci"
+
+[build.environment]
+  NODE_ENV = "production"
+  NEXT_PUBLIC_APP_ENV = "development"
+  NEXT_PUBLIC_SUPABASE_URL = "https://placeholder.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "placeholder-key"
+  CSRF_SECRET = "placeholder-secret-for-storybook"
+
+# Headers for better caching
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Redirect rules (if needed)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = ["admin"]}
+
+# Deploy only when Storybook-related files change
+[build.ignore]
+  command = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- src/components/ src/stories/ .storybook/ package.json package-lock.json"

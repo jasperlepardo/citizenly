@@ -62,7 +62,7 @@
     "deploy:setup": "./scripts/setup-deployment.sh setup",
     "deploy:status": "./scripts/setup-deployment.sh status",
     "deploy:test": "./scripts/setup-deployment.sh test",
-    "deploy:storybook": "vercel --local-config vercel-storybook.json --prod",
+    "deploy:storybook": "npm run build-storybook && echo 'Storybook built - deploy via GitHub Actions or Netlify CLI'",
     "setup-secrets": "./scripts/setup-secrets.sh",
     "prepare": "husky",
     "env:check": "npx ts-node -e \"import { logEnvironmentInfo } from './src/lib/env-config'; logEnvironmentInfo();\"",
