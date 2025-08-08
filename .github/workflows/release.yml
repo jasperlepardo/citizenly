@@ -47,10 +47,10 @@ jobs:
         run: |
           if [ "${{ inputs.environment }}" = "staging" ]; then
             git checkout staging || git checkout -b staging
-            git merge develop --no-ff -m "Release to staging"
+            git merge origin/develop --no-ff -m "Release to staging"
           elif [ "${{ inputs.environment }}" = "production" ]; then
             git checkout main || git checkout -b main  
-            git merge staging --no-ff -m "Release to production"
+            git merge origin/staging --no-ff -m "Release to production"
           fi
 
       - name: Setup Node.js

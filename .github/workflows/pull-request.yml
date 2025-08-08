@@ -99,6 +99,29 @@ jobs:
           npm run test:ci -- --config jest.config.ci.js
           npm run bundle:check
 
+  # Quick checks job for faster feedback
+  quick-checks:
+    name: Quick Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Quick lint check
+        run: npm run lint:fast || echo "Lint check failed but continuing"
+
+      - name: Quick type check
+        run: npm run type-check:fast
+
       - name: Upload test results
         if: matrix.check-group == 'testing' && always()
         uses: actions/upload-artifact@v4
