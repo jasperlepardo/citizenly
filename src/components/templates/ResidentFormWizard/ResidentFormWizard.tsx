@@ -111,6 +111,7 @@ export default function ResidentFormWizard({
   const [errors, setErrors] = useState<Partial<Record<keyof ResidentFormData, string>>>({});
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
   const [formData, setFormData] = useState<ResidentFormData>({
     // Personal Information
@@ -290,13 +291,19 @@ export default function ResidentFormWizard({
 
   const handleNextStep = () => {
     if (validateStep(currentStep) && currentStep < 5) {
+      // Mark current step as completed
+      setCompletedSteps(prev => new Set(prev).add(currentStep));
       setCurrentStep(currentStep + 1);
+      // Scroll to top of form for better UX
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      // Scroll to top of form for better UX
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -307,10 +314,18 @@ export default function ResidentFormWizard({
     }
 
     // Validate all steps before submitting
-    const allStepsValid = [1, 2, 3, 4].every(step => validateStep(step));
+    let firstInvalidStep = 0;
+    for (let step = 1; step <= 4; step++) {
+      if (!validateStep(step)) {
+        firstInvalidStep = step;
+        break;
+      }
+    }
 
-    if (!allStepsValid) {
-      alert('Please fill in all required fields correctly');
+    if (firstInvalidStep > 0) {
+      alert(`Please complete all required fields in Step ${firstInvalidStep} before submitting.`);
+      setCurrentStep(firstInvalidStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -554,7 +569,7 @@ export default function ResidentFormWizard({
                 key={step.id}
                 className={stepIdx !== steps.length - 1 ? 'relative pr-8 sm:pr-20' : 'relative'}
               >
-                {currentStep > step.id ? (
+                {currentStep > step.id || completedSteps.has(step.id) ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="bg-primary h-0.5 w-full" />
