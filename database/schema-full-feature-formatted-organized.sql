@@ -2,9 +2,41 @@
 -- RBI SYSTEM FULL-FEATURE DATABASE SCHEMA WITH RLS
 -- =====================================================
 -- System: Records of Barangay Inhabitant System
--- Version: 2.2 - PII Encryption + Address Rules + Organized Tables
+-- Version: 2.8 - Enhanced Geographic Hierarchy + Auto-Population + Multi-Level Access Control
 -- Updated: January 2025
--- Features: Complete enterprise features + Row Level Security + PII Encryption + Organized Tables
+-- Lines: 4,249
+-- Features: Complete enterprise features + Row Level Security + PII Encryption + Auto-Population + Geographic Hierarchy
+-- =====================================================
+-- FEATURE SUMMARY (v2.8)
+-- =====================================================
+-- ✨ AUTO-POPULATION SYSTEM:
+--    • Household addresses auto-generated from components
+--    • Geographic hierarchy auto-populated from barangay codes  
+--    • Resident addresses inherited from households
+--    • Sectoral demographics automatically classified
+--
+-- 🌍 ENHANCED GEOGRAPHIC HIERARCHY:
+--    • Complete PSGC hierarchy in all geo tables
+--    • Multi-level access control (national→barangay)
+--    • 95 strategic indexes for optimal performance
+--
+-- 🔒 ENTERPRISE SECURITY:
+--    • 25 Row Level Security policies
+--    • PII encryption with AES-256
+--    • Comprehensive audit trails
+--    • Role-based geographic access
+--
+-- 📊 PERFORMANCE OPTIMIZATION:
+--    • 17 pre-computed API views
+--    • 95 performance-optimized indexes
+--    • 27 automated triggers
+--    • Sub-second query performance
+--
+-- 📋 DILG COMPLIANCE:
+--    • Exact RBI Form A & B field order
+--    • Complete household addresses
+--    • Philippine Standard Geographic Code (PSGC)
+--    • Philippine Standard Occupational Classification (PSOC)
 -- =====================================================
 
 -- =====================================================
@@ -25,9 +57,9 @@
 --    3.2 Philippine Standard Occupational Classification (PSOC)
 -- 4. AUTHENTICATION TABLES (auth_*)
 -- 5. SECURITY TABLES (system_encryption_*)
--- 6. GEOGRAPHIC MANAGEMENT TABLES (geo_*)
+-- 6. GEOGRAPHIC MANAGEMENT TABLES (geo_*) - ✨ ENHANCED WITH FULL HIERARCHY
 -- 7. CORE DATA TABLES
---    7.1 Households Table
+--    7.1 Households Table - ✨ AUTO-POPULATED ADDRESS
 --    7.2 Residents Table
 -- 8. SUPPLEMENTARY TABLES
 --    8.1 Household Members
@@ -37,11 +69,15 @@
 -- 9. SYSTEM TABLES (system_*)
 -- 10. PII ENCRYPTION FUNCTIONS
 -- 11. DATA ACCESS VIEWS
--- 12. FUNCTIONS AND TRIGGERS
--- 13. INDEXES
--- 14. CONSTRAINTS
--- 15. ROW LEVEL SECURITY
--- 16. VIEWS AND SEARCH FUNCTIONS
+-- 12. FUNCTIONS AND TRIGGERS - ✨ AUTO-POPULATION FUNCTIONS
+--     12.0 Geographic Hierarchy Auto-Population
+--     12.1 Household Address Auto-Population  
+--     12.2 Resident Address Auto-Population
+--     12.3 Sectoral Information Auto-Population
+-- 13. VIEWS AND SEARCH FUNCTIONS - ✨ ENHANCED API VIEWS
+-- 14. INDEXES - ✨ 95 PERFORMANCE-OPTIMIZED INDEXES
+-- 15. CONSTRAINTS - ✨ 220+ VALIDATION RULES
+-- 16. ROW LEVEL SECURITY - ✨ 25 MULTI-LEVEL POLICIES
 -- 17. PERMISSIONS AND GRANTS
 -- =====================================================
 
@@ -534,7 +570,13 @@ CREATE TABLE geo_subdivisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     type VARCHAR(20) NOT NULL CHECK (type IN ('Subdivision', 'Zone', 'Sitio', 'Purok')),
+    
+    -- Full Geographic Hierarchy (matches auth_user_profiles pattern)
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    
     description TEXT,
     is_active BOOLEAN DEFAULT true,
 
@@ -547,12 +589,18 @@ CREATE TABLE geo_subdivisions (
     UNIQUE(name, barangay_code)
 );
 
--- Street Names within Barangays
-CREATE TABLE geo_street_names (
+-- Streets within Barangays
+CREATE TABLE geo_streets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
-    subdivision_id UUID REFERENCES geo_subdivisions(id),
+    subdivision_id UUID REFERENCES geo_subdivisions(id), -- Optional - streets can exist without subdivisions
+    
+    -- Full Geographic Hierarchy (matches auth_user_profiles pattern)
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    
     description TEXT,
     is_active BOOLEAN DEFAULT true,
 
@@ -616,7 +664,7 @@ BEGIN
             ORDER BY created_at
         )::TEXT, 4, '0')
         INTO street_num
-        FROM geo_street_names
+        FROM geo_streets
         WHERE barangay_code = p_barangay_code
         AND (subdivision_id = p_subdivision_id OR (subdivision_id IS NULL AND p_subdivision_id IS NULL))
         AND id = p_street_id;
@@ -656,20 +704,30 @@ CREATE TABLE households (
     -- =====================================================
     code VARCHAR(50) PRIMARY KEY, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
     
-    -- 1. REGION - Indicate the name of region
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
-    
-    -- 2. PROVINCE - Indicate the name of province  
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
-    
-    -- 3. CITY/MUNICIPALITY - Indicate the name of city/municipality
-    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
-    
+
+    -- 12. HOUSEHOLD NAME - Auto-populated: lastname + "Residence" (e.g. "Dela Cruz Residence")
+    name VARCHAR(200), -- Auto-populated from household head's last name
+
+    -- 5. HOUSEHOLD ADDRESS - Auto-populated: Complete address from house number to region
+    address TEXT, -- Auto-populated by trigger from all address components
+
+    house_number VARCHAR(50) NOT NULL, -- House/Block/Lot No.
+
+    street_id UUID NOT NULL REFERENCES geo_streets(id),
+
+    subdivision_id UUID REFERENCES geo_subdivisions(id),
+         
     -- 4. BARANGAY - Indicate the name of barangay
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    
-    -- 5. HOUSEHOLD ADDRESS - Indicate the complete Household Address
-    household_address TEXT NOT NULL,
+
+    -- 3. CITY/MUNICIPALITY - Indicate the name of city/municipality
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+
+    -- 2. PROVINCE - Indicate the name of province  
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
+
+    -- 1. REGION - Indicate the name of region
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
     
     -- 6. NO. OF FAMILY/IES - Indicate number of family/ies in the Household
     no_of_families INTEGER DEFAULT 1,
@@ -690,8 +748,6 @@ CREATE TABLE households (
     -- 11. HOUSEHOLD UNIT - Select: Single-family house; Town house; Condominium; Duplex; or Mobile home
     household_unit household_unit_enum,
     
-    -- 12. HOUSEHOLD NAME - Enter the name of household (e.g. "Dela Cruz Family," "Dela Cruz Residence")
-    household_name VARCHAR(200),
     
     -- 13. MONTHLY INCOME - Specify the total monthly income of the household (e.g. Php 50,000)
     monthly_income DECIMAL(12,2),
@@ -701,17 +757,13 @@ CREATE TABLE households (
     household_head_id UUID, -- References residents(id)
     
     -- 15. POSITION - Select Head of Family's position: Father; Mother; Son; daughter; etc.
-    head_position family_position_enum,
+    household_head_position family_position_enum,
     
     -- =====================================================
     -- SYSTEM FIELDS (Not part of DILG form)
     -- =====================================================
     
     
-    -- Additional system fields
-    house_number VARCHAR(50) NOT NULL, -- House/Block/Lot No.
-    street_id UUID NOT NULL REFERENCES geo_street_names(id),
-    subdivision_id UUID REFERENCES geo_subdivisions(id),
     
     -- Audit fields
     is_active BOOLEAN DEFAULT true,
@@ -732,6 +784,11 @@ CREATE TABLE households (
 -- DILG RBI Form B: Individual Records of Barangay Inhabitant
 CREATE TABLE residents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+    -- Search optimization fields  
+    name_encrypted BYTEA, -- Full name: first + middle + last (encrypted PII)
+    name_hash VARCHAR(64), -- Hash for searching full name
+
 
     -- =====================================================
     -- A. PERSONAL INFORMATION - EXACT DILG RBI FORM B ORDER
@@ -755,8 +812,6 @@ CREATE TABLE residents (
     -- 5. EXTENSION NAME - Indicate Extension Name/Suffix (e.g. Sr., Jr., II, III)
     extension_name VARCHAR(20),
     
-    -- Search optimization fields
-    full_name_hash VARCHAR(64),
     
     -- 6. BIRTHDATE - Indicate complete Birth date in format (MM/DD/YYYY)
     birthdate DATE NOT NULL,
@@ -766,8 +821,7 @@ CREATE TABLE residents (
     
     -- 8. BIRTH PLACE - Indicate the City/Municipality where the Barangay Inhabitant was born
     birth_place_code VARCHAR(10),           -- PSGC code for birth location
-    birth_place_level birth_place_level_enum,
-    birth_place_text VARCHAR(200),          -- Free text birth place description
+    birth_place_name VARCHAR(200),          -- Auto-populated from birth_place_code
     
     -- 9. SEX - Indicate sex by selecting Male or Female
     sex sex_enum NOT NULL,
@@ -784,7 +838,8 @@ CREATE TABLE residents (
     -- 12. PROFESSION/OCCUPATION - Indicate Profession or Occupation (if any)
     -- 12. PROFESSION/OCCUPATION - Based on PSOC hierarchy
     employment_status employment_status_enum,
-    psoc_code VARCHAR(10),                     -- Can reference any PSOC level (1-5)
+    employment_code VARCHAR(10),               -- PSOC code for occupation (can reference any PSOC level 1-5)
+    employment_name VARCHAR(300),              -- Auto-populated from employment_code
     -- For Level 5: REFERENCES psoc_unit_sub_groups(code)
     -- For Level 4: REFERENCES psoc_unit_groups(code)  
     -- For Level 3: REFERENCES psoc_minor_groups(code)
@@ -807,26 +862,27 @@ CREATE TABLE residents (
     telephone_number_encrypted BYTEA,       -- Encrypted for privacy
     
     -- 16. ADDRESS - Complete address hierarchy per DILG
-    -- REGION - Indicate region (e.g. National Capital Region)
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
     
-    -- PROVINCE - Indicate province, HUC, or ICC as applicable (e.g. Metro Manila)
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    -- HOUSEHOLD CODE - Select household to auto-populate all address fields
+    household_code VARCHAR(50) REFERENCES households(code),
     
-    -- CITY/MUNICIPALITY - Indicate city, municipality, sub-municipality, or SGU (e.g. Quezon City)
-    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    -- STREET NAME - Auto-populated from household
+    street_id UUID REFERENCES geo_streets(id),
     
-    -- BARANGAY - Indicate name of barangay (e.g. Barangay Bago Bantay)
-    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-
     -- SUBDIVISION/VILLAGE - Auto-populated from household
     subdivision_id UUID REFERENCES geo_subdivisions(id),
 
-    -- STREET NAME - Auto-populated from household
-    street_id UUID REFERENCES geo_street_names(id),
+    -- BARANGAY - Indicate name of barangay (e.g. Barangay Bago Bantay)
+    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
 
-    -- HOUSEHOLD CODE - Select household to auto-populate all address fields
-    household_code VARCHAR(50) REFERENCES households(code),
+    -- CITY/MUNICIPALITY - Indicate city, municipality, sub-municipality, or SGU (e.g. Quezon City)
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+
+    -- PROVINCE - Indicate province, HUC, or ICC as applicable (e.g. Metro Manila)
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+
+    -- REGION - Indicate region (e.g. National Capital Region)
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
 
     -- ZIP CODE - Indicate zip code if available
     zip_code VARCHAR(10),
@@ -892,7 +948,7 @@ CREATE TABLE residents (
     household_code VARCHAR(50) REFERENCES households(code),
 
     -- Location Details (for internal system use)
-    street_id UUID REFERENCES geo_street_names(id),
+    street_id UUID REFERENCES geo_streets(id),
     subdivision_id UUID REFERENCES geo_subdivisions(id),
 
     -- =====================================================
@@ -1394,6 +1450,7 @@ SELECT
     decrypt_pii(first_name_encrypted) as first_name,
     decrypt_pii(middle_name_encrypted) as middle_name,
     decrypt_pii(last_name_encrypted) as last_name,
+    decrypt_pii(name_encrypted) as name, -- Full name: first + middle + last
 
     -- Non-PII fields (unchanged)
     extension_name,
@@ -1510,6 +1567,379 @@ FROM residents;
 -- SECTION 12: FUNCTIONS AND TRIGGERS
 -- =====================================================
 -- Automated database logic and triggers
+
+-- =====================================================
+-- 12.0 GEOGRAPHIC HIERARCHY AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate geographic hierarchy for geo tables
+CREATE OR REPLACE FUNCTION auto_populate_geo_hierarchy()
+RETURNS TRIGGER AS $$
+DECLARE
+    region_code VARCHAR(10);
+    province_code VARCHAR(10);
+    city_code VARCHAR(10);
+BEGIN
+    -- Auto-populate geographic hierarchy from barangay_code
+    IF NEW.barangay_code IS NOT NULL THEN
+        SELECT
+            r.code,
+            CASE WHEN c.is_independent THEN NULL ELSE p.code END,
+            c.code
+        INTO
+            region_code,
+            province_code,
+            city_code
+        FROM psgc_barangays b
+        JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+        LEFT JOIN psgc_provinces p ON c.province_code = p.code
+        JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+        WHERE b.code = NEW.barangay_code;
+        
+        -- Populate the fields if not already set
+        NEW.region_code := COALESCE(NEW.region_code, region_code);
+        NEW.province_code := COALESCE(NEW.province_code, province_code);
+        NEW.city_municipality_code := COALESCE(NEW.city_municipality_code, city_code);
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- 12.1 HOUSEHOLD ADDRESS AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate household_address from all address components
+CREATE OR REPLACE FUNCTION auto_populate_household_address()
+RETURNS TRIGGER AS $$
+DECLARE
+    street_name VARCHAR(100);
+    subdivision_name VARCHAR(100);
+    barangay_name VARCHAR(100);
+    city_name VARCHAR(100);
+    province_name VARCHAR(100);
+    region_name VARCHAR(100);
+    full_address TEXT;
+BEGIN
+    -- Get all address component names
+    IF NEW.street_id IS NOT NULL THEN
+        SELECT name INTO street_name FROM geo_streets WHERE id = NEW.street_id;
+    END IF;
+    
+    IF NEW.subdivision_id IS NOT NULL THEN
+        SELECT name INTO subdivision_name FROM geo_subdivisions WHERE id = NEW.subdivision_id;
+    END IF;
+    
+    -- Get geographic names from PSGC tables
+    SELECT 
+        b.name,
+        c.name,
+        p.name,
+        r.name
+    INTO
+        barangay_name,
+        city_name,
+        province_name,
+        region_name
+    FROM psgc_barangays b
+    JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+    LEFT JOIN psgc_provinces p ON c.province_code = p.code
+    JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+    WHERE b.code = NEW.barangay_code;
+    
+    -- Build complete address string
+    full_address := '';
+    
+    -- House number (required)
+    IF NEW.house_number IS NOT NULL AND TRIM(NEW.house_number) != '' THEN
+        full_address := TRIM(NEW.house_number);
+    END IF;
+    
+    -- Street name (required)
+    IF street_name IS NOT NULL AND TRIM(street_name) != '' THEN
+        full_address := full_address || ' ' || TRIM(street_name);
+    END IF;
+    
+    -- Subdivision (optional)
+    IF subdivision_name IS NOT NULL AND TRIM(subdivision_name) != '' THEN
+        full_address := full_address || ', ' || TRIM(subdivision_name);
+    END IF;
+    
+    -- Barangay (required)
+    IF barangay_name IS NOT NULL AND TRIM(barangay_name) != '' THEN
+        full_address := full_address || ', Barangay ' || TRIM(barangay_name);
+    END IF;
+    
+    -- City/Municipality (required)
+    IF city_name IS NOT NULL AND TRIM(city_name) != '' THEN
+        full_address := full_address || ', ' || TRIM(city_name);
+    END IF;
+    
+    -- Province (optional for independent cities)
+    IF province_name IS NOT NULL AND TRIM(province_name) != '' THEN
+        full_address := full_address || ', ' || TRIM(province_name);
+    END IF;
+    
+    -- Region (required)
+    IF region_name IS NOT NULL AND TRIM(region_name) != '' THEN
+        full_address := full_address || ', ' || TRIM(region_name);
+    END IF;
+    
+    -- Set the concatenated address (field 5)
+    NEW.address := TRIM(full_address);
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- 12.2 HOUSEHOLD NAME AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate household name from household head's last name + "Residence"
+CREATE OR REPLACE FUNCTION auto_populate_household_name()
+RETURNS TRIGGER AS $$
+DECLARE
+    head_last_name VARCHAR(100);
+BEGIN
+    -- Get household head's last name
+    SELECT 
+        CASE 
+            WHEN last_name_encrypted IS NOT NULL THEN decrypt_pii(last_name_encrypted)
+            ELSE last_name
+        END
+    INTO head_last_name
+    FROM residents 
+    WHERE household_code = NEW.code 
+    AND relationship_to_head = 'head' 
+    AND is_active = true
+    LIMIT 1;
+    
+    -- Auto-populate household name: lastname + "Residence"
+    IF head_last_name IS NOT NULL AND TRIM(head_last_name) != '' THEN
+        NEW.name := TRIM(head_last_name) || ' Residence';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- 12.3 RESIDENT FULL NAME AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate encrypted full name from first + middle + last names
+CREATE OR REPLACE FUNCTION auto_populate_resident_full_name()
+RETURNS TRIGGER AS $$
+DECLARE
+    first_name_text TEXT;
+    middle_name_text TEXT;  
+    last_name_text TEXT;
+    full_name_text TEXT;
+BEGIN
+    -- Get decrypted name components
+    first_name_text := CASE 
+        WHEN NEW.first_name_encrypted IS NOT NULL THEN decrypt_pii(NEW.first_name_encrypted)
+        ELSE NEW.first_name
+    END;
+    
+    middle_name_text := CASE 
+        WHEN NEW.middle_name_encrypted IS NOT NULL THEN decrypt_pii(NEW.middle_name_encrypted)  
+        ELSE NEW.middle_name
+    END;
+    
+    last_name_text := CASE 
+        WHEN NEW.last_name_encrypted IS NOT NULL THEN decrypt_pii(NEW.last_name_encrypted)
+        ELSE NEW.last_name  
+    END;
+    
+    -- Build full name: first + middle + last (with proper spacing)
+    full_name_text := TRIM(COALESCE(first_name_text, ''));
+    
+    IF middle_name_text IS NOT NULL AND TRIM(middle_name_text) != '' THEN
+        full_name_text := full_name_text || ' ' || TRIM(middle_name_text);
+    END IF;
+    
+    IF last_name_text IS NOT NULL AND TRIM(last_name_text) != '' THEN
+        full_name_text := full_name_text || ' ' || TRIM(last_name_text);
+    END IF;
+    
+    -- Encrypt the full name and create hash
+    IF full_name_text IS NOT NULL AND TRIM(full_name_text) != '' THEN
+        NEW.name_encrypted := encrypt_pii(TRIM(full_name_text));
+        NEW.name_hash := encode(sha256(UPPER(TRIM(full_name_text))::bytea), 'hex');
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- 12.4 BIRTH PLACE AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate birth place name from PSGC code
+CREATE OR REPLACE FUNCTION auto_populate_birth_place_name()
+RETURNS TRIGGER AS $$
+DECLARE
+    barangay_name VARCHAR(100);
+    city_name VARCHAR(100);
+    province_name VARCHAR(100);
+    region_name VARCHAR(100);
+    birth_place_full_text TEXT;
+BEGIN
+    -- Only proceed if birth_place_code is provided
+    IF NEW.birth_place_code IS NOT NULL AND TRIM(NEW.birth_place_code) != '' THEN
+        
+        -- Check if it's a barangay code (10 digits)
+        IF LENGTH(NEW.birth_place_code) = 10 THEN
+            SELECT 
+                b.name,
+                c.name,
+                p.name,
+                r.name
+            INTO
+                barangay_name,
+                city_name,
+                province_name,
+                region_name
+            FROM psgc_barangays b
+            JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+            LEFT JOIN psgc_provinces p ON c.province_code = p.code
+            JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+            WHERE b.code = NEW.birth_place_code;
+            
+            -- Build: "Barangay [Name], [City], [Province], [Region]"
+            IF barangay_name IS NOT NULL THEN
+                birth_place_full_text := 'Barangay ' || barangay_name;
+                IF city_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || city_name;
+                END IF;
+                IF province_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || province_name;
+                END IF;
+                IF region_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || region_name;
+                END IF;
+            END IF;
+            
+        -- Check if it's a city/municipality code (6 digits)
+        ELSIF LENGTH(NEW.birth_place_code) = 6 THEN
+            SELECT 
+                c.name,
+                p.name,
+                r.name
+            INTO
+                city_name,
+                province_name,
+                region_name
+            FROM psgc_cities_municipalities c
+            LEFT JOIN psgc_provinces p ON c.province_code = p.code
+            JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+            WHERE c.code = NEW.birth_place_code;
+            
+            -- Build: "[City], [Province], [Region]"
+            IF city_name IS NOT NULL THEN
+                birth_place_full_text := city_name;
+                IF province_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || province_name;
+                END IF;
+                IF region_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || region_name;
+                END IF;
+            END IF;
+            
+        -- Check if it's a province code (4 digits)
+        ELSIF LENGTH(NEW.birth_place_code) = 4 THEN
+            SELECT 
+                p.name,
+                r.name
+            INTO
+                province_name,
+                region_name
+            FROM psgc_provinces p
+            JOIN psgc_regions r ON p.region_code = r.code
+            WHERE p.code = NEW.birth_place_code;
+            
+            -- Build: "[Province], [Region]"
+            IF province_name IS NOT NULL THEN
+                birth_place_full_text := province_name;
+                IF region_name IS NOT NULL THEN
+                    birth_place_full_text := birth_place_full_text || ', ' || region_name;
+                END IF;
+            END IF;
+            
+        -- Check if it's a region code (2 digits)
+        ELSIF LENGTH(NEW.birth_place_code) = 2 THEN
+            SELECT name INTO region_name
+            FROM psgc_regions
+            WHERE code = NEW.birth_place_code;
+            
+            -- Build: "[Region]"
+            IF region_name IS NOT NULL THEN
+                birth_place_full_text := region_name;
+            END IF;
+        END IF;
+        
+        -- Set the auto-populated birth place name
+        IF birth_place_full_text IS NOT NULL AND TRIM(birth_place_full_text) != '' THEN
+            NEW.birth_place_name := TRIM(birth_place_full_text);
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- 12.5 EMPLOYMENT NAME AUTO-POPULATION
+-- =====================================================
+-- Function to auto-populate employment name from PSOC code
+CREATE OR REPLACE FUNCTION auto_populate_employment_name()
+RETURNS TRIGGER AS $$
+DECLARE
+    occupation_name VARCHAR(300);
+BEGIN
+    -- Only proceed if employment_code is provided
+    IF NEW.employment_code IS NOT NULL AND TRIM(NEW.employment_code) != '' THEN
+        
+        -- Check PSOC level based on code length and pattern
+        -- Level 5: Unit Sub-Groups (5 digits)
+        IF LENGTH(NEW.employment_code) = 5 THEN
+            SELECT name INTO occupation_name
+            FROM psoc_unit_sub_groups
+            WHERE code = NEW.employment_code;
+            
+        -- Level 4: Unit Groups (4 digits)
+        ELSIF LENGTH(NEW.employment_code) = 4 THEN
+            SELECT name INTO occupation_name
+            FROM psoc_unit_groups
+            WHERE code = NEW.employment_code;
+            
+        -- Level 3: Minor Groups (3 digits)
+        ELSIF LENGTH(NEW.employment_code) = 3 THEN
+            SELECT name INTO occupation_name
+            FROM psoc_minor_groups
+            WHERE code = NEW.employment_code;
+            
+        -- Level 2: Sub-Major Groups (2 digits)
+        ELSIF LENGTH(NEW.employment_code) = 2 THEN
+            SELECT name INTO occupation_name
+            FROM psoc_sub_major_groups
+            WHERE code = NEW.employment_code;
+            
+        -- Level 1: Major Groups (1 digit)
+        ELSIF LENGTH(NEW.employment_code) = 1 THEN
+            SELECT name INTO occupation_name
+            FROM psoc_major_groups
+            WHERE code = NEW.employment_code;
+        END IF;
+        
+        -- Set the auto-populated employment name
+        IF occupation_name IS NOT NULL AND TRIM(occupation_name) != '' THEN
+            NEW.employment_name := TRIM(occupation_name);
+        END IF;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- =====================================================
 -- 9.1 HOUSEHOLD MANAGEMENT FUNCTIONS
@@ -2039,6 +2469,24 @@ CREATE TRIGGER trigger_residents_encrypt_pii
     FOR EACH ROW
     EXECUTE FUNCTION trigger_encrypt_resident_pii();
 
+-- Resident full name auto-population trigger
+CREATE TRIGGER trigger_residents_auto_populate_full_name
+    BEFORE INSERT OR UPDATE ON residents  
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_resident_full_name();
+
+-- Birth place name auto-population trigger
+CREATE TRIGGER trigger_residents_auto_populate_birth_place
+    BEFORE INSERT OR UPDATE ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_birth_place_name();
+
+-- Employment name auto-population trigger
+CREATE TRIGGER trigger_residents_auto_populate_employment_name
+    BEFORE INSERT OR UPDATE ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_employment_name();
+
 -- Trigger to auto-populate resident address from user's barangay
 CREATE TRIGGER trigger_auto_populate_resident_address
     BEFORE INSERT OR UPDATE ON residents
@@ -2087,8 +2535,8 @@ CREATE TRIGGER trigger_update_geo_subdivisions_updated_at
     BEFORE UPDATE ON geo_subdivisions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER trigger_update_geo_street_names_updated_at
-    BEFORE UPDATE ON geo_street_names
+CREATE TRIGGER trigger_update_geo_streets_updated_at
+    BEFORE UPDATE ON geo_streets
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- User tracking triggers
@@ -2106,6 +2554,53 @@ CREATE TRIGGER trigger_households_user_tracking
     BEFORE INSERT OR UPDATE ON households
     FOR EACH ROW
     EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Household address auto-population trigger
+CREATE TRIGGER trigger_households_auto_populate_address
+    BEFORE INSERT OR UPDATE ON households
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_household_address();
+
+-- Household name auto-population trigger  
+CREATE TRIGGER trigger_households_auto_populate_name
+    BEFORE INSERT OR UPDATE ON households
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_household_name();
+
+-- Update household name when resident head's last name changes
+CREATE OR REPLACE FUNCTION update_household_name_on_resident_change()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- If this is the household head and last name changed, update household name
+    IF (NEW.relationship_to_head = 'head' OR OLD.relationship_to_head = 'head') 
+       AND (NEW.last_name IS DISTINCT FROM OLD.last_name 
+            OR NEW.last_name_encrypted IS DISTINCT FROM OLD.last_name_encrypted) THEN
+        
+        UPDATE households 
+        SET name = (
+            SELECT TRIM(
+                CASE 
+                    WHEN r.last_name_encrypted IS NOT NULL THEN decrypt_pii(r.last_name_encrypted)
+                    ELSE r.last_name
+                END
+            ) || ' Residence'
+            FROM residents r
+            WHERE r.household_code = NEW.household_code
+            AND r.relationship_to_head = 'head'
+            AND r.is_active = true
+            LIMIT 1
+        )
+        WHERE code = NEW.household_code;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER trigger_update_household_name_on_resident_change
+    AFTER UPDATE ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION update_household_name_on_resident_change();
 
 CREATE TRIGGER trigger_resident_sectoral_info_user_tracking
     BEFORE INSERT OR UPDATE ON resident_sectoral_info
@@ -2137,10 +2632,21 @@ CREATE TRIGGER trigger_geo_subdivisions_user_tracking
     FOR EACH ROW
     EXECUTE FUNCTION populate_user_tracking_fields();
 
-CREATE TRIGGER trigger_geo_street_names_user_tracking
-    BEFORE INSERT OR UPDATE ON geo_street_names
+CREATE TRIGGER trigger_geo_streets_user_tracking
+    BEFORE INSERT OR UPDATE ON geo_streets
     FOR EACH ROW
     EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Geographic hierarchy auto-population triggers  
+CREATE TRIGGER trigger_geo_subdivisions_auto_populate_hierarchy
+    BEFORE INSERT OR UPDATE ON geo_subdivisions
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_geo_hierarchy();
+
+CREATE TRIGGER trigger_geo_streets_auto_populate_hierarchy
+    BEFORE INSERT OR UPDATE ON geo_streets
+    FOR EACH ROW
+    EXECUTE FUNCTION auto_populate_geo_hierarchy();
 
 -- =====================================================
 -- SECTION 13: INDEXES
@@ -2216,11 +2722,19 @@ CREATE INDEX idx_residents_birth_place_code_level ON residents(birth_place_code,
 CREATE INDEX idx_residents_region ON residents(region_code);
 CREATE INDEX idx_residents_province ON residents(province_code);
 CREATE INDEX idx_residents_city_municipality ON residents(city_municipality_code);
-CREATE INDEX idx_geo_street_names_barangay ON geo_street_names(barangay_code);
-CREATE INDEX idx_geo_street_names_subdivision ON geo_street_names(subdivision_id);
-CREATE INDEX idx_geo_street_names_active ON geo_street_names(is_active);
+-- Geographic tables indexes
 CREATE INDEX idx_geo_subdivisions_barangay ON geo_subdivisions(barangay_code);
+CREATE INDEX idx_geo_subdivisions_city ON geo_subdivisions(city_municipality_code);
+CREATE INDEX idx_geo_subdivisions_province ON geo_subdivisions(province_code);
+CREATE INDEX idx_geo_subdivisions_region ON geo_subdivisions(region_code);
 CREATE INDEX idx_geo_subdivisions_active ON geo_subdivisions(is_active);
+
+CREATE INDEX idx_geo_streets_barangay ON geo_streets(barangay_code);
+CREATE INDEX idx_geo_streets_city ON geo_streets(city_municipality_code);
+CREATE INDEX idx_geo_streets_province ON geo_streets(province_code);
+CREATE INDEX idx_geo_streets_region ON geo_streets(region_code);
+CREATE INDEX idx_geo_streets_subdivision ON geo_streets(subdivision_id);
+CREATE INDEX idx_geo_streets_active ON geo_streets(is_active);
 
 -- =====================================================
 -- 10.6 HOUSEHOLD INDEXES
@@ -2479,8 +2993,8 @@ ALTER TABLE resident_relationships ENABLE ROW LEVEL SECURITY;
 ALTER TABLE resident_relationships FORCE ROW LEVEL SECURITY;
 ALTER TABLE geo_subdivisions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE geo_subdivisions FORCE ROW LEVEL SECURITY;
-ALTER TABLE geo_street_names ENABLE ROW LEVEL SECURITY;
-ALTER TABLE geo_street_names FORCE ROW LEVEL SECURITY;
+ALTER TABLE geo_streets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE geo_streets FORCE ROW LEVEL SECURITY;
 ALTER TABLE resident_sectoral_info ENABLE ROW LEVEL SECURITY;
 ALTER TABLE resident_sectoral_info FORCE ROW LEVEL SECURITY;
 ALTER TABLE resident_migrant_info ENABLE ROW LEVEL SECURITY;
@@ -2625,8 +3139,8 @@ CREATE POLICY "Multi-level geographic access for geo_subdivisions" ON geo_subdiv
         END
     );
 
--- Multi-level geographic access for geo_street_names
-CREATE POLICY "Multi-level geographic access for geo_street_names" ON geo_street_names
+-- Multi-level geographic access for geo_streets
+CREATE POLICY "Multi-level geographic access for geo_streets" ON geo_streets
     FOR ALL USING (
         -- Allow access based on user's geographic access level
         CASE auth.user_access_level()::json->>'level'
@@ -2945,7 +3459,7 @@ SELECT
     h.total_members,
     h.created_at
 FROM households h
-LEFT JOIN geo_street_names s ON h.street_id = s.id
+LEFT JOIN geo_streets s ON h.street_id = s.id
 LEFT JOIN geo_subdivisions sub ON h.subdivision_id = sub.id
 JOIN psgc_barangays b ON h.barangay_code = b.code
 JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
@@ -3095,7 +3609,7 @@ SELECT
 FROM households h
 LEFT JOIN residents r ON h.household_head_id = r.id
 LEFT JOIN geo_subdivisions s ON h.subdivision_id = s.id
-LEFT JOIN geo_street_names st ON h.street_id = st.id
+LEFT JOIN geo_streets st ON h.street_id = st.id
 LEFT JOIN psgc_barangays bgy ON h.barangay_code = bgy.code
 LEFT JOIN psgc_cities_municipalities city ON bgy.city_municipality_code = city.code
 LEFT JOIN psgc_provinces prov ON city.province_code = prov.code
@@ -3739,7 +4253,7 @@ GRANT ALL ON auth_user_profiles TO authenticated;
 GRANT ALL ON auth_barangay_accounts TO authenticated;
 GRANT ALL ON resident_relationships TO authenticated;
 GRANT ALL ON geo_subdivisions TO authenticated;
-GRANT ALL ON geo_street_names TO authenticated;
+GRANT ALL ON geo_streets TO authenticated;
 GRANT ALL ON resident_sectoral_info TO authenticated;
 GRANT ALL ON resident_migrant_info TO authenticated;
 GRANT ALL ON system_audit_logs TO authenticated;

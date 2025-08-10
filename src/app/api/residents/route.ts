@@ -81,15 +81,21 @@ export async function POST(request: NextRequest) {
       householdCode = newHousehold.code;
     }
 
-    // Ensure resident has required geographic data based on user's access level
+    // Prepare resident data - let database trigger handle auto-population from household
     const newResidentData = {
       ...finalResidentData,
       household_code: householdCode,
-      barangay_code: finalResidentData.barangay_code || userProfile.barangay_code,
-      city_municipality_code:
-        finalResidentData.city_municipality_code || userProfile.city_municipality_code,
-      province_code: finalResidentData.province_code || userProfile.province_code,
-      region_code: finalResidentData.region_code || userProfile.region_code,
+      // Don't override geographic fields if household_code is provided - let trigger handle it
+      // If no household_code, fall back to user's geographic profile
+      ...(householdCode
+        ? {}
+        : {
+            barangay_code: finalResidentData.barangay_code || userProfile.barangay_code,
+            city_municipality_code:
+              finalResidentData.city_municipality_code || userProfile.city_municipality_code,
+            province_code: finalResidentData.province_code || userProfile.province_code,
+            region_code: finalResidentData.region_code || userProfile.region_code,
+          }),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       is_active: true,

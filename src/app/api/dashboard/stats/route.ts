@@ -36,9 +36,9 @@ export async function GET(request: NextRequest) {
 
     // Get user profile to get barangay_code
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select('barangay_code')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (profileError || !userProfile?.barangay_code) {

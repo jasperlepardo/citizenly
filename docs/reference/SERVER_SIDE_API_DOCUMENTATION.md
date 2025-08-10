@@ -67,6 +67,35 @@ if (error || !user) {
 }
 ```
 
+## 🏠 Hierarchical Household Code System
+
+The RBI System uses a hierarchical household code format that provides geographic context and uniqueness:
+
+**Format**: `RRPPMMBBB-SSSS-TTTT-HHHH`
+
+- **RRPPMMBBB**: 9-digit PSGC (Philippine Standard Geographic Code) barangay code
+  - **RR**: 2-digit region code (e.g., "13" for Caraga)
+  - **PP**: 2-digit province code (e.g., "74" for Surigao del Norte)
+  - **MM**: 2-digit city/municipality code (e.g., "04" for Surigao City)
+  - **BBB**: 3-digit barangay code (e.g., "001" for Washington)
+- **SSSS**: 4-digit subdivision sequence number within barangay
+- **TTTT**: 4-digit street sequence number within subdivision
+- **HHHH**: 4-digit house number (actual house/block/lot number, not sequential)
+
+**Example**: `137404001-0001-0002-0123`
+
+- Barangay: Washington (137404001), Surigao City, Surigao del Norte, Caraga
+- Subdivision: 1st subdivision in this barangay
+- Street: 2nd street in this subdivision
+- House: House number 123
+
+**Benefits**:
+
+- **Unique identification**: Each household has a globally unique code
+- **Geographic context**: Code reveals location hierarchy
+- **Auto-population**: Selecting a household code automatically populates all address fields
+- **Scalable**: Supports unlimited households per geographic unit
+
 ## 📊 API Endpoints
 
 ### Base URL
@@ -200,9 +229,39 @@ Content-Type: application/json
   "civil_status": "single",
   "citizenship": "filipino",
   "mobile_number": "09171234567",
-  "barangay_code": "137404001",
+  "household_code": "137404001-0001-0001-0001",
   "education_level": "college",
   "employment_status": "employed"
+}
+```
+
+**Note**: When `household_code` is provided, the system automatically populates all geographic fields (barangay_code, street_id, subdivision_id, etc.) from the household. If no household_code is provided, geographic fields are populated from the user's profile.
+
+#### Create Resident with Inline Household Creation
+
+```http
+POST /api/residents
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
+
+{
+  "create_household": {
+    "house_number": "123-A",
+    "street_id": "street-uuid",
+    "subdivision_id": "subdivision-uuid",
+    "household_address": "123-A Sample Street, Sample Subdivision",
+    "household_type": "nuclear",
+    "monthly_income": 25000
+  },
+  "resident_data": {
+    "first_name": "Maria",
+    "middle_name": "Garcia",
+    "last_name": "Santos",
+    "birthdate": "1985-05-20",
+    "sex": "female",
+    "civil_status": "single",
+    "relationship_to_head": "head"
+  }
 }
 ```
 
@@ -214,8 +273,29 @@ Content-Type: application/json
     "id": "new-uuid",
     "first_name": "Maria",
     "last_name": "Santos",
+    "household_code": "137404001-0001-0001-0001",
+    "street_id": "street-uuid",
+    "subdivision_id": "subdivision-uuid",
+    "barangay_code": "137404001",
     "created_at": "2024-01-01T00:00:00Z"
-  }
+  },
+  "message": "Resident created successfully"
+}
+```
+
+**Response (with inline household creation):**
+
+```json
+{
+  "resident": {
+    "id": "new-uuid",
+    "first_name": "Maria",
+    "last_name": "Santos",
+    "household_code": "137404001-0002-0001-0123",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  "household_code": "137404001-0002-0001-0123",
+  "message": "Household and resident created successfully"
 }
 ```
 
@@ -247,10 +327,12 @@ Authorization: Bearer <jwt_token>
 {
   "data": [
     {
-      "id": "uuid",
-      "code": "HH-2024-001",
-      "address": "123 Main Street",
+      "code": "137404001-0001-0001-0001",
+      "house_number": "123-A",
+      "household_address": "123-A Main Street, Sunset Village",
       "barangay_code": "137404001",
+      "street_id": "street-uuid",
+      "subdivision_id": "subdivision-uuid",
       "total_members": 4,
       "household_head": {
         "id": "uuid",
@@ -281,9 +363,12 @@ Authorization: Bearer <jwt_token>
 ```json
 {
   "household": {
-    "id": "uuid",
-    "code": "HH-2024-001",
-    "address": "123 Main Street",
+    "code": "137404001-0001-0001-0001",
+    "house_number": "123-A",
+    "household_address": "123-A Main Street, Sunset Village",
+    "street_id": "street-uuid",
+    "subdivision_id": "subdivision-uuid",
+    "barangay_code": "137404001",
     "total_members": 4,
     "members": [
       {
@@ -313,24 +398,15 @@ Authorization: Bearer <jwt_token>
 Content-Type: application/json
 
 {
-  "household": {
-    "household_type": "nuclear",
-    "monthly_income": 25000,
-    "address": "456 Oak Street",
-    "barangay_code": "137404001",
-    "contact_number": "09171234567",
-    "email": "household@email.com"
-  },
-  "residents": [
-    {
-      "first_name": "Pedro",
-      "last_name": "Santos",
-      "relationship_to_head": "head",
-      "birthdate": "1980-03-15",
-      "sex": "male",
-      "civil_status": "married"
-    }
-  ]
+  "house_number": "456-B",
+  "street_id": "street-uuid-2",
+  "subdivision_id": "subdivision-uuid-2",
+  "household_address": "456-B Oak Street, Green Valley Subdivision",
+  "household_type": "nuclear",
+  "monthly_income": 25000,
+  "barangay_code": "137404001",
+  "contact_number": "09171234567",
+  "email": "household@email.com"
 }
 ```
 
