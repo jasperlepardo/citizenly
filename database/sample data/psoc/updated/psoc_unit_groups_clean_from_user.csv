@@ -1,0 +1,464 @@
+code,title,minor_code
+1111,Legislators,111
+1112,Senior Government Officials,111
+1113,Traditional Chiefs And Heads Of Villages,111
+1114,Senior Officials Of Special-Interest Organizations,111
+1120,Managing Directors And Chief Executives,112
+1211,Finance Managers,121
+1212,Human Resource Managers,121
+1213,Policy And Planning Managers,121
+1219,Business Services And Administration Managers Not Elsewhere  Classified,121
+1221,Sales And Marketing Managers,122
+1222,Advertising And Public Relations Managers,122
+1223,Research And Development Managers,122
+1311,Agricultural And Forestry Production Managers,131
+1312,Aquaculture And Fisheries Production Managers,131
+1321,Manufacturing Managers,132
+1322,Mining Managers,132
+1323,Construction Managers,132
+1324,"Supply, Distribution And Related Managers",132
+1330,Information And Communications Technology Service Managers,133
+1341,Child Care Service Managers,134
+1342,Health Service Managers,134
+1343,Aged Care Service Managers,134
+1344,Social Welfare Managers,134
+1345,Education Managers,134
+1346,Financial And Insurance Services Branch Managers,134
+1349,Professional Services Managers Not Elsewhere Classified,134
+1411,Hotel Managers,141
+1412,Restaurant Managers,141
+1420,Retail And Wholesale Trade Managers,142
+1431,"Sports, Recreation And Cultural Centre Managers",143
+1439,Services Managers Not Elsewhere Classified,143
+2111,Physicists And Astronomers,211
+2112,Meteorologists,211
+2113,Chemists,211
+2114,Geologists And Geophysicists,211
+2119,Other Physical And Earth Science Professionals,211
+2121,Mathematicians,212
+2122,Statisticians,212
+2123,Actuaries,212
+2124,Data Scientist,212
+2131,"Biologists, Botanists, Zoologists And Related Scientists",213
+2132,"Farming, Forestry And Fisheries Advisers",213
+2133,Environmental Protection Professionals,213
+2141,Industrial And Production Engineers,214
+2142,Civil Engineers,214
+2143,Environmental Engineers,214
+2144,Mechanical Engineers,214
+2145,Chemical Engineers,214
+2146,"Mining Engineers, Metallurgists And Related Professionals",214
+2149,Engineering Professionals Not Elsewhere Classified,214
+2151,Electrical Engineers,215
+2152,Electronics Engineers,215
+2153,Telecommunications Engineers,215
+2161,Building Architects,216
+2162,Landscape Architects,216
+2163,Product And Garment Designers,216
+2164,Town And Traffic Planners,216
+2165,Cartographer And Surveyors,216
+2166,Graphic And Multimedia Designers,216
+2211,Generalist Medical Practioners,221
+2212,Specialist Medical Practitioners,221
+2221,Nursing Professionals,222
+2222,Midwifery Professionals,222
+2230,Traditional And Complementary Medicine Professionals,223
+2240,Paramedical Practitioners,224
+2250,Veterinarians,225
+2261,Dentists,226
+2262,Pharmacists,226
+2263,Environmental And Occupational Health And Hygiene Professionals,226
+2264,Physiotherapist,226
+2265,Dieticians And Nutritionist,226
+2266,Audiologists And Speech Therapist,226
+2267,Optometrists And Opthalmic Opticians,226
+2269,Health Professionals Not Elsewhere Classified,226
+2310,University And Higher Education Teachers,231
+2320,Vocational Education Teachers,232
+2330,Secondary Education Teachers,233
+2341,Primary School Teachers,234
+2342,Early Chilhood Educators,234
+2351,Education Methods Specialists,235
+2352,Special Need Teachers,235
+2353,Other Language Teachers,235
+2354,Other Music Teachers,235
+2355,Other Arts Teachers,235
+2356,Information Technology Trainers,235
+2359,Teaching Professionals Not Elsewhere Classified,235
+2411,Accountants,241
+2412,Financial And Investment Advisers,241
+2413,Financial Analyst,241
+2421,Management And Organization Analyst,242
+2422,Policy Administration Professionals,242
+2423,Personnel And Careers Professionals,242
+2424,Training And Staff Development Professionals,242
+2431,Advertising And Marketing Professionals,243
+2432,Public Relations Professionals,243
+2433,Technical And Medical Sale Professionals (Excluding Ict),243
+2434,Information And Communications Technology Sale Professionals,243
+2511,Systems Analysts,251
+2512,Software Developers,251
+2513,Web And Multimedia Developers,251
+2514,Applications Programmers,251
+2519,Software And Applications Developers And Analyst Not Elsewhere Classified,251
+2521,Database Designers And Administrators,252
+2522,Systems Administrators,252
+2523,Computer Network Professionals,252
+2529,Database And Network Professionals Not Elsewhere Classified,252
+2611,Lawyers,261
+2612,Judges,261
+2619,Legal Professionals Not Elsewhere Classified,261
+2621,Archivists And Curators,262
+2622,Librarians And Related Information Professionals,262
+2631,Economists,263
+2632,"Sociologists, Anthropologists And Related Professionals",263
+2633,"Philosophers, Historians And Political Scientists",263
+2634,Psychologists,263
+2635,Social Work And Counselling Professionals,263
+2636,Religious Professionals,263
+2641,Authors And Related Writers,264
+2642,Journalists,264
+2643,"Translators, Interpreters And Other Linguists",264
+2651,Visual Artists,265
+2652,"Musicians, Singers And Composers",265
+2653,Dancers And Choreographers,265
+2654,"Film, Stage And Related Directors And Producers",265
+2655,Actors,265
+2656,"Announcers On Radio, Television And Other Media",265
+2659,Creative And Performing Artists Not Elsewhere Classified,265
+3111,Chemical And Physical Science Technicians,311
+3112,Civil Engineering Technicians,311
+3113,Electrical Engineering Technicians,311
+3114,Electronics Engineering Technicians,311
+3115,Mechanical Engineering Technicians,311
+3116,Chemical Engineering Technicians,311
+3117,Mining And Metallurgical Technicians,311
+3118,Draftsmen,311
+3119,Physical And Engineering Science Technicians Not Elsewhere Classified,311
+3121,Mining Supervisors,312
+3122,Manufacturing Supervisors,312
+3123,Construction Supervisors,312
+3131,Power Production Plant Operators,313
+3132,Incinerator And Water Treatment Plant Operators,313
+3133,Chemical Processing Plant Controllers,313
+3134,Petroleum And Natural Gas Refining Plant Operators,313
+3135,Metal Production Process Controllers,313
+3139,Process Control Technicians Not Elsewhere Classified,313
+3141,Life Science Technicians (Excluding Medical),314
+3142,Agricultural Technicians,314
+3143,Forestry Technicians,314
+3151,Ships' Engineer,315
+3152,Ships' Deck Officers And Pilots,315
+3153,Aircraft Pilots And Related Associate Professionals,315
+3154,Air Traffic Controllers,315
+3155,Air Traffic Safety Electronics Technicians,315
+3211,Medical Imaging And Therapeutic Equipment Technicians,321
+3212,Medical And Pathology Laboratory Technicians,321
+3213,Pharmaceutical Technicians And Assistants,321
+3214,Medical And Dental Prosthetic Technicians,321
+3221,Nursing Associate Professionals,322
+3222,Midwifery Associate Professionals,322
+3230,Traditional And Complementary Medicine Associate Professionals,323
+3240,Veterinary Technicians And Assistants,324
+3251,Dental Assistants And Therapists,325
+3252,Medical Records And Health Information Technicians,325
+3253,Community Health Workers,325
+3254,Dispensing Opticians,325
+3255,Physiotherapy Technicians And Assistants,325
+3256,Medical Assistants,325
+3257,Environmental And Occupational Health Inspectors And Associates,325
+3258,Ambulance Workers,325
+3259,Health Associate Professionals Not Elsewhere Classified,325
+3311,Securities And Finance Dealers And Brokers,331
+3312,Credit And Loans Officers,331
+3313,Accounting Associate Professionals,331
+3314,"Statistical, Mathematical And Related Associate Professionals",331
+3315,Valuers And Loss Assessors,331
+3321,Insurance Representatives,332
+3322,Commercial Sales Representatives,332
+3323,Buyers,332
+3324,Trade Brokers,332
+3331,Clearing And Forwarding Agents,333
+3332,Conference And Event Planners,333
+3333,Employment Agents And Contractors,333
+3334,Real Estate Agents And Property Managers,333
+3339,Business Services Agents Not Elsewhere Classified,333
+3341,Office Supervisors,334
+3342,Legal Secretaries,334
+3343,Administrative And Executive Secretaries,334
+3344,Medical Secretaries,334
+3351,Customs And Border Inspectors,335
+3352,Government Tax And Excise Officials,335
+3353,Government Social Benefits Officials,335
+3354,Government Licensing Officials,335
+3355,Police Inspectors And Detectives,335
+3359,Government Regulatory Associate Professionals Not Elsewhere Classified,335
+3411,Legal And Related Associate Professionals,341
+3412,Social Work Associate Professionals,341
+3413,Religious Associate Professionals,341
+3421,Athletes And Sports Players,342
+3422,"Sports Coaches, Instructors And Officials",342
+3423,Fitness And Recreation Instructors And Program Leaders,342
+3424,Esports Players And Coaches,342
+3431,Photographers,343
+3432,Interior Designers And Decorators,343
+3433,"Gallery, Museum And Library Technicians",343
+3434,Chefs,343
+3435,Artistic And Cultural Associate Professional Not Elsewhere Classified,343
+3511,Information And Communications Technology Operations Technicians,351
+3512,Information And Communications Technology User Support Technicians,351
+3513,Computer Network And Systems Technicians,351
+3514,Web Technicians,351
+3521,Broadcasting And Audio-Visual Technicians,352
+3522,Telecommunications Engineering Technicians,352
+4110,General Office Clerks,411
+4120,Secretaries (General),412
+4131,Typists And Word Processing Operators,413
+4132,Data Entry Clerks,413
+4211,Bank Tellers And Related Clerks,421
+4212,"Bookmakers, Croupiers/Dealers And Related Gaming Workers",421
+4213,Pawnbrokers And Money-Lenders,421
+4214,Debt Collectors And Related Workers,421
+4221,Travel Consultants And Clerks,422
+4222,Contact Center Information Clerks,422
+4223,Telephone Switchboard Operators,422
+4224,Hotel Receptionists,422
+4225,Inquiry Clerks,422
+4226,Receptionists (General),422
+4227,Survey And Market Research Interviewers,422
+4229,Client Information Workers Not Elsewhere Classified,422
+4311,Accounting And Bookeeping Clerks,431
+4312,"Statistical, Finance And Insurance Clerks",431
+4313,Payroll Clerks,431
+4321,Stock Clerks,432
+4322,Production Clerks,432
+4323,Transport Clerks,432
+4411,Library Clerks,441
+4412,Mail Carriers And Sorting Clerks,441
+4413,"Coding, Proof-Reading And Related Clerks",441
+4414,Scribes And Related Workers,441
+4415,Filing And Copying Clerks,441
+4416,Personnel Clerk,441
+4419,Clerical Support Workers Not Elsewhere Classified,441
+5111,Travel Attendants And Travel Stewards,511
+5112,Transport Conductors,511
+5113,Travel Guides,511
+5120,Cooks,512
+5131,Waiters,513
+5132,Bartenders,513
+5141,Hairdressers,514
+5142,Beauticians And Related Workers,514
+5151,"Cleaning And Housekeeping Supervisors In Offices, Hotels And Other Establishments",515
+5152,Household Service Providers,515
+5153,Building Caretakers,515
+5161,"Astrologers, Fortune-Tellers And Related Workers",516
+5162,Companions And Valets,516
+5163,Undertakers And Embalmers,516
+5164,Pet Groomers And Animal Care Workers,516
+5165,Driving Instructors,516
+5169,Personal Services Workers Not Elsewhere Classified,516
+5211,Stall And Market Salespersons,521
+5212,Street Food Salespersons,521
+5221,Shopkeepers,522
+5222,Shop Supervisors,522
+5223,Shop Sales Assistants,522
+5230,Cashiers And Ticket Clerks,523
+5241,Fashion And Other Models,524
+5242,Sales Demonstrators,524
+5243,Door-To-Door Salespersons,524
+5244,Contact Center Salespersons,524
+5245,Service Station Attendants,524
+5246,Food Service Counter Attendants,524
+5247,Online-Selling Salespersons,524
+5249,Sales Workers Not Elsewhere Classified,524
+5311,Child Care Workers,531
+5312,Teachers' Aides,531
+5321,Health Care Assistants,532
+5322,Home-Based Personal Care Workers,532
+5329,Personal Care Workers In Health Services Not Elsewhere Classified,532
+5411,Firefighters,541
+5412,Police Officers,541
+5413,Prison Guards,541
+5414,Security Guards,541
+5419,Protective Services Workers Not Elsewhere Classified,541
+6111,Rice Farmers,611
+6112,Corn Farmers,611
+6113,"Vegetable, Legumes And Root Crops Farmers",611
+6114,Sugarcane Farmers,611
+6115,Coconut Farmers,611
+6116,Other Field Crop Farmers,611
+6117,Tree And Shrub Crop Growers,611
+6118,"Gardeners, Horticultural And Nursery Growers",611
+6119,"Other Market Gardeners And Crop Growers, Not Elsewhere Classified",611
+6121,Livestock Farmer,612
+6122,Dairy Farmer,612
+6123,Eggs Producers,612
+6124,Chicken Farmer,612
+6125,Duck Raisers,612
+6126,Poultry Producers,612
+6127,Hog Raising Producers,612
+6128,Apiarists And Sericulturists,612
+6129,Animal Producers Not Elsewhere Classified,612
+6130,Mixed Crop And Animal Producers,613
+6211,Forest Tree Planters,621
+6212,Concessionaires And Loggers,621
+6213,Charcoal Makers And Related Workers,621
+6214,Minor Forest Product Gatherers,621
+6221,Milkfish And Tilapia Producers,622
+6222,Seaweeds Producers,622
+6223,Prawn Producers,622
+6224,Oysters And Mussels Producers,622
+6225,Other Aqua Products Producers,622
+6226,Inland And Coastal Waters Fishery Workers,622
+6227,Deep-Sea Fishery Workers,622
+6228,Hunters And Trappers,622
+6229,Fishermen Not Elsewhere Classified,622
+6310,Subsistence Crop Farmers,631
+6320,Subsistence Livestock Farmers,632
+6330,Subsistence Mixed Crop And Livestock Farmers,633
+6340,"Subsistence Fishers, Hunters, Trappers And Gatherers",634
+7111,House Builders,711
+7112,Bricklayers And Related Workers,711
+7113,"Stonemasons, Stone Cutters, Splitters And Carvers",711
+7114,"Concrete Placers, Concrete Finishers And Related Workers",711
+7115,Carpenters And Joiners,711
+7119,Building Frame And Related Trades Workers Not Elsewhere Classified,711
+7121,Roofers,712
+7122,Floor Layers And Tile Setters,712
+7123,Plasterers,712
+7124,Insulation Workers,712
+7125,Glaziers,712
+7126,Plumbers And Pipe Fitters,712
+7127,Air Conditioning And Refrigeration Mechanics,712
+7131,Painters And Related Workers,713
+7132,Spray Painters And Varnishers,713
+7133,Building Structure Cleaners,713
+7211,Metal Molders And Coremakers,721
+7212,Welders And Flame Cutters,721
+7213,Sheet Metal Workers,721
+7214,Structural Metal Preparers And Erectors,721
+7215,Riggers And Cable Splicers,721
+7221,"Blacksmiths, Hammersmiths And Forging Press Workers",722
+7222,Toolmakers And Related Workers,722
+7223,Metal Working Machine Tool Setters And Operators,722
+7224,"Metal Polishers, Wheel Grinders And Tool Sharpeners",722
+7231,Motor Vehicle Mechanics And Repairers,723
+7232,Aircraft Engine Mechanics And Repairers,723
+7233,Agricultural And Industrial Machinery Mechanics And Repairers,723
+7234,Bicycle And Related Repairers,723
+7311,Precision-Instrument Makers And Repairers,731
+7312,Musical Instrument Makers And Tuners,731
+7313,Jewellery And Precious Metal Workers,731
+7314,Potters And Related Workers,731
+7315,"Glass Makers, Cutters, Grinders And Finishers",731
+7316,"Sign Writers, Decorative Painters, Engravers And Etchers",731
+7317,"Handicraft Workers In Wood, Basketry And Related Materials",731
+7318,"Handicraft Workers In Textile, Leather And Related Materials",731
+7319,Handicraft Workers Not Elsewhere Classified,731
+7321,Pre-Press Technicians,732
+7322,Printers,732
+7323,Print Finishing And Binding Workers,732
+7411,Building And Related Electricians,741
+7412,Electrical Mechanics And Fitters,741
+7413,Electrical Line Installers And Repairers,741
+7414,Electric Vehicle Mechanics And Repairers,741
+7421,Electronics Mechanics And Servicers,742
+7422,Information And Communications Technology Installers And Servicers,742
+7511,"Butchers, Fishmongers And Related Food Preparers",751
+7512,"Bakers, Pastry-Cooks And Confectionery Makers",751
+7513,Dairy Products Makers,751
+7514,"Fruit, Vegetable And Related Preservers",751
+7515,Food And Beverage Tasters And Graders,751
+7516,Tobacco Preparers And Tobacco Products Makers,751
+7521,Wood Treaters,752
+7522,Cabinet-Makers And Related Workers,752
+7523,Woodworking Machine Tool Setters And Operators,752
+7531,"Tailors, Dressmakers, Furriers And Hatters",753
+7532,Garment And Related Patternmakers And Cutters,753
+7533,"Sewing, Embroidery And Related Workers",753
+7534,Upholsterers And Related Workers,753
+7535,"Pelt Dressers, Tanners And Fellmongers",753
+7536,Shoemakers And Related Workers,753
+7541,Underwater Divers,754
+7542,Shotfirers And Blasters,754
+7543,Product Graders And Testers (Except Foods And Beverages),754
+7544,Fumigators And Other Pest And Weed Controllers,754
+7549,Craft And Related Workers Not Elsewhere Classified,754
+8111,Miners And Quarriers,811
+8112,Mineral And Stone Processing Plant Operators,811
+8113,Well Drillers And Borers And Related Workers,811
+8114,"Cement, Stone And Other Mineral Products Machine Operators",811
+8121,Metal Processing Plant Operators,812
+8122,"Metal Finishing, Plating And Coating Machine Operators",812
+8131,Chemical Products Plant And Machine Operators,813
+8132,Photographic Products Machine Operators,813
+8141,Rubber Products Machine Operators,814
+8142,Plastic Products Machine Operators,814
+8143,Paper Products Machine Operators,814
+8151,"Fibre Preparing, Spinning And Winding Machine Operators",815
+8152,Weaving And Knitting Machine Operators,815
+8153,Sewing Machine Operators,815
+8154,"Bleaching, Dyeing And Fabric Cleaning Machine Operators",815
+8155,Fur And Leather Preparing Machine Operators,815
+8156,Shoemaking And Related Machine Operators,815
+8157,Laundry Machine Operators,815
+8159,"Textile, Fur And Leather Products Machine Operators Not Elsewhere Classified",815
+8160,Food And Related Products Machine Operators,816
+8171,Pulp And Papermaking Plant Operators,817
+8172,Wood Processing Plant Operators,817
+8181,Glass And Ceramics Plant Operators,818
+8182,Steam Engine And Boiler Operators,818
+8183,"Packing, Bottling And Labelling Machine Operators",818
+8189,Stationary Plant And Machine Operators Not Elsewhere Classified,818
+8211,Mechanical Machinery Assemblers,821
+8212,Electrical And Electronic Equipment Assemblers,821
+8219,Assemblers Not Elsewhere Classified,821
+8311,Locomotive Engine Drivers,831
+8312,"Railway Brake, Signal And Switch Operators",831
+8321,Motorcycle Drivers,832
+8322,"Car, Taxi And Van Drivers",832
+8323,Transport Network Vehicle Service Motorcycle Drivers,832
+8324,Transport Network Vehicle Service Car Drivers,832
+8325,Transport Network Vehicle Service Taxi Drivers,832
+8326,Transport Network Vehicle Service Van Drivers,832
+8331,Bus And Tram Drivers,833
+8332,Heavy Truck And Lorry Drivers,833
+8341,Mobile Farm And Forestry Plant Operators,834
+8342,Earthmoving And Related Plant Operators,834
+8343,"Crane, Hoist And Related Plant Operators",834
+8344,Lifting Truck Operators,834
+8350,Ships' Deck Crews And Related Workers,835
+9111,Domestic Cleaners And Helpers,911
+9112,"Cleaners And Helpers In Offices, Hotels And Other Establishments",911
+9121,Hand Launderers And Pressers,912
+9122,Vehicle Cleaners,912
+9123,Window Cleaners,912
+9129,Other Cleaning Workers,912
+9211,Crop Farm Laborers,921
+9212,Livestock Farm Laborers,921
+9213,Mixed Crop And Livestock Farm Laborers,921
+9214,Garden And Horticultural Laborers,921
+9215,Forestry Laborers,921
+9216,Fishery And Aquaculture Laborers,921
+9311,Mining And Quarrying Laborers,931
+9312,Civil Engineering Laborers,931
+9313,Building Construction Laborers,931
+9321,Hand Packers,932
+9329,Manufacturing Laborers Not Elsewhere Classified,932
+9331,Hand And Pedal Vehicle Drivers,933
+9332,Drivers Of Animal-Drawn Vehicles And Machinery,933
+9333,Freight Handlers,933
+9334,Shelf Fillers,933
+9335,Transport Network Vehicle Service Bicycle Drivers,933
+9411,Fast Food Preparers,941
+9412,Kitchen Helpers,941
+9510,Street And Related Service Workers,951
+9520,Street Vendors (Excluding Food),952
+9611,Garbage And Recycling Collectors,961
+9612,Refuse Sorters,961
+9613,Sweepers And Related Laborers,961
+9621,"Messengers, Package Deliverers And Luggage Porters",962
+9622,Odd Job Persons,962
+9623,Meter Readers And Vending-Machine Collectors,962
+9624,Water And Firewoods Collector,962
+9629,Elementary Workers Not Elsewhere Classified,962

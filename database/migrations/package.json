@@ -10,7 +10,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
     "csv-parser": "^3.0.0",
-    "dotenv": "^16.6.1"
+    "dotenv": "^16.6.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20.0.0"

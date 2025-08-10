@@ -1,8 +1,8 @@
 -- =====================================================
--- RBI SYSTEM FULL-FEATURE DATABASE SCHEMA
+-- RBI SYSTEM FULL-FEATURE DATABASE SCHEMA WITH RLS
 -- Records of Barangay Inhabitant System
--- Based on consolidated current implementation + enterprise features
--- Updated: December 2024
+-- Complete enterprise features + Row Level Security
+-- Updated: January 2025
 -- =====================================================
 
 -- Enable necessary extensions
@@ -18,14 +18,12 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 CREATE TYPE sex_enum AS ENUM ('male', 'female');
 
 CREATE TYPE civil_status_enum AS ENUM (
-    'single', 
-    'married', 
-    'widowed', 
-    'divorced', 
-    'separated', 
-    'annulled',
-    'registered_partnership',
-    'live_in'
+    'single',    -- A person who has never been married
+    'married',   -- A couple living together as husband and wife, legally or consensually
+    'divorced',  -- A person whose bond of matrimony has been dissolved legally and who therefore can remarry
+    'separated', -- A person separated legally or not from his/her spouse because of marital discord or misunderstanding
+    'widowed',   -- A person whose bond of matrimony has been dissolved by death of his/her spouse
+    'others'     -- Other civil status not covered by the standard categories
 );
 
 CREATE TYPE citizenship_enum AS ENUM (
@@ -34,24 +32,16 @@ CREATE TYPE citizenship_enum AS ENUM (
     'foreign_national'
 );
 
--- Education Enums
+-- Education Enums (Highest Educational Attainment)
 CREATE TYPE education_level_enum AS ENUM (
-    'no_formal_education',
-    'elementary',
-    'high_school', 
-    'college',
-    'post_graduate',
-    'vocational',
-    'graduate',
-    'undergraduate'
+    'elementary',   -- Completed elementary/primary school
+    'high_school',  -- Completed secondary/high school
+    'college',      -- Completed college/university degree
+    'post_graduate', -- Completed post-graduate/masters/doctorate
+    'vocational'    -- Completed vocational/technical course
 );
 
-CREATE TYPE education_status_enum AS ENUM (
-    'currently_studying',
-    'not_studying',
-    'graduated',
-    'dropped_out'
-);
+-- Removed education_status_enum - now using boolean is_graduate field
 
 -- Employment Enum
 CREATE TYPE employment_status_enum AS ENUM (
@@ -101,6 +91,11 @@ CREATE TYPE religion_enum AS ENUM (
     'no_religion',
     'others',
     'prefer_not_to_say'
+);
+
+-- Birth Place Level Enum (Similar to PSOC level approach)
+CREATE TYPE birth_place_level_enum AS ENUM (
+    'region', 'province', 'city_municipality', 'barangay'
 );
 
 -- LGU Form 10 Compliant Ethnicity Enum
@@ -292,7 +287,7 @@ CREATE TABLE psoc_occupation_cross_references (
 -- =====================================================
 
 -- Roles and Permissions
-CREATE TABLE roles (
+CREATE TABLE auth_roles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT,
@@ -302,32 +297,41 @@ CREATE TABLE roles (
 );
 
 -- User Profiles (extends Supabase auth.users)
-CREATE TABLE user_profiles (
+CREATE TABLE auth_user_profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-    email VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
     middle_name VARCHAR(100),
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
-    role_id UUID NOT NULL REFERENCES roles(id),
+    role_id UUID NOT NULL REFERENCES auth_roles(id),
     -- Enhanced: Complete geographic hierarchy from current implementation
     barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
-    region_code VARCHAR(10) REFERENCES psgc_regions(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
     city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    region_code VARCHAR(10) REFERENCES psgc_regions(code),
     is_active BOOLEAN DEFAULT true,
     last_login TIMESTAMPTZ,
+    
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Barangay-specific user accounts for jurisdiction scoping
-CREATE TABLE barangay_accounts (
+CREATE TABLE auth_barangay_accounts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES user_profiles(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES auth_user_profiles(id) ON DELETE CASCADE,
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     is_primary BOOLEAN DEFAULT false,
+    
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(user_id, barangay_code)
 );
 
@@ -336,29 +340,31 @@ CREATE TABLE barangay_accounts (
 -- =====================================================
 
 -- Subdivisions, Zones, Sitios, Puroks within barangays
-CREATE TABLE subdivisions (
+CREATE TABLE geo_subdivisions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     type VARCHAR(20) NOT NULL CHECK (type IN ('Subdivision', 'Zone', 'Sitio', 'Purok')),
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     description TEXT,
     is_active BOOLEAN DEFAULT true,
-    created_by UUID REFERENCES user_profiles(id),
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(name, barangay_code)
 );
 
 -- Street names within barangays
-CREATE TABLE street_names (
+CREATE TABLE geo_street_names (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    subdivision_id UUID REFERENCES subdivisions(id),
+    subdivision_id UUID REFERENCES geo_subdivisions(id),
     description TEXT,
     is_active BOOLEAN DEFAULT true,
-    created_by UUID REFERENCES user_profiles(id),
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(name, barangay_code, subdivision_id)
 );
@@ -398,7 +404,7 @@ BEGIN
     IF p_subdivision_id IS NOT NULL THEN
         SELECT LPAD(ROW_NUMBER() OVER (PARTITION BY barangay_code ORDER BY created_at)::TEXT, 4, '0')
         INTO subdivision_num
-        FROM subdivisions 
+        FROM geo_subdivisions 
         WHERE barangay_code = p_barangay_code AND id = p_subdivision_id;
     END IF;
     
@@ -409,7 +415,7 @@ BEGIN
             ORDER BY created_at
         )::TEXT, 4, '0')
         INTO street_num
-        FROM street_names 
+        FROM geo_street_names 
         WHERE barangay_code = p_barangay_code 
         AND (subdivision_id = p_subdivision_id OR (subdivision_id IS NULL AND p_subdivision_id IS NULL))
         AND id = p_street_id;
@@ -439,43 +445,48 @@ CREATE TABLE households (
     -- Enhanced: Retain hierarchical code from current implementation
     code VARCHAR(50) NOT NULL UNIQUE, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
     household_number VARCHAR(50) NOT NULL, -- Enhanced: Required from current implementation
-    household_head_id UUID, -- Will reference residents(id) - forward reference
-    total_members INTEGER DEFAULT 0, -- Enhanced: Renamed from household_size
-    creation_date DATE DEFAULT CURRENT_DATE,
+
+    -- Address relationships
+    house_number VARCHAR(50),
+    street_id UUID REFERENCES geo_street_names(id),
+    subdivision_id UUID REFERENCES geo_subdivisions(id),
+
     -- Enhanced: Required geographic fields from current implementation
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- Required except independent cities
     city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
-    
-    -- Address relationships
-    subdivision_id UUID REFERENCES subdivisions(id),
-    street_id UUID REFERENCES street_names(id),
-    house_number VARCHAR(50),
-    
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- Required except independent cities
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+
+    -- Household Profile Information  
+    total_families INTEGER DEFAULT 1, -- Number of family units in household
+    total_members INTEGER DEFAULT 0, -- Auto-calculated from residents
+    total_migrants INTEGER DEFAULT 0, -- Auto-calculated from resident_sectoral_info
+
+
+
     -- Enhanced household fields
     household_type household_type_enum,
     tenure_status tenure_status_enum,
     tenure_others_specify TEXT, -- For "others" specification
     household_unit household_unit_enum,
-    
-    -- Household Profile Information
-    no_of_families INTEGER DEFAULT 1,
-    no_of_members INTEGER DEFAULT 0, -- Will be auto-calculated
-    no_of_migrants INTEGER DEFAULT 0, -- Will be auto-calculated
-    
+
+
+    -- Household Name (derived from head's last name)
+    household_name VARCHAR(100),
+
     -- Financial Information (calculated from residents' income)
     monthly_income DECIMAL(12,2) DEFAULT 0.00,
     income_class income_class_enum,
-    
-    -- Household Name (derived from head's last name)
-    household_name VARCHAR(100),
+
+
+    household_head_id UUID, -- Will reference residents(id) - forward reference
     
     -- Status
     is_active BOOLEAN DEFAULT true,
     
-    created_by UUID REFERENCES user_profiles(id),
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     
     -- Unique household number per barangay
@@ -496,58 +507,118 @@ CREATE TABLE residents (
     last_name VARCHAR(100) NOT NULL,
     extension_name VARCHAR(20),
     birthdate DATE NOT NULL,
-    place_of_birth VARCHAR(200), -- Enhanced: From current implementation
+    age INTEGER GENERATED ALWAYS AS (EXTRACT(YEAR FROM AGE(birthdate))) STORED,
+    
+    -- Birth Place Information (Single field approach like PSOC)
+    birth_place_code VARCHAR(10), -- PSGC code (can be region, province, city, or barangay)
+    birth_place_level birth_place_level_enum, -- Specifies which PSGC level the code represents
+    birth_place_text VARCHAR(200), -- Free text for non-PSGC locations (e.g., foreign countries)
+    -- Auto-generated complete birth place address
+    birth_place_full TEXT GENERATED ALWAYS AS (
+        CASE 
+            WHEN birth_place_text IS NOT NULL THEN birth_place_text
+            WHEN birth_place_code IS NOT NULL AND birth_place_level IS NOT NULL THEN
+                CASE birth_place_level
+                    WHEN 'region' THEN 
+                        (SELECT r.name FROM psgc_regions r WHERE r.code = birth_place_code)
+                    WHEN 'province' THEN 
+                        (SELECT CONCAT_WS(', ', p.name, r.name) 
+                         FROM psgc_provinces p 
+                         JOIN psgc_regions r ON p.region_code = r.code 
+                         WHERE p.code = birth_place_code)
+                    WHEN 'city_municipality' THEN 
+                        (SELECT CONCAT_WS(', ', 
+                            c.name,
+                            CASE WHEN c.is_independent THEN NULL ELSE p.name END,
+                            r.name
+                        ) 
+                        FROM psgc_cities_municipalities c
+                        LEFT JOIN psgc_provinces p ON c.province_code = p.code
+                        LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+                        WHERE c.code = birth_place_code)
+                    WHEN 'barangay' THEN 
+                        (SELECT CONCAT_WS(', ',
+                            b.name,
+                            c.name,
+                            CASE WHEN c.is_independent THEN NULL ELSE p.name END,
+                            r.name
+                        ) 
+                        FROM psgc_barangays b
+                        JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+                        LEFT JOIN psgc_provinces p ON c.province_code = p.code
+                        LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+                        WHERE b.code = birth_place_code)
+                    ELSE NULL
+                END
+            ELSE NULL
+        END
+    ) STORED,
     sex sex_enum NOT NULL,
     civil_status civil_status_enum NOT NULL,
-    citizenship citizenship_enum DEFAULT 'filipino',
-    
+    civil_status_others_specify TEXT, -- Custom text when civil_status = 'others'
+
     -- Enhanced Education Information - Optional from current implementation
-    education_level education_level_enum,
-    education_status education_status_enum,
+    education_attainment education_level_enum, -- Highest level attempted/studying
+    is_graduate BOOLEAN DEFAULT false, -- Completed the education level (true) or still studying/incomplete (false)
+
+
+    -- Employment Status
+    employment_status employment_status_enum, -- NULL for those not yet in workforce age
     
-    -- Occupation (Enhanced from current implementation)
-    psoc_code VARCHAR(10), -- Single field for any PSOC level
-    psoc_level VARCHAR(20) CHECK (psoc_level IN ('major_group', 'sub_major_group', 'minor_group', 'unit_group', 'unit_sub_group')),
-    occupation_title VARCHAR(200), -- Denormalized for performance
-    occupation VARCHAR(200), -- Additional occupation field used in forms
-    job_title VARCHAR(200), -- Job title field used in forms
-    workplace VARCHAR(255), -- Workplace information
-    occupation_details TEXT, -- Additional occupation details
-    employment_status employment_status_enum DEFAULT 'not_in_labor_force',
-    
+    -- Occupation (Single search field approach using psoc_occupation_search)
+    psoc_code TEXT, -- Maps to occupation_code from psoc_occupation_search
+    psoc_level TEXT, -- Maps to level_type from psoc_occupation_search
+    occupation_title TEXT, -- Auto-populated from PSOC search selection
+    job_title TEXT, -- Specific job position or title as stated by the resident
+    workplace TEXT, -- Company name and location where the resident works
+    occupation TEXT, -- General occupation field (for backward compatibility)
+    occupation_details TEXT, -- Detailed occupation information
+
+
+
     -- Contact Information (Enhanced) - Optional from current implementation
     mobile_number VARCHAR(20),
     telephone_number VARCHAR(20), -- Enhanced: From current implementation
     email VARCHAR(255),
 
-    -- Enhanced: Location with household code reference from current implementation
-    household_code VARCHAR(50) REFERENCES households(code), -- Primary household reference
-    household_id UUID REFERENCES households(id), -- Secondary UUID reference
+
+    -- Household Reference (Primary foreign key)
+    household_id UUID REFERENCES households(id), -- Primary household reference via UUID
+    household_code VARCHAR(50), -- Auto-populated from household (not a foreign key)
+    
+    -- Location Information
+    street_id UUID REFERENCES geo_street_names(id),
+    subdivision_id UUID REFERENCES geo_subdivisions(id),
+    
+    -- Geographic Hierarchy (Auto-populated from household or user's barangay)
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    region_code VARCHAR(10) REFERENCES psgc_regions(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
-    city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
-   
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+
+
+
     -- Physical Characteristics (Enhanced: Retained from current implementation)
+    blood_type blood_type_enum DEFAULT 'unknown',
     height DECIMAL(5,2), -- Height in cm
     weight DECIMAL(5,2), -- Weight in kg
     complexion VARCHAR(50), -- Complexion description
-    blood_type blood_type_enum DEFAULT 'unknown',
+    citizenship citizenship_enum DEFAULT 'filipino',
+    
+
+
+    is_registered_voter BOOLEAN DEFAULT false, -- Voter registration status
+    is_resident_voter BOOLEAN DEFAULT false, -- Resident of voting precinct  
+    last_voted_year INTEGER, -- Last voted year
+
     
     -- Demographics (Optional)
-    ethnicity ethnicity_enum DEFAULT 'not_reported',
-    religion religion_enum DEFAULT 'other',
-    
     -- Enhanced: Voting Information from current implementation
-    voter_registration_status BOOLEAN DEFAULT false, -- Used instead of is_voter
-    resident_voter_status BOOLEAN DEFAULT false, -- Used instead of is_resident_voter
-    voter_id_number VARCHAR(20), -- Voter ID number
-    last_voted_year VARCHAR(4), -- Last voted year
-    is_resident_voter BOOLEAN DEFAULT false,
-    last_voted_year INTEGER,
     ethnicity ethnicity_enum DEFAULT 'not_reported',
+
     religion religion_enum DEFAULT 'prefer_not_to_say',
     religion_others_specify TEXT,
+    
     
     -- Mother's maiden name
     mother_maiden_first TEXT,
@@ -555,7 +626,9 @@ CREATE TABLE residents (
     mother_maiden_last TEXT,
     
     -- Metadata
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     
     -- Enhanced: Full-text search from current implementation with improved null handling
@@ -597,17 +670,19 @@ ALTER TABLE households ADD CONSTRAINT unique_household_head_per_household
 -- Household Members (junction table)
 CREATE TABLE household_members (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    household_id VARCHAR(22) NOT NULL REFERENCES households(id) ON DELETE CASCADE,
+    household_id UUID NOT NULL REFERENCES households(id) ON DELETE CASCADE,
     resident_id UUID NOT NULL REFERENCES residents(id),
+
     relationship_to_head VARCHAR(50) NOT NULL,
     family_position family_position_enum,
     position_notes TEXT,
-    join_date DATE DEFAULT CURRENT_DATE,
-    leave_date DATE,
     is_active BOOLEAN DEFAULT true,
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(household_id, resident_id, join_date)
+    UNIQUE(household_id, resident_id)
 );
 
 -- Resident Relationships (family relationships)
@@ -620,14 +695,18 @@ CREATE TABLE resident_relationships (
     is_reciprocal BOOLEAN DEFAULT true,
     start_date DATE DEFAULT CURRENT_DATE,
     end_date DATE,
+    
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT no_self_relationship CHECK (resident_a_id != resident_b_id),
     CONSTRAINT unique_relationship UNIQUE(resident_a_id, resident_b_id, relationship_type)
 );
 
 -- Sectoral Information Table
-CREATE TABLE sectoral_information (
+CREATE TABLE resident_sectoral_info (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
     
@@ -637,21 +716,20 @@ CREATE TABLE sectoral_information (
     is_unemployed BOOLEAN DEFAULT false,
     
     -- Special Populations
-    is_ofw BOOLEAN DEFAULT false,                    -- Overseas Filipino Worker
+    is_overseas_filipino_worker BOOLEAN DEFAULT false, -- Overseas Filipino Worker
     is_person_with_disability BOOLEAN DEFAULT false, -- PWD
-    is_out_of_school_children BOOLEAN DEFAULT false, -- Out of School Children
-    is_out_of_school_youth BOOLEAN DEFAULT false,    -- Out of School Youth
+    is_out_of_school_children BOOLEAN DEFAULT false, -- Auto-calc: Ages 6-14 not enrolled in formal education
+    is_out_of_school_youth BOOLEAN DEFAULT false,    -- Auto-calc: Ages 15-24 not in school, no college attainment, not employed
     is_senior_citizen BOOLEAN DEFAULT false,         -- Senior Citizen (60+)
     is_registered_senior_citizen BOOLEAN DEFAULT false, -- Registered SC
     is_solo_parent BOOLEAN DEFAULT false,            -- Solo Parent
     is_indigenous_people BOOLEAN DEFAULT false,      -- Indigenous People
     is_migrant BOOLEAN DEFAULT false,                -- Migrant
-    
-    -- Additional sectoral information
-    notes TEXT,
-    
-    -- Metadata
+        
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     
     -- Ensure one record per resident
@@ -659,20 +737,15 @@ CREATE TABLE sectoral_information (
 );
 
 -- Migrant Information Table
-CREATE TABLE migrant_information (
+CREATE TABLE resident_migrant_info (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
     
     -- Previous Residence Information
-    previous_region_code VARCHAR(10) REFERENCES psgc_regions(code),
-    previous_province_code VARCHAR(10) REFERENCES psgc_provinces(code),
-    previous_city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
     previous_barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
-    previous_street_name VARCHAR(200),
-    previous_house_number VARCHAR(50),
-    previous_subdivision VARCHAR(100),
-    previous_zip_code VARCHAR(10),
-    previous_complete_address TEXT, -- For non-PSGC addresses
+    previous_city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
+    previous_province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    previous_region_code VARCHAR(10) REFERENCES psgc_regions(code),
     
     -- Migration Details
     length_of_stay_previous_months INTEGER, -- Length of stay in previous residence (in months)
@@ -682,11 +755,12 @@ CREATE TABLE migrant_information (
     duration_of_stay_current_months INTEGER, -- Duration of stay in current barangay (in months)
     
     -- Return Intention
-    intention_to_return BOOLEAN, -- true = Yes, false = No, null = undecided
-    intention_notes TEXT, -- Additional notes about return intention
+    intends_to_return BOOLEAN, -- true = Yes, false = No, null = undecided
     
-    -- Metadata
+    -- Audit fields
+    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     
     -- Ensure one record per resident
@@ -698,7 +772,7 @@ CREATE TABLE migrant_information (
 -- =====================================================
 
 -- Pre-calculated dashboard summaries
-CREATE TABLE barangay_dashboard_summaries (
+CREATE TABLE system_dashboard_summaries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     calculation_date DATE DEFAULT CURRENT_DATE,
@@ -729,19 +803,21 @@ CREATE TABLE barangay_dashboard_summaries (
     student_count INTEGER DEFAULT 0,
     retired_count INTEGER DEFAULT 0,
     
+    -- System generated timestamps (no user tracking needed)
     created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(barangay_code, calculation_date)
 );
 
 -- Audit trail table
-CREATE TABLE audit_logs (
+CREATE TABLE system_audit_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     table_name VARCHAR(50) NOT NULL,
     record_id UUID NOT NULL,
     operation VARCHAR(10) NOT NULL CHECK (operation IN ('INSERT', 'UPDATE', 'DELETE')),
     old_values JSONB,
     new_values JSONB,
-    user_id UUID REFERENCES user_profiles(id),
+    user_id UUID REFERENCES auth_user_profiles(id),
     barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -758,13 +834,25 @@ CREATE INDEX idx_residents_barangay ON residents(barangay_code);
 CREATE INDEX idx_residents_household ON residents(household_id);
 -- Enhanced: Conditional index for storage optimization from current implementation
 CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4) WHERE philsys_last4 IS NOT NULL;
--- Enhanced: Birthdate index for age-based calculations from current implementation
+-- Enhanced: Birthdate and age indexes for age-based calculations
 CREATE INDEX idx_residents_birthdate ON residents(birthdate);
+CREATE INDEX idx_residents_age ON residents(age);
+
+-- Performance indexes for common query patterns
+CREATE INDEX idx_residents_barangay_employment ON residents(barangay_code, employment_status);
+CREATE INDEX idx_residents_barangay_age ON residents(barangay_code, age);
+CREATE INDEX idx_residents_barangay_civil_status ON residents(barangay_code, civil_status);
+CREATE INDEX idx_residents_barangay_education ON residents(barangay_code, education_attainment, is_graduate);
+-- Birth place indexes for demographic analysis
+CREATE INDEX idx_residents_birth_place_code ON residents(birth_place_code);
+CREATE INDEX idx_residents_birth_place_level ON residents(birth_place_level);
+CREATE INDEX idx_residents_birth_place_code_level ON residents(birth_place_code, birth_place_level);
+CREATE INDEX idx_residents_birth_place_full ON residents USING GIN(to_tsvector('english', birth_place_full));
 CREATE INDEX idx_residents_sex ON residents(sex);
 CREATE INDEX idx_residents_civil_status ON residents(civil_status);
 CREATE INDEX idx_residents_citizenship ON residents(citizenship);
-CREATE INDEX idx_residents_is_voter ON residents(is_voter);
-CREATE INDEX idx_residents_education_level ON residents(education_level);
+CREATE INDEX idx_residents_registered_voter ON residents(is_registered_voter);
+CREATE INDEX idx_residents_education_attainment ON residents(education_attainment);
 CREATE INDEX idx_residents_psoc_code ON residents(psoc_code);
 CREATE INDEX idx_residents_psoc_level ON residents(psoc_level);
 CREATE INDEX idx_residents_employment_status ON residents(employment_status);
@@ -775,11 +863,11 @@ CREATE INDEX idx_residents_religion ON residents(religion);
 CREATE INDEX idx_residents_region ON residents(region_code);
 CREATE INDEX idx_residents_province ON residents(province_code);
 CREATE INDEX idx_residents_city_municipality ON residents(city_municipality_code);
-CREATE INDEX idx_street_names_barangay ON street_names(barangay_code);
-CREATE INDEX idx_street_names_subdivision ON street_names(subdivision_id);
-CREATE INDEX idx_street_names_active ON street_names(is_active);
-CREATE INDEX idx_subdivisions_barangay ON subdivisions(barangay_code);
-CREATE INDEX idx_subdivisions_active ON subdivisions(is_active);
+CREATE INDEX idx_geo_street_names_barangay ON geo_street_names(barangay_code);
+CREATE INDEX idx_geo_street_names_subdivision ON geo_street_names(subdivision_id);
+CREATE INDEX idx_geo_street_names_active ON geo_street_names(is_active);
+CREATE INDEX idx_geo_subdivisions_barangay ON geo_subdivisions(barangay_code);
+CREATE INDEX idx_geo_subdivisions_active ON geo_subdivisions(is_active);
 
 -- Household indexes
 CREATE INDEX idx_households_barangay ON households(barangay_code);
@@ -796,7 +884,7 @@ CREATE INDEX idx_households_tenure ON households(tenure_status);
 CREATE INDEX idx_households_unit ON households(household_unit);
 CREATE INDEX idx_households_income_class ON households(income_class);
 CREATE INDEX idx_households_monthly_income ON households(monthly_income);
-CREATE INDEX idx_households_no_members ON households(no_of_members);
+CREATE INDEX idx_households_total_members ON households(total_members);
 
 -- Relationship indexes
 CREATE INDEX idx_relationships_resident_a ON resident_relationships(resident_a_id);
@@ -804,49 +892,48 @@ CREATE INDEX idx_relationships_resident_b ON resident_relationships(resident_b_i
 CREATE INDEX idx_relationships_type ON resident_relationships(relationship_type);
 
 -- User and access control indexes
-CREATE INDEX idx_user_profiles_role ON user_profiles(role_id);
-CREATE INDEX idx_barangay_accounts_user ON barangay_accounts(user_id);
-CREATE INDEX idx_barangay_accounts_barangay ON barangay_accounts(barangay_code);
+CREATE INDEX idx_auth_user_profiles_role ON auth_user_profiles(role_id);
+CREATE INDEX idx_barangay_accounts_user ON auth_barangay_accounts(user_id);
+CREATE INDEX idx_barangay_accounts_barangay ON auth_barangay_accounts(barangay_code);
 
 -- Audit trail indexes
-CREATE INDEX idx_audit_logs_table_record ON audit_logs(table_name, record_id);
-CREATE INDEX idx_audit_logs_user ON audit_logs(user_id);
-CREATE INDEX idx_audit_logs_created_at ON audit_logs(created_at);
-CREATE INDEX idx_audit_logs_barangay ON audit_logs(barangay_code);
+CREATE INDEX idx_system_audit_logs_table_record ON system_audit_logs(table_name, record_id);
+CREATE INDEX idx_system_audit_logs_user ON system_audit_logs(user_id);
+CREATE INDEX idx_system_audit_logs_created_at ON system_audit_logs(created_at);
+CREATE INDEX idx_system_audit_logs_barangay ON system_audit_logs(barangay_code);
 
 -- Dashboard summary indexes
-CREATE INDEX idx_dashboard_summaries_barangay ON barangay_dashboard_summaries(barangay_code);
-CREATE INDEX idx_dashboard_summaries_date ON barangay_dashboard_summaries(calculation_date);
+CREATE INDEX idx_dashboard_summaries_barangay ON system_dashboard_summaries(barangay_code);
+CREATE INDEX idx_dashboard_summaries_date ON system_dashboard_summaries(calculation_date);
 
 -- Additional indexes for sectoral information
-CREATE INDEX idx_sectoral_resident ON sectoral_information(resident_id);
-CREATE INDEX idx_sectoral_labor_force ON sectoral_information(is_labor_force);
-CREATE INDEX idx_sectoral_employed ON sectoral_information(is_employed);
-CREATE INDEX idx_sectoral_ofw ON sectoral_information(is_ofw);
-CREATE INDEX idx_sectoral_pwd ON sectoral_information(is_person_with_disability);
-CREATE INDEX idx_sectoral_senior ON sectoral_information(is_senior_citizen);
-CREATE INDEX idx_sectoral_solo_parent ON sectoral_information(is_solo_parent);
-CREATE INDEX idx_sectoral_indigenous ON sectoral_information(is_indigenous_people);
-CREATE INDEX idx_sectoral_migrant ON sectoral_information(is_migrant);
+CREATE INDEX idx_sectoral_resident ON resident_sectoral_info(resident_id);
+CREATE INDEX idx_sectoral_labor_force ON resident_sectoral_info(is_labor_force);
+CREATE INDEX idx_sectoral_employed ON resident_sectoral_info(is_employed);
+CREATE INDEX idx_sectoral_ofw ON resident_sectoral_info(is_overseas_filipino_worker);
+CREATE INDEX idx_sectoral_pwd ON resident_sectoral_info(is_person_with_disability);
+CREATE INDEX idx_sectoral_senior ON resident_sectoral_info(is_senior_citizen);
+CREATE INDEX idx_sectoral_solo_parent ON resident_sectoral_info(is_solo_parent);
+CREATE INDEX idx_sectoral_indigenous ON resident_sectoral_info(is_indigenous_people);
+CREATE INDEX idx_sectoral_migrant ON resident_sectoral_info(is_migrant);
 
 -- Additional indexes for household members
 CREATE INDEX idx_household_members_position ON household_members(family_position);
 
 -- Additional indexes for residents new fields
-CREATE INDEX idx_residents_birthplace ON residents(birthplace);
-CREATE INDEX idx_residents_salary ON residents(salary);
+-- Removed duplicate birthplace index (using birth_place_full instead)
 CREATE INDEX idx_residents_religion_others ON residents(religion_others_specify);
 
 -- Indexes for migrant information
-CREATE INDEX idx_migrant_resident ON migrant_information(resident_id);
-CREATE INDEX idx_migrant_previous_region ON migrant_information(previous_region_code);
-CREATE INDEX idx_migrant_previous_province ON migrant_information(previous_province_code);
-CREATE INDEX idx_migrant_previous_city ON migrant_information(previous_city_municipality_code);
-CREATE INDEX idx_migrant_previous_barangay ON migrant_information(previous_barangay_code);
-CREATE INDEX idx_migrant_date_transfer ON migrant_information(date_of_transfer);
-CREATE INDEX idx_migrant_intention_return ON migrant_information(intention_to_return);
-CREATE INDEX idx_migrant_length_stay_previous ON migrant_information(length_of_stay_previous_months);
-CREATE INDEX idx_migrant_duration_current ON migrant_information(duration_of_stay_current_months);
+CREATE INDEX idx_migrant_resident ON resident_migrant_info(resident_id);
+CREATE INDEX idx_migrant_previous_region ON resident_migrant_info(previous_region_code);
+CREATE INDEX idx_migrant_previous_province ON resident_migrant_info(previous_province_code);
+CREATE INDEX idx_migrant_previous_city ON resident_migrant_info(previous_city_municipality_code);
+CREATE INDEX idx_migrant_previous_barangay ON resident_migrant_info(previous_barangay_code);
+CREATE INDEX idx_migrant_date_transfer ON resident_migrant_info(date_of_transfer);
+CREATE INDEX idx_migrant_intention_return ON resident_migrant_info(intends_to_return);
+CREATE INDEX idx_migrant_length_stay_previous ON resident_migrant_info(length_of_stay_previous_months);
+CREATE INDEX idx_migrant_duration_current ON resident_migrant_info(duration_of_stay_current_months);
 
 -- Additional household income classification indexes
 CREATE INDEX idx_households_monthly_income_class ON households(monthly_income, income_class);
@@ -882,16 +969,16 @@ BEGIN
     -- Update the household with calculated values including income class
     UPDATE households 
     SET 
-        no_of_members = (
+        total_members = (
             SELECT COUNT(*) 
             FROM household_members 
             WHERE household_id = COALESCE(NEW.household_id, OLD.household_id) 
             AND is_active = true
         ),
-        no_of_migrants = (
+        total_migrants = (
             SELECT COUNT(*) 
             FROM household_members hm
-            JOIN sectoral_information si ON hm.resident_id = si.resident_id
+            JOIN resident_sectoral_info si ON hm.resident_id = si.resident_id
             WHERE hm.household_id = COALESCE(NEW.household_id, OLD.household_id) 
             AND hm.is_active = true 
             AND si.is_migrant = true
@@ -962,7 +1049,7 @@ BEGIN
     is_working := NEW.employment_status IN ('employed', 'self_employed');
     
     -- Insert or update sectoral information
-    INSERT INTO sectoral_information (
+    INSERT INTO resident_sectoral_info (
         resident_id,
         is_labor_force,
         is_employed,
@@ -976,11 +1063,11 @@ BEGIN
         is_working,
         NEW.employment_status IN ('unemployed', 'looking_for_work'),
         resident_age >= 60,
-        -- OSC: Age 6-14 + not in formal education
-        (resident_age >= 6 AND resident_age <= 14 AND NEW.education_status IN ('not_studying', 'dropped_out')),
-        -- OSY: Age 15-24 + not in school + no college/post-secondary + not working
-        (resident_age >= 15 AND resident_age <= 24 AND NEW.education_status IN ('not_studying', 'dropped_out') 
-         AND NEW.education_level NOT IN ('college', 'post_graduate', 'graduate') 
+        -- OSC: Age 6-14 + not graduated from education level
+        (resident_age >= 6 AND resident_age <= 14 AND NEW.is_graduate = false),
+        -- OSY: Age 15-24 + not graduated + no college/post-secondary + not working
+        (resident_age >= 15 AND resident_age <= 24 AND NEW.is_graduate = false 
+         AND NEW.education_attainment NOT IN ('college', 'post_graduate') 
          AND NEW.employment_status IN ('unemployed', 'not_in_labor_force', 'looking_for_work'))
     )
     ON CONFLICT (resident_id) 
@@ -989,9 +1076,9 @@ BEGIN
         is_employed = is_working,
         is_unemployed = NEW.employment_status IN ('unemployed', 'looking_for_work'),
         is_senior_citizen = resident_age >= 60,
-        is_out_of_school_children = (resident_age >= 6 AND resident_age <= 14 AND NEW.education_status IN ('not_studying', 'dropped_out')),
-        is_out_of_school_youth = (resident_age >= 15 AND resident_age <= 24 AND NEW.education_status IN ('not_studying', 'dropped_out') 
-                                  AND NEW.education_level NOT IN ('college', 'post_graduate', 'graduate') 
+        is_out_of_school_children = (resident_age >= 6 AND resident_age <= 14 AND NEW.is_graduate = false),
+        is_out_of_school_youth = (resident_age >= 15 AND resident_age <= 24 AND NEW.is_graduate = false 
+                                  AND NEW.education_attainment NOT IN ('college', 'post_graduate') 
                                   AND NEW.employment_status IN ('unemployed', 'not_in_labor_force', 'looking_for_work')),
         updated_at = NOW();
     
@@ -1002,27 +1089,42 @@ $$ LANGUAGE plpgsql;
 -- Enhanced: Direct sectoral field updates from current implementation
 CREATE OR REPLACE FUNCTION update_resident_sectoral_status()
 RETURNS TRIGGER AS $$
+DECLARE
+    current_age INTEGER;
 BEGIN
+    -- Calculate age once for efficiency (generated column not available during INSERT)
+    current_age := EXTRACT(YEAR FROM AGE(NEW.birthdate));
+    
     -- Enhanced: Better PL/pgSQL syntax with :=
     -- Auto-calculate senior citizen status (age 60+)
-    NEW.is_senior_citizen := (EXTRACT(YEAR FROM AGE(NEW.birthdate)) >= 60);
+    NEW.is_senior_citizen := (current_age >= 60);
     
     -- Auto-calculate labor force status based on employment
     NEW.is_labor_force := (NEW.employment_status IN ('employed', 'unemployed', 'underemployed', 'self_employed', 'looking_for_work'));
     NEW.is_employed := (NEW.employment_status IN ('employed', 'self_employed'));
-    NEW.is_unemployed := (NEW.employment_status = 'unemployed');
+    NEW.is_unemployed := (NEW.employment_status IN ('unemployed', 'looking_for_work'));
     
-    -- Enhanced: Auto-calculate out-of-school classifications
-    -- Out-of-school children (ages 6-15)
-    IF EXTRACT(YEAR FROM AGE(NEW.birthdate)) BETWEEN 6 AND 15 THEN
-        NEW.is_out_of_school_children := (NEW.education_status != 'currently_studying');
+    -- Auto-calculate PWD status (this will be set via resident_sectoral_info)  
+    -- NEW.is_person_with_disability is handled in resident_sectoral_info table
+    
+    -- Auto-calculate Out-of-School Children (OSC): Ages 6-14 not enrolled in formal education
+    IF current_age BETWEEN 6 AND 14 THEN
+        NEW.is_out_of_school_children := (NEW.is_graduate = false 
+            AND NEW.education_attainment IN ('elementary', 'high_school')); -- Should be studying/completing elementary/high school
     ELSE
         NEW.is_out_of_school_children := false;
     END IF;
     
-    -- Out-of-school youth (ages 16-24)
-    IF EXTRACT(YEAR FROM AGE(NEW.birthdate)) BETWEEN 16 AND 24 THEN
-        NEW.is_out_of_school_youth := (NEW.education_status NOT IN ('currently_studying', 'graduated'));
+    -- Auto-calculate Out-of-School Youth (OSY): Ages 15-24 not attending school, 
+    -- haven't completed college/post-secondary course, and not employed
+    -- Note: employment_status may be NULL for those not yet in workforce age
+    IF current_age BETWEEN 15 AND 24 THEN
+        NEW.is_out_of_school_youth := (
+            -- Haven't completed college/post-graduate (is_graduate = false for college level OR lower education level)
+            (NEW.education_attainment NOT IN ('college', 'post_graduate') OR NEW.is_graduate = false)
+            AND NEW.is_graduate = false -- Not completed current education level
+            AND (NEW.employment_status IS NULL OR NEW.employment_status NOT IN ('employed', 'self_employed')) -- Not employed or no employment data yet
+        );
     ELSE
         NEW.is_out_of_school_youth := false;
     END IF;
@@ -1075,7 +1177,7 @@ CREATE TRIGGER trigger_update_household_derived_fields
     FOR EACH ROW
     EXECUTE FUNCTION update_household_derived_fields();
 
--- Function to auto-populate resident address from user's assigned barangay
+-- Function to auto-populate resident address from user's assigned barangay or household
 CREATE OR REPLACE FUNCTION auto_populate_resident_address()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1083,8 +1185,32 @@ DECLARE
     region_code VARCHAR(10);
     province_code VARCHAR(10);
     city_code VARCHAR(10);
+    household_code VARCHAR(50);
 BEGIN
-    -- Get the current user's assigned barangay
+    -- Priority 1: Auto-populate from household if household_id is provided
+    IF NEW.household_id IS NOT NULL THEN
+        SELECT 
+            h.barangay_code, 
+            h.city_municipality_code, 
+            h.province_code, 
+            h.region_code, 
+            h.code
+        INTO 
+            NEW.barangay_code, 
+            NEW.city_municipality_code, 
+            NEW.province_code, 
+            NEW.region_code, 
+            NEW.household_code
+        FROM households h 
+        WHERE h.id = NEW.household_id;
+        
+        -- Return early if household was found and populated
+        IF FOUND THEN
+            RETURN NEW;
+        END IF;
+    END IF;
+    
+    -- Priority 2: Auto-populate from user's assigned barangay (fallback)
     SELECT ba.barangay_code 
     INTO user_barangay_code
     FROM barangay_accounts ba 
@@ -1094,7 +1220,7 @@ BEGIN
     IF user_barangay_code IS NOT NULL THEN
         SELECT 
             r.code,
-            p.code,
+            CASE WHEN c.is_independent THEN NULL ELSE p.code END,
             c.code
         INTO 
             region_code,
@@ -1102,15 +1228,23 @@ BEGIN
             city_code
         FROM psgc_barangays b
         JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
-        JOIN psgc_provinces p ON c.province_code = p.code  
-        JOIN psgc_regions r ON p.region_code = r.code
+        LEFT JOIN psgc_provinces p ON c.province_code = p.code  
+        JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
         WHERE b.code = user_barangay_code;
         
-        -- Auto-populate the address fields
-        NEW.barangay_code := user_barangay_code;
-        NEW.city_municipality_code := city_code;
-        NEW.province_code := province_code;
-        NEW.region_code := region_code;
+        -- Auto-populate the address fields only if not already set
+        IF NEW.barangay_code IS NULL THEN
+            NEW.barangay_code := user_barangay_code;
+        END IF;
+        IF NEW.city_municipality_code IS NULL THEN
+            NEW.city_municipality_code := city_code;
+        END IF;
+        IF NEW.province_code IS NULL THEN
+            NEW.province_code := province_code;
+        END IF;
+        IF NEW.region_code IS NULL THEN
+            NEW.region_code := region_code;
+        END IF;
     END IF;
     
     RETURN NEW;
@@ -1139,7 +1273,7 @@ CREATE TRIGGER trigger_update_resident_sectoral_status
 CREATE OR REPLACE FUNCTION create_audit_log()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO audit_logs (
+    INSERT INTO system_audit_logs (
         table_name, 
         record_id, 
         operation, 
@@ -1166,15 +1300,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Audit triggers for main tables
-CREATE TRIGGER audit_residents
+CREATE TRIGGER trigger_audit_residents
     AFTER INSERT OR UPDATE OR DELETE ON residents
     FOR EACH ROW EXECUTE FUNCTION create_audit_log();
 
-CREATE TRIGGER audit_households
+CREATE TRIGGER trigger_audit_households
     AFTER INSERT OR UPDATE OR DELETE ON households
     FOR EACH ROW EXECUTE FUNCTION create_audit_log();
 
-CREATE TRIGGER audit_household_members
+CREATE TRIGGER trigger_audit_household_members
     AFTER INSERT OR UPDATE OR DELETE ON household_members
     FOR EACH ROW EXECUTE FUNCTION create_audit_log();
 
@@ -1188,50 +1322,127 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers for updated_at columns
-CREATE TRIGGER update_residents_updated_at
+CREATE TRIGGER trigger_update_residents_updated_at
     BEFORE UPDATE ON residents
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_households_updated_at
+CREATE TRIGGER trigger_update_households_updated_at
     BEFORE UPDATE ON households
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_user_profiles_updated_at
-    BEFORE UPDATE ON user_profiles
+CREATE TRIGGER trigger_update_auth_user_profiles_updated_at
+    BEFORE UPDATE ON auth_user_profiles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_subdivisions_updated_at
-    BEFORE UPDATE ON subdivisions
+CREATE TRIGGER trigger_update_geo_subdivisions_updated_at
+    BEFORE UPDATE ON geo_subdivisions
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_street_names_updated_at
-    BEFORE UPDATE ON street_names
+CREATE TRIGGER trigger_update_geo_street_names_updated_at
+    BEFORE UPDATE ON geo_street_names
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 
 -- =====================================================
--- 10. ROW LEVEL SECURITY (RLS) POLICIES
+-- 10. ROW LEVEL SECURITY (Complete Implementation)
 -- =====================================================
 
--- Enable RLS on all tables
-ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+-- Enable RLS on ALL tables (PSGC reference data + application tables)
+-- PSGC Reference Tables
+ALTER TABLE psgc_regions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psgc_regions FORCE ROW LEVEL SECURITY;
+ALTER TABLE psgc_provinces ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psgc_provinces FORCE ROW LEVEL SECURITY;
+ALTER TABLE psgc_cities_municipalities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psgc_cities_municipalities FORCE ROW LEVEL SECURITY;
+ALTER TABLE psgc_barangays ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psgc_barangays FORCE ROW LEVEL SECURITY;
+
+-- PSOC Reference Tables
+ALTER TABLE psoc_major_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_major_groups FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_sub_major_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_sub_major_groups FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_minor_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_minor_groups FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_unit_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_unit_groups FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_unit_sub_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_unit_sub_groups FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_position_titles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_position_titles FORCE ROW LEVEL SECURITY;
+ALTER TABLE psoc_cross_references ENABLE ROW LEVEL SECURITY;
+ALTER TABLE psoc_cross_references FORCE ROW LEVEL SECURITY;
+
+-- Application Tables
+ALTER TABLE roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE roles FORCE ROW LEVEL SECURITY;
+ALTER TABLE auth_user_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE auth_user_profiles FORCE ROW LEVEL SECURITY;
 ALTER TABLE barangay_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE barangay_accounts FORCE ROW LEVEL SECURITY;
 ALTER TABLE residents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE residents FORCE ROW LEVEL SECURITY;
 ALTER TABLE households ENABLE ROW LEVEL SECURITY;
+ALTER TABLE households FORCE ROW LEVEL SECURITY;
 ALTER TABLE household_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE household_members FORCE ROW LEVEL SECURITY;
 ALTER TABLE resident_relationships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE subdivisions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE street_names ENABLE ROW LEVEL SECURITY;
-ALTER TABLE sectoral_information ENABLE ROW LEVEL SECURITY;
-ALTER TABLE migrant_information ENABLE ROW LEVEL SECURITY;
-ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE barangay_dashboard_summaries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE resident_relationships FORCE ROW LEVEL SECURITY;
+ALTER TABLE geo_subdivisions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE geo_subdivisions FORCE ROW LEVEL SECURITY;
+ALTER TABLE geo_street_names ENABLE ROW LEVEL SECURITY;
+ALTER TABLE geo_street_names FORCE ROW LEVEL SECURITY;
+ALTER TABLE resident_sectoral_info ENABLE ROW LEVEL SECURITY;
+ALTER TABLE resident_sectoral_info FORCE ROW LEVEL SECURITY;
+ALTER TABLE resident_migrant_info ENABLE ROW LEVEL SECURITY;
+ALTER TABLE resident_migrant_info FORCE ROW LEVEL SECURITY;
+ALTER TABLE system_audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE system_audit_logs FORCE ROW LEVEL SECURITY;
+ALTER TABLE system_dashboard_summaries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE system_dashboard_summaries FORCE ROW LEVEL SECURITY;
+
+-- =====================================================
+-- 11. RLS POLICIES (Comprehensive Implementation)
+-- =====================================================
+
+-- PSGC Tables - Public read access, admin write access
+CREATE POLICY "Public read psgc_regions" ON psgc_regions FOR SELECT USING (true);
+CREATE POLICY "Admin write psgc_regions" ON psgc_regions FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM auth_user_profiles up
+        JOIN roles r ON up.role_id = r.id
+        WHERE up.id = auth.uid() AND r.name IN ('super_admin', 'barangay_admin')
+    )
+);
+
+CREATE POLICY "Public read psgc_provinces" ON psgc_provinces FOR SELECT USING (true);
+CREATE POLICY "Public read psgc_cities" ON psgc_cities_municipalities FOR SELECT USING (true);
+CREATE POLICY "Public read psgc_barangays" ON psgc_barangays FOR SELECT USING (true);
+
+-- PSOC Tables - Public read access
+CREATE POLICY "Public read psoc_major_groups" ON psoc_major_groups FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_sub_major_groups" ON psoc_sub_major_groups FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_minor_groups" ON psoc_minor_groups FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_unit_groups" ON psoc_unit_groups FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_unit_sub_groups" ON psoc_unit_sub_groups FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_position_titles" ON psoc_position_titles FOR SELECT USING (true);
+CREATE POLICY "Public read psoc_cross_references" ON psoc_cross_references FOR SELECT USING (true);
+
+-- Roles - Super admin access only
+CREATE POLICY "Super admin only roles" ON roles FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM auth_user_profiles up
+        JOIN roles r ON up.role_id = r.id
+        WHERE up.id = auth.uid() AND r.name = 'super_admin'
+    )
+);
 
 -- User profiles: users can only see their own profile
-CREATE POLICY "Users can view own profile" ON user_profiles
+CREATE POLICY "Users can view own profile" ON auth_user_profiles
     FOR SELECT USING (auth.uid() = id);
 
-CREATE POLICY "Users can update own profile" ON user_profiles
+CREATE POLICY "Users can update own profile" ON auth_user_profiles
     FOR UPDATE USING (auth.uid() = id);
 
 -- Barangay-scoped access for residents
@@ -1265,8 +1476,8 @@ CREATE POLICY "Barangay access for household_members" ON household_members
         )
     );
 
--- Barangay-scoped access for subdivisions
-CREATE POLICY "Barangay access for subdivisions" ON subdivisions
+-- Barangay-scoped access for geo_subdivisions
+CREATE POLICY "Barangay access for geo_subdivisions" ON geo_subdivisions
     FOR ALL USING (
         barangay_code IN (
             SELECT ba.barangay_code 
@@ -1275,8 +1486,8 @@ CREATE POLICY "Barangay access for subdivisions" ON subdivisions
         )
     );
 
--- Barangay-scoped access for street_names
-CREATE POLICY "Barangay access for street_names" ON street_names
+-- Barangay-scoped access for geo_street_names
+CREATE POLICY "Barangay access for geo_street_names" ON geo_street_names
     FOR ALL USING (
         barangay_code IN (
             SELECT ba.barangay_code 
@@ -1285,8 +1496,8 @@ CREATE POLICY "Barangay access for street_names" ON street_names
         )
     );
 
--- Barangay-scoped access for sectoral_information
-CREATE POLICY "Barangay access for sectoral_information" ON sectoral_information
+-- Barangay-scoped access for resident_sectoral_info
+CREATE POLICY "Barangay access for resident_sectoral_info" ON resident_sectoral_info
     FOR ALL USING (
         resident_id IN (
             SELECT r.id 
@@ -1296,8 +1507,8 @@ CREATE POLICY "Barangay access for sectoral_information" ON sectoral_information
         )
     );
 
--- Barangay-scoped access for migrant_information
-CREATE POLICY "Barangay access for migrant_information" ON migrant_information
+-- Barangay-scoped access for resident_migrant_info
+CREATE POLICY "Barangay access for resident_migrant_info" ON resident_migrant_info
     FOR ALL USING (
         resident_id IN (
             SELECT r.id 
@@ -1307,8 +1518,8 @@ CREATE POLICY "Barangay access for migrant_information" ON migrant_information
         )
     );
 
--- Barangay-scoped access for audit_logs
-CREATE POLICY "Barangay access for audit_logs" ON audit_logs
+-- Barangay-scoped access for system_audit_logs
+CREATE POLICY "Barangay access for system_audit_logs" ON system_audit_logs
     FOR SELECT USING (
         barangay_code IN (
             SELECT ba.barangay_code 
@@ -1318,7 +1529,62 @@ CREATE POLICY "Barangay access for audit_logs" ON audit_logs
     );
 
 -- =====================================================
--- 11. VIEWS FOR UI OPTIMIZATION
+-- 12. PERMISSIONS (Anonymous & Authenticated)
+-- =====================================================
+
+-- Remove ALL permissions from anonymous users
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
+REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM anon;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM anon;
+
+-- Grant safe read access to reference data (geographic and occupation data)
+GRANT SELECT ON psgc_regions TO anon;
+GRANT SELECT ON psgc_provinces TO anon;
+GRANT SELECT ON psgc_cities_municipalities TO anon;
+GRANT SELECT ON psgc_barangays TO anon;
+GRANT SELECT ON psoc_major_groups TO anon;
+GRANT SELECT ON psoc_sub_major_groups TO anon;
+GRANT SELECT ON psoc_minor_groups TO anon;
+GRANT SELECT ON psoc_unit_groups TO anon;
+GRANT SELECT ON psoc_unit_sub_groups TO anon;
+GRANT SELECT ON psoc_position_titles TO anon;
+GRANT SELECT ON psoc_cross_references TO anon;
+
+-- Authenticated users - Full access controlled by RLS policies
+GRANT ALL ON residents TO authenticated;
+GRANT ALL ON households TO authenticated;
+GRANT ALL ON household_members TO authenticated;
+GRANT ALL ON auth_user_profiles TO authenticated;
+GRANT ALL ON barangay_accounts TO authenticated;
+GRANT ALL ON resident_relationships TO authenticated;
+GRANT ALL ON geo_subdivisions TO authenticated;
+GRANT ALL ON geo_street_names TO authenticated;
+GRANT ALL ON resident_sectoral_info TO authenticated;
+GRANT ALL ON resident_migrant_info TO authenticated;
+GRANT ALL ON system_audit_logs TO authenticated;
+GRANT ALL ON system_dashboard_summaries TO authenticated;
+
+-- Reference data for authenticated users
+GRANT SELECT ON psgc_regions TO authenticated;
+GRANT SELECT ON psgc_provinces TO authenticated;
+GRANT SELECT ON psgc_cities_municipalities TO authenticated;
+GRANT SELECT ON psgc_barangays TO authenticated;
+GRANT SELECT ON psoc_major_groups TO authenticated;
+GRANT SELECT ON psoc_sub_major_groups TO authenticated;
+GRANT SELECT ON psoc_minor_groups TO authenticated;
+GRANT SELECT ON psoc_unit_groups TO authenticated;
+GRANT SELECT ON psoc_unit_sub_groups TO authenticated;
+GRANT SELECT ON psoc_position_titles TO authenticated;
+GRANT SELECT ON psoc_cross_references TO authenticated;
+
+-- Admin tables
+GRANT SELECT ON roles TO authenticated;
+
+-- Sequences for authenticated users
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO authenticated;
+
+-- =====================================================
+-- 13. VIEWS FOR UI OPTIMIZATION
 -- =====================================================
 
 -- Flattened PSOC hierarchy for unified occupation search
@@ -1475,49 +1741,49 @@ JOIN psoc_major_groups mg ON smg.major_code = mg.code
 
 ORDER BY hierarchy_level, occupation_title;
 
--- Complete address hierarchy view for Settings management
--- Enhanced: PSGC address hierarchy with smart formatting from current implementation
-CREATE VIEW psgc_address_hierarchy AS
+-- Complete Address Hierarchy View (Fixed for all barangays including independent cities)
+CREATE VIEW address_hierarchy AS
 SELECT 
-    r.code as region_code,
-    r.name as region_name,
-    p.code as province_code,
-    p.name as province_name,
-    cm.code as city_municipality_code,
-    cm.name as city_municipality_name,
-    cm.type as city_municipality_type,
-    cm.is_independent,
-    b.code as barangay_code,
-    b.name as barangay_name,
-    b.urban_rural_status,
+    b.code::text AS barangay_code,
+    b.name::text AS barangay_name,
+    c.code::text AS city_code,
+    c.name::text AS city_name,
+    c.type::text AS city_type,
+    p.code::text AS province_code,
+    p.name::text AS province_name,
+    COALESCE(r.code, 'UNKNOWN')::text AS region_code,
+    COALESCE(r.name, 'Unknown Region')::text AS region_name,
     s.id as subdivision_id,
     s.name as subdivision_name,
     s.type as subdivision_type,
     s.is_active as subdivision_active,
-    -- Enhanced: Smart address formatting for independent cities
+    -- Smart address formatting for independent cities and missing regions
     CASE 
-        WHEN cm.is_independent = true THEN 
-            CONCAT(b.name, ', ', cm.name, ', ', r.name)
+        WHEN c.is_independent = true AND r.name IS NOT NULL THEN 
+            CONCAT(b.name, ', ', c.name, ', ', r.name)
+        WHEN c.is_independent = true AND r.name IS NULL THEN
+            CONCAT(b.name, ', ', c.name, ', Metro Manila/NCR')  -- Default for missing regions
         ELSE 
-            CONCAT(b.name, ', ', cm.name, ', ', p.name, ', ', r.name)
-    END as full_address
-FROM psgc_regions r
-LEFT JOIN psgc_provinces p ON r.code = p.region_code
-JOIN psgc_cities_municipalities cm ON COALESCE(p.code, r.code) = COALESCE(cm.province_code, cm.province_code)
-JOIN psgc_barangays b ON cm.code = b.city_municipality_code
-LEFT JOIN subdivisions s ON b.code = s.barangay_code;
+            CONCAT(b.name, ', ', c.name, ', ', COALESCE(p.name, ''), ', ', COALESCE(r.name, 'Unknown Region'))
+    END AS full_address
+FROM psgc_barangays b
+JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+LEFT JOIN psgc_provinces p ON c.province_code = p.code
+LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+LEFT JOIN geo_subdivisions s ON b.code = s.barangay_code
+ORDER BY COALESCE(r.name, 'ZZ'), COALESCE(p.name, ''), c.name, b.name;
 
 -- Settings management summary view
 CREATE VIEW settings_management_summary AS
 SELECT 
     b.code as barangay_code,
     b.name as barangay_name,
-    COUNT(DISTINCT s.id) as total_subdivisions,
-    COUNT(DISTINCT CASE WHEN s.is_active = true THEN s.id END) as active_subdivisions,
+    COUNT(DISTINCT s.id) as total_geo_subdivisions,
+    COUNT(DISTINCT CASE WHEN s.is_active = true THEN s.id END) as active_geo_subdivisions,
     COUNT(DISTINCT h.id) as total_households,
     COUNT(DISTINCT CASE WHEN h.is_active = true THEN h.id END) as active_households
 FROM psgc_barangays b
-LEFT JOIN subdivisions s ON b.code = s.barangay_code
+LEFT JOIN geo_subdivisions s ON b.code = s.barangay_code
 LEFT JOIN households h ON b.code = h.barangay_code
 GROUP BY b.code, b.name;
 
@@ -1547,8 +1813,8 @@ SELECT
     mi.intention_to_return,
     mi.intention_notes
 FROM residents r
-LEFT JOIN sectoral_information si ON r.id = si.resident_id
-LEFT JOIN migrant_information mi ON r.id = mi.resident_id;
+LEFT JOIN resident_sectoral_info si ON r.id = si.resident_id
+LEFT JOIN resident_migrant_info mi ON r.id = mi.resident_id;
 
 -- Enhanced households view with complete information and income classification
 CREATE VIEW households_complete AS
@@ -1585,8 +1851,8 @@ SELECT
     END as income_class_description
 FROM households h
 LEFT JOIN residents r ON h.household_head_id = r.id
-LEFT JOIN subdivisions s ON h.subdivision_id = s.id
-LEFT JOIN street_names st ON h.street_id = st.id
+LEFT JOIN geo_subdivisions s ON h.subdivision_id = s.id
+LEFT JOIN geo_street_names st ON h.street_id = st.id
 LEFT JOIN psgc_barangays bgy ON h.barangay_code = bgy.code
 LEFT JOIN psgc_cities_municipalities city ON bgy.city_municipality_code = city.code
 LEFT JOIN psgc_provinces prov ON city.province_code = prov.code
@@ -1611,7 +1877,7 @@ SELECT
     curr_prov.name as current_province_name,
     curr_city.name as current_city_municipality_name,
     curr_bgy.name as current_barangay_name
-FROM migrant_information mi
+FROM resident_migrant_info mi
 JOIN residents r ON mi.resident_id = r.id
 -- Previous address joins
 LEFT JOIN psgc_regions prev_reg ON mi.previous_region_code = prev_reg.code
@@ -1727,14 +1993,34 @@ ALTER TABLE residents ADD CONSTRAINT valid_weight
 ALTER TABLE residents ADD CONSTRAINT valid_salary 
     CHECK (salary >= 0);
 
+-- Birth place validation constraint
+ALTER TABLE residents ADD CONSTRAINT valid_birth_place_code 
+    CHECK (
+        birth_place_code IS NULL OR birth_place_level IS NULL OR
+        CASE birth_place_level
+            WHEN 'region' THEN EXISTS (SELECT 1 FROM psgc_regions WHERE code = birth_place_code)
+            WHEN 'province' THEN EXISTS (SELECT 1 FROM psgc_provinces WHERE code = birth_place_code)
+            WHEN 'city_municipality' THEN EXISTS (SELECT 1 FROM psgc_cities_municipalities WHERE code = birth_place_code)
+            WHEN 'barangay' THEN EXISTS (SELECT 1 FROM psgc_barangays WHERE code = birth_place_code)
+            ELSE false
+        END
+    );
+
+-- Civil status others specification constraint
+ALTER TABLE residents ADD CONSTRAINT valid_civil_status_others_specify
+    CHECK (
+        (civil_status = 'others' AND civil_status_others_specify IS NOT NULL AND TRIM(civil_status_others_specify) != '') OR
+        (civil_status != 'others')
+    );
+
 ALTER TABLE households ADD CONSTRAINT valid_monthly_income 
     CHECK (monthly_income >= 0);
 
-ALTER TABLE households ADD CONSTRAINT valid_no_of_members 
-    CHECK (no_of_members >= 0);
+ALTER TABLE households ADD CONSTRAINT valid_total_members 
+    CHECK (total_members >= 0);
 
-ALTER TABLE households ADD CONSTRAINT valid_no_of_families 
-    CHECK (no_of_families >= 1);
+ALTER TABLE households ADD CONSTRAINT valid_total_families 
+    CHECK (total_families >= 1);
 
 -- Ensure philsys_last4 is exactly 4 characters if provided
 ALTER TABLE residents ADD CONSTRAINT valid_philsys_last4 
@@ -1748,13 +2034,467 @@ ALTER TABLE residents ADD CONSTRAINT valid_email_format
 -- SCHEMA VERSIONING AND METADATA
 -- =====================================================
 
-CREATE TABLE schema_version (
+CREATE TABLE system_schema_versions (
     version VARCHAR(10) PRIMARY KEY,
     applied_at TIMESTAMPTZ DEFAULT NOW(),
     description TEXT
 );
 
-INSERT INTO schema_version (version, description) 
+-- =====================================================
+-- BIRTH PLACE SELECTION VIEWS AND FUNCTIONS
+-- =====================================================
+
+-- Unified view for birth place selection (similar to PSOC hierarchy)
+CREATE OR REPLACE VIEW birth_place_options AS
+SELECT 
+    'region' as place_level,
+    code,
+    name,
+    name as full_name,
+    NULL::VARCHAR(10) as parent_code
+FROM psgc_regions
+
+UNION ALL
+
+SELECT 
+    'province' as place_level,
+    p.code,
+    p.name,
+    CONCAT_WS(', ', p.name, r.name) as full_name,
+    p.region_code as parent_code
+FROM psgc_provinces p
+JOIN psgc_regions r ON p.region_code = r.code
+
+UNION ALL
+
+SELECT 
+    'city_municipality' as place_level,
+    c.code,
+    c.name,
+    CASE 
+        WHEN c.is_independent THEN CONCAT_WS(', ', c.name, r.name)
+        ELSE CONCAT_WS(', ', c.name, p.name, r.name)
+    END as full_name,
+    c.province_code as parent_code
+FROM psgc_cities_municipalities c
+LEFT JOIN psgc_provinces p ON c.province_code = p.code
+LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+
+UNION ALL
+
+SELECT 
+    'barangay' as place_level,
+    b.code,
+    b.name,
+    CONCAT_WS(', ',
+        b.name,
+        c.name,
+        CASE WHEN c.is_independent THEN NULL ELSE p.name END,
+        r.name
+    ) as full_name,
+    b.city_municipality_code as parent_code
+FROM psgc_barangays b
+JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+LEFT JOIN psgc_provinces p ON c.province_code = p.code
+LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code;
+
+-- Function to search birth places (similar to PSOC search)
+CREATE OR REPLACE FUNCTION search_birth_places(
+    search_term TEXT DEFAULT NULL,
+    level_filter birth_place_level_enum DEFAULT NULL,
+    parent_code_filter VARCHAR(10) DEFAULT NULL,
+    limit_results INTEGER DEFAULT 50
+)
+RETURNS TABLE (
+    place_level TEXT,
+    code VARCHAR(10),
+    name VARCHAR,
+    full_name TEXT,
+    parent_code VARCHAR(10)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        bpo.place_level,
+        bpo.code,
+        bpo.name,
+        bpo.full_name,
+        bpo.parent_code
+    FROM birth_place_options bpo
+    WHERE 
+        (search_term IS NULL OR (
+            bpo.name ILIKE '%' || search_term || '%' OR
+            bpo.full_name ILIKE '%' || search_term || '%'
+        ))
+        AND (level_filter IS NULL OR bpo.place_level = level_filter::TEXT)
+        AND (parent_code_filter IS NULL OR bpo.parent_code = parent_code_filter)
+    ORDER BY 
+        bpo.name ASC,
+        bpo.place_level ASC
+    LIMIT limit_results;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get birth place details by code and level
+CREATE OR REPLACE FUNCTION get_birth_place_details(
+    place_code VARCHAR(10),
+    place_level birth_place_level_enum
+)
+RETURNS TABLE (
+    code VARCHAR(10),
+    name VARCHAR,
+    full_name TEXT,
+    level TEXT,
+    parent_code VARCHAR(10)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        bpo.code,
+        bpo.name,
+        bpo.full_name,
+        bpo.place_level,
+        bpo.parent_code
+    FROM birth_place_options bpo
+    WHERE bpo.code = place_code AND bpo.place_level = place_level::TEXT;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Grant permissions
+GRANT SELECT ON birth_place_options TO authenticated;
+
+-- Add comments
+COMMENT ON TYPE birth_place_level_enum IS 'Specifies which level of PSGC hierarchy the birth_place_code refers to (similar to PSOC levels)';
+COMMENT ON VIEW birth_place_options IS 'Unified view of all PSGC locations for birth place selection (similar to PSOC hierarchy view)';
+COMMENT ON FUNCTION search_birth_places(TEXT, birth_place_level_enum, VARCHAR(10), INTEGER) IS 'Search function for birth places across all PSGC levels with fuzzy matching';
+COMMENT ON FUNCTION get_birth_place_details(VARCHAR(10), birth_place_level_enum) IS 'Get detailed information for a specific birth place code and level';
+
+-- =====================================================
+-- OCCUPATION SEARCH FUNCTIONS
+-- =====================================================
+
+-- Function to search occupations using existing psoc_occupation_search table
+CREATE OR REPLACE FUNCTION search_occupations(
+    search_term TEXT DEFAULT NULL,
+    limit_results INTEGER DEFAULT 50
+)
+RETURNS TABLE (
+    psoc_code TEXT,
+    psoc_level TEXT,
+    occupation_title TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        pos.occupation_code as psoc_code,
+        pos.level_type as psoc_level,
+        pos.occupation_title
+    FROM psoc_occupation_search pos
+    WHERE 
+        search_term IS NULL OR (
+            pos.occupation_title ILIKE '%' || search_term || '%' OR
+            pos.searchable_text ILIKE '%' || search_term || '%'
+        )
+    ORDER BY 
+        pos.occupation_title ASC
+    LIMIT limit_results;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to get occupation details by code
+CREATE OR REPLACE FUNCTION get_occupation_details(
+    occupation_code TEXT
+)
+RETURNS TABLE (
+    psoc_code TEXT,
+    psoc_level TEXT,
+    occupation_title TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        pos.occupation_code as psoc_code,
+        pos.level_type as psoc_level,
+        pos.occupation_title
+    FROM psoc_occupation_search pos
+    WHERE pos.occupation_code = occupation_details.occupation_code;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Grant permissions
+GRANT EXECUTE ON FUNCTION search_occupations(TEXT, INTEGER) TO authenticated;
+GRANT EXECUTE ON FUNCTION get_occupation_details(TEXT) TO authenticated;
+
+-- Add comments
+COMMENT ON FUNCTION search_occupations(TEXT, INTEGER) IS 'Search occupations from psoc_occupation_search table by title or searchable text';
+COMMENT ON FUNCTION get_occupation_details(TEXT) IS 'Get occupation details by PSOC occupation code';
+
+-- Add comments for civil status others field
+COMMENT ON COLUMN residents.civil_status_others_specify IS 'Required custom text when civil_status = ''others'' (e.g., "common-law", "engaged", "live-in", etc.)';
+
+-- Add comments for education fields
+COMMENT ON COLUMN residents.education_attainment IS 'Highest level of education attempted/studying by the resident';
+COMMENT ON COLUMN residents.is_graduate IS 'Whether the resident completed their education level: true = graduated, false = still studying/incomplete';
+
+-- Add comments for occupation fields
+COMMENT ON COLUMN residents.psoc_code IS 'PSOC occupation code from psoc_occupation_search table (e.g., "251206")';
+COMMENT ON COLUMN residents.psoc_level IS 'PSOC hierarchy level from psoc_occupation_search table (e.g., "unit_sub_group")';
+COMMENT ON COLUMN residents.occupation_title IS 'Standardized occupation title from PSOC search selection (e.g., "Software developer")';
+COMMENT ON COLUMN residents.job_title IS 'Specific job position or title as stated by the resident (e.g., "Senior React Developer")';
+COMMENT ON COLUMN residents.workplace IS 'Company name and location where the resident works (e.g., "TechStart Inc., BGC Taguig")';
+
+-- =====================================================
+-- HOUSEHOLD SEARCH FOR RESIDENT CREATION
+-- =====================================================
+
+-- Create household search view with complete address display
+CREATE OR REPLACE VIEW household_search AS
+SELECT 
+    h.id,
+    h.code,
+    h.household_number,
+    h.house_number,
+    s.name as street_name,
+    sub.name as subdivision_name,
+    b.name as barangay_name,
+    c.name as city_municipality_name,
+    p.name as province_name,
+    r.name as region_name,
+    -- Complete formatted address for display
+    CONCAT_WS(', ',
+        NULLIF(TRIM(h.house_number), ''),
+        NULLIF(TRIM(s.name), ''),
+        NULLIF(TRIM(sub.name), ''),
+        TRIM(b.name),
+        TRIM(c.name),
+        CASE WHEN p.name IS NOT NULL THEN TRIM(p.name) ELSE NULL END,
+        TRIM(r.name)
+    ) as full_address,
+    -- Geographic codes for auto-population
+    h.barangay_code,
+    h.city_municipality_code,
+    h.province_code,
+    h.region_code,
+    h.total_members,
+    h.created_at
+FROM households h
+LEFT JOIN geo_street_names s ON h.street_id = s.id
+LEFT JOIN geo_subdivisions sub ON h.subdivision_id = sub.id
+JOIN psgc_barangays b ON h.barangay_code = b.code
+JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+LEFT JOIN psgc_provinces p ON c.province_code = p.code
+JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+WHERE h.is_active = true;
+
+-- Create search function for households with user barangay filtering
+CREATE OR REPLACE FUNCTION search_households(
+    search_term TEXT DEFAULT NULL,
+    user_barangay_code TEXT DEFAULT NULL,
+    limit_results INTEGER DEFAULT 50
+)
+RETURNS TABLE (
+    household_id UUID,
+    household_code VARCHAR(50),
+    household_number VARCHAR(50),
+    house_number VARCHAR(50),
+    street_name TEXT,
+    subdivision_name TEXT,
+    barangay_name TEXT,
+    city_municipality_name TEXT,
+    province_name TEXT,
+    region_name TEXT,
+    full_address TEXT,
+    barangay_code VARCHAR(10),
+    city_municipality_code VARCHAR(10),
+    province_code VARCHAR(10),
+    region_code VARCHAR(10),
+    total_members INTEGER,
+    created_at TIMESTAMPTZ
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        hs.id,
+        hs.code,
+        hs.household_number,
+        hs.house_number,
+        hs.street_name,
+        hs.subdivision_name,
+        hs.barangay_name,
+        hs.city_municipality_name,
+        hs.province_name,
+        hs.region_name,
+        hs.full_address,
+        hs.barangay_code,
+        hs.city_municipality_code,
+        hs.province_code,
+        hs.region_code,
+        hs.total_members,
+        hs.created_at
+    FROM household_search hs
+    WHERE 
+        -- Apply user barangay filter if provided (for RLS compliance)
+        (user_barangay_code IS NULL OR hs.barangay_code = user_barangay_code)
+        -- Apply search term filter if provided
+        AND (search_term IS NULL OR (
+            hs.household_number ILIKE '%' || search_term || '%' OR
+            hs.house_number ILIKE '%' || search_term || '%' OR
+            hs.street_name ILIKE '%' || search_term || '%' OR
+            hs.subdivision_name ILIKE '%' || search_term || '%' OR
+            hs.full_address ILIKE '%' || search_term || '%'
+        ))
+    ORDER BY 
+        -- Prioritize exact matches
+        CASE WHEN hs.household_number ILIKE search_term THEN 1
+             WHEN hs.house_number ILIKE search_term THEN 2
+             ELSE 3 END,
+        hs.household_number,
+        hs.created_at DESC
+    LIMIT limit_results;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create function to get household details for auto-population
+CREATE OR REPLACE FUNCTION get_household_for_resident(
+    household_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    code VARCHAR(50),
+    household_number VARCHAR(50),
+    barangay_code VARCHAR(10),
+    city_municipality_code VARCHAR(10),
+    province_code VARCHAR(10),
+    region_code VARCHAR(10),
+    full_address TEXT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        hs.id,
+        hs.code,
+        hs.household_number,
+        hs.barangay_code,
+        hs.city_municipality_code,
+        hs.province_code,
+        hs.region_code,
+        hs.full_address
+    FROM household_search hs
+    WHERE hs.id = get_household_for_resident.household_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Grant permissions for household search functions
+GRANT SELECT ON household_search TO authenticated;
+GRANT EXECUTE ON FUNCTION search_households(TEXT, TEXT, INTEGER) TO authenticated;
+GRANT EXECUTE ON FUNCTION get_household_for_resident(UUID) TO authenticated;
+
+-- Add RLS policy for household_search view
+ALTER VIEW household_search SET (security_barrier = true);
+
+-- Add comments for household search
+COMMENT ON VIEW household_search IS 'Complete household information with formatted addresses for resident creation search';
+COMMENT ON FUNCTION search_households(TEXT, TEXT, INTEGER) IS 'Search households with full address display for resident creation - includes RLS filtering by user barangay';
+COMMENT ON FUNCTION get_household_for_resident(UUID) IS 'Get specific household details for resident auto-population';
+
+-- =====================================================
+-- USER TRACKING TRIGGERS
+-- =====================================================
+
+-- Function to automatically populate created_by and updated_by fields
+CREATE OR REPLACE FUNCTION populate_user_tracking_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- On INSERT: Set created_by if not already set
+    IF TG_OP = 'INSERT' THEN
+        IF NEW.created_by IS NULL THEN
+            NEW.created_by := auth.uid();
+        END IF;
+        NEW.updated_by := auth.uid();
+        NEW.updated_at := NOW();
+        RETURN NEW;
+    END IF;
+    
+    -- On UPDATE: Set updated_by and updated_at
+    IF TG_OP = 'UPDATE' THEN
+        NEW.updated_by := auth.uid();
+        NEW.updated_at := NOW();
+        RETURN NEW;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply user tracking trigger to residents table
+CREATE TRIGGER trigger_residents_user_tracking
+    BEFORE INSERT OR UPDATE ON residents
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to household_members table
+CREATE TRIGGER trigger_household_members_user_tracking
+    BEFORE INSERT OR UPDATE ON household_members
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to households table
+CREATE TRIGGER trigger_households_user_tracking
+    BEFORE INSERT OR UPDATE ON households
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to resident_sectoral_info table
+CREATE TRIGGER trigger_resident_sectoral_info_user_tracking
+    BEFORE INSERT OR UPDATE ON resident_sectoral_info
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to resident_migrant_info table
+CREATE TRIGGER trigger_resident_migrant_info_user_tracking
+    BEFORE INSERT OR UPDATE ON resident_migrant_info
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to resident_relationships table
+CREATE TRIGGER trigger_resident_relationships_user_tracking
+    BEFORE INSERT OR UPDATE ON resident_relationships
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to auth_user_profiles table
+CREATE TRIGGER trigger_auth_user_profiles_user_tracking
+    BEFORE INSERT OR UPDATE ON auth_user_profiles
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to barangay_accounts table
+CREATE TRIGGER trigger_barangay_accounts_user_tracking
+    BEFORE INSERT OR UPDATE ON barangay_accounts
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to geo_subdivisions table
+CREATE TRIGGER trigger_geo_subdivisions_user_tracking
+    BEFORE INSERT OR UPDATE ON geo_subdivisions
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Apply user tracking trigger to geo_street_names table
+CREATE TRIGGER trigger_geo_street_names_user_tracking
+    BEFORE INSERT OR UPDATE ON geo_street_names
+    FOR EACH ROW
+    EXECUTE FUNCTION populate_user_tracking_fields();
+
+-- Note: system_dashboard_summaries is system-generated, no user tracking needed
+
+-- Grant execute permission
+GRANT EXECUTE ON FUNCTION populate_user_tracking_fields() TO authenticated;
+
+-- Add comments
+COMMENT ON FUNCTION populate_user_tracking_fields() IS 'Automatically populates created_by and updated_by fields with current user ID';
+
+INSERT INTO system_schema_versions (version, description) 
 VALUES ('2.0', 'Enhanced full-feature schema with current implementation optimizations: independence constraints, enhanced auto-calculations, improved search, conditional indexes, smart address formatting');
 
 -- Production readiness indicator

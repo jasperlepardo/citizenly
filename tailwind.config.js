@@ -9,7 +9,7 @@ const brandColors = {
   success: colors.green, // Your success green
   warning: colors.orange, // Your warning orange
   danger: colors.red, // Your danger red
-  gray: colors.gray, // Your neutral gray
+  neutral: colors.gray, // Your neutral gray
   white: '#FFFFFF',
   black: '#000000',
 };
@@ -34,252 +34,6 @@ module.exports = {
       colors: {
         // Brand colors (your existing colors)
         ...brandColors,
-
-        // Figma-style semantic tokens with your colors
-        text: {
-          // Primary text hierarchy
-          primary: {
-            DEFAULT: brandColors.gray[900], // Main text
-            dark: brandColors.gray[100],
-          },
-          primary_onBrand: {
-            DEFAULT: brandColors.white, // White text on brand colors
-            dark: brandColors.gray[50],
-          },
-
-          // Secondary text hierarchy
-          secondary: {
-            DEFAULT: brandColors.gray[700], // Secondary text
-            dark: brandColors.gray[300],
-          },
-          secondary_hover: {
-            DEFAULT: brandColors.gray[800], // Secondary text hover
-            dark: brandColors.gray[200],
-          },
-          secondary_onBrand: {
-            DEFAULT: brandColors.primary[200], // Secondary text on brand
-            dark: brandColors.gray[300],
-          },
-
-          // Tertiary text hierarchy
-          tertiary: {
-            DEFAULT: brandColors.gray[600], // Tertiary text
-            dark: brandColors.gray[400],
-          },
-          tertiary_hover: {
-            DEFAULT: brandColors.gray[700], // Tertiary text hover
-            dark: brandColors.gray[300],
-          },
-          tertiary_onBrand: {
-            DEFAULT: brandColors.primary[200], // Tertiary text on brand
-            dark: brandColors.gray[400],
-          },
-
-          // Quaternary text hierarchy
-          quaternary: {
-            DEFAULT: brandColors.gray[500], // Quaternary text
-            dark: brandColors.gray[400],
-          },
-
-          // Utility text
-          white: {
-            DEFAULT: brandColors.white,
-            dark: brandColors.white,
-          },
-          disabled: {
-            DEFAULT: brandColors.gray[400], // Disabled text
-            dark: brandColors.gray[600],
-          },
-          placeholder: {
-            DEFAULT: brandColors.gray[500], // Form placeholder
-            dark: brandColors.gray[400],
-          },
-          placeholder_subtle: {
-            DEFAULT: brandColors.gray[300], // Subtle placeholder
-            dark: brandColors.gray[700],
-          },
-
-          // Brand text colors
-          brand_primary: {
-            DEFAULT: brandColors.primary[600], // Your government blue
-            dark: brandColors.primary[400],
-          },
-          brand_secondary: {
-            DEFAULT: brandColors.secondary[600], // Your purple
-            dark: brandColors.secondary[400],
-          },
-
-          // Status text colors
-          success_primary: {
-            DEFAULT: brandColors.success[600],
-            dark: brandColors.success[400],
-          },
-          warning_primary: {
-            DEFAULT: brandColors.warning[600],
-            dark: brandColors.warning[400],
-          },
-          error_primary: {
-            DEFAULT: brandColors.danger[600],
-            dark: brandColors.danger[400],
-          },
-        },
-
-        // Figma-style background colors
-        background: {
-          // Primary backgrounds
-          primary: {
-            DEFAULT: brandColors.white, // Main background
-            dark: brandColors.gray[900],
-          },
-          primary_alt: {
-            DEFAULT: brandColors.white, // Alternative primary
-            dark: brandColors.gray[900],
-          },
-          primary_hover: {
-            DEFAULT: brandColors.gray[50], // Primary hover
-            dark: brandColors.gray[800],
-          },
-
-          // Secondary backgrounds
-          secondary: {
-            DEFAULT: brandColors.gray[50], // Secondary background
-            dark: brandColors.gray[800],
-          },
-          secondary_alt: {
-            DEFAULT: brandColors.gray[50], // Alternative secondary
-            dark: brandColors.gray[800],
-          },
-          secondary_hover: {
-            DEFAULT: brandColors.gray[100], // Secondary hover
-            dark: brandColors.gray[700],
-          },
-          secondary_subtle: {
-            DEFAULT: brandColors.gray[50], // Very subtle secondary (using 50 instead of 25)
-            dark: brandColors.gray[950], // Fixed: using 950 instead of 850
-          },
-
-          // Additional backgrounds
-          tertiary: {
-            DEFAULT: brandColors.gray[100], // Tertiary background
-            dark: brandColors.gray[700],
-          },
-          quaternary: {
-            DEFAULT: brandColors.gray[200], // Quaternary background
-            dark: brandColors.gray[600],
-          },
-
-          // Utility backgrounds
-          disabled: {
-            DEFAULT: brandColors.gray[100], // Disabled background
-            dark: brandColors.gray[700],
-          },
-          overlay: {
-            DEFAULT: brandColors.gray[900], // Modal overlay
-            dark: brandColors.gray[950],
-          },
-
-          // Brand backgrounds
-          brand_primary: {
-            DEFAULT: brandColors.primary[50], // Light brand background
-            dark: brandColors.primary[950],
-          },
-          brand_solid: {
-            DEFAULT: brandColors.primary[600], // Solid brand background
-            dark: brandColors.primary[600],
-          },
-          brand_solid_hover: {
-            DEFAULT: brandColors.primary[700], // Solid brand hover
-            dark: brandColors.primary[500],
-          },
-
-          // Status backgrounds
-          success_primary: {
-            DEFAULT: brandColors.success[50],
-            dark: brandColors.success[950],
-          },
-          success_solid: {
-            DEFAULT: brandColors.success[600],
-            dark: brandColors.success[600],
-          },
-          warning_primary: {
-            DEFAULT: brandColors.warning[50],
-            dark: brandColors.warning[950],
-          },
-          warning_solid: {
-            DEFAULT: brandColors.warning[600],
-            dark: brandColors.warning[600],
-          },
-          error_primary: {
-            DEFAULT: brandColors.danger[50],
-            dark: brandColors.danger[950],
-          },
-          error_solid: {
-            DEFAULT: brandColors.danger[600],
-            dark: brandColors.danger[600],
-          },
-        },
-
-        // Figma-style border colors
-        border: {
-          primary: {
-            DEFAULT: brandColors.gray[300], // Primary border
-            dark: brandColors.gray[700],
-          },
-          secondary: {
-            DEFAULT: brandColors.gray[200], // Secondary border
-            dark: brandColors.gray[800],
-          },
-          tertiary: {
-            DEFAULT: brandColors.gray[100], // Tertiary border
-            dark: brandColors.gray[800],
-          },
-
-          // Utility borders
-          disabled: {
-            DEFAULT: brandColors.gray[300], // Disabled border
-            dark: brandColors.gray[700],
-          },
-          disabled_subtle: {
-            DEFAULT: brandColors.gray[200], // Subtle disabled border
-            dark: brandColors.gray[800],
-          },
-
-          // Brand borders
-          brand: {
-            DEFAULT: brandColors.primary[300], // Light brand border
-            dark: brandColors.primary[700],
-          },
-          brand_solid: {
-            DEFAULT: brandColors.primary[600], // Solid brand border
-            dark: brandColors.primary[600],
-          },
-
-          // Status borders
-          success: {
-            DEFAULT: brandColors.success[300],
-            dark: brandColors.success[700],
-          },
-          success_solid: {
-            DEFAULT: brandColors.success[600],
-            dark: brandColors.success[600],
-          },
-          warning: {
-            DEFAULT: brandColors.warning[300],
-            dark: brandColors.warning[700],
-          },
-          warning_solid: {
-            DEFAULT: brandColors.warning[600],
-            dark: brandColors.warning[600],
-          },
-          error: {
-            DEFAULT: brandColors.danger[300],
-            dark: brandColors.danger[700],
-          },
-          error_solid: {
-            DEFAULT: brandColors.danger[600],
-            dark: brandColors.danger[600],
-          },
-        },
 
         // =============================================================================
         // FIGMA-STYLE UTILITY COLORS WITH DARK MODE
@@ -619,10 +373,312 @@ module.exports = {
           },
         },
       },
+
+      // =============================================================================
+      // CLEAN SEMANTIC COLORS (Option 2: Tailwind-specific extensions)
+      // =============================================================================
+      // Result: text-primary, bg-primary, border-primary (no double prefixes)
+
+      // Clean text colors (becomes text-primary, text-secondary, etc.)
+      textColor: {
+        // Primary text hierarchy
+        default: {
+          DEFAULT: brandColors.neutral[900], // Main text
+          dark: brandColors.neutral[100],
+        },
+        default_onBrand: {
+          DEFAULT: brandColors.white, // White text on brand colors
+          dark: brandColors.neutral[50],
+        },
+
+        // Secondary text hierarchy
+        default_secondary: {
+          DEFAULT: brandColors.neutral[700], // Secondary text
+          dark: brandColors.neutral[300],
+        },
+        default_secondary_hover: {
+          DEFAULT: brandColors.neutral[800], // Secondary text hover
+          dark: brandColors.neutral[200],
+        },
+        default_secondary_onBrand: {
+          DEFAULT: brandColors.primary[200], // Secondary text on brand
+          dark: brandColors.neutral[300],
+        },
+
+        // Tertiary text hierarchy
+        default_tertiary: {
+          DEFAULT: brandColors.neutral[600], // Tertiary text
+          dark: brandColors.neutral[400],
+        },
+        default_tertiary_hover: {
+          DEFAULT: brandColors.neutral[700], // Tertiary text hover
+          dark: brandColors.neutral[300],
+        },
+        default_tertiary_onBrand: {
+          DEFAULT: brandColors.primary[200], // Tertiary text on brand
+          dark: brandColors.neutral[400],
+        },
+
+        // Quaternary text hierarchy
+        default_quaternary: {
+          DEFAULT: brandColors.neutral[500], // Quaternary text
+          dark: brandColors.neutral[400],
+        },
+
+        // Utility text colors
+        disabled: {
+          DEFAULT: brandColors.neutral[400], // Disabled text
+          dark: brandColors.neutral[600],
+        },
+        placeholder: {
+          DEFAULT: brandColors.neutral[500], // Form placeholder
+          dark: brandColors.neutral[400],
+        },
+        placeholder_subtle: {
+          DEFAULT: brandColors.neutral[300], // Subtle placeholder
+          dark: brandColors.neutral[700],
+        },
+
+        // Brand text colors
+        primary: {
+          DEFAULT: brandColors.primary[600], // Your government blue
+          dark: brandColors.primary[400],
+        },
+        secondary: {
+          DEFAULT: brandColors.secondary[600], // Your purple
+          dark: brandColors.secondary[400],
+        },
+
+        // Status text colors
+        success: {
+          DEFAULT: brandColors.success[600],
+          dark: brandColors.success[400],
+        },
+        warning: {
+          DEFAULT: brandColors.warning[600],
+          dark: brandColors.warning[400],
+        },
+        error: {
+          DEFAULT: brandColors.danger[600],
+          dark: brandColors.danger[400],
+        },
+      },
+
+      // Clean background colors (becomes bg-primary, bg-secondary, etc.)
+      backgroundColor: {
+        // Primary backgrounds
+        default: {
+          DEFAULT: brandColors.white, // Main background
+          dark: brandColors.neutral[900],
+        },
+        default_alt: {
+          DEFAULT: brandColors.white, // Alternative primary
+          dark: brandColors.neutral[900],
+        },
+        default_hover: {
+          DEFAULT: brandColors.neutral[50], // Primary hover
+          dark: brandColors.neutral[800],
+        },
+
+        // Secondary backgrounds
+        default_secondary: {
+          DEFAULT: brandColors.neutral[50], // Secondary background
+          dark: brandColors.neutral[800],
+        },
+        default_secondary_alt: {
+          DEFAULT: brandColors.neutral[50], // Alternative secondary
+          dark: brandColors.neutral[800],
+        },
+        default_secondary_hover: {
+          DEFAULT: brandColors.neutral[100], // Secondary hover
+          dark: brandColors.neutral[700],
+        },
+        default_secondary_subtle: {
+          DEFAULT: brandColors.neutral[50], // Very subtle secondary
+          dark: brandColors.neutral[950],
+        },
+
+        // Additional backgrounds
+        default_tertiary: {
+          DEFAULT: brandColors.neutral[100], // Tertiary background
+          dark: brandColors.neutral[700],
+        },
+        default_quaternary: {
+          DEFAULT: brandColors.neutral[200], // Quaternary background
+          dark: brandColors.neutral[600],
+        },
+
+        // Utility backgrounds
+        disabled: {
+          DEFAULT: brandColors.neutral[100], // Disabled background
+          dark: brandColors.neutral[700],
+        },
+        overlay: {
+          DEFAULT: brandColors.neutral[900], // Modal overlay
+          dark: brandColors.neutral[950],
+        },
+
+        // Brand backgrounds
+        primary: {
+          DEFAULT: brandColors.primary[50], // Light brand background
+          dark: brandColors.primary[950],
+        },
+        primary_solid: {
+          DEFAULT: brandColors.primary[600], // Solid brand background
+          dark: brandColors.primary[600],
+        },
+        primary_solid_hover: {
+          DEFAULT: brandColors.primary[700], // Solid brand hover
+          dark: brandColors.primary[500],
+        },
+
+        // Status backgrounds
+        success: {
+          DEFAULT: brandColors.success[50],
+          dark: brandColors.success[950],
+        },
+        success_solid: {
+          DEFAULT: brandColors.success[600],
+          dark: brandColors.success[600],
+        },
+        warning: {
+          DEFAULT: brandColors.warning[50],
+          dark: brandColors.warning[950],
+        },
+        warning_solid: {
+          DEFAULT: brandColors.warning[600],
+          dark: brandColors.warning[600],
+        },
+        error: {
+          DEFAULT: brandColors.danger[50],
+          dark: brandColors.danger[950],
+        },
+        error_solid: {
+          DEFAULT: brandColors.danger[600],
+          dark: brandColors.danger[600],
+        },
+      },
+
+      // Clean border colors (becomes border-primary, border-secondary, etc.)
+      borderColor: {
+        default: {
+          DEFAULT: brandColors.neutral[300], // Primary border
+          dark: brandColors.neutral[700],
+        },
+        default_secondary: {
+          DEFAULT: brandColors.neutral[200], // Secondary border
+          dark: brandColors.neutral[800],
+        },
+        default_tertiary: {
+          DEFAULT: brandColors.neutral[100], // Tertiary border
+          dark: brandColors.neutral[800],
+        },
+
+        // Utility borders
+        disabled: {
+          DEFAULT: brandColors.neutral[300], // Disabled border
+          dark: brandColors.neutral[700],
+        },
+        disabled_subtle: {
+          DEFAULT: brandColors.neutral[200], // Subtle disabled border
+          dark: brandColors.neutral[800],
+        },
+
+        // Brand borders
+        primary: {
+          DEFAULT: brandColors.primary[300], // Light brand border
+          dark: brandColors.primary[700],
+        },
+        brand_solid: {
+          DEFAULT: brandColors.primary[600], // Solid brand border
+          dark: brandColors.primary[600],
+        },
+
+        // Status borders
+        success: {
+          DEFAULT: brandColors.success[300],
+          dark: brandColors.success[700],
+        },
+        success_solid: {
+          DEFAULT: brandColors.success[600],
+          dark: brandColors.success[600],
+        },
+        warning: {
+          DEFAULT: brandColors.warning[300],
+          dark: brandColors.warning[700],
+        },
+        warning_solid: {
+          DEFAULT: brandColors.warning[600],
+          dark: brandColors.warning[600],
+        },
+        error: {
+          DEFAULT: brandColors.danger[300],
+          dark: brandColors.danger[700],
+        },
+        error_solid: {
+          DEFAULT: brandColors.danger[600],
+          dark: brandColors.danger[600],
+        },
+      },
     },
   },
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/forms'),
+    
+    // Semantic color plugin - converts your textColor structure to automatic dark mode classes
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('tailwindcss/plugin')(function({ addUtilities }) {
+      const semanticUtilities = {
+        // Text colors (17 classes matching your textColor structure exactly)
+        '.text-default': {
+          '@apply text-neutral-900 dark:text-neutral-100': {},
+        },
+        '.text-default-onBrand': {
+          '@apply text-white dark:text-neutral-50': {},
+        },
+        '.text-default-secondary': {
+          '@apply text-neutral-700 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-200': {},
+        },
+        '.text-default-secondary-onBrand': {
+          '@apply text-blue-200 dark:text-neutral-300': {},
+        },
+        '.text-default-tertiary': {
+          '@apply text-neutral-600 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300': {},
+        },
+        '.text-default-tertiary-onBrand': {
+          '@apply text-blue-200 dark:text-neutral-400': {},
+        },
+        '.text-default-quaternary': {
+          '@apply text-neutral-500 dark:text-neutral-400': {},
+        },
+        '.text-disabled': {
+          '@apply text-neutral-400 dark:text-neutral-600': {},
+        },
+        '.text-placeholder': {
+          '@apply text-neutral-500 dark:text-neutral-400': {},
+        },
+        '.text-placeholder-subtle': {
+          '@apply text-neutral-300 dark:text-neutral-700': {},
+        },
+        '.text-primary': {
+          '@apply text-blue-600 dark:text-blue-400': {},
+        },
+        '.text-secondary': {
+          '@apply text-purple-600 dark:text-purple-400': {},
+        },
+        '.text-success': {
+          '@apply text-green-600 dark:text-green-400': {},
+        },
+        '.text-warning': {
+          '@apply text-orange-600 dark:text-orange-400': {},
+        },
+        '.text-error': {
+          '@apply text-red-600 dark:text-red-400': {},
+        },
+      }
+      
+      addUtilities(semanticUtilities)
+    }),
   ],
 };

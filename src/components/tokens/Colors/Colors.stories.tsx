@@ -230,93 +230,267 @@ export const SemanticColors: Story = {
         </p>
       </div>
 
-      {/* Text Semantic Colors - Comprehensive */}
+      {/* Text Semantic Colors - Clean Structure */}
       <div className="mb-12">
-        <h2 className="mb-6 text-xl font-semibold text-gray-900">Text Semantic Colors</h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {colors.text &&
-            Object.entries(colors.text).map(([name, colorObj]) => {
-              const colorValue = typeof colorObj === 'object' ? colorObj.DEFAULT : colorObj;
-              const darkValue = typeof colorObj === 'object' ? colorObj.dark : null;
-
-              return (
-                <div key={name} className="rounded-lg border border-gray-200 bg-white p-4">
+        <h2 className="mb-6 text-xl font-semibold text-gray-900">Clean Text Colors</h2>
+        <p className="mb-4 text-sm text-gray-600">
+          Now using clean class names: <code className="rounded bg-gray-100 px-1 py-0.5">text-default</code>, <code className="rounded bg-gray-100 px-1 py-0.5">text-primary</code>, <code className="rounded bg-gray-100 px-1 py-0.5">text-success</code> (no redundant prefixes!)
+        </p>
+        
+        <div className="grid grid-cols-1 gap-6">
+          {/* Content Hierarchy Section */}
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">📝 Content Hierarchy</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {colors.default && (
+                <div className="rounded-lg border border-gray-100 p-4">
                   <div className="mb-2 flex items-center gap-3">
                     <div
                       className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
-                      style={{ backgroundColor: colorValue }}
+                      style={{ backgroundColor: colors.default.DEFAULT }}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-semibold text-gray-900">text-{name}</div>
+                      <div className="text-sm font-semibold text-gray-900">text-default</div>
                     </div>
                   </div>
                   <div className="space-y-1 text-xs">
-                    <div className="font-mono text-gray-600">Light: {colorValue}</div>
-                    {darkValue && <div className="font-mono text-gray-600">Dark: {darkValue}</div>}
+                    <div className="font-mono text-gray-600">Light: {colors.default.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default.dark}</div>
                   </div>
                   <div className="mt-3">
-                    <div className="rounded px-2 py-1 text-sm" style={{ color: colorValue }}>
-                      Sample text
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default.DEFAULT }}>
+                      Main headings
                     </div>
                   </div>
                 </div>
-              );
-            })}
-        </div>
-      </div>
+              )}
 
-      {/* Background Semantic Colors - Comprehensive */}
-      <div className="mb-12">
-        <h2 className="mb-6 text-xl font-semibold text-gray-900">Background Semantic Colors</h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {colors.background &&
-            Object.entries(colors.background).map(([name, colorObj]) => {
-              const colorValue = typeof colorObj === 'object' ? colorObj.DEFAULT : colorObj;
-              const darkValue = typeof colorObj === 'object' ? colorObj.dark : null;
-
-              return (
-                <div key={name} className="overflow-hidden rounded-lg border border-gray-200">
-                  <div className="p-4" style={{ backgroundColor: colorValue }}>
+              {colors.default_secondary && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
                     <div
-                      className="mb-1 text-sm font-semibold"
-                      style={{
-                        color:
-                          colorValue === '#FFFFFF' || colorValue === '#ffffff'
-                            ? '#000000'
-                            : '#ffffff',
-                      }}
-                    >
-                      bg-background-{name}
-                    </div>
-                    <div
-                      className="text-xs"
-                      style={{
-                        color:
-                          colorValue === '#FFFFFF' || colorValue === '#ffffff'
-                            ? '#666666'
-                            : '#cccccc',
-                      }}
-                    >
-                      Background sample
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.default_secondary.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-default_secondary</div>
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-3">
-                    <div className="space-y-1 text-xs">
-                      <div className="font-mono text-gray-600">Light: {colorValue}</div>
-                      {darkValue && (
-                        <div className="font-mono text-gray-600">Dark: {darkValue}</div>
-                      )}
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.default_secondary.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default_secondary.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default_secondary.DEFAULT }}>
+                      Body text
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              )}
+
+              {colors.default_tertiary && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.default_tertiary.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-default_tertiary</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.default_tertiary.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default_tertiary.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default_tertiary.DEFAULT }}>
+                      Supporting info
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {colors.default_quaternary && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.default_quaternary.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-default_quaternary</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.default_quaternary.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default_quaternary.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default_quaternary.DEFAULT }}>
+                      Metadata
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Brand Colors Section */}
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">🎨 Brand Colors</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              {colors.primary && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.primary.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-primary</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.primary.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.primary.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.primary.DEFAULT }}>
+                      Government Blue
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {colors.secondary && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.secondary.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-secondary</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.secondary.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.secondary.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.secondary.DEFAULT }}>
+                      Brand Purple
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {colors.success && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.success.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">text-success</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.success.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.success.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.success.DEFAULT }}>
+                      Success Green
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Interactive States Section */}
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">⚡ Interactive States</h3>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {colors.default_secondary_hover && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.default_secondary_hover.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">hover:text-default_secondary_hover</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.default_secondary_hover.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default_secondary_hover.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default_secondary_hover.DEFAULT }}>
+                      Secondary hover
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {colors.default_tertiary_hover && (
+                <div className="rounded-lg border border-gray-100 p-4">
+                  <div className="mb-2 flex items-center gap-3">
+                    <div
+                      className="h-6 w-6 flex-shrink-0 rounded border border-gray-200"
+                      style={{ backgroundColor: colors.default_tertiary_hover.DEFAULT }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-gray-900">hover:text-default_tertiary_hover</div>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="font-mono text-gray-600">Light: {colors.default_tertiary_hover.DEFAULT}</div>
+                    <div className="font-mono text-gray-600">Dark: {colors.default_tertiary_hover.dark}</div>
+                  </div>
+                  <div className="mt-3">
+                    <div className="rounded px-2 py-1 text-sm" style={{ color: colors.default_tertiary_hover.DEFAULT }}>
+                      Tertiary hover
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Border Semantic Colors - Comprehensive */}
+      {/* Background Semantic Colors - Clean Structure */}
       <div className="mb-12">
-        <h2 className="mb-6 text-xl font-semibold text-gray-900">Border Semantic Colors</h2>
+        <h2 className="mb-6 text-xl font-semibold text-gray-900">Clean Background Colors</h2>
+        <p className="mb-4 text-sm text-gray-600">
+          Now using: <code className="rounded bg-gray-100 px-1 py-0.5">bg-default</code>, <code className="rounded bg-gray-100 px-1 py-0.5">bg-primary</code>, <code className="rounded bg-gray-100 px-1 py-0.5">bg-success</code>
+        </p>
+        
+        <div className="space-y-4 text-sm text-blue-800">
+          <p><strong>Surface Hierarchy:</strong> bg-default (main), bg-default_secondary (cards), bg-default_tertiary (subtle)</p>
+          <p><strong>Brand Backgrounds:</strong> bg-primary (light), bg-primary_solid (buttons)</p>
+          <p><strong>Status Backgrounds:</strong> bg-success, bg-warning, bg-error</p>
+        </div>
+      </div>
+
+      {/* Border Semantic Colors - Clean Structure */}
+      <div className="mb-12">
+        <h2 className="mb-6 text-xl font-semibold text-gray-900">Clean Border Colors</h2>
+        <p className="mb-4 text-sm text-gray-600">
+          Now using: <code className="rounded bg-gray-100 px-1 py-0.5">border-default</code>, <code className="rounded bg-gray-100 px-1 py-0.5">border-primary</code>, <code className="rounded bg-gray-100 px-1 py-0.5">border-success</code>
+        </p>
+        
+        <div className="space-y-4 text-sm text-purple-800">
+          <p><strong>Border Hierarchy:</strong> border-default (main), border-default_secondary (subtle), border-default_tertiary (very subtle)</p>
+          <p><strong>Brand Borders:</strong> border-primary (light brand), border-primary_solid (strong brand)</p>
+          <p><strong>Status Borders:</strong> border-success, border-warning, border-error</p>
+        </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {colors.border &&
             Object.entries(colors.border).map(([name, colorObj]) => {
@@ -343,70 +517,59 @@ export const SemanticColors: Story = {
         </div>
       </div>
 
-      {/* Usage Guidelines */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-blue-900">
-          💡 Professional Usage Guidelines
+      {/* Usage Guidelines - Updated for Clean Structure */}
+      <div className="rounded-lg border border-green-200 bg-green-50 p-6">
+        <h3 className="mb-4 text-lg font-semibold text-green-900">
+          🎉 Clean Color System - No More Redundant Prefixes!
         </h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <div>
-            <h4 className="mb-2 font-semibold text-blue-800">Text Hierarchy:</h4>
-            <ul className="space-y-1 text-sm text-blue-700">
-              <li>
-                • <code>text-primary</code> - Main content
-              </li>
-              <li>
-                • <code>text-secondary</code> - Supporting text
-              </li>
-              <li>
-                • <code>text-tertiary</code> - Less important
-              </li>
-              <li>
-                • <code>text-quaternary</code> - Metadata
-              </li>
-              <li>
-                • <code>text-*_onBrand</code> - On colored backgrounds
-              </li>
+            <h4 className="mb-2 font-semibold text-green-800">✨ Text Colors:</h4>
+            <ul className="space-y-1 text-sm text-green-700">
+              <li>• <code>text-default</code> - Main content</li>
+              <li>• <code>text-default_secondary</code> - Body text</li>
+              <li>• <code>text-default_tertiary</code> - Supporting info</li>
+              <li>• <code>text-primary</code> - Brand blue text</li>
+              <li>• <code>text-success</code> - Success green text</li>
+              <li>• <code>hover:text-default_secondary_hover</code> - Interactive</li>
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 font-semibold text-blue-800">Background Layers:</h4>
-            <ul className="space-y-1 text-sm text-blue-700">
-              <li>
-                • <code>bg-primary</code> - Main surfaces
-              </li>
-              <li>
-                • <code>bg-secondary</code> - Card backgrounds
-              </li>
-              <li>
-                • <code>bg-tertiary</code> - Subtle surfaces
-              </li>
-              <li>
-                • <code>bg-*_solid</code> - Solid colored backgrounds
-              </li>
-              <li>
-                • <code>bg-*_hover</code> - Interactive states
-              </li>
+            <h4 className="mb-2 font-semibold text-green-800">🏠 Backgrounds:</h4>
+            <ul className="space-y-1 text-sm text-green-700">
+              <li>• <code>bg-default</code> - Main background</li>
+              <li>• <code>bg-default_secondary</code> - Card backgrounds</li>
+              <li>• <code>bg-primary</code> - Light brand background</li>
+              <li>• <code>bg-primary_solid</code> - Solid brand buttons</li>
+              <li>• <code>bg-success</code> - Success backgrounds</li>
+              <li>• <code>hover:bg-primary_solid_hover</code> - Button hovers</li>
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 font-semibold text-blue-800">Border Hierarchy:</h4>
-            <ul className="space-y-1 text-sm text-blue-700">
-              <li>
-                • <code>border-primary</code> - Main borders
-              </li>
-              <li>
-                • <code>border-secondary</code> - Subtle borders
-              </li>
-              <li>
-                • <code>border-tertiary</code> - Very subtle
-              </li>
-              <li>
-                • <code>border-*_solid</code> - Colored borders
-              </li>
-              <li>
-                • <code>border-disabled</code> - Inactive states
-              </li>
+            <h4 className="mb-2 font-semibold text-green-800">📐 Borders:</h4>
+            <ul className="space-y-1 text-sm text-green-700">
+              <li>• <code>border-default</code> - Main borders</li>
+              <li>• <code>border-default_secondary</code> - Subtle borders</li>
+              <li>• <code>border-primary</code> - Brand borders</li>
+              <li>• <code>border-primary_solid</code> - Strong brand</li>
+              <li>• <code>border-success</code> - Success borders</li>
+              <li>• <code>border-disabled</code> - Inactive states</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="mt-6 rounded-lg border border-green-300 bg-green-100 p-4">
+          <h4 className="mb-2 font-semibold text-green-900">🚀 Benefits of the New Structure:</h4>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <ul className="space-y-1 text-sm text-green-800">
+              <li>✅ <strong>Cleaner:</strong> No more text-text-primary redundancy</li>
+              <li>✅ <strong>Shorter:</strong> Less typing, more readable code</li>
+              <li>✅ <strong>Standard:</strong> Follows Tailwind conventions</li>
+            </ul>
+            <ul className="space-y-1 text-sm text-green-800">
+              <li>✅ <strong>Intuitive:</strong> text-primary, bg-primary, border-primary</li>
+              <li>✅ <strong>Dark Mode:</strong> Still automatic with all colors</li>
+              <li>✅ <strong>Future-proof:</strong> Easier to maintain and extend</li>
             </ul>
           </div>
         </div>
