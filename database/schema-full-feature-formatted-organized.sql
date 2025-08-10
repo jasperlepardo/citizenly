@@ -164,6 +164,7 @@ CREATE TYPE religion_enum AS ENUM (
 
 -- Ethnic Background
 CREATE TYPE ethnicity_enum AS ENUM (
+    -- Major Philippine ethnic groups
     'tagalog',
     'cebuano',
     'ilocano',
@@ -173,10 +174,40 @@ CREATE TYPE ethnicity_enum AS ENUM (
     'waray',
     'kapampangan',
     'pangasinense',
+    
+    -- Muslim/Moro groups
     'maranao',
     'maguindanao',
     'tausug',
-    'indigenous',
+    'yakan',
+    'samal',
+    'badjao',
+    
+    -- Indigenous Peoples (Lumad/IP groups)
+    'aeta',
+    'agta',
+    'ati',
+    'batak',
+    'bukidnon',
+    'gaddang',
+    'higaonon',
+    'ibaloi',
+    'ifugao',
+    'igorot',
+    'ilongot',
+    'isneg',
+    'ivatan',
+    'kalinga',
+    'kankanaey',
+    'mangyan',
+    'mansaka',
+    'palawan',
+    'subanen',
+    'tboli',
+    'teduray',
+    'tumandok',
+    
+    -- Other groups
     'chinese',
     'other',
     'not_reported'
@@ -476,8 +507,6 @@ CREATE TABLE system_encryption_keys (
     created_by UUID REFERENCES auth_user_profiles(id),
 
     -- Constraints
-    CONSTRAINT active_key_per_name UNIQUE(key_name, is_active)
-        WHERE is_active = true,
     CONSTRAINT valid_algorithm CHECK (encryption_algorithm IN ('AES-256-GCM', 'AES-256-CBC')),
     CONSTRAINT valid_purpose CHECK (key_purpose IN ('pii', 'documents', 'communications', 'system'))
 );
@@ -522,8 +551,8 @@ CREATE TABLE geo_subdivisions (
 CREATE TABLE geo_street_names (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
-    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     subdivision_id UUID REFERENCES geo_subdivisions(id),
+    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
     description TEXT,
     is_active BOOLEAN DEFAULT true,
 
@@ -548,8 +577,8 @@ CREATE TABLE geo_street_names (
 -- Function to generate hierarchical household ID using proper PSGC structure (RR-PP-MM-BBB)
 CREATE OR REPLACE FUNCTION generate_hierarchical_household_id(
     p_barangay_code VARCHAR(10),
-    p_subdivision_id UUID DEFAULT NULL,
     p_street_id UUID DEFAULT NULL
+    p_subdivision_id UUID DEFAULT NULL,
 ) RETURNS VARCHAR(22) AS $$
 DECLARE
     region_code VARCHAR(2);
@@ -610,50 +639,79 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Households Table (Core Entity)
+-- =====================================================
+-- HOUSEHOLDS TABLE - EXACT DILG RBI FORM A STRUCTURE
+-- =====================================================
+-- DILG RBI Form A: Record of Barangay Inhabitants by Household
 CREATE TABLE households (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
-    -- Identification
+    -- =====================================================
+    -- DILG RBI FORM A - EXACT FIELD ORDER
+    -- =====================================================
+    
+    -- 1. REGION - Indicate the name of region
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    
+    -- 2. PROVINCE - Indicate the name of province  
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
+    
+    -- 3. CITY/MUNICIPALITY - Indicate the name of city/municipality
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    
+    -- 4. BARANGAY - Indicate the name of barangay
+    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    
+    -- 5. HOUSEHOLD ADDRESS - Indicate the complete Household Address
+    household_address TEXT NOT NULL,
+    
+    -- 6. NO. OF FAMILY/IES - Indicate number of family/ies in the Household
+    no_of_families INTEGER DEFAULT 1,
+    
+    -- 7. NO. OF HOUSEHOLD MEMBERS - Indicate the complete number of Household Members
+    no_of_household_members INTEGER DEFAULT 0, -- Auto-calculated
+    
+    -- 8. NO. OF MIGRANT/S - Indicate the complete number of Household Migrants (if any)
+    no_of_migrants INTEGER DEFAULT 0, -- Auto-calculated
+    
+    -- 9. HOUSEHOLD TYPE - Select: Nuclear; Single Parent; Extended; Childless; Grandparent; or Stepfamily
+    household_type household_type_enum,
+    
+    -- 10. TENURE STATUS - Select: Owner; Renter; please specify if others
+    tenure_status tenure_status_enum,
+    tenure_others_specify TEXT,
+    
+    -- 11. HOUSEHOLD UNIT - Select: Single-family house; Town house; Condominium; Duplex; or Mobile home
+    household_unit household_unit_enum,
+    
+    -- 12. HOUSEHOLD NAME - Enter the name of household (e.g. "Dela Cruz Family," "Dela Cruz Residence")
+    household_name VARCHAR(200),
+    
+    -- 13. MONTHLY INCOME - Specify the total monthly income of the household (e.g. Php 50,000)
+    monthly_income DECIMAL(12,2),
+    
+    -- 14. HEAD OF THE FAMILY NAME - Identify the head of the family by providing the Full Name
+    household_head_id UUID, -- References residents(id)
+    
+    -- 15. POSITION - Select Head of Family's position: Father; Mother; Son; daughter; etc.
+    head_position family_position_enum,
+    
+    -- =====================================================
+    -- SYSTEM FIELDS (Not part of DILG form)
+    -- =====================================================
+    
+    -- Internal system identification
     code VARCHAR(50) NOT NULL UNIQUE, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
     household_number VARCHAR(50) NOT NULL,
-
-    -- Address Details
+    
+    -- Additional system fields
     house_number VARCHAR(50) NOT NULL,
     street_id UUID NOT NULL REFERENCES geo_street_names(id),
     subdivision_id UUID REFERENCES geo_subdivisions(id),
-
-    -- Geographic Location (PSGC Codes)
-    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code), -- NULL for independent cities
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
-
-    -- Household Profile
-    total_families INTEGER DEFAULT 1,      -- Number of family units
-    total_members INTEGER DEFAULT 0,       -- Auto-calculated
-    total_migrants INTEGER DEFAULT 0,      -- Auto-calculated
-
-    -- Household Characteristics
-    household_type household_type_enum,
-    tenure_status tenure_status_enum,
-    tenure_others_specify TEXT,
-    household_unit household_unit_enum,
-
-    -- Household Name
-    household_name VARCHAR(100),
-
-    -- Economic Information
-    monthly_income DECIMAL(12,2) DEFAULT 0.00,
     income_class income_class_enum,
-
-    -- Relationship
-    household_head_id UUID, -- Will reference residents(id)
-
-    -- Status
+    
+    -- Audit fields
     is_active BOOLEAN DEFAULT true,
-
-    -- Audit Fields
     created_by UUID REFERENCES auth_user_profiles(id),
     updated_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -667,110 +725,150 @@ CREATE TABLE households (
 -- 6.2 RESIDENTS TABLE
 -- =====================================================
 
--- Residents Table (Core Entity)
+-- =====================================================  
+-- RESIDENTS TABLE - EXACT DILG RBI FORM B STRUCTURE
+-- =====================================================
+-- DILG RBI Form B: Individual Records of Barangay Inhabitant
 CREATE TABLE residents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
     -- =====================================================
-    -- IDENTIFICATION
+    -- A. PERSONAL INFORMATION - EXACT DILG RBI FORM B ORDER
     -- =====================================================
-    philsys_card_number_hash BYTEA,
-    philsys_last4 VARCHAR(4),
-
-    -- =====================================================
-    -- PERSONAL INFORMATION
-    -- =====================================================
-    -- Name (Encrypted Storage Only)
-    first_name_encrypted BYTEA,
-    middle_name_encrypted BYTEA,
-    last_name_encrypted BYTEA,
+    
+    -- 1. PHILSYS CARD NUMBER (PCN) - Provide the 16-digit PhilSys Card Number
+    philsys_card_number_hash BYTEA,         -- Encrypted for privacy
+    philsys_last4 VARCHAR(4),               -- Last 4 digits (searchable)
+    
+    -- 2. FIRST NAME - Indicate Given Name
+    first_name_encrypted BYTEA NOT NULL,    -- Encrypted for PII Protection
+    first_name_hash VARCHAR(64),            -- Hash for searching
+    
+    -- 3. MIDDLE NAME - Indicate Middle Name
+    middle_name_encrypted BYTEA,            -- Encrypted for PII Protection  
+    
+    -- 4. LAST NAME - Indicate Last Name
+    last_name_encrypted BYTEA NOT NULL,     -- Encrypted for PII Protection
+    last_name_hash VARCHAR(64),             -- Hash for searching
+    
+    -- 5. EXTENSION NAME - Indicate Extension Name/Suffix (e.g. Sr., Jr., II, III)
     extension_name VARCHAR(20),
-
-    -- Birth Information
+    
+    -- Search optimization fields
+    full_name_hash VARCHAR(64),
+    
+    -- 6. BIRTHDATE - Indicate complete Birth date in format (MM/DD/YYYY)
     birthdate DATE NOT NULL,
-    age INTEGER GENERATED ALWAYS AS (EXTRACT(YEAR FROM AGE(birthdate))) STORED,
-    birth_place_code VARCHAR(10),
+    
+    -- 7. AGE - Indicate age in numerical value (e.g. 20) - Calculated in views
+    -- Note: AGE is auto-calculated from birthdate
+    
+    -- 8. BIRTH PLACE - Indicate the City/Municipality where the Barangay Inhabitant was born
+    birth_place_code VARCHAR(10),           -- PSGC code for birth location
     birth_place_level birth_place_level_enum,
-    birth_place_text VARCHAR(200),
-    birth_place_full TEXT GENERATED ALWAYS AS (
-        CASE
-            WHEN birth_place_text IS NOT NULL THEN birth_place_text
-            WHEN birth_place_code IS NOT NULL AND birth_place_level IS NOT NULL THEN
-                CASE birth_place_level
-                    WHEN 'region' THEN
-                        (SELECT r.name FROM psgc_regions r WHERE r.code = birth_place_code)
-                    WHEN 'province' THEN
-                        (SELECT CONCAT_WS(', ', p.name, r.name)
-                         FROM psgc_provinces p
-                         JOIN psgc_regions r ON p.region_code = r.code
-                         WHERE p.code = birth_place_code)
-                    WHEN 'city_municipality' THEN
-                        (SELECT CONCAT_WS(', ',
-                            c.name,
-                            CASE WHEN c.is_independent THEN NULL ELSE p.name END,
-                            r.name
-                        )
-                        FROM psgc_cities_municipalities c
-                        LEFT JOIN psgc_provinces p ON c.province_code = p.code
-                        LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
-                        WHERE c.code = birth_place_code)
-                    WHEN 'barangay' THEN
-                        (SELECT CONCAT_WS(', ',
-                            b.name,
-                            c.name,
-                            CASE WHEN c.is_independent THEN NULL ELSE p.name END,
-                            r.name
-                        )
-                        FROM psgc_barangays b
-                        JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
-                        LEFT JOIN psgc_provinces p ON c.province_code = p.code
-                        LEFT JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
-                        WHERE b.code = birth_place_code)
-                END
-            ELSE NULL
-        END
-    ) STORED,
-
-    -- Demographics
+    birth_place_text VARCHAR(200),          -- Free text birth place description
+    
+    -- 9. SEX - Indicate sex by selecting Male or Female
     sex sex_enum NOT NULL,
+    
+    -- 10. CIVIL STATUS - Select: Single; Married; Widowed; Divorced; Separated; Registered Partnership; others
     civil_status civil_status_enum DEFAULT 'single',
     civil_status_others_specify TEXT,
-    blood_type blood_type_enum DEFAULT 'unknown',
-    height DECIMAL(5,2),
-    weight DECIMAL(5,2),
-    complexion VARCHAR(50),
-
-    -- =====================================================
-    -- EDUCATION AND EMPLOYMENT
-    -- =====================================================
-
+    
+    -- 11. HIGHEST EDUCATIONAL ATTAINMENT - Select: Elementary, High School, College, Post Grad, Vocational
+    -- Then specify "Graduate" or "Undergraduate"
     education_attainment education_level_enum,
-    is_graduate BOOLEAN DEFAULT false,
+    is_graduate BOOLEAN DEFAULT false,         -- Graduate or Undergraduate
+    
+    -- 12. PROFESSION/OCCUPATION - Indicate Profession or Occupation (if any)
+    -- 12. PROFESSION/OCCUPATION - Based on PSOC hierarchy
     employment_status employment_status_enum,
-    psoc_code TEXT,
-    psoc_level TEXT,
-    occupation_title TEXT,
-    job_title TEXT,
-    workplace TEXT,
-    occupation TEXT,
-    occupation_details TEXT,
+    psoc_code VARCHAR(10),                     -- Can reference any PSOC level (1-5)
+    -- For Level 5: REFERENCES psoc_unit_sub_groups(code)
+    -- For Level 4: REFERENCES psoc_unit_groups(code)  
+    -- For Level 3: REFERENCES psoc_minor_groups(code)
+    -- For Level 2: REFERENCES psoc_sub_major_groups(code)
+    -- For Level 1: REFERENCES psoc_major_groups(code)
 
     -- =====================================================
-    -- ENCRYPTED PII FIELDS (Secure Storage)
+    -- B. CONTACT DETAILS - EXACT DILG RBI FORM B ORDER
     -- =====================================================
-    mobile_number_encrypted BYTEA,
-    telephone_number_encrypted BYTEA,
-    email_encrypted BYTEA,
-    mother_maiden_first_encrypted BYTEA,
-    mother_maiden_middle_encrypted BYTEA,
-    mother_maiden_last_encrypted BYTEA,
+    
+    -- 13. EMAIL ADDRESS - Enter email address (if any)
+    email_encrypted BYTEA,                  -- Encrypted for privacy
+    email_hash VARCHAR(64),                 -- Hash for searching
+    
+    -- 14. MOBILE NUMBER - Provide 11-digit mobile number
+    mobile_number_encrypted BYTEA,          -- Encrypted for privacy
+    mobile_number_hash VARCHAR(64),         -- Hash for searching
+    
+    -- 15. TELEPHONE NUMBER - Provide telephone number (if any)
+    telephone_number_encrypted BYTEA,       -- Encrypted for privacy
+    
+    -- 16. ADDRESS - Complete address hierarchy per DILG
+    -- REGION - Indicate region (e.g. National Capital Region)
+    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
+    
+    -- PROVINCE - Indicate province, HUC, or ICC as applicable (e.g. Metro Manila)
+    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
+    
+    -- CITY/MUNICIPALITY - Indicate city, municipality, sub-municipality, or SGU (e.g. Quezon City)
+    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
+    
+    -- BARANGAY - Indicate name of barangay (e.g. Barangay Bago Bantay)
+    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
+    
+    -- HOUSE/BLOCK/LOT NO. - Specify house number, block, or lot number if applicable
+    house_number VARCHAR(50),
+    
+    -- STREET NAME - Provide street name
+    street_name VARCHAR(100),
+    
+    -- SUBDIVISION/VILLAGE - Indicate name of subdivision or village
+    subdivision_name VARCHAR(100),
+    
+    -- ZIP CODE - Indicate zip code if available
+    zip_code VARCHAR(10),
 
-    -- Searchable hashes for encrypted fields
-    first_name_hash VARCHAR(64),
-    last_name_hash VARCHAR(64),
-    mobile_number_hash VARCHAR(64),
-    email_hash VARCHAR(64),
-    full_name_hash VARCHAR(64),
+    -- =====================================================
+    -- C. IDENTITY INFORMATION - EXACT DILG RBI FORM B ORDER
+    -- =====================================================
+    
+    -- 17. BLOOD TYPE - Specify blood type from list: A+, A-, O+, O-, B+, B-, AB+, AB-
+    blood_type blood_type_enum DEFAULT 'unknown',
+    
+    -- 18. HEIGHT - Provide height in meters
+    height DECIMAL(5,2),
+    
+    -- 19. WEIGHT - Provide weight in kilograms
+    weight DECIMAL(5,2),
+    
+    -- 20. COMPLEXION - Describe complexion: "Fair," "Medium," or "Dark"
+    complexion VARCHAR(50),
+    
+    -- 21. CITIZENSHIP - Select: Filipino, Dual Citizenship, or Foreigner
+    citizenship citizenship_enum DEFAULT 'filipino',
+    
+    -- 22. VOTER - Indicate whether you are a voter by selecting "Yes" or "No"
+    is_voter BOOLEAN,
+    
+    -- 23. RESIDENT VOTER - Specify if you are a resident voter by selecting "Yes" or "No"
+    is_resident_voter BOOLEAN,
+    
+    -- 24. LAST VOTED YEAR - Enter the date of the last year you voted in format MM-DD-YYYY
+    last_voted_date DATE,
+    
+    -- 25. ETHNICITY - Specify your ethnicity (e.g. Igorot) (Refer to LGUSS Form 10)
+    ethnicity ethnicity_enum DEFAULT 'not_reported',
+    
+    -- 26. RELIGION - Select from list: Roman Catholic, Islam, Iglesia ni Cristo, Christian, etc.
+    religion religion_enum DEFAULT 'prefer_not_to_say',
+    religion_others_specify TEXT,
+    
+    -- 27. MOTHER'S MAIDEN NAME - Provide mother's maiden name (First, Middle, Last Name)
+    mother_maiden_first_encrypted BYTEA,    -- First Name (encrypted)
+    mother_maiden_middle_encrypted BYTEA,   -- Middle Name (encrypted)
+    mother_maiden_last_encrypted BYTEA,     -- Last Name (encrypted)
 
     -- Encryption metadata
     is_data_encrypted BOOLEAN DEFAULT false,
@@ -779,81 +877,35 @@ CREATE TABLE residents (
     encrypted_by UUID REFERENCES auth_user_profiles(id),
 
     -- =====================================================
-    -- LOCATION AND HOUSEHOLD
+    -- D. SECTORAL INFORMATION (DILG RBI Form B Section D)
     -- =====================================================
+    -- Note: Detailed sectoral information is stored in resident_sectoral_info table
+    -- SECTORAL INFORMATION options: Labor Force/Employed, Unemployed, OFW, PWD,
+    -- OSC, OSY, Solo Parent, Indigenous People, Migrant, Senior Citizen
 
+    -- =====================================================
+    -- HOUSEHOLD AND LOCATION REFERENCES
+    -- =====================================================
+    
     -- Household Reference
     household_id UUID REFERENCES households(id),
     household_code VARCHAR(50),
 
-    -- Location Details
+    -- Location Details (for internal system use)
     street_id UUID REFERENCES geo_street_names(id),
     subdivision_id UUID REFERENCES geo_subdivisions(id),
 
-    -- Geographic Hierarchy
-    barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    city_municipality_code VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code),
-    province_code VARCHAR(10) REFERENCES psgc_provinces(code),
-    region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
-
     -- =====================================================
-    -- GOVERNMENT AND CIVIC INFORMATION
+    -- AUDIT AND METADATA
     -- =====================================================
-
-    -- Citizenship and Voting
-    citizenship citizenship_enum DEFAULT 'filipino',
-    is_registered_voter BOOLEAN DEFAULT false,
-    is_resident_voter BOOLEAN DEFAULT false,
-    last_voted_year INTEGER,
-
-    -- =====================================================
-    -- DEMOGRAPHICS AND CULTURAL
-    -- =====================================================
-
-    ethnicity ethnicity_enum DEFAULT 'not_reported',
-    religion religion_enum DEFAULT 'prefer_not_to_say',
-    religion_others_specify TEXT,
-
-    -- Mother's Maiden Name
-    mother_maiden_first TEXT,
-    mother_maiden_middle TEXT,
-    mother_maiden_last TEXT,
-
-    -- =====================================================
-    -- METADATA AND SEARCH
-    -- =====================================================
-
-    -- Audit Fields
+    
+    -- System audit fields
     created_by UUID REFERENCES auth_user_profiles(id),
     updated_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 
-    -- Full-text search
-    search_text TEXT GENERATED ALWAYS AS (
-        LOWER(CONCAT_WS(' ',
-            first_name,
-            COALESCE(middle_name, ''),
-            last_name,
-            COALESCE(occupation_title, ''),
-            COALESCE(mobile_number, ''),
-            COALESCE(occupation, ''),
-            COALESCE(job_title, ''),
-            COALESCE(workplace, ''),
-            COALESCE(extension_name, '')))
-    ) STORED,
-
-    search_vector tsvector GENERATED ALWAYS AS (
-        to_tsvector('english',
-            COALESCE(first_name, '') || ' ' ||
-            COALESCE(middle_name, '') || ' ' ||
-            COALESCE(last_name, '') || ' ' ||
-            COALESCE(email, '') || ' ' ||
-            COALESCE(mobile_number, '') || ' ' ||
-            COALESCE(occupation_details, '') || ' ' ||
-            COALESCE(workplace, '')
-        )
-    ) STORED
+    -- Search functionality now handled through API views
 );
 
 -- Add the foreign key constraint for household_head_id
@@ -921,27 +973,30 @@ CREATE TABLE resident_relationships (
 -- =====================================================
 -- 7.3 RESIDENT SECTORAL INFORMATION TABLE
 -- =====================================================
+-- DILG RBI Form B Section D: SECTORAL INFORMATION Compliant
+-- Tracks sectoral classification as required by DILG RBI Form B
 
--- Sectoral Information Table
 CREATE TABLE resident_sectoral_info (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
 
-    -- Labor Force Status (automatically determined from occupation)
-    is_labor_force BOOLEAN DEFAULT false,
-    is_employed BOOLEAN DEFAULT false,
-    is_unemployed BOOLEAN DEFAULT false,
+    -- DILG RBI Form B Section D: SECTORAL INFORMATION
+    -- "Select a sector from the list provided. You may select more than one as applicable:"
+    
+    -- Labor Force Status
+    is_labor_force_employed BOOLEAN DEFAULT false,    -- Labor Force/Employed (combined category)
+    is_unemployed BOOLEAN DEFAULT false,             -- Unemployed
 
-    -- Special Populations
-    is_overseas_filipino_worker BOOLEAN DEFAULT false, -- Overseas Filipino Worker
-    is_person_with_disability BOOLEAN DEFAULT false, -- PWD
-    is_out_of_school_children BOOLEAN DEFAULT false, -- Auto-calc: Ages 6-14 not enrolled in formal education
-    is_out_of_school_youth BOOLEAN DEFAULT false,    -- Auto-calc: Ages 15-24 not in school, no college attainment, not employed
-    is_senior_citizen BOOLEAN DEFAULT false,         -- Senior Citizen (60+)
-    is_registered_senior_citizen BOOLEAN DEFAULT false, -- Registered SC
-    is_solo_parent BOOLEAN DEFAULT false,            -- Solo Parent
-    is_indigenous_people BOOLEAN DEFAULT false,      -- Indigenous People
-    is_migrant BOOLEAN DEFAULT false,                -- Migrant
+    -- Special Populations (DILG RBI Form B Required Sectors)
+    is_overseas_filipino_worker BOOLEAN DEFAULT false, -- Overseas Filipino Worker (OFW)
+    is_person_with_disability BOOLEAN DEFAULT false,   -- Person with Disabilities (PWD)
+    is_out_of_school_children BOOLEAN DEFAULT false,   -- Out of School Children (OSC)
+    is_out_of_school_youth BOOLEAN DEFAULT false,      -- Out of School Youth (OSY)
+    is_senior_citizen BOOLEAN DEFAULT false,           -- Senior Citizen (SC) 
+    is_registered_senior_citizen BOOLEAN DEFAULT false, -- SC - specify if registered (Yes/No)
+    is_solo_parent BOOLEAN DEFAULT false,               -- Solo Parent
+    is_indigenous_people BOOLEAN DEFAULT false,         -- Indigenous People (IP)
+    is_migrant BOOLEAN DEFAULT false,                   -- Migrant
 
     -- Audit fields
     created_by UUID REFERENCES auth_user_profiles(id),
@@ -958,25 +1013,40 @@ CREATE TABLE resident_sectoral_info (
 -- =====================================================
 
 -- Migrant Information Table
+-- =====================================================
+-- PART 3: MIGRANT INFORMATION (DILG RBI Form A)
+-- =====================================================
+-- This table stores migration information as required by DILG RBI Form A Part 3
 CREATE TABLE resident_migrant_info (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
 
-    -- Previous Residence Information
+    -- DILG RBI Part 3 Required Fields (in exact order):
+    -- Note: LAST NAME, FIRST NAME, MIDDLE NAME, EXTENSION NAME stored in residents table
+    
+    -- PREVIOUS RESIDENCE ADDRESS (Barangay, City/Municipality, Province)
     previous_barangay_code VARCHAR(10) REFERENCES psgc_barangays(code),
     previous_city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
     previous_province_code VARCHAR(10) REFERENCES psgc_provinces(code),
     previous_region_code VARCHAR(10) REFERENCES psgc_regions(code),
 
-    -- Migration Details
-    length_of_stay_previous_months INTEGER, -- Length of stay in previous residence (in months)
-    reason_for_leaving TEXT, -- Reason for leaving previous residence
-    date_of_transfer DATE, -- Date of transfer to current barangay
-    reason_for_transferring TEXT, -- Reason for transferring to this barangay
-    duration_of_stay_current_months INTEGER, -- Duration of stay in current barangay (in months)
+    -- LENGTH OF STAY IN THE PREVIOUS BARANGAY (months or years)
+    length_of_stay_previous_months INTEGER, 
+    
+    -- REASON/S FOR LEAVING (previous residence)
+    reason_for_leaving TEXT, 
+    
+    -- DATE OF TRANSFER (MM/DD/YYYY format)
+    date_of_transfer DATE, 
+    
+    -- REASON/S FOR TRANSFERRING IN THIS BARANGAY
+    reason_for_transferring TEXT, 
+    
+    -- DURATION OF STAY IN THE CURRENT BARANGAY (months/years)
+    duration_of_stay_current_months INTEGER, 
 
-    -- Return Intention
-    intends_to_return BOOLEAN, -- true = Yes, false = No, null = undecided
+    -- INTENTION TO RETURN TO PREVIOUS RESIDENCE (Yes or No)
+    is_intending_to_return BOOLEAN, -- true = Yes, false = No, null = undecided
 
     -- Audit fields
     created_by UUID REFERENCES auth_user_profiles(id),
@@ -1232,18 +1302,20 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 
 -- Function: Insert resident with automatic encryption
 CREATE OR REPLACE FUNCTION insert_resident_encrypted(
+    -- Required parameters (no defaults)
     p_first_name TEXT,
-    p_middle_name TEXT DEFAULT NULL,
     p_last_name TEXT,
+    p_birthdate DATE,
+    p_sex sex_enum,
+    p_barangay_code VARCHAR(10),
+    -- Optional parameters (all with defaults)
+    p_middle_name TEXT DEFAULT NULL,
     p_mobile_number TEXT DEFAULT NULL,
     p_telephone_number TEXT DEFAULT NULL,
     p_email TEXT DEFAULT NULL,
     p_mother_maiden_first TEXT DEFAULT NULL,
     p_mother_maiden_middle TEXT DEFAULT NULL,
     p_mother_maiden_last TEXT DEFAULT NULL,
-    p_birthdate DATE,
-    p_sex sex_enum,
-    p_barangay_code VARCHAR(10),
     p_household_id UUID DEFAULT NULL
 )
 RETURNS UUID AS $$
@@ -1326,11 +1398,10 @@ SELECT
     -- Non-PII fields (unchanged)
     extension_name,
     birthdate,
-    age,
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate)) as age,
     birth_place_code,
     birth_place_level,
     birth_place_text,
-    birth_place_full,
     sex,
     civil_status,
     civil_status_others_specify,
@@ -1385,8 +1456,6 @@ SELECT
     updated_by,
     created_at,
     updated_at,
-    search_text,
-    search_vector,
 
     -- Encryption metadata
     is_data_encrypted,
@@ -1414,7 +1483,7 @@ SELECT
     END as last_name_masked,
 
     -- Public demographic information
-    age,
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate)) as age,
     sex,
     civil_status,
     barangay_code,
@@ -1518,6 +1587,126 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
+
+-- =====================================================
+-- 9.1 AUTHENTICATION AND AUTHORIZATION FUNCTIONS
+-- =====================================================
+-- Multi-level geographic access control functions
+
+-- Function: Get user's assigned barangay code
+CREATE OR REPLACE FUNCTION auth.user_barangay_code()
+RETURNS VARCHAR(10) AS $$
+BEGIN
+    RETURN (
+        SELECT barangay_code 
+        FROM auth_user_profiles 
+        WHERE id = auth.uid()
+        AND is_active = true
+        AND barangay_code IS NOT NULL
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Get user's assigned city/municipality code  
+CREATE OR REPLACE FUNCTION auth.user_city_code()
+RETURNS VARCHAR(10) AS $$
+BEGIN
+    RETURN (
+        SELECT city_municipality_code 
+        FROM auth_user_profiles 
+        WHERE id = auth.uid()
+        AND is_active = true
+        AND city_municipality_code IS NOT NULL
+        AND barangay_code IS NULL  -- Only if no barangay-specific access
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Get user's assigned province code
+CREATE OR REPLACE FUNCTION auth.user_province_code()
+RETURNS VARCHAR(10) AS $$
+BEGIN
+    RETURN (
+        SELECT province_code 
+        FROM auth_user_profiles 
+        WHERE id = auth.uid()
+        AND is_active = true
+        AND province_code IS NOT NULL
+        AND barangay_code IS NULL          -- Only if no barangay access
+        AND city_municipality_code IS NULL -- Only if no city access
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Get user's assigned region code
+CREATE OR REPLACE FUNCTION auth.user_region_code()
+RETURNS VARCHAR(10) AS $$
+BEGIN
+    RETURN (
+        SELECT region_code 
+        FROM auth_user_profiles 
+        WHERE id = auth.uid()
+        AND is_active = true
+        AND region_code IS NOT NULL
+        AND barangay_code IS NULL          -- Only if no barangay access
+        AND city_municipality_code IS NULL -- Only if no city access
+        AND province_code IS NULL          -- Only if no province access
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Get user's role name
+CREATE OR REPLACE FUNCTION auth.user_role()
+RETURNS VARCHAR(50) AS $$
+BEGIN
+    RETURN (
+        SELECT r.name 
+        FROM auth_user_profiles u
+        JOIN auth_roles r ON u.role_id = r.id
+        WHERE u.id = auth.uid()
+        AND u.is_active = true
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Get user's access level and code
+CREATE OR REPLACE FUNCTION auth.user_access_level()
+RETURNS TABLE(level VARCHAR(10), code VARCHAR(10)) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        CASE 
+            WHEN up.barangay_code IS NOT NULL THEN 'barangay'::VARCHAR(10)
+            WHEN up.city_municipality_code IS NOT NULL THEN 'city'::VARCHAR(10) 
+            WHEN up.province_code IS NOT NULL THEN 'province'::VARCHAR(10)
+            WHEN up.region_code IS NOT NULL THEN 'region'::VARCHAR(10)
+            ELSE 'none'::VARCHAR(10)
+        END as level,
+        COALESCE(
+            up.barangay_code,
+            up.city_municipality_code,
+            up.province_code, 
+            up.region_code
+        ) as code
+    FROM auth_user_profiles up
+    WHERE up.id = auth.uid()
+    AND up.is_active = true;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function: Check if user has admin privileges
+CREATE OR REPLACE FUNCTION auth.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN (
+        SELECT r.name IN ('super_admin', 'barangay_admin', 'provincial_admin', 'regional_admin')
+        FROM auth_user_profiles u
+        JOIN auth_roles r ON u.role_id = r.id
+        WHERE u.id = auth.uid()
+        AND u.is_active = true
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- =====================================================
 -- 9.2 SECTORAL INFORMATION FUNCTIONS
@@ -1945,17 +2134,21 @@ CREATE TRIGGER trigger_geo_street_names_user_tracking
 -- 10.1 SEARCH AND TEXT INDEXES
 -- =====================================================
 
--- Primary search indexes
-CREATE INDEX idx_residents_search_vector ON residents USING GIN(search_vector);
--- Enhanced: Search text index from current implementation
-CREATE INDEX idx_residents_search_text ON residents USING GIN(search_text gin_trgm_ops);
+-- Search indexes removed - search functionality now handled through API views with decrypted data
 CREATE INDEX idx_residents_barangay ON residents(barangay_code);
 CREATE INDEX idx_residents_household ON residents(household_id);
+
+-- =====================================================
+-- 10.1.1 SYSTEM ENCRYPTION INDEXES
+-- =====================================================
+
+-- Partial unique index for active encryption keys (only one active key per name)
+CREATE UNIQUE INDEX idx_encryption_keys_active_unique ON system_encryption_keys(key_name) WHERE is_active = true;
 -- Enhanced: Conditional index for storage optimization from current implementation
 CREATE INDEX idx_residents_philsys_last4 ON residents(philsys_last4) WHERE philsys_last4 IS NOT NULL;
 -- Enhanced: Birthdate and age indexes for age-based calculations
 CREATE INDEX idx_residents_birthdate ON residents(birthdate);
-CREATE INDEX idx_residents_age ON residents(age);
+-- Age index removed - age is now computed dynamically from birthdate
 
 -- =====================================================
 -- 10.2 DEMOGRAPHIC INDEXES
@@ -1963,7 +2156,7 @@ CREATE INDEX idx_residents_age ON residents(age);
 
 -- Performance indexes for common query patterns
 CREATE INDEX idx_residents_barangay_employment ON residents(barangay_code, employment_status);
-CREATE INDEX idx_residents_barangay_age ON residents(barangay_code, age);
+-- Barangay-age index removed - age is now computed dynamically from birthdate
 CREATE INDEX idx_residents_barangay_civil_status ON residents(barangay_code, civil_status);
 CREATE INDEX idx_residents_barangay_education ON residents(barangay_code, education_attainment, is_graduate);
 CREATE INDEX idx_residents_sex ON residents(sex);
@@ -1996,7 +2189,7 @@ CREATE INDEX idx_psoc_cross_references_related_unit_code ON psoc_occupation_cros
 CREATE INDEX idx_residents_birth_place_code ON residents(birth_place_code);
 CREATE INDEX idx_residents_birth_place_level ON residents(birth_place_level);
 CREATE INDEX idx_residents_birth_place_code_level ON residents(birth_place_code, birth_place_level);
-CREATE INDEX idx_residents_birth_place_full ON residents USING GIN(to_tsvector('english', birth_place_full));
+-- Index on birth_place_full removed - column was converted to computed field in API views
 
 -- =====================================================
 -- 10.5 GEOGRAPHIC INDEXES
@@ -2096,7 +2289,7 @@ CREATE INDEX idx_migrant_previous_province ON resident_migrant_info(previous_pro
 CREATE INDEX idx_migrant_previous_city ON resident_migrant_info(previous_city_municipality_code);
 CREATE INDEX idx_migrant_previous_barangay ON resident_migrant_info(previous_barangay_code);
 CREATE INDEX idx_migrant_date_transfer ON resident_migrant_info(date_of_transfer);
-CREATE INDEX idx_migrant_intention_return ON resident_migrant_info(intends_to_return);
+CREATE INDEX idx_migrant_intention_return ON resident_migrant_info(is_intending_to_return);
 CREATE INDEX idx_migrant_length_stay_previous ON resident_migrant_info(length_of_stay_previous_months);
 CREATE INDEX idx_migrant_duration_current ON resident_migrant_info(duration_of_stay_current_months);
 
@@ -2167,17 +2360,13 @@ ALTER TABLE residents ADD CONSTRAINT valid_civil_status_others_specify
 -- 11.4 BIRTH PLACE CONSTRAINTS
 -- =====================================================
 
--- Birth place validation constraint
-ALTER TABLE residents ADD CONSTRAINT valid_birth_place_code
+-- Birth place validation removed - PostgreSQL doesn't allow subqueries in check constraints
+-- Birth place validation should be handled at application level or through triggers
+-- Basic constraint: if birth_place_code is specified, birth_place_level must also be specified
+ALTER TABLE residents ADD CONSTRAINT valid_birth_place_level_required
     CHECK (
-        birth_place_code IS NULL OR birth_place_level IS NULL OR
-        CASE birth_place_level
-            WHEN 'region' THEN EXISTS (SELECT 1 FROM psgc_regions WHERE code = birth_place_code)
-            WHEN 'province' THEN EXISTS (SELECT 1 FROM psgc_provinces WHERE code = birth_place_code)
-            WHEN 'city_municipality' THEN EXISTS (SELECT 1 FROM psgc_cities_municipalities WHERE code = birth_place_code)
-            WHEN 'barangay' THEN EXISTS (SELECT 1 FROM psgc_barangays WHERE code = birth_place_code)
-            ELSE false
-        END
+        (birth_place_code IS NULL AND birth_place_level IS NULL) OR
+        (birth_place_code IS NOT NULL AND birth_place_level IS NOT NULL)
     );
 
 -- =====================================================
@@ -2188,9 +2377,8 @@ ALTER TABLE residents ADD CONSTRAINT valid_birth_place_code
 ALTER TABLE residents ADD CONSTRAINT valid_philsys_last4
     CHECK (philsys_last4 IS NULL OR LENGTH(philsys_last4) = 4);
 
--- Ensure email format is valid if provided
-ALTER TABLE residents ADD CONSTRAINT valid_email_format
-    CHECK (email IS NULL OR email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+-- Email format validation removed - email is stored encrypted as email_encrypted
+-- Email format validation should be handled at application level before encryption
 
 -- =====================================================
 -- 11.6 HOUSEHOLD CONSTRAINTS
@@ -2358,34 +2546,48 @@ CREATE POLICY "Users can update own profile" ON auth_user_profiles
 -- 12.4 RLS POLICIES FOR MAIN DATA TABLES
 -- =====================================================
 
--- Barangay-scoped access for residents
-CREATE POLICY "Barangay access for residents" ON residents
+-- Multi-level geographic access for residents
+CREATE POLICY "Multi-level geographic access for residents" ON residents
     FOR ALL USING (
-        barangay_code IN (
-            SELECT ba.barangay_code
-            FROM auth_barangay_accounts ba
-            WHERE ba.user_id = auth.uid()
-        )
+        -- Allow access based on user's geographic access level
+        CASE auth.user_access_level()::json->>'level'
+            WHEN 'barangay' THEN barangay_code = auth.user_barangay_code()
+            WHEN 'city' THEN city_municipality_code = auth.user_city_code()
+            WHEN 'province' THEN province_code = auth.user_province_code()
+            WHEN 'region' THEN region_code = auth.user_region_code()
+            WHEN 'national' THEN true -- National users see all
+            ELSE false -- No access by default
+        END
     );
 
--- Barangay-scoped access for households
-CREATE POLICY "Barangay access for households" ON households
+-- Multi-level geographic access for households
+CREATE POLICY "Multi-level geographic access for households" ON households
     FOR ALL USING (
-        barangay_code IN (
-            SELECT ba.barangay_code
-            FROM auth_barangay_accounts ba
-            WHERE ba.user_id = auth.uid()
-        )
+        -- Allow access based on user's geographic access level
+        CASE auth.user_access_level()::json->>'level'
+            WHEN 'barangay' THEN barangay_code = auth.user_barangay_code()
+            WHEN 'city' THEN city_municipality_code = auth.user_city_code()
+            WHEN 'province' THEN province_code = auth.user_province_code()
+            WHEN 'region' THEN region_code = auth.user_region_code()
+            WHEN 'national' THEN true -- National users see all
+            ELSE false -- No access by default
+        END
     );
 
--- Barangay-scoped access for household_members
-CREATE POLICY "Barangay access for household_members" ON household_members
+-- Multi-level geographic access for household_members
+CREATE POLICY "Multi-level geographic access for household_members" ON household_members
     FOR ALL USING (
         household_id IN (
             SELECT h.id
             FROM households h
-            JOIN auth_barangay_accounts ba ON h.barangay_code = ba.barangay_code
-            WHERE ba.user_id = auth.uid()
+            WHERE CASE auth.user_access_level()::json->>'level'
+                WHEN 'barangay' THEN h.barangay_code = auth.user_barangay_code()
+                WHEN 'city' THEN h.city_municipality_code = auth.user_city_code()
+                WHEN 'province' THEN h.province_code = auth.user_province_code()
+                WHEN 'region' THEN h.region_code = auth.user_region_code()
+                WHEN 'national' THEN true -- National users see all
+                ELSE false -- No access by default
+            END
         )
     );
 
@@ -2393,49 +2595,69 @@ CREATE POLICY "Barangay access for household_members" ON household_members
 -- 12.5 RLS POLICIES FOR GEOGRAPHIC DATA
 -- =====================================================
 
--- Barangay-scoped access for geo_subdivisions
-CREATE POLICY "Barangay access for geo_subdivisions" ON geo_subdivisions
+-- Multi-level geographic access for geo_subdivisions
+CREATE POLICY "Multi-level geographic access for geo_subdivisions" ON geo_subdivisions
     FOR ALL USING (
-        barangay_code IN (
-            SELECT ba.barangay_code
-            FROM auth_barangay_accounts ba
-            WHERE ba.user_id = auth.uid()
-        )
+        -- Allow access based on user's geographic access level
+        CASE auth.user_access_level()::json->>'level'
+            WHEN 'barangay' THEN barangay_code = auth.user_barangay_code()
+            WHEN 'city' THEN city_municipality_code = auth.user_city_code()
+            WHEN 'province' THEN province_code = auth.user_province_code()
+            WHEN 'region' THEN region_code = auth.user_region_code()
+            WHEN 'national' THEN true -- National users see all
+            ELSE false -- No access by default
+        END
     );
 
--- Barangay-scoped access for geo_street_names
-CREATE POLICY "Barangay access for geo_street_names" ON geo_street_names
+-- Multi-level geographic access for geo_street_names
+CREATE POLICY "Multi-level geographic access for geo_street_names" ON geo_street_names
     FOR ALL USING (
-        barangay_code IN (
-            SELECT ba.barangay_code
-            FROM auth_barangay_accounts ba
-            WHERE ba.user_id = auth.uid()
-        )
+        -- Allow access based on user's geographic access level
+        CASE auth.user_access_level()::json->>'level'
+            WHEN 'barangay' THEN barangay_code = auth.user_barangay_code()
+            WHEN 'city' THEN city_municipality_code = auth.user_city_code()
+            WHEN 'province' THEN province_code = auth.user_province_code()
+            WHEN 'region' THEN region_code = auth.user_region_code()
+            WHEN 'national' THEN true -- National users see all
+            ELSE false -- No access by default
+        END
     );
 
 -- =====================================================
 -- 12.6 RLS POLICIES FOR SUPPLEMENTARY TABLES
 -- =====================================================
 
--- Barangay-scoped access for resident_sectoral_info
-CREATE POLICY "Barangay access for resident_sectoral_info" ON resident_sectoral_info
+-- Multi-level geographic access for resident_sectoral_info
+CREATE POLICY "Multi-level geographic access for resident_sectoral_info" ON resident_sectoral_info
     FOR ALL USING (
         resident_id IN (
             SELECT r.id
             FROM residents r
-            JOIN auth_barangay_accounts ba ON r.barangay_code = ba.barangay_code
-            WHERE ba.user_id = auth.uid()
+            WHERE CASE auth.user_access_level()::json->>'level'
+                WHEN 'barangay' THEN r.barangay_code = auth.user_barangay_code()
+                WHEN 'city' THEN r.city_municipality_code = auth.user_city_code()
+                WHEN 'province' THEN r.province_code = auth.user_province_code()
+                WHEN 'region' THEN r.region_code = auth.user_region_code()
+                WHEN 'national' THEN true -- National users see all
+                ELSE false -- No access by default
+            END
         )
     );
 
--- Barangay-scoped access for resident_migrant_info
-CREATE POLICY "Barangay access for resident_migrant_info" ON resident_migrant_info
+-- Multi-level geographic access for resident_migrant_info
+CREATE POLICY "Multi-level geographic access for resident_migrant_info" ON resident_migrant_info
     FOR ALL USING (
         resident_id IN (
             SELECT r.id
             FROM residents r
-            JOIN auth_barangay_accounts ba ON r.barangay_code = ba.barangay_code
-            WHERE ba.user_id = auth.uid()
+            WHERE CASE auth.user_access_level()::json->>'level'
+                WHEN 'barangay' THEN r.barangay_code = auth.user_barangay_code()
+                WHEN 'city' THEN r.city_municipality_code = auth.user_city_code()
+                WHEN 'province' THEN r.province_code = auth.user_province_code()
+                WHEN 'region' THEN r.region_code = auth.user_region_code()
+                WHEN 'national' THEN true -- National users see all
+                ELSE false -- No access by default
+            END
         )
     );
 
@@ -2443,14 +2665,18 @@ CREATE POLICY "Barangay access for resident_migrant_info" ON resident_migrant_in
 -- 12.7 RLS POLICIES FOR SYSTEM TABLES
 -- =====================================================
 
--- Barangay-scoped access for system_audit_logs
-CREATE POLICY "Barangay access for system_audit_logs" ON system_audit_logs
+-- Multi-level geographic access for system_audit_logs
+CREATE POLICY "Multi-level geographic access for system_audit_logs" ON system_audit_logs
     FOR SELECT USING (
-        barangay_code IN (
-            SELECT ba.barangay_code
-            FROM auth_barangay_accounts ba
-            WHERE ba.user_id = auth.uid()
-        )
+        -- Allow access based on user's geographic access level
+        CASE auth.user_access_level()::json->>'level'
+            WHEN 'barangay' THEN barangay_code = auth.user_barangay_code()
+            WHEN 'city' THEN city_municipality_code = auth.user_city_code()
+            WHEN 'province' THEN province_code = auth.user_province_code()
+            WHEN 'region' THEN region_code = auth.user_region_code()
+            WHEN 'national' THEN true -- National users see all
+            ELSE false -- No access by default
+        END
     );
 
 -- =====================================================
@@ -2469,7 +2695,7 @@ SELECT
     usg.code as occupation_code,
     'unit_sub_group' as level_type,
     ug.title || ' - ' || usg.title as occupation_title, -- "Legislators - Congressman"
-    usg.description as occupation_description,
+    usg.title as occupation_description,
     mg.code as major_group_code,
     mg.title as major_group_title,
     smg.code as sub_major_group_code,
@@ -2521,7 +2747,7 @@ SELECT
     ug.code as occupation_code,
     'unit_group' as level_type,
     ug.title as occupation_title,
-    ug.description as occupation_description,
+    ug.title as occupation_description,
     mg.code as major_group_code,
     mg.title as major_group_title,
     smg.code as sub_major_group_code,
@@ -2530,8 +2756,10 @@ SELECT
     ming.title as minor_group_title,
     ug.code as unit_group_code,
     ug.title as unit_group_title,
+    NULL as unit_sub_group_code,
+    NULL as unit_sub_group_title,
     mg.title || ' > ' || smg.title || ' > ' || ming.title || ' > ' || ug.title as full_hierarchy,
-    1 as hierarchy_level
+    2 as hierarchy_level
 FROM psoc_unit_groups ug
 JOIN psoc_minor_groups ming ON ug.minor_code = ming.code
 JOIN psoc_sub_major_groups smg ON ming.sub_major_code = smg.code
@@ -2543,15 +2771,19 @@ SELECT
     ming.code as occupation_code,
     'minor_group' as level_type,
     ming.title as occupation_title,
-    ming.description as occupation_description,
+    ming.title as occupation_description,
     mg.code as major_group_code,
     mg.title as major_group_title,
     smg.code as sub_major_group_code,
     smg.title as sub_major_group_title,
     ming.code as minor_group_code,
     ming.title as minor_group_title,
+    NULL as unit_group_code,
+    NULL as unit_group_title,
+    NULL as unit_sub_group_code,
+    NULL as unit_sub_group_title,
     mg.title || ' > ' || smg.title || ' > ' || ming.title as full_hierarchy,
-    2 as hierarchy_level
+    3 as hierarchy_level
 FROM psoc_minor_groups ming
 JOIN psoc_sub_major_groups smg ON ming.sub_major_code = smg.code
 JOIN psoc_major_groups mg ON smg.major_code = mg.code
@@ -2562,15 +2794,19 @@ SELECT
     smg.code as occupation_code,
     'sub_major_group' as level_type,
     smg.title as occupation_title,
-    smg.description as occupation_description,
+    smg.title as occupation_description,
     mg.code as major_group_code,
     mg.title as major_group_title,
     smg.code as sub_major_group_code,
     smg.title as sub_major_group_title,
     NULL as minor_group_code,
     NULL as minor_group_title,
+    NULL as unit_group_code,
+    NULL as unit_group_title,
+    NULL as unit_sub_group_code,
+    NULL as unit_sub_group_title,
     mg.title || ' > ' || smg.title as full_hierarchy,
-    3 as hierarchy_level
+    4 as hierarchy_level
 FROM psoc_sub_major_groups smg
 JOIN psoc_major_groups mg ON smg.major_code = mg.code
 
@@ -2580,15 +2816,19 @@ SELECT
     mg.code as occupation_code,
     'major_group' as level_type,
     mg.title as occupation_title,
-    mg.description as occupation_description,
+    mg.title as occupation_description,
     mg.code as major_group_code,
     mg.title as major_group_title,
     NULL as sub_major_group_code,
     NULL as sub_major_group_title,
     NULL as minor_group_code,
     NULL as minor_group_title,
+    NULL as unit_group_code,
+    NULL as unit_group_title,
+    NULL as unit_sub_group_code,
+    NULL as unit_sub_group_title,
     mg.title as full_hierarchy,
-    4 as hierarchy_level
+    5 as hierarchy_level
 FROM psoc_major_groups mg
 
 UNION ALL
@@ -2605,8 +2845,12 @@ SELECT
     smg.title as sub_major_group_title,
     ming.code as minor_group_code,
     ming.title as minor_group_title,
+    rug.code as unit_group_code,
+    rug.title as unit_group_title,
+    NULL as unit_sub_group_code,
+    NULL as unit_sub_group_title,
     mg.title || ' > ' || smg.title || ' > ' || ming.title || ' > ' || rug.title || ' > ' || cr.related_occupation_title as full_hierarchy,
-    5 as hierarchy_level -- Lowest priority, shown after main results
+    6 as hierarchy_level -- Lowest priority, shown after main results
 FROM psoc_occupation_cross_references cr
 JOIN psoc_unit_groups ug ON cr.unit_group_code = ug.code -- Original unit group
 JOIN psoc_unit_groups rug ON cr.related_unit_code = rug.code -- Related unit group
@@ -2796,7 +3040,7 @@ SELECT
     mi.date_of_transfer,
     mi.reason_for_transferring,
     mi.duration_of_stay_current_months,
-    mi.intends_to_return
+    mi.is_intending_to_return
 FROM residents r
 LEFT JOIN resident_sectoral_info si ON r.id = si.resident_id
 LEFT JOIN resident_migrant_info mi ON r.id = mi.resident_id;
@@ -2805,7 +3049,7 @@ LEFT JOIN resident_migrant_info mi ON r.id = mi.resident_id;
 CREATE VIEW households_complete AS
 SELECT
     h.*,
-    r.first_name || ' ' || r.last_name as head_full_name,
+    COALESCE(decrypt_pii(r.first_name_encrypted), '') || ' ' || COALESCE(decrypt_pii(r.last_name_encrypted), '') as head_full_name,
     -- Address components
     reg.name as region_name,
     prov.name as province_name,
@@ -2847,9 +3091,9 @@ LEFT JOIN psgc_regions reg ON prov.region_code = reg.code;
 CREATE VIEW migrants_complete AS
 SELECT
     mi.*,
-    r.first_name,
-    r.middle_name,
-    r.last_name,
+    decrypt_pii(r.first_name_encrypted) as first_name,
+    decrypt_pii(r.middle_name_encrypted) as middle_name,
+    decrypt_pii(r.last_name_encrypted) as last_name,
     r.birthdate,
     r.sex,
     -- Previous address components
@@ -3125,6 +3369,335 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- =====================================================
+-- SECTION 13.7: SERVER-SIDE API OPTIMIZED FLAT VIEWS
+-- =====================================================
+-- These views are optimized for the server-side API layer
+-- and provide pre-joined, flattened data structures
+
+-- =====================================================
+-- 13.7.1 RESIDENTS WITH COMPLETE GEOGRAPHIC INFO
+-- =====================================================
+CREATE OR REPLACE VIEW api_residents_with_geography AS
+SELECT 
+    -- Core resident fields (excluding household_code to avoid duplicate)
+    r.id,
+    r.philsys_card_number_hash,
+    r.philsys_last4,
+    r.first_name_encrypted,
+    r.middle_name_encrypted,
+    r.last_name_encrypted,
+    r.extension_name,
+    r.birthdate,
+    r.birth_place_code,
+    r.birth_place_level,
+    r.birth_place_text,
+    r.sex,
+    r.civil_status,
+    r.civil_status_others_specify,
+    r.blood_type,
+    r.height,
+    r.weight,
+    r.complexion,
+    r.education_attainment,
+    r.is_graduate,
+    r.employment_status,
+    r.psoc_code,
+    r.psoc_level,
+    r.occupation_title,
+    r.job_title,
+    r.workplace,
+    r.occupation,
+    r.occupation_details,
+    r.mobile_number_encrypted,
+    r.telephone_number_encrypted,
+    r.email_encrypted,
+    r.mother_maiden_first_encrypted,
+    r.mother_maiden_middle_encrypted,
+    r.mother_maiden_last_encrypted,
+    r.first_name_hash,
+    r.last_name_hash,
+    r.mobile_number_hash,
+    r.email_hash,
+    r.full_name_hash,
+    r.is_data_encrypted,
+    r.encryption_key_version,
+    r.encrypted_at,
+    r.encrypted_by,
+    r.household_id,
+    -- r.household_code excluded to avoid duplicate with h.code AS household_code
+    r.street_id,
+    r.subdivision_id,
+    r.barangay_code,
+    r.city_municipality_code,
+    -- r.province_code and r.region_code excluded to avoid duplicates with ah.* columns
+    r.citizenship,
+    r.is_registered_voter,
+    r.is_resident_voter,
+    r.last_voted_year,
+    r.ethnicity,
+    r.religion,
+    r.religion_others_specify,
+    r.created_by,
+    r.updated_by,
+    r.created_at,
+    r.updated_at,
+    
+    -- Computed age (dynamic calculation)
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, r.birthdate)) AS age,
+    
+    -- Computed birth place (dynamic calculation)
+    CASE
+        WHEN r.birth_place_text IS NOT NULL THEN r.birth_place_text
+        WHEN r.birth_place_code IS NOT NULL AND r.birth_place_level IS NOT NULL THEN
+            CASE r.birth_place_level
+                WHEN 'region' THEN reg.name
+                WHEN 'province' THEN CONCAT_WS(', ', prov.name, reg2.name)
+                WHEN 'city_municipality' THEN CONCAT_WS(', ',
+                    city.name,
+                    CASE WHEN city.is_independent THEN NULL ELSE prov2.name END,
+                    reg3.name
+                )
+                WHEN 'barangay' THEN CONCAT_WS(', ',
+                    brgy.name,
+                    city.name,
+                    CASE WHEN city.is_independent THEN NULL ELSE prov2.name END,
+                    reg3.name
+                )
+                ELSE NULL
+            END
+        ELSE NULL
+    END AS birth_place_full,
+    
+    -- Household information (if exists)
+    h.code AS household_code,
+    h.house_number AS household_house_number,
+    h.total_members AS household_total_members,
+    h.monthly_income AS household_monthly_income,
+    h.household_type AS household_type,
+    
+    -- Geographic hierarchy (using existing address_hierarchy view)
+    ah.region_code,
+    ah.region_name,
+    ah.province_code, 
+    ah.province_name,
+    ah.city_code,
+    ah.city_name,
+    ah.city_type,
+    ah.barangay_name,
+    ah.full_address AS complete_geographic_address,
+    
+    -- Computed fields for API responses
+    CONCAT_WS(' ', 
+        NULLIF(decrypt_pii(r.first_name_encrypted), ''),
+        NULLIF(decrypt_pii(r.middle_name_encrypted), ''), 
+        NULLIF(decrypt_pii(r.last_name_encrypted), ''),
+        NULLIF(r.extension_name, '')
+    ) AS full_name,
+    
+    -- Address components for display
+    CASE 
+        WHEN h.house_number IS NOT NULL THEN
+            CONCAT(h.house_number, ', ', ah.barangay_name)
+        ELSE
+            ah.barangay_name
+    END AS display_address
+
+FROM residents r
+LEFT JOIN households h ON r.household_code = h.code
+LEFT JOIN address_hierarchy ah ON r.barangay_code = ah.barangay_code
+-- Birth place lookups for computed birth_place_full
+LEFT JOIN psgc_regions reg ON r.birth_place_code = reg.code AND r.birth_place_level = 'region'
+LEFT JOIN psgc_provinces prov ON r.birth_place_code = prov.code AND r.birth_place_level = 'province'
+LEFT JOIN psgc_regions reg2 ON prov.region_code = reg2.code AND r.birth_place_level = 'province'
+LEFT JOIN psgc_cities_municipalities city ON r.birth_place_code = city.code AND r.birth_place_level IN ('city_municipality', 'barangay')
+LEFT JOIN psgc_provinces prov2 ON city.province_code = prov2.code AND r.birth_place_level IN ('city_municipality', 'barangay')
+LEFT JOIN psgc_regions reg3 ON COALESCE(prov2.region_code, city.province_code) = reg3.code AND r.birth_place_level IN ('city_municipality', 'barangay')
+LEFT JOIN psgc_barangays brgy ON r.birth_place_code = brgy.code AND r.birth_place_level = 'barangay';
+
+-- =====================================================
+-- 13.7.2 HOUSEHOLDS WITH COMPLETE MEMBER INFO
+-- =====================================================
+CREATE OR REPLACE VIEW api_households_with_members AS
+SELECT 
+    -- Core household fields (excluding geographic columns to avoid conflicts with ah.*)
+    h.id,
+    h.code,
+    h.household_number,
+    h.house_number,
+    h.street_id,
+    h.subdivision_id,
+    h.barangay_code, -- Keep for JOINs, conflicts resolved with ah prefix
+    -- h.city_municipality_code, h.province_code, h.region_code excluded to avoid conflicts
+    h.total_families,
+    h.total_members,
+    h.total_migrants,
+    h.household_type,
+    h.tenure_status,
+    h.tenure_others_specify,
+    h.household_unit,
+    h.household_name,
+    h.monthly_income,
+    h.income_class,
+    h.household_head_id,
+    h.is_active,
+    h.created_by,
+    h.updated_by,
+    h.created_at,
+    h.updated_at,
+    
+    -- Geographic hierarchy
+    ah.region_code,
+    ah.region_name,
+    ah.province_code,
+    ah.province_name, 
+    ah.city_code,
+    ah.city_name,
+    ah.city_type,
+    ah.barangay_name,
+    ah.full_address AS complete_geographic_address,
+    
+    -- Household head information
+    head.id AS head_id,
+    decrypt_pii(head.first_name_encrypted) AS head_first_name,
+    decrypt_pii(head.middle_name_encrypted) AS head_middle_name,
+    decrypt_pii(head.last_name_encrypted) AS head_last_name,
+    head.extension_name AS head_extension_name,
+    CONCAT_WS(' ', 
+        NULLIF(decrypt_pii(head.first_name_encrypted), ''),
+        NULLIF(decrypt_pii(head.middle_name_encrypted), ''),
+        NULLIF(decrypt_pii(head.last_name_encrypted), ''),
+        NULLIF(head.extension_name, '')
+    ) AS head_full_name,
+    head.sex AS head_sex,
+    head.birthdate AS head_birthdate,
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, head.birthdate::DATE)) AS head_age,
+    
+    -- Member statistics (computed from actual members)
+    COALESCE(member_stats.actual_member_count, 0) AS actual_member_count,
+    COALESCE(member_stats.male_count, 0) AS male_members,
+    COALESCE(member_stats.female_count, 0) AS female_members,
+    COALESCE(member_stats.minor_count, 0) AS minor_members,
+    COALESCE(member_stats.adult_count, 0) AS adult_members,
+    COALESCE(member_stats.senior_count, 0) AS senior_members,
+    COALESCE(member_stats.pwd_count, 0) AS pwd_members,
+    COALESCE(member_stats.voter_count, 0) AS voter_members,
+    
+    -- Display address
+    CASE 
+        WHEN h.house_number IS NOT NULL THEN
+            CONCAT(h.house_number, ', ', ah.barangay_name)
+        ELSE
+            ah.barangay_name
+    END AS display_address
+
+FROM households h
+LEFT JOIN address_hierarchy ah ON h.barangay_code = ah.barangay_code
+-- Get household head
+LEFT JOIN residents head ON h.household_head_id = head.id
+-- Get member statistics
+LEFT JOIN (
+    SELECT 
+        household_code,
+        COUNT(*) AS actual_member_count,
+        COUNT(*) FILTER (WHERE sex = 'male') AS male_count,
+        COUNT(*) FILTER (WHERE sex = 'female') AS female_count,
+        COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) < 18) AS minor_count,
+        COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) BETWEEN 18 AND 59) AS adult_count,
+        COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) >= 60) AS senior_count,
+        COUNT(*) FILTER (WHERE si.is_person_with_disability = true) AS pwd_count,
+        COUNT(*) FILTER (WHERE r.is_registered_voter = true) AS voter_count
+    FROM residents r
+    LEFT JOIN resident_sectoral_info si ON r.id = si.resident_id
+    GROUP BY household_code
+) member_stats ON h.code = member_stats.household_code;
+
+-- =====================================================
+-- 13.7.3 DASHBOARD STATS VIEW (Pre-aggregated)
+-- =====================================================
+CREATE OR REPLACE VIEW api_dashboard_stats AS
+SELECT 
+    r.barangay_code,
+    
+    -- Basic counts
+    COUNT(*) AS total_residents,
+    COUNT(*) FILTER (WHERE sex = 'male') AS male_residents,
+    COUNT(*) FILTER (WHERE sex = 'female') AS female_residents,
+    
+    -- Age groups
+    COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) < 18) AS minors,
+    COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) BETWEEN 18 AND 59) AS adults,
+    COUNT(*) FILTER (WHERE EXTRACT(YEAR FROM AGE(CURRENT_DATE, birthdate::DATE)) >= 60) AS seniors,
+    
+    -- Special categories
+    COUNT(*) FILTER (WHERE si.is_person_with_disability = true) AS pwd_residents,
+    COUNT(*) FILTER (WHERE si.is_solo_parent = true) AS solo_parents,
+    COUNT(*) FILTER (WHERE si.is_overseas_filipino_worker = true) AS ofw_residents,
+    COUNT(*) FILTER (WHERE si.is_indigenous_people = true) AS indigenous_residents,
+    
+    -- Voting
+    COUNT(*) FILTER (WHERE r.is_registered_voter = true) AS registered_voters,
+    COUNT(*) FILTER (WHERE r.is_resident_voter = true) AS resident_voters,
+    
+    -- Employment
+    COUNT(*) FILTER (WHERE si.is_labor_force = true) AS labor_force,
+    COUNT(*) FILTER (WHERE si.is_employed = true) AS employed,
+    COUNT(*) FILTER (WHERE si.is_unemployed = true) AS unemployed,
+    COUNT(*) FILTER (WHERE si.is_out_of_school_youth = true) AS out_of_school_youth,
+    
+    -- Education levels (top 5)
+    COUNT(*) FILTER (WHERE education_attainment = 'elementary') AS elementary_education,
+    COUNT(*) FILTER (WHERE education_attainment = 'high_school') AS high_school_education,  
+    COUNT(*) FILTER (WHERE education_attainment = 'college') AS college_education,
+    COUNT(*) FILTER (WHERE education_attainment = 'vocational') AS vocational_education,
+    COUNT(*) FILTER (WHERE education_attainment = 'post_graduate') AS post_graduate_education,
+    
+    -- Civil status
+    COUNT(*) FILTER (WHERE civil_status = 'single') AS single_residents,
+    COUNT(*) FILTER (WHERE civil_status = 'married') AS married_residents,
+    COUNT(*) FILTER (WHERE civil_status = 'widowed') AS widowed_residents,
+    COUNT(*) FILTER (WHERE civil_status = 'divorced') AS divorced_residents,
+    
+    -- Geographic info (from first resident in barangay)
+    MAX(ah.region_name) AS region_name,
+    MAX(ah.province_name) AS province_name,
+    MAX(ah.city_name) AS city_name,
+    MAX(ah.barangay_name) AS barangay_name
+
+FROM residents r
+LEFT JOIN resident_sectoral_info si ON r.id = si.resident_id
+LEFT JOIN address_hierarchy ah ON r.barangay_code = ah.barangay_code
+GROUP BY r.barangay_code;
+
+-- =====================================================
+-- 13.7.4 ADDRESS SEARCH VIEW (Optimized for barangay search)
+-- =====================================================
+CREATE OR REPLACE VIEW api_address_search AS
+SELECT 
+    ah.barangay_code AS code,
+    ah.barangay_name AS name,
+    ah.city_name,
+    ah.province_name,
+    ah.region_name,
+    ah.full_address,
+    
+    -- Search-optimized fields
+    LOWER(ah.barangay_name) AS barangay_lower,
+    LOWER(ah.city_name) AS city_lower,
+    LOWER(ah.province_name) AS province_lower,
+    LOWER(ah.region_name) AS region_lower,
+    
+    -- Combined search text for full-text search
+    LOWER(CONCAT_WS(' ', ah.barangay_name, ah.city_name, ah.province_name, ah.region_name)) AS searchable_text,
+    
+    -- Display formats
+    CONCAT(ah.barangay_name, ', ', ah.city_name) AS short_display,
+    CONCAT(ah.barangay_name, ', ', ah.city_name, ', ', ah.province_name) AS medium_display,
+    ah.full_address AS full_display
+
+FROM address_hierarchy ah
+ORDER BY ah.region_name, ah.province_name, ah.city_name, ah.barangay_name;
+
+-- =====================================================
 -- SECTION 14: PERMISSIONS AND GRANTS
 -- =====================================================
 -- Database access permissions for different user types
@@ -3199,6 +3772,12 @@ GRANT SELECT ON households_complete TO authenticated;
 GRANT SELECT ON migrants_complete TO authenticated;
 GRANT SELECT ON household_income_analytics TO authenticated;
 
+-- Server-side API optimized views
+GRANT SELECT ON api_residents_with_geography TO authenticated;
+GRANT SELECT ON api_households_with_members TO authenticated;
+GRANT SELECT ON api_dashboard_stats TO authenticated;
+GRANT SELECT ON api_address_search TO authenticated;
+
 -- Function permissions
 GRANT EXECUTE ON FUNCTION search_birth_places(TEXT, birth_place_level_enum, VARCHAR(10), INTEGER) TO authenticated;
 GRANT EXECUTE ON FUNCTION get_birth_place_details(VARCHAR(10), birth_place_level_enum) TO authenticated;
@@ -3238,6 +3817,12 @@ COMMENT ON TABLE residents IS 'Core resident profiles with comprehensive demogra
 COMMENT ON TABLE households IS 'Household entities with address and composition management';
 COMMENT ON VIEW psoc_occupation_search IS 'Flattened PSOC hierarchy view for unified occupation search UI';
 COMMENT ON VIEW address_hierarchy IS 'Complete address hierarchy view for settings management';
+
+-- Server-side API optimized views comments
+COMMENT ON VIEW api_residents_with_geography IS 'Optimized flat view for resident API endpoints with pre-joined geographic and household data';
+COMMENT ON VIEW api_households_with_members IS 'Optimized flat view for household API endpoints with pre-computed member statistics and geographic data';
+COMMENT ON VIEW api_dashboard_stats IS 'Pre-aggregated statistics by barangay for dashboard API performance optimization';
+COMMENT ON VIEW api_address_search IS 'Optimized view for address/barangay search API with searchable text fields and multiple display formats';
 
 -- Column comments for key fields
 COMMENT ON COLUMN residents.philsys_card_number_hash IS 'Hashed PhilSys card number for security (use crypt/hmac)';
@@ -3302,6 +3887,168 @@ COMMENT ON SCHEMA public IS 'RBI System v2.2 - PII Encryption + Address Rules + 
 
 -- =====================================================
 -- SECTION 18: SECURITY INITIALIZATION
+-- =====================================================
+-- 14. PSOC UNIFIED SEARCH VIEWS AND FUNCTIONS
+-- =====================================================
+
+-- Unified view for searching across all PSOC hierarchy levels
+CREATE OR REPLACE VIEW psoc_unified_search AS
+-- Level 1: Major Groups
+SELECT 
+    code as psoc_code,
+    title as occupation_title,
+    1 as psoc_level,
+    'Major Group' as level_name,
+    NULL::VARCHAR as parent_code,
+    NULL::VARCHAR as parent_title,
+    code || ' - ' || title as display_text,
+    title as search_text
+FROM psoc_major_groups
+
+UNION ALL
+
+-- Level 2: Sub-Major Groups  
+SELECT 
+    s.code as psoc_code,
+    s.title as occupation_title,
+    2 as psoc_level,
+    'Sub-Major Group' as level_name,
+    m.code as parent_code,
+    m.title as parent_title,
+    s.code || ' - ' || s.title || ' (' || m.title || ')' as display_text,
+    s.title || ' ' || m.title as search_text
+FROM psoc_sub_major_groups s
+JOIN psoc_major_groups m ON s.major_code = m.code
+
+UNION ALL
+
+-- Level 3: Minor Groups
+SELECT 
+    mi.code as psoc_code,
+    mi.title as occupation_title,
+    3 as psoc_level,
+    'Minor Group' as level_name,
+    s.code as parent_code,
+    s.title as parent_title,
+    mi.code || ' - ' || mi.title || ' (' || s.title || ')' as display_text,
+    mi.title || ' ' || s.title || ' ' || m.title as search_text
+FROM psoc_minor_groups mi
+JOIN psoc_sub_major_groups s ON mi.sub_major_code = s.code
+JOIN psoc_major_groups m ON s.major_code = m.code
+
+UNION ALL
+
+-- Level 4: Unit Groups
+SELECT 
+    u.code as psoc_code,
+    u.title as occupation_title,
+    4 as psoc_level,
+    'Unit Group' as level_name,
+    mi.code as parent_code,
+    mi.title as parent_title,
+    u.code || ' - ' || u.title || ' (' || mi.title || ')' as display_text,
+    u.title || ' ' || mi.title || ' ' || s.title || ' ' || m.title as search_text
+FROM psoc_unit_groups u
+JOIN psoc_minor_groups mi ON u.minor_code = mi.code
+JOIN psoc_sub_major_groups s ON mi.sub_major_code = s.code
+JOIN psoc_major_groups m ON s.major_code = m.code
+
+UNION ALL
+
+-- Level 5: Unit Sub-Groups
+SELECT 
+    us.code as psoc_code,
+    us.title as occupation_title,
+    5 as psoc_level,
+    'Unit Sub-Group' as level_name,
+    u.code as parent_code,
+    u.title as parent_title,
+    us.code || ' - ' || us.title || ' (' || u.title || ')' as display_text,
+    us.title || ' ' || u.title || ' ' || mi.title || ' ' || s.title || ' ' || m.title as search_text
+FROM psoc_unit_sub_groups us
+JOIN psoc_unit_groups u ON us.unit_code = u.code
+JOIN psoc_minor_groups mi ON u.minor_code = mi.code
+JOIN psoc_sub_major_groups s ON mi.sub_major_code = s.code
+JOIN psoc_major_groups m ON s.major_code = m.code;
+
+-- Function to get occupation title by PSOC code
+CREATE OR REPLACE FUNCTION get_psoc_title(p_psoc_code VARCHAR)
+RETURNS VARCHAR AS $$
+DECLARE
+    v_title VARCHAR;
+BEGIN
+    -- Try each level to find the title
+    SELECT occupation_title INTO v_title
+    FROM psoc_unified_search
+    WHERE psoc_code = p_psoc_code
+    LIMIT 1;
+    
+    RETURN v_title;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to search PSOC occupations (for UI autocomplete)
+CREATE OR REPLACE FUNCTION search_psoc_occupations(
+    p_search_term VARCHAR,
+    p_limit INTEGER DEFAULT 20
+)
+RETURNS TABLE (
+    psoc_code VARCHAR,
+    occupation_title VARCHAR,
+    psoc_level INTEGER,
+    level_name VARCHAR,
+    display_text VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        pus.psoc_code,
+        pus.occupation_title,
+        pus.psoc_level,
+        pus.level_name,
+        pus.display_text
+    FROM psoc_unified_search pus
+    WHERE 
+        pus.search_text ILIKE '%' || p_search_term || '%'
+        OR pus.occupation_title ILIKE '%' || p_search_term || '%'
+        OR pus.psoc_code ILIKE p_search_term || '%'
+    ORDER BY 
+        -- Exact title matches first
+        CASE WHEN pus.occupation_title ILIKE p_search_term THEN 0 ELSE 1 END,
+        -- Then by level (more specific first)
+        pus.psoc_level DESC,
+        -- Then alphabetically
+        pus.occupation_title
+    LIMIT p_limit;
+END;
+$$ LANGUAGE plpgsql;
+
+-- View: Residents with occupation details
+CREATE OR REPLACE VIEW residents_with_occupation AS
+SELECT 
+    r.id,
+    r.employment_status,
+    r.psoc_code,
+    pus.occupation_title,
+    pus.psoc_level,
+    pus.level_name,
+    pus.parent_title,
+    pus.display_text as occupation_display
+FROM residents r
+LEFT JOIN psoc_unified_search pus ON r.psoc_code = pus.psoc_code;
+
+COMMENT ON VIEW psoc_unified_search IS 
+'Unified view for searching across all PSOC hierarchy levels. Use for UI dropdowns and autocomplete.';
+
+COMMENT ON FUNCTION get_psoc_title IS 
+'Returns the occupation title for any PSOC code regardless of level';
+
+COMMENT ON FUNCTION search_psoc_occupations IS 
+'Search function for UI autocomplete. Returns matching occupations from all levels.';
+
+COMMENT ON VIEW residents_with_occupation IS 
+'View joining residents with their occupation details from PSOC hierarchy';
+
 -- =====================================================
 -- Initialize encryption keys and security settings
 

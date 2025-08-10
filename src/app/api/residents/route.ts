@@ -36,24 +36,25 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-    // Get user profile to get barangay_code
+    // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
+      .from('auth_user_profiles')
+      .select('barangay_code, city_municipality_code, province_code, region_code, role')
+      .eq('user_id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
+    if (profileError || !userProfile) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
-    // Ensure resident is created in user's barangay
+    // Ensure resident has required geographic data based on user's access level
     const newResidentData = {
       ...residentData,
-      barangay_code: userProfile.barangay_code,
+      barangay_code: residentData.barangay_code || userProfile.barangay_code,
+      city_municipality_code:
+        residentData.city_municipality_code || userProfile.city_municipality_code,
+      province_code: residentData.province_code || userProfile.province_code,
+      region_code: residentData.region_code || userProfile.region_code,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       is_active: true,
@@ -122,30 +123,67 @@ export async function GET(request: NextRequest) {
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-    // Get user profile to get barangay_code
+    // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
+      .from('auth_user_profiles')
+      .select('barangay_code, city_municipality_code, province_code, region_code, role')
+      .eq('user_id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
+    if (profileError || !userProfile) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
-    // Build the query
+    // Get user role to determine access level
+    const { data: roleData, error: roleError } = await supabaseAdmin
+      .from('auth_roles')
+      .select('access_level')
+      .eq('role_name', userProfile.role)
+      .single();
+
+    if (roleError || !roleData) {
+      return NextResponse.json({ error: 'User role not found' }, { status: 400 });
+    }
+
+    const accessLevel = roleData.access_level;
+
+    // Build the query using optimized flat view with multi-level filtering
     let query = supabaseAdmin
-      .from('residents')
-      .select(
-        `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
-        { count: 'exact' }
-      )
-      .eq('barangay_code', userProfile.barangay_code)
-      .eq('is_active', true)
+      .from('api_residents_with_geography')
+      .select('*', { count: 'exact' })
       .order('created_at', { ascending: false });
+
+    // Apply geographic filtering based on user's access level
+    switch (accessLevel) {
+      case 'barangay':
+        if (userProfile.barangay_code) {
+          query = query.eq('barangay_code', userProfile.barangay_code);
+        }
+        break;
+      case 'city':
+        if (userProfile.city_municipality_code) {
+          query = query.eq('city_municipality_code', userProfile.city_municipality_code);
+        }
+        break;
+      case 'province':
+        if (userProfile.province_code) {
+          query = query.eq('province_code', userProfile.province_code);
+        }
+        break;
+      case 'region':
+        if (userProfile.region_code) {
+          query = query.eq('region_code', userProfile.region_code);
+        }
+        break;
+      case 'national':
+        // No filtering - national access sees all
+        break;
+      default:
+        // Default to barangay-level access for security
+        if (userProfile.barangay_code) {
+          query = query.eq('barangay_code', userProfile.barangay_code);
+        }
+    }
 
     // Add search if provided
     if (searchTerm.trim()) {

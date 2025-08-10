@@ -36,24 +36,25 @@ export async function POST(request: NextRequest) {
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-    // Get user profile to get barangay_code
+    // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
+      .from('auth_user_profiles')
+      .select('barangay_code, city_municipality_code, province_code, region_code, role')
+      .eq('user_id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
+    if (profileError || !userProfile) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
-    // Ensure household is created in user's barangay
+    // Ensure household has required geographic data based on user's access level
     const newHouseholdData = {
       ...householdData,
-      barangay_code: userProfile.barangay_code,
+      barangay_code: householdData.barangay_code || userProfile.barangay_code,
+      city_municipality_code:
+        householdData.city_municipality_code || userProfile.city_municipality_code,
+      province_code: householdData.province_code || userProfile.province_code,
+      region_code: householdData.region_code || userProfile.region_code,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
@@ -118,37 +119,67 @@ export async function GET(request: NextRequest) {
       process.env.SUPABASE_SERVICE_KEY!
     );
 
-    // Get user profile to get barangay_code
+    // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
+      .from('auth_user_profiles')
+      .select('barangay_code, city_municipality_code, province_code, region_code, role')
+      .eq('user_id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
+    if (profileError || !userProfile) {
+      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
-    // Build the households query
+    // Get user role to determine access level
+    const { data: roleData, error: roleError } = await supabaseAdmin
+      .from('auth_roles')
+      .select('access_level')
+      .eq('role_name', userProfile.role)
+      .single();
+
+    if (roleError || !roleData) {
+      return NextResponse.json({ error: 'User role not found' }, { status: 400 });
+    }
+
+    const accessLevel = roleData.access_level;
+
+    // Build the households query using optimized flat view with multi-level filtering
     let query = supabaseAdmin
-      .from('households')
-      .select(
-        `
-        *,
-        head_resident:residents!households_household_head_id_fkey(
-          id,
-          first_name,
-          middle_name,
-          last_name
-        )
-        `,
-        { count: 'exact' }
-      )
-      .eq('barangay_code', userProfile.barangay_code)
+      .from('api_households_with_members')
+      .select('*', { count: 'exact' })
       .order('code', { ascending: true });
+
+    // Apply geographic filtering based on user's access level
+    switch (accessLevel) {
+      case 'barangay':
+        if (userProfile.barangay_code) {
+          query = query.eq('barangay_code', userProfile.barangay_code);
+        }
+        break;
+      case 'city':
+        if (userProfile.city_municipality_code) {
+          query = query.eq('city_municipality_code', userProfile.city_municipality_code);
+        }
+        break;
+      case 'province':
+        if (userProfile.province_code) {
+          query = query.eq('province_code', userProfile.province_code);
+        }
+        break;
+      case 'region':
+        if (userProfile.region_code) {
+          query = query.eq('region_code', userProfile.region_code);
+        }
+        break;
+      case 'national':
+        // No filtering - national access sees all
+        break;
+      default:
+        // Default to barangay-level access for security
+        if (userProfile.barangay_code) {
+          query = query.eq('barangay_code', userProfile.barangay_code);
+        }
+    }
 
     // Add search if provided
     if (searchTerm.trim()) {
@@ -162,85 +193,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch households' }, { status: 500 });
     }
 
-    // Get member counts and geographic information for each household
-    const householdsWithDetails = await Promise.all(
-      (households || []).map(async household => {
-        try {
-          // Get member count
-          const { count: memberCount } = await supabaseAdmin
-            .from('residents')
-            .select('*', { count: 'exact', head: true })
-            .eq('household_code', household.code);
-
-          // Get geographic information from PSGC tables
-          const { data: barangayData } = await supabaseAdmin
-            .from('psgc_barangays')
-            .select(
-              `
-              code,
-              name,
-              psgc_cities_municipalities!inner(
-                code,
-                name,
-                type,
-                psgc_provinces!inner(
-                  code,
-                  name,
-                  psgc_regions!inner(
-                    code,
-                    name
-                  )
-                )
-              )
-              `
-            )
-            .eq('code', household.barangay_code)
-            .single();
-
-          let geoInfo = {};
-          if (barangayData) {
-            const cityMunData = barangayData.psgc_cities_municipalities as any;
-            const province = cityMunData.psgc_provinces;
-            const region = province.psgc_regions;
-
-            geoInfo = {
-              barangay_info: {
-                code: barangayData.code,
-                name: barangayData.name,
-              },
-              city_municipality_info: {
-                code: cityMunData.code,
-                name: cityMunData.name,
-                type: cityMunData.type,
-              },
-              province_info: {
-                code: province.code,
-                name: province.name,
-              },
-              region_info: {
-                code: region.code,
-                name: region.name,
-              },
-            };
-          }
-
-          return {
-            ...household,
-            member_count: memberCount || 0,
-            ...geoInfo,
-          };
-        } catch (detailError) {
-          console.warn('Failed to get household details:', detailError);
-          return {
-            ...household,
-            member_count: 0,
-          };
-        }
-      })
-    );
-
     return NextResponse.json({
-      data: householdsWithDetails,
+      data: households || [],
       total: count || 0,
     });
   } catch (error) {

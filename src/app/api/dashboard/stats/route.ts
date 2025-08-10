@@ -50,59 +50,34 @@ export async function GET(request: NextRequest) {
 
     const barangayCode = userProfile.barangay_code;
 
-    // Get dashboard stats using service role
-    const [householdSummaryResult, residentsResult, householdCountResult] = await Promise.all([
-      // Try to get household summary via RPC
-      supabaseAdmin.rpc('get_household_summary', {
-        user_barangay: barangayCode,
-      }),
+    // Get dashboard stats using optimized flat view
+    const { data: dashboardStats, error: statsError } = await supabaseAdmin
+      .from('api_dashboard_stats')
+      .select('*')
+      .eq('barangay_code', barangayCode)
+      .single();
 
-      // Get residents data for demographics
-      supabaseAdmin
-        .from('residents')
-        .select('birthdate, sex, civil_status, employment_status, is_employed')
-        .eq('barangay_code', barangayCode)
-        .eq('is_active', true),
-
-      // Get household count
-      supabaseAdmin
-        .from('households')
-        .select('*', { count: 'exact', head: true })
-        .eq('barangay_code', barangayCode),
-    ]);
-
-    // Handle errors gracefully
-    let summaryData = {
-      total_households: 0,
-      total_residents: 0,
-      avg_household_size: 0,
-      senior_citizens: 0,
-      pwd_residents: 0,
-    };
-
-    if (householdSummaryResult.data && householdSummaryResult.data[0]) {
-      summaryData = householdSummaryResult.data[0];
-    } else if (householdSummaryResult.error) {
-      console.warn('Household summary RPC failed:', householdSummaryResult.error);
+    if (statsError) {
+      console.error('Dashboard stats query error:', statsError);
+      return NextResponse.json({ error: 'Failed to fetch dashboard stats' }, { status: 500 });
     }
 
-    // Use household count from direct query if RPC didn't provide it
-    if (summaryData.total_households === 0 && householdCountResult.count) {
-      summaryData.total_households = householdCountResult.count;
-    }
-
-    const residentsData = residentsResult.data || [];
+    // Get individual residents data for additional processing if needed
+    const { data: residentsData } = await supabaseAdmin
+      .from('api_residents_with_geography')
+      .select('birthdate, sex, civil_status, employment_status, is_employed')
+      .eq('barangay_code', barangayCode);
 
     return NextResponse.json({
       stats: {
-        residents: summaryData.total_residents,
-        households: summaryData.total_households,
+        residents: dashboardStats?.total_residents || 0,
+        households: dashboardStats?.total_households || 0,
         businesses: 0, // TODO: Add when businesses table exists
         certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: summaryData.senior_citizens,
-        employedResidents: residentsData.filter(r => r.is_employed === true).length,
+        seniorCitizens: dashboardStats?.senior_citizens || 0,
+        employedResidents: dashboardStats?.employed_residents || 0,
       },
-      residentsData: residentsData,
+      residentsData: residentsData || [],
       barangayCode: barangayCode,
     });
   } catch (error) {
