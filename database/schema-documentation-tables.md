@@ -277,8 +277,8 @@ blood_type_enum: 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'
 -- 7. Religion classification (22 values)
 religion_enum: 'roman_catholic', 'islam', 'christian', 'protestant', 'born_again_christian', 'iglesia_ni_cristo', 'jehovas_witnesses', 'buddhism', 'hinduism', 'judaism', 'aglipay', 'evangelical', 'methodist', 'baptist', 'adventist', 'mormon', 'pentecostal', 'anglican', 'orthodox', 'others', 'prefer_not_to_say', 'not_reported'
 
--- 8. Ethnicity classification (50+ Philippine ethnic groups)
-ethnicity_enum: 'tagalog', 'cebuano', 'ilocano', 'bisaya', 'hiligaynon', 'bikol', 'waray', 'kapampangan', 'pangasinan', etc.
+-- 8. Ethnicity classification (40+ Philippine ethnic groups including Indigenous Peoples)
+ethnicity_enum: 'tagalog', 'cebuano', 'ilocano', 'bisaya', 'hiligaynon', 'bikolano', 'waray', 'kapampangan', 'pangasinense', 'maranao', 'maguindanao', 'tausug', 'yakan', 'samal', 'badjao', 'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 'teduray', 'tumandok', 'chinese', 'other', 'not_reported'
 
 -- 9. Household type classification
 household_type_enum: 'nuclear', 'single_parent', 'extended', 'childless', 'one_person', 'non_family', 'other'
@@ -668,14 +668,8 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 | `civil_status_others_specify` | `TEXT`                   |                    | For "others" specification                            |
 | `education_attainment`        | `education_level_enum`   |                    | HIGHEST EDUCATIONAL ATTAINMENT - Education level      |
 | `is_graduate`                 | `BOOLEAN`                | `DEFAULT false`    | Graduation status                                     |
-| `occupation_title`            | `TEXT`                   |                    | PROFESSION/OCCUPATION - Job title                     |
 | `employment_status`           | `employment_status_enum` |                    | Employment classification                             |
-| `psoc_code`                   | `TEXT`                   |                    | PSOC classification code                              |
-| `psoc_level`                  | `TEXT`                   |                    | PSOC level                                            |
-| `job_title`                   | `TEXT`                   |                    | Specific job title                                    |
-| `workplace`                   | `TEXT`                   |                    | Workplace name                                        |
-| `occupation`                  | `TEXT`                   |                    | General occupation                                    |
-| `occupation_details`          | `TEXT`                   |                    | Detailed occupation info                              |
+| `psoc_code`                   | `VARCHAR(10)`            |                    | PSOC code - Can reference any PSOC level (1-5)        |
 
 #### **SECTION B: CONTACT DETAILS (DILG FIELDS 13-16):**
 
@@ -792,20 +786,19 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 
 #### **DILG RBI Form B Section D: Sectoral Information**
 
-| Field Name                     | Data Type | Constraints     | Description                    |
-| ------------------------------ | --------- | --------------- | ------------------------------ |
-| `is_labor_force`               | `BOOLEAN` | `DEFAULT false` | Labor Force/Employed           |
-| `is_employed`                  | `BOOLEAN` | `DEFAULT false` | Labor Force/Employed           |
-| `is_unemployed`                | `BOOLEAN` | `DEFAULT false` | Unemployed                     |
-| `is_overseas_filipino_worker`  | `BOOLEAN` | `DEFAULT false` | Overseas Filipino Worker (OFW) |
-| `is_person_with_disability`    | `BOOLEAN` | `DEFAULT false` | Person with Disabilities (PWD) |
-| `is_out_of_school_children`    | `BOOLEAN` | `DEFAULT false` | Out of School Children (OSC)   |
-| `is_out_of_school_youth`       | `BOOLEAN` | `DEFAULT false` | Out of School Youth (OSY)      |
-| `is_senior_citizen`            | `BOOLEAN` | `DEFAULT false` | Senior Citizen (SC)            |
-| `is_registered_senior_citizen` | `BOOLEAN` | `DEFAULT false` | Registered Senior Citizen      |
-| `is_solo_parent`               | `BOOLEAN` | `DEFAULT false` | Solo Parent                    |
-| `is_indigenous_people`         | `BOOLEAN` | `DEFAULT false` | Indigenous People (IP)         |
-| `is_migrant`                   | `BOOLEAN` | `DEFAULT false` | Migrant                        |
+| Field Name                     | Data Type | Constraints     | Description                              |
+| ------------------------------ | --------- | --------------- | ---------------------------------------- |
+| `is_labor_force_employed`      | `BOOLEAN` | `DEFAULT false` | Labor Force/Employed (combined category) |
+| `is_unemployed`                | `BOOLEAN` | `DEFAULT false` | Unemployed                               |
+| `is_overseas_filipino_worker`  | `BOOLEAN` | `DEFAULT false` | Overseas Filipino Worker (OFW)           |
+| `is_person_with_disability`    | `BOOLEAN` | `DEFAULT false` | Person with Disabilities (PWD)           |
+| `is_out_of_school_children`    | `BOOLEAN` | `DEFAULT false` | Out of School Children (OSC)             |
+| `is_out_of_school_youth`       | `BOOLEAN` | `DEFAULT false` | Out of School Youth (OSY)                |
+| `is_senior_citizen`            | `BOOLEAN` | `DEFAULT false` | Senior Citizen (SC)                      |
+| `is_registered_senior_citizen` | `BOOLEAN` | `DEFAULT false` | Registered Senior Citizen                |
+| `is_solo_parent`               | `BOOLEAN` | `DEFAULT false` | Solo Parent                              |
+| `is_indigenous_people`         | `BOOLEAN` | `DEFAULT false` | Indigenous People (IP)                   |
+| `is_migrant`                   | `BOOLEAN` | `DEFAULT false` | Migrant                                  |
 
 #### **System Fields**
 
@@ -852,6 +845,19 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 | `updated_at` | `TIMESTAMPTZ` | `DEFAULT NOW()`                     | Last update timestamp  |
 
 **Unique Constraints:** `(resident_id)`
+
+#### **Auto-Calculated Fields:**
+
+The following sectoral classifications are automatically calculated based on resident data:
+
+| Field                       | Calculation Logic                                                | Trigger                               |
+| --------------------------- | ---------------------------------------------------------------- | ------------------------------------- |
+| `is_out_of_school_children` | Age 6-14 AND employment_status != 'student'                      | Age or employment changes             |
+| `is_out_of_school_youth`    | Age 15-24 AND not student AND no college degree AND not employed | Age, education, or employment changes |
+| `is_senior_citizen`         | Age >= 60                                                        | Age changes (birthdate)               |
+| `is_indigenous_people`      | ethnicity IN (Indigenous Peoples list)                           | Ethnicity changes                     |
+
+**Note:** Other sectoral classifications (OFW, PWD, Solo Parent, etc.) remain manual entry as they require documentation/verification.
 
 ---
 
@@ -994,6 +1000,13 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 - **`update_member_counts()`** - Automatic member count updates
 - **`validate_philsys()`** - PhilSys number validation
 
+#### **PSOC Search & Selection Functions**
+
+- **`psoc_unified_search` View** - Unified view across all PSOC hierarchy levels (1-5)
+- **`search_psoc_occupations()`** - Search function for UI autocomplete across all levels
+- **`get_psoc_title()`** - Get occupation title for any PSOC code
+- **`residents_with_occupation` View** - Residents joined with occupation details
+
 ---
 
 ### **📊 COMPLETE SCHEMA SUMMARY**
@@ -1001,8 +1014,8 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 #### **Database Statistics**
 
 - **Total Tables:** 43 main tables across 8 functional categories
-- **Views:** 11 performance-optimized views
-- **Functions:** 29 business logic and security functions
+- **Views:** 14 performance-optimized views (includes PSOC unified search)
+- **Functions:** 32 business logic and security functions (includes PSOC search functions)
 - **Indexes:** 50+ performance-optimized indexes
 - **RLS Policies:** 15+ multi-level security policies
 - **ENUMs:** 14 custom enumeration types
@@ -1012,9 +1025,10 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 
 - ✅ **EXACT DILG RBI Form A Field Order** - Households table (15 fields)
 - ✅ **EXACT DILG RBI Form B Field Order** - Residents table (27 fields across sections A-D)
-- ✅ **Complete Sectoral Information** - All DILG required classifications
+- ✅ **Complete Sectoral Information** - All DILG required classifications with auto-calculation
 - ✅ **Migration Information** - Full Part 3 compliance
 - ✅ **Geographic Hierarchy** - Complete PSGC integration
+- ✅ **Auto-Calculated Sectors** - OSC, OSY, and Senior Citizen status automatically computed
 
 #### **Security Features**
 
@@ -1036,7 +1050,9 @@ birth_place_level_enum: 'region', 'province', 'city_municipality', 'barangay'
 #### **Philippine Standards Compliance**
 
 - 🇵🇭 **PSGC Integration**: Complete geographic code hierarchy
-- 👔 **PSOC Classification**: Full occupational classification system
+- 👔 **PSOC Classification**: Full occupational classification system with unified search
+- 🔍 **PSOC Search**: UI-ready search across all hierarchy levels (1-5)
+- 🏷️ **Indigenous Peoples**: Specific ethnicity tracking for all Philippine IP groups
 - 📋 **Official Forms**: Exact DILG RBI Forms A & B structure
 - 🏛️ **Government Standards**: Full compliance with DILG requirements
 - 📊 **Statistical Ready**: Pre-formatted for government reporting

@@ -577,8 +577,9 @@ CREATE TABLE geo_street_names (
 -- Function to generate hierarchical household ID using proper PSGC structure (RR-PP-MM-BBB)
 CREATE OR REPLACE FUNCTION generate_hierarchical_household_id(
     p_barangay_code VARCHAR(10),
-    p_street_id UUID DEFAULT NULL
     p_subdivision_id UUID DEFAULT NULL,
+    p_street_id UUID DEFAULT NULL,
+    p_house_number VARCHAR(50) DEFAULT NULL
 ) RETURNS VARCHAR(22) AS $$
 DECLARE
     region_code VARCHAR(2);
@@ -621,15 +622,21 @@ BEGIN
         AND id = p_street_id;
     END IF;
 
-    -- Get next house sequence number for this street/subdivision combination
-    SELECT COALESCE(MAX(CAST(RIGHT(id, 4) AS INTEGER)), 0) + 1
-    INTO next_house_seq
-    FROM households
-    WHERE barangay_code = p_barangay_code
-    AND COALESCE(subdivision_id, '00000000-0000-0000-0000-000000000000'::UUID) = COALESCE(p_subdivision_id, '00000000-0000-0000-0000-000000000000'::UUID)
-    AND COALESCE(street_id, '00000000-0000-0000-0000-000000000000'::UUID) = COALESCE(p_street_id, '00000000-0000-0000-0000-000000000000'::UUID);
-
-    house_num := LPAD(next_house_seq::TEXT, 4, '0');
+    -- Use actual house ID if provided, otherwise generate next sequential number
+    IF p_house_number IS NOT NULL AND TRIM(p_house_number) != '' THEN
+        -- Extract numeric part from house ID (e.g., "123-A" -> "123")
+        house_num := LPAD(REGEXP_REPLACE(p_house_number, '[^0-9]', '', 'g'), 4, '0');
+    ELSE
+        -- Fallback to sequential numbering if no house ID provided
+        SELECT COALESCE(MAX(CAST(RIGHT(code, 4) AS INTEGER)), 0) + 1
+        INTO next_house_seq
+        FROM households
+        WHERE barangay_code = p_barangay_code
+        AND COALESCE(subdivision_id, '00000000-0000-0000-0000-000000000000'::UUID) = COALESCE(p_subdivision_id, '00000000-0000-0000-0000-000000000000'::UUID)
+        AND COALESCE(street_id, '00000000-0000-0000-0000-000000000000'::UUID) = COALESCE(p_street_id, '00000000-0000-0000-0000-000000000000'::UUID);
+        
+        house_num := LPAD(next_house_seq::TEXT, 4, '0');
+    END IF;
 
     -- Construct the ID using PSGC format: RRPPMMBBB-SSSS-TTTT-HHHH
     new_id := region_code || province_code || municipality_code ||
@@ -644,11 +651,10 @@ $$ LANGUAGE plpgsql;
 -- =====================================================
 -- DILG RBI Form A: Record of Barangay Inhabitants by Household
 CREATE TABLE households (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-
     -- =====================================================
     -- DILG RBI FORM A - EXACT FIELD ORDER
     -- =====================================================
+    code VARCHAR(50) PRIMARY KEY, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
     
     -- 1. REGION - Indicate the name of region
     region_code VARCHAR(10) NOT NULL REFERENCES psgc_regions(code),
@@ -689,6 +695,7 @@ CREATE TABLE households (
     
     -- 13. MONTHLY INCOME - Specify the total monthly income of the household (e.g. Php 50,000)
     monthly_income DECIMAL(12,2),
+    income_class income_class_enum,
     
     -- 14. HEAD OF THE FAMILY NAME - Identify the head of the family by providing the Full Name
     household_head_id UUID, -- References residents(id)
@@ -700,15 +707,11 @@ CREATE TABLE households (
     -- SYSTEM FIELDS (Not part of DILG form)
     -- =====================================================
     
-    -- Internal system identification
-    code VARCHAR(50) NOT NULL UNIQUE, -- Hierarchical format: RRPPMMBBB-SSSS-TTTT-HHHH
-    household_number VARCHAR(50) NOT NULL,
     
     -- Additional system fields
-    house_number VARCHAR(50) NOT NULL,
+    house_number VARCHAR(50) NOT NULL, -- House/Block/Lot No.
     street_id UUID NOT NULL REFERENCES geo_street_names(id),
     subdivision_id UUID REFERENCES geo_subdivisions(id),
-    income_class income_class_enum,
     
     -- Audit fields
     is_active BOOLEAN DEFAULT true,
@@ -717,8 +720,6 @@ CREATE TABLE households (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
 
-    -- Unique household number per barangay
-    UNIQUE(household_number, barangay_code)
 );
 
 -- =====================================================
@@ -817,16 +818,16 @@ CREATE TABLE residents (
     
     -- BARANGAY - Indicate name of barangay (e.g. Barangay Bago Bantay)
     barangay_code VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code),
-    
-    -- HOUSE/BLOCK/LOT NO. - Specify house number, block, or lot number if applicable
-    house_number VARCHAR(50),
-    
-    -- STREET NAME - Provide street name
-    street_name VARCHAR(100),
-    
-    -- SUBDIVISION/VILLAGE - Indicate name of subdivision or village
-    subdivision_name VARCHAR(100),
-    
+
+    -- SUBDIVISION/VILLAGE - Auto-populated from household
+    subdivision_id UUID REFERENCES geo_subdivisions(id),
+
+    -- STREET NAME - Auto-populated from household
+    street_id UUID REFERENCES geo_street_names(id),
+
+    -- HOUSEHOLD CODE - Select household to auto-populate all address fields
+    household_code VARCHAR(50) REFERENCES households(code),
+
     -- ZIP CODE - Indicate zip code if available
     zip_code VARCHAR(10),
 
@@ -888,8 +889,7 @@ CREATE TABLE residents (
     -- =====================================================
     
     -- Household Reference
-    household_id UUID REFERENCES households(id),
-    household_code VARCHAR(50),
+    household_code VARCHAR(50) REFERENCES households(code),
 
     -- Location Details (for internal system use)
     street_id UUID REFERENCES geo_street_names(id),
@@ -928,7 +928,7 @@ ALTER TABLE households ADD CONSTRAINT unique_household_head_per_household
 -- Household Members (junction table)
 CREATE TABLE household_members (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    household_id UUID NOT NULL REFERENCES households(id) ON DELETE CASCADE,
+    household_code VARCHAR(50) NOT NULL REFERENCES households(code) ON DELETE CASCADE,
     resident_id UUID NOT NULL REFERENCES residents(id),
 
     relationship_to_head VARCHAR(50) NOT NULL,
@@ -942,7 +942,7 @@ CREATE TABLE household_members (
     updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
 
-    UNIQUE(household_id, resident_id)
+    UNIQUE(household_code, resident_id)
 );
 
 -- =====================================================
@@ -1316,7 +1316,7 @@ CREATE OR REPLACE FUNCTION insert_resident_encrypted(
     p_mother_maiden_first TEXT DEFAULT NULL,
     p_mother_maiden_middle TEXT DEFAULT NULL,
     p_mother_maiden_last TEXT DEFAULT NULL,
-    p_household_id UUID DEFAULT NULL
+    p_household_code VARCHAR(50) DEFAULT NULL
 )
 RETURNS UUID AS $$
 DECLARE
@@ -1340,7 +1340,7 @@ BEGIN
         birthdate,
         sex,
         barangay_code,
-        household_id,
+        household_code,
         is_data_encrypted,
         encryption_key_version,
         encrypted_at,
@@ -1367,7 +1367,7 @@ BEGIN
         p_birthdate,
         p_sex,
         p_barangay_code,
-        p_household_id,
+        p_household_code,
         true,
         1,
         NOW(),
@@ -1428,7 +1428,6 @@ SELECT
     decrypt_pii(email_encrypted) as email,
 
     -- Location and household (non-sensitive)
-    household_id,
     household_code,
     street_id,
     subdivision_id,
@@ -1531,14 +1530,14 @@ BEGIN
         total_members = (
             SELECT COUNT(*)
             FROM household_members
-            WHERE household_id = COALESCE(NEW.household_id, OLD.household_id)
+            WHERE household_code = COALESCE(NEW.household_code, OLD.household_code)
             AND is_active = true
         ),
         total_migrants = (
             SELECT COUNT(*)
             FROM household_members hm
             JOIN resident_sectoral_info si ON hm.resident_id = si.resident_id
-            WHERE hm.household_id = COALESCE(NEW.household_id, OLD.household_id)
+            WHERE hm.household_code = COALESCE(NEW.household_code, OLD.household_code)
             AND hm.is_active = true
             AND si.is_migrant = true
         ),
@@ -1550,11 +1549,11 @@ BEGIN
             WHERE r.id = (
                 SELECT household_head_id
                 FROM households
-                WHERE id = COALESCE(NEW.household_id, OLD.household_id)
+                WHERE code = COALESCE(NEW.household_code, OLD.household_code)
             )
         ),
         updated_at = NOW()
-    WHERE id = COALESCE(NEW.household_id, OLD.household_id);
+    WHERE code = COALESCE(NEW.household_code, OLD.household_code);
 
     RETURN COALESCE(NEW, OLD);
 END;
@@ -1812,28 +1811,51 @@ $$ LANGUAGE plpgsql;
 -- 9.3 ADDRESS AUTO-POPULATION FUNCTIONS
 -- =====================================================
 
--- Function to auto-populate household barangay and generate ID
+-- Function to auto-populate geographic codes from user's assigned barangay and generate household ID
 CREATE OR REPLACE FUNCTION generate_household_id_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
     user_barangay_code VARCHAR(10);
+    user_city_code VARCHAR(10);
+    user_province_code VARCHAR(10);
+    user_region_code VARCHAR(10);
 BEGIN
-    -- Auto-populate barangay from user's assigned barangay if not provided
-    IF NEW.barangay_code IS NULL THEN
+    -- Auto-populate all geographic codes from user's assigned barangay if not provided
+    IF NEW.barangay_code IS NULL OR NEW.city_municipality_code IS NULL OR 
+       NEW.province_code IS NULL OR NEW.region_code IS NULL THEN
+       
         SELECT ba.barangay_code
         INTO user_barangay_code
         FROM auth_barangay_accounts ba
         WHERE ba.user_id = auth.uid();
 
-        NEW.barangay_code := user_barangay_code;
+        IF user_barangay_code IS NOT NULL THEN
+            -- Get the full geographic hierarchy from the barangay code
+            SELECT 
+                b.code,
+                c.code,
+                p.code,
+                r.code
+            INTO
+                NEW.barangay_code,
+                NEW.city_municipality_code,
+                NEW.province_code,
+                NEW.region_code
+            FROM psgc_barangays b
+            JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
+            LEFT JOIN psgc_provinces p ON c.province_code = p.code
+            JOIN psgc_regions r ON COALESCE(p.region_code, c.region_code) = r.code
+            WHERE b.code = user_barangay_code;
+        END IF;
     END IF;
 
-    -- Generate hierarchical ID if not provided
-    IF NEW.id IS NULL THEN
-        NEW.id := generate_hierarchical_household_id(
+    -- Generate hierarchical code if not provided
+    IF NEW.code IS NULL THEN
+        NEW.code := generate_hierarchical_household_id(
             NEW.barangay_code,
             NEW.subdivision_id,
-            NEW.street_id
+            NEW.street_id,
+            NEW.house_number
         );
     END IF;
 
@@ -1841,7 +1863,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Function to auto-populate resident address from user's assigned barangay or household
+-- Function to auto-populate resident location from household or user's assigned barangay
 CREATE OR REPLACE FUNCTION auto_populate_resident_address()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1851,22 +1873,24 @@ DECLARE
     city_code VARCHAR(10);
     household_code VARCHAR(50);
 BEGIN
-    -- Priority 1: Auto-populate from household if household_id is provided
-    IF NEW.household_id IS NOT NULL THEN
+    -- Priority 1: Auto-populate ALL location fields from household if household_code is provided
+    IF NEW.household_code IS NOT NULL THEN
         SELECT
             h.barangay_code,
             h.city_municipality_code,
             h.province_code,
             h.region_code,
-            h.code
+            h.street_id,
+            h.subdivision_id
         INTO
             NEW.barangay_code,
             NEW.city_municipality_code,
             NEW.province_code,
             NEW.region_code,
-            NEW.household_code
+            NEW.street_id,
+            NEW.subdivision_id
         FROM households h
-        WHERE h.id = NEW.household_id;
+        WHERE h.code = NEW.household_code;
 
         -- Return early if household was found and populated
         IF FOUND THEN
@@ -1893,22 +1917,15 @@ BEGIN
         FROM psgc_barangays b
         JOIN psgc_cities_municipalities c ON b.city_municipality_code = c.code
         LEFT JOIN psgc_provinces p ON c.province_code = p.code
-        JOIN psgc_regions r ON COALESCE(p.region_code, c.province_code) = r.code
+        JOIN psgc_regions r ON COALESCE(p.region_code, c.region_code) = r.code
         WHERE b.code = user_barangay_code;
 
-        -- Auto-populate the address fields only if not already set
-        IF NEW.barangay_code IS NULL THEN
-            NEW.barangay_code := user_barangay_code;
-        END IF;
-        IF NEW.city_municipality_code IS NULL THEN
-            NEW.city_municipality_code := city_code;
-        END IF;
-        IF NEW.province_code IS NULL THEN
-            NEW.province_code := province_code;
-        END IF;
-        IF NEW.region_code IS NULL THEN
-            NEW.region_code := region_code;
-        END IF;
+        -- Auto-populate all geographic fields based on user's barangay
+        -- This ensures consistency across the entire geographic hierarchy
+        NEW.barangay_code := user_barangay_code;
+        NEW.city_municipality_code := city_code;
+        NEW.province_code := province_code;
+        NEW.region_code := region_code;
     END IF;
 
     RETURN NEW;
@@ -2136,7 +2153,7 @@ CREATE TRIGGER trigger_geo_street_names_user_tracking
 
 -- Search indexes removed - search functionality now handled through API views with decrypted data
 CREATE INDEX idx_residents_barangay ON residents(barangay_code);
-CREATE INDEX idx_residents_household ON residents(household_id);
+CREATE INDEX idx_residents_household ON residents(household_code);
 
 -- =====================================================
 -- 10.1.1 SYSTEM ENCRYPTION INDEXES
@@ -2213,8 +2230,7 @@ CREATE INDEX idx_geo_subdivisions_active ON geo_subdivisions(is_active);
 CREATE INDEX idx_households_barangay ON households(barangay_code);
 CREATE INDEX idx_households_subdivision ON households(subdivision_id);
 CREATE INDEX idx_households_street ON households(street_id);
-CREATE INDEX idx_households_number_barangay ON households(household_number, barangay_code);
-CREATE INDEX idx_household_members_household ON household_members(household_id);
+CREATE INDEX idx_household_members_household ON household_members(household_code);
 CREATE INDEX idx_household_members_resident ON household_members(resident_id);
 CREATE INDEX idx_household_members_active ON household_members(is_active);
 
@@ -2577,8 +2593,8 @@ CREATE POLICY "Multi-level geographic access for households" ON households
 -- Multi-level geographic access for household_members
 CREATE POLICY "Multi-level geographic access for household_members" ON household_members
     FOR ALL USING (
-        household_id IN (
-            SELECT h.id
+        household_code IN (
+            SELECT h.code
             FROM households h
             WHERE CASE auth.user_access_level()::json->>'level'
                 WHEN 'barangay' THEN h.barangay_code = auth.user_barangay_code()
@@ -2903,9 +2919,7 @@ ORDER BY COALESCE(r.name, 'ZZ'), COALESCE(p.name, ''), c.name, b.name;
 -- Create household search view with complete address display
 CREATE VIEW household_search AS
 SELECT
-    h.id,
     h.code,
-    h.household_number,
     h.house_number,
     s.name as street_name,
     sub.name as subdivision_name,
@@ -3008,8 +3022,8 @@ SELECT
     b.name as barangay_name,
     COUNT(DISTINCT s.id) as total_geo_subdivisions,
     COUNT(DISTINCT CASE WHEN s.is_active = true THEN s.id END) as active_geo_subdivisions,
-    COUNT(DISTINCT h.id) as total_households,
-    COUNT(DISTINCT CASE WHEN h.is_active = true THEN h.id END) as active_households
+    COUNT(DISTINCT h.code) as total_households,
+    COUNT(DISTINCT CASE WHEN h.is_active = true THEN h.code END) as active_households
 FROM psgc_barangays b
 LEFT JOIN geo_subdivisions s ON b.code = s.barangay_code
 LEFT JOIN households h ON b.code = h.barangay_code
@@ -3277,9 +3291,7 @@ CREATE OR REPLACE FUNCTION search_households(
     limit_results INTEGER DEFAULT 50
 )
 RETURNS TABLE (
-    household_id UUID,
     household_code VARCHAR(50),
-    household_number VARCHAR(50),
     house_number VARCHAR(50),
     street_name TEXT,
     subdivision_name TEXT,
@@ -3298,9 +3310,7 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
     SELECT
-        hs.id,
         hs.code,
-        hs.household_number,
         hs.house_number,
         hs.street_name,
         hs.subdivision_name,
@@ -3321,7 +3331,7 @@ BEGIN
         (user_barangay_code IS NULL OR hs.barangay_code = user_barangay_code)
         -- Apply search term filter if provided
         AND (search_term IS NULL OR (
-            hs.household_number ILIKE '%' || search_term || '%' OR
+            hs.code ILIKE '%' || search_term || '%' OR
             hs.house_number ILIKE '%' || search_term || '%' OR
             hs.street_name ILIKE '%' || search_term || '%' OR
             hs.subdivision_name ILIKE '%' || search_term || '%' OR
@@ -3329,10 +3339,10 @@ BEGIN
         ))
     ORDER BY
         -- Prioritize exact matches
-        CASE WHEN hs.household_number ILIKE search_term THEN 1
+        CASE WHEN hs.code ILIKE search_term THEN 1
              WHEN hs.house_number ILIKE search_term THEN 2
              ELSE 3 END,
-        hs.household_number,
+        hs.code,
         hs.created_at DESC
     LIMIT limit_results;
 END;
@@ -3340,12 +3350,10 @@ $$ LANGUAGE plpgsql;
 
 -- Create function to get household details for auto-population
 CREATE OR REPLACE FUNCTION get_household_for_resident(
-    household_id UUID
+    household_code VARCHAR(50)
 )
 RETURNS TABLE (
-    id UUID,
     code VARCHAR(50),
-    household_number VARCHAR(50),
     barangay_code VARCHAR(10),
     city_municipality_code VARCHAR(10),
     province_code VARCHAR(10),
@@ -3355,16 +3363,14 @@ RETURNS TABLE (
 BEGIN
     RETURN QUERY
     SELECT
-        hs.id,
         hs.code,
-        hs.household_number,
         hs.barangay_code,
         hs.city_municipality_code,
         hs.province_code,
         hs.region_code,
         hs.full_address
     FROM household_search hs
-    WHERE hs.id = get_household_for_resident.household_id;
+    WHERE hs.code = get_household_for_resident.household_code;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -3423,7 +3429,6 @@ SELECT
     r.encryption_key_version,
     r.encrypted_at,
     r.encrypted_by,
-    r.household_id,
     -- r.household_code excluded to avoid duplicate with h.code AS household_code
     r.street_id,
     r.subdivision_id,
@@ -3470,7 +3475,7 @@ SELECT
     
     -- Household information (if exists)
     h.code AS household_code,
-    h.house_number AS household_house_number,
+    h.house_number AS household_house_number, -- House/Block/Lot No.
     h.total_members AS household_total_members,
     h.monthly_income AS household_monthly_income,
     h.household_type AS household_type,
@@ -3520,9 +3525,7 @@ LEFT JOIN psgc_barangays brgy ON r.birth_place_code = brgy.code AND r.birth_plac
 CREATE OR REPLACE VIEW api_households_with_members AS
 SELECT 
     -- Core household fields (excluding geographic columns to avoid conflicts with ah.*)
-    h.id,
     h.code,
-    h.household_number,
     h.house_number,
     h.street_id,
     h.subdivision_id,

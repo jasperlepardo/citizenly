@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const residentData = await request.json();
+    const requestData = await request.json();
+    const { create_household, resident_data: residentData, ...directResidentData } = requestData;
+
+    // Support both formats: direct resident data or nested structure
+    const finalResidentData = residentData || directResidentData;
 
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
@@ -47,14 +51,45 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
+    let householdCode = finalResidentData.household_code;
+
+    // Handle inline household creation if requested
+    if (create_household && !householdCode) {
+      const householdData = {
+        ...create_household,
+        barangay_code: create_household.barangay_code || userProfile.barangay_code,
+        city_municipality_code:
+          create_household.city_municipality_code || userProfile.city_municipality_code,
+        province_code: create_household.province_code || userProfile.province_code,
+        region_code: create_household.region_code || userProfile.region_code,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_active: true,
+      };
+
+      const { data: newHousehold, error: householdError } = await supabaseAdmin
+        .from('households')
+        .insert([householdData])
+        .select('code')
+        .single();
+
+      if (householdError) {
+        console.error('Household creation error:', householdError);
+        return NextResponse.json({ error: 'Failed to create household' }, { status: 500 });
+      }
+
+      householdCode = newHousehold.code;
+    }
+
     // Ensure resident has required geographic data based on user's access level
     const newResidentData = {
-      ...residentData,
-      barangay_code: residentData.barangay_code || userProfile.barangay_code,
+      ...finalResidentData,
+      household_code: householdCode,
+      barangay_code: finalResidentData.barangay_code || userProfile.barangay_code,
       city_municipality_code:
-        residentData.city_municipality_code || userProfile.city_municipality_code,
-      province_code: residentData.province_code || userProfile.province_code,
-      region_code: residentData.region_code || userProfile.region_code,
+        finalResidentData.city_municipality_code || userProfile.city_municipality_code,
+      province_code: finalResidentData.province_code || userProfile.province_code,
+      region_code: finalResidentData.region_code || userProfile.region_code,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       is_active: true,
@@ -71,13 +106,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to create resident' }, { status: 500 });
     }
 
-    return NextResponse.json(
-      {
-        resident: newResident,
-        message: 'Resident created successfully',
-      },
-      { status: 201 }
-    );
+    // Prepare response
+    const response: any = {
+      resident: newResident,
+      message: create_household
+        ? 'Household and resident created successfully'
+        : 'Resident created successfully',
+    };
+
+    // Include household code in response if household was created
+    if (create_household && householdCode) {
+      response.household_code = householdCode;
+    }
+
+    return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error('Resident creation API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
