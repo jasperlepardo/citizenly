@@ -419,37 +419,62 @@ export default function ResidentFormWizard({
         csrf_token_used: !!csrfToken,
       });
 
-      const { data, error } = await supabase.from('residents').insert([residentData]).select();
+      // Use API endpoint instead of direct insert
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (error) {
-        // Log failed creation attempt
-        logSecurityOperation('RESIDENT_CREATE_FAILED', 'current-user', {
-          error_message: error.message,
-          error_code: error.code,
-        });
-        dbLogger.error('Failed to create resident', { error: error.message, code: error.code });
-        alert(`Failed to create resident: ${error.message}`);
+      if (!session?.access_token) {
+        alert('Authentication required. Please log in again.');
         return;
       }
 
+      const response = await fetch('/api/residents', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(residentData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+
+        // Log failed creation attempt
+        logSecurityOperation('RESIDENT_CREATE_FAILED', 'current-user', {
+          error_message: errorMessage,
+          status_code: response.status,
+        });
+        dbLogger.error('Failed to create resident via API', {
+          error: errorMessage,
+          status: response.status,
+        });
+        alert(`Failed to create resident: ${errorMessage}`);
+        return;
+      }
+
+      const { resident: data } = await response.json();
+
       // Log successful creation
       logSecurityOperation('RESIDENT_CREATED', 'current-user', {
-        resident_id: data[0]?.id,
+        resident_id: data?.id,
         household_code: formData.householdCode,
         is_household_head: formData.householdRole === 'Head',
       });
 
       dbLogger.info('Resident created successfully', {
-        recordId: data[0]?.id,
+        recordId: data?.id,
         householdCode: formData.householdCode,
       });
 
       // If this resident is assigned as household head, update the household
-      if (formData.householdRole === 'Head' && formData.householdCode && data?.[0]?.id) {
+      if (formData.householdRole === 'Head' && formData.householdCode && data?.id) {
         logger.info('Updating household head assignment');
         const { error: householdUpdateError } = await supabase
           .from('households')
-          .update({ household_head_id: data[0].id })
+          .update({ household_head_id: data.id })
           .eq('code', formData.householdCode);
 
         if (householdUpdateError) {
@@ -460,7 +485,7 @@ export default function ResidentFormWizard({
         } else {
           dbLogger.info('Household head updated successfully', {
             householdCode: formData.householdCode,
-            headId: data[0].id,
+            headId: data.id,
           });
         }
       }
@@ -557,9 +582,9 @@ export default function ResidentFormWizard({
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="bg-primary h-0.5 w-full" />
+                      <div className="h-0.5 w-full bg-primary" />
                     </div>
-                    <div className="bg-primary relative flex size-8 items-center justify-center rounded-full">
+                    <div className="relative flex size-8 items-center justify-center rounded-full bg-primary">
                       <svg className="size-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path
                           fillRule="evenodd"
@@ -574,7 +599,7 @@ export default function ResidentFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="border-primary relative flex size-8 items-center justify-center rounded-full border-2 bg-surface">
+                    <div className="bg-surface relative flex size-8 items-center justify-center rounded-full border-2 border-primary">
                       <span className="text-sm font-medium text-primary">{step.id}</span>
                     </div>
                   </>
@@ -583,7 +608,7 @@ export default function ResidentFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="group relative flex size-8 items-center justify-center rounded-full border-2 bg-surface border-default">
+                    <div className="bg-surface group relative flex size-8 items-center justify-center rounded-full border-2 border-default">
                       <span className="text-sm font-medium text-secondary">{step.id}</span>
                     </div>
                   </>
@@ -599,7 +624,7 @@ export default function ResidentFormWizard({
       </div>
 
       {/* Form Content */}
-      <div className="rounded-lg border shadow-sm bg-surface border-default">
+      <div className="bg-surface rounded-lg border border-default shadow-sm">
         <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
@@ -716,7 +741,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               id="voterRegistration"
               checked={formData.voterRegistrationStatus}
               onChange={e => onChange('voterRegistrationStatus', e.target.checked)}
-              className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
+              className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="voterRegistration" className="text-sm text-primary">
               Registered Voter
@@ -728,7 +753,7 @@ function ContactPhysicalStep({ formData, onChange, errors }: any) {
               id="residentVoter"
               checked={formData.residentVoterStatus}
               onChange={e => onChange('residentVoterStatus', e.target.checked)}
-              className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
+              className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
             />
             <label htmlFor="residentVoter" className="text-sm text-primary">
               Resident Voter
@@ -835,7 +860,7 @@ function ReviewStep({
         </p>
       </div>
 
-      <div className="rounded-lg border p-6 bg-background-muted border-default">
+      <div className="bg-background-muted rounded-lg border border-default p-6">
         <div className="space-y-6">
           {/* Personal Information Summary */}
           <div>
@@ -893,7 +918,7 @@ function ReviewStep({
                 <dd className="text-sm/6 text-primary">
                   {formData.occupationDescription || 'Not specified'}
                   {formData.psocCode && (
-                    <span className="block text-xs text-muted">
+                    <span className="text-muted block text-xs">
                       PSOC Code: {formData.psocCode} ({formData.psocLevel?.replace('_', ' ')})
                     </span>
                   )}

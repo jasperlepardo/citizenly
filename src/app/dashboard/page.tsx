@@ -14,7 +14,6 @@ import {
 } from '@/components/molecules';
 import { PopulationPyramid } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
-import { getBarangayStatsOptimized } from '@/lib/database-utils';
 
 interface DashboardStats {
   residents: number;
@@ -123,80 +122,48 @@ function DashboardContent() {
       const barangayCode = userProfile?.barangay_code;
       if (!barangayCode) return;
 
-      // Try to get cached stats from materialized view first
-      const cachedStats = await getBarangayStatsOptimized(barangayCode, 6); // Allow 6-hour stale data
+      // Get current session to pass auth token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const [householdSummaryResult, populationResult] = await Promise.all([
-        // Get optimized household summary (total_households, total_residents, senior_citizens, pwd_residents)
-        // Only fetch if we don't have cached stats
-        cachedStats
-          ? Promise.resolve({ data: null, error: null })
-          : supabase.rpc('get_household_summary', {
-              user_barangay: barangayCode,
-            }),
-
-        // Demographics for population pyramid and other charts
-        supabase
-          .from('residents')
-          .select('birthdate, sex, civil_status, employment_status, is_employed')
-          .eq('barangay_code', barangayCode)
-          .eq('is_active', true),
-      ]);
-
-      if (householdSummaryResult.error) {
-        throw householdSummaryResult.error;
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
       }
 
-      if (populationResult.error) {
-        throw populationResult.error;
+      // Use server-side API to fetch dashboard data (bypasses RLS issues)
+      const response = await fetch('/api/dashboard/stats', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Use cached stats if available, otherwise use fresh function data
-      const summaryData = cachedStats
-        ? {
-            total_households: 0, // Not available in materialized view
-            total_residents: cachedStats.total_residents,
-            avg_household_size: 0, // Not available in materialized view
-            senior_citizens: cachedStats.senior_citizens,
-            pwd_residents: cachedStats.pwd_count,
-          }
-        : householdSummaryResult.data?.[0] || {
-            total_households: 0,
-            total_residents: 0,
-            avg_household_size: 0,
-            senior_citizens: 0,
-            pwd_residents: 0,
-          };
-
-      // If using cached stats, we still need household count
-      let householdCount = summaryData.total_households;
-      if (cachedStats && householdCount === 0) {
-        const { count: householdsCount, error: householdsError } = await supabase
-          .from('households')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode);
-
-        if (!householdsError) {
-          householdCount = householdsCount || 0;
-        }
-      }
+      const data = await response.json();
+      const { stats, residentsData } = data;
 
       // Process population data for pyramid
-      const ageGroupData = processPopulationData(populationResult.data || []);
+      const ageGroupData = processPopulationData(residentsData || []);
 
       // Process other chart data
-      const residentData = populationResult.data || [];
+      const residentData = residentsData || [];
       processSexData(residentData);
       processCivilStatusData(residentData);
-      const employedCount = processEmploymentData(residentData);
+      processEmploymentData(residentData);
 
       setStats({
-        residents: Number(summaryData.total_residents) || 0,
-        households: Number(householdCount) || 0,
-        businesses: 0, // TODO: Add when businesses table exists
-        certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: Number(summaryData.senior_citizens) || 0,
-        employedResidents: employedCount,
+        residents: Number(stats.residents) || 0,
+        households: Number(stats.households) || 0,
+        businesses: Number(stats.businesses) || 0,
+        certifications: Number(stats.certifications) || 0,
+        seniorCitizens: Number(stats.seniorCitizens) || 0,
+        employedResidents: Number(stats.employedResidents) || 0,
       });
 
       setPopulationData(ageGroupData);

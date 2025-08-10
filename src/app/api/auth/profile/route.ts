@@ -1,0 +1,74 @@
+import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  try {
+    // Get auth header from the request
+    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Create regular client to verify user
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    // Verify the user token
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
+    }
+
+    // Use service role client to bypass RLS for this specific query
+    // This is safe because we've already verified the user's authentication
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY! // Service role key
+    );
+
+    // Fetch user profile with service role (bypasses RLS)
+    const { data: profileData, error: profileError } = await supabaseAdmin
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Profile query error:', profileError);
+      return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
+    }
+
+    if (!profileData) {
+      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+    }
+
+    // Fetch role separately if needed
+    let roleData = null;
+    if (profileData.role_id) {
+      const { data: role } = await supabaseAdmin
+        .from('roles')
+        .select('*')
+        .eq('id', profileData.role_id)
+        .single();
+
+      roleData = role;
+    }
+
+    return NextResponse.json({
+      profile: profileData,
+      role: roleData,
+    });
+  } catch (error) {
+    console.error('API route error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

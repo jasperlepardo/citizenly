@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useRegisterHousehold } from '@/hooks/api/useHousehold';
-import { useGenerateHouseholdNumber } from '@/hooks/api/useHousehold';
+import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/atoms';
 import { BarangaySelector } from '@/components/organisms';
 import { ErrorBoundary } from '@/providers';
@@ -19,22 +18,26 @@ const householdSchema = z.object({
   barangay_code: z.string().min(1, 'Barangay is required'),
   contact_number: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
-  
+
   // Residents
-  residents: z.array(z.object({
-    first_name: z.string().min(1, 'First name is required'),
-    middle_name: z.string().optional(),
-    last_name: z.string().min(1, 'Last name is required'),
-    suffix: z.string().optional(),
-    relationship_to_head: z.string().min(1, 'Relationship is required'),
-    birth_date: z.string().min(1, 'Birth date is required'),
-    sex: z.enum(['male', 'female']),
-    civil_status: z.string().min(1, 'Civil status is required'),
-    is_pwd: z.boolean().default(false),
-    is_registered_voter: z.boolean().default(false),
-    is_indigenous: z.boolean().default(false),
-    ethnicity: z.string().optional(),
-  })).min(1, 'At least one resident is required'),
+  residents: z
+    .array(
+      z.object({
+        first_name: z.string().min(1, 'First name is required'),
+        middle_name: z.string().optional(),
+        last_name: z.string().min(1, 'Last name is required'),
+        suffix: z.string().optional(),
+        relationship_to_head: z.string().min(1, 'Relationship is required'),
+        birth_date: z.string().min(1, 'Birth date is required'),
+        sex: z.enum(['male', 'female']),
+        civil_status: z.string().min(1, 'Civil status is required'),
+        is_pwd: z.boolean().default(false),
+        is_registered_voter: z.boolean().default(false),
+        is_indigenous: z.boolean().default(false),
+        ethnicity: z.string().optional(),
+      })
+    )
+    .min(1, 'At least one resident is required'),
 });
 
 type HouseholdFormData = z.infer<typeof householdSchema>;
@@ -108,9 +111,49 @@ export default function HouseholdRegistrationForm({
     name: 'residents',
   });
 
-  const barangayCode = watch('barangay_code');
-  const { data: householdNumber } = useGenerateHouseholdNumber(barangayCode);
-  const { mutate: registerHousehold, isPending } = useRegisterHousehold();
+  const [isPending, setIsPending] = useState(false);
+  const [householdNumber, setHouseholdNumber] = useState<string | null>(null);
+
+  const registerHousehold = async (
+    data: any,
+    options: { onSuccess?: (household: any) => void } = {}
+  ) => {
+    try {
+      setIsPending(true);
+
+      // Get the current session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
+      }
+
+      const response = await fetch('/api/households', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      setHouseholdNumber(result.household.household_number);
+      options.onSuccess?.(result);
+    } catch (error) {
+      console.error('Household registration error:', error);
+      throw error;
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   const onSubmit = (data: HouseholdFormData) => {
     registerHousehold(
@@ -127,7 +170,7 @@ export default function HouseholdRegistrationForm({
         residents: data.residents,
       },
       {
-        onSuccess: (household) => {
+        onSuccess: household => {
           onSuccess?.(household?.id || '');
         },
       }
@@ -151,16 +194,12 @@ export default function HouseholdRegistrationForm({
 
   return (
     <ErrorBoundary level="section">
-      <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Household Registration
-          </h2>
-          <p className="text-gray-600">
-            Register a new household and its members in the system
-          </p>
+          <h2 className="mb-2 text-2xl font-bold text-gray-900">Household Registration</h2>
+          <p className="text-gray-600">Register a new household and its members in the system</p>
           {householdNumber && (
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
+            <div className="mt-3 rounded border border-blue-200 bg-blue-50 p-3">
               <p className="text-sm text-blue-700">
                 <strong>Household Number:</strong> {householdNumber}
               </p>
@@ -171,21 +210,19 @@ export default function HouseholdRegistrationForm({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Household Information */}
           <section>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Household Information
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">Household Information</h3>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   Household Type *
                 </label>
                 <select
                   {...register('household_type')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select household type</option>
-                  {HOUSEHOLD_TYPES.map((type) => (
+                  {HOUSEHOLD_TYPES.map(type => (
                     <option key={type.value} value={type.value}>
                       {type.label}
                     </option>
@@ -197,25 +234,23 @@ export default function HouseholdRegistrationForm({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   Monthly Income (PHP)
                 </label>
                 <input
                   type="number"
                   {...register('monthly_income', { valueAsNumber: true })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="0"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Address *
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Address *</label>
                 <textarea
                   {...register('address')}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="House number, street, subdivision, landmark"
                 />
                 {errors.address && (
@@ -224,36 +259,32 @@ export default function HouseholdRegistrationForm({
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Barangay *
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Barangay *</label>
                 <BarangaySelector
                   value={watch('barangay_code') || ''}
-                  onChange={(code) => setValue('barangay_code', code)}
+                  onChange={code => setValue('barangay_code', code)}
                   error={errors.barangay_code?.message}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   Contact Number
                 </label>
                 <input
                   type="tel"
                   {...register('contact_number')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="+63 9XX XXX XXXX"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
+                <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
                   {...register('email')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="email@example.com"
                 />
               </div>
@@ -262,24 +293,17 @@ export default function HouseholdRegistrationForm({
 
           {/* Household Members */}
           <section>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Household Members
-              </h3>
-              <Button
-                type="button"
-                onClick={addResident}
-                variant="secondary"
-                size="sm"
-              >
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Household Members</h3>
+              <Button type="button" onClick={addResident} variant="secondary" size="sm">
                 Add Member
               </Button>
             </div>
 
             <div className="space-y-6">
               {fields.map((field, index) => (
-                <div key={field.id} className="p-4 border border-gray-200 rounded-lg">
-                  <div className="flex justify-between items-center mb-3">
+                <div key={field.id} className="rounded-lg border border-gray-200 p-4">
+                  <div className="mb-3 flex items-center justify-between">
                     <h4 className="font-medium text-gray-900">
                       Member {index + 1}
                       {index === 0 && (
@@ -298,14 +322,14 @@ export default function HouseholdRegistrationForm({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         First Name *
                       </label>
                       <input
                         {...register(`residents.${index}.first_name`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       {errors.residents?.[index]?.first_name && (
                         <p className="mt-1 text-sm text-red-600">
@@ -315,22 +339,22 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Middle Name
                       </label>
                       <input
                         {...register(`residents.${index}.middle_name`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Last Name *
                       </label>
                       <input
                         {...register(`residents.${index}.last_name`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       {errors.residents?.[index]?.last_name && (
                         <p className="mt-1 text-sm text-red-600">
@@ -340,14 +364,14 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Relationship *
                       </label>
                       <select
                         {...register(`residents.${index}.relationship_to_head`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        {RELATIONSHIPS.map((rel) => (
+                        {RELATIONSHIPS.map(rel => (
                           <option key={rel.value} value={rel.value}>
                             {rel.label}
                           </option>
@@ -356,23 +380,21 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Birth Date *
                       </label>
                       <input
                         type="date"
                         {...register(`residents.${index}.birth_date`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Sex *
-                      </label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">Sex *</label>
                       <select
                         {...register(`residents.${index}.sex`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -380,14 +402,14 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-gray-700">
                         Civil Status *
                       </label>
                       <select
                         {...register(`residents.${index}.civil_status`)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        {CIVIL_STATUS.map((status) => (
+                        {CIVIL_STATUS.map(status => (
                           <option key={status.value} value={status.value}>
                             {status.label}
                           </option>
@@ -428,7 +450,7 @@ export default function HouseholdRegistrationForm({
           </section>
 
           {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-6 border-t">
+          <div className="flex justify-end space-x-3 border-t pt-6">
             {onCancel && (
               <Button
                 type="button"

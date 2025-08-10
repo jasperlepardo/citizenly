@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
 import { BaseSelector, BaseSelectorOption } from '@/components/base/BaseSelector';
-import { useBarangaySearch, useBarangay } from '@/hooks/api/useBarangay';
 
 interface BarangayOption extends BaseSelectorOption {
   value: string;
@@ -35,14 +35,63 @@ export default function BarangaySelector({
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
-  // Use React Query hook for search
-  const { data: searchResults = [], isLoading } = useBarangaySearch(
-    searchTerm,
-    searchTerm.length >= 2
-  );
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [selectedBarangay, setSelectedBarangay] = useState<any>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Get selected barangay details for display
-  const { data: selectedBarangay } = useBarangay(value, !!value);
+  // Fetch barangay data from API
+  const searchBarangays = async (searchTerm: string) => {
+    if (searchTerm.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setIsError(false);
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
+      }
+
+      const response = await fetch(
+        `/api/addresses/barangays?search=${encodeURIComponent(searchTerm)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      setSearchResults(data.barangays || []);
+    } catch (error) {
+      console.error('Error searching barangays:', error);
+      setIsError(true);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Get selected barangay details
+  useEffect(() => {
+    if (value && searchResults.length > 0) {
+      const barangay = searchResults.find(b => b.code === value);
+      setSelectedBarangay(barangay);
+    } else if (!value) {
+      setSelectedBarangay(null);
+    }
+  }, [value, searchResults]);
 
   // Transform search results to match BaseSelector format
   const options: BarangayOption[] = (searchResults || []).map(barangay => ({
@@ -51,10 +100,10 @@ export default function BarangaySelector({
     metadata: {
       code: barangay.code,
       name: barangay.name,
-      city_name: 'Unknown City',
-      province_name: 'Unknown Province', 
-      region_name: 'Unknown Region',
-      full_address: `${barangay.name}, Unknown City, Unknown Province, Unknown Region`,
+      city_name: barangay.city_name || 'Unknown City',
+      province_name: barangay.province_name || 'Unknown Province',
+      region_name: barangay.region_name || 'Unknown Region',
+      full_address: `${barangay.name}, ${barangay.city_name || 'Unknown City'}, ${barangay.province_name || 'Unknown Province'}, ${barangay.region_name || 'Unknown Region'}`,
     },
   }));
 
@@ -67,10 +116,20 @@ export default function BarangaySelector({
 
   const handleSearchChange = (term: string) => {
     setSearchTerm(term);
+
     // Clear selection if user is typing and it doesn't match selected
     if (selectedBarangay && term !== selectedBarangay.name) {
       onChange('');
     }
+
+    // Debounce the search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      searchBarangays(term);
+    }, 300);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -100,21 +159,37 @@ export default function BarangaySelector({
 
     return (
       <div className="flex flex-col">
-        <div className="font-medium text-primary">
-          {highlightMatch(option.metadata.name)}
-        </div>
+        <div className="font-medium text-primary">{highlightMatch(option.metadata.name)}</div>
         <div className="text-sm text-secondary">
           {highlightMatch(`${option.metadata.city_name}, ${option.metadata.province_name}`)}
         </div>
-        <div className="text-xs text-muted">{option.metadata.region_name}</div>
+        <div className="text-muted text-xs">{option.metadata.region_name}</div>
       </div>
     );
   };
 
-  const emptyMessage = (
+  const emptyMessage = isError ? (
     <>
       <svg
-        className="mx-auto mb-2 size-8 text-muted"
+        className="text-muted mx-auto mb-2 size-8"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <p className="text-sm text-red-600">Unable to load barangays</p>
+      <p className="mt-1 text-xs text-red-500">Please check your connection and try again</p>
+    </>
+  ) : (
+    <>
+      <svg
+        className="text-muted mx-auto mb-2 size-8"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -127,16 +202,14 @@ export default function BarangaySelector({
         />
       </svg>
       <p className="text-sm">No barangays found for &quot;{searchTerm}&quot;</p>
-      <p className="mt-1 text-xs">
-        Try searching with a different term or check your spelling
-      </p>
+      <p className="mt-1 text-xs">Try searching with a different term or check your spelling</p>
     </>
   );
 
   const searchInstructions = (
     <>
       <svg
-        className="mx-auto mb-2 size-8 text-muted"
+        className="text-muted mx-auto mb-2 size-8"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -175,7 +248,7 @@ export default function BarangaySelector({
         minSearchLength={2}
       />
       {!error && (
-        <p className="mt-1 text-xs text-muted">
+        <p className="text-muted mt-1 text-xs">
           Start typing to search by barangay name, city, or province (e.g., &quot;Poblacion&quot;,
           &quot;Manila&quot;, &quot;Cebu City&quot;)
         </p>
