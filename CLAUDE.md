@@ -1,0 +1,4 @@
+- Always check this schema /Users/jasperjohnlepardo/Documents/GitHub/citizenly/database/schema.sql in this project
+- alway think of production-ready solution
+- always tell me what the plan is before executing a sql script.
+- For every push/commit, use the naming conventions specified in docs/reference/NAMING_CONVENTIONS_QUICK_REFERENCE.md
