@@ -6,6 +6,7 @@
  * Supports both internal (domestic) and international migration tracking
  */
 
+import React, { useState } from 'react';
 import { Textarea, Radio, RadioGroup } from '../../../atoms';
 import { FormGroup, InputField } from '../../../molecules';
 

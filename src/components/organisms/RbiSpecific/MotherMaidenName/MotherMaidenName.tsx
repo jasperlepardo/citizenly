@@ -6,6 +6,7 @@
  * Follows Philippine naming conventions and cultural considerations
  */
 
+import React, { useState } from 'react';
 import { Checkbox, Button } from '../../../atoms';
 import { FormGroup, InputField, DropdownSelect } from '../../../molecules';
 

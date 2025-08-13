@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import StreetSelector from '../../StreetSelector';
-import SubdivisionSelector from '../../SubdivisionSelector';
+import StreetSelector from '../StreetSelector/StreetSelector';
+import SubdivisionSelector from '../SubdivisionSelector/SubdivisionSelector';
 
 interface HouseholdFormData {
   house_number: string;
@@ -51,7 +51,7 @@ export default function HouseholdAddressForm({
         </label>
         <SubdivisionSelector
           value={formData.subdivision_id}
-          onSelect={(subdivisionId) => onChange('subdivision_id', subdivisionId || '')}
+          onSelect={(subdivisionId: string | null) => onChange('subdivision_id', subdivisionId || '')}
           error={errors.subdivision_id}
           placeholder="🏘️ Select subdivision or create new"
         />
@@ -64,7 +64,7 @@ export default function HouseholdAddressForm({
         </label>
         <StreetSelector
           value={formData.street_id}
-          onSelect={(streetId) => onChange('street_id', streetId || '')}
+          onSelect={(streetId: string | null) => onChange('street_id', streetId || '')}
           error={errors.street_id}
           placeholder="🛣️ Select street or create new"
           subdivisionId={formData.subdivision_id || null}

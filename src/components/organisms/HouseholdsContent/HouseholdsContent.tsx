@@ -122,12 +122,14 @@ export default function HouseholdsContent() {
 
   const actions: TableAction<Household>[] = [
     {
+      key: 'view',
       label: 'View Details',
       onClick: (household: Household) => {
         router.push(`/households/${household.code}`);
       },
     },
     {
+      key: 'edit',
       label: 'Edit',
       onClick: (household: Household) => {
         router.push(`/households/${household.code}/edit`);
