@@ -64,7 +64,7 @@ function CreateUserContent() {
       setLoadingRoles(true);
 
       const { data, error } = await supabase
-        .from('roles')
+        .from('auth_roles')
         .select('id, name, permissions')
         .in('name', ['resident', 'clerk']) // Admins can only create residents and clerks
         .order('name', { ascending: true });

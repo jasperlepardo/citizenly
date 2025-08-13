@@ -30,6 +30,7 @@ export interface CascadingGeographicSelectorProps {
   };
   disabled?: boolean;
   required?: boolean;
+  autoPopulateFromUser?: boolean;
 }
 
 export function CascadingGeographicSelector({
@@ -37,6 +38,7 @@ export function CascadingGeographicSelector({
   initialValues,
   disabled = false,
   required = false,
+  autoPopulateFromUser = false,
 }: CascadingGeographicSelectorProps) {
   // State for each level
   const [regions, setRegions] = useState<GeographicOption[]>([]);
@@ -61,6 +63,7 @@ export function CascadingGeographicSelector({
   const [loadingProvinces, setLoadingProvinces] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
   const [loadingBarangays, setLoadingBarangays] = useState(false);
+  const [initialHierarchyLoaded, setInitialHierarchyLoaded] = useState(false);
 
   // Helper function to get auth headers
   const getAuthHeaders = useCallback(async (): Promise<HeadersInit> => {
@@ -74,31 +77,31 @@ export function CascadingGeographicSelector({
   const fetchRegions = useCallback(async () => {
     setLoadingRegions(true);
     try {
-      const headers = await getAuthHeaders();
-      const response = await fetch('/api/addresses/regions', { headers });
+      const response = await fetch('/api/addresses/regions/public');
       if (response.ok) {
         const data = await response.json();
         setRegions(data.data || []);
+      } else {
+        console.error('Failed to fetch regions:', response.status);
       }
     } catch (error) {
       console.error('Error fetching regions:', error);
     } finally {
       setLoadingRegions(false);
     }
-  }, [getAuthHeaders]);
+  }, []);
 
   const fetchProvinces = useCallback(
     async (regionCode: string) => {
       if (!regionCode) return;
       setLoadingProvinces(true);
       try {
-        const headers = await getAuthHeaders();
-        const response = await fetch(`/api/addresses/provinces?regionCode=${regionCode}`, {
-          headers,
-        });
+        const response = await fetch(`/api/addresses/provinces/public?regionCode=${regionCode}`);
         if (response.ok) {
           const data = await response.json();
           setProvinces(data.data || []);
+        } else {
+          console.error('Failed to fetch provinces:', response.status);
         }
       } catch (error) {
         console.error('Error fetching provinces:', error);
@@ -106,7 +109,7 @@ export function CascadingGeographicSelector({
         setLoadingProvinces(false);
       }
     },
-    [getAuthHeaders]
+    []
   );
 
   const fetchCities = useCallback(
@@ -114,13 +117,12 @@ export function CascadingGeographicSelector({
       if (!provinceCode) return;
       setLoadingCities(true);
       try {
-        const headers = await getAuthHeaders();
-        const response = await fetch(`/api/addresses/cities?provinceCode=${provinceCode}`, {
-          headers,
-        });
+        const response = await fetch(`/api/addresses/cities/public?provinceCode=${provinceCode}`);
         if (response.ok) {
           const data = await response.json();
           setCities(data.data || []);
+        } else {
+          console.error('Failed to fetch cities:', response.status);
         }
       } catch (error) {
         console.error('Error fetching cities:', error);
@@ -128,7 +130,7 @@ export function CascadingGeographicSelector({
         setLoadingCities(false);
       }
     },
-    [getAuthHeaders]
+    []
   );
 
   const fetchBarangays = useCallback(
@@ -136,11 +138,12 @@ export function CascadingGeographicSelector({
       if (!cityCode) return;
       setLoadingBarangays(true);
       try {
-        const headers = await getAuthHeaders();
-        const response = await fetch(`/api/addresses/barangays?cityCode=${cityCode}`, { headers });
+        const response = await fetch(`/api/addresses/barangays/public?cityCode=${cityCode}`);
         if (response.ok) {
           const data = await response.json();
           setBarangays(data.data || []);
+        } else {
+          console.error('Failed to fetch barangays:', response.status);
         }
       } catch (error) {
         console.error('Error fetching barangays:', error);
@@ -148,13 +151,155 @@ export function CascadingGeographicSelector({
         setLoadingBarangays(false);
       }
     },
-    [getAuthHeaders]
+    []
   );
+
+  // Auto-populate from logged-in user's location using dedicated API
+  const autoPopulateFromUserLocation = useCallback(async () => {
+    if (!autoPopulateFromUser) return;
+    
+    console.log('🔄 Auto-populating from user location...');
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        console.log('❌ No user session found');
+        return;
+      }
+      
+      console.log('✅ User session found:', session.user.email);
+
+      // Use dedicated API endpoint for secure multi-tenant auto-populate
+      const response = await fetch('/api/user/geographic-location', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Auto-populate API error:', response.status, errorText);
+        return;
+      }
+
+      const hierarchy = await response.json();
+      console.log('✅ Geographic hierarchy received:', hierarchy);
+
+      // Set region and load provinces
+      if (hierarchy.region) {
+        setSelectedRegion(hierarchy.region);
+        setRegionSearch(hierarchy.region.name);
+        await fetchProvinces(hierarchy.region.code);
+
+        // Set province and load cities
+        if (hierarchy.province) {
+          setSelectedProvince(hierarchy.province);
+          setProvinceSearch(hierarchy.province.name);
+          await fetchCities(hierarchy.province.code);
+
+          // Set city and load barangays
+          if (hierarchy.city) {
+            setSelectedCity(hierarchy.city);
+            setCitySearch(hierarchy.city.name);
+            await fetchBarangays(hierarchy.city.code);
+
+            // Set barangay
+            if (hierarchy.barangay) {
+              setSelectedBarangay(hierarchy.barangay);
+              setBarangaySearch(hierarchy.barangay.name);
+            }
+          }
+        }
+      }
+
+      console.log('🎉 Auto-population completed successfully');
+    } catch (error) {
+      console.error('❌ Error auto-populating user location:', error);
+    }
+  }, [autoPopulateFromUser, fetchProvinces, fetchCities, fetchBarangays]);
 
   // Load initial data
   useEffect(() => {
     fetchRegions();
   }, [fetchRegions]);
+
+  // Handle initialValues - load the full hierarchy if codes are provided (only once)
+  useEffect(() => {
+    const loadInitialHierarchy = async () => {
+      if (!initialValues?.regionCode || !regions.length || initialHierarchyLoaded) return;
+      
+      console.log('🔧 Loading initial hierarchy from form data:', initialValues);
+      setInitialHierarchyLoaded(true); // Prevent re-runs
+      
+      try {
+        // Find and set region
+        const region = regions.find(r => r.code === initialValues.regionCode);
+        if (region) {
+          setSelectedRegion(region);
+          setRegionSearch(region.name);
+          
+          // Load provinces and find the selected one
+          if (initialValues.provinceCode) {
+            const provinceResponse = await fetch(`/api/addresses/provinces/public?regionCode=${initialValues.regionCode}`);
+            if (provinceResponse.ok) {
+              const provinceResult = await provinceResponse.json();
+              setProvinces(provinceResult.data || []);
+              const province = provinceResult.data?.find((p: any) => p.code === initialValues.provinceCode);
+              
+              if (province) {
+                setSelectedProvince(province);
+                setProvinceSearch(province.name);
+                
+                // Load cities and find the selected one
+                if (initialValues.cityCode) {
+                  const cityResponse = await fetch(`/api/addresses/cities/public?provinceCode=${initialValues.provinceCode}`);
+                  if (cityResponse.ok) {
+                    const cityResult = await cityResponse.json();
+                    setCities(cityResult.data || []);
+                    const city = cityResult.data?.find((c: any) => c.code === initialValues.cityCode);
+                    
+                    if (city) {
+                      setSelectedCity(city);
+                      setCitySearch(city.name);
+                      
+                      // Load barangays and find the selected one
+                      if (initialValues.barangayCode) {
+                        const barangayResponse = await fetch(`/api/addresses/barangays/public?cityCode=${initialValues.cityCode}`);
+                        if (barangayResponse.ok) {
+                          const barangayResult = await barangayResponse.json();
+                          setBarangays(barangayResult.data || []);
+                          const barangay = barangayResult.data?.find((b: any) => b.code === initialValues.barangayCode);
+                          
+                          if (barangay) {
+                            setSelectedBarangay(barangay);
+                            setBarangaySearch(barangay.name);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        console.log('✅ Initial hierarchy loaded successfully');
+      } catch (error) {
+        console.error('❌ Error loading initial hierarchy:', error);
+      }
+    };
+    
+    loadInitialHierarchy();
+  }, [initialValues?.regionCode, initialValues?.provinceCode, initialValues?.cityCode, initialValues?.barangayCode, regions.length, initialHierarchyLoaded]);
+
+  // Auto-populate after regions are loaded (only if no initial values provided)
+  useEffect(() => {
+    if (regions.length > 0 && autoPopulateFromUser && !initialValues?.regionCode) {
+      autoPopulateFromUserLocation();
+    }
+  }, [regions, autoPopulateFromUser, autoPopulateFromUserLocation, initialValues?.regionCode]);
 
   // Handle selection changes
   const handleRegionSelect = useCallback(
@@ -219,7 +364,7 @@ export function CascadingGeographicSelector({
       barangayCode: selectedBarangay?.code || null,
       barangayName: selectedBarangay?.name || null,
     });
-  }, [selectedRegion, selectedProvince, selectedCity, selectedBarangay, onSelectionChange]);
+  }, [selectedRegion, selectedProvince, selectedCity, selectedBarangay]);
 
   // Filter functions
   const filterOptions = (options: GeographicOption[], searchTerm: string) => {

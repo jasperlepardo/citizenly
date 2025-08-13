@@ -33,14 +33,14 @@ export async function POST(request: NextRequest) {
     // Use service role client to bypass RLS for this specific operation
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .select('barangay_code, city_municipality_code, province_code, region_code, role')
-      .eq('user_id', user.id)
+      .select('barangay_code, city_municipality_code, province_code, region_code, role_id')
+      .eq('id', user.id)
       .single();
 
     if (profileError || !userProfile) {
@@ -116,14 +116,14 @@ export async function GET(request: NextRequest) {
     // Use service role client to bypass RLS for this specific query
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Get user profile with full geographic access info
     const { data: userProfile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .select('barangay_code, city_municipality_code, province_code, region_code, role')
-      .eq('user_id', user.id)
+      .select('barangay_code, city_municipality_code, province_code, region_code, role_id')
+      .eq('id', user.id)
       .single();
 
     if (profileError || !userProfile) {
@@ -133,15 +133,20 @@ export async function GET(request: NextRequest) {
     // Get user role to determine access level
     const { data: roleData, error: roleError } = await supabaseAdmin
       .from('auth_roles')
-      .select('access_level')
-      .eq('role_name', userProfile.role)
+      .select('name')
+      .eq('id', userProfile.role_id)
       .single();
 
     if (roleError || !roleData) {
       return NextResponse.json({ error: 'User role not found' }, { status: 400 });
     }
 
-    const accessLevel = roleData.access_level;
+    // Determine access level from role name
+    const accessLevel = roleData.name.includes('barangay') ? 'barangay' :
+                       roleData.name.includes('city') ? 'city' :
+                       roleData.name.includes('province') ? 'province' :
+                       roleData.name.includes('region') ? 'region' :
+                       roleData.name.includes('national') ? 'national' : 'barangay';
 
     // Build the households query using optimized flat view with multi-level filtering
     let query = supabaseAdmin

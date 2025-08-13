@@ -41,7 +41,7 @@ export default function BarangaySelector({
   const [selectedBarangay, setSelectedBarangay] = useState<any>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch barangay data from API
+  // Fetch barangay data from API (works with or without authentication)
   const searchBarangays = async (searchTerm: string) => {
     if (searchTerm.length < 2) {
       setSearchResults([]);
@@ -52,28 +52,58 @@ export default function BarangaySelector({
       setIsLoading(true);
       setIsError(false);
 
+      // Try to get session, but don't require it
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        throw new Error('No valid session found');
-      }
 
-      const response = await fetch(
-        `/api/addresses/barangays?search=${encodeURIComponent(searchTerm)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
+      if (session?.access_token) {
+        // Authenticated search - use API with jurisdiction filtering
+        const response = await fetch(
+          `/api/addresses/barangays?search=${encodeURIComponent(searchTerm)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        setSearchResults(data.barangays || []);
+      } else {
+        // Public search - simplified direct query for reliability
+        console.log('🔍 Public barangay search for:', searchTerm);
+        
+        const { data, error } = await supabase
+          .from('psgc_barangays')
+          .select('code, name, city_municipality_code')
+          .ilike('name', `%${searchTerm}%`)
+          .limit(20)
+          .order('name');
+
+        if (error) {
+          console.error('Public search error:', error);
+          throw error;
+        }
+
+        console.log('✅ Found barangays:', data?.length);
+
+        // Transform to match expected format (simplified)
+        const transformedData = data?.map((item: any) => ({
+          code: item.code,
+          name: item.name,
+          city_name: 'Loading...', // Will be populated by separate queries if needed
+          province_name: 'Loading...',
+          region_name: 'Loading...',
+          full_address: `${item.name} (Code: ${item.code})`,
+        })) || [];
+
+        setSearchResults(transformedData);
       }
-
-      const data = await response.json();
-      setSearchResults(data.barangays || []);
     } catch (error) {
       console.error('Error searching barangays:', error);
       setIsError(true);

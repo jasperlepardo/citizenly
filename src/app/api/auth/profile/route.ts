@@ -32,12 +32,12 @@ export async function GET(request: NextRequest) {
     // This is safe because we've already verified the user's authentication
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY! // Service role key
+      process.env.SUPABASE_SERVICE_ROLE_KEY! // Service role key
     );
 
     // Fetch user profile with service role (bypasses RLS)
     const { data: profileData, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select('*')
       .eq('id', user.id)
       .single();
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     let roleData = null;
     if (profileData.role_id) {
       const { data: role } = await supabaseAdmin
-        .from('roles')
+        .from('auth_roles')
         .select('*')
         .eq('id', profileData.role_id)
         .single();

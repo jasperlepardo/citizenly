@@ -326,11 +326,17 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         password,
       });
 
-      // Preload profile data immediately after successful sign-in
+      // Preload profile data immediately after successful sign-in (but skip on public routes)
       if (!error && data.user) {
-        loadUserProfile(data.user.id).catch(err => {
-          console.error('Profile preloading failed:', err);
-        });
+        const publicRoutes = ['/signup', '/login', '/'];
+        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+        const isPublicRoute = publicRoutes.includes(currentPath);
+        
+        if (!isPublicRoute) {
+          loadUserProfile(data.user.id).catch(err => {
+            console.error('Profile preloading failed:', err);
+          });
+        }
       }
 
       return { error };
@@ -360,9 +366,14 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     }
   }, [user, loadUserProfile]);
 
-  // Auto-load profile when user is authenticated
+  // Auto-load profile when user is authenticated (but skip on public routes)
   useEffect(() => {
-    if (user?.id && !userProfile && !profileLoading) {
+    // Skip profile loading on public routes
+    const publicRoutes = ['/signup', '/login', '/'];
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    const isPublicRoute = publicRoutes.includes(currentPath);
+    
+    if (user?.id && !userProfile && !profileLoading && !isPublicRoute) {
       loadProfile();
     }
   }, [user?.id, userProfile, profileLoading, loadProfile]);

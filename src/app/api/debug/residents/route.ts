@@ -31,12 +31,12 @@ export async function GET(request: NextRequest) {
     // Use service role client to check data directly
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Get user profile first
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select('*')
       .eq('id', user.id)
       .single();

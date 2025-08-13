@@ -61,7 +61,13 @@ export default function PSOCSelector({
         .order('occupation_title', { ascending: true })
         .limit(50);
 
-      logger.debug('PSOC view search result', { hasData: !!data, error });
+      logger.debug('PSOC view search result', { hasData: !!data, error, dataLength: data?.length });
+
+      // If view works and has data, use it
+      if (!error && data && data.length > 0) {
+        setOptions(data);
+        return;
+      }
 
       // If view doesn't exist or has no data, try direct table queries
       if (error || !data || data.length === 0) {
@@ -129,8 +135,6 @@ export default function PSOCSelector({
 
         logger.warn('No PSOC data found in any table');
         setOptions([]);
-      } else {
-        setOptions(data || []);
       }
     } catch (error) {
       logError(error as Error, 'PSOC_SEARCH_ERROR');
@@ -200,11 +204,13 @@ export default function PSOCSelector({
             .from('psoc_occupation_search')
             .select('*')
             .eq('occupation_code', value)
-            .single();
+            .maybeSingle(); // Use maybeSingle instead of single to handle no results gracefully
 
           if (data && !error) {
             setSelectedOption(data);
             setSearchQuery(data.occupation_title);
+          } else if (error) {
+            logger.debug('Could not load PSOC option by code', { value, error: error.message });
           }
         } catch (error) {
           logError(error as Error, 'PSOC_OPTION_LOAD_ERROR');

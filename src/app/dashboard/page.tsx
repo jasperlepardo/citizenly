@@ -128,7 +128,8 @@ function DashboardContent() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        throw new Error('No valid session found');
+        // User not authenticated - this is expected, don't log as error
+        return;
       }
 
       // Use server-side API to fetch dashboard data (bypasses RLS issues)
@@ -146,16 +147,59 @@ function DashboardContent() {
       }
 
       const data = await response.json();
-      const { stats, residentsData } = data;
+      const { stats, demographics, residentsData } = data;
+      
+      console.log('Dashboard API response:', data);
+      console.log('Demographics data:', demographics);
 
-      // Process population data for pyramid
+      // Use pre-computed demographics data if available, fallback to client-side processing
+      if (demographics) {
+        // Use server-computed demographics
+        const newDependencyData = {
+          youngDependents: demographics.ageGroups?.youngDependents || 0,
+          workingAge: demographics.ageGroups?.workingAge || 0,
+          oldDependents: demographics.ageGroups?.oldDependents || 0,
+        };
+        console.log('Setting dependency data:', newDependencyData);
+        setDependencyData(newDependencyData);
+
+        setSexData({
+          male: demographics.sexDistribution?.male || 0,
+          female: demographics.sexDistribution?.female || 0,
+        });
+
+        setCivilStatusData({
+          single: demographics.civilStatus?.single || 0,
+          married: demographics.civilStatus?.married || 0,
+          widowed: demographics.civilStatus?.widowed || 0,
+          divorced: demographics.civilStatus?.divorced || 0,
+          separated: 0, // Not in view yet
+          annulled: 0, // Not in view yet
+          registeredPartnership: 0, // Not in view yet
+          liveIn: 0, // Not in view yet
+        });
+
+        setEmploymentData({
+          employed: demographics.employment?.employed || 0,
+          unemployed: demographics.employment?.unemployed || 0,
+          selfEmployed: 0, // Not separated in view
+          student: 0, // Not separated in view
+          retired: 0, // Not separated in view
+          homemaker: 0, // Not separated in view
+          disabled: 0, // Not separated in view
+          other: 0, // Not separated in view
+        });
+      } else {
+        // Fallback to client-side processing
+        const residentData = residentsData || [];
+        processSexData(residentData);
+        processCivilStatusData(residentData);
+        processEmploymentData(residentData);
+      }
+
+      // Process population data for pyramid (still use client-side for detailed age groups)
       const ageGroupData = processPopulationData(residentsData || []);
-
-      // Process other chart data
-      const residentData = residentsData || [];
-      processSexData(residentData);
-      processCivilStatusData(residentData);
-      processEmploymentData(residentData);
+      setPopulationData(ageGroupData);
 
       setStats({
         residents: Number(stats.residents) || 0,
@@ -165,14 +209,17 @@ function DashboardContent() {
         seniorCitizens: Number(stats.seniorCitizens) || 0,
         employedResidents: Number(stats.employedResidents) || 0,
       });
-
-      setPopulationData(ageGroupData);
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      logError(err, 'DASHBOARD_STATS_ERROR');
-      logger.error('Dashboard stats load failed', {
-        barangayCode: userProfile?.barangay_code,
-      });
+      
+      // Only log actual errors, not authentication issues
+      if (err.message !== 'No valid session found') {
+        logError(err, 'DASHBOARD_STATS_ERROR');
+        logger.error('Dashboard stats load failed', {
+          barangayCode: userProfile?.barangay_code,
+          error: err.message,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -247,7 +294,7 @@ function DashboardContent() {
   };
 
   const processEmploymentData = (
-    residents: { employment_status: string; is_employed?: boolean }[]
+    residents: { employment_status: string; is_labor_force_employed?: boolean }[]
   ): number => {
     const employmentCounts = {
       employed: 0,
@@ -265,8 +312,8 @@ function DashboardContent() {
     residents.forEach(resident => {
       const status = resident.employment_status?.toLowerCase()?.replace(/[^a-z]/g, '') || '';
 
-      // Count employed residents using the computed is_employed field if available
-      if (resident.is_employed === true) {
+      // Count employed residents using the computed is_labor_force_employed field if available
+      if (resident.is_labor_force_employed === true) {
         totalEmployed++;
       }
 

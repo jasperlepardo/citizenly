@@ -20,6 +20,14 @@ function UserDropdown() {
   // Load barangay information from database
   const loadBarangayInfo = async (barangayCode: string) => {
     try {
+      // Check if user is authenticated first
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
+        setBarangayInfo(`Barangay ${barangayCode}`);
+        return;
+      }
+
       logger.debug('Loading barangay info', { barangayCode });
 
       // Query the PSGC tables to get full address hierarchy
@@ -44,7 +52,19 @@ function UserDropdown() {
         .single();
 
       if (error) {
-        logger.error('Error loading barangay info', { error, barangayCode });
+        // Don't log error if it's just an authentication issue
+        if (
+          error.code === 'PGRST001' || 
+          error.message?.includes('permission') ||
+          error.message?.includes('JWT') ||
+          error.message?.includes('unauthorized') ||
+          error.code === '401'
+        ) {
+          logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
+        } else {
+          // Only log non-authentication related errors, and use debug level for less critical errors
+          logger.debug('Error loading barangay info', { error: error.message, code: error.code, barangayCode });
+        }
         setBarangayInfo(`Barangay ${barangayCode}`);
         return;
       }
@@ -60,7 +80,11 @@ function UserDropdown() {
         setBarangayInfo(`Barangay ${barangayCode}`);
       }
     } catch (error) {
-      logError(error as Error, 'BARANGAY_INFO_LOAD_ERROR');
+      // Don't log critical errors for authentication-related issues in dashboard
+      logger.debug('Error loading barangay info (caught in catch)', { 
+        error: error instanceof Error ? error.message : String(error), 
+        barangayCode 
+      });
       setBarangayInfo(`Barangay ${barangayCode}`);
     }
   };

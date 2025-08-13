@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const householdCode = params.id;
+    const resolvedParams = await params;
+    const householdCode = resolvedParams.id;
 
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
@@ -33,12 +34,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     // Use service role client to bypass RLS
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
@@ -159,9 +160,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const householdCode = params.id;
+    const resolvedParams = await params;
+    const householdCode = resolvedParams.id;
     const updateData = await request.json();
 
     // Get auth header from the request
@@ -192,12 +194,12 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     // Use service role client to bypass RLS
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();

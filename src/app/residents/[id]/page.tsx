@@ -848,8 +848,8 @@ function ResidentDetailContent() {
                 {isEditing ? (
                   <EducationEmployment
                     value={{
-                      educationLevel: editedResident?.education_level || '',
-                      educationStatus: editedResident?.education_status || '',
+                      educationAttainment: editedResident?.education_level || '',
+                      isGraduate: editedResident?.education_status === 'graduate',
                       psocCode: editedResident?.psoc_code || '',
                       psocLevel: editedResident?.psoc_level || '',
                       positionTitleId: '',
@@ -861,8 +861,8 @@ function ResidentDetailContent() {
                       if (!editedResident) return;
                       setEditedResident({
                         ...editedResident,
-                        education_level: educationData.educationLevel,
-                        education_status: educationData.educationStatus,
+                        education_level: educationData.educationAttainment,
+                        education_status: educationData.isGraduate ? 'graduate' : 'non-graduate',
                         psoc_code: educationData.psocCode,
                         psoc_level: educationData.psocLevel,
                         occupation_title: educationData.occupationDescription,

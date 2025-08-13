@@ -150,7 +150,7 @@ function UsersManagementContent() {
 
       // Load users with their barangay information
       const { data: users, error } = await supabase
-        .from('user_profiles')
+        .from('auth_user_profiles')
         .select(
           `
           *,
@@ -216,7 +216,7 @@ function UsersManagementContent() {
 
       // Update user profile status
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('auth_user_profiles')
         .update({
           status: 'active',
           updated_at: new Date().toISOString(),
@@ -268,7 +268,7 @@ function UsersManagementContent() {
 
       // Update user profile status
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('auth_user_profiles')
         .update({
           status: 'inactive',
           updated_at: new Date().toISOString(),
@@ -319,7 +319,7 @@ function UsersManagementContent() {
 
       // Update user profile status
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('auth_user_profiles')
         .update({
           status: 'suspended',
           updated_at: new Date().toISOString(),

@@ -33,13 +33,13 @@ export async function POST(request: NextRequest) {
     // Use service role client to bypass RLS
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('role_id, roles!inner(name)')
+      .from('auth_user_profiles')
+      .select('role_id')
       .eq('id', user.id)
       .single();
 
@@ -47,9 +47,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
+    // Get the role name separately
+    const { data: userRole, error: roleError } = await supabaseAdmin
+      .from('auth_roles')
+      .select('name')
+      .eq('id', userProfile.role_id)
+      .single();
+
+    if (roleError || !userRole) {
+      return NextResponse.json({ error: 'User role not found' }, { status: 400 });
+    }
+
     // Check if user has admin role (assuming 'admin' or 'super_admin' role names)
-    const userRole = (userProfile.roles as any)?.name;
-    if (!userRole || !['admin', 'super_admin'].includes(userRole)) {
+    const roleName = userRole.name;
+    if (!roleName || !['admin', 'super_admin'].includes(roleName)) {
       return NextResponse.json(
         { error: 'Insufficient permissions - Admin role required' },
         { status: 403 }
@@ -81,6 +92,7 @@ export async function POST(request: NextRequest) {
       email: userData.email,
       first_name: userData.firstName,
       last_name: userData.lastName,
+      phone: userData.mobileNumber,
       barangay_code: userData.barangayCode,
       role_id: userData.roleId,
       is_active: true,
@@ -88,7 +100,7 @@ export async function POST(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    const { error: profileInsertError } = await supabaseAdmin.from('user_profiles').insert(profileData);
+    const { error: profileInsertError } = await supabaseAdmin.from('auth_user_profiles').insert(profileData);
 
     if (profileInsertError) {
       console.error('Profile creation error:', profileInsertError);
@@ -164,13 +176,13 @@ export async function GET(request: NextRequest) {
     // Use service role client to bypass RLS
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('user_profiles')
-      .select('role_id, roles!inner(name)')
+      .from('auth_user_profiles')
+      .select('role_id')
       .eq('id', user.id)
       .single();
 
@@ -178,9 +190,20 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
     }
 
+    // Get the role name separately
+    const { data: userRole, error: roleError } = await supabaseAdmin
+      .from('auth_roles')
+      .select('name')
+      .eq('id', userProfile.role_id)
+      .single();
+
+    if (roleError || !userRole) {
+      return NextResponse.json({ error: 'User role not found' }, { status: 400 });
+    }
+
     // Check if user has admin role
-    const userRole = (userProfile.roles as any)?.name;
-    if (!userRole || !['admin', 'super_admin'].includes(userRole)) {
+    const roleName = userRole.name;
+    if (!roleName || !['admin', 'super_admin'].includes(roleName)) {
       return NextResponse.json(
         { error: 'Insufficient permissions - Admin role required' },
         { status: 403 }
@@ -193,17 +216,34 @@ export async function GET(request: NextRequest) {
       error: usersError,
       count,
     } = await supabaseAdmin
-      .from('user_profiles')
+      .from('auth_user_profiles')
       .select(
         `
         *,
-        roles(name),
         barangay_accounts(barangay_code)
         `,
         { count: 'exact' }
       )
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
+
+    // If we got users, fetch their role names separately
+    if (users && users.length > 0) {
+      const roleIds = Array.from(new Set(users.map(u => u.role_id).filter(Boolean)));
+      if (roleIds.length > 0) {
+        const { data: rolesData } = await supabaseAdmin
+          .from('auth_roles')
+          .select('id, name')
+          .in('id', roleIds);
+
+        if (rolesData) {
+          const roleMap = Object.fromEntries(rolesData.map(r => [r.id, r.name]));
+          users.forEach(user => {
+            user.role_name = user.role_id ? roleMap[user.role_id] : null;
+          });
+        }
+      }
+    }
 
     if (usersError) {
       console.error('Users query error:', usersError);

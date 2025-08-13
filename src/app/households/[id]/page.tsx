@@ -7,20 +7,17 @@ import { supabase } from '@/lib/supabase';
 import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import { logger, logError } from '@/lib/secure-logger';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Household {
   code: string;
-  street_name?: string;
+  name?: string;
   house_number?: string;
-  subdivision?: string;
   barangay_code: string;
   created_at: string;
-  head_resident?: {
-    id: string;
-    first_name: string;
-    middle_name?: string;
-    last_name: string;
-  };
+  household_head_id?: string;
+  street_id?: string;
+  subdivision_id?: string;
 }
 
 interface HouseholdMember {
@@ -37,6 +34,7 @@ interface HouseholdMember {
 }
 
 function HouseholdDetailContent() {
+  const { user, loading: authLoading } = useAuth();
   const params = useParams();
   const householdCode = params.id as string;
   const [household, setHousehold] = useState<Household | null>(null);
@@ -46,34 +44,34 @@ function HouseholdDetailContent() {
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
 
   useEffect(() => {
+    console.log('useEffect triggered:', { householdCode, authLoading, user: !!user });
+    
     const loadHouseholdDetails = async () => {
-      if (!householdCode) return;
+      if (!householdCode || authLoading || !user) {
+        console.log('Early return:', { householdCode, authLoading, user: !!user });
+        return;
+      }
 
+      console.log('Starting to load household details...');
       try {
         setLoading(true);
 
-        // Load household details with head resident info
+        // Load household details - simplified query first
         const { data: householdData, error: householdError } = await supabase
           .from('households')
-          .select(
-            `
-            *,
-            head_resident:residents!households_household_head_id_fkey(
-              id,
-              first_name,
-              middle_name,
-              last_name
-            )
-          `
-          )
+          .select('*')
           .eq('code', householdCode)
           .single();
 
+        console.log('Household query result:', { householdData, householdError });
+        
         if (householdError) {
+          console.error('Household error:', householdError);
           setError('Household not found');
           return;
         }
 
+        console.log('Setting household data:', householdData);
         setHousehold(householdData);
 
         // Load all household members
@@ -100,7 +98,7 @@ function HouseholdDetailContent() {
     };
 
     loadHouseholdDetails();
-  }, [householdCode]);
+  }, [householdCode, authLoading, user]);
 
   const formatFullName = (person: {
     first_name: string;
@@ -121,7 +119,7 @@ function HouseholdDetailContent() {
     return age;
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
@@ -268,17 +266,15 @@ function HouseholdDetailContent() {
                   <div>
                     <dt className="text-sm font-medium text-secondary">Head of Household</dt>
                     <dd className="mt-1 text-sm text-primary">
-                      {household.head_resident
-                        ? formatFullName(household.head_resident)
+                      {household.household_head_id
+                        ? 'Head assigned'
                         : 'No head assigned'}
                     </dd>
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-secondary">Address</dt>
                     <dd className="mt-1 text-sm text-primary">
-                      {[household.house_number, household.street_name, household.subdivision]
-                        .filter(Boolean)
-                        .join(', ') || 'No address specified'}
+                      {household.house_number || 'No address specified'}
                     </dd>
                   </div>
                   <div>
@@ -340,7 +336,7 @@ function HouseholdDetailContent() {
                           <td className="whitespace-nowrap px-6 py-4">
                             <div className="text-sm font-medium text-primary">
                               {formatFullName(member)}
-                              {household.head_resident?.id === member.id && (
+                              {household.household_head_id === member.id && (
                                 <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
                                   Head
                                 </span>

@@ -112,7 +112,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         if (user) {
           // Update user profile status to active
           await supabase
-            .from('user_profiles')
+            .from('auth_user_profiles')
             .update({ status: 'active' })
             .eq('email', devCredentials.email);
 

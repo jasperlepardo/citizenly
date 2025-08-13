@@ -1,251 +1,270 @@
 # Schema Migration Matrix & Decision Guide
 
-## Quick Decision Matrix
+> **Database schema evolution and migration guide for the Citizenly project**
+> 
+> This document helps you understand the current schema structure, migration paths, and evolution strategy.
 
-Use this matrix to choose the right schema version for your implementation needs.
+## 📊 Current Schema Overview
 
-## 📊 Feature Comparison Matrix
+### **Production Schema (schema.sql)**
+The current production schema includes:
 
-| Feature Category           | schema.sql (MVP)      | schema-v2 (Standard)       | schema-full-feature (Enterprise)  |
-| -------------------------- | --------------------- | -------------------------- | --------------------------------- |
-| **🏠 Core Functionality**  |                       |                            |                                   |
-| Resident Registration      | ✅ Complete           | ✅ Complete                | ✅ Complete                       |
-| Household Management       | ✅ Basic              | ✅ Enhanced                | ✅ Advanced                       |
-| PSGC Geographic Data       | ✅ Full hierarchy     | ✅ + Independence rules    | ✅ + Street/subdivision           |
-| User & Role Management     | ✅ Basic RBAC         | ✅ Enhanced permissions    | ✅ + Audit trail                  |
-| **📊 Data Management**     |                       |                            |                                   |
-| Search Performance         | 🟡 Good               | 🟢 Better (40% faster)     | 🟢 Best (60% faster)              |
-| Data Validation            | 🟡 Manual             | 🟢 Semi-automated          | 🟢 Fully automated                |
-| Auto-calculations          | ❌ None               | ✅ Sectoral flags          | ✅ All classifications            |
-| Full-text Search           | ✅ GIN trigram        | ✅ Enhanced GIN            | ✅ Multi-table indexed            |
-| **👥 Resident Features**   |                       |                            |                                   |
-| Demographics               | ✅ Complete           | ✅ Complete                | ✅ Complete                       |
-| Sectoral Classification    | ✅ 13 boolean flags   | ✅ Auto-calculated flags   | ✅ Detailed tracking table        |
-| Occupation (PSOC)          | ✅ 5-level hierarchy  | ✅ + Search optimization   | ✅ + Position titles              |
-| Address Information        | ✅ PSGC codes         | ✅ + Enhanced validation   | ✅ + Street addresses             |
-| Contact Management         | ✅ Phone/email        | ✅ Phone/email             | ✅ + Historical tracking          |
-| **🏘️ Household Features**  |                       |                            |                                   |
-| Household Structure        | ✅ Basic hierarchy    | ✅ UUID + codes            | ✅ Complex classification         |
-| Member Relationships       | ✅ Basic family links | ✅ Enhanced constraints    | ✅ Detailed relationship tracking |
-| Address Management         | ✅ PSGC only          | ✅ + Independence handling | ✅ + Full addressing              |
-| Income Classification      | ❌ None               | ❌ None                    | ✅ Comprehensive tiers            |
-| **🔍 Search & Reporting**  |                       |                            |                                   |
-| Basic Search               | ✅ Name, mobile       | ✅ Name, mobile            | ✅ Name, mobile                   |
-| Advanced Search            | ✅ Multiple filters   | ✅ Better performance      | ✅ Cross-table search             |
-| Standard Reports           | ✅ Demographics       | ✅ + Sectoral auto-reports | ✅ + Income reports               |
-| Custom Reports             | 🟡 Limited            | 🟢 Enhanced                | 🟢 Full flexibility               |
-| Export Capabilities        | ✅ CSV/Excel          | ✅ CSV/Excel               | ✅ Multiple formats               |
-| **🔒 Security Features**   |                       |                            |                                   |
-| Row-level Security         | ✅ Barangay scoping   | ✅ + Role exceptions       | ✅ + Advanced policies            |
-| Data Encryption            | ✅ PhilSys hashing    | ✅ PhilSys hashing         | ✅ + Field-level encryption       |
-| Audit Trail                | ❌ None               | ❌ None                    | ✅ Complete audit_logs            |
-| Permission Management      | ✅ Basic roles        | ✅ Enhanced permissions    | ✅ Fine-grained control           |
-| **🌐 Advanced Features**   |                       |                            |                                   |
-| Migrant Tracking           | 🟡 Basic flag         | 🟡 Basic flag              | ✅ Detailed history               |
-| Dashboard Analytics        | ❌ Manual             | 🟡 Basic                   | ✅ Real-time                      |
-| Historical Data            | ❌ None               | 🟡 Limited                 | ✅ Complete                       |
-| API Performance            | ✅ Good               | ✅ Better                  | ✅ Optimized                      |
-| **⚡ Performance & Scale** |                       |                            |                                   |
-| Resident Capacity          | 50,000                | 100,000                    | 500,000+                          |
-| Concurrent Users           | 20                    | 50                         | 200+                              |
-| Query Response Time        | 100ms                 | 60ms                       | 40ms                              |
-| Report Generation          | 5 seconds             | 3 seconds                  | 2 seconds                         |
-| **🛠️ Maintenance**         |                       |                            |                                   |
-| Setup Complexity           | 🟢 Simple             | 🟡 Moderate                | 🔴 Complex                        |
-| Maintenance Overhead       | 🟢 Low                | 🟡 Medium                  | 🔴 High                           |
-| Technical Skills Required  | 🟢 Basic              | 🟡 Intermediate            | 🔴 Advanced                       |
-| Backup/Restore             | 🟢 Simple             | 🟡 Moderate                | 🔴 Complex                        |
+| Component | Status | Description |
+|-----------|--------|-------------|
+| **Core Tables** | ✅ Stable | residents, households, auth_user_profiles |
+| **PSGC Integration** | ✅ Complete | Full Philippine geographic hierarchy |
+| **RLS Security** | ✅ Production-ready | Multi-tenant data isolation |
+| **Auto-calculations** | ✅ Implemented | Age, sectoral flags, dependencies |
+| **Search Optimization** | ✅ Ready | Full-text search, indexes |
+| **Audit Logging** | ✅ Enabled | Change tracking and compliance |
 
-## 🎯 Implementation Decision Tree
+## 🔄 Migration History
 
-```
-Start Here: What's your organization size?
-│
-├── Small Barangay (< 10,000 residents)
-│   └── Limited tech resources? → schema.sql (MVP)
-│   └── Growth planned? → schema-v2-production-ready.sql
-│
-├── Medium LGU (10,000 - 50,000 residents)
-│   └── Current system working well? → schema.sql (MVP)
-│   └── Need performance improvements? → schema-v2-production-ready.sql
-│   └── Advanced reporting needed? → schema-full-feature.sql
-│
-└── Large City/Province (50,000+ residents)
-    └── Basic needs only? → schema-v2-production-ready.sql
-    └── Comprehensive requirements? → schema-full-feature.sql
+### **Version 1.0 (Current Production)**
+- **File**: `database/schema.sql`
+- **Features**: 
+  - Complete resident management
+  - Household structure with hierarchical codes
+  - PSGC geographic data integration
+  - Row-level security (RLS)
+  - Sectoral group auto-calculation
+  - Full-text search capabilities
+  - Audit trail system
+
+### **Legacy Versions (Deprecated)**
+- Multiple schema variants exist in development files
+- **Recommendation**: Use only `database/schema.sql` for new deployments
+
+## 🚀 Migration Paths
+
+### **From Legacy to Current**
+```sql
+-- 1. Backup existing data
+pg_dump existing_db > backup_$(date +%Y%m%d).sql
+
+-- 2. Apply current schema
+psql new_db < database/schema.sql
+
+-- 3. Migrate data with transformation
+-- (Custom migration scripts needed based on source schema)
+
+-- 4. Verify RLS policies
+SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual 
+FROM pg_policies 
+WHERE schemaname = 'public';
 ```
 
-## 💰 Resource Requirements Comparison
+### **Schema Updates (Production)**
+```bash
+# 1. Create migration file
+create-migration.sh "add_new_feature"
 
-### **Hardware Requirements**
+# 2. Test migration locally
+supabase db reset
+supabase migration up
 
-| Schema Version          | RAM | Storage | CPU     | Network    |
-| ----------------------- | --- | ------- | ------- | ---------- |
-| **schema.sql**          | 2GB | 20GB    | 2 cores | Standard   |
-| **schema-v2**           | 4GB | 50GB    | 4 cores | Standard   |
-| **schema-full-feature** | 8GB | 200GB   | 8 cores | High-speed |
+# 3. Apply to staging
+supabase db push --environment staging
 
-### **Human Resource Requirements**
+# 4. Deploy to production
+supabase db push --environment production
+```
 
-| Schema Version          | Setup Time | Admin Skills     | Developer Skills    |
-| ----------------------- | ---------- | ---------------- | ------------------- |
-| **schema.sql**          | 1 week     | Basic SQL        | Junior developer    |
-| **schema-v2**           | 2-3 weeks  | Intermediate SQL | Mid-level developer |
-| **schema-full-feature** | 2-3 months | Advanced SQL     | Senior developer    |
+## 🔧 Migration Commands
 
-### **Operational Costs (Annual)**
+### **Local Development**
+```bash
+# Reset to clean schema
+npm run db:reset
 
-| Schema Version          | Hosting | Maintenance | Support | Total   |
-| ----------------------- | ------- | ----------- | ------- | ------- |
-| **schema.sql**          | $500    | $2,000      | $1,000  | $3,500  |
-| **schema-v2**           | $1,200  | $5,000      | $2,000  | $8,200  |
-| **schema-full-feature** | $3,600  | $15,000     | $6,000  | $24,600 |
+# Apply specific migration
+npm run db:migrate -- --file=20240115_add_feature.sql
 
-## 🔄 Migration Paths & Complexity
+# Rollback last migration
+npm run db:rollback
 
-### **Current → Standard (schema.sql → schema-v2)**
+# Generate migration from changes
+npm run db:diff -- migration_name
+```
 
-**Complexity**: 🟡 Medium
-**Duration**: 3-4 weeks
-**Risk Level**: Low
-**Data Loss Risk**: None
+### **Production Deployment**
+```bash
+# Pre-deployment backup
+npm run db:backup
 
-**Migration Steps**:
+# Deploy migration
+npm run db:deploy -- --environment=production
 
-1. **Week 1**: Schema preparation and testing
-2. **Week 2**: Index creation and optimization
-3. **Week 3**: Data migration and validation
-4. **Week 4**: Testing and go-live
+# Verify deployment
+npm run db:verify -- --environment=production
 
-**Benefits**:
+# Rollback if needed (emergency only)
+npm run db:rollback -- --environment=production
+```
 
-- 40% performance improvement
-- Automated sectoral classification
-- Better data integrity
+## 📋 Schema Features by Category
 
-### **Standard → Enterprise (schema-v2 → schema-full-feature)**
+### **🏠 Core Functionality**
+| Feature | Current Status | Notes |
+|---------|---------------|-------|
+| Resident Registration | ✅ Complete | Full demographic data capture |
+| Household Management | ✅ Advanced | Hierarchical household codes |
+| PSGC Geographic Data | ✅ Complete | Full Philippine hierarchy |
+| User & Role Management | ✅ Production | RBAC with audit trail |
 
-**Complexity**: 🔴 High
-**Duration**: 3-6 months
-**Risk Level**: High
-**Data Loss Risk**: Low (with proper backup)
+### **📊 Data Management**
+| Feature | Current Status | Performance |
+|---------|---------------|-------------|
+| Search Performance | ✅ Optimized | ~50ms average query time |
+| Data Validation | ✅ Automated | Triggers + constraints |
+| Auto-calculations | ✅ Complete | Age, sectoral, dependencies |
+| Full-text Search | ✅ Indexed | GIN trigram + tsvector |
 
-**Migration Steps**:
+### **👥 Resident Features**
+| Feature | Implementation | Details |
+|---------|---------------|---------|
+| Demographics | ✅ Complete | All standard fields |
+| Sectoral Classification | ✅ Auto-calculated | 13 sectoral groups |
+| Occupation (PSOC) | ✅ Full hierarchy | 5-level classification |
+| Address Information | ✅ PSGC + Street | Complete addressing |
+| Contact Management | ✅ Multi-contact | Phone, email, emergency |
 
-1. **Month 1**: Analysis and planning
-2. **Month 2-3**: Schema development and testing
-3. **Month 4**: Data migration
-4. **Month 5**: System testing and validation
-5. **Month 6**: Training and go-live
+### **🏘️ Household Features**
+| Feature | Implementation | Capabilities |
+|---------|---------------|-------------|
+| Household Structure | ✅ UUID + Codes | Unique identification |
+| Member Relationships | ✅ Detailed | Family relationship tracking |
+| Address Management | ✅ Complete | PSGC + street addresses |
+| Head Assignment | ✅ Automated | Auto-assign household head |
 
-**Benefits**:
+## 🔒 Security & Compliance
 
-- Complete LGU compliance
-- Advanced analytics capabilities
-- Comprehensive audit trail
+### **Row-Level Security (RLS)**
+```sql
+-- Barangay isolation
+CREATE POLICY "barangay_isolation" ON residents
+FOR ALL USING (barangay_code = get_user_barangay_code());
 
-### **Direct Migration (schema.sql → schema-full-feature)**
+-- Role-based access
+CREATE POLICY "role_based_access" ON residents
+FOR ALL USING (
+  CASE 
+    WHEN get_user_role() = 'super_admin' THEN true
+    WHEN get_user_role() = 'barangay_admin' THEN 
+      barangay_code = get_user_barangay_code()
+    ELSE id = auth.uid()
+  END
+);
+```
 
-**Complexity**: 🔴 Very High
-**Duration**: 6-12 months
-**Risk Level**: Very High
-**Recommendation**: ❌ Not recommended
+### **Data Privacy & Compliance**
+- **Encryption**: Sensitive fields encrypted at rest
+- **Audit Trail**: All changes logged with user attribution
+- **Data Retention**: Configurable retention policies
+- **Access Control**: Role-based permissions
 
-## 📋 Pre-Migration Checklist
+## 📈 Performance Optimizations
 
-### **For Any Migration**
+### **Current Indexes**
+```sql
+-- Search performance
+CREATE INDEX idx_residents_search ON residents USING gin(search_vector);
+CREATE INDEX idx_residents_name ON residents(last_name, first_name);
+CREATE INDEX idx_residents_barangay ON residents(barangay_code);
 
-- [ ] Complete database backup
-- [ ] Performance baseline measurement
-- [ ] User training materials prepared
-- [ ] Rollback plan documented
-- [ ] Test environment setup
-- [ ] Stakeholder approval obtained
+-- Household relationships
+CREATE INDEX idx_households_barangay ON households(barangay_code);
+CREATE INDEX idx_households_head ON households(household_head_id);
 
-### **For schema-v2 Migration**
+-- Geographic lookups
+CREATE INDEX idx_psgc_hierarchy ON psgc_barangays(region_code, province_code, city_code);
+```
 
-- [ ] PSGC data validation complete
-- [ ] Sectoral classification rules defined
-- [ ] Performance testing completed
-- [ ] User acceptance testing passed
+### **Query Performance**
+- **Average Response**: < 50ms for standard queries
+- **Search Queries**: < 100ms for full-text search
+- **Dashboard Stats**: < 200ms for complex aggregations
+- **Bulk Operations**: Optimized for 1000+ records
 
-### **For schema-full-feature Migration**
+## 🎯 Migration Best Practices
 
-- [ ] Income classification system designed
-- [ ] Migrant tracking requirements defined
-- [ ] Audit trail policies established
-- [ ] Dashboard requirements specified
-- [ ] Advanced reporting templates ready
+### **Before Migration**
+1. **Full backup** of existing data
+2. **Test migration** on copy of production data
+3. **Verify RLS policies** match business rules
+4. **Performance test** with representative data
+5. **Prepare rollback plan**
 
-## ⚠️ Migration Risks & Mitigation
+### **During Migration**
+1. **Monitor query performance**
+2. **Verify data integrity** at each step
+3. **Check constraint violations**
+4. **Validate RLS enforcement**
+5. **Test authentication flows**
 
-### **Common Risks**
+### **After Migration**
+1. **Run full test suite**
+2. **Verify all features working**
+3. **Monitor error logs**
+4. **Check performance metrics**
+5. **Update documentation**
 
-| Risk                             | Probability | Impact | Mitigation                         |
-| -------------------------------- | ----------- | ------ | ---------------------------------- |
-| Data corruption during migration | Low         | High   | Multiple backups, staged migration |
-| Performance degradation          | Medium      | Medium | Load testing, rollback plan        |
-| User training gaps               | High        | Low    | Training plan, documentation       |
-| Extended downtime                | Medium      | High   | Staged migration, parallel systems |
+## 🚨 Common Migration Issues
 
-### **Schema-Specific Risks**
+### **RLS Policy Conflicts**
+```sql
+-- Issue: Policies too restrictive
+-- Solution: Check policy conditions
+SELECT * FROM pg_policies WHERE tablename = 'residents';
 
-**schema-v2 Migration**:
+-- Fix: Update policy
+DROP POLICY IF EXISTS "old_policy" ON residents;
+CREATE POLICY "new_policy" ON residents FOR ALL USING (...);
+```
 
-- Risk: Auto-calculation conflicts with existing data
-- Mitigation: Data validation scripts, manual review process
+### **Data Type Mismatches**
+```sql
+-- Issue: Column type changed
+-- Solution: Cast or transform data
+ALTER TABLE residents ALTER COLUMN age TYPE INTEGER USING age::INTEGER;
+```
 
-**schema-full-feature Migration**:
+### **Constraint Violations**
+```sql
+-- Issue: New constraints fail on existing data
+-- Solution: Clean data first
+UPDATE residents SET email = NULL WHERE email = '';
+ALTER TABLE residents ADD CONSTRAINT valid_email CHECK (email ~ '^[^@]+@[^@]+\.[^@]+$');
+```
 
-- Risk: Complex feature implementation issues
-- Mitigation: Phased rollout, extensive testing, expert consultation
+## 📋 Migration Checklist
 
-## 🎯 Success Metrics
+### **Pre-Migration**
+- [ ] Database backup completed
+- [ ] Migration script tested locally
+- [ ] Rollback plan prepared
+- [ ] Downtime window scheduled
+- [ ] Team notified
 
-### **Performance Metrics**
+### **Migration**
+- [ ] Application maintenance mode enabled
+- [ ] Migration script executed
+- [ ] Data integrity verified
+- [ ] RLS policies tested
+- [ ] Performance benchmarks met
 
-- Query response time improvement
-- Report generation speed
-- Concurrent user capacity
-- System availability
-
-### **Functional Metrics**
-
-- Data accuracy improvement
-- Feature utilization rates
-- User satisfaction scores
-- Error reduction rates
-
-### **Business Metrics**
-
-- Administrative efficiency gains
-- Cost per resident managed
-- Compliance reporting accuracy
-- Decision-making speed improvement
-
-## 🔮 Future Considerations
-
-### **Emerging Requirements**
-
-- Integration with national databases
-- Mobile-first data collection
-- Real-time analytics
-- AI-powered insights
-
-### **Technology Evolution**
-
-- Cloud-native deployments
-- Microservices architecture
-- GraphQL API layers
-- Advanced security frameworks
-
-### **Scalability Planning**
-
-- Multi-tenant architecture
-- Horizontal scaling capabilities
-- Edge computing deployment
-- Performance monitoring
+### **Post-Migration**
+- [ ] Application functionality verified
+- [ ] User acceptance testing completed
+- [ ] Monitoring alerts configured
+- [ ] Documentation updated
+- [ ] Team training completed
 
 ---
 
-**Recommendation**: For most organizations, start with `schema.sql` for immediate needs, then migrate to `schema-v2-production-ready.sql` within 6-12 months for enhanced performance and features. Consider `schema-full-feature.sql` only if you have advanced requirements and technical capabilities.
+💡 **Remember**: Always test migrations thoroughly in a staging environment before applying to production.
+
+🔗 **Related Documentation**: 
+- [Database Schema Documentation](./DATABASE_SCHEMA_DOCUMENTATION.md) for detailed schema reference
+- [Deployment Guide](./DEPLOYMENT_GUIDE.md) for deployment procedures
+- [Backup Recovery](./BACKUP_RECOVERY.md) for backup and recovery processes

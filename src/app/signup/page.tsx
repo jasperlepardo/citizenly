@@ -7,6 +7,7 @@ import { SimpleBarangaySelector } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
 import { logger, logError } from '@/lib/secure-logger';
+import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {
   email: string;
@@ -17,6 +18,9 @@ interface SignupFormData {
   mobileNumber: string;
   barangayCode: string;
 }
+
+// Profile creation now happens after email confirmation via database trigger
+// No need for immediate profile creation during signup
 
 export default function SignupPage() {
   const [formData, setFormData] = useState<SignupFormData>({
@@ -32,39 +36,9 @@ export default function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [assignedRole, setAssignedRole] = useState<string>('');
+  const [submitStatus, setSubmitStatus] = useState<string>('');
 
-  const checkBarangayAdminExists = async (barangayCode: string): Promise<boolean> => {
-    try {
-      logger.debug('Checking for existing barangay admin', { barangayCode });
-
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select(
-          `
-          id,
-          roles!inner(name)
-        `
-        )
-        .eq('barangay_code', barangayCode)
-        .eq('roles.name', 'barangay_admin')
-        .eq('is_active', true);
-
-      if (error) {
-        logError(new Error(error.message), 'BARANGAY_ADMIN_CHECK');
-        return true; // Assume admin exists if we can't check
-      }
-
-      const hasAdmin = data && data.length > 0;
-      logger.debug('Barangay admin check completed', { hasAdmin });
-      return hasAdmin;
-    } catch (error) {
-      logError(
-        error instanceof Error ? error : new Error('Unknown error checking barangay admin'),
-        'BARANGAY_ADMIN_CHECK'
-      );
-      return true; // Assume admin exists if we can't check
-    }
-  };
+  // Barangay admin checking now handled by database trigger after email confirmation
 
   const handleChange = (field: keyof SignupFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -128,7 +102,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -141,132 +115,74 @@ export default function SignupPage() {
     }, 30000); // 30 second timeout
 
     try {
-      // Check if barangay already has an admin
-      logger.info('Starting signup process - checking for existing admin');
-      const hasAdmin = await checkBarangayAdminExists(formData.barangayCode);
-      const willBeAdmin = !hasAdmin;
-      logger.debug('Role assignment determined', { willBeAdmin });
-
-      // Create auth user
-      logger.info('Creating authentication user account');
+      // Step 1: Create auth user with metadata for post-confirmation processing
+      setSubmitStatus('Creating your account...');
+      console.log('🔄 Attempting signup with email:', formData.email);
+      
+      // Check if we're in development mode (disable emails to prevent bounces)
+      const isDevelopment = process.env.NODE_ENV === 'development';
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          data: {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.mobileNumber,
+            barangay_code: formData.barangayCode,
+            signup_step: 'awaiting_confirmation'
+          },
+          // In development, don't send confirmation emails
+          emailRedirectTo: isDevelopment ? undefined : `${window.location.origin}/auth/callback`
+        }
       });
 
-      if (authError) {
-        logError(new Error(authError.message), 'AUTH_SIGNUP');
-        if (authError.message.includes('already registered')) {
-          setErrors({
-            general: 'An account with this email already exists. Please sign in instead.',
-          });
-        } else {
-          setErrors({ general: authError.message });
-        }
-        return;
-      }
+      console.log('📋 Signup result:', {
+        success: !authError,
+        hasUser: !!authData.user,
+        userId: authData.user?.id,
+        error: authError?.message,
+        errorCode: authError?.code
+      });
 
-      if (!authData.user) {
-        logger.error('No user data returned from authentication signup');
-        setErrors({ general: 'Failed to create account. Please try again.' });
-        return;
-      }
-
-      logger.info('Authentication user created successfully', { userId: authData.user.id });
-
-      // Get the appropriate role using our function
-      logger.info('Assigning user role for barangay');
-      const { data: roleData, error: roleError } = await supabase.rpc(
-        'assign_user_role_for_barangay',
-        {
-          p_user_id: authData.user.id,
-          p_barangay_code: formData.barangayCode,
-        }
-      );
-
-      if (roleError) {
-        logError(new Error(roleError.message), 'ROLE_ASSIGNMENT');
-        logger.info('Using fallback role assignment method');
-        // Fallback to manual role assignment
-        const { data: roles } = await supabase
-          .from('roles')
-          .select('id, name')
-          .in('name', ['barangay_admin', 'resident']);
-
-        const role = willBeAdmin
-          ? roles?.find(r => r.name === 'barangay_admin')
-          : roles?.find(r => r.name === 'resident');
-
-        if (!role) {
-          logger.error('No valid roles found in fallback assignment');
-          setErrors({
-            general: 'System error: No valid roles found. Please contact administrator.',
-          });
-          return;
-        }
-
-        // Update roleData to use the role.id from fallback
-        const { error: profileError } = await supabase.from('user_profiles').insert({
-          id: authData.user.id,
-          email: formData.email,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          mobile_number: formData.mobileNumber,
-          barangay_code: formData.barangayCode,
-          role_id: role.id,
-          is_active: true,
+      if (authError || !authData.user) {
+        console.error('❌ Signup failed:', { 
+          error: authError?.message, 
+          code: authError?.code,
+          status: authError?.status
         });
-
-        if (profileError) {
-          logError(new Error(profileError.message), 'PROFILE_CREATION');
-          setErrors({
-            general: 'Account created but profile setup failed: ' + profileError.message,
-          });
-          return;
-        }
-
-        // Set assigned role for display
-        setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
-        setStep('success');
-        return;
+        throw new Error(authError?.message || 'Failed to create account');
       }
 
-      // Create user profile with successful role assignment
-      logger.info('Creating user profile with role assignment');
-      const { error: profileError } = await supabase.from('user_profiles').insert({
-        id: authData.user.id,
-        email: formData.email,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        mobile_number: formData.mobileNumber,
-        barangay_code: formData.barangayCode,
-        role_id: roleData,
-        is_active: true,
-      });
+      console.log('✅ Auth user created successfully:', authData.user.id);
+      console.log('📧 Email confirmation required:', !authData.user.email_confirmed_at);
 
-      if (profileError) {
-        logError(new Error(profileError.message), 'PROFILE_CREATION');
-        setErrors({ general: 'Account created but profile setup failed: ' + profileError.message });
-        return;
-      }
+      // Signup data is already stored in user metadata during supabase.auth.signUp()
+      // Database trigger will process this after email confirmation
 
-      // Set assigned role for display
-      logger.info('Signup process completed successfully', {
-        assignedRole: willBeAdmin ? 'barangay_admin' : 'resident',
-      });
-      setAssignedRole(willBeAdmin ? 'Barangay Administrator' : 'Resident');
+      // Success
+      setSubmitStatus('Account created successfully!');
       setStep('success');
-    } catch (error: unknown) {
+      setAssignedRole('Barangay Administrator');
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setErrors({ general: errorMessage });
+      
+      // Log error for debugging
       logError(
-        error instanceof Error ? error : new Error('Unknown signup error'),
+        error instanceof Error ? error : new Error(errorMessage),
         'SIGNUP_PROCESS'
       );
-      setErrors({ general: 'An unexpected error occurred. Please try again.' });
     } finally {
       clearTimeout(timeoutId);
       setIsSubmitting(false);
+      setSubmitStatus('');
     }
   };
+
+  // Role assignment now handled by database trigger after email confirmation
 
   // No auth loading check needed for signup page
 
@@ -297,27 +213,24 @@ export default function SignupPage() {
               </h2>
 
               <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h3 className="mb-2 text-sm font-medium text-blue-800">Your Role Assignment:</h3>
+                <h3 className="mb-2 text-sm font-medium text-blue-800">Pending Role Assignment:</h3>
                 <p className="text-blue-700">
-                  <strong>{assignedRole}</strong>
+                  You will be assigned as <strong>Barangay Administrator</strong> once you verify your email address.
                 </p>
-                {assignedRole.includes('Administrator') && (
-                  <p className="mt-2 text-sm text-blue-600">
-                    You&apos;ve been assigned as the first administrator for this barangay. You can
-                    now manage users and data for your barangay.
-                  </p>
-                )}
+                <p className="mt-2 text-sm text-blue-600">
+                  Your role will be automatically assigned after email verification, allowing you to
+                  manage users and data for your barangay.
+                </p>
               </div>
 
               <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                 <h3 className="mb-2 text-sm font-medium text-yellow-800">Next Steps:</h3>
                 <ol className="list-inside list-decimal space-y-1 text-left text-sm text-yellow-700">
-                  <li>Check your email for a verification link</li>
-                  <li>Click the verification link to activate your account</li>
-                  <li>Return to login and access your dashboard</li>
-                  {assignedRole.includes('Administrator') && (
-                    <li>Start adding residents and managing your barangay data</li>
-                  )}
+                  <li><strong>Check your email</strong> for a verification link from Citizenly</li>
+                  <li><strong>Click the verification link</strong> to confirm your email address</li>
+                  <li><strong>Your administrator account will be automatically activated</strong> after verification</li>
+                  <li><strong>Return to login</strong> and access your dashboard</li>
+                  <li><strong>Start managing your barangay</strong> - add residents and data</li>
                 </ol>
               </div>
 
@@ -347,6 +260,19 @@ export default function SignupPage() {
 
         <div className="rounded-lg bg-white p-8 shadow-md">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Status Message */}
+            {isSubmitting && submitStatus && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <div>
+                    <h4 className="font-medium text-blue-800">Creating Account</h4>
+                    <p className="text-sm text-blue-700">{submitStatus}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* General Error */}
             {errors.general && (
               <div className="rounded-lg border border-red-200 bg-red-50 p-4">
@@ -507,7 +433,9 @@ export default function SignupPage() {
                     <strong>Barangay Administrator</strong>
                   </li>
                   <li>
-                    If an administrator already exists → <strong>Resident</strong>
+                    If an administrator already exists → <strong>Registration blocked</strong>
+                    <br />
+                    <small className="text-blue-500">Contact your barangay admin to be invited to the system</small>
                   </li>
                 </ul>
               </div>

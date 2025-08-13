@@ -78,7 +78,7 @@ function withLazyLoading<P extends object>(
 // Lazy-loaded components
 const CreateHouseholdModalLazy = lazy(() => 
   import('@/components/organisms/CreateHouseholdModal').then(module => ({
-    default: module.default
+    default: module.CreateHouseholdModal
   }))
 );
 
@@ -124,6 +124,31 @@ const EducationEmploymentLazy = lazy(() =>
   }))
 );
 
+const ErrorModalLazy = lazy(() => 
+  import('@/components/molecules/ErrorModal').then(module => ({
+    default: module.ErrorModal
+  }))
+);
+
+const SuccessModalLazy = lazy(() => 
+  import('@/components/molecules/SuccessModal').then(module => ({
+    default: module.SuccessModal
+  }))
+);
+
+// Geographic selector components
+const CascadingGeographicSelectorLazy = lazy(() => 
+  import('@/components/molecules/CascadingGeographicSelector').then(module => ({
+    default: module.CascadingGeographicSelector
+  }))
+);
+
+const GeographicLocationStepLazy = lazy(() => 
+  import('@/components/organisms/GeographicLocationStep').then(module => ({
+    default: module.GeographicLocationStep
+  }))
+);
+
 // Wrapped components with appropriate loading states
 export const CreateHouseholdModal = withLazyLoading(
   CreateHouseholdModalLazy, 
@@ -165,6 +190,21 @@ export const EducationEmployment = withLazyLoading(
   <FormSkeleton />
 );
 
+export const ErrorModal = withLazyLoading(ErrorModalLazy);
+
+export const SuccessModal = withLazyLoading(SuccessModalLazy);
+
+// Geographic selector components with loading states
+export const CascadingGeographicSelector = withLazyLoading(
+  CascadingGeographicSelectorLazy,
+  <LoadingFallback height="300px" />
+);
+
+export const GeographicLocationStep = withLazyLoading(
+  GeographicLocationStepLazy,
+  <FormSkeleton />
+);
+
 // Preload functions for better UX
 export const preloadComponents = {
   createHouseholdModal: () => import('@/components/organisms/CreateHouseholdModal'),
@@ -175,6 +215,10 @@ export const preloadComponents = {
   personalInformation: () => import('@/components/organisms/PersonalInformation'),
   sectoralInfo: () => import('@/components/organisms/SectoralInfo'),
   educationEmployment: () => import('@/components/organisms/EducationEmployment'),
+  errorModal: () => import('@/components/molecules/ErrorModal'),
+  successModal: () => import('@/components/molecules/SuccessModal'),
+  cascadingGeographicSelector: () => import('@/components/molecules/CascadingGeographicSelector'),
+  geographicLocationStep: () => import('@/components/organisms/GeographicLocationStep'),
 };
 
 // Utility to preload component on hover

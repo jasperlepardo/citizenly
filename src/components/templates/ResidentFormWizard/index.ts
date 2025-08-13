@@ -1,1 +1,2 @@
-export { default as ResidentFormWizard } from './ResidentFormWizard';
+export { ResidentFormWizard } from './ResidentFormWizard';
+export type { ResidentFormData, ResidentFormWizardProps } from './types';
