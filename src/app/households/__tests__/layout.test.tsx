@@ -29,7 +29,7 @@ describe('Households Layout', () => {
       expect(metadata.openGraph).toBeDefined();
       expect(metadata.openGraph?.title).toBe('Households Management - Citizenly');
       expect(metadata.openGraph?.description).toContain('household registration');
-      expect(metadata.openGraph?.type).toBe('website');
+      expect((metadata.openGraph as any)?.type).toBe('website');
     });
 
     it('should have all required metadata properties', () => {

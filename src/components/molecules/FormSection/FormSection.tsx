@@ -9,7 +9,8 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface FormSectionProps {
-  legend: string;
+  legend?: string;
+  title?: string; // Alternative to legend for backwards compatibility
   description?: string;
   children: React.ReactNode;
   className?: string;
@@ -18,15 +19,18 @@ interface FormSectionProps {
 
 export default function FormSection({
   legend,
+  title,
   description,
   children,
   className,
   required = false,
 }: FormSectionProps) {
+  // Use title as fallback for legend for backwards compatibility
+  const sectionTitle = legend || title;
   return (
     <fieldset className={cn('space-y-4', className)}>
       <legend className="border-b pb-2 text-lg font-medium text-primary">
-        {legend}
+        {sectionTitle}
         {required && (
           <span className="ml-1 text-red-500" aria-label="required">
             *

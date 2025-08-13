@@ -159,7 +159,7 @@ export default function ResidentEditPage() {
 
         setInitialData(formattedData);
       } catch (err) {
-        logError('Error fetching resident', err);
+        logError('Error fetching resident', err instanceof Error ? err : new Error(String(err)));
         setError(err instanceof Error ? err.message : 'Failed to load resident');
       } finally {
         setLoading(false);

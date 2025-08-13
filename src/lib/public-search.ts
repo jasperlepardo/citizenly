@@ -54,11 +54,11 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
     // Transform data to match expected format
     const transformedData = data?.map(item => ({
       code: item.code,
-      name: item.name,
-      city_name: `${item.psgc_cities_municipalities.name} (${item.psgc_cities_municipalities.type})`,
-      province_name: item.psgc_cities_municipalities.psgc_provinces.name,
-      region_name: item.psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
-      full_address: `${item.name}, ${item.psgc_cities_municipalities.name}, ${item.psgc_cities_municipalities.psgc_provinces.name}, ${item.psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
+      name: (item as any).name,
+      city_name: `${(item as any).psgc_cities_municipalities.name} (${(item as any).psgc_cities_municipalities.type})`,
+      province_name: (item as any).psgc_cities_municipalities.psgc_provinces.name,
+      region_name: (item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
+      full_address: `${(item as any).name}, ${(item as any).psgc_cities_municipalities.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
     })) || [];
 
     logger.debug(`Found ${transformedData.length} barangays`);
