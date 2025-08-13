@@ -164,7 +164,8 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         }
 
         const data = await response.json();
-        const { profile: profileData, role } = data;
+        // The API returns { data: { profile, role }, message, metadata }
+        const { profile: profileData, role } = data.data || data;
 
         if (!profileData) {
           console.error('No profile found for user:', userId);

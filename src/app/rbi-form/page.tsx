@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/organisms';
@@ -355,12 +356,12 @@ function HouseholdSelector() {
                   Households are created automatically when you add residents.
                 </p>
                 <div className="mt-4 flex justify-center space-x-4">
-                  <a
+                  <Link
                     href="/residents/create"
                     className="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                   >
                     Add Resident
-                  </a>
+                  </Link>
                 </div>
               </div>
             )}

@@ -9,6 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/navigation';
 import ResidentsPage from './page';
 import { useAuth } from '@/contexts/AuthContext';
+import { fetchResidents } from '@/utils/residentListingHelpers';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -17,6 +18,10 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
+}));
+
+jest.mock('@/utils/residentListingHelpers', () => ({
+  fetchResidents: jest.fn(),
 }));
 
 jest.mock('@/components/organisms', () => ({
@@ -108,8 +113,7 @@ describe('ResidentsPage', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useAuth as jest.Mock).mockReturnValue({ session: mockSession });
     
-    const { fetchResidents } = require('@/utils/residentListingHelpers');
-    fetchResidents.mockResolvedValue(mockApiResponse);
+    (fetchResidents as jest.Mock).mockResolvedValue(mockApiResponse);
   });
 
   describe('Rendering', () => {
@@ -132,8 +136,7 @@ describe('ResidentsPage', () => {
     });
 
     it('should render error state when fetch fails', async () => {
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      fetchResidents.mockRejectedValue(new Error('Failed to fetch'));
+        fetchResidents.mockRejectedValue(new Error('Failed to fetch'));
       
       render(<ResidentsPage />);
       
@@ -149,8 +152,7 @@ describe('ResidentsPage', () => {
   describe('Search Functionality', () => {
     it('should handle search input', async () => {
       const user = userEvent.setup();
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      
+        
       render(<ResidentsPage />);
       
       await waitFor(() => {
@@ -168,8 +170,7 @@ describe('ResidentsPage', () => {
 
     it('should reset page to 1 when searching', async () => {
       const user = userEvent.setup();
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      
+        
       render(<ResidentsPage />);
       
       await waitFor(() => {
@@ -224,8 +225,7 @@ describe('ResidentsPage', () => {
   describe('Error Handling', () => {
     it('should retry data loading when retry button is clicked', async () => {
       const user = userEvent.setup();
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      
+        
       fetchResidents
         .mockRejectedValueOnce(new Error('Network error'))
         .mockResolvedValueOnce(mockApiResponse);
@@ -245,8 +245,7 @@ describe('ResidentsPage', () => {
 
   describe('Authentication', () => {
     it('should not fetch data without session', () => {
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      (useAuth as jest.Mock).mockReturnValue({ session: null });
+        (useAuth as jest.Mock).mockReturnValue({ session: null });
       
       render(<ResidentsPage />);
       
@@ -256,8 +255,7 @@ describe('ResidentsPage', () => {
 
   describe('Pagination', () => {
     it('should handle page changes', async () => {
-      const { fetchResidents } = require('@/utils/residentListingHelpers');
-      const multiPageResponse = {
+        const multiPageResponse = {
         ...mockApiResponse,
         pagination: {
           ...mockApiResponse.pagination,

@@ -261,7 +261,7 @@ export async function authenticate(
     };
 
   } catch (error) {
-    logger.error('Authentication service error', { error, context });
+    logger.error('Authentication service error', { error });
     return {
       success: false,
       error: {

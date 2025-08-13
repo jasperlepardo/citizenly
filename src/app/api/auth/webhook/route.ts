@@ -174,8 +174,8 @@ async function completeAddressHierarchy(userId: string) {
       .from('auth_user_profiles')
       .update({
         city_municipality_code: hierarchy.city_municipality_code,
-        province_code: hierarchy.psgc_cities_municipalities.province_code,
-        region_code: hierarchy.psgc_cities_municipalities.psgc_provinces.region_code,
+        province_code: (hierarchy as any).psgc_cities_municipalities.province_code,
+        region_code: (hierarchy as any).psgc_cities_municipalities.psgc_provinces.region_code,
         updated_at: new Date().toISOString()
       })
       .eq('id', userId);
@@ -219,7 +219,7 @@ async function queueWelcomeNotifications(userId: string) {
       metadata: {
         email: profile.email,
         first_name: profile.first_name,
-        role_name: profile.auth_roles.name
+        role_name: (profile as any).auth_roles.name
       }
     });
 

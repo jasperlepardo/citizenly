@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server';
-import { logger } from '@/lib/secure-logger';
 import { createAdminSupabaseClient } from '@/lib/api-auth';
 import { createClient } from '@supabase/supabase-js';
 import { createSuccessResponse, createUnauthorizedResponse, createNotFoundResponse, handleDatabaseError, handleUnexpectedError } from '@/lib/api-responses';
