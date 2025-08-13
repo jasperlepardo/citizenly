@@ -1,13 +1,30 @@
+import { NextRequest } from 'next/server';
+import { logger } from '@/lib/secure-logger';
+import { createAdminSupabaseClient } from '@/lib/api-auth';
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+import { createSuccessResponse, createUnauthorizedResponse, createNotFoundResponse, handleDatabaseError, handleUnexpectedError } from '@/lib/api-responses';
 
+/**
+ * GET API Handler for auth/profile
+ * 
+ * @description Handles GET requests for the auth/profile endpoint
+ * @param {NextRequest} request - The incoming HTTP request object
+ * @returns {Promise<NextResponse>} JSON response with data or error message
+ * 
+ * @example
+ * ```typescript
+ * // GET /auth/profile
+ * const response = await fetch('/auth/profile', { method: 'GET' });
+ * const data = await response.json();
+ * ```
+ */
 export async function GET(request: NextRequest) {
   try {
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
+      return createUnauthorizedResponse('No auth token provided');
     }
 
     const token = authHeader.split(' ')[1];
@@ -25,15 +42,12 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
+      return createUnauthorizedResponse('Invalid token');
     }
 
     // Use service role client to bypass RLS for this specific query
     // This is safe because we've already verified the user's authentication
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY! // Service role key
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Fetch user profile with service role (bypasses RLS)
     const { data: profileData, error: profileError } = await supabaseAdmin
@@ -43,12 +57,11 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (profileError) {
-      console.error('Profile query error:', profileError);
-      return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
+      return await handleDatabaseError(profileError);
     }
 
     if (!profileData) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+      return createNotFoundResponse('Profile');
     }
 
     // Fetch role separately if needed
@@ -63,12 +76,11 @@ export async function GET(request: NextRequest) {
       roleData = role;
     }
 
-    return NextResponse.json({
+    return createSuccessResponse({
       profile: profileData,
       role: roleData,
-    });
+    }, 'Profile retrieved successfully');
   } catch (error) {
-    console.error('API route error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return await handleUnexpectedError(error);
   }
 }

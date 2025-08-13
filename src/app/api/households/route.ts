@@ -1,209 +1,180 @@
-import { createClient } from '@supabase/supabase-js';
-import { NextRequest, NextResponse } from 'next/server';
+/**
+ * Households API Route
+ * Updated to comply with API Design Standards
+ */
 
-export async function POST(request: NextRequest) {
-  try {
-    const householdData = await request.json();
+import { NextRequest } from 'next/server';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
+import { createRateLimitHandler, RATE_LIMIT_RULES } from '@/lib/rate-limit';
+import { createHouseholdSchema } from '@/lib/api-validation';
+import {
+  createPaginatedResponse,
+  createCreatedResponse,
+  createValidationErrorResponse,
+  processSearchParams,
+  applySearchFilter,
+  withErrorHandling,
+  withSecurityHeaders
+} from '@/lib/api-responses';
+import { auditDataOperation } from '@/lib/api-audit';
+import { RequestContext } from '@/lib/api-types';
+import { z } from 'zod';
 
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
-
-    // Use service role client to bypass RLS for this specific operation
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    // Get user profile with full geographic access info
-    const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('auth_user_profiles')
-      .select('barangay_code, city_municipality_code, province_code, region_code, role_id')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError || !userProfile) {
-      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
-    }
-
-    // Ensure household has required geographic data based on user's access level
-    const newHouseholdData = {
-      ...householdData,
-      barangay_code: householdData.barangay_code || userProfile.barangay_code,
-      city_municipality_code:
-        householdData.city_municipality_code || userProfile.city_municipality_code,
-      province_code: householdData.province_code || userProfile.province_code,
-      region_code: householdData.region_code || userProfile.region_code,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
-    const { data: newHousehold, error: createError } = await supabaseAdmin
-      .from('households')
-      .insert([newHouseholdData])
-      .select()
-      .single();
-
-    if (createError) {
-      console.error('Household creation error:', createError);
-      return NextResponse.json({ error: 'Failed to create household' }, { status: 500 });
-    }
-
-    return NextResponse.json(
-      {
-        household: newHousehold,
-        message: 'Household created successfully',
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Household creation API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
+// Type the auth result properly
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: string;
+  barangayCode?: string;
+  cityCode?: string;
+  provinceCode?: string;
+  regionCode?: string;
 }
 
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const searchTerm = searchParams.get('search') || '';
+// GET /api/households - List households with pagination and search
+export const GET = withSecurityHeaders(
+  withAuth(
+    { requiredPermissions: ['households.manage.barangay', 'households.manage.city', 'households.manage.province', 'households.manage.region', 'households.manage.all'] },
+    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+      // Apply rate limiting
+      const rateLimitResponse = await createRateLimitHandler('SEARCH_RESIDENTS')(request, user.id);
+      if (rateLimitResponse) return rateLimitResponse;
 
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+      // Process search parameters safely
+      const { search, page, limit, offset } = await processSearchParams(
+        new URL(request.url).searchParams,
+        context
+      );
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
+      const supabaseAdmin = createAdminSupabaseClient();
 
-    const token = authHeader.split(' ')[1];
+      // Build base query using the optimized view
+      let query = supabaseAdmin
+        .from('api_households_with_members')
+        .select('*', { count: 'exact' })
+        .order('code', { ascending: true });
 
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+      // Apply geographic filtering based on user's access level
+      query = applyGeographicFilter(query, user);
 
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
+      // Apply search filter if provided
+      if (search) {
+        query = applySearchFilter(query, search, [
+          'code',
+          'street_name'
+        ]);
+      }
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
 
-    // Use service role client to bypass RLS for this specific query
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+      // Execute query
+      const { data: households, error, count } = await query;
 
-    // Get user profile with full geographic access info
-    const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('auth_user_profiles')
-      .select('barangay_code, city_municipality_code, province_code, region_code, role_id')
-      .eq('id', user.id)
-      .single();
+      if (error) {
+        // Re-throw error to be handled by withErrorHandling wrapper
+        throw error;
+      }
 
-    if (profileError || !userProfile) {
-      return NextResponse.json({ error: 'User profile not found' }, { status: 400 });
-    }
+      // Audit the data access
+      await auditDataOperation('view', 'household', 'list', context, {
+        searchTerm: search,
+        resultCount: households?.length || 0,
+        totalCount: count || 0
+      });
 
-    // Get user role to determine access level
-    const { data: roleData, error: roleError } = await supabaseAdmin
-      .from('auth_roles')
-      .select('name')
-      .eq('id', userProfile.role_id)
-      .single();
+      return createPaginatedResponse(
+        households || [],
+        { page, limit, total: count || 0 },
+        'Households retrieved successfully',
+        context
+      );
+    })
+  )
+);
 
-    if (roleError || !roleData) {
-      return NextResponse.json({ error: 'User role not found' }, { status: 400 });
-    }
+// POST /api/households - Create new household
+export const POST = withSecurityHeaders(
+  withAuth(
+    { requiredPermissions: ['households.manage.barangay', 'households.manage.city', 'households.manage.province', 'households.manage.region', 'households.manage.all'] },
+    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+      // Apply rate limiting
+      const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
+      if (rateLimitResponse) return rateLimitResponse;
 
-    // Determine access level from role name
-    const accessLevel = roleData.name.includes('barangay') ? 'barangay' :
-                       roleData.name.includes('city') ? 'city' :
-                       roleData.name.includes('province') ? 'province' :
-                       roleData.name.includes('region') ? 'region' :
-                       roleData.name.includes('national') ? 'national' : 'barangay';
+      // Parse and validate request body
+      const body = await request.json();
+      const validationResult = createHouseholdSchema.safeParse(body);
 
-    // Build the households query using optimized flat view with multi-level filtering
-    let query = supabaseAdmin
-      .from('api_households_with_members')
-      .select('*', { count: 'exact' })
-      .order('code', { ascending: true });
+      if (!validationResult.success) {
+        return createValidationErrorResponse(
+          validationResult.error.issues.map((err: z.ZodIssue) => ({
+            field: err.path.join('.'),
+            message: err.message
+          })),
+          context
+        );
+      }
 
-    // Apply geographic filtering based on user's access level
-    switch (accessLevel) {
-      case 'barangay':
-        if (userProfile.barangay_code) {
-          query = query.eq('barangay_code', userProfile.barangay_code);
-        }
-        break;
-      case 'city':
-        if (userProfile.city_municipality_code) {
-          query = query.eq('city_municipality_code', userProfile.city_municipality_code);
-        }
-        break;
-      case 'province':
-        if (userProfile.province_code) {
-          query = query.eq('province_code', userProfile.province_code);
-        }
-        break;
-      case 'region':
-        if (userProfile.region_code) {
-          query = query.eq('region_code', userProfile.region_code);
-        }
-        break;
-      case 'national':
-        // No filtering - national access sees all
-        break;
-      default:
-        // Default to barangay-level access for security
-        if (userProfile.barangay_code) {
-          query = query.eq('barangay_code', userProfile.barangay_code);
-        }
-    }
+      const householdData = validationResult.data;
 
-    // Add search if provided
-    if (searchTerm.trim()) {
-      query = query.or(`code.ilike.%${searchTerm}%,street_name.ilike.%${searchTerm}%`);
-    }
+      // Use user's geographic codes if not provided
+      const effectiveBarangayCode = householdData.barangayCode || user.barangayCode;
+      if (!effectiveBarangayCode) {
+        return createValidationErrorResponse(
+          [{ field: 'barangayCode', message: 'Barangay code is required' }],
+          context
+        );
+      }
 
-    const { data: households, error: householdsError, count } = await query;
+      const supabaseAdmin = createAdminSupabaseClient();
 
-    if (householdsError) {
-      console.error('Households query error:', householdsError);
-      return NextResponse.json({ error: 'Failed to fetch households' }, { status: 500 });
-    }
+      // Prepare data for insertion
+      const insertData = {
+        code: householdData.code,
+        street_name: householdData.streetName || null,
+        subdivision_name: householdData.subdivisionName || null,
+        household_number: householdData.householdNumber || null,
+        barangay_code: effectiveBarangayCode,
+        city_municipality_code: householdData.cityMunicipalityCode || user.cityCode || null,
+        province_code: householdData.provinceCode || user.provinceCode || null,
+        region_code: householdData.regionCode || user.regionCode || null,
+        head_resident_id: householdData.headResidentId || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-    return NextResponse.json({
-      data: households || [],
-      total: count || 0,
-    });
-  } catch (error) {
-    console.error('Households API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+      // Insert household
+      const { data: newHousehold, error: insertError } = await supabaseAdmin
+        .from('households')
+        .insert([insertData])
+        .select('*')
+        .single();
+
+      if (insertError) {
+        // Re-throw error to be handled by withErrorHandling wrapper
+        throw insertError;
+      }
+
+      // Audit the creation
+      await auditDataOperation('create', 'household', newHousehold.id, context, {
+        barangayCode: effectiveBarangayCode,
+        householdCode: householdData.code
+      });
+
+      return createCreatedResponse(
+        {
+          household: newHousehold
+        },
+        'Household created successfully',
+        context
+      );
+    })
+  )
+);
+
+// Export rate limiting rules for this endpoint
+// export const rateLimitConfig = {
+//   GET: RATE_LIMIT_RULES.SEARCH_RESIDENTS,
+//   POST: RATE_LIMIT_RULES.RESIDENT_CREATE
+// };
