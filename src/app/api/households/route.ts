@@ -13,18 +13,18 @@ import {
   createValidationErrorResponse,
   processSearchParams,
   applySearchFilter,
-  withErrorHandling,
+  withNextRequestErrorHandling,
   withSecurityHeaders
 } from '@/lib/api-responses';
 import { auditDataOperation } from '@/lib/api-audit';
-import { RequestContext } from '@/lib/api-types';
+import { RequestContext, Role } from '@/lib/api-types';
 import { z } from 'zod';
 
 // Type the auth result properly
 interface AuthenticatedUser {
   id: string;
   email: string;
-  role: string;
+  role: Role;
   barangayCode?: string;
   cityCode?: string;
   provinceCode?: string;
@@ -35,7 +35,7 @@ interface AuthenticatedUser {
 export const GET = withSecurityHeaders(
   withAuth(
     { requiredPermissions: ['households.manage.barangay', 'households.manage.city', 'households.manage.province', 'households.manage.region', 'households.manage.all'] },
-    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+    withNextRequestErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
       // Apply rate limiting
       const rateLimitResponse = await createRateLimitHandler('SEARCH_RESIDENTS')(request, user.id);
       if (rateLimitResponse) return rateLimitResponse;
@@ -97,7 +97,7 @@ export const GET = withSecurityHeaders(
 export const POST = withSecurityHeaders(
   withAuth(
     { requiredPermissions: ['households.manage.barangay', 'households.manage.city', 'households.manage.province', 'households.manage.region', 'households.manage.all'] },
-    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+    withNextRequestErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
       // Apply rate limiting
       const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
       if (rateLimitResponse) return rateLimitResponse;

@@ -115,7 +115,7 @@ export const LazyLoadingPresets = {
    */
   chart: {
     fallback: <LoadingSpinner message="Loading chart..." />,
-    errorFallback: LazyErrorFallback,
+    errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   },
   
   /**
@@ -123,7 +123,7 @@ export const LazyLoadingPresets = {
    */
   form: {
     fallback: <LoadingSpinner message="Loading form..." />,
-    errorFallback: LazyErrorFallback,
+    errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   },
   
   /**
@@ -135,7 +135,7 @@ export const LazyLoadingPresets = {
         <LoadingSpinner message="Loading modal..." />
       </div>
     ),
-    errorFallback: LazyErrorFallback,
+    errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   },
 
   /**
@@ -149,7 +149,7 @@ export const LazyLoadingPresets = {
         <div className="h-4 bg-gray-200 rounded w-3/4"></div>
       </div>
     ),
-    errorFallback: LazyErrorFallback,
+    errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   }
 };
 

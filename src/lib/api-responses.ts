@@ -404,6 +404,40 @@ export function withErrorHandling<T extends any[]>(
 }
 
 /**
+ * Specialized error handling for NextRequest (used with withAuth)
+ */
+export function withNextRequestErrorHandling<T extends any[]>(
+  handler: (request: NextRequest, ...args: T) => Promise<Response>
+) {
+  return async (request: NextRequest, ...args: T): Promise<Response> => {
+    try {
+      return await handler(request, ...args);
+    } catch (error: any) {
+      const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as RequestContext | undefined;
+      
+      // Check for validation errors
+      if (error.name === 'ZodError') {
+        return createValidationErrorResponse(
+          error.errors.map((err: any) => ({
+            field: err.path.join('.'),
+            message: err.message
+          })),
+          context
+        );
+      }
+
+      // Check for database errors
+      if (error?.code && typeof error.code === 'string') {
+        return handleDatabaseError(error, context);
+      }
+
+      // Handle unexpected errors
+      return handleUnexpectedError(error, context);
+    }
+  };
+}
+
+/**
  * Create a 201 Created response for successful resource creation
  */
 export function createCreatedResponse<T>(

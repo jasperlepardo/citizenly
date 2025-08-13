@@ -1,0 +1,470 @@
+{
+  "timestamp": "2025-08-12T23:47:25.184Z",
+  "summary": {
+    "total": 49,
+    "high": 14,
+    "medium": 15,
+    "low": 20
+  },
+  "vulnerabilities": {
+    "high": [
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/api/residents/__tests__/residents.post.test.ts",
+        "line": 32,
+        "match": "token = 'test-token'",
+        "context": "function buildRequest(body: any,"
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 40,
+        "match": "password: ''",
+        "context": ""
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 41,
+        "match": "Password: ''",
+        "context": "confirm"
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 76,
+        "match": "password = 'Password is required'",
+        "context": "newErrors."
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 78,
+        "match": "password = 'Password must be at least 8 characters'",
+        "context": "newErrors."
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 80,
+        "match": "password =\n        'Password must contain at least one uppercase letter, one lowercase letter, and one number'",
+        "context": "newErrors."
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 86,
+        "match": "Password = 'Please confirm your password'",
+        "context": "newErrors.confirm"
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/app/signup/page.tsx",
+        "line": 88,
+        "match": "Password = 'Passwords do not match'",
+        "context": "newErrors.confirm"
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/components/organisms/DevLogin/DevLogin.stories.tsx",
+        "line": 9,
+        "match": "password: 'dev123456'",
+        "context": ""
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/components/organisms/LoginForm/LoginForm.tsx",
+        "line": 22,
+        "match": "password: ''",
+        "context": ""
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/components/organisms/LoginForm/LoginForm.tsx",
+        "line": 46,
+        "match": "password = 'Password is required'",
+        "context": "newErrors."
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/components/organisms/LoginForm/LoginForm.tsx",
+        "line": 48,
+        "match": "password = 'Password must be at least 6 characters'",
+        "context": "newErrors."
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/lib/api-audit.ts",
+        "line": 42,
+        "match": "TOKEN = 'invalid_token'",
+        "context": "INVALID_"
+      },
+      {
+        "type": "hardcoded_secrets",
+        "severity": "high",
+        "message": "Potential hardcoded secrets detected",
+        "file": "src/lib/api-types.ts",
+        "line": 55,
+        "match": "TOKEN = 'INVALID_TOKEN'",
+        "context": "INVALID_"
+      }
+    ],
+    "medium": [
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/app/api/residents/__tests__/residents.post.test.ts",
+        "line": 41,
+        "match": "http://",
+        "context": "process.env.NEXT_PUBLIC_SUPABASE_URL = '"
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/atoms/Button/Button.tsx",
+        "line": 159,
+        "match": "http://",
+        "context": "xmlns=\""
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/base/BaseSelector.tsx",
+        "line": 124,
+        "match": "http://",
+        "context": "xmlns=\""
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/base/BaseSelector.tsx",
+        "line": 149,
+        "match": "http://",
+        "context": "xmlns=\""
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/components/molecules/DropdownSelect/DropdownSelect.tsx",
+        "line": 99,
+        "match": "Math.random()",
+        "context": "const listboxId = `dropdown-listbox-${"
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/components/molecules/DropdownSelect/DropdownSelect.tsx",
+        "line": 100,
+        "match": "Math.random()",
+        "context": "const labelId = `dropdown-label-${"
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/organisms/DevLogin/DevLogin.tsx",
+        "line": 220,
+        "match": "http://",
+        "context": "xmlns=\""
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/components/organisms/PSOCSelector/PSOCSelector.tsx",
+        "line": 42,
+        "match": "Math.random()",
+        "context": "const listboxId = `psoc-listbox-${"
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/templates/DashboardLayout/DashboardLayout.tsx",
+        "line": 151,
+        "match": "http://",
+        "context": "'url(\\'data:image/svg+xml,%3Csvg xmlns=\""
+      },
+      {
+        "type": "insecure_http",
+        "severity": "medium",
+        "message": "Insecure HTTP usage detected",
+        "file": "src/components/templates/DashboardLayout/DashboardLayout.tsx",
+        "line": 186,
+        "match": "http://",
+        "context": "'url(\\'data:image/svg+xml,%3Csvg xmlns=\""
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/components/templates/HouseholdFormWizard/HouseholdFormWizard.tsx",
+        "line": 149,
+        "match": "Math.random()",
+        "context": "const randomStr ="
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/lib/accessibility.ts",
+        "line": 179,
+        "match": "Math.random()",
+        "context": "idRef.current = `${prefix}-${"
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/lib/file-security.ts",
+        "line": 217,
+        "match": "Math.random()",
+        "context": "const random ="
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/lib/utils.ts",
+        "line": 102,
+        "match": "Math.random()",
+        "context": "return `${prefix}-${Date.now()}-${"
+      },
+      {
+        "type": "weak_random",
+        "severity": "medium",
+        "message": "Weak random number generation for security purposes",
+        "file": "src/providers/AppProvider.tsx",
+        "line": 117,
+        "match": "Math.random()",
+        "context": "id: `notif-${Date.now()}-${"
+      }
+    ],
+    "low": [
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/api/auth/assign-role/route.ts",
+        "line": 8,
+        "match": "console.error('Missing Supabase configuration:', {\n    url: !!supabaseUrl,\n    serviceKey: !!supabaseServiceKey",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/api/auth/check-barangay-admin/route.ts",
+        "line": 8,
+        "match": "console.error('Missing Supabase configuration:', {\n    url: !!supabaseUrl,\n    serviceKey: !!supabaseServiceKey",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/api/auth/webhook/route.ts",
+        "line": 61,
+        "match": "console.log('🔄 Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/signup/page.tsx",
+        "line": 153,
+        "match": "console.log('📋 Signup result:', {\n        success: !authError,\n        hasUser: !!authData.user,\n        userId: authData.user?.id,\n        error: authError?.message,\n        errorCode: auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/signup/page.tsx",
+        "line": 170,
+        "match": "console.log('✅ Auth user created successfully:', auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/signup/page.tsx",
+        "line": 171,
+        "match": "console.log('📧 Email confirmation required:', !auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/app/signup/page.tsx",
+        "line": 162,
+        "match": "console.error('❌ Signup failed:', { \n          error: authError?.message, \n          code: authError?.code,\n          status: auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 243,
+        "match": "console.log('Starting auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 265,
+        "match": "console.log('Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 288,
+        "match": "console.log('User was auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 301,
+        "match": "console.log('Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 268,
+        "match": "console.error('Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/contexts/AuthContext.tsx",
+        "line": 284,
+        "match": "console.warn('Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/design-system/utils.ts",
+        "line": 23,
+        "match": "console.warn(`Color token",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/api-auth.ts",
+        "line": 263,
+        "match": "console.error('Auth",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/csrf.ts",
+        "line": 79,
+        "match": "console.warn('[CSRF] Token",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/csrf.ts",
+        "line": 101,
+        "match": "console.error('[CSRF] Token",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/csrf.ts",
+        "line": 136,
+        "match": "console.error('[CSRF] Token",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/csrf.ts",
+        "line": 198,
+        "match": "console.warn('[CSRF] Missing CSRF token",
+        "context": ""
+      },
+      {
+        "type": "console_logging",
+        "severity": "low",
+        "message": "Potential sensitive data logging",
+        "file": "src/lib/rate-limit.ts",
+        "line": 119,
+        "match": "console.warn(`[RATE_LIMIT] ${ruleKey",
+        "context": ""
+      }
+    ]
+  },
+  "recommendations": [
+    "Address all high-severity vulnerabilities immediately",
+    "Move all secrets to environment variables",
+    "Add .env files to .gitignore if not already present",
+    "Replace HTTP URLs with HTTPS equivalents",
+    "Use crypto.randomBytes() for cryptographic purposes",
+    "Remove console.log statements with sensitive data",
+    "Use proper logging framework instead of console methods",
+    "Run npm audit regularly to check for vulnerable dependencies",
+    "Consider implementing Content Security Policy (CSP) headers",
+    "Set up automated security scanning in CI/CD pipeline"
+  ]
+}

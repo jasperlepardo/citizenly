@@ -13,11 +13,11 @@ import {
   createValidationErrorResponse,
   processSearchParams,
   applySearchFilter,
-  withErrorHandling,
+  withNextRequestErrorHandling,
   withSecurityHeaders
 } from '@/lib/api-responses';
 import { auditDataOperation } from '@/lib/api-audit';
-import { RequestContext } from '@/lib/api-types';
+import { RequestContext, Role } from '@/lib/api-types';
 import { z } from 'zod';
 import { logger, logError } from '@/lib/secure-logger';
 
@@ -25,7 +25,7 @@ import { logger, logError } from '@/lib/secure-logger';
 interface AuthenticatedUser {
   id: string;
   email: string;
-  role: string;
+  role: Role;
   barangayCode?: string;
   cityCode?: string;
   provinceCode?: string;
@@ -36,7 +36,7 @@ interface AuthenticatedUser {
 export const GET = withSecurityHeaders(
   withAuth(
     { requiredPermissions: ['residents.manage.barangay', 'residents.manage.city', 'residents.manage.province', 'residents.manage.region', 'residents.manage.all'] },
-    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+    withNextRequestErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
       // Apply rate limiting
       const rateLimitResponse = await createRateLimitHandler('SEARCH_RESIDENTS')(request, user.id);
       if (rateLimitResponse) return rateLimitResponse;
@@ -88,7 +88,7 @@ export const GET = withSecurityHeaders(
       const { data: residents, error, count } = await query;
 
       if (error) {
-        logError('Residents query error', error);
+        logError(new Error('Residents query error'), JSON.stringify(error));
         throw error;
       }
 
@@ -113,7 +113,7 @@ export const GET = withSecurityHeaders(
 export const POST = withSecurityHeaders(
   withAuth(
     { requiredPermissions: ['residents.manage.barangay', 'residents.manage.city', 'residents.manage.province', 'residents.manage.region', 'residents.manage.all'] },
-    withErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+    withNextRequestErrorHandling(async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
       // Apply rate limiting
       const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
       if (rateLimitResponse) return rateLimitResponse;
@@ -211,7 +211,7 @@ export const POST = withSecurityHeaders(
         .single();
 
       if (insertError) {
-        logError('Resident creation error', insertError);
+        logError(new Error('Resident creation error'), JSON.stringify(insertError));
         throw insertError;
       }
 

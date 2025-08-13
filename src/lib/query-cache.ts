@@ -84,7 +84,7 @@ class QueryCache {
   invalidateByTag(tag: string): number {
     let invalidated = 0;
     
-    for (const [key, entry] of this.cache.entries()) {
+    for (const [key, entry] of Array.from(this.cache.entries())) {
       if (entry.tags.includes(tag)) {
         this.cache.delete(key);
         invalidated++;
@@ -137,7 +137,7 @@ class QueryCache {
     let oldestKey: string | null = null;
     let oldestTimestamp = Date.now();
 
-    for (const [key, entry] of this.cache.entries()) {
+    for (const [key, entry] of Array.from(this.cache.entries())) {
       if (entry.timestamp < oldestTimestamp) {
         oldestTimestamp = entry.timestamp;
         oldestKey = key;
@@ -157,7 +157,7 @@ class QueryCache {
     
     // Estimate memory usage (rough calculation)
     let memoryUsage = 0;
-    for (const entry of this.cache.values()) {
+    for (const entry of Array.from(this.cache.values())) {
       memoryUsage += JSON.stringify(entry).length * 2; // Rough estimate
     }
     this.stats.memoryUsage = memoryUsage;
@@ -170,7 +170,7 @@ class QueryCache {
     let cleaned = 0;
     const now = Date.now();
 
-    for (const [key, entry] of this.cache.entries()) {
+    for (const [key, entry] of Array.from(this.cache.entries())) {
       if (now - entry.timestamp > entry.ttl) {
         this.cache.delete(key);
         cleaned++;

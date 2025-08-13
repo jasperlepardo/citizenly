@@ -1,0 +1,31 @@
+{
+  "complexity": {
+    "maxCyclomaticComplexity": 10,
+    "maxCognitiveComplexity": 15,
+    "maxLinesPerFunction": 50,
+    "maxLinesPerFile": 300,
+    "warningThresholds": {
+      "cyclomaticComplexity": 8,
+      "cognitiveComplexity": 12,
+      "linesPerFunction": 40,
+      "linesPerFile": 250
+    }
+  },
+  "refactoringPriority": {
+    "urgent": {
+      "cyclomaticComplexity": "> 30",
+      "cognitiveComplexity": "> 50",
+      "linesPerFile": "> 500"
+    },
+    "high": {
+      "cyclomaticComplexity": "> 20",
+      "cognitiveComplexity": "> 30",
+      "linesPerFile": "> 400"
+    },
+    "medium": {
+      "cyclomaticComplexity": "> 15",
+      "cognitiveComplexity": "> 20",
+      "linesPerFile": "> 300"
+    }
+  }
+}

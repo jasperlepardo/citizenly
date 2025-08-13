@@ -1,0 +1,178 @@
+#!/bin/bash
+
+# Pre-commit hook to enforce coding standards
+# This hook runs before each commit to ensure code quality
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to print colored output
+print_status() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# Check if there are staged files
+if git diff --cached --quiet; then
+    print_warning "No staged files found. Skipping pre-commit checks."
+    exit 0
+fi
+
+# Get list of staged TypeScript/JavaScript files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' || true)
+
+if [ -z "$STAGED_FILES" ]; then
+    print_status "No TypeScript/JavaScript files staged. Skipping code quality checks."
+    exit 0
+fi
+
+echo "📁 Checking staged files:"
+echo "$STAGED_FILES" | sed 's/^/  - /'
+echo
+
+# 1. Run TypeScript compiler check
+echo "🔧 Running TypeScript compiler check..."
+if ! npx tsc --noEmit; then
+    print_error "TypeScript compilation failed. Please fix type errors before committing."
+    exit 1
+fi
+print_status "TypeScript compilation passed"
+
+# 2. Run ESLint on staged files
+echo "🧹 Running ESLint..."
+if ! echo "$STAGED_FILES" | xargs npx eslint --ext .ts,.tsx,.js,.jsx; then
+    print_error "ESLint found issues. Please fix them before committing."
+    echo "💡 Run 'npm run lint:fix' to auto-fix some issues"
+    exit 1
+fi
+print_status "ESLint passed"
+
+# 3. Run Prettier check
+echo "💅 Checking code formatting..."
+if ! echo "$STAGED_FILES" | xargs npx prettier --check; then
+    print_error "Code formatting issues found. Please format your code before committing."
+    echo "💡 Run 'npm run format' to auto-format files"
+    exit 1
+fi
+print_status "Code formatting is correct"
+
+# 4. Check for console.log statements (except in logger files)
+echo "🔍 Checking for console.log statements..."
+CONSOLE_LOG_FILES=$(echo "$STAGED_FILES" | xargs grep -l "console\.log" | grep -v -E "(logger|log)" || true)
+if [ -n "$CONSOLE_LOG_FILES" ]; then
+    print_warning "Found console.log statements in:"
+    echo "$CONSOLE_LOG_FILES" | sed 's/^/  - /'
+    echo "💡 Consider using the client-logger utility instead"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 5. Check file sizes (warn if > 300 lines for components)
+echo "📏 Checking file sizes..."
+LARGE_FILES=$(echo "$STAGED_FILES" | xargs wc -l | awk '$1 > 300 && $2 !~ /(test|spec|stories)/ { print $2 " (" $1 " lines)" }' || true)
+if [ -n "$LARGE_FILES" ]; then
+    print_warning "Large files detected (>300 lines):"
+    echo "$LARGE_FILES" | sed 's/^/  - /'
+    echo "💡 Consider breaking down large files into smaller components"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 6. Check for TODO/FIXME comments in committed code
+echo "📝 Checking for TODO/FIXME comments..."
+TODO_COMMENTS=$(echo "$STAGED_FILES" | xargs grep -n -E "(TODO|FIXME|HACK)" || true)
+if [ -n "$TODO_COMMENTS" ]; then
+    print_warning "Found TODO/FIXME comments:"
+    echo "$TODO_COMMENTS" | sed 's/^/  - /'
+    echo "💡 Consider creating GitHub issues for these items"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 7. Check for any usage (strict TypeScript)
+echo "🎯 Checking for 'any' type usage..."
+ANY_USAGE=$(echo "$STAGED_FILES" | xargs grep -n ": any\b" | grep -v -E "(test|spec|stories)" || true)
+if [ -n "$ANY_USAGE" ]; then
+    print_warning "Found 'any' type usage:"
+    echo "$ANY_USAGE" | sed 's/^/  - /' | head -10
+    echo "💡 Consider using more specific types"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 8. Check for hardcoded strings that should be constants
+echo "🔤 Checking for potential hardcoded strings..."
+HARDCODED_STRINGS=$(echo "$STAGED_FILES" | xargs grep -n -E "\"(http://|https://|SELECT|INSERT|UPDATE|DELETE)" | head -5 || true)
+if [ -n "$HARDCODED_STRINGS" ]; then
+    print_warning "Found potential hardcoded strings:"
+    echo "$HARDCODED_STRINGS" | sed 's/^/  - /'
+    echo "💡 Consider using environment variables or constants"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 9. Run tests if test files are modified
+TEST_FILES=$(echo "$STAGED_FILES" | grep -E '\.(test|spec)\.(ts|tsx|js|jsx)$' || true)
+if [ -n "$TEST_FILES" ]; then
+    echo "🧪 Running tests for modified test files..."
+    if ! npm run test -- --passWithNoTests --findRelatedTests $TEST_FILES; then
+        print_error "Tests failed. Please fix failing tests before committing."
+        exit 1
+    fi
+    print_status "Tests passed"
+fi
+
+# 10. Check technical debt limits
+echo "💳 Checking technical debt limits..."
+if ! npm run quality:debt-check > /dev/null 2>&1; then
+    print_error "Technical debt exceeds acceptable limits"
+    echo "💡 Run 'npm run quality:debt' to see detailed technical debt report"
+    exit 1
+fi
+print_status "Technical debt within limits"
+
+# 11. Check documentation coverage for new/modified files
+echo "📚 Checking documentation coverage..."
+DOC_COVERAGE=$(npm run quality:docs 2>&1 | grep "Overall coverage:" | grep -o "[0-9.]*%" || echo "0%")
+DOC_PERCENTAGE=$(echo "$DOC_COVERAGE" | sed 's/%//')
+if (( $(echo "$DOC_PERCENTAGE < 60" | bc -l) )); then
+    print_warning "Documentation coverage is low: $DOC_COVERAGE"
+    echo "💡 Run 'npm run quality:docs' for detailed documentation report"
+    echo "💡 Use 'node scripts/quick-doc-generator.js' for quick improvements"
+    echo "⚠️  This is a warning, not blocking the commit"
+else
+    print_status "Documentation coverage is acceptable: $DOC_COVERAGE"
+fi
+
+
+# 13. Check code complexity limits
+echo "🧮 Checking code complexity limits..."
+if ! npm run quality:complexity > /dev/null 2>&1; then
+    print_error "Code complexity exceeds limits"
+    echo "💡 Run 'npm run quality:complexity' to see detailed complexity report"
+    echo "💡 Consider refactoring complex functions before committing"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 14. Check for basic security issues
+echo "🔒 Checking for basic security issues..."
+if ! npm run security:code > /dev/null 2>&1; then
+    print_warning "Security issues detected in code"
+    echo "💡 Run 'npm run security:code' to see detailed security report"
+    echo "⚠️  This is a warning, not blocking the commit"
+fi
+
+# 15. Final success message
+echo
+print_status "All pre-commit checks passed! 🎉"
+echo "✨ Code is ready for commit"
+echo

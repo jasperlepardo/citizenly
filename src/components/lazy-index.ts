@@ -15,7 +15,7 @@ import { createLazyComponent, LazyLoadingPresets } from '@/lib/lazy-components';
 
 // Heavy data visualization components
 export const LazyDataTable = createLazyComponent(
-  () => import('@/components/organisms/DataTable'),
+  () => import('@/components/organisms/DataTable').then(mod => ({ default: mod.DataTable })),
   {
     ...LazyLoadingPresets.table,
     displayName: 'DataTable'
@@ -23,7 +23,7 @@ export const LazyDataTable = createLazyComponent(
 );
 
 export const LazyPopulationPyramid = createLazyComponent(
-  () => import('@/components/organisms/PopulationPyramid'),
+  () => import('@/components/organisms/PopulationPyramid').then(mod => ({ default: mod.PopulationPyramid })),
   {
     ...LazyLoadingPresets.chart,
     displayName: 'PopulationPyramid'
@@ -32,7 +32,7 @@ export const LazyPopulationPyramid = createLazyComponent(
 
 // Chart components (these are usually heavy with charting libraries)
 export const LazyCivilStatusPieChart = createLazyComponent(
-  () => import('@/components/molecules/CivilStatusPieChart'),
+  () => import('@/components/molecules/CivilStatusPieChart').then(mod => ({ default: mod.CivilStatusPieChart })),
   {
     ...LazyLoadingPresets.chart,
     displayName: 'CivilStatusPieChart'
@@ -40,7 +40,7 @@ export const LazyCivilStatusPieChart = createLazyComponent(
 );
 
 export const LazyEmploymentStatusPieChart = createLazyComponent(
-  () => import('@/components/molecules/EmploymentStatusPieChart'),
+  () => import('@/components/molecules/EmploymentStatusPieChart').then(mod => ({ default: mod.EmploymentStatusPieChart })),
   {
     ...LazyLoadingPresets.chart,
     displayName: 'EmploymentStatusPieChart'
@@ -48,7 +48,7 @@ export const LazyEmploymentStatusPieChart = createLazyComponent(
 );
 
 export const LazySexDistributionPieChart = createLazyComponent(
-  () => import('@/components/molecules/SexDistributionPieChart'),
+  () => import('@/components/molecules/SexDistributionPieChart').then(mod => ({ default: mod.SexDistributionPieChart })),
   {
     ...LazyLoadingPresets.chart,
     displayName: 'SexDistributionPieChart'
@@ -56,7 +56,7 @@ export const LazySexDistributionPieChart = createLazyComponent(
 );
 
 export const LazyDependencyRatioPieChart = createLazyComponent(
-  () => import('@/components/molecules/DependencyRatioPieChart'),
+  () => import('@/components/molecules/DependencyRatioPieChart').then(mod => ({ default: mod.DependencyRatioPieChart })),
   {
     ...LazyLoadingPresets.chart,
     displayName: 'DependencyRatioPieChart'

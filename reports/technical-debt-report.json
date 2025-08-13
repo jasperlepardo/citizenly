@@ -1,0 +1,305 @@
+{
+  "summary": {
+    "totalItems": 8,
+    "bySeverity": {
+      "low": 7,
+      "medium": 1
+    },
+    "byKeyword": {
+      "TODO": 7,
+      "XXX": 1
+    },
+    "byEffort": {
+      "medium": 8
+    },
+    "byFile": {
+      "src/app/api/auth/process-notifications/route.ts": 2,
+      "src/app/api/dashboard/stats/route.ts": 2,
+      "src/components/molecules/PhilSysNumberInput/PhilSysNumberInput.tsx": 1,
+      "src/lib/crypto.ts": 1,
+      "src/lib/file-security.ts": 2
+    }
+  },
+  "items": [
+    {
+      "keyword": "TODO",
+      "file": "src/app/api/auth/process-notifications/route.ts",
+      "line": 163,
+      "description": "Implement actual email sending",
+      "context": [
+        {
+          "lineNumber": 161,
+          "content": "    console.log('📧 Email content:', emailContent);",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 162,
+          "content": "    ",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 163,
+          "content": "    // TODO: Implement actual email sending",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 164,
+          "content": "    // const result = await emailService.send(emailContent);",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 165,
+          "content": "    // return result.success;",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/app/api/auth/process-notifications/route.ts",
+      "line": 194,
+      "description": "Implement actual SMS sending",
+      "context": [
+        {
+          "lineNumber": 192,
+          "content": "    console.log('📱 SMS content:', smsContent);",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 193,
+          "content": "    ",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 194,
+          "content": "    // TODO: Implement actual SMS sending  ",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 195,
+          "content": "    // const result = await smsService.send(smsContent);",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 196,
+          "content": "    // return result.success;",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/app/api/dashboard/stats/route.ts",
+      "line": 118,
+      "description": "Add when businesses table exists",
+      "context": [
+        {
+          "lineNumber": 116,
+          "content": "        residents: statsData.total_residents || 0,",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 117,
+          "content": "        households: statsData.total_households || 0,",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 118,
+          "content": "        businesses: 0, // TODO: Add when businesses table exists",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 119,
+          "content": "        certifications: 0, // TODO: Add when certifications table exists",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 120,
+          "content": "        seniorCitizens: statsData.old_dependents || 0, // Using dependency ratio standard (65+)",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/app/api/dashboard/stats/route.ts",
+      "line": 119,
+      "description": "Add when certifications table exists",
+      "context": [
+        {
+          "lineNumber": 117,
+          "content": "        households: statsData.total_households || 0,",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 118,
+          "content": "        businesses: 0, // TODO: Add when businesses table exists",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 119,
+          "content": "        certifications: 0, // TODO: Add when certifications table exists",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 120,
+          "content": "        seniorCitizens: statsData.old_dependents || 0, // Using dependency ratio standard (65+)",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 121,
+          "content": "        employedResidents: statsData.employed || 0,",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "XXX",
+      "file": "src/components/molecules/PhilSysNumberInput/PhilSysNumberInput.tsx",
+      "line": 177,
+      "description": "X-XXXX-XXXX + potential extra char",
+      "context": [
+        {
+          "lineNumber": 175,
+          "content": "          errorMessage={error || validationError}",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 176,
+          "content": "          className={`font-mono ${isValid ? 'border-green-500' : ''}`}",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 177,
+          "content": "          maxLength={14} // XXXX-XXXX-XXXX + potential extra char",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 178,
+          "content": "        />",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 179,
+          "content": "",
+          "isTarget": false
+        }
+      ],
+      "severity": "medium",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/lib/crypto.ts",
+      "line": 129,
+      "description": "Implement proper audit logging to secure database/service",
+      "context": [
+        {
+          "lineNumber": 127,
+          "content": "  console.info('[SECURITY AUDIT]', JSON.stringify(auditLog));",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 128,
+          "content": "",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 129,
+          "content": "  // TODO: Implement proper audit logging to secure database/service",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 130,
+          "content": "  // - Store in audit_logs table",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 131,
+          "content": "  // - Send to security monitoring service",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/lib/file-security.ts",
+      "line": 312,
+      "description": "Store in secure audit database",
+      "context": [
+        {
+          "lineNumber": 310,
+          "content": "  console.info('[FILE_SECURITY_AUDIT]', JSON.stringify(auditLog));",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 311,
+          "content": "",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 312,
+          "content": "  // TODO: Store in secure audit database",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 313,
+          "content": "  // TODO: Alert on suspicious patterns",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 314,
+          "content": "}",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    },
+    {
+      "keyword": "TODO",
+      "file": "src/lib/file-security.ts",
+      "line": 313,
+      "description": "Alert on suspicious patterns",
+      "context": [
+        {
+          "lineNumber": 311,
+          "content": "",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 312,
+          "content": "  // TODO: Store in secure audit database",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 313,
+          "content": "  // TODO: Alert on suspicious patterns",
+          "isTarget": true
+        },
+        {
+          "lineNumber": 314,
+          "content": "}",
+          "isTarget": false
+        },
+        {
+          "lineNumber": 315,
+          "content": "",
+          "isTarget": false
+        }
+      ],
+      "severity": "low",
+      "estimatedEffort": "medium"
+    }
+  ]
+}
