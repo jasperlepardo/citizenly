@@ -46,7 +46,7 @@ module.exports = {
   testTimeout: 30000, // 30 seconds
 
   // Setup files
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js', '<rootDir>/jest.setup.ci.js'],
+  setupFilesAfterEnv: ['<rootDir>/config/jest/jest.setup.js', '<rootDir>/config/jest/jest.setup.ci.js'],
 
   // Include all test types in CI
   testMatch: [

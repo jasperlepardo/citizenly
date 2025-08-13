@@ -1,6 +1,29 @@
-# Git Workflow Automation Scripts
+# Development Scripts
 
-This directory contains automation scripts to streamline the Git workflow for feature development, following best practices for branching, committing, and pull request creation.
+This directory contains automation scripts organized by category to streamline development workflows, code quality, and project maintenance.
+
+## 📁 Organization
+
+### `git/` - Git Workflow Automation
+Scripts for branching, committing, and pull request creation following best practices.
+
+### `build/` - Build & Bundle Management  
+Scripts for build optimization, bundle analysis, and deployment preparation.
+
+### `quality/` - Code Quality & Analysis
+Scripts for complexity checking, import management, and technical debt tracking.
+
+### `docs/` - Documentation Management
+Scripts for JSDoc fixing, documentation generation, and consistency checking.
+
+### `security/` - Security Analysis
+Scripts for dependency vulnerability scanning and security policy enforcement.
+
+### `database/` - Database Utilities
+Scripts for database cleanup, analysis, and maintenance.
+
+### `testing/` - Test Infrastructure
+Scripts for test generation, coverage monitoring, and test infrastructure setup.
 
 ## 🚀 Quick Start
 
@@ -32,12 +55,18 @@ npm run create-pr                                       # Create PR
 
 ```bash
 # Main workflow script
-./scripts/workflow.sh [command] [args...]
+./scripts/git/workflow.sh [command] [args...]
 
 # Individual scripts
-./scripts/create-feature.sh <name> [description]
-./scripts/commit.sh [type] [description]
-./scripts/create-pr.sh [base-branch]
+./scripts/git/create-feature.sh <name> [description]
+./scripts/git/commit.sh [type] [description]
+./scripts/git/create-pr.sh [base-branch]
+
+# Other categories
+./scripts/build/analyze-bundle.js
+./scripts/quality/check-complexity.js
+./scripts/security/check-security.sh
+./scripts/docs/check-documentation.js
 ```
 
 ## 🔄 Workflow Steps
@@ -105,12 +134,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## 🛠️ Individual Scripts
 
-### create-feature.sh
+### git/create-feature.sh
 
 Creates a new feature branch with proper setup.
 
 ```bash
-./scripts/create-feature.sh dark-mode "Add dark mode support"
+./scripts/git/create-feature.sh dark-mode "Add dark mode support"
 ```
 
 **Features:**
@@ -120,12 +149,12 @@ Creates a new feature branch with proper setup.
 - Sets up commit message template
 - Provides next steps guidance
 
-### commit.sh
+### git/commit.sh
 
 Smart commit with conventional format and file context.
 
 ```bash
-./scripts/commit.sh feat "Add login component"
+./scripts/git/commit.sh feat "Add login component"
 ```
 
 **Features:**
@@ -136,12 +165,12 @@ Smart commit with conventional format and file context.
 - Preview before committing
 - Optional push to remote
 
-### create-pr.sh
+### git/create-pr.sh
 
 Creates GitHub pull request with rich description.
 
 ```bash
-./scripts/create-pr.sh develop
+./scripts/git/create-pr.sh develop
 ```
 
 **Features:**
@@ -152,12 +181,12 @@ Creates GitHub pull request with rich description.
 - Creates test plan checklist
 - Opens in browser (optional)
 
-### workflow.sh
+### git/workflow.sh
 
 Main orchestration script combining all workflows.
 
 ```bash
-./scripts/workflow.sh complete user-auth "Add user authentication"
+./scripts/git/workflow.sh complete user-auth "Add user authentication"
 ```
 
 **Features:**
