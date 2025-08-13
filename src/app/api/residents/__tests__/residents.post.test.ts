@@ -146,13 +146,16 @@ describe.skip('POST /api/residents', () => {
   });
 
   it('returns 401 for missing bearer', async () => {
-    // Mock authentication failure for this specific test
-    const { withAuth } = require('@/lib/api-auth');
-    withAuth.mockImplementationOnce(() => {
-      return async () => {
-        return Response.json({ error: 'Unauthorized' }, { status: 401 });
-      };
-    });
+    // Mock authentication failure for this specific test by reimporting the mocked module
+    jest.doMock('@/lib/api-auth', () => ({
+      withAuth: jest.fn(() => {
+        return async () => {
+          return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        };
+      }),
+      createAdminSupabaseClient: jest.fn(() => mockSupabaseClient),
+      applyGeographicFilter: jest.fn(),
+    }));
 
     const headers = new Headers({ 'Content-Type': 'application/json' });
     const req = new NextRequest(
