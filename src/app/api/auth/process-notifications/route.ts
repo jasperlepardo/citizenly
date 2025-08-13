@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+import { createAdminSupabaseClient } from '@/lib/api-auth';
 
 interface NotificationRecord {
   id: string;
@@ -23,6 +12,8 @@ interface NotificationRecord {
 export async function POST(_request: NextRequest) {
   try {
     console.log('🔄 Processing pending notifications...');
+
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get pending notifications
     const { data: notifications, error } = await supabaseAdmin
@@ -199,6 +190,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
 // GET endpoint to check notification status
 export async function GET() {
   try {
+    const supabaseAdmin = createAdminSupabaseClient();
     const { data: stats, error } = await supabaseAdmin
       .from('user_notifications')
       .select('status, notification_type')

@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createAdminSupabaseClient } from '@/lib/api-auth';
 // Note: These imports are available for future error handling enhancements
 // import { getErrorMessage, getStatusCodeForError, DatabaseResponse } from '@/lib/auth-errors';
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
 
 interface CreateProfileRequest {
   id: string;
@@ -61,6 +50,7 @@ export async function POST(request: NextRequest) {
     console.log('Creating profile for newly created user:', { id: '[REDACTED]', email });
 
     // Create user profile using service role
+    const supabaseAdmin = createAdminSupabaseClient();
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
       .upsert(requestData, {

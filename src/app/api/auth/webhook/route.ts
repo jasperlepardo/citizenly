@@ -1,18 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import { WebhookUserRecord } from '@/types/database';
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+import { createAdminSupabaseClient } from '@/lib/api-auth';
 
 // Webhook secret for verifying Supabase webhook signatures
 const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secret';
@@ -27,6 +16,7 @@ interface WebhookPayload {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = createAdminSupabaseClient();
     const body = await request.text();
     const signature = request.headers.get('x-webhook-signature');
 
@@ -55,13 +45,17 @@ export async function POST(request: NextRequest) {
     switch (payload.type) {
       case 'UPDATE':
         if (payload.table === 'users' && payload.schema === 'auth') {
-          await handleUserUpdate(payload.record, payload.old_record || payload.record);
+          await handleUserUpdate(
+            supabaseAdmin,
+            payload.record,
+            payload.old_record || payload.record
+          );
         }
         break;
 
       case 'INSERT':
         if (payload.table === 'users' && payload.schema === 'auth') {
-          await handleUserInsert(payload.record);
+          await handleUserInsert(supabaseAdmin, payload.record);
         }
         break;
 
@@ -76,7 +70,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleUserUpdate(newRecord: WebhookUserRecord, oldRecord: WebhookUserRecord) {
+async function handleUserUpdate(
+  supabaseAdmin: any,
+  newRecord: WebhookUserRecord,
+  oldRecord: WebhookUserRecord
+) {
   const userId = newRecord.id;
 
   // Check if email was just confirmed
@@ -100,10 +98,10 @@ async function handleUserUpdate(newRecord: WebhookUserRecord, oldRecord: Webhook
       }
 
       // Complete address hierarchy if needed
-      await completeAddressHierarchy(userId);
+      await completeAddressHierarchy(supabaseAdmin, userId);
 
       // Queue welcome notifications
-      await queueWelcomeNotifications(userId);
+      await queueWelcomeNotifications(supabaseAdmin, userId);
 
       console.log(`✅ Post-confirmation processing completed for user: ${userId}`);
     } catch (error) {
@@ -112,7 +110,7 @@ async function handleUserUpdate(newRecord: WebhookUserRecord, oldRecord: Webhook
   }
 }
 
-async function handleUserInsert(record: WebhookUserRecord) {
+async function handleUserInsert(supabaseAdmin: any, record: WebhookUserRecord) {
   const userId = record.id;
   console.log(`👤 New user created: ${userId}`);
 
@@ -123,11 +121,11 @@ async function handleUserInsert(record: WebhookUserRecord) {
       ...record,
       email_confirmed_at: null,
     };
-    await handleUserUpdate(record, mockOldRecord);
+    await handleUserUpdate(supabaseAdmin, record, mockOldRecord);
   }
 }
 
-async function completeAddressHierarchy(userId: string) {
+async function completeAddressHierarchy(supabaseAdmin: any, userId: string) {
   try {
     // Get user profile with barangay code
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -195,7 +193,7 @@ async function completeAddressHierarchy(userId: string) {
   }
 }
 
-async function queueWelcomeNotifications(userId: string) {
+async function queueWelcomeNotifications(supabaseAdmin: any, userId: string) {
   try {
     // Get user profile for notification data
     const { data: profile, error: profileError } = await supabaseAdmin

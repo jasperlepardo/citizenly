@@ -22,14 +22,12 @@ jest.mock('@/lib/api-auth', () => ({
 
 // Mock API responses
 jest.mock('@/lib/api-responses', () => ({
-  createCreatedResponse: jest.fn((data) => 
-    Response.json(data, { status: 200 })
-  ),
-  createValidationErrorResponse: jest.fn((message) => 
+  createCreatedResponse: jest.fn(data => Response.json(data, { status: 200 })),
+  createValidationErrorResponse: jest.fn(message =>
     Response.json({ error: message }, { status: 400 })
   ),
-  withNextRequestErrorHandling: jest.fn((handler) => handler),
-  withSecurityHeaders: jest.fn((handler) => handler),
+  withNextRequestErrorHandling: jest.fn(handler => handler),
+  withSecurityHeaders: jest.fn(handler => handler),
 }));
 
 // Mock other dependencies
