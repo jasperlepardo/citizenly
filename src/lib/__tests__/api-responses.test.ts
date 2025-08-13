@@ -11,7 +11,7 @@ import {
   handleDatabaseError,
   handleUnexpectedError,
 } from '../api-responses';
-import { ErrorCode } from '../api-types';
+import { ErrorCode, Role } from '../api-types';
 
 // Mock logger to avoid console output during tests
 jest.mock('../secure-logger', () => ({
@@ -30,6 +30,8 @@ jest.mock('../api-audit', () => ({
 
 describe('API Response Utilities', () => {
   const mockContext = {
+    userId: 'test-user-123',
+    userRole: Role.BARANGAY_ADMIN,
     requestId: 'test-request-123',
     path: '/api/test',
     method: 'GET',
@@ -232,7 +234,7 @@ describe('API Response Utilities', () => {
 
     it('should include error details in development', async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'development' });
 
       const error = new Error('Test error');
       const response = await handleUnexpectedError(error, mockContext);
@@ -240,12 +242,12 @@ describe('API Response Utilities', () => {
       const responseData = await response.json();
       expect(responseData.error.details).toBeDefined();
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv });
     });
 
     it('should not include error details in production', async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'production' });
 
       const error = new Error('Test error');
       const response = await handleUnexpectedError(error, mockContext);
@@ -253,7 +255,7 @@ describe('API Response Utilities', () => {
       const responseData = await response.json();
       expect(responseData.error.details).toBeUndefined();
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv });
     });
   });
 });

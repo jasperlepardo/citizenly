@@ -430,9 +430,9 @@ export const Step3ContactPhysical: Story = {
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <h3 className="font-semibold text-purple-900 mb-2">Family Information</h3>
               <ul className="text-purple-800 text-sm space-y-1">
-                <li>• Mother's First Name</li>
-                <li>• Mother's Middle Name</li>
-                <li>• Mother's Maiden Last Name</li>
+                <li>• Mother&rsquo;s First Name</li>
+                <li>• Mother&rsquo;s Middle Name</li>
+                <li>• Mother&rsquo;s Maiden Last Name</li>
               </ul>
             </div>
           </div>

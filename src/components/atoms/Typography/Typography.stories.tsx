@@ -66,7 +66,7 @@ export const BodyTextVariants: Story = {
       
       <Typography variant="bodyMedium">
         Body Medium - This is the standard body text used throughout the application. 
-        It's designed for optimal readability and is the most commonly used text variant for content.
+        It&rsquo;s designed for optimal readability and is the most commonly used text variant for content.
       </Typography>
       
       <Typography variant="bodySmall">
@@ -147,18 +147,18 @@ export const SemanticUsage: Story = {
       
       <Typography variant="bodyLarge" as="p" className="text-gray-600">
         This is the article introduction or summary paragraph that gives readers 
-        an overview of what they're about to read.
+        an overview of what they&rsquo;re about to read.
       </Typography>
       
       <Heading2>Section Heading</Heading2>
       
       <BodyTextComponent>
-        This is a regular paragraph with standard body text. It's designed for 
+        This is a regular paragraph with standard body text. It&rsquo;s designed for 
         optimal readability and comfortable reading experience.
       </BodyTextComponent>
       
       <BodyTextComponent>
-        Here's another paragraph to show proper spacing and typography hierarchy. 
+        Here&rsquo;s another paragraph to show proper spacing and typography hierarchy. 
         Notice how the text flows naturally and maintains good readability.
       </BodyTextComponent>
       

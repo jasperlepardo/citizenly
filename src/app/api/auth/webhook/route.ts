@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { WebhookUserRecord } from '@/types/database';
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,8 +21,8 @@ interface WebhookPayload {
   type: string;
   table: string;
   schema: string;
-  record: any;
-  old_record?: any;
+  record: WebhookUserRecord;
+  old_record?: WebhookUserRecord;
 }
 
 export async function POST(request: NextRequest) {
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     switch (payload.type) {
       case 'UPDATE':
         if (payload.table === 'users' && payload.schema === 'auth') {
-          await handleUserUpdate(payload.record, payload.old_record);
+          await handleUserUpdate(payload.record, payload.old_record || payload.record);
         }
         break;
         
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleUserUpdate(newRecord: any, oldRecord: any) {
+async function handleUserUpdate(newRecord: WebhookUserRecord, oldRecord: WebhookUserRecord) {
   const userId = newRecord.id;
   
   // Check if email was just confirmed
@@ -116,14 +117,18 @@ async function handleUserUpdate(newRecord: any, oldRecord: any) {
   }
 }
 
-async function handleUserInsert(record: any) {
+async function handleUserInsert(record: WebhookUserRecord) {
   const userId = record.id;
   console.log(`👤 New user created: ${userId}`);
   
   // If user is already confirmed (rare but possible), process immediately
   if (record.email_confirmed_at) {
     console.log(`✅ User already confirmed at signup: ${userId}`);
-    await handleUserUpdate(record, { email_confirmed_at: null });
+    const mockOldRecord: WebhookUserRecord = {
+      ...record,
+      email_confirmed_at: null
+    };
+    await handleUserUpdate(record, mockOldRecord);
   }
 }
 

@@ -386,7 +386,7 @@ export default function ResidentStatusSelector({
                 type="text"
                 value={value.indigenous_community || ''}
                 onChange={e => handleChange('indigenous_community', e.target.value)}
-                placeholder="e.g., Bontoc, T'boli, Hanunuo"
+                placeholder="e.g., Bontoc, T&rsquo;boli, Hanunuo"
                 disabled={disabled}
               />
             </div>

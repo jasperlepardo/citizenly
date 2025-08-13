@@ -36,16 +36,16 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
           <SelectField 
             label="Blood Type"
             value={formData.bloodType}
-            onChange={(value) => onChange('bloodType', value)}
+            onChange={(e) => onChange('bloodType', e.target.value)}
             options={bloodTypeOptionsWithEmpty}
-            error={errors.bloodType}
+            errorMessage={errors.bloodType}
           />
           <InputField 
             label="Height (cm)"
             type="number"
             value={formData.height}
             onChange={(e) => onChange('height', e.target.value)}
-            error={errors.height}
+            errorMessage={errors.height}
             placeholder="170"
           />
           <InputField 
@@ -53,7 +53,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
             type="number"
             value={formData.weight}
             onChange={(e) => onChange('weight', e.target.value)}
-            error={errors.weight}
+            errorMessage={errors.weight}
             placeholder="65"
           />
         </div>
@@ -61,16 +61,16 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
           <SelectField 
             label="Ethnicity"
             value={formData.ethnicity}
-            onChange={(value) => onChange('ethnicity', value)}
+            onChange={(e) => onChange('ethnicity', e.target.value)}
             options={ethnicityOptionsWithEmpty}
-            error={errors.ethnicity}
+            errorMessage={errors.ethnicity}
           />
           <SelectField 
             label="Religion"
             value={formData.religion}
-            onChange={(value) => onChange('religion', value)}
+            onChange={(e) => onChange('religion', e.target.value)}
             options={religionOptionsWithEmpty}
-            error={errors.religion}
+            errorMessage={errors.religion}
           />
         </div>
         {formData.religion === 'others' && (
@@ -78,7 +78,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
             label="Please specify religion"
             value={formData.religionOthersSpecify}
             onChange={(e) => onChange('religionOthersSpecify', e.target.value)}
-            error={errors.religionOthersSpecify}
+            errorMessage={errors.religionOthersSpecify}
             placeholder="Specify other religion"
           />
         )}
@@ -91,28 +91,30 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
           <SelectField 
             label="Registered Voter?"
             value={formData.isVoter === true ? 'yes' : formData.isVoter === false ? 'no' : ''}
-            onChange={(value) => 
-              onChange('isVoter', value === 'yes' ? true : value === 'no' ? false : null)
-            }
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange('isVoter', value === 'yes' ? true : value === 'no' ? false : null);
+            }}
             options={[
               { value: '', label: 'Not specified' },
               { value: 'yes', label: 'Yes' },
               { value: 'no', label: 'No' }
             ]}
-            error={errors.isVoter}
+            errorMessage={errors.isVoter}
           />
           <SelectField 
             label="Resident Voter?"
             value={formData.isResidentVoter === true ? 'yes' : formData.isResidentVoter === false ? 'no' : ''}
-            onChange={(value) => 
-              onChange('isResidentVoter', value === 'yes' ? true : value === 'no' ? false : null)
-            }
+            onChange={(e) => {
+              const value = e.target.value;
+              onChange('isResidentVoter', value === 'yes' ? true : value === 'no' ? false : null);
+            }}
             options={[
               { value: '', label: 'Not specified' },
               { value: 'yes', label: 'Yes' },
               { value: 'no', label: 'No' }
             ]}
-            error={errors.isResidentVoter}
+            errorMessage={errors.isResidentVoter}
           />
         </div>
         {(formData.isVoter === true || formData.isResidentVoter === true) && (
@@ -121,7 +123,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
             type="date"
             value={formData.lastVotedDate}
             onChange={(e) => onChange('lastVotedDate', e.target.value)}
-            error={errors.lastVotedDate}
+            errorMessage={errors.lastVotedDate}
           />
         )}
       </div>
@@ -133,36 +135,36 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
           label="PhilSys Card Number"
           value={formData.philsysCardNumber}
           onChange={(e) => onChange('philsysCardNumber', e.target.value)}
-          error={errors.philsysCardNumber}
+          errorMessage={errors.philsysCardNumber}
           placeholder="XXXX-XXXX-XXXX"
-          help="Enter PhilSys (National ID) card number if available"
+          helperText="Enter PhilSys (National ID) card number if available"
         />
       </div>
 
       {/* Family Information */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Mother's Maiden Name</h4>
+        <h4 className="text-sm font-medium text-primary">Mother&rsquo;s Maiden Name</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField 
             label="First Name"
             value={formData.motherMaidenFirstName}
             onChange={(e) => onChange('motherMaidenFirstName', e.target.value)}
-            error={errors.motherMaidenFirstName}
-            placeholder="Mother's maiden first name"
+            errorMessage={errors.motherMaidenFirstName}
+            placeholder="Mother&rsquo;s maiden first name"
           />
           <InputField 
             label="Middle Name"
             value={formData.motherMaidenMiddleName}
             onChange={(e) => onChange('motherMaidenMiddleName', e.target.value)}
-            error={errors.motherMaidenMiddleName}
-            placeholder="Mother's maiden middle name"
+            errorMessage={errors.motherMaidenMiddleName}
+            placeholder="Mother&rsquo;s maiden middle name"
           />
           <InputField 
             label="Last Name"
             value={formData.motherMaidenLastName}
             onChange={(e) => onChange('motherMaidenLastName', e.target.value)}
-            error={errors.motherMaidenLastName}
-            placeholder="Mother's maiden last name"
+            errorMessage={errors.motherMaidenLastName}
+            placeholder="Mother&rsquo;s maiden last name"
           />
         </div>
       </div>

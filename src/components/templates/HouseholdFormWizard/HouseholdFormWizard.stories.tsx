@@ -229,7 +229,7 @@ export const Step1BasicInformation: Story = {
               <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
               <div>
                 <p className="font-medium text-primary text-sm">Required Fields</p>
-                <p className="text-secondary text-xs">Household type, head's first and last name must be filled</p>
+                <p className="text-secondary text-xs">Household type, head&rsquo;s first and last name must be filled</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -320,7 +320,7 @@ export const Step2LocationDetails: Story = {
               <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
               <div>
                 <p className="font-medium text-primary text-sm">Automatic Loading</p>
-                <p className="text-secondary text-xs">Geographic hierarchy loads from user's barangay assignment</p>
+                <p className="text-secondary text-xs">Geographic hierarchy loads from user&rsquo;s barangay assignment</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

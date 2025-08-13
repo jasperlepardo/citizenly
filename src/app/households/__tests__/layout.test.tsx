@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { render } from '@testing-library/react';
-import { Metadata } from 'next';
+// import { render } from '@testing-library/react';
+// import { Metadata } from 'next';
 
 // Import the metadata export from the layout
 import { metadata } from '../layout';

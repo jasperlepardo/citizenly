@@ -21,9 +21,9 @@ interface GeographicLocationStepProps {
 
 export function GeographicLocationStep({
   formData,
-  updateFormData,
+  updateFormData: _updateFormData,
   errors,
-  required = true
+  required: _required = true
 }: GeographicLocationStepProps) {
   const [names, setNames] = useState({
     regionName: '',

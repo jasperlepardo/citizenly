@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, ChevronDown, MapPin, Building2, Home, Users } from 'lucide-react';
+import { ChevronDown, MapPin, Building2, Home, Users } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface GeographicOption {
@@ -65,13 +65,11 @@ export function CascadingGeographicSelector({
   const [loadingBarangays, setLoadingBarangays] = useState(false);
   const [initialHierarchyLoaded, setInitialHierarchyLoaded] = useState(false);
 
-  // Helper function to get auth headers
-  const getAuthHeaders = useCallback(async (): Promise<HeadersInit> => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    return session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
-  }, []);
+  // Note: Auth headers helper available for future authenticated endpoints
+  // const getAuthHeaders = useCallback(async (): Promise<HeadersInit> => {
+  //   const { data: { session } } = await supabase.auth.getSession();
+  //   return session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
+  // }, []);
 
   // API calls
   const fetchRegions = useCallback(async () => {
@@ -292,7 +290,7 @@ export function CascadingGeographicSelector({
     };
     
     loadInitialHierarchy();
-  }, [initialValues?.regionCode, initialValues?.provinceCode, initialValues?.cityCode, initialValues?.barangayCode, regions.length, initialHierarchyLoaded]);
+  }, [initialValues, regions, initialHierarchyLoaded]);
 
   // Auto-populate after regions are loaded (only if no initial values provided)
   useEffect(() => {
@@ -364,7 +362,7 @@ export function CascadingGeographicSelector({
       barangayCode: selectedBarangay?.code || null,
       barangayName: selectedBarangay?.name || null,
     });
-  }, [selectedRegion, selectedProvince, selectedCity, selectedBarangay]);
+  }, [selectedRegion, selectedProvince, selectedCity, selectedBarangay, onSelectionChange]);
 
   // Filter functions
   const filterOptions = (options: GeographicOption[], searchTerm: string) => {
@@ -382,7 +380,7 @@ export function CascadingGeographicSelector({
   const DropdownSelector = ({
     label,
     icon: Icon,
-    value,
+    value: _value,
     searchValue,
     onSearchChange,
     options,

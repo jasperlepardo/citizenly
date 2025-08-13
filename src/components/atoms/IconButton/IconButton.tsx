@@ -10,7 +10,7 @@ export interface IconButtonProps extends Omit<ButtonProps, 'leftIcon' | 'rightIc
 }
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ icon, className, children, ...props }, ref) => {
+  ({ icon, className, children: _children, ...props }, ref) => {
     return (
       <Button
         ref={ref}

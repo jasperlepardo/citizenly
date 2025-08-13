@@ -264,7 +264,7 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
     try {
       logger.debug('Loading address display info', { barangayCode });
 
-      let addressInfo: AddressDisplayInfo = {
+      const addressInfo: AddressDisplayInfo = {
         region: 'Region information not available',
         province: 'Province information not available',
         cityMunicipality: 'City/Municipality information not available',

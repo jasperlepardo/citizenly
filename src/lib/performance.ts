@@ -5,6 +5,21 @@ import { logger } from './secure-logger';
  * Tracks key metrics and provides insights into app performance
  */
 
+// Performance entry interfaces
+interface LayoutShiftEntry extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+  sources?: Array<{
+    node?: {
+      tagName: string;
+    };
+  }>;
+}
+
+interface ComponentProps {
+  [key: string]: unknown;
+}
+
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -77,9 +92,10 @@ class PerformanceMonitor {
         // Observe cumulative layout shift
         const clsObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              this.recordMetric('cls', (entry as any).value, {
-                sources: (entry as any).sources?.map((s: any) => s.node?.tagName),
+            const layoutShiftEntry = entry as LayoutShiftEntry;
+            if (!layoutShiftEntry.hadRecentInput) {
+              this.recordMetric('cls', layoutShiftEntry.value, {
+                sources: layoutShiftEntry.sources?.map((s) => s.node?.tagName),
               });
             }
           }
@@ -255,10 +271,10 @@ class PerformanceMonitor {
       ttfb: navigation ? navigation.responseStart - navigation.requestStart : null,
       
       // DOM Content Loaded
-      domContentLoaded: navigation ? navigation.domContentLoadedEventEnd - navigation.navigationStart : null,
+      domContentLoaded: navigation ? navigation.domContentLoadedEventEnd - navigation.fetchStart : null,
       
       // Load Complete
-      loadComplete: navigation ? navigation.loadEventEnd - navigation.navigationStart : null,
+      loadComplete: navigation ? navigation.loadEventEnd - navigation.fetchStart : null,
     };
   }
 
@@ -299,11 +315,11 @@ export const performanceMonitor = new PerformanceMonitor();
 
 // Decorator for timing functions
 export function timed(name?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: object, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    const timerName = name || `${target.constructor.name}.${propertyKey}`;
+    const timerName = name || `${(target as any).constructor.name}.${propertyKey}`;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       const endTiming = performanceMonitor.startTiming(timerName);
       try {
         const result = originalMethod.apply(this, args);
@@ -338,7 +354,7 @@ export function usePerformanceTracking(componentName: string) {
 }
 
 // Utility to measure props size
-export function measurePropsSize(props: any): number {
+export function measurePropsSize(props: ComponentProps): number {
   try {
     return JSON.stringify(props).length;
   } catch {

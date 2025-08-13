@@ -45,7 +45,7 @@ function ResidentsContent() {
   const [loading, setLoading] = useState(true);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
+  const [_searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -53,28 +53,7 @@ function ResidentsContent() {
     total: 0,
   });
 
-  // Helper function to apply filters to a query
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const applyFiltersToQuery = useCallback((query: any, filters: SearchFilter[]) => {
-    return filters.reduce((q, filter) => {
-      switch (filter.operator) {
-        case 'equals':
-          return q.eq(filter.field, filter.value);
-        case 'contains':
-          return q.ilike(filter.field, `%${filter.value}%`);
-        case 'starts_with':
-          return q.ilike(filter.field, `${filter.value}%`);
-        case 'ends_with':
-          return q.ilike(filter.field, `%${filter.value}`);
-        case 'greater_than':
-          return typeof filter.value === 'number' ? q.gt(filter.field, filter.value) : q;
-        case 'less_than':
-          return typeof filter.value === 'number' ? q.lt(filter.field, filter.value) : q;
-        default:
-          return q;
-      }
-    }, query);
-  }, []);
+  // Note: Advanced filter functionality will be implemented in future version
 
   // Helper function to load residents via API (bypasses RLS issues)
   const loadResidentsFromAPI = useCallback(
@@ -148,7 +127,7 @@ function ResidentsContent() {
     } finally {
       setLoading(false);
     }
-  }, [userProfile, searchTerm, pagination.current, pagination.pageSize, loadResidentsFromAPI]);
+  }, [userProfile, searchTerm, pagination, loadResidentsFromAPI]);
 
   useEffect(() => {
     if (!authLoading && user && userProfile?.barangay_code) {

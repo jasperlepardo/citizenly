@@ -40,7 +40,7 @@ export default function FormSection({
       {description && (
         <p
           className="mt-1 text-sm text-secondary"
-          id={`${legend.toLowerCase().replace(/\s+/g, '-')}-description`}
+          id={`${sectionTitle?.toLowerCase().replace(/\s+/g, '-')}-description`}
         >
           {description}
         </p>
@@ -48,7 +48,7 @@ export default function FormSection({
       <div
         className="space-y-4"
         aria-describedby={
-          description ? `${legend.toLowerCase().replace(/\s+/g, '-')}-description` : undefined
+          description ? `${sectionTitle?.toLowerCase().replace(/\s+/g, '-')}-description` : undefined
         }
       >
         {children}

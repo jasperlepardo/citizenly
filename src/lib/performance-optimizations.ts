@@ -13,7 +13,7 @@ export function useDebounce<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number
 ): T {
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {
@@ -148,7 +148,7 @@ export function useVirtualScroll({
  * Performance monitoring hook
  */
 export function usePerformanceMonitor(componentName: string) {
-  const renderStartTime = useRef<number>();
+  const renderStartTime = useRef<number | undefined>(undefined);
   const renderCount = useRef(0);
 
   useEffect(() => {

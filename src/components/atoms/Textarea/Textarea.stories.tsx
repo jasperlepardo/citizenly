@@ -118,10 +118,10 @@ export const ReadOnly: Story = {
 export const WithCharacterCount: Story = {
   args: {
     label: 'Tweet',
-    placeholder: "What's happening?",
+    placeholder: "What&rsquo;s happening?",
     maxLength: 280,
     showCharCount: true,
-    helperText: "Share what's on your mind!",
+    helperText: "Share what&rsquo;s on your mind!",
   },
 };
 
@@ -189,9 +189,9 @@ const InteractiveTextareaComponent = () => {
         errorMessage={showError ? 'This field cannot be empty' : undefined}
         helperText={
           isOverLimit
-            ? `You've exceeded the limit by ${value.length - maxLength} characters`
+            ? `You&rsquo;ve exceeded the limit by ${value.length - maxLength} characters`
             : isNearLimit
-              ? "You're approaching the character limit"
+              ? "You&rsquo;re approaching the character limit"
               : 'Share your thoughts with us'
         }
         resizable

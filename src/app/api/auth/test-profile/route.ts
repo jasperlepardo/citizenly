@@ -1,6 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+interface TestResults {
+  timestamp: string;
+  userId: string;
+  tests: {
+    adminUserLookup?: {
+      success: boolean;
+      hasData?: boolean;
+      hasUser?: boolean;
+      error: string | null;
+      confirmed?: boolean;
+    };
+    userInList?: {
+      success: boolean;
+      totalUsers?: number;
+      userFound?: boolean;
+      error: string | null;
+    };
+    existingProfile?: {
+      success: boolean;
+      profileExists?: boolean;
+      error: string | null;
+    };
+    profileCreation?: {
+      success: boolean;
+      profileCreated?: boolean;
+      error: string | null;
+      errorCode?: string | null;
+    };
+  };
+}
+
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -22,7 +53,7 @@ export async function POST(request: NextRequest) {
     
     console.log('🧪 Testing profile creation for user:', { id: '[REDACTED]' });
     
-    const results: any = {
+    const results: TestResults = {
       timestamp: new Date().toISOString(),
       userId: '[REDACTED]',
       tests: {}

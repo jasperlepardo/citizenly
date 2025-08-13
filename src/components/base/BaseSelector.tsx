@@ -49,7 +49,7 @@ export function BaseSelector<T extends BaseSelectorOption>({
   className,
 }: BaseSelectorProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const selectedOption = options.find(opt => opt.value === value) || null;
+  const _selectedOption = options.find(opt => opt.value === value) || null;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

@@ -6,7 +6,7 @@
 interface LogContext {
   component?: string;
   action?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   error?: Error;
   userId?: string;
   sessionId?: string;

@@ -135,9 +135,9 @@ export default function HouseholdFormWizard({
     if (userAddress && barangayCode) {
       setFormData(prev => ({
         ...prev,
-        regionCode: userAddress.region_code,
+        regionCode: userAddress.region_code || '',
         provinceCode: userAddress.province_code || '',
-        cityMunicipalityCode: userAddress.city_municipality_code,
+        cityMunicipalityCode: userAddress.city_municipality_code || '',
         barangayCode: userAddress.barangay_code,
       }));
     }

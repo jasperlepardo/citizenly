@@ -167,7 +167,7 @@ export default function PersonalInfoSection({
       </div>
 
       {/* Conditional field for other civil status */}
-      {formData.civil_status === 'others' && (
+      {(formData.civil_status as string) === 'others' && (
         <div className="mt-4">
           <FormField label="Please Specify Civil Status" errorMessage={errors.civil_status_others_specify}>
             <FormInput

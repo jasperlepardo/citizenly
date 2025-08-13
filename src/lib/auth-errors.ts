@@ -62,8 +62,8 @@ export interface DatabaseResponse {
   error_code?: string;
   details?: string;
   profile_id?: string;
-  user_data?: any;
-  role_data?: any;
-  location_data?: any;
+  user_data?: Record<string, unknown>;
+  role_data?: Record<string, unknown>;
+  location_data?: Record<string, unknown>;
   message?: string;
 }

@@ -99,7 +99,7 @@ export function ReviewStep({ formData }: StepComponentProps) {
               'Height': formData.height ? `${formData.height} cm` : '',
               'Weight': formData.weight ? `${formData.weight} kg` : '',
               'Ethnicity': formData.ethnicity,
-              'Religion': formData.religion === 'other' && formData.religionOthersSpecify 
+              'Religion': formData.religion === 'others' && formData.religionOthersSpecify 
                 ? formData.religionOthersSpecify 
                 : formData.religion,
             }}

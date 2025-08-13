@@ -7,7 +7,7 @@ import { SimpleBarangaySelector } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
 import { logger, logError } from '@/lib/secure-logger';
-import { getErrorMessage } from '@/lib/auth-errors';
+// import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {
   email: string;
@@ -35,7 +35,7 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
-  const [assignedRole, setAssignedRole] = useState<string>('');
+  const [_assignedRole, setAssignedRole] = useState<string>('');
   const [submitStatus, setSubmitStatus] = useState<string>('');
 
   // Barangay admin checking now handled by database trigger after email confirmation

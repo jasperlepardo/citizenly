@@ -45,12 +45,12 @@ export default function MotherMaidenNameSection({
 
   return (
     <FormSection 
-      title="Mother's Maiden Name" 
-      description="Mother's full maiden name for identification purposes"
+      title="Mother&rsquo;s Maiden Name" 
+      description="Mother&rsquo;s full maiden name for identification purposes"
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField 
-          label="Mother's Maiden First Name" 
+          label="Mother&rsquo;s Maiden First Name" 
           errorMessage={errors.mother_maiden_first}
         >
           <FormInput
@@ -64,7 +64,7 @@ export default function MotherMaidenNameSection({
         </FormField>
         
         <FormField 
-          label="Mother's Maiden Middle Name" 
+          label="Mother&rsquo;s Maiden Middle Name" 
           errorMessage={errors.mother_maiden_middle}
         >
           <FormInput
@@ -78,7 +78,7 @@ export default function MotherMaidenNameSection({
         </FormField>
         
         <FormField 
-          label="Mother's Maiden Last Name" 
+          label="Mother&rsquo;s Maiden Last Name" 
           errorMessage={errors.mother_maiden_last}
         >
           <FormInput

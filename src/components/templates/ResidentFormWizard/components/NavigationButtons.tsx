@@ -30,7 +30,7 @@ export function NavigationButtons({
       <div>
         {canGoBack && (
           <Button
-            variant="outline"
+            variant="secondary-outline"
             onClick={onPrevious}
             disabled={isSubmitting}
             className="inline-flex items-center gap-2"

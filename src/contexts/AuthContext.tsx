@@ -234,7 +234,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
       setProfileLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profileCache, profileLoading, lastProfileLoad]);
 
   // Initialize auth state
   useEffect(() => {

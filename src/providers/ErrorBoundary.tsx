@@ -57,11 +57,7 @@ export class ErrorBoundary extends Component<Props, State> {
     const { onError, level = 'component' } = this.props;
     
     // Log error with context
-    logError(error, `ERROR_BOUNDARY_${level.toUpperCase()}`, {
-      componentStack: errorInfo.componentStack,
-      errorBoundary: true,
-      errorCount: this.state.errorCount + 1,
-    });
+    logError(error, `ERROR_BOUNDARY_${level.toUpperCase()}`);
 
     // Call custom error handler if provided
     if (onError) {
@@ -212,7 +208,7 @@ export class ErrorBoundary extends Component<Props, State> {
           </h3>
           
           <p className="text-gray-600 mb-6">
-            We're sorry for the inconvenience. Please try again.
+            We&rsquo;re sorry for the inconvenience. Please try again.
           </p>
           
           <div className="flex justify-center gap-3">

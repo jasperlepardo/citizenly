@@ -104,7 +104,7 @@ export default function MotherMaidenName({
           checked={value.is_unknown_mother}
           onChange={e => handleChange('is_unknown_mother', e.target.checked)}
           label="Unknown Mother"
-          description="Check if mother's information is unknown or unavailable"
+          description="Check if mother&rsquo;s information is unknown or unavailable"
           disabled={disabled}
         />
 
@@ -122,7 +122,7 @@ export default function MotherMaidenName({
       {/* Mother's Name Information */}
       {!value.is_unknown_mother && (
         <>
-          <FormGroup title="Mother's Full Name">
+          <FormGroup title="Mother&rsquo;s Full Name">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="md:col-span-2">
                 <InputField
@@ -157,7 +157,7 @@ export default function MotherMaidenName({
             </div>
           </FormGroup>
 
-          <FormGroup title="Mother's Maiden Last Name">
+          <FormGroup title="Mother&rsquo;s Maiden Last Name">
             <InputField
               type="text"
               value={value.mother_maiden_last_name || ''}
@@ -191,7 +191,7 @@ export default function MotherMaidenName({
           {showAdvanced && (
             <div className="space-y-6 rounded-lg bg-gray-50 p-4">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <FormGroup title="Mother's Status">
+                <FormGroup title="Mother&rsquo;s Status">
                   <Checkbox
                     checked={value.mother_is_deceased || false}
                     onChange={e => handleChange('mother_is_deceased', e.target.checked)}
@@ -219,7 +219,7 @@ export default function MotherMaidenName({
                 </FormGroup>
               </div>
 
-              <FormGroup title="Mother's Birthplace">
+              <FormGroup title="Mother&rsquo;s Birthplace">
                 <InputField
                   type="text"
                   value={value.mother_birthplace || ''}
@@ -238,7 +238,7 @@ export default function MotherMaidenName({
         <textarea
           value={value.notes || ''}
           onChange={e => handleChange('notes', e.target.value)}
-          placeholder="Any additional information or special circumstances regarding mother's information"
+          placeholder="Any additional information or special circumstances regarding mother&rsquo;s information"
           disabled={disabled}
           rows={3}
           className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"

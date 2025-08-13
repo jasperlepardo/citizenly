@@ -10,7 +10,7 @@ const meta: Meta<typeof MotherMaidenName> = {
     docs: {
       description: {
         component:
-          "Component for capturing mother's maiden name and related genealogical information for RBI residents. Follows Filipino naming conventions and includes privacy protections and cultural considerations.",
+          "Component for capturing mother&rsquo;s maiden name and related genealogical information for RBI residents. Follows Filipino naming conventions and includes privacy protections and cultural considerations.",
       },
     },
   },

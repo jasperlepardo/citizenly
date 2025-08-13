@@ -40,14 +40,14 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
             label="Mobile Number"
             value={formData.mobileNumber}
             onChange={(e) => onChange('mobileNumber', e.target.value)}
-            error={errors.mobileNumber}
+            errorMessage={errors.mobileNumber}
             placeholder="+639XXXXXXXXX"
           />
           <InputField 
             label="Telephone Number"
             value={formData.telephoneNumber}
             onChange={(e) => onChange('telephoneNumber', e.target.value)}
-            error={errors.telephoneNumber}
+            errorMessage={errors.telephoneNumber}
             placeholder="(02) XXXX-XXXX"
           />
           <div className="sm:col-span-2">
@@ -56,7 +56,7 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
               type="email"
               value={formData.email}
               onChange={(e) => onChange('email', e.target.value)}
-              error={errors.email}
+              errorMessage={errors.email}
               placeholder="example@domain.com"
             />
           </div>
@@ -101,7 +101,7 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
             label="ZIP Code"
             value={formData.zipCode}
             onChange={(e) => onChange('zipCode', e.target.value)}
-            error={errors.zipCode}
+            errorMessage={errors.zipCode}
             placeholder="XXXX"
           />
         </div>

@@ -5,7 +5,7 @@
 
 import { NextRequest } from 'next/server';
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
-import { createRateLimitHandler, RATE_LIMIT_RULES } from '@/lib/rate-limit';
+import { createRateLimitHandler } from '@/lib/rate-limit';
 import { createHouseholdSchema } from '@/lib/api-validation';
 import {
   createPaginatedResponse,

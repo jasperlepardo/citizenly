@@ -197,7 +197,7 @@ export function validateResidentForm(data: unknown): ValidationResult {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const errors: Record<string, string> = {};
-      error.errors.forEach((err: any) => {
+      error.issues.forEach((err: any) => {
         const path = err.path.join('.');
         errors[path] = err.message;
       });

@@ -20,7 +20,7 @@ interface NotificationRecord {
   retry_count: number;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     console.log('🔄 Processing pending notifications...');
     
@@ -229,7 +229,7 @@ export async function GET() {
       total: stats?.length || 0
     });
 
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to get stats' }, { status: 500 });
   }
 }

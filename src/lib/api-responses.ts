@@ -11,7 +11,7 @@ import {
   ErrorCode, 
   RequestContext 
 } from './api-types';
-import { auditError, auditSecurityViolation } from './api-audit';
+import { auditError, auditSecurityViolation, AuditEventType } from './api-audit';
 import { sanitizeSearchInput } from './api-validation';
 import { logger } from './secure-logger';
 
@@ -306,7 +306,7 @@ export async function detectSQLInjection(
   
   if (isSQLInjection && context) {
     await auditSecurityViolation(
-      'sql_injection_attempt' as any,
+      AuditEventType.SQL_INJECTION_ATTEMPT,
       context,
       { suspiciousInput: input },
       ErrorCode.SQL_INJECTION_ATTEMPT

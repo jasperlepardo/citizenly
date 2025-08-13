@@ -32,7 +32,7 @@ import { Button } from '@/components/atoms';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResidentEditForm } from '@/hooks/useResidentEditForm';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
-import { logger, logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/secure-logger';
 import {
   PersonalInfoSection,
   ContactInfoSection,
@@ -159,7 +159,7 @@ export default function ResidentEditPage() {
 
         setInitialData(formattedData);
       } catch (err) {
-        logError('Error fetching resident', err instanceof Error ? err : new Error(String(err)));
+        logError(err instanceof Error ? err : new Error(String(err)));
         setError(err instanceof Error ? err.message : 'Failed to load resident');
       } finally {
         setLoading(false);

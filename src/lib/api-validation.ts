@@ -227,7 +227,7 @@ export function handleValidationError(error: z.ZodError): {
   message: string;
   details: Array<{ field: string; message: string }>;
 } {
-  const details = error.issues.map((err: any) => ({
+  const details = error.issues.map((err) => ({
     field: err.path.join('.'),
     message: err.message
   }));

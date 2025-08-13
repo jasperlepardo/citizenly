@@ -470,9 +470,10 @@ export default function ResidentFormWizard({
       const stepNames = invalidSteps
         .map(step => steps[step - 1]?.title || `Step ${step}`)
         .join(', ');
-      const errorSummary = allErrors
-        .map(error => `Step ${error.step} - ${error.field}: ${error.message}`)
-        .join('\n');
+      // Error summary available for debugging purposes
+      // const errorSummary = allErrors
+      //   .map(error => `Step ${error.step} - ${error.field}: ${error.message}`)
+      //   .join('\n');
 
       const errorDetails = invalidSteps.map(stepIndex => {
         const step = steps[stepIndex - 1];
@@ -623,12 +624,12 @@ export default function ResidentFormWizard({
       }
 
       // Securely hash PhilSys card number if provided
-      let philsysHash = null;
       let philsysLast4 = null;
 
       if (formData.philsysCardNumber) {
         try {
-          philsysHash = await hashPhilSysNumber(formData.philsysCardNumber);
+          // Hash generated but not stored for security reasons
+          await hashPhilSysNumber(formData.philsysCardNumber);
           philsysLast4 = extractPhilSysLast4(formData.philsysCardNumber);
 
           // Log security operation for audit trail
@@ -1058,32 +1059,32 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
 
       {/* Mother's Maiden Name Section */}
       <div>
-        <h4 className="mb-4 text-sm font-medium text-primary">Mother's Maiden Name (Optional)</h4>
+        <h4 className="mb-4 text-sm font-medium text-primary">Mother&rsquo;s Maiden Name (Optional)</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
-            label="Mother's First Name"
+            label="Mother&rsquo;s First Name"
             type="text"
             value={formData.motherMaidenFirstName}
             onChange={e => onChange('motherMaidenFirstName', e.target.value)}
-            placeholder="Enter mother's first name"
+            placeholder="Enter mother&rsquo;s first name"
             errorMessage={errors.motherMaidenFirstName}
           />
 
           <InputField
-            label="Mother's Middle Name"
+            label="Mother&rsquo;s Middle Name"
             type="text"
             value={formData.motherMaidenMiddleName}
             onChange={e => onChange('motherMaidenMiddleName', e.target.value)}
-            placeholder="Enter mother's middle name"
+            placeholder="Enter mother&rsquo;s middle name"
             errorMessage={errors.motherMaidenMiddleName}
           />
 
           <InputField
-            label="Mother's Last Name"
+            label="Mother&rsquo;s Last Name"
             type="text"
             value={formData.motherMaidenLastName}
             onChange={e => onChange('motherMaidenLastName', e.target.value)}
-            placeholder="Enter mother's last name"
+            placeholder="Enter mother&rsquo;s last name"
             errorMessage={errors.motherMaidenLastName}
           />
         </div>
@@ -1547,15 +1548,15 @@ function ContactAddressStep({ formData, onChange, errors, userAddress }: any) {
 function ReviewStep({
   formData,
   userAddress: _userAddress,
-  showError,
-  showSuccess,
-  showErrorModal,
-  setShowErrorModal,
-  showSuccessModal,
-  setShowSuccessModal,
-  modalError,
-  modalSuccess,
-  router,
+  showError: _showError,
+  showSuccess: _showSuccess,
+  showErrorModal: _showErrorModal,
+  setShowErrorModal: _setShowErrorModal,
+  showSuccessModal: _showSuccessModal,
+  setShowSuccessModal: _setShowSuccessModal,
+  modalError: _modalError,
+  modalSuccess: _modalSuccess,
+  router: _router,
 }: {
   formData: ResidentFormData;
   userAddress: unknown;

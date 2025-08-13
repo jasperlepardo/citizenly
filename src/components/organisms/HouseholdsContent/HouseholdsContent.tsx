@@ -174,7 +174,7 @@ export default function HouseholdsContent() {
 
   useEffect(() => {
     fetchHouseholds(searchQuery, page);
-  }, [session, searchQuery, page]);
+  }, [session, searchQuery, page, fetchHouseholds]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);

@@ -197,9 +197,9 @@ export default function AddressSearch({
                         Independent
                       </span>
                     )}
-                    {address.urban_rural_status && (
+                    {(address as any).urban_rural_status && (
                       <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-300">
-                        {address.urban_rural_status}
+                        {(address as any).urban_rural_status}
                       </span>
                     )}
                   </div>

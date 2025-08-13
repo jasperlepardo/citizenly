@@ -231,7 +231,7 @@ function NotificationsContent() {
               <p className="font-montserrat text-sm text-secondary">
                 {filter === 'unread' && 'No unread notifications'}
                 {filter === 'important' && 'No important notifications'}
-                {filter === 'all' && "You're all caught up!"}
+                {filter === 'all' && "You&rsquo;re all caught up!"}
               </p>
             </div>
           ) : (

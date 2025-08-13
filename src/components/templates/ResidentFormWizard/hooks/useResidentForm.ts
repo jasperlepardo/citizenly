@@ -91,7 +91,7 @@ export function useResidentForm({
   initialData 
 }: ResidentFormWizardProps = {}): UseResidentFormReturn {
   const router = useRouter();
-  const { userBarangayCode, loading: barangayLoading } = useUserBarangay();
+  const { barangayCode: userBarangayCode, loading: barangayLoading } = useUserBarangay();
   
   // Form state
   const [formData, setFormData] = useState<ResidentFormData>(() => 

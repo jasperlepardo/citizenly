@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getErrorMessage, getStatusCodeForError, DatabaseResponse } from '@/lib/auth-errors';
+// Note: These imports are available for future error handling enhancements
+// import { getErrorMessage, getStatusCodeForError, DatabaseResponse } from '@/lib/auth-errors';
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

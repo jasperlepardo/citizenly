@@ -45,7 +45,7 @@ export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCar
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-secondary block">Mother's Maiden Name</span>
+            <span className="text-sm font-medium text-secondary block">Mother&rsquo;s Maiden Name</span>
             <span className="text-primary">
               {[resident.mother_maiden_first, resident.mother_maiden_middle, resident.mother_maiden_last]
                 .filter(Boolean).join(' ') || '-'}

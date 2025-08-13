@@ -8,6 +8,7 @@ import { NextRequest } from 'next/server';
 import { Role, ROLE_PERMISSIONS, ErrorCode, RequestContext } from './api-types';
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from './secure-logger';
+import { AuthUserProfile } from '@/types/database';
 
 export interface AuthResult {
   success: boolean;
@@ -62,7 +63,7 @@ function getClientIP(request: NextRequest): string {
  */
 export function hasPermission(userRole: Role, requiredPermission: string): boolean {
   const rolePermissions = ROLE_PERMISSIONS[userRole] || [];
-  return rolePermissions.includes(requiredPermission);
+  return (rolePermissions as readonly string[]).includes(requiredPermission);
 }
 
 /**
