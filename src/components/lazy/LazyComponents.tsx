@@ -84,43 +84,43 @@ const CreateHouseholdModalLazy = lazy(() =>
 
 const DataTableLazy = lazy(() => 
   import('@/components/organisms/DataTable').then(module => ({
-    default: module.default
+    default: module.DataTable
   }))
 );
 
 const PopulationPyramidLazy = lazy(() => 
   import('@/components/organisms/PopulationPyramid').then(module => ({
-    default: module.default
+    default: module.PopulationPyramid
   }))
 );
 
 const UserProfileLazy = lazy(() => 
   import('@/components/organisms/UserProfile').then(module => ({
-    default: module.default
+    default: module.UserProfile
   }))
 );
 
 const AddressSelectorLazy = lazy(() => 
   import('@/components/organisms/AddressSelector').then(module => ({
-    default: module.default
+    default: module.AddressSelector
   }))
 );
 
 const PersonalInformationLazy = lazy(() => 
   import('@/components/organisms/PersonalInformation').then(module => ({
-    default: module.default
+    default: module.PersonalInformation
   }))
 );
 
 const SectoralInfoLazy = lazy(() => 
   import('@/components/organisms/SectoralInfo').then(module => ({
-    default: module.default
+    default: module.SectoralInfo
   }))
 );
 
 const EducationEmploymentLazy = lazy(() => 
   import('@/components/organisms/EducationEmployment').then(module => ({
-    default: module.default
+    default: module.EducationEmployment
   }))
 );
 

@@ -71,14 +71,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Geographic hierarchy not found' }, { status: 404 });
     }
 
-    const city = hierarchy.psgc_cities_municipalities;
-    const province = city.psgc_provinces;
-    const region = province.psgc_regions;
+    const city = (hierarchy as any).psgc_cities_municipalities;
+    const province = (city as any).psgc_provinces;
+    const region = (province as any).psgc_regions;
 
     return NextResponse.json({
       region: { code: region.code, name: region.name },
       province: { code: province.code, name: province.name },
-      city: { code: city.code, name: city.name },
+      city: { code: (city as any).code, name: (city as any).name },
       barangay: { code: hierarchy.code, name: hierarchy.name }
     });
 

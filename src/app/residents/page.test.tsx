@@ -11,6 +11,9 @@ import ResidentsPage from './page';
 import { useAuth } from '@/contexts/AuthContext';
 import { fetchResidents } from '@/utils/residentListingHelpers';
 
+// Type the mocked functions
+const mockFetchResidents = fetchResidents as jest.MockedFunction<typeof fetchResidents>;
+
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -113,7 +116,7 @@ describe('ResidentsPage', () => {
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useAuth as jest.Mock).mockReturnValue({ session: mockSession });
     
-    (fetchResidents as jest.Mock).mockResolvedValue(mockApiResponse);
+    mockFetchResidents.mockResolvedValue(mockApiResponse);
   });
 
   describe('Rendering', () => {
@@ -136,7 +139,7 @@ describe('ResidentsPage', () => {
     });
 
     it('should render error state when fetch fails', async () => {
-        fetchResidents.mockRejectedValue(new Error('Failed to fetch'));
+        mockFetchResidents.mockRejectedValue(new Error('Failed to fetch'));
       
       render(<ResidentsPage />);
       
@@ -226,7 +229,7 @@ describe('ResidentsPage', () => {
     it('should retry data loading when retry button is clicked', async () => {
       const user = userEvent.setup();
         
-      fetchResidents
+      mockFetchResidents
         .mockRejectedValueOnce(new Error('Network error'))
         .mockResolvedValueOnce(mockApiResponse);
       
@@ -264,7 +267,7 @@ describe('ResidentsPage', () => {
         },
       };
       
-      fetchResidents.mockResolvedValue(multiPageResponse);
+      mockFetchResidents.mockResolvedValue(multiPageResponse);
       
       render(<ResidentsPage />);
       
@@ -297,7 +300,7 @@ describe('ResidentsPage', () => {
       });
 
       const header = screen.getByText('Residents Management').closest('div');
-      expect(header?.parentElement).toHaveClass('flex', 'items-center', 'justify-between');
+      expect(header?.parentElement).toHaveClass('flex items-center justify-between');
     });
   });
 });
