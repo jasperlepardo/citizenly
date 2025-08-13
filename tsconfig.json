@@ -33,5 +33,5 @@
     ".next/types/**/*.ts",
     "src/types/global.d.ts"
   ],
-  "exclude": ["node_modules", "**/*.stories.*", "**/*.story.*", ".storybook", "src/stories", "scripts/test-templates/**/*", "src/components/lazy-index.ts", "src/app/api/auth/test-profile/**/*"]
+  "exclude": ["node_modules", "**/*.stories.*", "**/*.story.*", ".storybook", "src/stories", "scripts/**/*", "src/components/lazy-index.ts"]
 }

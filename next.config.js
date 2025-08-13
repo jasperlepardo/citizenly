@@ -19,7 +19,6 @@ const nextConfig = {
   compress: true,
 
   // Build optimizations
-  swcMinify: true,
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,

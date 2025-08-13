@@ -235,7 +235,7 @@ export default function AddressesPage() {
                       </thead>
                       <tbody className="divide-default divide-y">
                         {addressResults.map((address, index) => {
-                          const status = address.urban_rural_status ? 'complete' : 'partial';
+                          const status = (address as any).urban_rural_status ? 'complete' : 'partial';
 
                           return (
                             <tr
