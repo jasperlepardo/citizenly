@@ -1,0 +1,197 @@
+[
+  {
+    "code": "11",
+    "title": "Chief Executives, Senior Officials And Legislators",
+    "major_code": "1"
+  },
+  {
+    "code": "12",
+    "title": "Administrative And Commercial Managers",
+    "major_code": "1"
+  },
+  {
+    "code": "13",
+    "title": "Production And Specialized Services Managers",
+    "major_code": "1"
+  },
+  {
+    "code": "14",
+    "title": "Hospitality, Retail And Other Services Managers",
+    "major_code": "1"
+  },
+  {
+    "code": "21",
+    "title": "Science And Engineering Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "22",
+    "title": "Health Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "23",
+    "title": "Teaching Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "24",
+    "title": "Business And Administration Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "25",
+    "title": "Information And Communication Technology Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "26",
+    "title": "Legal, Social And Cultural Professionals",
+    "major_code": "2"
+  },
+  {
+    "code": "31",
+    "title": "Science And Engineering Associate Professionals",
+    "major_code": "3"
+  },
+  {
+    "code": "32",
+    "title": "Health Associate Professionals",
+    "major_code": "3"
+  },
+  {
+    "code": "33",
+    "title": "Business And Administration Associate Professionals",
+    "major_code": "3"
+  },
+  {
+    "code": "34",
+    "title": "Legal, Social, Cultural And Related Professionals",
+    "major_code": "3"
+  },
+  {
+    "code": "35",
+    "title": "Information And Communications Technician",
+    "major_code": "3"
+  },
+  {
+    "code": "41",
+    "title": "General And Keyboard Clerks",
+    "major_code": "4"
+  },
+  {
+    "code": "42",
+    "title": "Customer Service Clerks",
+    "major_code": "4"
+  },
+  {
+    "code": "43",
+    "title": "Numerical And Material Recording Clerks",
+    "major_code": "4"
+  },
+  {
+    "code": "44",
+    "title": "Other Clerical Support Workers",
+    "major_code": "4"
+  },
+  {
+    "code": "51",
+    "title": "Personal Service Workers",
+    "major_code": "5"
+  },
+  {
+    "code": "52",
+    "title": "Sales Workers",
+    "major_code": "5"
+  },
+  {
+    "code": "53",
+    "title": "Personal Care Workers",
+    "major_code": "5"
+  },
+  {
+    "code": "54",
+    "title": "Proctective Services Workers",
+    "major_code": "5"
+  },
+  {
+    "code": "62",
+    "title": "Market-Oriented Skilled Forestry, Fishery And Hunting Workers",
+    "major_code": "6"
+  },
+  {
+    "code": "63",
+    "title": "Subsistence Farmers, Fishers, Hunter And Gatherers",
+    "major_code": "6"
+  },
+  {
+    "code": "71",
+    "title": "Building And Related Trades Workers, Excluding Electricians",
+    "major_code": "7"
+  },
+  {
+    "code": "72",
+    "title": "Metal, Machinery And Related Trades Workers",
+    "major_code": "7"
+  },
+  {
+    "code": "73",
+    "title": "Handicraft And Printing Workers",
+    "major_code": "7"
+  },
+  {
+    "code": "74",
+    "title": "Electrical And Electronics Trades Workers",
+    "major_code": "7"
+  },
+  {
+    "code": "75",
+    "title": "Food Processing, Wood Working, Garment And Other Craft And Related Trades Workers",
+    "major_code": "7"
+  },
+  {
+    "code": "81",
+    "title": "Stationary Plant And Machine Operators",
+    "major_code": "8"
+  },
+  {
+    "code": "82",
+    "title": "Assemblers",
+    "major_code": "8"
+  },
+  {
+    "code": "83",
+    "title": "Drivers And Mobile Plant Operators",
+    "major_code": "8"
+  },
+  {
+    "code": "91",
+    "title": "Cleaners And Helpers",
+    "major_code": "9"
+  },
+  {
+    "code": "92",
+    "title": "Agricultural, Forestry And Fishery Laborers",
+    "major_code": "9"
+  },
+  {
+    "code": "93",
+    "title": "Laborers In Mining, Construction, Manufacturing And Transport",
+    "major_code": "9"
+  },
+  {
+    "code": "94",
+    "title": "Food Preparation Assistants",
+    "major_code": "9"
+  },
+  {
+    "code": "95",
+    "title": "Street And Related Sales And Service Workers",
+    "major_code": "9"
+  },
+  {
+    "code": "96",
+    "title": "Refuse Workers And Other Elementary Workers",
+    "major_code": "9"
+  }
+]

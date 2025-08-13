@@ -309,16 +309,41 @@ export default function HouseholdFormWizard({
         household_head_id: null,
       };
 
-      const { data, error } = await supabase.from('households').insert([householdData]).select();
+      // Use API endpoint instead of direct insert
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (error) {
-        dbLogger.error('Failed to create household', { error: error.message, code: error.code });
-        alert(`Failed to create household: ${error.message}`);
+      if (!session?.access_token) {
+        alert('Authentication required. Please log in again.');
         return;
       }
 
-      dbLogger.info('Household created successfully', {
-        recordId: data[0]?.id,
+      const response = await fetch('/api/households', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(householdData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+
+        dbLogger.error('Failed to create household via API', {
+          error: errorMessage,
+          status: response.status,
+        });
+        alert(`Failed to create household: ${errorMessage}`);
+        return;
+      }
+
+      const { household: data } = await response.json();
+
+      dbLogger.info('Household created successfully via API', {
+        recordId: data?.id,
         householdCode: formData.householdCode,
       });
 

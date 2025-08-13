@@ -7,11 +7,11 @@ This directory contains comprehensive documentation for the Citizenly project, o
 | Category                           | Description                                     | Files                 |
 | ---------------------------------- | ----------------------------------------------- | --------------------- |
 | **[Architecture](#-architecture)** | System design and technical architecture        | 2 files               |
-| **[Deployment](#-deployment)**     | Deployment guides and configurations            | 1 unified guide       |
-| **[Development](#-development)**   | Development workflows and implementation        | 4 files               |
+| **[Deployment](#-deployment)**     | Deployment guides and configurations            | 2 unified guides      |
+| **[Development](#-development)**   | Development workflows and implementation        | 6 files               |
 | **[Guides](#-guides)**             | Step-by-step guides and tutorials               | 1 comprehensive guide |
 | **[Operations](#-operations)**     | System operations, monitoring, and optimization | 3 guides              |
-| **[Reference](#-reference)**       | Reference materials and specifications          | 9 files               |
+| **[Reference](#-reference)**       | Reference materials and specifications          | 10 files              |
 
 ## 🏗️ Architecture
 
@@ -30,6 +30,7 @@ Unified deployment guide with tier-specific instructions and platform configurat
   - 🔴 **Enterprise Tier**: Full feature enterprise deployment
   - Platform-specific configurations (Vercel, GitHub Actions)
   - Troubleshooting and validation procedures
+- **[NETLIFY_STORYBOOK_SETUP.md](deployment/NETLIFY_STORYBOOK_SETUP.md)** - Storybook deployment to Netlify configuration
 
 ## 💻 Development
 
@@ -39,6 +40,8 @@ Development processes, implementation planning, and workflow documentation.
 - **[NEXT_STEPS.md](development/NEXT_STEPS.md)** - Actionable next steps and MVP development tasks
 - **[QUALITY_ASSURANCE.md](development/QUALITY_ASSURANCE.md)** - Environment-based quality assurance system documentation
 - **[ENVIRONMENT_SETUP.md](development/ENVIRONMENT_SETUP.md)** - Development environment setup and configuration guide
+- **[BRANCH_PROTECTION_WORKFLOW.md](development/BRANCH_PROTECTION_WORKFLOW.md)** - Comprehensive branching workflow and protection rules
+- **[QUALITY_SYSTEM_README.md](development/QUALITY_SYSTEM_README.md)** - 4-tier quality assurance system overview
 
 ## 📚 Guides
 
@@ -74,6 +77,7 @@ Comprehensive reference materials, specifications, and design documentation.
 - **[COMPONENT_LIBRARY.md](reference/COMPONENT_LIBRARY.md)** - UI component library documentation
 - **[TECH_STACK.md](reference/TECH_STACK.md)** - Technology stack documentation
 - **[PRD.md](reference/PRD.md)** - Product Requirements Document
+- **[NAMING_CONVENTIONS_QUICK_REFERENCE.md](reference/NAMING_CONVENTIONS_QUICK_REFERENCE.md)** - Quick reference for git workflow naming conventions
 
 ### **🎨 Design & UX References**
 
@@ -129,10 +133,10 @@ Comprehensive reference materials, specifications, and design documentation.
 
 ## 🔄 Git Workflow
 
-This project follows a strict branching workflow. See the root-level documentation:
+This project follows a strict branching workflow. See the development documentation:
 
-- **[BRANCH_PROTECTION_WORKFLOW.md](../BRANCH_PROTECTION_WORKFLOW.md)** - Comprehensive workflow rules
-- **[NAMING_CONVENTIONS_QUICK_REFERENCE.md](../NAMING_CONVENTIONS_QUICK_REFERENCE.md)** - Quick naming reference
+- **[BRANCH_PROTECTION_WORKFLOW.md](development/BRANCH_PROTECTION_WORKFLOW.md)** - Comprehensive workflow rules
+- **[NAMING_CONVENTIONS_QUICK_REFERENCE.md](reference/NAMING_CONVENTIONS_QUICK_REFERENCE.md)** - Quick naming reference
 
 ## 📋 Documentation Standards
 

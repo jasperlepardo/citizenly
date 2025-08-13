@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '../../atoms';
+import AccessibleModal from '../../molecules/AccessibleModal';
+import StreetSelector from '../StreetSelector';
+import SubdivisionSelector from '../SubdivisionSelector';
 import { logger, logError } from '@/lib/secure-logger';
 
 interface CreateHouseholdModalProps {
@@ -50,9 +53,8 @@ interface AddressHierarchy {
 
 interface HouseholdFormData {
   house_number: string;
-  street_name: string;
-  subdivision: string;
-  zip_code: string;
+  street_id: string;
+  subdivision_id: string;
 }
 
 export default function CreateHouseholdModal({
@@ -63,9 +65,8 @@ export default function CreateHouseholdModal({
   const { userProfile } = useAuth();
   const [formData, setFormData] = useState<HouseholdFormData>({
     house_number: '',
-    street_name: '',
-    subdivision: '',
-    zip_code: '',
+    street_id: '',
+    subdivision_id: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof HouseholdFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,8 +82,8 @@ export default function CreateHouseholdModal({
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof HouseholdFormData, string>> = {};
 
-    if (!formData.street_name.trim()) {
-      newErrors.street_name = 'Street name is required';
+    if (!formData.street_id.trim()) {
+      newErrors.street_id = 'Street is required';
     }
 
     setErrors(newErrors);
@@ -333,7 +334,7 @@ export default function CreateHouseholdModal({
 
       // Test RLS policy by checking if user can query their own profile
       const { data: testProfile, error: testProfileError } = await supabase
-        .from('user_profiles')
+        .from('auth_user_profiles')
         .select('id, barangay_code, is_active, role_id')
         .eq('id', user?.id)
         .single();
@@ -343,7 +344,7 @@ export default function CreateHouseholdModal({
       // Check if user has proper role
       if (testProfile?.role_id) {
         const { data: roleData, error: roleError } = await supabase
-          .from('roles')
+          .from('auth_roles')
           .select('id, name')
           .eq('id', testProfile.role_id)
           .single();
@@ -355,7 +356,7 @@ export default function CreateHouseholdModal({
       if (testProfile && testProfile.is_active !== true) {
         logger.info('User is not active, updating profile to active status');
         const { error: updateError } = await supabase
-          .from('user_profiles')
+          .from('auth_user_profiles')
           .update({ is_active: true })
           .eq('id', user?.id);
 
@@ -373,20 +374,23 @@ export default function CreateHouseholdModal({
       const actualDerivedCodes = deriveGeographicCodes(actualBarangayCode);
       logger.debug('Derived geographic codes', { codes: actualDerivedCodes });
 
+      // Use the selected street and subdivision IDs directly
+      const streetId = formData.street_id;
+      const subdivisionId = formData.subdivision_id || null;
+
       // Generate PSGC-compliant household code
       const householdCode = await generateHouseholdCode();
 
-      // Create household record
+      // Create household record with proper schema fields
       const householdData = {
         code: householdCode,
+        house_number: formData.house_number.trim() || '1', // Default to '1' if empty since it's required
+        street_id: streetId, // Required UUID reference
+        subdivision_id: subdivisionId, // Optional UUID reference
         barangay_code: actualBarangayCode,
-        region_code: actualDerivedCodes?.region_code || null,
-        province_code: actualDerivedCodes?.province_code || null,
-        city_municipality_code: actualDerivedCodes?.city_municipality_code || null,
-        house_number: formData.house_number.trim() || null,
-        street_name: formData.street_name.trim(),
-        subdivision: formData.subdivision.trim() || null,
-        zip_code: formData.zip_code.trim() || null,
+        city_municipality_code: actualDerivedCodes?.city_municipality_code,
+        province_code: actualDerivedCodes?.province_code,
+        region_code: actualDerivedCodes?.region_code,
         created_by: userProfile.id,
       };
 
@@ -395,7 +399,7 @@ export default function CreateHouseholdModal({
       const { data, error } = await supabase
         .from('households')
         .insert([householdData])
-        .select('code, barangay_code, street_name, total_members')
+        .select('code, barangay_code, house_number')
         .single();
 
       if (error) {
@@ -411,9 +415,8 @@ export default function CreateHouseholdModal({
       // Reset form
       setFormData({
         house_number: '',
-        street_name: '',
-        subdivision: '',
-        zip_code: '',
+        street_id: '',
+        subdivision_id: '',
       });
       setErrors({});
     } catch (error) {
@@ -430,180 +433,133 @@ export default function CreateHouseholdModal({
       // Reset form when closing
       setFormData({
         house_number: '',
-        street_name: '',
-        subdivision: '',
-        zip_code: '',
+        street_id: '',
+        subdivision_id: '',
       });
       setErrors({});
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black bg-opacity-50" onClick={handleClose} />
-
-      {/* Modal */}
-      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white shadow-xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-neutral-200 p-6">
-          <h2 className="font-montserrat text-lg font-semibold text-neutral-900">
-            Create New Household
-          </h2>
+    <AccessibleModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Create New Household"
+      description="Create a new household for this resident in your assigned barangay"
+      size="md"
+      closeOnEscape={!isSubmitting}
+      closeOnBackdropClick={!isSubmitting}
+      showCloseButton={!isSubmitting}
+      footer={
+        <div className="flex gap-3">
           <Button
+            type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            variant="ghost"
-            size="sm"
-            iconOnly
-            className="text-neutral-400 hover:text-neutral-600"
+            variant="neutral"
+            size="regular"
+            fullWidth
           >
-            <svg className="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            form="household-form"
+            disabled={isSubmitting}
+            loading={isSubmitting}
+            variant="primary"
+            size="regular"
+            fullWidth
+          >
+            Create Household
           </Button>
         </div>
-
-        {/* Address Info Display */}
-        <div className="border-b border-green-200 bg-green-50 p-6">
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 text-green-600">📍</span>
-            <div>
-              <h5 className="mb-2 font-medium text-green-800">Household Location</h5>
-              <div className="space-y-1 text-sm text-green-700">
-                <div>
-                  <strong>Region:</strong> {addressDisplayInfo.region}
-                </div>
-                <div>
-                  <strong>Province:</strong> {addressDisplayInfo.province}
-                </div>
-                <div>
-                  <strong>City/Municipality:</strong> {addressDisplayInfo.cityMunicipality}
-                </div>
-                <div>
-                  <strong>Barangay:</strong> {addressDisplayInfo.barangay}
-                </div>
-                <div className="mt-1 text-xs text-neutral-500">
-                  Code: {userProfile?.barangay_code}
-                </div>
-                <div className="mt-2 text-xs text-green-600">
-                  All household geographic details are auto-populated from your barangay assignment.
-                </div>
+      }
+    >
+      {/* Address Info Display */}
+      <div className="mb-6 border-b border-green-200 bg-green-50 p-4 -m-4">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 text-green-600">📍</span>
+          <div>
+            <h5 className="mb-2 font-medium text-green-800">Household Location</h5>
+            <div className="space-y-1 text-sm text-green-700">
+              <div>
+                <strong>Region:</strong> {addressDisplayInfo.region}
+              </div>
+              <div>
+                <strong>Province:</strong> {addressDisplayInfo.province}
+              </div>
+              <div>
+                <strong>City/Municipality:</strong> {addressDisplayInfo.cityMunicipality}
+              </div>
+              <div>
+                <strong>Barangay:</strong> {addressDisplayInfo.barangay}
+              </div>
+              <div className="mt-1 text-xs text-neutral-500">
+                Code: {userProfile?.barangay_code}
+              </div>
+              <div className="mt-2 text-xs text-green-600">
+                All household geographic details are auto-populated from your barangay assignment.
               </div>
             </div>
           </div>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 p-6">
-          {/* House Number */}
-          <div>
-            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
-              House/Block/Lot Number
-            </label>
-            <input
-              type="text"
-              value={formData.house_number}
-              onChange={e => handleInputChange('house_number', e.target.value)}
-              placeholder="e.g., Blk 1 Lot 5, #123"
-              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* Street Name */}
-          <div>
-            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
-              Street Name *
-            </label>
-            <input
-              type="text"
-              value={formData.street_name}
-              onChange={e => handleInputChange('street_name', e.target.value)}
-              placeholder="e.g., Main Street, Rizal Avenue"
-              className={`font-montserrat w-full rounded border px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 ${
-                errors.street_name
-                  ? 'border-red-500 focus:ring-red-500'
-                  : 'border-neutral-300 focus:ring-blue-500'
-              }`}
-              disabled={isSubmitting}
-              required
-            />
-            {errors.street_name && (
-              <p className="mt-1 text-sm text-red-600">{errors.street_name}</p>
-            )}
-          </div>
-
-          {/* Subdivision */}
-          <div>
-            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
-              Subdivision/Zone/Sitio/Purok
-            </label>
-            <input
-              type="text"
-              value={formData.subdivision}
-              onChange={e => handleInputChange('subdivision', e.target.value)}
-              placeholder="e.g., Greenview Subdivision, Zone 1"
-              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* ZIP Code */}
-          <div>
-            <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
-              ZIP Code
-            </label>
-            <input
-              type="text"
-              value={formData.zip_code}
-              onChange={e => handleInputChange('zip_code', e.target.value)}
-              placeholder="e.g., 1234"
-              className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* Info Note */}
-          <div className="rounded border border-blue-200 bg-blue-50 p-4">
-            <p className="font-montserrat text-sm text-blue-800">
-              <strong>Note:</strong> This household will be created in your assigned barangay. You
-              can assign a resident as the household head after creating the household.
-            </p>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex gap-3 pt-4">
-            <Button
-              type="button"
-              onClick={handleClose}
-              disabled={isSubmitting}
-              variant="neutral"
-              size="regular"
-              fullWidth
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              loading={isSubmitting}
-              variant="primary"
-              size="regular"
-              fullWidth
-            >
-              Create Household
-            </Button>
-          </div>
-        </form>
       </div>
-    </div>
+
+      {/* Form */}
+      <form id="household-form" onSubmit={handleSubmit} className="space-y-4">
+        {/* House Number */}
+        <div>
+          <label htmlFor="house-number" className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+            House/Block/Lot Number
+          </label>
+          <input
+            id="house-number"
+            type="text"
+            value={formData.house_number}
+            onChange={e => handleInputChange('house_number', e.target.value)}
+            placeholder="e.g., Blk 1 Lot 5, #123"
+            className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isSubmitting}
+          />
+        </div>
+
+        {/* Subdivision */}
+        <div>
+          <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+            Subdivision/Zone/Sitio/Purok
+          </label>
+          <SubdivisionSelector
+            value={formData.subdivision_id}
+            onSelect={(subdivisionId) => handleInputChange('subdivision_id', subdivisionId || '')}
+            error={errors.subdivision_id}
+            placeholder="🏘️ Select subdivision or create new"
+          />
+        </div>
+
+        {/* Street Name */}
+        <div>
+          <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+            Street Name *
+          </label>
+          <StreetSelector
+            value={formData.street_id}
+            onSelect={(streetId) => handleInputChange('street_id', streetId || '')}
+            error={errors.street_id}
+            placeholder="🛣️ Select street or create new"
+            subdivisionId={formData.subdivision_id || null}
+          />
+        </div>
+
+
+        {/* Info Note */}
+        <div className="rounded border border-blue-200 bg-blue-50 p-4">
+          <p className="font-montserrat text-sm text-blue-800">
+            <strong>Note:</strong> This household will be created in your assigned barangay. You
+            can assign a resident as the household head after creating the household.
+          </p>
+        </div>
+      </form>
+    </AccessibleModal>
   );
 }

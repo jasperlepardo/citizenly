@@ -56,6 +56,7 @@ export interface DropdownSelectProps extends VariantProps<typeof dropdownVariant
   maxHeight?: number;
   className?: string;
   dropdownClassName?: string;
+  required?: boolean;
 }
 
 const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
@@ -80,6 +81,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
       searchable = false,
       clearable = false,
       maxHeight = 200,
+      required = false,
       ...props
     },
     ref
@@ -371,6 +373,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
             aria-controls={id}
           >
             {label}
+            {required && <span className="text-red-500 ml-1">*</span>}
           </div>
         )}
 

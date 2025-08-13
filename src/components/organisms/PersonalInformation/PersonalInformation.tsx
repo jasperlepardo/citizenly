@@ -116,6 +116,7 @@ export default function PersonalInformation({
           options={SEX_OPTIONS}
           placeholder="Select sex"
           searchable={true}
+          required
           errorMessage={errors.sex}
         />
 

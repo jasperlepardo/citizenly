@@ -89,17 +89,30 @@ export const getSupabaseConfig = () => {
         autoRefreshToken: true,
         persistSession: !isTest(),
         detectSessionInUrl: !isTest(),
+        // Production-ready auth settings
+        storageKey: 'rbi-auth-token',
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        flowType: 'pkce' as const,
+        debug: isDebugEnabled(),
       },
 
       db: {
         schema: 'public',
       },
 
+      // Realtime settings for production
+      realtime: config.database.enableRealtime ? {
+        params: {
+          eventsPerSecond: 10,
+        },
+      } : undefined,
+
       global: {
         headers: {
           'Cache-Control': isProduction() ? 'public, max-age=3600' : 'no-cache',
           Pragma: isProduction() ? 'cache' : 'no-cache',
           'X-Environment': config.environment,
+          'X-Client-Info': 'rbi-system-client',
         },
       },
     },

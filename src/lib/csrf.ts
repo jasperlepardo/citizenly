@@ -23,6 +23,11 @@ const SECRET =
 
 const TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 
+// Helper function to convert base64 to URL-safe base64
+function toBase64Url(str: string): string {
+  return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
 export interface CSRFToken {
   token: string;
   timestamp: number;
@@ -36,13 +41,15 @@ export interface CSRFToken {
 export function generateCSRFToken(): CSRFToken {
   validateCSRFSecret();
   const timestamp = Date.now();
-  const randomToken = randomBytes(32).toString('base64url');
+  const randomToken = toBase64Url(randomBytes(32).toString('base64'));
 
   // Create signature using HMAC
   const data = `${randomToken}:${timestamp}`;
-  const signature = createHash('sha256')
-    .update(data + SECRET)
-    .digest('base64url');
+  const signature = toBase64Url(
+    createHash('sha256')
+      .update(data + SECRET)
+      .digest('base64')
+  );
 
   return {
     token: randomToken,
@@ -69,13 +76,15 @@ export function verifyCSRFToken(token: string, timestamp: number, signature: str
 
     // Recreate the signature
     const data = `${token}:${timestamp}`;
-    const expectedSignature = createHash('sha256')
-      .update(data + SECRET)
-      .digest('base64url');
+    const expectedSignature = toBase64Url(
+      createHash('sha256')
+        .update(data + SECRET)
+        .digest('base64')
+    );
 
     // Use timing-safe comparison to prevent timing attacks
-    const expectedBuffer = Buffer.from(expectedSignature, 'base64url');
-    const actualBuffer = Buffer.from(signature, 'base64url');
+    const expectedBuffer = Buffer.from(expectedSignature, 'base64');
+    const actualBuffer = Buffer.from(signature, 'base64');
 
     if (expectedBuffer.length !== actualBuffer.length) {
       return false;

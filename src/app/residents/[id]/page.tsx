@@ -4,10 +4,23 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { ProtectedRoute } from '@/components/organisms';
+import { ProtectedRoute, PersonalInformation, EducationEmployment } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
 import { DropdownSelect } from '@/components/molecules';
+import { InputField } from '@/components/molecules';
 import { logger, logError } from '@/lib/secure-logger';
+import {
+  SEX_OPTIONS,
+  CIVIL_STATUS_OPTIONS,
+  CITIZENSHIP_OPTIONS,
+  EDUCATION_LEVEL_OPTIONS,
+  EDUCATION_STATUS_OPTIONS,
+  EMPLOYMENT_STATUS_OPTIONS,
+  BLOOD_TYPE_OPTIONS,
+  RELIGION_OPTIONS,
+  ETHNICITY_OPTIONS,
+  extractValues,
+} from '@/lib/constants/resident-enums';
 
 // Tooltip Component
 const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
@@ -23,7 +36,7 @@ const Tooltip = ({ children, content }: { children: React.ReactNode; content: st
         {children}
       </div>
       {isVisible && (
-        <div className="tooltip absolute bottom-full left-1/2 z-10 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-lg bg-neutral-800 px-3 py-2 text-sm font-medium shadow-sm text-inverse">
+        <div className="tooltip text-inverse absolute bottom-full left-1/2 z-10 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-lg bg-neutral-800 px-3 py-2 text-sm font-medium shadow-sm">
           {content}
           <div className="tooltip-arrow absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-neutral-800"></div>
         </div>
@@ -46,6 +59,8 @@ interface Resident {
   citizenship?: string;
   mobile_number?: string;
   email?: string;
+  telephone_number?: string;
+  philsys_card_number?: string;
   education_level?: string;
   education_status?: string;
   employment_status?: string;
@@ -53,9 +68,17 @@ interface Resident {
   psoc_level?: string;
   occupation_title?: string;
   occupation_details?: string;
+  workplace?: string;
   blood_type?: string;
+  height_cm?: number;
+  weight_kg?: number;
+  complexion?: string;
   ethnicity?: string;
   religion?: string;
+  mother_first_name?: string;
+  mother_middle_name?: string;
+  mother_maiden_last_name?: string;
+  migration_info?: any;
   is_voter?: boolean;
   is_resident_voter?: boolean;
   voter_id_number?: string;
@@ -139,47 +162,41 @@ function ResidentDetailContent() {
 
         logger.debug('Loading resident details', { residentId });
 
-        // First, let's check if we can access the residents table at all
-        const { data: allResidents, error: listError } = await supabase
-          .from('residents')
-          .select('id, first_name, last_name')
-          .limit(5);
+        // Use API endpoint instead of direct queries
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-        logger.debug('Sample residents query result', { count: allResidents?.length || 0 });
-        if (listError) {
-          logger.warn('Sample residents query failed', { error: listError.message });
+        if (!session?.access_token) {
+          throw new Error('No valid session found');
         }
 
-        // Load resident details first without relationships
-        const { data: residentData, error: residentError } = await supabase
-          .from('residents')
-          .select('*')
-          .eq('id', residentId)
-          .single();
-
-        logger.debug('Resident query completed', {
-          found: !!residentData,
-          hasError: !!residentError,
+        // Load resident details via API
+        const response = await fetch(`/api/residents/${residentId}`, {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
         });
 
-        if (residentError) {
-          logError(new Error(residentError.message), 'RESIDENT_QUERY');
-          if (residentError.code === 'PGRST116') {
-            setError(`Resident with ID "${residentId}" not found`);
-          } else {
-            setError(
-              `Database error: ${residentError.message || 'Failed to load resident details'}`
-            );
-          }
-          return;
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
         }
+
+        const { resident: residentData, household: householdData } = await response.json();
 
         if (!residentData) {
           setError('No data returned for resident');
           return;
         }
 
-        logger.debug('Resident data loaded successfully', { residentId: residentData.id });
+        logger.debug('Resident data loaded successfully via API', { residentId: residentData.id });
+
+        // Household data is already included in the API response
+        if (householdData) {
+          residentData.household = householdData;
+        }
 
         // Load address information for the resident's barangay
         try {
@@ -274,58 +291,7 @@ function ResidentDetailContent() {
           // No fallback data - leave address_info undefined if query fails
         }
 
-        // Try to load household information if resident has household_code or household_id
-        logger.debug('Checking household associations', {
-          hasHouseholdCode: !!residentData.household_code,
-          hasHouseholdId: !!residentData.household_id,
-        });
-
-        if (residentData.household_code || residentData.household_id) {
-          try {
-            // Query by household_code or household_id directly
-            logger.debug('Querying household data', { hasCode: !!residentData.household_code });
-            let householdQuery = supabase.from('households').select('*');
-
-            if (residentData.household_code) {
-              householdQuery = householdQuery.eq('code', residentData.household_code);
-            } else if (residentData.household_id) {
-              householdQuery = householdQuery.eq('id', residentData.household_id);
-            }
-
-            const { data: householdData, error: householdError } = await householdQuery.single();
-
-            logger.debug('Household query completed', {
-              found: !!householdData,
-              hasError: !!householdError,
-            });
-            if (householdError) {
-              logger.warn('Household query failed', { error: householdError.message });
-            }
-
-            if (householdData && !householdError) {
-              residentData.household = householdData;
-
-              // Load household head information if available
-              if (householdData.household_head_id) {
-                const { data: headData } = await supabase
-                  .from('residents')
-                  .select('id, first_name, middle_name, last_name')
-                  .eq('id', householdData.household_head_id)
-                  .single();
-
-                if (headData) {
-                  residentData.household.head_resident = headData;
-                }
-              }
-            }
-          } catch (householdError) {
-            logger.warn('Household data lookup failed', {
-              error: householdError instanceof Error ? householdError.message : 'Unknown error',
-            });
-          }
-        } else {
-          logger.debug('Resident has no household association');
-        }
+        // Household information is now included in the main API response
 
         // Try to load PSOC information if available
         if (residentData.psoc_code) {
@@ -346,8 +312,32 @@ function ResidentDetailContent() {
           }
         }
 
-        setResident(residentData);
-        setEditedResident(updateComputedFields({ ...residentData }));
+        // Initialize missing fields for comprehensive form
+        const initializedResident = {
+          ...residentData,
+          telephone_number: residentData.telephone_number || '',
+          philsys_card_number: residentData.philsys_card_number || '',
+          workplace: residentData.workplace || '',
+          height_cm: residentData.height_cm || undefined,
+          weight_kg: residentData.weight_kg || undefined,
+          complexion: residentData.complexion || '',
+          mother_first_name: residentData.mother_first_name || '',
+          mother_middle_name: residentData.mother_middle_name || '',
+          mother_maiden_last_name: residentData.mother_maiden_last_name || '',
+          migration_info: residentData.migration_info || {
+            is_migrant: false,
+            migration_type: null,
+            previous_address: '',
+            previous_country: '',
+            migration_reason: null,
+            migration_date: null,
+            documentation_status: null,
+            is_returning_resident: false,
+          },
+        };
+
+        setResident(initializedResident);
+        setEditedResident(updateComputedFields({ ...initializedResident }));
       } catch (err) {
         logError(
           err instanceof Error ? err : new Error('Unknown error loading resident'),
@@ -434,14 +424,22 @@ function ResidentDetailContent() {
           citizenship: editedResident.citizenship,
           mobile_number: editedResident.mobile_number,
           email: editedResident.email,
+          telephone_number: editedResident.telephone_number,
           education_level: editedResident.education_level,
           education_status: editedResident.education_status,
           employment_status: editedResident.employment_status,
           occupation_title: editedResident.occupation_title,
           occupation_details: editedResident.occupation_details,
+          workplace: editedResident.workplace,
           blood_type: editedResident.blood_type,
+          height_cm: editedResident.height_cm,
+          weight_kg: editedResident.weight_kg,
+          complexion: editedResident.complexion,
           ethnicity: editedResident.ethnicity,
           religion: editedResident.religion,
+          mother_first_name: editedResident.mother_first_name,
+          mother_middle_name: editedResident.mother_middle_name,
+          mother_maiden_last_name: editedResident.mother_maiden_last_name,
           is_voter: editedResident.is_voter,
           is_resident_voter: editedResident.is_resident_voter,
           voter_id_number: editedResident.voter_id_number,
@@ -450,6 +448,7 @@ function ResidentDetailContent() {
           is_solo_parent: editedResident.is_solo_parent,
           is_indigenous_people: editedResident.is_indigenous_people,
           is_migrant: editedResident.is_migrant,
+          migration_info: editedResident.migration_info,
           updated_at: new Date().toISOString(),
         })
         .eq('id', residentId);
@@ -548,7 +547,7 @@ function ResidentDetailContent() {
                   type="checkbox"
                   checked={!!value}
                   onChange={e => handleFieldChange(field, e.target.checked)}
-                  className="rounded text-blue-600 border-default focus:ring-blue-500"
+                  className="rounded border-default text-blue-600 focus:ring-blue-500"
                 />
                 <span className="ml-2 text-sm text-primary">{value ? 'Yes' : 'No'}</span>
               </label>
@@ -598,7 +597,7 @@ function ResidentDetailContent() {
               type={type}
               value={(value as string) || ''}
               onChange={e => handleFieldChange(field, e.target.value)}
-              className="block w-full rounded-md border text-sm shadow-sm text-primary bg-surface border-default focus:border-blue-500 focus:ring-blue-500"
+              className="bg-surface block w-full rounded-md border border-default text-sm text-primary shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -669,7 +668,7 @@ function ResidentDetailContent() {
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+            <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -691,7 +690,7 @@ function ResidentDetailContent() {
               <p className="font-montserrat mb-4 text-sm text-secondary">{error}</p>
               <Link
                 href="/residents"
-                className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium text-secondary border-default hover:bg-surface-hover"
+                className="hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary"
               >
                 Back to Residents
               </Link>
@@ -710,7 +709,7 @@ function ResidentDetailContent() {
           <div className="flex items-center gap-4">
             <Link
               href="/residents"
-              className="inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="bg-surface hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-3 py-2 text-sm font-medium text-secondary shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -735,147 +734,194 @@ function ResidentDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-6 lg:col-span-2">
             {/* Personal Information Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Personal Information</h3>
               </div>
               <div className="px-6 py-4">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  {renderEditableField('First Name', 'first_name', 'text')}
-                  {renderEditableField('Middle Name', 'middle_name', 'text')}
-                  {renderEditableField('Last Name', 'last_name', 'text')}
-                  {renderEditableField('Extension Name', 'extension_name', 'text')}
-                  {renderEditableField('Date of Birth', 'birthdate', 'date')}
-                  {renderEditableField('Sex', 'sex', 'select', ['male', 'female'])}
-                  {renderEditableField('Civil Status', 'civil_status', 'select', [
-                    'single',
-                    'married',
-                    'widowed',
-                    'divorced',
-                    'separated',
-                    'annulled',
-                    'registered_partnership',
-                    'live_in',
-                  ])}
-                  {renderEditableField('Citizenship', 'citizenship', 'select', [
-                    'filipino',
-                    'dual_citizen',
-                    'foreign_national',
-                  ])}
-                  {renderEditableField('Mobile Number', 'mobile_number', 'tel')}
-                  {renderEditableField('Email Address', 'email', 'email')}
-                  <div className="sm:col-span-2">
-                    <dt className="text-sm font-medium text-secondary">Address</dt>
-                    <dd className="mt-1 text-sm text-primary">
-                      {resident.household ? (
-                        <div>
-                          <Link
-                            href={`/households/${resident.household.code}`}
-                            className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
-                          >
-                            <div className="font-medium">
-                              {[
-                                formatAddress(resident.household),
-                                resident.address_info?.barangay_name,
-                                resident.address_info?.city_municipality_name &&
-                                  resident.address_info.city_municipality_name +
-                                    (resident.address_info.province_name
-                                      ? `, ${resident.address_info.province_name}`
-                                      : ''),
-                                resident.address_info?.region_name,
-                              ]
-                                .filter(Boolean)
-                                .join(', ')}
-                            </div>
-                          </Link>
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="text-secondary">
-                            {resident.address_info
-                              ? [
-                                  'No household assigned',
-                                  resident.address_info.barangay_name,
-                                  resident.address_info.city_municipality_name &&
+                {isEditing ? (
+                  <PersonalInformation
+                    value={{
+                      firstName: editedResident?.first_name || '',
+                      middleName: editedResident?.middle_name || '',
+                      lastName: editedResident?.last_name || '',
+                      extensionName: editedResident?.extension_name || '',
+                      birthdate: editedResident?.birthdate || '',
+                      sex: (editedResident?.sex as 'male' | 'female') || '',
+                      civilStatus: editedResident?.civil_status || '',
+                      citizenship: editedResident?.citizenship || 'filipino',
+                    }}
+                    onChange={personalData => {
+                      if (!editedResident) return;
+                      setEditedResident({
+                        ...editedResident,
+                        first_name: personalData.firstName,
+                        middle_name: personalData.middleName,
+                        last_name: personalData.lastName,
+                        extension_name: personalData.extensionName,
+                        birthdate: personalData.birthdate,
+                        sex: personalData.sex as 'male' | 'female',
+                        civil_status: personalData.civilStatus,
+                        citizenship: personalData.citizenship,
+                      });
+                    }}
+                    errors={{}}
+                  />
+                ) : (
+                  <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                    {renderEditableField('First Name', 'first_name', 'text')}
+                    {renderEditableField('Middle Name', 'middle_name', 'text')}
+                    {renderEditableField('Last Name', 'last_name', 'text')}
+                    {renderEditableField('Extension Name', 'extension_name', 'text')}
+                    {renderEditableField('Date of Birth', 'birthdate', 'date')}
+                    {renderEditableField('Sex', 'sex', 'select', extractValues(SEX_OPTIONS))}
+                    {renderEditableField(
+                      'Civil Status',
+                      'civil_status',
+                      'select',
+                      extractValues(CIVIL_STATUS_OPTIONS)
+                    )}
+                    {renderEditableField(
+                      'Citizenship',
+                      'citizenship',
+                      'select',
+                      extractValues(CITIZENSHIP_OPTIONS)
+                    )}
+                    <div className="sm:col-span-2">
+                      <dt className="text-sm font-medium text-secondary">Address</dt>
+                      <dd className="mt-1 text-sm text-primary">
+                        {resident.household ? (
+                          <div>
+                            <Link
+                              href={`/households/${resident.household.code}`}
+                              className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
+                            >
+                              <div className="font-medium">
+                                {[
+                                  formatAddress(resident.household),
+                                  resident.address_info?.barangay_name,
+                                  resident.address_info?.city_municipality_name &&
                                     resident.address_info.city_municipality_name +
                                       (resident.address_info.province_name
                                         ? `, ${resident.address_info.province_name}`
                                         : ''),
-                                  resident.address_info.region_name,
+                                  resident.address_info?.region_name,
                                 ]
                                   .filter(Boolean)
-                                  .join(', ')
-                              : `No household assigned, Barangay Code: ${resident.barangay_code}`}
+                                  .join(', ')}
+                              </div>
+                            </Link>
                           </div>
-                        </div>
-                      )}
-                    </dd>
-                  </div>
-                </dl>
+                        ) : (
+                          <div>
+                            <div className="text-secondary">
+                              {resident.address_info
+                                ? [
+                                    'No household assigned',
+                                    resident.address_info.barangay_name,
+                                    resident.address_info.city_municipality_name &&
+                                      resident.address_info.city_municipality_name +
+                                        (resident.address_info.province_name
+                                          ? `, ${resident.address_info.province_name}`
+                                          : ''),
+                                    resident.address_info.region_name,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(', ')
+                                : `No household assigned, Barangay Code: ${resident.barangay_code}`}
+                            </div>
+                          </div>
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
               </div>
             </div>
 
             {/* Education & Employment Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Education & Employment</h3>
               </div>
               <div className="px-6 py-4">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  {renderEditableField('Education Level', 'education_level', 'select', [
-                    'no_formal_education',
-                    'elementary',
-                    'high_school',
-                    'college',
-                    'post_graduate',
-                    'vocational',
-                    'graduate',
-                    'undergraduate',
-                  ])}
-                  {renderEditableField('Education Status', 'education_status', 'select', [
-                    'currently_studying',
-                    'not_studying',
-                    'graduated',
-                    'dropped_out',
-                  ])}
-                  {renderEditableField('Employment Status', 'employment_status', 'select', [
-                    'employed',
-                    'unemployed',
-                    'underemployed',
-                    'self_employed',
-                    'student',
-                    'retired',
-                    'homemaker',
-                    'unable_to_work',
-                    'looking_for_work',
-                    'not_in_labor_force',
-                  ])}
-                  {renderEditableField('Occupation Title', 'occupation_title', 'text')}
-                  {resident.psoc_code && (
-                    <div>
-                      <dt className="text-sm font-medium text-secondary">PSOC Code</dt>
-                      <dd className="mt-1 font-mono text-sm text-primary">{resident.psoc_code}</dd>
+                {isEditing ? (
+                  <EducationEmployment
+                    value={{
+                      educationAttainment: editedResident?.education_level || '',
+                      isGraduate: editedResident?.education_status === 'graduate',
+                      psocCode: editedResident?.psoc_code || '',
+                      psocLevel: editedResident?.psoc_level || '',
+                      positionTitleId: '',
+                      occupationDescription: editedResident?.occupation_title || '',
+                      employmentStatus: editedResident?.employment_status || '',
+                      workplace: editedResident?.workplace || '',
+                    }}
+                    onChange={educationData => {
+                      if (!editedResident) return;
+                      setEditedResident({
+                        ...editedResident,
+                        education_level: educationData.educationAttainment,
+                        education_status: educationData.isGraduate ? 'graduate' : 'non-graduate',
+                        psoc_code: educationData.psocCode,
+                        psoc_level: educationData.psocLevel,
+                        occupation_title: educationData.occupationDescription,
+                        employment_status: educationData.employmentStatus,
+                        workplace: educationData.workplace,
+                      });
+                    }}
+                    errors={{}}
+                  />
+                ) : (
+                  <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                    {renderEditableField(
+                      'Education Level',
+                      'education_level',
+                      'select',
+                      extractValues(EDUCATION_LEVEL_OPTIONS)
+                    )}
+                    {renderEditableField(
+                      'Education Status',
+                      'education_status',
+                      'select',
+                      extractValues(EDUCATION_STATUS_OPTIONS)
+                    )}
+                    {renderEditableField(
+                      'Employment Status',
+                      'employment_status',
+                      'select',
+                      extractValues(EMPLOYMENT_STATUS_OPTIONS)
+                    )}
+                    {renderEditableField('Occupation Title', 'occupation_title', 'text')}
+                    {renderEditableField('Workplace', 'workplace', 'text')}
+                    {resident.psoc_code && (
+                      <div>
+                        <dt className="text-sm font-medium text-secondary">PSOC Code</dt>
+                        <dd className="mt-1 font-mono text-sm text-primary">
+                          {resident.psoc_code}
+                        </dd>
+                      </div>
+                    )}
+                    {resident.psoc_level && (
+                      <div>
+                        <dt className="text-sm font-medium text-secondary">PSOC Level</dt>
+                        <dd className="mt-1 text-sm text-primary">
+                          {formatEnumValue(resident.psoc_level)}
+                        </dd>
+                      </div>
+                    )}
+                    <div className="sm:col-span-2">
+                      {renderEditableField('Occupation Details', 'occupation_details', 'text')}
                     </div>
-                  )}
-                  {resident.psoc_level && (
-                    <div>
-                      <dt className="text-sm font-medium text-secondary">PSOC Level</dt>
-                      <dd className="mt-1 text-sm text-primary">
-                        {formatEnumValue(resident.psoc_level)}
-                      </dd>
-                    </div>
-                  )}
-                  <div className="sm:col-span-2">
-                    {renderEditableField('Occupation Details', 'occupation_details', 'text')}
-                  </div>
-                </dl>
+                  </dl>
+                )}
               </div>
             </div>
 
             {/* Household Information Card */}
             {resident.household && (
-              <div className="rounded-lg border shadow bg-surface border-default">
-                <div className="border-b px-6 py-4 border-default">
+              <div className="bg-surface rounded-lg border border-default shadow">
+                <div className="border-b border-default px-6 py-4">
                   <h3 className="text-lg font-medium text-primary">Household Information</h3>
                 </div>
                 <div className="px-6 py-4">
@@ -951,13 +997,343 @@ function ResidentDetailContent() {
                 </div>
               </div>
             )}
+
+            {/* Contact & Physical Information Card */}
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-primary">Contact & Physical Information</h3>
+              </div>
+              <div className="px-6 py-4">
+                <div className="space-y-6">
+                  {/* Contact Details */}
+                  <div>
+                    <h4 className="mb-4 text-sm/6 font-medium text-primary">Contact Information</h4>
+                    {isEditing ? (
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <InputField
+                          label="Mobile Number"
+                          type="tel"
+                          value={editedResident?.mobile_number || ''}
+                          onChange={e => handleFieldChange('mobile_number', e.target.value)}
+                          placeholder="09XXXXXXXXX"
+                          required
+                        />
+                        <InputField
+                          label="Telephone Number"
+                          type="tel"
+                          value={editedResident?.telephone_number || ''}
+                          onChange={e => handleFieldChange('telephone_number', e.target.value)}
+                          placeholder="(02) XXX-XXXX"
+                        />
+                        <InputField
+                          label="Email Address"
+                          type="email"
+                          value={editedResident?.email || ''}
+                          onChange={e => handleFieldChange('email', e.target.value)}
+                          placeholder="email@example.com"
+                        />
+                        <InputField
+                          label="PhilSys Card Number"
+                          type="text"
+                          value={editedResident?.philsys_card_number || ''}
+                          onChange={e => handleFieldChange('philsys_card_number', e.target.value)}
+                          placeholder="XXXX-XXXX-XXXX"
+                        />
+                      </div>
+                    ) : (
+                      <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        {renderEditableField('Mobile Number', 'mobile_number', 'tel')}
+                        {renderEditableField('Telephone Number', 'telephone_number', 'tel')}
+                        {renderEditableField('Email Address', 'email', 'email')}
+                        {resident.philsys_last4 && (
+                          <div>
+                            <dt className="text-sm font-medium text-secondary">PhilSys ID</dt>
+                            <dd className="mt-1 font-mono text-sm text-primary">
+                              ****-****-****-{resident.philsys_last4}
+                            </dd>
+                          </div>
+                        )}
+                      </dl>
+                    )}
+                  </div>
+
+                  {/* Physical Characteristics */}
+                  <div>
+                    <h4 className="mb-4 text-sm/6 font-medium text-primary">
+                      Physical Characteristics
+                    </h4>
+                    {isEditing ? (
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <InputField
+                          label="Height (cm)"
+                          type="number"
+                          value={editedResident?.height_cm?.toString() || ''}
+                          onChange={e =>
+                            handleFieldChange('height_cm', parseFloat(e.target.value) || undefined)
+                          }
+                          placeholder="170"
+                        />
+                        <InputField
+                          label="Weight (kg)"
+                          type="number"
+                          value={editedResident?.weight_kg?.toString() || ''}
+                          onChange={e =>
+                            handleFieldChange('weight_kg', parseFloat(e.target.value) || undefined)
+                          }
+                          placeholder="65"
+                        />
+                        <div>
+                          <label className="mb-1 block text-sm font-medium text-secondary">
+                            Blood Type
+                          </label>
+                          <DropdownSelect
+                            options={BLOOD_TYPE_OPTIONS}
+                            value={editedResident?.blood_type || ''}
+                            onChange={val => handleFieldChange('blood_type', val)}
+                          />
+                        </div>
+                        <InputField
+                          label="Complexion"
+                          type="text"
+                          value={editedResident?.complexion || ''}
+                          onChange={e => handleFieldChange('complexion', e.target.value)}
+                          placeholder="Fair, Medium, Dark, etc."
+                        />
+                      </div>
+                    ) : (
+                      <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div>
+                          <dt className="text-sm font-medium text-secondary">Height</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {resident.height_cm ? `${resident.height_cm} cm` : 'N/A'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-secondary">Weight</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {resident.weight_kg ? `${resident.weight_kg} kg` : 'N/A'}
+                          </dd>
+                        </div>
+                        {renderEditableField('Blood Type', 'blood_type', 'text')}
+                        {renderEditableField('Complexion', 'complexion', 'text')}
+                      </dl>
+                    )}
+                  </div>
+
+                  {/* Mother's Information */}
+                  <div>
+                    <h4 className="mb-4 text-sm/6 font-medium text-primary">
+                      Mother's Information
+                    </h4>
+                    {isEditing ? (
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                        <InputField
+                          label="Mother's First Name"
+                          type="text"
+                          value={editedResident?.mother_first_name || ''}
+                          onChange={e => handleFieldChange('mother_first_name', e.target.value)}
+                          placeholder="First name"
+                        />
+                        <InputField
+                          label="Mother's Middle Name"
+                          type="text"
+                          value={editedResident?.mother_middle_name || ''}
+                          onChange={e => handleFieldChange('mother_middle_name', e.target.value)}
+                          placeholder="Middle name"
+                        />
+                        <InputField
+                          label="Mother's Maiden Last Name"
+                          type="text"
+                          value={editedResident?.mother_maiden_last_name || ''}
+                          onChange={e =>
+                            handleFieldChange('mother_maiden_last_name', e.target.value)
+                          }
+                          placeholder="Maiden last name"
+                        />
+                      </div>
+                    ) : (
+                      <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
+                        {renderEditableField("Mother's First Name", 'mother_first_name', 'text')}
+                        {renderEditableField("Mother's Middle Name", 'mother_middle_name', 'text')}
+                        {renderEditableField(
+                          "Mother's Maiden Last Name",
+                          'mother_maiden_last_name',
+                          'text'
+                        )}
+                      </dl>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Migration Information Card */}
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-primary">Migration Information</h3>
+              </div>
+              <div className="px-6 py-4">
+                {isEditing ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        id="is_migrant"
+                        checked={editedResident?.migration_info?.is_migrant || false}
+                        onChange={e =>
+                          handleFieldChange('migration_info', {
+                            ...editedResident?.migration_info,
+                            is_migrant: e.target.checked,
+                          })
+                        }
+                        className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
+                      />
+                      <label htmlFor="is_migrant" className="text-sm text-primary">
+                        Is Migrant
+                      </label>
+                    </div>
+                    {editedResident?.migration_info?.is_migrant && (
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <InputField
+                          label="Previous Address"
+                          type="text"
+                          value={editedResident?.migration_info?.previous_address || ''}
+                          onChange={e =>
+                            handleFieldChange('migration_info', {
+                              ...editedResident?.migration_info,
+                              previous_address: e.target.value,
+                            })
+                          }
+                          placeholder="Previous address"
+                        />
+                        <InputField
+                          label="Previous Country"
+                          type="text"
+                          value={editedResident?.migration_info?.previous_country || ''}
+                          onChange={e =>
+                            handleFieldChange('migration_info', {
+                              ...editedResident?.migration_info,
+                              previous_country: e.target.value,
+                            })
+                          }
+                          placeholder="Previous country"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                    <div>
+                      <dt className="text-sm font-medium text-secondary">Is Migrant</dt>
+                      <dd className="mt-1 text-sm text-primary">
+                        {formatBoolean(resident.migration_info?.is_migrant)}
+                      </dd>
+                    </div>
+                    {resident.migration_info?.is_migrant && (
+                      <>
+                        <div>
+                          <dt className="text-sm font-medium text-secondary">Migration Type</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {formatEnumValue(resident.migration_info?.migration_type)}
+                          </dd>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <dt className="text-sm font-medium text-secondary">Previous Address</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {resident.migration_info?.previous_address || 'N/A'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-secondary">Previous Country</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {resident.migration_info?.previous_country || 'N/A'}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-sm font-medium text-secondary">Migration Date</dt>
+                          <dd className="mt-1 text-sm text-primary">
+                            {resident.migration_info?.migration_date
+                              ? new Date(
+                                  resident.migration_info.migration_date
+                                ).toLocaleDateString()
+                              : 'N/A'}
+                          </dd>
+                        </div>
+                      </>
+                    )}
+                  </dl>
+                )}
+              </div>
+            </div>
+
+            {/* Sectoral Information Card */}
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-primary">Sectoral Classification</h3>
+              </div>
+              <div className="px-6 py-4">
+                {isEditing ? (
+                  <div className="text-sm text-secondary">
+                    <p className="mb-4">
+                      Sectoral classifications will be automatically calculated when you save the
+                      changes based on the resident's age, employment status, and other information.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 text-xs">
+                      <div className="space-y-2">
+                        <p>
+                          <strong>Auto-calculated fields:</strong>
+                        </p>
+                        <ul className="ml-2 list-inside list-disc space-y-1">
+                          <li>Labor Force Status</li>
+                          <li>Employment Status</li>
+                          <li>Senior Citizen Status</li>
+                          <li>Out of School Status</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <p>
+                          <strong>Manual classifications:</strong>
+                        </p>
+                        <div className="space-y-2">
+                          {['is_pwd', 'is_solo_parent', 'is_ofw', 'is_indigenous_people'].map(
+                            field => (
+                              <div key={field} className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id={field}
+                                  checked={!!(editedResident as any)?.[field]}
+                                  onChange={e =>
+                                    handleFieldChange(field as keyof Resident, e.target.checked)
+                                  }
+                                  className="bg-surface size-3 rounded border-default text-blue-600 focus:ring-blue-500"
+                                />
+                                <label htmlFor={field} className="text-xs">
+                                  {field.replace(/^is_/, '').replace(/_/g, ' ').toUpperCase()}
+                                </label>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-secondary">
+                    <p>
+                      Sectoral classifications are automatically calculated based on other resident
+                      information and displayed in the Classifications section.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Right Column - Side Information */}
           <div className="space-y-6">
             {/* Quick Actions Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
               </div>
               <div className="space-y-3 px-6 py-4">
@@ -989,10 +1365,10 @@ function ResidentDetailContent() {
                     >
                       Edit Information
                     </button>
-                    <button className="w-full rounded-md border px-4 py-2 text-sm font-medium text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Generate Certificate
                     </button>
-                    <button className="w-full rounded-md border px-4 py-2 text-sm font-medium text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Export Data
                     </button>
                   </>
@@ -1001,10 +1377,10 @@ function ResidentDetailContent() {
             </div>
 
             {/* Classifications Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Classifications</h3>
-                <p className="mt-1 text-xs text-muted">
+                <p className="text-muted mt-1 text-xs">
                   Fields marked with <span className="text-blue-600 underline">(auto)</span> are
                   calculated automatically. Hover for details.
                 </p>
@@ -1050,69 +1426,32 @@ function ResidentDetailContent() {
             </div>
 
             {/* Additional Information Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Additional Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
-                  {renderEditableField('Blood Type', 'blood_type', 'select', [
-                    'A+',
-                    'A-',
-                    'B+',
-                    'B-',
-                    'AB+',
-                    'AB-',
-                    'O+',
-                    'O-',
-                    'unknown',
-                  ])}
-                  {renderEditableField('Religion', 'religion', 'select', [
-                    'roman_catholic',
-                    'protestant',
-                    'iglesia_ni_cristo',
-                    'islam',
-                    'buddhism',
-                    'judaism',
-                    'hinduism',
-                    'indigenous_beliefs',
-                    'other',
-                    'none',
-                  ])}
-                  {renderEditableField('Ethnicity', 'ethnicity', 'select', [
-                    'tagalog',
-                    'cebuano',
-                    'ilocano',
-                    'bisaya',
-                    'hiligaynon',
-                    'bicolano',
-                    'waray',
-                    'kapampangan',
-                    'pangasinan',
-                    'maranao',
-                    'maguindanao',
-                    'tausug',
-                    'indigenous_group',
-                    'mixed_heritage',
-                    'other',
-                    'not_reported',
-                  ])}
-                  {renderEditableField('Voter ID Number', 'voter_id_number', 'text')}
-                  {resident.philsys_last4 && (
-                    <div>
-                      <dt className="text-sm font-medium text-secondary">PhilSys ID</dt>
-                      <dd className="mt-1 font-mono text-sm text-primary">
-                        ****-****-****-{resident.philsys_last4}
-                      </dd>
-                    </div>
+                  {renderEditableField(
+                    'Religion',
+                    'religion',
+                    'select',
+                    extractValues(RELIGION_OPTIONS)
                   )}
+                  {renderEditableField(
+                    'Ethnicity',
+                    'ethnicity',
+                    'select',
+                    extractValues(ETHNICITY_OPTIONS)
+                  )}
+                  {renderEditableField('Voter ID Number', 'voter_id_number', 'text')}
                 </dl>
               </div>
             </div>
 
             {/* System Information Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">System Information</h3>
               </div>
               <div className="px-6 py-4">

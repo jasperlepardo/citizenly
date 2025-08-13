@@ -125,57 +125,69 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
       });
 
       try {
-        // Use retry logic for optimized combined query
-        const response = await retryWithBackoff(async () => {
+        // Get the current session to pass the auth token
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.access_token) {
+          throw new Error('No valid session found');
+        }
+
+        // Use server-side API to fetch profile data (bypasses RLS issues)
+        const response = (await retryWithBackoff(async () => {
           const result = await Promise.race([
-            supabase
-              .from('user_profiles')
-              .select(
-                `
-                *,
-                roles!inner(
-                  *
-                )
-              `
-              )
-              .eq('id', userId)
-              .single(),
+            fetch('/api/auth/profile', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            }),
             timeoutPromise,
           ]);
           return result;
-        });
+        })) as Response;
 
-        const { data: profileWithRole, error: queryError } = response as any;
         const queryTime = Date.now() - startTime;
         console.log(`Profile query completed successfully in ${queryTime}ms`);
 
-        if (queryError) {
-          console.error('Profile query error:', queryError);
-          throw queryError;
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Profile API error:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorData.error || 'Unknown error',
+            fullError: JSON.stringify(errorData, null, 2),
+          });
+          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
         }
 
-        if (!profileWithRole) {
+        const data = await response.json();
+        const { profile: profileData, role } = data;
+
+        if (!profileData) {
           console.error('No profile found for user:', userId);
           throw new Error('Profile not found');
         }
 
         // Log the actual data structure to understand what fields exist
-        console.log('Raw profile data from database:', profileWithRole);
+        console.log('Raw profile data from API:', profileData);
+        console.log('Profile barangay_code:', profileData?.barangay_code);
+        console.log('Profile role_id:', profileData?.role_id);
 
         // Map the database fields to our interface, using defaults for missing fields
         const profile: UserProfile = {
-          id: profileWithRole.id || userId,
-          email: profileWithRole.email || '',
-          first_name: profileWithRole.first_name || '',
-          last_name: profileWithRole.last_name || '',
-          barangay_code: profileWithRole.barangay_code || '',
-          role_id: profileWithRole.role_id || '',
-          is_active: profileWithRole.is_active !== undefined ? profileWithRole.is_active : true,
-          created_at: profileWithRole.created_at || new Date().toISOString(),
-          updated_at: profileWithRole.updated_at || new Date().toISOString(),
+          id: profileData.id || userId,
+          email: profileData.email || '',
+          first_name: profileData.first_name || '',
+          last_name: profileData.last_name || '',
+          barangay_code: profileData.barangay_code || '',
+          role_id: profileData.role_id || '',
+          is_active: profileData.is_active !== undefined ? profileData.is_active : true,
+          created_at: profileData.created_at || new Date().toISOString(),
+          updated_at: profileData.updated_at || new Date().toISOString(),
         };
-
-        const role = profileWithRole.roles || null;
 
         console.log('Profile loaded successfully:', profile);
         console.log('Role loaded:', role);
@@ -198,7 +210,13 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         setUserProfile(profile);
         setRole(finalRole);
       } catch (dbError) {
-        console.error('Database query failed and no fallback available:', dbError);
+        console.error('Database query failed and no fallback available:', {
+          message: (dbError as any)?.message || 'Unknown error',
+          code: (dbError as any)?.code,
+          details: (dbError as any)?.details,
+          hint: (dbError as any)?.hint,
+          fullError: JSON.stringify(dbError, null, 2),
+        });
         console.error('User must have a valid profile in the database to use the system');
 
         // Don't use mock data - require real database profile
@@ -229,7 +247,13 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         } = await supabase.auth.getSession();
 
         if (error) {
-          console.error('Session error:', error);
+          console.error('Session error:', {
+            message: error.message || 'Unknown error',
+            code: error.code,
+            details: (error as any).details,
+            hint: (error as any).hint,
+            fullError: JSON.stringify(error, null, 2),
+          });
           setLoading(false);
           return;
         }
@@ -241,7 +265,13 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         console.log('Auth initialization complete');
         setLoading(false);
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error('Auth initialization error:', {
+          message: (error as any)?.message || 'Unknown error',
+          code: (error as any)?.code,
+          details: (error as any)?.details,
+          hint: (error as any)?.hint,
+          fullError: JSON.stringify(error, null, 2),
+        });
         setLoading(false);
       }
     };
@@ -296,11 +326,17 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         password,
       });
 
-      // Preload profile data immediately after successful sign-in
+      // Preload profile data immediately after successful sign-in (but skip on public routes)
       if (!error && data.user) {
-        loadUserProfile(data.user.id).catch(err => {
-          console.error('Profile preloading failed:', err);
-        });
+        const publicRoutes = ['/signup', '/login', '/'];
+        const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+        const isPublicRoute = publicRoutes.includes(currentPath);
+        
+        if (!isPublicRoute) {
+          loadUserProfile(data.user.id).catch(err => {
+            console.error('Profile preloading failed:', err);
+          });
+        }
       }
 
       return { error };
@@ -330,9 +366,14 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     }
   }, [user, loadUserProfile]);
 
-  // Auto-load profile when user is authenticated
+  // Auto-load profile when user is authenticated (but skip on public routes)
   useEffect(() => {
-    if (user?.id && !userProfile && !profileLoading) {
+    // Skip profile loading on public routes
+    const publicRoutes = ['/signup', '/login', '/'];
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    const isPublicRoute = publicRoutes.includes(currentPath);
+    
+    if (user?.id && !userProfile && !profileLoading && !isPublicRoute) {
       loadProfile();
     }
   }, [user?.id, userProfile, profileLoading, loadProfile]);
