@@ -1,6 +1,38 @@
 import Link from 'next/link';
 import { Button } from '@/components/atoms';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'Citizenly - Barangay Management System',
+  description: 'Modern barangay management system for efficient resident registration, household management, and community administration in the Philippines.',
+  keywords: ['barangay', 'management', 'residents', 'households', 'Philippines', 'PSGC', 'RBI'],
+  authors: [{ name: 'Citizenly Development Team' }],
+  openGraph: {
+    title: 'Citizenly - Barangay Management System',
+    description: 'Streamline your barangay operations with our comprehensive management platform',
+    type: 'website',
+    siteName: 'Citizenly'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Citizenly - Barangay Management System',
+    description: 'Modern barangay management for the digital age'
+  }
+};
+
+/**
+ * HomePage Component
+ * 
+ * @description Renders the home page interface for the application
+ * @returns {JSX.Element} The rendered HomePage component
+ * 
+ * @example
+ * ```typescript
+ * function App() {
+ *   return <HomePage />;
+ * }
+ * ```
+ */
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
