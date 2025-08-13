@@ -34,7 +34,7 @@ export default function SubdivisionSelector({
   const [isOpen, setIsOpen] = useState(false);
   const [newSubdivisionData, setNewSubdivisionData] = useState({
     name: '',
-    type: 'Subdivision' as 'Subdivision' | 'Zone' | 'Sitio' | 'Purok'
+    type: 'Subdivision' as 'Subdivision' | 'Zone' | 'Sitio' | 'Purok',
   });
   const [isCreating, setIsCreating] = useState(false);
 
@@ -80,9 +80,9 @@ export default function SubdivisionSelector({
 
     setIsCreating(true);
     try {
-      logger.info('Creating new subdivision', { 
+      logger.info('Creating new subdivision', {
         name: newSubdivisionData.name.trim(),
-        type: newSubdivisionData.type 
+        type: newSubdivisionData.type,
       });
 
       // Derive geographic codes from barangay code
@@ -93,15 +93,17 @@ export default function SubdivisionSelector({
 
       const { data: newSubdivision, error } = await supabase
         .from('geo_subdivisions')
-        .insert([{
-          name: newSubdivisionData.name.trim(),
-          type: newSubdivisionData.type,
-          barangay_code: barangayCode,
-          city_municipality_code: cityMunicipalityCode,
-          province_code: provinceCode,
-          region_code: regionCode,
-          created_by: userProfile.id,
-        }])
+        .insert([
+          {
+            name: newSubdivisionData.name.trim(),
+            type: newSubdivisionData.type,
+            barangay_code: barangayCode,
+            city_municipality_code: cityMunicipalityCode,
+            province_code: provinceCode,
+            region_code: regionCode,
+            created_by: userProfile.id,
+          },
+        ])
         .select('id, name, type')
         .single();
 
@@ -111,23 +113,22 @@ export default function SubdivisionSelector({
         return;
       }
 
-      logger.info('Created new subdivision', { 
-        subdivisionId: newSubdivision.id, 
+      logger.info('Created new subdivision', {
+        subdivisionId: newSubdivision.id,
         name: newSubdivision.name,
-        type: newSubdivision.type 
+        type: newSubdivision.type,
       });
-      
+
       // Select the newly created subdivision
       onSelect(newSubdivision.id);
       setNewSubdivisionData({ name: '', type: 'Subdivision' });
       setShowCreateForm(false);
       setIsOpen(false);
-      
+
       // Refresh subdivisions list
       setTimeout(() => {
         loadSubdivisions();
       }, 500);
-
     } catch (error) {
       logError(error as Error, 'SUBDIVISION_CREATION_ERROR');
       alert('An unexpected error occurred while creating the subdivision.');
@@ -165,11 +166,7 @@ export default function SubdivisionSelector({
       >
         <input
           type="text"
-          value={
-            selectedSubdivision
-              ? formatDisplayName(selectedSubdivision)
-              : searchTerm
-          }
+          value={selectedSubdivision ? formatDisplayName(selectedSubdivision) : searchTerm}
           onChange={e => {
             setSearchTerm(e.target.value);
             setIsOpen(true);
@@ -219,17 +216,21 @@ export default function SubdivisionSelector({
                 >
                   <div className="font-medium text-blue-600">+ Create New Subdivision</div>
                   <div className="text-xs text-blue-500">
-                    {searchTerm ? `Create "${searchTerm}"` : 'Add a new subdivision/zone/sitio/purok'}
+                    {searchTerm
+                      ? `Create "${searchTerm}"`
+                      : 'Add a new subdivision/zone/sitio/purok'}
                   </div>
                 </button>
               ) : (
                 <div className="border-b border-neutral-100 p-3">
-                  <div className="font-medium text-blue-600 mb-2">Create New Subdivision</div>
+                  <div className="mb-2 font-medium text-blue-600">Create New Subdivision</div>
                   <div className="space-y-2">
                     <input
                       type="text"
                       value={newSubdivisionData.name}
-                      onChange={e => setNewSubdivisionData(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={e =>
+                        setNewSubdivisionData(prev => ({ ...prev, name: e.target.value }))
+                      }
                       placeholder="Enter subdivision name"
                       className="w-full rounded border border-neutral-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                       onKeyDown={e => {
@@ -243,17 +244,21 @@ export default function SubdivisionSelector({
                       }}
                       autoFocus
                     />
-                    <div className="flex gap-2 items-center">
+                    <div className="flex items-center gap-2">
                       <select
                         value={newSubdivisionData.type}
-                        onChange={e => setNewSubdivisionData(prev => ({ 
-                          ...prev, 
-                          type: e.target.value as typeof prev.type 
-                        }))}
+                        onChange={e =>
+                          setNewSubdivisionData(prev => ({
+                            ...prev,
+                            type: e.target.value as typeof prev.type,
+                          }))
+                        }
                         className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                       >
                         {subdivisionTypes.map(type => (
-                          <option key={type} value={type}>{type}</option>
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
                         ))}
                       </select>
                       <button
@@ -326,10 +331,15 @@ export default function SubdivisionSelector({
       )}
 
       {/* Click outside to close */}
-      {isOpen && <div className="fixed inset-0 z-0" onClick={() => {
-        setIsOpen(false);
-        setShowCreateForm(false);
-      }} />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-0"
+          onClick={() => {
+            setIsOpen(false);
+            setShowCreateForm(false);
+          }}
+        />
+      )}
 
       {/* Error message */}
       {error && (

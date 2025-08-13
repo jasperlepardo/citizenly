@@ -45,7 +45,7 @@ function HouseholdDetailContent() {
 
   useEffect(() => {
     console.log('useEffect triggered:', { householdCode, authLoading, user: !!user });
-    
+
     const loadHouseholdDetails = async () => {
       if (!householdCode || authLoading || !user) {
         console.log('Early return:', { householdCode, authLoading, user: !!user });
@@ -64,7 +64,7 @@ function HouseholdDetailContent() {
           .single();
 
         console.log('Household query result:', { householdData, householdError });
-        
+
         if (householdError) {
           console.error('Household error:', householdError);
           setError('Household not found');
@@ -139,7 +139,7 @@ function HouseholdDetailContent() {
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+            <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -161,7 +161,7 @@ function HouseholdDetailContent() {
               <p className="font-montserrat mb-4 text-sm text-secondary">{error}</p>
               <Link
                 href="/households"
-                className="inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium text-secondary border-default hover:bg-surface-hover"
+                className="hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary"
               >
                 Back to Households
               </Link>
@@ -176,12 +176,12 @@ function HouseholdDetailContent() {
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="mx-auto max-w-7xl">
         {/* Header Section */}
-        <div className="-mx-6 mb-8 border-b p-6 shadow-sm bg-surface border-default">
+        <div className="bg-surface -mx-6 mb-8 border-b border-default p-6 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <Link
                 href="/households"
-                className="inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="bg-surface hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-3 py-2 text-sm font-medium text-secondary shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -253,8 +253,8 @@ function HouseholdDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-8 lg:col-span-2">
             {/* Household Information Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Household Information</h3>
               </div>
               <div className="px-6 py-4">
@@ -266,9 +266,7 @@ function HouseholdDetailContent() {
                   <div>
                     <dt className="text-sm font-medium text-secondary">Head of Household</dt>
                     <dd className="mt-1 text-sm text-primary">
-                      {household.household_head_id
-                        ? 'Head assigned'
-                        : 'No head assigned'}
+                      {household.household_head_id ? 'Head assigned' : 'No head assigned'}
                     </dd>
                   </div>
                   <div>
@@ -296,8 +294,8 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Members Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Household Members</h3>
               </div>
 
@@ -330,9 +328,9 @@ function HouseholdDetailContent() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-border-light divide-y bg-surface">
+                    <tbody className="divide-border-light bg-surface divide-y">
                       {members.map(member => (
-                        <tr key={member.id} className="transition-colors hover:bg-surface-hover">
+                        <tr key={member.id} className="hover:bg-surface-hover transition-colors">
                           <td className="whitespace-nowrap px-6 py-4">
                             <div className="text-sm font-medium text-primary">
                               {formatFullName(member)}
@@ -355,7 +353,7 @@ function HouseholdDetailContent() {
                           <td className="whitespace-nowrap px-6 py-4 text-sm text-primary">
                             <div>{member.mobile_number}</div>
                             {member.email && (
-                              <div className="text-xs text-muted">{member.email}</div>
+                              <div className="text-muted text-xs">{member.email}</div>
                             )}
                           </td>
                           <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
@@ -378,8 +376,8 @@ function HouseholdDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-8">
             {/* Quick Actions Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
               </div>
               <div className="space-y-3 px-6 py-4">
@@ -389,7 +387,7 @@ function HouseholdDetailContent() {
                 >
                   Generate RBI Form
                 </Link>
-                <button className="w-full rounded-md border px-4 py-2 text-sm font-medium text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                   Export Household Data
                 </button>
                 <Link
@@ -402,8 +400,8 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Statistics Card */}
-            <div className="rounded-lg border shadow bg-surface border-default">
-              <div className="border-b px-6 py-4 border-default">
+            <div className="bg-surface rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
                 <h3 className="text-lg font-medium text-primary">Statistics</h3>
               </div>
               <div className="px-6 py-4">

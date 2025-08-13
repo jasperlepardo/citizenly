@@ -89,152 +89,155 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   };
 
   // Load user profile and related data (simplified for original schema)
-  const loadUserProfile = useCallback(async (userId: string, force = false) => {
-    try {
-      // Check cache first (cache for 5 minutes)
-      const cacheKey = userId;
-      const cached = profileCache.get(cacheKey);
-      const now = Date.now();
-      const cacheTimeout = 5 * 60 * 1000; // 5 minutes
-
-      if (!force && cached && now - cached.timestamp < cacheTimeout) {
-        console.log('Using cached profile data');
-        setUserProfile(cached.profile);
-        setRole(cached.role);
-        return;
-      }
-
-      // Prevent multiple simultaneous requests for the same user
-      if (profileLoading && now - lastProfileLoad < 1000) {
-        console.log('Profile already loading, skipping duplicate request');
-        return;
-      }
-
-      setProfileLoading(true);
-      setProfileError(null);
-      setLastProfileLoad(now);
-      console.log('Loading user profile for:', userId);
-
-      // Try real database query first
-      console.log('Attempting real database query...');
-      const startTime = Date.now();
-
-      // Set a shorter timeout for this specific query
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Profile query timeout')), 15000); // 15 second timeout
-      });
-
+  const loadUserProfile = useCallback(
+    async (userId: string, force = false) => {
       try {
-        // Get the current session to pass the auth token
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        // Check cache first (cache for 5 minutes)
+        const cacheKey = userId;
+        const cached = profileCache.get(cacheKey);
+        const now = Date.now();
+        const cacheTimeout = 5 * 60 * 1000; // 5 minutes
 
-        if (!session?.access_token) {
-          throw new Error('No valid session found');
+        if (!force && cached && now - cached.timestamp < cacheTimeout) {
+          console.log('Using cached profile data');
+          setUserProfile(cached.profile);
+          setRole(cached.role);
+          return;
         }
 
-        // Use server-side API to fetch profile data (bypasses RLS issues)
-        const response = (await retryWithBackoff(async () => {
-          const result = await Promise.race([
-            fetch('/api/auth/profile', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${session.access_token}`,
-              },
-            }),
-            timeoutPromise,
-          ]);
-          return result;
-        })) as Response;
+        // Prevent multiple simultaneous requests for the same user
+        if (profileLoading && now - lastProfileLoad < 1000) {
+          console.log('Profile already loading, skipping duplicate request');
+          return;
+        }
 
-        const queryTime = Date.now() - startTime;
-        console.log(`Profile query completed successfully in ${queryTime}ms`);
+        setProfileLoading(true);
+        setProfileError(null);
+        setLastProfileLoad(now);
+        console.log('Loading user profile for:', userId);
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          console.error('Profile API error:', {
-            status: response.status,
-            statusText: response.statusText,
-            error: errorData.error || 'Unknown error',
-            fullError: JSON.stringify(errorData, null, 2),
+        // Try real database query first
+        console.log('Attempting real database query...');
+        const startTime = Date.now();
+
+        // Set a shorter timeout for this specific query
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Profile query timeout')), 15000); // 15 second timeout
+        });
+
+        try {
+          // Get the current session to pass the auth token
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+
+          if (!session?.access_token) {
+            throw new Error('No valid session found');
+          }
+
+          // Use server-side API to fetch profile data (bypasses RLS issues)
+          const response = (await retryWithBackoff(async () => {
+            const result = await Promise.race([
+              fetch('/api/auth/profile', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+              }),
+              timeoutPromise,
+            ]);
+            return result;
+          })) as Response;
+
+          const queryTime = Date.now() - startTime;
+          console.log(`Profile query completed successfully in ${queryTime}ms`);
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Profile API error:', {
+              status: response.status,
+              statusText: response.statusText,
+              error: errorData.error || 'Unknown error',
+              fullError: JSON.stringify(errorData, null, 2),
+            });
+            throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          // The API returns { data: { profile, role }, message, metadata }
+          const { profile: profileData, role } = data.data || data;
+
+          if (!profileData) {
+            console.error('No profile found for user:', userId);
+            throw new Error('Profile not found');
+          }
+
+          // Log the actual data structure to understand what fields exist
+          console.log('Raw profile data from API:', profileData);
+          console.log('Profile barangay_code:', profileData?.barangay_code);
+          console.log('Profile role_id:', profileData?.role_id);
+
+          // Map the database fields to our interface, using defaults for missing fields
+          const profile: UserProfile = {
+            id: profileData.id || userId,
+            email: profileData.email || '',
+            first_name: profileData.first_name || '',
+            last_name: profileData.last_name || '',
+            barangay_code: profileData.barangay_code || '',
+            role_id: profileData.role_id || '',
+            is_active: profileData.is_active !== undefined ? profileData.is_active : true,
+            created_at: profileData.created_at || new Date().toISOString(),
+            updated_at: profileData.updated_at || new Date().toISOString(),
+          };
+
+          console.log('Profile loaded successfully:', profile);
+          console.log('Role loaded:', role);
+
+          const finalRole = role || {
+            id: 'default-role',
+            name: 'User',
+            permissions: { residents_view: true },
+          };
+
+          // Cache the results
+          const newCache = new Map(profileCache);
+          newCache.set(cacheKey, {
+            profile,
+            role: finalRole,
+            timestamp: Date.now(),
           });
-          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+          setProfileCache(newCache);
+
+          setUserProfile(profile);
+          setRole(finalRole);
+        } catch (dbError) {
+          console.error('Database query failed and no fallback available:', {
+            message: (dbError as any)?.message || 'Unknown error',
+            code: (dbError as any)?.code,
+            details: (dbError as any)?.details,
+            hint: (dbError as any)?.hint,
+            fullError: JSON.stringify(dbError, null, 2),
+          });
+          console.error('User must have a valid profile in the database to use the system');
+
+          // Don't use mock data - require real database profile
+          setUserProfile(null);
+          setRole(null);
+          throw new Error('Failed to load user profile from database');
         }
-
-        const data = await response.json();
-        // The API returns { data: { profile, role }, message, metadata }
-        const { profile: profileData, role } = data.data || data;
-
-        if (!profileData) {
-          console.error('No profile found for user:', userId);
-          throw new Error('Profile not found');
-        }
-
-        // Log the actual data structure to understand what fields exist
-        console.log('Raw profile data from API:', profileData);
-        console.log('Profile barangay_code:', profileData?.barangay_code);
-        console.log('Profile role_id:', profileData?.role_id);
-
-        // Map the database fields to our interface, using defaults for missing fields
-        const profile: UserProfile = {
-          id: profileData.id || userId,
-          email: profileData.email || '',
-          first_name: profileData.first_name || '',
-          last_name: profileData.last_name || '',
-          barangay_code: profileData.barangay_code || '',
-          role_id: profileData.role_id || '',
-          is_active: profileData.is_active !== undefined ? profileData.is_active : true,
-          created_at: profileData.created_at || new Date().toISOString(),
-          updated_at: profileData.updated_at || new Date().toISOString(),
-        };
-
-        console.log('Profile loaded successfully:', profile);
-        console.log('Role loaded:', role);
-
-        const finalRole = role || {
-          id: 'default-role',
-          name: 'User',
-          permissions: { residents_view: true },
-        };
-
-        // Cache the results
-        const newCache = new Map(profileCache);
-        newCache.set(cacheKey, {
-          profile,
-          role: finalRole,
-          timestamp: Date.now(),
-        });
-        setProfileCache(newCache);
-
-        setUserProfile(profile);
-        setRole(finalRole);
-      } catch (dbError) {
-        console.error('Database query failed and no fallback available:', {
-          message: (dbError as any)?.message || 'Unknown error',
-          code: (dbError as any)?.code,
-          details: (dbError as any)?.details,
-          hint: (dbError as any)?.hint,
-          fullError: JSON.stringify(dbError, null, 2),
-        });
-        console.error('User must have a valid profile in the database to use the system');
-
-        // Don't use mock data - require real database profile
+      } catch (error) {
+        console.error('Error in loadUserProfile:', error);
+        setProfileError(error instanceof Error ? error.message : 'Failed to load profile');
         setUserProfile(null);
         setRole(null);
-        throw new Error('Failed to load user profile from database');
+      } finally {
+        setProfileLoading(false);
       }
-    } catch (error) {
-      console.error('Error in loadUserProfile:', error);
-      setProfileError(error instanceof Error ? error.message : 'Failed to load profile');
-      setUserProfile(null);
-      setRole(null);
-    } finally {
-      setProfileLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileCache, profileLoading, lastProfileLoad]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [profileCache, profileLoading, lastProfileLoad]
+  );
 
   // Initialize auth state
   useEffect(() => {
@@ -332,7 +335,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
         const publicRoutes = ['/signup', '/login', '/'];
         const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
         const isPublicRoute = publicRoutes.includes(currentPath);
-        
+
         if (!isPublicRoute) {
           loadUserProfile(data.user.id).catch(err => {
             console.error('Profile preloading failed:', err);
@@ -373,7 +376,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     const publicRoutes = ['/signup', '/login', '/'];
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
     const isPublicRoute = publicRoutes.includes(currentPath);
-    
+
     if (user?.id && !userProfile && !profileLoading && !isPublicRoute) {
       loadProfile();
     }

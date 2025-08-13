@@ -64,33 +64,33 @@ const countriesOptions: DropdownOption[] = [
 ];
 
 const optionsWithDescriptions: DropdownOption[] = [
-  { 
-    value: 'starter', 
-    label: 'Starter Plan', 
-    description: 'Perfect for individuals and small teams' 
+  {
+    value: 'starter',
+    label: 'Starter Plan',
+    description: 'Perfect for individuals and small teams',
   },
-  { 
-    value: 'pro', 
-    label: 'Pro Plan', 
-    description: 'Advanced features for growing businesses' 
+  {
+    value: 'pro',
+    label: 'Pro Plan',
+    description: 'Advanced features for growing businesses',
   },
-  { 
-    value: 'enterprise', 
-    label: 'Enterprise Plan', 
-    description: 'Full-featured plan for large organizations' 
+  {
+    value: 'enterprise',
+    label: 'Enterprise Plan',
+    description: 'Full-featured plan for large organizations',
   },
-  { 
-    value: 'custom', 
-    label: 'Custom Plan', 
+  {
+    value: 'custom',
+    label: 'Custom Plan',
     description: 'Tailored solutions for specific needs',
-    disabled: true 
+    disabled: true,
   },
 ];
 
 export const Default: Story = {
-  render: (args) => {
+  render: args => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -111,7 +111,7 @@ export const Default: Story = {
 export const WithLabel: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -130,7 +130,7 @@ export const WithLabel: Story = {
 export const Searchable: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -150,7 +150,7 @@ export const Searchable: Story = {
 export const WithDescriptions: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="w-96">
         <DropdownSelect
@@ -170,7 +170,7 @@ export const WithDescriptions: Story = {
 export const Clearable: Story = {
   render: () => {
     const [value, setValue] = useState('apple');
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -190,13 +190,18 @@ export const Clearable: Story = {
 export const WithIcon: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     const userIcon = (
-      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
       </svg>
     );
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -219,9 +224,9 @@ export const WithIcon: Story = {
 export const States: Story = {
   render: () => {
     const [value, setValue] = useState('apple');
-    
+
     return (
-      <div className="space-y-6 w-80">
+      <div className="w-80 space-y-6">
         <DropdownSelect
           label="Normal State"
           options={sampleOptions}
@@ -229,7 +234,7 @@ export const States: Story = {
           onChange={setValue}
           placeholder="Select option..."
         />
-        
+
         <DropdownSelect
           label="Error State"
           options={sampleOptions}
@@ -238,7 +243,7 @@ export const States: Story = {
           placeholder="Select option..."
           errorMessage="This field is required"
         />
-        
+
         <DropdownSelect
           label="Success State"
           variant="success"
@@ -248,7 +253,7 @@ export const States: Story = {
           placeholder="Select option..."
           helperText="Great choice!"
         />
-        
+
         <DropdownSelect
           label="Disabled State"
           options={sampleOptions}
@@ -258,7 +263,7 @@ export const States: Story = {
           disabled
           helperText="This field is currently disabled"
         />
-        
+
         <DropdownSelect
           label="Loading State"
           options={[]}
@@ -276,33 +281,33 @@ export const States: Story = {
 export const Sizes: Story = {
   render: () => {
     const [values, setValues] = useState({ sm: '', md: 'banana', lg: '' });
-    
+
     return (
-      <div className="space-y-6 w-80">
+      <div className="w-80 space-y-6">
         <DropdownSelect
           label="Small Size"
           size="sm"
           options={sampleOptions}
           value={values.sm}
-          onChange={(v) => setValues(prev => ({ ...prev, sm: v }))}
+          onChange={v => setValues(prev => ({ ...prev, sm: v }))}
           placeholder="Small dropdown..."
         />
-        
+
         <DropdownSelect
           label="Medium Size (Default)"
           size="md"
           options={sampleOptions}
           value={values.md}
-          onChange={(v) => setValues(prev => ({ ...prev, md: v }))}
+          onChange={v => setValues(prev => ({ ...prev, md: v }))}
           placeholder="Medium dropdown..."
         />
-        
+
         <DropdownSelect
           label="Large Size"
           size="lg"
           options={sampleOptions}
           value={values.lg}
-          onChange={(v) => setValues(prev => ({ ...prev, lg: v }))}
+          onChange={v => setValues(prev => ({ ...prev, lg: v }))}
           placeholder="Large dropdown..."
         />
       </div>
@@ -313,14 +318,14 @@ export const Sizes: Story = {
 export const LongList: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     // Generate a long list of options
     const longOptions: DropdownOption[] = Array.from({ length: 50 }, (_, i) => ({
       value: `option-${i}`,
       label: `Option ${i + 1}`,
-      description: `This is option number ${i + 1}`
+      description: `This is option number ${i + 1}`,
     }));
-    
+
     return (
       <div className="w-80">
         <DropdownSelect
@@ -345,52 +350,57 @@ export const FormExample: Story = {
       plan: '',
       user: '',
     });
-    
+
     const [errors, setErrors] = useState<Record<string, string>>({});
-    
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      
+
       const newErrors: Record<string, string> = {};
       if (!formData.country) newErrors.country = 'Country is required';
       if (!formData.plan) newErrors.plan = 'Plan is required';
       if (!formData.user) newErrors.user = 'User is required';
-      
+
       setErrors(newErrors);
-      
+
       if (Object.keys(newErrors).length === 0) {
         alert('Form submitted successfully!');
       }
     };
-    
+
     return (
       <form onSubmit={handleSubmit} className="w-96 space-y-6">
         <DropdownSelect
           label="Country"
           options={countriesOptions}
           value={formData.country}
-          onChange={(v) => setFormData(prev => ({ ...prev, country: v }))}
+          onChange={v => setFormData(prev => ({ ...prev, country: v }))}
           placeholder="Select your country..."
           errorMessage={errors.country}
           clearable
           searchable
         />
-        
+
         <DropdownSelect
           label="Plan"
           options={optionsWithDescriptions}
           value={formData.plan}
-          onChange={(v) => setFormData(prev => ({ ...prev, plan: v }))}
+          onChange={v => setFormData(prev => ({ ...prev, plan: v }))}
           placeholder="Choose a plan..."
           errorMessage={errors.plan}
           helperText="You can change your plan later"
         />
-        
+
         <DropdownSelect
           label="Assign to User"
           leftIcon={
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
             </svg>
           }
           options={[
@@ -399,26 +409,26 @@ export const FormExample: Story = {
             { value: 'bob', label: 'Bob Johnson', description: 'User' },
           ]}
           value={formData.user}
-          onChange={(v) => setFormData(prev => ({ ...prev, user: v }))}
+          onChange={v => setFormData(prev => ({ ...prev, user: v }))}
           placeholder="Select user..."
           errorMessage={errors.user}
           clearable
         />
-        
+
         <div className="flex gap-4">
-          <button 
+          <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Submit
           </button>
-          <button 
+          <button
             type="button"
             onClick={() => {
               setFormData({ country: '', plan: '', user: '' });
               setErrors({});
             }}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
             Reset
           </button>
@@ -431,21 +441,33 @@ export const FormExample: Story = {
 export const AccessibilityDemo: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="space-y-6">
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">Keyboard Navigation</h3>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• <kbd className="px-1 py-0.5 bg-blue-100 rounded">Tab</kbd> to focus the dropdown</li>
-            <li>• <kbd className="px-1 py-0.5 bg-blue-100 rounded">Space</kbd> or <kbd className="px-1 py-0.5 bg-blue-100 rounded">Enter</kbd> to open</li>
-            <li>• <kbd className="px-1 py-0.5 bg-blue-100 rounded">↑</kbd><kbd className="px-1 py-0.5 bg-blue-100 rounded">↓</kbd> to navigate options</li>
-            <li>• <kbd className="px-1 py-0.5 bg-blue-100 rounded">Enter</kbd> to select</li>
-            <li>• <kbd className="px-1 py-0.5 bg-blue-100 rounded">Esc</kbd> to close</li>
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h3 className="mb-2 text-lg font-semibold text-blue-800">Keyboard Navigation</h3>
+          <ul className="space-y-1 text-sm text-blue-700">
+            <li>
+              • <kbd className="rounded bg-blue-100 px-1 py-0.5">Tab</kbd> to focus the dropdown
+            </li>
+            <li>
+              • <kbd className="rounded bg-blue-100 px-1 py-0.5">Space</kbd> or{' '}
+              <kbd className="rounded bg-blue-100 px-1 py-0.5">Enter</kbd> to open
+            </li>
+            <li>
+              • <kbd className="rounded bg-blue-100 px-1 py-0.5">↑</kbd>
+              <kbd className="rounded bg-blue-100 px-1 py-0.5">↓</kbd> to navigate options
+            </li>
+            <li>
+              • <kbd className="rounded bg-blue-100 px-1 py-0.5">Enter</kbd> to select
+            </li>
+            <li>
+              • <kbd className="rounded bg-blue-100 px-1 py-0.5">Esc</kbd> to close
+            </li>
             <li>• Type letters for quick navigation</li>
           </ul>
         </div>
-        
+
         <div className="w-80">
           <DropdownSelect
             label="Fully Accessible Dropdown"

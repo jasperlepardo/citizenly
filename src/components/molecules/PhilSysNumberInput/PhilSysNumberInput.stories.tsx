@@ -155,12 +155,12 @@ const InteractiveComponent = () => {
         }}
       />
 
-      <div className="rounded-lg border p-4 bg-background border-default">
+      <div className="bg-background rounded-lg border border-default p-4">
         <h3 className="mb-2 font-semibold text-primary">Real-time Status:</h3>
         <div className="space-y-2 text-sm">
           <div>
             <strong>Current Value:</strong>{' '}
-            <code className="rounded px-2 py-1 bg-background-muted">{value || 'empty'}</code>
+            <code className="bg-background-muted rounded px-2 py-1">{value || 'empty'}</code>
           </div>
           <div>
             <strong>Is Valid:</strong>{' '}
@@ -176,7 +176,7 @@ const InteractiveComponent = () => {
           {hashedValue && (
             <div>
               <strong>Hashed Value:</strong>{' '}
-              <code className="break-all rounded px-2 py-1 text-xs bg-background-muted">
+              <code className="bg-background-muted break-all rounded px-2 py-1 text-xs">
                 {hashedValue.substring(0, 20)}...
               </code>
             </div>
@@ -212,7 +212,7 @@ const MaskingDemoComponent = () => {
         onChange={newValue => setValue(newValue)}
       />
 
-      <div className="text-sm text-muted">
+      <div className="text-muted text-sm">
         <strong>Tip:</strong> The input automatically formats as you type and masks the number when
         not focused.
       </div>

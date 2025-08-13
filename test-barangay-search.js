@@ -7,18 +7,18 @@ const supabase = createClient(
 
 async function testBarangaySearch() {
   console.log('Testing barangay search...\n');
-  
+
   const searches = [
     'anuling cerca',
     'anuling',
     'cerca',
     'adams', // We know this one exists
-    'bani'   // We know this one exists
+    'bani', // We know this one exists
   ];
-  
+
   for (const searchTerm of searches) {
     console.log(`🔍 Searching for: "${searchTerm}"`);
-    
+
     try {
       const { data, error } = await supabase
         .from('psgc_barangays')
@@ -26,12 +26,12 @@ async function testBarangaySearch() {
         .ilike('name', `%${searchTerm}%`)
         .limit(10)
         .order('name');
-      
+
       if (error) {
         console.error('Error:', error.message);
         continue;
       }
-      
+
       if (data && data.length > 0) {
         console.log(`✅ Found ${data.length} results:`);
         data.forEach(b => {
@@ -40,17 +40,16 @@ async function testBarangaySearch() {
       } else {
         console.log('❌ No results found');
       }
-      
     } catch (err) {
       console.error('Search error:', err.message);
     }
-    
+
     console.log('');
   }
-  
+
   // Also try fuzzy search for "anuling cerca"
   console.log('🔍 Trying fuzzy search for barangays containing "anuling" OR "cerca"...');
-  
+
   try {
     const { data, error } = await supabase
       .from('psgc_barangays')
@@ -58,7 +57,7 @@ async function testBarangaySearch() {
       .or('name.ilike.%anuling%,name.ilike.%cerca%')
       .limit(10)
       .order('name');
-    
+
     if (error) {
       console.error('Fuzzy search error:', error.message);
     } else if (data && data.length > 0) {
@@ -69,27 +68,25 @@ async function testBarangaySearch() {
     } else {
       console.log('❌ No fuzzy results found');
     }
-    
   } catch (err) {
     console.error('Fuzzy search error:', err.message);
   }
-  
+
   // Show some sample barangays for reference
   console.log('\n📋 Sample barangays in database:');
-  
+
   try {
     const { data, error } = await supabase
       .from('psgc_barangays')
       .select('code, name')
       .limit(20)
       .order('name');
-    
+
     if (data) {
       data.forEach((b, i) => {
         console.log(`${i + 1}. ${b.code} - ${b.name}`);
       });
     }
-    
   } catch (err) {
     console.error('Sample error:', err.message);
   }

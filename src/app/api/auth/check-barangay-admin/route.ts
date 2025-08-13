@@ -7,38 +7,33 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Missing Supabase configuration:', {
     url: !!supabaseUrl,
-    serviceKey: !!supabaseServiceKey
+    serviceKey: !!supabaseServiceKey,
   });
 }
 
 // Create Supabase client with service role key for admin operations
-const supabaseAdmin = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
-  : null;
+const supabaseAdmin =
+  supabaseUrl && supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      })
+    : null;
 
 export async function POST(request: NextRequest) {
   try {
     // Check if Supabase admin client is available
     if (!supabaseAdmin) {
       console.error('Supabase admin client not available - missing environment variables');
-      return NextResponse.json(
-        { error: 'Service configuration error' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Service configuration error' }, { status: 500 });
     }
 
     const { barangayCode } = await request.json();
 
     if (!barangayCode) {
-      return NextResponse.json(
-        { error: 'Missing barangayCode' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing barangayCode' }, { status: 400 });
     }
 
     // Get the barangay_admin role ID
@@ -63,12 +58,8 @@ export async function POST(request: NextRequest) {
     const hasAdmin = existingAdmin && existingAdmin.length > 0;
 
     return NextResponse.json({ hasAdmin });
-
   } catch (error) {
     console.error('Error checking barangay admin:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

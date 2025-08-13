@@ -132,13 +132,13 @@ export default function AddressSearch({
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full rounded-md border px-4 py-2 outline-none text-primary bg-surface border-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          className="bg-surface w-full rounded-md border border-default px-4 py-2 text-primary outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         />
 
         {/* Loading indicator only */}
         {isLoading && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <div className="size-4 animate-spin rounded-full border-2 border-t-blue-600 border-default"></div>
+            <div className="size-4 animate-spin rounded-full border-2 border-default border-t-blue-600"></div>
           </div>
         )}
 
@@ -151,7 +151,7 @@ export default function AddressSearch({
               setIsOpen(false);
               inputRef.current?.focus();
             }}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted hover:text-secondary"
+            className="text-muted absolute inset-y-0 right-0 flex items-center pr-3 hover:text-secondary"
           >
             <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -167,12 +167,12 @@ export default function AddressSearch({
 
       {/* Search Results Dropdown */}
       {isOpen && results.length > 0 && (
-        <div className="absolute z-50 mt-1 max-h-96 w-full overflow-y-auto rounded-md border shadow-lg bg-surface border-default">
+        <div className="bg-surface absolute z-50 mt-1 max-h-96 w-full overflow-y-auto rounded-md border border-default shadow-lg">
           {results.map((address, index) => (
             <button
               key={`${address.barangay_code}-${index}`}
               onClick={() => handleSelect(address)}
-              className={`w-full border-b px-4 py-3 text-left border-default last:border-b-0 hover:bg-surface-hover focus:bg-blue-50 focus:outline-none dark:focus:bg-blue-900/20 ${
+              className={`hover:bg-surface-hover w-full border-b border-default px-4 py-3 text-left last:border-b-0 focus:bg-blue-50 focus:outline-none dark:focus:bg-blue-900/20 ${
                 index === selectedIndex ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
@@ -209,7 +209,7 @@ export default function AddressSearch({
           ))}
 
           {/* Search Stats */}
-          <div className="border-t px-4 py-2 text-xs text-muted bg-background-muted border-default">
+          <div className="text-muted bg-background-muted border-t border-default px-4 py-2 text-xs">
             Found {results.length} result{results.length !== 1 ? 's' : ''}
             {results.length === maxResults && ` (showing first ${maxResults})`}
           </div>
@@ -218,7 +218,7 @@ export default function AddressSearch({
 
       {/* No Results */}
       {isOpen && !isLoading && query.trim().length >= 2 && results.length === 0 && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border p-4 text-center text-sm shadow-lg text-secondary bg-surface border-default">
+        <div className="bg-surface absolute z-50 mt-1 w-full rounded-md border border-default p-4 text-center text-sm text-secondary shadow-lg">
           <div className="space-y-2">
             <div className="text-muted">
               <svg className="mx-auto size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,7 +240,7 @@ export default function AddressSearch({
 
       {/* Search Help */}
       {!query && (
-        <div className="mt-2 text-xs text-muted">
+        <div className="text-muted mt-2 text-xs">
           <span className="text-xs">💡</span> Search across 38,372 barangays in 1,637 cities
           nationwide
         </div>

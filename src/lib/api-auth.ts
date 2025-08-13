@@ -40,11 +40,11 @@ export interface AuthConfig {
  */
 function extractBearerToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
   }
-  
+
   return authHeader.split(' ')[1];
 }
 
@@ -76,7 +76,9 @@ export function hasAnyPermission(userRole: Role, requiredPermissions: string[]):
 /**
  * Get geographic access level based on role
  */
-export function getAccessLevel(userRole: Role): 'national' | 'region' | 'province' | 'city' | 'barangay' {
+export function getAccessLevel(
+  userRole: Role
+): 'national' | 'region' | 'province' | 'city' | 'barangay' {
   const accessLevels: Record<Role, 'national' | 'region' | 'province' | 'city' | 'barangay'> = {
     [Role.SUPER_ADMIN]: 'national',
     [Role.REGION_ADMIN]: 'region',
@@ -84,9 +86,9 @@ export function getAccessLevel(userRole: Role): 'national' | 'region' | 'provinc
     [Role.CITY_ADMIN]: 'city',
     [Role.BARANGAY_ADMIN]: 'barangay',
     [Role.BARANGAY_STAFF]: 'barangay',
-    [Role.RESIDENT]: 'barangay'
+    [Role.RESIDENT]: 'barangay',
   };
-  
+
   return accessLevels[userRole] || 'barangay';
 }
 
@@ -116,8 +118,8 @@ export async function authenticate(
         path,
         method,
         ip,
-        userAgent
-      }
+        userAgent,
+      },
     };
   }
 
@@ -129,8 +131,8 @@ export async function authenticate(
       error: {
         code: ErrorCode.UNAUTHORIZED,
         message: 'Authentication required. Please provide a valid Bearer token.',
-        status: 401
-      }
+        status: 401,
+      },
     };
   }
 
@@ -147,30 +149,35 @@ export async function authenticate(
     );
 
     // Verify user token
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
       return {
         success: false,
         error: {
           code: ErrorCode.INVALID_TOKEN,
           message: 'Invalid or expired authentication token.',
-          status: 401
-        }
+          status: 401,
+        },
       };
     }
 
     // Get user profile with role information
     const { data: userProfile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .select(`
+      .select(
+        `
         barangay_code,
         city_municipality_code,
         province_code,
         region_code,
         role_id,
         is_active
-      `)
+      `
+      )
       .eq('id', user.id)
       .single();
 
@@ -180,8 +187,8 @@ export async function authenticate(
         error: {
           code: ErrorCode.NOT_FOUND,
           message: 'User profile not found.',
-          status: 404
-        }
+          status: 404,
+        },
       };
     }
 
@@ -192,8 +199,8 @@ export async function authenticate(
         error: {
           code: ErrorCode.FORBIDDEN,
           message: 'Account is deactivated. Please contact administrator.',
-          status: 403
-        }
+          status: 403,
+        },
       };
     }
 
@@ -210,8 +217,8 @@ export async function authenticate(
         error: {
           code: ErrorCode.NOT_FOUND,
           message: 'User role not found.',
-          status: 404
-        }
+          status: 404,
+        },
       };
     }
 
@@ -225,8 +232,8 @@ export async function authenticate(
           error: {
             code: ErrorCode.INSUFFICIENT_PERMISSIONS,
             message: 'Insufficient permissions to access this resource.',
-            status: 403
-          }
+            status: 403,
+          },
         };
       }
     }
@@ -244,7 +251,7 @@ export async function authenticate(
       path,
       method,
       ip,
-      userAgent
+      userAgent,
     };
 
     return {
@@ -256,11 +263,10 @@ export async function authenticate(
         barangayCode: userProfile.barangay_code,
         cityCode: userProfile.city_municipality_code,
         provinceCode: userProfile.province_code,
-        regionCode: userProfile.region_code
+        regionCode: userProfile.region_code,
       },
-      context
+      context,
     };
-
   } catch (error) {
     logger.error('Authentication service error', { error });
     return {
@@ -268,8 +274,8 @@ export async function authenticate(
       error: {
         code: ErrorCode.INTERNAL_ERROR,
         message: 'Authentication service temporarily unavailable.',
-        status: 500
-      }
+        status: 500,
+      },
     };
   }
 }
@@ -279,28 +285,32 @@ export async function authenticate(
  */
 export function withAuth(
   config: AuthConfig,
-  handler: (request: NextRequest, context: RequestContext, user: NonNullable<AuthResult['user']>) => Promise<Response>
+  handler: (
+    request: NextRequest,
+    context: RequestContext,
+    user: NonNullable<AuthResult['user']>
+  ) => Promise<Response>
 ) {
   return async (request: Request | NextRequest): Promise<Response> => {
-    const nextRequest = request instanceof Request ? request as NextRequest : request;
+    const nextRequest = request instanceof Request ? (request as NextRequest) : request;
     const authResult = await authenticate(nextRequest, config);
-    
+
     if (!authResult.success) {
       return new Response(
         JSON.stringify({
           error: authResult.error,
           timestamp: new Date().toISOString(),
-          path: nextRequest.nextUrl?.pathname || new URL(request.url).pathname
+          path: nextRequest.nextUrl?.pathname || new URL(request.url).pathname,
         }),
         {
           status: authResult.error!.status,
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }
       );
     }
-    
+
     return handler(nextRequest, authResult.context!, authResult.user!);
   };
 }
@@ -315,9 +325,9 @@ export function createAuthorizedSupabaseClient(token: string) {
     {
       global: {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
+          Authorization: `Bearer ${token}`,
+        },
+      },
     }
   );
 }
@@ -335,12 +345,9 @@ export function createAdminSupabaseClient() {
 /**
  * Apply geographic filtering based on user's access level
  */
-export function applyGeographicFilter(
-  query: any,
-  user: NonNullable<AuthResult['user']>
-): any {
+export function applyGeographicFilter(query: any, user: NonNullable<AuthResult['user']>): any {
   const accessLevel = getAccessLevel(user.role);
-  
+
   switch (accessLevel) {
     case 'barangay':
       if (user.barangayCode) {
@@ -366,6 +373,6 @@ export function applyGeographicFilter(
       // No filtering for national access
       break;
   }
-  
+
   return query;
 }

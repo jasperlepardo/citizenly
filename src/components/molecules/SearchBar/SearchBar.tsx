@@ -106,7 +106,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               ref={ref}
               type="text"
               className={cn(
-                'font-montserrat w-full bg-transparent font-normal text-primary placeholder:text-muted',
+                'font-montserrat placeholder:text-muted w-full bg-transparent font-normal text-primary',
                 // Remove ALL borders and focus states
                 'border-0 shadow-none outline-0 ring-0',
                 'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
@@ -115,7 +115,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
                 size === 'sm' && 'text-sm leading-4',
                 size === 'md' && 'text-base leading-5',
                 size === 'lg' && 'text-lg leading-6',
-                disabled && 'cursor-not-allowed text-muted'
+                disabled && 'text-muted cursor-not-allowed'
               )}
               style={{
                 border: 'none',
@@ -140,7 +140,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             <button
               type="button"
               onClick={handleClear}
-              className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
+              className="flex size-full items-center justify-center text-secondary transition-colors hover:text-primary"
               aria-label="Clear search"
               tabIndex={-1}
             >

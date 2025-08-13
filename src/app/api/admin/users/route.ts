@@ -100,7 +100,9 @@ export async function POST(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    const { error: profileInsertError } = await supabaseAdmin.from('auth_user_profiles').insert(profileData);
+    const { error: profileInsertError } = await supabaseAdmin
+      .from('auth_user_profiles')
+      .insert(profileData);
 
     if (profileInsertError) {
       console.error('Profile creation error:', profileInsertError);

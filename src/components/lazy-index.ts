@@ -1,9 +1,9 @@
 /**
  * Lazy-loaded Component Exports
- * 
+ *
  * @description Centralized exports for lazy-loaded components to improve initial bundle size.
  * Heavy components are loaded only when needed, improving app startup performance.
- * 
+ *
  * @performance This reduces the initial JavaScript bundle size by approximately:
  * - DataTable: ~45KB
  * - Chart components: ~120KB
@@ -18,48 +18,63 @@ export const LazyDataTable = createLazyComponent(
   () => import('@/components/organisms/DataTable').then(mod => ({ default: mod.DataTable })),
   {
     ...LazyLoadingPresets.table,
-    displayName: 'DataTable'
+    displayName: 'DataTable',
   }
 );
 
 export const LazyPopulationPyramid = createLazyComponent(
-  () => import('@/components/organisms/PopulationPyramid').then(mod => ({ default: mod.PopulationPyramid })),
+  () =>
+    import('@/components/organisms/PopulationPyramid').then(mod => ({
+      default: mod.PopulationPyramid,
+    })),
   {
     ...LazyLoadingPresets.chart,
-    displayName: 'PopulationPyramid'
+    displayName: 'PopulationPyramid',
   }
 );
 
 // Chart components (these are usually heavy with charting libraries)
 export const LazyCivilStatusPieChart = createLazyComponent(
-  () => import('@/components/molecules/CivilStatusPieChart').then(mod => ({ default: mod.CivilStatusPieChart })),
+  () =>
+    import('@/components/molecules/CivilStatusPieChart').then(mod => ({
+      default: mod.CivilStatusPieChart,
+    })),
   {
     ...LazyLoadingPresets.chart,
-    displayName: 'CivilStatusPieChart'
+    displayName: 'CivilStatusPieChart',
   }
 );
 
 export const LazyEmploymentStatusPieChart = createLazyComponent(
-  () => import('@/components/molecules/EmploymentStatusPieChart').then(mod => ({ default: mod.EmploymentStatusPieChart })),
+  () =>
+    import('@/components/molecules/EmploymentStatusPieChart').then(mod => ({
+      default: mod.EmploymentStatusPieChart,
+    })),
   {
     ...LazyLoadingPresets.chart,
-    displayName: 'EmploymentStatusPieChart'
+    displayName: 'EmploymentStatusPieChart',
   }
 );
 
 export const LazySexDistributionPieChart = createLazyComponent(
-  () => import('@/components/molecules/SexDistributionPieChart').then(mod => ({ default: mod.SexDistributionPieChart })),
+  () =>
+    import('@/components/molecules/SexDistributionPieChart').then(mod => ({
+      default: mod.SexDistributionPieChart,
+    })),
   {
     ...LazyLoadingPresets.chart,
-    displayName: 'SexDistributionPieChart'
+    displayName: 'SexDistributionPieChart',
   }
 );
 
 export const LazyDependencyRatioPieChart = createLazyComponent(
-  () => import('@/components/molecules/DependencyRatioPieChart').then(mod => ({ default: mod.DependencyRatioPieChart })),
+  () =>
+    import('@/components/molecules/DependencyRatioPieChart').then(mod => ({
+      default: mod.DependencyRatioPieChart,
+    })),
   {
     ...LazyLoadingPresets.chart,
-    displayName: 'DependencyRatioPieChart'
+    displayName: 'DependencyRatioPieChart',
   }
 );
 
@@ -68,7 +83,7 @@ export const LazyResidentFormWizard = createLazyComponent(
   () => import('@/components/templates/ResidentFormWizard'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'ResidentFormWizard'
+    displayName: 'ResidentFormWizard',
   }
 );
 
@@ -76,7 +91,7 @@ export const LazyHouseholdFormWizard = createLazyComponent(
   () => import('@/components/templates/HouseholdFormWizard'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'HouseholdFormWizard'
+    displayName: 'HouseholdFormWizard',
   }
 );
 
@@ -85,7 +100,7 @@ export const LazyCreateHouseholdModal = createLazyComponent(
   () => import('@/components/organisms/CreateHouseholdModal'),
   {
     ...LazyLoadingPresets.modal,
-    displayName: 'CreateHouseholdModal'
+    displayName: 'CreateHouseholdModal',
   }
 );
 
@@ -94,7 +109,7 @@ export const LazyEducationEmployment = createLazyComponent(
   () => import('@/components/organisms/EducationEmployment'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'EducationEmployment'
+    displayName: 'EducationEmployment',
   }
 );
 
@@ -102,7 +117,7 @@ export const LazySectoralInfo = createLazyComponent(
   () => import('@/components/organisms/SectoralInfo'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'SectoralInfo'
+    displayName: 'SectoralInfo',
   }
 );
 
@@ -111,7 +126,7 @@ export const LazyPhysicalCharacteristics = createLazyComponent(
   () => import('@/components/organisms/RbiSpecific/PhysicalCharacteristics'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'PhysicalCharacteristics'
+    displayName: 'PhysicalCharacteristics',
   }
 );
 
@@ -119,7 +134,7 @@ export const LazyMigrantInformation = createLazyComponent(
   () => import('@/components/organisms/RbiSpecific/MigrantInformation'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'MigrantInformation'
+    displayName: 'MigrantInformation',
   }
 );
 
@@ -127,7 +142,7 @@ export const LazyFamilyRelationshipSelector = createLazyComponent(
   () => import('@/components/organisms/RbiSpecific/FamilyRelationshipSelector'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'FamilyRelationshipSelector'
+    displayName: 'FamilyRelationshipSelector',
   }
 );
 
@@ -136,7 +151,7 @@ export const LazyAddressSearch = createLazyComponent(
   () => import('@/components/organisms/AddressSearch'),
   {
     fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'AddressSearch'
+    displayName: 'AddressSearch',
   }
 );
 
@@ -144,7 +159,7 @@ export const LazyCascadingGeographicSelector = createLazyComponent(
   () => import('@/components/molecules/CascadingGeographicSelector'),
   {
     fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'CascadingGeographicSelector'
+    displayName: 'CascadingGeographicSelector',
   }
 );
 
@@ -153,7 +168,7 @@ export const LazyAdvancedSearchBar = createLazyComponent(
   () => import('@/components/organisms/AdvancedSearchBar'),
   {
     fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'AdvancedSearchBar'
+    displayName: 'AdvancedSearchBar',
   }
 );
 
@@ -162,7 +177,7 @@ export const LazyPSOCSelector = createLazyComponent(
   () => import('@/components/organisms/PSOCSelector'),
   {
     ...LazyLoadingPresets.form,
-    displayName: 'PSOCSelector'
+    displayName: 'PSOCSelector',
   }
 );
 
@@ -177,7 +192,7 @@ export const preloadComponents = {
     import('@/components/templates/HouseholdFormWizard');
     import('@/components/organisms/EducationEmployment');
   },
-  
+
   // Preload chart components when user navigates to dashboard/reports
   charts: () => {
     import('@/components/molecules/CivilStatusPieChart');
@@ -185,28 +200,28 @@ export const preloadComponents = {
     import('@/components/molecules/SexDistributionPieChart');
     import('@/components/organisms/PopulationPyramid');
   },
-  
+
   // Preload data components when user navigates to listing pages
   data: () => {
     import('@/components/organisms/DataTable');
     import('@/components/organisms/AdvancedSearchBar');
   },
-  
+
   // Preload modal components on user interaction hints
   modals: () => {
     import('@/components/organisms/CreateHouseholdModal');
-  }
+  },
 };
 
 /**
  * Usage recommendations:
- * 
+ *
  * 1. Import lazy components instead of regular ones:
  *    import { LazyDataTable } from '@/components/lazy-index';
- * 
+ *
  * 2. Preload components when user shows intent:
  *    <Link href="/residents/create" onMouseEnter={() => preloadComponents.forms()}>
- * 
+ *
  * 3. Use intersection observer for below-the-fold components:
  *    const shouldLoad = useLazyLoadOnIntersection(ref, () => import('./HeavyComponent'));
  */

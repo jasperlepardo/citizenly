@@ -17,7 +17,10 @@ export async function GET(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -55,7 +58,7 @@ export async function GET(request: NextRequest) {
         p_last_name: 'Y',
         p_birthdate: '2000-01-01',
         p_sex: 'male',
-        p_barangay_code: profile?.barangay_code || null
+        p_barangay_code: profile?.barangay_code || null,
       });
     } catch (e: any) {
       const message = (e?.message || '').toLowerCase();
@@ -75,27 +78,26 @@ export async function GET(request: NextRequest) {
         encryption_key: {
           exists: !!encryptionKey,
           error: keyError?.message || null,
-          data: encryptionKey
+          data: encryptionKey,
         },
         profile_barangay: {
           code: profile?.barangay_code || null,
-          error: profileError?.message || null
+          error: profileError?.message || null,
         },
         function_check: {
           exists: funcExists,
           error: funcError,
-        }
+        },
       },
       diagnosis: {
         ready_for_rbi: !!encryptionKey && !!profile?.barangay_code && funcExists,
         issues: [
           !encryptionKey ? 'Missing active pii_master_key' : null,
           !profile?.barangay_code ? 'No barangay assigned on profile' : null,
-          !funcExists ? 'insert_resident_encrypted function not available' : null
-        ].filter(Boolean)
-      }
+          !funcExists ? 'insert_resident_encrypted function not available' : null,
+        ].filter(Boolean),
+      },
     });
-
   } catch (error) {
     console.error('[RBI Preflight] Error:', error);
     return NextResponse.json({ error: 'Internal server error', details: error }, { status: 500 });

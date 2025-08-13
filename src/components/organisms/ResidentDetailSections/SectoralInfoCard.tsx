@@ -1,6 +1,6 @@
 /**
  * Sectoral Information Card for Resident Detail View
- * 
+ *
  * @description Displays sectoral information including employment sectors and demographics
  * @author Citizenly Development Team
  * @version 1.0.0
@@ -27,11 +27,11 @@ interface SectoralInfoCardProps {
 
 /**
  * Sectoral Information Card Component
- * 
+ *
  * @description Renders sectoral information section for resident detail view
  * @param props - Component props containing sectoral information data
  * @returns JSX element for sectoral information display
- * 
+ *
  * @example
  * ```typescript
  * <SectoralInfoCard sectoralInfo={resident.sectoral_info} />
@@ -41,18 +41,20 @@ export default function SectoralInfoCard({ sectoralInfo }: SectoralInfoCardProps
   if (!sectoralInfo) return null;
 
   return (
-    <div className="bg-surface rounded-xl shadow-sm border border-default p-6 hover:shadow-md transition-shadow">
-      <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
         🎯 Sectoral Information
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">Labor Force:</span>
           <span className="text-primary">{sectoralInfo.is_labor_force ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">Employed:</span>
-          <span className="text-primary">{sectoralInfo.is_labor_force_employed ? 'Yes' : 'No'}</span>
+          <span className="text-primary">
+            {sectoralInfo.is_labor_force_employed ? 'Yes' : 'No'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">Unemployed:</span>
@@ -60,15 +62,21 @@ export default function SectoralInfoCard({ sectoralInfo }: SectoralInfoCardProps
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">OFW:</span>
-          <span className="text-primary">{sectoralInfo.is_overseas_filipino_worker ? 'Yes' : 'No'}</span>
+          <span className="text-primary">
+            {sectoralInfo.is_overseas_filipino_worker ? 'Yes' : 'No'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">PWD:</span>
-          <span className="text-primary">{sectoralInfo.is_person_with_disability ? 'Yes' : 'No'}</span>
+          <span className="text-primary">
+            {sectoralInfo.is_person_with_disability ? 'Yes' : 'No'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">OSC:</span>
-          <span className="text-primary">{sectoralInfo.is_out_of_school_children ? 'Yes' : 'No'}</span>
+          <span className="text-primary">
+            {sectoralInfo.is_out_of_school_children ? 'Yes' : 'No'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-secondary">OSY:</span>

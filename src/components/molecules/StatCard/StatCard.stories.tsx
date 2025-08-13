@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A single statistic display card used in barangay dashboard. Displays key metrics with optional trend indicators.',
+        component:
+          'A single statistic display card used in barangay dashboard. Displays key metrics with optional trend indicators.',
       },
     },
   },
@@ -177,32 +178,20 @@ export const VeryLongTitle: Story = {
 // Multiple cards showcase
 export const BarangayDashboard: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-gray-50">
+    <div className="grid grid-cols-1 gap-6 bg-gray-50 p-6 md:grid-cols-2 lg:grid-cols-3">
       <StatCard
         title="Total Population"
         value="2,847"
         trend={{ direction: 'up', percentage: 3.2 }}
       />
-      <StatCard
-        title="Total Households"
-        value="634"
-        trend={{ direction: 'up', percentage: 2.1 }}
-      />
+      <StatCard title="Total Households" value="634" trend={{ direction: 'up', percentage: 2.1 }} />
       <StatCard
         title="Registered Voters"
         value="1,923"
         trend={{ direction: 'up', percentage: 1.8 }}
       />
-      <StatCard
-        title="Senior Citizens"
-        value="287"
-        trend={{ direction: 'up', percentage: 4.2 }}
-      />
-      <StatCard
-        title="PWDs"
-        value="45"
-        trend={{ direction: 'neutral', percentage: 0.2 }}
-      />
+      <StatCard title="Senior Citizens" value="287" trend={{ direction: 'up', percentage: 4.2 }} />
+      <StatCard title="PWDs" value="45" trend={{ direction: 'neutral', percentage: 0.2 }} />
       <StatCard
         title="Out-of-School Youth"
         value="23"
@@ -227,30 +216,13 @@ export const ResponsiveLayout: Story = {
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <StatCard
-          title="Male"
-          value="1,445"
-          trend={{ direction: 'up', percentage: 3.1 }}
-        />
-        <StatCard
-          title="Female"
-          value="1,402"
-          trend={{ direction: 'up', percentage: 3.3 }}
-        />
+        <StatCard title="Male" value="1,445" trend={{ direction: 'up', percentage: 3.1 }} />
+        <StatCard title="Female" value="1,402" trend={{ direction: 'up', percentage: 3.3 }} />
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <StatCard
-          title="0-14 years"
-          value="856"
-        />
-        <StatCard
-          title="15-64 years"
-          value="1,704"
-        />
-        <StatCard
-          title="65+ years"
-          value="287"
-        />
+        <StatCard title="0-14 years" value="856" />
+        <StatCard title="15-64 years" value="1,704" />
+        <StatCard title="65+ years" value="287" />
       </div>
     </div>
   ),

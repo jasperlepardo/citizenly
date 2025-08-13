@@ -7,10 +7,7 @@ import { z } from 'zod';
 import { ErrorCode } from './api-types';
 
 // Base validation schemas
-export const emailSchema = z
-  .string()
-  .email('Invalid email format')
-  .max(255, 'Email too long');
+export const emailSchema = z.string().email('Invalid email format').max(255, 'Email too long');
 
 export const phoneSchema = z
   .string()
@@ -42,7 +39,7 @@ export const passwordSchema = z
 export const dateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
-  .refine((date) => {
+  .refine(date => {
     const parsedDate = new Date(date);
     const minDate = new Date('1900-01-01');
     const maxDate = new Date();
@@ -53,13 +50,13 @@ export const dateSchema = z
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  cursor: z.string().optional()
+  cursor: z.string().optional(),
 });
 
 // Sort schema
 export const sortSchema = z.object({
   sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).default('desc')
+  order: z.enum(['asc', 'desc']).default('desc'),
 });
 
 // Search schema with SQL injection protection
@@ -68,7 +65,7 @@ export const searchSchema = z.object({
     .string()
     .max(100, 'Search term too long')
     .regex(/^[a-zA-Z0-9\s\-\.@_]+$/, 'Search contains invalid characters')
-    .optional()
+    .optional(),
 });
 
 // Resident validation schemas
@@ -78,81 +75,99 @@ export const createResidentSchema = z.object({
   lastName: nameSchema,
   birthdate: dateSchema,
   sex: z.enum(['male', 'female']),
-  
+
   // Optional personal info
   middleName: z.string().max(100).optional().or(z.literal('')),
   extensionName: z.string().max(20).optional().or(z.literal('')),
-  
+
   // Contact information
   email: emailSchema.optional().or(z.literal('')),
   mobileNumber: phoneSchema,
   telephoneNumber: z.string().max(50).optional().or(z.literal('')),
-  
+
   // Geographic codes
   barangayCode: psgcCodeSchema,
   cityMunicipalityCode: psgcCodeSchema.optional(),
   provinceCode: psgcCodeSchema.optional(),
   regionCode: psgcCodeSchema.optional(),
-  
+
   // Personal details
-  civilStatus: z.enum([
-    'single', 'married', 'widowed', 'separated', 'divorced', 'annulled'
-  ]).default('single'),
+  civilStatus: z
+    .enum(['single', 'married', 'widowed', 'separated', 'divorced', 'annulled'])
+    .default('single'),
   citizenship: z.string().max(50).default('filipino'),
-  bloodType: z.enum([
-    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'
-  ]).default('unknown'),
+  bloodType: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'])
+    .default('unknown'),
   ethnicity: z.string().max(50).default('not_reported'),
   religion: z.string().max(50).default('prefer_not_to_say'),
   religionOthersSpecify: z.string().max(200).optional().or(z.literal('')),
-  
+
   // Physical characteristics
   height: z.string().max(10).optional().or(z.literal('')),
   weight: z.string().max(10).optional().or(z.literal('')),
   complexion: z.string().max(50).optional().or(z.literal('')),
-  
+
   // Birth place information
   birthPlaceCode: z.string().max(10).optional().or(z.literal('')),
   birthPlaceLevel: z.string().max(20).optional().or(z.literal('')),
   birthPlaceName: z.string().max(200).optional().or(z.literal('')),
-  
+
   // Documentation
   philsysCardNumber: z.string().max(20).optional().or(z.literal('')),
-  
+
   // Geographic details
   zipCode: z.string().max(10).optional().or(z.literal('')),
-  
+
   // Family information (allow empty strings)
   motherMaidenFirstName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
   motherMaidenMiddleName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
   motherMaidenLastName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
-  
+
   // Education and employment
-  educationAttainment: z.union([
-    z.enum([
-      'no_schooling', 'elementary_undergraduate', 'elementary_graduate',
-      'high_school_undergraduate', 'high_school_graduate', 'college_undergraduate',
-      'college_graduate', 'post_graduate', 'college', 'elementary', 'high_school', 'vocational'
-    ]),
-    z.literal('')
-  ]).optional(),
+  educationAttainment: z
+    .union([
+      z.enum([
+        'no_schooling',
+        'elementary_undergraduate',
+        'elementary_graduate',
+        'high_school_undergraduate',
+        'high_school_graduate',
+        'college_undergraduate',
+        'college_graduate',
+        'post_graduate',
+        'college',
+        'elementary',
+        'high_school',
+        'vocational',
+      ]),
+      z.literal(''),
+    ])
+    .optional(),
   isGraduate: z.boolean().default(false),
-  employmentStatus: z.enum([
-    'employed', 'unemployed', 'self_employed', 'student', 'retired',
-    'not_in_labor_force', 'ofw'
-  ]).default('not_in_labor_force'),
+  employmentStatus: z
+    .enum([
+      'employed',
+      'unemployed',
+      'self_employed',
+      'student',
+      'retired',
+      'not_in_labor_force',
+      'ofw',
+    ])
+    .default('not_in_labor_force'),
   psocCode: z.string().max(10).optional().or(z.literal('')),
   psocLevel: z.union([z.number().int().min(1).max(5), z.null()]).optional(),
   occupationTitle: z.string().max(100).optional().or(z.literal('')),
   workplace: z.string().max(200).optional().or(z.literal('')), // Form sends this but DB doesn't have it
-  
+
   // Voting information
   isVoter: z.union([z.boolean(), z.null()]).optional(),
   isResidentVoter: z.union([z.boolean(), z.null()]).optional(),
   lastVotedDate: z.string().optional().or(z.literal('')),
-  
+
   // Household
-  householdCode: z.string().max(50).optional().or(z.literal(''))
+  householdCode: z.string().max(50).optional().or(z.literal('')),
 });
 
 export const updateResidentSchema = createResidentSchema.partial();
@@ -163,15 +178,15 @@ export const createHouseholdSchema = z.object({
   streetName: z.string().max(200).optional(),
   subdivisionName: z.string().max(200).optional(),
   householdNumber: z.string().max(50).optional(),
-  
+
   // Geographic codes
   barangayCode: psgcCodeSchema,
   cityMunicipalityCode: psgcCodeSchema.optional(),
   provinceCode: psgcCodeSchema.optional(),
   regionCode: psgcCodeSchema.optional(),
-  
+
   // Head of household
-  headResidentId: z.string().uuid().optional()
+  headResidentId: z.string().uuid().optional(),
 });
 
 export const updateHouseholdSchema = createHouseholdSchema.partial();
@@ -184,7 +199,7 @@ export const createUserSchema = z.object({
   lastName: nameSchema,
   mobileNumber: phoneSchema,
   barangayCode: psgcCodeSchema,
-  roleId: z.string().uuid()
+  roleId: z.string().uuid(),
 });
 
 export const updateUserSchema = createUserSchema.partial().omit({ password: true });
@@ -192,7 +207,7 @@ export const updateUserSchema = createUserSchema.partial().omit({ password: true
 // Authentication schemas
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, 'Password is required')
+  password: z.string().min(1, 'Password is required'),
 });
 
 export const signupSchema = z.object({
@@ -200,7 +215,7 @@ export const signupSchema = z.object({
   password: passwordSchema,
   firstName: nameSchema,
   lastName: nameSchema,
-  barangayCode: psgcCodeSchema
+  barangayCode: psgcCodeSchema,
 });
 
 // Geographic filter schemas
@@ -208,15 +223,19 @@ export const geographicFilterSchema = z.object({
   regionCode: psgcCodeSchema.optional(),
   provinceCode: psgcCodeSchema.optional(),
   cityMunicipalityCode: psgcCodeSchema.optional(),
-  barangayCode: psgcCodeSchema.optional()
+  barangayCode: psgcCodeSchema.optional(),
 });
 
 // File upload schemas
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1).max(255),
-  fileSize: z.number().int().min(1).max(10 * 1024 * 1024), // 10MB max
+  fileSize: z
+    .number()
+    .int()
+    .min(1)
+    .max(10 * 1024 * 1024), // 10MB max
   fileType: z.enum(['image/jpeg', 'image/png', 'application/pdf', 'text/csv']),
-  purpose: z.enum(['profile_photo', 'document', 'import_data'])
+  purpose: z.enum(['profile_photo', 'document', 'import_data']),
 });
 
 /**
@@ -227,15 +246,15 @@ export function handleValidationError(error: z.ZodError): {
   message: string;
   details: Array<{ field: string; message: string }>;
 } {
-  const details = error.issues.map((err) => ({
+  const details = error.issues.map(err => ({
     field: err.path.join('.'),
-    message: err.message
+    message: err.message,
   }));
 
   return {
     code: ErrorCode.VALIDATION_ERROR,
     message: 'Invalid input data',
-    details
+    details,
   };
 }
 
@@ -261,25 +280,28 @@ export function validatePagination(params: URLSearchParams): {
 } {
   const result = paginationSchema.parse({
     page: params.get('page'),
-    limit: params.get('limit')
+    limit: params.get('limit'),
   });
 
   return {
     page: result.page,
     limit: result.limit,
-    offset: (result.page - 1) * result.limit
+    offset: (result.page - 1) * result.limit,
   };
 }
 
 /**
  * Validate and sanitize sort parameters
  */
-export function validateSort(params: URLSearchParams, allowedFields: string[]): {
+export function validateSort(
+  params: URLSearchParams,
+  allowedFields: string[]
+): {
   field: string;
   order: 'asc' | 'desc';
 } | null {
   const sort = params.get('sort');
-  const order = params.get('order') as 'asc' | 'desc' || 'desc';
+  const order = (params.get('order') as 'asc' | 'desc') || 'desc';
 
   if (!sort || !allowedFields.includes(sort)) {
     return null;
@@ -307,15 +329,15 @@ export function withValidation<T>(
           JSON.stringify({
             error: validationError,
             timestamp: new Date().toISOString(),
-            path: new URL(request.url).pathname
+            path: new URL(request.url).pathname,
           }),
           {
             status: 422,
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
           }
         );
       }
-      
+
       // Re-throw non-validation errors
       throw error;
     }

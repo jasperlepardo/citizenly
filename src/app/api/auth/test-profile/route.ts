@@ -38,8 +38,8 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
@@ -50,32 +50,33 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { userId } = body;
-    
+
     console.log('🧪 Testing profile creation for user:', { id: '[REDACTED]' });
-    
+
     const results: TestResults = {
       timestamp: new Date().toISOString(),
       userId: '[REDACTED]',
-      tests: {}
+      tests: {},
     };
-    
+
     // Test 1: Admin client user lookup
     try {
-      const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(userId);
+      const { data: userData, error: userError } =
+        await supabaseAdmin.auth.admin.getUserById(userId);
       results.tests.adminUserLookup = {
         success: !!userData?.user,
         hasData: !!userData,
         hasUser: !!userData?.user,
         error: userError?.message || null,
-        confirmed: userData?.user?.email_confirmed_at ? true : false
+        confirmed: userData?.user?.email_confirmed_at ? true : false,
       };
     } catch (error) {
       results.tests.adminUserLookup = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-    
+
     // Test 2: List all users to see if user exists
     try {
       const { data: allUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers();
@@ -84,15 +85,15 @@ export async function POST(request: NextRequest) {
         success: !listError,
         totalUsers: allUsers?.users?.length || 0,
         userFound: !!userInList,
-        error: listError?.message || null
+        error: listError?.message || null,
       };
     } catch (error) {
       results.tests.userInList = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-    
+
     // Test 3: Check if profile already exists
     try {
       const { data: existingProfile, error: profileError } = await supabaseAdmin
@@ -100,19 +101,19 @@ export async function POST(request: NextRequest) {
         .select('*')
         .eq('id', userId)
         .maybeSingle();
-        
+
       results.tests.existingProfile = {
         success: !profileError,
         profileExists: !!existingProfile,
-        error: profileError?.message || null
+        error: profileError?.message || null,
       };
     } catch (error) {
       results.tests.existingProfile = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-    
+
     // Test 4: Try to create minimal profile
     try {
       const minimalProfile = {
@@ -121,39 +122,38 @@ export async function POST(request: NextRequest) {
         first_name: 'Test',
         last_name: 'User',
         role_id: '3fd5bb4b-0f55-4e96-aa9f-69a63e783cc6', // barangay_admin from debug output
-        is_active: true
+        is_active: true,
       };
-      
+
       const { data: createdProfile, error: createError } = await supabaseAdmin
         .from('auth_user_profiles')
         .upsert(minimalProfile)
         .select()
         .single();
-        
+
       results.tests.profileCreation = {
         success: !createError,
         profileCreated: !!createdProfile,
         error: createError?.message || null,
-        errorCode: createError?.code || null
+        errorCode: createError?.code || null,
       };
     } catch (error) {
       results.tests.profileCreation = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
-    
+
     return NextResponse.json({
       message: 'Profile creation test completed',
-      results
+      results,
     });
-
   } catch (error) {
     console.error('Test API error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Test API error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

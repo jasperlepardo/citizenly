@@ -1,6 +1,6 @@
 /**
  * Mother's Maiden Name & Voter Information Card for Resident Detail View
- * 
+ *
  * @description Displays mother's maiden name and voter registration information
  * @author Citizenly Development Team
  * @version 1.0.0
@@ -22,11 +22,11 @@ interface FamilyVoterCardProps {
 
 /**
  * Family & Voter Card Component
- * 
+ *
  * @description Renders family and voter information section for resident detail view
  * @param props - Component props containing resident family/voter data and utility functions
  * @returns JSX element for family and voter information display
- * 
+ *
  * @example
  * ```typescript
  * <FamilyVoterCard
@@ -37,39 +37,46 @@ interface FamilyVoterCardProps {
  */
 export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCardProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Family Information */}
-      <div className="bg-surface rounded-xl shadow-sm border border-default p-6 hover:shadow-md transition-shadow">
-        <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
           👨‍👩‍👧‍👦 Family Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-secondary block">Mother&rsquo;s Maiden Name</span>
+            <span className="block text-sm font-medium text-secondary">
+              Mother&rsquo;s Maiden Name
+            </span>
             <span className="text-primary">
-              {[resident.mother_maiden_first, resident.mother_maiden_middle, resident.mother_maiden_last]
-                .filter(Boolean).join(' ') || '-'}
+              {[
+                resident.mother_maiden_first,
+                resident.mother_maiden_middle,
+                resident.mother_maiden_last,
+              ]
+                .filter(Boolean)
+                .join(' ') || '-'}
             </span>
           </div>
         </div>
       </div>
 
       {/* Voter Information */}
-      <div className="bg-surface rounded-xl shadow-sm border border-default p-6 hover:shadow-md transition-shadow">
-        <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
           🗳️ Voter Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-secondary block">Registered Voter</span>
+            <span className="block text-sm font-medium text-secondary">Registered Voter</span>
             <span className="text-primary">{resident.is_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Resident Voter</span>
+            <span className="block text-sm font-medium text-secondary">Resident Voter</span>
             <span className="text-primary">{resident.is_resident_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Last Voted Date</span>
+            <span className="block text-sm font-medium text-secondary">Last Voted Date</span>
             <span className="text-primary">{formatDate(resident.last_voted_date || '')}</span>
           </div>
         </div>

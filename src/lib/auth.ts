@@ -10,9 +10,9 @@ import type { User, Session, AuthError } from '@supabase/supabase-js';
 const logger = createLogger('Auth');
 
 // User role types
-export type UserRole = 
+export type UserRole =
   | 'super_admin'
-  | 'region_admin' 
+  | 'region_admin'
   | 'province_admin'
   | 'city_admin'
   | 'barangay_admin'
@@ -83,13 +83,12 @@ export const registerUser = async (data: RegistrationData) => {
 
     // 2. The user profile will be automatically created by the database trigger
     logger.info('User registered successfully:', data.email);
-    
+
     return {
       user: authData.user,
       session: authData.session,
       needsEmailConfirmation: !authData.session,
     };
-
   } catch (error) {
     logger.error('Registration error:', error);
     throw error;
@@ -115,14 +114,13 @@ export const signInUser = async (email: string, password: string) => {
 
     // Get user profile
     const profile = await getUserProfile(data.user.id);
-    
+
     if (!profile?.is_active) {
       throw new Error('Account is deactivated. Please contact your administrator.');
     }
 
     logger.info('User signed in successfully:', email);
     return { user: data.user, session: data.session, profile };
-
   } catch (error) {
     logger.error('Sign in error:', error);
     throw error;
@@ -158,7 +156,8 @@ export const getUserProfile = async (userId?: string): Promise<UserProfile | nul
       .single();
 
     if (error) {
-      if (error.code !== 'PGRST116') { // Not found error
+      if (error.code !== 'PGRST116') {
+        // Not found error
         logger.error('Error fetching user profile:', error.message);
       }
       return null;
@@ -211,7 +210,7 @@ export const requestPasswordReset = async (email: string) => {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email);
     if (error) throw error;
-    
+
     logger.info('Password reset requested for:', email);
   } catch (error) {
     logger.error('Password reset error:', error);
@@ -227,9 +226,9 @@ export const updatePassword = async (newPassword: string) => {
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     });
-    
+
     if (error) throw error;
-    
+
     logger.info('Password updated successfully');
   } catch (error) {
     logger.error('Password update error:', error);
@@ -253,7 +252,9 @@ export const hasRole = (profile: UserProfile | null, role: UserRole): boolean =>
  */
 export const isAdmin = (profile: UserProfile | null): boolean => {
   if (!profile?.is_active) return false;
-  return ['super_admin', 'region_admin', 'province_admin', 'city_admin', 'barangay_admin'].includes(profile.role_name);
+  return ['super_admin', 'region_admin', 'province_admin', 'city_admin', 'barangay_admin'].includes(
+    profile.role_name
+  );
 };
 
 /**
@@ -261,7 +262,7 @@ export const isAdmin = (profile: UserProfile | null): boolean => {
  */
 export const canAccessBarangay = (profile: UserProfile | null, barangayCode: string): boolean => {
   if (!profile?.is_active) return false;
-  
+
   switch (profile.role_name) {
     case 'super_admin':
       return true;
@@ -279,9 +280,9 @@ export const canAccessBarangay = (profile: UserProfile | null, barangayCode: str
 export const getUserAccessibleBarangays = async () => {
   try {
     const { data, error } = await supabase.rpc('get_user_accessible_barangays');
-    
+
     if (error) throw error;
-    
+
     return data || [];
   } catch (error) {
     logger.error('Error getting accessible barangays:', error);
@@ -298,7 +299,10 @@ export const getUserAccessibleBarangays = async () => {
  */
 export const getCurrentSession = async (): Promise<Session | null> => {
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession();
     if (error) throw error;
     return session;
   } catch (error) {
@@ -312,7 +316,10 @@ export const getCurrentSession = async (): Promise<Session | null> => {
  */
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
     if (error) throw error;
     return user;
   } catch (error) {
@@ -336,11 +343,8 @@ export const onAuthStateChange = (callback: (event: string, session: Session | n
  * Get PSGC regions
  */
 export const getRegions = async () => {
-  const { data, error } = await supabase
-    .from('psgc_regions')
-    .select('code, name')
-    .order('name');
-    
+  const { data, error } = await supabase.from('psgc_regions').select('code, name').order('name');
+
   if (error) throw error;
   return data;
 };
@@ -354,7 +358,7 @@ export const getProvincesByRegion = async (regionCode: string) => {
     .select('code, name')
     .eq('region_code', regionCode)
     .order('name');
-    
+
   if (error) throw error;
   return data;
 };
@@ -368,7 +372,7 @@ export const getCitiesByProvince = async (provinceCode: string) => {
     .select('code, name, type')
     .eq('province_code', provinceCode)
     .order('name');
-    
+
   if (error) throw error;
   return data;
 };
@@ -382,7 +386,7 @@ export const getBarangaysByCity = async (cityCode: string) => {
     .select('code, name')
     .eq('city_municipality_code', cityCode)
     .order('name');
-    
+
   if (error) throw error;
   return data;
 };
@@ -393,17 +397,19 @@ export const getBarangaysByCity = async (cityCode: string) => {
 export const searchBarangays = async (searchTerm: string, limit = 10) => {
   const { data, error } = await supabase
     .from('psgc_barangays')
-    .select(`
+    .select(
+      `
       code, 
       name,
       city_municipality_code,
       psgc_cities_municipalities(name, type),
       psgc_cities_municipalities.psgc_provinces(name),
       psgc_cities_municipalities.psgc_provinces.psgc_regions(name)
-    `)
+    `
+    )
     .ilike('name', `%${searchTerm}%`)
     .limit(limit);
-    
+
   if (error) throw error;
   return data;
 };
@@ -417,7 +423,7 @@ export const searchOccupations = async (searchTerm: string, limit = 10) => {
     .select('psoc_code, occupation_title, psoc_level, parent_title')
     .ilike('search_text', `%${searchTerm}%`)
     .limit(limit);
-    
+
   if (error) throw error;
   return data;
 };
@@ -431,28 +437,28 @@ export const searchOccupations = async (searchTerm: string, limit = 10) => {
  */
 export const getAuthErrorMessage = (error: AuthError | Error): string => {
   const message = error.message;
-  
+
   // Common auth error patterns
   if (message.includes('Invalid login credentials')) {
     return 'Invalid email or password. Please check your credentials and try again.';
   }
-  
+
   if (message.includes('Email not confirmed')) {
     return 'Please confirm your email address before signing in.';
   }
-  
+
   if (message.includes('User already registered')) {
     return 'An account with this email already exists. Please sign in instead.';
   }
-  
+
   if (message.includes('Password should be at least')) {
     return 'Password must be at least 6 characters long.';
   }
-  
+
   if (message.includes('Unable to validate email address')) {
     return 'Please enter a valid email address.';
   }
-  
+
   // Default to original message if no pattern matches
   return message;
 };

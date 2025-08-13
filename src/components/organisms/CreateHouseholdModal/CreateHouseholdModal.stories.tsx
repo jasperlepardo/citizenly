@@ -148,7 +148,7 @@ export const GeographicContextDemo: Story = {
     docs: {
       description: {
         story:
-          "Demonstrates how the modal shows different geographic contexts based on the user&rsquo;s barangay assignment.",
+          'Demonstrates how the modal shows different geographic contexts based on the user&rsquo;s barangay assignment.',
       },
     },
   },

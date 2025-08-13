@@ -296,7 +296,7 @@ export default function AddressSelector({
 
       {/* Address Summary */}
       {!compact && (value.region || value.province || value.city || value.barangay) && (
-        <div className="mt-4 rounded-md p-3 bg-background-muted">
+        <div className="bg-background-muted mt-4 rounded-md p-3">
           <h4 className="mb-2 text-sm font-medium text-primary">Selected Address:</h4>
           <div className="text-sm text-secondary">
             {[
@@ -313,7 +313,7 @@ export default function AddressSelector({
 
       {/* Coverage Info */}
       {!compact && (
-        <div className="mt-4 text-xs text-muted">
+        <div className="text-muted mt-4 text-xs">
           <span className="text-xs">🗺️</span> Coverage: 17 regions, 86 provinces, 1,637 cities,
           38,372 barangays (91% nationwide)
         </div>

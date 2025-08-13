@@ -1,9 +1,9 @@
 /**
  * Lazy Component Loading Utilities
- * 
+ *
  * @description Centralized lazy loading configuration for performance optimization.
  * Provides standardized loading states and error boundaries for dynamically imported components.
- * 
+ *
  * @performance Benefits:
  * - Reduces initial bundle size
  * - Faster page load times
@@ -19,7 +19,7 @@ import { ErrorBoundary } from '@/providers/ErrorBoundary';
  */
 const LoadingSpinner = ({ message = 'Loading...' }: { message?: string }) => (
   <div className="flex items-center justify-center p-8">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mr-3"></div>
+    <div className="mr-3 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
     <span className="text-gray-600">{message}</span>
   </div>
 );
@@ -29,16 +29,23 @@ const LoadingSpinner = ({ message = 'Loading...' }: { message?: string }) => (
  */
 const LazyErrorFallback = ({ error }: { error: Error }) => (
   <div className="p-8 text-center">
-    <div className="text-red-600 mb-4">
+    <div className="mb-4 text-red-600">
       <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
       </svg>
     </div>
-    <h3 className="text-lg font-medium text-gray-900 mb-2">Component Failed to Load</h3>
-    <p className="text-gray-600 mb-4">There was an error loading this component. Please try refreshing the page.</p>
-    <button 
-      onClick={() => window.location.reload()} 
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+    <h3 className="mb-2 text-lg font-medium text-gray-900">Component Failed to Load</h3>
+    <p className="mb-4 text-gray-600">
+      There was an error loading this component. Please try refreshing the page.
+    </p>
+    <button
+      onClick={() => window.location.reload()}
+      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
     >
       Refresh Page
     </button>
@@ -57,9 +64,13 @@ export function createLazyComponent<T extends ComponentType<any>>(
   } = {}
 ): ComponentType<React.ComponentProps<T>> {
   const LazyComponent = lazy(importFn);
-  
+
   const WrappedComponent = (props: React.ComponentProps<T>) => (
-    <ErrorBoundary fallback={options.errorFallback || <LazyErrorFallback error={new Error('Component loading failed')} />}>
+    <ErrorBoundary
+      fallback={
+        options.errorFallback || <LazyErrorFallback error={new Error('Component loading failed')} />
+      }
+    >
       <Suspense fallback={options.fallback || <LoadingSpinner />}>
         <LazyComponent {...props} />
       </Suspense>
@@ -79,14 +90,14 @@ export function createLazyComponent<T extends ComponentType<any>>(
 export function preloadLazyComponent(importFn: () => Promise<any>) {
   // Preload the component when function is called
   const modulePromise = importFn();
-  
+
   // Return a function to check if preload is complete
   return {
     preload: () => modulePromise,
     isPreloaded: () => {
       // Check if the module is already in the module cache
       return modulePromise !== undefined;
-    }
+    },
   };
 }
 
@@ -117,7 +128,7 @@ export const LazyLoadingPresets = {
     fallback: <LoadingSpinner message="Loading chart..." />,
     errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   },
-  
+
   /**
    * For form components with complex validation
    */
@@ -125,13 +136,13 @@ export const LazyLoadingPresets = {
     fallback: <LoadingSpinner message="Loading form..." />,
     errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
   },
-  
+
   /**
    * For modal dialogs
    */
   modal: {
     fallback: (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <LoadingSpinner message="Loading modal..." />
       </div>
     ),
@@ -144,13 +155,13 @@ export const LazyLoadingPresets = {
   table: {
     fallback: (
       <div className="animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
+        <div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
+        <div className="h-4 w-3/4 rounded bg-gray-200"></div>
       </div>
     ),
     errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,
-  }
+  },
 };
 
 /**
@@ -162,7 +173,7 @@ export function useLazyLoadOnIntersection(
   options: IntersectionObserverInit = {}
 ) {
   const [isIntersecting, setIsIntersecting] = React.useState(false);
-  
+
   React.useEffect(() => {
     const element = ref.current;
     if (!element) return;

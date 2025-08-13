@@ -419,7 +419,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'pending'
                     ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-muted hover:border-gray-300 hover:text-gray-700'
+                    : 'text-muted border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Pending Approvals ({pendingUsers.length})
@@ -431,7 +431,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'active'
                     ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-muted hover:border-gray-300 hover:text-gray-700'
+                    : 'text-muted border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Active Users ({activeUsers.length})
@@ -445,7 +445,7 @@ function UsersManagementContent() {
               <>
                 {pendingUsers.length === 0 ? (
                   <div className="py-12 text-center">
-                    <div className="mb-4 text-muted">
+                    <div className="text-muted mb-4">
                       <svg
                         className="mx-auto size-12"
                         fill="none"
@@ -486,7 +486,7 @@ function UsersManagementContent() {
               <>
                 {activeUsers.length === 0 ? (
                   <div className="py-12 text-center">
-                    <div className="mb-4 text-muted">
+                    <div className="text-muted mb-4">
                       <svg
                         className="mx-auto size-12"
                         fill="none"

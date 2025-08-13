@@ -1,10 +1,10 @@
 /**
  * Household Creation Hook
- * 
+ *
  * @description Custom hook for managing household creation workflow including
  * form validation, PSGC-compliant code generation, and address resolution.
  * Handles the complete household registration process with proper error handling.
- * 
+ *
  * @example
  * ```typescript
  * function CreateHouseholdForm() {
@@ -15,14 +15,14 @@
  *     handleInputChange,
  *     createHousehold
  *   } = useHouseholdCreation();
- * 
+ *
  *   const handleSubmit = async () => {
  *     const householdCode = await createHousehold();
  *     if (householdCode) {
  *       router.push(`/households/${householdCode}`);
  *     }
  *   };
- * 
+ *
  *   return (
  *     <form onSubmit={handleSubmit}>
  *       <input
@@ -90,15 +90,15 @@ interface UseHouseholdCreationReturn {
 
 /**
  * Custom hook for household creation workflow
- * 
+ *
  * @description Manages the complete household creation process including:
  * - Form state management with validation
  * - PSGC-compliant household code generation
  * - Address hierarchy resolution and display
  * - Database integration with proper error handling
- * 
+ *
  * @returns {UseHouseholdCreationReturn} Object containing form state and handlers
- * 
+ *
  * @example
  * ```typescript
  * const {
@@ -111,7 +111,7 @@ interface UseHouseholdCreationReturn {
  *   createHousehold,
  *   resetForm
  * } = useHouseholdCreation();
- * 
+ *
  * // Handle form submission
  * const handleSubmit = async (e: FormEvent) => {
  *   e.preventDefault();
@@ -143,21 +143,24 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Handles form field changes and clears related errors
-   * 
+   *
    * @param field - The field being updated
    * @param value - The new field value
    */
-  const handleInputChange = useCallback((field: keyof HouseholdFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-  }, [errors]);
+  const handleInputChange = useCallback(
+    (field: keyof HouseholdFormData, value: string) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+      // Clear error when user starts typing
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: undefined }));
+      }
+    },
+    [errors]
+  );
 
   /**
    * Validates the current form state
-   * 
+   *
    * @returns {boolean} True if form is valid, false otherwise
    */
   const validateForm = useCallback((): boolean => {
@@ -173,16 +176,16 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Generates a PSGC-compliant household code
-   * 
+   *
    * @description Creates a unique household identifier following the format:
    * RRPPMMBBB-SSSS-TTTT-HHHH where:
    * - RRPPMMBBB: 9-digit barangay code
    * - SSSS: Street/Sitio code (0000 for now)
    * - TTTT: Type code (0001 for household)
    * - HHHH: Sequential household number
-   * 
+   *
    * @returns {Promise<string>} Generated household code
-   * 
+   *
    * @example
    * ```typescript
    * // For barangay 137404001, this might generate:
@@ -207,14 +210,14 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Derives higher-level geographic codes from barangay code
-   * 
+   *
    * @description Extracts region, province, and city/municipality codes
    * from the 9-digit PSGC barangay code following the format:
    * RRPPMMBBB (Region-Province-City/Municipality-Barangay)
-   * 
+   *
    * @param barangayCode - 9-digit PSGC barangay code
    * @returns Geographic code hierarchy or null if invalid
-   * 
+   *
    * @example
    * ```typescript
    * const codes = deriveGeographicCodes('137404001');
@@ -241,13 +244,13 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Loads and resolves complete address hierarchy for display
-   * 
+   *
    * @description Performs sequential database queries to build complete
    * address information from barangay code up to region level.
    * Uses fallback values if any part of the hierarchy is missing.
-   * 
+   *
    * @param barangayCode - 9-digit PSGC barangay code
-   * 
+   *
    * @example
    * ```typescript
    * await loadAddressDisplayInfo('137404001');
@@ -330,15 +333,15 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Creates a new household in the database
-   * 
+   *
    * @description Validates form data, generates PSGC-compliant household code,
    * derives geographic codes, and inserts the household record.
    * Handles all error cases and provides detailed logging.
-   * 
+   *
    * @returns {Promise<string | null>} Generated household code on success, null on failure
-   * 
+   *
    * @throws {Error} Database insertion errors
-   * 
+   *
    * @example
    * ```typescript
    * const handleSubmit = async () => {
@@ -412,7 +415,7 @@ export function useHouseholdCreation(): UseHouseholdCreationReturn {
 
   /**
    * Resets the form to its initial state
-   * 
+   *
    * @description Clears all form data and validation errors.
    * Useful for "Cancel" buttons or after successful submission.
    */

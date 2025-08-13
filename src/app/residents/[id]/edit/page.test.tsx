@@ -47,7 +47,7 @@ jest.mock('@/components/organisms/ResidentFormSections', () => ({
       <input
         data-testid="first-name"
         value={formData.first_name || ''}
-        onChange={(e) => updateField('first_name', e.target.value)}
+        onChange={e => updateField('first_name', e.target.value)}
       />
     </div>
   )),
@@ -91,36 +91,37 @@ describe('ResidentEditPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     (useParams as jest.Mock).mockReturnValue({ id: 'test-resident-id' });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useAuth as jest.Mock).mockReturnValue({ session: mockSession });
     (useResidentEditForm as jest.Mock).mockReturnValue(mockFormHook);
-    
+
     (fetch as jest.Mock).mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve({
-        resident: {
-          id: 'test-resident-id',
-          first_name: 'John',
-          last_name: 'Doe',
-          birthdate: '1990-01-01',
-        },
-      }),
+      json: () =>
+        Promise.resolve({
+          resident: {
+            id: 'test-resident-id',
+            first_name: 'John',
+            last_name: 'Doe',
+            birthdate: '1990-01-01',
+          },
+        }),
     });
   });
 
   describe('Rendering', () => {
     it('should render loading state initially', () => {
       render(<ResidentEditPage />);
-      
+
       expect(screen.getByText('Loading resident data...')).toBeInTheDocument();
       expect(screen.getByRole('status', { hidden: true })).toBeInTheDocument();
     });
 
     it('should render all form sections after loading', async () => {
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Edit Resident')).toBeInTheDocument();
       });
@@ -138,9 +139,9 @@ describe('ResidentEditPage', () => {
 
     it('should render error state when fetch fails', async () => {
       (fetch as jest.Mock).mockRejectedValue(new Error('Failed to fetch'));
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Error Loading Resident')).toBeInTheDocument();
       });
@@ -153,11 +154,11 @@ describe('ResidentEditPage', () => {
   describe('Data Loading', () => {
     it('should fetch resident data on mount', async () => {
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(fetch).toHaveBeenCalledWith('/api/residents/test-resident-id', {
           headers: {
-            'Authorization': 'Bearer mock-token',
+            Authorization: 'Bearer mock-token',
             'Content-Type': 'application/json',
           },
         });
@@ -167,16 +168,17 @@ describe('ResidentEditPage', () => {
     it('should format date fields correctly', async () => {
       (fetch as jest.Mock).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          resident: {
-            birthdate: '1990-01-01T00:00:00Z',
-            last_voted_date: '2023-05-09T00:00:00Z',
-          },
-        }),
+        json: () =>
+          Promise.resolve({
+            resident: {
+              birthdate: '1990-01-01T00:00:00Z',
+              last_voted_date: '2023-05-09T00:00:00Z',
+            },
+          }),
       });
 
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(useResidentEditForm).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -193,31 +195,34 @@ describe('ResidentEditPage', () => {
   describe('Form Interactions', () => {
     it('should update field when user types', async () => {
       const user = userEvent.setup();
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByTestId('first-name')).toBeInTheDocument();
       });
 
       const firstNameInput = screen.getByTestId('first-name');
       await user.type(firstNameInput, 'Jane');
-      
-      expect(mockFormHook.updateField).toHaveBeenCalledWith('first_name', expect.stringContaining('Jane'));
+
+      expect(mockFormHook.updateField).toHaveBeenCalledWith(
+        'first_name',
+        expect.stringContaining('Jane')
+      );
     });
 
     it('should submit form when save button is clicked', async () => {
       const user = userEvent.setup();
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Save Changes')).toBeInTheDocument();
       });
 
       const saveButton = screen.getByText('Save Changes');
       await user.click(saveButton);
-      
+
       expect(mockFormHook.submitForm).toHaveBeenCalled();
     });
 
@@ -226,9 +231,9 @@ describe('ResidentEditPage', () => {
         ...mockFormHook,
         isDirty: true,
       });
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('• Unsaved changes')).toBeInTheDocument();
       });
@@ -238,37 +243,37 @@ describe('ResidentEditPage', () => {
   describe('Navigation', () => {
     it('should navigate back to resident detail on cancel', async () => {
       const user = userEvent.setup();
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Cancel')).toBeInTheDocument();
       });
 
       const cancelButton = screen.getAllByText('Cancel')[0];
       await user.click(cancelButton);
-      
+
       expect(mockRouter.push).toHaveBeenCalledWith('/residents/test-resident-id');
     });
 
     it('should show confirmation dialog when canceling with unsaved changes', async () => {
       const user = userEvent.setup();
       window.confirm = jest.fn().mockReturnValue(true);
-      
+
       (useResidentEditForm as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isDirty: true,
       });
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Cancel')).toBeInTheDocument();
       });
 
       const cancelButton = screen.getAllByText('Cancel')[0];
       await user.click(cancelButton);
-      
+
       expect(window.confirm).toHaveBeenCalledWith(
         'You have unsaved changes. Are you sure you want to leave?'
       );
@@ -278,21 +283,21 @@ describe('ResidentEditPage', () => {
     it('should not navigate when user cancels confirmation dialog', async () => {
       const user = userEvent.setup();
       window.confirm = jest.fn().mockReturnValue(false);
-      
+
       (useResidentEditForm as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isDirty: true,
       });
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Cancel')).toBeInTheDocument();
       });
 
       const cancelButton = screen.getAllByText('Cancel')[0];
       await user.click(cancelButton);
-      
+
       expect(window.confirm).toHaveBeenCalled();
       expect(mockRouter.push).not.toHaveBeenCalled();
     });
@@ -301,21 +306,21 @@ describe('ResidentEditPage', () => {
   describe('Form Submission', () => {
     it('should handle successful form submission', async () => {
       const mockSubmit = jest.fn().mockResolvedValue(undefined);
-      
+
       (useResidentEditForm as jest.Mock).mockReturnValue({
         ...mockFormHook,
         submitForm: mockSubmit,
       });
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Save Changes')).toBeInTheDocument();
       });
 
       const form = screen.getByRole('form');
       fireEvent.submit(form);
-      
+
       expect(mockSubmit).toHaveBeenCalled();
     });
 
@@ -324,9 +329,9 @@ describe('ResidentEditPage', () => {
         ...mockFormHook,
         isSubmitting: true,
       });
-      
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Saving...')).toBeInTheDocument();
       });
@@ -339,21 +344,20 @@ describe('ResidentEditPage', () => {
   describe('Error Handling', () => {
     it('should retry data loading when retry button is clicked', async () => {
       const user = userEvent.setup();
-      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'))
-                          .mockResolvedValueOnce({
-                            ok: true,
-                            json: () => Promise.resolve({ resident: {} }),
-                          });
-      
+      (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error')).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ resident: {} }),
+      });
+
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Retry')).toBeInTheDocument();
       });
 
       const retryButton = screen.getByText('Retry');
       await user.click(retryButton);
-      
+
       // Should attempt to reload
       expect(fetch).toHaveBeenCalledTimes(2);
     });
@@ -362,9 +366,9 @@ describe('ResidentEditPage', () => {
   describe('Authentication', () => {
     it('should not render form without session', () => {
       (useAuth as jest.Mock).mockReturnValue({ session: null });
-      
+
       render(<ResidentEditPage />);
-      
+
       expect(screen.getByText('Loading resident data...')).toBeInTheDocument();
     });
   });
@@ -372,7 +376,7 @@ describe('ResidentEditPage', () => {
   describe('Accessibility', () => {
     it('should have proper form structure', async () => {
       render(<ResidentEditPage />);
-      
+
       await waitFor(() => {
         expect(screen.getByRole('form')).toBeInTheDocument();
       });
@@ -383,7 +387,7 @@ describe('ResidentEditPage', () => {
 
     it('should have proper loading indicators', () => {
       render(<ResidentEditPage />);
-      
+
       const loadingSpinner = screen.getByRole('status', { hidden: true });
       expect(loadingSpinner).toHaveClass('animate-spin');
     });
@@ -400,14 +404,15 @@ describe('ResidentEditPage Integration', () => {
 
   it('should complete full edit workflow', async () => {
     const user = userEvent.setup();
-    
+
     // Mock successful API calls
     (fetch as jest.Mock)
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          resident: { first_name: 'John', last_name: 'Doe' },
-        }),
+        json: () =>
+          Promise.resolve({
+            resident: { first_name: 'John', last_name: 'Doe' },
+          }),
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -421,9 +426,9 @@ describe('ResidentEditPage Integration', () => {
 
     // Use real form hook for integration test
     jest.unmock('@/hooks/useResidentEditForm');
-    
+
     render(<ResidentEditPage />);
-    
+
     // Wait for loading to complete
     await waitFor(() => {
       expect(screen.getByText('Edit Resident')).toBeInTheDocument();

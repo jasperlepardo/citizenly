@@ -7,7 +7,11 @@ import { z } from 'zod';
 
 // Base schema for common validations
 const nameSchema = z.string().min(1, 'Required').max(100, 'Too long (max 100 characters)');
-const optionalNameSchema = z.string().max(100, 'Too long (max 100 characters)').optional().or(z.literal(''));
+const optionalNameSchema = z
+  .string()
+  .max(100, 'Too long (max 100 characters)')
+  .optional()
+  .or(z.literal(''));
 
 // Phone number validation for Philippine format
 const phoneSchema = z
@@ -17,15 +21,11 @@ const phoneSchema = z
   .or(z.literal(''));
 
 // Email validation
-const emailSchema = z
-  .string()
-  .email('Invalid email format')
-  .optional()
-  .or(z.literal(''));
+const emailSchema = z.string().email('Invalid email format').optional().or(z.literal(''));
 
 // Date validation
 const dateSchema = z.string().refine(
-  (date) => {
+  date => {
     if (!date) return false;
     const parsed = new Date(date);
     return !isNaN(parsed.getTime()) && parsed <= new Date();
@@ -37,7 +37,7 @@ const dateSchema = z.string().refine(
 const optionalDateSchema = z
   .string()
   .refine(
-    (date) => {
+    date => {
       if (!date) return true;
       const parsed = new Date(date);
       return !isNaN(parsed.getTime());
@@ -72,7 +72,7 @@ export const ResidentFormSchema = z.object({
   birthdate: dateSchema,
   sex: z.enum(['male', 'female'], { message: 'Sex is required' }),
   civil_status: z.enum(['single', 'married', 'divorced', 'widowed', 'separated'], {
-    message: 'Civil status is required'
+    message: 'Civil status is required',
   }),
   civil_status_others_specify: z.string().max(200, 'Too long').optional().or(z.literal('')),
   citizenship: z.enum(['filipino', 'foreign'], { message: 'Citizenship is required' }).optional(),
@@ -95,29 +95,33 @@ export const ResidentFormSchema = z.object({
   zip_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
 
   // Education & Employment
-  education_attainment: z.enum([
-    'no_formal_education',
-    'pre_primary',
-    'primary',
-    'junior_high_school',
-    'senior_high_school',
-    'post_secondary_non_tertiary',
-    'short_cycle_tertiary',
-    'bachelors_degree',
-    'masters_degree',
-    'doctoral_degree'
-  ]).optional(),
+  education_attainment: z
+    .enum([
+      'no_formal_education',
+      'pre_primary',
+      'primary',
+      'junior_high_school',
+      'senior_high_school',
+      'post_secondary_non_tertiary',
+      'short_cycle_tertiary',
+      'bachelors_degree',
+      'masters_degree',
+      'doctoral_degree',
+    ])
+    .optional(),
   is_graduate: z.boolean().optional(),
-  employment_status: z.enum([
-    'employed',
-    'unemployed',
-    'not_in_labor_force',
-    'student',
-    'homemaker',
-    'retired',
-    'disabled',
-    'others'
-  ]).optional(),
+  employment_status: z
+    .enum([
+      'employed',
+      'unemployed',
+      'not_in_labor_force',
+      'student',
+      'homemaker',
+      'retired',
+      'disabled',
+      'others',
+    ])
+    .optional(),
   employment_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
   employment_name: z.string().max(300, 'Too long').optional().or(z.literal('')),
   psoc_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
@@ -125,40 +129,56 @@ export const ResidentFormSchema = z.object({
   occupation_title: z.string().max(300, 'Too long').optional().or(z.literal('')),
 
   // Physical Characteristics
-  blood_type: z.enum(['a_positive', 'a_negative', 'b_positive', 'b_negative', 'ab_positive', 'ab_negative', 'o_positive', 'o_negative', 'unknown']).optional(),
+  blood_type: z
+    .enum([
+      'a_positive',
+      'a_negative',
+      'b_positive',
+      'b_negative',
+      'ab_positive',
+      'ab_negative',
+      'o_positive',
+      'o_negative',
+      'unknown',
+    ])
+    .optional(),
   height: heightSchema,
   weight: weightSchema,
   complexion: z.string().max(50, 'Too long').optional().or(z.literal('')),
 
   // Cultural & Religious Information
-  religion: z.enum([
-    'roman_catholic',
-    'protestant',
-    'islam',
-    'iglesia_ni_cristo',
-    'buddhism',
-    'hinduism',
-    'judaism',
-    'others',
-    'prefer_not_to_say'
-  ]).optional(),
+  religion: z
+    .enum([
+      'roman_catholic',
+      'protestant',
+      'islam',
+      'iglesia_ni_cristo',
+      'buddhism',
+      'hinduism',
+      'judaism',
+      'others',
+      'prefer_not_to_say',
+    ])
+    .optional(),
   religion_others_specify: z.string().max(200, 'Too long').optional().or(z.literal('')),
-  ethnicity: z.enum([
-    'tagalog',
-    'cebuano',
-    'ilocano',
-    'bisaya',
-    'hiligaynon',
-    'bikol',
-    'waray',
-    'kapampangan',
-    'pangasinan',
-    'maranao',
-    'maguindanao',
-    'tausug',
-    'others',
-    'not_reported'
-  ]).optional(),
+  ethnicity: z
+    .enum([
+      'tagalog',
+      'cebuano',
+      'ilocano',
+      'bisaya',
+      'hiligaynon',
+      'bikol',
+      'waray',
+      'kapampangan',
+      'pangasinan',
+      'maranao',
+      'maguindanao',
+      'tausug',
+      'others',
+      'not_reported',
+    ])
+    .optional(),
 
   // Voting Information
   is_voter: z.boolean().optional(),

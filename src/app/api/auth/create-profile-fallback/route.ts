@@ -7,8 +7,8 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
@@ -34,14 +34,14 @@ interface CreateProfileRequest {
 export async function POST(request: NextRequest) {
   try {
     const requestData: CreateProfileRequest = await request.json();
-    
+
     // Validate required fields
     const { id, email, first_name, last_name, role_id } = requestData;
     if (!id || !email || !first_name || !last_name || !role_id) {
       return NextResponse.json(
-        { 
-          error: 'Missing required fields', 
-          required: ['id', 'email', 'first_name', 'last_name', 'role_id']
+        {
+          error: 'Missing required fields',
+          required: ['id', 'email', 'first_name', 'last_name', 'role_id'],
         },
         { status: 400 }
       );
@@ -50,21 +50,20 @@ export async function POST(request: NextRequest) {
     // Validate UUID format
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return NextResponse.json(
-        { error: 'Invalid user ID format' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid user ID format' }, { status: 400 });
     }
 
     console.log('🔄 Fallback profile creation for user:', { id: '[REDACTED]', email });
-    console.log('⚠️ FALLBACK MODE: Skipping user existence check - proceeding with profile creation');
+    console.log(
+      '⚠️ FALLBACK MODE: Skipping user existence check - proceeding with profile creation'
+    );
 
     // Create profile regardless of user lookup result
     // The foreign key constraint will catch any real issues
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
       .upsert(requestData, {
-        onConflict: 'id'
+        onConflict: 'id',
       })
       .select()
       .single();
@@ -72,21 +71,21 @@ export async function POST(request: NextRequest) {
     if (profileError) {
       console.error('Fallback profile creation error:', {
         error: profileError,
-        requestData: { ...requestData, id: '[REDACTED]' }
+        requestData: { ...requestData, id: '[REDACTED]' },
       });
-      
+
       // Check if it's a foreign key error (user doesn't exist)
       if (profileError.code === '23503') {
         return NextResponse.json(
-          { 
+          {
             error: 'User account not found. Please wait a moment and try again.',
             code: 'USER_NOT_PROPAGATED',
-            details: 'The user account may still be propagating in the system.'
+            details: 'The user account may still be propagating in the system.',
           },
           { status: 422 }
         );
       }
-      
+
       return NextResponse.json(
         { error: 'Could not create user profile', details: profileError.message },
         { status: 500 }
@@ -98,14 +97,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       profile,
       message: 'Profile created successfully (fallback)',
-      note: 'Created without user verification due to timing issues'
+      note: 'Created without user verification due to timing issues',
     });
-
   } catch (error) {
     console.error('Fallback API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

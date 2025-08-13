@@ -22,7 +22,7 @@ export default function DependencyRatioPieChart({
 }: DependencyRatioPieChartProps) {
   const { youngDependents, workingAge, oldDependents } = data;
   const total = youngDependents + workingAge + oldDependents;
-  
+
   console.log('DependencyRatioPieChart received data:', data);
   console.log('Calculated total:', total);
 

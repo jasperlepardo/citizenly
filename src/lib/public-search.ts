@@ -22,7 +22,8 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
 
     const { data, error } = await supabase
       .from('psgc_barangays')
-      .select(`
+      .select(
+        `
         code, 
         name,
         city_municipality_code,
@@ -41,29 +42,30 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
             )
           )
         )
-      `)
+      `
+      )
       .ilike('name', `%${searchTerm}%`)
       .limit(limit)
       .order('name');
-      
+
     if (error) {
       logger.error('Error searching barangays:', error.message);
       throw error;
     }
 
     // Transform data to match expected format
-    const transformedData = data?.map(item => ({
-      code: item.code,
-      name: (item as any).name,
-      city_name: `${(item as any).psgc_cities_municipalities.name} (${(item as any).psgc_cities_municipalities.type})`,
-      province_name: (item as any).psgc_cities_municipalities.psgc_provinces.name,
-      region_name: (item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
-      full_address: `${(item as any).name}, ${(item as any).psgc_cities_municipalities.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
-    })) || [];
+    const transformedData =
+      data?.map(item => ({
+        code: item.code,
+        name: (item as any).name,
+        city_name: `${(item as any).psgc_cities_municipalities.name} (${(item as any).psgc_cities_municipalities.type})`,
+        province_name: (item as any).psgc_cities_municipalities.psgc_provinces.name,
+        region_name: (item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
+        full_address: `${(item as any).name}, ${(item as any).psgc_cities_municipalities.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
+      })) || [];
 
     logger.debug(`Found ${transformedData.length} barangays`);
     return transformedData;
-
   } catch (error) {
     logger.error('Public barangay search failed:', error);
     throw error;
@@ -75,11 +77,8 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
  */
 export const getRegionsPublic = async () => {
   try {
-    const { data, error } = await supabase
-      .from('psgc_regions')
-      .select('code, name')
-      .order('name');
-      
+    const { data, error } = await supabase.from('psgc_regions').select('code, name').order('name');
+
     if (error) throw error;
     return data;
   } catch (error) {
@@ -98,7 +97,7 @@ export const getProvincesByRegionPublic = async (regionCode: string) => {
       .select('code, name')
       .eq('region_code', regionCode)
       .order('name');
-      
+
     if (error) throw error;
     return data;
   } catch (error) {
@@ -117,7 +116,7 @@ export const getCitiesByProvincePublic = async (provinceCode: string) => {
       .select('code, name, type')
       .eq('province_code', provinceCode)
       .order('name');
-      
+
     if (error) throw error;
     return data;
   } catch (error) {
@@ -136,7 +135,7 @@ export const getBarangaysByCityPublic = async (cityCode: string) => {
       .select('code, name')
       .eq('city_municipality_code', cityCode)
       .order('name');
-      
+
     if (error) throw error;
     return data;
   } catch (error) {
@@ -160,7 +159,7 @@ export const searchOccupationsPublic = async (searchTerm: string, limit = 20) =>
       .ilike('search_text', `%${searchTerm}%`)
       .limit(limit)
       .order('occupation_title');
-      
+
     if (error) throw error;
     return data || [];
   } catch (error) {

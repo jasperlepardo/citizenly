@@ -7,38 +7,33 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error('Missing Supabase configuration:', {
     url: !!supabaseUrl,
-    serviceKey: !!supabaseServiceKey
+    serviceKey: !!supabaseServiceKey,
   });
 }
 
 // Create Supabase client with service role key for admin operations
-const supabaseAdmin = supabaseUrl && supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    })
-  : null;
+const supabaseAdmin =
+  supabaseUrl && supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      })
+    : null;
 
 export async function POST(request: NextRequest) {
   try {
     // Check if Supabase admin client is available
     if (!supabaseAdmin) {
       console.error('Supabase admin client not available - missing environment variables');
-      return NextResponse.json(
-        { error: 'Service configuration error' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Service configuration error' }, { status: 500 });
     }
 
     const { userId, barangayCode } = await request.json();
 
     if (!userId || !barangayCode) {
-      return NextResponse.json(
-        { error: 'Missing userId or barangayCode' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing userId or barangayCode' }, { status: 400 });
     }
 
     // Get the barangay_admin role
@@ -51,7 +46,10 @@ export async function POST(request: NextRequest) {
     if (roleError || !role) {
       console.error('Failed to get barangay_admin role:', roleError);
       return NextResponse.json(
-        { error: 'Could not find administrator role', details: roleError?.message || 'Role not found' },
+        {
+          error: 'Could not find administrator role',
+          details: roleError?.message || 'Role not found',
+        },
         { status: 500 }
       );
     }
@@ -75,14 +73,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       roleId: role.id,
       roleName: role.name,
-      message: 'Role assigned successfully'
+      message: 'Role assigned successfully',
     });
-
   } catch (error) {
     console.error('Error in assign-role API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

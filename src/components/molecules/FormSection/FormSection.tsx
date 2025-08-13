@@ -48,7 +48,9 @@ export default function FormSection({
       <div
         className="space-y-4"
         aria-describedby={
-          description ? `${sectionTitle?.toLowerCase().replace(/\s+/g, '-')}-description` : undefined
+          description
+            ? `${sectionTitle?.toLowerCase().replace(/\s+/g, '-')}-description`
+            : undefined
         }
       >
         {children}

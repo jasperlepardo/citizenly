@@ -30,7 +30,10 @@ export default function HouseholdAddressForm({
     <div className="space-y-4">
       {/* House Number */}
       <div>
-        <label htmlFor="house-number" className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+        <label
+          htmlFor="house-number"
+          className="font-montserrat mb-2 block text-sm font-medium text-neutral-700"
+        >
           House/Block/Lot Number
         </label>
         <input
@@ -51,7 +54,9 @@ export default function HouseholdAddressForm({
         </label>
         <SubdivisionSelector
           value={formData.subdivision_id}
-          onSelect={(subdivisionId: string | null) => onChange('subdivision_id', subdivisionId || '')}
+          onSelect={(subdivisionId: string | null) =>
+            onChange('subdivision_id', subdivisionId || '')
+          }
           error={errors.subdivision_id}
           placeholder="🏘️ Select subdivision or create new"
         />
@@ -74,8 +79,8 @@ export default function HouseholdAddressForm({
       {/* Info Note */}
       <div className="rounded border border-blue-200 bg-blue-50 p-4">
         <p className="font-montserrat text-sm text-blue-800">
-          <strong>Note:</strong> This household will be created in your assigned barangay. You
-          can assign a resident as the household head after creating the household.
+          <strong>Note:</strong> This household will be created in your assigned barangay. You can
+          assign a resident as the household head after creating the household.
         </p>
       </div>
     </div>

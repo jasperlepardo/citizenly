@@ -1059,7 +1059,9 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
 
       {/* Mother's Maiden Name Section */}
       <div>
-        <h4 className="mb-4 text-sm font-medium text-primary">Mother&rsquo;s Maiden Name (Optional)</h4>
+        <h4 className="mb-4 text-sm font-medium text-primary">
+          Mother&rsquo;s Maiden Name (Optional)
+        </h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="Mother&rsquo;s First Name"

@@ -54,7 +54,7 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="text-center">
           <svg
             className="mx-auto size-12 animate-spin text-blue-600"
@@ -88,7 +88,7 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="text-center">
           <svg
             className="mx-auto size-12 animate-spin text-blue-600"
@@ -121,7 +121,7 @@ export default function ProtectedRoute({
     // If profile is still loading, show loading state
     if (profileLoading) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="bg-background flex min-h-screen items-center justify-center">
           <div className="text-center">
             <svg
               className="mx-auto size-12 animate-spin text-blue-600"
@@ -150,9 +150,9 @@ export default function ProtectedRoute({
 
     // If not loading and no profile for permission checks, show error
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="w-full max-w-md text-center">
-          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+          <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
             <div className="mb-4 text-yellow-600">
               <svg
                 className="mx-auto size-12"
@@ -184,9 +184,9 @@ export default function ProtectedRoute({
   // Check role requirement
   if (requireRole && !isInRole(requireRole)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="w-full max-w-md text-center">
-          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+          <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
             <div className="mb-4 text-yellow-600">
               <svg
                 className="mx-auto size-12"
@@ -206,7 +206,7 @@ export default function ProtectedRoute({
             <p className="mb-2 text-sm text-secondary">
               You need the <strong>{requireRole}</strong> role to access this page.
             </p>
-            <p className="mb-4 text-xs text-muted">
+            <p className="text-muted mb-4 text-xs">
               Your current role: <strong>{role?.name}</strong>
             </p>
             <Button
@@ -226,9 +226,9 @@ export default function ProtectedRoute({
   // Check permission requirement
   if (requirePermission && !hasPermission(requirePermission)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="bg-background flex min-h-screen items-center justify-center">
         <div className="w-full max-w-md text-center">
-          <div className="rounded-lg border p-6 shadow-md bg-surface border-default">
+          <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
             <div className="mb-4 text-red-600">
               <svg
                 className="mx-auto size-12"
@@ -248,7 +248,7 @@ export default function ProtectedRoute({
             <p className="mb-2 text-sm text-secondary">
               You don&apos;t have permission to access this page.
             </p>
-            <p className="mb-4 text-xs text-muted">
+            <p className="text-muted mb-4 text-xs">
               Required permission: <strong>{requirePermission}</strong>
             </p>
             <Button

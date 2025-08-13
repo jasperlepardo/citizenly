@@ -13,17 +13,17 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
 async function testMetadata() {
   const testEmail = `metadata.test.${Date.now()}@example.com`;
-  
+
   console.log('Testing metadata storage...\n');
   console.log('Creating user with metadata:', testEmail);
-  
+
   try {
     // Sign up with metadata
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -35,29 +35,32 @@ async function testMetadata() {
           last_name: 'Test',
           phone: '09171234567',
           barangay_code: '012801001',
-          signup_step: 'awaiting_confirmation'
-        }
-      }
+          signup_step: 'awaiting_confirmation',
+        },
+      },
     });
-    
+
     if (authError) throw authError;
-    
+
     console.log('\n✅ User created');
     console.log('User ID:', authData.user.id);
     console.log('Metadata from signup response:', authData.user.user_metadata);
-    
+
     // Now check what's actually stored in the database
     console.log('\nChecking database storage...');
-    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-    
+    const {
+      data: { users },
+      error: listError,
+    } = await supabaseAdmin.auth.admin.listUsers();
+
     const dbUser = users.find(u => u.id === authData.user.id);
-    
+
     if (dbUser) {
       console.log('\nDatabase user found:');
       console.log('- raw_user_meta_data:', dbUser.raw_user_meta_data);
       console.log('- user_metadata:', dbUser.user_metadata);
       console.log('- app_metadata:', dbUser.app_metadata);
-      
+
       // Try different ways to access metadata
       console.log('\nMetadata access tests:');
       console.log('- raw_user_meta_data?.first_name:', dbUser.raw_user_meta_data?.first_name);
@@ -65,7 +68,6 @@ async function testMetadata() {
     } else {
       console.log('❌ User not found in database');
     }
-    
   } catch (error) {
     console.error('Error:', error.message);
   }

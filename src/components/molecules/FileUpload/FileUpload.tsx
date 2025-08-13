@@ -190,7 +190,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="mb-2 block text-sm font-medium text-[#262626] font-body">{label}</label>
+          <label className="mb-2 block font-body text-sm font-medium text-[#262626]">{label}</label>
         )}
 
         {/* Upload Area */}
@@ -264,7 +264,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="mt-2 text-xs text-[#737373] font-body">
+              <div className="mt-2 font-body text-xs text-[#737373]">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -275,7 +275,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {/* File Preview */}
         {showPreview && selectedFiles.length > 0 && (
           <div className="mt-4 space-y-2">
-            <h4 className="text-sm font-medium text-[#262626] font-body">Selected Files:</h4>
+            <h4 className="font-body text-sm font-medium text-[#262626]">Selected Files:</h4>
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
@@ -293,10 +293,10 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-[#262626] font-body">
+                    <p className="truncate font-body text-sm font-medium text-[#262626]">
                       {file.name}
                     </p>
-                    <p className="text-xs text-[#737373] font-body">{formatFileSize(file.size)}</p>
+                    <p className="font-body text-xs text-[#737373]">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
                 <Button
@@ -326,9 +326,9 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
+              <p className="font-body text-xs text-danger-600">{errorMessage}</p>
             ) : (
-              <p className="text-xs text-[#737373] font-body">{helperText}</p>
+              <p className="font-body text-xs text-[#737373]">{helperText}</p>
             )}
           </div>
         )}

@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [showDevLogin, setShowDevLogin] = useState(false);
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-center py-12 bg-background sm:px-6 lg:px-8">
+    <div className="bg-background relative flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Theme Toggle - positioned in top right */}
       <div className="absolute right-4 top-4">
         <ThemeToggle variant="ghost" size="md" />
@@ -33,7 +33,7 @@ export default function LoginPage() {
         )}
 
         <div className="mt-8 text-center">
-          <div className="rounded-lg border p-4 bg-surface border-default">
+          <div className="bg-surface rounded-lg border border-default p-4">
             <h3 className="mb-2 text-sm font-medium text-primary-400">Development Mode</h3>
             <div className="space-y-2 text-xs text-secondary">
               <div>If you can&apos;t login, the demo users may not exist yet.</div>

@@ -17,12 +17,12 @@ interface HouseholdLocationInfoProps {
   barangayCode?: string;
 }
 
-export default function HouseholdLocationInfo({ 
-  addressDisplayInfo, 
-  barangayCode 
+export default function HouseholdLocationInfo({
+  addressDisplayInfo,
+  barangayCode,
 }: HouseholdLocationInfoProps) {
   return (
-    <div className="mb-6 border-b border-green-200 bg-green-50 p-4 -m-4">
+    <div className="-m-4 mb-6 border-b border-green-200 bg-green-50 p-4">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 text-green-600">📍</span>
         <div>
@@ -41,9 +41,7 @@ export default function HouseholdLocationInfo({
               <strong>Barangay:</strong> {addressDisplayInfo.barangay}
             </div>
             {barangayCode && (
-              <div className="mt-1 text-xs text-neutral-500">
-                Code: {barangayCode}
-              </div>
+              <div className="mt-1 text-xs text-neutral-500">Code: {barangayCode}</div>
             )}
             <div className="mt-2 text-xs text-green-600">
               All household geographic details are auto-populated from your barangay assignment.

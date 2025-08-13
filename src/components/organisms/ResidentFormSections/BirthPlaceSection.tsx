@@ -11,7 +11,10 @@ import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 interface BirthPlaceSectionProps {
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   disabled?: boolean;
 }
 
@@ -24,11 +27,11 @@ const BIRTH_PLACE_LEVEL_OPTIONS = [
 
 /**
  * Birth Place Information Form Section
- * 
+ *
  * @description Renders birth place information fields including name, code, and level
  * @param props - Component props
  * @returns JSX element for birth place information section
- * 
+ *
  * @example
  * ```typescript
  * <BirthPlaceSection
@@ -43,7 +46,7 @@ export default function BirthPlaceSection({
   formData,
   errors,
   updateField,
-  disabled = false
+  disabled = false,
 }: BirthPlaceSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -51,13 +54,10 @@ export default function BirthPlaceSection({
   };
 
   return (
-    <FormSection 
-      title="Birth Place Information" 
-      description="Location where the resident was born"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField 
-          label="Birth Place Name" 
+    <FormSection title="Birth Place Information" description="Location where the resident was born">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField
+          label="Birth Place Name"
           errorMessage={errors.birth_place_name}
           helperText="Full name of the place of birth"
         >
@@ -70,9 +70,9 @@ export default function BirthPlaceSection({
             placeholder="e.g., Manila, Metro Manila"
           />
         </FormField>
-        
-        <FormField 
-          label="Birth Place Code" 
+
+        <FormField
+          label="Birth Place Code"
           errorMessage={errors.birth_place_code}
           helperText="Official PSGC code if known"
         >
@@ -85,9 +85,9 @@ export default function BirthPlaceSection({
             placeholder="e.g., 137404000"
           />
         </FormField>
-        
-        <FormField 
-          label="Birth Place Level" 
+
+        <FormField
+          label="Birth Place Level"
           errorMessage={errors.birth_place_level}
           helperText="Administrative level of the place"
         >
@@ -96,7 +96,7 @@ export default function BirthPlaceSection({
             value={formData.birth_place_level || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Level</option>
             {BIRTH_PLACE_LEVEL_OPTIONS.map(option => (

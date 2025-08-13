@@ -1,6 +1,6 @@
 /**
  * Resident Listing Types
- * 
+ *
  * @description Type definitions for resident listing page components, table views, and paginated responses
  * @author Citizenly Development Team
  * @version 1.0.0
@@ -10,11 +10,11 @@ import { Resident } from './residentDetail';
 
 /**
  * Optimized resident data structure for listing and table views
- * 
+ *
  * @description Lightweight version of Resident interface containing only fields needed
  * for list displays, search results, and table components. This reduces data transfer
  * and improves performance for paginated resident listings.
- * 
+ *
  * @example Basic usage in table component
  * ```typescript
  * const residents: ResidentListItem[] = [
@@ -31,11 +31,12 @@ import { Resident } from './residentDetail';
  * ];
  * ```
  */
-export type ResidentListItem = Pick<Resident, 
-  | 'id' 
-  | 'first_name' 
-  | 'middle_name' 
-  | 'last_name' 
+export type ResidentListItem = Pick<
+  Resident,
+  | 'id'
+  | 'first_name'
+  | 'middle_name'
+  | 'last_name'
   | 'extension_name'
   | 'email'
   | 'mobile_number'
@@ -73,18 +74,18 @@ export type ResidentListItem = Pick<Resident,
 
 /**
  * Standard API response format for resident listing endpoints
- * 
+ *
  * @description Paginated response structure used by all resident listing APIs.
  * Provides consistent data format, pagination controls, and metadata for client consumption.
- * 
+ *
  * @example API response handling
  * ```typescript
  * const response = await fetch('/api/residents?page=1&limit=10');
  * const data: ResidentsApiResponse = await response.json();
- * 
+ *
  * console.log(`Showing ${data.data.length} of ${data.pagination.total} residents`);
  * console.log(`Page ${data.pagination.page} of ${data.pagination.pages}`);
- * 
+ *
  * // Handle pagination
  * if (data.pagination.hasNext) {
  *   const nextPage = data.pagination.page + 1;

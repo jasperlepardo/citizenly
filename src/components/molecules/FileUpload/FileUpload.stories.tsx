@@ -6,21 +6,27 @@ import { FileUpload } from './FileUpload';
 const mockValidateUploadedFile = async (file: File) => ({
   isValid: true,
   errors: [],
-  fileInfo: { hash: 'mock-hash' }
+  fileInfo: { hash: 'mock-hash' },
 });
 
 const mockScanFileForViruses = async (file: File) => ({
   clean: true,
-  threats: []
+  threats: [],
 });
 
-const mockLogFileOperation = (operation: string, filename: string, user: string, status: string, metadata: any) => {
+const mockLogFileOperation = (
+  operation: string,
+  filename: string,
+  user: string,
+  status: string,
+  metadata: any
+) => {
   console.log('File operation:', { operation, filename, user, status, metadata });
 };
 
 // Mock logger
 const mockLogger = {
-  error: (message: string, data: any) => console.error(message, data)
+  error: (message: string, data: any) => console.error(message, data),
 };
 
 // Note: This story mocks security dependencies that may not exist in the actual implementation
@@ -65,22 +71,25 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => {
+  render: args => {
     const [files, setFiles] = useState<FileList | null>(null);
-    
+
     return (
       <div className="w-96">
         <FileUpload
           {...args}
-          onFileSelect={(fileList) => {
+          onFileSelect={fileList => {
             setFiles(fileList);
             console.log('Files selected:', fileList);
           }}
         />
-        
+
         {files && (
-          <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
-            <strong>Selected:</strong> {Array.from(files).map(f => f.name).join(', ')}
+          <div className="mt-4 rounded bg-gray-100 p-3 text-sm">
+            <strong>Selected:</strong>{' '}
+            {Array.from(files)
+              .map(f => f.name)
+              .join(', ')}
           </div>
         )}
       </div>
@@ -95,7 +104,7 @@ export const Default: Story = {
 export const WithLabel: Story = {
   render: () => {
     const [files, setFiles] = useState<FileList | null>(null);
-    
+
     return (
       <div className="w-96">
         <FileUpload
@@ -114,7 +123,7 @@ export const WithLabel: Story = {
 export const Multiple: Story = {
   render: () => {
     const [files, setFiles] = useState<FileList | null>(null);
-    
+
     return (
       <div className="w-96">
         <FileUpload
@@ -133,7 +142,7 @@ export const Multiple: Story = {
 export const ImageUpload: Story = {
   render: () => {
     const [files, setFiles] = useState<FileList | null>(null);
-    
+
     return (
       <div className="w-96">
         <FileUpload
@@ -153,9 +162,9 @@ export const ImageUpload: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div className="space-y-8 w-full max-w-2xl">
+    <div className="w-full max-w-2xl space-y-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Small Size</h3>
+        <h3 className="mb-4 text-lg font-semibold">Small Size</h3>
         <FileUpload
           size="sm"
           label="Small Upload"
@@ -163,9 +172,9 @@ export const Sizes: Story = {
           onFileSelect={() => {}}
         />
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Medium Size (Default)</h3>
+        <h3 className="mb-4 text-lg font-semibold">Medium Size (Default)</h3>
         <FileUpload
           size="md"
           label="Medium Upload"
@@ -173,9 +182,9 @@ export const Sizes: Story = {
           onFileSelect={() => {}}
         />
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Large Size</h3>
+        <h3 className="mb-4 text-lg font-semibold">Large Size</h3>
         <FileUpload
           size="lg"
           label="Large Upload"
@@ -189,27 +198,27 @@ export const Sizes: Story = {
 
 export const States: Story = {
   render: () => (
-    <div className="space-y-8 w-96">
+    <div className="w-96 space-y-8">
       <FileUpload
         label="Normal State"
         helperText="Upload your files here"
         onFileSelect={() => {}}
       />
-      
+
       <FileUpload
         label="Error State"
         errorMessage="File type not supported. Please upload a valid file."
         variant="error"
         onFileSelect={() => {}}
       />
-      
+
       <FileUpload
         label="Success State"
         helperText="Files uploaded successfully!"
         variant="success"
         onFileSelect={() => {}}
       />
-      
+
       <FileUpload
         label="Disabled State"
         helperText="File upload is currently disabled"
@@ -222,33 +231,29 @@ export const States: Story = {
 
 export const FileTypes: Story = {
   render: () => (
-    <div className="space-y-8 w-96">
+    <div className="w-96 space-y-8">
       <FileUpload
         label="Documents Only"
         acceptedFileTypes=".pdf,.doc,.docx,.txt"
         helperText="PDF, Word documents, and text files only"
         onFileSelect={() => {}}
       />
-      
+
       <FileUpload
         label="Images Only"
         acceptedFileTypes="image/*"
         helperText="All image formats accepted"
         onFileSelect={() => {}}
       />
-      
+
       <FileUpload
         label="Spreadsheets Only"
         acceptedFileTypes=".xlsx,.xls,.csv"
         helperText="Excel and CSV files only"
         onFileSelect={() => {}}
       />
-      
-      <FileUpload
-        label="All Files"
-        helperText="Any file type accepted"
-        onFileSelect={() => {}}
-      />
+
+      <FileUpload label="All Files" helperText="Any file type accepted" onFileSelect={() => {}} />
     </div>
   ),
 };
@@ -256,7 +261,7 @@ export const FileTypes: Story = {
 export const WithPreview: Story = {
   render: () => {
     const [files, setFiles] = useState<FileList | null>(null);
-    
+
     return (
       <div className="w-96">
         <FileUpload
@@ -280,24 +285,24 @@ export const FormExample: Story = {
       avatar: null as FileList | null,
       resume: null as FileList | null,
     });
-    
+
     const [errors, setErrors] = useState<Record<string, string>>({});
-    
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      
+
       const newErrors: Record<string, string> = {};
       if (!formData.documents) newErrors.documents = 'Please upload at least one document';
       if (!formData.resume) newErrors.resume = 'Resume is required';
-      
+
       setErrors(newErrors);
-      
+
       if (Object.keys(newErrors).length === 0) {
         alert('Form submitted successfully!');
         console.log('Form data:', formData);
       }
     };
-    
+
     return (
       <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
         <FileUpload
@@ -308,9 +313,9 @@ export const FormExample: Story = {
           acceptedFileTypes="image/*"
           maxFileSize={2}
           showPreview
-          onFileSelect={(files) => setFormData(prev => ({ ...prev, avatar: files }))}
+          onFileSelect={files => setFormData(prev => ({ ...prev, avatar: files }))}
         />
-        
+
         <FileUpload
           label="Resume/CV *"
           helperText="Upload your resume or CV (PDF preferred)"
@@ -319,9 +324,9 @@ export const FormExample: Story = {
           showPreview
           errorMessage={errors.resume}
           variant={errors.resume ? 'error' : 'default'}
-          onFileSelect={(files) => setFormData(prev => ({ ...prev, resume: files }))}
+          onFileSelect={files => setFormData(prev => ({ ...prev, resume: files }))}
         />
-        
+
         <FileUpload
           label="Supporting Documents *"
           helperText="Upload any supporting documents (certificates, portfolios, etc.)"
@@ -331,13 +336,13 @@ export const FormExample: Story = {
           showPreview
           errorMessage={errors.documents}
           variant={errors.documents ? 'error' : 'default'}
-          onFileSelect={(files) => setFormData(prev => ({ ...prev, documents: files }))}
+          onFileSelect={files => setFormData(prev => ({ ...prev, documents: files }))}
         />
-        
+
         <div className="flex gap-4">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Submit Application
           </button>
@@ -347,7 +352,7 @@ export const FormExample: Story = {
               setFormData({ documents: null, avatar: null, resume: null });
               setErrors({});
             }}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
           >
             Reset
           </button>
@@ -371,7 +376,7 @@ export const CustomStyling: Story = {
           onFileSelect={() => {}}
         />
       </div>
-      
+
       <div className="w-96">
         <FileUpload
           label="Minimal Upload"
@@ -390,17 +395,27 @@ export const CustomStyling: Story = {
 export const AccessibilityDemo: Story = {
   render: () => (
     <div className="space-y-6">
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <h3 className="text-lg font-semibold text-blue-800 mb-2">Accessibility Features</h3>
-        <ul className="text-sm text-blue-700 space-y-1">
-          <li>• <strong>Keyboard accessible</strong>: Tab to focus, Enter/Space to open file dialog</li>
-          <li>• <strong>Screen reader support</strong>: Proper labels and descriptions</li>
-          <li>• <strong>Drag and drop</strong>: Visual feedback for drag over state</li>
-          <li>• <strong>File validation</strong>: Clear error messages for invalid files</li>
-          <li>• <strong>Progress indication</strong>: Visual feedback during upload process</li>
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h3 className="mb-2 text-lg font-semibold text-blue-800">Accessibility Features</h3>
+        <ul className="space-y-1 text-sm text-blue-700">
+          <li>
+            • <strong>Keyboard accessible</strong>: Tab to focus, Enter/Space to open file dialog
+          </li>
+          <li>
+            • <strong>Screen reader support</strong>: Proper labels and descriptions
+          </li>
+          <li>
+            • <strong>Drag and drop</strong>: Visual feedback for drag over state
+          </li>
+          <li>
+            • <strong>File validation</strong>: Clear error messages for invalid files
+          </li>
+          <li>
+            • <strong>Progress indication</strong>: Visual feedback during upload process
+          </li>
         </ul>
       </div>
-      
+
       <div className="w-96">
         <FileUpload
           label="Accessible File Upload"

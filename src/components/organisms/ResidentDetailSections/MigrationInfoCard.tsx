@@ -1,6 +1,6 @@
 /**
  * Migration Information Card for Resident Detail View
- * 
+ *
  * @description Displays migration information for residents who have migrated
  * @author Citizenly Development Team
  * @version 1.0.0
@@ -26,11 +26,11 @@ interface MigrationInfoCardProps {
 
 /**
  * Migration Information Card Component
- * 
+ *
  * @description Renders migration information section for resident detail view
  * @param props - Component props containing migration data and utility functions
  * @returns JSX element for migration information display
- * 
+ *
  * @example
  * ```typescript
  * <MigrationInfoCard
@@ -43,47 +43,57 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
   if (!migrantInfo) return null;
 
   return (
-    <div className="bg-surface rounded-xl shadow-sm border border-default p-6 hover:shadow-md transition-shadow">
-      <h2 className="text-xl font-semibold text-primary mb-4 flex items-center gap-2">
+    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
         🏃‍♂️ Migration Information
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-secondary block">Previous Location</span>
+            <span className="block text-sm font-medium text-secondary">Previous Location</span>
             <span className="text-primary">
               {[
                 migrantInfo.previous_barangay_code,
                 migrantInfo.previous_city_municipality_code,
                 migrantInfo.previous_province_code,
-                migrantInfo.previous_region_code
-              ].filter(Boolean).join(', ') || '-'}
+                migrantInfo.previous_region_code,
+              ]
+                .filter(Boolean)
+                .join(', ') || '-'}
             </span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Reason for Leaving</span>
+            <span className="block text-sm font-medium text-secondary">Reason for Leaving</span>
             <span className="text-primary">{migrantInfo.reason_for_leaving || '-'}</span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Date of Transfer</span>
+            <span className="block text-sm font-medium text-secondary">Date of Transfer</span>
             <span className="text-primary">{formatDate(migrantInfo.date_of_transfer || '')}</span>
           </div>
         </div>
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-secondary block">Reason for Transferring</span>
+            <span className="block text-sm font-medium text-secondary">
+              Reason for Transferring
+            </span>
             <span className="text-primary">{migrantInfo.reason_for_transferring || '-'}</span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Duration of Stay (months)</span>
-            <span className="text-primary">{migrantInfo.duration_of_stay_current_months || '-'}</span>
+            <span className="block text-sm font-medium text-secondary">
+              Duration of Stay (months)
+            </span>
+            <span className="text-primary">
+              {migrantInfo.duration_of_stay_current_months || '-'}
+            </span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Intending to Return</span>
-            <span className="text-primary">{migrantInfo.is_intending_to_return ? 'Yes' : 'No'}</span>
+            <span className="block text-sm font-medium text-secondary">Intending to Return</span>
+            <span className="text-primary">
+              {migrantInfo.is_intending_to_return ? 'Yes' : 'No'}
+            </span>
           </div>
           <div>
-            <span className="text-sm font-medium text-secondary block">Migration Type</span>
+            <span className="block text-sm font-medium text-secondary">Migration Type</span>
             <span className="text-primary">{migrantInfo.migration_type || '-'}</span>
           </div>
         </div>

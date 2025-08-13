@@ -89,90 +89,83 @@ export function CascadingGeographicSelector({
     }
   }, []);
 
-  const fetchProvinces = useCallback(
-    async (regionCode: string) => {
-      if (!regionCode) return;
-      setLoadingProvinces(true);
-      try {
-        const response = await fetch(`/api/addresses/provinces/public?regionCode=${regionCode}`);
-        if (response.ok) {
-          const data = await response.json();
-          setProvinces(data.data || []);
-        } else {
-          console.error('Failed to fetch provinces:', response.status);
-        }
-      } catch (error) {
-        console.error('Error fetching provinces:', error);
-      } finally {
-        setLoadingProvinces(false);
+  const fetchProvinces = useCallback(async (regionCode: string) => {
+    if (!regionCode) return;
+    setLoadingProvinces(true);
+    try {
+      const response = await fetch(`/api/addresses/provinces/public?regionCode=${regionCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProvinces(data.data || []);
+      } else {
+        console.error('Failed to fetch provinces:', response.status);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+    } finally {
+      setLoadingProvinces(false);
+    }
+  }, []);
 
-  const fetchCities = useCallback(
-    async (provinceCode: string) => {
-      if (!provinceCode) return;
-      setLoadingCities(true);
-      try {
-        const response = await fetch(`/api/addresses/cities/public?provinceCode=${provinceCode}`);
-        if (response.ok) {
-          const data = await response.json();
-          setCities(data.data || []);
-        } else {
-          console.error('Failed to fetch cities:', response.status);
-        }
-      } catch (error) {
-        console.error('Error fetching cities:', error);
-      } finally {
-        setLoadingCities(false);
+  const fetchCities = useCallback(async (provinceCode: string) => {
+    if (!provinceCode) return;
+    setLoadingCities(true);
+    try {
+      const response = await fetch(`/api/addresses/cities/public?provinceCode=${provinceCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCities(data.data || []);
+      } else {
+        console.error('Failed to fetch cities:', response.status);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    } finally {
+      setLoadingCities(false);
+    }
+  }, []);
 
-  const fetchBarangays = useCallback(
-    async (cityCode: string) => {
-      if (!cityCode) return;
-      setLoadingBarangays(true);
-      try {
-        const response = await fetch(`/api/addresses/barangays/public?cityCode=${cityCode}`);
-        if (response.ok) {
-          const data = await response.json();
-          setBarangays(data.data || []);
-        } else {
-          console.error('Failed to fetch barangays:', response.status);
-        }
-      } catch (error) {
-        console.error('Error fetching barangays:', error);
-      } finally {
-        setLoadingBarangays(false);
+  const fetchBarangays = useCallback(async (cityCode: string) => {
+    if (!cityCode) return;
+    setLoadingBarangays(true);
+    try {
+      const response = await fetch(`/api/addresses/barangays/public?cityCode=${cityCode}`);
+      if (response.ok) {
+        const data = await response.json();
+        setBarangays(data.data || []);
+      } else {
+        console.error('Failed to fetch barangays:', response.status);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error('Error fetching barangays:', error);
+    } finally {
+      setLoadingBarangays(false);
+    }
+  }, []);
 
   // Auto-populate from logged-in user's location using dedicated API
   const autoPopulateFromUserLocation = useCallback(async () => {
     if (!autoPopulateFromUser) return;
-    
+
     console.log('🔄 Auto-populating from user location...');
-    
+
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) {
         console.log('❌ No user session found');
         return;
       }
-      
+
       console.log('✅ User session found:', session.user.email);
 
       // Use dedicated API endpoint for secure multi-tenant auto-populate
       const response = await fetch('/api/user/geographic-location', {
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -226,49 +219,61 @@ export function CascadingGeographicSelector({
   useEffect(() => {
     const loadInitialHierarchy = async () => {
       if (!initialValues?.regionCode || !regions.length || initialHierarchyLoaded) return;
-      
+
       console.log('🔧 Loading initial hierarchy from form data:', initialValues);
       setInitialHierarchyLoaded(true); // Prevent re-runs
-      
+
       try {
         // Find and set region
         const region = regions.find(r => r.code === initialValues.regionCode);
         if (region) {
           setSelectedRegion(region);
           setRegionSearch(region.name);
-          
+
           // Load provinces and find the selected one
           if (initialValues.provinceCode) {
-            const provinceResponse = await fetch(`/api/addresses/provinces/public?regionCode=${initialValues.regionCode}`);
+            const provinceResponse = await fetch(
+              `/api/addresses/provinces/public?regionCode=${initialValues.regionCode}`
+            );
             if (provinceResponse.ok) {
               const provinceResult = await provinceResponse.json();
               setProvinces(provinceResult.data || []);
-              const province = provinceResult.data?.find((p: any) => p.code === initialValues.provinceCode);
-              
+              const province = provinceResult.data?.find(
+                (p: any) => p.code === initialValues.provinceCode
+              );
+
               if (province) {
                 setSelectedProvince(province);
                 setProvinceSearch(province.name);
-                
+
                 // Load cities and find the selected one
                 if (initialValues.cityCode) {
-                  const cityResponse = await fetch(`/api/addresses/cities/public?provinceCode=${initialValues.provinceCode}`);
+                  const cityResponse = await fetch(
+                    `/api/addresses/cities/public?provinceCode=${initialValues.provinceCode}`
+                  );
                   if (cityResponse.ok) {
                     const cityResult = await cityResponse.json();
                     setCities(cityResult.data || []);
-                    const city = cityResult.data?.find((c: any) => c.code === initialValues.cityCode);
-                    
+                    const city = cityResult.data?.find(
+                      (c: any) => c.code === initialValues.cityCode
+                    );
+
                     if (city) {
                       setSelectedCity(city);
                       setCitySearch(city.name);
-                      
+
                       // Load barangays and find the selected one
                       if (initialValues.barangayCode) {
-                        const barangayResponse = await fetch(`/api/addresses/barangays/public?cityCode=${initialValues.cityCode}`);
+                        const barangayResponse = await fetch(
+                          `/api/addresses/barangays/public?cityCode=${initialValues.cityCode}`
+                        );
                         if (barangayResponse.ok) {
                           const barangayResult = await barangayResponse.json();
                           setBarangays(barangayResult.data || []);
-                          const barangay = barangayResult.data?.find((b: any) => b.code === initialValues.barangayCode);
-                          
+                          const barangay = barangayResult.data?.find(
+                            (b: any) => b.code === initialValues.barangayCode
+                          );
+
                           if (barangay) {
                             setSelectedBarangay(barangay);
                             setBarangaySearch(barangay.name);
@@ -282,13 +287,13 @@ export function CascadingGeographicSelector({
             }
           }
         }
-        
+
         console.log('✅ Initial hierarchy loaded successfully');
       } catch (error) {
         console.error('❌ Error loading initial hierarchy:', error);
       }
     };
-    
+
     loadInitialHierarchy();
   }, [initialValues, regions, initialHierarchyLoaded]);
 

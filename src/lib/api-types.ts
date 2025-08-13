@@ -48,32 +48,32 @@ export enum ErrorCode {
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   REQUIRED_FIELD = 'REQUIRED_FIELD',
   INVALID_FORMAT = 'INVALID_FORMAT',
-  
+
   // Authentication errors
   UNAUTHORIZED = 'UNAUTHORIZED',
   TOKEN_EXPIRED = 'TOKEN_EXPIRED',
   INVALID_TOKEN = 'INVALID_TOKEN',
-  
+
   // Authorization errors
   FORBIDDEN = 'FORBIDDEN',
   INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
-  
+
   // Resource errors
   NOT_FOUND = 'NOT_FOUND',
   ALREADY_EXISTS = 'ALREADY_EXISTS',
   CONFLICT = 'CONFLICT',
-  
+
   // Server errors
   INTERNAL_ERROR = 'INTERNAL_ERROR',
   DATABASE_ERROR = 'DATABASE_ERROR',
   EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
-  
+
   // Rate limiting
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
-  
+
   // Security
   SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
-  CSRF_TOKEN_INVALID = 'CSRF_TOKEN_INVALID'
+  CSRF_TOKEN_INVALID = 'CSRF_TOKEN_INVALID',
 }
 
 export enum Role {
@@ -83,7 +83,7 @@ export enum Role {
   CITY_ADMIN = 'city_admin',
   BARANGAY_ADMIN = 'barangay_admin',
   BARANGAY_STAFF = 'barangay_staff',
-  RESIDENT = 'resident'
+  RESIDENT = 'resident',
 }
 
 export const ROLE_PERMISSIONS = {
@@ -93,43 +93,39 @@ export const ROLE_PERMISSIONS = {
     'barangays.manage',
     'residents.manage.all',
     'reports.view.all',
-    'admin.access'
+    'admin.access',
   ],
   [Role.REGION_ADMIN]: [
     'residents.manage.region',
     'households.manage.region',
     'reports.view.region',
-    'exports.create.region'
+    'exports.create.region',
   ],
   [Role.PROVINCE_ADMIN]: [
     'residents.manage.province',
     'households.manage.province',
     'reports.view.province',
-    'exports.create.province'
+    'exports.create.province',
   ],
   [Role.CITY_ADMIN]: [
     'residents.manage.city',
     'households.manage.city',
     'reports.view.city',
-    'exports.create.city'
+    'exports.create.city',
   ],
   [Role.BARANGAY_ADMIN]: [
     'residents.manage.barangay',
     'households.manage.barangay',
     'reports.view.barangay',
     'exports.create.barangay',
-    'admin.access'
+    'admin.access',
   ],
   [Role.BARANGAY_STAFF]: [
     'residents.manage.barangay',
     'households.manage.barangay',
-    'reports.view.barangay'
+    'reports.view.barangay',
   ],
-  [Role.RESIDENT]: [
-    'profile.view.own',
-    'profile.update.own',
-    'household.view.own'
-  ]
+  [Role.RESIDENT]: ['profile.view.own', 'profile.update.own', 'household.view.own'],
 } as const;
 
 export interface PaginationParams {

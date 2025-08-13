@@ -6,22 +6,22 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
 async function runMigration() {
   console.log('Running email confirmation flow migration steps...\n');
-  
+
   try {
     // Step 1: Drop the old trigger
     console.log('1. Dropping existing trigger...');
     await supabaseAdmin.rpc('exec', {
-      sql: 'DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;'
+      sql: 'DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;',
     });
     console.log('✅ Old trigger dropped');
-    
+
     // Step 2: Create the email confirmation function
     console.log('2. Creating email confirmation function...');
     const confirmationFunction = `
@@ -136,12 +136,12 @@ async function runMigration() {
             RETURN NEW;
     END;
     $$ LANGUAGE plpgsql SECURITY DEFINER;`;
-    
+
     console.log('Function creation might take a moment...');
     const result = await supabaseAdmin.query(confirmationFunction);
     if (result.error) throw result.error;
     console.log('✅ Email confirmation function created');
-    
+
     // Step 3: Create the trigger
     console.log('3. Creating email confirmation trigger...');
     await supabaseAdmin.query(`
@@ -153,7 +153,7 @@ async function runMigration() {
           EXECUTE FUNCTION handle_user_email_confirmation();
     `);
     console.log('✅ Email confirmation trigger created');
-    
+
     // Step 4: Update handle_new_user function to no-op
     console.log('4. Updating signup function to no-op...');
     await supabaseAdmin.query(`
@@ -167,7 +167,7 @@ async function runMigration() {
       $$ LANGUAGE plpgsql SECURITY DEFINER;
     `);
     console.log('✅ Signup function updated');
-    
+
     // Step 5: Recreate the signup trigger
     console.log('5. Recreating signup trigger...');
     await supabaseAdmin.query(`
@@ -176,10 +176,9 @@ async function runMigration() {
           FOR EACH ROW EXECUTE FUNCTION handle_new_user();
     `);
     console.log('✅ Signup trigger recreated');
-    
+
     console.log('\n🎉 Email confirmation flow migration completed successfully!');
     console.log('✅ New flow: Account → Email Confirmation → Profile → Roles');
-    
   } catch (error) {
     console.error('❌ Migration failed:', error.message);
     if (error.details) console.error('Details:', error.details);

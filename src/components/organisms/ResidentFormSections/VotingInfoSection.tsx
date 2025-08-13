@@ -11,17 +11,20 @@ import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 interface VotingInfoSectionProps {
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   disabled?: boolean;
 }
 
 /**
  * Voting Information Form Section
- * 
+ *
  * @description Renders voting information fields including registration status and voting history
  * @param props - Component props
  * @returns JSX element for voting information section
- * 
+ *
  * @example
  * ```typescript
  * <VotingInfoSection
@@ -36,11 +39,11 @@ export default function VotingInfoSection({
   formData,
   errors,
   updateField,
-  disabled = false
+  disabled = false,
 }: VotingInfoSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       updateField(name as keyof ResidentEditFormData, checked as any);
@@ -50,11 +53,11 @@ export default function VotingInfoSection({
   };
 
   return (
-    <FormSection 
-      title="Voting Information" 
+    <FormSection
+      title="Voting Information"
       description="Voter registration status and voting history"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -63,13 +66,13 @@ export default function VotingInfoSection({
             checked={formData.is_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
           <label htmlFor="is_voter" className="text-primary">
             Registered Voter
           </label>
         </div>
-        
+
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -78,7 +81,7 @@ export default function VotingInfoSection({
             checked={formData.is_resident_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600"
+            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
           <label htmlFor="is_resident_voter" className="text-primary">
             Resident Voter (votes in this barangay)
@@ -89,9 +92,9 @@ export default function VotingInfoSection({
       {/* Show last voted date if they are a registered voter */}
       {formData.is_voter && (
         <div className="mt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField 
-              label="Last Voted Date" 
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FormField
+              label="Last Voted Date"
               errorMessage={errors.last_voted_date}
               helperText="Date of last participation in an election"
             >

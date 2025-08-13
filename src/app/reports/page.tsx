@@ -39,10 +39,10 @@ function ReportsContent() {
           {reportTypes.map((report, index) => (
             <div
               key={index}
-              className={`rounded-lg border p-6 transition-shadow bg-surface hover:shadow-md ${
+              className={`bg-surface rounded-lg border p-6 transition-shadow hover:shadow-md ${
                 report.status === 'Available'
                   ? 'border-default hover:border-blue-300'
-                  : 'opacity-75 border-default'
+                  : 'border-default opacity-75'
               }`}
             >
               <div className="mb-4 flex items-start justify-between">

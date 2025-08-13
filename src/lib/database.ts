@@ -249,28 +249,30 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
     // Get complete address hierarchy from view with explicit column selection
     const { data: addressData, error: addressError } = await supabase
       .from('address_hierarchy')
-      .select('barangay_code, barangay_name, city_code, city_name, city_type, province_code, province_name, region_code, region_name, full_address')
+      .select(
+        'barangay_code, barangay_name, city_code, city_name, city_type, province_code, province_name, region_code, region_name, full_address'
+      )
       .eq('barangay_code', barangayCode)
       .single();
 
     if (addressError || !addressData) {
       console.warn('Barangay not found in database:', {
         code: barangayCode,
-        error: addressError?.message || 'No data returned'
+        error: addressError?.message || 'No data returned',
       });
       // Return null values for unknown barangays to avoid FK constraint violations
       return {
         region_code: null,
         region_name: 'Unknown Region',
         province_code: null,
-        province_name: 'Unknown Province', 
+        province_name: 'Unknown Province',
         city_municipality_code: null,
         city_municipality_name: 'Unknown City',
         city_municipality_type: 'unknown',
         is_independent: false,
         barangay_code: barangayCode,
         barangay_name: 'Unknown Barangay',
-        full_address: `Barangay ${barangayCode}`
+        full_address: `Barangay ${barangayCode}`,
       };
     }
 
@@ -288,7 +290,6 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
       barangay_name: addressData.barangay_name,
       full_address: addressData.full_address,
     };
-
   } catch (error) {
     console.error('Error fetching complete address:', error);
     return null;

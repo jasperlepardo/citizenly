@@ -45,15 +45,16 @@ export default function StreetSelector({
       return;
     }
 
-    logger.debug('Loading streets for barangay', { 
+    logger.debug('Loading streets for barangay', {
       barangayCode: userProfile.barangay_code,
-      subdivisionId 
+      subdivisionId,
     });
     setLoading(true);
     try {
       let query = supabase
         .from('geo_streets')
-        .select(`
+        .select(
+          `
           id,
           name,
           barangay_code,
@@ -62,7 +63,8 @@ export default function StreetSelector({
           geo_subdivisions (
             name
           )
-        `)
+        `
+        )
         .eq('barangay_code', userProfile.barangay_code)
         .eq('is_active', true)
         .order('name', { ascending: true });
@@ -122,15 +124,17 @@ export default function StreetSelector({
 
       const { data: newStreet, error } = await supabase
         .from('geo_streets')
-        .insert([{
-          name: newStreetName.trim(),
-          subdivision_id: subdivisionId,
-          barangay_code: barangayCode,
-          city_municipality_code: cityMunicipalityCode,
-          province_code: provinceCode,
-          region_code: regionCode,
-          created_by: userProfile.id,
-        }])
+        .insert([
+          {
+            name: newStreetName.trim(),
+            subdivision_id: subdivisionId,
+            barangay_code: barangayCode,
+            city_municipality_code: cityMunicipalityCode,
+            province_code: provinceCode,
+            region_code: regionCode,
+            created_by: userProfile.id,
+          },
+        ])
         .select('id, name')
         .single();
 
@@ -141,18 +145,17 @@ export default function StreetSelector({
       }
 
       logger.info('Created new street', { streetId: newStreet.id, name: newStreet.name });
-      
+
       // Select the newly created street
       onSelect(newStreet.id);
       setNewStreetName('');
       setShowCreateForm(false);
       setIsOpen(false);
-      
+
       // Refresh streets list
       setTimeout(() => {
         loadStreets();
       }, 500);
-
     } catch (error) {
       logError(error as Error, 'STREET_CREATION_ERROR');
       alert('An unexpected error occurred while creating the street.');
@@ -191,11 +194,7 @@ export default function StreetSelector({
       >
         <input
           type="text"
-          value={
-            selectedStreet
-              ? formatDisplayName(selectedStreet)
-              : searchTerm
-          }
+          value={selectedStreet ? formatDisplayName(selectedStreet) : searchTerm}
           onChange={e => {
             setSearchTerm(e.target.value);
             setIsOpen(true);
@@ -250,7 +249,7 @@ export default function StreetSelector({
                 </button>
               ) : (
                 <div className="border-b border-neutral-100 p-3">
-                  <div className="font-medium text-blue-600 mb-2">Create New Street</div>
+                  <div className="mb-2 font-medium text-blue-600">Create New Street</div>
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -295,9 +294,7 @@ export default function StreetSelector({
               {filteredStreets.length === 0 && !searchTerm && (
                 <div className="p-3 text-center text-neutral-500">
                   <div className="text-sm">No streets found in this area</div>
-                  <div className="mt-1 text-xs text-green-600">
-                    ✓ Create the first street above
-                  </div>
+                  <div className="mt-1 text-xs text-green-600">✓ Create the first street above</div>
                 </div>
               )}
 
@@ -325,9 +322,7 @@ export default function StreetSelector({
                     <div className="flex-1">
                       <div className="font-medium text-neutral-900">{street.name}</div>
                       {street.subdivision_name && (
-                        <div className="text-sm text-neutral-600">
-                          in {street.subdivision_name}
-                        </div>
+                        <div className="text-sm text-neutral-600">in {street.subdivision_name}</div>
                       )}
                       {street.description && (
                         <div className="text-xs text-neutral-500">{street.description}</div>
@@ -342,10 +337,15 @@ export default function StreetSelector({
       )}
 
       {/* Click outside to close */}
-      {isOpen && <div className="fixed inset-0 z-0" onClick={() => {
-        setIsOpen(false);
-        setShowCreateForm(false);
-      }} />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-0"
+          onClick={() => {
+            setIsOpen(false);
+            setShowCreateForm(false);
+          }}
+        />
+      )}
 
       {/* Error message */}
       {error && (

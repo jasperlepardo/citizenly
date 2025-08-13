@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A reusable pie chart component with interactive features, tooltips, and automatic color generation. Used as the foundation for all barangay demographic charts.',
+        component:
+          'A reusable pie chart component with interactive features, tooltips, and automatic color generation. Used as the foundation for all barangay demographic charts.',
       },
     },
   },
@@ -110,9 +111,7 @@ export const WithCustomColors: Story = {
 export const SingleCategory: Story = {
   args: {
     title: 'Complete Coverage',
-    data: [
-      { label: 'Covered', value: 2847, percentage: 100.0, color: '' },
-    ],
+    data: [{ label: 'Covered', value: 2847, percentage: 100.0, color: '' }],
   },
 };
 
@@ -228,7 +227,7 @@ export const ResponsiveDisplay: Story = {
 // Multiple charts comparison
 export const MultipleCharts: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
+    <div className="grid grid-cols-1 gap-8 p-6 md:grid-cols-2">
       <GenericPieChart
         title="Age Distribution"
         data={[

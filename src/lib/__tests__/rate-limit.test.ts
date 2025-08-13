@@ -97,7 +97,7 @@ describe('Rate Limiting', () => {
 
       const response = await handler(request, userId);
       expect(response).not.toBeNull();
-      
+
       if (response) {
         const body = await response.json();
         expect(body.error.code).toBe('RATE_LIMIT_EXCEEDED');

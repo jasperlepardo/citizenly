@@ -94,9 +94,9 @@ export default function HouseholdSelector({
       return;
     }
 
-    logger.debug('Loading households for barangay', { 
+    logger.debug('Loading households for barangay', {
       barangayCode: userProfile.barangay_code,
-      userProfileId: userProfile.id 
+      userProfileId: userProfile.id,
     });
     setLoading(true);
     try {
@@ -131,17 +131,17 @@ export default function HouseholdSelector({
         return;
       }
 
-      logger.debug('Raw households data from query', { 
-        count: householdsData?.length || 0, 
+      logger.debug('Raw households data from query', {
+        count: householdsData?.length || 0,
         userBarangay: userProfile.barangay_code,
         rawData: householdsData,
-        queryWithoutBarangayFilter: true 
+        queryWithoutBarangayFilter: true,
       });
 
       console.log('🏠 HOUSEHOLD DEBUG:', {
         userBarangayCode: userProfile.barangay_code,
         householdsFound: householdsData?.length || 0,
-        households: householdsData
+        households: householdsData,
       });
 
       // Get member counts, head resident info, and geographic information for each household
@@ -229,13 +229,15 @@ export default function HouseholdSelector({
             head_resident: headResident || undefined,
             member_count: count || 0,
             // Fix geo_streets to be single object, not array
-            geo_streets: household.geo_streets && household.geo_streets.length > 0 
-              ? household.geo_streets[0] 
-              : { id: '', name: '' },
-            // Fix geo_subdivisions to be single object, not array  
-            geo_subdivisions: household.geo_subdivisions && household.geo_subdivisions.length > 0
-              ? household.geo_subdivisions[0]
-              : undefined,
+            geo_streets:
+              household.geo_streets && household.geo_streets.length > 0
+                ? household.geo_streets[0]
+                : { id: '', name: '' },
+            // Fix geo_subdivisions to be single object, not array
+            geo_subdivisions:
+              household.geo_subdivisions && household.geo_subdivisions.length > 0
+                ? household.geo_subdivisions[0]
+                : undefined,
             ...geoInfo,
           } as Household;
         })
@@ -270,7 +272,7 @@ export default function HouseholdSelector({
     const parts = [
       household.house_number,
       household.geo_streets?.name,
-      household.geo_subdivisions?.name
+      household.geo_subdivisions?.name,
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : 'No address';
   };

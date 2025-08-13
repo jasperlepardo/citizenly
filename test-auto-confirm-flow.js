@@ -13,37 +13,37 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
 async function testAutoConfirmFlow() {
   console.log('🧪 Testing Auto-Confirm Development Flow\n');
   console.log('═'.repeat(50));
-  
+
   // Get a valid barangay code first
   const { data: barangays } = await supabaseAdmin
     .from('psgc_barangays')
     .select('code, name')
     .limit(1);
-  
+
   const barangayCode = barangays?.[0]?.code || '012801001';
   console.log('Using barangay:', barangays?.[0]?.name || 'Adams', `(${barangayCode})`);
-  
+
   // Generate test email
   const timestamp = Date.now();
   const testEmail = `dev.test.${timestamp}@example.com`;
   const testPassword = 'TestPassword123!';
-  
+
   console.log('Test email:', testEmail);
   console.log('═'.repeat(50));
-  
+
   try {
     // Step 1: Sign up
     console.log('\n1️⃣ SIGNUP');
     console.log('Creating account with metadata...');
-    
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: testEmail,
       password: testPassword,
@@ -53,33 +53,38 @@ async function testAutoConfirmFlow() {
           last_name: 'Test',
           phone: '09171234567',
           barangay_code: barangayCode,
-          signup_step: 'awaiting_confirmation'
-        }
-      }
+          signup_step: 'awaiting_confirmation',
+        },
+      },
     });
-    
+
     if (authError) throw authError;
-    
+
     console.log('✅ Account created');
     console.log('   User ID:', authData.user.id);
-    console.log('   Email confirmed:', authData.user.email_confirmed_at ? '✅ YES (auto-confirmed!)' : '❌ NO');
-    
+    console.log(
+      '   Email confirmed:',
+      authData.user.email_confirmed_at ? '✅ YES (auto-confirmed!)' : '❌ NO'
+    );
+
     // Step 2: Check if profile was created immediately
     console.log('\n2️⃣ CHECKING PROFILE');
     console.log('Waiting 2 seconds for triggers to complete...');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .select(`
+      .select(
+        `
         *,
         auth_roles (
           name
         )
-      `)
+      `
+      )
       .eq('id', authData.user.id)
       .single();
-    
+
     if (profile) {
       console.log('✅ Profile created automatically!');
       console.log('   Name:', `${profile.first_name} ${profile.last_name}`);
@@ -91,16 +96,16 @@ async function testAutoConfirmFlow() {
       console.log('❌ Profile not found');
       if (profileError) console.log('   Error:', profileError.message);
     }
-    
+
     // Step 3: Test immediate login
     console.log('\n3️⃣ LOGIN TEST');
     console.log('Testing immediate login...');
-    
+
     const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
       email: testEmail,
-      password: testPassword
+      password: testPassword,
     });
-    
+
     if (loginData?.user) {
       console.log('✅ Login successful!');
       console.log('   User can access system immediately');
@@ -108,7 +113,7 @@ async function testAutoConfirmFlow() {
     } else {
       console.log('❌ Login failed:', loginError?.message);
     }
-    
+
     console.log('\n' + '═'.repeat(50));
     console.log('✨ AUTO-CONFIRM MODE WORKING!');
     console.log('\nBenefits:');
@@ -117,7 +122,6 @@ async function testAutoConfirmFlow() {
     console.log('✅ Profile created immediately');
     console.log('✅ Can login right away');
     console.log('✅ Perfect for development/testing');
-    
   } catch (error) {
     console.error('\n❌ Test failed:', error.message);
     if (error.details) console.error('Details:', error.details);

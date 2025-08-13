@@ -4,11 +4,11 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { 
-  ResidentEditFormData, 
-  ResidentFormSchema, 
+import {
+  ResidentEditFormData,
+  ResidentFormSchema,
   validateResidentForm,
-  ValidationResult 
+  ValidationResult,
 } from '@/lib/validation/resident-schema';
 
 /**
@@ -74,20 +74,23 @@ interface UseResidentEditFormReturn {
   // Form data
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  
+
   // Form state
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  
+
   // Form actions
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   updateFields: (fields: Partial<ResidentEditFormData>) => void;
   validateField: (field: keyof ResidentEditFormData) => void;
   validateForm: () => ValidationResult;
   resetForm: () => void;
   submitForm: () => Promise<void>;
-  
+
   // Utility methods
   getFieldError: (field: keyof ResidentEditFormData) => string | undefined;
   hasFieldError: (field: keyof ResidentEditFormData) => boolean;
@@ -96,10 +99,10 @@ interface UseResidentEditFormReturn {
 
 /**
  * Custom hook for resident form management
- * 
+ *
  * @param options - Configuration options for the form hook
  * @returns Object containing form state and actions
- * 
+ *
  * @example
  * ```typescript
  * function ResidentEditForm() {
@@ -115,7 +118,7 @@ interface UseResidentEditFormReturn {
  *       await updateResident(data);
  *     }
  *   });
- * 
+ *
  *   return (
  *     <form onSubmit={submitForm}>
  *       <input
@@ -127,18 +130,20 @@ interface UseResidentEditFormReturn {
  * }
  * ```
  */
-export function useResidentEditForm(options: UseResidentEditFormOptions = {}): UseResidentEditFormReturn {
+export function useResidentEditForm(
+  options: UseResidentEditFormOptions = {}
+): UseResidentEditFormReturn {
   const {
     initialData = {},
     onSubmit,
     autoSave = false,
-    autoSaveKey = 'resident-form-draft'
+    autoSaveKey = 'resident-form-draft',
   } = options;
 
   // Form state
   const [formData, setFormData] = useState<Partial<ResidentEditFormData>>(() => {
     const merged = { ...DEFAULT_FORM_DATA, ...initialData };
-    
+
     // Load from localStorage if autoSave is enabled and no initial data
     if (autoSave && Object.keys(initialData).length === 0) {
       try {
@@ -151,7 +156,7 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
         console.warn('Failed to load auto-saved form data:', error);
       }
     }
-    
+
     return merged;
   });
 
@@ -173,18 +178,18 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
   /**
    * Updates a single form field
    */
-  const updateField = useCallback(<K extends keyof ResidentEditFormData>(
-    field: K, 
-    value: ResidentEditFormData[K]
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setIsDirty(true);
-    
-    // Clear field error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  }, [errors]);
+  const updateField = useCallback(
+    <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+      setIsDirty(true);
+
+      // Clear field error when user starts typing
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+    },
+    [errors]
+  );
 
   /**
    * Updates multiple form fields at once
@@ -192,7 +197,7 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
   const updateFields = useCallback((fields: Partial<ResidentEditFormData>) => {
     setFormData(prev => ({ ...prev, ...fields }));
     setIsDirty(true);
-    
+
     // Clear errors for updated fields
     const updatedFieldNames = Object.keys(fields);
     setErrors(prev => {
@@ -209,33 +214,36 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
   /**
    * Validates a single field
    */
-  const validateField = useCallback((field: keyof ResidentEditFormData) => {
-    try {
-      const fieldSchema = ResidentFormSchema.shape[field];
-      if (fieldSchema) {
-        fieldSchema.parse(formData[field]);
-        // Clear error if validation passes
-        setErrors(prev => ({ ...prev, [field]: '' }));
+  const validateField = useCallback(
+    (field: keyof ResidentEditFormData) => {
+      try {
+        const fieldSchema = ResidentFormSchema.shape[field];
+        if (fieldSchema) {
+          fieldSchema.parse(formData[field]);
+          // Clear error if validation passes
+          setErrors(prev => ({ ...prev, [field]: '' }));
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setErrors(prev => ({ ...prev, [field]: error.message }));
+        }
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrors(prev => ({ ...prev, [field]: error.message }));
-      }
-    }
-  }, [formData]);
+    },
+    [formData]
+  );
 
   /**
    * Validates the entire form
    */
   const validateForm = useCallback((): ValidationResult => {
     const result = validateResidentForm(formData);
-    
+
     if (!result.success && result.errors) {
       setErrors(result.errors);
     } else {
       setErrors({});
     }
-    
+
     return result;
   }, [formData]);
 
@@ -247,7 +255,7 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
     setFormData(resetData);
     setErrors({});
     setIsDirty(false);
-    
+
     // Clear auto-saved data
     if (autoSave) {
       try {
@@ -268,10 +276,10 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const validation = validateForm();
-      
+
       if (!validation.success) {
         console.warn('Form validation failed:', validation.errors);
         return;
@@ -279,7 +287,7 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
 
       if (validation.data) {
         await onSubmit(validation.data);
-        
+
         // Clear auto-saved data on successful submit
         if (autoSave) {
           try {
@@ -288,15 +296,15 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
             console.warn('Failed to clear auto-saved data:', error);
           }
         }
-        
+
         setIsDirty(false);
       }
     } catch (error) {
       console.error('Form submission failed:', error);
       // You might want to set a general error here
-      setErrors(prev => ({ 
-        ...prev, 
-        submit: error instanceof Error ? error.message : 'Submission failed' 
+      setErrors(prev => ({
+        ...prev,
+        submit: error instanceof Error ? error.message : 'Submission failed',
       }));
     } finally {
       setIsSubmitting(false);
@@ -306,13 +314,19 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
   /**
    * Utility methods
    */
-  const getFieldError = useCallback((field: keyof ResidentEditFormData) => {
-    return errors[field] || undefined;
-  }, [errors]);
+  const getFieldError = useCallback(
+    (field: keyof ResidentEditFormData) => {
+      return errors[field] || undefined;
+    },
+    [errors]
+  );
 
-  const hasFieldError = useCallback((field: keyof ResidentEditFormData) => {
-    return Boolean(errors[field]);
-  }, [errors]);
+  const hasFieldError = useCallback(
+    (field: keyof ResidentEditFormData) => {
+      return Boolean(errors[field]);
+    },
+    [errors]
+  );
 
   const clearFieldError = useCallback((field: keyof ResidentEditFormData) => {
     setErrors(prev => ({ ...prev, [field]: '' }));
@@ -325,12 +339,12 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
     // Form data
     formData,
     errors,
-    
+
     // Form state
     isSubmitting,
     isValid,
     isDirty,
-    
+
     // Form actions
     updateField,
     updateFields,
@@ -338,7 +352,7 @@ export function useResidentEditForm(options: UseResidentEditFormOptions = {}): U
     validateForm,
     resetForm,
     submitForm,
-    
+
     // Utility methods
     getFieldError,
     hasFieldError,

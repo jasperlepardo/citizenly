@@ -6,21 +6,21 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
 async function simpleTest() {
   console.log('Simple Admin Check Test\n');
-  
+
   try {
     // Check if there are any user profiles
     const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('auth_user_profiles')
       .select('*')
       .limit(5);
-    
+
     console.log('Profiles found:', profiles?.length || 0);
     if (profiles && profiles.length > 0) {
       console.log('Sample profile:', {
@@ -28,22 +28,19 @@ async function simpleTest() {
         email: profiles[0].email,
         barangay_code: profiles[0].barangay_code,
         role_id: profiles[0].role_id,
-        is_active: profiles[0].is_active
+        is_active: profiles[0].is_active,
       });
     }
-    
+
     // Check roles
-    const { data: roles, error: rolesError } = await supabaseAdmin
-      .from('auth_roles')
-      .select('*');
-    
+    const { data: roles, error: rolesError } = await supabaseAdmin.from('auth_roles').select('*');
+
     console.log('\nRoles found:', roles?.length || 0);
     if (roles) {
       roles.forEach(role => {
         console.log(`- ${role.name}: ${role.id}`);
       });
     }
-    
   } catch (error) {
     console.error('Error:', error.message);
   }

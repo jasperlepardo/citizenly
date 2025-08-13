@@ -23,13 +23,13 @@ export function GeographicLocationStep({
   formData,
   updateFormData: _updateFormData,
   errors,
-  required: _required = true
+  required: _required = true,
 }: GeographicLocationStepProps) {
   const [names, setNames] = useState({
     regionName: '',
     provinceName: '',
     cityName: '',
-    barangayName: ''
+    barangayName: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -37,16 +37,18 @@ export function GeographicLocationStep({
   useEffect(() => {
     const fetchNames = async () => {
       if (!formData.barangayCode) return;
-      
+
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!session?.user) return;
 
         const response = await fetch('/api/user/geographic-location', {
           headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
         });
 
         if (response.ok) {
@@ -55,7 +57,7 @@ export function GeographicLocationStep({
             regionName: hierarchy.region?.name || '',
             provinceName: hierarchy.province?.name || '',
             cityName: hierarchy.city?.name || '',
-            barangayName: hierarchy.barangay?.name || ''
+            barangayName: hierarchy.barangay?.name || '',
           });
         }
       } catch (error) {
@@ -73,52 +75,61 @@ export function GeographicLocationStep({
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Geographic Location</h2>
         <p className="mt-2 text-gray-600">
-          Select your geographic location. This information will be used for administrative purposes and data collection.
+          Select your geographic location. This information will be used for administrative purposes
+          and data collection.
         </p>
       </div>
 
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Geographic Location</h3>
-        <p className="text-sm text-gray-600 mb-4">
+      <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+        <h3 className="mb-4 text-lg font-medium text-gray-900">Geographic Location</h3>
+        <p className="mb-4 text-sm text-gray-600">
           This resident will be assigned to your barangay's jurisdiction:
         </p>
-        
+
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="font-medium text-gray-700">Region:</span>
             <span className="text-gray-900">
-              {loading ? 'Loading...' : 
-                formData.regionCode ? `${names.regionName} (${formData.regionCode})` : 'Not assigned'
-              }
+              {loading
+                ? 'Loading...'
+                : formData.regionCode
+                  ? `${names.regionName} (${formData.regionCode})`
+                  : 'Not assigned'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium text-gray-700">Province:</span>
             <span className="text-gray-900">
-              {loading ? 'Loading...' : 
-                formData.provinceCode ? `${names.provinceName} (${formData.provinceCode})` : 'Not assigned'
-              }
+              {loading
+                ? 'Loading...'
+                : formData.provinceCode
+                  ? `${names.provinceName} (${formData.provinceCode})`
+                  : 'Not assigned'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium text-gray-700">City/Municipality:</span>
             <span className="text-gray-900">
-              {loading ? 'Loading...' : 
-                formData.cityMunicipalityCode ? `${names.cityName} (${formData.cityMunicipalityCode})` : 'Not assigned'
-              }
+              {loading
+                ? 'Loading...'
+                : formData.cityMunicipalityCode
+                  ? `${names.cityName} (${formData.cityMunicipalityCode})`
+                  : 'Not assigned'}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium text-gray-700">Barangay:</span>
-            <span className="text-gray-900 font-semibold">
-              {loading ? 'Loading...' : 
-                formData.barangayCode ? `${names.barangayName} (${formData.barangayCode})` : 'Not assigned'
-              }
+            <span className="font-semibold text-gray-900">
+              {loading
+                ? 'Loading...'
+                : formData.barangayCode
+                  ? `${names.barangayName} (${formData.barangayCode})`
+                  : 'Not assigned'}
             </span>
           </div>
         </div>
-        
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+
+        <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3">
           <p className="text-sm text-blue-800">
             ✓ Geographic location automatically assigned from your barangay admin profile
           </p>
@@ -127,9 +138,11 @@ export function GeographicLocationStep({
 
       {/* Error Display */}
       {Object.keys(errors).length > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <h4 className="text-sm font-medium text-red-800 mb-2">Please fix the following errors:</h4>
-          <ul className="text-sm text-red-700 space-y-1">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+          <h4 className="mb-2 text-sm font-medium text-red-800">
+            Please fix the following errors:
+          </h4>
+          <ul className="space-y-1 text-sm text-red-700">
             {Object.entries(errors).map(([field, error]) => (
               <li key={field}>• {error}</li>
             ))}
@@ -138,9 +151,9 @@ export function GeographicLocationStep({
       )}
 
       {/* Information Note */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="text-sm font-medium text-blue-800 mb-2">Important Information</h4>
-        <ul className="text-sm text-blue-700 space-y-1">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h4 className="mb-2 text-sm font-medium text-blue-800">Important Information</h4>
+        <ul className="space-y-1 text-sm text-blue-700">
           <li>• Location automatically populated from your barangay admin profile</li>
           <li>• Geographic location is required for proper data organization</li>
           <li>• Only the location codes are stored in the system, not the names</li>

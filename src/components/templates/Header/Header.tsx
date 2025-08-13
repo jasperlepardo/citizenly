@@ -37,7 +37,7 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="border-b shadow-sm bg-surface border-default">
+    <header className="bg-surface border-b border-default shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -54,31 +54,31 @@ export default function Header() {
           <nav className="hidden space-x-1 md:flex">
             <Link
               href="/dashboard"
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="rounded-md px-3 py-2 text-sm font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
             >
               Reports
             </Link>
@@ -94,7 +94,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 text-sm font-medium font-body text-secondary hover:text-primary"
+                className="rounded-md px-3 py-2 font-body text-sm font-medium text-secondary hover:text-primary"
               >
                 Sign In
               </Link>
@@ -105,7 +105,7 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center rounded-md p-2 transition-colors text-secondary hover:text-primary hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="hover:bg-surface-hover inline-flex items-center justify-center rounded-md p-2 text-secondary transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
               <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -123,38 +123,38 @@ export default function Header() {
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="border-t border-default md:hidden">
-          <div className="space-y-1 px-2 pb-3 pt-2 bg-surface sm:px-3">
+          <div className="bg-surface space-y-1 px-2 pb-3 pt-2 sm:px-3">
             <Link
               href="/dashboard"
-              className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
             >
               Reports
@@ -162,17 +162,17 @@ export default function Header() {
 
             {/* Mobile User Menu */}
             {user ? (
-              <div className="mt-2 border-t pt-2 border-default">
+              <div className="mt-2 border-t border-default pt-2">
                 <div className="px-3 py-2">
                   <div className="flex items-center gap-3 p-2">
                     <div className="flex size-8 items-center justify-center rounded-full bg-primary-600 text-sm font-medium text-white">
                       {`${user.user_metadata?.first_name?.[0] || ''}${user.user_metadata?.last_name?.[0] || ''}`.toUpperCase()}
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm font-medium font-body text-primary">
+                      <div className="font-body text-sm font-medium text-primary">
                         {user.user_metadata?.first_name} {user.user_metadata?.last_name}
                       </div>
-                      <div className="text-xs font-body text-secondary">{user.email}</div>
+                      <div className="font-body text-xs text-secondary">{user.email}</div>
                     </div>
                   </div>
                 </div>
@@ -181,10 +181,10 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <div className="mt-2 border-t pt-2 border-default">
+              <div className="mt-2 border-t border-default pt-2">
                 <Link
                   href="/login"
-                  className="block rounded-md px-3 py-2 text-base font-medium transition-colors font-body text-secondary hover:text-primary hover:bg-surface-hover"
+                  className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In

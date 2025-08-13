@@ -9,8 +9,8 @@ const supabaseAdmin = createClient(
   {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
-    }
+      persistSession: false,
+    },
   }
 );
 
@@ -32,14 +32,14 @@ interface CreateProfileRequest {
 export async function POST(request: NextRequest) {
   try {
     const requestData: CreateProfileRequest = await request.json();
-    
+
     // Validate required fields
     const { id, email, first_name, last_name, role_id } = requestData;
     if (!id || !email || !first_name || !last_name || !role_id) {
       return NextResponse.json(
-        { 
-          error: 'Missing required fields', 
-          required: ['id', 'email', 'first_name', 'last_name', 'role_id']
+        {
+          error: 'Missing required fields',
+          required: ['id', 'email', 'first_name', 'last_name', 'role_id'],
         },
         { status: 400 }
       );
@@ -50,9 +50,9 @@ export async function POST(request: NextRequest) {
     if (!uuidRegex.test(id)) {
       console.error('Invalid UUID format:', { id: '[REDACTED]', format: typeof id });
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid user ID format',
-          details: 'User ID must be a valid UUID' 
+          details: 'User ID must be a valid UUID',
         },
         { status: 400 }
       );
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
       .upsert(requestData, {
-        onConflict: 'id'
+        onConflict: 'id',
       })
       .select()
       .single();
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     if (profileError) {
       console.error('Profile creation error:', {
         error: profileError,
-        requestData: { ...requestData, id: '[REDACTED]' }
+        requestData: { ...requestData, id: '[REDACTED]' },
       });
       return NextResponse.json(
         { error: 'Could not create user profile', details: profileError.message },
@@ -82,14 +82,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       profile,
-      message: 'Profile created successfully'
+      message: 'Profile created successfully',
     });
-
   } catch (error) {
     console.error('API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -16,17 +16,20 @@ import {
 interface PersonalInfoSectionProps {
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   disabled?: boolean;
 }
 
 /**
  * Personal Information Form Section
- * 
+ *
  * @description Renders personal information fields including name, birthdate, sex, and civil status
  * @param props - Component props
  * @returns JSX element for personal information section
- * 
+ *
  * @example
  * ```typescript
  * <PersonalInfoSection
@@ -41,7 +44,7 @@ export default function PersonalInfoSection({
   formData,
   errors,
   updateField,
-  disabled = false
+  disabled = false,
 }: PersonalInfoSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -49,11 +52,8 @@ export default function PersonalInfoSection({
   };
 
   return (
-    <FormSection 
-      title="Personal Information" 
-      description="Basic personal details"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <FormSection title="Personal Information" description="Basic personal details">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <FormField label="First Name" required errorMessage={errors.first_name}>
           <FormInput
             name="first_name"
@@ -65,7 +65,7 @@ export default function PersonalInfoSection({
             placeholder="Enter first name"
           />
         </FormField>
-        
+
         <FormField label="Middle Name" errorMessage={errors.middle_name}>
           <FormInput
             name="middle_name"
@@ -76,7 +76,7 @@ export default function PersonalInfoSection({
             placeholder="Enter middle name (optional)"
           />
         </FormField>
-        
+
         <FormField label="Last Name" required errorMessage={errors.last_name}>
           <FormInput
             name="last_name"
@@ -88,7 +88,7 @@ export default function PersonalInfoSection({
             placeholder="Enter last name"
           />
         </FormField>
-        
+
         <FormField label="Extension Name" errorMessage={errors.extension_name}>
           <FormInput
             name="extension_name"
@@ -99,7 +99,7 @@ export default function PersonalInfoSection({
             placeholder="Jr., Sr., III, etc."
           />
         </FormField>
-        
+
         <FormField label="Date of Birth" required errorMessage={errors.birthdate}>
           <FormInput
             type="date"
@@ -111,7 +111,7 @@ export default function PersonalInfoSection({
             required
           />
         </FormField>
-        
+
         <FormField label="Sex" required errorMessage={errors.sex}>
           <select
             name="sex"
@@ -119,7 +119,7 @@ export default function PersonalInfoSection({
             onChange={handleInputChange}
             disabled={disabled}
             required
-            className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Sex</option>
             {SEX_OPTIONS.map(option => (
@@ -129,7 +129,7 @@ export default function PersonalInfoSection({
             ))}
           </select>
         </FormField>
-        
+
         <FormField label="Civil Status" required errorMessage={errors.civil_status}>
           <select
             name="civil_status"
@@ -137,7 +137,7 @@ export default function PersonalInfoSection({
             onChange={handleInputChange}
             disabled={disabled}
             required
-            className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Civil Status</option>
             {CIVIL_STATUS_OPTIONS.map(option => (
@@ -147,14 +147,14 @@ export default function PersonalInfoSection({
             ))}
           </select>
         </FormField>
-        
+
         <FormField label="Citizenship" errorMessage={errors.citizenship}>
           <select
             name="citizenship"
             value={formData.citizenship || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Citizenship</option>
             {CITIZENSHIP_OPTIONS.map(option => (
@@ -169,7 +169,10 @@ export default function PersonalInfoSection({
       {/* Conditional field for other civil status */}
       {(formData.civil_status as string) === 'others' && (
         <div className="mt-4">
-          <FormField label="Please Specify Civil Status" errorMessage={errors.civil_status_others_specify}>
+          <FormField
+            label="Please Specify Civil Status"
+            errorMessage={errors.civil_status_others_specify}
+          >
             <FormInput
               name="civil_status_others_specify"
               value={formData.civil_status_others_specify || ''}

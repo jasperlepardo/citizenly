@@ -124,17 +124,17 @@ export default function PopulationPyramid({
   };
 
   return (
-    <div className={`rounded-lg border p-6 bg-surface border-default ${className}`}>
+    <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
       <div className="mb-6 flex items-center justify-between">
         <h3 className="font-display text-lg font-semibold text-primary">Population Pyramid</h3>
-        <div className="text-sm font-body text-secondary">
+        <div className="font-body text-sm text-secondary">
           Total: {totalPopulation.toLocaleString()}
         </div>
       </div>
 
       <div className="space-y-1">
         {/* Header */}
-        <div className="mb-3 flex items-center text-xs font-body text-secondary">
+        <div className="mb-3 flex items-center font-body text-xs text-secondary">
           <div className="w-[45%] pr-3 text-right">Male</div>
           <div className="w-[10%] px-3 text-center">Age</div>
           <div className="w-[45%] pl-3 text-left">Female</div>
@@ -152,7 +152,7 @@ export default function PopulationPyramid({
                 isSelected
                   ? 'bg-primary-50 shadow-sm dark:bg-primary-900/20'
                   : isHovered
-                    ? 'shadow-sm bg-surface-hover'
+                    ? 'bg-surface-hover shadow-sm'
                     : hoveredGroup && hoveredGroup !== group.ageRange
                       ? 'opacity-60'
                       : 'hover:bg-surface-hover'
@@ -165,7 +165,7 @@ export default function PopulationPyramid({
               <div className="flex w-[45%] justify-end pr-3">
                 <div className="relative flex w-full items-center gap-4">
                   <span
-                    className={`min-w-[35px] text-right text-xs transition-all duration-200 font-body ${
+                    className={`min-w-[35px] text-right font-body text-xs transition-all duration-200 ${
                       isHovered || isSelected ? 'font-medium text-primary' : 'text-secondary'
                     }`}
                   >
@@ -200,7 +200,7 @@ export default function PopulationPyramid({
               {/* Age group label */}
               <div className="w-[10%] px-3 text-center">
                 <span
-                  className={`text-xs transition-all duration-200 font-body ${
+                  className={`font-body text-xs transition-all duration-200 ${
                     isHovered || isSelected
                       ? 'font-bold text-primary'
                       : 'font-medium text-secondary'
@@ -237,7 +237,7 @@ export default function PopulationPyramid({
                     )}
                   </div>
                   <span
-                    className={`min-w-[35px] text-xs transition-all duration-200 font-body ${
+                    className={`min-w-[35px] font-body text-xs transition-all duration-200 ${
                       isHovered || isSelected ? 'font-medium text-primary' : 'text-secondary'
                     }`}
                   >
@@ -250,18 +250,18 @@ export default function PopulationPyramid({
         })}
 
         {/* Legend and Stats */}
-        <div className="mt-6 border-t pt-4 border-default">
+        <div className="mt-6 border-t border-default pt-4">
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-2">
               <div className="size-3 rounded bg-primary-500" />
-              <span className="text-xs font-body text-secondary">
+              <span className="font-body text-xs text-secondary">
                 Male: {totalMale.toLocaleString()} (
                 {((totalMale / totalPopulation) * 100).toFixed(1)}%)
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="size-3 rounded bg-secondary-500" />
-              <span className="text-xs font-body text-secondary">
+              <span className="font-body text-xs text-secondary">
                 Female: {totalFemale.toLocaleString()} (
                 {((totalFemale / totalPopulation) * 100).toFixed(1)}%)
               </span>
@@ -270,10 +270,10 @@ export default function PopulationPyramid({
 
           {selectedGroup && (
             <div className="mt-4 rounded-lg border border-primary-200 bg-primary-50 p-3 text-center dark:border-primary-800 dark:bg-primary-900/20">
-              <p className="text-sm font-body text-primary">
+              <p className="font-body text-sm text-primary">
                 Age group <span className="font-semibold">{selectedGroup}</span> selected
               </p>
-              <p className="mt-1 text-xs font-body text-secondary">
+              <p className="mt-1 font-body text-xs text-secondary">
                 Click another group to compare or click outside to deselect
               </p>
             </div>

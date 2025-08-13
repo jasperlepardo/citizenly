@@ -14,12 +14,12 @@ export enum AuditEventType {
   LOGOUT = 'logout',
   TOKEN_REFRESH = 'token_refresh',
   PASSWORD_CHANGE = 'password_change',
-  
+
   // Authorization events
   ACCESS_GRANTED = 'access_granted',
   ACCESS_DENIED = 'access_denied',
   PERMISSION_ESCALATION = 'permission_escalation',
-  
+
   // Data operations
   RESIDENT_CREATE = 'resident_create',
   RESIDENT_UPDATE = 'resident_update',
@@ -28,7 +28,7 @@ export enum AuditEventType {
   HOUSEHOLD_CREATE = 'household_create',
   HOUSEHOLD_UPDATE = 'household_update',
   HOUSEHOLD_DELETE = 'household_delete',
-  
+
   // User management
   USER_CREATE = 'user_create',
   USER_UPDATE = 'user_update',
@@ -36,30 +36,30 @@ export enum AuditEventType {
   USER_ACTIVATE = 'user_activate',
   USER_DEACTIVATE = 'user_deactivate',
   ROLE_CHANGE = 'role_change',
-  
+
   // Security events
   RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded',
   SQL_INJECTION_ATTEMPT = 'sql_injection_attempt',
   INVALID_TOKEN = 'invalid_token',
   CSRF_VIOLATION = 'csrf_violation',
   SUSPICIOUS_ACTIVITY = 'suspicious_activity',
-  
+
   // System events
   API_ERROR = 'api_error',
   DATABASE_ERROR = 'database_error',
   EXTERNAL_SERVICE_ERROR = 'external_service_error',
-  
+
   // Data export/import
   DATA_EXPORT = 'data_export',
   DATA_IMPORT = 'data_import',
-  BULK_OPERATION = 'bulk_operation'
+  BULK_OPERATION = 'bulk_operation',
 }
 
 export enum AuditSeverity {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  CRITICAL = 'critical'
+  CRITICAL = 'critical',
 }
 
 export interface AuditEvent {
@@ -111,13 +111,20 @@ function maskSensitiveData(data: any): any {
   }
 
   const sensitiveFields = [
-    'password', 'token', 'ssn', 'social_security',
-    'credit_card', 'bank_account', 'api_key',
-    'secret', 'private_key', 'access_token'
+    'password',
+    'token',
+    'ssn',
+    'social_security',
+    'credit_card',
+    'bank_account',
+    'api_key',
+    'secret',
+    'private_key',
+    'access_token',
   ];
 
   const masked = { ...data };
-  
+
   Object.keys(masked).forEach(key => {
     const lowerKey = key.toLowerCase();
     if (sensitiveFields.some(field => lowerKey.includes(field))) {
@@ -139,7 +146,7 @@ function getEventSeverity(eventType: AuditEventType): AuditSeverity {
     [AuditEventType.SQL_INJECTION_ATTEMPT]: AuditSeverity.CRITICAL,
     [AuditEventType.PERMISSION_ESCALATION]: AuditSeverity.CRITICAL,
     [AuditEventType.SUSPICIOUS_ACTIVITY]: AuditSeverity.CRITICAL,
-    
+
     // High severity events
     [AuditEventType.LOGIN_FAILED]: AuditSeverity.HIGH,
     [AuditEventType.ACCESS_DENIED]: AuditSeverity.HIGH,
@@ -147,7 +154,7 @@ function getEventSeverity(eventType: AuditEventType): AuditSeverity {
     [AuditEventType.USER_DELETE]: AuditSeverity.HIGH,
     [AuditEventType.ROLE_CHANGE]: AuditSeverity.HIGH,
     [AuditEventType.DATA_EXPORT]: AuditSeverity.HIGH,
-    
+
     // Medium severity events
     [AuditEventType.LOGIN_SUCCESS]: AuditSeverity.MEDIUM,
     [AuditEventType.USER_CREATE]: AuditSeverity.MEDIUM,
@@ -155,7 +162,7 @@ function getEventSeverity(eventType: AuditEventType): AuditSeverity {
     [AuditEventType.RESIDENT_DELETE]: AuditSeverity.MEDIUM,
     [AuditEventType.HOUSEHOLD_DELETE]: AuditSeverity.MEDIUM,
     [AuditEventType.DATA_IMPORT]: AuditSeverity.MEDIUM,
-    
+
     // Low severity events
     [AuditEventType.LOGOUT]: AuditSeverity.LOW,
     [AuditEventType.RESIDENT_VIEW]: AuditSeverity.LOW,
@@ -173,7 +180,7 @@ function getEventSeverity(eventType: AuditEventType): AuditSeverity {
     [AuditEventType.EXTERNAL_SERVICE_ERROR]: AuditSeverity.LOW,
     [AuditEventType.INVALID_TOKEN]: AuditSeverity.LOW,
     [AuditEventType.CSRF_VIOLATION]: AuditSeverity.LOW,
-    [AuditEventType.BULK_OPERATION]: AuditSeverity.LOW
+    [AuditEventType.BULK_OPERATION]: AuditSeverity.LOW,
   };
 
   return severityMap[eventType] || AuditSeverity.LOW;
@@ -202,7 +209,7 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       details: event.details ? maskSensitiveData(event.details) : undefined,
       context: event.context!,
       errorCode: event.errorCode,
-      errorMessage: event.errorMessage
+      errorMessage: event.errorMessage,
     };
 
     // Create audit log entry
@@ -227,13 +234,11 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       barangay_code: auditEvent.context.barangayCode,
       city_code: auditEvent.context.cityCode,
       province_code: auditEvent.context.provinceCode,
-      region_code: auditEvent.context.regionCode
+      region_code: auditEvent.context.regionCode,
     };
 
     // Insert into audit_logs table
-    const { error } = await supabaseAdmin
-      .from('audit_logs')
-      .insert(logEntry);
+    const { error } = await supabaseAdmin.from('audit_logs').insert(logEntry);
 
     if (error) {
       logger.error('Failed to insert audit log', { error, auditEvent });
@@ -248,10 +253,9 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
         ip: auditEvent.context.ip,
         path: auditEvent.context.path,
         details: auditEvent.details,
-        critical: true
+        critical: true,
       });
     }
-
   } catch (error) {
     logger.error('Audit logging service error', { error });
     // Don't throw error to avoid disrupting main application flow
@@ -272,7 +276,7 @@ export async function auditAuth(
     action: eventType.replace('_', ' '),
     outcome: eventType.includes('failed') ? 'failure' : 'success',
     details,
-    context
+    context,
   });
 }
 
@@ -287,9 +291,8 @@ export async function auditResourceAccess(
   context: RequestContext,
   details?: Record<string, any>
 ): Promise<void> {
-  const eventType = outcome === 'success' 
-    ? AuditEventType.ACCESS_GRANTED 
-    : AuditEventType.ACCESS_DENIED;
+  const eventType =
+    outcome === 'success' ? AuditEventType.ACCESS_GRANTED : AuditEventType.ACCESS_DENIED;
 
   await auditLog({
     eventType,
@@ -300,7 +303,7 @@ export async function auditResourceAccess(
     action,
     outcome,
     details,
-    context
+    context,
   });
 }
 
@@ -315,16 +318,16 @@ export async function auditDataOperation(
   details?: Record<string, any>
 ): Promise<void> {
   const eventTypeMap: Record<string, AuditEventType> = {
-    'create_resident': AuditEventType.RESIDENT_CREATE,
-    'update_resident': AuditEventType.RESIDENT_UPDATE,
-    'delete_resident': AuditEventType.RESIDENT_DELETE,
-    'view_resident': AuditEventType.RESIDENT_VIEW,
-    'create_household': AuditEventType.HOUSEHOLD_CREATE,
-    'update_household': AuditEventType.HOUSEHOLD_UPDATE,
-    'delete_household': AuditEventType.HOUSEHOLD_DELETE,
-    'create_user': AuditEventType.USER_CREATE,
-    'update_user': AuditEventType.USER_UPDATE,
-    'delete_user': AuditEventType.USER_DELETE
+    create_resident: AuditEventType.RESIDENT_CREATE,
+    update_resident: AuditEventType.RESIDENT_UPDATE,
+    delete_resident: AuditEventType.RESIDENT_DELETE,
+    view_resident: AuditEventType.RESIDENT_VIEW,
+    create_household: AuditEventType.HOUSEHOLD_CREATE,
+    update_household: AuditEventType.HOUSEHOLD_UPDATE,
+    delete_household: AuditEventType.HOUSEHOLD_DELETE,
+    create_user: AuditEventType.USER_CREATE,
+    update_user: AuditEventType.USER_UPDATE,
+    delete_user: AuditEventType.USER_DELETE,
   };
 
   const eventKey = `${operation}_${resourceType}`;
@@ -340,7 +343,7 @@ export async function auditDataOperation(
       action: `${operation} ${resourceType}`,
       outcome: 'success',
       details,
-      context
+      context,
     });
   }
 }
@@ -361,7 +364,7 @@ export async function auditSecurityViolation(
     outcome: 'failure',
     details,
     context,
-    errorCode
+    errorCode,
   });
 }
 
@@ -380,11 +383,11 @@ export async function auditError(
     outcome: 'failure',
     details: {
       errorName: error.name,
-      errorStack: error.stack?.split('\n').slice(0, 5) // First 5 lines only
+      errorStack: error.stack?.split('\n').slice(0, 5), // First 5 lines only
     },
     context,
     errorCode,
-    errorMessage: error.message
+    errorMessage: error.message,
   });
 }
 
@@ -406,39 +409,36 @@ export function createAuditQuery(filters: {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  let query = supabaseAdmin
-    .from('audit_logs')
-    .select('*')
-    .order('timestamp', { ascending: false });
+  let query = supabaseAdmin.from('audit_logs').select('*').order('timestamp', { ascending: false });
 
   if (filters.userId) {
     query = query.eq('user_id', filters.userId);
   }
-  
+
   if (filters.eventType) {
     query = query.eq('event_type', filters.eventType);
   }
-  
+
   if (filters.severity) {
     query = query.eq('severity', filters.severity);
   }
-  
+
   if (filters.startDate) {
     query = query.gte('timestamp', filters.startDate);
   }
-  
+
   if (filters.endDate) {
     query = query.lte('timestamp', filters.endDate);
   }
-  
+
   if (filters.ipAddress) {
     query = query.eq('ip_address', filters.ipAddress);
   }
-  
+
   if (filters.resourceType) {
     query = query.eq('resource_type', filters.resourceType);
   }
-  
+
   if (filters.outcome) {
     query = query.eq('outcome', filters.outcome);
   }

@@ -33,5 +33,13 @@
     ".next/types/**/*.ts",
     "src/types/global.d.ts"
   ],
-  "exclude": ["node_modules", "**/*.stories.*", "**/*.story.*", ".storybook", "src/stories", "scripts/**/*", "src/components/lazy-index.ts"]
+  "exclude": [
+    "node_modules",
+    "**/*.stories.*",
+    "**/*.story.*",
+    ".storybook",
+    "src/stories",
+    "scripts/**/*",
+    "src/components/lazy-index.ts"
+  ]
 }

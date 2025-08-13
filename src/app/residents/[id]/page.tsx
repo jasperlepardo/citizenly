@@ -1153,10 +1153,18 @@ function ResidentDetailContent() {
                       </div>
                     ) : (
                       <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
-                        {renderEditableField("Mother&rsquo;s First Name", 'mother_first_name', 'text')}
-                        {renderEditableField("Mother&rsquo;s Middle Name", 'mother_middle_name', 'text')}
                         {renderEditableField(
-                          "Mother&rsquo;s Maiden Last Name",
+                          'Mother&rsquo;s First Name',
+                          'mother_first_name',
+                          'text'
+                        )}
+                        {renderEditableField(
+                          'Mother&rsquo;s Middle Name',
+                          'mother_middle_name',
+                          'text'
+                        )}
+                        {renderEditableField(
+                          'Mother&rsquo;s Maiden Last Name',
                           'mother_maiden_last_name',
                           'text'
                         )}
@@ -1276,7 +1284,8 @@ function ResidentDetailContent() {
                   <div className="text-sm text-secondary">
                     <p className="mb-4">
                       Sectoral classifications will be automatically calculated when you save the
-                      changes based on the resident&rsquo;s age, employment status, and other information.
+                      changes based on the resident&rsquo;s age, employment status, and other
+                      information.
                     </p>
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       <div className="space-y-2">

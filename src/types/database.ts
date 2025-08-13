@@ -1,11 +1,11 @@
 /**
  * Database Types
  * Comprehensive TypeScript interfaces for all database table structures and query responses
- * 
+ *
  * @description This file provides type-safe interfaces for all database operations,
  * replacing 'any' types throughout the application with proper TypeScript interfaces.
  * Based on the RBI system schema and PSGC reference data.
- * 
+ *
  * @author Citizenly Development Team
  * @version 1.0.0
  */

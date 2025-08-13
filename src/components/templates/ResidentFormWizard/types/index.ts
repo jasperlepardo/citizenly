@@ -1,12 +1,12 @@
-import { 
-  SexValue, 
-  CivilStatusValue, 
-  CitizenshipValue, 
-  EducationLevelValue, 
-  EmploymentStatusValue, 
-  BloodTypeValue, 
-  ReligionValue, 
-  EthnicityValue 
+import {
+  SexValue,
+  CivilStatusValue,
+  CitizenshipValue,
+  EducationLevelValue,
+  EmploymentStatusValue,
+  BloodTypeValue,
+  ReligionValue,
+  EthnicityValue,
 } from '../constants/enums';
 
 export interface ResidentFormData {
@@ -122,17 +122,20 @@ export interface UseResidentFormReturn {
   errors: ValidationErrors;
   currentStep: number;
   isSubmitting: boolean;
-  
+
   // Actions
-  handleInputChange: (field: keyof ResidentFormData, value: string | boolean | number | null) => void;
+  handleInputChange: (
+    field: keyof ResidentFormData,
+    value: string | boolean | number | null
+  ) => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
   handleSubmit: () => Promise<void>;
-  
+
   // Validation
   validateStep: (step: number) => boolean;
   validateForm: () => boolean;
-  
+
   // Utilities
   steps: FormStep[];
   canProceedToNext: boolean;

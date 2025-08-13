@@ -191,7 +191,7 @@ export default function DataTable<T extends Record<string, any>>({
 
   if (loading) {
     return (
-      <div className={`rounded-lg border bg-surface border-default ${className}`}>
+      <div className={`bg-surface rounded-lg border border-default ${className}`}>
         <div className="flex items-center justify-center py-12">
           <div className="flex items-center space-x-2">
             <div className="size-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -203,7 +203,7 @@ export default function DataTable<T extends Record<string, any>>({
   }
 
   return (
-    <div className={`overflow-hidden rounded-lg border bg-surface border-default ${className}`}>
+    <div className={`bg-surface overflow-hidden rounded-lg border border-default ${className}`}>
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="divide-border-default min-w-full divide-y">
@@ -215,7 +215,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th className={`${paddingClasses[size]} w-12`}>
                   <input
                     type="checkbox"
-                    className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
+                    className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
                     checked={
                       selection.selectedRowKeys.length === sortedData.length &&
                       sortedData.length > 0
@@ -230,7 +230,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th
                   key={column.key}
                   className={`${paddingClasses[size]} text-left ${sizeClasses[size]} font-medium text-primary ${
-                    column.sortable ? 'cursor-pointer hover:bg-surface-hover' : ''
+                    column.sortable ? 'hover:bg-surface-hover cursor-pointer' : ''
                   }`}
                   style={{ width: column.width }}
                   onClick={column.sortable ? () => handleSort(column.key) : undefined}
@@ -268,7 +268,7 @@ export default function DataTable<T extends Record<string, any>>({
           </thead>
 
           {/* Body */}
-          <tbody className="divide-border-default divide-y bg-surface">
+          <tbody className="divide-border-default bg-surface divide-y">
             {sortedData.length === 0 ? (
               <tr>
                 <td
@@ -296,7 +296,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td className={paddingClasses[size]}>
                         <input
                           type="checkbox"
-                          className="size-4 rounded text-blue-600 bg-surface border-default focus:ring-blue-500"
+                          className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
                           checked={isSelected}
                           onChange={e => handleRowSelect(record, index, e.target.checked)}
                           disabled={selection.getCheckboxProps?.(record)?.disabled}
@@ -367,7 +367,7 @@ export default function DataTable<T extends Record<string, any>>({
 
       {/* Pagination */}
       {pagination && (
-        <div className="flex items-center justify-between border-t px-4 py-3 bg-surface border-default">
+        <div className="bg-surface flex items-center justify-between border-t border-default px-4 py-3">
           <div className="flex items-center text-sm text-secondary">
             <span>
               Showing{' '}

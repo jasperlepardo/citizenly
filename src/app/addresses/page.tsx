@@ -139,7 +139,7 @@ export default function AddressesPage() {
         {/* Address Statistics Cards - Dashboard Style */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {addressStats.map(stat => (
-            <div key={stat.name} className="rounded-lg border p-6 bg-surface border-default">
+            <div key={stat.name} className="bg-surface rounded-lg border border-default p-6">
               <div className="font-montserrat mb-2 text-sm font-medium text-secondary">
                 {stat.name}
               </div>
@@ -152,14 +152,14 @@ export default function AddressesPage() {
                   {stat.coverage}
                 </span>
               </div>
-              <p className="mt-2 text-xs text-muted">{stat.description}</p>
+              <p className="text-muted mt-2 text-xs">{stat.description}</p>
             </div>
           ))}
         </div>
 
         {/* Address Search Section */}
-        <div className="rounded-lg border p-6 bg-surface border-default">
-          <div className="mb-6 border-b pb-4 border-default">
+        <div className="bg-surface rounded-lg border border-default p-6">
+          <div className="mb-6 border-b border-default pb-4">
             <h3 className="font-montserrat text-lg font-semibold text-primary">
               Search Philippine Addresses
             </h3>
@@ -178,9 +178,9 @@ export default function AddressesPage() {
 
         {/* Search Results */}
         {addressResults.length > 0 && (
-          <div className="rounded-lg border bg-surface border-default">
+          <div className="bg-surface rounded-lg border border-default">
             <div className="p-6">
-              <div className="mb-6 border-b pb-4 border-default">
+              <div className="mb-6 border-b border-default pb-4">
                 <h3 className="font-montserrat text-lg font-semibold text-primary">
                   Recent Selections
                 </h3>
@@ -233,14 +233,16 @@ export default function AddressesPage() {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-default divide-y">
+                      <tbody className="divide-y divide-default">
                         {addressResults.map((address, index) => {
-                          const status = (address as any).urban_rural_status ? 'complete' : 'partial';
+                          const status = (address as any).urban_rural_status
+                            ? 'complete'
+                            : 'partial';
 
                           return (
                             <tr
                               key={`${address.barangay_code}-${index}`}
-                              className="transition-colors duration-200 hover:bg-surface-hover"
+                              className="hover:bg-surface-hover transition-colors duration-200"
                             >
                               <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-primary sm:pl-0">
                                 {address.region_name}
@@ -286,8 +288,8 @@ export default function AddressesPage() {
         )}
 
         {/* Coverage Summary */}
-        <div className="rounded-lg border p-6 bg-surface border-default">
-          <div className="mb-6 border-b pb-4 border-default">
+        <div className="bg-surface rounded-lg border border-default p-6">
+          <div className="mb-6 border-b border-default pb-4">
             <h3 className="font-montserrat text-lg font-semibold text-primary">
               Philippine Address Coverage
             </h3>
@@ -296,7 +298,7 @@ export default function AddressesPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-lg border p-4 bg-background border-default">
+            <div className="bg-background rounded-lg border border-default p-4">
               <div className="text-2xl font-bold text-emerald-600">
                 {loading ? '...' : calculateCoverage(dbStats.barangays, 42028)}
               </div>
@@ -304,7 +306,7 @@ export default function AddressesPage() {
                 Nationwide Coverage {dbStats.connected ? '(Live)' : '(Offline)'}
               </div>
             </div>
-            <div className="rounded-lg border p-4 bg-background border-default">
+            <div className="bg-background rounded-lg border border-default p-4">
               <div className="text-2xl font-bold text-blue-600">
                 {loading ? '...' : dbStats.barangays.toLocaleString()}
               </div>
@@ -312,7 +314,7 @@ export default function AddressesPage() {
                 Barangays {dbStats.connected ? 'Available' : 'Cached'}
               </div>
             </div>
-            <div className="rounded-lg border p-4 bg-background border-default">
+            <div className="bg-background rounded-lg border border-default p-4">
               <div className="text-2xl font-bold text-purple-600">{loading ? '...' : '17'}</div>
               <div className="mt-1 text-sm font-medium text-secondary">Regions Covered</div>
             </div>

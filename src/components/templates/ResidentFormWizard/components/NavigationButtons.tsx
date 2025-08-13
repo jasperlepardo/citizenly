@@ -60,7 +60,7 @@ export function NavigationButtons({
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"

@@ -52,7 +52,11 @@ const defaultResidentStatus: ResidentStatus = {
 };
 
 // Template component for interactive stories
-const ResidentStatusTemplate = (args: { value: ResidentStatus; onChange?: (value: ResidentStatus) => void; [key: string]: unknown }) => {
+const ResidentStatusTemplate = (args: {
+  value: ResidentStatus;
+  onChange?: (value: ResidentStatus) => void;
+  [key: string]: unknown;
+}) => {
   const [value, setValue] = useState<ResidentStatus>(args.value);
 
   return (

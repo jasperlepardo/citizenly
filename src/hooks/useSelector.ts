@@ -75,14 +75,20 @@ export function useSelector<T extends { value: string; label: string }>({
     }
   }, [value, selectedOption, loadSelectedFn, formatDisplayValue]);
 
-  const handleSearchChange = useCallback((term: string) => {
-    setSearchTerm(term);
-    
-    if (selectedOption && term !== (formatDisplayValue ? formatDisplayValue(selectedOption) : selectedOption.label)) {
-      setSelectedOption(null);
-      onChange('');
-    }
-  }, [selectedOption, onChange, formatDisplayValue]);
+  const handleSearchChange = useCallback(
+    (term: string) => {
+      setSearchTerm(term);
+
+      if (
+        selectedOption &&
+        term !== (formatDisplayValue ? formatDisplayValue(selectedOption) : selectedOption.label)
+      ) {
+        setSelectedOption(null);
+        onChange('');
+      }
+    },
+    [selectedOption, onChange, formatDisplayValue]
+  );
 
   const handleOpenChange = useCallback((open: boolean) => {
     setIsOpen(open);

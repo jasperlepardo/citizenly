@@ -11,7 +11,7 @@ async function runMigration() {
 
   console.log('Environment:', {
     url: supabaseUrl ? 'present' : 'missing',
-    key: serviceRoleKey ? 'present' : 'missing'
+    key: serviceRoleKey ? 'present' : 'missing',
   });
 
   if (!supabaseUrl || !serviceRoleKey) {
@@ -30,17 +30,17 @@ async function runMigration() {
   try {
     console.log('Running migration to fix full name trigger...');
     console.log('SQL content preview:', sql.substring(0, 200) + '...');
-    
+
     // Split the SQL into individual statements and execute them
     const statements = sql.split(';').filter(stmt => stmt.trim());
-    
+
     for (const statement of statements) {
       if (statement.trim()) {
         console.log('Executing statement:', statement.trim().substring(0, 100) + '...');
-        const { data, error } = await supabase.rpc('exec_sql', { 
-          sql: statement.trim() + ';'
+        const { data, error } = await supabase.rpc('exec_sql', {
+          sql: statement.trim() + ';',
         });
-        
+
         if (error) {
           console.error('Statement failed:', error);
           // Continue with other statements
@@ -49,7 +49,7 @@ async function runMigration() {
         }
       }
     }
-    
+
     console.log('Migration completed!');
   } catch (err) {
     console.error('Error running migration:', err);
