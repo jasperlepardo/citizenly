@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     console.log('User profile query result:', {
       userId: user.id,
       userProfile,
-      profileError
+      profileError,
     });
 
     if (profileError || !userProfile?.barangay_code) {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     console.log('Dashboard query result:', {
       barangayCode,
       dashboardStats,
-      statsError
+      statsError,
     });
 
     if (statsError) {
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
       total_residents: 0,
       total_households: 0,
       seniors: 0,
-      employed: 0
+      employed: 0,
     };
 
     // Get individual residents data for additional processing if needed
@@ -92,7 +92,7 @@ export async function GET(request: NextRequest) {
       barangayCode,
       residentsCount: residentsData?.length || 0,
       residentsError,
-      sampleResident: residentsData?.[0]
+      sampleResident: residentsData?.[0],
     });
 
     // If no individual residents data, try direct residents table query
@@ -103,11 +103,11 @@ export async function GET(request: NextRequest) {
         .select('id, birthdate, sex, civil_status, employment_status')
         .eq('barangay_code', barangayCode)
         .eq('is_active', true);
-      
+
       console.log('Direct residents query:', {
         count: directResidents?.length || 0,
         error: directError,
-        sample: directResidents?.[0]
+        sample: directResidents?.[0],
       });
     }
 
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
           soloParents: statsData.solo_parents || 0,
           ofw: statsData.ofw_residents || 0,
           indigenous: statsData.indigenous_residents || 0,
-        }
+        },
       },
       residentsData: residentsData || [],
       barangayCode: barangayCode,

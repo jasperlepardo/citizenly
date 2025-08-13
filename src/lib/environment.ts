@@ -101,11 +101,13 @@ export const getSupabaseConfig = () => {
       },
 
       // Realtime settings for production
-      realtime: config.database.enableRealtime ? {
-        params: {
-          eventsPerSecond: 10,
-        },
-      } : undefined,
+      realtime: config.database.enableRealtime
+        ? {
+            params: {
+              eventsPerSecond: 10,
+            },
+          }
+        : undefined,
 
       global: {
         headers: {

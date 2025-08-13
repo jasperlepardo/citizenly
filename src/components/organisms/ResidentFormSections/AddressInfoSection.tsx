@@ -11,17 +11,20 @@ import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 interface AddressInfoSectionProps {
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   disabled?: boolean;
 }
 
 /**
  * Address Information Form Section
- * 
+ *
  * @description Renders address information fields including household code, street, subdivision, and ZIP
  * @param props - Component props
  * @returns JSX element for address information section
- * 
+ *
  * @example
  * ```typescript
  * <AddressInfoSection
@@ -36,7 +39,7 @@ export default function AddressInfoSection({
   formData,
   errors,
   updateField,
-  disabled = false
+  disabled = false,
 }: AddressInfoSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,13 +47,13 @@ export default function AddressInfoSection({
   };
 
   return (
-    <FormSection 
-      title="Address Information" 
+    <FormSection
+      title="Address Information"
       description="Detailed address and location information"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField 
-          label="Household Code" 
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField
+          label="Household Code"
           errorMessage={errors.household_code}
           helperText="The household this resident belongs to"
         >
@@ -63,12 +66,8 @@ export default function AddressInfoSection({
             placeholder="e.g., 042114014-2025-000001"
           />
         </FormField>
-        
-        <FormField 
-          label="ZIP Code" 
-          errorMessage={errors.zip_code}
-          helperText="Postal ZIP code"
-        >
+
+        <FormField label="ZIP Code" errorMessage={errors.zip_code} helperText="Postal ZIP code">
           <FormInput
             name="zip_code"
             value={formData.zip_code || ''}
@@ -79,9 +78,9 @@ export default function AddressInfoSection({
             maxLength={10}
           />
         </FormField>
-        
-        <FormField 
-          label="Street ID" 
+
+        <FormField
+          label="Street ID"
           errorMessage={errors.street_id}
           helperText="Internal street identifier (UUID)"
         >
@@ -94,9 +93,9 @@ export default function AddressInfoSection({
             placeholder="Street UUID"
           />
         </FormField>
-        
-        <FormField 
-          label="Subdivision ID" 
+
+        <FormField
+          label="Subdivision ID"
           errorMessage={errors.subdivision_id}
           helperText="Internal subdivision identifier (UUID)"
         >
@@ -111,14 +110,14 @@ export default function AddressInfoSection({
         </FormField>
       </div>
 
-      <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-        <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+      <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
+        <h4 className="mb-2 text-sm font-medium text-blue-800 dark:text-blue-200">
           Address Information Note
         </h4>
         <p className="text-sm text-blue-700 dark:text-blue-300">
-          Street ID and Subdivision ID are internal system identifiers. The household code links 
-          this resident to their household record. These fields are typically populated automatically 
-          by the system but can be manually adjusted if needed.
+          Street ID and Subdivision ID are internal system identifiers. The household code links
+          this resident to their household record. These fields are typically populated
+          automatically by the system but can be manually adjusted if needed.
         </p>
       </div>
     </FormSection>

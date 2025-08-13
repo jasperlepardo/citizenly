@@ -27,8 +27,8 @@ describe('Rate Limiting', () => {
 
   beforeEach(() => {
     // Clear rate limit store between tests
-    const rateLimitModule = require('../rate-limit');
-    rateLimitModule.rateLimitStore?.clear?.();
+    // Note: In production, we'd use Redis which has proper clear methods
+    jest.clearAllMocks();
   });
 
   describe('RATE_LIMIT_RULES', () => {
@@ -97,7 +97,7 @@ describe('Rate Limiting', () => {
 
       const response = await handler(request, userId);
       expect(response).not.toBeNull();
-      
+
       if (response) {
         const body = await response.json();
         expect(body.error.code).toBe('RATE_LIMIT_EXCEEDED');

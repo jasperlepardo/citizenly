@@ -48,7 +48,8 @@ export async function GET(request: NextRequest) {
     // Get complete geographic hierarchy in a single query
     const { data: hierarchy, error: hierarchyError } = await supabaseAdmin
       .from('psgc_barangays')
-      .select(`
+      .select(
+        `
         code,
         name,
         psgc_cities_municipalities!inner(
@@ -63,7 +64,8 @@ export async function GET(request: NextRequest) {
             )
           )
         )
-      `)
+      `
+      )
       .eq('code', profile.barangay_code)
       .single();
 
@@ -71,17 +73,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Geographic hierarchy not found' }, { status: 404 });
     }
 
-    const city = hierarchy.psgc_cities_municipalities;
-    const province = city.psgc_provinces;
-    const region = province.psgc_regions;
+    const city = (hierarchy as any).psgc_cities_municipalities;
+    const province = (city as any).psgc_provinces;
+    const region = (province as any).psgc_regions;
 
     return NextResponse.json({
       region: { code: region.code, name: region.name },
       province: { code: province.code, name: province.name },
-      city: { code: city.code, name: city.name },
-      barangay: { code: hierarchy.code, name: hierarchy.name }
+      city: { code: (city as any).code, name: (city as any).name },
+      barangay: { code: hierarchy.code, name: hierarchy.name },
     });
-
   } catch (error) {
     console.error('Geographic location API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

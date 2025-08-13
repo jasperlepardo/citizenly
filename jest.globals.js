@@ -6,4 +6,3 @@ try {
 } catch (e) {
   // ignore
 }
-

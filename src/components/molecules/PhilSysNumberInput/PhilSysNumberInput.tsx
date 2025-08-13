@@ -196,7 +196,7 @@ export default function PhilSysNumberInput({
       </div>
 
       {/* Helper Text */}
-      <div className="text-xs text-muted">
+      <div className="text-muted text-xs">
         {!isFocused && displayValue && showLastFourDigits ? (
           <span>
             Number is masked for security. Click to edit. Last 4 digits: {displayValue.slice(-4)}

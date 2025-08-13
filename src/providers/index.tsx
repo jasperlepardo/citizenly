@@ -11,7 +11,7 @@ interface RootProviderProps {
 
 /**
  * Root Provider Component
- * 
+ *
  * Wraps the entire application with all necessary providers
  * in the correct order with proper error boundaries
  */
@@ -19,9 +19,7 @@ export function RootProvider({ children, initialUser }: RootProviderProps) {
   return (
     <ErrorBoundary level="page" resetOnPropsChange>
       <AppProvider initialUser={initialUser}>
-        <ErrorBoundary level="section">
-          {children}
-        </ErrorBoundary>
+        <ErrorBoundary level="section">{children}</ErrorBoundary>
       </AppProvider>
     </ErrorBoundary>
   );
@@ -33,7 +31,7 @@ export { ErrorBoundary, withErrorBoundary } from './ErrorBoundary';
 
 // Example usage in app/layout.tsx:
 // import { RootProvider } from '@/providers';
-// 
+//
 // export default function RootLayout({ children }) {
 //   return (
 //     <html>

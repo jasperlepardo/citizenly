@@ -18,16 +18,16 @@ interface AppState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  
+
   // Theme state
   theme: 'light' | 'dark' | 'system';
   primaryColor: string;
-  
+
   // UI state
   sidebarOpen: boolean;
   mobileMenuOpen: boolean;
   notifications: Notification[];
-  
+
   // App settings
   locale: string;
   timezone: string;
@@ -76,37 +76,37 @@ function appReducer(state: AppState, action: AppAction): AppState {
         user: action.payload,
         isAuthenticated: !!action.payload,
       };
-    
+
     case 'SET_LOADING':
       return {
         ...state,
         isLoading: action.payload,
       };
-    
+
     case 'SET_THEME':
       return {
         ...state,
         theme: action.payload,
       };
-    
+
     case 'SET_PRIMARY_COLOR':
       return {
         ...state,
         primaryColor: action.payload,
       };
-    
+
     case 'TOGGLE_SIDEBAR':
       return {
         ...state,
         sidebarOpen: !state.sidebarOpen,
       };
-    
+
     case 'TOGGLE_MOBILE_MENU':
       return {
         ...state,
         mobileMenuOpen: !state.mobileMenuOpen,
       };
-    
+
     case 'ADD_NOTIFICATION':
       return {
         ...state,
@@ -119,28 +119,28 @@ function appReducer(state: AppState, action: AppAction): AppState {
           },
         ].slice(-10), // Keep only last 10 notifications
       };
-    
+
     case 'REMOVE_NOTIFICATION':
       return {
         ...state,
         notifications: state.notifications.filter(n => n.id !== action.payload),
       };
-    
+
     case 'SET_LOCALE':
       return {
         ...state,
         locale: action.payload,
       };
-    
+
     case 'SET_TIMEZONE':
       return {
         ...state,
         timezone: action.payload,
       };
-    
+
     case 'RESET_STATE':
       return initialState;
-    
+
     default:
       return state;
   }
@@ -151,19 +151,19 @@ interface AppContextValue extends AppState {
   // Auth actions
   login: (user: User) => void;
   logout: () => void;
-  
+
   // Theme actions
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   setPrimaryColor: (color: string) => void;
-  
+
   // UI actions
   toggleSidebar: () => void;
   toggleMobileMenu: () => void;
-  
+
   // Notification actions
   notify: (type: Notification['type'], message: string) => void;
   dismissNotification: (id: string) => void;
-  
+
   // Settings actions
   setLocale: (locale: string) => void;
   setTimezone: (timezone: string) => void;
@@ -203,14 +203,14 @@ export function AppProvider({ children, initialUser = null }: AppProviderProps) 
   // Apply theme
   useEffect(() => {
     const root = document.documentElement;
-    
+
     if (state.theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       root.classList.toggle('dark', prefersDark);
     } else {
       root.classList.toggle('dark', state.theme === 'dark');
     }
-    
+
     // Set primary color CSS variable
     root.style.setProperty('--color-primary', state.primaryColor);
   }, [state.theme, state.primaryColor]);
@@ -237,7 +237,8 @@ export function AppProvider({ children, initialUser = null }: AppProviderProps) 
       if (savedSettings) {
         const settings = JSON.parse(savedSettings);
         if (settings.theme) dispatch({ type: 'SET_THEME', payload: settings.theme });
-        if (settings.primaryColor) dispatch({ type: 'SET_PRIMARY_COLOR', payload: settings.primaryColor });
+        if (settings.primaryColor)
+          dispatch({ type: 'SET_PRIMARY_COLOR', payload: settings.primaryColor });
         if (settings.locale) dispatch({ type: 'SET_LOCALE', payload: settings.locale });
         if (settings.timezone) dispatch({ type: 'SET_TIMEZONE', payload: settings.timezone });
       }
@@ -264,39 +265,39 @@ export function AppProvider({ children, initialUser = null }: AppProviderProps) 
   // Context value
   const contextValue: AppContextValue = {
     ...state,
-    
+
     // Auth actions
     login: (user: User) => {
       dispatch({ type: 'SET_USER', payload: user });
       logger.info('User logged in', { userId: user.id });
     },
-    
+
     logout: () => {
       dispatch({ type: 'SET_USER', payload: null });
       dispatch({ type: 'RESET_STATE' });
       logger.info('User logged out');
     },
-    
+
     // Theme actions
-    setTheme: (theme) => dispatch({ type: 'SET_THEME', payload: theme }),
-    setPrimaryColor: (color) => dispatch({ type: 'SET_PRIMARY_COLOR', payload: color }),
-    
+    setTheme: theme => dispatch({ type: 'SET_THEME', payload: theme }),
+    setPrimaryColor: color => dispatch({ type: 'SET_PRIMARY_COLOR', payload: color }),
+
     // UI actions
     toggleSidebar: () => dispatch({ type: 'TOGGLE_SIDEBAR' }),
     toggleMobileMenu: () => dispatch({ type: 'TOGGLE_MOBILE_MENU' }),
-    
+
     // Notification actions
     notify: (type, message) => {
       dispatch({ type: 'ADD_NOTIFICATION', payload: { type, message } });
     },
-    
-    dismissNotification: (id) => {
+
+    dismissNotification: id => {
       dispatch({ type: 'REMOVE_NOTIFICATION', payload: id });
     },
-    
+
     // Settings actions
-    setLocale: (locale) => dispatch({ type: 'SET_LOCALE', payload: locale }),
-    setTimezone: (timezone) => dispatch({ type: 'SET_TIMEZONE', payload: timezone }),
+    setLocale: locale => dispatch({ type: 'SET_LOCALE', payload: locale }),
+    setTimezone: timezone => dispatch({ type: 'SET_TIMEZONE', payload: timezone }),
   };
 
   return (

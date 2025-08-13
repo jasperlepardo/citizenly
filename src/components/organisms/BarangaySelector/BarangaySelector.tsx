@@ -77,7 +77,7 @@ export default function BarangaySelector({
       } else {
         // Public search - simplified direct query for reliability
         console.log('🔍 Public barangay search for:', searchTerm);
-        
+
         const { data, error } = await supabase
           .from('psgc_barangays')
           .select('code, name, city_municipality_code')
@@ -93,14 +93,15 @@ export default function BarangaySelector({
         console.log('✅ Found barangays:', data?.length);
 
         // Transform to match expected format (simplified)
-        const transformedData = data?.map((item: any) => ({
-          code: item.code,
-          name: item.name,
-          city_name: 'Loading...', // Will be populated by separate queries if needed
-          province_name: 'Loading...',
-          region_name: 'Loading...',
-          full_address: `${item.name} (Code: ${item.code})`,
-        })) || [];
+        const transformedData =
+          data?.map((item: any) => ({
+            code: item.code,
+            name: item.name,
+            city_name: 'Loading...', // Will be populated by separate queries if needed
+            province_name: 'Loading...',
+            region_name: 'Loading...',
+            full_address: `${item.name} (Code: ${item.code})`,
+          })) || [];
 
         setSearchResults(transformedData);
       }

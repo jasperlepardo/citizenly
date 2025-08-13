@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A specialized pie chart for displaying civil status distribution in Filipino barangays. Shows breakdown of single, married, widowed, divorced, separated, annulled, registered partnership, and live-in relationships.',
+        component:
+          'A specialized pie chart for displaying civil status distribution in Filipino barangays. Shows breakdown of single, married, widowed, divorced, separated, annulled, registered partnership, and live-in relationships.',
       },
     },
   },
@@ -238,7 +239,7 @@ export const FilipinoTitle: Story = {
 // Comparative analysis - Two charts
 export const ComparativeAnalysis: Story = {
   render: () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6">
+    <div className="grid grid-cols-1 gap-8 p-6 lg:grid-cols-2">
       <CivilStatusPieChart
         title="2023 Data"
         data={{
@@ -275,7 +276,7 @@ export const ComparativeAnalysis: Story = {
 // Different barangay types comparison
 export const BarangayComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid min-h-screen grid-cols-1 gap-6 bg-gray-50 p-6 md:grid-cols-2 xl:grid-cols-3">
       <CivilStatusPieChart
         title="Rural Barangay"
         data={{

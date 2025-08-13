@@ -21,7 +21,9 @@ function UserDropdown() {
   const loadBarangayInfo = async (barangayCode: string) => {
     try {
       // Check if user is authenticated first
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
         setBarangayInfo(`Barangay ${barangayCode}`);
@@ -54,7 +56,7 @@ function UserDropdown() {
       if (error) {
         // Don't log error if it's just an authentication issue
         if (
-          error.code === 'PGRST001' || 
+          error.code === 'PGRST001' ||
           error.message?.includes('permission') ||
           error.message?.includes('JWT') ||
           error.message?.includes('unauthorized') ||
@@ -63,7 +65,11 @@ function UserDropdown() {
           logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
         } else {
           // Only log non-authentication related errors, and use debug level for less critical errors
-          logger.debug('Error loading barangay info', { error: error.message, code: error.code, barangayCode });
+          logger.debug('Error loading barangay info', {
+            error: error.message,
+            code: error.code,
+            barangayCode,
+          });
         }
         setBarangayInfo(`Barangay ${barangayCode}`);
         return;
@@ -81,9 +87,9 @@ function UserDropdown() {
       }
     } catch (error) {
       // Don't log critical errors for authentication-related issues in dashboard
-      logger.debug('Error loading barangay info (caught in catch)', { 
-        error: error instanceof Error ? error.message : String(error), 
-        barangayCode 
+      logger.debug('Error loading barangay info (caught in catch)', {
+        error: error instanceof Error ? error.message : String(error),
+        barangayCode,
       });
       setBarangayInfo(`Barangay ${barangayCode}`);
     }
@@ -257,7 +263,7 @@ export default function DashboardLayout({
   onSearchChange,
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       {/* Skip Navigation */}
       <SkipNavigation skipTo="#main-content" />
 
@@ -269,7 +275,7 @@ export default function DashboardLayout({
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b px-4 py-3 border-default">
+          <div className="flex items-center justify-between border-b border-default px-4 py-3">
             <h1 className="font-montserrat text-xl font-semibold text-primary">Citizenly</h1>
             <div className="flex gap-1">
               <div className="rounded bg-neutral-200 p-0.5">
@@ -291,7 +297,7 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main className="ml-56">
         {/* Top Header */}
-        <header className="border-b px-6 py-2 bg-background border-default">
+        <header className="bg-background border-b border-default px-6 py-2">
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="w-[497px]">

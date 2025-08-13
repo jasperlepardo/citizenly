@@ -30,8 +30,8 @@ export default function UserProfile({
   if (loading || profileLoading) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <div className="size-8 animate-pulse rounded-full bg-background-muted"></div>
-        {!compact && <div className="h-4 w-20 animate-pulse rounded bg-background-muted"></div>}
+        <div className="bg-background-muted size-8 animate-pulse rounded-full"></div>
+        {!compact && <div className="bg-background-muted h-4 w-20 animate-pulse rounded"></div>}
       </div>
     );
   }
@@ -57,7 +57,7 @@ export default function UserProfile({
       <div className={`relative ${className}`}>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="hover:bg-surface-hover flex items-center gap-2 rounded-md p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
             {initials}
@@ -80,25 +80,25 @@ export default function UserProfile({
         {showDropdown && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)}></div>
-            <div className="absolute right-0 z-50 mt-2 w-64 rounded-md border shadow-xl bg-surface border-default">
-              <div className="border-b p-4 border-default">
+            <div className="bg-surface absolute right-0 z-50 mt-2 w-64 rounded-md border border-default shadow-xl">
+              <div className="border-b border-default p-4">
                 <div className="font-medium text-primary">{displayName}</div>
                 <div className="text-sm text-secondary">{userProfile.email}</div>
                 <div className="mt-1 text-xs text-blue-600">{role?.name}</div>
               </div>
 
               {showBarangay && address && (
-                <div className="border-b p-4 border-default">
+                <div className="border-b border-default p-4">
                   <div className="mb-1 text-xs font-medium text-secondary">Assigned Barangay</div>
                   <div className="text-sm text-primary">{userProfile?.barangay_code}</div>
-                  <div className="text-xs text-muted">Barangay Assignment</div>
+                  <div className="text-muted text-xs">Barangay Assignment</div>
                 </div>
               )}
 
               <div className="p-2">
                 <button
                   onClick={handleSignOut}
-                  className="w-full rounded-md p-2 text-left text-sm text-secondary hover:bg-surface-hover"
+                  className="hover:bg-surface-hover w-full rounded-md p-2 text-left text-sm text-secondary"
                 >
                   Sign Out
                 </button>
@@ -111,7 +111,7 @@ export default function UserProfile({
   }
 
   return (
-    <div className={`rounded-lg border p-6 shadow-sm bg-surface border-default ${className}`}>
+    <div className={`bg-surface rounded-lg border border-default p-6 shadow-sm ${className}`}>
       <div className="flex items-start gap-4">
         <div className="flex size-16 items-center justify-center rounded-full bg-blue-600 text-xl font-medium text-white">
           {initials}
@@ -133,7 +133,7 @@ export default function UserProfile({
       </div>
 
       {showBarangay && (
-        <div className="mt-6 border-t pt-6 border-default">
+        <div className="mt-6 border-t border-default pt-6">
           <h4 className="mb-3 text-sm font-medium text-secondary">Barangay Assignment</h4>
 
           {barangayAccounts.length > 0 ? (
@@ -172,10 +172,10 @@ export default function UserProfile({
         </div>
       )}
 
-      <div className="mt-6 border-t pt-6 border-default">
+      <div className="mt-6 border-t border-default pt-6">
         <button
           onClick={handleSignOut}
-          className="flex w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium text-secondary bg-surface border-default hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="bg-surface hover:bg-surface-hover flex w-full items-center justify-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Sign Out
         </button>

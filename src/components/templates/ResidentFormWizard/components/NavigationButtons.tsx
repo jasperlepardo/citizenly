@@ -30,7 +30,7 @@ export function NavigationButtons({
       <div>
         {canGoBack && (
           <Button
-            variant="outline"
+            variant="secondary-outline"
             onClick={onPrevious}
             disabled={isSubmitting}
             className="inline-flex items-center gap-2"
@@ -60,7 +60,7 @@ export function NavigationButtons({
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"

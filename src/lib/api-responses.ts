@@ -4,14 +4,14 @@
  */
 
 import { NextResponse, NextRequest } from 'next/server';
-import { 
-  ApiResponse, 
-  PaginatedResponse, 
-  ErrorResponse, 
-  ErrorCode, 
-  RequestContext 
+import {
+  ApiResponse,
+  PaginatedResponse,
+  ErrorResponse,
+  ErrorCode,
+  RequestContext,
 } from './api-types';
-import { auditError, auditSecurityViolation } from './api-audit';
+import { auditError, auditSecurityViolation, AuditEventType } from './api-audit';
 import { sanitizeSearchInput } from './api-validation';
 import { logger } from './secure-logger';
 
@@ -29,8 +29,8 @@ export function createSuccessResponse<T>(
     metadata: {
       timestamp: new Date().toISOString(),
       version: '1.0',
-      requestId: context?.requestId
-    }
+      requestId: context?.requestId,
+    },
   };
 
   return NextResponse.json(response, { status: 200 });
@@ -50,7 +50,7 @@ export function createPaginatedResponse<T>(
   context?: RequestContext
 ): Response {
   const pages = Math.ceil(pagination.total / pagination.limit);
-  
+
   const response: PaginatedResponse<T> = {
     data,
     pagination: {
@@ -59,14 +59,14 @@ export function createPaginatedResponse<T>(
       total: pagination.total,
       pages,
       hasNext: pagination.page < pages,
-      hasPrev: pagination.page > 1
+      hasPrev: pagination.page > 1,
     },
     message,
     metadata: {
       timestamp: new Date().toISOString(),
       version: '1.0',
-      requestId: context?.requestId
-    }
+      requestId: context?.requestId,
+    },
   };
 
   return NextResponse.json(response, { status: 200 });
@@ -88,11 +88,11 @@ export function createErrorResponse(
       code,
       message,
       details,
-      field
+      field,
     },
     timestamp: new Date().toISOString(),
     path: context?.path || 'unknown',
-    requestId: context?.requestId
+    requestId: context?.requestId,
   };
 
   return NextResponse.json(response, { status });
@@ -122,14 +122,7 @@ export function createUnauthorizedResponse(
   message: string = 'Authentication required',
   context?: RequestContext
 ): Response {
-  return createErrorResponse(
-    ErrorCode.UNAUTHORIZED,
-    message,
-    401,
-    undefined,
-    undefined,
-    context
-  );
+  return createErrorResponse(ErrorCode.UNAUTHORIZED, message, 401, undefined, undefined, context);
 }
 
 /**
@@ -139,14 +132,7 @@ export function createForbiddenResponse(
   message: string = 'Insufficient permissions',
   context?: RequestContext
 ): Response {
-  return createErrorResponse(
-    ErrorCode.FORBIDDEN,
-    message,
-    403,
-    undefined,
-    undefined,
-    context
-  );
+  return createErrorResponse(ErrorCode.FORBIDDEN, message, 403, undefined, undefined, context);
 }
 
 /**
@@ -169,27 +155,14 @@ export function createNotFoundResponse(
 /**
  * Create a conflict error response
  */
-export function createConflictResponse(
-  message: string,
-  context?: RequestContext
-): Response {
-  return createErrorResponse(
-    ErrorCode.CONFLICT,
-    message,
-    409,
-    undefined,
-    undefined,
-    context
-  );
+export function createConflictResponse(message: string, context?: RequestContext): Response {
+  return createErrorResponse(ErrorCode.CONFLICT, message, 409, undefined, undefined, context);
 }
 
 /**
  * Create a rate limit error response
  */
-export function createRateLimitResponse(
-  retryAfter: number,
-  context?: RequestContext
-): Response {
+export function createRateLimitResponse(retryAfter: number, context?: RequestContext): Response {
   const response = createErrorResponse(
     ErrorCode.RATE_LIMIT_EXCEEDED,
     `Too many requests. Try again in ${retryAfter} seconds.`,
@@ -206,25 +179,21 @@ export function createRateLimitResponse(
 /**
  * Handle database errors consistently
  */
-export async function handleDatabaseError(
-  error: any,
-  context?: RequestContext
-): Promise<Response> {
+export async function handleDatabaseError(error: any, context?: RequestContext): Promise<Response> {
   logger.error('Database error', { error, context });
-  
+
   if (context) {
     await auditError(error, context, ErrorCode.DATABASE_ERROR);
   }
 
   // Check for specific database error codes
-  if (error?.code === '23505') { // Unique constraint violation
-    return createConflictResponse(
-      'Resource already exists',
-      context
-    );
+  if (error?.code === '23505') {
+    // Unique constraint violation
+    return createConflictResponse('Resource already exists', context);
   }
-  
-  if (error?.code === '23503') { // Foreign key violation
+
+  if (error?.code === '23503') {
+    // Foreign key violation
     return createErrorResponse(
       ErrorCode.VALIDATION_ERROR,
       'Invalid reference to related resource',
@@ -234,8 +203,9 @@ export async function handleDatabaseError(
       context
     );
   }
-  
-  if (error?.code === '42P01') { // Table does not exist
+
+  if (error?.code === '42P01') {
+    // Table does not exist
     return createErrorResponse(
       ErrorCode.INTERNAL_ERROR,
       'Database configuration error',
@@ -251,10 +221,12 @@ export async function handleDatabaseError(
     ErrorCode.DATABASE_ERROR,
     'Database operation failed',
     500,
-    process.env.NODE_ENV === 'development' ? {
-      code: error?.code,
-      message: error?.message
-    } : undefined,
+    process.env.NODE_ENV === 'development'
+      ? {
+          code: error?.code,
+          message: error?.message,
+        }
+      : undefined,
     undefined,
     context
   );
@@ -268,7 +240,7 @@ export async function handleUnexpectedError(
   context?: RequestContext
 ): Promise<Response> {
   logger.error('Unexpected API error', { error, context });
-  
+
   if (context) {
     await auditError(error, context, ErrorCode.INTERNAL_ERROR);
   }
@@ -277,11 +249,13 @@ export async function handleUnexpectedError(
     ErrorCode.INTERNAL_ERROR,
     'An unexpected error occurred',
     500,
-    process.env.NODE_ENV === 'development' ? {
-      name: error?.name,
-      message: error?.message,
-      stack: error?.stack?.split('\n').slice(0, 5)
-    } : undefined,
+    process.env.NODE_ENV === 'development'
+      ? {
+          name: error?.name,
+          message: error?.message,
+          stack: error?.stack?.split('\n').slice(0, 5),
+        }
+      : undefined,
     undefined,
     context
   );
@@ -299,14 +273,14 @@ export async function detectSQLInjection(
     /(union|select|insert|update|delete|drop|create|alter)\s/i,
     /(\bor\b|\band\b)\s+\d+\s*=\s*\d+/i,
     /(\bor\b|\band\b)\s+['"].*['"]?\s*=\s*['"].*['"]?/i,
-    /(exec|execute|sp_|xp_)/i
+    /(exec|execute|sp_|xp_)/i,
   ];
 
   const isSQLInjection = sqlPatterns.some(pattern => pattern.test(input));
-  
+
   if (isSQLInjection && context) {
     await auditSecurityViolation(
-      'sql_injection_attempt' as any,
+      AuditEventType.SQL_INJECTION_ATTEMPT,
       context,
       { suspiciousInput: input },
       ErrorCode.SQL_INJECTION_ATTEMPT
@@ -345,26 +319,20 @@ export async function processSearchParams(
     search: search ? sanitizeSearchInput(search) : null,
     page,
     limit,
-    offset
+    offset,
   };
 }
 
 /**
  * Apply search filters safely to Supabase query
  */
-export function applySearchFilter(
-  query: any,
-  searchTerm: string,
-  searchFields: string[]
-): any {
+export function applySearchFilter(query: any, searchTerm: string, searchFields: string[]): any {
   if (!searchTerm || !searchFields.length) {
     return query;
   }
 
   const sanitizedTerm = sanitizeSearchInput(searchTerm);
-  const searchConditions = searchFields
-    .map(field => `${field}.ilike.%${sanitizedTerm}%`)
-    .join(',');
+  const searchConditions = searchFields.map(field => `${field}.ilike.%${sanitizedTerm}%`).join(',');
 
   return query.or(searchConditions);
 }
@@ -379,14 +347,16 @@ export function withErrorHandling<T extends any[]>(
     try {
       return await handler(request, ...args);
     } catch (error: any) {
-      const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as RequestContext | undefined;
-      
+      const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as
+        | RequestContext
+        | undefined;
+
       // Check for validation errors
       if (error.name === 'ZodError') {
         return createValidationErrorResponse(
           error.errors.map((err: any) => ({
             field: err.path.join('.'),
-            message: err.message
+            message: err.message,
           })),
           context
         );
@@ -413,14 +383,16 @@ export function withNextRequestErrorHandling<T extends any[]>(
     try {
       return await handler(request, ...args);
     } catch (error: any) {
-      const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as RequestContext | undefined;
-      
+      const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as
+        | RequestContext
+        | undefined;
+
       // Check for validation errors
       if (error.name === 'ZodError') {
         return createValidationErrorResponse(
           error.errors.map((err: any) => ({
             field: err.path.join('.'),
-            message: err.message
+            message: err.message,
           })),
           context
         );
@@ -451,8 +423,8 @@ export function createCreatedResponse<T>(
     metadata: {
       timestamp: new Date().toISOString(),
       version: '1.0',
-      requestId: context?.requestId
-    }
+      requestId: context?.requestId,
+    },
   };
 
   return NextResponse.json(response, { status: 201 });
@@ -474,16 +446,14 @@ export function addSecurityHeaders(response: Response): Response {
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
+
   return response;
 }
 
 /**
  * Middleware to add security headers to all responses
  */
-export function withSecurityHeaders(
-  handler: (request: Request) => Promise<Response>
-) {
+export function withSecurityHeaders(handler: (request: Request) => Promise<Response>) {
   return async (request: Request): Promise<Response> => {
     const response = await handler(request);
     return addSecurityHeaders(response);

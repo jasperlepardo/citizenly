@@ -29,28 +29,23 @@ export function GeographicSelectorExample() {
       barangayCode: formData.barangayCode,
       // Names are stored locally for display but not submitted
     };
-    
+
     console.log('Data to submit to API:', dataToSubmit);
     alert('Check console for submitted data');
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          Geographic Selector Example
-        </h1>
-        
-        <CascadingGeographicSelector
-          onSelectionChange={handleSelectionChange}
-          required
-        />
-        
+    <div className="mx-auto max-w-2xl space-y-6 p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <h1 className="mb-6 text-2xl font-bold text-gray-900">Geographic Selector Example</h1>
+
+        <CascadingGeographicSelector onSelectionChange={handleSelectionChange} required />
+
         <div className="mt-6">
           <button
             onClick={handleSubmit}
             disabled={!formData.barangayCode}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
           >
             Submit (Check Console)
           </button>
@@ -58,24 +53,28 @@ export function GeographicSelectorExample() {
       </div>
 
       {/* Current Selection Display */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h3 className="font-semibold text-gray-800 mb-3">Current Selection Data:</h3>
-        <pre className="text-sm text-gray-600 overflow-auto">
+      <div className="rounded-lg bg-gray-50 p-4">
+        <h3 className="mb-3 font-semibold text-gray-800">Current Selection Data:</h3>
+        <pre className="overflow-auto text-sm text-gray-600">
           {JSON.stringify(formData, null, 2)}
         </pre>
       </div>
 
       {/* API Data Preview */}
       {formData.barangayCode && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-800 mb-3">Data sent to API (codes only):</h3>
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h3 className="mb-3 font-semibold text-blue-800">Data sent to API (codes only):</h3>
           <pre className="text-sm text-blue-700">
-            {JSON.stringify({
-              regionCode: formData.regionCode,
-              provinceCode: formData.provinceCode,
-              cityMunicipalityCode: formData.cityCode,
-              barangayCode: formData.barangayCode,
-            }, null, 2)}
+            {JSON.stringify(
+              {
+                regionCode: formData.regionCode,
+                provinceCode: formData.provinceCode,
+                cityMunicipalityCode: formData.cityCode,
+                barangayCode: formData.barangayCode,
+              },
+              null,
+              2
+            )}
           </pre>
         </div>
       )}

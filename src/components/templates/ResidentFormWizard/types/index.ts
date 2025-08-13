@@ -1,12 +1,12 @@
-import { 
-  SexValue, 
-  CivilStatusValue, 
-  CitizenshipValue, 
-  EducationLevelValue, 
-  EmploymentStatusValue, 
-  BloodTypeValue, 
-  ReligionValue, 
-  EthnicityValue 
+import {
+  SexValue,
+  CivilStatusValue,
+  CitizenshipValue,
+  EducationLevelValue,
+  EmploymentStatusValue,
+  BloodTypeValue,
+  ReligionValue,
+  EthnicityValue,
 } from '../constants/enums';
 
 export interface ResidentFormData {
@@ -76,7 +76,18 @@ export interface ResidentFormData {
   householdCode: string;
 
   // Migration Information - Step 5 (optional)
-  migrationInfo: any;
+  migrationInfo: {
+    previousBarangayCode?: string;
+    previousCityMunicipalityCode?: string;
+    previousProvinceCode?: string;
+    previousRegionCode?: string;
+    reasonForLeaving?: string;
+    dateOfTransfer?: string;
+    reasonForTransferring?: string;
+    durationOfStayCurrentMonths?: number;
+    isIntendingToReturn?: boolean;
+    migrationType?: string;
+  } | null;
 }
 
 export interface ValidationErrors {
@@ -85,7 +96,7 @@ export interface ValidationErrors {
 
 export interface StepComponentProps {
   formData: ResidentFormData;
-  onChange: (field: keyof ResidentFormData, value: any) => void;
+  onChange: (field: keyof ResidentFormData, value: string | boolean | number | null) => void;
   errors: ValidationErrors;
   onNext: () => void;
   onPrevious: () => void;
@@ -111,17 +122,20 @@ export interface UseResidentFormReturn {
   errors: ValidationErrors;
   currentStep: number;
   isSubmitting: boolean;
-  
+
   // Actions
-  handleInputChange: (field: keyof ResidentFormData, value: any) => void;
+  handleInputChange: (
+    field: keyof ResidentFormData,
+    value: string | boolean | number | null
+  ) => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
   handleSubmit: () => Promise<void>;
-  
+
   // Validation
   validateStep: (step: number) => boolean;
   validateForm: () => boolean;
-  
+
   // Utilities
   steps: FormStep[];
   canProceedToNext: boolean;

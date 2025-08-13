@@ -325,7 +325,7 @@ async function registerResident(data) {
             <code style={typographyScale.code.sm} className="rounded bg-neutral-200 px-1">
               updateResident()
             </code>{' '}
-            function with the resident's{' '}
+            function with the resident&rsquo;s{' '}
             <code style={typographyScale.code.sm} className="rounded bg-neutral-200 px-1">
               philsys_number
             </code>{' '}

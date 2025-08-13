@@ -1,6 +1,6 @@
 /**
  * Resident Detail Types
- * 
+ *
  * @description Type definitions for resident detail view components and comprehensive resident data management
  * @author Citizenly Development Team
  * @version 1.0.0
@@ -8,13 +8,13 @@
 
 /**
  * Complete resident record interface for detail views and comprehensive data management
- * 
+ *
  * @description Represents a comprehensive resident profile including personal information,
  * geographic location, sectoral demographics, household relationships, and migration data.
  * This interface is used throughout the system for resident detail views, forms, and API responses.
- * 
+ *
  * @interface Resident
- * 
+ *
  * @example Basic resident creation
  * ```typescript
  * const newResident: Resident = {
@@ -29,7 +29,7 @@
  *   created_at: '2024-01-15T10:30:00Z'
  * };
  * ```
- * 
+ *
  * @example With household and sectoral information
  * ```typescript
  * const residentWithDetails: Resident = {
@@ -62,8 +62,8 @@ export interface Resident {
   last_name: string;
   /** Name extension (Jr., Sr., III, etc.) */
   extension_name?: string;
-  
-  // Birth and Identity Information  
+
+  // Birth and Identity Information
   /** Birth date in ISO 8601 format (YYYY-MM-DD) */
   birthdate: string;
   /** PSGC code of birth place location */
@@ -74,7 +74,7 @@ export interface Resident {
   birth_place_name?: string;
   /** Biological sex as recorded in official documents */
   sex: 'male' | 'female';
-  
+
   // Civil Status Information
   /** Current civil status (married, single, widowed, etc.) */
   civil_status: string;
@@ -82,7 +82,7 @@ export interface Resident {
   civil_status_others_specify?: string;
   /** Citizenship status (Filipino, dual citizen, foreign national) */
   citizenship?: string;
-  
+
   // Contact Information
   /** Mobile phone number (Philippine format: +639xxxxxxxxx or 09xxxxxxxxx) */
   mobile_number?: string;
@@ -90,19 +90,19 @@ export interface Resident {
   email?: string;
   /** Landline/telephone number */
   telephone_number?: string;
-  
+
   // Government IDs and Numbers
   /** Complete PhilSys (PSN) card number (format: 1234-5678-9012-3456) */
   philsys_card_number?: string;
   /** Last 4 digits of PhilSys number (for verification purposes) */
   philsys_last4?: string;
-  
+
   // Education Information
   /** Highest educational attainment level */
   education_attainment?: string;
   /** Whether the resident graduated from their education level */
   is_graduate?: boolean;
-  
+
   // Employment Information
   /** Current employment status (employed, unemployed, student, etc.) */
   employment_status?: string;
@@ -116,7 +116,7 @@ export interface Resident {
   psoc_level?: number;
   /** Specific job title or occupation */
   occupation_title?: string;
-  
+
   // Physical Characteristics
   /** Blood type (A+, B-, AB+, O-, etc. or 'unknown') */
   blood_type?: string;
@@ -126,7 +126,7 @@ export interface Resident {
   weight?: number;
   /** Skin complexion description */
   complexion?: string;
-  
+
   // Cultural Identity
   /** Ethnic group or cultural identity */
   ethnicity?: string;
@@ -134,7 +134,7 @@ export interface Resident {
   religion?: string;
   /** Specification when religion is 'others' */
   religion_others_specify?: string;
-  
+
   // Family Information
   /** Mother's maiden first name */
   mother_maiden_first?: string;
@@ -142,7 +142,7 @@ export interface Resident {
   mother_maiden_middle?: string;
   /** Mother's maiden last name */
   mother_maiden_last?: string;
-  
+
   // Voting Information
   /** Whether resident is registered to vote */
   is_voter?: boolean;
@@ -150,7 +150,7 @@ export interface Resident {
   is_resident_voter?: boolean;
   /** Date of last recorded vote (ISO 8601 format) */
   last_voted_date?: string;
-  
+
   // Geographic/Address Information
   /** Household code this resident belongs to */
   household_code?: string;
@@ -168,7 +168,7 @@ export interface Resident {
   region_code: string;
   /** Postal ZIP code */
   zip_code?: string;
-  
+
   // System Fields
   /** Whether the resident record is active/enabled */
   is_active?: boolean;
@@ -178,9 +178,9 @@ export interface Resident {
   updated_at?: string;
   /** User ID who created this record */
   created_by?: string;
-  
+
   // Related Data from API Response
-  /** 
+  /**
    * Household information when resident data includes household details
    * @description Complete household record associated with this resident
    */
@@ -220,9 +220,9 @@ export interface Resident {
     /** Resident ID of the household head */
     household_head_id?: string;
   };
-  
+
   // Geographic Information from API
-  /** 
+  /**
    * Barangay details for display purposes
    * @description PSGC barangay information populated from API calls
    */
@@ -232,7 +232,7 @@ export interface Resident {
     /** Official barangay name */
     name: string;
   };
-  /** 
+  /**
    * City/Municipality details for display purposes
    * @description PSGC city/municipality information populated from API calls
    */
@@ -244,7 +244,7 @@ export interface Resident {
     /** Administrative type (city, municipality, independent city) */
     type: string;
   };
-  /** 
+  /**
    * Province details for display purposes
    * @description PSGC province information populated from API calls
    */
@@ -254,7 +254,7 @@ export interface Resident {
     /** Official province name */
     name: string;
   };
-  /** 
+  /**
    * Region details for display purposes
    * @description PSGC region information populated from API calls
    */
@@ -264,9 +264,9 @@ export interface Resident {
     /** Official region name */
     name: string;
   };
-  
+
   // Sectoral Information (from resident_sectoral_info table)
-  /** 
+  /**
    * Government sectoral demographic classifications
    * @description Statistical categorizations used for government planning and social services.
    * Based on Philippine Statistical Authority (PSA) demographic classifications.
@@ -297,9 +297,9 @@ export interface Resident {
     /** Whether resident is an internal migrant (moved from another location) */
     is_migrant?: boolean;
   };
-  
+
   // Migration Information (from resident_migrant_info table)
-  /** 
+  /**
    * Internal migration tracking information
    * @description Details about residents who have migrated from other locations within the Philippines.
    * Used for tracking population movement and providing appropriate social services.

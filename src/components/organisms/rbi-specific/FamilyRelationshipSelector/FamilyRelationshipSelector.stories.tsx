@@ -173,7 +173,7 @@ export const Grandchild: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Grandchild - child of the household head's children.",
+        story: 'Grandchild - child of the household head&rsquo;s children.',
       },
     },
   },

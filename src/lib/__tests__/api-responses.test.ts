@@ -11,7 +11,7 @@ import {
   handleDatabaseError,
   handleUnexpectedError,
 } from '../api-responses';
-import { ErrorCode } from '../api-types';
+import { ErrorCode, Role } from '../api-types';
 
 // Mock logger to avoid console output during tests
 jest.mock('../secure-logger', () => ({
@@ -30,6 +30,8 @@ jest.mock('../api-audit', () => ({
 
 describe('API Response Utilities', () => {
   const mockContext = {
+    userId: 'test-user-123',
+    userRole: Role.BARANGAY_ADMIN,
     requestId: 'test-request-123',
     path: '/api/test',
     method: 'GET',
@@ -42,7 +44,7 @@ describe('API Response Utilities', () => {
       const response = createSuccessResponse(data, 'User retrieved successfully', mockContext);
 
       expect(response.status).toBe(200);
-      
+
       const responseData = await response.json();
       expect(responseData.data).toEqual(data);
       expect(responseData.message).toBe('User retrieved successfully');
@@ -55,7 +57,7 @@ describe('API Response Utilities', () => {
       const response = createSuccessResponse(data);
 
       expect(response.status).toBe(200);
-      
+
       const responseData = await response.json();
       expect(responseData.data).toEqual(data);
       expect(responseData.message).toBeUndefined();
@@ -74,7 +76,7 @@ describe('API Response Utilities', () => {
       );
 
       expect(response.status).toBe(422);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.VALIDATION_ERROR);
       expect(responseData.error.message).toBe('Invalid input data');
@@ -85,10 +87,7 @@ describe('API Response Utilities', () => {
     });
 
     it('should use default status code', async () => {
-      const response = createErrorResponse(
-        ErrorCode.INTERNAL_ERROR,
-        'Something went wrong'
-      );
+      const response = createErrorResponse(ErrorCode.INTERNAL_ERROR, 'Something went wrong');
 
       expect(response.status).toBe(500);
     });
@@ -104,7 +103,7 @@ describe('API Response Utilities', () => {
       const response = createValidationErrorResponse(details, mockContext);
 
       expect(response.status).toBe(422);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.VALIDATION_ERROR);
       expect(responseData.error.message).toBe('Invalid input data');
@@ -117,7 +116,7 @@ describe('API Response Utilities', () => {
       const response = createUnauthorizedResponse('Invalid token', mockContext);
 
       expect(response.status).toBe(401);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.UNAUTHORIZED);
       expect(responseData.error.message).toBe('Invalid token');
@@ -127,7 +126,7 @@ describe('API Response Utilities', () => {
       const response = createUnauthorizedResponse();
 
       expect(response.status).toBe(401);
-      
+
       const responseData = await response.json();
       expect(responseData.error.message).toBe('Authentication required');
     });
@@ -138,7 +137,7 @@ describe('API Response Utilities', () => {
       const response = createNotFoundResponse('User', mockContext);
 
       expect(response.status).toBe(404);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.NOT_FOUND);
       expect(responseData.error.message).toBe('User not found');
@@ -148,7 +147,7 @@ describe('API Response Utilities', () => {
       const response = createNotFoundResponse();
 
       expect(response.status).toBe(404);
-      
+
       const responseData = await response.json();
       expect(responseData.error.message).toBe('Resource not found');
     });
@@ -164,7 +163,7 @@ describe('API Response Utilities', () => {
       const response = await handleDatabaseError(dbError, mockContext);
 
       expect(response.status).toBe(409);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.CONFLICT);
       expect(responseData.error.message).toBe('Resource already exists');
@@ -179,7 +178,7 @@ describe('API Response Utilities', () => {
       const response = await handleDatabaseError(dbError, mockContext);
 
       expect(response.status).toBe(400);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.VALIDATION_ERROR);
       expect(responseData.error.message).toBe('Invalid reference to related resource');
@@ -194,7 +193,7 @@ describe('API Response Utilities', () => {
       const response = await handleDatabaseError(dbError, mockContext);
 
       expect(response.status).toBe(500);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.INTERNAL_ERROR);
       expect(responseData.error.message).toBe('Database configuration error');
@@ -209,7 +208,7 @@ describe('API Response Utilities', () => {
       const response = await handleDatabaseError(dbError, mockContext);
 
       expect(response.status).toBe(500);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.DATABASE_ERROR);
       expect(responseData.error.message).toBe('Database operation failed');
@@ -224,7 +223,7 @@ describe('API Response Utilities', () => {
       const response = await handleUnexpectedError(error, mockContext);
 
       expect(response.status).toBe(500);
-      
+
       const responseData = await response.json();
       expect(responseData.error.code).toBe(ErrorCode.INTERNAL_ERROR);
       expect(responseData.error.message).toBe('An unexpected error occurred');
@@ -232,28 +231,28 @@ describe('API Response Utilities', () => {
 
     it('should include error details in development', async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'development' });
 
       const error = new Error('Test error');
       const response = await handleUnexpectedError(error, mockContext);
-      
+
       const responseData = await response.json();
       expect(responseData.error.details).toBeDefined();
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv });
     });
 
     it('should not include error details in production', async () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      Object.defineProperty(process.env, 'NODE_ENV', { value: 'production' });
 
       const error = new Error('Test error');
       const response = await handleUnexpectedError(error, mockContext);
-      
+
       const responseData = await response.json();
       expect(responseData.error.details).toBeUndefined();
 
-      process.env.NODE_ENV = originalEnv;
+      Object.defineProperty(process.env, 'NODE_ENV', { value: originalEnv });
     });
   });
 });

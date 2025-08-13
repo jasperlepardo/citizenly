@@ -31,7 +31,11 @@ const nameSchema = z
 // Personal Information Schema
 export const personalInfoSchema = z.object({
   firstName: nameSchema,
-  middleName: z.string().max(100).optional().transform(val => val && val.trim() ? sanitizeString(val) : undefined),
+  middleName: z
+    .string()
+    .max(100)
+    .optional()
+    .transform(val => (val && val.trim() ? sanitizeString(val) : undefined)),
   lastName: nameSchema,
   extensionName: z
     .string()
@@ -45,17 +49,19 @@ export const personalInfoSchema = z.object({
     return parsedDate <= now && parsedDate >= minDate;
   }, 'Invalid birthdate'),
   sex: z.enum(['male', 'female']),
-  civilStatus: z.enum([
-    'single',
-    'married',
-    'widowed',
-    'divorced',
-    'separated',
-    'annulled',
-    'registered_partnership',
-    'live_in',
-    'others', // Added for RBI v3 compatibility
-  ]).default('single'),
+  civilStatus: z
+    .enum([
+      'single',
+      'married',
+      'widowed',
+      'divorced',
+      'separated',
+      'annulled',
+      'registered_partnership',
+      'live_in',
+      'others', // Added for RBI v3 compatibility
+    ])
+    .default('single'),
   citizenship: z.enum(['filipino', 'dual_citizen', 'foreign_national']).default('filipino'),
 });
 
@@ -64,8 +70,11 @@ export const contactInfoSchema = z.object({
   mobileNumber: z
     .string()
     .optional()
-    .refine(phone => !phone || phone.trim() === '' || PHONE_REGEX.test(phone), 'Invalid Philippine mobile number format')
-    .transform(phone => phone && phone.trim() !== '' ? phone.replace(/[^\d]/g, '') : undefined), // Sanitize to numbers only
+    .refine(
+      phone => !phone || phone.trim() === '' || PHONE_REGEX.test(phone),
+      'Invalid Philippine mobile number format'
+    )
+    .transform(phone => (phone && phone.trim() !== '' ? phone.replace(/[^\d]/g, '') : undefined)), // Sanitize to numbers only
   telephoneNumber: z
     .string()
     .regex(/^[0-9\-\+\(\)\s]*$/, 'Invalid telephone number format')

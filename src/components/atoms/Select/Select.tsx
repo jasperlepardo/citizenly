@@ -121,7 +121,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled}
-                className="text-primary bg-surface"
+                className="bg-surface text-primary"
                 style={{
                   backgroundColor: 'var(--color-surface)',
                   color: 'var(--color-text-primary)',
@@ -138,7 +138,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               <div className="border-border-light size-4 animate-spin rounded-full border-2 border-t-blue-600"></div>
             ) : (
               <svg
-                className="size-4 text-muted"
+                className="text-muted size-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

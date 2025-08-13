@@ -11,17 +11,20 @@ import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 interface ContactInfoSectionProps {
   formData: Partial<ResidentEditFormData>;
   errors: Record<string, string>;
-  updateField: <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => void;
+  updateField: <K extends keyof ResidentEditFormData>(
+    field: K,
+    value: ResidentEditFormData[K]
+  ) => void;
   disabled?: boolean;
 }
 
 /**
  * Contact Information Form Section
- * 
+ *
  * @description Renders contact information fields including mobile, email, telephone, and PhilSys
  * @param props - Component props
  * @returns JSX element for contact information section
- * 
+ *
  * @example
  * ```typescript
  * <ContactInfoSection
@@ -36,7 +39,7 @@ export default function ContactInfoSection({
   formData,
   errors,
   updateField,
-  disabled = false
+  disabled = false,
 }: ContactInfoSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,13 +47,10 @@ export default function ContactInfoSection({
   };
 
   return (
-    <FormSection 
-      title="Contact Information" 
-      description="Communication and identification details"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField 
-          label="Mobile Number" 
+    <FormSection title="Contact Information" description="Communication and identification details">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField
+          label="Mobile Number"
           errorMessage={errors.mobile_number}
           helperText="Format: 09XX XXX XXXX"
         >
@@ -65,7 +65,7 @@ export default function ContactInfoSection({
             maxLength={11}
           />
         </FormField>
-        
+
         <FormField label="Email Address" errorMessage={errors.email}>
           <FormInput
             type="email"
@@ -77,7 +77,7 @@ export default function ContactInfoSection({
             placeholder="example@email.com"
           />
         </FormField>
-        
+
         <FormField label="Telephone Number" errorMessage={errors.telephone_number}>
           <FormInput
             type="tel"
@@ -89,9 +89,9 @@ export default function ContactInfoSection({
             placeholder="(02) 123-4567"
           />
         </FormField>
-        
-        <FormField 
-          label="PhilSys Card Number" 
+
+        <FormField
+          label="PhilSys Card Number"
           errorMessage={errors.philsys_card_number}
           helperText="Format: XXXX-XXXX-XXXX-XXXX"
         >

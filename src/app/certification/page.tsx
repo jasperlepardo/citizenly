@@ -70,10 +70,10 @@ function CertificationContent() {
           {certificateTypes.map((cert, index) => (
             <div
               key={index}
-              className={`rounded-lg border p-6 transition-shadow bg-surface hover:shadow-md ${
+              className={`bg-surface rounded-lg border p-6 transition-shadow hover:shadow-md ${
                 cert.status === 'Available'
                   ? 'border-default hover:border-blue-300'
-                  : 'opacity-75 border-default'
+                  : 'border-default opacity-75'
               }`}
             >
               <div className="mb-4 flex items-start justify-between">
@@ -105,7 +105,7 @@ function CertificationContent() {
         </div>
 
         {/* Recent Requests Section */}
-        <div className="rounded-lg border p-6 bg-surface border-default">
+        <div className="bg-surface rounded-lg border border-default p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-montserrat text-lg font-semibold text-primary">
               Recent Certificate Requests
@@ -117,7 +117,7 @@ function CertificationContent() {
 
           <div className="space-y-4">
             {/* Sample Request Items */}
-            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover flex items-center justify-between rounded-lg p-4">
               <div className="flex items-center space-x-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
                   <span className="text-sm font-medium text-blue-600">#001</span>
@@ -135,11 +135,11 @@ function CertificationContent() {
                 <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                   Ready
                 </span>
-                <p className="font-montserrat mt-1 text-xs text-muted">Dec 15, 2024</p>
+                <p className="font-montserrat text-muted mt-1 text-xs">Dec 15, 2024</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover flex items-center justify-between rounded-lg p-4">
               <div className="flex items-center space-x-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
                   <span className="text-sm font-medium text-blue-600">#002</span>
@@ -161,7 +161,7 @@ function CertificationContent() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover flex items-center justify-between rounded-lg p-4">
               <div className="flex items-center space-x-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
                   <span className="text-sm font-medium text-blue-600">#003</span>

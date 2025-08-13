@@ -7,7 +7,7 @@ import { SimpleBarangaySelector } from '@/components/organisms';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
 import { logger, logError } from '@/lib/secure-logger';
-import { getErrorMessage } from '@/lib/auth-errors';
+// import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {
   email: string;
@@ -35,7 +35,7 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
-  const [assignedRole, setAssignedRole] = useState<string>('');
+  const [_assignedRole, setAssignedRole] = useState<string>('');
   const [submitStatus, setSubmitStatus] = useState<string>('');
 
   // Barangay admin checking now handled by database trigger after email confirmation
@@ -102,7 +102,7 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
@@ -118,10 +118,10 @@ export default function SignupPage() {
       // Step 1: Create auth user with metadata for post-confirmation processing
       setSubmitStatus('Creating your account...');
       console.log('🔄 Attempting signup with email:', formData.email);
-      
+
       // Check if we're in development mode (disable emails to prevent bounces)
       const isDevelopment = process.env.NODE_ENV === 'development';
-      
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -131,11 +131,11 @@ export default function SignupPage() {
             last_name: formData.lastName,
             phone: formData.mobileNumber,
             barangay_code: formData.barangayCode,
-            signup_step: 'awaiting_confirmation'
+            signup_step: 'awaiting_confirmation',
           },
           // In development, don't send confirmation emails
-          emailRedirectTo: isDevelopment ? undefined : `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: isDevelopment ? undefined : `${window.location.origin}/auth/callback`,
+        },
       });
 
       console.log('📋 Signup result:', {
@@ -143,14 +143,14 @@ export default function SignupPage() {
         hasUser: !!authData.user,
         userId: authData.user?.id,
         error: authError?.message,
-        errorCode: authError?.code
+        errorCode: authError?.code,
       });
 
       if (authError || !authData.user) {
-        console.error('❌ Signup failed:', { 
-          error: authError?.message, 
+        console.error('❌ Signup failed:', {
+          error: authError?.message,
           code: authError?.code,
-          status: authError?.status
+          status: authError?.status,
         });
         throw new Error(authError?.message || 'Failed to create account');
       }
@@ -165,16 +165,12 @@ export default function SignupPage() {
       setSubmitStatus('Account created successfully!');
       setStep('success');
       setAssignedRole('Barangay Administrator');
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setErrors({ general: errorMessage });
-      
+
       // Log error for debugging
-      logError(
-        error instanceof Error ? error : new Error(errorMessage),
-        'SIGNUP_PROCESS'
-      );
+      logError(error instanceof Error ? error : new Error(errorMessage), 'SIGNUP_PROCESS');
     } finally {
       clearTimeout(timeoutId);
       setIsSubmitting(false);
@@ -215,7 +211,8 @@ export default function SignupPage() {
               <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <h3 className="mb-2 text-sm font-medium text-blue-800">Pending Role Assignment:</h3>
                 <p className="text-blue-700">
-                  You will be assigned as <strong>Barangay Administrator</strong> once you verify your email address.
+                  You will be assigned as <strong>Barangay Administrator</strong> once you verify
+                  your email address.
                 </p>
                 <p className="mt-2 text-sm text-blue-600">
                   Your role will be automatically assigned after email verification, allowing you to
@@ -226,11 +223,22 @@ export default function SignupPage() {
               <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
                 <h3 className="mb-2 text-sm font-medium text-yellow-800">Next Steps:</h3>
                 <ol className="list-inside list-decimal space-y-1 text-left text-sm text-yellow-700">
-                  <li><strong>Check your email</strong> for a verification link from Citizenly</li>
-                  <li><strong>Click the verification link</strong> to confirm your email address</li>
-                  <li><strong>Your administrator account will be automatically activated</strong> after verification</li>
-                  <li><strong>Return to login</strong> and access your dashboard</li>
-                  <li><strong>Start managing your barangay</strong> - add residents and data</li>
+                  <li>
+                    <strong>Check your email</strong> for a verification link from Citizenly
+                  </li>
+                  <li>
+                    <strong>Click the verification link</strong> to confirm your email address
+                  </li>
+                  <li>
+                    <strong>Your administrator account will be automatically activated</strong>{' '}
+                    after verification
+                  </li>
+                  <li>
+                    <strong>Return to login</strong> and access your dashboard
+                  </li>
+                  <li>
+                    <strong>Start managing your barangay</strong> - add residents and data
+                  </li>
                 </ol>
               </div>
 
@@ -264,7 +272,7 @@ export default function SignupPage() {
             {isSubmitting && submitStatus && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <div className="flex items-center gap-3">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></div>
                   <div>
                     <h4 className="font-medium text-blue-800">Creating Account</h4>
                     <p className="text-sm text-blue-700">{submitStatus}</p>
@@ -435,7 +443,9 @@ export default function SignupPage() {
                   <li>
                     If an administrator already exists → <strong>Registration blocked</strong>
                     <br />
-                    <small className="text-blue-500">Contact your barangay admin to be invited to the system</small>
+                    <small className="text-blue-500">
+                      Contact your barangay admin to be invited to the system
+                    </small>
                   </li>
                 </ul>
               </div>

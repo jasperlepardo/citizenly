@@ -83,7 +83,7 @@ export default function HouseholdEditPage() {
         // Use the standard endpoint
         const response = await fetch(`/api/households/${householdCode}`, {
           headers: {
-            'Authorization': `Bearer ${session.access_token}`,
+            Authorization: `Bearer ${session.access_token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -111,7 +111,7 @@ export default function HouseholdEditPage() {
           no_of_migrants: household.no_of_migrants || 0,
         });
       } catch (err) {
-        logError('Error fetching household', err);
+        logError(err instanceof Error ? err : new Error(String(err)));
         setError(err instanceof Error ? err.message : 'Failed to load household');
       } finally {
         setLoading(false);
@@ -123,7 +123,7 @@ export default function HouseholdEditPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
+
     if (type === 'number') {
       setFormData(prev => ({ ...prev, [name]: value ? Number(value) : undefined }));
     } else {
@@ -133,7 +133,7 @@ export default function HouseholdEditPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!session) {
       setError('No active session');
       return;
@@ -147,7 +147,7 @@ export default function HouseholdEditPage() {
       const response = await fetch(`/api/households/${householdCode}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
@@ -161,7 +161,7 @@ export default function HouseholdEditPage() {
       // Redirect back to household detail page
       router.push(`/households/${householdCode}`);
     } catch (err) {
-      logError('Error updating household', err);
+      logError(err instanceof Error ? err : new Error(String(err)));
       setError(err instanceof Error ? err.message : 'Failed to update household');
     } finally {
       setSaving(false);
@@ -186,13 +186,13 @@ export default function HouseholdEditPage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="mx-auto max-w-4xl space-y-6">
           {/* Header */}
-          <div className="bg-surface rounded-xl shadow-sm border border-default p-6">
+          <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-primary">Edit Household</h1>
-                <p className="text-secondary mt-2">Household Code: {householdCode}</p>
+                <p className="mt-2 text-secondary">Household Code: {householdCode}</p>
               </div>
               <Button
                 variant="secondary-outline"
@@ -204,7 +204,7 @@ export default function HouseholdEditPage() {
           </div>
 
           {error && (
-            <div className="bg-danger-50 border border-danger-200 dark:bg-danger-950 dark:border-danger-800 rounded-lg p-4">
+            <div className="rounded-lg border border-danger-200 bg-danger-50 p-4 dark:border-danger-800 dark:bg-danger-950">
               <p className="text-danger-800 dark:text-danger-200">{error}</p>
             </div>
           )}
@@ -213,7 +213,7 @@ export default function HouseholdEditPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <FormSection title="Basic Information">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField label="Household Name">
                   <FormInput
                     name="name"
@@ -222,13 +222,13 @@ export default function HouseholdEditPage() {
                     placeholder="Optional household name"
                   />
                 </FormField>
-                
+
                 <FormField label="Household Type">
                   <select
                     name="household_type"
                     value={formData.household_type}
                     onChange={handleInputChange}
-                    className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Household Type</option>
                     {HOUSEHOLD_TYPE_OPTIONS.map(option => (
@@ -238,13 +238,13 @@ export default function HouseholdEditPage() {
                     ))}
                   </select>
                 </FormField>
-                
+
                 <FormField label="Housing Unit">
                   <select
                     name="household_unit"
                     value={formData.household_unit}
                     onChange={handleInputChange}
-                    className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Housing Unit</option>
                     {HOUSEHOLD_UNIT_OPTIONS.map(option => (
@@ -254,7 +254,7 @@ export default function HouseholdEditPage() {
                     ))}
                   </select>
                 </FormField>
-                
+
                 <FormField label="Number of Families">
                   <FormInput
                     type="number"
@@ -264,7 +264,7 @@ export default function HouseholdEditPage() {
                     min="1"
                   />
                 </FormField>
-                
+
                 <FormField label="Number of Household Members">
                   <FormInput
                     type="number"
@@ -274,7 +274,7 @@ export default function HouseholdEditPage() {
                     min="0"
                   />
                 </FormField>
-                
+
                 <FormField label="Number of Migrants">
                   <FormInput
                     type="number"
@@ -289,7 +289,7 @@ export default function HouseholdEditPage() {
 
             {/* Address Information */}
             <FormSection title="Address Information">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField label="House Number">
                   <FormInput
                     name="house_number"
@@ -298,7 +298,7 @@ export default function HouseholdEditPage() {
                     placeholder="e.g., 123, Block 1 Lot 2"
                   />
                 </FormField>
-                
+
                 <FormField label="Street Name">
                   <FormInput
                     name="street_name"
@@ -307,7 +307,7 @@ export default function HouseholdEditPage() {
                     placeholder="e.g., Main Street, Rizal Avenue"
                   />
                 </FormField>
-                
+
                 <FormField label="Subdivision">
                   <FormInput
                     name="subdivision"
@@ -321,7 +321,7 @@ export default function HouseholdEditPage() {
 
             {/* Economic Information */}
             <FormSection title="Economic Information">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <FormField label="Monthly Income (₱)">
                   <FormInput
                     type="number"
@@ -333,13 +333,13 @@ export default function HouseholdEditPage() {
                     placeholder="0.00"
                   />
                 </FormField>
-                
+
                 <FormField label="Income Class">
                   <select
                     name="income_class"
                     value={formData.income_class}
                     onChange={handleInputChange}
-                    className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Income Class</option>
                     {INCOME_CLASS_OPTIONS.map(option => (
@@ -349,13 +349,13 @@ export default function HouseholdEditPage() {
                     ))}
                   </select>
                 </FormField>
-                
+
                 <FormField label="Tenure Status">
                   <select
                     name="tenure_status"
                     value={formData.tenure_status}
                     onChange={handleInputChange}
-                    className="w-full min-h-10 px-3 py-2 border border-default rounded-md bg-surface text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Tenure Status</option>
                     {TENURE_STATUS_OPTIONS.map(option => (
@@ -365,7 +365,7 @@ export default function HouseholdEditPage() {
                     ))}
                   </select>
                 </FormField>
-                
+
                 {formData.tenure_status === 'other' && (
                   <FormField label="Tenure Details">
                     <FormInput
@@ -380,7 +380,7 @@ export default function HouseholdEditPage() {
             </FormSection>
 
             {/* Form Actions */}
-            <div className="bg-surface rounded-xl shadow-sm border border-default p-6">
+            <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
               <div className="flex justify-end gap-4">
                 <Button
                   type="button"
@@ -390,11 +390,7 @@ export default function HouseholdEditPage() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={saving}
-                >
+                <Button type="submit" variant="primary" disabled={saving}>
                   {saving ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>

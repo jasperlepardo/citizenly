@@ -2,15 +2,27 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useUserBarangay } from '@/hooks/useUserBarangay';
-import { ResidentFormData, ValidationErrors, FormStep, UseResidentFormReturn, ResidentFormWizardProps } from '../types';
-import { 
-  BasicInfoStep, 
-  ContactAddressStep, 
+import {
+  ResidentFormData,
+  ValidationErrors,
+  FormStep,
+  UseResidentFormReturn,
+  ResidentFormWizardProps,
+} from '../types';
+import {
+  BasicInfoStep,
+  ContactAddressStep,
   EducationEmploymentStep,
   AdditionalDetailsStep,
-  ReviewStep 
+  ReviewStep,
 } from '../steps';
-import { validateStep1, validateStep2, validateStep3, validateStep4, validateStep5 } from '../utils/validation';
+import {
+  validateStep1,
+  validateStep2,
+  validateStep3,
+  validateStep4,
+  validateStep5,
+} from '../utils/validation';
 
 // Default form data
 const getInitialFormData = (initialData?: Partial<ResidentFormData>): ResidentFormData => ({
@@ -85,18 +97,16 @@ const getInitialFormData = (initialData?: Partial<ResidentFormData>): ResidentFo
   ...initialData,
 });
 
-export function useResidentForm({ 
-  onSubmit, 
-  onCancel, 
-  initialData 
+export function useResidentForm({
+  onSubmit,
+  onCancel,
+  initialData,
 }: ResidentFormWizardProps = {}): UseResidentFormReturn {
   const router = useRouter();
-  const { userBarangayCode, loading: barangayLoading } = useUserBarangay();
-  
+  const { barangayCode: userBarangayCode, loading: barangayLoading } = useUserBarangay();
+
   // Form state
-  const [formData, setFormData] = useState<ResidentFormData>(() => 
-    getInitialFormData(initialData)
-  );
+  const [formData, setFormData] = useState<ResidentFormData>(() => getInitialFormData(initialData));
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,9 +123,11 @@ export function useResidentForm({
     const autoPopulateGeographicData = async () => {
       // Skip if already populated or no auth session
       if (formData.regionCode || formData.provinceCode || formData.cityMunicipalityCode) return;
-      
+
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!session?.user) return;
 
         console.log('🚀 Pre-loading geographic data for faster form experience...');
@@ -123,9 +135,9 @@ export function useResidentForm({
         // Use dedicated API endpoint for secure auto-populate
         const response = await fetch('/api/user/geographic-location', {
           headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
         });
 
         if (!response.ok) {
@@ -142,7 +154,7 @@ export function useResidentForm({
           regionCode: hierarchy.region?.code || '',
           provinceCode: hierarchy.province?.code || '',
           cityMunicipalityCode: hierarchy.city?.code || '',
-          barangayCode: hierarchy.barangay?.code || prev.barangayCode // Don't override if already set
+          barangayCode: hierarchy.barangay?.code || prev.barangayCode, // Don't override if already set
         }));
 
         console.log('🎉 Form pre-populated with user geographic location');
@@ -157,78 +169,87 @@ export function useResidentForm({
   }, []); // Empty dependency array - only run once
 
   // Step configuration
-  const steps: FormStep[] = useMemo(() => [
-    {
-      id: 1,
-      title: "Personal Information",
-      description: "Basic personal details and family information",
-      component: BasicInfoStep,
-      validation: validateStep1,
-    },
-    {
-      id: 2,
-      title: "Contact & Address",
-      description: "Contact information and geographic location",
-      component: ContactAddressStep,
-      validation: validateStep2,
-    },
-    {
-      id: 3,
-      title: "Education & Employment",
-      description: "Educational background and occupation details",
-      component: EducationEmploymentStep,
-      validation: validateStep3,
-    },
-    {
-      id: 4,
-      title: "Additional Details",
-      description: "Physical characteristics, voting info, and documentation",
-      component: AdditionalDetailsStep,
-      validation: validateStep4,
-    },
-    {
-      id: 5,
-      title: "Review & Submit",
-      description: "Review all information and submit registration",
-      component: ReviewStep,
-      validation: validateStep5,
-    },
-  ], []);
+  const steps: FormStep[] = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'Personal Information',
+        description: 'Basic personal details and family information',
+        component: BasicInfoStep,
+        validation: validateStep1,
+      },
+      {
+        id: 2,
+        title: 'Contact & Address',
+        description: 'Contact information and geographic location',
+        component: ContactAddressStep,
+        validation: validateStep2,
+      },
+      {
+        id: 3,
+        title: 'Education & Employment',
+        description: 'Educational background and occupation details',
+        component: EducationEmploymentStep,
+        validation: validateStep3,
+      },
+      {
+        id: 4,
+        title: 'Additional Details',
+        description: 'Physical characteristics, voting info, and documentation',
+        component: AdditionalDetailsStep,
+        validation: validateStep4,
+      },
+      {
+        id: 5,
+        title: 'Review & Submit',
+        description: 'Review all information and submit registration',
+        component: ReviewStep,
+        validation: validateStep5,
+      },
+    ],
+    []
+  );
 
   // Handle input changes
-  const handleInputChange = useCallback((field: keyof ResidentFormData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error for this field when user starts typing
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
-  }, [errors]);
+  const handleInputChange = useCallback(
+    (field: keyof ResidentFormData, value: any) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+
+      // Clear error for this field when user starts typing
+      if (errors[field]) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+    },
+    [errors]
+  );
 
   // Validate current step
-  const validateStep = useCallback((step: number): boolean => {
-    const currentStepConfig = steps[step - 1];
-    if (!currentStepConfig) return true;
+  const validateStep = useCallback(
+    (step: number): boolean => {
+      const currentStepConfig = steps[step - 1];
+      if (!currentStepConfig) return true;
 
-    const stepErrors = currentStepConfig.validation(formData);
-    setErrors(stepErrors);
-    
-    return Object.keys(stepErrors).length === 0;
-  }, [steps, formData]);
+      const stepErrors = currentStepConfig.validation(formData);
+      setErrors(stepErrors);
+
+      return Object.keys(stepErrors).length === 0;
+    },
+    [steps, formData]
+  );
 
   // Validate entire form
   const validateForm = useCallback((): boolean => {
     let allErrors: ValidationErrors = {};
-    
+
     steps.forEach(step => {
       const stepErrors = step.validation(formData);
       allErrors = { ...allErrors, ...stepErrors };
     });
-    
+
     setErrors(allErrors);
     return Object.keys(allErrors).length === 0;
   }, [steps, formData]);
@@ -278,9 +299,9 @@ export function useResidentForm({
 
   // Default API submission
   const submitToAPI = async (data: ResidentFormData) => {
-    const token = await supabase.auth.getSession().then(({ data: { session } }) => 
-      session?.access_token
-    );
+    const token = await supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => session?.access_token);
 
     if (!token) throw new Error('No authentication token');
 
@@ -350,17 +371,17 @@ export function useResidentForm({
     errors,
     currentStep,
     isSubmitting,
-    
+
     // Actions
     handleInputChange,
     handleNextStep,
     handlePrevStep,
     handleSubmit,
-    
+
     // Validation
     validateStep,
     validateForm,
-    
+
     // Utilities
     steps,
     canProceedToNext,

@@ -625,10 +625,10 @@ module.exports = {
   plugins: [
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('@tailwindcss/forms'),
-    
+
     // Semantic color plugin - converts your textColor structure to automatic dark mode classes
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('tailwindcss/plugin')(function({ addUtilities }) {
+    require('tailwindcss/plugin')(function ({ addUtilities }) {
       const semanticUtilities = {
         // Text colors (17 classes matching your textColor structure exactly)
         '.text-default': {
@@ -638,13 +638,15 @@ module.exports = {
           '@apply text-white dark:text-neutral-50': {},
         },
         '.text-default-secondary': {
-          '@apply text-neutral-700 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-200': {},
+          '@apply text-neutral-700 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-200':
+            {},
         },
         '.text-default-secondary-onBrand': {
           '@apply text-blue-200 dark:text-neutral-300': {},
         },
         '.text-default-tertiary': {
-          '@apply text-neutral-600 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300': {},
+          '@apply text-neutral-600 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300':
+            {},
         },
         '.text-default-tertiary-onBrand': {
           '@apply text-blue-200 dark:text-neutral-400': {},
@@ -676,9 +678,9 @@ module.exports = {
         '.text-error': {
           '@apply text-red-600 dark:text-red-400': {},
         },
-      }
-      
-      addUtilities(semanticUtilities)
+      };
+
+      addUtilities(semanticUtilities);
     }),
   ],
 };

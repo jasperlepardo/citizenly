@@ -49,7 +49,7 @@ export function BaseSelector<T extends BaseSelectorOption>({
   className,
 }: BaseSelectorProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const selectedOption = options.find(opt => opt.value === value) || null;
+  const _selectedOption = options.find(opt => opt.value === value) || null;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -120,7 +120,7 @@ export function BaseSelector<T extends BaseSelectorOption>({
         {loading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <svg
-              className="size-5 animate-spin text-muted"
+              className="text-muted size-5 animate-spin"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -143,9 +143,9 @@ export function BaseSelector<T extends BaseSelectorOption>({
         )}
 
         {!loading && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
             <svg
-              className="size-5 text-muted"
+              className="text-muted size-5"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -163,13 +163,13 @@ export function BaseSelector<T extends BaseSelectorOption>({
       </div>
 
       {isOpen && options.length > 0 && searchTerm.length >= minSearchLength && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border shadow-lg bg-white border-gray-200">
+        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white shadow-lg">
           {options.map(option => (
             <button
               key={option.value}
               type="button"
               onClick={() => handleSelect(option)}
-              className="w-full px-4 py-3 text-left border-b border-gray-100 last:border-b-0 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+              className="w-full border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
             >
               {renderOption ? renderOption(option, searchTerm) : defaultRenderOption(option)}
             </button>
@@ -178,12 +178,12 @@ export function BaseSelector<T extends BaseSelectorOption>({
       )}
 
       {isOpen && !loading && options.length === 0 && searchTerm.length >= minSearchLength && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border p-4 shadow-lg bg-white border-gray-200">
-          <div className="text-center text-muted">
+        <div className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white p-4 shadow-lg">
+          <div className="text-muted text-center">
             {typeof emptyMessage === 'string' ? (
               <>
                 <svg
-                  className="mx-auto mb-2 size-8 text-muted"
+                  className="text-muted mx-auto mb-2 size-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -205,12 +205,12 @@ export function BaseSelector<T extends BaseSelectorOption>({
       )}
 
       {isOpen && !loading && searchTerm.length < minSearchLength && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border p-4 shadow-lg bg-white border-gray-200">
-          <div className="text-center text-muted">
+        <div className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white p-4 shadow-lg">
+          <div className="text-muted text-center">
             {typeof searchInstructions === 'string' ? (
               <>
                 <svg
-                  className="mx-auto mb-2 size-8 text-muted"
+                  className="text-muted mx-auto mb-2 size-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

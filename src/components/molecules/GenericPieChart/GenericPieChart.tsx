@@ -69,7 +69,7 @@ export default function GenericPieChart({
 
   if (total === 0) {
     return (
-      <div className={`rounded-lg border p-6 bg-surface border-default ${className}`}>
+      <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
         <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
         <div className="text-center text-secondary">No data available</div>
       </div>
@@ -130,7 +130,7 @@ export default function GenericPieChart({
   });
 
   return (
-    <div className={`rounded-lg border p-6 bg-surface border-default ${className}`}>
+    <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
       <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
 
       <div className="grid grid-cols-2 gap-6">
@@ -203,7 +203,7 @@ export default function GenericPieChart({
                   hasNoData
                     ? 'cursor-default opacity-50'
                     : isHovered
-                      ? 'shadow-sm bg-surface-hover'
+                      ? 'bg-surface-hover shadow-sm'
                       : isOtherHovered
                         ? 'opacity-60'
                         : 'hover:bg-surface-hover'
@@ -223,7 +223,7 @@ export default function GenericPieChart({
                     style={{ backgroundColor: item.color }}
                   ></div>
                   <span
-                    className={`text-sm transition-all duration-200 font-body ${
+                    className={`font-body text-sm transition-all duration-200 ${
                       hasNoData
                         ? 'text-gray-400 dark:text-gray-600'
                         : isHovered

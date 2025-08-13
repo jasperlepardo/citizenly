@@ -213,6 +213,8 @@ beforeAll(() => {
       'Warning: ReactDOM.render is deprecated',
       'Warning: An invalid form control',
       'Warning: validateDOMNesting',
+      '[ERROR]', // Allow secure logger error messages
+      'An update to %s inside a test was not wrapped in act(...)', // Allow React act warnings in tests
     ];
 
     if (

@@ -46,29 +46,29 @@ export function EducationEmploymentStep({ formData, onChange, errors }: StepComp
           Provide education background and employment information.
         </p>
       </div>
-      
-      <EducationEmployment 
+
+      <EducationEmployment
         value={educationEmploymentValue}
         onChange={handleEducationEmploymentChange}
         errors={errors}
       />
-      
+
       <div className="space-y-4">
         <h4 className="text-sm font-medium text-primary">Occupation Details</h4>
-        <PSOCSelector 
+        <PSOCSelector
           value={formData.psocCode}
           onSelect={handlePSOCSelect}
           placeholder="Search for occupation..."
           error={errors.psocCode}
         />
-        
+
         {formData.occupationTitle && (
-          <div className="mt-2 p-3 bg-gray-50 rounded-md border">
+          <div className="mt-2 rounded-md border bg-gray-50 p-3">
             <p className="text-sm text-gray-700">
               <span className="font-medium">Selected Occupation:</span> {formData.occupationTitle}
             </p>
             {formData.psocCode && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="mt-1 text-xs text-gray-500">
                 Code: {formData.psocCode} | Level: {formData.psocLevel}
               </p>
             )}

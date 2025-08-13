@@ -477,7 +477,7 @@ export default function CreateHouseholdModal({
       }
     >
       {/* Address Info Display */}
-      <div className="mb-6 border-b border-green-200 bg-green-50 p-4 -m-4">
+      <div className="-m-4 mb-6 border-b border-green-200 bg-green-50 p-4">
         <div className="flex items-start gap-3">
           <span className="mt-0.5 text-green-600">📍</span>
           <div>
@@ -510,7 +510,10 @@ export default function CreateHouseholdModal({
       <form id="household-form" onSubmit={handleSubmit} className="space-y-4">
         {/* House Number */}
         <div>
-          <label htmlFor="house-number" className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+          <label
+            htmlFor="house-number"
+            className="font-montserrat mb-2 block text-sm font-medium text-neutral-700"
+          >
             House/Block/Lot Number
           </label>
           <input
@@ -531,7 +534,7 @@ export default function CreateHouseholdModal({
           </label>
           <SubdivisionSelector
             value={formData.subdivision_id}
-            onSelect={(subdivisionId) => handleInputChange('subdivision_id', subdivisionId || '')}
+            onSelect={subdivisionId => handleInputChange('subdivision_id', subdivisionId || '')}
             error={errors.subdivision_id}
             placeholder="🏘️ Select subdivision or create new"
           />
@@ -544,19 +547,18 @@ export default function CreateHouseholdModal({
           </label>
           <StreetSelector
             value={formData.street_id}
-            onSelect={(streetId) => handleInputChange('street_id', streetId || '')}
+            onSelect={streetId => handleInputChange('street_id', streetId || '')}
             error={errors.street_id}
             placeholder="🛣️ Select street or create new"
             subdivisionId={formData.subdivision_id || null}
           />
         </div>
 
-
         {/* Info Note */}
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
           <p className="font-montserrat text-sm text-blue-800">
-            <strong>Note:</strong> This household will be created in your assigned barangay. You
-            can assign a resident as the household head after creating the household.
+            <strong>Note:</strong> This household will be created in your assigned barangay. You can
+            assign a resident as the household head after creating the household.
           </p>
         </div>
       </form>

@@ -6,7 +6,7 @@
 interface LogContext {
   component?: string;
   action?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   error?: Error;
   userId?: string;
   sessionId?: string;
@@ -23,7 +23,7 @@ const LOG_LEVELS: LogLevel = {
   DEBUG: 'debug',
   INFO: 'info',
   WARN: 'warn',
-  ERROR: 'error'
+  ERROR: 'error',
 };
 
 class ClientLogger {
@@ -46,7 +46,7 @@ class ClientLogger {
     if (this.isDevelopment) {
       console.info(`ℹ️ [INFO] ${message}`, context || '');
     }
-    
+
     // In production, send to monitoring service
     if (this.isProduction) {
       this.sendToMonitoring('info', message, context);
@@ -60,7 +60,7 @@ class ClientLogger {
     if (this.isDevelopment) {
       console.warn(`⚠️ [WARN] ${message}`, context || '');
     }
-    
+
     // Always log warnings in production
     if (this.isProduction) {
       this.sendToMonitoring('warn', message, context);
@@ -74,7 +74,7 @@ class ClientLogger {
     if (this.isDevelopment) {
       console.error(`🚨 [ERROR] ${message}`, context || '');
     }
-    
+
     // Always log errors in production
     if (this.isProduction) {
       this.sendToMonitoring('error', message, context);
@@ -88,7 +88,7 @@ class ClientLogger {
     this.debug(`Component ${component}: ${action}`, {
       component,
       action,
-      data
+      data,
     });
   }
 
@@ -98,7 +98,7 @@ class ClientLogger {
   api(method: string, url: string, status?: number, duration?: number): void {
     const message = `${method.toUpperCase()} ${url}`;
     const context = { action: 'api_call', data: { method, url, status, duration } };
-    
+
     if (status && status >= 400) {
       this.warn(`${message} - Status: ${status}`, context);
     } else {
@@ -113,7 +113,7 @@ class ClientLogger {
     this.info(`User action: ${action}`, {
       component,
       action: 'user_interaction',
-      data
+      data,
     });
   }
 
@@ -124,7 +124,7 @@ class ClientLogger {
     this.info(`Search performed: "${searchTerm}"`, {
       component,
       action: 'search',
-      data: { searchTerm, resultsCount }
+      data: { searchTerm, resultsCount },
     });
   }
 
@@ -134,7 +134,7 @@ class ClientLogger {
   dataLoad(resource: string, count?: number, duration?: number): void {
     this.info(`Data loaded: ${resource}`, {
       action: 'data_load',
-      data: { resource, count, duration }
+      data: { resource, count, duration },
     });
   }
 
@@ -150,7 +150,7 @@ class ClientLogger {
       message,
       context,
       url: window?.location?.href,
-      userAgent: navigator?.userAgent
+      userAgent: navigator?.userAgent,
     };
 
     // Could send to services like:
@@ -158,7 +158,7 @@ class ClientLogger {
     // - LogRocket
     // - DataDog
     // - Custom logging endpoint
-    
+
     // For now, just structure the console output
     console.log(`[${level.toUpperCase()}]`, logEntry);
   }
@@ -170,67 +170,76 @@ export const clientLogger = new ClientLogger();
 // Export convenience methods
 /**
  * log Debug
- * 
+ *
  * @description log Debug utility function
  * @returns {unknown} Function execution result
  */
-export const logDebug = (message: string, context?: LogContext) => clientLogger.debug(message, context);
+export const logDebug = (message: string, context?: LogContext) =>
+  clientLogger.debug(message, context);
 /**
  * log Info
- * 
+ *
  * @description log Info utility function
  * @returns {unknown} Function execution result
  */
-export const logInfo = (message: string, context?: LogContext) => clientLogger.info(message, context);
+export const logInfo = (message: string, context?: LogContext) =>
+  clientLogger.info(message, context);
 /**
  * log Warn
- * 
+ *
  * @description log Warn utility function
  * @returns {unknown} Function execution result
  */
-export const logWarn = (message: string, context?: LogContext) => clientLogger.warn(message, context);
+export const logWarn = (message: string, context?: LogContext) =>
+  clientLogger.warn(message, context);
 /**
  * log Error
- * 
+ *
  * @description log Error utility function
  * @returns {unknown} Function execution result
  */
-export const logError = (message: string, context?: LogContext) => clientLogger.error(message, context);
+export const logError = (message: string, context?: LogContext) =>
+  clientLogger.error(message, context);
 /**
  * log Component
- * 
+ *
  * @description log Component utility function
  * @returns {unknown} Function execution result
  */
-export const logComponent = (component: string, action: string, data?: any) => clientLogger.component(component, action, data);
+export const logComponent = (component: string, action: string, data?: any) =>
+  clientLogger.component(component, action, data);
 /**
  * log Api
- * 
+ *
  * @description log Api utility function
  * @returns {unknown} Function execution result
  */
-export const logApi = (method: string, url: string, status?: number, duration?: number) => clientLogger.api(method, url, status, duration);
+export const logApi = (method: string, url: string, status?: number, duration?: number) =>
+  clientLogger.api(method, url, status, duration);
 /**
  * log User Action
- * 
+ *
  * @description log User Action utility function
  * @returns {unknown} Function execution result
  */
-export const logUserAction = (action: string, component?: string, data?: any) => clientLogger.userAction(action, component, data);
+export const logUserAction = (action: string, component?: string, data?: any) =>
+  clientLogger.userAction(action, component, data);
 /**
  * log Search
- * 
+ *
  * @description log Search utility function
  * @returns {unknown} Function execution result
  */
-export const logSearch = (searchTerm: string, component: string, resultsCount?: number) => clientLogger.search(searchTerm, component, resultsCount);
+export const logSearch = (searchTerm: string, component: string, resultsCount?: number) =>
+  clientLogger.search(searchTerm, component, resultsCount);
 /**
  * log Data Load
- * 
+ *
  * @description log Data Load utility function
  * @returns {unknown} Function execution result
  */
-export const logDataLoad = (resource: string, count?: number, duration?: number) => clientLogger.dataLoad(resource, count, duration);
+export const logDataLoad = (resource: string, count?: number, duration?: number) =>
+  clientLogger.dataLoad(resource, count, duration);
 
 // Default export
 export default clientLogger;

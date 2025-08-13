@@ -1,9 +1,9 @@
 /**
  * Performance Monitoring Utilities
- * 
+ *
  * @description Client-side performance monitoring for Core Web Vitals and custom metrics.
  * Provides insights into app performance and helps identify optimization opportunities.
- * 
+ *
  * @metrics Tracked:
  * - Largest Contentful Paint (LCP) - Loading performance
  * - First Input Delay (FID) - Interactivity
@@ -18,8 +18,8 @@ import { logger } from './secure-logger';
 // Performance thresholds based on Core Web Vitals
 export const PERFORMANCE_THRESHOLDS = {
   LCP: { good: 2500, needsImprovement: 4000 }, // milliseconds
-  FID: { good: 100, needsImprovement: 300 },   // milliseconds
-  CLS: { good: 0.1, needsImprovement: 0.25 },  // score
+  FID: { good: 100, needsImprovement: 300 }, // milliseconds
+  CLS: { good: 0.1, needsImprovement: 0.25 }, // score
   FCP: { good: 1800, needsImprovement: 3000 }, // milliseconds
   TTFB: { good: 800, needsImprovement: 1800 }, // milliseconds
 };
@@ -65,7 +65,7 @@ class PerformanceMonitor {
     this.setupCoreWebVitalsObserver();
     this.setupNavigationObserver();
     this.setupResourceObserver();
-    
+
     // Monitor long tasks that could affect responsiveness
     this.setupLongTaskObserver();
   }
@@ -77,14 +77,16 @@ class PerformanceMonitor {
     if (!this.isEnabled) return;
 
     try {
-      this.observer = new PerformanceObserver((list) => {
+      this.observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           this.handlePerformanceEntry(entry);
         }
       });
 
       // Observe different performance entry types
-      this.observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift'] });
+      this.observer.observe({
+        entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift'],
+      });
     } catch (error) {
       logger.error('Failed to setup Core Web Vitals observer', { error });
     }
@@ -97,7 +99,7 @@ class PerformanceMonitor {
     if (!this.isEnabled) return;
 
     try {
-      const navObserver = new PerformanceObserver((list) => {
+      const navObserver = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           this.handleNavigationEntry(entry as PerformanceNavigationTiming);
         }
@@ -116,8 +118,10 @@ class PerformanceMonitor {
     if (!this.isEnabled) return;
 
     try {
-      const resourceObserver = new PerformanceObserver((list) => {
-        const resources = this.analyzeResourceTiming(list.getEntries() as PerformanceResourceTiming[]);
+      const resourceObserver = new PerformanceObserver(list => {
+        const resources = this.analyzeResourceTiming(
+          list.getEntries() as PerformanceResourceTiming[]
+        );
         this.reportResourceMetrics(resources);
       });
 
@@ -134,7 +138,7 @@ class PerformanceMonitor {
     if (!this.isEnabled) return;
 
     try {
-      const longTaskObserver = new PerformanceObserver((list) => {
+      const longTaskObserver = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           this.handleLongTask(entry);
         }
@@ -191,7 +195,10 @@ class PerformanceMonitor {
     this.recordMetric(metric);
 
     // Additional navigation metrics
-    this.recordCustomMetric('DOM_LOAD_TIME', entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart);
+    this.recordCustomMetric(
+      'DOM_LOAD_TIME',
+      entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart
+    );
     this.recordCustomMetric('FULL_LOAD_TIME', entry.loadEventEnd - entry.loadEventStart);
   }
 
@@ -202,7 +209,7 @@ class PerformanceMonitor {
     logger.warn('Long task detected', {
       duration: entry.duration,
       startTime: entry.startTime,
-      name: entry.name
+      name: entry.name,
     });
 
     // Long tasks over 50ms can affect user experience
@@ -219,7 +226,7 @@ class PerformanceMonitor {
       name: entry.name,
       duration: entry.responseEnd - entry.requestStart,
       size: entry.transferSize || 0,
-      type: this.getResourceType(entry.name)
+      type: this.getResourceType(entry.name),
     }));
   }
 
@@ -245,7 +252,7 @@ class PerformanceMonitor {
       rating: this.getRating(name, value),
       timestamp: Date.now(),
       url: window.location.href,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     };
   }
 
@@ -266,13 +273,13 @@ class PerformanceMonitor {
    */
   private recordMetric(metric: PerformanceMetric): void {
     this.metrics.push(metric);
-    
+
     // Log poor performance metrics
     if (metric.rating === 'poor') {
       logger.warn('Poor performance metric detected', {
         metric: metric.name,
         value: metric.value,
-        url: metric.url
+        url: metric.url,
       });
     }
 
@@ -313,7 +320,7 @@ class PerformanceMonitor {
   private sendToAnalytics(metric: PerformanceMetric): void {
     // Implementation would depend on your analytics service
     // Example: Google Analytics, Mixpanel, custom endpoint
-    
+
     try {
       // Example with fetch to custom endpoint
       if (navigator.sendBeacon) {
@@ -323,7 +330,7 @@ class PerformanceMonitor {
           method: 'POST',
           body: JSON.stringify(metric),
           headers: { 'Content-Type': 'application/json' },
-          keepalive: true
+          keepalive: true,
         }).catch(error => {
           logger.error('Failed to send performance metric', { error });
         });
@@ -348,7 +355,9 @@ class PerformanceMonitor {
       }
 
       summary[metric.name].count++;
-      summary[metric.name].average = (summary[metric.name].average * (summary[metric.name].count - 1) + metric.value) / summary[metric.name].count;
+      summary[metric.name].average =
+        (summary[metric.name].average * (summary[metric.name].count - 1) + metric.value) /
+        summary[metric.name].count;
       summary[metric.name].worst = Math.max(summary[metric.name].worst, metric.value);
     }
 
@@ -395,7 +404,7 @@ export function usePerformanceTracking(componentName: string) {
  */
 export function markUserInteraction(actionName: string): () => void {
   performance.mark(`user-${actionName}-start`);
-  
+
   // Return a function to mark the end
   return () => {
     performance.mark(`user-${actionName}-end`);

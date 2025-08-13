@@ -31,8 +31,8 @@ export function BasicInfoStep({ formData, onChange, errors }: StepComponentProps
           Enter the resident's basic personal details and identification information.
         </p>
       </div>
-      
-      <PersonalInformation 
+
+      <PersonalInformation
         value={personalInfoValue}
         onChange={handlePersonalInfoChange}
         errors={errors}

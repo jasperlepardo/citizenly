@@ -1,16 +1,21 @@
 import { NextRequest } from 'next/server';
-import { logger } from '@/lib/secure-logger';
 import { createAdminSupabaseClient } from '@/lib/api-auth';
 import { createClient } from '@supabase/supabase-js';
-import { createSuccessResponse, createUnauthorizedResponse, createNotFoundResponse, handleDatabaseError, handleUnexpectedError } from '@/lib/api-responses';
+import {
+  createSuccessResponse,
+  createUnauthorizedResponse,
+  createNotFoundResponse,
+  handleDatabaseError,
+  handleUnexpectedError,
+} from '@/lib/api-responses';
 
 /**
  * GET API Handler for auth/profile
- * 
+ *
  * @description Handles GET requests for the auth/profile endpoint
  * @param {NextRequest} request - The incoming HTTP request object
  * @returns {Promise<NextResponse>} JSON response with data or error message
- * 
+ *
  * @example
  * ```typescript
  * // GET /auth/profile
@@ -76,10 +81,13 @@ export async function GET(request: NextRequest) {
       roleData = role;
     }
 
-    return createSuccessResponse({
-      profile: profileData,
-      role: roleData,
-    }, 'Profile retrieved successfully');
+    return createSuccessResponse(
+      {
+        profile: profileData,
+        role: roleData,
+      },
+      'Profile retrieved successfully'
+    );
   } catch (error) {
     return await handleUnexpectedError(error);
   }

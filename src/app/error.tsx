@@ -7,7 +7,7 @@ interface ErrorPageProps {
 
 export default function ErrorPage({ error, reset }: ErrorPageProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+    <div className="bg-background flex min-h-screen flex-col items-center justify-center">
       <div className="text-center">
         <h1 className="mb-4 text-4xl font-bold text-red-600">Something went wrong!</h1>
         <p className="mb-6 max-w-md text-secondary">

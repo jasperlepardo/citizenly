@@ -159,7 +159,7 @@ export default function HouseholdTypeSelector({
       )}
 
       {/* Additional Information */}
-      <div className="rounded-lg p-3 text-xs text-muted bg-background-muted">
+      <div className="text-muted bg-background-muted rounded-lg p-3 text-xs">
         <span className="font-medium">📋 Note:</span> This classification helps determine household
         demographics and social services eligibility. You can change this selection later if the
         family composition changes.

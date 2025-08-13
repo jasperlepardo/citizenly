@@ -56,10 +56,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div>
         <div
-          className={`relative rounded transition-colors font-system focus-within:outline-none ${
+          className={`relative rounded font-system transition-colors focus-within:outline-none ${
             actualState === 'error'
-              ? 'border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
-              : 'border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+              ? 'bg-surface border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
+              : 'bg-surface border border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
           } min-h-10 p-2 text-base ${className}`}
         >
           {showBefore && (
@@ -74,7 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-[0]">
               <input
                 ref={ref}
-                className="font-montserrat w-full border-0 bg-transparent text-base font-normal leading-5 shadow-none outline-0 ring-0 text-primary placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
+                className="font-montserrat placeholder:text-muted w-full border-0 bg-transparent text-base font-normal leading-5 text-primary shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
                 style={{
                   border: 'none',
                   outline: 'none',

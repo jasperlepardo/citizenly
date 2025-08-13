@@ -21,16 +21,13 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
               <div className="flex flex-col items-center">
                 {/* Step Circle */}
                 <div
-                  className={`
-                    flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium
-                    ${
-                      isActive
-                        ? 'border-blue-600 bg-blue-600 text-white'
-                        : isCompleted
+                  className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium ${
+                    isActive
+                      ? 'border-blue-600 bg-blue-600 text-white'
+                      : isCompleted
                         ? 'border-green-600 bg-green-600 text-white'
                         : 'border-gray-300 bg-white text-gray-500'
-                    }
-                  `}
+                  } `}
                 >
                   {isCompleted ? (
                     <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -44,37 +41,25 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                     stepNumber
                   )}
                 </div>
-                
+
                 {/* Step Label */}
-                <div className="mt-2 text-center max-w-24">
+                <div className="mt-2 max-w-24 text-center">
                   <p
-                    className={`
-                      text-xs font-medium
-                      ${
-                        isActive
-                          ? 'text-blue-600'
-                          : isCompleted
-                          ? 'text-green-600'
-                          : 'text-gray-500'
-                      }
-                    `}
+                    className={`text-xs font-medium ${
+                      isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                    } `}
                   >
                     {step.title}
                   </p>
                 </div>
               </div>
-              
+
               {/* Connector Line */}
               {!isLast && (
                 <div
-                  className={`
-                    flex-1 h-0.5 mx-4 mt-[-20px]
-                    ${
-                      isCompleted || (isActive && stepNumber > 1)
-                        ? 'bg-green-600'
-                        : 'bg-gray-300'
-                    }
-                  `}
+                  className={`mx-4 mt-[-20px] h-0.5 flex-1 ${
+                    isCompleted || (isActive && stepNumber > 1) ? 'bg-green-600' : 'bg-gray-300'
+                  } `}
                 />
               )}
             </React.Fragment>

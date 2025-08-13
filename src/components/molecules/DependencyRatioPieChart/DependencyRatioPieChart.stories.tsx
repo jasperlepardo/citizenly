@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A specialized pie chart for displaying dependency ratios in Filipino barangays. Shows the distribution of young dependents (0-14), working age population (15-64), and elderly dependents (65+).',
+        component:
+          'A specialized pie chart for displaying dependency ratios in Filipino barangays. Shows the distribution of young dependents (0-14), working age population (15-64), and elderly dependents (65+).',
       },
     },
   },
@@ -38,8 +39,8 @@ export const TypicalBarangay: Story = {
     title: 'Age Dependency Ratio',
     data: {
       youngDependents: 856, // 30.1% (0-14 years)
-      workingAge: 1704,     // 59.8% (15-64 years)
-      oldDependents: 287,   // 10.1% (65+ years)
+      workingAge: 1704, // 59.8% (15-64 years)
+      oldDependents: 287, // 10.1% (65+ years)
     },
   },
 };
@@ -50,8 +51,8 @@ export const YoungPopulation: Story = {
     title: 'High Birth Rate Area',
     data: {
       youngDependents: 1234, // 43.4%
-      workingAge: 1456,      // 51.2%
-      oldDependents: 153,    // 5.4%
+      workingAge: 1456, // 51.2%
+      oldDependents: 153, // 5.4%
     },
   },
 };
@@ -61,9 +62,9 @@ export const AgingBarangay: Story = {
   args: {
     title: 'Aging Community',
     data: {
-      youngDependents: 423,  // 19.8%
-      workingAge: 1234,      // 57.8%
-      oldDependents: 478,    // 22.4%
+      youngDependents: 423, // 19.8%
+      workingAge: 1234, // 57.8%
+      oldDependents: 478, // 22.4%
     },
   },
 };
@@ -73,9 +74,9 @@ export const UrbanProfessional: Story = {
   args: {
     title: 'Urban Professional Area',
     data: {
-      youngDependents: 345,  // 17.2%
-      workingAge: 1567,      // 78.4%
-      oldDependents: 88,     // 4.4%
+      youngDependents: 345, // 17.2%
+      workingAge: 1567, // 78.4%
+      oldDependents: 88, // 4.4%
     },
   },
 };
@@ -85,9 +86,9 @@ export const RuralAgricultural: Story = {
   args: {
     title: 'Rural Agricultural Community',
     data: {
-      youngDependents: 987,  // 35.2%
-      workingAge: 1567,      // 55.9%
-      oldDependents: 249,    // 8.9%
+      youngDependents: 987, // 35.2%
+      workingAge: 1567, // 55.9%
+      oldDependents: 249, // 8.9%
     },
   },
 };
@@ -97,9 +98,9 @@ export const BalancedPopulation: Story = {
   args: {
     title: 'Balanced Age Structure',
     data: {
-      youngDependents: 567,  // 25.0%
-      workingAge: 1456,      // 64.2%
-      oldDependents: 244,    // 10.8%
+      youngDependents: 567, // 25.0%
+      workingAge: 1456, // 64.2%
+      oldDependents: 244, // 10.8%
     },
   },
 };
@@ -109,9 +110,9 @@ export const RetirementCommunity: Story = {
   args: {
     title: 'Retirement Community',
     data: {
-      youngDependents: 123,  // 8.7%
-      workingAge: 678,       // 47.8%
-      oldDependents: 615,    // 43.5%
+      youngDependents: 123, // 8.7%
+      workingAge: 678, // 47.8%
+      oldDependents: 615, // 43.5%
     },
   },
 };
@@ -121,9 +122,9 @@ export const UniversityArea: Story = {
   args: {
     title: 'University Area',
     data: {
-      youngDependents: 234,  // 11.7%
-      workingAge: 1678,      // 83.9%
-      oldDependents: 88,     // 4.4%
+      youngDependents: 234, // 11.7%
+      workingAge: 1678, // 83.9%
+      oldDependents: 88, // 4.4%
     },
   },
 };
@@ -133,9 +134,9 @@ export const IslandBarangay: Story = {
   args: {
     title: 'Island Community (Out-migration)',
     data: {
-      youngDependents: 345,  // 38.3%
-      workingAge: 423,       // 47.0%
-      oldDependents: 132,    // 14.7%
+      youngDependents: 345, // 38.3%
+      workingAge: 423, // 47.0%
+      oldDependents: 132, // 14.7%
     },
   },
 };
@@ -145,9 +146,9 @@ export const MiningCommunity: Story = {
   args: {
     title: 'Mining Community',
     data: {
-      youngDependents: 456,  // 22.1%
-      workingAge: 1456,      // 70.5%
-      oldDependents: 152,    // 7.4%
+      youngDependents: 456, // 22.1%
+      workingAge: 1456, // 70.5%
+      oldDependents: 152, // 7.4%
     },
   },
 };
@@ -157,9 +158,9 @@ export const OFWBarangay: Story = {
   args: {
     title: 'OFW-Dependent Community',
     data: {
-      youngDependents: 678,  // 42.4%
-      workingAge: 756,       // 47.3%
-      oldDependents: 165,    // 10.3%
+      youngDependents: 678, // 42.4%
+      workingAge: 756, // 47.3%
+      oldDependents: 165, // 10.3%
     },
   },
 };
@@ -169,9 +170,9 @@ export const DisasterAffected: Story = {
   args: {
     title: 'Post-Disaster Demographics',
     data: {
-      youngDependents: 234,  // 31.2%
-      workingAge: 423,       // 56.3%
-      oldDependents: 94,     // 12.5%
+      youngDependents: 234, // 31.2%
+      workingAge: 423, // 56.3%
+      oldDependents: 94, // 12.5%
     },
   },
 };
@@ -182,8 +183,8 @@ export const HighFertility: Story = {
     title: 'High Fertility Rate Area',
     data: {
       youngDependents: 1456, // 48.2%
-      workingAge: 1345,      // 44.5%
-      oldDependents: 221,    // 7.3%
+      workingAge: 1345, // 44.5%
+      oldDependents: 221, // 7.3%
     },
   },
 };
@@ -193,9 +194,9 @@ export const LowFertilityUrban: Story = {
   args: {
     title: 'Low Fertility Urban Area',
     data: {
-      youngDependents: 287,  // 15.6%
-      workingAge: 1345,      // 73.1%
-      oldDependents: 207,    // 11.3%
+      youngDependents: 287, // 15.6%
+      workingAge: 1345, // 73.1%
+      oldDependents: 207, // 11.3%
     },
   },
 };
@@ -227,7 +228,7 @@ export const EmptyData: Story = {
 // Comparative analysis - Multiple charts
 export const RegionalComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid min-h-screen grid-cols-1 gap-6 bg-gray-50 p-6 md:grid-cols-2 xl:grid-cols-3">
       <DependencyRatioPieChart
         title="Metro Manila"
         data={{
@@ -286,7 +287,7 @@ export const RegionalComparison: Story = {
 // Time series comparison
 export const TimeSeriesComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 gap-6 p-6 lg:grid-cols-3">
       <DependencyRatioPieChart
         title="2020 Census"
         data={{
@@ -322,39 +323,39 @@ export const TimeSeriesComparison: Story = {
 export const DependencyScenarios: Story = {
   render: () => (
     <div className="space-y-8 p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <DependencyRatioPieChart
           title="High Dependency (70%)"
           data={{
-            youngDependents: 567,  // 35%
-            workingAge: 489,       // 30%  
-            oldDependents: 567,    // 35%
+            youngDependents: 567, // 35%
+            workingAge: 489, // 30%
+            oldDependents: 567, // 35%
           }}
         />
         <DependencyRatioPieChart
           title="Low Dependency (30%)"
           data={{
-            youngDependents: 243,  // 15%
-            workingAge: 1134,      // 70%
-            oldDependents: 243,    // 15%
+            youngDependents: 243, // 15%
+            workingAge: 1134, // 70%
+            oldDependents: 243, // 15%
           }}
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <DependencyRatioPieChart
           title="Youth Bulge"
           data={{
             youngDependents: 1215, // 50%
-            workingAge: 1093,      // 45%
-            oldDependents: 122,    // 5%
+            workingAge: 1093, // 45%
+            oldDependents: 122, // 5%
           }}
         />
         <DependencyRatioPieChart
           title="Population Aging"
           data={{
-            youngDependents: 243,  // 10%
-            workingAge: 1215,      // 50%
-            oldDependents: 972,    // 40%
+            youngDependents: 243, // 10%
+            workingAge: 1215, // 50%
+            oldDependents: 972, // 40%
           }}
         />
       </div>

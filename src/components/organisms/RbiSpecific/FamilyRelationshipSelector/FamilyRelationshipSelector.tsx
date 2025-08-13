@@ -6,6 +6,7 @@
  * Handles relationship to household head and position in family
  */
 
+import React, { useState, useEffect } from 'react';
 import { DropdownSelect } from '../../../molecules';
 import { FormGroup } from '../../../molecules';
 
@@ -365,7 +366,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Context Information */}
       {(personContext.age || personContext.gender) && (
-        <div className="rounded-lg p-3 text-xs text-muted bg-background-muted">
+        <div className="text-muted bg-background-muted rounded-lg p-3 text-xs">
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}

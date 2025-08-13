@@ -83,8 +83,10 @@ export default function HouseholdsContent() {
           const fullName = [
             household.head_resident.first_name,
             household.head_resident.middle_name,
-            household.head_resident.last_name
-          ].filter(Boolean).join(' ');
+            household.head_resident.last_name,
+          ]
+            .filter(Boolean)
+            .join(' ');
           return <span>{fullName}</span>;
         }
         return <span className="text-gray-500">No head assigned</span>;
@@ -97,19 +99,15 @@ export default function HouseholdsContent() {
         const addressParts = [
           household.house_number,
           household.street_name,
-          household.subdivision
+          household.subdivision,
         ].filter(Boolean);
-        return (
-          <span>{addressParts.length > 0 ? addressParts.join(', ') : 'N/A'}</span>
-        );
+        return <span>{addressParts.length > 0 ? addressParts.join(', ') : 'N/A'}</span>;
       },
     },
     {
       key: 'member_count',
       title: 'Members',
-      render: (household: Household) => (
-        <span>{household.member_count || 0}</span>
-      ),
+      render: (household: Household) => <span>{household.member_count || 0}</span>,
     },
     {
       key: 'created_at',
@@ -122,12 +120,14 @@ export default function HouseholdsContent() {
 
   const actions: TableAction<Household>[] = [
     {
+      key: 'view',
       label: 'View Details',
       onClick: (household: Household) => {
         router.push(`/households/${household.code}`);
       },
     },
     {
+      key: 'edit',
       label: 'Edit',
       onClick: (household: Household) => {
         router.push(`/households/${household.code}/edit`);
@@ -150,7 +150,7 @@ export default function HouseholdsContent() {
 
       const response = await fetch(`/api/households?${params}`, {
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -172,7 +172,7 @@ export default function HouseholdsContent() {
 
   useEffect(() => {
     fetchHouseholds(searchQuery, page);
-  }, [session, searchQuery, page]);
+  }, [session, searchQuery, page, fetchHouseholds]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -192,12 +192,12 @@ export default function HouseholdsContent() {
 
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border p-8">
+      <div className="rounded-xl border bg-white p-8 shadow-sm">
         <div className="text-center">
           <h3 className="text-lg font-medium text-red-800">Error Loading Households</h3>
           <p className="mt-2 text-red-700">{error}</p>
-          <button 
-            onClick={() => fetchHouseholds(searchQuery, page)} 
+          <button
+            onClick={() => fetchHouseholds(searchQuery, page)}
             className="mt-4 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
           >
             Retry
@@ -211,16 +211,14 @@ export default function HouseholdsContent() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-primary">Households Management</h1>
-        <p className="text-secondary mt-2">
-          Manage and view household information ({households.length} of {totalPages > 1 ? `${(page - 1) * 10 + households.length}` : households.length} total)
+        <p className="mt-2 text-secondary">
+          Manage and view household information ({households.length} of{' '}
+          {totalPages > 1 ? `${(page - 1) * 10 + households.length}` : households.length} total)
         </p>
       </div>
-      
-      <SearchBar
-        onSearch={handleSearch}
-        placeholder="Search households by code or head name..."
-      />
-      
+
+      <SearchBar onSearch={handleSearch} placeholder="Search households by code or head name..." />
+
       <DataTable<Household>
         data={households}
         columns={columns}
@@ -229,7 +227,7 @@ export default function HouseholdsContent() {
           current: page,
           pageSize: 10,
           total: totalPages * 10,
-          onChange: (pageNum) => setPage(pageNum)
+          onChange: pageNum => setPage(pageNum),
         }}
         rowKey="code"
       />

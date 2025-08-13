@@ -74,7 +74,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="mb-1 block text-sm font-medium font-body text-primary">{label}</label>
+          <label className="mb-1 block font-body text-sm font-medium text-primary">{label}</label>
         )}
 
         {/* Select Container */}
@@ -102,13 +102,13 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
               <select
                 ref={ref}
                 className={cn(
-                  'font-montserrat w-full cursor-pointer appearance-none border-none bg-transparent font-normal outline-none text-primary',
+                  'font-montserrat w-full cursor-pointer appearance-none border-none bg-transparent font-normal text-primary outline-none',
                   'dark:[color-scheme:dark]', // This helps browsers apply dark theme to native dropdowns
                   // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                   size === 'sm' && 'text-sm leading-4',
                   size === 'md' && 'text-base leading-5', // 16px from Figma
                   size === 'lg' && 'text-lg leading-6',
-                  disabled && 'cursor-not-allowed text-muted',
+                  disabled && 'text-muted cursor-not-allowed',
                   !value && 'text-muted' // Placeholder color from Figma
                 )}
                 disabled={disabled || loading}
@@ -147,7 +147,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                       key={option.value}
                       value={option.value}
                       disabled={option.disabled}
-                      className="text-primary bg-surface"
+                      className="bg-surface text-primary"
                       style={{
                         backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-text-primary)',
@@ -179,9 +179,9 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
+              <p className="font-body text-xs text-danger-600">{errorMessage}</p>
             ) : (
-              <p className="text-xs font-body text-muted">{helperText}</p>
+              <p className="text-muted font-body text-xs">{helperText}</p>
             )}
           </div>
         )}

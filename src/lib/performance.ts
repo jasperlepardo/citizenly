@@ -5,6 +5,21 @@ import { logger } from './secure-logger';
  * Tracks key metrics and provides insights into app performance
  */
 
+// Performance entry interfaces
+interface LayoutShiftEntry extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+  sources?: Array<{
+    node?: {
+      tagName: string;
+    };
+  }>;
+}
+
+interface ComponentProps {
+  [key: string]: unknown;
+}
+
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -36,7 +51,7 @@ class PerformanceMonitor {
     try {
       // Observe navigation timing
       if ('PerformanceObserver' in window) {
-        const navigationObserver = new PerformanceObserver((list) => {
+        const navigationObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
             this.recordMetric('navigation', entry.duration, {
               type: entry.entryType,
@@ -48,9 +63,10 @@ class PerformanceMonitor {
         this.observers.push(navigationObserver);
 
         // Observe resource loading
-        const resourceObserver = new PerformanceObserver((list) => {
+        const resourceObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
-            if (entry.duration > 100) { // Only log slow resources
+            if (entry.duration > 100) {
+              // Only log slow resources
               this.recordMetric('resource', entry.duration, {
                 name: entry.name,
                 type: entry.entryType,
@@ -63,7 +79,7 @@ class PerformanceMonitor {
         this.observers.push(resourceObserver);
 
         // Observe largest contentful paint
-        const lcpObserver = new PerformanceObserver((list) => {
+        const lcpObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
             this.recordMetric('lcp', entry.startTime, {
               element: (entry as any).element?.tagName,
@@ -75,11 +91,12 @@ class PerformanceMonitor {
         this.observers.push(lcpObserver);
 
         // Observe cumulative layout shift
-        const clsObserver = new PerformanceObserver((list) => {
+        const clsObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              this.recordMetric('cls', (entry as any).value, {
-                sources: (entry as any).sources?.map((s: any) => s.node?.tagName),
+            const layoutShiftEntry = entry as LayoutShiftEntry;
+            if (!layoutShiftEntry.hadRecentInput) {
+              this.recordMetric('cls', layoutShiftEntry.value, {
+                sources: layoutShiftEntry.sources?.map(s => s.node?.tagName),
               });
             }
           }
@@ -141,7 +158,7 @@ class PerformanceMonitor {
     if (!this.isEnabled) return () => {};
 
     const start = performance.now();
-    
+
     return () => {
       const duration = performance.now() - start;
       this.recordMetric(name, duration);
@@ -187,7 +204,8 @@ class PerformanceMonitor {
 
     this.componentMetrics.set(componentName, data);
 
-    if (renderTime > 16) { // Slower than 60fps
+    if (renderTime > 16) {
+      // Slower than 60fps
       logger.warn(`Slow component render: ${componentName}`, {
         renderTime: `${renderTime.toFixed(2)}ms`,
         rerenderCount: data.rerenderCount,
@@ -203,7 +221,7 @@ class PerformanceMonitor {
     if (!this.isEnabled) return null;
 
     const recent = this.metrics.filter(m => Date.now() - m.timestamp < 60000); // Last minute
-    
+
     const summary = {
       totalMetrics: this.metrics.length,
       recentMetrics: recent.length,
@@ -220,11 +238,14 @@ class PerformanceMonitor {
     };
 
     // Calculate averages by metric type
-    const grouped = recent.reduce((acc, metric) => {
-      if (!acc[metric.name]) acc[metric.name] = [];
-      acc[metric.name].push(metric.value);
-      return acc;
-    }, {} as Record<string, number[]>);
+    const grouped = recent.reduce(
+      (acc, metric) => {
+        if (!acc[metric.name]) acc[metric.name] = [];
+        acc[metric.name].push(metric.value);
+        return acc;
+      },
+      {} as Record<string, number[]>
+    );
 
     Object.entries(grouped).forEach(([name, values]) => {
       summary.averages[name] = values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -240,25 +261,30 @@ class PerformanceMonitor {
     if (!this.isEnabled || typeof window === 'undefined') return null;
 
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    
+
     return {
       // First Contentful Paint
-      fcp: this.metrics.find(m => m.name === 'paint' && m.metadata?.name === 'first-contentful-paint')?.value,
-      
+      fcp: this.metrics.find(
+        m => m.name === 'paint' && m.metadata?.name === 'first-contentful-paint'
+      )?.value,
+
       // Largest Contentful Paint
-      lcp: this.metrics.filter(m => m.name === 'lcp').sort((a, b) => b.timestamp - a.timestamp)[0]?.value,
-      
+      lcp: this.metrics.filter(m => m.name === 'lcp').sort((a, b) => b.timestamp - a.timestamp)[0]
+        ?.value,
+
       // Cumulative Layout Shift
       cls: this.metrics.filter(m => m.name === 'cls').reduce((sum, m) => sum + m.value, 0),
-      
+
       // Time to First Byte
       ttfb: navigation ? navigation.responseStart - navigation.requestStart : null,
-      
+
       // DOM Content Loaded
-      domContentLoaded: navigation ? navigation.domContentLoadedEventEnd - navigation.navigationStart : null,
-      
+      domContentLoaded: navigation
+        ? navigation.domContentLoadedEventEnd - navigation.fetchStart
+        : null,
+
       // Load Complete
-      loadComplete: navigation ? navigation.loadEventEnd - navigation.navigationStart : null,
+      loadComplete: navigation ? navigation.loadEventEnd - navigation.fetchStart : null,
     };
   }
 
@@ -299,20 +325,20 @@ export const performanceMonitor = new PerformanceMonitor();
 
 // Decorator for timing functions
 export function timed(name?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: object, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    const timerName = name || `${target.constructor.name}.${propertyKey}`;
+    const timerName = name || `${(target as any).constructor.name}.${propertyKey}`;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       const endTiming = performanceMonitor.startTiming(timerName);
       try {
         const result = originalMethod.apply(this, args);
-        
+
         // Handle async methods
         if (result instanceof Promise) {
           return result.finally(() => endTiming());
         }
-        
+
         endTiming();
         return result;
       } catch (error) {
@@ -328,7 +354,7 @@ export function timed(name?: string) {
 // React hook for component performance tracking
 export function usePerformanceTracking(componentName: string) {
   const renderStart = performance.now();
-  
+
   return {
     onRenderComplete: (propsSize?: number, isRerender = false) => {
       const renderTime = performance.now() - renderStart;
@@ -338,7 +364,7 @@ export function usePerformanceTracking(componentName: string) {
 }
 
 // Utility to measure props size
-export function measurePropsSize(props: any): number {
+export function measurePropsSize(props: ComponentProps): number {
   try {
     return JSON.stringify(props).length;
   } catch {
@@ -350,10 +376,10 @@ export function measurePropsSize(props: any): number {
 export async function reportPerformanceMetrics() {
   if (process.env.NODE_ENV === 'production') {
     const metrics = performanceMonitor.exportMetrics();
-    
+
     // In a real app, send to analytics service
     logger.info('Performance report', { metrics });
-    
+
     // Clear after reporting
     performanceMonitor.clearMetrics();
   }

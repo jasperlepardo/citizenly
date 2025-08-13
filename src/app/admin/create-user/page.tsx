@@ -30,7 +30,7 @@ interface Role {
 }
 
 function CreateUserContent() {
-  const { user: currentUser } = useAuth();
+  const { user: _currentUser } = useAuth();
   const [formData, setFormData] = useState<CreateUserFormData>({
     email: '',
     password: '',
@@ -435,7 +435,7 @@ function CreateUserContent() {
                     onChange={code => handleChange('barangayCode', code)}
                     error={errors.barangayCode}
                     disabled={isSubmitting}
-                    placeholder="Search for the user's barangay..."
+                    placeholder="Search for the user&rsquo;s barangay..."
                   />
                 </div>
               </div>
@@ -469,7 +469,7 @@ function CreateUserContent() {
                     value={formData.roleId}
                     onChange={val => handleChange('roleId', val)}
                     errorMessage={errors.roleId}
-                    helperText="Select the role that best describes the user's position"
+                    helperText="Select the role that best describes the user&rsquo;s position"
                     disabled={isSubmitting}
                   />
                 )}

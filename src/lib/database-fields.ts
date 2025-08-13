@@ -1,7 +1,7 @@
 /**
  * DATABASE FIELD DEFINITIONS
  * ==========================
- * 
+ *
  * Single source of truth for all database field names
  * Ensures consistency between schema and API usage
  * All field names match exactly with database schema.sql
@@ -25,7 +25,7 @@ export const AUTH_USER_PROFILES_FIELDS = {
   created_by: 'created_by',
   updated_by: 'updated_by',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 // auth_roles table fields
@@ -35,7 +35,7 @@ export const AUTH_ROLES_FIELDS = {
   description: 'description',
   permissions: 'permissions',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 // residents table fields
@@ -71,7 +71,7 @@ export const RESIDENTS_FIELDS = {
   created_by: 'created_by',
   updated_by: 'updated_by',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 // households table fields
@@ -98,7 +98,7 @@ export const HOUSEHOLDS_FIELDS = {
   created_by: 'created_by',
   updated_by: 'updated_by',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 // PSGC table fields
@@ -107,7 +107,7 @@ export const PSGC_REGIONS_FIELDS = {
   name: 'name',
   is_active: 'is_active',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 export const PSGC_PROVINCES_FIELDS = {
@@ -116,7 +116,7 @@ export const PSGC_PROVINCES_FIELDS = {
   region_code: 'region_code',
   is_active: 'is_active',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 export const PSGC_CITIES_MUNICIPALITIES_FIELDS = {
@@ -126,7 +126,7 @@ export const PSGC_CITIES_MUNICIPALITIES_FIELDS = {
   type: 'type',
   is_active: 'is_active',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 export const PSGC_BARANGAYS_FIELDS = {
@@ -135,14 +135,15 @@ export const PSGC_BARANGAYS_FIELDS = {
   city_municipality_code: 'city_municipality_code',
   is_active: 'is_active',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
 } as const;
 
 // Type helpers for strict typing
-export type AuthUserProfileFields = typeof AUTH_USER_PROFILES_FIELDS[keyof typeof AUTH_USER_PROFILES_FIELDS];
-export type AuthRoleFields = typeof AUTH_ROLES_FIELDS[keyof typeof AUTH_ROLES_FIELDS];
-export type ResidentFields = typeof RESIDENTS_FIELDS[keyof typeof RESIDENTS_FIELDS];
-export type HouseholdFields = typeof HOUSEHOLDS_FIELDS[keyof typeof HOUSEHOLDS_FIELDS];
+export type AuthUserProfileFields =
+  (typeof AUTH_USER_PROFILES_FIELDS)[keyof typeof AUTH_USER_PROFILES_FIELDS];
+export type AuthRoleFields = (typeof AUTH_ROLES_FIELDS)[keyof typeof AUTH_ROLES_FIELDS];
+export type ResidentFields = (typeof RESIDENTS_FIELDS)[keyof typeof RESIDENTS_FIELDS];
+export type HouseholdFields = (typeof HOUSEHOLDS_FIELDS)[keyof typeof HOUSEHOLDS_FIELDS];
 
 // Helper function to build select queries with exact field names
 export function buildSelectQuery<T extends Record<string, string>>(
@@ -178,5 +179,5 @@ export const DB_FIELDS = {
   PSGC_REGIONS: PSGC_REGIONS_FIELDS,
   PSGC_PROVINCES: PSGC_PROVINCES_FIELDS,
   PSGC_CITIES_MUNICIPALITIES: PSGC_CITIES_MUNICIPALITIES_FIELDS,
-  PSGC_BARANGAYS: PSGC_BARANGAYS_FIELDS
+  PSGC_BARANGAYS: PSGC_BARANGAYS_FIELDS,
 } as const;

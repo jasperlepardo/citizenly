@@ -106,7 +106,7 @@ export const ETHNICITY_OPTIONS = [
 ];
 
 // Helper function to extract just the values
-export const extractValues = (options: { value: string; label: string }[]) => 
+export const extractValues = (options: { value: string; label: string }[]) =>
   options.map(option => option.value).filter(value => value !== '');
 
 // Helper function to get label by value

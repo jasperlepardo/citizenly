@@ -1,16 +1,16 @@
 /**
  * Resident Edit Page Component
- * 
+ *
  * @description Comprehensive resident editing form following development standards
  * @author Citizenly Development Team
  * @version 2.0.0
- * 
+ *
  * @example
  * ```typescript
  * // Accessed via URL: /residents/{id}/edit
  * // Automatically loads resident data and provides full editing capabilities
  * ```
- * 
+ *
  * @compliance
  * - ✅ Component Size: Under 150 lines (vs previous 519 lines)
  * - ✅ Zod Validation: Runtime validation with comprehensive schemas
@@ -32,7 +32,7 @@ import { Button } from '@/components/atoms';
 import { useAuth } from '@/contexts/AuthContext';
 import { useResidentEditForm } from '@/hooks/useResidentEditForm';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
-import { logger, logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/secure-logger';
 import {
   PersonalInfoSection,
   ContactInfoSection,
@@ -49,10 +49,10 @@ export const dynamic = 'force-dynamic';
 
 /**
  * Resident Edit Page Component
- * 
+ *
  * @description Provides comprehensive resident data editing with validation and error handling
  * @returns {JSX.Element} The rendered resident edit page
- * 
+ *
  * @features
  * - Complete form coverage (all database fields)
  * - Real-time validation with Zod schemas
@@ -61,7 +61,7 @@ export const dynamic = 'force-dynamic';
  * - Dark mode support
  * - Responsive design
  * - Accessibility compliance
- * 
+ *
  * @security
  * - Authentication required via ProtectedRoute
  * - Input validation and sanitization
@@ -73,7 +73,7 @@ export default function ResidentEditPage() {
   const params = useParams();
   const router = useRouter();
   const residentId = params.id as string;
-  
+
   const [initialData, setInitialData] = useState<Partial<ResidentEditFormData> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,40 +81,36 @@ export default function ResidentEditPage() {
   /**
    * Handles form submission with proper error handling and validation
    */
-  const handleSubmit = useCallback(async (data: ResidentEditFormData) => {
-    if (!session) {
-      throw new Error('No active session');
-    }
+  const handleSubmit = useCallback(
+    async (data: ResidentEditFormData) => {
+      if (!session) {
+        throw new Error('No active session');
+      }
 
-    const response = await fetch(`/api/residents/${residentId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch(`/api/residents/${residentId}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Failed to update resident: ${response.status}`);
-    }
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to update resident: ${response.status}`);
+      }
 
-    // Navigate back to resident detail page on success
-    router.push(`/residents/${residentId}`);
-  }, [session, residentId, router]);
+      // Navigate back to resident detail page on success
+      router.push(`/residents/${residentId}`);
+    },
+    [session, residentId, router]
+  );
 
   /**
    * Initialize form hook with loaded data and submission handler
    */
-  const {
-    formData,
-    errors,
-    updateField,
-    submitForm,
-    isSubmitting,
-    isDirty,
-  } = useResidentEditForm({
+  const { formData, errors, updateField, submitForm, isSubmitting, isDirty } = useResidentEditForm({
     initialData: initialData || {},
     onSubmit: handleSubmit,
     autoSave: true,
@@ -134,7 +130,7 @@ export default function ResidentEditPage() {
 
         const response = await fetch(`/api/residents/${residentId}`, {
           headers: {
-            'Authorization': `Bearer ${session.access_token}`,
+            Authorization: `Bearer ${session.access_token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -145,21 +141,21 @@ export default function ResidentEditPage() {
 
         const data = await response.json();
         const resident = data.resident || data;
-        
+
         // Format data for form consumption
         const formattedData: Partial<ResidentEditFormData> = {
           ...resident,
-          birthdate: resident.birthdate 
+          birthdate: resident.birthdate
             ? new Date(resident.birthdate).toISOString().split('T')[0]
             : '',
-          last_voted_date: resident.last_voted_date 
+          last_voted_date: resident.last_voted_date
             ? new Date(resident.last_voted_date).toISOString().split('T')[0]
             : '',
         };
 
         setInitialData(formattedData);
       } catch (err) {
-        logError('Error fetching resident', err);
+        logError(err instanceof Error ? err : new Error(String(err)));
         setError(err instanceof Error ? err.message : 'Failed to load resident');
       } finally {
         setLoading(false);
@@ -172,10 +168,13 @@ export default function ResidentEditPage() {
   /**
    * Handle form submission with validation
    */
-  const handleFormSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    await submitForm();
-  }, [submitForm]);
+  const handleFormSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      await submitForm();
+    },
+    [submitForm]
+  );
 
   /**
    * Handle cancel action with unsaved changes warning
@@ -212,13 +211,13 @@ export default function ResidentEditPage() {
       <ProtectedRoute>
         <DashboardLayout>
           <div className="space-y-6">
-            <div className="bg-danger-50 border border-danger-200 dark:bg-danger-950 dark:border-danger-800 rounded-lg p-4">
+            <div className="rounded-lg border border-danger-200 bg-danger-50 p-4 dark:border-danger-800 dark:bg-danger-950">
               <h3 className="text-lg font-medium text-danger-800 dark:text-danger-200">
                 Error Loading Resident
               </h3>
               <p className="mt-2 text-danger-700 dark:text-danger-300">{error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
+              <button
+                onClick={() => window.location.reload()}
                 className="mt-4 rounded bg-danger-600 px-4 py-2 text-white hover:bg-danger-700 dark:bg-danger-500 dark:hover:bg-danger-600"
               >
                 Retry
@@ -233,22 +232,18 @@ export default function ResidentEditPage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="max-w-6xl mx-auto space-y-6">
+        <div className="mx-auto max-w-6xl space-y-6">
           {/* Header */}
-          <div className="bg-surface rounded-xl shadow-sm border border-default p-6">
+          <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-primary">Edit Resident</h1>
-                <p className="text-secondary mt-2">
+                <p className="mt-2 text-secondary">
                   Complete resident information form
                   {isDirty && <span className="ml-2 text-yellow-600">• Unsaved changes</span>}
                 </p>
               </div>
-              <Button
-                variant="secondary-outline"
-                onClick={handleCancel}
-                disabled={isSubmitting}
-              >
+              <Button variant="secondary-outline" onClick={handleCancel} disabled={isSubmitting}>
                 Cancel
               </Button>
             </div>
@@ -320,7 +315,7 @@ export default function ResidentEditPage() {
             />
 
             {/* Form Actions */}
-            <div className="bg-surface rounded-xl shadow-sm border border-default p-6">
+            <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
               <div className="flex justify-end gap-4">
                 <Button
                   type="button"
@@ -330,11 +325,7 @@ export default function ResidentEditPage() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" variant="primary" disabled={isSubmitting}>
                   {isSubmitting ? 'Saving...' : 'Save Changes'}
                 </Button>
               </div>

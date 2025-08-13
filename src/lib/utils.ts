@@ -59,7 +59,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
-  
+
   return function (...args: Parameters<T>) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
@@ -77,7 +77,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  
+
   return function (...args: Parameters<T>) {
     if (!inThrottle) {
       func(...args);
@@ -118,7 +118,7 @@ export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') return obj;
   if (obj instanceof Date) return new Date(obj.getTime()) as T;
   if (obj instanceof Array) return obj.map(item => deepClone(item)) as T;
-  
+
   const cloned = {} as T;
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -171,11 +171,11 @@ export function toTitleCase(str: string): string {
 export function parseQueryString(queryString: string): Record<string, string> {
   const params = new URLSearchParams(queryString);
   const result: Record<string, string> = {};
-  
+
   params.forEach((value, key) => {
     result[key] = value;
   });
-  
+
   return result;
 }
 
@@ -184,15 +184,17 @@ export function parseQueryString(queryString: string): Record<string, string> {
  * @param params - Parameters object
  * @returns Query string
  */
-export function buildQueryString(params: Record<string, string | number | boolean | null | undefined>): string {
+export function buildQueryString(
+  params: Record<string, string | number | boolean | null | undefined>
+): string {
   const searchParams = new URLSearchParams();
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== '') {
       searchParams.append(key, String(value));
     }
   });
-  
+
   return searchParams.toString();
 }
 
@@ -212,25 +214,21 @@ export function sleep(ms: number): Promise<void> {
  * @param delay - Initial delay in milliseconds
  * @returns Result of function or throws error
  */
-export async function retry<T>(
-  fn: () => Promise<T>,
-  maxAttempts = 3,
-  delay = 1000
-): Promise<T> {
+export async function retry<T>(fn: () => Promise<T>, maxAttempts = 3, delay = 1000): Promise<T> {
   let lastError: Error | undefined;
-  
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
-      
+
       if (attempt < maxAttempts) {
         await sleep(delay * Math.pow(2, attempt - 1));
       }
     }
   }
-  
+
   throw new Error(lastError?.message || 'Retry failed after maximum attempts');
 }
 
@@ -241,14 +239,17 @@ export async function retry<T>(
  * @returns Grouped object
  */
 export function groupBy<T>(array: T[], key: keyof T): Record<string, T[]> {
-  return array.reduce((groups, item) => {
-    const groupKey = String(item[key]);
-    if (!groups[groupKey]) {
-      groups[groupKey] = [];
-    }
-    groups[groupKey].push(item);
-    return groups;
-  }, {} as Record<string, T[]>);
+  return array.reduce(
+    (groups, item) => {
+      const groupKey = String(item[key]);
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(item);
+      return groups;
+    },
+    {} as Record<string, T[]>
+  );
 }
 
 /**
@@ -261,7 +262,7 @@ export function removeDuplicates<T>(array: T[], key?: keyof T): T[] {
   if (!key) {
     return Array.from(new Set(array));
   }
-  
+
   const seen = new Set();
   return array.filter(item => {
     const value = item[key];
@@ -280,15 +281,11 @@ export function removeDuplicates<T>(array: T[], key?: keyof T): T[] {
  * @param order - Sort order
  * @returns Sorted array
  */
-export function sortBy<T>(
-  array: T[],
-  key: keyof T,
-  order: 'asc' | 'desc' = 'asc'
-): T[] {
+export function sortBy<T>(array: T[], key: keyof T, order: 'asc' | 'desc' = 'asc'): T[] {
   return [...array].sort((a, b) => {
     const aVal = a[key];
     const bVal = b[key];
-    
+
     if (aVal < bVal) return order === 'asc' ? -1 : 1;
     if (aVal > bVal) return order === 'asc' ? 1 : -1;
     return 0;

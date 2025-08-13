@@ -88,7 +88,7 @@ export default function LoginForm({
 
   return (
     <div className={`mx-auto w-full max-w-md ${className}`}>
-      <div className="rounded-lg border p-8 shadow-lg bg-surface border-default">
+      <div className="bg-surface rounded-lg border border-default p-8 shadow-lg">
         <div className="mb-8 text-center">
           <h1 className="mb-2 text-2xl font-bold text-primary">Sign In to RBI System</h1>
           <p className="text-sm text-secondary">Records of Barangay Inhabitant System</p>
@@ -183,7 +183,7 @@ export default function LoginForm({
               Create one here
             </a>
           </p>
-          <p className="text-xs text-muted">Need help? Contact your Barangay Administrator</p>
+          <p className="text-muted text-xs">Need help? Contact your Barangay Administrator</p>
         </div>
       </div>
     </div>

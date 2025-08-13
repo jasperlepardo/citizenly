@@ -18,7 +18,7 @@ function CreateResidentForm() {
         <div className="mb-8 flex items-center gap-4">
           <Link
             href="/residents"
-            className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm/6 font-medium shadow-sm text-primary bg-surface border-default hover:bg-surface-hover"
+            className="bg-surface hover:bg-surface-hover inline-flex items-center gap-2 rounded-lg border border-default px-3 py-2 text-sm/6 font-medium text-primary shadow-sm"
           >
             <svg
               className="size-4"

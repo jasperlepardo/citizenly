@@ -5,7 +5,11 @@ import { useResidentForm } from './hooks/useResidentForm';
 import { StepIndicator, NavigationButtons } from './components';
 import { ResidentFormWizardProps } from './types';
 
-export function ResidentFormWizard({ onSubmit, onCancel, initialData }: ResidentFormWizardProps = {}) {
+export function ResidentFormWizard({
+  onSubmit,
+  onCancel,
+  initialData,
+}: ResidentFormWizardProps = {}) {
   const {
     formData,
     errors,
@@ -24,14 +28,11 @@ export function ResidentFormWizard({ onSubmit, onCancel, initialData }: Resident
 
   return (
     <div className="mx-auto max-w-4xl">
-      <StepIndicator 
-        steps={steps}
-        currentStep={currentStep}
-      />
-      
+      <StepIndicator steps={steps} currentStep={currentStep} />
+
       <div className="bg-surface rounded-lg border border-default shadow-sm">
         <div className="px-6 py-8">
-          <CurrentStepComponent 
+          <CurrentStepComponent
             formData={formData}
             onChange={handleInputChange}
             errors={errors}
@@ -40,8 +41,8 @@ export function ResidentFormWizard({ onSubmit, onCancel, initialData }: Resident
           />
         </div>
       </div>
-      
-      <NavigationButtons 
+
+      <NavigationButtons
         currentStep={currentStep}
         totalSteps={steps.length}
         canGoBack={canGoBack}

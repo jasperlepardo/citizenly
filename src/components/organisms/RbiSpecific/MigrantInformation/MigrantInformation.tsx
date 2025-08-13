@@ -6,6 +6,7 @@
  * Supports both internal (domestic) and international migration tracking
  */
 
+import React, { useState } from 'react';
 import { Textarea, Radio, RadioGroup } from '../../../atoms';
 import { FormGroup, InputField } from '../../../molecules';
 
@@ -124,7 +125,7 @@ export default function MigrantInformation({
   if (!value.is_migrant) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="border-b pb-4 border-default">
+        <div className="border-b border-default pb-4">
           <h3 className="mb-2 text-lg font-medium text-primary">
             <span className="text-base">🧳</span> Migration Information
           </h3>
@@ -134,7 +135,7 @@ export default function MigrantInformation({
           </p>
         </div>
 
-        <div className="rounded-lg p-4 bg-background-muted">
+        <div className="bg-background-muted rounded-lg p-4">
           <p className="text-sm italic text-secondary">
             Migration information is automatically collected when a resident is marked as a migrant
             in sectoral classifications.
@@ -147,7 +148,7 @@ export default function MigrantInformation({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b pb-4 border-default">
+      <div className="border-b border-default pb-4">
         <h3 className="mb-2 text-lg font-medium text-primary">
           <span className="text-base">🧳</span> Migration Information
         </h3>

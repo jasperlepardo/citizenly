@@ -62,8 +62,11 @@ export const RELIGION_OPTIONS = [
   { value: 'aglipayan_church', label: 'Aglipayan Church' },
   { value: 'seventh_day_adventist', label: 'Seventh Day Adventist' },
   { value: 'bible_baptist_church', label: 'Bible Baptist Church' },
-  { value: 'jehovahs_witnesses', label: 'Jehovah\'s Witnesses' },
-  { value: 'church_of_jesus_christ_latter_day_saints', label: 'Church of Jesus Christ of Latter-day Saints' },
+  { value: 'jehovahs_witnesses', label: "Jehovah's Witnesses" },
+  {
+    value: 'church_of_jesus_christ_latter_day_saints',
+    label: 'Church of Jesus Christ of Latter-day Saints',
+  },
   { value: 'united_church_of_christ_philippines', label: 'United Church of Christ Philippines' },
   { value: 'protestant', label: 'Protestant' },
   { value: 'buddhism', label: 'Buddhism' },
@@ -94,7 +97,7 @@ export const ETHNICITY_OPTIONS = [
   { value: 'waray', label: 'Waray' },
   { value: 'kapampangan', label: 'Kapampangan' },
   { value: 'pangasinense', label: 'Pangasinense' },
-  
+
   // Muslim/Moro groups
   { value: 'maranao', label: 'Maranao' },
   { value: 'maguindanao', label: 'Maguindanao' },
@@ -102,7 +105,7 @@ export const ETHNICITY_OPTIONS = [
   { value: 'yakan', label: 'Yakan' },
   { value: 'samal', label: 'Samal' },
   { value: 'badjao', label: 'Badjao' },
-  
+
   // Indigenous Peoples
   { value: 'aeta', label: 'Aeta' },
   { value: 'agta', label: 'Agta' },
@@ -123,10 +126,10 @@ export const ETHNICITY_OPTIONS = [
   { value: 'mansaka', label: 'Mansaka' },
   { value: 'palawan', label: 'Palawan' },
   { value: 'subanen', label: 'Subanen' },
-  { value: 'tboli', label: 'T\'boli' },
+  { value: 'tboli', label: "T'boli" },
   { value: 'teduray', label: 'Teduray' },
   { value: 'tumandok', label: 'Tumandok' },
-  
+
   // Other groups
   { value: 'chinese', label: 'Chinese' },
   { value: 'other', label: 'Other' },
@@ -134,11 +137,11 @@ export const ETHNICITY_OPTIONS = [
 ] as const;
 
 // Type helpers to extract the value types
-export type SexValue = typeof SEX_OPTIONS[number]['value'];
-export type CivilStatusValue = typeof CIVIL_STATUS_OPTIONS[number]['value'];
-export type CitizenshipValue = typeof CITIZENSHIP_OPTIONS[number]['value'];
-export type EducationLevelValue = typeof EDUCATION_LEVEL_OPTIONS[number]['value'];
-export type EmploymentStatusValue = typeof EMPLOYMENT_STATUS_OPTIONS[number]['value'];
-export type BloodTypeValue = typeof BLOOD_TYPE_OPTIONS[number]['value'];
-export type ReligionValue = typeof RELIGION_OPTIONS[number]['value'];
-export type EthnicityValue = typeof ETHNICITY_OPTIONS[number]['value'];
+export type SexValue = (typeof SEX_OPTIONS)[number]['value'];
+export type CivilStatusValue = (typeof CIVIL_STATUS_OPTIONS)[number]['value'];
+export type CitizenshipValue = (typeof CITIZENSHIP_OPTIONS)[number]['value'];
+export type EducationLevelValue = (typeof EDUCATION_LEVEL_OPTIONS)[number]['value'];
+export type EmploymentStatusValue = (typeof EMPLOYMENT_STATUS_OPTIONS)[number]['value'];
+export type BloodTypeValue = (typeof BLOOD_TYPE_OPTIONS)[number]['value'];
+export type ReligionValue = (typeof RELIGION_OPTIONS)[number]['value'];
+export type EthnicityValue = (typeof ETHNICITY_OPTIONS)[number]['value'];

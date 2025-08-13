@@ -1,9 +1,9 @@
 /**
  * Database Query Caching Layer
- * 
+ *
  * @description In-memory caching for frequently accessed database queries to improve performance.
  * Reduces database load and improves response times for common operations.
- * 
+ *
  * @features:
  * - TTL-based cache expiration
  * - Cache invalidation by tags
@@ -39,7 +39,7 @@ class QueryCache {
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       return null;
@@ -71,7 +71,7 @@ class QueryCache {
       timestamp: Date.now(),
       ttl: options.ttl || this.defaultTTL,
       tags: options.tags || [],
-      key
+      key,
     };
 
     this.cache.set(key, entry);
@@ -83,7 +83,7 @@ class QueryCache {
    */
   invalidateByTag(tag: string): number {
     let invalidated = 0;
-    
+
     for (const [key, entry] of Array.from(this.cache.entries())) {
       if (entry.tags.includes(tag)) {
         this.cache.delete(key);
@@ -154,7 +154,7 @@ class QueryCache {
    */
   private updateStats(): void {
     this.stats.size = this.cache.size;
-    
+
     // Estimate memory usage (rough calculation)
     let memoryUsage = 0;
     for (const entry of Array.from(this.cache.values())) {
@@ -198,7 +198,7 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
 ): T {
   return (async (...args: Parameters<T>) => {
     // Generate cache key
-    const key = options.keyGenerator 
+    const key = options.keyGenerator
       ? options.keyGenerator(...args)
       : `${fn.name}:${JSON.stringify(args)}`;
 
@@ -211,14 +211,12 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
     // Execute function and cache result
     try {
       const result = await fn(...args);
-      
-      const tags = typeof options.tags === 'function' 
-        ? options.tags(...args)
-        : options.tags || [];
 
-      queryCache.set(key, result, { 
+      const tags = typeof options.tags === 'function' ? options.tags(...args) : options.tags || [];
+
+      queryCache.set(key, result, {
         ttl: options.ttl,
-        tags 
+        tags,
       });
 
       return result;
@@ -267,7 +265,7 @@ export const CacheWarming = {
   async warmAddressCache() {
     // This would typically be called during app startup
     logger.info('Warming address cache...');
-    
+
     try {
       // Load and cache common address data
       // Implementation would call actual data fetching functions
@@ -286,7 +284,7 @@ export const CacheWarming = {
       const statsKey = CacheKeys.dashboardStats(barangayCode);
       // Implementation would fetch and cache dashboard stats
     }
-  }
+  },
 };
 
 /**
@@ -309,10 +307,10 @@ export function setupCacheCleanup(intervalMs: number = 10 * 60 * 1000): () => vo
 export function logCacheStats(): void {
   const stats = queryCache.getStats();
   const hitRatio = queryCache.getHitRatio();
-  
+
   logger.info('Cache performance stats', {
     ...stats,
     hitRatio: Math.round(hitRatio * 100) / 100,
-    memoryUsageKB: Math.round(stats.memoryUsage / 1024)
+    memoryUsageKB: Math.round(stats.memoryUsage / 1024),
   });
 }

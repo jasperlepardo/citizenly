@@ -198,7 +198,7 @@ export const CompleteForm: Story = {
       <Form onSubmit={handleSubmit} spacing="lg" className="w-full max-w-2xl">
         <FormGroup
           title="Contact Information"
-          description="We'll use this information to get back to you"
+          description="We&rsquo;ll use this information to get back to you"
         >
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <FormField label="First Name" required errorMessage={errors.firstName}>
@@ -222,7 +222,7 @@ export const CompleteForm: Story = {
             label="Email Address"
             required
             errorMessage={errors.email}
-            helperText="We'll never share your email with anyone"
+            helperText="We&rsquo;ll never share your email with anyone"
           >
             <Input
               type="email"
@@ -258,7 +258,7 @@ export const CompleteForm: Story = {
             helperText="Tell us how we can help you"
           >
             <Textarea
-              placeholder="I'm interested in..."
+              placeholder="I&rsquo;m interested in..."
               value={formData.message}
               onChange={e => updateField('message', e.target.value)}
               showCharCount

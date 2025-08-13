@@ -148,7 +148,7 @@ function DashboardContent() {
 
       const data = await response.json();
       const { stats, demographics, residentsData } = data;
-      
+
       console.log('Dashboard API response:', data);
       console.log('Demographics data:', demographics);
 
@@ -211,7 +211,7 @@ function DashboardContent() {
       });
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      
+
       // Only log actual errors, not authentication issues
       if (err.message !== 'No valid session found') {
         logError(err, 'DASHBOARD_STATS_ERROR');

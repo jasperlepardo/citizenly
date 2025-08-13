@@ -13,7 +13,7 @@ export function useDebounce<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number
 ): T {
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {
@@ -47,9 +47,7 @@ export function useSearchFilter<T extends Record<string, unknown>>(
     return data.filter(item =>
       searchFields.some(field => {
         const value = item[field];
-        return value && 
-               typeof value === 'string' && 
-               value.toLowerCase().includes(lowercaseSearch);
+        return value && typeof value === 'string' && value.toLowerCase().includes(lowercaseSearch);
       })
     );
   }, [data, searchTerm, searchFields]);
@@ -58,10 +56,7 @@ export function useSearchFilter<T extends Record<string, unknown>>(
 /**
  * Memoized pagination for large datasets
  */
-export function usePagination<T>(
-  data: T[],
-  pageSize: number = 20
-) {
+export function usePagination<T>(data: T[], pageSize: number = 20) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const paginatedData = useMemo(() => {
@@ -70,17 +65,17 @@ export function usePagination<T>(
     return data.slice(startIndex, endIndex);
   }, [data, currentPage, pageSize]);
 
-  const totalPages = useMemo(() => 
-    Math.ceil(data.length / pageSize), 
-    [data.length, pageSize]
-  );
+  const totalPages = useMemo(() => Math.ceil(data.length / pageSize), [data.length, pageSize]);
 
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
 
-  const goToPage = useCallback((page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
-  }, [totalPages]);
+  const goToPage = useCallback(
+    (page: number) => {
+      setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+    },
+    [totalPages]
+  );
 
   const nextPage = useCallback(() => {
     if (hasNextPage) setCurrentPage(prev => prev + 1);
@@ -100,7 +95,7 @@ export function usePagination<T>(
     hasPrevPage,
     goToPage,
     nextPage,
-    prevPage
+    prevPage,
   };
 }
 
@@ -111,7 +106,7 @@ export function useVirtualScroll({
   itemCount,
   itemHeight,
   containerHeight,
-  overscan = 5
+  overscan = 5,
 }: {
   itemCount: number;
   itemHeight: number;
@@ -129,7 +124,7 @@ export function useVirtualScroll({
 
     return {
       start: Math.max(0, startIndex - overscan),
-      end: Math.min(itemCount - 1, endIndex + overscan)
+      end: Math.min(itemCount - 1, endIndex + overscan),
     };
   }, [scrollTop, itemHeight, containerHeight, itemCount, overscan]);
 
@@ -140,7 +135,7 @@ export function useVirtualScroll({
     visibleRange,
     totalHeight,
     offsetY,
-    setScrollTop
+    setScrollTop,
   };
 }
 
@@ -148,7 +143,7 @@ export function useVirtualScroll({
  * Performance monitoring hook
  */
 export function usePerformanceMonitor(componentName: string) {
-  const renderStartTime = useRef<number>();
+  const renderStartTime = useRef<number | undefined>(undefined);
   const renderCount = useRef(0);
 
   useEffect(() => {
@@ -159,18 +154,19 @@ export function usePerformanceMonitor(componentName: string) {
   useEffect(() => {
     const endTime = performance.now();
     const renderTime = endTime - (renderStartTime.current || endTime);
-    
-    if (renderTime > 16) { // > 16ms is concerning for 60fps
+
+    if (renderTime > 16) {
+      // > 16ms is concerning for 60fps
       logInfo(`Performance warning: ${componentName} render took ${renderTime.toFixed(2)}ms`, {
         component: componentName,
         action: 'performance_warning',
-        data: { renderTime, renderCount: renderCount.current }
+        data: { renderTime, renderCount: renderCount.current },
       });
     }
   });
 
   return {
-    renderCount: renderCount.current
+    renderCount: renderCount.current,
   };
 }
 
@@ -228,16 +224,16 @@ export function useOptimizedFetch<T>(
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  
+
   const cache = useRef<Map<string, { data: T; timestamp: number }>>(new Map());
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   const fetch = useCallback(async () => {
     const key = cacheKey || JSON.stringify(deps);
     const cached = cache.current.get(key);
-    
+
     // Return cached data if valid
-    if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
       setData(cached.data);
       return;
     }
@@ -248,7 +244,7 @@ export function useOptimizedFetch<T>(
     try {
       const result = await fetchFn();
       setData(result);
-      
+
       // Cache the result
       cache.current.set(key, { data: result, timestamp: Date.now() });
     } catch (err) {
@@ -293,4 +289,3 @@ export function useIntersectionObserver(
 
   return [ref, isIntersecting];
 }
-

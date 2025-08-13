@@ -42,7 +42,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
 function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
+    <div className="bg-background flex min-h-screen items-center justify-center">
       <div className="space-y-4 p-8 text-center">
         <div className="space-y-2">
           <h1 className="text-foreground text-2xl font-bold">Something went wrong</h1>
@@ -61,7 +61,7 @@ function DefaultErrorFallback({ error, resetError }: { error: Error; resetError:
         <div className="flex justify-center gap-2">
           <button
             onClick={resetError}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 transition-colors"
+            className="text-primary-foreground rounded-md bg-primary px-4 py-2 transition-colors hover:bg-primary/90"
           >
             Try Again
           </button>

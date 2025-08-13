@@ -68,7 +68,7 @@ export function SimpleGeographicSelector({
       setProvinceOptions([]);
       return;
     }
-    
+
     setLoadingProvinces(true);
     try {
       const response = await fetch(`/api/addresses/provinces/public?regionCode=${regionCode}`);
@@ -92,7 +92,7 @@ export function SimpleGeographicSelector({
       setCityOptions([]);
       return;
     }
-    
+
     setLoadingCities(true);
     try {
       const response = await fetch(`/api/addresses/cities/public?provinceCode=${provinceCode}`);
@@ -116,7 +116,7 @@ export function SimpleGeographicSelector({
       setBarangayOptions([]);
       return;
     }
-    
+
     setLoadingBarangays(true);
     try {
       const response = await fetch(`/api/addresses/barangays/public?cityCode=${cityCode}`);
@@ -138,18 +138,20 @@ export function SimpleGeographicSelector({
   // Auto-populate from user profile
   const autoPopulateFromUserProfile = useCallback(async () => {
     if (!autoPopulateFromUser) return;
-    
+
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) return;
 
       console.log('🚀 Auto-populating geographic data...');
 
       const response = await fetch('/api/user/geographic-location', {
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) return;
@@ -170,7 +172,6 @@ export function SimpleGeographicSelector({
       if (hierarchy.barangay && onBarangayChange) {
         onBarangayChange(hierarchy.barangay.code);
       }
-
     } catch (error) {
       console.error('❌ Error auto-populating:', error);
     }
@@ -242,7 +243,7 @@ export function SimpleGeographicSelector({
     <div className="space-y-4">
       <DropdownSelect
         label="Region"
-        placeholder={loadingRegions ? "Loading regions..." : "Select a region"}
+        placeholder={loadingRegions ? 'Loading regions...' : 'Select a region'}
         options={regionOptions}
         value={regionCode}
         onChange={handleRegionChange}
@@ -252,7 +253,13 @@ export function SimpleGeographicSelector({
 
       <DropdownSelect
         label="Province"
-        placeholder={loadingProvinces ? "Loading provinces..." : regionCode ? "Select a province" : "Select a region first"}
+        placeholder={
+          loadingProvinces
+            ? 'Loading provinces...'
+            : regionCode
+              ? 'Select a province'
+              : 'Select a region first'
+        }
         options={provinceOptions}
         value={provinceCode}
         onChange={handleProvinceChange}
@@ -262,7 +269,13 @@ export function SimpleGeographicSelector({
 
       <DropdownSelect
         label="City/Municipality"
-        placeholder={loadingCities ? "Loading cities..." : provinceCode ? "Select a city/municipality" : "Select a province first"}
+        placeholder={
+          loadingCities
+            ? 'Loading cities...'
+            : provinceCode
+              ? 'Select a city/municipality'
+              : 'Select a province first'
+        }
         options={cityOptions}
         value={cityCode}
         onChange={handleCityChange}
@@ -272,7 +285,13 @@ export function SimpleGeographicSelector({
 
       <DropdownSelect
         label="Barangay"
-        placeholder={loadingBarangays ? "Loading barangays..." : cityCode ? "Select a barangay" : "Select a city/municipality first"}
+        placeholder={
+          loadingBarangays
+            ? 'Loading barangays...'
+            : cityCode
+              ? 'Select a barangay'
+              : 'Select a city/municipality first'
+        }
         options={barangayOptions}
         value={barangayCode}
         onChange={onBarangayChange}
