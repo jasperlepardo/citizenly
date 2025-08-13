@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     
     console.log('🧪 Testing profile creation for user:', { id: '[REDACTED]' });
     
-    const results = {
+    const results: any = {
       timestamp: new Date().toISOString(),
       userId: '[REDACTED]',
       tests: {}
