@@ -234,19 +234,19 @@ export const TypographyExample: React.FC<TypographyExampleProps> = ({
   styles,
   sampleText = 'The quick brown fox jumps over the lazy dog',
 }) => (
-  <div className="mb-8 rounded-lg border border-neutral-200 p-6">
-    <h3 className="mb-4 text-lg font-semibold text-neutral-900">{title}</h3>
+  <div className="mb-8 rounded-lg border border-gray-200 p-6">
+    <h3 className="mb-4 text-lg font-semibold text-gray-900">{title}</h3>
     <div className="space-y-4">
       {Object.entries(styles).map(([size, style]) => (
         <div key={size} className="flex items-start gap-6">
           <div className="w-20 flex-shrink-0">
-            <span className="font-mono text-sm text-neutral-500">{size}</span>
+            <span className="font-mono text-sm text-gray-500">{size}</span>
           </div>
           <div className="min-w-0 flex-1">
-            <div className="mb-2 text-neutral-900" style={style}>
+            <div className="mb-2 text-gray-900" style={style}>
               {sampleText}
             </div>
-            <div className="font-mono text-xs text-neutral-500">
+            <div className="font-mono text-xs text-gray-500">
               {style.fontSize} • {style.lineHeight} • {style.fontWeight}
               {style.letterSpacing && ` • ${style.letterSpacing}`}
             </div>
@@ -268,12 +268,12 @@ export const FontFamilyShowcase: React.FC<FontFamilyShowcaseProps> = ({
   fontFamily,
   sampleText = 'The quick brown fox jumps over the lazy dog 0123456789',
 }) => (
-  <div className="mb-6 rounded-lg border border-neutral-200 p-4">
-    <h4 className="text-md mb-3 font-semibold text-neutral-900">{title}</h4>
-    <div className="mb-2 text-2xl text-neutral-900" style={{ fontFamily: fontFamily.join(', ') }}>
+  <div className="mb-6 rounded-lg border border-gray-200 p-4">
+    <h4 className="text-md mb-3 font-semibold text-gray-900">{title}</h4>
+    <div className="mb-2 text-2xl text-gray-900" style={{ fontFamily: fontFamily.join(', ') }}>
       {sampleText}
     </div>
-    <div className="font-mono text-sm text-neutral-500">{fontFamily.join(', ')}</div>
+    <div className="font-mono text-sm text-gray-500">{fontFamily.join(', ')}</div>
   </div>
 );
 
@@ -285,8 +285,8 @@ const Typography: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-neutral-900">Design Tokens: Typography</h1>
-        <p className="max-w-2xl text-neutral-600">
+        <h1 className="mb-2 text-3xl font-bold text-gray-900">Design Tokens: Typography</h1>
+        <p className="max-w-2xl text-gray-600">
           Typography tokens for the Citizenly design system. These tokens ensure consistent,
           readable, and accessible text across all government applications.
         </p>
@@ -294,7 +294,7 @@ const Typography: React.FC = () => {
 
       {/* Font Families */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Font Families</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Font Families</h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {Object.entries(typographyTokens.fontFamily).map(([name, fonts]) => (
             <FontFamilyShowcase
@@ -343,11 +343,11 @@ const Typography: React.FC = () => {
 
       {/* Usage Guidelines */}
       <div className="mt-12 rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-blue-900">📝 Typography Guidelines</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">📝 Typography Guidelines</h3>
         <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
           <div>
-            <h4 className="mb-2 font-semibold text-blue-900">Hierarchy</h4>
-            <ul className="space-y-1 text-blue-800">
+            <h4 className="mb-2 font-semibold text-gray-900">Hierarchy</h4>
+            <ul className="space-y-1 text-gray-800">
               <li>• Use display typography for hero sections</li>
               <li>• Follow H1-H6 hierarchy for content structure</li>
               <li>• Limit to 3-4 text sizes per screen</li>
@@ -355,8 +355,8 @@ const Typography: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="mb-2 font-semibold text-blue-900">Accessibility</h4>
-            <ul className="space-y-1 text-blue-800">
+            <h4 className="mb-2 font-semibold text-gray-900">Accessibility</h4>
+            <ul className="space-y-1 text-gray-800">
               <li>• Minimum 16px font size for body text</li>
               <li>• Line height of 1.5 for readability</li>
               <li>• Adequate color contrast ratios</li>
@@ -367,12 +367,12 @@ const Typography: React.FC = () => {
       </div>
 
       {/* CSS Classes Reference */}
-      <div className="mt-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-neutral-900">💻 Usage in Code</h3>
+      <div className="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">💻 Usage in Code</h3>
         <div className="space-y-4">
           <div>
-            <h4 className="mb-2 font-medium text-neutral-900">Tailwind CSS Classes</h4>
-            <pre className="overflow-x-auto rounded border bg-white p-3 text-sm text-neutral-700">
+            <h4 className="mb-2 font-medium text-gray-900">Tailwind CSS Classes</h4>
+            <pre className="overflow-x-auto rounded border bg-white p-3 text-sm text-gray-700">
               {`<!-- Display Typography -->
 <h1 class="text-4xl font-bold leading-tight tracking-tight">
 

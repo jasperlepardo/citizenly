@@ -370,8 +370,8 @@ const CommonOccupationsComponent = () => {
 
       {selectedExample && (
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 font-semibold text-blue-800">Occupation Details</h4>
-          <div className="space-y-1 text-sm text-blue-700">
+          <h4 className="mb-2 font-semibold text-gray-800">Occupation Details</h4>
+          <div className="space-y-1 text-sm text-gray-700">
             <div>
               <strong>Title:</strong> {selectedExample.occupation_title || selectedExample.title}
             </div>

@@ -41,7 +41,7 @@ export default function HouseholdLocationInfo({
               <strong>Barangay:</strong> {addressDisplayInfo.barangay}
             </div>
             {barangayCode && (
-              <div className="mt-1 text-xs text-neutral-500">Code: {barangayCode}</div>
+              <div className="mt-1 text-xs text-gray-500">Code: {barangayCode}</div>
             )}
             <div className="mt-2 text-xs text-green-600">
               All household geographic details are auto-populated from your barangay assignment.

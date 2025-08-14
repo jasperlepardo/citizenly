@@ -143,7 +143,7 @@ export default function SearchBar({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="text-muted hover:text-secondary size-4 p-0"
+                  className="text-muted size-4 p-0 hover:text-gray-600"
                 >
                   <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -187,9 +187,9 @@ export default function SearchBar({
 
       {/* Advanced Filters */}
       {showFilters && filterOptions.length > 0 && (
-        <div className="bg-surface-hover border-default space-y-4 rounded-lg border p-4">
+        <div className="bg-default-hover space-y-4 rounded-lg border border-default p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-primary text-sm font-medium">Advanced Filters</h3>
+            <h3 className="text-sm font-medium text-gray-600">Advanced Filters</h3>
             <Button size="sm" variant="primary-outline" onClick={handleAddFilter}>
               Add Filter
             </Button>
@@ -208,7 +208,7 @@ export default function SearchBar({
                 return (
                   <div
                     key={index}
-                    className="bg-surface border-default flex items-center gap-2 rounded border p-3"
+                    className="bg-default flex items-center gap-2 rounded border border-default p-3"
                   >
                     {/* Field Selection */}
                     <div className="w-40">
@@ -341,10 +341,10 @@ export default function SearchBar({
           {filters.map((filter, index) => (
             <div
               key={index}
-              className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
+              className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-gray-800"
             >
               <span className="font-medium">{filter.label}</span>
-              <span className="text-blue-600">{filter.operator.replace('_', ' ')}</span>
+              <span className="text-gray-600">{filter.operator.replace('_', ' ')}</span>
               <span className="font-medium">
                 {Array.isArray(filter.value)
                   ? `${filter.value[0]} - ${filter.value[1]}`
@@ -355,7 +355,7 @@ export default function SearchBar({
                 variant="ghost"
                 size="sm"
                 iconOnly
-                className="ml-1 size-3 p-0 text-blue-600 hover:text-blue-800"
+                className="ml-1 size-3 p-0 text-gray-600 hover:text-gray-800"
               >
                 <svg className="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path

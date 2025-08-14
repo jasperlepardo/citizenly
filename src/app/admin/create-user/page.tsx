@@ -283,7 +283,7 @@ function CreateUserContent() {
                     ></path>
                   </svg>
                 </div>
-                <h2 className="text-primary mb-4 text-2xl font-bold">User Created Successfully!</h2>
+                <h2 className="mb-4 text-2xl font-bold text-gray-600">User Created Successfully!</h2>
                 <div className="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
                   <h3 className="mb-2 text-sm font-medium text-green-800">User Details:</h3>
                   <div className="space-y-1 text-sm text-green-700">
@@ -328,8 +328,8 @@ function CreateUserContent() {
       <div className="flex flex-col gap-6 p-6">
         <div className="flex w-full flex-row items-start justify-between gap-4">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-montserrat text-primary text-xl font-semibold">Create New User</h1>
-            <p className="font-montserrat text-secondary text-sm font-normal">
+            <h1 className="font-montserrat text-xl font-semibold text-gray-600">Create New User</h1>
+            <p className="font-montserrat text-sm font-normal text-gray-600">
               Create a new user account for your barangay
             </p>
           </div>
@@ -358,7 +358,7 @@ function CreateUserContent() {
 
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-primary border-b pb-2 text-lg font-medium">
+                <h3 className="border-b pb-2 text-lg font-medium text-gray-600">
                   Personal Information
                 </h3>
 
@@ -417,14 +417,14 @@ function CreateUserContent() {
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h3 className="text-primary border-b pb-2 text-lg font-medium">
+                <h3 className="border-b pb-2 text-lg font-medium text-gray-600">
                   Location Information
                 </h3>
 
                 <div>
                   <label
                     htmlFor="barangayCode"
-                    className="text-secondary mb-2 block text-sm font-medium"
+                    className="mb-2 block text-sm font-medium text-gray-600"
                   >
                     Barangay *
                   </label>
@@ -440,13 +440,13 @@ function CreateUserContent() {
 
               {/* Role Selection */}
               <div className="space-y-4">
-                <h3 className="text-primary border-b pb-2 text-lg font-medium">Account Type</h3>
+                <h3 className="border-b pb-2 text-lg font-medium text-gray-600">Account Type</h3>
 
                 {loadingRoles ? (
                   <div className="space-y-2">
                     <label
                       htmlFor="role-loading"
-                      className="text-secondary block text-sm font-medium"
+                      className="block text-sm font-medium text-gray-600"
                     >
                       Role *
                     </label>
@@ -475,7 +475,7 @@ function CreateUserContent() {
 
               {/* Account Security */}
               <div className="space-y-4">
-                <h3 className="text-primary border-b pb-2 text-lg font-medium">Account Security</h3>
+                <h3 className="border-b pb-2 text-lg font-medium text-gray-600">Account Security</h3>
 
                 <InputField
                   label="Password *"

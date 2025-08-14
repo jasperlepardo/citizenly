@@ -10,13 +10,13 @@ const textareaVariants = cva(
     variants: {
       variant: {
         default:
-          'border-default bg-surface focus:border-blue-600 focus:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'border-default bg-default focus:border-blue-600 focus:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         error:
-          'border-red-600 bg-surface focus:border-red-600 focus:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
+          'border-red-600 bg-default focus:border-red-600 focus:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
-          'border-green-500 bg-surface focus:border-green-500 focus:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'border-default bg-background-muted cursor-not-allowed',
-        readonly: 'border-default bg-background-muted',
+          'border-green-500 bg-default focus:border-green-500 focus:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
+        disabled: 'border-default bg-default-muted cursor-not-allowed',
+        readonly: 'border-default bg-default-muted',
       },
       size: {
         sm: 'p-1.5 text-sm min-h-[80px]',
@@ -74,7 +74,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="font-montserrat text-primary mb-2 block text-sm font-medium">
+          <label className="font-montserrat mb-2 block text-sm font-medium text-gray-600">
             {label}
           </label>
         )}
@@ -86,8 +86,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             textareaVariants({ variant: actualVariant, size }),
             resizable ? 'resize-y' : 'resize-none',
             disabled && 'text-muted',
-            readOnly && 'text-secondary',
-            'placeholder:text-muted text-primary',
+            readOnly && 'text-gray-600',
+            'placeholder:text-muted text-gray-600',
             className
           )}
           disabled={disabled}

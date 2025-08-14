@@ -247,8 +247,8 @@ export default function MotherMaidenName({
 
       {/* Information Summary */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-blue-900">Mother&apos;s Information Summary</h4>
-        <div className="space-y-1 text-sm text-blue-800">
+        <h4 className="mb-2 font-medium text-gray-900">Mother&apos;s Information Summary</h4>
+        <div className="space-y-1 text-sm text-gray-800">
           {value.is_confidential && (
             <p className="rounded bg-yellow-100 px-2 py-1 text-yellow-800">
               🔒 This information is marked as confidential

@@ -37,63 +37,63 @@ const buttonVariants = cva(
       variant: {
         // Primary variants
         primary:
-          'bg-blue-600 text-white hover:bg-blue-500 focus-visible:ring-blue-600 disabled:text-muted disabled:bg-background-muted',
+          'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-500 dark:hover:bg-blue-400 focus-visible:ring-blue-600 disabled:text-muted disabled:bg-default-muted',
         'primary-subtle':
-          'bg-blue-50 text-blue-800 hover:bg-blue-100 hover:text-blue-900 focus-visible:ring-blue-800',
+          'bg-blue-50 dark:bg-blue-900/20 text-gray-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-gray-900 dark:hover:text-blue-100 focus-visible:ring-blue-800',
         'primary-faded':
-          'bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900 focus-visible:ring-blue-800',
+          'bg-blue-100 dark:bg-blue-900/30 text-gray-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-900/40 hover:text-gray-900 dark:hover:text-blue-100 focus-visible:ring-blue-800',
         'primary-outline':
-          'border border-blue-600 text-blue-800 bg-surface hover:bg-blue-50 hover:text-blue-900 focus-visible:ring-blue-800',
+          'border border-blue-600 dark:border-blue-400 text-gray-800 dark:text-blue-200 bg-default hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-gray-900 dark:hover:text-blue-100 focus-visible:ring-blue-800',
 
         // Secondary variants
-        secondary: 'bg-purple-600 text-white hover:bg-purple-500 focus-visible:ring-purple-600',
+        secondary: 'bg-purple-600 dark:bg-purple-500 text-white hover:bg-purple-500 dark:hover:bg-purple-400 focus-visible:ring-purple-600',
         'secondary-subtle':
-          'bg-purple-50 text-purple-800 hover:bg-purple-100 hover:text-purple-900 focus-visible:ring-purple-800',
+          'bg-purple-50 dark:bg-purple-900/20 text-gray-800 dark:text-purple-200 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:text-gray-900 dark:hover:text-purple-100 focus-visible:ring-purple-800',
         'secondary-faded':
-          'bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900 focus-visible:ring-purple-800',
+          'bg-purple-100 dark:bg-purple-900/30 text-gray-800 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-900/40 hover:text-gray-900 dark:hover:text-purple-100 focus-visible:ring-purple-800',
         'secondary-outline':
-          'border border-purple-600 text-purple-800 bg-surface hover:bg-purple-50 hover:text-purple-900 focus-visible:ring-purple-800',
+          'border border-purple-600 dark:border-purple-400 text-gray-800 dark:text-purple-200 bg-default hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-gray-900 dark:hover:text-purple-100 focus-visible:ring-purple-800',
 
         // Success variants
-        success: 'bg-green-600 text-white hover:bg-green-500 focus-visible:ring-green-600',
+        success: 'bg-green-600 dark:bg-green-500 text-white hover:bg-green-500 dark:hover:bg-green-400 focus-visible:ring-green-600',
         'success-subtle':
-          'bg-green-50 text-green-800 hover:bg-green-100 hover:text-green-900 focus-visible:ring-green-800',
+          'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-900 dark:hover:text-green-100 focus-visible:ring-green-800',
         'success-faded':
-          'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900 focus-visible:ring-green-800',
+          'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900/40 hover:text-green-900 dark:hover:text-green-100 focus-visible:ring-green-800',
         'success-outline':
-          'border border-green-600 text-green-800 bg-surface hover:bg-green-50 hover:text-green-900 focus-visible:ring-green-800',
+          'border border-green-600 dark:border-green-400 text-green-800 dark:text-green-200 bg-default hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-900 dark:hover:text-green-100 focus-visible:ring-green-800',
 
         // Warning variants
-        warning: 'bg-orange-600 text-white hover:bg-orange-500 focus-visible:ring-orange-600',
+        warning: 'bg-orange-600 dark:bg-orange-500 text-white hover:bg-orange-500 dark:hover:bg-orange-400 focus-visible:ring-orange-600',
         'warning-subtle':
-          'bg-orange-50 text-orange-800 hover:bg-orange-100 hover:text-orange-900 focus-visible:ring-orange-800',
+          'bg-orange-50 dark:bg-orange-900/20 text-orange-800 dark:text-orange-200 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-900 dark:hover:text-orange-100 focus-visible:ring-orange-800',
         'warning-faded':
-          'bg-orange-100 text-orange-800 hover:bg-orange-200 hover:text-orange-900 focus-visible:ring-orange-800',
+          'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 hover:bg-orange-200 dark:hover:bg-orange-900/40 hover:text-orange-900 dark:hover:text-orange-100 focus-visible:ring-orange-800',
         'warning-outline':
-          'border border-orange-600 text-orange-800 bg-surface hover:bg-orange-50 hover:text-orange-900 focus-visible:ring-orange-800',
+          'border border-orange-600 dark:border-orange-400 text-orange-800 dark:text-orange-200 bg-default hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-900 dark:hover:text-orange-100 focus-visible:ring-orange-800',
 
         // Danger variants
-        danger: 'bg-red-600 text-white hover:bg-red-500 focus-visible:ring-red-600',
+        danger: 'bg-red-600 dark:bg-red-500 text-white hover:bg-red-500 dark:hover:bg-red-400 focus-visible:ring-red-600',
         'danger-subtle':
-          'bg-red-50 text-red-800 hover:bg-red-100 hover:text-red-900 focus-visible:ring-red-800',
+          'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-900 dark:hover:text-red-100 focus-visible:ring-red-800',
         'danger-faded':
-          'bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900 focus-visible:ring-red-800',
+          'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900/40 hover:text-red-900 dark:hover:text-red-100 focus-visible:ring-red-800',
         'danger-outline':
-          'border border-red-600 text-red-800 bg-surface hover:bg-red-50 hover:text-red-900 focus-visible:ring-red-800',
+          'border border-red-600 dark:border-red-400 text-red-800 dark:text-red-200 bg-default hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-900 dark:hover:text-red-100 focus-visible:ring-red-800',
 
         // Neutral variants
         neutral:
-          'bg-border-default focus-visible:ring-secondary text-secondary hover:text-primary hover:bg-surface-hover disabled:text-muted disabled:bg-background-muted',
+          'bg-border-default focus-visible:ring-secondary text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-default-hover disabled:text-muted disabled:bg-default-muted',
         'neutral-subtle':
-          'hover:bg-border-default focus-visible:ring-secondary text-secondary bg-surface-hover hover:text-primary disabled:text-muted disabled:bg-background-muted',
+          'hover:bg-border-default focus-visible:ring-secondary text-gray-600 dark:text-gray-400 bg-default-hover hover:text-gray-600 dark:hover:text-gray-400 disabled:text-muted disabled:bg-default-muted',
         'neutral-faded':
-          'bg-border-default focus-visible:ring-secondary text-secondary hover:text-primary hover:bg-surface-hover disabled:text-muted disabled:bg-background-muted',
+          'bg-border-default focus-visible:ring-secondary text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-default-hover disabled:text-muted disabled:bg-default-muted',
         'neutral-outline':
-          'focus-visible:ring-secondary border text-secondary bg-surface border-default hover:text-primary hover:bg-surface-hover disabled:text-muted disabled:bg-background-muted disabled:border-default',
+          'focus-visible:ring-secondary border text-gray-600 dark:text-gray-400 bg-default border-default hover:text-gray-600 dark:hover:text-gray-400 hover:bg-default-hover disabled:text-muted disabled:bg-default-muted disabled:border-default',
 
         // Ghost variants
         ghost:
-          'focus-visible:ring-secondary text-secondary hover:text-primary hover:bg-surface-hover disabled:text-muted',
+          'focus-visible:ring-secondary text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-default-hover disabled:text-muted',
       },
       size: {
         sm: 'h-8 px-3 text-sm',

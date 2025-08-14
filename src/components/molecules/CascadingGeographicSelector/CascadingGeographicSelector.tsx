@@ -483,7 +483,7 @@ export function CascadingGeographicSelector({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-        <MapPin className="h-5 w-5 text-blue-600" />
+        <MapPin className="h-5 w-5 text-gray-600" />
         Geographic Location
       </div>
 

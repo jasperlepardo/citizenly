@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const dropdownVariants = cva(
-  'font-montserrat relative flex w-full cursor-pointer items-center rounded transition-all duration-200 bg-surface focus-within:outline-none',
+  'font-montserrat relative flex w-full cursor-pointer items-center rounded transition-all duration-200 bg-default focus-within:outline-none',
   {
     variants: {
       variant: {
@@ -15,8 +15,8 @@ const dropdownVariants = cva(
           'border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
           'border border-green-500 focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'cursor-not-allowed border bg-background-muted border-default',
-        readonly: 'border bg-background-muted border-default',
+        disabled: 'cursor-not-allowed border bg-default-muted border-default',
+        readonly: 'border bg-default-muted border-default',
       },
       size: {
         sm: 'min-h-8 p-1.5 text-sm',
@@ -342,7 +342,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {label && (
           <div
             id={labelId}
-            className="text-primary mb-1 block cursor-pointer text-sm font-medium"
+            className="mb-1 block cursor-pointer text-sm font-medium text-gray-600"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
@@ -399,7 +399,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+            <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
               {leftIcon}
             </div>
           )}
@@ -418,7 +418,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     size === 'sm' && 'text-sm leading-4',
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
-                    'text-primary',
+                    'text-gray-600',
                     disabled && 'text-muted cursor-not-allowed'
                   )}
                   style={{
@@ -476,7 +476,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     size === 'sm' && 'text-sm leading-4',
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
-                    selectedOption ? 'text-primary' : 'text-muted',
+                    selectedOption ? 'text-gray-600' : 'text-muted',
                     disabled && 'text-muted cursor-not-allowed'
                   )}
                 >
@@ -488,11 +488,11 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
           {/* Clear Button */}
           {clearable && selectedOption && !disabled && (
-            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+            <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
               <button
                 type="button"
                 onClick={handleClear}
-                className="text-secondary hover:text-primary flex size-full items-center justify-center transition-colors"
+                className="flex size-full items-center justify-center text-gray-600 transition-colors hover:text-gray-600"
               >
                 <svg
                   width="16"
@@ -510,7 +510,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
           )}
 
           {/* Dropdown Icon - Figma: w-5 (20px width) */}
-          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+          <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
             <svg
               className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
               fill="none"
@@ -527,7 +527,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {isOpen && (
           <div
             className={cn(
-              'bg-surface border-default absolute z-50 mt-1 w-full rounded-md border shadow-xl',
+              'bg-default absolute z-50 mt-1 w-full rounded-md border border-default shadow-xl',
               'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-100',
               dropdownClassName
             )}
@@ -553,10 +553,10 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     }}
                     className={cn(
                       'flex cursor-pointer items-center px-3 py-2 text-sm transition-colors',
-                      'hover:bg-surface-hover',
-                      highlightedIndex === index && 'bg-surface-hover',
+                      'hover:bg-default-hover',
+                      highlightedIndex === index && 'bg-default-hover',
                       option.value === value &&
-                        'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
+                        'bg-blue-50 text-gray-600 dark:bg-blue-900/20 dark:text-gray-400',
                       option.disabled && 'text-muted cursor-not-allowed opacity-50'
                     )}
                     onClick={() => handleSelect(option)}
@@ -573,7 +573,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
                     {/* Selected Checkmark */}
                     {option.value === value && (
-                      <div className="flex size-5 items-center justify-center text-blue-600 dark:text-blue-400">
+                      <div className="flex size-5 items-center justify-center text-gray-600 dark:text-gray-400">
                         <svg
                           width="16"
                           height="16"

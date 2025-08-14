@@ -194,26 +194,26 @@ export default function HouseholdDetailContent() {
           </h2>
           <div className="space-y-3">
             <div>
-              <span className="text-secondary block text-sm font-medium">Household Code</span>
-              <span className="text-primary">{household.code}</span>
+              <span className="block text-sm font-medium text-gray-600">Household Code</span>
+              <span className="text-gray-600">{household.code}</span>
             </div>
             {household.name && (
               <div>
-                <span className="text-secondary block text-sm font-medium">Household Name</span>
-                <span className="text-primary">{household.name}</span>
+                <span className="block text-sm font-medium text-gray-600">Household Name</span>
+                <span className="text-gray-600">{household.name}</span>
               </div>
             )}
             <div>
-              <span className="text-secondary block text-sm font-medium">Address</span>
-              <span className="text-primary">
+              <span className="block text-sm font-medium text-gray-600">Address</span>
+              <span className="text-gray-600">
                 {[household.house_number, household.street_name, household.subdivision]
                   .filter(Boolean)
                   .join(', ') || 'N/A'}
               </span>
             </div>
             <div>
-              <span className="text-secondary block text-sm font-medium">Barangay Code</span>
-              <span className="text-primary">{household.barangay_code}</span>
+              <span className="block text-sm font-medium text-gray-600">Barangay Code</span>
+              <span className="text-gray-600">{household.barangay_code}</span>
             </div>
           </div>
         </div>
@@ -226,12 +226,12 @@ export default function HouseholdDetailContent() {
             {household.head_resident ? (
               <>
                 <div>
-                  <span className="text-secondary block text-sm font-medium">Name</span>
-                  <span className="text-primary">{formatFullName(household.head_resident)}</span>
+                  <span className="block text-sm font-medium text-gray-600">Name</span>
+                  <span className="text-gray-600">{formatFullName(household.head_resident)}</span>
                 </div>
                 <div>
-                  <span className="text-secondary block text-sm font-medium">Resident ID</span>
-                  <span className="text-primary">{household.head_resident.id}</span>
+                  <span className="block text-sm font-medium text-gray-600">Resident ID</span>
+                  <span className="text-gray-600">{household.head_resident.id}</span>
                 </div>
               </>
             ) : (

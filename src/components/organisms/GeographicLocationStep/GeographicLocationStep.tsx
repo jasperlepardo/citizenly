@@ -130,7 +130,7 @@ export function GeographicLocationStep({
         </div>
 
         <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3">
-          <p className="text-sm text-blue-800">
+          <p className="text-sm text-gray-800">
             ✓ Geographic location automatically assigned from your barangay admin profile
           </p>
         </div>
@@ -152,8 +152,8 @@ export function GeographicLocationStep({
 
       {/* Information Note */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 text-sm font-medium text-blue-800">Important Information</h4>
-        <ul className="space-y-1 text-sm text-blue-700">
+        <h4 className="mb-2 text-sm font-medium text-gray-800">Important Information</h4>
+        <ul className="space-y-1 text-sm text-gray-700">
           <li>• Location automatically populated from your barangay admin profile</li>
           <li>• Geographic location is required for proper data organization</li>
           <li>• Only the location codes are stored in the system, not the names</li>

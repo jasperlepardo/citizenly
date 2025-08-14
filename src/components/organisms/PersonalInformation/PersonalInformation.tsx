@@ -57,8 +57,8 @@ export default function PersonalInformation({
   return (
     <div className={`space-y-8 ${className}`}>
       <div>
-        <h3 className="text-primary text-base/7 font-semibold">Personal Information</h3>
-        <p className="text-secondary mt-1 text-sm/6">
+        <h3 className="text-base/7 font-semibold text-gray-600">Personal Information</h3>
+        <p className="mt-1 text-sm/6 text-gray-600">
           Basic details and identification information.
         </p>
       </div>

@@ -445,8 +445,8 @@ export const AccessibilityDemo: Story = {
     return (
       <div className="space-y-6">
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-2 text-lg font-semibold text-blue-800">Keyboard Navigation</h3>
-          <ul className="space-y-1 text-sm text-blue-700">
+          <h3 className="mb-2 text-lg font-semibold text-gray-800">Keyboard Navigation</h3>
+          <ul className="space-y-1 text-sm text-gray-700">
             <li>
               • <kbd className="rounded bg-blue-100 px-1 py-0.5">Tab</kbd> to focus the dropdown
             </li>

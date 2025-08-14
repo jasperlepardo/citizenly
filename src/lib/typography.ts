@@ -57,13 +57,13 @@ export interface TypographyProps {
 
 // Common typography combinations
 export const typographyPresets = {
-  pageTitle: `${typography.h1} text-neutral-900 mb-6`,
-  sectionTitle: `${typography.h2} text-neutral-800 mb-4`,
-  cardTitle: `${typography.h3} text-neutral-800 mb-3`,
-  fieldLabel: `${typography.label} text-neutral-700 mb-2`,
-  helpText: `${typography.bodySmall} text-neutral-500`,
-  errorText: `${typography.bodySmall} text-danger-600`,
-  successText: `${typography.bodySmall} text-success-600`,
+  pageTitle: `${typography.h1} text-gray-900 mb-6`,
+  sectionTitle: `${typography.h2} text-gray-800 mb-4`,
+  cardTitle: `${typography.h3} text-gray-800 mb-3`,
+  fieldLabel: `${typography.label} text-gray-700 mb-2`,
+  helpText: `${typography.bodySmall} text-gray-500`,
+  errorText: `${typography.bodySmall} text-red-600`,
+  successText: `${typography.bodySmall} text-green-600`,
 } as const;
 
 export default typography;

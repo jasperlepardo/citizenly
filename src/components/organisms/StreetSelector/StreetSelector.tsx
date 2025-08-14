@@ -189,7 +189,7 @@ export default function StreetSelector({
         className={`font-montserrat relative rounded border text-base focus-within:border-transparent focus-within:ring-2 ${
           error
             ? 'border-red-500 focus-within:ring-red-500'
-            : 'border-neutral-300 focus-within:ring-blue-500'
+            : 'border-gray-300 focus-within:ring-blue-500'
         }`}
       >
         <input
@@ -210,7 +210,7 @@ export default function StreetSelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
         >
           <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -225,9 +225,9 @@ export default function StreetSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {loading ? (
-            <div className="p-3 text-center text-neutral-500">
+            <div className="p-3 text-center text-gray-500">
               <div className="animate-pulse">Loading streets...</div>
             </div>
           ) : (
@@ -240,23 +240,23 @@ export default function StreetSelector({
                     setShowCreateForm(true);
                     setNewStreetName(searchTerm);
                   }}
-                  className="w-full border-b border-neutral-100 p-3 text-left hover:bg-blue-50"
+                  className="w-full border-b border-gray-100 p-3 text-left hover:bg-blue-50"
                 >
-                  <div className="font-medium text-blue-600">+ Create New Street</div>
-                  <div className="text-xs text-blue-500">
+                  <div className="font-medium text-gray-600">+ Create New Street</div>
+                  <div className="text-xs text-gray-500">
                     {searchTerm ? `Create "${searchTerm}"` : 'Add a new street to this area'}
                   </div>
                 </button>
               ) : (
-                <div className="border-b border-neutral-100 p-3">
-                  <div className="mb-2 font-medium text-blue-600">Create New Street</div>
+                <div className="border-b border-gray-100 p-3">
+                  <div className="mb-2 font-medium text-gray-600">Create New Street</div>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={newStreetName}
                       onChange={e => setNewStreetName(e.target.value)}
                       placeholder="Enter street name"
-                      className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                      className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -272,7 +272,7 @@ export default function StreetSelector({
                       type="button"
                       onClick={createStreet}
                       disabled={!newStreetName.trim() || isCreating}
-                      className="rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 disabled:bg-neutral-400"
+                      className="rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 disabled:bg-gray-400"
                     >
                       {isCreating ? '...' : 'Add'}
                     </button>
@@ -282,7 +282,7 @@ export default function StreetSelector({
                         setShowCreateForm(false);
                         setNewStreetName('');
                       }}
-                      className="rounded bg-neutral-400 px-2 py-1 text-xs text-white hover:bg-neutral-500"
+                      className="rounded bg-gray-400 px-2 py-1 text-xs text-white hover:bg-gray-500"
                     >
                       ✕
                     </button>
@@ -292,7 +292,7 @@ export default function StreetSelector({
 
               {/* Show message when no existing streets */}
               {filteredStreets.length === 0 && !searchTerm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500">
                   <div className="text-sm">No streets found in this area</div>
                   <div className="mt-1 text-xs text-green-600">✓ Create the first street above</div>
                 </div>
@@ -300,7 +300,7 @@ export default function StreetSelector({
 
               {/* Show "no search results" when searching */}
               {filteredStreets.length === 0 && searchTerm && !showCreateForm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500">
                   <div className="text-sm">No streets match your search</div>
                 </div>
               )}
@@ -316,16 +316,16 @@ export default function StreetSelector({
                     setIsOpen(false);
                     setShowCreateForm(false);
                   }}
-                  className="w-full border-b border-neutral-100 p-3 text-left last:border-b-0 hover:bg-neutral-50"
+                  className="w-full border-b border-gray-100 p-3 text-left last:border-b-0 hover:bg-gray-50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="font-medium text-neutral-900">{street.name}</div>
+                      <div className="font-medium text-gray-900">{street.name}</div>
                       {street.subdivision_name && (
-                        <div className="text-sm text-neutral-600">in {street.subdivision_name}</div>
+                        <div className="text-sm text-gray-600">in {street.subdivision_name}</div>
                       )}
                       {street.description && (
-                        <div className="text-xs text-neutral-500">{street.description}</div>
+                        <div className="text-xs text-gray-500">{street.description}</div>
                       )}
                     </div>
                   </div>

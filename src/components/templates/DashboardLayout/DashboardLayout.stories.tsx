@@ -100,8 +100,8 @@ type Story = StoryObj<typeof meta>;
 const MockDashboardContent = () => (
   <div className="space-y-8 p-6">
     <div>
-      <h1 className="text-primary text-3xl font-bold">Dashboard Overview</h1>
-      <p className="text-secondary mt-2">Barangay Records Management System</p>
+      <h1 className="text-3xl font-bold text-gray-600">Dashboard Overview</h1>
+      <p className="mt-2 text-gray-600">Barangay Records Management System</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -111,11 +111,11 @@ const MockDashboardContent = () => (
         { title: 'Registered Voters', value: '1,876', trend: '+3.1%' },
         { title: 'Pending Applications', value: '47', trend: '-15.3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+        <div key={index} className="bg-default rounded-xl border border-default p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-secondary text-sm font-medium">{stat.title}</p>
-              <p className="text-primary mt-1 text-2xl font-bold">{stat.value}</p>
+              <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-600">{stat.value}</p>
             </div>
             <span
               className={`rounded-full px-2 py-1 text-xs font-medium ${
@@ -132,8 +132,8 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
-        <h3 className="text-primary mb-4 text-lg font-semibold">Recent Registrations</h3>
+      <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600">Recent Registrations</h3>
         <div className="space-y-4">
           {[
             { name: 'Maria Elena Santos', type: 'New Resident', time: '2 hours ago' },
@@ -142,12 +142,12 @@ const MockDashboardContent = () => (
             { name: 'Ana Beatriz Cruz', type: 'New Voter Registration', time: '1 day ago' },
           ].map((activity, index) => (
             <div key={index} className="flex items-start gap-3">
-              <div className="bg-primary-100 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
-                <div className="bg-primary h-3 w-3 rounded-full"></div>
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
+                <div className="h-3 w-3 rounded-full bg-blue-600"></div>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-primary text-sm font-medium">{activity.name}</p>
-                <p className="text-secondary text-xs">
+                <p className="text-sm font-medium text-gray-600">{activity.name}</p>
+                <p className="text-xs text-gray-600">
                   {activity.type} • {activity.time}
                 </p>
               </div>
@@ -156,8 +156,8 @@ const MockDashboardContent = () => (
         </div>
       </div>
 
-      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
-        <h3 className="text-primary mb-4 text-lg font-semibold">System Health</h3>
+      <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600">System Health</h3>
         <div className="space-y-4">
           {[
             { metric: 'Database Status', status: 'Online', color: 'green' },
@@ -166,10 +166,10 @@ const MockDashboardContent = () => (
             { metric: 'Last Backup', status: '2 hours ago', color: 'green' },
           ].map((health, index) => (
             <div key={index} className="flex items-center justify-between">
-              <span className="text-secondary text-sm">{health.metric}</span>
+              <span className="text-sm text-gray-600">{health.metric}</span>
               <div className="flex items-center gap-2">
                 <div className={`h-2 w-2 rounded-full bg-${health.color}-500`}></div>
-                <span className="text-primary text-sm font-medium">{health.status}</span>
+                <span className="text-sm font-medium text-gray-600">{health.status}</span>
               </div>
             </div>
           ))}
@@ -211,30 +211,30 @@ const MockResidentsContent = () => (
   <div className="space-y-6 p-6">
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-primary text-3xl font-bold">Residents Directory</h1>
-        <p className="text-secondary mt-1">Manage resident records and profiles</p>
+        <h1 className="text-3xl font-bold text-gray-600">Residents Directory</h1>
+        <p className="mt-1 text-gray-600">Manage resident records and profiles</p>
       </div>
       <div className="flex gap-3">
-        <button className="hover:bg-surface-hover border-default text-secondary rounded-lg border px-4 py-2 transition-colors">
+        <button className="hover:bg-default-hover rounded-lg border border-default px-4 py-2 text-gray-600 transition-colors">
           Export Data
         </button>
-        <button className="bg-primary hover:bg-primary-600 rounded-lg px-4 py-2 text-white transition-colors">
+        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-600">
           Add New Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-surface border-default overflow-hidden rounded-xl border">
-      <div className="bg-background-muted border-default border-b p-4">
+    <div className="bg-default overflow-hidden rounded-xl border border-default">
+      <div className="bg-default-muted border-b border-default p-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-primary font-semibold">Active Residents</h3>
+          <h3 className="font-semibold text-gray-600">Active Residents</h3>
           <div className="flex items-center gap-3">
-            <select className="bg-surface border-default text-primary rounded border px-3 py-2 text-sm">
+            <select className="bg-default rounded border border-default px-3 py-2 text-sm text-gray-600">
               <option>All Status</option>
               <option>Active</option>
               <option>Inactive</option>
             </select>
-            <select className="bg-surface border-default text-primary rounded border px-3 py-2 text-sm">
+            <select className="bg-default rounded border border-default px-3 py-2 text-sm text-gray-600">
               <option>All Ages</option>
               <option>Minors (0-17)</option>
               <option>Adults (18-59)</option>
@@ -244,7 +244,7 @@ const MockResidentsContent = () => (
         </div>
       </div>
 
-      <div className="divide-default divide-y">
+      <div className="divide-y divide-default">
         {[
           {
             name: 'Juan Antonio Dela Cruz',
@@ -282,11 +282,11 @@ const MockResidentsContent = () => (
             voters: true,
           },
         ].map((resident, index) => (
-          <div key={index} className="hover:bg-surface-hover p-4 transition-colors">
+          <div key={index} className="hover:bg-default-hover p-4 transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="bg-primary-100 flex h-12 w-12 items-center justify-center rounded-full">
-                  <span className="text-primary font-semibold">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                  <span className="font-semibold text-gray-600">
                     {resident.name
                       .split(' ')
                       .slice(0, 2)
@@ -295,8 +295,8 @@ const MockResidentsContent = () => (
                   </span>
                 </div>
                 <div>
-                  <h4 className="text-primary font-medium">{resident.name}</h4>
-                  <p className="text-secondary text-sm">
+                  <h4 className="font-medium text-gray-600">{resident.name}</h4>
+                  <p className="text-sm text-gray-600">
                     Age {resident.age} • {resident.address}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
@@ -310,7 +310,7 @@ const MockResidentsContent = () => (
                       {resident.status}
                     </span>
                     {resident.voters && (
-                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-gray-800">
                         Registered Voter
                       </span>
                     )}
@@ -318,7 +318,7 @@ const MockResidentsContent = () => (
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="hover:bg-surface-hover text-secondary hover:text-primary rounded-lg p-2 transition-colors">
+                <button className="hover:bg-default-hover rounded-lg p-2 text-gray-600 transition-colors hover:text-gray-600">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -328,7 +328,7 @@ const MockResidentsContent = () => (
                     />
                   </svg>
                 </button>
-                <button className="hover:bg-surface-hover text-secondary hover:text-primary rounded-lg p-2 transition-colors">
+                <button className="hover:bg-default-hover rounded-lg p-2 text-gray-600 transition-colors hover:text-gray-600">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -362,14 +362,14 @@ export const WithSearch: Story = {
     <DashboardLayoutWrapper showSearch={true} initialSearchTerm="">
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-primary text-3xl font-bold">Search Results</h1>
-          <p className="text-secondary mt-1">Search through residents, households, and records</p>
+          <h1 className="text-3xl font-bold text-gray-600">Search Results</h1>
+          <p className="mt-1 text-gray-600">Search through residents, households, and records</p>
         </div>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
           <div className="flex items-start gap-3">
             <svg
-              className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600"
+              className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -382,8 +382,8 @@ export const WithSearch: Story = {
               />
             </svg>
             <div>
-              <h3 className="font-medium text-blue-900">Search Functionality</h3>
-              <p className="mt-1 text-sm text-blue-700">
+              <h3 className="font-medium text-gray-900">Search Functionality</h3>
+              <p className="mt-1 text-sm text-gray-700">
                 Use the search bar in the header to find residents, households, addresses, or any
                 other records. The search supports partial matches and filters across all data
                 types.
@@ -407,13 +407,13 @@ export const WithSearch: Story = {
               items: ['Add resident', 'Create household', 'Generate report'],
             },
           ].map((section, index) => (
-            <div key={index} className="bg-surface border-default rounded-lg border p-4">
-              <h3 className="text-primary mb-3 font-medium">{section.title}</h3>
+            <div key={index} className="bg-default rounded-lg border border-default p-4">
+              <h3 className="mb-3 font-medium text-gray-600">{section.title}</h3>
               <ul className="space-y-2">
                 {section.items.map((item, itemIndex) => (
                   <li
                     key={itemIndex}
-                    className="text-secondary hover:text-primary cursor-pointer text-sm"
+                    className="cursor-pointer text-sm text-gray-600 hover:text-gray-600"
                   >
                     {item}
                   </li>
@@ -498,8 +498,8 @@ export const UserDropdownShowcase: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-primary text-3xl font-bold">User Profile & Barangay Information</h1>
-          <p className="text-secondary mt-1">
+          <h1 className="text-3xl font-bold text-gray-600">User Profile & Barangay Information</h1>
+          <p className="mt-1 text-gray-600">
             The user dropdown shows detailed profile and barangay assignment information
           </p>
         </div>
@@ -578,8 +578,8 @@ export const EnvironmentIndicator: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-primary text-3xl font-bold">Environment Indicators</h1>
-          <p className="text-secondary mt-1">
+          <h1 className="text-3xl font-bold text-gray-600">Environment Indicators</h1>
+          <p className="mt-1 text-gray-600">
             Visual indicators show the current environment (Development/Staging/Production)
           </p>
         </div>
@@ -622,7 +622,7 @@ export const EnvironmentIndicator: Story = {
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
           <div className="flex items-start gap-3">
             <svg
-              className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600"
+              className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -635,8 +635,8 @@ export const EnvironmentIndicator: Story = {
               />
             </svg>
             <div>
-              <h4 className="font-medium text-blue-900">Environment Detection</h4>
-              <p className="mt-1 text-sm text-blue-800">
+              <h4 className="font-medium text-gray-900">Environment Detection</h4>
+              <p className="mt-1 text-sm text-gray-800">
                 The system automatically detects the environment and displays appropriate indicators
                 in the sidebar footer. This helps developers and testers quickly identify which
                 environment they're working in.
@@ -663,18 +663,18 @@ export const LayoutFeatures: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-8 p-6">
         <div className="text-center">
-          <h1 className="text-primary mb-4 text-3xl font-bold">DashboardLayout Features</h1>
-          <p className="text-secondary mx-auto max-w-2xl">
+          <h1 className="mb-4 text-3xl font-bold text-gray-600">DashboardLayout Features</h1>
+          <p className="mx-auto max-w-2xl text-gray-600">
             A comprehensive dashboard layout with authentication integration, search functionality,
             and responsive design optimized for barangay management systems.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
               <svg
-                className="h-6 w-6 text-blue-600"
+                className="h-6 w-6 text-gray-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -687,14 +687,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Authentication Integration</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Authentication Integration</h3>
+            <p className="text-sm text-gray-600">
               Seamless integration with authentication context, displaying user profile, role
               information, and barangay assignments.
             </p>
           </div>
 
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"
@@ -710,17 +710,17 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Global Search</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Global Search</h3>
+            <p className="text-sm text-gray-600">
               Integrated search functionality with real-time filtering and comprehensive search
               across all data types.
             </p>
           </div>
 
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
-                className="h-6 w-6 text-purple-600"
+                className="h-6 w-6 text-gray-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -733,14 +733,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Responsive Design</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Responsive Design</h3>
+            <p className="text-sm text-gray-600">
               Fixed sidebar layout that maintains navigation accessibility across all device sizes
               and orientations.
             </p>
           </div>
 
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
               <svg
                 className="h-6 w-6 text-orange-600"
@@ -762,14 +762,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Location Context</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Location Context</h3>
+            <p className="text-sm text-gray-600">
               Automatic barangay information loading with full PSGC hierarchy display for
               administrative context.
             </p>
           </div>
 
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100">
               <svg
                 className="h-6 w-6 text-red-600"
@@ -785,14 +785,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Environment Indicators</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Environment Indicators</h3>
+            <p className="text-sm text-gray-600">
               Visual environment indicators help distinguish between development, staging, and
               production environments.
             </p>
           </div>
 
-          <div className="bg-surface border-default rounded-xl border p-6">
+          <div className="bg-default rounded-xl border border-default p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"
@@ -808,8 +808,8 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="text-primary mb-2 font-semibold">Accessibility</h3>
-            <p className="text-secondary text-sm">
+            <h3 className="mb-2 font-semibold text-gray-600">Accessibility</h3>
+            <p className="text-sm text-gray-600">
               Built with skip navigation, ARIA labels, keyboard navigation, and screen reader
               support for inclusive access.
             </p>

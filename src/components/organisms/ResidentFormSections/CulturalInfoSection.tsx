@@ -56,7 +56,7 @@ export default function CulturalInfoSection({
             value={formData.religion || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Religion</option>
             {RELIGION_OPTIONS.map(option => (
@@ -73,7 +73,7 @@ export default function CulturalInfoSection({
             value={formData.ethnicity || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Ethnicity</option>
             {ETHNICITY_OPTIONS.map(option => (

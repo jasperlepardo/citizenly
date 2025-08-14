@@ -197,7 +197,7 @@ export default function ResidentEditPage() {
           <div className="flex min-h-screen items-center justify-center">
             <div className="text-center">
               <div className="inline-block size-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent dark:border-blue-400 dark:border-r-transparent"></div>
-              <h2 className="text-primary mt-4 text-lg font-medium">Loading resident data...</h2>
+              <h2 className="mt-4 text-lg font-medium text-gray-600">Loading resident data...</h2>
             </div>
           </div>
         </DashboardLayout>
@@ -211,14 +211,14 @@ export default function ResidentEditPage() {
       <ProtectedRoute>
         <DashboardLayout>
           <div className="space-y-6">
-            <div className="border-danger-200 bg-danger-50 dark:border-danger-800 dark:bg-danger-950 rounded-lg border p-4">
-              <h3 className="text-danger-800 dark:text-danger-200 text-lg font-medium">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-danger-950">
+              <h3 className="text-lg font-medium text-red-800 dark:text-red-200">
                 Error Loading Resident
               </h3>
-              <p className="text-danger-700 dark:text-danger-300 mt-2">{error}</p>
+              <p className="mt-2 text-red-700 dark:text-red-300">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-danger-600 hover:bg-danger-700 dark:bg-danger-500 dark:hover:bg-danger-600 mt-4 rounded px-4 py-2 text-white"
+                className="mt-4 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
               >
                 Retry
               </button>
@@ -234,11 +234,11 @@ export default function ResidentEditPage() {
       <DashboardLayout>
         <div className="mx-auto max-w-6xl space-y-6">
           {/* Header */}
-          <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+          <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-primary text-3xl font-bold">Edit Resident</h1>
-                <p className="text-secondary mt-2">
+                <h1 className="text-3xl font-bold text-gray-600">Edit Resident</h1>
+                <p className="mt-2 text-gray-600">
                   Complete resident information form
                   {isDirty && <span className="ml-2 text-yellow-600">• Unsaved changes</span>}
                 </p>
@@ -315,7 +315,7 @@ export default function ResidentEditPage() {
             />
 
             {/* Form Actions */}
-            <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+            <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
               <div className="flex justify-end gap-4">
                 <Button
                   type="button"

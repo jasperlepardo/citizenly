@@ -45,15 +45,15 @@ const inputVariants = cva(
     variants: {
       variant: {
         default:
-          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-default border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         filled:
-          'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded border bg-default border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         error:
-          'rounded border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
+          'rounded border border-red-600 bg-default focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
-          'rounded border border-green-500 bg-surface focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'cursor-not-allowed rounded border bg-background-muted border-default',
-        readonly: 'rounded-none border-0 bg-background-muted',
+          'rounded border border-green-500 bg-default focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
+        disabled: 'cursor-not-allowed rounded border bg-default-muted border-default',
+        readonly: 'rounded-none border-0 bg-default-muted',
         borderless: 'rounded-none border-0 bg-transparent',
       },
       size: {
@@ -138,7 +138,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="font-system text-primary mb-2 block text-sm font-medium">{label}</label>
+          <label className="mb-2 block font-system text-sm font-medium text-gray-600">{label}</label>
         )}
 
         {/* Input Container */}
@@ -151,7 +151,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+            <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
               {leftIcon}
             </div>
           )}
@@ -163,7 +163,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               <input
                 ref={ref}
                 className={cn(
-                  'font-montserrat placeholder:text-muted text-primary w-full bg-transparent font-normal',
+                  'font-montserrat placeholder:text-muted w-full bg-transparent font-normal text-gray-600',
                   // Remove ALL borders and focus states
                   'border-0 shadow-none outline-0 ring-0',
                   'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
@@ -173,7 +173,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                   size === 'md' && 'text-base leading-5',
                   size === 'lg' && 'text-lg leading-6',
                   disabled && 'text-muted cursor-not-allowed',
-                  readOnly && 'text-secondary'
+                  readOnly && 'text-gray-600'
                 )}
                 style={{
                   border: 'none',
@@ -191,12 +191,12 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {/* Right Icon - Figma: w-5 (20px width) */}
           {(rightIcon || showClearButton) && (
-            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+            <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
               {showClearButton ? (
                 <button
                   type="button"
                   onClick={onClear}
-                  className="text-secondary hover:text-primary flex size-full items-center justify-center transition-colors"
+                  className="flex size-full items-center justify-center text-gray-600 transition-colors hover:text-gray-600"
                 >
                   <svg
                     width="16"
@@ -218,13 +218,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {/* Addons for special cases */}
           {leftAddon && (
-            <div className="text-muted bg-background-muted border-default flex items-center border-r px-3 text-sm">
+            <div className="text-muted bg-default-muted flex items-center border-r border-default px-3 text-sm">
               {leftAddon}
             </div>
           )}
 
           {rightAddon && (
-            <div className="text-muted bg-background-muted border-default flex items-center border-l px-3 text-sm">
+            <div className="text-muted bg-default-muted flex items-center border-l border-default px-3 text-sm">
               {rightAddon}
             </div>
           )}

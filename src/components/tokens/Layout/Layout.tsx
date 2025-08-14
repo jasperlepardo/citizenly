@@ -195,15 +195,15 @@ export const LayoutSwatch: React.FC<LayoutSwatchProps> = ({ name, value, type = 
           </div>
         );
       default:
-        return <div className="h-4 w-16 rounded bg-neutral-300" />;
+        return <div className="h-4 w-16 rounded bg-gray-300" />;
     }
   };
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-neutral-200 p-3">
+    <div className="flex items-center gap-4 rounded-lg border border-gray-200 p-3">
       <div className="w-24 flex-shrink-0">
-        <div className="font-mono text-sm text-neutral-700">{name}</div>
-        <div className="text-xs text-neutral-500">{value}</div>
+        <div className="font-mono text-sm text-gray-700">{name}</div>
+        <div className="text-xs text-gray-500">{value}</div>
       </div>
 
       <div className="flex min-w-0 flex-1 items-center">{getVisualization()}</div>
@@ -226,8 +226,8 @@ export const LayoutGroup: React.FC<LayoutGroupProps> = ({
 }) => (
   <div className="mb-8">
     <div className="mb-4">
-      <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
-      {description && <p className="mt-1 text-sm text-neutral-600">{description}</p>}
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
     </div>
     <div className="space-y-2">
       {Object.entries(layouts).map(([name, value]) => (
@@ -246,10 +246,10 @@ interface LayoutDemoProps {
 export const LayoutDemo: React.FC<LayoutDemoProps> = ({ title, description, children }) => (
   <div className="mb-8">
     <div className="mb-4">
-      <h4 className="text-md font-medium text-neutral-900">{title}</h4>
-      <p className="text-sm text-neutral-600">{description}</p>
+      <h4 className="text-md font-medium text-gray-900">{title}</h4>
+      <p className="text-sm text-gray-600">{description}</p>
     </div>
-    <div className="overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50 p-4">
       {children}
     </div>
   </div>
@@ -263,8 +263,8 @@ export const ResponsiveDemo: React.FC = () => (
   <div className="space-y-4">
     {Object.entries(layoutTokens.breakpoints).map(([name, width]) => (
       <div key={name} className="flex items-center gap-4">
-        <div className="w-12 font-mono text-sm text-neutral-700">{name}</div>
-        <div className="relative h-8 flex-1 overflow-hidden rounded bg-neutral-200">
+        <div className="w-12 font-mono text-sm text-gray-700">{name}</div>
+        <div className="relative h-8 flex-1 overflow-hidden rounded bg-gray-200">
           <div
             className="flex h-full items-center justify-center rounded bg-blue-500 text-xs font-medium text-white transition-all"
             style={{
@@ -287,8 +287,8 @@ const Layout: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-neutral-900">Design Tokens: Layout</h1>
-        <p className="max-w-2xl text-neutral-600">
+        <h1 className="mb-2 text-3xl font-bold text-gray-900">Design Tokens: Layout</h1>
+        <p className="max-w-2xl text-gray-600">
           Layout tokens for the Citizenly design system. These tokens provide consistent structure
           and organization across all government applications.
         </p>
@@ -296,8 +296,8 @@ const Layout: React.FC = () => {
 
       {/* Container Widths */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Container Widths</h2>
-        <p className="mb-6 text-neutral-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Container Widths</h2>
+        <p className="mb-6 text-gray-600">
           Predefined container widths that work across different screen sizes and content types.
         </p>
 
@@ -318,9 +318,9 @@ const Layout: React.FC = () => {
               .slice(0, 4)
               .map(([name, width]) => (
                 <div key={name} className="flex items-center gap-4">
-                  <div className="w-12 font-mono text-xs text-neutral-600">{name}</div>
+                  <div className="w-12 font-mono text-xs text-gray-600">{name}</div>
                   <div
-                    className="rounded border border-blue-200 bg-blue-100 p-3 text-center text-blue-800"
+                    className="rounded border border-blue-200 bg-blue-100 p-3 text-center text-gray-800"
                     style={{ maxWidth: width, width: '100%' }}
                   >
                     {width} container
@@ -333,8 +333,8 @@ const Layout: React.FC = () => {
 
       {/* Breakpoints */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Responsive Breakpoints</h2>
-        <p className="mb-6 text-neutral-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Responsive Breakpoints</h2>
+        <p className="mb-6 text-gray-600">
           Breakpoint system for responsive design, matching Tailwind CSS for consistency.
         </p>
 
@@ -355,8 +355,8 @@ const Layout: React.FC = () => {
 
       {/* Grid System */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Grid System</h2>
-        <p className="mb-6 text-neutral-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Grid System</h2>
+        <p className="mb-6 text-gray-600">
           12-column grid system with flexible gaps for consistent layouts.
         </p>
 
@@ -383,7 +383,7 @@ const Layout: React.FC = () => {
           <div className="space-y-4">
             {[12, 6, 4, 3, 2, 1].map(columns => (
               <div key={columns} className="flex gap-2">
-                <div className="flex w-16 items-center text-xs text-neutral-600">
+                <div className="flex w-16 items-center text-xs text-gray-600">
                   {12 / columns} col{12 / columns !== 1 ? 's' : ''}
                 </div>
                 <div
@@ -407,8 +407,8 @@ const Layout: React.FC = () => {
 
       {/* Z-Index Layers */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Z-Index Layers</h2>
-        <p className="mb-6 text-neutral-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Z-Index Layers</h2>
+        <p className="mb-6 text-gray-600">
           Organized layering system for overlapping elements and proper stacking context.
         </p>
 
@@ -426,7 +426,7 @@ const Layout: React.FC = () => {
           <div className="relative h-40 overflow-hidden rounded bg-gray-100">
             {/* Base layer */}
             <div
-              className="absolute inset-4 flex items-center justify-center rounded bg-blue-200 text-sm font-medium text-blue-800"
+              className="absolute inset-4 flex items-center justify-center rounded bg-blue-200 text-sm font-medium text-gray-800"
               style={{ zIndex: layoutTokens.zIndex.base }}
             >
               Base (z: {layoutTokens.zIndex.base})
@@ -442,7 +442,7 @@ const Layout: React.FC = () => {
 
             {/* Dropdown layer */}
             <div
-              className="absolute left-12 top-12 flex h-12 w-32 items-center justify-center rounded bg-purple-400 text-xs font-medium text-purple-900"
+              className="absolute left-12 top-12 flex h-12 w-32 items-center justify-center rounded bg-purple-400 text-xs font-medium text-gray-900"
               style={{ zIndex: layoutTokens.zIndex.dropdown }}
             >
               Dropdown (z: {layoutTokens.zIndex.dropdown})
@@ -461,8 +461,8 @@ const Layout: React.FC = () => {
 
       {/* Layout Patterns */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-neutral-900">Common Layout Patterns</h2>
-        <p className="mb-6 text-neutral-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Common Layout Patterns</h2>
+        <p className="mb-6 text-gray-600">
           Predefined dimensions for common layout elements like sidebars, headers, and footers.
         </p>
 
@@ -493,7 +493,7 @@ const Layout: React.FC = () => {
           title="Layout Pattern Example"
           description="Typical government website layout structure"
         >
-          <div className="overflow-hidden rounded border border-neutral-300 bg-white">
+          <div className="overflow-hidden rounded border border-gray-300 bg-white">
             {/* Header */}
             <div
               className="flex items-center bg-blue-600 px-4 text-sm font-medium text-white"
@@ -514,8 +514,8 @@ const Layout: React.FC = () => {
 
               {/* Main Content */}
               <div className="flex-1 p-6">
-                <h3 className="mb-2 text-lg font-semibold text-neutral-900">Main Content Area</h3>
-                <p className="text-sm text-neutral-600">
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">Main Content Area</h3>
+                <p className="text-sm text-gray-600">
                   This area uses the remaining space after accounting for the sidebar width. Content
                   flows naturally within the available space.
                 </p>

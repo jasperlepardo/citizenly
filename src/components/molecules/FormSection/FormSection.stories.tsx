@@ -183,8 +183,8 @@ export const AccessibilityShowcase: Story = {
     children: (
       <div className="space-y-6">
         <div className="rounded-lg border-l-4 border-blue-400 bg-blue-50 p-4">
-          <h4 className="mb-2 font-medium text-blue-900">Accessibility Features:</h4>
-          <ul className="space-y-1 text-sm text-blue-800">
+          <h4 className="mb-2 font-medium text-gray-900">Accessibility Features:</h4>
+          <ul className="space-y-1 text-sm text-gray-800">
             <li>• Uses semantic &lt;fieldset&gt; and &lt;legend&gt; elements</li>
             <li>• Proper ARIA relationships with aria-describedby</li>
             <li>• Screen reader announces section purpose</li>

@@ -498,7 +498,7 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
       <div className="rounded-lg bg-blue-50 p-4 ring-1 ring-blue-900/10 dark:bg-blue-400/10 dark:ring-blue-400/20">
         <div className="flex">
           <div className="shrink-0">
-            <svg className="size-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
@@ -507,10 +507,10 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
             </svg>
           </div>
           <div className="ml-3">
-            <h4 className="text-sm/6 font-medium text-blue-800 dark:text-blue-200">
+            <h4 className="text-sm/6 font-medium text-gray-800 dark:text-gray-200">
               Household Code (Auto-generated)
             </h4>
-            <div className="mt-2 text-sm/6 text-blue-700 dark:text-blue-300">
+            <div className="mt-2 text-sm/6 text-gray-700 dark:text-gray-300">
               <p className="font-mono text-lg font-semibold">{formData.householdCode}</p>
               <p className="mt-1">This unique code will identify this household in the system.</p>
             </div>
@@ -595,7 +595,7 @@ function LocationDetailsStep({
 
         {loadingAddress ? (
           <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <svg className="size-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+            <svg className="size-5 animate-spin text-gray-600" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -610,7 +610,7 @@ function LocationDetailsStep({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-sm font-medium text-blue-700">
+            <span className="text-sm font-medium text-gray-700">
               Loading your assigned barangay...
             </span>
           </div>
@@ -925,7 +925,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasElectricity"
               checked={formData.hasElectricity}
               onChange={e => onChange('hasElectricity', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded border-gray-300 bg-white text-gray-600 focus:ring-blue-500"
             />
             <label htmlFor="hasElectricity" className="text-sm text-zinc-950 dark:text-white">
               Has Electricity
@@ -938,7 +938,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasWater"
               checked={formData.hasWater}
               onChange={e => onChange('hasWater', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded border-gray-300 bg-white text-gray-600 focus:ring-blue-500"
             />
             <label htmlFor="hasWater" className="text-sm text-zinc-950 dark:text-white">
               Has Water Supply
@@ -951,7 +951,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasInternet"
               checked={formData.hasInternet}
               onChange={e => onChange('hasInternet', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded border-gray-300 bg-white text-gray-600 focus:ring-blue-500"
             />
             <label htmlFor="hasInternet" className="text-sm text-zinc-950 dark:text-white">
               Has Internet Access

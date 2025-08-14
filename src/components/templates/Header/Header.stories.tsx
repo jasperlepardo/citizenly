@@ -92,18 +92,18 @@ const mockAdminUser = {
 export const Default: Story = {
   render: () => (
     <MockAuthProvider user={mockUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-4xl">
-            <h1 className="text-primary mb-6 text-3xl font-bold">Page Content</h1>
-            <p className="text-secondary mb-4">
+            <h1 className="mb-6 text-3xl font-bold text-gray-600">Page Content</h1>
+            <p className="mb-4 text-gray-600">
               This demonstrates the Header component in its default authenticated state. The header
               shows the RBI System branding, navigation menu, and user profile.
             </p>
-            <div className="bg-surface border-default rounded-lg border p-6">
-              <h2 className="text-primary mb-3 font-semibold">Navigation Features</h2>
-              <ul className="text-secondary space-y-2">
+            <div className="bg-default rounded-lg border border-default p-6">
+              <h2 className="mb-3 font-semibold text-gray-600">Navigation Features</h2>
+              <ul className="space-y-2 text-gray-600">
                 <li>• Dashboard - System overview and statistics</li>
                 <li>• Residents - Individual resident management</li>
                 <li>• Households - Family and household records</li>
@@ -122,18 +122,18 @@ export const Default: Story = {
 export const Unauthenticated: Story = {
   render: () => (
     <MockAuthProvider user={null}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-primary mb-6 text-3xl font-bold">Welcome to RBI System</h1>
-            <p className="text-secondary mb-8">
+            <h1 className="mb-6 text-3xl font-bold text-gray-600">Welcome to RBI System</h1>
+            <p className="mb-8 text-gray-600">
               When no user is authenticated, the header displays a Sign In link instead of user
               profile information.
             </p>
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-              <h2 className="mb-3 font-semibold text-blue-900">Sign In Required</h2>
-              <p className="text-sm text-blue-800">
+              <h2 className="mb-3 font-semibold text-gray-900">Sign In Required</h2>
+              <p className="text-sm text-gray-800">
                 Click the "Sign In" link in the header to access the RBI Records Management System.
               </p>
             </div>
@@ -156,12 +156,12 @@ export const Unauthenticated: Story = {
 export const LoadingState: Story = {
   render: () => (
     <MockAuthProvider user={null} loading={true}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-primary mb-6 text-3xl font-bold">Authentication Loading</h1>
-            <p className="text-secondary mb-8">
+            <h1 className="mb-6 text-3xl font-bold text-gray-600">Authentication Loading</h1>
+            <p className="mb-8 text-gray-600">
               While authentication is loading, the header maintains its layout structure.
             </p>
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
@@ -188,12 +188,12 @@ export const LoadingState: Story = {
 export const AdminUser: Story = {
   render: () => (
     <MockAuthProvider user={mockAdminUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-4xl">
-            <h1 className="text-primary mb-6 text-3xl font-bold">Admin Dashboard</h1>
-            <p className="text-secondary mb-4">
+            <h1 className="mb-6 text-3xl font-bold text-gray-600">Admin Dashboard</h1>
+            <p className="mb-4 text-gray-600">
               Header showing admin user "Maria Santos" with full system access.
             </p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -207,8 +207,8 @@ export const AdminUser: Story = {
                 </ul>
               </div>
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-                <h3 className="mb-3 font-semibold text-blue-900">User Profile Features</h3>
-                <ul className="space-y-1 text-sm text-blue-800">
+                <h3 className="mb-3 font-semibold text-gray-900">User Profile Features</h3>
+                <ul className="space-y-1 text-sm text-gray-800">
                   <li>• Compact profile display</li>
                   <li>• Automatic name initialization</li>
                   <li>• One-click logout functionality</li>
@@ -234,20 +234,20 @@ export const AdminUser: Story = {
 export const MobileView: Story = {
   render: () => (
     <MockAuthProvider user={mockUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-4">
           <div className="mx-auto max-w-lg">
-            <h1 className="text-primary mb-4 text-2xl font-bold">Mobile Navigation</h1>
-            <p className="text-secondary mb-6 text-sm">
+            <h1 className="mb-4 text-2xl font-bold text-gray-600">Mobile Navigation</h1>
+            <p className="mb-6 text-sm text-gray-600">
               On mobile devices, the navigation collapses into a hamburger menu. Tap the menu icon
               to see the mobile navigation drawer.
             </p>
 
             <div className="space-y-4">
               <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-                <h3 className="mb-2 font-medium text-purple-900">Mobile Features</h3>
-                <ul className="space-y-1 text-sm text-purple-800">
+                <h3 className="mb-2 font-medium text-gray-900">Mobile Features</h3>
+                <ul className="space-y-1 text-sm text-gray-800">
                   <li>• Hamburger menu toggle</li>
                   <li>• Collapsible navigation</li>
                   <li>• Touch-friendly user profile</li>
@@ -284,38 +284,38 @@ export const MobileView: Story = {
 export const TabletView: Story = {
   render: () => (
     <MockAuthProvider user={mockUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-6">
           <div className="mx-auto max-w-3xl">
-            <h1 className="text-primary mb-6 text-3xl font-bold">Tablet Layout</h1>
-            <p className="text-secondary mb-6">
+            <h1 className="mb-6 text-3xl font-bold text-gray-600">Tablet Layout</h1>
+            <p className="mb-6 text-gray-600">
               On tablet-sized screens, the header maintains desktop navigation while optimizing
               spacing and touch targets.
             </p>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="bg-surface border-default rounded-lg border p-6">
-                <h3 className="text-primary mb-4 font-semibold">Responsive Design</h3>
-                <p className="text-secondary mb-4 text-sm">
+              <div className="bg-default rounded-lg border border-default p-6">
+                <h3 className="mb-4 font-semibold text-gray-600">Responsive Design</h3>
+                <p className="mb-4 text-sm text-gray-600">
                   The header automatically adapts to different screen sizes using responsive design
                   principles.
                 </p>
                 <div className="flex items-center gap-2 text-xs">
                   <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                  <span className="text-secondary">Tablet optimized</span>
+                  <span className="text-gray-600">Tablet optimized</span>
                 </div>
               </div>
 
-              <div className="bg-surface border-default rounded-lg border p-6">
-                <h3 className="text-primary mb-4 font-semibold">Navigation Access</h3>
-                <p className="text-secondary mb-4 text-sm">
+              <div className="bg-default rounded-lg border border-default p-6">
+                <h3 className="mb-4 font-semibold text-gray-600">Navigation Access</h3>
+                <p className="mb-4 text-sm text-gray-600">
                   All navigation links remain easily accessible with appropriate touch targets for
                   tablet interaction.
                 </p>
                 <div className="flex items-center gap-2 text-xs">
                   <div className="h-3 w-3 rounded-full bg-blue-500"></div>
-                  <span className="text-secondary">Touch friendly</span>
+                  <span className="text-gray-600">Touch friendly</span>
                 </div>
               </div>
             </div>
@@ -340,13 +340,13 @@ export const TabletView: Story = {
 export const NavigationShowcase: Story = {
   render: () => (
     <MockAuthProvider user={mockUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-8 text-center">
-              <h1 className="text-primary mb-4 text-3xl font-bold">Navigation System</h1>
-              <p className="text-secondary mx-auto max-w-2xl">
+              <h1 className="mb-4 text-3xl font-bold text-gray-600">Navigation System</h1>
+              <p className="mx-auto max-w-2xl text-gray-600">
                 The Header component provides comprehensive navigation throughout the RBI System
                 with clear visual hierarchy and intuitive organization.
               </p>
@@ -423,18 +423,18 @@ export const NavigationShowcase: Story = {
               ].map((section, index) => (
                 <div
                   key={index}
-                  className="bg-surface border-default rounded-xl border p-6 transition-shadow hover:shadow-md"
+                  className="bg-default rounded-xl border border-default p-6 transition-shadow hover:shadow-md"
                 >
                   <div className="mb-3 text-3xl">{section.icon}</div>
-                  <h3 className="text-primary mb-2 font-semibold">{section.title}</h3>
-                  <p className="text-secondary mb-4 text-sm">{section.description}</p>
+                  <h3 className="mb-2 font-semibold text-gray-600">{section.title}</h3>
+                  <p className="mb-4 text-sm text-gray-600">{section.description}</p>
                   <ul className="space-y-1">
                     {section.features.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
-                        className="text-secondary flex items-center gap-2 text-xs"
+                        className="flex items-center gap-2 text-xs text-gray-600"
                       >
-                        <div className="bg-primary h-1.5 w-1.5 rounded-full"></div>
+                        <div className="h-1.5 w-1.5 rounded-full bg-blue-600"></div>
                         {feature}
                       </li>
                     ))}
@@ -472,30 +472,30 @@ export const NavigationShowcase: Story = {
 export const BrandIdentity: Story = {
   render: () => (
     <MockAuthProvider user={mockUser}>
-      <div className="bg-background min-h-screen">
+      <div className="bg-default min-h-screen">
         <Header />
         <div className="p-8">
           <div className="mx-auto max-w-4xl">
             <div className="mb-8 text-center">
-              <h1 className="text-primary mb-4 text-3xl font-bold">Brand Identity</h1>
-              <p className="text-secondary">
+              <h1 className="mb-4 text-3xl font-bold text-gray-600">Brand Identity</h1>
+              <p className="text-gray-600">
                 The Header component showcases the RBI System brand identity with consistent visual
                 design and professional appearance.
               </p>
             </div>
 
             <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2">
-              <div className="bg-surface border-default rounded-xl border p-6">
+              <div className="bg-default rounded-xl border border-default p-6">
                 <div className="mb-4 flex items-center space-x-3">
-                  <div className="bg-primary-600 flex size-10 items-center justify-center rounded-lg">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-600">
                     <span className="font-display text-sm font-bold text-white">RBI</span>
                   </div>
-                  <span className="font-display text-primary text-xl font-semibold">
+                  <span className="font-display text-xl font-semibold text-gray-600">
                     RBI System
                   </span>
                 </div>
-                <h3 className="text-primary mb-3 font-semibold">Logo Design</h3>
-                <ul className="text-secondary space-y-2 text-sm">
+                <h3 className="mb-3 font-semibold text-gray-600">Logo Design</h3>
+                <ul className="space-y-2 text-sm text-gray-600">
                   <li>• Clean, modern design approach</li>
                   <li>• Professional color scheme</li>
                   <li>• Consistent typography</li>
@@ -503,28 +503,28 @@ export const BrandIdentity: Story = {
                 </ul>
               </div>
 
-              <div className="bg-surface border-default rounded-xl border p-6">
-                <h3 className="text-primary mb-4 font-semibold">Brand Values</h3>
+              <div className="bg-default rounded-xl border border-default p-6">
+                <h3 className="mb-4 font-semibold text-gray-600">Brand Values</h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">
                     <div className="mt-2 h-2 w-2 rounded-full bg-blue-500"></div>
                     <div>
-                      <p className="text-primary text-sm font-medium">Professionalism</p>
-                      <p className="text-secondary text-xs">Clean, reliable interface design</p>
+                      <p className="text-sm font-medium text-gray-600">Professionalism</p>
+                      <p className="text-xs text-gray-600">Clean, reliable interface design</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="mt-2 h-2 w-2 rounded-full bg-green-500"></div>
                     <div>
-                      <p className="text-primary text-sm font-medium">Accessibility</p>
-                      <p className="text-secondary text-xs">Inclusive design for all users</p>
+                      <p className="text-sm font-medium text-gray-600">Accessibility</p>
+                      <p className="text-xs text-gray-600">Inclusive design for all users</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="mt-2 h-2 w-2 rounded-full bg-purple-500"></div>
                     <div>
-                      <p className="text-primary text-sm font-medium">Efficiency</p>
-                      <p className="text-secondary text-xs">Streamlined user experience</p>
+                      <p className="text-sm font-medium text-gray-600">Efficiency</p>
+                      <p className="text-xs text-gray-600">Streamlined user experience</p>
                     </div>
                   </div>
                 </div>
@@ -533,9 +533,9 @@ export const BrandIdentity: Story = {
 
             <div className="rounded-xl border border-gray-200 bg-gradient-to-r from-gray-50 to-blue-50 p-6">
               <div className="mb-4 flex items-center gap-4">
-                <div className="bg-primary-100 flex h-12 w-12 items-center justify-center rounded-xl">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
                   <svg
-                    className="text-primary-600 h-6 w-6"
+                    className="h-6 w-6 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -549,8 +549,8 @@ export const BrandIdentity: Story = {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-primary font-semibold">Government Standard Compliance</h3>
-                  <p className="text-secondary text-sm">
+                  <h3 className="font-semibold text-gray-600">Government Standard Compliance</h3>
+                  <p className="text-sm text-gray-600">
                     Designed to meet government accessibility standards and professional
                     requirements for public administration systems.
                   </p>

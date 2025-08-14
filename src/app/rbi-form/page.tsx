@@ -328,7 +328,7 @@ function HouseholdSelector() {
                 setStreetNameFilter('');
                 setSubdivisionFilter('');
               }}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm text-gray-600 hover:text-gray-800"
             >
               Clear all filters
             </button>
@@ -342,7 +342,7 @@ function HouseholdSelector() {
       </div>
 
       {/* Household List */}
-      <div className="max-h-96 divide-y divide-gray-200 overflow-y-auto">
+      <div className="max-h-96 divide-y divide-default overflow-y-auto">
         {filteredHouseholds.length === 0 ? (
           <div className="p-8 text-center">
             <p className="text-gray-600">
@@ -375,7 +375,7 @@ function HouseholdSelector() {
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center space-x-3">
-                    <div className="font-mono text-sm font-medium text-blue-600">
+                    <div className="font-mono text-sm font-medium text-gray-600">
                       #{household.code}
                     </div>
                     <div className="text-sm font-medium text-gray-900">
@@ -629,7 +629,7 @@ function RBIFormContent() {
         <div className="flex h-64 items-center justify-center">
           <div className="text-center">
             <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <p className="mt-4 text-sm text-neutral-600">Loading household data...</p>
+            <p className="mt-4 text-sm text-gray-600">Loading household data...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -950,7 +950,7 @@ function RBIFormContent() {
 
           /* Hide any top bars or headers */
           .bg-white.border-b,
-          .border-neutral-300,
+          .border-gray-300,
           .px-6.py-2 {
             display: none !important;
           }

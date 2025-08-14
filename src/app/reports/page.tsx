@@ -25,10 +25,10 @@ function ReportsContent() {
         {/* Page Header */}
         <div className="mb-6">
           <div>
-            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600">
               Reports & Analytics
             </h1>
-            <p className="font-montserrat text-secondary text-sm font-normal">
+            <p className="font-montserrat text-sm font-normal text-gray-600">
               Generate and manage comprehensive reports and data analytics for your barangay
             </p>
           </div>
@@ -39,7 +39,7 @@ function ReportsContent() {
           {reportTypes.map((report, index) => (
             <div
               key={index}
-              className={`bg-surface rounded-lg border p-6 transition-shadow hover:shadow-md ${
+              className={`bg-default rounded-lg border p-6 transition-shadow hover:shadow-md ${
                 report.status === 'Available'
                   ? 'border-default hover:border-blue-300'
                   : 'border-default opacity-75'
@@ -57,10 +57,10 @@ function ReportsContent() {
                   {report.status}
                 </span>
               </div>
-              <h3 className="font-montserrat text-primary mb-2 text-base font-semibold">
+              <h3 className="font-montserrat mb-2 text-base font-semibold text-gray-600">
                 {report.name}
               </h3>
-              <p className="font-montserrat text-secondary mb-4 text-sm">{report.description}</p>
+              <p className="font-montserrat mb-4 text-sm text-gray-600">{report.description}</p>
               {report.link ? (
                 <Link href={report.link}>
                   <Button

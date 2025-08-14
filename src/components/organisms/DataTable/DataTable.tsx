@@ -191,11 +191,11 @@ export default function DataTable<T extends Record<string, any>>({
 
   if (loading) {
     return (
-      <div className={`bg-surface border-default rounded-lg border ${className}`}>
+      <div className={`bg-default rounded-lg border border-default ${className}`}>
         <div className="flex items-center justify-center py-12">
           <div className="flex items-center space-x-2">
             <div className="size-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <span className="text-secondary text-sm">Loading...</span>
+            <span className="text-sm text-gray-600">Loading...</span>
           </div>
         </div>
       </div>
@@ -203,19 +203,19 @@ export default function DataTable<T extends Record<string, any>>({
   }
 
   return (
-    <div className={`bg-surface border-default overflow-hidden rounded-lg border ${className}`}>
+    <div className={`bg-default overflow-hidden rounded-lg border border-default ${className}`}>
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="divide-border-default min-w-full divide-y">
+        <table className="border-default min-w-full divide-y">
           {/* Header */}
-          <thead className="bg-background-muted">
+          <thead className="bg-default-muted">
             <tr>
               {/* Selection column */}
               {selection && (
                 <th className={`${paddingClasses[size]} w-12`}>
                   <input
                     type="checkbox"
-                    className="bg-surface border-default size-4 rounded text-blue-600 focus:ring-blue-500"
+                    className="bg-default size-4 rounded border-default text-gray-600 focus:ring-blue-500"
                     checked={
                       selection.selectedRowKeys.length === sortedData.length &&
                       sortedData.length > 0
@@ -229,8 +229,8 @@ export default function DataTable<T extends Record<string, any>>({
               {columns.map(column => (
                 <th
                   key={column.key}
-                  className={`${paddingClasses[size]} text-left ${sizeClasses[size]} text-primary font-medium ${
-                    column.sortable ? 'hover:bg-surface-hover cursor-pointer' : ''
+                  className={`${paddingClasses[size]} text-left ${sizeClasses[size]} font-medium text-gray-600 ${
+                    column.sortable ? 'hover:bg-default-hover cursor-pointer' : ''
                   }`}
                   style={{ width: column.width }}
                   onClick={column.sortable ? () => handleSort(column.key) : undefined}
@@ -242,7 +242,7 @@ export default function DataTable<T extends Record<string, any>>({
                         <svg
                           className={`size-3 ${
                             sortField === column.key && sortOrder === 'asc'
-                              ? 'text-blue-600'
+                              ? 'text-gray-600'
                               : 'text-muted'
                           }`}
                           fill="currentColor"
@@ -259,7 +259,7 @@ export default function DataTable<T extends Record<string, any>>({
               {/* Actions column */}
               {actions.length > 0 && (
                 <th
-                  className={`${paddingClasses[size]} text-right ${sizeClasses[size]} text-primary font-medium`}
+                  className={`${paddingClasses[size]} text-right ${sizeClasses[size]} font-medium text-gray-600`}
                 >
                   Actions
                 </th>
@@ -268,12 +268,12 @@ export default function DataTable<T extends Record<string, any>>({
           </thead>
 
           {/* Body */}
-          <tbody className="divide-border-default bg-surface divide-y">
+          <tbody className="border-default bg-default divide-y">
             {sortedData.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + (selection ? 1 : 0) + (actions.length > 0 ? 1 : 0)}
-                  className="text-secondary px-6 py-12 text-center"
+                  className="px-6 py-12 text-center text-gray-600"
                 >
                   {emptyText}
                 </td>
@@ -287,7 +287,7 @@ export default function DataTable<T extends Record<string, any>>({
                 return (
                   <tr
                     key={rowKeyValue}
-                    className={`hover:bg-surface-hover ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''} ${rowProps.className || ''}`}
+                    className={`hover:bg-default-hover ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''} ${rowProps.className || ''}`}
                     onClick={rowProps.onClick}
                     onDoubleClick={rowProps.onDoubleClick}
                   >
@@ -296,7 +296,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td className={paddingClasses[size]}>
                         <input
                           type="checkbox"
-                          className="bg-surface border-default size-4 rounded text-blue-600 focus:ring-blue-500"
+                          className="bg-default size-4 rounded border-default text-gray-600 focus:ring-blue-500"
                           checked={isSelected}
                           onChange={e => handleRowSelect(record, index, e.target.checked)}
                           disabled={selection.getCheckboxProps?.(record)?.disabled}
@@ -308,7 +308,7 @@ export default function DataTable<T extends Record<string, any>>({
                     {columns.map(column => (
                       <td
                         key={column.key}
-                        className={`${paddingClasses[size]} ${sizeClasses[size]} text-primary`}
+                        className={`${paddingClasses[size]} ${sizeClasses[size]} text-gray-600`}
                         style={{ textAlign: column.align || 'left' }}
                       >
                         {getCellValue(record, column, index)}
@@ -329,7 +329,7 @@ export default function DataTable<T extends Record<string, any>>({
                                   <Link
                                     key={action.key}
                                     href={action.href(record)}
-                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800"
+                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800"
                                   >
                                     {action.icon && <span className="mr-1">{action.icon}</span>}
                                     {action.label}
@@ -367,8 +367,8 @@ export default function DataTable<T extends Record<string, any>>({
 
       {/* Pagination */}
       {pagination && (
-        <div className="bg-surface border-default flex items-center justify-between border-t px-4 py-3">
-          <div className="text-secondary flex items-center text-sm">
+        <div className="bg-default flex items-center justify-between border-t border-default px-4 py-3">
+          <div className="flex items-center text-sm text-gray-600">
             <span>
               Showing{' '}
               {Math.min((pagination.current - 1) * pagination.pageSize + 1, pagination.total)} to{' '}
@@ -387,7 +387,7 @@ export default function DataTable<T extends Record<string, any>>({
               Previous
             </Button>
 
-            <span className="text-secondary text-sm">
+            <span className="text-sm text-gray-600">
               Page {pagination.current} of {Math.ceil(pagination.total / pagination.pageSize)}
             </span>
 

@@ -145,11 +145,14 @@ function ResidentsContent() {
     setSelectedResidents(selectedKeys);
   };
 
-  const handlePaginationChange = useCallback((page: number, pageSize: number) => {
-    setPagination(prev => ({ ...prev, current: page, pageSize }));
-    // Directly load with new pagination values
-    loadResidentsFromAPI(page, pageSize);
-  }, [loadResidentsFromAPI]);
+  const handlePaginationChange = useCallback(
+    (page: number, pageSize: number) => {
+      setPagination(prev => ({ ...prev, current: page, pageSize }));
+      // Directly load with new pagination values
+      loadResidentsFromAPI(page, pageSize);
+    },
+    [loadResidentsFromAPI]
+  );
 
   const formatFullName = (resident: Resident) => {
     return [resident.first_name, resident.middle_name, resident.last_name, resident.extension_name]
@@ -188,7 +191,7 @@ function ResidentsContent() {
       render: (value: string, record: Resident) => (
         <Link
           href={`/residents/${record.id}`}
-          className="font-montserrat text-base font-normal text-blue-600 hover:text-blue-800 hover:underline"
+          className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline"
         >
           {value}
         </Link>
@@ -286,8 +289,8 @@ function ResidentsContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">Residents</h1>
-            <p className="font-montserrat text-secondary text-sm font-normal">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600">Residents</h1>
+            <p className="font-montserrat text-sm font-normal text-gray-600">
               {pagination.total} total residents
             </p>
           </div>

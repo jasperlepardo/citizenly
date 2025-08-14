@@ -18,19 +18,19 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           ref={ref}
           className={cn(
             'w-full rounded-md border px-3 py-2 shadow-sm transition-colors',
-            'bg-surface border-default text-primary',
+            'bg-default border-default text-gray-600',
             'focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500',
             'placeholder:text-muted',
             'dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-400',
             'dark:focus:border-blue-400 dark:focus:ring-blue-400',
             inputVariant === 'error'
-              ? 'border-danger-300 text-danger-900 placeholder:text-danger-300 focus:border-danger-500 focus:ring-danger-500 dark:border-danger-500 dark:text-danger-200 dark:placeholder:text-danger-400'
+              ? 'border-red-300 text-red-900 placeholder:text-red-300 focus:border-red-500 focus:ring-danger-500 dark:border-red-500 dark:text-red-200 dark:placeholder:text-red-400'
               : '',
             className
           )}
           {...props}
         />
-        {error && <p className="text-danger-600 dark:text-danger-400 mt-1 text-sm">{error}</p>}
+        {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </div>
     );
   }

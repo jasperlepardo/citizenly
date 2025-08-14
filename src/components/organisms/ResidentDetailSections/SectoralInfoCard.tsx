@@ -41,62 +41,62 @@ export default function SectoralInfoCard({ sectoralInfo }: SectoralInfoCardProps
   if (!sectoralInfo) return null;
 
   return (
-    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+    <div className="bg-default rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600">
         🎯 Sectoral Information
       </h2>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Labor Force:</span>
-          <span className="text-primary">{sectoralInfo.is_labor_force ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Labor Force:</span>
+          <span className="text-gray-600">{sectoralInfo.is_labor_force ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Employed:</span>
-          <span className="text-primary">
+          <span className="text-sm font-medium text-gray-600">Employed:</span>
+          <span className="text-gray-600">
             {sectoralInfo.is_labor_force_employed ? 'Yes' : 'No'}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Unemployed:</span>
-          <span className="text-primary">{sectoralInfo.is_unemployed ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Unemployed:</span>
+          <span className="text-gray-600">{sectoralInfo.is_unemployed ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">OFW:</span>
-          <span className="text-primary">
+          <span className="text-sm font-medium text-gray-600">OFW:</span>
+          <span className="text-gray-600">
             {sectoralInfo.is_overseas_filipino_worker ? 'Yes' : 'No'}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">PWD:</span>
-          <span className="text-primary">
+          <span className="text-sm font-medium text-gray-600">PWD:</span>
+          <span className="text-gray-600">
             {sectoralInfo.is_person_with_disability ? 'Yes' : 'No'}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">OSC:</span>
-          <span className="text-primary">
+          <span className="text-sm font-medium text-gray-600">OSC:</span>
+          <span className="text-gray-600">
             {sectoralInfo.is_out_of_school_children ? 'Yes' : 'No'}
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">OSY:</span>
-          <span className="text-primary">{sectoralInfo.is_out_of_school_youth ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">OSY:</span>
+          <span className="text-gray-600">{sectoralInfo.is_out_of_school_youth ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Senior Citizen:</span>
-          <span className="text-primary">{sectoralInfo.is_senior_citizen ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Senior Citizen:</span>
+          <span className="text-gray-600">{sectoralInfo.is_senior_citizen ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Solo Parent:</span>
-          <span className="text-primary">{sectoralInfo.is_solo_parent ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Solo Parent:</span>
+          <span className="text-gray-600">{sectoralInfo.is_solo_parent ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Indigenous People:</span>
-          <span className="text-primary">{sectoralInfo.is_indigenous_people ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Indigenous People:</span>
+          <span className="text-gray-600">{sectoralInfo.is_indigenous_people ? 'Yes' : 'No'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-secondary text-sm font-medium">Migrant:</span>
-          <span className="text-primary">{sectoralInfo.is_migrant ? 'Yes' : 'No'}</span>
+          <span className="text-sm font-medium text-gray-600">Migrant:</span>
+          <span className="text-gray-600">{sectoralInfo.is_migrant ? 'Yes' : 'No'}</span>
         </div>
       </div>
     </div>

@@ -305,8 +305,8 @@ export default function SectoralInfo({
 
       {/* Summary */}
       <div className="rounded-lg bg-blue-50 p-4">
-        <h4 className="mb-2 text-sm font-medium text-blue-900">Classification Summary</h4>
-        <div className="text-xs text-blue-700">
+        <h4 className="mb-2 text-sm font-medium text-gray-900">Classification Summary</h4>
+        <div className="text-xs text-gray-700">
           <span className="font-medium">Active Classifications:</span>{' '}
           {(() => {
             const allClassifications = { ..._autoCalculated, ...value };

@@ -209,12 +209,12 @@ export default function SignupPage() {
               </h2>
 
               <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h3 className="mb-2 text-sm font-medium text-blue-800">Pending Role Assignment:</h3>
-                <p className="text-blue-700">
+                <h3 className="mb-2 text-sm font-medium text-gray-800">Pending Role Assignment:</h3>
+                <p className="text-gray-700">
                   You will be assigned as <strong>Barangay Administrator</strong> once you verify
                   your email address.
                 </p>
-                <p className="mt-2 text-sm text-blue-600">
+                <p className="mt-2 text-sm text-gray-600">
                   Your role will be automatically assigned after email verification, allowing you to
                   manage users and data for your barangay.
                 </p>
@@ -274,8 +274,8 @@ export default function SignupPage() {
                 <div className="flex items-center gap-3">
                   <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></div>
                   <div>
-                    <h4 className="font-medium text-blue-800">Creating Account</h4>
-                    <p className="text-sm text-blue-700">{submitStatus}</p>
+                    <h4 className="font-medium text-gray-800">Creating Account</h4>
+                    <p className="text-sm text-gray-700">{submitStatus}</p>
                   </div>
                 </div>
               </div>
@@ -429,13 +429,13 @@ export default function SignupPage() {
             <div className="space-y-4">
               <h3 className="border-b pb-2 text-lg font-medium text-gray-900">Role Assignment</h3>
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                <h4 className="mb-2 text-sm font-medium text-blue-800">
+                <h4 className="mb-2 text-sm font-medium text-gray-800">
                   Automatic Role Assignment
                 </h4>
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-gray-700">
                   Your role will be automatically assigned based on your barangay:
                 </p>
-                <ul className="mt-2 list-inside list-disc text-sm text-blue-600">
+                <ul className="mt-2 list-inside list-disc text-sm text-gray-600">
                   <li>
                     If no administrator exists for your barangay →{' '}
                     <strong>Barangay Administrator</strong>
@@ -443,7 +443,7 @@ export default function SignupPage() {
                   <li>
                     If an administrator already exists → <strong>Registration blocked</strong>
                     <br />
-                    <small className="text-blue-500">
+                    <small className="text-gray-500">
                       Contact your barangay admin to be invited to the system
                     </small>
                   </li>
@@ -525,7 +525,7 @@ export default function SignupPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/login" className="font-medium text-gray-600 hover:text-gray-500">
                 Sign in here
               </Link>
             </p>

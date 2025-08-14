@@ -179,7 +179,7 @@ export default function BarangaySelector({
       const parts = text.split(regex);
       return parts.map((part, index) =>
         regex.test(part) ? (
-          <mark key={`${part}-${index}`} className="text-primary bg-yellow-200 font-medium">
+          <mark key={`${part}-${index}`} className="bg-yellow-200 font-medium text-gray-600">
             {part}
           </mark>
         ) : (
@@ -190,8 +190,8 @@ export default function BarangaySelector({
 
     return (
       <div className="flex flex-col">
-        <div className="text-primary font-medium">{highlightMatch(option.metadata.name)}</div>
-        <div className="text-secondary text-sm">
+        <div className="font-medium text-gray-600">{highlightMatch(option.metadata.name)}</div>
+        <div className="text-sm text-gray-600">
           {highlightMatch(`${option.metadata.city_name}, ${option.metadata.province_name}`)}
         </div>
         <div className="text-muted text-xs">{option.metadata.region_name}</div>

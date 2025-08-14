@@ -161,7 +161,7 @@ export default function SubdivisionSelector({
         className={`font-montserrat relative rounded border text-base focus-within:border-transparent focus-within:ring-2 ${
           error
             ? 'border-red-500 focus-within:ring-red-500'
-            : 'border-neutral-300 focus-within:ring-blue-500'
+            : 'border-gray-300 focus-within:ring-blue-500'
         }`}
       >
         <input
@@ -182,7 +182,7 @@ export default function SubdivisionSelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
         >
           <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -197,9 +197,9 @@ export default function SubdivisionSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {loading ? (
-            <div className="p-3 text-center text-neutral-500">
+            <div className="p-3 text-center text-gray-500">
               <div className="animate-pulse">Loading subdivisions...</div>
             </div>
           ) : (
@@ -212,18 +212,18 @@ export default function SubdivisionSelector({
                     setShowCreateForm(true);
                     setNewSubdivisionData(prev => ({ ...prev, name: searchTerm }));
                   }}
-                  className="w-full border-b border-neutral-100 p-3 text-left hover:bg-blue-50"
+                  className="w-full border-b border-gray-100 p-3 text-left hover:bg-blue-50"
                 >
-                  <div className="font-medium text-blue-600">+ Create New Subdivision</div>
-                  <div className="text-xs text-blue-500">
+                  <div className="font-medium text-gray-600">+ Create New Subdivision</div>
+                  <div className="text-xs text-gray-500">
                     {searchTerm
                       ? `Create "${searchTerm}"`
                       : 'Add a new subdivision/zone/sitio/purok'}
                   </div>
                 </button>
               ) : (
-                <div className="border-b border-neutral-100 p-3">
-                  <div className="mb-2 font-medium text-blue-600">Create New Subdivision</div>
+                <div className="border-b border-gray-100 p-3">
+                  <div className="mb-2 font-medium text-gray-600">Create New Subdivision</div>
                   <div className="space-y-2">
                     <input
                       type="text"
@@ -232,7 +232,7 @@ export default function SubdivisionSelector({
                         setNewSubdivisionData(prev => ({ ...prev, name: e.target.value }))
                       }
                       placeholder="Enter subdivision name"
-                      className="w-full rounded border border-neutral-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                      className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                       onKeyDown={e => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
@@ -253,7 +253,7 @@ export default function SubdivisionSelector({
                             type: e.target.value as typeof prev.type,
                           }))
                         }
-                        className="flex-1 rounded border border-neutral-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                        className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
                       >
                         {subdivisionTypes.map(type => (
                           <option key={type} value={type}>
@@ -265,7 +265,7 @@ export default function SubdivisionSelector({
                         type="button"
                         onClick={createSubdivision}
                         disabled={!newSubdivisionData.name.trim() || isCreating}
-                        className="rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 disabled:bg-neutral-400"
+                        className="rounded bg-blue-600 px-3 py-1 text-xs text-white hover:bg-blue-700 disabled:bg-gray-400"
                       >
                         {isCreating ? '...' : 'Add'}
                       </button>
@@ -275,7 +275,7 @@ export default function SubdivisionSelector({
                           setShowCreateForm(false);
                           setNewSubdivisionData({ name: '', type: 'Subdivision' });
                         }}
-                        className="rounded bg-neutral-400 px-2 py-1 text-xs text-white hover:bg-neutral-500"
+                        className="rounded bg-gray-400 px-2 py-1 text-xs text-white hover:bg-gray-500"
                       >
                         ✕
                       </button>
@@ -286,7 +286,7 @@ export default function SubdivisionSelector({
 
               {/* Show message when no existing subdivisions */}
               {filteredSubdivisions.length === 0 && !searchTerm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500">
                   <div className="text-sm">No subdivisions found in this barangay</div>
                   <div className="mt-1 text-xs text-green-600">
                     ✓ Create the first subdivision above
@@ -296,7 +296,7 @@ export default function SubdivisionSelector({
 
               {/* Show "no search results" when searching */}
               {filteredSubdivisions.length === 0 && searchTerm && !showCreateForm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500">
                   <div className="text-sm">No subdivisions match your search</div>
                 </div>
               )}
@@ -312,14 +312,14 @@ export default function SubdivisionSelector({
                     setIsOpen(false);
                     setShowCreateForm(false);
                   }}
-                  className="w-full border-b border-neutral-100 p-3 text-left last:border-b-0 hover:bg-neutral-50"
+                  className="w-full border-b border-gray-100 p-3 text-left last:border-b-0 hover:bg-gray-50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="font-medium text-neutral-900">{subdivision.name}</div>
-                      <div className="text-sm text-neutral-600">Type: {subdivision.type}</div>
+                      <div className="font-medium text-gray-900">{subdivision.name}</div>
+                      <div className="text-sm text-gray-600">Type: {subdivision.type}</div>
                       {subdivision.description && (
-                        <div className="text-xs text-neutral-500">{subdivision.description}</div>
+                        <div className="text-xs text-gray-500">{subdivision.description}</div>
                       )}
                     </div>
                   </div>

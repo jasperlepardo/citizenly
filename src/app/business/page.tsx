@@ -14,10 +14,10 @@ function BusinessContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600">
               Business Registration
             </h1>
-            <p className="font-montserrat text-secondary text-sm font-normal">
+            <p className="font-montserrat text-sm font-normal text-gray-600">
               Manage business permits, licenses, and registrations in your barangay
             </p>
           </div>
@@ -27,10 +27,10 @@ function BusinessContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="bg-surface border-default rounded-lg border p-8 text-center">
+        <div className="bg-default rounded-lg border border-default p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
             <svg
-              className="size-8 text-blue-600"
+              className="size-8 text-gray-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -43,10 +43,10 @@ function BusinessContent() {
               />
             </svg>
           </div>
-          <h3 className="text-primary mb-2 text-lg font-semibold">
+          <h3 className="mb-2 text-lg font-semibold text-gray-600">
             Business Management Coming Soon
           </h3>
-          <p className="text-secondary mx-auto mb-6 max-w-md">
+          <p className="mx-auto mb-6 max-w-md text-gray-600">
             We&apos;re working on bringing you comprehensive business registration and permit
             management tools. This feature will allow you to track business licenses, permits, and
             compliance in your barangay.
@@ -54,7 +54,7 @@ function BusinessContent() {
 
           {/* Feature Preview */}
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="bg-surface-hover rounded-lg p-4">
+            <div className="bg-default-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-green-100">
                 <svg
                   className="size-4 text-green-600"
@@ -70,16 +70,16 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="text-primary mb-1 text-sm font-medium">Business Permits</h4>
-              <p className="text-secondary text-xs">
+              <h4 className="mb-1 text-sm font-medium text-gray-600">Business Permits</h4>
+              <p className="text-xs text-gray-600">
                 Track and manage business permit applications and renewals
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
+            <div className="bg-default-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-blue-100">
                 <svg
-                  className="size-4 text-blue-600"
+                  className="size-4 text-gray-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -92,16 +92,16 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="text-primary mb-1 text-sm font-medium">Tax Records</h4>
-              <p className="text-secondary text-xs">
+              <h4 className="mb-1 text-sm font-medium text-gray-600">Tax Records</h4>
+              <p className="text-xs text-gray-600">
                 Monitor business tax compliance and payment history
               </p>
             </div>
 
-            <div className="bg-surface-hover rounded-lg p-4">
+            <div className="bg-default-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-purple-100">
                 <svg
-                  className="size-4 text-purple-600"
+                  className="size-4 text-gray-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -114,8 +114,8 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="text-primary mb-1 text-sm font-medium">Analytics</h4>
-              <p className="text-secondary text-xs">
+              <h4 className="mb-1 text-sm font-medium text-gray-600">Analytics</h4>
+              <p className="text-xs text-gray-600">
                 View business registration trends and statistics
               </p>
             </div>

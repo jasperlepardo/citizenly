@@ -20,15 +20,15 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-primary text-base/7 font-semibold">Additional Details</h3>
-        <p className="text-secondary mt-1 text-sm/6">
+        <h3 className="text-base/7 font-semibold text-gray-600">Additional Details</h3>
+        <p className="mt-1 text-sm/6 text-gray-600">
           Provide additional identification and personal information.
         </p>
       </div>
 
       {/* Physical Characteristics */}
       <div className="space-y-4">
-        <h4 className="text-primary text-sm font-medium">Physical Characteristics</h4>
+        <h4 className="text-sm font-medium text-gray-600">Physical Characteristics</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <SelectField
             label="Blood Type"
@@ -83,7 +83,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
 
       {/* Voting Information */}
       <div className="space-y-4">
-        <h4 className="text-primary text-sm font-medium">Voting Information</h4>
+        <h4 className="text-sm font-medium text-gray-600">Voting Information</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <SelectField
             label="Registered Voter?"
@@ -133,7 +133,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
 
       {/* Documentation */}
       <div className="space-y-4">
-        <h4 className="text-primary text-sm font-medium">Documentation</h4>
+        <h4 className="text-sm font-medium text-gray-600">Documentation</h4>
         <InputField
           label="PhilSys Card Number"
           value={formData.philsysCardNumber}
@@ -146,7 +146,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
 
       {/* Family Information */}
       <div className="space-y-4">
-        <h4 className="text-primary text-sm font-medium">Mother&rsquo;s Maiden Name</h4>
+        <h4 className="text-sm font-medium text-gray-600">Mother&rsquo;s Maiden Name</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="First Name"

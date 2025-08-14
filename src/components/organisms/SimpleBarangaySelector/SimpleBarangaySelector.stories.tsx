@@ -363,12 +363,12 @@ export const ComparisonWithFullSelector: Story = {
         </div>
 
         <div>
-          <h3 className="mb-3 text-lg font-semibold text-blue-800">Full BarangaySelector</h3>
+          <h3 className="mb-3 text-lg font-semibold text-gray-800">Full BarangaySelector</h3>
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
             <div className="w-full cursor-not-allowed rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-500">
               Full BarangaySelector (would appear here)
             </div>
-            <div className="mt-4 text-sm text-blue-700">
+            <div className="mt-4 text-sm text-gray-700">
               <h4 className="mb-2 font-semibold">Features:</h4>
               <ul className="space-y-1">
                 <li>• Rich address hierarchy display</li>

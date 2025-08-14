@@ -101,17 +101,17 @@ export const CustomSkipTarget: Story = {
         <h2 className="mb-2 font-bold">Sidebar Content</h2>
         <ul className="space-y-1 text-sm">
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline">
               Recent Articles
             </a>
           </li>
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline">
               Popular Posts
             </a>
           </li>
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline">
               Categories
             </a>
           </li>

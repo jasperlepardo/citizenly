@@ -191,10 +191,10 @@ function HouseholdsContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
+            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600">
               Households
             </h1>
-            <p className="font-montserrat text-secondary text-sm font-normal">
+            <p className="font-montserrat text-sm font-normal text-gray-600">
               {totalCount} total households
             </p>
           </div>
@@ -215,9 +215,9 @@ function HouseholdsContent() {
         </div>
 
         {/* Table */}
-        <div className="bg-surface overflow-hidden">
+        <div className="bg-default overflow-hidden">
           {/* Table Header */}
-          <div className="bg-surface border-default flex items-center border-b p-0">
+          <div className="bg-default flex items-center border-b border-default p-0">
             {/* Select All */}
             <div className="flex items-center p-2">
               <div className="flex items-center gap-2">
@@ -229,7 +229,7 @@ function HouseholdsContent() {
                 >
                   {selectedAll && <div className="size-2 rounded-sm bg-blue-600"></div>}
                 </Button>
-                <span className="font-montserrat text-primary text-base font-normal">
+                <span className="font-montserrat text-base font-normal text-gray-600">
                   Select all
                 </span>
               </div>
@@ -302,8 +302,8 @@ function HouseholdsContent() {
 
             {/* Search Households */}
             <div className="ml-auto mr-0">
-              <div className="bg-surface border-default flex w-60 items-center gap-2 rounded border p-2">
-                <div className="text-secondary size-5">
+              <div className="bg-default flex w-60 items-center gap-2 rounded border border-default p-2">
+                <div className="size-5 text-gray-600">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -318,37 +318,37 @@ function HouseholdsContent() {
                   placeholder="Search households"
                   value={localSearchTerm}
                   onChange={e => setLocalSearchTerm(e.target.value)}
-                  className="font-montserrat placeholder:text-muted text-primary flex-1 bg-transparent text-base font-normal outline-none"
+                  className="font-montserrat placeholder:text-muted flex-1 bg-transparent text-base font-normal text-gray-600 outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Table Column Headers */}
-          <div className="bg-background-muted border-default flex items-center border-b p-0">
+          <div className="bg-default-muted flex items-center border-b border-default p-0">
             {/* Checkbox Column */}
             <div className="w-12 p-2"></div>
 
             {/* Column Headers */}
             <div className="grid flex-1 grid-cols-5 gap-4 p-2">
               <div className="p-2">
-                <span className="font-montserrat text-secondary text-sm font-medium">
+                <span className="font-montserrat text-sm font-medium text-gray-600">
                   Household #
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-secondary text-sm font-medium">
+                <span className="font-montserrat text-sm font-medium text-gray-600">
                   Head of Household
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-secondary text-sm font-medium">Address</span>
+                <span className="font-montserrat text-sm font-medium text-gray-600">Address</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-secondary text-sm font-medium">Members</span>
+                <span className="font-montserrat text-sm font-medium text-gray-600">Members</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-secondary text-sm font-medium">Created</span>
+                <span className="font-montserrat text-sm font-medium text-gray-600">Created</span>
               </div>
             </div>
 
@@ -363,7 +363,7 @@ function HouseholdsContent() {
                 return (
                   <div className="p-8 text-center">
                     <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                    <p className="text-secondary mt-2">Loading households...</p>
+                    <p className="mt-2 text-gray-600">Loading households...</p>
                   </div>
                 );
               }
@@ -375,7 +375,7 @@ function HouseholdsContent() {
 
                 return (
                   <div className="p-8 text-center">
-                    <p className="text-secondary">{noResultsMessage}</p>
+                    <p className="text-gray-600">{noResultsMessage}</p>
                     <p className="text-muted mt-2 text-sm">
                       Households are created automatically when you add residents.
                     </p>
@@ -386,7 +386,7 @@ function HouseholdsContent() {
               return households.map(household => (
                 <div
                   key={household.code}
-                  className="bg-surface hover:bg-surface-hover flex items-center p-0 transition-colors"
+                  className="bg-default hover:bg-default-hover flex items-center p-0 transition-colors"
                 >
                   {/* Checkbox */}
                   <div className="p-2">
@@ -407,28 +407,28 @@ function HouseholdsContent() {
                     <div className="p-2">
                       <Link
                         href={`/households/${household.code}`}
-                        className="font-montserrat text-base font-normal text-blue-600 hover:text-blue-800 hover:underline"
+                        className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline"
                       >
                         #{household.code}
                       </Link>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-primary text-base font-normal">
+                      <div className="font-montserrat text-base font-normal text-gray-600">
                         {formatFullName(household.head_resident)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-primary text-base font-normal">
+                      <div className="font-montserrat text-base font-normal text-gray-600">
                         {formatFullAddress(household)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-primary text-base font-normal">
+                      <div className="font-montserrat text-base font-normal text-gray-600">
                         {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-primary text-base font-normal">
+                      <div className="font-montserrat text-base font-normal text-gray-600">
                         {new Date(household.created_at).toLocaleDateString()}
                       </div>
                     </div>

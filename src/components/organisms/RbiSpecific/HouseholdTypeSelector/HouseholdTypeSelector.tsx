@@ -90,11 +90,11 @@ export default function HouseholdTypeSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="text-primary mb-1 text-lg font-medium">
+        <h3 className="mb-1 text-lg font-medium text-gray-600">
           <span className="text-base">🏠</span> Household Type
           {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
-        <p className="text-secondary text-sm">
+        <p className="text-sm text-gray-600">
           Select the household composition that best describes this family structure.
         </p>
       </div>
@@ -129,14 +129,14 @@ export default function HouseholdTypeSelector({
                   {option.icon}
                 </span>
                 <h4
-                  className={`text-base font-medium ${value === option.value ? 'text-blue-900' : 'text-primary'} `}
+                  className={`text-base font-medium ${value === option.value ? 'text-gray-900' : 'text-gray-600'} `}
                 >
                   {option.label}
                 </h4>
               </div>
 
               <p
-                className={`text-sm leading-relaxed ${value === option.value ? 'text-blue-700' : 'text-secondary'} `}
+                className={`text-sm leading-relaxed ${value === option.value ? 'text-gray-700' : 'text-gray-600'} `}
               >
                 {option.description}
               </p>
@@ -158,7 +158,7 @@ export default function HouseholdTypeSelector({
       )}
 
       {/* Additional Information */}
-      <div className="text-muted bg-background-muted rounded-lg p-3 text-xs">
+      <div className="text-muted bg-default-muted rounded-lg p-3 text-xs">
         <span className="font-medium">📋 Note:</span> This classification helps determine household
         demographics and social services eligibility. You can change this selection later if the
         family composition changes.

@@ -416,8 +416,8 @@ export const AccessibilityDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-blue-800">Accessibility Features</h3>
-        <ul className="space-y-1 text-sm text-blue-700">
+        <h3 className="mb-2 text-lg font-semibold text-gray-800">Accessibility Features</h3>
+        <ul className="space-y-1 text-sm text-gray-700">
           <li>
             • <strong>Proper labeling</strong>: All form fields have associated labels
           </li>

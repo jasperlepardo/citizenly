@@ -8,7 +8,7 @@ const MockHeader = () => (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="bg-primary-600 flex size-8 items-center justify-center rounded-lg">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
             <span className="font-display text-sm font-bold text-white">RBI</span>
           </div>
           <span className="font-display text-xl font-semibold text-gray-900">RBI System</span>
@@ -40,8 +40,8 @@ const MockHeader = () => (
           </a>
         </nav>
         <div className="flex items-center space-x-3">
-          <div className="bg-primary-100 flex size-8 items-center justify-center rounded-full">
-            <span className="text-primary-600 text-sm font-medium">JD</span>
+          <div className="flex size-8 items-center justify-center rounded-full bg-blue-100">
+            <span className="text-sm font-medium text-gray-600">JD</span>
           </div>
         </div>
       </div>
@@ -95,8 +95,8 @@ const BasicContent = () => (
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-blue-900">Layout Benefits</h4>
-        <ul className="space-y-1 text-sm text-blue-800">
+        <h4 className="mb-2 font-medium text-gray-900">Layout Benefits</h4>
+        <ul className="space-y-1 text-sm text-gray-800">
           <li>• Consistent spacing</li>
           <li>• Responsive design</li>
           <li>• Clean typography</li>
@@ -277,7 +277,7 @@ const FormContent = () => (
     <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
       <div className="flex items-start gap-3">
         <svg
-          className="mt-0.5 h-5 w-5 text-blue-600"
+          className="mt-0.5 h-5 w-5 text-gray-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -290,8 +290,8 @@ const FormContent = () => (
           />
         </svg>
         <div>
-          <h4 className="text-sm font-medium text-blue-900">Form Layout Benefits</h4>
-          <p className="mt-1 text-sm text-blue-800">
+          <h4 className="text-sm font-medium text-gray-900">Form Layout Benefits</h4>
+          <p className="mt-1 text-sm text-gray-800">
             The MainLayout provides proper spacing and width constraints that make forms more
             readable and user-friendly, especially on larger screens.
           </p>
@@ -488,8 +488,8 @@ export const LayoutStructure: Story = {
     children: (
       <div className="space-y-6">
         <div className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-100 p-8 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-blue-900">Header Area</h3>
-          <p className="text-sm text-blue-800">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">Header Area</h3>
+          <p className="text-sm text-gray-800">
             Contains the RBI System branding and navigation (imported via Header component)
           </p>
         </div>
@@ -500,12 +500,12 @@ export const LayoutStructure: Story = {
         </div>
 
         <div className="rounded-xl border-2 border-dashed border-purple-300 bg-purple-100 p-12 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-purple-900">Main Content Area</h3>
-          <p className="mb-4 text-sm text-purple-800">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">Main Content Area</h3>
+          <p className="mb-4 text-sm text-gray-800">
             This is where the children prop content is rendered
           </p>
           <div className="mx-auto max-w-md rounded-lg border border-purple-200 bg-white p-4">
-            <p className="text-sm text-purple-900">Your content goes here</p>
+            <p className="text-sm text-gray-900">Your content goes here</p>
           </div>
         </div>
 

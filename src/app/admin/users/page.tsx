@@ -63,11 +63,11 @@ function UserCard({
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h3 className="text-primary text-lg font-semibold">
+          <h3 className="text-lg font-semibold text-gray-600">
             {user.first_name} {user.last_name}
           </h3>
-          <p className="text-secondary text-sm">{user.email}</p>
-          <p className="text-secondary text-sm">{user.mobile_number}</p>
+          <p className="text-sm text-gray-600">{user.email}</p>
+          <p className="text-sm text-gray-600">{user.mobile_number}</p>
         </div>
         <div className="text-right">
           <span
@@ -79,17 +79,17 @@ function UserCard({
       </div>
 
       <div className="mb-4 space-y-2">
-        <div className="text-secondary flex items-center text-sm">
+        <div className="flex items-center text-sm text-gray-600">
           <span className="mr-2 font-medium">Barangay:</span>
           <span>
             {user.barangay_name}, {user.city_municipality_name}, {user.province_name}
           </span>
         </div>
-        <div className="text-secondary flex items-center text-sm">
+        <div className="flex items-center text-sm text-gray-600">
           <span className="mr-2 font-medium">Role:</span>
           <span>{user.role_name || 'resident'}</span>
         </div>
-        <div className="text-secondary flex items-center text-sm">
+        <div className="flex items-center text-sm text-gray-600">
           <span className="mr-2 font-medium">Registered:</span>
           <span>{formatDate(user.created_at)}</span>
         </div>
@@ -365,7 +365,7 @@ function UsersManagementContent() {
         <div className="flex min-h-64 items-center justify-center p-6">
           <div className="text-center">
             <svg
-              className="mx-auto size-12 animate-spin text-blue-600"
+              className="mx-auto size-12 animate-spin text-gray-600"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -383,7 +383,7 @@ function UsersManagementContent() {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="text-secondary mt-4 text-sm">Loading users...</p>
+            <p className="mt-4 text-sm text-gray-600">Loading users...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -397,10 +397,10 @@ function UsersManagementContent() {
           {/* Header */}
           <div className="flex w-full flex-row items-start justify-between gap-4">
             <div className="flex flex-col gap-0.5">
-              <h1 className="font-montserrat text-primary text-xl font-semibold">
+              <h1 className="font-montserrat text-xl font-semibold text-gray-600">
                 User Management
               </h1>
-              <p className="font-montserrat text-secondary text-sm font-normal">
+              <p className="font-montserrat text-sm font-normal text-gray-600">
                 Manage user registrations and permissions
               </p>
             </div>
@@ -418,7 +418,7 @@ function UsersManagementContent() {
                 size="sm"
                 className={`rounded-none border-b-2 ${
                   activeTab === 'pending'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-blue-500 text-gray-600'
                     : 'text-muted border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
@@ -430,7 +430,7 @@ function UsersManagementContent() {
                 size="sm"
                 className={`rounded-none border-b-2 ${
                   activeTab === 'active'
-                    ? 'border-blue-500 text-blue-600'
+                    ? 'border-blue-500 text-gray-600'
                     : 'text-muted border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
@@ -460,7 +460,7 @@ function UsersManagementContent() {
                         ></path>
                       </svg>
                     </div>
-                    <h3 className="text-primary mb-2 text-lg font-medium">
+                    <h3 className="mb-2 text-lg font-medium text-gray-600">
                       No Pending Registrations
                     </h3>
                     <p className="text-muted">All user registrations have been processed.</p>
@@ -501,7 +501,7 @@ function UsersManagementContent() {
                         ></path>
                       </svg>
                     </div>
-                    <h3 className="text-primary mb-2 text-lg font-medium">No Active Users</h3>
+                    <h3 className="mb-2 text-lg font-medium text-gray-600">No Active Users</h3>
                     <p className="text-muted">No users have been approved yet.</p>
                   </div>
                 ) : (

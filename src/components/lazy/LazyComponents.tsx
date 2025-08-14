@@ -13,7 +13,7 @@ function LoadingFallback({ height = '200px' }: { height?: string }) {
       style={{ minHeight: height }}
     >
       <div className="flex flex-col items-center gap-3">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
         <span className="text-sm text-gray-600">Loading...</span>
       </div>
     </div>

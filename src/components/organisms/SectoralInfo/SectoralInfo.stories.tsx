@@ -463,7 +463,7 @@ export const InteractiveDemo: Story = {
                 <button
                   key={scenario.name}
                   onClick={() => setContext(scenario.context)}
-                  className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700 hover:bg-blue-200"
+                  className="rounded bg-blue-100 px-3 py-1 text-sm text-gray-700 hover:bg-blue-200"
                 >
                   {scenario.name}
                 </button>
@@ -544,7 +544,7 @@ export const AgeBasedCalculations: Story = {
             ))}
           </div>
 
-          <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+          <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm text-gray-700">
             <strong>Current:</strong> {ageGroups.find(g => g.age === currentAge)?.description}
           </div>
         </div>

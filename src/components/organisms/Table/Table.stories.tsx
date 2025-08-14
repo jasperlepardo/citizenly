@@ -182,7 +182,7 @@ export const WithCheckboxes: Story = {
 
         {selectedItems.length > 0 && (
           <div className="border-t border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">{selectedItems.length} item(s) selected</p>
+            <p className="text-sm text-gray-800">{selectedItems.length} item(s) selected</p>
           </div>
         )}
       </Table>
@@ -357,7 +357,7 @@ export const WithControls: Story = {
 
         {selectedItems.length > 0 && (
           <div className="rounded border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-gray-800">
               {selectedItems.length} of {filteredContacts.length} contacts selected
             </p>
           </div>
@@ -457,7 +457,7 @@ export const ResidentsTable: Story = {
                 <TableCell className="text-sm text-gray-600">{resident.address}</TableCell>
                 <TableCell>{resident.occupation}</TableCell>
                 <TableCell>
-                  <span className="rounded bg-blue-100 px-2 py-1 font-mono text-sm text-blue-800">
+                  <span className="rounded bg-blue-100 px-2 py-1 font-mono text-sm text-gray-800">
                     {resident.household}
                   </span>
                 </TableCell>
@@ -471,7 +471,7 @@ export const ResidentsTable: Story = {
                     </button>
                     <button
                       onClick={() => action('edit-resident')(resident)}
-                      className="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 hover:bg-blue-200"
+                      className="rounded bg-blue-100 px-2 py-1 text-xs text-gray-700 hover:bg-blue-200"
                     >
                       Edit
                     </button>

@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const selectVariants = cva(
-  'font-montserrat relative flex w-full items-center rounded transition-all duration-200 bg-surface focus-within:outline-none',
+  'font-montserrat relative flex w-full items-center rounded transition-all duration-200 bg-default focus-within:outline-none',
   {
     variants: {
       variant: {
@@ -15,8 +15,8 @@ const selectVariants = cva(
           'border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]',
         success:
           'border border-green-500 focus-within:border-green-500 focus-within:shadow-[0px_0px_0px_4px_rgba(5,150,105,0.32)]',
-        disabled: 'cursor-not-allowed border bg-background-muted border-default',
-        readonly: 'border bg-background-muted border-default',
+        disabled: 'cursor-not-allowed border bg-default-muted border-default',
+        readonly: 'border bg-default-muted border-default',
       },
       size: {
         sm: 'min-h-8 p-1.5 text-sm',
@@ -74,7 +74,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="font-body text-primary mb-1 block text-sm font-medium">{label}</label>
+          <label className="mb-1 block font-body text-sm font-medium text-gray-600">{label}</label>
         )}
 
         {/* Select Container */}
@@ -90,7 +90,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+            <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
               {leftIcon}
             </div>
           )}
@@ -102,7 +102,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
               <select
                 ref={ref}
                 className={cn(
-                  'font-montserrat text-primary w-full cursor-pointer appearance-none border-none bg-transparent font-normal outline-none',
+                  'font-montserrat w-full cursor-pointer appearance-none border-none bg-transparent font-normal text-gray-600 outline-none',
                   'dark:[color-scheme:dark]', // This helps browsers apply dark theme to native dropdowns
                   // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                   size === 'sm' && 'text-sm leading-4',
@@ -120,7 +120,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                     value=""
                     disabled
                     hidden
-                    className="text-muted bg-surface"
+                    className="text-muted bg-default"
                     style={{
                       backgroundColor: 'var(--color-surface)',
                       color: 'var(--color-text-muted)',
@@ -133,7 +133,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                   <option
                     value=""
                     disabled
-                    className="text-muted bg-surface"
+                    className="text-muted bg-default"
                     style={{
                       backgroundColor: 'var(--color-surface)',
                       color: 'var(--color-text-muted)',
@@ -147,10 +147,10 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
                       key={option.value}
                       value={option.value}
                       disabled={option.disabled}
-                      className="bg-surface text-primary"
+                      className="bg-default text-gray-600"
                       style={{
                         backgroundColor: 'var(--color-surface)',
-                        color: 'var(--color-text-primary)',
+                        color: 'var(--color-text-gray-600)',
                       }}
                     >
                       {option.label}
@@ -162,7 +162,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           </div>
 
           {/* Dropdown Icon - Figma: w-5 (20px width) */}
-          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
+          <div className="flex size-5 shrink-0 items-center justify-center text-gray-600">
             <svg
               className="size-4"
               fill="none"
@@ -179,7 +179,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="font-body text-danger-600 text-xs">{errorMessage}</p>
+              <p className="font-body text-xs text-red-600">{errorMessage}</p>
             ) : (
               <p className="text-muted font-body text-xs">{helperText}</p>
             )}

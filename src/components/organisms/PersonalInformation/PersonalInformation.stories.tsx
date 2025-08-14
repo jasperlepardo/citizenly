@@ -360,7 +360,7 @@ const ValidationDemoComponent = () => {
 
       {formData.birthdate && (
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
-          <p className="text-sm text-blue-800">
+          <p className="text-sm text-gray-800">
             <strong>Age:</strong> {calculateAge(formData.birthdate)} years old
           </p>
         </div>

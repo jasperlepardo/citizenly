@@ -200,7 +200,7 @@ export default function HouseholdRegistrationForm({
           <p className="text-gray-600">Register a new household and its members in the system</p>
           {householdNumber && (
             <div className="mt-3 rounded border border-blue-200 bg-blue-50 p-3">
-              <p className="text-sm text-blue-700">
+              <p className="text-sm text-gray-700">
                 <strong>Household Number:</strong> {householdNumber}
               </p>
             </div>
@@ -307,7 +307,7 @@ export default function HouseholdRegistrationForm({
                     <h4 className="font-medium text-gray-900">
                       Member {index + 1}
                       {index === 0 && (
-                        <span className="ml-2 text-sm text-blue-600">(Head of Household)</span>
+                        <span className="ml-2 text-sm text-gray-600">(Head of Household)</span>
                       )}
                     </h4>
                     {index > 0 && (

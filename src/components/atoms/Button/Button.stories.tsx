@@ -231,7 +231,7 @@ export const FigmaDesignSystem: Story = {
 
       {/* Primary Color Family */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-blue-700">Primary Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700">Primary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
             <Button variant="primary" size="regular">
@@ -270,7 +270,7 @@ export const FigmaDesignSystem: Story = {
 
       {/* Secondary Color Family */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-purple-700">Secondary Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700">Secondary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
             <Button variant="secondary" size="regular">

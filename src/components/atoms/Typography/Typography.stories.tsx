@@ -255,7 +255,7 @@ export const ColorVariations: Story = {
         Muted text color for less important information
       </Typography>
 
-      <Typography variant="bodyMedium" className="text-blue-600">
+      <Typography variant="bodyMedium" className="text-gray-600">
         Blue accent color for links or highlights
       </Typography>
 

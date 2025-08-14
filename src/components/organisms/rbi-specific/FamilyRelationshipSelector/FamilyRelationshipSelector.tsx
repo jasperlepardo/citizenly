@@ -308,11 +308,11 @@ export default function FamilyRelationshipSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="text-primary mb-1 text-lg font-medium">
+        <h3 className="mb-1 text-lg font-medium text-gray-600">
           <span className="text-base">👨‍👩‍👧‍👦</span> Family Position
           {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
-        <p className="text-secondary text-sm">
+        <p className="text-sm text-gray-600">
           Select this person&apos;s relationship to the household head and position in the family.
         </p>
       </div>
@@ -349,13 +349,13 @@ export default function FamilyRelationshipSelector({
       {value && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
           <div className="flex items-center space-x-2">
-            <span className="text-blue-600">✓</span>
+            <span className="text-gray-600">✓</span>
             <div className="flex-1">
-              <span className="text-sm font-medium text-blue-800">
+              <span className="text-sm font-medium text-gray-800">
                 Position: {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.label}
               </span>
               {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description && (
-                <p className="mt-1 text-xs text-blue-600">
+                <p className="mt-1 text-xs text-gray-600">
                   {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description}
                 </p>
               )}
@@ -366,7 +366,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Context Information */}
       {(personContext.age || personContext.gender) && (
-        <div className="text-muted bg-background-muted rounded-lg p-3 text-xs">
+        <div className="text-muted bg-default-muted rounded-lg p-3 text-xs">
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}

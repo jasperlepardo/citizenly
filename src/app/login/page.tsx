@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [showDevLogin, setShowDevLogin] = useState(false);
 
   return (
-    <div className="bg-background relative flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="bg-default relative flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Theme Toggle - positioned in top right */}
       <div className="absolute right-4 top-4">
         <ThemeToggle variant="ghost" size="md" />
@@ -18,8 +18,8 @@ export default function LoginPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="text-primary mb-2 text-3xl font-bold">Citizenly</h1>
-          <p className="text-secondary mb-8 text-sm">Records of Barangay Inhabitant System</p>
+          <h1 className="mb-2 text-3xl font-bold text-gray-600">Citizenly</h1>
+          <p className="mb-8 text-sm text-gray-600">Records of Barangay Inhabitant System</p>
         </div>
 
         {showDevLogin ? (
@@ -33,13 +33,13 @@ export default function LoginPage() {
         )}
 
         <div className="mt-8 text-center">
-          <div className="bg-surface border-default rounded-lg border p-4">
-            <h3 className="text-primary-400 mb-2 text-sm font-medium">Development Mode</h3>
-            <div className="text-secondary space-y-2 text-xs">
+          <div className="bg-default rounded-lg border border-default p-4">
+            <h3 className="mb-2 text-sm font-medium text-gray-400">Development Mode</h3>
+            <div className="space-y-2 text-xs text-gray-600">
               <div>If you can&apos;t login, the demo users may not exist yet.</div>
               <button
                 onClick={() => setShowDevLogin(!showDevLogin)}
-                className="text-primary-400 hover:text-primary-300 underline"
+                className="text-gray-400 underline hover:text-gray-300"
               >
                 {showDevLogin ? 'Back to Login Form' : 'Setup Demo Users'}
               </button>

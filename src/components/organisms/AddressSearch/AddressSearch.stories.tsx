@@ -344,7 +344,7 @@ const LoadingStatesTemplate = () => {
           placeholder="Search to see loading indicator..."
         />
         <div className="rounded border border-blue-200 bg-blue-50 p-3">
-          <p className="text-xs text-blue-800">
+          <p className="text-xs text-gray-800">
             This demo simulates a slow network connection (2-second delay) to showcase the loading
             spinner.
           </p>
@@ -531,30 +531,30 @@ const PSGCIntegrationTemplate = () => {
       {selectedAddress && (
         <div className="space-y-3">
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <h4 className="mb-3 text-sm font-medium text-blue-800">PSGC Breakdown</h4>
+            <h4 className="mb-3 text-sm font-medium text-gray-800">PSGC Breakdown</h4>
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-blue-700">Region Code:</span>
+                <span className="text-gray-700">Region Code:</span>
                 <span className="rounded bg-blue-100 px-2 py-1 font-mono">
                   {selectedAddress.region_code}
                 </span>
               </div>
               {selectedAddress.province_code && (
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Province Code:</span>
+                  <span className="text-gray-700">Province Code:</span>
                   <span className="rounded bg-blue-100 px-2 py-1 font-mono">
                     {selectedAddress.province_code}
                   </span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-blue-700">City/Municipality Code:</span>
+                <span className="text-gray-700">City/Municipality Code:</span>
                 <span className="rounded bg-blue-100 px-2 py-1 font-mono">
                   {selectedAddress.city_municipality_code}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-blue-700">Barangay Code:</span>
+                <span className="text-gray-700">Barangay Code:</span>
                 <span className="rounded bg-blue-100 px-2 py-1 font-mono">
                   {selectedAddress.barangay_code}
                 </span>
@@ -615,8 +615,8 @@ const AccessibilityDemoTemplate = () => {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-blue-800">Keyboard Navigation</h3>
-        <ul className="space-y-1 text-sm text-blue-700">
+        <h3 className="mb-2 text-lg font-semibold text-gray-800">Keyboard Navigation</h3>
+        <ul className="space-y-1 text-sm text-gray-700">
           <li>
             • <kbd className="rounded bg-blue-100 px-1 py-0.5">Tab</kbd> to focus the search input
           </li>

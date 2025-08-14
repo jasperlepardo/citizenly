@@ -361,8 +361,8 @@ export const LoadingStatesDemo: Story = {
             </button>
 
             <div className="rounded border border-blue-200 bg-blue-50 p-4 text-left">
-              <h4 className="mb-2 font-semibold text-blue-800">Loading States Demo</h4>
-              <div className="space-y-2 text-sm text-blue-700">
+              <h4 className="mb-2 font-semibold text-gray-800">Loading States Demo</h4>
+              <div className="space-y-2 text-sm text-gray-700">
                 <p>
                   <strong>1. Initial:</strong> Form ready for input
                 </p>

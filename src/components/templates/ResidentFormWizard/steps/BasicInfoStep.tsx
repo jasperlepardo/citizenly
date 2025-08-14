@@ -26,8 +26,8 @@ export function BasicInfoStep({ formData, onChange, errors }: StepComponentProps
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-primary text-base/7 font-semibold">Personal Information</h3>
-        <p className="text-secondary mt-1 text-sm/6">
+        <h3 className="text-base/7 font-semibold text-gray-600">Personal Information</h3>
+        <p className="mt-1 text-sm/6 text-gray-600">
           Enter the resident's basic personal details and identification information.
         </p>
       </div>

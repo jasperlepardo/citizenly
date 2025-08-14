@@ -32,30 +32,30 @@ interface EducationEmploymentCardProps {
  */
 export default function EducationEmploymentCard({ resident }: EducationEmploymentCardProps) {
   return (
-    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+    <div className="bg-default rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600">
         🎓 Education & Employment
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="text-secondary block text-sm font-medium">Education Attainment</span>
-          <span className="text-primary">{resident.education_attainment || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600">Education Attainment</span>
+          <span className="text-gray-600">{resident.education_attainment || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Graduate Status</span>
-          <span className="text-primary">{resident.is_graduate ? 'Graduate' : 'Non-Graduate'}</span>
+          <span className="block text-sm font-medium text-gray-600">Graduate Status</span>
+          <span className="text-gray-600">{resident.is_graduate ? 'Graduate' : 'Non-Graduate'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Employment Status</span>
-          <span className="text-primary">{resident.employment_status || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600">Employment Status</span>
+          <span className="text-gray-600">{resident.employment_status || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Occupation</span>
-          <span className="text-primary">{resident.occupation_title || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600">Occupation</span>
+          <span className="text-gray-600">{resident.occupation_title || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Employment Name</span>
-          <span className="text-primary">{resident.employment_name || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600">Employment Name</span>
+          <span className="text-gray-600">{resident.employment_name || '-'}</span>
         </div>
       </div>
     </div>

@@ -119,7 +119,7 @@ export default function PersonalInfoSection({
             onChange={handleInputChange}
             disabled={disabled}
             required
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Sex</option>
             {SEX_OPTIONS.map(option => (
@@ -137,7 +137,7 @@ export default function PersonalInfoSection({
             onChange={handleInputChange}
             disabled={disabled}
             required
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Civil Status</option>
             {CIVIL_STATUS_OPTIONS.map(option => (
@@ -154,7 +154,7 @@ export default function PersonalInfoSection({
             value={formData.citizenship || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Citizenship</option>
             {CITIZENSHIP_OPTIONS.map(option => (

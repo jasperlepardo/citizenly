@@ -152,7 +152,7 @@ export const DifferentSeverities: Story = {
         <ErrorMessage
           id="error-info"
           error="Info: Additional verification may be required"
-          className="rounded border border-blue-200 bg-blue-50 px-3 py-2 text-blue-600"
+          className="rounded border border-blue-200 bg-blue-50 px-3 py-2 text-gray-600"
         />
       </div>
     </div>

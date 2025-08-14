@@ -288,8 +288,8 @@ export const NCRDemo: Story = {
         <AddressSelector value={address} onChange={setAddress} showLabels={true} />
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 text-sm font-medium text-blue-800">NCR Special Handling:</h4>
-          <ul className="space-y-1 text-sm text-blue-700">
+          <h4 className="mb-2 text-sm font-medium text-gray-800">NCR Special Handling:</h4>
+          <ul className="space-y-1 text-sm text-gray-700">
             <li>• Independent cities (Manila, Quezon City, Makati, etc.)</li>
             <li>• No provincial-level government structure</li>
             <li>• Direct Region → City → Barangay hierarchy</li>
@@ -411,8 +411,8 @@ export const LoadingStates: Story = {
         <AddressSelector value={address} onChange={setAddress} showLabels={true} />
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 text-sm font-medium text-blue-800">Loading Behavior:</h4>
-          <ul className="space-y-1 text-sm text-blue-700">
+          <h4 className="mb-2 text-sm font-medium text-gray-800">Loading Behavior:</h4>
+          <ul className="space-y-1 text-sm text-gray-700">
             <li>• Each dropdown shows loading spinner during API calls</li>
             <li>• Dependent dropdowns are disabled until parent selection loads</li>
             <li>• Cascade resets clear child selections appropriately</li>
@@ -713,8 +713,8 @@ export const ValidationDemo: Story = {
         </div>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 text-sm font-medium text-blue-800">Validation Rules:</h4>
-          <ul className="space-y-1 text-sm text-blue-700">
+          <h4 className="mb-2 text-sm font-medium text-gray-800">Validation Rules:</h4>
+          <ul className="space-y-1 text-sm text-gray-700">
             <li>• Region is always required</li>
             <li>• Province is required except for NCR (independent cities)</li>
             <li>• City/Municipality is required for all locations</li>
@@ -739,8 +739,8 @@ export const AccessibilityDemo: Story = {
     return (
       <div className="space-y-6">
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-2 text-lg font-semibold text-blue-800">Accessibility Features</h3>
-          <div className="grid grid-cols-1 gap-4 text-sm text-blue-700 md:grid-cols-2">
+          <h3 className="mb-2 text-lg font-semibold text-gray-800">Accessibility Features</h3>
+          <div className="grid grid-cols-1 gap-4 text-sm text-gray-700 md:grid-cols-2">
             <div>
               <h4 className="mb-2 font-medium">Keyboard Navigation:</h4>
               <ul className="space-y-1">

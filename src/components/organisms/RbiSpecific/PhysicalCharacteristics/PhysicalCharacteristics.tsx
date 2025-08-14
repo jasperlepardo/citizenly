@@ -140,11 +140,11 @@ export default function PhysicalCharacteristics({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-default border-b pb-4">
-        <h3 className="text-primary mb-2 text-lg font-medium">
+      <div className="border-b border-default pb-4">
+        <h3 className="mb-2 text-lg font-medium text-gray-600">
           <span className="text-base">👤</span> Physical Characteristics
         </h3>
-        <p className="text-secondary text-sm">
+        <p className="text-sm text-gray-600">
           Physical description for identification and health tracking purposes. All fields are
           optional.
         </p>
@@ -183,9 +183,9 @@ export default function PhysicalCharacteristics({
 
         {/* BMI Display */}
         {bmiValue && bmiCategory && (
-          <div className="bg-background-muted mt-3 rounded-lg p-3">
+          <div className="bg-default-muted mt-3 rounded-lg p-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-secondary">Body Mass Index (BMI):</span>
+              <span className="text-gray-600">Body Mass Index (BMI):</span>
               <span className="font-medium">
                 {bmiValue} kg/m²
                 <span className={`ml-2 ${bmiCategory.color}`}>({bmiCategory.category})</span>
@@ -302,8 +302,8 @@ export default function PhysicalCharacteristics({
         value.hair_color ||
         value.complexion) && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 font-medium text-blue-900">Physical Profile Summary</h4>
-          <div className="space-y-1 text-sm text-blue-800">
+          <h4 className="mb-2 font-medium text-gray-900">Physical Profile Summary</h4>
+          <div className="space-y-1 text-sm text-gray-800">
             {value.height_cm && value.weight_kg && (
               <p>
                 <strong>Physical:</strong> {value.height_cm}cm, {value.weight_kg}kg{' '}

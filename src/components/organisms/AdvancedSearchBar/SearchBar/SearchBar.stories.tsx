@@ -275,7 +275,7 @@ const ResidentSearchComponent = () => {
           </h4>
         </div>
 
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-default">
           {isSearching ? (
             <div className="p-8 text-center text-gray-500">
               <div className="animate-pulse">Searching residents...</div>

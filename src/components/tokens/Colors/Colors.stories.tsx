@@ -98,8 +98,8 @@ All colors read directly from your Tailwind config with built-in dark mode suppo
 ## What You Have
 
 - **Brand Colors**: Your government blue, purple, green, orange, red palette
-- **Text Hierarchy**: \`text-text-primary\`, \`text-text-secondary\`, \`text-text-tertiary\`, \`text-text-quaternary\`
-- **Background Hierarchy**: \`bg-background-primary\`, \`bg-background-secondary\`, etc.
+- **Text Hierarchy**: \`text-text-gray-600\`, \`text-text-gray-600\`, \`text-text-tertiary\`, \`text-text-quaternary\`
+- **Background Hierarchy**: \`bg-default-primary\`, \`bg-default-secondary\`, etc.
 - **Context-Aware**: \`_onBrand\`, \`_hover\`, \`_solid\` variants
 - **Built-in Dark Mode**: Every semantic color automatically switches
 
@@ -107,27 +107,27 @@ All colors read directly from your Tailwind config with built-in dark mode suppo
 
 \`\`\`tsx
 // Text hierarchy (professional Figma pattern)
-<h1 className="text-text-primary">Main heading</h1>
-<p className="text-text-secondary">Secondary content</p>
+<h1 className="text-text-gray-600">Main heading</h1>
+<p className="text-text-gray-600">Secondary content</p>
 <p className="text-text-tertiary">Less important content</p>
 <span className="text-text-quaternary">Subtle text</span>
 
 // Context-aware text
-<span className="text-text-primary_onBrand">White text on brand colors</span>
-<span className="text-text-secondary_onBrand">Light text on brand</span>
+<span className="text-text-gray-600_onBrand">White text on brand colors</span>
+<span className="text-text-gray-600_onBrand">Light text on brand</span>
 
 // Background hierarchy  
-<div className="bg-background-primary">Main background</div>
-<div className="bg-background-secondary">Card background</div>
-<div className="bg-background-tertiary">Subtle background</div>
+<div className="bg-default-primary">Main background</div>
+<div className="bg-default-secondary">Card background</div>
+<div className="bg-default-tertiary">Subtle background</div>
 
 // Status colors with hierarchy
-<div className="text-text-success_primary bg-background-success_primary border border-border-success">
+<div className="text-text-success_primary bg-default-success_primary border border-border-green-600">
   Professional success message
 </div>
 
 // Brand colors (your government theme)
-<button className="bg-background-brand_solid hover:bg-background-brand_solid_hover text-text-primary_onBrand">
+<button className="bg-default-brand_solid hover:bg-default-brand_solid_hover text-text-gray-600_onBrand">
   Government Action Button
 </button>
 
@@ -162,8 +162,8 @@ export const BrandColors: Story = {
         <p className="text-gray-600">
           Your brand color palette from{' '}
           <code className="rounded bg-gray-100 px-2 py-1">tailwind.config.js</code>. Use classes
-          like <code className="rounded bg-gray-100 px-2 py-1">bg-primary-600</code>,{' '}
-          <code className="rounded bg-gray-100 px-2 py-1">text-secondary-500</code>, etc.
+          like <code className="rounded bg-gray-100 px-2 py-1">bg-blue-600</code>,{' '}
+          <code className="rounded bg-gray-100 px-2 py-1">text-gray-500</code>, etc.
         </p>
       </div>
 
@@ -236,7 +236,7 @@ export const SemanticColors: Story = {
         <p className="mb-4 text-sm text-gray-600">
           Now using clean class names:{' '}
           <code className="rounded bg-gray-100 px-1 py-0.5">text-default</code>,{' '}
-          <code className="rounded bg-gray-100 px-1 py-0.5">text-primary</code>,{' '}
+          <code className="rounded bg-gray-100 px-1 py-0.5">text-gray-600</code>,{' '}
           <code className="rounded bg-gray-100 px-1 py-0.5">text-success</code> (no redundant
           prefixes!)
         </p>
@@ -382,7 +382,7 @@ export const SemanticColors: Story = {
                       style={{ backgroundColor: colors.primary.DEFAULT }}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-semibold text-gray-900">text-primary</div>
+                      <div className="text-sm font-semibold text-gray-900">text-gray-600</div>
                     </div>
                   </div>
                   <div className="space-y-1 text-xs">
@@ -408,7 +408,7 @@ export const SemanticColors: Story = {
                       style={{ backgroundColor: colors.secondary.DEFAULT }}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-semibold text-gray-900">text-secondary</div>
+                      <div className="text-sm font-semibold text-gray-900">text-gray-600</div>
                     </div>
                   </div>
                   <div className="space-y-1 text-xs">
@@ -531,17 +531,17 @@ export const SemanticColors: Story = {
         <h2 className="mb-6 text-xl font-semibold text-gray-900">Clean Background Colors</h2>
         <p className="mb-4 text-sm text-gray-600">
           Now using: <code className="rounded bg-gray-100 px-1 py-0.5">bg-default</code>,{' '}
-          <code className="rounded bg-gray-100 px-1 py-0.5">bg-primary</code>,{' '}
+          <code className="rounded bg-gray-100 px-1 py-0.5">bg-blue-600</code>,{' '}
           <code className="rounded bg-gray-100 px-1 py-0.5">bg-success</code>
         </p>
 
-        <div className="space-y-4 text-sm text-blue-800">
+        <div className="space-y-4 text-sm text-gray-800">
           <p>
             <strong>Surface Hierarchy:</strong> bg-default (main), bg-default_secondary (cards),
             bg-default_tertiary (subtle)
           </p>
           <p>
-            <strong>Brand Backgrounds:</strong> bg-primary (light), bg-primary_solid (buttons)
+            <strong>Brand Backgrounds:</strong> bg-blue-600 (light), bg-blue-600_solid (buttons)
           </p>
           <p>
             <strong>Status Backgrounds:</strong> bg-success, bg-warning, bg-error
@@ -554,17 +554,17 @@ export const SemanticColors: Story = {
         <h2 className="mb-6 text-xl font-semibold text-gray-900">Clean Border Colors</h2>
         <p className="mb-4 text-sm text-gray-600">
           Now using: <code className="rounded bg-gray-100 px-1 py-0.5">border-default</code>,{' '}
-          <code className="rounded bg-gray-100 px-1 py-0.5">border-primary</code>,{' '}
+          <code className="rounded bg-gray-100 px-1 py-0.5">border-blue-600</code>,{' '}
           <code className="rounded bg-gray-100 px-1 py-0.5">border-success</code>
         </p>
 
-        <div className="space-y-4 text-sm text-purple-800">
+        <div className="space-y-4 text-sm text-gray-800">
           <p>
             <strong>Border Hierarchy:</strong> border-default (main), border-default_secondary
             (subtle), border-default_tertiary (very subtle)
           </p>
           <p>
-            <strong>Brand Borders:</strong> border-primary (light brand), border-primary_solid
+            <strong>Brand Borders:</strong> border-blue-600 (light brand), border-blue-600_solid
             (strong brand)
           </p>
           <p>
@@ -616,7 +616,7 @@ export const SemanticColors: Story = {
                 • <code>text-default_tertiary</code> - Supporting info
               </li>
               <li>
-                • <code>text-primary</code> - Brand blue text
+                • <code>text-gray-600</code> - Brand blue text
               </li>
               <li>
                 • <code>text-success</code> - Success green text
@@ -636,16 +636,16 @@ export const SemanticColors: Story = {
                 • <code>bg-default_secondary</code> - Card backgrounds
               </li>
               <li>
-                • <code>bg-primary</code> - Light brand background
+                • <code>bg-blue-600</code> - Light brand background
               </li>
               <li>
-                • <code>bg-primary_solid</code> - Solid brand buttons
+                • <code>bg-blue-600_solid</code> - Solid brand buttons
               </li>
               <li>
                 • <code>bg-success</code> - Success backgrounds
               </li>
               <li>
-                • <code>hover:bg-primary_solid_hover</code> - Button hovers
+                • <code>hover:bg-blue-600_solid_hover</code> - Button hovers
               </li>
             </ul>
           </div>
@@ -659,10 +659,10 @@ export const SemanticColors: Story = {
                 • <code>border-default_secondary</code> - Subtle borders
               </li>
               <li>
-                • <code>border-primary</code> - Brand borders
+                • <code>border-blue-600</code> - Brand borders
               </li>
               <li>
-                • <code>border-primary_solid</code> - Strong brand
+                • <code>border-blue-600_solid</code> - Strong brand
               </li>
               <li>
                 • <code>border-success</code> - Success borders
@@ -679,7 +679,7 @@ export const SemanticColors: Story = {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <ul className="space-y-1 text-sm text-green-800">
               <li>
-                ✅ <strong>Cleaner:</strong> No more text-text-primary redundancy
+                ✅ <strong>Cleaner:</strong> No more text-text-gray-600 redundancy
               </li>
               <li>
                 ✅ <strong>Shorter:</strong> Less typing, more readable code
@@ -690,7 +690,7 @@ export const SemanticColors: Story = {
             </ul>
             <ul className="space-y-1 text-sm text-green-800">
               <li>
-                ✅ <strong>Intuitive:</strong> text-primary, bg-primary, border-primary
+                ✅ <strong>Intuitive:</strong> text-gray-600, bg-blue-600, border-blue-600
               </li>
               <li>
                 ✅ <strong>Dark Mode:</strong> Still automatic with all colors
@@ -725,13 +725,13 @@ export const TextHierarchy: Story = {
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="w-32 text-sm font-medium text-gray-700">Primary</div>
-              <div className="text-text-primary text-xl">Main headings and important content</div>
-              <code className="rounded bg-gray-100 px-2 py-1 text-xs">text-text-primary</code>
+              <div className="text-text-gray-600 text-xl">Main headings and important content</div>
+              <code className="rounded bg-gray-100 px-2 py-1 text-xs">text-text-gray-600</code>
             </div>
             <div className="flex items-center gap-4">
               <div className="w-32 text-sm font-medium text-gray-700">Secondary</div>
-              <div className="text-text-secondary text-lg">Secondary headings and body text</div>
-              <code className="rounded bg-gray-100 px-2 py-1 text-xs">text-text-secondary</code>
+              <div className="text-text-gray-600 text-lg">Secondary headings and body text</div>
+              <code className="rounded bg-gray-100 px-2 py-1 text-xs">text-text-gray-600</code>
             </div>
             <div className="flex items-center gap-4">
               <div className="w-32 text-sm font-medium text-gray-700">Tertiary</div>
@@ -757,37 +757,37 @@ export const TextHierarchy: Story = {
         </div>
 
         {/* Brand Context Text */}
-        <div className="border-primary-700 bg-primary-600 rounded-xl border p-6">
-          <h3 className="text-text-primary_onBrand mb-6 text-lg font-semibold">
+        <div className="rounded-xl border border-blue-700 bg-blue-600 p-6">
+          <h3 className="text-text-gray-600_onBrand mb-6 text-lg font-semibold">
             Text on Brand Colors
           </h3>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="text-text-secondary_onBrand w-32 text-sm font-medium">
+              <div className="text-text-gray-600_onBrand w-32 text-sm font-medium">
                 Primary on Brand
               </div>
-              <div className="text-text-primary_onBrand text-xl">White text for high contrast</div>
-              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
-                text-text-primary_onBrand
+              <div className="text-text-gray-600_onBrand text-xl">White text for high contrast</div>
+              <code className="rounded bg-blue-800 px-2 py-1 text-xs text-gray-100">
+                text-text-gray-600_onBrand
               </code>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-text-secondary_onBrand w-32 text-sm font-medium">
+              <div className="text-text-gray-600_onBrand w-32 text-sm font-medium">
                 Secondary on Brand
               </div>
-              <div className="text-text-secondary_onBrand">Light blue text on brand</div>
-              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
-                text-text-secondary_onBrand
+              <div className="text-text-gray-600_onBrand">Light blue text on brand</div>
+              <code className="rounded bg-blue-800 px-2 py-1 text-xs text-gray-100">
+                text-text-gray-600_onBrand
               </code>
             </div>
             <div className="flex items-center gap-4">
-              <div className="text-text-secondary_onBrand w-32 text-sm font-medium">
+              <div className="text-text-gray-600_onBrand w-32 text-sm font-medium">
                 Tertiary on Brand
               </div>
               <div className="text-text-tertiary_onBrand text-sm">
                 Subtle text on brand backgrounds
               </div>
-              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
+              <code className="rounded bg-blue-800 px-2 py-1 text-xs text-gray-100">
                 text-text-tertiary_onBrand
               </code>
             </div>
@@ -796,16 +796,16 @@ export const TextHierarchy: Story = {
 
         {/* Status Text Colors */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="border-border-success bg-background-success_primary rounded-lg border p-4">
+          <div className="border-border-green-600 bg-default-success_primary rounded-lg border p-4">
             <h4 className="text-text-success_primary mb-2 font-semibold">Success Text</h4>
             <p className="text-text-success_primary text-sm">
               Use for positive feedback, confirmations, and successful actions.
             </p>
-            <code className="bg-success-100 text-success-800 mt-2 inline-block rounded px-2 py-1 text-xs">
+            <code className="mt-2 inline-block rounded bg-green-100 px-2 py-1 text-xs text-green-800">
               text-text-success_primary
             </code>
           </div>
-          <div className="border-border-warning bg-background-warning_primary rounded-lg border p-4">
+          <div className="border-border-orange-600 bg-default-warning_primary rounded-lg border p-4">
             <h4 className="text-text-warning_primary mb-2 font-semibold">Warning Text</h4>
             <p className="text-text-warning_primary text-sm">
               Use for cautions, pending states, and important notices.
@@ -814,7 +814,7 @@ export const TextHierarchy: Story = {
               text-text-warning_primary
             </code>
           </div>
-          <div className="border-border-error bg-background-error_primary rounded-lg border p-4">
+          <div className="border-border-error bg-default-error_primary rounded-lg border p-4">
             <h4 className="text-text-error_primary mb-2 font-semibold">Error Text</h4>
             <p className="text-text-error_primary text-sm">
               Use for errors, validation messages, and critical alerts.
@@ -827,8 +827,8 @@ export const TextHierarchy: Story = {
       </div>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-2 text-lg font-semibold text-blue-900">💡 Usage Guidelines</h3>
-        <div className="space-y-2 text-sm text-blue-800">
+        <h3 className="mb-2 text-lg font-semibold text-gray-900">💡 Usage Guidelines</h3>
+        <div className="space-y-2 text-sm text-gray-800">
           <p>
             <strong>Primary:</strong> Main headings, key information, primary actions
           </p>
@@ -993,21 +993,21 @@ export const LiveExamples: Story = {
         <div>
           <h3 className="mb-4 text-lg font-semibold text-gray-900">Brand Color Buttons</h3>
           <div className="flex flex-wrap gap-3">
-            <button className="bg-primary-600 hover:bg-primary-700 rounded-lg px-6 py-3 text-white transition-colors">
+            <button className="rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700">
               Primary Button
-              <span className="block text-xs opacity-75">bg-primary-600</span>
+              <span className="block text-xs opacity-75">bg-blue-600</span>
             </button>
-            <button className="bg-secondary-600 hover:bg-secondary-700 rounded-lg px-6 py-3 text-white transition-colors">
+            <button className="rounded-lg bg-purple-600 px-6 py-3 text-white transition-colors hover:bg-purple-700">
               Secondary Button
-              <span className="block text-xs opacity-75">bg-secondary-600</span>
+              <span className="block text-xs opacity-75">bg-purple-600</span>
             </button>
-            <button className="bg-success-600 hover:bg-success-700 rounded-lg px-6 py-3 text-white transition-colors">
+            <button className="rounded-lg bg-green-600 px-6 py-3 text-white transition-colors hover:bg-green-700">
               Success Button
-              <span className="block text-xs opacity-75">bg-success-600</span>
+              <span className="block text-xs opacity-75">bg-green-600</span>
             </button>
-            <button className="bg-danger-600 hover:bg-danger-700 rounded-lg px-6 py-3 text-white transition-colors">
+            <button className="rounded-lg bg-red-600 px-6 py-3 text-white transition-colors hover:bg-red-700">
               Danger Button
-              <span className="block text-xs opacity-75">bg-danger-600</span>
+              <span className="block text-xs opacity-75">bg-red-600</span>
             </button>
           </div>
         </div>
@@ -1018,9 +1018,9 @@ export const LiveExamples: Story = {
             Professional Semantic Notifications
           </h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="border-border-success bg-background-success_primary rounded-lg border-l-4 p-4">
+            <div className="border-border-green-600 bg-default-success_primary rounded-lg border-l-4 p-4">
               <div className="flex items-center">
-                <div className="bg-background-success_solid mr-3 h-2 w-2 rounded-full" />
+                <div className="bg-default-success_solid mr-3 h-2 w-2 rounded-full" />
                 <span className="text-text-success_primary font-medium">
                   Application submitted successfully
                 </span>
@@ -1028,14 +1028,14 @@ export const LiveExamples: Story = {
               <p className="text-text-quaternary mt-2 text-sm">
                 Classes:{' '}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-                  bg-background-success_primary text-text-success_primary
+                  bg-default-success_primary text-text-success_primary
                 </code>
               </p>
             </div>
 
-            <div className="border-border-warning bg-background-warning_primary rounded-lg border-l-4 p-4">
+            <div className="border-border-orange-600 bg-default-warning_primary rounded-lg border-l-4 p-4">
               <div className="flex items-center">
-                <div className="bg-background-warning_solid mr-3 h-2 w-2 rounded-full" />
+                <div className="bg-default-warning_solid mr-3 h-2 w-2 rounded-full" />
                 <span className="text-text-warning_primary font-medium">
                   Document verification required
                 </span>
@@ -1043,14 +1043,14 @@ export const LiveExamples: Story = {
               <p className="text-text-quaternary mt-2 text-sm">
                 Classes:{' '}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-                  bg-background-warning_primary text-text-warning_primary
+                  bg-default-warning_primary text-text-warning_primary
                 </code>
               </p>
             </div>
 
-            <div className="border-border-error bg-background-error_primary rounded-lg border-l-4 p-4">
+            <div className="border-border-error bg-default-error_primary rounded-lg border-l-4 p-4">
               <div className="flex items-center">
-                <div className="bg-background-error_solid mr-3 h-2 w-2 rounded-full" />
+                <div className="bg-default-error_solid mr-3 h-2 w-2 rounded-full" />
                 <span className="text-text-error_primary font-medium">
                   Invalid government ID format
                 </span>
@@ -1058,20 +1058,20 @@ export const LiveExamples: Story = {
               <p className="text-text-quaternary mt-2 text-sm">
                 Classes:{' '}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-                  bg-background-error_primary text-text-error_primary
+                  bg-default-error_primary text-text-error_primary
                 </code>
               </p>
             </div>
 
-            <div className="border-border-primary bg-background-secondary rounded-lg border p-4">
-              <h4 className="text-text-primary mb-2 font-semibold">Professional Content Card</h4>
-              <p className="text-text-secondary mb-2">
+            <div className="border-border-blue-600 bg-default-secondary rounded-lg border p-4">
+              <h4 className="text-text-gray-600 mb-2 font-semibold">Professional Content Card</h4>
+              <p className="text-text-gray-600 mb-2">
                 This is secondary text content using professional Figma-style hierarchy.
               </p>
               <p className="text-text-quaternary text-sm">
                 Classes:{' '}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">
-                  bg-background-secondary text-text-primary text-text-secondary
+                  bg-default-secondary text-text-gray-600 text-text-gray-600
                 </code>
               </p>
             </div>
@@ -1080,8 +1080,8 @@ export const LiveExamples: Story = {
       </div>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-2 text-lg font-semibold text-blue-900">🎯 Single Source of Truth</h3>
-        <p className="text-sm text-blue-800">
+        <h3 className="mb-2 text-lg font-semibold text-gray-900">🎯 Single Source of Truth</h3>
+        <p className="text-sm text-gray-800">
           All colors shown here come directly from your{' '}
           <code className="rounded bg-blue-100 px-1 py-0.5">tailwind.config.js</code>. When you
           update your config, this documentation automatically updates too!

@@ -126,7 +126,7 @@ function HouseholdDetailContent() {
           <div className="flex h-64 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <p className="text-secondary mt-4 text-sm">Loading household details...</p>
+              <p className="mt-4 text-sm text-gray-600">Loading household details...</p>
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ function HouseholdDetailContent() {
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="bg-surface border-default rounded-lg border p-6 shadow-md">
+            <div className="bg-default rounded-lg border border-default p-6 shadow-md">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -155,13 +155,13 @@ function HouseholdDetailContent() {
                   />
                 </svg>
               </div>
-              <h1 className="font-montserrat text-primary mb-2 text-lg font-semibold">
+              <h1 className="font-montserrat mb-2 text-lg font-semibold text-gray-600">
                 Household Not Found
               </h1>
-              <p className="font-montserrat text-secondary mb-4 text-sm">{error}</p>
+              <p className="font-montserrat mb-4 text-sm text-gray-600">{error}</p>
               <Link
                 href="/households"
-                className="hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium"
+                className="hover:bg-default-hover inline-flex items-center rounded-md border border-default px-4 py-2 text-sm font-medium text-gray-600"
               >
                 Back to Households
               </Link>
@@ -176,12 +176,12 @@ function HouseholdDetailContent() {
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="mx-auto max-w-7xl">
         {/* Header Section */}
-        <div className="bg-surface border-default -mx-6 mb-8 border-b p-6 shadow-sm">
+        <div className="bg-default -mx-6 mb-8 border-b border-default p-6 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <Link
                 href="/households"
-                className="bg-surface hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="bg-default hover:bg-default-hover inline-flex items-center rounded-md border border-default px-3 py-2 text-sm font-medium text-gray-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -216,8 +216,8 @@ function HouseholdDetailContent() {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-primary text-2xl font-bold">Household #{household.code}</h1>
-                  <p className="text-secondary text-sm">
+                  <h1 className="text-2xl font-bold text-gray-600">Household #{household.code}</h1>
+                  <p className="text-sm text-gray-600">
                     {members.length} member{members.length !== 1 ? 's' : ''} • Created{' '}
                     {new Date(household.created_at).toLocaleDateString()}
                   </p>
@@ -253,35 +253,35 @@ function HouseholdDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-8 lg:col-span-2">
             {/* Household Information Card */}
-            <div className="bg-surface border-default rounded-lg border shadow">
-              <div className="border-default border-b px-6 py-4">
-                <h3 className="text-primary text-lg font-medium">Household Information</h3>
+            <div className="bg-default rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-gray-600">Household Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   <div>
-                    <dt className="text-secondary text-sm font-medium">Household Number</dt>
-                    <dd className="text-primary mt-1 font-mono text-sm">#{household.code}</dd>
+                    <dt className="text-sm font-medium text-gray-600">Household Number</dt>
+                    <dd className="mt-1 font-mono text-sm text-gray-600">#{household.code}</dd>
                   </div>
                   <div>
-                    <dt className="text-secondary text-sm font-medium">Head of Household</dt>
-                    <dd className="text-primary mt-1 text-sm">
+                    <dt className="text-sm font-medium text-gray-600">Head of Household</dt>
+                    <dd className="mt-1 text-sm text-gray-600">
                       {household.household_head_id ? 'Head assigned' : 'No head assigned'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-secondary text-sm font-medium">Address</dt>
-                    <dd className="text-primary mt-1 text-sm">
+                    <dt className="text-sm font-medium text-gray-600">Address</dt>
+                    <dd className="mt-1 text-sm text-gray-600">
                       {household.house_number || 'No address specified'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-secondary text-sm font-medium">Total Members</dt>
-                    <dd className="text-primary mt-1 text-sm">{members.length}</dd>
+                    <dt className="text-sm font-medium text-gray-600">Total Members</dt>
+                    <dd className="mt-1 text-sm text-gray-600">{members.length}</dd>
                   </div>
                   <div>
-                    <dt className="text-secondary text-sm font-medium">Created Date</dt>
-                    <dd className="text-primary mt-1 text-sm">
+                    <dt className="text-sm font-medium text-gray-600">Created Date</dt>
+                    <dd className="mt-1 text-sm text-gray-600">
                       {new Date(household.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -294,63 +294,63 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Members Card */}
-            <div className="bg-surface border-default rounded-lg border shadow">
-              <div className="border-default border-b px-6 py-4">
-                <h3 className="text-primary text-lg font-medium">Household Members</h3>
+            <div className="bg-default rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-gray-600">Household Members</h3>
               </div>
 
               {members.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-secondary">No members found in this household.</p>
+                  <p className="text-gray-600">No members found in this household.</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="divide-border-light min-w-full divide-y">
-                    <thead className="bg-background-muted">
+                    <thead className="bg-default-muted">
                       <tr>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Name
                         </th>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Age
                         </th>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Sex
                         </th>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Civil Status
                         </th>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Contact
                         </th>
-                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">
                           Actions
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-border-light bg-surface divide-y">
+                    <tbody className="divide-border-light bg-default divide-y">
                       {members.map(member => (
-                        <tr key={member.id} className="hover:bg-surface-hover transition-colors">
+                        <tr key={member.id} className="hover:bg-default-hover transition-colors">
                           <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-primary text-sm font-medium">
+                            <div className="text-sm font-medium text-gray-600">
                               {formatFullName(member)}
                               {household.household_head_id === member.id && (
-                                <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                                <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-gray-800">
                                   Head
                                 </span>
                               )}
                             </div>
                           </td>
-                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
                             {calculateAge(member.birthdate)} years old
                           </td>
-                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm capitalize">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-gray-600">
                             {member.sex}
                           </td>
-                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm capitalize">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-gray-600">
                             {member.civil_status.replace('_', ' ')}
                           </td>
-                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm">
+                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
                             <div>{member.mobile_number}</div>
                             {member.email && (
                               <div className="text-muted text-xs">{member.email}</div>
@@ -359,7 +359,7 @@ function HouseholdDetailContent() {
                           <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                             <Link
                               href={`/residents/${member.id}`}
-                              className="text-blue-600 hover:text-blue-800 hover:underline"
+                              className="text-gray-600 hover:text-gray-800 hover:underline"
                             >
                               View Details
                             </Link>
@@ -376,9 +376,9 @@ function HouseholdDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-8">
             {/* Quick Actions Card */}
-            <div className="bg-surface border-default rounded-lg border shadow">
-              <div className="border-default border-b px-6 py-4">
-                <h3 className="text-primary text-lg font-medium">Quick Actions</h3>
+            <div className="bg-default rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-gray-600">Quick Actions</h3>
               </div>
               <div className="space-y-3 px-6 py-4">
                 <Link
@@ -387,7 +387,7 @@ function HouseholdDetailContent() {
                 >
                   Generate RBI Form
                 </Link>
-                <button className="bg-surface hover:bg-surface-hover border-default text-secondary w-full rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <button className="bg-default hover:bg-default-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                   Export Household Data
                 </button>
                 <Link
@@ -400,31 +400,31 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Statistics Card */}
-            <div className="bg-surface border-default rounded-lg border shadow">
-              <div className="border-default border-b px-6 py-4">
-                <h3 className="text-primary text-lg font-medium">Statistics</h3>
+            <div className="bg-default rounded-lg border border-default shadow">
+              <div className="border-b border-default px-6 py-4">
+                <h3 className="text-lg font-medium text-gray-600">Statistics</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <dt className="text-secondary text-sm font-medium">Total Members</dt>
-                    <dd className="text-primary text-sm font-medium">{members.length}</dd>
+                    <dt className="text-sm font-medium text-gray-600">Total Members</dt>
+                    <dd className="text-sm font-medium text-gray-600">{members.length}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-secondary text-sm font-medium">Adults (18+)</dt>
-                    <dd className="text-primary text-sm font-medium">
+                    <dt className="text-sm font-medium text-gray-600">Adults (18+)</dt>
+                    <dd className="text-sm font-medium text-gray-600">
                       {members.filter(m => calculateAge(m.birthdate) >= 18).length}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-secondary text-sm font-medium">Minors (Under 18)</dt>
-                    <dd className="text-primary text-sm font-medium">
+                    <dt className="text-sm font-medium text-gray-600">Minors (Under 18)</dt>
+                    <dd className="text-sm font-medium text-gray-600">
                       {members.filter(m => calculateAge(m.birthdate) < 18).length}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-secondary text-sm font-medium">Senior Citizens (60+)</dt>
-                    <dd className="text-primary text-sm font-medium">
+                    <dt className="text-sm font-medium text-gray-600">Senior Citizens (60+)</dt>
+                    <dd className="text-sm font-medium text-gray-600">
                       {members.filter(m => calculateAge(m.birthdate) >= 60).length}
                     </dd>
                   </div>

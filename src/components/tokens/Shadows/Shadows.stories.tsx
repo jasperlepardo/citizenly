@@ -153,8 +153,8 @@ export const BoxShadows: Story = {
   name: '📦 Box Shadows',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-neutral-900">Box Shadow System</h1>
-      <p className="mb-8 text-neutral-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900">Box Shadow System</h1>
+      <p className="mb-8 text-gray-600">
         Progressive shadow system that creates depth and visual hierarchy in government
         applications.
       </p>
@@ -184,20 +184,20 @@ export const BoxShadows: Story = {
             .map(([name, shadow]) => (
               <div key={name} className="text-center">
                 <div
-                  className="mx-auto mb-3 flex h-24 w-24 items-center justify-center rounded-lg border border-neutral-200 bg-white font-medium text-neutral-700"
+                  className="mx-auto mb-3 flex h-24 w-24 items-center justify-center rounded-lg border border-gray-200 bg-white font-medium text-gray-700"
                   style={{ boxShadow: shadow }}
                 >
                   {name}
                 </div>
-                <div className="text-sm text-neutral-600">{name} shadow</div>
+                <div className="text-sm text-gray-600">{name} shadow</div>
               </div>
             ))}
         </div>
       </ShadowDemo>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 font-semibold text-blue-900">📦 Box Shadow Guidelines</h3>
-        <ul className="space-y-1 text-sm text-blue-800">
+        <h3 className="mb-2 font-semibold text-gray-900">📦 Box Shadow Guidelines</h3>
+        <ul className="space-y-1 text-sm text-gray-800">
           <li>
             • <strong>xs-sm</strong>: Subtle elevation for buttons, inputs, small cards
           </li>
@@ -223,8 +223,8 @@ export const BorderRadius: Story = {
   name: '🔄 Border Radius',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-neutral-900">Border Radius System</h1>
-      <p className="mb-8 text-neutral-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900">Border Radius System</h1>
+      <p className="mb-8 text-gray-600">
         Modern corner rounding that creates approachable, contemporary government interfaces.
       </p>
 
@@ -242,7 +242,7 @@ export const BorderRadius: Story = {
         <div className="space-y-8">
           {/* Buttons */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Buttons</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Buttons</h4>
             <div className="flex flex-wrap gap-4">
               {Object.entries(radiusTokens)
                 .filter(([name]) => !['full'].includes(name))
@@ -261,21 +261,21 @@ export const BorderRadius: Story = {
 
           {/* Cards */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Cards</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Cards</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {[radiusTokens.sm, radiusTokens.lg, radiusTokens['2xl']].map((radius, index) => {
                 const names = ['sm', 'lg', '2xl'];
                 return (
                   <div
                     key={radius}
-                    className="border border-neutral-200 bg-white p-6 shadow-md"
+                    className="border border-gray-200 bg-white p-6 shadow-md"
                     style={{ borderRadius: radius }}
                   >
-                    <h5 className="mb-2 font-semibold text-neutral-900">Card Component</h5>
-                    <p className="mb-3 text-sm text-neutral-600">
+                    <h5 className="mb-2 font-semibold text-gray-900">Card Component</h5>
+                    <p className="mb-3 text-sm text-gray-600">
                       This card uses {names[index]} border radius ({radius}).
                     </p>
-                    <button className="text-sm font-medium text-blue-600">Learn more →</button>
+                    <button className="text-sm font-medium text-gray-600">Learn more →</button>
                   </div>
                 );
               })}
@@ -284,7 +284,7 @@ export const BorderRadius: Story = {
 
           {/* Badges and Avatars */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Badges & Avatars</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Badges & Avatars</h4>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
                 <div
@@ -293,7 +293,7 @@ export const BorderRadius: Story = {
                 >
                   JD
                 </div>
-                <span className="text-sm text-neutral-600">Avatar (full radius)</span>
+                <span className="text-sm text-gray-600">Avatar (full radius)</span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -303,7 +303,7 @@ export const BorderRadius: Story = {
                 >
                   Online
                 </span>
-                <span className="text-sm text-neutral-600">Badge (full radius)</span>
+                <span className="text-sm text-gray-600">Badge (full radius)</span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -313,7 +313,7 @@ export const BorderRadius: Story = {
                 >
                   New
                 </span>
-                <span className="text-sm text-neutral-600">Tag (sm radius)</span>
+                <span className="text-sm text-gray-600">Tag (sm radius)</span>
               </div>
             </div>
           </div>
@@ -345,8 +345,8 @@ export const OpacityBlur: Story = {
   name: '👻 Opacity & Blur',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-neutral-900">Opacity & Blur Effects</h1>
-      <p className="mb-8 text-neutral-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900">Opacity & Blur Effects</h1>
+      <p className="mb-8 text-gray-600">
         Transparency and blur effects for modern UI patterns and state management.
       </p>
 
@@ -373,22 +373,22 @@ export const OpacityBlur: Story = {
         <div className="space-y-8">
           {/* Loading States */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Loading & Disabled States</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Loading & Disabled States</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="rounded-lg border border-neutral-200 bg-white p-4">
-                <h5 className="mb-2 font-semibold text-neutral-900">Normal State</h5>
-                <p className="mb-3 text-sm text-neutral-600">
+              <div className="rounded-lg border border-gray-200 bg-white p-4">
+                <h5 className="mb-2 font-semibold text-gray-900">Normal State</h5>
+                <p className="mb-3 text-sm text-gray-600">
                   This content is fully visible and interactive.
                 </p>
                 <button className="rounded-md bg-blue-600 px-4 py-2 text-white">Action</button>
               </div>
 
               <div
-                className="rounded-lg border border-neutral-200 bg-white p-4"
+                className="rounded-lg border border-gray-200 bg-white p-4"
                 style={{ opacity: opacityTokens[60] }}
               >
-                <h5 className="mb-2 font-semibold text-neutral-900">Loading State</h5>
-                <p className="mb-3 text-sm text-neutral-600">
+                <h5 className="mb-2 font-semibold text-gray-900">Loading State</h5>
+                <p className="mb-3 text-sm text-gray-600">
                   Content is loading, reduced opacity indicates wait.
                 </p>
                 <button className="rounded-md bg-blue-600 px-4 py-2 text-white" disabled>
@@ -397,11 +397,11 @@ export const OpacityBlur: Story = {
               </div>
 
               <div
-                className="rounded-lg border border-neutral-200 bg-white p-4"
+                className="rounded-lg border border-gray-200 bg-white p-4"
                 style={{ opacity: opacityTokens[40] }}
               >
-                <h5 className="mb-2 font-semibold text-neutral-900">Disabled State</h5>
-                <p className="mb-3 text-sm text-neutral-600">
+                <h5 className="mb-2 font-semibold text-gray-900">Disabled State</h5>
+                <p className="mb-3 text-sm text-gray-600">
                   Content is disabled, low opacity shows unavailability.
                 </p>
                 <button className="rounded-md bg-blue-600 px-4 py-2 text-white" disabled>
@@ -413,7 +413,7 @@ export const OpacityBlur: Story = {
 
           {/* Overlay Examples */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Overlay Patterns</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Overlay Patterns</h4>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Modal overlay */}
               <div className="relative h-40 overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-purple-500">
@@ -462,7 +462,7 @@ export const OpacityBlur: Story = {
         <div className="space-y-8">
           {/* Glassmorphism */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Glassmorphism Cards</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Glassmorphism Cards</h4>
             <div className="relative h-64 overflow-hidden rounded-xl bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-6">
               <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Light glass */}
@@ -500,25 +500,25 @@ export const OpacityBlur: Story = {
 
           {/* Loading blur */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Loading State Blur</h4>
-            <div className="relative overflow-hidden rounded-lg border border-neutral-200 bg-white">
+            <h4 className="mb-4 font-semibold text-gray-900">Loading State Blur</h4>
+            <div className="relative overflow-hidden rounded-lg border border-gray-200 bg-white">
               <div className="p-6">
-                <h5 className="mb-3 font-semibold text-neutral-900">Document Processing System</h5>
+                <h5 className="mb-3 font-semibold text-gray-900">Document Processing System</h5>
                 <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded border bg-neutral-50 p-4">
-                    <div className="text-sm font-medium text-neutral-700">Applications</div>
-                    <div className="text-2xl font-bold text-neutral-900">1,234</div>
+                  <div className="rounded border bg-gray-50 p-4">
+                    <div className="text-sm font-medium text-gray-700">Applications</div>
+                    <div className="text-2xl font-bold text-gray-900">1,234</div>
                   </div>
-                  <div className="rounded border bg-neutral-50 p-4">
-                    <div className="text-sm font-medium text-neutral-700">Processed</div>
-                    <div className="text-2xl font-bold text-neutral-900">856</div>
+                  <div className="rounded border bg-gray-50 p-4">
+                    <div className="text-sm font-medium text-gray-700">Processed</div>
+                    <div className="text-2xl font-bold text-gray-900">856</div>
                   </div>
-                  <div className="rounded border bg-neutral-50 p-4">
-                    <div className="text-sm font-medium text-neutral-700">Pending</div>
-                    <div className="text-2xl font-bold text-neutral-900">378</div>
+                  <div className="rounded border bg-gray-50 p-4">
+                    <div className="text-sm font-medium text-gray-700">Pending</div>
+                    <div className="text-2xl font-bold text-gray-900">378</div>
                   </div>
                 </div>
-                <p className="text-sm text-neutral-600">
+                <p className="text-sm text-gray-600">
                   This interface shows document processing statistics and status information.
                 </p>
               </div>
@@ -530,8 +530,8 @@ export const OpacityBlur: Story = {
               >
                 <div className="text-center">
                   <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
-                  <div className="font-medium text-neutral-900">Processing Request...</div>
-                  <div className="text-sm text-neutral-600">blur: {blurTokens.md}</div>
+                  <div className="font-medium text-gray-900">Processing Request...</div>
+                  <div className="text-sm text-gray-600">blur: {blurTokens.md}</div>
                 </div>
               </div>
             </div>
@@ -541,8 +541,8 @@ export const OpacityBlur: Story = {
 
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-          <h3 className="mb-2 font-semibold text-purple-900">👻 Opacity Guidelines</h3>
-          <ul className="space-y-1 text-sm text-purple-800">
+          <h3 className="mb-2 font-semibold text-gray-900">👻 Opacity Guidelines</h3>
+          <ul className="space-y-1 text-sm text-gray-800">
             <li>
               • <strong>10-25%</strong>: Subtle overlays, hover effects
             </li>
@@ -580,8 +580,8 @@ export const SemanticShadows: Story = {
   name: '🎯 Semantic Usage',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-neutral-900">Semantic Shadow & Effect Usage</h1>
-      <p className="mb-8 text-neutral-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900">Semantic Shadow & Effect Usage</h1>
+      <p className="mb-8 text-gray-600">
         Contextual shadow and effect tokens for consistent patterns across government applications.
       </p>
 
@@ -601,22 +601,22 @@ export const SemanticShadows: Story = {
             >
               Primary Button
             </button>
-            <div className="mt-2 text-sm text-neutral-600">button shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600">button shadow + radius</div>
           </div>
 
           {/* Card */}
           <div className="text-center">
             <div
-              className="mx-auto max-w-48 border border-neutral-200 bg-white p-4"
+              className="mx-auto max-w-48 border border-gray-200 bg-white p-4"
               style={{
                 boxShadow: semanticShadows.component.card,
                 borderRadius: semanticEffects.radius.card,
               }}
             >
-              <h4 className="mb-2 font-semibold text-neutral-900">Service Card</h4>
-              <p className="text-sm text-neutral-600">Government service information</p>
+              <h4 className="mb-2 font-semibold text-gray-900">Service Card</h4>
+              <p className="text-sm text-gray-600">Government service information</p>
             </div>
-            <div className="mt-2 text-sm text-neutral-600">card shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600">card shadow + radius</div>
           </div>
 
           {/* Input */}
@@ -624,7 +624,7 @@ export const SemanticShadows: Story = {
             <input
               type="text"
               placeholder="Government ID"
-              className="w-full max-w-48 border border-neutral-300 px-4 py-2 transition-all focus:border-blue-500 focus:outline-none"
+              className="w-full max-w-48 border border-gray-300 px-4 py-2 transition-all focus:border-blue-500 focus:outline-none"
               style={{
                 boxShadow: semanticShadows.component.input,
                 borderRadius: semanticEffects.radius.input,
@@ -636,7 +636,7 @@ export const SemanticShadows: Story = {
                 e.currentTarget.style.boxShadow = semanticShadows.component.input;
               }}
             />
-            <div className="mt-2 text-sm text-neutral-600">input shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600">input shadow + radius</div>
           </div>
         </div>
       </ShadowDemo>
@@ -648,7 +648,7 @@ export const SemanticShadows: Story = {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* Hover effects */}
           <div className="space-y-6">
-            <h4 className="font-semibold text-neutral-900">Hover Effects</h4>
+            <h4 className="font-semibold text-gray-900">Hover Effects</h4>
             <div className="space-y-4">
               {['Normal', 'Hover Me!', 'Click Me!'].map((text, index) => {
                 const shadows = [
@@ -659,7 +659,7 @@ export const SemanticShadows: Story = {
                 return (
                   <div
                     key={text}
-                    className="cursor-pointer select-none rounded-lg border border-neutral-200 bg-white p-4 transition-all duration-200"
+                    className="cursor-pointer select-none rounded-lg border border-gray-200 bg-white p-4 transition-all duration-200"
                     style={{ boxShadow: shadows[index] }}
                     onMouseEnter={e => {
                       if (index === 1)
@@ -678,19 +678,19 @@ export const SemanticShadows: Story = {
                         e.currentTarget.style.boxShadow = semanticShadows.component.card;
                     }}
                   >
-                    <div className="text-center font-medium text-neutral-700">{text}</div>
+                    <div className="text-center font-medium text-gray-700">{text}</div>
                     {index === 0 && (
-                      <div className="mt-1 text-center text-xs text-neutral-500">
+                      <div className="mt-1 text-center text-xs text-gray-500">
                         Default card shadow
                       </div>
                     )}
                     {index === 1 && (
-                      <div className="mt-1 text-center text-xs text-neutral-500">
+                      <div className="mt-1 text-center text-xs text-gray-500">
                         Hover to see elevation
                       </div>
                     )}
                     {index === 2 && (
-                      <div className="mt-1 text-center text-xs text-neutral-500">
+                      <div className="mt-1 text-center text-xs text-gray-500">
                         Click and hold for active state
                       </div>
                     )}
@@ -702,12 +702,12 @@ export const SemanticShadows: Story = {
 
           {/* Focus states */}
           <div className="space-y-6">
-            <h4 className="font-semibold text-neutral-900">Focus States</h4>
+            <h4 className="font-semibold text-gray-900">Focus States</h4>
             <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Click to focus"
-                className="w-full rounded-lg border border-neutral-300 px-4 py-3 transition-all focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-none"
                 onFocus={e => {
                   e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                   e.currentTarget.style.borderColor = '#3b82f6';
@@ -721,7 +721,7 @@ export const SemanticShadows: Story = {
               <textarea
                 placeholder="Text area with focus shadow"
                 rows={3}
-                className="w-full resize-none rounded-lg border border-neutral-300 px-4 py-3 transition-all focus:outline-none"
+                className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-none"
                 onFocus={e => {
                   e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                   e.currentTarget.style.borderColor = '#3b82f6';
@@ -744,7 +744,7 @@ export const SemanticShadows: Story = {
                 Button with focus ring
               </button>
 
-              <div className="text-center text-xs text-neutral-500">
+              <div className="text-center text-xs text-gray-500">
                 Focus elements above to see accessibility focus indicators
               </div>
             </div>
@@ -759,7 +759,7 @@ export const SemanticShadows: Story = {
         <div className="space-y-8">
           {/* Navigation */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Navigation Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Navigation Shadow</h4>
             <div
               className="rounded-lg bg-blue-600 p-4 text-white"
               style={{ boxShadow: semanticShadows.layout.navigation }}
@@ -773,28 +773,28 @@ export const SemanticShadows: Story = {
 
           {/* Modal */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Modal Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Modal Shadow</h4>
             <div className="relative">
-              <div className="rounded-xl bg-neutral-900 bg-opacity-50 p-8">
+              <div className="rounded-xl bg-gray-900 bg-opacity-50 p-8">
                 <div
                   className="mx-auto max-w-md rounded-xl bg-white p-6"
                   style={{ boxShadow: semanticShadows.layout.modal }}
                 >
-                  <h5 className="mb-3 text-lg font-semibold text-neutral-900">
+                  <h5 className="mb-3 text-lg font-semibold text-gray-900">
                     Document Confirmation
                   </h5>
-                  <p className="mb-4 text-neutral-600">
+                  <p className="mb-4 text-gray-600">
                     Are you sure you want to submit this application?
                   </p>
                   <div className="flex justify-end gap-3">
-                    <button className="px-4 py-2 text-neutral-600 hover:text-neutral-800">
+                    <button className="px-4 py-2 text-gray-600 hover:text-gray-800">
                       Cancel
                     </button>
                     <button className="rounded-md bg-blue-600 px-4 py-2 text-white">Confirm</button>
                   </div>
                 </div>
               </div>
-              <div className="mt-2 text-center text-sm text-neutral-600">
+              <div className="mt-2 text-center text-sm text-gray-600">
                 modal shadow (2xl depth)
               </div>
             </div>
@@ -802,27 +802,27 @@ export const SemanticShadows: Story = {
 
           {/* Dropdown */}
           <div>
-            <h4 className="mb-4 font-semibold text-neutral-900">Dropdown Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900">Dropdown Shadow</h4>
             <div className="relative inline-block">
-              <button className="rounded-md border border-neutral-300 bg-white px-4 py-2 text-neutral-700">
+              <button className="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700">
                 Select Service ▼
               </button>
               <div
-                className="absolute left-0 top-full z-10 mt-2 w-56 rounded-md border border-neutral-200 bg-white py-2"
+                className="absolute left-0 top-full z-10 mt-2 w-56 rounded-md border border-gray-200 bg-white py-2"
                 style={{ boxShadow: semanticShadows.layout.dropdown }}
               >
-                <div className="cursor-pointer px-4 py-2 hover:bg-neutral-50">
+                <div className="cursor-pointer px-4 py-2 hover:bg-gray-50">
                   Birth Certificate Request
                 </div>
-                <div className="cursor-pointer px-4 py-2 hover:bg-neutral-50">
+                <div className="cursor-pointer px-4 py-2 hover:bg-gray-50">
                   Marriage Certificate
                 </div>
-                <div className="cursor-pointer px-4 py-2 hover:bg-neutral-50">
+                <div className="cursor-pointer px-4 py-2 hover:bg-gray-50">
                   Business Permit Application
                 </div>
-                <div className="cursor-pointer px-4 py-2 hover:bg-neutral-50">Tax Clearance</div>
+                <div className="cursor-pointer px-4 py-2 hover:bg-gray-50">Tax Clearance</div>
               </div>
-              <div className="mt-16 text-sm text-neutral-600">dropdown shadow (xl depth)</div>
+              <div className="mt-16 text-sm text-gray-600">dropdown shadow (xl depth)</div>
             </div>
           </div>
         </div>

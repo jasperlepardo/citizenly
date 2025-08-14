@@ -63,8 +63,8 @@ export function GeographicSelectorExample() {
       {/* API Data Preview */}
       {formData.barangayCode && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-3 font-semibold text-blue-800">Data sent to API (codes only):</h3>
-          <pre className="text-sm text-blue-700">
+          <h3 className="mb-3 font-semibold text-gray-800">Data sent to API (codes only):</h3>
+          <pre className="text-sm text-gray-700">
             {JSON.stringify(
               {
                 regionCode: formData.regionCode,

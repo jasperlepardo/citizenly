@@ -46,7 +46,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 <div className="mt-2 max-w-24 text-center">
                   <p
                     className={`text-xs font-medium ${
-                      isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                      isActive ? 'text-gray-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
                     } `}
                   >
                     {step.title}

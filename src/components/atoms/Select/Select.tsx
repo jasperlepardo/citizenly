@@ -8,14 +8,14 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const selectContainerVariants = cva(
-  'relative w-full rounded transition-all duration-200 bg-surface',
+  'relative w-full rounded transition-all duration-200 bg-default',
   {
     variants: {
       variant: {
         default:
           'border border-default focus-within:border-blue-500 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         error: 'border border-red-500',
-        disabled: 'border bg-background-muted border-default',
+        disabled: 'border bg-default-muted border-default',
       },
       size: {
         default: 'min-h-10 px-3 py-2', // 12px + 8px padding from Figma
@@ -33,9 +33,9 @@ const selectVariants = cva(
   {
     variants: {
       variant: {
-        default: 'text-primary',
-        error: 'text-primary',
-        disabled: 'cursor-not-allowed text-muted',
+        default: 'text-gray-600 dark:text-gray-300',
+        error: 'text-gray-600 dark:text-gray-300',
+        disabled: 'cursor-not-allowed text-muted dark:text-gray-500',
       },
     },
     defaultVariants: {
@@ -108,7 +108,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <option
               value=""
               disabled
-              className="text-muted bg-surface"
+              className="text-muted bg-default bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400"
               style={{
                 backgroundColor: 'var(--color-surface)',
                 color: 'var(--color-text-muted)',
@@ -121,10 +121,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled}
-                className="bg-surface text-primary"
+                className="bg-default text-gray-600 bg-white dark:bg-gray-900 dark:text-gray-300"
                 style={{
                   backgroundColor: 'var(--color-surface)',
-                  color: 'var(--color-text-primary)',
+                  color: 'var(--color-text-gray-600)',
                 }}
               >
                 {option.label}
@@ -155,10 +155,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </div>
 
         {/* Helper Text */}
-        {helperText && !errorMessage && <p className="text-secondary mt-1 text-xs">{helperText}</p>}
+        {helperText && !errorMessage && <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">{helperText}</p>}
 
         {/* Error Message */}
-        {errorMessage && <p className="text-danger-600 mt-1 text-xs">{errorMessage}</p>}
+        {errorMessage && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errorMessage}</p>}
       </div>
     );
   }

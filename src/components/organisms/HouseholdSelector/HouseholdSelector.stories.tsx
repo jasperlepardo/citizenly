@@ -163,12 +163,12 @@ export const WorkflowDemo: Story = {
       <div className="max-w-2xl space-y-6">
         <div className="flex items-center space-x-2 text-sm">
           <div
-            className={`rounded px-3 py-1 ${step === 'select' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+            className={`rounded px-3 py-1 ${step === 'select' ? 'bg-blue-100 text-gray-800' : 'bg-gray-100 text-gray-600'}`}
           >
             1. Select Household
           </div>
           <div
-            className={`rounded px-3 py-1 ${step === 'confirm' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+            className={`rounded px-3 py-1 ${step === 'confirm' ? 'bg-blue-100 text-gray-800' : 'bg-gray-100 text-gray-600'}`}
           >
             2. Confirm
           </div>
@@ -296,13 +296,13 @@ export const SearchExamples: Story = {
           </div>
 
           <div className="rounded-lg bg-blue-50 p-4">
-            <h4 className="mb-2 font-medium text-blue-800">Create New</h4>
+            <h4 className="mb-2 font-medium text-gray-800">Create New</h4>
             <HouseholdSelector
               value=""
               onSelect={action('create-new')}
               placeholder="Click dropdown to see create option"
             />
-            <p className="mt-2 text-sm text-blue-600">
+            <p className="mt-2 text-sm text-gray-600">
               Always available option to create new household
             </p>
           </div>
@@ -382,7 +382,7 @@ export const FormIntegration: Story = {
 
         {householdCode && (
           <div className="rounded border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-gray-800">
               <strong>Selected:</strong> {householdCode}
             </p>
           </div>

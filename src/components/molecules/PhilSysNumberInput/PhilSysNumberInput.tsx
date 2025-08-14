@@ -157,7 +157,7 @@ export default function PhilSysNumberInput({
   return (
     <div className={`space-y-2 ${className}`}>
       {label && (
-        <label className="text-primary block text-sm font-medium">
+        <label className="block text-sm font-medium text-gray-600">
           {label}
           {required && <span className="ml-1 text-red-500">*</span>}
         </label>
@@ -222,8 +222,8 @@ export default function PhilSysNumberInput({
       {/* Security Notice */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs dark:border-blue-800 dark:bg-blue-900/20">
         <div className="flex items-start space-x-2">
-          <span className="text-blue-600 dark:text-blue-400">🔐</span>
-          <div className="text-blue-700 dark:text-blue-300">
+          <span className="text-gray-600 dark:text-gray-400">🔐</span>
+          <div className="text-gray-700 dark:text-gray-300">
             <strong>Security Notice:</strong> PhilSys numbers are automatically encrypted and masked
             for protection. Only the last 4 digits are shown when not editing.
             {autoHash && ' Data is hashed before storage.'}

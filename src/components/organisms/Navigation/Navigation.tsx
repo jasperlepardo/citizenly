@@ -180,19 +180,19 @@ const navigationStyles = {
   base: 'group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors duration-200',
 
   // Active item styles
-  active: 'bg-blue-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400',
+  active: 'bg-blue-50 dark:bg-slate-800 text-gray-600 dark:text-gray-400',
 
   // Inactive item styles
-  inactive: 'text-secondary hover:text-blue-600 hover:bg-surface-hover',
+  inactive: 'text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-default-hover dark:hover:bg-gray-700',
 
   // Icon styles
-  iconActive: 'text-blue-600 dark:text-blue-400 h-6 w-6 shrink-0',
-  iconInactive: 'text-muted group-hover:text-blue-600 h-6 w-6 shrink-0',
+  iconActive: 'text-gray-600 dark:text-gray-400 h-6 w-6 shrink-0',
+  iconInactive: 'text-muted group-hover:text-gray-600 dark:group-hover:text-gray-400 h-6 w-6 shrink-0',
 
   // Submenu styles
   submenu: 'mt-2 ml-4 space-y-1',
   submenuItem: 'rounded p-2 bg-blue-50 dark:bg-slate-800',
-  submenuLink: 'font-montserrat text-sm font-medium text-blue-600 dark:text-blue-400',
+  submenuLink: 'font-montserrat text-sm font-medium text-gray-600 dark:text-gray-400',
 };
 
 // Navigation item component

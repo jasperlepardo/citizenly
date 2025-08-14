@@ -495,7 +495,7 @@ export default function CreateHouseholdModal({
               <div>
                 <strong>Barangay:</strong> {addressDisplayInfo.barangay}
               </div>
-              <div className="mt-1 text-xs text-neutral-500">
+              <div className="mt-1 text-xs text-gray-500">
                 Code: {userProfile?.barangay_code}
               </div>
               <div className="mt-2 text-xs text-green-600">
@@ -512,7 +512,7 @@ export default function CreateHouseholdModal({
         <div>
           <label
             htmlFor="house-number"
-            className="font-montserrat mb-2 block text-sm font-medium text-neutral-700"
+            className="font-montserrat mb-2 block text-sm font-medium text-gray-700"
           >
             House/Block/Lot Number
           </label>
@@ -522,14 +522,14 @@ export default function CreateHouseholdModal({
             value={formData.house_number}
             onChange={e => handleInputChange('house_number', e.target.value)}
             placeholder="e.g., Blk 1 Lot 5, #123"
-            className="font-montserrat w-full rounded border border-neutral-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="font-montserrat w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isSubmitting}
           />
         </div>
 
         {/* Subdivision */}
         <div>
-          <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+          <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
             Subdivision/Zone/Sitio/Purok
           </label>
           <SubdivisionSelector
@@ -542,7 +542,7 @@ export default function CreateHouseholdModal({
 
         {/* Street Name */}
         <div>
-          <label className="font-montserrat mb-2 block text-sm font-medium text-neutral-700">
+          <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
             Street Name *
           </label>
           <StreetSelector
@@ -556,7 +556,7 @@ export default function CreateHouseholdModal({
 
         {/* Info Note */}
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
-          <p className="font-montserrat text-sm text-blue-800">
+          <p className="font-montserrat text-sm text-gray-800">
             <strong>Note:</strong> This household will be created in your assigned barangay. You can
             assign a resident as the household head after creating the household.
           </p>

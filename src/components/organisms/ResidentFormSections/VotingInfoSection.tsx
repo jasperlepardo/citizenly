@@ -66,9 +66,9 @@ export default function VotingInfoSection({
             checked={formData.is_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
-          <label htmlFor="is_voter" className="text-primary">
+          <label htmlFor="is_voter" className="text-gray-600">
             Registered Voter
           </label>
         </div>
@@ -81,9 +81,9 @@ export default function VotingInfoSection({
             checked={formData.is_resident_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
-          <label htmlFor="is_resident_voter" className="text-primary">
+          <label htmlFor="is_resident_voter" className="text-gray-600">
             Resident Voter (votes in this barangay)
           </label>
         </div>

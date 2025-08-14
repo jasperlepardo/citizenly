@@ -402,7 +402,7 @@ export const CustomLoadingComponent: Story = {
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="font-medium text-blue-600">Verifying your credentials...</p>
+          <p className="font-medium text-gray-600">Verifying your credentials...</p>
           <p className="mt-2 text-sm text-gray-500">Please wait while we check your access level</p>
         </div>
       </div>

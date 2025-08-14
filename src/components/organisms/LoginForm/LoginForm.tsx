@@ -88,21 +88,21 @@ export default function LoginForm({
 
   return (
     <div className={`mx-auto w-full max-w-md ${className}`}>
-      <div className="bg-surface border-default rounded-lg border p-8 shadow-lg">
+      <div className="bg-default rounded-lg border border-default p-8 shadow-lg">
         <div className="mb-8 text-center">
-          <h1 className="text-primary mb-2 text-2xl font-bold">Sign In to RBI System</h1>
-          <p className="text-secondary text-sm">Records of Barangay Inhabitant System</p>
+          <h1 className="mb-2 text-2xl font-bold text-gray-600">Sign In to RBI System</h1>
+          <p className="text-sm text-gray-600">Records of Barangay Inhabitant System</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* General Error */}
           {errors.general && (
-            <div className="border-danger-300 bg-danger-50 rounded-lg border p-4">
+            <div className="rounded-lg border border-red-300 bg-red-50 p-4">
               <div className="flex items-start gap-3">
-                <span className="text-danger-600 mt-0.5">⚠️</span>
+                <span className="mt-0.5 text-red-600">⚠️</span>
                 <div>
-                  <h4 className="text-danger-800 font-medium">Login Failed</h4>
-                  <p className="text-danger-700 text-sm">{errors.general}</p>
+                  <h4 className="font-medium text-red-800">Login Failed</h4>
+                  <p className="text-sm text-red-700">{errors.general}</p>
                 </div>
               </div>
             </div>
@@ -177,9 +177,9 @@ export default function LoginForm({
 
         {/* Footer */}
         <div className="mt-6 space-y-3 text-center">
-          <p className="text-secondary text-sm">
+          <p className="text-sm text-gray-600">
             Don&apos;t have an account?{' '}
-            <a href="/signup" className="text-primary-400 hover:text-primary-300 font-medium">
+            <a href="/signup" className="font-medium text-gray-400 hover:text-gray-300">
               Create one here
             </a>
           </p>

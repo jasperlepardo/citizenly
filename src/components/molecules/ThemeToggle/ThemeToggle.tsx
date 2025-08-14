@@ -10,9 +10,9 @@ const themeToggleVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-surface hover:bg-surface-hover border border-default text-primary',
-        ghost: 'hover:bg-surface-hover text-primary',
-        outline: 'border border-default bg-transparent hover:bg-surface-hover text-primary',
+        default: 'bg-default hover:bg-default-hover border border-default text-gray-600',
+        ghost: 'hover:bg-default-hover text-gray-600',
+        outline: 'border border-default bg-transparent hover:bg-default-hover text-gray-600',
       },
       size: {
         sm: 'h-8 w-8 p-1',

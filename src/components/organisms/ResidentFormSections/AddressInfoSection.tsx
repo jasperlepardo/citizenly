@@ -111,10 +111,10 @@ export default function AddressInfoSection({
       </div>
 
       <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-        <h4 className="mb-2 text-sm font-medium text-blue-800 dark:text-blue-200">
+        <h4 className="mb-2 text-sm font-medium text-gray-800 dark:text-gray-200">
           Address Information Note
         </h4>
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+        <p className="text-sm text-gray-700 dark:text-gray-300">
           Street ID and Subdivision ID are internal system identifiers. The household code links
           this resident to their household record. These fields are typically populated
           automatically by the system but can be manually adjusted if needed.

@@ -17,7 +17,7 @@ export default function AppShell({ children }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-default min-h-screen">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div className="relative z-50 lg:hidden" role="dialog" aria-modal="true">
@@ -49,14 +49,14 @@ export default function AppShell({ children }: AppShellProps) {
                 </Button>
               </div>
 
-              <div className="bg-surface/95 border-default/60 flex grow flex-col overflow-y-auto border-r backdrop-blur-xl">
+              <div className="bg-default/95 flex grow flex-col overflow-y-auto border-r border-default/60 backdrop-blur-xl">
                 <div className="px-6 py-8">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
                       <span className="text-lg font-bold text-white">R</span>
                     </div>
                     <div>
-                      <h1 className="text-primary text-xl font-bold tracking-tight">RBI System</h1>
+                      <h1 className="text-xl font-bold tracking-tight text-gray-600">RBI System</h1>
                       <p className="text-muted text-xs font-medium">Records Management</p>
                     </div>
                   </div>
@@ -73,14 +73,14 @@ export default function AppShell({ children }: AppShellProps) {
 
       {/* Static sidebar for desktop */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-        <div className="bg-surface/95 border-default/60 flex grow flex-col overflow-y-auto border-r backdrop-blur-xl">
+        <div className="bg-default/95 flex grow flex-col overflow-y-auto border-r border-default/60 backdrop-blur-xl">
           <div className="px-6 py-8">
             <div className="flex items-center gap-3">
               <div className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl">
                 <span className="text-lg font-bold text-white">R</span>
               </div>
               <div>
-                <h1 className="text-primary text-xl font-bold tracking-tight">RBI System</h1>
+                <h1 className="text-xl font-bold tracking-tight text-gray-600">RBI System</h1>
                 <p className="text-muted text-xs font-medium">Records Management</p>
               </div>
             </div>
@@ -94,13 +94,13 @@ export default function AppShell({ children }: AppShellProps) {
 
       <div className="lg:pl-64">
         {/* Top navigation bar */}
-        <div className="bg-surface/90 border-default/40 sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b px-4 shadow-xl shadow-black/5 backdrop-blur-2xl sm:px-6 lg:px-8">
+        <div className="bg-default/90 sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-default/40 px-4 shadow-xl shadow-black/5 backdrop-blur-2xl sm:px-6 lg:px-8">
           <Button
             variant="ghost"
             size="sm"
             iconOnly
             onClick={() => setSidebarOpen(true)}
-            className="hover:bg-surface-hover text-secondary hover:text-primary -m-2.5 rounded-lg p-2.5 transition-all duration-200 lg:hidden"
+            className="hover:bg-default-hover -m-2.5 rounded-lg p-2.5 text-gray-600 transition-all duration-200 hover:text-gray-600 lg:hidden"
           >
             <span className="sr-only">Open sidebar</span>
             <div className="flex size-5 flex-col justify-center space-y-1">
@@ -122,7 +122,7 @@ export default function AppShell({ children }: AppShellProps) {
                 </div>
               </div>
               <input
-                className="bg-surface/80 hover:bg-surface-hover/80 placeholder:text-muted focus:bg-surface text-primary block size-full rounded-2xl border-0 py-0 pl-11 pr-4 shadow-inner transition-all duration-200 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm"
+                className="bg-default/80 hover:bg-default-hover/80 placeholder:text-muted focus:bg-default block size-full rounded-2xl border-0 py-0 pl-11 pr-4 text-gray-600 shadow-inner transition-all duration-200 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm"
                 placeholder="Search residents, addresses..."
                 type="search"
               />
@@ -134,7 +134,7 @@ export default function AppShell({ children }: AppShellProps) {
                 variant="ghost"
                 size="sm"
                 iconOnly
-                className="text-muted hover:bg-surface-hover hover:text-secondary relative -m-2.5 rounded-xl p-2.5 transition-all duration-200"
+                className="text-muted hover:bg-default-hover relative -m-2.5 rounded-xl p-2.5 transition-all duration-200 hover:text-gray-600"
               >
                 <span className="sr-only">View notifications</span>
                 <div className="relative size-5">
@@ -154,17 +154,17 @@ export default function AppShell({ children }: AppShellProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hover:bg-surface-hover group -m-1.5 flex h-auto items-center rounded-2xl p-2 transition-all duration-200"
+                  className="hover:bg-default-hover group -m-1.5 flex h-auto items-center rounded-2xl p-2 transition-all duration-200"
                 >
                   <span className="sr-only">Open user menu</span>
                   <div className="flex size-8 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-xl ring-2 ring-white transition-transform duration-200 group-hover:scale-105">
                     <span className="text-sm font-bold text-white">BO</span>
                   </div>
                   <span className="hidden lg:ml-3 lg:flex lg:items-center">
-                    <span className="text-primary text-sm font-semibold transition-colors duration-200 group-hover:text-indigo-600">
+                    <span className="text-sm font-semibold text-gray-600 transition-colors duration-200 group-hover:text-indigo-600">
                       Barangay Official
                     </span>
-                    <div className="text-muted group-hover:text-secondary ml-2 size-4 transition-colors duration-200">
+                    <div className="text-muted ml-2 size-4 transition-colors duration-200 group-hover:text-gray-600">
                       <div className="size-1 rounded-full bg-current"></div>
                       <div className="-mt-0.5 ml-1 size-1 rounded-full bg-current"></div>
                       <div className="-mt-0.5 ml-2 size-1 rounded-full bg-current"></div>

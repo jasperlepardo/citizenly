@@ -232,7 +232,7 @@ export default function SimpleBarangaySelector({
         <div className="flex items-center justify-between">
           <div className="font-medium">{option.metadata.name}</div>
           {adminCheckStatus === 'checking' && (
-            <div className="flex items-center text-xs text-blue-500">
+            <div className="flex items-center text-xs text-gray-500">
               <div className="mr-1 h-3 w-3 animate-spin rounded-full border border-blue-500 border-t-transparent"></div>
               Checking...
             </div>
