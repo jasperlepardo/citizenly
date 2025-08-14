@@ -194,17 +194,17 @@ export default function HouseholdDetailContent() {
           </h2>
           <div className="space-y-3">
             <div>
-              <span className="block text-sm font-medium text-secondary">Household Code</span>
+              <span className="text-secondary block text-sm font-medium">Household Code</span>
               <span className="text-primary">{household.code}</span>
             </div>
             {household.name && (
               <div>
-                <span className="block text-sm font-medium text-secondary">Household Name</span>
+                <span className="text-secondary block text-sm font-medium">Household Name</span>
                 <span className="text-primary">{household.name}</span>
               </div>
             )}
             <div>
-              <span className="block text-sm font-medium text-secondary">Address</span>
+              <span className="text-secondary block text-sm font-medium">Address</span>
               <span className="text-primary">
                 {[household.house_number, household.street_name, household.subdivision]
                   .filter(Boolean)
@@ -212,7 +212,7 @@ export default function HouseholdDetailContent() {
               </span>
             </div>
             <div>
-              <span className="block text-sm font-medium text-secondary">Barangay Code</span>
+              <span className="text-secondary block text-sm font-medium">Barangay Code</span>
               <span className="text-primary">{household.barangay_code}</span>
             </div>
           </div>
@@ -226,11 +226,11 @@ export default function HouseholdDetailContent() {
             {household.head_resident ? (
               <>
                 <div>
-                  <span className="block text-sm font-medium text-secondary">Name</span>
+                  <span className="text-secondary block text-sm font-medium">Name</span>
                   <span className="text-primary">{formatFullName(household.head_resident)}</span>
                 </div>
                 <div>
-                  <span className="block text-sm font-medium text-secondary">Resident ID</span>
+                  <span className="text-secondary block text-sm font-medium">Resident ID</span>
                   <span className="text-primary">{household.head_resident.id}</span>
                 </div>
               </>

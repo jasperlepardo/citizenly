@@ -25,10 +25,10 @@ function ReportsContent() {
         {/* Page Header */}
         <div className="mb-6">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
               Reports & Analytics
             </h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <p className="font-montserrat text-secondary text-sm font-normal">
               Generate and manage comprehensive reports and data analytics for your barangay
             </p>
           </div>
@@ -57,10 +57,10 @@ function ReportsContent() {
                   {report.status}
                 </span>
               </div>
-              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary">
+              <h3 className="font-montserrat text-primary mb-2 text-base font-semibold">
                 {report.name}
               </h3>
-              <p className="font-montserrat mb-4 text-sm text-secondary">{report.description}</p>
+              <p className="font-montserrat text-secondary mb-4 text-sm">{report.description}</p>
               {report.link ? (
                 <Link href={report.link}>
                   <Button

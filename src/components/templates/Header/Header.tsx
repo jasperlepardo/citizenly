@@ -37,16 +37,16 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="bg-surface border-b border-default shadow-sm">
+    <header className="bg-surface border-default border-b shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary-600">
+              <div className="bg-primary-600 flex size-8 items-center justify-center rounded-lg">
                 <span className="font-display text-sm font-bold text-white">RBI</span>
               </div>
-              <span className="font-display text-xl font-semibold text-primary">RBI System</span>
+              <span className="font-display text-primary text-xl font-semibold">RBI System</span>
             </Link>
           </div>
 
@@ -54,31 +54,31 @@ export default function Header() {
           <nav className="hidden space-x-1 md:flex">
             <Link
               href="/dashboard"
-              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="hover:bg-surface-hover rounded-md px-3 py-2 font-body text-sm font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               Reports
             </Link>
@@ -94,7 +94,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 font-body text-sm font-medium text-secondary hover:text-primary"
+                className="font-body text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium"
               >
                 Sign In
               </Link>
@@ -105,7 +105,7 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="hover:bg-surface-hover inline-flex items-center justify-center rounded-md p-2 text-secondary transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="hover:bg-surface-hover text-secondary hover:text-primary focus:ring-primary-500 inline-flex items-center justify-center rounded-md p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-inset"
             >
               <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -122,39 +122,39 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="border-t border-default md:hidden">
+        <div className="border-default border-t md:hidden">
           <div className="bg-surface space-y-1 px-2 pb-3 pt-2 sm:px-3">
             <Link
               href="/dashboard"
-              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+              className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Reports
@@ -162,17 +162,17 @@ export default function Header() {
 
             {/* Mobile User Menu */}
             {user ? (
-              <div className="mt-2 border-t border-default pt-2">
+              <div className="border-default mt-2 border-t pt-2">
                 <div className="px-3 py-2">
                   <div className="flex items-center gap-3 p-2">
-                    <div className="flex size-8 items-center justify-center rounded-full bg-primary-600 text-sm font-medium text-white">
+                    <div className="bg-primary-600 flex size-8 items-center justify-center rounded-full text-sm font-medium text-white">
                       {`${user.user_metadata?.first_name?.[0] || ''}${user.user_metadata?.last_name?.[0] || ''}`.toUpperCase()}
                     </div>
                     <div className="flex-1">
-                      <div className="font-body text-sm font-medium text-primary">
+                      <div className="font-body text-primary text-sm font-medium">
                         {user.user_metadata?.first_name} {user.user_metadata?.last_name}
                       </div>
-                      <div className="font-body text-xs text-secondary">{user.email}</div>
+                      <div className="font-body text-secondary text-xs">{user.email}</div>
                     </div>
                   </div>
                 </div>
@@ -181,10 +181,10 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <div className="mt-2 border-t border-default pt-2">
+              <div className="border-default mt-2 border-t pt-2">
                 <Link
                   href="/login"
-                  className="hover:bg-surface-hover block rounded-md px-3 py-2 font-body text-base font-medium text-secondary transition-colors hover:text-primary"
+                  className="hover:bg-surface-hover font-body text-secondary hover:text-primary block rounded-md px-3 py-2 text-base font-medium transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In

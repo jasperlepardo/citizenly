@@ -143,7 +143,7 @@ export default function SearchBar({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="text-muted size-4 p-0 hover:text-secondary"
+                  className="text-muted hover:text-secondary size-4 p-0"
                 >
                   <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -187,9 +187,9 @@ export default function SearchBar({
 
       {/* Advanced Filters */}
       {showFilters && filterOptions.length > 0 && (
-        <div className="bg-surface-hover space-y-4 rounded-lg border border-default p-4">
+        <div className="bg-surface-hover border-default space-y-4 rounded-lg border p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-primary">Advanced Filters</h3>
+            <h3 className="text-primary text-sm font-medium">Advanced Filters</h3>
             <Button size="sm" variant="primary-outline" onClick={handleAddFilter}>
               Add Filter
             </Button>
@@ -208,7 +208,7 @@ export default function SearchBar({
                 return (
                   <div
                     key={index}
-                    className="bg-surface flex items-center gap-2 rounded border border-default p-3"
+                    className="bg-surface border-default flex items-center gap-2 rounded border p-3"
                   >
                     {/* Field Selection */}
                     <div className="w-40">

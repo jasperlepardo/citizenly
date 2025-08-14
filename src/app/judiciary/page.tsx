@@ -14,10 +14,10 @@ function JudiciaryContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
               Judiciary Services
             </h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <p className="font-montserrat text-secondary text-sm font-normal">
               Barangay justice system, mediation, and dispute resolution services
             </p>
           </div>
@@ -27,7 +27,7 @@ function JudiciaryContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="bg-surface rounded-lg border border-default p-8 text-center">
+        <div className="bg-surface border-default rounded-lg border p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-amber-100">
             <svg
               className="size-8 text-amber-600"
@@ -43,10 +43,10 @@ function JudiciaryContent() {
               />
             </svg>
           </div>
-          <h3 className="mb-2 text-lg font-semibold text-primary">
+          <h3 className="text-primary mb-2 text-lg font-semibold">
             Barangay Justice System Coming Soon
           </h3>
-          <p className="mx-auto mb-6 max-w-md text-secondary">
+          <p className="text-secondary mx-auto mb-6 max-w-md">
             We&apos;re developing a comprehensive digital platform for barangay justice
             administration. This will streamline case management, mediation processes, and legal
             documentation.
@@ -70,8 +70,8 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Case Management</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Case Management</h4>
+              <p className="text-secondary text-xs">
                 Track cases, hearings, and legal proceedings digitally
               </p>
             </div>
@@ -92,8 +92,8 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Mediation Services</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Mediation Services</h4>
+              <p className="text-secondary text-xs">
                 Facilitate dispute resolution and community mediation
               </p>
             </div>
@@ -114,8 +114,8 @@ function JudiciaryContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Legal Records</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Legal Records</h4>
+              <p className="text-secondary text-xs">
                 Maintain comprehensive legal documentation and archives
               </p>
             </div>

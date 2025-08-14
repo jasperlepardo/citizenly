@@ -282,7 +282,7 @@ function ResidentCard({ resident }) {
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button className="rounded-md bg-primary-500 px-4 py-2 text-sm font-medium text-neutral-50 transition-colors hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+        <button className="bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 rounded-md px-4 py-2 text-sm font-medium text-neutral-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
           View Details
         </button>
         <button className="rounded-md bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-200">

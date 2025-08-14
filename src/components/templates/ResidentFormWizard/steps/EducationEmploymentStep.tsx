@@ -41,8 +41,8 @@ export function EducationEmploymentStep({ formData, onChange, errors }: StepComp
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Education & Employment</h3>
-        <p className="mt-1 text-sm/6 text-secondary">
+        <h3 className="text-primary text-base/7 font-semibold">Education & Employment</h3>
+        <p className="text-secondary mt-1 text-sm/6">
           Provide education background and employment information.
         </p>
       </div>
@@ -54,7 +54,7 @@ export function EducationEmploymentStep({ formData, onChange, errors }: StepComp
       />
 
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Occupation Details</h4>
+        <h4 className="text-primary text-sm font-medium">Occupation Details</h4>
         <PSOCSelector
           value={formData.psocCode}
           onSelect={handlePSOCSelect}

@@ -39,7 +39,7 @@ export default function LiveRegion({
       role="status"
       aria-live={type}
       aria-atomic="true"
-      className={visible ? 'text-sm text-secondary' : 'sr-only'}
+      className={visible ? 'text-secondary text-sm' : 'sr-only'}
     >
       {currentMessage}
     </div>

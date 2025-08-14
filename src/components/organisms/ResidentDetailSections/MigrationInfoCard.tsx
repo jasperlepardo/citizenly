@@ -43,14 +43,14 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
   if (!migrantInfo) return null;
 
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         🏃‍♂️ Migration Information
       </h2>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-3">
           <div>
-            <span className="block text-sm font-medium text-secondary">Previous Location</span>
+            <span className="text-secondary block text-sm font-medium">Previous Location</span>
             <span className="text-primary">
               {[
                 migrantInfo.previous_barangay_code,
@@ -63,23 +63,23 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
             </span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Reason for Leaving</span>
+            <span className="text-secondary block text-sm font-medium">Reason for Leaving</span>
             <span className="text-primary">{migrantInfo.reason_for_leaving || '-'}</span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Date of Transfer</span>
+            <span className="text-secondary block text-sm font-medium">Date of Transfer</span>
             <span className="text-primary">{formatDate(migrantInfo.date_of_transfer || '')}</span>
           </div>
         </div>
         <div className="space-y-3">
           <div>
-            <span className="block text-sm font-medium text-secondary">
+            <span className="text-secondary block text-sm font-medium">
               Reason for Transferring
             </span>
             <span className="text-primary">{migrantInfo.reason_for_transferring || '-'}</span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">
+            <span className="text-secondary block text-sm font-medium">
               Duration of Stay (months)
             </span>
             <span className="text-primary">
@@ -87,13 +87,13 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
             </span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Intending to Return</span>
+            <span className="text-secondary block text-sm font-medium">Intending to Return</span>
             <span className="text-primary">
               {migrantInfo.is_intending_to_return ? 'Yes' : 'No'}
             </span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Migration Type</span>
+            <span className="text-secondary block text-sm font-medium">Migration Type</span>
             <span className="text-primary">{migrantInfo.migration_type || '-'}</span>
           </div>
         </div>

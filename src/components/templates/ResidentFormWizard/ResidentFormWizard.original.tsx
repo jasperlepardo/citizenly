@@ -883,9 +883,9 @@ export default function ResidentFormWizard({
                 {currentStep > step.id ? (
                   <>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="h-0.5 w-full bg-primary" />
+                      <div className="bg-primary h-0.5 w-full" />
                     </div>
-                    <div className="relative flex size-8 items-center justify-center rounded-full bg-primary">
+                    <div className="bg-primary relative flex size-8 items-center justify-center rounded-full">
                       <svg className="size-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path
                           fillRule="evenodd"
@@ -900,8 +900,8 @@ export default function ResidentFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="bg-surface relative flex size-8 items-center justify-center rounded-full border-2 border-primary">
-                      <span className="text-sm font-medium text-primary">{step.id}</span>
+                    <div className="bg-surface border-primary relative flex size-8 items-center justify-center rounded-full border-2">
+                      <span className="text-primary text-sm font-medium">{step.id}</span>
                     </div>
                   </>
                 ) : (
@@ -909,8 +909,8 @@ export default function ResidentFormWizard({
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="bg-border-light h-0.5 w-full" />
                     </div>
-                    <div className="bg-surface group relative flex size-8 items-center justify-center rounded-full border-2 border-default">
-                      <span className="text-sm font-medium text-secondary">{step.id}</span>
+                    <div className="bg-surface border-default group relative flex size-8 items-center justify-center rounded-full border-2">
+                      <span className="text-secondary text-sm font-medium">{step.id}</span>
                     </div>
                   </>
                 )}
@@ -919,8 +919,8 @@ export default function ResidentFormWizard({
           </ol>
         </nav>
         <div className="mt-6">
-          <h2 className="text-lg/8 font-semibold text-primary">{steps[currentStep - 1].title}</h2>
-          <p className="mt-1 text-sm/6 text-secondary">{steps[currentStep - 1].description}</p>
+          <h2 className="text-primary text-lg/8 font-semibold">{steps[currentStep - 1].title}</h2>
+          <p className="text-secondary mt-1 text-sm/6">{steps[currentStep - 1].description}</p>
           <p className="mt-2 text-xs text-amber-600">
             <span className="font-medium">*</span> Required fields must be completed to continue
           </p>
@@ -928,7 +928,7 @@ export default function ResidentFormWizard({
       </div>
 
       {/* Form Content */}
-      <div className="bg-surface rounded-lg border border-default shadow-sm">
+      <div className="bg-surface border-default rounded-lg border shadow-sm">
         <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
@@ -980,8 +980,8 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Basic Information</h3>
-        <p className="mt-1 text-sm/6 text-secondary">Essential personal details.</p>
+        <h3 className="text-primary text-base/7 font-semibold">Basic Information</h3>
+        <p className="text-secondary mt-1 text-sm/6">Essential personal details.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -1024,13 +1024,13 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
         />
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">
+          <label className="text-primary mb-2 block text-sm font-medium">
             Sex <span className="text-red-500">*</span>
           </label>
           <select
             value={formData.sex}
             onChange={e => onChange('sex', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select sex</option>
             <option value="male">Male</option>
@@ -1040,11 +1040,11 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-2 block text-sm font-medium text-primary">Civil Status</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Civil Status</label>
           <select
             value={formData.civilStatus}
             onChange={e => onChange('civilStatus', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select civil status</option>
             <option value="single">Single</option>
@@ -1059,7 +1059,7 @@ function BasicInfoStep({ formData, onChange, errors }: any) {
 
       {/* Mother's Maiden Name Section */}
       <div>
-        <h4 className="mb-4 text-sm font-medium text-primary">
+        <h4 className="text-primary mb-4 text-sm font-medium">
           Mother&rsquo;s Maiden Name (Optional)
         </h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -1100,19 +1100,19 @@ function EducationEmploymentStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Education & Employment</h3>
-        <p className="mt-1 text-sm/6 text-secondary">
+        <h3 className="text-primary text-base/7 font-semibold">Education & Employment</h3>
+        <p className="text-secondary mt-1 text-sm/6">
           Your educational background and work information.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Education Level</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Education Level</label>
           <select
             value={formData.educationAttainment || ''}
             onChange={e => onChange('educationAttainment', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select education level</option>
             <option value="elementary">Elementary</option>
@@ -1124,11 +1124,11 @@ function EducationEmploymentStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Graduate Status</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Graduate Status</label>
           <select
             value={formData.isGraduate ? 'yes' : 'no'}
             onChange={e => onChange('isGraduate', e.target.value === 'yes')}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="no">Not a Graduate</option>
             <option value="yes">Graduate</option>
@@ -1136,11 +1136,11 @@ function EducationEmploymentStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Employment Status</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Employment Status</label>
           <select
             value={formData.employmentStatus || ''}
             onChange={e => onChange('employmentStatus', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select employment status</option>
             <option value="employed">Employed</option>
@@ -1157,7 +1157,7 @@ function EducationEmploymentStep({ formData, onChange, errors }: any) {
         </div>
 
         <div className="sm:col-span-2">
-          <label className="mb-2 block text-sm font-medium text-primary">Occupation (PSOC)</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Occupation (PSOC)</label>
           <PSOCSelector
             value={formData.psocCode || ''}
             onSelect={option => {
@@ -1174,12 +1174,12 @@ function EducationEmploymentStep({ formData, onChange, errors }: any) {
             placeholder="Search for occupation (e.g., Teacher, Engineer, Doctor)..."
             error={errors.psocCode}
           />
-          <p className="mt-1 text-xs text-secondary">
+          <p className="text-secondary mt-1 text-xs">
             Search across all occupation levels - the system will automatically fill in the PSOC
             code and level
           </p>
           {formData.psocCode && (
-            <div className="mt-2 text-xs text-secondary">
+            <div className="text-secondary mt-2 text-xs">
               Selected: {formData.occupationTitle} • Code: {formData.psocCode} • Level:{' '}
               {formData.psocLevel}
             </div>
@@ -1194,17 +1194,17 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Additional Details</h3>
-        <p className="mt-1 text-sm/6 text-secondary">Health, identity, and voting information.</p>
+        <h3 className="text-primary text-base/7 font-semibold">Additional Details</h3>
+        <p className="text-secondary mt-1 text-sm/6">Health, identity, and voting information.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Citizenship</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Citizenship</label>
           <select
             value={formData.citizenship || 'filipino'}
             onChange={e => onChange('citizenship', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="filipino">Filipino</option>
             <option value="dual_citizen">Dual Citizen</option>
@@ -1213,11 +1213,11 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Blood Type</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Blood Type</label>
           <select
             value={formData.bloodType || 'unknown'}
             onChange={e => onChange('bloodType', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="unknown">Unknown</option>
             <option value="A+">A+</option>
@@ -1232,11 +1232,11 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Religion</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Religion</label>
           <select
             value={formData.religion || 'prefer_not_to_say'}
             onChange={e => onChange('religion', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="prefer_not_to_say">Prefer Not to Say</option>
             <option value="roman_catholic">Roman Catholic</option>
@@ -1255,11 +1255,11 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Ethnicity</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Ethnicity</label>
           <select
             value={formData.ethnicity || 'not_reported'}
             onChange={e => onChange('ethnicity', e.target.value)}
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="not_reported">Not Reported</option>
             <option value="tagalog">Tagalog</option>
@@ -1280,7 +1280,7 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Registered Voter?</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Registered Voter?</label>
           <select
             value={formData.isVoter === true ? 'yes' : formData.isVoter === false ? 'no' : ''}
             onChange={e =>
@@ -1289,7 +1289,7 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
                 e.target.value === 'yes' ? true : e.target.value === 'no' ? false : null
               )
             }
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Not specified</option>
             <option value="yes">Yes</option>
@@ -1298,7 +1298,7 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-primary">Resident Voter?</label>
+          <label className="text-primary mb-2 block text-sm font-medium">Resident Voter?</label>
           <select
             value={
               formData.isResidentVoter === true
@@ -1313,7 +1313,7 @@ function AdditionalDetailsStep({ formData, onChange, errors }: any) {
                 e.target.value === 'yes' ? true : e.target.value === 'no' ? false : null
               )
             }
-            className="bg-surface w-full rounded-md border border-default px-3 py-2 text-primary focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-surface border-default text-primary w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Not specified</option>
             <option value="yes">Yes</option>
@@ -1358,8 +1358,8 @@ function ContactAddressStep({ formData, onChange, errors, userAddress }: any) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Contact & Address</h3>
-        <p className="mt-1 text-sm/6 text-secondary">How to reach you and where you live.</p>
+        <h3 className="text-primary text-base/7 font-semibold">Contact & Address</h3>
+        <p className="text-secondary mt-1 text-sm/6">How to reach you and where you live.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -1396,7 +1396,7 @@ function ContactAddressStep({ formData, onChange, errors, userAddress }: any) {
 
       {/* Geographic Location - REQUIRED */}
       <div>
-        <h4 className="mb-4 text-sm font-medium text-primary">
+        <h4 className="text-primary mb-4 text-sm font-medium">
           Geographic Location <span className="text-red-500">*</span>
         </h4>
 
@@ -1575,76 +1575,76 @@ function ReviewStep({
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Review & Submit</h3>
-        <p className="mt-1 text-sm/6 text-secondary">
+        <h3 className="text-primary text-base/7 font-semibold">Review & Submit</h3>
+        <p className="text-secondary mt-1 text-sm/6">
           Please review your information before submitting.
         </p>
       </div>
 
-      <div className="bg-background-muted rounded-lg border border-default p-6">
+      <div className="bg-background-muted border-default rounded-lg border p-6">
         <div className="space-y-6">
           {/* Basic Information Summary */}
           <div>
-            <h4 className="mb-3 text-sm/6 font-medium text-primary">Basic Information</h4>
+            <h4 className="text-primary mb-3 text-sm/6 font-medium">Basic Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Name</dt>
-                <dd className="text-sm/6 text-primary">
+                <dt className="text-secondary text-sm/6 font-medium">Name</dt>
+                <dd className="text-primary text-sm/6">
                   {`${formData.firstName} ${formData.lastName}`.trim()}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Birth Date</dt>
-                <dd className="text-sm/6 text-primary">{formData.birthdate}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Birth Date</dt>
+                <dd className="text-primary text-sm/6">{formData.birthdate}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Sex</dt>
-                <dd className="text-sm/6 text-primary">{formData.sex}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Sex</dt>
+                <dd className="text-primary text-sm/6">{formData.sex}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Civil Status</dt>
-                <dd className="text-sm/6 text-primary">{formData.civilStatus}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Civil Status</dt>
+                <dd className="text-primary text-sm/6">{formData.civilStatus}</dd>
               </div>
             </dl>
           </div>
 
           {/* Contact Information Summary */}
           <div>
-            <h4 className="mb-3 text-sm/6 font-medium text-primary">Contact Information</h4>
+            <h4 className="text-primary mb-3 text-sm/6 font-medium">Contact Information</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Mobile Number</dt>
-                <dd className="text-sm/6 text-primary">
+                <dt className="text-secondary text-sm/6 font-medium">Mobile Number</dt>
+                <dd className="text-primary text-sm/6">
                   {formData.mobileNumber || 'Not provided'}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Email</dt>
-                <dd className="text-sm/6 text-primary">{formData.email || 'Not provided'}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Email</dt>
+                <dd className="text-primary text-sm/6">{formData.email || 'Not provided'}</dd>
               </div>
             </dl>
           </div>
 
           {/* Education & Employment Summary */}
           <div>
-            <h4 className="mb-3 text-sm/6 font-medium text-primary">Education & Employment</h4>
+            <h4 className="text-primary mb-3 text-sm/6 font-medium">Education & Employment</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Education Level</dt>
-                <dd className="text-sm/6 text-primary">
+                <dt className="text-secondary text-sm/6 font-medium">Education Level</dt>
+                <dd className="text-primary text-sm/6">
                   {formData.educationAttainment || 'Not specified'}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Employment Status</dt>
-                <dd className="text-sm/6 text-primary">
+                <dt className="text-secondary text-sm/6 font-medium">Employment Status</dt>
+                <dd className="text-primary text-sm/6">
                   {formData.employmentStatus || 'Not specified'}
                 </dd>
               </div>
               {formData.occupationTitle && (
                 <div>
-                  <dt className="text-sm/6 font-medium text-secondary">Occupation</dt>
-                  <dd className="text-sm/6 text-primary">{formData.occupationTitle}</dd>
+                  <dt className="text-secondary text-sm/6 font-medium">Occupation</dt>
+                  <dd className="text-primary text-sm/6">{formData.occupationTitle}</dd>
                 </div>
               )}
             </dl>
@@ -1652,30 +1652,30 @@ function ReviewStep({
 
           {/* Additional Details Summary */}
           <div>
-            <h4 className="mb-3 text-sm/6 font-medium text-primary">Additional Details</h4>
+            <h4 className="text-primary mb-3 text-sm/6 font-medium">Additional Details</h4>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Citizenship</dt>
-                <dd className="text-sm/6 text-primary">{formData.citizenship || 'Filipino'}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Citizenship</dt>
+                <dd className="text-primary text-sm/6">{formData.citizenship || 'Filipino'}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Blood Type</dt>
-                <dd className="text-sm/6 text-primary">{formData.bloodType || 'Unknown'}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Blood Type</dt>
+                <dd className="text-primary text-sm/6">{formData.bloodType || 'Unknown'}</dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Religion</dt>
-                <dd className="text-sm/6 text-primary">
+                <dt className="text-secondary text-sm/6 font-medium">Religion</dt>
+                <dd className="text-primary text-sm/6">
                   {formData.religion || 'Prefer not to say'}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm/6 font-medium text-secondary">Ethnicity</dt>
-                <dd className="text-sm/6 text-primary">{formData.ethnicity || 'Not reported'}</dd>
+                <dt className="text-secondary text-sm/6 font-medium">Ethnicity</dt>
+                <dd className="text-primary text-sm/6">{formData.ethnicity || 'Not reported'}</dd>
               </div>
               {formData.isVoter !== null && (
                 <div>
-                  <dt className="text-sm/6 font-medium text-secondary">Registered Voter</dt>
-                  <dd className="text-sm/6 text-primary">{formData.isVoter ? 'Yes' : 'No'}</dd>
+                  <dt className="text-secondary text-sm/6 font-medium">Registered Voter</dt>
+                  <dd className="text-primary text-sm/6">{formData.isVoter ? 'Yes' : 'No'}</dd>
                 </div>
               )}
             </dl>

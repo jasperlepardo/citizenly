@@ -224,10 +224,10 @@ export default function PSOCSelector({
     <div className="relative" ref={dropdownRef}>
       {/* Input Container - Figma: exact 8px padding, structured like InputField */}
       <div
-        className={`relative flex w-full items-center font-system transition-colors focus-within:outline-none ${
+        className={`font-system relative flex w-full items-center transition-colors focus-within:outline-none ${
           error
             ? 'bg-surface rounded border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
-            : 'bg-surface rounded border border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+            : 'bg-surface border-default rounded border focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
         } min-h-10 p-2 text-base ${className}`}
       >
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
@@ -240,7 +240,7 @@ export default function PSOCSelector({
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => setIsOpen(true)}
-              className="font-montserrat placeholder:text-muted w-full border-0 bg-transparent text-base font-normal leading-5 text-primary shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
+              className="font-montserrat placeholder:text-muted text-primary w-full border-0 bg-transparent text-base font-normal leading-5 shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
               style={{
                 border: 'none',
                 outline: 'none',
@@ -259,7 +259,7 @@ export default function PSOCSelector({
 
         {/* Loading indicator - Figma: w-5 (20px width) */}
         {loading && (
-          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
             <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
@@ -314,7 +314,7 @@ export default function PSOCSelector({
                     onClick={() => handleOptionSelect(option)}
                     role="option"
                     aria-selected={selectedOption?.occupation_code === option.occupation_code}
-                    className="hover:bg-surface-hover focus:bg-surface-hover w-full px-3 py-2 text-left text-sm/6 text-primary focus:outline-none"
+                    className="hover:bg-surface-hover focus:bg-surface-hover text-primary w-full px-3 py-2 text-left text-sm/6 focus:outline-none"
                   >
                     <div className="font-medium">{option.occupation_title}</div>
                     <div className="text-muted text-xs">

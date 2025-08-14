@@ -29,7 +29,7 @@ export default function FormSection({
   const sectionTitle = legend || title;
   return (
     <fieldset className={cn('space-y-4', className)}>
-      <legend className="border-b pb-2 text-lg font-medium text-primary">
+      <legend className="text-primary border-b pb-2 text-lg font-medium">
         {sectionTitle}
         {required && (
           <span className="ml-1 text-red-500" aria-label="required">
@@ -39,7 +39,7 @@ export default function FormSection({
       </legend>
       {description && (
         <p
-          className="mt-1 text-sm text-secondary"
+          className="text-secondary mt-1 text-sm"
           id={`${sectionTitle?.toLowerCase().replace(/\s+/g, '-')}-description`}
         >
           {description}

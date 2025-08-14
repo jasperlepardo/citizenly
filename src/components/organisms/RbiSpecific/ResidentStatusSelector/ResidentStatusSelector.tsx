@@ -198,10 +198,10 @@ export default function ResidentStatusSelector({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="mb-2 text-lg font-medium text-primary">
+        <h3 className="text-primary mb-2 text-lg font-medium">
           <span className="text-base">🏠</span> Resident Status Classification
         </h3>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Legal and administrative classification of the resident&apos;s status in the barangay.
         </p>
       </div>
@@ -261,7 +261,7 @@ export default function ResidentStatusSelector({
             />
           </div>
 
-          <div className="mt-2 text-sm text-secondary">
+          <div className="text-secondary mt-2 text-sm">
             <strong>Total residency:</strong> {getResidencyDisplay()}
           </div>
         </FormGroup>
@@ -311,7 +311,7 @@ export default function ResidentStatusSelector({
               className="mt-1 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <div className="flex-1">
-              <label htmlFor="is_registered_voter" className="text-sm font-medium text-primary">
+              <label htmlFor="is_registered_voter" className="text-primary text-sm font-medium">
                 Registered Voter
               </label>
               <p className="text-muted text-xs">
@@ -358,7 +358,7 @@ export default function ResidentStatusSelector({
               className="mt-1 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <div className="flex-1">
-              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-primary">
+              <label htmlFor="is_indigenous_member" className="text-primary text-sm font-medium">
                 Member of Indigenous Cultural Community
               </label>
               <p className="text-muted text-xs">

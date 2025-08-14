@@ -32,29 +32,29 @@ interface EducationEmploymentCardProps {
  */
 export default function EducationEmploymentCard({ resident }: EducationEmploymentCardProps) {
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         🎓 Education & Employment
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="block text-sm font-medium text-secondary">Education Attainment</span>
+          <span className="text-secondary block text-sm font-medium">Education Attainment</span>
           <span className="text-primary">{resident.education_attainment || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Graduate Status</span>
+          <span className="text-secondary block text-sm font-medium">Graduate Status</span>
           <span className="text-primary">{resident.is_graduate ? 'Graduate' : 'Non-Graduate'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Employment Status</span>
+          <span className="text-secondary block text-sm font-medium">Employment Status</span>
           <span className="text-primary">{resident.employment_status || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Occupation</span>
+          <span className="text-secondary block text-sm font-medium">Occupation</span>
           <span className="text-primary">{resident.occupation_title || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Employment Name</span>
+          <span className="text-secondary block text-sm font-medium">Employment Name</span>
           <span className="text-primary">{resident.employment_name || '-'}</span>
         </div>
       </div>

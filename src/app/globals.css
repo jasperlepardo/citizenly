@@ -370,7 +370,6 @@ select {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  background: transparent !important;
 }
 
 /* Remove IE/Edge dropdown arrow */
@@ -383,7 +382,6 @@ select:focus {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  ring: none !important;
 }
 
 /* Input field overrides - remove native borders for components that manage their own */
@@ -409,7 +407,6 @@ input[type='url']:not(.preserve-native-styles):focus {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  ring: none !important;
 }
 
 /* Specific override for our InputField component */
@@ -434,14 +431,12 @@ input[type='url']:not(.preserve-native-styles):focus {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  ring: none !important;
 }
 
 .input-field-container input:focus {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-  ring: none !important;
 }
 
 /* =============================================================================

@@ -84,7 +84,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
       <div className={cn(searchBarVariants({ variant, size }), 'search-bar-container', className)}>
         {/* Left Icon - Figma: w-5 (20px width) */}
         {(leftIcon || true) && (
-          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
             {leftIcon || (
               <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -106,7 +106,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               ref={ref}
               type="text"
               className={cn(
-                'font-montserrat placeholder:text-muted w-full bg-transparent font-normal text-primary',
+                'font-montserrat placeholder:text-muted text-primary w-full bg-transparent font-normal',
                 // Remove ALL borders and focus states
                 'border-0 shadow-none outline-0 ring-0',
                 'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
@@ -136,11 +136,11 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
 
         {/* Clear Button - Figma: w-5 (20px width) */}
         {showClearButton && hasValue && (
-          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
             <button
               type="button"
               onClick={handleClear}
-              className="flex size-full items-center justify-center text-secondary transition-colors hover:text-primary"
+              className="text-secondary hover:text-primary flex size-full items-center justify-center transition-colors"
               aria-label="Clear search"
               tabIndex={-1}
             >

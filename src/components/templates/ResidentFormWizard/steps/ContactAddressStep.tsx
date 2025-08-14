@@ -27,15 +27,15 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Contact & Address Information</h3>
-        <p className="mt-1 text-sm/6 text-secondary">
+        <h3 className="text-primary text-base/7 font-semibold">Contact & Address Information</h3>
+        <p className="text-secondary mt-1 text-sm/6">
           Provide contact details and geographic location information.
         </p>
       </div>
 
       {/* Contact Information */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Contact Information</h4>
+        <h4 className="text-primary text-sm font-medium">Contact Information</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="Mobile Number"
@@ -66,7 +66,7 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
 
       {/* Geographic Selection */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Geographic Location</h4>
+        <h4 className="text-primary text-sm font-medium">Geographic Location</h4>
         <GeographicLocationStep
           formData={geographicData}
           updateFormData={handleGeographicChange}
@@ -77,7 +77,7 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
 
       {/* Address Details */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Address Details</h4>
+        <h4 className="text-primary text-sm font-medium">Address Details</h4>
         <p className="text-sm text-gray-600">
           Select or create the street and subdivision for detailed address information.
         </p>
@@ -110,7 +110,7 @@ export function ContactAddressStep({ formData, onChange, errors }: StepComponent
 
       {/* Household Assignment */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-primary">Household Assignment</h4>
+        <h4 className="text-primary text-sm font-medium">Household Assignment</h4>
         <p className="text-sm text-gray-600">
           Select an existing household or create a new one for this resident.
         </p>

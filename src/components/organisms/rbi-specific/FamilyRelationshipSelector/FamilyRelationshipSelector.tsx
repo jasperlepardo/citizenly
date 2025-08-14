@@ -308,11 +308,11 @@ export default function FamilyRelationshipSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="mb-1 text-lg font-medium text-primary">
+        <h3 className="text-primary mb-1 text-lg font-medium">
           <span className="text-base">👨‍👩‍👧‍👦</span> Family Position
           {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Select this person&apos;s relationship to the household head and position in the family.
         </p>
       </div>

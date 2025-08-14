@@ -172,7 +172,8 @@ export default function HouseholdsContent() {
 
   useEffect(() => {
     fetchHouseholds(searchQuery, page);
-  }, [session, searchQuery, page, fetchHouseholds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, searchQuery, page]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -184,7 +185,7 @@ export default function HouseholdsContent() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-4 text-secondary">Loading households...</p>
+          <p className="text-secondary mt-4">Loading households...</p>
         </div>
       </div>
     );
@@ -210,8 +211,8 @@ export default function HouseholdsContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-primary">Households Management</h1>
-        <p className="mt-2 text-secondary">
+        <h1 className="text-primary text-3xl font-bold">Households Management</h1>
+        <p className="text-secondary mt-2">
           Manage and view household information ({households.length} of{' '}
           {totalPages > 1 ? `${(page - 1) * 10 + households.length}` : households.length} total)
         </p>

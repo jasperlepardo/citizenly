@@ -53,10 +53,10 @@ function CertificationContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
               Certification Services
             </h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <p className="font-montserrat text-secondary text-sm font-normal">
               Generate and manage barangay certificates and official documents
             </p>
           </div>
@@ -88,10 +88,10 @@ function CertificationContent() {
                   {cert.status}
                 </span>
               </div>
-              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary">
+              <h3 className="font-montserrat text-primary mb-2 text-base font-semibold">
                 {cert.name}
               </h3>
-              <p className="font-montserrat mb-4 text-sm text-secondary">{cert.description}</p>
+              <p className="font-montserrat text-secondary mb-4 text-sm">{cert.description}</p>
               <Button
                 variant={cert.status === 'Available' ? 'primary' : 'ghost'}
                 size="sm"
@@ -105,9 +105,9 @@ function CertificationContent() {
         </div>
 
         {/* Recent Requests Section */}
-        <div className="bg-surface rounded-lg border border-default p-6">
+        <div className="bg-surface border-default rounded-lg border p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-montserrat text-lg font-semibold text-primary">
+            <h2 className="font-montserrat text-primary text-lg font-semibold">
               Recent Certificate Requests
             </h2>
             <Button variant="ghost" size="sm">
@@ -123,10 +123,10 @@ function CertificationContent() {
                   <span className="text-sm font-medium text-blue-600">#001</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat text-sm font-medium text-primary">
+                  <h4 className="font-montserrat text-primary text-sm font-medium">
                     Barangay Certificate
                   </h4>
-                  <p className="font-montserrat text-xs text-secondary">
+                  <p className="font-montserrat text-secondary text-xs">
                     Requested by: Juan Dela Cruz
                   </p>
                 </div>
@@ -145,10 +145,10 @@ function CertificationContent() {
                   <span className="text-sm font-medium text-blue-600">#002</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat text-sm font-medium text-primary">
+                  <h4 className="font-montserrat text-primary text-sm font-medium">
                     Certificate of Residency
                   </h4>
-                  <p className="font-montserrat text-xs text-secondary">
+                  <p className="font-montserrat text-secondary text-xs">
                     Requested by: Maria Santos
                   </p>
                 </div>
@@ -167,10 +167,10 @@ function CertificationContent() {
                   <span className="text-sm font-medium text-blue-600">#003</span>
                 </div>
                 <div>
-                  <h4 className="font-montserrat text-sm font-medium text-primary">
+                  <h4 className="font-montserrat text-primary text-sm font-medium">
                     Barangay Clearance
                   </h4>
-                  <p className="font-montserrat text-xs text-secondary">
+                  <p className="font-montserrat text-secondary text-xs">
                     Requested by: Pedro Garcia
                   </p>
                 </div>

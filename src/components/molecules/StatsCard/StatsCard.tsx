@@ -44,13 +44,13 @@ export default function StatsCard({
   };
 
   return (
-    <div className="bg-surface rounded-lg border border-default p-6">
+    <div className="bg-surface border-default rounded-lg border p-6">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="font-body text-sm font-medium text-secondary">{title}</p>
-          <p className="mt-1 font-display text-2xl font-semibold text-primary">{value}</p>
+          <p className="font-body text-secondary text-sm font-medium">{title}</p>
+          <p className="font-display text-primary mt-1 text-2xl font-semibold">{value}</p>
 
-          {description && <p className="mt-1 text-sm text-secondary">{description}</p>}
+          {description && <p className="text-secondary mt-1 text-sm">{description}</p>}
 
           {trend && (
             <div

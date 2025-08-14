@@ -466,7 +466,7 @@ function DashboardContent() {
   };
 
   if (profileLoading) {
-    return <div className="flex h-screen items-center justify-center text-primary">Loading...</div>;
+    return <div className="text-primary flex h-screen items-center justify-center">Loading...</div>;
   }
 
   return (
@@ -474,7 +474,7 @@ function DashboardContent() {
       <div className="p-6">
         {/* Welcome Message */}
         <div className="mb-8">
-          <h1 className="font-display text-2xl font-semibold text-primary">
+          <h1 className="font-display text-primary text-2xl font-semibold">
             Welcome back, {userProfile ? userProfile.first_name : 'User'}!
           </h1>
         </div>

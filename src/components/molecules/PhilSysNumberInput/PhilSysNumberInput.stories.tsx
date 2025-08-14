@@ -155,8 +155,8 @@ const InteractiveComponent = () => {
         }}
       />
 
-      <div className="bg-background rounded-lg border border-default p-4">
-        <h3 className="mb-2 font-semibold text-primary">Real-time Status:</h3>
+      <div className="bg-background border-default rounded-lg border p-4">
+        <h3 className="text-primary mb-2 font-semibold">Real-time Status:</h3>
         <div className="space-y-2 text-sm">
           <div>
             <strong>Current Value:</strong>{' '}
@@ -230,7 +230,7 @@ export const SecurityFeatures: Story = {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <h3 className="mb-3 font-semibold text-primary">With Auto-Hash (Default)</h3>
+          <h3 className="text-primary mb-3 font-semibold">With Auto-Hash (Default)</h3>
           <PhilSysNumberInput
             label="Secure PhilSys Input"
             autoHash={true}
@@ -241,7 +241,7 @@ export const SecurityFeatures: Story = {
         </div>
 
         <div>
-          <h3 className="mb-3 font-semibold text-primary">No Auto-Hash</h3>
+          <h3 className="text-primary mb-3 font-semibold">No Auto-Hash</h3>
           <PhilSysNumberInput
             label="Manual Handling"
             autoHash={false}
@@ -254,7 +254,7 @@ export const SecurityFeatures: Story = {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <h3 className="mb-3 font-semibold text-primary">Show Last 4 Digits</h3>
+          <h3 className="text-primary mb-3 font-semibold">Show Last 4 Digits</h3>
           <PhilSysNumberInput
             label="Partial Masking"
             showLastFourDigits={true}
@@ -264,7 +264,7 @@ export const SecurityFeatures: Story = {
         </div>
 
         <div>
-          <h3 className="mb-3 font-semibold text-primary">Full Masking</h3>
+          <h3 className="text-primary mb-3 font-semibold">Full Masking</h3>
           <PhilSysNumberInput
             label="Complete Masking"
             showLastFourDigits={false}

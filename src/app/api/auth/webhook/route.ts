@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { WebhookUserRecord } from '@/types/database';
 import { createAdminSupabaseClient } from '@/lib/api-auth';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Webhook secret for verifying Supabase webhook signatures
 const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secret';
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleUserUpdate(
-  supabaseAdmin: any,
+  supabaseAdmin: SupabaseClient,
   newRecord: WebhookUserRecord,
   oldRecord: WebhookUserRecord
 ) {

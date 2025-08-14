@@ -213,7 +213,7 @@ export async function GET() {
       summary,
       total: stats?.length || 0,
     });
-  } catch (_error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to get stats' }, { status: 500 });
   }
 }

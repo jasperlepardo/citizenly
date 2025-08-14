@@ -100,8 +100,8 @@ type Story = StoryObj<typeof meta>;
 const MockDashboardContent = () => (
   <div className="space-y-8 p-6">
     <div>
-      <h1 className="text-3xl font-bold text-primary">Dashboard Overview</h1>
-      <p className="mt-2 text-secondary">Barangay Records Management System</p>
+      <h1 className="text-primary text-3xl font-bold">Dashboard Overview</h1>
+      <p className="text-secondary mt-2">Barangay Records Management System</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -111,11 +111,11 @@ const MockDashboardContent = () => (
         { title: 'Registered Voters', value: '1,876', trend: '+3.1%' },
         { title: 'Pending Applications', value: '47', trend: '-15.3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-surface rounded-xl border border-default p-6 shadow-sm">
+        <div key={index} className="bg-surface border-default rounded-xl border p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary">{stat.title}</p>
-              <p className="mt-1 text-2xl font-bold text-primary">{stat.value}</p>
+              <p className="text-secondary text-sm font-medium">{stat.title}</p>
+              <p className="text-primary mt-1 text-2xl font-bold">{stat.value}</p>
             </div>
             <span
               className={`rounded-full px-2 py-1 text-xs font-medium ${
@@ -132,8 +132,8 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-primary">Recent Registrations</h3>
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+        <h3 className="text-primary mb-4 text-lg font-semibold">Recent Registrations</h3>
         <div className="space-y-4">
           {[
             { name: 'Maria Elena Santos', type: 'New Resident', time: '2 hours ago' },
@@ -142,12 +142,12 @@ const MockDashboardContent = () => (
             { name: 'Ana Beatriz Cruz', type: 'New Voter Registration', time: '1 day ago' },
           ].map((activity, index) => (
             <div key={index} className="flex items-start gap-3">
-              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-100">
-                <div className="h-3 w-3 rounded-full bg-primary"></div>
+              <div className="bg-primary-100 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+                <div className="bg-primary h-3 w-3 rounded-full"></div>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-primary">{activity.name}</p>
-                <p className="text-xs text-secondary">
+                <p className="text-primary text-sm font-medium">{activity.name}</p>
+                <p className="text-secondary text-xs">
                   {activity.type} • {activity.time}
                 </p>
               </div>
@@ -156,8 +156,8 @@ const MockDashboardContent = () => (
         </div>
       </div>
 
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-primary">System Health</h3>
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+        <h3 className="text-primary mb-4 text-lg font-semibold">System Health</h3>
         <div className="space-y-4">
           {[
             { metric: 'Database Status', status: 'Online', color: 'green' },
@@ -166,10 +166,10 @@ const MockDashboardContent = () => (
             { metric: 'Last Backup', status: '2 hours ago', color: 'green' },
           ].map((health, index) => (
             <div key={index} className="flex items-center justify-between">
-              <span className="text-sm text-secondary">{health.metric}</span>
+              <span className="text-secondary text-sm">{health.metric}</span>
               <div className="flex items-center gap-2">
                 <div className={`h-2 w-2 rounded-full bg-${health.color}-500`}></div>
-                <span className="text-sm font-medium text-primary">{health.status}</span>
+                <span className="text-primary text-sm font-medium">{health.status}</span>
               </div>
             </div>
           ))}
@@ -211,30 +211,30 @@ const MockResidentsContent = () => (
   <div className="space-y-6 p-6">
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-primary">Residents Directory</h1>
-        <p className="mt-1 text-secondary">Manage resident records and profiles</p>
+        <h1 className="text-primary text-3xl font-bold">Residents Directory</h1>
+        <p className="text-secondary mt-1">Manage resident records and profiles</p>
       </div>
       <div className="flex gap-3">
-        <button className="hover:bg-surface-hover rounded-lg border border-default px-4 py-2 text-secondary transition-colors">
+        <button className="hover:bg-surface-hover border-default text-secondary rounded-lg border px-4 py-2 transition-colors">
           Export Data
         </button>
-        <button className="rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-600">
+        <button className="bg-primary hover:bg-primary-600 rounded-lg px-4 py-2 text-white transition-colors">
           Add New Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-surface overflow-hidden rounded-xl border border-default">
-      <div className="bg-background-muted border-b border-default p-4">
+    <div className="bg-surface border-default overflow-hidden rounded-xl border">
+      <div className="bg-background-muted border-default border-b p-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-primary">Active Residents</h3>
+          <h3 className="text-primary font-semibold">Active Residents</h3>
           <div className="flex items-center gap-3">
-            <select className="bg-surface rounded border border-default px-3 py-2 text-sm text-primary">
+            <select className="bg-surface border-default text-primary rounded border px-3 py-2 text-sm">
               <option>All Status</option>
               <option>Active</option>
               <option>Inactive</option>
             </select>
-            <select className="bg-surface rounded border border-default px-3 py-2 text-sm text-primary">
+            <select className="bg-surface border-default text-primary rounded border px-3 py-2 text-sm">
               <option>All Ages</option>
               <option>Minors (0-17)</option>
               <option>Adults (18-59)</option>
@@ -244,7 +244,7 @@ const MockResidentsContent = () => (
         </div>
       </div>
 
-      <div className="divide-y divide-default">
+      <div className="divide-default divide-y">
         {[
           {
             name: 'Juan Antonio Dela Cruz',
@@ -285,8 +285,8 @@ const MockResidentsContent = () => (
           <div key={index} className="hover:bg-surface-hover p-4 transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100">
-                  <span className="font-semibold text-primary">
+                <div className="bg-primary-100 flex h-12 w-12 items-center justify-center rounded-full">
+                  <span className="text-primary font-semibold">
                     {resident.name
                       .split(' ')
                       .slice(0, 2)
@@ -295,8 +295,8 @@ const MockResidentsContent = () => (
                   </span>
                 </div>
                 <div>
-                  <h4 className="font-medium text-primary">{resident.name}</h4>
-                  <p className="text-sm text-secondary">
+                  <h4 className="text-primary font-medium">{resident.name}</h4>
+                  <p className="text-secondary text-sm">
                     Age {resident.age} • {resident.address}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
@@ -318,7 +318,7 @@ const MockResidentsContent = () => (
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="hover:bg-surface-hover rounded-lg p-2 text-secondary transition-colors hover:text-primary">
+                <button className="hover:bg-surface-hover text-secondary hover:text-primary rounded-lg p-2 transition-colors">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -328,7 +328,7 @@ const MockResidentsContent = () => (
                     />
                   </svg>
                 </button>
-                <button className="hover:bg-surface-hover rounded-lg p-2 text-secondary transition-colors hover:text-primary">
+                <button className="hover:bg-surface-hover text-secondary hover:text-primary rounded-lg p-2 transition-colors">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -362,8 +362,8 @@ export const WithSearch: Story = {
     <DashboardLayoutWrapper showSearch={true} initialSearchTerm="">
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Search Results</h1>
-          <p className="mt-1 text-secondary">Search through residents, households, and records</p>
+          <h1 className="text-primary text-3xl font-bold">Search Results</h1>
+          <p className="text-secondary mt-1">Search through residents, households, and records</p>
         </div>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -407,13 +407,13 @@ export const WithSearch: Story = {
               items: ['Add resident', 'Create household', 'Generate report'],
             },
           ].map((section, index) => (
-            <div key={index} className="bg-surface rounded-lg border border-default p-4">
-              <h3 className="mb-3 font-medium text-primary">{section.title}</h3>
+            <div key={index} className="bg-surface border-default rounded-lg border p-4">
+              <h3 className="text-primary mb-3 font-medium">{section.title}</h3>
               <ul className="space-y-2">
                 {section.items.map((item, itemIndex) => (
                   <li
                     key={itemIndex}
-                    className="cursor-pointer text-sm text-secondary hover:text-primary"
+                    className="text-secondary hover:text-primary cursor-pointer text-sm"
                   >
                     {item}
                   </li>
@@ -498,8 +498,8 @@ export const UserDropdownShowcase: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold text-primary">User Profile & Barangay Information</h1>
-          <p className="mt-1 text-secondary">
+          <h1 className="text-primary text-3xl font-bold">User Profile & Barangay Information</h1>
+          <p className="text-secondary mt-1">
             The user dropdown shows detailed profile and barangay assignment information
           </p>
         </div>
@@ -578,8 +578,8 @@ export const EnvironmentIndicator: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Environment Indicators</h1>
-          <p className="mt-1 text-secondary">
+          <h1 className="text-primary text-3xl font-bold">Environment Indicators</h1>
+          <p className="text-secondary mt-1">
             Visual indicators show the current environment (Development/Staging/Production)
           </p>
         </div>
@@ -663,15 +663,15 @@ export const LayoutFeatures: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-8 p-6">
         <div className="text-center">
-          <h1 className="mb-4 text-3xl font-bold text-primary">DashboardLayout Features</h1>
-          <p className="mx-auto max-w-2xl text-secondary">
+          <h1 className="text-primary mb-4 text-3xl font-bold">DashboardLayout Features</h1>
+          <p className="text-secondary mx-auto max-w-2xl">
             A comprehensive dashboard layout with authentication integration, search functionality,
             and responsive design optimized for barangay management systems.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
               <svg
                 className="h-6 w-6 text-blue-600"
@@ -687,14 +687,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Authentication Integration</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Authentication Integration</h3>
+            <p className="text-secondary text-sm">
               Seamless integration with authentication context, displaying user profile, role
               information, and barangay assignments.
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"
@@ -710,14 +710,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Global Search</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Global Search</h3>
+            <p className="text-secondary text-sm">
               Integrated search functionality with real-time filtering and comprehensive search
               across all data types.
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
                 className="h-6 w-6 text-purple-600"
@@ -733,14 +733,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Responsive Design</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Responsive Design</h3>
+            <p className="text-secondary text-sm">
               Fixed sidebar layout that maintains navigation accessibility across all device sizes
               and orientations.
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
               <svg
                 className="h-6 w-6 text-orange-600"
@@ -762,14 +762,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Location Context</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Location Context</h3>
+            <p className="text-secondary text-sm">
               Automatic barangay information loading with full PSGC hierarchy display for
               administrative context.
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100">
               <svg
                 className="h-6 w-6 text-red-600"
@@ -785,14 +785,14 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Environment Indicators</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Environment Indicators</h3>
+            <p className="text-secondary text-sm">
               Visual environment indicators help distinguish between development, staging, and
               production environments.
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"
@@ -808,8 +808,8 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Accessibility</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Accessibility</h3>
+            <p className="text-secondary text-sm">
               Built with skip navigation, ARIA labels, keyboard navigation, and screen reader
               support for inclusive access.
             </p>

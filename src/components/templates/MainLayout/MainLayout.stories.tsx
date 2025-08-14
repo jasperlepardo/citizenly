@@ -8,7 +8,7 @@ const MockHeader = () => (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary-600">
+          <div className="bg-primary-600 flex size-8 items-center justify-center rounded-lg">
             <span className="font-display text-sm font-bold text-white">RBI</span>
           </div>
           <span className="font-display text-xl font-semibold text-gray-900">RBI System</span>
@@ -40,8 +40,8 @@ const MockHeader = () => (
           </a>
         </nav>
         <div className="flex items-center space-x-3">
-          <div className="flex size-8 items-center justify-center rounded-full bg-primary-100">
-            <span className="text-sm font-medium text-primary-600">JD</span>
+          <div className="bg-primary-100 flex size-8 items-center justify-center rounded-full">
+            <span className="text-primary-600 text-sm font-medium">JD</span>
           </div>
         </div>
       </div>

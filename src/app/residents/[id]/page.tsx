@@ -540,16 +540,16 @@ function ResidentDetailContent() {
       if (type === 'checkbox') {
         return (
           <div>
-            <dt className="text-sm font-medium text-secondary">{label}</dt>
+            <dt className="text-secondary text-sm font-medium">{label}</dt>
             <dd className="mt-1">
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={!!value}
                   onChange={e => handleFieldChange(field, e.target.checked)}
-                  className="rounded border-default text-blue-600 focus:ring-blue-500"
+                  className="border-default rounded text-blue-600 focus:ring-blue-500"
                 />
-                <span className="ml-2 text-sm text-primary">{value ? 'Yes' : 'No'}</span>
+                <span className="text-primary ml-2 text-sm">{value ? 'Yes' : 'No'}</span>
               </label>
             </dd>
           </div>
@@ -562,7 +562,7 @@ function ResidentDetailContent() {
           <div>
             <label
               htmlFor={selectId}
-              className="block cursor-pointer text-sm font-medium text-secondary"
+              className="text-secondary block cursor-pointer text-sm font-medium"
             >
               {label}
             </label>
@@ -597,7 +597,7 @@ function ResidentDetailContent() {
               type={type}
               value={(value as string) || ''}
               onChange={e => handleFieldChange(field, e.target.value)}
-              className="bg-surface block w-full rounded-md border border-default text-sm text-primary shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="bg-surface border-default text-primary block w-full rounded-md border text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -626,8 +626,8 @@ function ResidentDetailContent() {
     if (type === 'date') {
       return (
         <div>
-          <dt className="text-sm font-medium text-secondary">{label}</dt>
-          <dd className="mt-1 text-sm text-primary">
+          <dt className="text-secondary text-sm font-medium">{label}</dt>
+          <dd className="text-primary mt-1 text-sm">
             {value
               ? `${new Date(value as string).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -642,8 +642,8 @@ function ResidentDetailContent() {
 
     return (
       <div>
-        <dt className="text-sm font-medium text-secondary">{label}</dt>
-        <dd className="mt-1 text-sm text-primary">{formatEnumValue(value as string)}</dd>
+        <dt className="text-secondary text-sm font-medium">{label}</dt>
+        <dd className="text-primary mt-1 text-sm">{formatEnumValue(value as string)}</dd>
       </div>
     );
   };
@@ -655,7 +655,7 @@ function ResidentDetailContent() {
           <div className="flex h-64 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-sm text-secondary">Loading resident details...</p>
+              <p className="text-secondary mt-4 text-sm">Loading resident details...</p>
             </div>
           </div>
         </div>
@@ -668,7 +668,7 @@ function ResidentDetailContent() {
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
+            <div className="bg-surface border-default rounded-lg border p-6 shadow-md">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -684,13 +684,13 @@ function ResidentDetailContent() {
                   />
                 </svg>
               </div>
-              <h1 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+              <h1 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                 Resident Not Found
               </h1>
-              <p className="font-montserrat mb-4 text-sm text-secondary">{error}</p>
+              <p className="font-montserrat text-secondary mb-4 text-sm">{error}</p>
               <Link
                 href="/residents"
-                className="hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary"
+                className="hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium"
               >
                 Back to Residents
               </Link>
@@ -709,7 +709,7 @@ function ResidentDetailContent() {
           <div className="flex items-center gap-4">
             <Link
               href="/residents"
-              className="bg-surface hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-3 py-2 text-sm font-medium text-secondary shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="bg-surface hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -722,10 +722,10 @@ function ResidentDetailContent() {
               Back to Residents
             </Link>
             <div>
-              <h1 className="font-montserrat text-xl font-semibold text-primary">
+              <h1 className="font-montserrat text-primary text-xl font-semibold">
                 {formatFullName(resident)}
               </h1>
-              <p className="font-montserrat text-sm font-normal text-secondary">Resident Details</p>
+              <p className="font-montserrat text-secondary text-sm font-normal">Resident Details</p>
             </div>
           </div>
         </div>
@@ -734,9 +734,9 @@ function ResidentDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-6 lg:col-span-2">
             {/* Personal Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Personal Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Personal Information</h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
@@ -788,8 +788,8 @@ function ResidentDetailContent() {
                       extractValues(CITIZENSHIP_OPTIONS)
                     )}
                     <div className="sm:col-span-2">
-                      <dt className="text-sm font-medium text-secondary">Address</dt>
-                      <dd className="mt-1 text-sm text-primary">
+                      <dt className="text-secondary text-sm font-medium">Address</dt>
+                      <dd className="text-primary mt-1 text-sm">
                         {resident.household ? (
                           <div>
                             <Link
@@ -840,9 +840,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Education & Employment Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Education & Employment</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Education & Employment</h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
@@ -896,16 +896,16 @@ function ResidentDetailContent() {
                     {renderEditableField('Workplace', 'workplace', 'text')}
                     {resident.psoc_code && (
                       <div>
-                        <dt className="text-sm font-medium text-secondary">PSOC Code</dt>
-                        <dd className="mt-1 font-mono text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">PSOC Code</dt>
+                        <dd className="text-primary mt-1 font-mono text-sm">
                           {resident.psoc_code}
                         </dd>
                       </div>
                     )}
                     {resident.psoc_level && (
                       <div>
-                        <dt className="text-sm font-medium text-secondary">PSOC Level</dt>
-                        <dd className="mt-1 text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">PSOC Level</dt>
+                        <dd className="text-primary mt-1 text-sm">
                           {formatEnumValue(resident.psoc_level)}
                         </dd>
                       </div>
@@ -920,14 +920,14 @@ function ResidentDetailContent() {
 
             {/* Household Information Card */}
             {resident.household && (
-              <div className="bg-surface rounded-lg border border-default shadow">
-                <div className="border-b border-default px-6 py-4">
-                  <h3 className="text-lg font-medium text-primary">Household Information</h3>
+              <div className="bg-surface border-default rounded-lg border shadow">
+                <div className="border-default border-b px-6 py-4">
+                  <h3 className="text-primary text-lg font-medium">Household Information</h3>
                 </div>
                 <div className="px-6 py-4">
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-secondary">Household Code</dt>
+                      <dt className="text-secondary text-sm font-medium">Household Code</dt>
                       <dd className="mt-1">
                         <Link
                           href={`/households/${resident.household.code}`}
@@ -938,8 +938,8 @@ function ResidentDetailContent() {
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-secondary">Address</dt>
-                      <dd className="mt-1 text-sm text-primary">
+                      <dt className="text-secondary text-sm font-medium">Address</dt>
+                      <dd className="text-primary mt-1 text-sm">
                         <Link
                           href={`/households/${resident.household.code}`}
                           className="text-blue-600 hover:text-blue-800 hover:underline"
@@ -963,32 +963,32 @@ function ResidentDetailContent() {
                     </div>
                     {resident.household.household_number && (
                       <div>
-                        <dt className="text-sm font-medium text-secondary">Household Number</dt>
-                        <dd className="mt-1 font-mono text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">Household Number</dt>
+                        <dd className="text-primary mt-1 font-mono text-sm">
                           {resident.household.household_number}
                         </dd>
                       </div>
                     )}
                     {resident.household.zip_code && (
                       <div>
-                        <dt className="text-sm font-medium text-secondary">ZIP Code</dt>
-                        <dd className="mt-1 font-mono text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">ZIP Code</dt>
+                        <dd className="text-primary mt-1 font-mono text-sm">
                           {resident.household.zip_code}
                         </dd>
                       </div>
                     )}
                     {resident.household.total_members && (
                       <div>
-                        <dt className="text-sm font-medium text-secondary">Total Members</dt>
-                        <dd className="mt-1 text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">Total Members</dt>
+                        <dd className="text-primary mt-1 text-sm">
                           {resident.household.total_members}
                         </dd>
                       </div>
                     )}
                     {resident.household.head_resident && (
                       <div className="sm:col-span-2">
-                        <dt className="text-sm font-medium text-secondary">Household Head</dt>
-                        <dd className="mt-1 text-sm text-primary">
+                        <dt className="text-secondary text-sm font-medium">Household Head</dt>
+                        <dd className="text-primary mt-1 text-sm">
                           {formatFullName(resident.household.head_resident)}
                         </dd>
                       </div>
@@ -999,15 +999,15 @@ function ResidentDetailContent() {
             )}
 
             {/* Contact & Physical Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Contact & Physical Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Contact & Physical Information</h3>
               </div>
               <div className="px-6 py-4">
                 <div className="space-y-6">
                   {/* Contact Details */}
                   <div>
-                    <h4 className="mb-4 text-sm/6 font-medium text-primary">Contact Information</h4>
+                    <h4 className="text-primary mb-4 text-sm/6 font-medium">Contact Information</h4>
                     {isEditing ? (
                       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <InputField
@@ -1047,8 +1047,8 @@ function ResidentDetailContent() {
                         {renderEditableField('Email Address', 'email', 'email')}
                         {resident.philsys_last4 && (
                           <div>
-                            <dt className="text-sm font-medium text-secondary">PhilSys ID</dt>
-                            <dd className="mt-1 font-mono text-sm text-primary">
+                            <dt className="text-secondary text-sm font-medium">PhilSys ID</dt>
+                            <dd className="text-primary mt-1 font-mono text-sm">
                               ****-****-****-{resident.philsys_last4}
                             </dd>
                           </div>
@@ -1059,7 +1059,7 @@ function ResidentDetailContent() {
 
                   {/* Physical Characteristics */}
                   <div>
-                    <h4 className="mb-4 text-sm/6 font-medium text-primary">
+                    <h4 className="text-primary mb-4 text-sm/6 font-medium">
                       Physical Characteristics
                     </h4>
                     {isEditing ? (
@@ -1083,7 +1083,7 @@ function ResidentDetailContent() {
                           placeholder="65"
                         />
                         <div>
-                          <label className="mb-1 block text-sm font-medium text-secondary">
+                          <label className="text-secondary mb-1 block text-sm font-medium">
                             Blood Type
                           </label>
                           <DropdownSelect
@@ -1103,14 +1103,14 @@ function ResidentDetailContent() {
                     ) : (
                       <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div>
-                          <dt className="text-sm font-medium text-secondary">Height</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Height</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {resident.height_cm ? `${resident.height_cm} cm` : 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-secondary">Weight</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Weight</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {resident.weight_kg ? `${resident.weight_kg} kg` : 'N/A'}
                           </dd>
                         </div>
@@ -1122,7 +1122,7 @@ function ResidentDetailContent() {
 
                   {/* Mother's Information */}
                   <div>
-                    <h4 className="mb-4 text-sm/6 font-medium text-primary">
+                    <h4 className="text-primary mb-4 text-sm/6 font-medium">
                       Mother&rsquo;s Information
                     </h4>
                     {isEditing ? (
@@ -1176,9 +1176,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Migration Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Migration Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Migration Information</h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
@@ -1194,9 +1194,9 @@ function ResidentDetailContent() {
                             is_migrant: e.target.checked,
                           })
                         }
-                        className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
+                        className="bg-surface border-default size-4 rounded text-blue-600 focus:ring-blue-500"
                       />
-                      <label htmlFor="is_migrant" className="text-sm text-primary">
+                      <label htmlFor="is_migrant" className="text-primary text-sm">
                         Is Migrant
                       </label>
                     </div>
@@ -1232,34 +1232,34 @@ function ResidentDetailContent() {
                 ) : (
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-secondary">Is Migrant</dt>
-                      <dd className="mt-1 text-sm text-primary">
+                      <dt className="text-secondary text-sm font-medium">Is Migrant</dt>
+                      <dd className="text-primary mt-1 text-sm">
                         {formatBoolean(resident.migration_info?.is_migrant)}
                       </dd>
                     </div>
                     {resident.migration_info?.is_migrant && (
                       <>
                         <div>
-                          <dt className="text-sm font-medium text-secondary">Migration Type</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Migration Type</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {formatEnumValue(resident.migration_info?.migration_type)}
                           </dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="text-sm font-medium text-secondary">Previous Address</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Previous Address</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {resident.migration_info?.previous_address || 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-secondary">Previous Country</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Previous Country</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {resident.migration_info?.previous_country || 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-secondary">Migration Date</dt>
-                          <dd className="mt-1 text-sm text-primary">
+                          <dt className="text-secondary text-sm font-medium">Migration Date</dt>
+                          <dd className="text-primary mt-1 text-sm">
                             {resident.migration_info?.migration_date
                               ? new Date(
                                   resident.migration_info.migration_date
@@ -1275,13 +1275,13 @@ function ResidentDetailContent() {
             </div>
 
             {/* Sectoral Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Sectoral Classification</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Sectoral Classification</h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
-                  <div className="text-sm text-secondary">
+                  <div className="text-secondary text-sm">
                     <p className="mb-4">
                       Sectoral classifications will be automatically calculated when you save the
                       changes based on the resident&rsquo;s age, employment status, and other
@@ -1314,7 +1314,7 @@ function ResidentDetailContent() {
                                   onChange={e =>
                                     handleFieldChange(field as keyof Resident, e.target.checked)
                                   }
-                                  className="bg-surface size-3 rounded border-default text-blue-600 focus:ring-blue-500"
+                                  className="bg-surface border-default size-3 rounded text-blue-600 focus:ring-blue-500"
                                 />
                                 <label htmlFor={field} className="text-xs">
                                   {field.replace(/^is_/, '').replace(/_/g, ' ').toUpperCase()}
@@ -1327,7 +1327,7 @@ function ResidentDetailContent() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-sm text-secondary">
+                  <div className="text-secondary text-sm">
                     <p>
                       Sectoral classifications are automatically calculated based on other resident
                       information and displayed in the Classifications section.
@@ -1341,9 +1341,9 @@ function ResidentDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-6">
             {/* Quick Actions Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Quick Actions</h3>
               </div>
               <div className="space-y-3 px-6 py-4">
                 {isEditing ? (
@@ -1374,10 +1374,10 @@ function ResidentDetailContent() {
                     >
                       Edit Information
                     </button>
-                    <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="bg-surface hover:bg-surface-hover border-default text-secondary w-full rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Generate Certificate
                     </button>
-                    <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="bg-surface hover:bg-surface-hover border-default text-secondary w-full rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                       Export Data
                     </button>
                   </>
@@ -1386,9 +1386,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Classifications Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Classifications</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Classifications</h3>
                 <p className="text-muted mt-1 text-xs">
                   Fields marked with <span className="text-blue-600 underline">(auto)</span> are
                   calculated automatically. Hover for details.
@@ -1435,9 +1435,9 @@ function ResidentDetailContent() {
             </div>
 
             {/* Additional Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Additional Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Additional Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
@@ -1459,19 +1459,19 @@ function ResidentDetailContent() {
             </div>
 
             {/* System Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">System Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">System Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Record ID</dt>
-                    <dd className="mt-1 font-mono text-xs text-primary">{resident.id}</dd>
+                    <dt className="text-secondary text-sm font-medium">Record ID</dt>
+                    <dd className="text-primary mt-1 font-mono text-xs">{resident.id}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Created Date</dt>
-                    <dd className="mt-1 text-sm text-primary">
+                    <dt className="text-secondary text-sm font-medium">Created Date</dt>
+                    <dd className="text-primary mt-1 text-sm">
                       {new Date(resident.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -1483,8 +1483,8 @@ function ResidentDetailContent() {
                   </div>
                   {resident.updated_at && (
                     <div>
-                      <dt className="text-sm font-medium text-secondary">Last Updated</dt>
-                      <dd className="mt-1 text-sm text-primary">
+                      <dt className="text-secondary text-sm font-medium">Last Updated</dt>
+                      <dd className="text-primary mt-1 text-sm">
                         {new Date(resident.updated_at).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
@@ -1497,14 +1497,14 @@ function ResidentDetailContent() {
                   )}
                   {resident.household_id && (
                     <div>
-                      <dt className="text-sm font-medium text-secondary">Household ID</dt>
-                      <dd className="mt-1 font-mono text-xs text-primary">
+                      <dt className="text-secondary text-sm font-medium">Household ID</dt>
+                      <dd className="text-primary mt-1 font-mono text-xs">
                         {resident.household_id}
                       </dd>
                     </div>
                   )}
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-secondary">Active Status</dt>
+                    <dt className="text-secondary text-sm font-medium">Active Status</dt>
                     <dd
                       className={`text-sm font-medium ${
                         resident.is_active ? 'text-green-600' : 'text-red-600'

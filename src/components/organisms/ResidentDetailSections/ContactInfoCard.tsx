@@ -36,34 +36,34 @@ interface ContactInfoCardProps {
  */
 export default function ContactInfoCard({ resident }: ContactInfoCardProps) {
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         📞 Contact Information
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="block text-sm font-medium text-secondary">Email</span>
+          <span className="text-secondary block text-sm font-medium">Email</span>
           <span className="text-primary">{resident.email || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Mobile Number</span>
+          <span className="text-secondary block text-sm font-medium">Mobile Number</span>
           <span className="text-primary">{resident.mobile_number || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Telephone Number</span>
+          <span className="text-secondary block text-sm font-medium">Telephone Number</span>
           <span className="text-primary">{resident.telephone_number || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">PhilSys Card Number</span>
+          <span className="text-secondary block text-sm font-medium">PhilSys Card Number</span>
           <span className="text-primary">{resident.philsys_card_number || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Household Code</span>
+          <span className="text-secondary block text-sm font-medium">Household Code</span>
           <span className="text-primary">{resident.household_code || '-'}</span>
         </div>
         {resident.household && (
           <div>
-            <span className="block text-sm font-medium text-secondary">Address</span>
+            <span className="text-secondary block text-sm font-medium">Address</span>
             <span className="text-primary">
               {[resident.household.house_number, resident.household.address]
                 .filter(Boolean)

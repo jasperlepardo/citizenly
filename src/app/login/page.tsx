@@ -18,8 +18,8 @@ export default function LoginPage() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="mb-2 text-3xl font-bold text-primary">Citizenly</h1>
-          <p className="mb-8 text-sm text-secondary">Records of Barangay Inhabitant System</p>
+          <h1 className="text-primary mb-2 text-3xl font-bold">Citizenly</h1>
+          <p className="text-secondary mb-8 text-sm">Records of Barangay Inhabitant System</p>
         </div>
 
         {showDevLogin ? (
@@ -33,13 +33,13 @@ export default function LoginPage() {
         )}
 
         <div className="mt-8 text-center">
-          <div className="bg-surface rounded-lg border border-default p-4">
-            <h3 className="mb-2 text-sm font-medium text-primary-400">Development Mode</h3>
-            <div className="space-y-2 text-xs text-secondary">
+          <div className="bg-surface border-default rounded-lg border p-4">
+            <h3 className="text-primary-400 mb-2 text-sm font-medium">Development Mode</h3>
+            <div className="text-secondary space-y-2 text-xs">
               <div>If you can&apos;t login, the demo users may not exist yet.</div>
               <button
                 onClick={() => setShowDevLogin(!showDevLogin)}
-                className="text-primary-400 underline hover:text-primary-300"
+                className="text-primary-400 hover:text-primary-300 underline"
               >
                 {showDevLogin ? 'Back to Login Form' : 'Setup Demo Users'}
               </button>

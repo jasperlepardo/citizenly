@@ -74,7 +74,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="mb-1 block font-body text-sm font-medium text-primary">{label}</label>
+          <label className="font-body text-primary mb-1 block text-sm font-medium">{label}</label>
         )}
 
         {/* Select Container */}
@@ -90,7 +90,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
               {leftIcon}
             </div>
           )}
@@ -102,7 +102,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
               <select
                 ref={ref}
                 className={cn(
-                  'font-montserrat w-full cursor-pointer appearance-none border-none bg-transparent font-normal text-primary outline-none',
+                  'font-montserrat text-primary w-full cursor-pointer appearance-none border-none bg-transparent font-normal outline-none',
                   'dark:[color-scheme:dark]', // This helps browsers apply dark theme to native dropdowns
                   // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                   size === 'sm' && 'text-sm leading-4',
@@ -162,7 +162,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
           </div>
 
           {/* Dropdown Icon - Figma: w-5 (20px width) */}
-          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
             <svg
               className="size-4"
               fill="none"
@@ -179,7 +179,7 @@ const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="font-body text-xs text-danger-600">{errorMessage}</p>
+              <p className="font-body text-danger-600 text-xs">{errorMessage}</p>
             ) : (
               <p className="text-muted font-body text-xs">{helperText}</p>
             )}

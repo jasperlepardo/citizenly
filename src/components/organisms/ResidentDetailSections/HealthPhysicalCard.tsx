@@ -31,25 +31,25 @@ interface HealthPhysicalCardProps {
  */
 export default function HealthPhysicalCard({ resident }: HealthPhysicalCardProps) {
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         🏥 Health & Physical
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="block text-sm font-medium text-secondary">Blood Type</span>
+          <span className="text-secondary block text-sm font-medium">Blood Type</span>
           <span className="text-primary">{resident.blood_type || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Height</span>
+          <span className="text-secondary block text-sm font-medium">Height</span>
           <span className="text-primary">{resident.height ? `${resident.height} cm` : '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Weight</span>
+          <span className="text-secondary block text-sm font-medium">Weight</span>
           <span className="text-primary">{resident.weight ? `${resident.weight} kg` : '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Complexion</span>
+          <span className="text-secondary block text-sm font-medium">Complexion</span>
           <span className="text-primary">{resident.complexion || '-'}</span>
         </div>
       </div>
