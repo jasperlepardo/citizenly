@@ -11,10 +11,7 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export default class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -33,9 +30,7 @@ export default class ErrorBoundary extends React.Component<
       return (
         <div className="flex min-h-screen flex-col items-center justify-center p-4">
           <div className="max-w-md rounded-lg bg-red-50 p-6 text-center">
-            <h1 className="mb-4 text-2xl font-bold text-red-900">
-              Something went wrong
-            </h1>
+            <h1 className="mb-4 text-2xl font-bold text-red-900">Something went wrong</h1>
             <p className="mb-4 text-red-700">
               An unexpected error occurred. Please try refreshing the page.
             </p>

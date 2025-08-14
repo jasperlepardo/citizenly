@@ -268,7 +268,7 @@ function ResidentCard({ resident }) {
   const badgeColor = getSectoralBadgeColor(resident.classification, 'subtle');
 
   return (
-    <div className="rounded-lg border border-neutral-200 bg-neutral-0 p-6 shadow-md">
+    <div className="bg-neutral-0 rounded-lg border border-neutral-200 p-6 shadow-md">
       <div className="mb-4 flex items-start justify-between">
         <h3 className="text-lg font-semibold text-neutral-800">{resident.name}</h3>
         <span className="rounded px-2 py-1 text-xs font-medium" style={badgeColor}>

@@ -1,17 +1,19 @@
 # API Usage Examples
 
-## Quick Reference
-
-This document provides practical examples for common API operations in the RBI System. All examples use the Supabase client with TypeScript.
+> **Practical examples for common API operations in the Citizenly project**
+> 
+> This document provides real-world examples and patterns for interacting with the Citizenly API using Supabase client and Next.js API routes.
 
 ## 🚀 Setup
 
 ```typescript
-import { supabase } from '@/lib/supabase';
-import type { Database } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
+import type { Database } from '@/lib/database.types';
 
 type Resident = Database['public']['Tables']['residents']['Row'];
 type Household = Database['public']['Tables']['households']['Row'];
+
+const supabase = createClient();
 ```
 
 ## 👥 Residents API Examples
@@ -737,4 +739,351 @@ describe('Residents API', () => {
 });
 ```
 
-This comprehensive API documentation provides practical examples for all common operations in the RBI System. Use these patterns as starting points for your specific implementation needs.
+## 🚨 Error Handling Patterns
+
+### Comprehensive Error Handler
+```typescript
+// lib/api/errorHandler.ts
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public code: string = 'UNKNOWN_ERROR'
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+export function handleApiError(error: any): never {
+  if (error.code === '23505') {
+    throw new ApiError('Record already exists', 409, 'DUPLICATE_RECORD');
+  }
+  
+  if (error.code === '42501') {
+    throw new ApiError('Insufficient permissions', 403, 'FORBIDDEN');
+  }
+  
+  if (error.code === 'PGRST116') {
+    throw new ApiError('Record not found', 404, 'NOT_FOUND');
+  }
+  
+  throw new ApiError(error.message || 'Unknown error occurred', 500);
+}
+
+// Usage in API routes
+export async function POST(request: Request) {
+  try {
+    const data = await request.json();
+    const resident = await createResident(data);
+    return Response.json({ data: resident });
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return Response.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode }
+      );
+    }
+    
+    return Response.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+## 🔍 Advanced Query Patterns
+
+### Complex Filtering with RLS
+```typescript
+// Get residents with complex filters respecting RLS
+const getFilteredResidents = async (filters: {
+  ageRange?: [number, number];
+  sectors?: string[];
+  employment?: string[];
+  education?: string[];
+  search?: string;
+}) => {
+  let query = supabase
+    .from('residents')
+    .select(`
+      id, first_name, last_name, birth_date, sex,
+      age, sectoral_groups, employment_status, education_level,
+      barangay:psgc_barangays(name)
+    `)
+    .eq('is_active', true);
+
+  // Age range filter
+  if (filters.ageRange) {
+    query = query
+      .gte('age', filters.ageRange[0])
+      .lte('age', filters.ageRange[1]);
+  }
+
+  // Sectoral groups filter (JSON array contains)
+  if (filters.sectors?.length) {
+    query = query.overlaps('sectoral_groups', filters.sectors);
+  }
+
+  // Multiple employment status
+  if (filters.employment?.length) {
+    query = query.in('employment_status', filters.employment);
+  }
+
+  // Full-text search across multiple fields
+  if (filters.search) {
+    query = query.textSearch('fts_names', filters.search);
+  }
+
+  const { data, error } = await query
+    .order('last_name')
+    .limit(100);
+
+  if (error) throw handleApiError(error);
+  return data;
+};
+```
+
+## 📊 Analytics & Reporting
+
+### Dashboard Statistics
+```typescript
+// Get comprehensive dashboard stats
+const getDashboardStats = async (barangayCode: string) => {
+  // Use RPC for complex aggregations
+  const { data: stats, error } = await supabase
+    .rpc('get_dashboard_statistics', {
+      p_barangay_code: barangayCode
+    });
+
+  if (error) throw handleApiError(error);
+
+  return {
+    residents: {
+      total: stats.total_residents,
+      male: stats.male_residents,
+      female: stats.female_residents,
+      children: stats.children_count,
+      youth: stats.youth_count,
+      adults: stats.adult_count,
+      seniors: stats.senior_count
+    },
+    households: {
+      total: stats.total_households,
+      averageSize: stats.avg_household_size
+    },
+    sectoral: {
+      pwd: stats.pwd_count,
+      seniorCitizens: stats.senior_citizens,
+      soloParents: stats.solo_parents,
+      indigenousPeoples: stats.indigenous_peoples
+    },
+    employment: {
+      employed: stats.employed_count,
+      unemployed: stats.unemployed_count,
+      employmentRate: stats.employment_rate
+    }
+  };
+};
+```
+
+## 🔄 Bulk Operations
+
+### Batch Resident Creation
+```typescript
+const bulkCreateResidents = async (residents: Partial<Resident>[]) => {
+  const batchSize = 100;
+  const results = [];
+  
+  for (let i = 0; i < residents.length; i += batchSize) {
+    const batch = residents.slice(i, i + batchSize).map(resident => ({
+      ...resident,
+      id: crypto.randomUUID(),
+      created_at: new Date().toISOString(),
+      is_active: true
+    }));
+    
+    const { data, error } = await supabase
+      .from('residents')
+      .insert(batch)
+      .select('id, first_name, last_name');
+    
+    if (error) {
+      throw new ApiError(
+        `Batch ${Math.floor(i / batchSize) + 1} failed: ${error.message}`,
+        400,
+        'BATCH_INSERT_FAILED'
+      );
+    }
+    
+    results.push(...(data || []));
+  }
+  
+  return results;
+};
+```
+
+## 🔐 Authentication & Authorization
+
+### Role-Based Data Access
+```typescript
+// Get user's accessible barangays based on role
+const getUserBarangayAccess = async (userId: string) => {
+  const { data: profile, error } = await supabase
+    .from('auth_user_profiles')
+    .select('role, barangay_code')
+    .eq('id', userId)
+    .single();
+
+  if (error) throw handleApiError(error);
+
+  switch (profile.role) {
+    case 'super_admin':
+      // Get all barangays
+      const { data: allBarangays } = await supabase
+        .from('psgc_barangays')
+        .select('code, name')
+        .order('name');
+      return allBarangays || [];
+
+    case 'barangay_admin':
+      // Get only assigned barangay
+      const { data: assignedBarangay } = await supabase
+        .from('psgc_barangays')
+        .select('code, name')
+        .eq('code', profile.barangay_code)
+        .single();
+      return assignedBarangay ? [assignedBarangay] : [];
+
+    default:
+      return [];
+  }
+};
+```
+
+## 📱 React Hooks for API Integration
+
+### Custom Hook for Residents
+```typescript
+// hooks/useResidents.ts
+export const useResidents = (params: {
+  barangayCode?: string;
+  page?: number;
+  limit?: number;
+  filters?: any;
+}) => {
+  const [residents, setResidents] = useState<Resident[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchResidents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, pagination } = await getResidents(params);
+      
+      if (params.page === 0) {
+        setResidents(data);
+      } else {
+        setResidents(prev => [...prev, ...data]);
+      }
+      
+      setHasMore(pagination.hasNext);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchResidents();
+  }, [fetchResidents]);
+
+  const refresh = () => fetchResidents();
+  
+  const createResident = async (data: Partial<Resident>) => {
+    const newResident = await createResidentApi(data);
+    setResidents(prev => [newResident, ...prev]);
+    return newResident;
+  };
+
+  return {
+    residents,
+    loading,
+    error,
+    hasMore,
+    refresh,
+    createResident
+  };
+};
+```
+
+## 🌐 Next.js API Route Examples
+
+### Residents API Route
+```typescript
+// app/api/residents/route.ts
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const supabase = createClient();
+  const searchParams = request.nextUrl.searchParams;
+  
+  // Authentication check
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Get user's barangay access
+  const barangayCode = searchParams.get('barangay_code');
+  const hasAccess = await checkBarangayAccess(user.id, barangayCode);
+  
+  if (!hasAccess) {
+    return Response.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
+  try {
+    const page = parseInt(searchParams.get('page') || '0');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
+    
+    const { data, error } = await supabase
+      .from('residents')
+      .select('*', { count: 'exact' })
+      .eq('barangay_code', barangayCode)
+      .eq('is_active', true)
+      .range(page * limit, (page + 1) * limit - 1)
+      .order('last_name');
+
+    if (error) throw error;
+
+    return Response.json({
+      data: data || [],
+      pagination: {
+        page,
+        limit,
+        total: data?.length || 0,
+        hasNext: (data?.length || 0) === limit
+      }
+    });
+  } catch (error) {
+    return Response.json(
+      { error: 'Failed to fetch residents' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+---
+
+💡 **Remember**: Always implement proper error handling, authentication checks, and follow the security guidelines outlined in our documentation.
+
+🔗 **Related Documentation**: 
+- [API Design Standards](./API_DESIGN_STANDARDS.md) for API patterns and conventions
+- [Security Guidelines](./SECURITY_GUIDELINES.md) for authentication and authorization
+- [Testing Strategy](./TESTING_STRATEGY.md) for API testing approaches

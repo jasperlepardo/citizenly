@@ -1,12 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { logger, logError } from '@/lib/secure-logger';
+import { BaseSelector, BaseSelectorOption } from '@/components/base/BaseSelector';
 
-interface BarangayOption {
-  code: string;
-  name: string;
+interface BarangayOption extends BaseSelectorOption {
+  value: string;
+  label: string;
+  metadata: {
+    code: string;
+    name: string;
+    hasAdmin: boolean;
+    adminCheckStatus: 'checking' | 'completed' | 'error';
+  };
 }
 
 interface SimpleBarangaySelectorProps {
@@ -18,166 +24,286 @@ interface SimpleBarangaySelectorProps {
 }
 
 export default function SimpleBarangaySelector({
-  value: _value,
+  value,
   onChange,
   error,
   disabled = false,
   placeholder = 'Search for your barangay...',
 }: SimpleBarangaySelectorProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [options, setOptions] = useState<BarangayOption[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Handle search with debouncing
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    debounceRef.current = setTimeout(() => {
-      if (searchTerm.length >= 2) {
-        loadBarangays(searchTerm);
-      } else {
-        setOptions([]);
-      }
-    }, 300);
-
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
-    };
-  }, [searchTerm]);
-
-  // Click outside handler
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const loadBarangays = async (search: string) => {
+  // Check if barangays already have administrators
+  const checkAdminStatus = async (barangays: any[]) => {
     try {
-      logger.debug('Loading barangays for search', { search });
-      setLoading(true);
+      console.log('🔍 Checking admin status for', barangays.length, 'barangays');
 
-      // First, test if we can access the table at all
-      const { count, error: countError } = await supabase
-        .from('psgc_barangays')
-        .select('*', { count: 'exact', head: true });
+      const promises = barangays.map(async barangay => {
+        try {
+          const response = await fetch('/api/auth/check-barangay-admin', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ barangayCode: barangay.code }),
+          });
 
-      logger.debug('Table access test', { count, error: countError });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
 
-      if (countError) {
-        logger.error('Cannot access psgc_barangays table', { error: countError });
-        logger.warn('PSGC data must be loaded in the database for barangay selection to work');
-        setOptions([]);
-        return;
-      }
+          const data = await response.json();
+          return {
+            code: barangay.code,
+            hasAdmin: data.hasAdmin || false,
+            adminCheckStatus: 'completed' as const,
+          };
+        } catch (error) {
+          console.error('Admin check failed for', barangay.code, error);
+          return {
+            code: barangay.code,
+            hasAdmin: false, // Default to allowing signup if check fails
+            adminCheckStatus: 'error' as const,
+          };
+        }
+      });
 
-      if (count === 0) {
-        logger.warn('psgc_barangays table is empty');
-        setOptions([]);
-        return;
-      }
+      const results = await Promise.all(promises);
+      console.log('✅ Admin check results:', results);
 
-      // If table is accessible and has data, proceed with search
-      const { data, error } = await supabase
-        .from('psgc_barangays')
-        .select('code, name')
-        .ilike('name', `%${search}%`)
-        .limit(10)
-        .order('name', { ascending: true });
-
-      logger.debug('Barangay search result', { hasData: !!data, error, count: data?.length });
-
-      if (error) {
-        logger.error('Barangay search error', { error });
-        setOptions([]);
-        return;
-      }
-
-      setOptions(data || []);
-      logger.debug('Set options', { itemCount: data?.length || 0 });
+      // Update search results with admin status
+      setSearchResults(prevResults =>
+        prevResults.map(barangay => {
+          const result = results.find(r => r.code === barangay.code);
+          if (result) {
+            return {
+              ...barangay,
+              hasAdmin: result.hasAdmin,
+              adminCheckStatus: result.adminCheckStatus,
+            };
+          }
+          return barangay;
+        })
+      );
     } catch (error) {
-      logError(error as Error, 'BARANGAY_LOAD_ERROR');
-      setOptions([]);
-    } finally {
-      setLoading(false);
+      console.error('Error checking admin status:', error);
+      // Mark all as error status if batch check fails
+      setSearchResults(prevResults =>
+        prevResults.map(barangay => ({
+          ...barangay,
+          adminCheckStatus: 'error' as const,
+        }))
+      );
     }
   };
 
-  const handleSelect = (option: BarangayOption) => {
-    setSearchTerm(option.name);
-    setIsOpen(false);
-    onChange(option.code);
+  // Fetch barangay data (works with or without authentication)
+  const searchBarangays = async (searchTerm: string) => {
+    if (searchTerm.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setIsError(false);
+
+      // Try to get session, but don't require it
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session?.access_token) {
+        // Authenticated search - use API
+        const response = await fetch(
+          `/api/addresses/barangays?search=${encodeURIComponent(searchTerm)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        setSearchResults(data.barangays || []);
+      } else {
+        // Public search - direct Supabase query
+        console.log('🔍 Public barangay search for:', searchTerm);
+
+        const { data, error } = await supabase
+          .from('psgc_barangays')
+          .select('code, name')
+          .ilike('name', `%${searchTerm}%`)
+          .limit(20)
+          .order('name');
+
+        if (error) {
+          console.error('Public search error:', error);
+          throw error;
+        }
+
+        console.log('✅ Found barangays:', data?.length);
+
+        // Transform to match expected format and check admin status
+        const transformedData =
+          data?.map((item: any) => ({
+            code: item.code,
+            name: item.name,
+            full_address: item.name, // Simple version just shows name
+            hasAdmin: false,
+            adminCheckStatus: 'checking' as const,
+          })) || [];
+
+        setSearchResults(transformedData);
+
+        // Check admin status for each barangay
+        await checkAdminStatus(transformedData);
+      }
+    } catch (error) {
+      console.error('Error searching barangays:', error);
+      setIsError(true);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setSearchTerm(newValue);
-    setIsOpen(true);
+  // Transform search results to match BaseSelector format
+  const options: BarangayOption[] = (searchResults || []).map(barangay => ({
+    value: barangay.code,
+    label: barangay.name,
+    disabled: barangay.hasAdmin && barangay.adminCheckStatus === 'completed',
+    metadata: {
+      code: barangay.code,
+      name: barangay.name,
+      hasAdmin: barangay.hasAdmin || false,
+      adminCheckStatus: barangay.adminCheckStatus || 'checking',
+    },
+  }));
 
-    // If user clears the input, clear the selection
-    if (!newValue) {
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    if (!term) {
       onChange('');
     }
+
+    // Debounce the search
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      searchBarangays(term);
+    }, 300);
   };
 
-  return (
-    <div ref={containerRef} className="relative">
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={handleInputChange}
-        onFocus={() => setIsOpen(true)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className={`w-full rounded-md border p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
-        } ${disabled ? 'cursor-not-allowed bg-gray-100' : 'bg-white'}`}
-      />
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
 
-      {/* Loading indicator */}
-      {loading && (
-        <div className="absolute right-3 top-1/2 -translate-y-1/2">
-          <div className="size-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-        </div>
-      )}
+  const handleChange = (code: string) => {
+    // Find the selected barangay to check admin status
+    const selectedBarangay = searchResults.find(b => b.code === code);
 
-      {/* Dropdown */}
-      {isOpen && searchTerm.length >= 2 && !loading && (
-        <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-300 bg-white shadow-lg">
-          {options.length > 0 ? (
-            options.map(option => (
-              <button
-                key={option.code}
-                type="button"
-                className="w-full px-4 py-2 text-left hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
-                onClick={() => handleSelect(option)}
-              >
-                <div className="font-medium">{option.name}</div>
-                <div className="text-sm text-gray-500">Code: {option.code}</div>
-              </button>
-            ))
-          ) : (
-            <div className="px-4 py-2 text-gray-500">
-              No barangays found matching &quot;{searchTerm}&quot;
+    if (selectedBarangay?.hasAdmin && selectedBarangay?.adminCheckStatus === 'completed') {
+      // Don't allow selection of barangays with existing admins
+      console.log('❌ Cannot select barangay with existing admin:', code);
+      return;
+    }
+
+    onChange(code);
+    setIsOpen(false);
+  };
+
+  const renderOption = (option: BarangayOption) => {
+    const { hasAdmin, adminCheckStatus } = option.metadata;
+
+    return (
+      <>
+        <div className="flex items-center justify-between">
+          <div className="font-medium">{option.metadata.name}</div>
+          {adminCheckStatus === 'checking' && (
+            <div className="flex items-center text-xs text-blue-500">
+              <div className="mr-1 h-3 w-3 animate-spin rounded-full border border-blue-500 border-t-transparent"></div>
+              Checking...
+            </div>
+          )}
+          {adminCheckStatus === 'completed' && hasAdmin && (
+            <div className="flex items-center rounded bg-red-50 px-2 py-1 text-xs text-red-500">
+              <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Admin exists
+            </div>
+          )}
+          {adminCheckStatus === 'completed' && !hasAdmin && (
+            <div className="flex items-center rounded bg-green-50 px-2 py-1 text-xs text-green-500">
+              <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Available
+            </div>
+          )}
+          {adminCheckStatus === 'error' && (
+            <div className="flex items-center rounded bg-yellow-50 px-2 py-1 text-xs text-yellow-500">
+              <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Check failed
             </div>
           )}
         </div>
-      )}
+        <div className="text-sm text-gray-500">Code: {option.metadata.code}</div>
+        {hasAdmin && adminCheckStatus === 'completed' && (
+          <div className="mt-1 text-xs text-red-600">
+            This barangay already has an administrator. Contact them to be added to the system.
+          </div>
+        )}
+      </>
+    );
+  };
 
-      {/* Error message */}
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
-    </div>
+  const emptyMessage = isError
+    ? 'Unable to load barangays. Please check your connection.'
+    : `No barangays found matching "${searchTerm}"`;
+
+  return (
+    <BaseSelector
+      value={value}
+      onChange={handleChange}
+      options={options}
+      loading={isLoading}
+      error={error}
+      disabled={disabled}
+      placeholder={placeholder}
+      searchTerm={searchTerm}
+      onSearchChange={handleSearchChange}
+      isOpen={isOpen}
+      onOpenChange={handleOpenChange}
+      renderOption={renderOption}
+      emptyMessage={emptyMessage}
+      minSearchLength={2}
+    />
   );
 }

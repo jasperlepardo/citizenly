@@ -26,9 +26,9 @@ interface CityMunicipality {
 
 interface Household {
   code: string;
-  street_name?: string;
   house_number?: string;
-  subdivision?: string;
+  street_id: string;
+  subdivision_id?: string;
   barangay_code: string;
   head_resident?: {
     id: string;
@@ -37,6 +37,16 @@ interface Household {
     last_name: string;
   };
   member_count?: number;
+  // Related data from JOINs
+  geo_streets: {
+    id: string;
+    name: string;
+  };
+  geo_subdivisions?: {
+    id: string;
+    name: string;
+    type: string;
+  };
   // Geographic information for display
   region_info?: {
     code: string;
@@ -80,24 +90,36 @@ export default function HouseholdSelector({
   // Load households for the user's barangay
   const loadHouseholds = useCallback(async () => {
     if (!userProfile?.barangay_code) {
-      logger.debug('No barangay_code available, cannot load households');
+      logger.debug('No barangay_code available, cannot load households', { userProfile });
       return;
     }
 
-    logger.debug('Loading households for barangay', { barangayCode: userProfile.barangay_code });
+    logger.debug('Loading households for barangay', {
+      barangayCode: userProfile.barangay_code,
+      userProfileId: userProfile.id,
+    });
     setLoading(true);
     try {
-      // Get households with head resident info
+      // Get households with optional head resident, street, and subdivision info
       const { data: householdsData, error } = await supabase
         .from('households')
         .select(
           `
-            *,
-            head_resident:residents!households_household_head_id_fkey(
+            code,
+            name,
+            house_number,
+            street_id,
+            subdivision_id,
+            barangay_code,
+            household_head_id,
+            geo_streets(
               id,
-              first_name,
-              middle_name,
-              last_name
+              name
+            ),
+            geo_subdivisions(
+              id,
+              name,
+              type
             )
           `
         )
@@ -109,7 +131,20 @@ export default function HouseholdSelector({
         return;
       }
 
-      // Get member counts and geographic information for each household
+      logger.debug('Raw households data from query', {
+        count: householdsData?.length || 0,
+        userBarangay: userProfile.barangay_code,
+        rawData: householdsData,
+        queryWithoutBarangayFilter: true,
+      });
+
+      console.log('🏠 HOUSEHOLD DEBUG:', {
+        userBarangayCode: userProfile.barangay_code,
+        householdsFound: householdsData?.length || 0,
+        households: householdsData,
+      });
+
+      // Get member counts, head resident info, and geographic information for each household
       const householdsWithCounts = await Promise.all(
         (householdsData || []).map(async household => {
           // Get member count
@@ -117,6 +152,17 @@ export default function HouseholdSelector({
             .from('residents')
             .select('*', { count: 'exact', head: true })
             .eq('household_code', household.code);
+
+          // Get head resident info if household_head_id exists
+          let headResident = null;
+          if (household.household_head_id) {
+            const { data: headData } = await supabase
+              .from('residents')
+              .select('id, first_name, middle_name, last_name')
+              .eq('id', household.household_head_id)
+              .single();
+            headResident = headData;
+          }
 
           // Get geographic information from PSGC tables
           let geoInfo = {};
@@ -180,9 +226,20 @@ export default function HouseholdSelector({
 
           return {
             ...household,
+            head_resident: headResident || undefined,
             member_count: count || 0,
+            // Fix geo_streets to be single object, not array
+            geo_streets:
+              household.geo_streets && household.geo_streets.length > 0
+                ? household.geo_streets[0]
+                : { id: '', name: '' },
+            // Fix geo_subdivisions to be single object, not array
+            geo_subdivisions:
+              household.geo_subdivisions && household.geo_subdivisions.length > 0
+                ? household.geo_subdivisions[0]
+                : undefined,
             ...geoInfo,
-          };
+          } as Household;
         })
       );
 
@@ -212,9 +269,11 @@ export default function HouseholdSelector({
 
   // Helper function to format address
   const formatAddress = (household: Household) => {
-    const parts = [household.house_number, household.street_name, household.subdivision].filter(
-      Boolean
-    );
+    const parts = [
+      household.house_number,
+      household.geo_streets?.name,
+      household.geo_subdivisions?.name,
+    ].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : 'No address';
   };
 
@@ -254,9 +313,9 @@ export default function HouseholdSelector({
     return (
       household.code.toLowerCase().includes(searchLower) ||
       formatFullName(household.head_resident).toLowerCase().includes(searchLower) ||
-      household.street_name?.toLowerCase().includes(searchLower) ||
+      household.geo_streets?.name?.toLowerCase().includes(searchLower) ||
       household.house_number?.toLowerCase().includes(searchLower) ||
-      household.subdivision?.toLowerCase().includes(searchLower)
+      household.geo_subdivisions?.name?.toLowerCase().includes(searchLower)
     );
   });
 

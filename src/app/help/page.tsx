@@ -205,12 +205,12 @@ function HelpContent() {
         </div>
 
         {/* Help Content */}
-        <div className="rounded-lg border p-6 bg-surface border-default">
+        <div className="bg-surface rounded-lg border border-default p-6">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="font-montserrat text-lg font-semibold text-primary">
               Frequently Asked Questions
             </h2>
-            <div className="text-sm text-muted">
+            <div className="text-muted text-sm">
               {totalResults} {totalResults === 1 ? 'result' : 'results'}
             </div>
           </div>
@@ -243,7 +243,7 @@ function HelpContent() {
             {Object.keys(groupedContent).length === 0 ? (
               <div className="py-8 text-center">
                 <svg
-                  className="mx-auto mb-4 size-12 text-muted"
+                  className="text-muted mx-auto mb-4 size-12"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -266,11 +266,11 @@ function HelpContent() {
               Object.entries(groupedContent).map(([category, items]) => (
                 <div key={category} className="space-y-4">
                   {/* Category Header */}
-                  <div className="border-b pb-2 border-default">
+                  <div className="border-b border-default pb-2">
                     <h3 className="font-montserrat flex items-center space-x-2 text-lg font-semibold text-primary">
                       <span className="text-primary-600">{getCategoryIcon(category)}</span>
                       <span>{category}</span>
-                      <span className="text-sm font-normal text-muted">({items.length})</span>
+                      <span className="text-muted text-sm font-normal">({items.length})</span>
                     </h3>
                   </div>
 
@@ -285,7 +285,7 @@ function HelpContent() {
                         >
                           <button
                             onClick={() => toggleAccordion(globalIndex)}
-                            className="w-full p-4 text-left transition-colors bg-background-muted hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                            className="bg-background-muted hover:bg-surface-hover w-full p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex-1 pr-4">
@@ -294,7 +294,7 @@ function HelpContent() {
                                 </h4>
                               </div>
                               <svg
-                                className={`size-5 shrink-0 transition-transform text-muted ${
+                                className={`text-muted size-5 shrink-0 transition-transform ${
                                   isAccordionOpen(globalIndex) ? 'rotate-180' : ''
                                 }`}
                                 fill="none"
@@ -311,7 +311,7 @@ function HelpContent() {
                             </div>
                           </button>
                           {isAccordionOpen(globalIndex) && (
-                            <div className="border-t p-4 bg-surface border-default">
+                            <div className="bg-surface border-t border-default p-4">
                               <p className="font-montserrat text-sm leading-relaxed text-secondary">
                                 {item.answer}
                               </p>

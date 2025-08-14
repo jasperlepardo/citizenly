@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'A specialized pie chart for displaying gender distribution in Filipino barangays. Shows the breakdown between male and female population using consistent colors that match the population pyramid.',
+        component:
+          'A specialized pie chart for displaying gender distribution in Filipino barangays. Shows the breakdown between male and female population using consistent colors that match the population pyramid.',
       },
     },
   },
@@ -36,8 +37,8 @@ type Story = StoryObj<typeof meta>;
 export const BalancedDistribution: Story = {
   args: {
     data: {
-      male: 1445,    // 50.7%
-      female: 1402,  // 49.3%
+      male: 1445, // 50.7%
+      female: 1402, // 49.3%
     },
   },
 };
@@ -47,8 +48,8 @@ export const MaleDominated: Story = {
   args: {
     title: 'Gender Distribution - Male Majority',
     data: {
-      male: 1567,    // 52.1%
-      female: 1443,  // 47.9%
+      male: 1567, // 52.1%
+      female: 1443, // 47.9%
     },
   },
 };
@@ -58,8 +59,8 @@ export const FemaleDominated: Story = {
   args: {
     title: 'Gender Distribution - Female Majority',
     data: {
-      male: 1389,    // 48.2%
-      female: 1493,  // 51.8%
+      male: 1389, // 48.2%
+      female: 1493, // 51.8%
     },
   },
 };
@@ -69,8 +70,8 @@ export const SmallBarangay: Story = {
   args: {
     title: 'Small Barangay Gender Distribution',
     data: {
-      male: 287,     // 49.8%
-      female: 289,   // 50.2%
+      male: 287, // 49.8%
+      female: 289, // 50.2%
     },
   },
 };
@@ -80,8 +81,8 @@ export const LargeBarangay: Story = {
   args: {
     title: 'Large Barangay Gender Distribution',
     data: {
-      male: 4523,    // 50.3%
-      female: 4456,  // 49.7%
+      male: 4523, // 50.3%
+      female: 4456, // 49.7%
     },
   },
 };
@@ -91,8 +92,8 @@ export const RuralAgricultural: Story = {
   args: {
     title: 'Rural Agricultural Area',
     data: {
-      male: 1623,    // 53.4%
-      female: 1418,  // 46.6%
+      male: 1623, // 53.4%
+      female: 1418, // 46.6%
     },
   },
 };
@@ -102,8 +103,8 @@ export const UrbanResidential: Story = {
   args: {
     title: 'Urban Residential Area',
     data: {
-      male: 1234,    // 47.8%
-      female: 1345,  // 52.2%
+      male: 1234, // 47.8%
+      female: 1345, // 52.2%
     },
   },
 };
@@ -113,8 +114,8 @@ export const FishingCommunity: Story = {
   args: {
     title: 'Fishing Community',
     data: {
-      male: 789,     // 54.2%
-      female: 667,   // 45.8%
+      male: 789, // 54.2%
+      female: 667, // 45.8%
     },
   },
 };
@@ -124,8 +125,8 @@ export const MiningCommunity: Story = {
   args: {
     title: 'Mining Community',
     data: {
-      male: 1789,    // 58.7%
-      female: 1256,  // 41.3%
+      male: 1789, // 58.7%
+      female: 1256, // 41.3%
     },
   },
 };
@@ -135,8 +136,8 @@ export const TextileIndustry: Story = {
   args: {
     title: 'Textile Industry Area',
     data: {
-      male: 567,     // 39.2%
-      female: 879,   // 60.8%
+      male: 567, // 39.2%
+      female: 879, // 60.8%
     },
   },
 };
@@ -146,8 +147,8 @@ export const UniversityTown: Story = {
   args: {
     title: 'University Town',
     data: {
-      male: 1234,    // 48.9%
-      female: 1289,  // 51.1%
+      male: 1234, // 48.9%
+      female: 1289, // 51.1%
     },
   },
 };
@@ -157,8 +158,8 @@ export const RetirementCommunity: Story = {
   args: {
     title: 'Retirement Community',
     data: {
-      male: 456,     // 44.7%
-      female: 564,   // 55.3%
+      male: 456, // 44.7%
+      female: 564, // 55.3%
     },
   },
 };
@@ -168,8 +169,8 @@ export const OFWSending: Story = {
   args: {
     title: 'OFW-Sending Community',
     data: {
-      male: 678,     // 43.2%
-      female: 892,   // 56.8%
+      male: 678, // 43.2%
+      female: 892, // 56.8%
     },
   },
 };
@@ -179,8 +180,8 @@ export const MilitaryResidential: Story = {
   args: {
     title: 'Military Residential Area',
     data: {
-      male: 1345,    // 55.8%
-      female: 1067,  // 44.2%
+      male: 1345, // 55.8%
+      female: 1067, // 44.2%
     },
   },
 };
@@ -190,8 +191,8 @@ export const HealthcareArea: Story = {
   args: {
     title: 'Healthcare Worker Area',
     data: {
-      male: 423,     // 41.5%
-      female: 596,   // 58.5%
+      male: 423, // 41.5%
+      female: 596, // 58.5%
     },
   },
 };
@@ -201,8 +202,8 @@ export const ConstructionDormitory: Story = {
   args: {
     title: 'Construction Worker Area',
     data: {
-      male: 987,     // 78.9%
-      female: 264,   // 21.1%
+      male: 987, // 78.9%
+      female: 264, // 21.1%
     },
   },
 };
@@ -212,8 +213,8 @@ export const BPOArea: Story = {
   args: {
     title: 'BPO District',
     data: {
-      male: 756,     // 47.3%
-      female: 842,   // 52.7%
+      male: 756, // 47.3%
+      female: 842, // 52.7%
     },
   },
 };
@@ -223,8 +224,8 @@ export const IndigenousCommunity: Story = {
   args: {
     title: 'Indigenous Community',
     data: {
-      male: 234,     // 50.1%
-      female: 233,   // 49.9%
+      male: 234, // 50.1%
+      female: 233, // 49.9%
     },
   },
 };
@@ -234,8 +235,8 @@ export const TouristDestination: Story = {
   args: {
     title: 'Tourist Destination',
     data: {
-      male: 892,     // 46.8%
-      female: 1015,  // 53.2%
+      male: 892, // 46.8%
+      female: 1015, // 53.2%
     },
   },
 };
@@ -245,8 +246,8 @@ export const FactoryTown: Story = {
   args: {
     title: 'Factory Town',
     data: {
-      male: 1456,    // 51.3%
-      female: 1382,  // 48.7%
+      male: 1456, // 51.3%
+      female: 1382, // 48.7%
     },
   },
 };
@@ -289,8 +290,8 @@ export const PerfectBalance: Story = {
   args: {
     title: 'Perfect Gender Balance',
     data: {
-      male: 1000,    // 50.0%
-      female: 1000,  // 50.0%
+      male: 1000, // 50.0%
+      female: 1000, // 50.0%
     },
   },
 };
@@ -298,7 +299,7 @@ export const PerfectBalance: Story = {
 // Regional comparison showcase
 export const RegionalComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid min-h-screen grid-cols-1 gap-6 bg-gray-50 p-6 md:grid-cols-2 xl:grid-cols-4">
       <SexDistributionPieChart
         title="Metro Manila"
         data={{
@@ -337,7 +338,7 @@ export const RegionalComparison: Story = {
 // Economic type comparison
 export const EconomicTypeComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-3">
       <SexDistributionPieChart
         title="Agricultural"
         data={{
@@ -390,7 +391,7 @@ export const EconomicTypeComparison: Story = {
 // Age-related gender patterns
 export const AgeRelatedPatterns: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-3">
       <SexDistributionPieChart
         title="Young Community"
         data={{
@@ -422,7 +423,7 @@ export const AgeRelatedPatterns: Story = {
 // Different population sizes
 export const PopulationSizes: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:grid-cols-4">
       <SexDistributionPieChart
         title="Very Small (500)"
         data={{

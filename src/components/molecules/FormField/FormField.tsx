@@ -31,7 +31,7 @@ export const FormField = ({
       {/* Label */}
       {label && (
         <div className={cn(isHorizontal ? `${labelWidth} flex-shrink-0 pt-2` : 'mb-1')}>
-          <label className="block text-sm font-medium font-body text-primary">
+          <label className="block font-body text-sm font-medium text-primary">
             {label}
             {required && <span className="ml-1 text-danger-600">*</span>}
           </label>
@@ -47,9 +47,9 @@ export const FormField = ({
         {(helperText || errorMessage) && (
           <div className="mt-1">
             {errorMessage ? (
-              <p className="text-xs text-danger-600 font-body">{errorMessage}</p>
+              <p className="font-body text-xs text-danger-600">{errorMessage}</p>
             ) : (
-              <p className="text-xs font-body text-muted">{helperText}</p>
+              <p className="text-muted font-body text-xs">{helperText}</p>
             )}
           </div>
         )}
@@ -85,8 +85,8 @@ export const FormGroup = ({
       {/* Title and Description */}
       {(title || description) && (
         <div className="mb-4">
-          {title && <h3 className="mb-1 text-lg font-semibold font-body text-primary">{title}</h3>}
-          {description && <p className="text-sm font-body text-muted">{description}</p>}
+          {title && <h3 className="mb-1 font-body text-lg font-semibold text-primary">{title}</h3>}
+          {description && <p className="text-muted font-body text-sm">{description}</p>}
         </div>
       )}
 

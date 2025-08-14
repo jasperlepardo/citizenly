@@ -335,7 +335,7 @@ export function getFocusRing(
  * @param styles - Component styles object
  * @returns Validation results with suggestions
  */
-export function validateDesignTokenUsage(styles: Record<string, any>) {
+export function validateDesignTokenUsage(styles: Record<string, unknown>) {
   const warnings: string[] = [];
   const suggestions: string[] = [];
 
@@ -381,7 +381,7 @@ export function getSectoralBadgeColor(
   classification: string,
   variant: 'solid' | 'outline' | 'subtle' = 'solid'
 ) {
-  const baseColor = getRBIColor(classification as any);
+  const baseColor = getRBIColor(classification as Parameters<typeof getRBIColor>[0]);
 
   switch (variant) {
     case 'solid':

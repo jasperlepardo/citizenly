@@ -5,8 +5,8 @@ import { z } from 'zod';
  * These provide security through input validation and sanitization
  */
 
-// Common validation patterns
-const PHONE_REGEX = /^(\+63|0)?[0-9]{10}$/;
+// Common validation patterns - Updated for RBI v3 compatibility
+const PHONE_REGEX = /^(\+63|0)?9[0-9]{9}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PHILSYS_REGEX = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
 const NAME_REGEX = /^[a-zA-Z\s\-'\.]+$/;
@@ -34,9 +34,8 @@ export const personalInfoSchema = z.object({
   middleName: z
     .string()
     .max(100)
-    .regex(NAME_REGEX)
     .optional()
-    .transform(val => (val ? sanitizeString(val) : undefined)),
+    .transform(val => (val && val.trim() ? sanitizeString(val) : undefined)),
   lastName: nameSchema,
   extensionName: z
     .string()
@@ -50,25 +49,32 @@ export const personalInfoSchema = z.object({
     return parsedDate <= now && parsedDate >= minDate;
   }, 'Invalid birthdate'),
   sex: z.enum(['male', 'female']),
-  civilStatus: z.enum([
-    'single',
-    'married',
-    'widowed',
-    'divorced',
-    'separated',
-    'annulled',
-    'registered_partnership',
-    'live_in',
-  ]),
+  civilStatus: z
+    .enum([
+      'single',
+      'married',
+      'widowed',
+      'divorced',
+      'separated',
+      'annulled',
+      'registered_partnership',
+      'live_in',
+      'others', // Added for RBI v3 compatibility
+    ])
+    .default('single'),
   citizenship: z.enum(['filipino', 'dual_citizen', 'foreign_national']).default('filipino'),
 });
 
-// Contact Information Schema
+// Contact Information Schema - Made optional for RBI v3
 export const contactInfoSchema = z.object({
   mobileNumber: z
     .string()
-    .regex(PHONE_REGEX, 'Invalid Philippine mobile number format')
-    .transform(phone => phone.replace(/[^\d]/g, '')), // Sanitize to numbers only
+    .optional()
+    .refine(
+      phone => !phone || phone.trim() === '' || PHONE_REGEX.test(phone),
+      'Invalid Philippine mobile number format'
+    )
+    .transform(phone => (phone && phone.trim() !== '' ? phone.replace(/[^\d]/g, '') : undefined)), // Sanitize to numbers only
   telephoneNumber: z
     .string()
     .regex(/^[0-9\-\+\(\)\s]*$/, 'Invalid telephone number format')

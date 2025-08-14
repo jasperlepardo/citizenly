@@ -1,11 +1,44 @@
 import Link from 'next/link';
 import { Button } from '@/components/atoms';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: 'Citizenly - Barangay Management System',
+  description:
+    'Modern barangay management system for efficient resident registration, household management, and community administration in the Philippines.',
+  keywords: ['barangay', 'management', 'residents', 'households', 'Philippines', 'PSGC', 'RBI'],
+  authors: [{ name: 'Citizenly Development Team' }],
+  openGraph: {
+    title: 'Citizenly - Barangay Management System',
+    description: 'Streamline your barangay operations with our comprehensive management platform',
+    type: 'website',
+    siteName: 'Citizenly',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Citizenly - Barangay Management System',
+    description: 'Modern barangay management for the digital age',
+  },
+};
+
+/**
+ * HomePage Component
+ *
+ * @description Renders the home page interface for the application
+ * @returns {JSX.Element} The rendered HomePage component
+ *
+ * @example
+ * ```typescript
+ * function App() {
+ *   return <HomePage />;
+ * }
+ * ```
+ */
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
       {/* Header */}
-      <header className="border-b shadow-sm bg-surface border-default">
+      <header className="bg-surface border-b border-default shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
@@ -14,7 +47,7 @@ export default function HomePage() {
             <div className="flex items-center space-x-4">
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 text-sm font-medium transition-colors text-secondary hover:text-primary"
+                className="rounded-md px-3 py-2 text-sm font-medium text-secondary transition-colors hover:text-primary"
               >
                 Sign In
               </Link>
@@ -37,7 +70,7 @@ export default function HomePage() {
               Records of Barangay Inhabitant System
             </span>
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-base font-body text-secondary sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
+          <p className="mx-auto mt-3 max-w-md font-body text-base text-secondary sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
             Complete digital solution for Philippine barangay resident management, built for local
             government units to efficiently manage their communities.
           </p>
@@ -69,7 +102,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Resident Management */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/20">
                 <svg
                   className="size-6 text-primary-600 dark:text-primary-400"
@@ -95,7 +128,7 @@ export default function HomePage() {
             </div>
 
             {/* Address System */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-success-100 dark:bg-success-900/20">
                 <svg
                   className="size-6 text-success-600 dark:text-success-400"
@@ -127,7 +160,7 @@ export default function HomePage() {
             </div>
 
             {/* Analytics */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-secondary-100 dark:bg-secondary-900/20">
                 <svg
                   className="size-6 text-secondary-600 dark:text-secondary-400"
@@ -153,7 +186,7 @@ export default function HomePage() {
             </div>
 
             {/* Search & Filter */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-warning-100 dark:bg-warning-900/20">
                 <svg
                   className="size-6 text-warning-600 dark:text-warning-400"
@@ -179,7 +212,7 @@ export default function HomePage() {
             </div>
 
             {/* Security */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-danger-100 dark:bg-danger-900/20">
                 <svg
                   className="size-6 text-danger-600 dark:text-danger-400"
@@ -205,10 +238,10 @@ export default function HomePage() {
             </div>
 
             {/* Digital Forms */}
-            <div className="rounded-xl border p-8 shadow-md transition-shadow bg-surface border-default hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-rbi-govBlue/10 dark:bg-rbi-govBlue/20">
+            <div className="bg-surface rounded-xl border border-default p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
+              <div className="bg-rbi-govBlue/10 dark:bg-rbi-govBlue/20 mb-4 flex size-12 items-center justify-center rounded-lg">
                 <svg
-                  className="size-6 text-rbi-govBlue dark:text-rbi-govBlue"
+                  className="text-rbi-govBlue dark:text-rbi-govBlue size-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -236,10 +269,10 @@ export default function HomePage() {
         <div className="mt-20 rounded-2xl bg-primary-600 shadow-xl dark:bg-primary-700">
           <div className="px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
             <div className="text-center">
-              <h2 className="font-display text-3xl font-extrabold text-inverse">
+              <h2 className="text-inverse font-display text-3xl font-extrabold">
                 Ready to modernize your barangay?
               </h2>
-              <p className="mt-4 text-lg text-primary-100 font-body dark:text-primary-200">
+              <p className="mt-4 font-body text-lg text-primary-100 dark:text-primary-200">
                 Join local government units across the Philippines in digitizing their resident
                 management systems.
               </p>
@@ -256,7 +289,7 @@ export default function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t bg-surface border-default dark:border-neutral-700 dark:bg-neutral-900">
+      <footer className="bg-surface mt-20 border-t border-default dark:border-neutral-700 dark:bg-neutral-900">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-4 flex items-center justify-center">

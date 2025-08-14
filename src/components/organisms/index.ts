@@ -7,11 +7,14 @@ export { Navigation } from './Navigation';
 export { Table } from './Table';
 export { CreateHouseholdModal } from './CreateHouseholdModal';
 export { HouseholdSelector } from './HouseholdSelector';
+export { default as StreetSelector } from './StreetSelector';
+export { default as SubdivisionSelector } from './SubdivisionSelector';
 export { PopulationPyramid } from './PopulationPyramid';
 
 // Address Components
 export { AddressSearch } from './AddressSearch';
 export { AddressSelector } from './AddressSelector';
+export { GeographicLocationStep } from './GeographicLocationStep';
 
 // Search Components
 export { AdvancedSearchBar } from './AdvancedSearchBar';

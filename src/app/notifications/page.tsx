@@ -187,7 +187,7 @@ function NotificationsContent() {
                   className={`font-montserrat whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium ${
                     filter === tab.id
                       ? 'border-primary-500 text-primary-600'
-                      : 'hover:border-muted border-transparent text-muted hover:text-secondary'
+                      : 'hover:border-muted text-muted border-transparent hover:text-secondary'
                   }`}
                 >
                   {tab.name}
@@ -209,12 +209,12 @@ function NotificationsContent() {
         </div>
 
         {/* Notifications List */}
-        <div className="rounded-lg border bg-surface border-default">
+        <div className="bg-surface rounded-lg border border-default">
           {filteredNotifications.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-background-muted">
+              <div className="bg-background-muted mx-auto mb-4 flex size-16 items-center justify-center rounded-full">
                 <svg
-                  className="size-8 text-muted"
+                  className="text-muted size-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -231,15 +231,15 @@ function NotificationsContent() {
               <p className="font-montserrat text-sm text-secondary">
                 {filter === 'unread' && 'No unread notifications'}
                 {filter === 'important' && 'No important notifications'}
-                {filter === 'all' && "You're all caught up!"}
+                {filter === 'all' && 'You&rsquo;re all caught up!'}
               </p>
             </div>
           ) : (
-            <div className="divide-default divide-y">
+            <div className="divide-y divide-default">
               {filteredNotifications.map(notification => (
                 <div
                   key={notification.id}
-                  className={`p-4 transition-colors hover:bg-surface-hover ${
+                  className={`hover:bg-surface-hover p-4 transition-colors ${
                     !notification.read ? 'bg-primary-50/30' : ''
                   }`}
                 >
@@ -270,7 +270,7 @@ function NotificationsContent() {
                           <p className="font-montserrat mt-1 text-sm text-secondary">
                             {notification.message}
                           </p>
-                          <p className="font-montserrat mt-2 text-xs text-muted">
+                          <p className="font-montserrat text-muted mt-2 text-xs">
                             {notification.time}
                           </p>
                         </div>
@@ -281,7 +281,7 @@ function NotificationsContent() {
                             </button>
                           )}
                           <button
-                            className="focus:ring-offset-surface rounded p-1 transition-colors text-muted hover:text-secondary focus:text-danger-600 focus:outline-none focus:ring-2 focus:ring-danger-500 focus:ring-offset-1"
+                            className="focus:ring-offset-surface text-muted rounded p-1 transition-colors hover:text-secondary focus:text-danger-600 focus:outline-none focus:ring-2 focus:ring-danger-500 focus:ring-offset-1"
                             title="Delete notification"
                           >
                             <svg

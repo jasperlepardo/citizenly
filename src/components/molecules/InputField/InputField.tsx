@@ -138,7 +138,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="mb-2 block text-sm font-medium font-system text-primary">{label}</label>
+          <label className="mb-2 block font-system text-sm font-medium text-primary">{label}</label>
         )}
 
         {/* Input Container */}
@@ -163,7 +163,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
               <input
                 ref={ref}
                 className={cn(
-                  'font-montserrat w-full bg-transparent font-normal text-primary placeholder:text-muted',
+                  'font-montserrat placeholder:text-muted w-full bg-transparent font-normal text-primary',
                   // Remove ALL borders and focus states
                   'border-0 shadow-none outline-0 ring-0',
                   'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
@@ -172,7 +172,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                   size === 'sm' && 'text-sm leading-4',
                   size === 'md' && 'text-base leading-5',
                   size === 'lg' && 'text-lg leading-6',
-                  disabled && 'cursor-not-allowed text-muted',
+                  disabled && 'text-muted cursor-not-allowed',
                   readOnly && 'text-secondary'
                 )}
                 style={{
@@ -196,7 +196,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
                 <button
                   type="button"
                   onClick={onClear}
-                  className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
+                  className="flex size-full items-center justify-center text-secondary transition-colors hover:text-primary"
                 >
                   <svg
                     width="16"
@@ -218,13 +218,13 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
           {/* Addons for special cases */}
           {leftAddon && (
-            <div className="flex items-center border-r px-3 text-sm text-muted bg-background-muted border-default">
+            <div className="text-muted bg-background-muted flex items-center border-r border-default px-3 text-sm">
               {leftAddon}
             </div>
           )}
 
           {rightAddon && (
-            <div className="flex items-center border-l px-3 text-sm text-muted bg-background-muted border-default">
+            <div className="text-muted bg-background-muted flex items-center border-l border-default px-3 text-sm">
               {rightAddon}
             </div>
           )}
@@ -234,9 +234,9 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="text-xs leading-[14px] text-red-500 font-system">{errorMessage}</p>
+              <p className="font-system text-xs leading-[14px] text-red-500">{errorMessage}</p>
             ) : (
-              <p className="text-xs leading-[14px] font-system text-muted">{helperText}</p>
+              <p className="text-muted font-system text-xs leading-[14px]">{helperText}</p>
             )}
           </div>
         )}

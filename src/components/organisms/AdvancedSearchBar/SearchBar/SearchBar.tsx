@@ -123,7 +123,7 @@ export default function SearchBar({
             placeholder={placeholder}
             leftIcon={
               <svg
-                className="size-5 text-muted"
+                className="text-muted size-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -143,7 +143,7 @@ export default function SearchBar({
                   variant="ghost"
                   size="sm"
                   iconOnly
-                  className="size-4 p-0 text-muted hover:text-secondary"
+                  className="text-muted size-4 p-0 hover:text-secondary"
                 >
                   <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -187,7 +187,7 @@ export default function SearchBar({
 
       {/* Advanced Filters */}
       {showFilters && filterOptions.length > 0 && (
-        <div className="space-y-4 rounded-lg border p-4 bg-surface-hover border-default">
+        <div className="bg-surface-hover space-y-4 rounded-lg border border-default p-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-primary">Advanced Filters</h3>
             <Button size="sm" variant="primary-outline" onClick={handleAddFilter}>
@@ -196,7 +196,7 @@ export default function SearchBar({
           </div>
 
           {filters.length === 0 ? (
-            <p className="text-sm text-muted">
+            <p className="text-muted text-sm">
               No filters applied. Click &quot;Add Filter&quot; to add search criteria.
             </p>
           ) : (
@@ -208,7 +208,7 @@ export default function SearchBar({
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 rounded border p-3 bg-surface border-default"
+                    className="bg-surface flex items-center gap-2 rounded border border-default p-3"
                   >
                     {/* Field Selection */}
                     <div className="w-40">

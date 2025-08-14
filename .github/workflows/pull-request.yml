@@ -79,7 +79,7 @@ jobs:
         if: matrix.check-group == 'static-analysis'
         run: |
           echo "🔍 Running Tier 2 Static Analysis"
-          npm run lint -- --config .eslintrc.ci.js --format json --output-file eslint-report.json
+          npm run lint -- --format json --output-file eslint-report.json
           npm run type-check
 
       # Security & Dependencies Group  
@@ -140,10 +140,10 @@ jobs:
         run: npm ci
 
       - name: Run lint
-        run: npm run lint:fast
+        run: npm run lint
 
       - name: Run type check
-        run: npm run type-check:fast
+        run: npm run type-check
 
   # Parallel testing
   test:
@@ -172,6 +172,29 @@ jobs:
 
       - name: Run tests
         run: npm run test:fast
+
+  # Quick basic checks for fast feedback
+  quick-checks:
+    name: Quick Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Quick lint check
+        run: npm run lint
+
+      - name: Quick type check
+        run: npm run type-check
 
   # Build job that depends on other checks
   build:

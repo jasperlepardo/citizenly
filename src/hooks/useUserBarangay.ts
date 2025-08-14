@@ -24,19 +24,25 @@ export function useUserBarangay(): UserBarangayInfo {
   useEffect(() => {
     const loadBarangayAddress = async () => {
       // Wait for auth to load
-      if (authLoading) return;
+      if (authLoading) {
+        console.log('useUserBarangay: waiting for auth to load...');
+        return;
+      }
 
       // User must be authenticated
       if (!user) {
-        setError('User not authenticated');
+        console.log('useUserBarangay: user not authenticated, skipping barangay load');
+        setError(null); // Don't show error for unauthenticated users - let ProtectedRoute handle it
         setLoading(false);
         return;
       }
 
       // User must have a barangay assignment
       if (!userProfile?.barangay_code) {
+        console.log('useUserBarangay: no barangay assignment found');
         setError('No barangay assignment found. Please contact your administrator.');
         setLoading(false);
+        setAddress(null);
         return;
       }
 
@@ -45,11 +51,14 @@ export function useUserBarangay(): UserBarangayInfo {
         setError(null);
 
         // Get complete address hierarchy for the user's barangay
+        console.log('Loading address for barangay code:', userProfile.barangay_code);
         const addressData = await getCompleteAddress(userProfile.barangay_code);
 
         if (addressData) {
+          console.log('Successfully loaded barangay address:', addressData);
           setAddress(addressData);
         } else {
+          console.log('No address data returned for barangay code:', userProfile.barangay_code);
           setError('Unable to load barangay address information');
         }
       } catch (err) {

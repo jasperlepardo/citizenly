@@ -10,9 +10,13 @@ const createJestConfig = nextJest({
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   // Setup files to run before tests
+  // Default setup for jsdom tests
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  // Allow per-test overrides for node environment to bypass window-dependent setup
+  setupFiles: [],
 
   // Test environment
+  // Use jsdom globally, but allow per-file overrides (we set node env in API tests via file annotation)
   testEnvironment: 'jsdom',
 
   // Module path mapping to handle Next.js absolute imports

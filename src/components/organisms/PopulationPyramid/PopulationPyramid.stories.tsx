@@ -8,7 +8,8 @@ const meta = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'An interactive population pyramid showing age and gender distribution in Filipino barangays. Features animated bars, tooltips, clickable age groups, and responsive design.',
+        component:
+          'An interactive population pyramid showing age and gender distribution in Filipino barangays. Features animated bars, tooltips, clickable age groups, and responsive design.',
       },
     },
   },
@@ -264,7 +265,7 @@ export const WithZeroValues: Story = {
 // Comparative analysis
 export const RegionalComparison: Story = {
   render: () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 bg-gray-50 min-h-screen">
+    <div className="grid min-h-screen grid-cols-1 gap-8 bg-gray-50 p-6 lg:grid-cols-2">
       <PopulationPyramid
         data={[
           { ageRange: '0-4', male: 234, female: 218, malePercentage: 8.2, femalePercentage: 7.7 },
@@ -287,8 +288,20 @@ export const RegionalComparison: Story = {
           { ageRange: '10-14', male: 107, female: 102, malePercentage: 3.7, femalePercentage: 3.6 },
           { ageRange: '15-19', male: 123, female: 118, malePercentage: 4.3, femalePercentage: 4.1 },
           { ageRange: '20-24', male: 234, female: 267, malePercentage: 8.2, femalePercentage: 9.4 },
-          { ageRange: '25-29', male: 298, female: 334, malePercentage: 10.5, femalePercentage: 11.7 },
-          { ageRange: '30-34', male: 278, female: 312, malePercentage: 9.8, femalePercentage: 11.0 },
+          {
+            ageRange: '25-29',
+            male: 298,
+            female: 334,
+            malePercentage: 10.5,
+            femalePercentage: 11.7,
+          },
+          {
+            ageRange: '30-34',
+            male: 278,
+            female: 312,
+            malePercentage: 9.8,
+            femalePercentage: 11.0,
+          },
           { ageRange: '35-39', male: 234, female: 267, malePercentage: 8.2, femalePercentage: 9.4 },
           { ageRange: '40-44', male: 198, female: 221, malePercentage: 7.0, femalePercentage: 7.8 },
           { ageRange: '45-49', male: 167, female: 189, malePercentage: 5.9, femalePercentage: 6.6 },
@@ -305,44 +318,128 @@ export const RegionalComparison: Story = {
 // Different community types
 export const CommunityTypes: Story = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid min-h-screen grid-cols-1 gap-6 bg-gray-50 p-6 md:grid-cols-2 xl:grid-cols-3">
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-center">Rural Agricultural</h3>
+        <h3 className="text-center text-lg font-semibold">Rural Agricultural</h3>
         <PopulationPyramid
           data={[
-            { ageRange: '0-14', male: 234, female: 218, malePercentage: 16.5, femalePercentage: 15.4 },
-            { ageRange: '15-29', male: 298, female: 312, malePercentage: 21.0, femalePercentage: 22.0 },
-            { ageRange: '30-44', male: 267, female: 278, malePercentage: 18.8, femalePercentage: 19.6 },
-            { ageRange: '45-59', male: 189, female: 203, malePercentage: 13.3, femalePercentage: 14.3 },
-            { ageRange: '60+', male: 156, female: 234, malePercentage: 11.0, femalePercentage: 16.5 },
+            {
+              ageRange: '0-14',
+              male: 234,
+              female: 218,
+              malePercentage: 16.5,
+              femalePercentage: 15.4,
+            },
+            {
+              ageRange: '15-29',
+              male: 298,
+              female: 312,
+              malePercentage: 21.0,
+              femalePercentage: 22.0,
+            },
+            {
+              ageRange: '30-44',
+              male: 267,
+              female: 278,
+              malePercentage: 18.8,
+              femalePercentage: 19.6,
+            },
+            {
+              ageRange: '45-59',
+              male: 189,
+              female: 203,
+              malePercentage: 13.3,
+              femalePercentage: 14.3,
+            },
+            {
+              ageRange: '60+',
+              male: 156,
+              female: 234,
+              malePercentage: 11.0,
+              femalePercentage: 16.5,
+            },
           ]}
           className="h-96"
         />
       </div>
-      
+
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-center">Urban Professional</h3>
+        <h3 className="text-center text-lg font-semibold">Urban Professional</h3>
         <PopulationPyramid
           data={[
-            { ageRange: '0-14', male: 145, female: 134, malePercentage: 10.2, femalePercentage: 9.4 },
-            { ageRange: '15-29', male: 423, female: 456, malePercentage: 29.8, femalePercentage: 32.1 },
-            { ageRange: '30-44', male: 367, female: 389, malePercentage: 25.9, femalePercentage: 27.4 },
-            { ageRange: '45-59', male: 234, female: 267, malePercentage: 16.5, femalePercentage: 18.8 },
-            { ageRange: '60+', male: 123, female: 178, malePercentage: 8.7, femalePercentage: 12.5 },
+            {
+              ageRange: '0-14',
+              male: 145,
+              female: 134,
+              malePercentage: 10.2,
+              femalePercentage: 9.4,
+            },
+            {
+              ageRange: '15-29',
+              male: 423,
+              female: 456,
+              malePercentage: 29.8,
+              femalePercentage: 32.1,
+            },
+            {
+              ageRange: '30-44',
+              male: 367,
+              female: 389,
+              malePercentage: 25.9,
+              femalePercentage: 27.4,
+            },
+            {
+              ageRange: '45-59',
+              male: 234,
+              female: 267,
+              malePercentage: 16.5,
+              femalePercentage: 18.8,
+            },
+            {
+              ageRange: '60+',
+              male: 123,
+              female: 178,
+              malePercentage: 8.7,
+              femalePercentage: 12.5,
+            },
           ]}
           className="h-96"
         />
       </div>
-      
+
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-center">Retirement Community</h3>
+        <h3 className="text-center text-lg font-semibold">Retirement Community</h3>
         <PopulationPyramid
           data={[
             { ageRange: '0-14', male: 45, female: 42, malePercentage: 6.3, femalePercentage: 5.9 },
-            { ageRange: '15-29', male: 67, female: 73, malePercentage: 9.4, femalePercentage: 10.3 },
-            { ageRange: '30-44', male: 89, female: 98, malePercentage: 12.5, femalePercentage: 13.8 },
-            { ageRange: '45-59', male: 156, female: 178, malePercentage: 21.9, femalePercentage: 25.0 },
-            { ageRange: '60+', male: 234, female: 367, malePercentage: 32.9, femalePercentage: 51.6 },
+            {
+              ageRange: '15-29',
+              male: 67,
+              female: 73,
+              malePercentage: 9.4,
+              femalePercentage: 10.3,
+            },
+            {
+              ageRange: '30-44',
+              male: 89,
+              female: 98,
+              malePercentage: 12.5,
+              femalePercentage: 13.8,
+            },
+            {
+              ageRange: '45-59',
+              male: 156,
+              female: 178,
+              malePercentage: 21.9,
+              femalePercentage: 25.0,
+            },
+            {
+              ageRange: '60+',
+              male: 234,
+              female: 367,
+              malePercentage: 32.9,
+              femalePercentage: 51.6,
+            },
           ]}
           className="h-96"
         />

@@ -1,10 +1,11 @@
 import React from 'react';
 import { InputField, DropdownSelect } from '@/components/molecules';
+import { Toggle } from '@/components/atoms';
 import { PSOCSelector } from '../PSOCSelector';
 
 export interface EducationEmploymentData {
-  educationLevel: string;
-  educationStatus: string;
+  educationAttainment: string; // Changed to match database schema
+  isGraduate: boolean; // Changed to match database schema
   psocCode: string;
   psocLevel: string;
   positionTitleId: string;
@@ -31,12 +32,7 @@ const EDUCATION_LEVEL_OPTIONS = [
   { value: 'undergraduate', label: 'Undergraduate' },
 ];
 
-const EDUCATION_STATUS_OPTIONS = [
-  { value: 'currently_studying', label: 'Currently Studying' },
-  { value: 'not_studying', label: 'Not Studying' },
-  { value: 'graduated', label: 'Graduated' },
-  { value: 'dropped_out', label: 'Dropped Out' },
-];
+// Removed EDUCATION_STATUS_OPTIONS - now using a boolean toggle
 
 const EMPLOYMENT_STATUS_OPTIONS = [
   { value: 'employed', label: 'Employed' },
@@ -57,7 +53,7 @@ export default function EducationEmployment({
   errors = {},
   className = '',
 }: EducationEmploymentProps) {
-  const handleChange = (field: keyof EducationEmploymentData, newValue: string) => {
+  const handleChange = (field: keyof EducationEmploymentData, newValue: string | boolean) => {
     onChange({
       ...value,
       [field]: newValue,
@@ -100,21 +96,20 @@ export default function EducationEmployment({
 
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
         <DropdownSelect
-          label="Education Level"
-          value={value.educationLevel}
-          onChange={val => handleChange('educationLevel', val)}
+          label="Education Attainment"
+          value={value.educationAttainment}
+          onChange={val => handleChange('educationAttainment', val)}
           options={EDUCATION_LEVEL_OPTIONS}
-          placeholder="Select education level"
-          errorMessage={errors.educationLevel}
+          placeholder="Select education attainment"
+          errorMessage={errors.educationAttainment}
         />
 
-        <DropdownSelect
-          label="Education Status"
-          value={value.educationStatus}
-          onChange={val => handleChange('educationStatus', val)}
-          options={EDUCATION_STATUS_OPTIONS}
-          placeholder="Select education status"
-          errorMessage={errors.educationStatus}
+        <Toggle
+          label="Is Graduate"
+          description="Has this person completed their highest level of education?"
+          checked={value.isGraduate}
+          onToggle={checked => handleChange('isGraduate', checked)}
+          errorMessage={errors.isGraduate}
         />
       </div>
 

@@ -9,6 +9,7 @@ export * from './Textarea';
 export * from './IconButton';
 export * from './Typography';
 export * from './KeyboardNavigableList';
+export * from './FormInput';
 
 // Utility Components
 export * from './ErrorMessage';

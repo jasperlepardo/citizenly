@@ -1,0 +1,1 @@
+export { default as HouseholdDetailContent } from './HouseholdDetailContent';

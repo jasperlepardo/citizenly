@@ -4,7 +4,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-require-imports */
-const baseConfig = require('./.eslintrc.js');
+const baseConfig = require('./.eslintrc.json');
 
 module.exports = {
   ...baseConfig,

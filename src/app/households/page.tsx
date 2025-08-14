@@ -69,125 +69,39 @@ function HouseholdsContent() {
     try {
       setLoading(true);
 
-      let query = supabase
-        .from('households')
-        .select(
-          `
-          *,
-          head_resident:residents!households_household_head_id_fkey(
-            id,
-            first_name,
-            middle_name,
-            last_name
-          )
-        `,
-          { count: 'exact' }
-        )
-        .eq('barangay_code', userProfile?.barangay_code)
-        .order('code', { ascending: true });
+      // Get current session to pass auth token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
+      }
+
+      // Build query parameters
+      const params = new URLSearchParams();
       if (localSearchTerm.trim()) {
-        query = query.or(`code.ilike.%${localSearchTerm}%,street_name.ilike.%${localSearchTerm}%`);
+        params.append('search', localSearchTerm.trim());
       }
 
-      const { data, error, count } = await query;
+      // Use server-side API to fetch households data (bypasses RLS issues)
+      const response = await fetch(`/api/households?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Get member counts and geographic information for each household
-      const householdsWithCounts = await Promise.all(
-        (data || []).map(async household => {
-          // Get member count
-          const { count: memberCount } = await supabase
-            .from('residents')
-            .select('*', { count: 'exact', head: true })
-            .eq('household_code', household.code);
+      const data = await response.json();
 
-          // Get geographic information from PSGC tables
-          let geoInfo = {};
-          try {
-            const { data: barangayData } = await supabase
-              .from('psgc_barangays')
-              .select(
-                `
-                code,
-                name,
-                psgc_cities_municipalities!inner(
-                  code,
-                  name,
-                  type,
-                  psgc_provinces!inner(
-                    code,
-                    name,
-                    psgc_regions!inner(
-                      code,
-                      name
-                    )
-                  )
-                )
-              `
-              )
-              .eq('code', household.barangay_code)
-              .single();
-
-            if (barangayData) {
-              const cityMunData = barangayData.psgc_cities_municipalities as unknown;
-              const cityMun = cityMunData as {
-                code: string;
-                name: string;
-                type: string;
-                psgc_provinces: {
-                  code: string;
-                  name: string;
-                  psgc_regions: {
-                    code: string;
-                    name: string;
-                  };
-                };
-              };
-              const province = cityMun.psgc_provinces;
-              const region = province.psgc_regions;
-
-              geoInfo = {
-                barangay_info: {
-                  code: barangayData.code,
-                  name: barangayData.name,
-                },
-                city_municipality_info: {
-                  code: cityMun.code,
-                  name: cityMun.name,
-                  type: cityMun.type,
-                },
-                province_info: {
-                  code: province.code,
-                  name: province.name,
-                },
-                region_info: {
-                  code: region.code,
-                  name: region.name,
-                },
-              };
-            }
-          } catch (geoError) {
-            logger.warn('Geographic info load failed', {
-              householdCode: household.code,
-              error: geoError,
-              context: 'household_geo_info',
-            });
-          }
-
-          return {
-            ...household,
-            member_count: memberCount || 0,
-            ...geoInfo,
-          };
-        })
-      );
-
-      setHouseholds(householdsWithCounts);
-      setTotalCount(count || 0);
+      setHouseholds(data.data || []);
+      setTotalCount(data.total || 0);
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       logError(error, 'HOUSEHOLDS_LOAD_ERROR');
@@ -301,9 +215,9 @@ function HouseholdsContent() {
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden bg-surface">
+        <div className="bg-surface overflow-hidden">
           {/* Table Header */}
-          <div className="flex items-center border-b p-0 bg-surface border-default">
+          <div className="bg-surface flex items-center border-b border-default p-0">
             {/* Select All */}
             <div className="flex items-center p-2">
               <div className="flex items-center gap-2">
@@ -388,7 +302,7 @@ function HouseholdsContent() {
 
             {/* Search Households */}
             <div className="ml-auto mr-0">
-              <div className="flex w-60 items-center gap-2 rounded border p-2 bg-surface border-default">
+              <div className="bg-surface flex w-60 items-center gap-2 rounded border border-default p-2">
                 <div className="size-5 text-secondary">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -404,14 +318,14 @@ function HouseholdsContent() {
                   placeholder="Search households"
                   value={localSearchTerm}
                   onChange={e => setLocalSearchTerm(e.target.value)}
-                  className="font-montserrat flex-1 bg-transparent text-base font-normal outline-none text-primary placeholder:text-muted"
+                  className="font-montserrat placeholder:text-muted flex-1 bg-transparent text-base font-normal text-primary outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Table Column Headers */}
-          <div className="flex items-center border-b p-0 bg-background-muted border-default">
+          <div className="bg-background-muted flex items-center border-b border-default p-0">
             {/* Checkbox Column */}
             <div className="w-12 p-2"></div>
 
@@ -462,7 +376,7 @@ function HouseholdsContent() {
                 return (
                   <div className="p-8 text-center">
                     <p className="text-secondary">{noResultsMessage}</p>
-                    <p className="mt-2 text-sm text-muted">
+                    <p className="text-muted mt-2 text-sm">
                       Households are created automatically when you add residents.
                     </p>
                   </div>
@@ -472,7 +386,7 @@ function HouseholdsContent() {
               return households.map(household => (
                 <div
                   key={household.code}
-                  className="flex items-center p-0 transition-colors bg-surface hover:bg-surface-hover"
+                  className="bg-surface hover:bg-surface-hover flex items-center p-0 transition-colors"
                 >
                   {/* Checkbox */}
                   <div className="p-2">

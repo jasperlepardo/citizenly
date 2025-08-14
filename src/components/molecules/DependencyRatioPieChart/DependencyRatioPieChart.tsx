@@ -23,6 +23,9 @@ export default function DependencyRatioPieChart({
   const { youngDependents, workingAge, oldDependents } = data;
   const total = youngDependents + workingAge + oldDependents;
 
+  console.log('DependencyRatioPieChart received data:', data);
+  console.log('Calculated total:', total);
+
   // Let GenericPieChart generate beautiful colors automatically
   const colors = {
     youngDependents: '',

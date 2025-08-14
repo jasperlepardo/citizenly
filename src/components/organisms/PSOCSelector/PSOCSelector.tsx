@@ -61,7 +61,13 @@ export default function PSOCSelector({
         .order('occupation_title', { ascending: true })
         .limit(50);
 
-      logger.debug('PSOC view search result', { hasData: !!data, error });
+      logger.debug('PSOC view search result', { hasData: !!data, error, dataLength: data?.length });
+
+      // If view works and has data, use it
+      if (!error && data && data.length > 0) {
+        setOptions(data);
+        return;
+      }
 
       // If view doesn't exist or has no data, try direct table queries
       if (error || !data || data.length === 0) {
@@ -129,8 +135,6 @@ export default function PSOCSelector({
 
         logger.warn('No PSOC data found in any table');
         setOptions([]);
-      } else {
-        setOptions(data || []);
       }
     } catch (error) {
       logError(error as Error, 'PSOC_SEARCH_ERROR');
@@ -200,11 +204,13 @@ export default function PSOCSelector({
             .from('psoc_occupation_search')
             .select('*')
             .eq('occupation_code', value)
-            .single();
+            .maybeSingle(); // Use maybeSingle instead of single to handle no results gracefully
 
           if (data && !error) {
             setSelectedOption(data);
             setSearchQuery(data.occupation_title);
+          } else if (error) {
+            logger.debug('Could not load PSOC option by code', { value, error: error.message });
           }
         } catch (error) {
           logError(error as Error, 'PSOC_OPTION_LOAD_ERROR');
@@ -218,10 +224,10 @@ export default function PSOCSelector({
     <div className="relative" ref={dropdownRef}>
       {/* Input Container - Figma: exact 8px padding, structured like InputField */}
       <div
-        className={`relative flex w-full items-center transition-colors font-system focus-within:outline-none ${
+        className={`relative flex w-full items-center font-system transition-colors focus-within:outline-none ${
           error
-            ? 'rounded border border-red-600 bg-surface focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
-            : 'rounded border bg-surface border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
+            ? 'bg-surface rounded border border-red-600 focus-within:border-red-600 focus-within:shadow-[0px_0px_0px_4px_rgba(220,38,38,0.32)]'
+            : 'bg-surface rounded border border-default focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]'
         } min-h-10 p-2 text-base ${className}`}
       >
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
@@ -234,7 +240,7 @@ export default function PSOCSelector({
               value={searchQuery}
               onChange={handleInputChange}
               onFocus={() => setIsOpen(true)}
-              className="font-montserrat w-full border-0 bg-transparent text-base font-normal leading-5 shadow-none outline-0 ring-0 text-primary placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
+              className="font-montserrat placeholder:text-muted w-full border-0 bg-transparent text-base font-normal leading-5 text-primary shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0"
               style={{
                 border: 'none',
                 outline: 'none',
@@ -278,10 +284,10 @@ export default function PSOCSelector({
         <div
           id={listboxId}
           role="listbox"
-          className="ring-border-default absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg shadow-lg ring-1 bg-surface"
+          className="ring-border-default bg-surface absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg shadow-lg ring-1"
         >
           {loading ? (
-            <div className="flex items-center gap-2 px-3 py-2 text-sm/6 text-muted">
+            <div className="text-muted flex items-center gap-2 px-3 py-2 text-sm/6">
               <svg className="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle
                   className="opacity-25"
@@ -308,10 +314,10 @@ export default function PSOCSelector({
                     onClick={() => handleOptionSelect(option)}
                     role="option"
                     aria-selected={selectedOption?.occupation_code === option.occupation_code}
-                    className="w-full px-3 py-2 text-left text-sm/6 text-primary hover:bg-surface-hover focus:outline-none focus:bg-surface-hover"
+                    className="hover:bg-surface-hover focus:bg-surface-hover w-full px-3 py-2 text-left text-sm/6 text-primary focus:outline-none"
                   >
                     <div className="font-medium">{option.occupation_title}</div>
-                    <div className="text-xs text-muted">
+                    <div className="text-muted text-xs">
                       {option.full_hierarchy} • {option.occupation_code} •{' '}
                       {option.level_type.replace('_', ' ')}
                     </div>
@@ -320,14 +326,14 @@ export default function PSOCSelector({
               ))}
             </ul>
           ) : searchQuery.trim() ? (
-            <div className="px-3 py-2 text-sm/6 text-muted">
+            <div className="text-muted px-3 py-2 text-sm/6">
               <div>No occupations found for &quot;{searchQuery}&quot;</div>
-              <div className="mt-1 text-xs text-muted">
+              <div className="text-muted mt-1 text-xs">
                 Note: PSOC data may not be loaded in the database yet.
               </div>
             </div>
           ) : (
-            <div className="px-3 py-2 text-sm/6 text-muted">
+            <div className="text-muted px-3 py-2 text-sm/6">
               Start typing to search occupations...
             </div>
           )}
@@ -337,7 +343,7 @@ export default function PSOCSelector({
       {/* Error message styled like InputField */}
       {error && (
         <div className="mt-2">
-          <p className="text-xs leading-[14px] text-red-500 font-system" role="alert">
+          <p className="font-system text-xs leading-[14px] text-red-500" role="alert">
             {error}
           </p>
         </div>

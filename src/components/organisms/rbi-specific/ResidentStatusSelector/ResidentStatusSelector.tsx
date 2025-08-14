@@ -315,7 +315,7 @@ export default function ResidentStatusSelector({
               <label htmlFor="is_registered_voter" className="text-sm font-medium text-primary">
                 Registered Voter
               </label>
-              <p className="text-xs text-muted">
+              <p className="text-muted text-xs">
                 Check if resident is registered to vote in this barangay
               </p>
             </div>
@@ -362,7 +362,7 @@ export default function ResidentStatusSelector({
               <label htmlFor="is_indigenous_member" className="text-sm font-medium text-primary">
                 Member of Indigenous Cultural Community
               </label>
-              <p className="text-xs text-muted">
+              <p className="text-muted text-xs">
                 Check if resident belongs to an Indigenous Cultural Community (ICC) or Indigenous
                 Peoples (IP) group
               </p>
@@ -386,7 +386,7 @@ export default function ResidentStatusSelector({
                 type="text"
                 value={value.indigenous_community || ''}
                 onChange={e => handleChange('indigenous_community', e.target.value)}
-                placeholder="e.g., Bontoc, T'boli, Hanunuo"
+                placeholder="e.g., Bontoc, T&rsquo;boli, Hanunuo"
                 disabled={disabled}
               />
             </div>

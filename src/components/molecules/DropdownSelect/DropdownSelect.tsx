@@ -56,6 +56,7 @@ export interface DropdownSelectProps extends VariantProps<typeof dropdownVariant
   maxHeight?: number;
   className?: string;
   dropdownClassName?: string;
+  required?: boolean;
 }
 
 const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
@@ -80,6 +81,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
       searchable = false,
       clearable = false,
       maxHeight = 200,
+      required = false,
       ...props
     },
     ref
@@ -371,6 +373,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
             aria-controls={id}
           >
             {label}
+            {required && <span className="ml-1 text-red-500">*</span>}
           </div>
         )}
 
@@ -410,13 +413,13 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                   ref={searchInputRef}
                   type="text"
                   className={cn(
-                    'font-montserrat w-full border-0 bg-transparent font-normal shadow-none outline-0 ring-0 placeholder:text-muted focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0',
+                    'font-montserrat placeholder:text-muted w-full border-0 bg-transparent font-normal shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0 active:border-0 active:shadow-none active:outline-0 active:ring-0',
                     // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                     size === 'sm' && 'text-sm leading-4',
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
                     'text-primary',
-                    disabled && 'cursor-not-allowed text-muted'
+                    disabled && 'text-muted cursor-not-allowed'
                   )}
                   style={{
                     border: 'none',
@@ -474,7 +477,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     size === 'md' && 'text-base leading-5',
                     size === 'lg' && 'text-lg leading-6',
                     selectedOption ? 'text-primary' : 'text-muted',
-                    disabled && 'cursor-not-allowed text-muted'
+                    disabled && 'text-muted cursor-not-allowed'
                   )}
                 >
                   {loading ? 'Loading...' : selectedOption?.label || placeholder}
@@ -489,7 +492,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex size-full items-center justify-center transition-colors text-secondary hover:text-primary"
+                className="flex size-full items-center justify-center text-secondary transition-colors hover:text-primary"
               >
                 <svg
                   width="16"
@@ -524,7 +527,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {isOpen && (
           <div
             className={cn(
-              'absolute z-50 mt-1 w-full rounded-md border shadow-xl bg-surface border-default',
+              'bg-surface absolute z-50 mt-1 w-full rounded-md border border-default shadow-xl',
               'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-100',
               dropdownClassName
             )}
@@ -538,7 +541,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
               className="max-h-60 overflow-auto py-1"
             >
               {filteredOptions.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-muted">
+                <div className="text-muted px-3 py-2 text-sm">
                   {searchable && searchTerm ? 'No options found' : 'No options available'}
                 </div>
               ) : (
@@ -554,7 +557,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                       highlightedIndex === index && 'bg-surface-hover',
                       option.value === value &&
                         'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
-                      option.disabled && 'cursor-not-allowed opacity-50 text-muted'
+                      option.disabled && 'text-muted cursor-not-allowed opacity-50'
                     )}
                     onClick={() => handleSelect(option)}
                     role="option"
@@ -564,7 +567,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
                     <div className="flex-1">
                       <div className="font-medium">{option.label}</div>
                       {option.description && (
-                        <div className="mt-1 text-xs text-muted">{option.description}</div>
+                        <div className="text-muted mt-1 text-xs">{option.description}</div>
                       )}
                     </div>
 
@@ -596,7 +599,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
             {errorMessage ? (
               <p className="font-montserrat text-xs text-red-500">{errorMessage}</p>
             ) : (
-              <p className="font-montserrat text-xs text-muted">{helperText}</p>
+              <p className="font-montserrat text-muted text-xs">{helperText}</p>
             )}
           </div>
         )}

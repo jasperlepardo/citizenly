@@ -27,7 +27,7 @@ function JudiciaryContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="rounded-lg border p-8 text-center bg-surface border-default">
+        <div className="bg-surface rounded-lg border border-default p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-amber-100">
             <svg
               className="size-8 text-amber-600"
@@ -54,7 +54,7 @@ function JudiciaryContent() {
 
           {/* Feature Preview */}
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-red-100">
                 <svg
                   className="size-4 text-red-600"
@@ -76,7 +76,7 @@ function JudiciaryContent() {
               </p>
             </div>
 
-            <div className="rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-green-100">
                 <svg
                   className="size-4 text-green-600"
@@ -98,7 +98,7 @@ function JudiciaryContent() {
               </p>
             </div>
 
-            <div className="rounded-lg p-4 bg-surface-hover">
+            <div className="bg-surface-hover rounded-lg p-4">
               <div className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-blue-100">
                 <svg
                   className="size-4 text-blue-600"

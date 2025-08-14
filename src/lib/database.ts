@@ -29,21 +29,19 @@ export interface Barangay {
   code: string;
   name: string;
   city_municipality_code: string;
-  urban_rural_status: string | null;
 }
 
 export interface AddressHierarchy {
-  region_code: string;
+  region_code: string | null;
   region_name: string;
   province_code: string | null;
   province_name: string | null;
-  city_municipality_code: string;
+  city_municipality_code: string | null;
   city_municipality_name: string;
   city_municipality_type: string;
   is_independent: boolean;
   barangay_code: string;
   barangay_name: string;
-  urban_rural_status: string | null;
   full_address: string;
 }
 
@@ -152,7 +150,7 @@ export async function getCitiesByProvince(provinceCode: string | null): Promise<
 export async function getBarangaysByCity(cityCode: string): Promise<Barangay[]> {
   const { data, error } = await supabase
     .from('psgc_barangays')
-    .select('code, name, city_municipality_code, urban_rural_status')
+    .select('code, name, city_municipality_code')
     .eq('city_municipality_code', cityCode)
     .order('name');
 
@@ -180,7 +178,6 @@ export async function searchAddresses(
         code,
         name,
         city_municipality_code,
-        urban_rural_status,
         psgc_cities_municipalities (
           code,
           name,
@@ -214,17 +211,16 @@ export async function searchAddresses(
       const region = province?.psgc_regions;
 
       return {
-        region_code: region?.code || '',
+        region_code: region?.code || null,
         region_name: region?.name || '',
         province_code: province?.code || null,
         province_name: province?.name || null,
-        city_municipality_code: city?.code || '',
+        city_municipality_code: city?.code || null,
         city_municipality_name: city?.name || '',
         city_municipality_type: city?.type || '',
         is_independent: city?.is_independent || false,
         barangay_code: barangay.code,
         barangay_name: barangay.name,
-        urban_rural_status: barangay.urban_rural_status,
         full_address: [barangay.name, city?.name, province?.name, region?.name]
           .filter(Boolean)
           .join(', '),
@@ -240,64 +236,59 @@ export async function searchAddresses(
 
 /**
  * Get complete address hierarchy for a specific barangay
+ * Uses separate queries instead of JOINs due to removed foreign key constraints
  */
 export async function getCompleteAddress(barangayCode: string): Promise<AddressHierarchy | null> {
   try {
-    const { data, error } = await supabase
-      .from('psgc_barangays')
-      .select(
-        `
-        code,
-        name,
-        city_municipality_code,
-        urban_rural_status,
-        psgc_cities_municipalities (
-          code,
-          name,
-          type,
-          is_independent,
-          province_code,
-          psgc_provinces (
-            code,
-            name,
-            region_code,
-            psgc_regions (
-              code,
-              name
-            )
-          )
-        )
-      `
-      )
-      .eq('code', barangayCode)
-      .single();
-
-    if (error) {
-      console.error('Error fetching complete address:', error);
+    // Validate barangay code
+    if (!barangayCode || typeof barangayCode !== 'string') {
+      console.error('Invalid barangay code provided:', barangayCode);
       return null;
     }
 
-    if (!data) return null;
+    // Get complete address hierarchy from view with explicit column selection
+    const { data: addressData, error: addressError } = await supabase
+      .from('address_hierarchy')
+      .select(
+        'barangay_code, barangay_name, city_code, city_name, city_type, province_code, province_name, region_code, region_name, full_address'
+      )
+      .eq('barangay_code', barangayCode)
+      .single();
 
-    const city = (data as any).psgc_cities_municipalities;
-    const province = city?.psgc_provinces;
-    const region = province?.psgc_regions;
+    if (addressError || !addressData) {
+      console.warn('Barangay not found in database:', {
+        code: barangayCode,
+        error: addressError?.message || 'No data returned',
+      });
+      // Return null values for unknown barangays to avoid FK constraint violations
+      return {
+        region_code: null,
+        region_name: 'Unknown Region',
+        province_code: null,
+        province_name: 'Unknown Province',
+        city_municipality_code: null,
+        city_municipality_name: 'Unknown City',
+        city_municipality_type: 'unknown',
+        is_independent: false,
+        barangay_code: barangayCode,
+        barangay_name: 'Unknown Barangay',
+        full_address: `Barangay ${barangayCode}`,
+      };
+    }
 
+    // Return complete address hierarchy from view
     return {
-      region_code: region?.code || '',
-      region_name: region?.name || '',
-      province_code: province?.code || null,
-      province_name: province?.name || null,
-      city_municipality_code: city?.code || '',
-      city_municipality_name: city?.name || '',
-      city_municipality_type: city?.type || '',
-      is_independent: city?.is_independent || false,
-      barangay_code: data.code,
-      barangay_name: data.name,
-      urban_rural_status: data.urban_rural_status,
-      full_address: [data.name, city?.name, province?.name, region?.name]
-        .filter(Boolean)
-        .join(', '),
+      region_code: addressData.region_code,
+      region_name: addressData.region_name,
+      province_code: addressData.province_code,
+      province_name: addressData.province_name,
+      city_municipality_code: addressData.city_code,
+      city_municipality_name: addressData.city_name,
+      city_municipality_type: addressData.city_type,
+      is_independent: false, // Default value, view doesn't include this
+      barangay_code: addressData.barangay_code,
+      barangay_name: addressData.barangay_name,
+      full_address: addressData.full_address,
     };
   } catch (error) {
     console.error('Error fetching complete address:', error);

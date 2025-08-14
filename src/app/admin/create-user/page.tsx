@@ -30,7 +30,7 @@ interface Role {
 }
 
 function CreateUserContent() {
-  const { user: currentUser } = useAuth();
+  const { user: _currentUser } = useAuth();
   const [formData, setFormData] = useState<CreateUserFormData>({
     email: '',
     password: '',
@@ -64,7 +64,7 @@ function CreateUserContent() {
       setLoadingRoles(true);
 
       const { data, error } = await supabase
-        .from('roles')
+        .from('auth_roles')
         .select('id, name, permissions')
         .in('name', ['resident', 'clerk']) // Admins can only create residents and clerks
         .order('name', { ascending: true });
@@ -181,82 +181,49 @@ function CreateUserContent() {
     try {
       logger.info('Starting user account creation process');
 
-      // Create auth user using admin privileges
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      logger.debug('Creating user via admin API');
+
+      // Use API endpoint instead of direct inserts
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        setErrors({ general: 'Authentication required. Please log in again.' });
+        return;
+      }
+
+      const adminUserData = {
         email: formData.email,
         password: formData.password,
-        email_confirm: true, // Auto-confirm email
-        user_metadata: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          mobile_number: formData.mobileNumber,
-          barangay_code: formData.barangayCode,
-          created_by: currentUser?.id,
-        },
-      });
-
-      if (authError) {
-        logError(new Error(authError.message), 'AUTH_USER_CREATION');
-        if (authError.message.includes('already registered')) {
-          setErrors({ general: 'An account with this email already exists.' });
-        } else {
-          setErrors({ general: authError.message });
-        }
-        return;
-      }
-
-      if (!authData.user) {
-        setErrors({ general: 'Failed to create user account. Please try again.' });
-        return;
-      }
-
-      logger.info('Authentication user created successfully', { userId: authData.user.id });
-
-      // Create user profile in database
-      const profileData = {
-        id: authData.user.id,
-        email: formData.email,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        mobile_number: formData.mobileNumber,
-        barangay_code: formData.barangayCode,
-        role_id: formData.roleId,
-        status: 'active', // Admin-created users are automatically active
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        barangayCode: formData.barangayCode,
+        roleId: formData.roleId,
       };
 
-      logger.debug('Creating user profile with data');
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(adminUserData),
+      });
 
-      const { error: profileError } = await supabase.from('user_profiles').insert(profileData);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`;
 
-      if (profileError) {
-        logError(new Error(profileError.message), 'PROFILE_CREATION');
-        setErrors({
-          general: 'User account created but profile setup failed: ' + profileError.message,
-        });
+        logError(new Error(errorMessage), 'ADMIN_USER_CREATION');
+        setErrors({ general: 'Failed to create user: ' + errorMessage });
         return;
       }
 
-      logger.info('User profile created successfully');
+      const { user: createdUser } = await response.json();
+      logger.info('User created successfully via API', { userId: createdUser.id });
 
-      // Create barangay account
-      const { error: barangayAccountError } = await supabase.from('barangay_accounts').insert({
-        user_id: authData.user.id,
-        barangay_code: formData.barangayCode,
-        role_id: formData.roleId,
-        status: 'active', // Admin-created accounts are automatically active
-        approved_by: currentUser?.id,
-        approved_at: new Date().toISOString(),
-      });
-
-      if (barangayAccountError) {
-        logError(new Error(barangayAccountError.message), 'BARANGAY_ACCOUNT_CREATION');
-        // Don't fail if barangay_accounts table doesn't exist
-        if (!barangayAccountError.message.includes('does not exist')) {
-          logger.warn('Barangay account creation failed, but continuing with user creation');
-        }
-      } else {
-        logger.info('Barangay account created successfully');
-      }
+      // Barangay account creation is handled by the API
 
       // Success!
       setCreatedUser({
@@ -468,7 +435,7 @@ function CreateUserContent() {
                     onChange={code => handleChange('barangayCode', code)}
                     error={errors.barangayCode}
                     disabled={isSubmitting}
-                    placeholder="Search for the user's barangay..."
+                    placeholder="Search for the user&rsquo;s barangay..."
                   />
                 </div>
               </div>
@@ -486,7 +453,7 @@ function CreateUserContent() {
                       Role *
                     </label>
                     <div className="rounded-md border border-gray-300 bg-gray-50 p-3">
-                      <span className="text-sm text-muted">Loading roles...</span>
+                      <span className="text-muted text-sm">Loading roles...</span>
                     </div>
                   </div>
                 ) : (
@@ -502,7 +469,7 @@ function CreateUserContent() {
                     value={formData.roleId}
                     onChange={val => handleChange('roleId', val)}
                     errorMessage={errors.roleId}
-                    helperText="Select the role that best describes the user's position"
+                    helperText="Select the role that best describes the user&rsquo;s position"
                     disabled={isSubmitting}
                   />
                 )}

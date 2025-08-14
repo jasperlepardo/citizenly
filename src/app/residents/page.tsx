@@ -45,7 +45,7 @@ function ResidentsContent() {
   const [loading, setLoading] = useState(true);
   const [globalSearchTerm, setGlobalSearchTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
+  const [_searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -53,117 +53,70 @@ function ResidentsContent() {
     total: 0,
   });
 
-  // Helper function to apply filters to a query
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const applyFiltersToQuery = useCallback((query: any, filters: SearchFilter[]) => {
-    return filters.reduce((q, filter) => {
-      switch (filter.operator) {
-        case 'equals':
-          return q.eq(filter.field, filter.value);
-        case 'contains':
-          return q.ilike(filter.field, `%${filter.value}%`);
-        case 'starts_with':
-          return q.ilike(filter.field, `${filter.value}%`);
-        case 'ends_with':
-          return q.ilike(filter.field, `%${filter.value}`);
-        case 'greater_than':
-          return typeof filter.value === 'number' ? q.gt(filter.field, filter.value) : q;
-        case 'less_than':
-          return typeof filter.value === 'number' ? q.lt(filter.field, filter.value) : q;
-        default:
-          return q;
-      }
-    }, query);
-  }, []);
+  // Note: Advanced filter functionality will be implemented in future version
 
-  // Helper function to load residents with search
-  const loadResidentsWithSearch = useCallback(
-    async (barangayCode: string, pageSize: number) => {
-      const { data: searchResults, error: searchError } = await supabase.rpc(
-        'search_residents_optimized',
-        {
-          search_term: searchTerm.trim(),
-          user_barangay: barangayCode,
-          limit_results: pageSize,
-        }
-      );
+  // Helper function to load residents via API (bypasses RLS issues)
+  const loadResidentsFromAPI = useCallback(
+    async (current: number, pageSize: number) => {
+      // Get current session to pass auth token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (searchError) throw searchError;
-
-      const residentIds = searchResults?.map((r: { resident_id: string }) => r.resident_id) || [];
-      if (residentIds.length === 0) {
-        setResidents([]);
-        setPagination(prev => ({ ...prev, total: 0 }));
-        return;
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
       }
 
-      let query = supabase
-        .from('residents')
-        .select(
-          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
-          { count: 'exact' }
-        )
-        .in('id', residentIds);
+      // Build query parameters
+      const params = new URLSearchParams({
+        page: current.toString(),
+        pageSize: pageSize.toString(),
+      });
 
-      query = applyFiltersToQuery(query, searchFilters);
-      const { data, error, count } = await query;
-      if (error) throw error;
+      if (searchTerm.trim()) {
+        params.append('search', searchTerm.trim());
+      }
 
-      const sortedData = data
-        ? [...data].sort((a: Resident, b: Resident) => {
-            const aIndex = residentIds.indexOf(a.id);
-            const bIndex = residentIds.indexOf(b.id);
-            return aIndex - bIndex;
-          })
-        : [];
+      const response = await fetch(`/api/residents?${params}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-      setResidents(sortedData);
-      setPagination(prev => ({ ...prev, total: count || 0 }));
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      setResidents(data.data || []);
+      setPagination(prev => ({
+        ...prev,
+        total: data.total || 0,
+        current: data.page || current,
+        pageSize: data.pageSize || pageSize,
+      }));
     },
-    [searchTerm, searchFilters, applyFiltersToQuery]
-  );
-
-  // Helper function to load residents without search
-  const loadResidentsStandard = useCallback(
-    async (barangayCode: string, current: number, pageSize: number) => {
-      let query = supabase
-        .from('residents')
-        .select(
-          `*, household:households!residents_household_code_fkey(code, street_name, house_number, subdivision)`,
-          { count: 'exact' }
-        )
-        .eq('barangay_code', barangayCode)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .range((current - 1) * pageSize, current * pageSize - 1);
-
-      query = applyFiltersToQuery(query, searchFilters);
-      const { data, error, count } = await query;
-      if (error) throw error;
-
-      setResidents(data || []);
-      setPagination(prev => ({ ...prev, total: count || 0 }));
-    },
-    [searchFilters, applyFiltersToQuery]
+    [searchTerm]
   );
 
   const loadResidents = useCallback(async () => {
     try {
       setLoading(true);
 
+      console.log('User profile for residents:', userProfile);
+      console.log('Barangay code:', userProfile?.barangay_code);
+
       if (!userProfile?.barangay_code) {
+        console.error('No barangay code available. User profile:', userProfile);
         throw new Error('No barangay code available');
       }
 
-      if (searchTerm.trim()) {
-        await loadResidentsWithSearch(userProfile.barangay_code, pagination.pageSize);
-      } else {
-        await loadResidentsStandard(
-          userProfile.barangay_code,
-          pagination.current,
-          pagination.pageSize
-        );
-      }
+      // Use API endpoint instead of direct Supabase queries to bypass RLS issues
+      await loadResidentsFromAPI(pagination.current, pagination.pageSize);
     } catch (err) {
       logError(
         err instanceof Error ? err : new Error('Unknown error loading residents'),
@@ -174,14 +127,7 @@ function ResidentsContent() {
     } finally {
       setLoading(false);
     }
-  }, [
-    userProfile,
-    searchTerm,
-    pagination.current,
-    pagination.pageSize,
-    loadResidentsWithSearch,
-    loadResidentsStandard,
-  ]);
+  }, [userProfile, searchTerm, pagination, loadResidentsFromAPI]);
 
   useEffect(() => {
     if (!authLoading && user && userProfile?.barangay_code) {

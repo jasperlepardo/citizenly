@@ -14,7 +14,6 @@ import {
 } from '@/components/molecules';
 import { PopulationPyramid } from '@/components/organisms';
 import { logger, logError } from '@/lib/secure-logger';
-import { getBarangayStatsOptimized } from '@/lib/database-utils';
 
 interface DashboardStats {
   residents: number;
@@ -123,89 +122,104 @@ function DashboardContent() {
       const barangayCode = userProfile?.barangay_code;
       if (!barangayCode) return;
 
-      // Try to get cached stats from materialized view first
-      const cachedStats = await getBarangayStatsOptimized(barangayCode, 6); // Allow 6-hour stale data
+      // Get current session to pass auth token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const [householdSummaryResult, populationResult] = await Promise.all([
-        // Get optimized household summary (total_households, total_residents, senior_citizens, pwd_residents)
-        // Only fetch if we don't have cached stats
-        cachedStats
-          ? Promise.resolve({ data: null, error: null })
-          : supabase.rpc('get_household_summary', {
-              user_barangay: barangayCode,
-            }),
-
-        // Demographics for population pyramid and other charts
-        supabase
-          .from('residents')
-          .select('birthdate, sex, civil_status, employment_status, is_employed')
-          .eq('barangay_code', barangayCode)
-          .eq('is_active', true),
-      ]);
-
-      if (householdSummaryResult.error) {
-        throw householdSummaryResult.error;
+      if (!session?.access_token) {
+        // User not authenticated - this is expected, don't log as error
+        return;
       }
 
-      if (populationResult.error) {
-        throw populationResult.error;
+      // Use server-side API to fetch dashboard data (bypasses RLS issues)
+      const response = await fetch('/api/dashboard/stats', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Use cached stats if available, otherwise use fresh function data
-      const summaryData = cachedStats
-        ? {
-            total_households: 0, // Not available in materialized view
-            total_residents: cachedStats.total_residents,
-            avg_household_size: 0, // Not available in materialized view
-            senior_citizens: cachedStats.senior_citizens,
-            pwd_residents: cachedStats.pwd_count,
-          }
-        : householdSummaryResult.data?.[0] || {
-            total_households: 0,
-            total_residents: 0,
-            avg_household_size: 0,
-            senior_citizens: 0,
-            pwd_residents: 0,
-          };
+      const data = await response.json();
+      const { stats, demographics, residentsData } = data;
 
-      // If using cached stats, we still need household count
-      let householdCount = summaryData.total_households;
-      if (cachedStats && householdCount === 0) {
-        const { count: householdsCount, error: householdsError } = await supabase
-          .from('households')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', barangayCode);
+      console.log('Dashboard API response:', data);
+      console.log('Demographics data:', demographics);
 
-        if (!householdsError) {
-          householdCount = householdsCount || 0;
-        }
+      // Use pre-computed demographics data if available, fallback to client-side processing
+      if (demographics) {
+        // Use server-computed demographics
+        const newDependencyData = {
+          youngDependents: demographics.ageGroups?.youngDependents || 0,
+          workingAge: demographics.ageGroups?.workingAge || 0,
+          oldDependents: demographics.ageGroups?.oldDependents || 0,
+        };
+        console.log('Setting dependency data:', newDependencyData);
+        setDependencyData(newDependencyData);
+
+        setSexData({
+          male: demographics.sexDistribution?.male || 0,
+          female: demographics.sexDistribution?.female || 0,
+        });
+
+        setCivilStatusData({
+          single: demographics.civilStatus?.single || 0,
+          married: demographics.civilStatus?.married || 0,
+          widowed: demographics.civilStatus?.widowed || 0,
+          divorced: demographics.civilStatus?.divorced || 0,
+          separated: 0, // Not in view yet
+          annulled: 0, // Not in view yet
+          registeredPartnership: 0, // Not in view yet
+          liveIn: 0, // Not in view yet
+        });
+
+        setEmploymentData({
+          employed: demographics.employment?.employed || 0,
+          unemployed: demographics.employment?.unemployed || 0,
+          selfEmployed: 0, // Not separated in view
+          student: 0, // Not separated in view
+          retired: 0, // Not separated in view
+          homemaker: 0, // Not separated in view
+          disabled: 0, // Not separated in view
+          other: 0, // Not separated in view
+        });
+      } else {
+        // Fallback to client-side processing
+        const residentData = residentsData || [];
+        processSexData(residentData);
+        processCivilStatusData(residentData);
+        processEmploymentData(residentData);
       }
 
-      // Process population data for pyramid
-      const ageGroupData = processPopulationData(populationResult.data || []);
-
-      // Process other chart data
-      const residentData = populationResult.data || [];
-      processSexData(residentData);
-      processCivilStatusData(residentData);
-      const employedCount = processEmploymentData(residentData);
+      // Process population data for pyramid (still use client-side for detailed age groups)
+      const ageGroupData = processPopulationData(residentsData || []);
+      setPopulationData(ageGroupData);
 
       setStats({
-        residents: Number(summaryData.total_residents) || 0,
-        households: Number(householdCount) || 0,
-        businesses: 0, // TODO: Add when businesses table exists
-        certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: Number(summaryData.senior_citizens) || 0,
-        employedResidents: employedCount,
+        residents: Number(stats.residents) || 0,
+        households: Number(stats.households) || 0,
+        businesses: Number(stats.businesses) || 0,
+        certifications: Number(stats.certifications) || 0,
+        seniorCitizens: Number(stats.seniorCitizens) || 0,
+        employedResidents: Number(stats.employedResidents) || 0,
       });
-
-      setPopulationData(ageGroupData);
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      logError(err, 'DASHBOARD_STATS_ERROR');
-      logger.error('Dashboard stats load failed', {
-        barangayCode: userProfile?.barangay_code,
-      });
+
+      // Only log actual errors, not authentication issues
+      if (err.message !== 'No valid session found') {
+        logError(err, 'DASHBOARD_STATS_ERROR');
+        logger.error('Dashboard stats load failed', {
+          barangayCode: userProfile?.barangay_code,
+          error: err.message,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -280,7 +294,7 @@ function DashboardContent() {
   };
 
   const processEmploymentData = (
-    residents: { employment_status: string; is_employed?: boolean }[]
+    residents: { employment_status: string; is_labor_force_employed?: boolean }[]
   ): number => {
     const employmentCounts = {
       employed: 0,
@@ -298,8 +312,8 @@ function DashboardContent() {
     residents.forEach(resident => {
       const status = resident.employment_status?.toLowerCase()?.replace(/[^a-z]/g, '') || '';
 
-      // Count employed residents using the computed is_employed field if available
-      if (resident.is_employed === true) {
+      // Count employed residents using the computed is_labor_force_employed field if available
+      if (resident.is_labor_force_employed === true) {
         totalEmployed++;
       }
 

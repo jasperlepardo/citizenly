@@ -4,7 +4,7 @@ import MainLayout from './MainLayout';
 
 // Mock Header component for the stories
 const MockHeader = () => (
-  <header className="border-b shadow-sm bg-white">
+  <header className="border-b bg-white shadow-sm">
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
@@ -14,10 +14,30 @@ const MockHeader = () => (
           <span className="font-display text-xl font-semibold text-gray-900">RBI System</span>
         </div>
         <nav className="hidden space-x-1 md:flex">
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Dashboard</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Residents</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Households</a>
-          <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Reports</a>
+          <a
+            href="#"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          >
+            Dashboard
+          </a>
+          <a
+            href="#"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          >
+            Residents
+          </a>
+          <a
+            href="#"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          >
+            Households
+          </a>
+          <a
+            href="#"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+          >
+            Reports
+          </a>
         </nav>
         <div className="flex items-center space-x-3">
           <div className="flex size-8 items-center justify-center rounded-full bg-primary-100">
@@ -36,7 +56,8 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Main Layout Component - A simple and clean wrapper layout with header and main content area. Provides consistent spacing, typography, and structure for basic page layouts. Features optional page titles and responsive design with maximum width constraints.',
+        component:
+          'Main Layout Component - A simple and clean wrapper layout with header and main content area. Provides consistent spacing, typography, and structure for basic page layouts. Features optional page titles and responsive design with maximum width constraints.',
       },
     },
   },
@@ -60,31 +81,31 @@ type Story = StoryObj<typeof meta>;
 const BasicContent = () => (
   <div className="space-y-6">
     <p className="text-gray-600">
-      This is basic content within the MainLayout. The layout provides consistent spacing 
-      and typography while keeping the design clean and focused.
+      This is basic content within the MainLayout. The layout provides consistent spacing and
+      typography while keeping the design clean and focused.
     </p>
-    
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-3">Sample Card</h3>
-      <p className="text-gray-600 text-sm">
-        Content cards and components work well within the MainLayout structure, 
-        maintaining proper spacing and alignment.
+
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 className="mb-3 text-lg font-semibold text-gray-900">Sample Card</h3>
+      <p className="text-sm text-gray-600">
+        Content cards and components work well within the MainLayout structure, maintaining proper
+        spacing and alignment.
       </p>
     </div>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Layout Benefits</h4>
-        <ul className="text-blue-800 text-sm space-y-1">
+
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <h4 className="mb-2 font-medium text-blue-900">Layout Benefits</h4>
+        <ul className="space-y-1 text-sm text-blue-800">
           <li>• Consistent spacing</li>
           <li>• Responsive design</li>
           <li>• Clean typography</li>
           <li>• Maximum width constraints</li>
         </ul>
       </div>
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-        <h4 className="font-medium text-green-900 mb-2">Use Cases</h4>
-        <ul className="text-green-800 text-sm space-y-1">
+      <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+        <h4 className="mb-2 font-medium text-green-900">Use Cases</h4>
+        <ul className="space-y-1 text-sm text-green-800">
           <li>• Simple pages</li>
           <li>• Content-focused layouts</li>
           <li>• Form pages</li>
@@ -98,58 +119,71 @@ const BasicContent = () => (
 const RichContent = () => (
   <div className="space-y-8">
     <div className="prose max-w-none">
-      <p className="text-lg text-gray-600 leading-relaxed">
-        The MainLayout component serves as a foundation for pages that need a simple, 
-        clean structure without complex navigation or specialized layouts.
+      <p className="text-lg leading-relaxed text-gray-600">
+        The MainLayout component serves as a foundation for pages that need a simple, clean
+        structure without complex navigation or specialized layouts.
       </p>
     </div>
 
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {[
         {
           icon: '📄',
           title: 'Content Pages',
-          description: 'Perfect for static content, documentation, and informational pages.'
+          description: 'Perfect for static content, documentation, and informational pages.',
         },
         {
           icon: '📝',
           title: 'Form Layouts',
-          description: 'Ideal for simple forms, settings pages, and data entry interfaces.'
+          description: 'Ideal for simple forms, settings pages, and data entry interfaces.',
         },
         {
           icon: '🚀',
           title: 'Landing Pages',
-          description: 'Great for welcome screens, onboarding flows, and promotional content.'
-        }
+          description: 'Great for welcome screens, onboarding flows, and promotional content.',
+        },
       ].map((feature, index) => (
-        <div key={index} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="text-3xl mb-3">{feature.icon}</div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-          <p className="text-gray-600 text-sm">{feature.description}</p>
+        <div
+          key={index}
+          className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+        >
+          <div className="mb-3 text-3xl">{feature.icon}</div>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900">{feature.title}</h3>
+          <p className="text-sm text-gray-600">{feature.description}</p>
         </div>
       ))}
     </div>
 
-    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-8">
+    <div className="rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 p-8">
       <div className="text-center">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
+          <svg
+            className="h-8 w-8 text-indigo-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
+            />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-indigo-900 mb-3">Simple & Effective</h2>
-        <p className="text-indigo-800 max-w-2xl mx-auto">
-          MainLayout focuses on simplicity and effectiveness, providing just enough structure 
-          to create professional-looking pages without unnecessary complexity.
+        <h2 className="mb-3 text-2xl font-bold text-indigo-900">Simple & Effective</h2>
+        <p className="mx-auto max-w-2xl text-indigo-800">
+          MainLayout focuses on simplicity and effectiveness, providing just enough structure to
+          create professional-looking pages without unnecessary complexity.
         </p>
       </div>
     </div>
 
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Technical Specifications</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+    <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <h3 className="mb-4 text-lg font-semibold text-gray-900">Technical Specifications</h3>
+      <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
         <div>
-          <h4 className="font-medium text-gray-900 mb-2">Layout Features</h4>
+          <h4 className="mb-2 font-medium text-gray-900">Layout Features</h4>
           <ul className="space-y-1 text-gray-600">
             <li>• Full-height background (min-h-screen)</li>
             <li>• Light gray background (bg-gray-50)</li>
@@ -159,7 +193,7 @@ const RichContent = () => (
           </ul>
         </div>
         <div>
-          <h4 className="font-medium text-gray-900 mb-2">Typography</h4>
+          <h4 className="mb-2 font-medium text-gray-900">Typography</h4>
           <ul className="space-y-1 text-gray-600">
             <li>• Optional page titles</li>
             <li>• Consistent heading hierarchy</li>
@@ -177,56 +211,48 @@ const FormContent = () => (
   <div className="space-y-8">
     <div className="text-center">
       <p className="text-gray-600">
-        MainLayout works excellently for form-based pages, providing clean structure 
-        and appropriate spacing for form elements.
+        MainLayout works excellently for form-based pages, providing clean structure and appropriate
+        spacing for form elements.
       </p>
     </div>
 
-    <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-sm">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Sample Form</h2>
-      
+    <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+      <h2 className="mb-6 text-xl font-semibold text-gray-900">Sample Form</h2>
+
       <form className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              First Name
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">First Name</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter first name"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Last Name
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700">Last Name</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter last name"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
           <input
             type="email"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter email address"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Message
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Message</label>
           <textarea
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter your message"
           />
         </div>
@@ -234,13 +260,13 @@ const FormContent = () => (
         <div className="flex items-center justify-between pt-4">
           <button
             type="button"
-            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            className="rounded-lg bg-indigo-600 px-6 py-2 text-white transition-colors hover:bg-indigo-700"
           >
             Submit Form
           </button>
@@ -248,16 +274,26 @@ const FormContent = () => (
       </form>
     </div>
 
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
       <div className="flex items-start gap-3">
-        <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg
+          className="mt-0.5 h-5 w-5 text-blue-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
         <div>
-          <h4 className="font-medium text-blue-900 text-sm">Form Layout Benefits</h4>
-          <p className="text-blue-800 text-sm mt-1">
-            The MainLayout provides proper spacing and width constraints that make forms more readable 
-            and user-friendly, especially on larger screens.
+          <h4 className="text-sm font-medium text-blue-900">Form Layout Benefits</h4>
+          <p className="mt-1 text-sm text-blue-800">
+            The MainLayout provides proper spacing and width constraints that make forms more
+            readable and user-friendly, especially on larger screens.
           </p>
         </div>
       </div>
@@ -296,7 +332,8 @@ export const RichContentExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'MainLayout showcasing rich content with multiple sections, cards, and interactive elements.',
+        story:
+          'MainLayout showcasing rich content with multiple sections, cards, and interactive elements.',
       },
     },
   },
@@ -311,7 +348,8 @@ export const FormLayout: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'MainLayout optimized for form-based pages with proper spacing and structure for form elements.',
+        story:
+          'MainLayout optimized for form-based pages with proper spacing and structure for form elements.',
       },
     },
   },
@@ -347,7 +385,8 @@ export const TabletView: Story = {
     },
     docs: {
       description: {
-        story: 'MainLayout on tablet-sized screens showing how content adapts to medium screen sizes.',
+        story:
+          'MainLayout on tablet-sized screens showing how content adapts to medium screen sizes.',
       },
     },
   },
@@ -358,15 +397,26 @@ export const MinimalContent: Story = {
   args: {
     title: 'Minimal Page',
     children: (
-      <div className="text-center py-12">
-        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
+          <svg
+            className="h-12 w-12 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Simple Content</h2>
-        <p className="text-gray-600 max-w-md mx-auto">
-          This demonstrates how MainLayout handles minimal content while maintaining proper spacing and visual hierarchy.
+        <h2 className="mb-3 text-2xl font-bold text-gray-900">Simple Content</h2>
+        <p className="mx-auto max-w-md text-gray-600">
+          This demonstrates how MainLayout handles minimal content while maintaining proper spacing
+          and visual hierarchy.
         </p>
       </div>
     ),
@@ -374,7 +424,8 @@ export const MinimalContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'MainLayout with minimal content, showing how the layout handles sparse content gracefully.',
+        story:
+          'MainLayout with minimal content, showing how the layout handles sparse content gracefully.',
       },
     },
   },
@@ -387,33 +438,33 @@ export const LongContent: Story = {
     children: (
       <div className="space-y-8">
         <div className="prose max-w-none">
-          <p className="text-lg text-gray-600 leading-relaxed">
-            This example demonstrates how MainLayout handles longer content with multiple sections 
+          <p className="text-lg leading-relaxed text-gray-600">
+            This example demonstrates how MainLayout handles longer content with multiple sections
             and maintains readability throughout the page.
           </p>
         </div>
 
         {/* Generate multiple content sections */}
         {Array.from({ length: 8 }, (_, index) => (
-          <div key={index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 className="mb-3 text-lg font-semibold text-gray-900">
               Section {index + 1}: Content Block
             </h3>
-            <p className="text-gray-600 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-              nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            <p className="mb-4 text-gray-600">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+              <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
               <span>Content section {index + 1} of 8</span>
             </div>
           </div>
         ))}
 
-        <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-semibold text-green-900 mb-2">End of Content</h3>
-          <p className="text-green-800 text-sm">
+        <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-center">
+          <h3 className="mb-2 text-lg font-semibold text-green-900">End of Content</h3>
+          <p className="text-sm text-green-800">
             The MainLayout maintains consistent spacing and readability even with extended content.
           </p>
         </div>
@@ -423,7 +474,8 @@ export const LongContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'MainLayout with extended content demonstrating how the layout handles longer pages with multiple sections.',
+        story:
+          'MainLayout with extended content demonstrating how the layout handles longer pages with multiple sections.',
       },
     },
   },
@@ -435,33 +487,31 @@ export const LayoutStructure: Story = {
     title: 'Layout Structure',
     children: (
       <div className="space-y-6">
-        <div className="bg-blue-100 border-2 border-dashed border-blue-300 rounded-xl p-8 text-center">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">Header Area</h3>
-          <p className="text-blue-800 text-sm">
+        <div className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-100 p-8 text-center">
+          <h3 className="mb-2 text-lg font-semibold text-blue-900">Header Area</h3>
+          <p className="text-sm text-blue-800">
             Contains the RBI System branding and navigation (imported via Header component)
           </p>
         </div>
 
-        <div className="bg-green-100 border-2 border-dashed border-green-300 rounded-xl p-8 text-center">
-          <h3 className="text-lg font-semibold text-green-900 mb-2">Title Section (Optional)</h3>
-          <p className="text-green-800 text-sm">
-            Displays page title when provided via props
-          </p>
+        <div className="rounded-xl border-2 border-dashed border-green-300 bg-green-100 p-8 text-center">
+          <h3 className="mb-2 text-lg font-semibold text-green-900">Title Section (Optional)</h3>
+          <p className="text-sm text-green-800">Displays page title when provided via props</p>
         </div>
 
-        <div className="bg-purple-100 border-2 border-dashed border-purple-300 rounded-xl p-12 text-center">
-          <h3 className="text-lg font-semibold text-purple-900 mb-2">Main Content Area</h3>
-          <p className="text-purple-800 text-sm mb-4">
+        <div className="rounded-xl border-2 border-dashed border-purple-300 bg-purple-100 p-12 text-center">
+          <h3 className="mb-2 text-lg font-semibold text-purple-900">Main Content Area</h3>
+          <p className="mb-4 text-sm text-purple-800">
             This is where the children prop content is rendered
           </p>
-          <div className="bg-white border border-purple-200 rounded-lg p-4 max-w-md mx-auto">
-            <p className="text-purple-900 text-sm">Your content goes here</p>
+          <div className="mx-auto max-w-md rounded-lg border border-purple-200 bg-white p-4">
+            <p className="text-sm text-purple-900">Your content goes here</p>
           </div>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Layout Specifications</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
+          <h3 className="mb-4 font-semibold text-gray-900">Layout Specifications</h3>
+          <div className="grid grid-cols-1 gap-4 text-sm text-gray-600 md:grid-cols-2">
             <div>
               <span className="font-medium">Container:</span> max-w-7xl mx-auto
             </div>
@@ -482,7 +532,8 @@ export const LayoutStructure: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Visual breakdown of the MainLayout structure showing header, optional title, and content areas.',
+        story:
+          'Visual breakdown of the MainLayout structure showing header, optional title, and content areas.',
       },
     },
   },
@@ -492,14 +543,14 @@ export const LayoutStructure: Story = {
 export const WithoutTitle: Story = {
   args: {
     children: (
-      <div className="text-center py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Custom Content Title</h2>
-        <p className="text-gray-600 mb-6">
-          When no title prop is provided, you can include your own custom headings 
-          and structure within the content area.
+      <div className="py-8 text-center">
+        <h2 className="mb-4 text-2xl font-bold text-gray-900">Custom Content Title</h2>
+        <p className="mb-6 text-gray-600">
+          When no title prop is provided, you can include your own custom headings and structure
+          within the content area.
         </p>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md mx-auto">
-          <p className="text-yellow-800 text-sm">
+        <div className="mx-auto max-w-md rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+          <p className="text-sm text-yellow-800">
             This provides maximum flexibility for custom layouts and designs.
           </p>
         </div>
@@ -509,7 +560,8 @@ export const WithoutTitle: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'MainLayout without the title prop, showing how to include custom headings within the content area.',
+        story:
+          'MainLayout without the title prop, showing how to include custom headings within the content area.',
       },
     },
   },
@@ -527,7 +579,8 @@ export const WithDarkBackground: Story = {
     },
     docs: {
       description: {
-        story: 'MainLayout with dark background to test theme compatibility. The layout uses light colors that may need adjustment for full dark mode support.',
+        story:
+          'MainLayout with dark background to test theme compatibility. The layout uses light colors that may need adjustment for full dark mode support.',
       },
     },
   },

@@ -58,7 +58,7 @@ export default function SettingsPage() {
                   className={`font-montserrat whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-primary'
-                      : 'border-transparent text-secondary hover:text-primary hover:border-default'
+                      : 'border-transparent text-secondary hover:border-default hover:text-primary'
                   }`}
                 >
                   {tab.name}
@@ -69,7 +69,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="overflow-hidden rounded border bg-surface border-default">
+        <div className="bg-surface overflow-hidden rounded border border-default">
           <div className="p-6">
             {/* General Settings */}
             {activeTab === 'general' && (
@@ -103,10 +103,10 @@ export default function SettingsPage() {
                       className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'light'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'bg-surface border-default hover:bg-surface-hover'
+                          : 'bg-surface hover:bg-surface-hover border-default'
                       }`}
                     >
-                      <div className="mb-2 flex size-8 items-center justify-center rounded border bg-surface border-default">
+                      <div className="bg-surface mb-2 flex size-8 items-center justify-center rounded border border-default">
                         <svg
                           className="size-4 text-amber-500"
                           fill="none"
@@ -137,7 +137,7 @@ export default function SettingsPage() {
                       className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'dark'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'bg-surface border-default hover:bg-surface-hover'
+                          : 'bg-surface hover:bg-surface-hover border-default'
                       }`}
                     >
                       <div className="mb-2 flex size-8 items-center justify-center rounded border border-slate-600 bg-slate-800">
@@ -171,10 +171,10 @@ export default function SettingsPage() {
                       className={`relative flex flex-col items-center rounded border p-4 transition-colors ${
                         theme === 'system'
                           ? 'border-blue-500 bg-blue-50'
-                          : 'bg-surface border-default hover:bg-surface-hover'
+                          : 'bg-surface hover:bg-surface-hover border-default'
                       }`}
                     >
-                      <div className="from-surface mb-2 flex size-8 items-center justify-center rounded border bg-gradient-to-br to-slate-800 border-default">
+                      <div className="from-surface mb-2 flex size-8 items-center justify-center rounded border border-default bg-gradient-to-br to-slate-800">
                         <svg
                           className="size-4 text-secondary"
                           fill="none"
@@ -209,7 +209,7 @@ export default function SettingsPage() {
                     <input
                       type="text"
                       defaultValue="RBI System - Barangay Records"
-                      className="block w-full rounded border px-3 py-2 text-primary bg-surface border-default focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="bg-surface block w-full rounded border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
@@ -263,7 +263,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Two-Factor Authentication
@@ -280,7 +280,7 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Session Timeout
@@ -301,7 +301,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Password Complexity
@@ -352,7 +352,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover rounded border border-default p-4">
                     <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
                       Connection Status
                     </h4>
@@ -384,7 +384,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover rounded border border-default p-4">
                     <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
                       Performance
                     </h4>
@@ -432,7 +432,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Email Notifications
@@ -456,7 +456,7 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         SMS Notifications
@@ -480,7 +480,7 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Push Notifications
@@ -554,7 +554,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Automatic Backup
@@ -581,7 +581,7 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Maintenance Mode
@@ -608,7 +608,7 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between rounded border p-4 bg-surface-hover border-default">
+                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
                     <div>
                       <h4 className="font-montserrat text-base font-medium text-primary">
                         Debug Mode
@@ -636,7 +636,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="border-t pt-6 border-default">
+                <div className="border-t border-default pt-6">
                   <Button variant="danger" size="md">
                     Reset System Settings
                   </Button>
@@ -645,7 +645,7 @@ export default function SettingsPage() {
             )}
 
             {/* Save Button */}
-            <div className="border-t pt-8 border-default">
+            <div className="border-t border-default pt-8">
               <div className="flex justify-end">
                 <Button variant="primary" size="md">
                   Save Changes

@@ -141,7 +141,7 @@ export default function PhysicalCharacteristics({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b pb-4 border-default">
+      <div className="border-b border-default pb-4">
         <h3 className="mb-2 text-lg font-medium text-primary">
           <span className="text-base">👤</span> Physical Characteristics
         </h3>
@@ -184,7 +184,7 @@ export default function PhysicalCharacteristics({
 
         {/* BMI Display */}
         {bmiValue && bmiCategory && (
-          <div className="mt-3 rounded-lg p-3 bg-background-muted">
+          <div className="bg-background-muted mt-3 rounded-lg p-3">
             <div className="flex items-center justify-between text-sm">
               <span className="text-secondary">Body Mass Index (BMI):</span>
               <span className="font-medium">
@@ -244,7 +244,7 @@ export default function PhysicalCharacteristics({
           disabled={disabled}
           rows={3}
         />
-        <p className="mt-1 text-xs text-muted">
+        <p className="text-muted mt-1 text-xs">
           Include scars, birthmarks, tattoos, or other identifying features
         </p>
       </FormGroup>
@@ -259,7 +259,7 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="mt-1 text-xs text-muted">
+          <p className="text-muted mt-1 text-xs">
             List any chronic conditions or ongoing medical issues
           </p>
         </FormGroup>
@@ -272,7 +272,7 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="mt-1 text-xs text-muted">
+          <p className="text-muted mt-1 text-xs">
             List any known allergies to food, medicine, or other substances
           </p>
         </FormGroup>

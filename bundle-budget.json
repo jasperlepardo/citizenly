@@ -1,0 +1,16 @@
+{
+  "budgets": [
+    {
+      "path": "**/*.js",
+      "maxSize": "2MB"
+    },
+    {
+      "path": "**/*.css",
+      "maxSize": "200KB"
+    }
+  ],
+  "thresholds": {
+    "warning": 80,
+    "error": 95
+  }
+}
