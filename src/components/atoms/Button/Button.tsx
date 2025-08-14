@@ -1,6 +1,31 @@
 'use client';
 
-// Button component - Testing Node.js 20 fix for Storybook deployment
+/**
+ * Button Component
+ *
+ * A versatile button component with multiple variants, sizes, and states.
+ * Built with accessibility in mind and supports icons, loading states, and full customization.
+ *
+ * @example
+ * ```tsx
+ * // Basic button
+ * <Button>Click me</Button>
+ *
+ * // With variant and size
+ * <Button variant="danger" size="lg">Delete</Button>
+ *
+ * // With icons
+ * <Button leftIcon={<PlusIcon />}>Add Item</Button>
+ *
+ * // Loading state
+ * <Button loading>Saving...</Button>
+ *
+ * // Icon-only button
+ * <Button iconOnly aria-label="Settings">
+ *   <SettingsIcon />
+ * </Button>
+ * ```
+ */
 import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -116,15 +141,37 @@ const buttonVariants = cva(
   }
 );
 
+/**
+ * Button component props
+ */
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  /** Render as a different element (future implementation for Radix Slot) */
   asChild?: boolean;
+
+  /** Show loading spinner and disable button */
   loading?: boolean;
+
+  /** Icon to display on the left side of the button */
   leftIcon?: React.ReactNode;
+
+  /** Icon to display on the right side of the button */
   rightIcon?: React.ReactNode;
 }
 
+/**
+ * Button component with comprehensive variant support and accessibility features.
+ *
+ * Features:
+ * - Multiple visual variants (primary, secondary, success, warning, danger, neutral, ghost)
+ * - Semantic variant styles (subtle, faded, outline)
+ * - Loading states with spinner animation
+ * - Icon support (left, right, icon-only)
+ * - Full width and size options
+ * - Built-in accessibility (focus management, ARIA attributes)
+ * - Proper disabled state handling
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -187,7 +234,3 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
-// Test automated deployment - Wed Aug  6 04:41:55 PST 2025
-// Retry automated deployment - Wed Aug  6 04:47:14 PST 2025
-// Fix Vercel deployment - deploy static files - Wed Aug  6 04:54:41 PST 2025
-// Fixed Vercel config - disable build and serve static files - Mon Aug  5 17:45:12 PST 2025

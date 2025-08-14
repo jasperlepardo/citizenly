@@ -21,3 +21,6 @@ export * from './templates';
 
 // Providers - React context providers
 export * from './providers';
+
+// Types - Shared component interfaces and types
+export * from './types';
