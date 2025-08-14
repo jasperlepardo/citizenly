@@ -7,7 +7,6 @@ import { BarangaySelector } from '@/components/organisms';
 import { AppShell } from '@/components/templates';
 import { ProtectedRoute } from '@/components/organisms';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
 import { logger, logError } from '@/lib/secure-logger';
 
 export const dynamic = 'force-dynamic';
@@ -30,7 +29,6 @@ interface Role {
 }
 
 function CreateUserContent() {
-  const { user: _currentUser } = useAuth();
   const [formData, setFormData] = useState<CreateUserFormData>({
     email: '',
     password: '',
