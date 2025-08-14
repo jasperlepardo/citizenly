@@ -21,7 +21,7 @@ module.exports = {
 
   // Faster test execution
   testTimeout: 10000, // 10 seconds
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js', '<rootDir>/jest.setup.dev.js'],
+  setupFilesAfterEnv: ['<rootDir>/config/jest/jest.setup.js', '<rootDir>/config/jest/jest.setup.dev.js'],
 
   // Watch mode optimizations
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
