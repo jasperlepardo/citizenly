@@ -39,13 +39,13 @@ export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCar
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Family Information */}
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+        <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
           👨‍👩‍👧‍👦 Family Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="block text-sm font-medium text-secondary">
+            <span className="text-secondary block text-sm font-medium">
               Mother&rsquo;s Maiden Name
             </span>
             <span className="text-primary">
@@ -62,21 +62,21 @@ export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCar
       </div>
 
       {/* Voter Information */}
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+        <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
           🗳️ Voter Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="block text-sm font-medium text-secondary">Registered Voter</span>
+            <span className="text-secondary block text-sm font-medium">Registered Voter</span>
             <span className="text-primary">{resident.is_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Resident Voter</span>
+            <span className="text-secondary block text-sm font-medium">Resident Voter</span>
             <span className="text-primary">{resident.is_resident_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="block text-sm font-medium text-secondary">Last Voted Date</span>
+            <span className="text-secondary block text-sm font-medium">Last Voted Date</span>
             <span className="text-primary">{formatDate(resident.last_voted_date || '')}</span>
           </div>
         </div>

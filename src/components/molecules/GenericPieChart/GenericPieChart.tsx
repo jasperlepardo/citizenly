@@ -69,9 +69,9 @@ export default function GenericPieChart({
 
   if (total === 0) {
     return (
-      <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
-        <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
-        <div className="text-center text-secondary">No data available</div>
+      <div className={`bg-surface border-default rounded-lg border p-6 ${className}`}>
+        <h3 className="font-display text-primary mb-4 text-lg font-semibold">{title}</h3>
+        <div className="text-secondary text-center">No data available</div>
       </div>
     );
   }
@@ -130,8 +130,8 @@ export default function GenericPieChart({
   });
 
   return (
-    <div className={`bg-surface rounded-lg border border-default p-6 ${className}`}>
-      <h3 className="mb-4 font-display text-lg font-semibold text-primary">{title}</h3>
+    <div className={`bg-surface border-default rounded-lg border p-6 ${className}`}>
+      <h3 className="font-display text-primary mb-4 text-lg font-semibold">{title}</h3>
 
       <div className="grid grid-cols-2 gap-6">
         {/* Pie Chart */}
@@ -217,7 +217,7 @@ export default function GenericPieChart({
                       hasNoData
                         ? ''
                         : isHovered
-                          ? 'scale-125 shadow-md ring-2 ring-primary-200'
+                          ? 'ring-primary-200 scale-125 shadow-md ring-2'
                           : ''
                     }`}
                     style={{ backgroundColor: item.color }}
@@ -227,7 +227,7 @@ export default function GenericPieChart({
                       hasNoData
                         ? 'text-gray-400 dark:text-gray-600'
                         : isHovered
-                          ? 'font-medium text-primary'
+                          ? 'text-primary font-medium'
                           : 'text-gray-700 dark:text-gray-300'
                     }`}
                   >
@@ -239,7 +239,7 @@ export default function GenericPieChart({
                     hasNoData
                       ? 'text-gray-400 dark:text-gray-600'
                       : isHovered
-                        ? 'font-bold text-primary'
+                        ? 'text-primary font-bold'
                         : 'text-gray-900 dark:text-gray-100'
                   }`}
                 >
@@ -254,7 +254,7 @@ export default function GenericPieChart({
       {/* Tooltip */}
       {hoveredSlice && (
         <div
-          className="pointer-events-none fixed z-50 rounded-lg border-2 border-primary-200 bg-white px-4 py-3 shadow-2xl dark:border-primary-700 dark:bg-gray-900"
+          className="border-primary-200 dark:border-primary-700 pointer-events-none fixed z-50 rounded-lg border-2 bg-white px-4 py-3 shadow-2xl dark:bg-gray-900"
           style={{
             left: mousePosition.x + 10,
             top: mousePosition.y - 10,

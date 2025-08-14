@@ -63,12 +63,12 @@ export default function UserProfile({
             {initials}
           </div>
           <div className="text-left">
-            <div className="text-sm font-medium text-primary">{displayName}</div>
-            <div className="text-xs text-secondary">{role?.name}</div>
+            <div className="text-primary text-sm font-medium">{displayName}</div>
+            <div className="text-secondary text-xs">{role?.name}</div>
           </div>
           {/* Dropdown chevron icon */}
           <svg
-            className="ml-1 size-4 text-secondary"
+            className="text-secondary ml-1 size-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -80,17 +80,17 @@ export default function UserProfile({
         {showDropdown && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)}></div>
-            <div className="bg-surface absolute right-0 z-50 mt-2 w-64 rounded-md border border-default shadow-xl">
-              <div className="border-b border-default p-4">
-                <div className="font-medium text-primary">{displayName}</div>
-                <div className="text-sm text-secondary">{userProfile.email}</div>
+            <div className="bg-surface border-default absolute right-0 z-50 mt-2 w-64 rounded-md border shadow-xl">
+              <div className="border-default border-b p-4">
+                <div className="text-primary font-medium">{displayName}</div>
+                <div className="text-secondary text-sm">{userProfile.email}</div>
                 <div className="mt-1 text-xs text-blue-600">{role?.name}</div>
               </div>
 
               {showBarangay && address && (
-                <div className="border-b border-default p-4">
-                  <div className="mb-1 text-xs font-medium text-secondary">Assigned Barangay</div>
-                  <div className="text-sm text-primary">{userProfile?.barangay_code}</div>
+                <div className="border-default border-b p-4">
+                  <div className="text-secondary mb-1 text-xs font-medium">Assigned Barangay</div>
+                  <div className="text-primary text-sm">{userProfile?.barangay_code}</div>
                   <div className="text-muted text-xs">Barangay Assignment</div>
                 </div>
               )}
@@ -98,7 +98,7 @@ export default function UserProfile({
               <div className="p-2">
                 <button
                   onClick={handleSignOut}
-                  className="hover:bg-surface-hover w-full rounded-md p-2 text-left text-sm text-secondary"
+                  className="hover:bg-surface-hover text-secondary w-full rounded-md p-2 text-left text-sm"
                 >
                   Sign Out
                 </button>
@@ -111,19 +111,19 @@ export default function UserProfile({
   }
 
   return (
-    <div className={`bg-surface rounded-lg border border-default p-6 shadow-sm ${className}`}>
+    <div className={`bg-surface border-default rounded-lg border p-6 shadow-sm ${className}`}>
       <div className="flex items-start gap-4">
         <div className="flex size-16 items-center justify-center rounded-full bg-blue-600 text-xl font-medium text-white">
           {initials}
         </div>
 
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-primary">{displayName}</h3>
+          <h3 className="text-primary text-lg font-semibold">{displayName}</h3>
           <p className="text-secondary">{userProfile.email}</p>
 
           <div className="mt-3 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-secondary">Role:</span>
+              <span className="text-secondary text-sm font-medium">Role:</span>
               <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                 {role?.name}
               </span>
@@ -133,8 +133,8 @@ export default function UserProfile({
       </div>
 
       {showBarangay && (
-        <div className="mt-6 border-t border-default pt-6">
-          <h4 className="mb-3 text-sm font-medium text-secondary">Barangay Assignment</h4>
+        <div className="border-default mt-6 border-t pt-6">
+          <h4 className="text-secondary mb-3 text-sm font-medium">Barangay Assignment</h4>
 
           {barangayAccounts.length > 0 ? (
             <div className="space-y-2">
@@ -172,10 +172,10 @@ export default function UserProfile({
         </div>
       )}
 
-      <div className="mt-6 border-t border-default pt-6">
+      <div className="border-default mt-6 border-t pt-6">
         <button
           onClick={handleSignOut}
-          className="bg-surface hover:bg-surface-hover flex w-full items-center justify-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="bg-surface hover:bg-surface-hover border-default text-secondary flex w-full items-center justify-center rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Sign Out
         </button>

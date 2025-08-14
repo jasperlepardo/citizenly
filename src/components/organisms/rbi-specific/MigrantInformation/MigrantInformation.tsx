@@ -125,18 +125,18 @@ export default function MigrantInformation({
   if (!value.is_migrant) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="border-b border-default pb-4">
-          <h3 className="mb-2 text-lg font-medium text-primary">
+        <div className="border-default border-b pb-4">
+          <h3 className="text-primary mb-2 text-lg font-medium">
             <span className="text-base">🧳</span> Migration Information
           </h3>
-          <p className="text-sm text-secondary">
+          <p className="text-secondary text-sm">
             This resident is not classified as a migrant. Enable migration status to collect
             details.
           </p>
         </div>
 
         <div className="bg-background-muted rounded-lg p-4">
-          <p className="text-sm italic text-secondary">
+          <p className="text-secondary text-sm italic">
             Migration information is automatically collected when a resident is marked as a migrant
             in sectoral classifications.
           </p>
@@ -148,11 +148,11 @@ export default function MigrantInformation({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-default pb-4">
-        <h3 className="mb-2 text-lg font-medium text-primary">
+      <div className="border-default border-b pb-4">
+        <h3 className="text-primary mb-2 text-lg font-medium">
           <span className="text-base">🧳</span> Migration Information
         </h3>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Details about migration history and current status for this resident.
         </p>
       </div>

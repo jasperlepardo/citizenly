@@ -127,13 +127,13 @@ function ResidentsContent() {
     } finally {
       setLoading(false);
     }
-  }, [userProfile, searchTerm, pagination, loadResidentsFromAPI]);
+  }, [userProfile, searchTerm, loadResidentsFromAPI, pagination.current, pagination.pageSize]);
 
   useEffect(() => {
     if (!authLoading && user && userProfile?.barangay_code) {
       loadResidents();
     }
-  }, [user, authLoading, userProfile, loadResidents]);
+  }, [user, authLoading, userProfile?.barangay_code, loadResidents]);
 
   const handleSearch = useCallback((term: string, filters: SearchFilter[]) => {
     setSearchTerm(term);
@@ -145,9 +145,11 @@ function ResidentsContent() {
     setSelectedResidents(selectedKeys);
   };
 
-  const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({ current: page, pageSize, total: pagination.total });
-  };
+  const handlePaginationChange = useCallback((page: number, pageSize: number) => {
+    setPagination(prev => ({ ...prev, current: page, pageSize }));
+    // Directly load with new pagination values
+    loadResidentsFromAPI(page, pageSize);
+  }, [loadResidentsFromAPI]);
 
   const formatFullName = (resident: Resident) => {
     return [resident.first_name, resident.middle_name, resident.last_name, resident.extension_name]
@@ -284,8 +286,8 @@ function ResidentsContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">Residents</h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">Residents</h1>
+            <p className="font-montserrat text-secondary text-sm font-normal">
               {pagination.total} total residents
             </p>
           </div>

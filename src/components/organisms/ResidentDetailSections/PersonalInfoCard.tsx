@@ -51,45 +51,45 @@ export default function PersonalInfoCard({
   calculateAge,
 }: PersonalInfoCardProps) {
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         👤 Personal Information
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="block text-sm font-medium text-secondary">Full Name</span>
+          <span className="text-secondary block text-sm font-medium">Full Name</span>
           <span className="text-primary">{formatFullName(resident)}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Sex</span>
+          <span className="text-secondary block text-sm font-medium">Sex</span>
           <span className="text-primary">
             {resident.sex ? resident.sex.charAt(0).toUpperCase() + resident.sex.slice(1) : '-'}
           </span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Date of Birth</span>
+          <span className="text-secondary block text-sm font-medium">Date of Birth</span>
           <span className="text-primary">
             {formatDate(resident.birthdate)} (Age: {calculateAge(resident.birthdate)})
           </span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Civil Status</span>
+          <span className="text-secondary block text-sm font-medium">Civil Status</span>
           <span className="text-primary">{resident.civil_status || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Citizenship</span>
+          <span className="text-secondary block text-sm font-medium">Citizenship</span>
           <span className="text-primary">{resident.citizenship || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Religion</span>
+          <span className="text-secondary block text-sm font-medium">Religion</span>
           <span className="text-primary">{resident.religion || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Ethnicity</span>
+          <span className="text-secondary block text-sm font-medium">Ethnicity</span>
           <span className="text-primary">{resident.ethnicity || '-'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Birth Place</span>
+          <span className="text-secondary block text-sm font-medium">Birth Place</span>
           <span className="text-primary">{resident.birth_place_name || '-'}</span>
         </div>
       </div>

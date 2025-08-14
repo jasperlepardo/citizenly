@@ -757,7 +757,7 @@ export const TextHierarchy: Story = {
         </div>
 
         {/* Brand Context Text */}
-        <div className="rounded-xl border border-primary-700 bg-primary-600 p-6">
+        <div className="border-primary-700 bg-primary-600 rounded-xl border p-6">
           <h3 className="text-text-primary_onBrand mb-6 text-lg font-semibold">
             Text on Brand Colors
           </h3>
@@ -767,7 +767,7 @@ export const TextHierarchy: Story = {
                 Primary on Brand
               </div>
               <div className="text-text-primary_onBrand text-xl">White text for high contrast</div>
-              <code className="rounded bg-primary-800 px-2 py-1 text-xs text-primary-100">
+              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
                 text-text-primary_onBrand
               </code>
             </div>
@@ -776,7 +776,7 @@ export const TextHierarchy: Story = {
                 Secondary on Brand
               </div>
               <div className="text-text-secondary_onBrand">Light blue text on brand</div>
-              <code className="rounded bg-primary-800 px-2 py-1 text-xs text-primary-100">
+              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
                 text-text-secondary_onBrand
               </code>
             </div>
@@ -787,7 +787,7 @@ export const TextHierarchy: Story = {
               <div className="text-text-tertiary_onBrand text-sm">
                 Subtle text on brand backgrounds
               </div>
-              <code className="rounded bg-primary-800 px-2 py-1 text-xs text-primary-100">
+              <code className="bg-primary-800 text-primary-100 rounded px-2 py-1 text-xs">
                 text-text-tertiary_onBrand
               </code>
             </div>
@@ -801,7 +801,7 @@ export const TextHierarchy: Story = {
             <p className="text-text-success_primary text-sm">
               Use for positive feedback, confirmations, and successful actions.
             </p>
-            <code className="mt-2 inline-block rounded bg-success-100 px-2 py-1 text-xs text-success-800">
+            <code className="bg-success-100 text-success-800 mt-2 inline-block rounded px-2 py-1 text-xs">
               text-text-success_primary
             </code>
           </div>
@@ -993,19 +993,19 @@ export const LiveExamples: Story = {
         <div>
           <h3 className="mb-4 text-lg font-semibold text-gray-900">Brand Color Buttons</h3>
           <div className="flex flex-wrap gap-3">
-            <button className="rounded-lg bg-primary-600 px-6 py-3 text-white transition-colors hover:bg-primary-700">
+            <button className="bg-primary-600 hover:bg-primary-700 rounded-lg px-6 py-3 text-white transition-colors">
               Primary Button
               <span className="block text-xs opacity-75">bg-primary-600</span>
             </button>
-            <button className="rounded-lg bg-secondary-600 px-6 py-3 text-white transition-colors hover:bg-secondary-700">
+            <button className="bg-secondary-600 hover:bg-secondary-700 rounded-lg px-6 py-3 text-white transition-colors">
               Secondary Button
               <span className="block text-xs opacity-75">bg-secondary-600</span>
             </button>
-            <button className="rounded-lg bg-success-600 px-6 py-3 text-white transition-colors hover:bg-success-700">
+            <button className="bg-success-600 hover:bg-success-700 rounded-lg px-6 py-3 text-white transition-colors">
               Success Button
               <span className="block text-xs opacity-75">bg-success-600</span>
             </button>
-            <button className="rounded-lg bg-danger-600 px-6 py-3 text-white transition-colors hover:bg-danger-700">
+            <button className="bg-danger-600 hover:bg-danger-700 rounded-lg px-6 py-3 text-white transition-colors">
               Danger Button
               <span className="block text-xs opacity-75">bg-danger-600</span>
             </button>

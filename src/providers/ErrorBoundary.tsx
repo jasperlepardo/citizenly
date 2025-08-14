@@ -226,7 +226,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="flex justify-center gap-3">
             <button
               onClick={this.resetErrorBoundary}
-              className="rounded bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
+              className="bg-primary hover:bg-primary-dark rounded px-4 py-2 text-white transition-colors"
             >
               Try Again
             </button>

@@ -191,11 +191,11 @@ export default function DataTable<T extends Record<string, any>>({
 
   if (loading) {
     return (
-      <div className={`bg-surface rounded-lg border border-default ${className}`}>
+      <div className={`bg-surface border-default rounded-lg border ${className}`}>
         <div className="flex items-center justify-center py-12">
           <div className="flex items-center space-x-2">
             <div className="size-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <span className="text-sm text-secondary">Loading...</span>
+            <span className="text-secondary text-sm">Loading...</span>
           </div>
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function DataTable<T extends Record<string, any>>({
   }
 
   return (
-    <div className={`bg-surface overflow-hidden rounded-lg border border-default ${className}`}>
+    <div className={`bg-surface border-default overflow-hidden rounded-lg border ${className}`}>
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="divide-border-default min-w-full divide-y">
@@ -215,7 +215,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th className={`${paddingClasses[size]} w-12`}>
                   <input
                     type="checkbox"
-                    className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
+                    className="bg-surface border-default size-4 rounded text-blue-600 focus:ring-blue-500"
                     checked={
                       selection.selectedRowKeys.length === sortedData.length &&
                       sortedData.length > 0
@@ -229,7 +229,7 @@ export default function DataTable<T extends Record<string, any>>({
               {columns.map(column => (
                 <th
                   key={column.key}
-                  className={`${paddingClasses[size]} text-left ${sizeClasses[size]} font-medium text-primary ${
+                  className={`${paddingClasses[size]} text-left ${sizeClasses[size]} text-primary font-medium ${
                     column.sortable ? 'hover:bg-surface-hover cursor-pointer' : ''
                   }`}
                   style={{ width: column.width }}
@@ -259,7 +259,7 @@ export default function DataTable<T extends Record<string, any>>({
               {/* Actions column */}
               {actions.length > 0 && (
                 <th
-                  className={`${paddingClasses[size]} text-right ${sizeClasses[size]} font-medium text-primary`}
+                  className={`${paddingClasses[size]} text-right ${sizeClasses[size]} text-primary font-medium`}
                 >
                   Actions
                 </th>
@@ -273,7 +273,7 @@ export default function DataTable<T extends Record<string, any>>({
               <tr>
                 <td
                   colSpan={columns.length + (selection ? 1 : 0) + (actions.length > 0 ? 1 : 0)}
-                  className="px-6 py-12 text-center text-secondary"
+                  className="text-secondary px-6 py-12 text-center"
                 >
                   {emptyText}
                 </td>
@@ -296,7 +296,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td className={paddingClasses[size]}>
                         <input
                           type="checkbox"
-                          className="bg-surface size-4 rounded border-default text-blue-600 focus:ring-blue-500"
+                          className="bg-surface border-default size-4 rounded text-blue-600 focus:ring-blue-500"
                           checked={isSelected}
                           onChange={e => handleRowSelect(record, index, e.target.checked)}
                           disabled={selection.getCheckboxProps?.(record)?.disabled}
@@ -367,8 +367,8 @@ export default function DataTable<T extends Record<string, any>>({
 
       {/* Pagination */}
       {pagination && (
-        <div className="bg-surface flex items-center justify-between border-t border-default px-4 py-3">
-          <div className="flex items-center text-sm text-secondary">
+        <div className="bg-surface border-default flex items-center justify-between border-t px-4 py-3">
+          <div className="text-secondary flex items-center text-sm">
             <span>
               Showing{' '}
               {Math.min((pagination.current - 1) * pagination.pageSize + 1, pagination.total)} to{' '}
@@ -387,7 +387,7 @@ export default function DataTable<T extends Record<string, any>>({
               Previous
             </Button>
 
-            <span className="text-sm text-secondary">
+            <span className="text-secondary text-sm">
               Page {pagination.current} of {Math.ceil(pagination.total / pagination.pageSize)}
             </span>
 

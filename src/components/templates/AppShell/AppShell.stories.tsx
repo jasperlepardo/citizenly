@@ -24,8 +24,8 @@ type Story = StoryObj<typeof meta>;
 const MockDashboardContent = () => (
   <div className="space-y-8">
     <div>
-      <h1 className="text-3xl font-bold text-primary">Dashboard Overview</h1>
-      <p className="mt-2 text-secondary">Welcome to the RBI Records Management System</p>
+      <h1 className="text-primary text-3xl font-bold">Dashboard Overview</h1>
+      <p className="text-secondary mt-2">Welcome to the RBI Records Management System</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -35,14 +35,14 @@ const MockDashboardContent = () => (
         { title: 'Active Voters', value: '987', change: '+8%' },
         { title: 'Pending Records', value: '23', change: '-3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-surface rounded-xl border border-default p-6 shadow-sm">
+        <div key={index} className="bg-surface border-default rounded-xl border p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-secondary">{stat.title}</p>
-              <p className="text-2xl font-bold text-primary">{stat.value}</p>
+              <p className="text-secondary text-sm font-medium">{stat.title}</p>
+              <p className="text-primary text-2xl font-bold">{stat.value}</p>
             </div>
             <div className="text-right">
-              <span className="text-xs font-medium text-success">{stat.change}</span>
+              <span className="text-success text-xs font-medium">{stat.change}</span>
             </div>
           </div>
         </div>
@@ -50,8 +50,8 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-primary">Recent Activity</h3>
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+        <h3 className="text-primary mb-4 text-lg font-semibold">Recent Activity</h3>
         <div className="space-y-4">
           {[
             'New resident registered: Maria Santos',
@@ -60,21 +60,21 @@ const MockDashboardContent = () => (
             'Report generated: Population Summary',
           ].map((activity, index) => (
             <div key={index} className="flex items-start gap-3">
-              <div className="mt-2 h-2 w-2 rounded-full bg-primary"></div>
-              <p className="text-sm text-secondary">{activity}</p>
+              <div className="bg-primary mt-2 h-2 w-2 rounded-full"></div>
+              <p className="text-secondary text-sm">{activity}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-primary">Quick Actions</h3>
+      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm">
+        <h3 className="text-primary mb-4 text-lg font-semibold">Quick Actions</h3>
         <div className="space-y-3">
           {['Add New Resident', 'Create Household', 'Generate Report', 'Manage Users'].map(
             (action, index) => (
               <button
                 key={index}
-                className="bg-surface-hover w-full rounded-lg px-4 py-3 text-left text-secondary transition-colors hover:bg-primary-50 hover:text-primary"
+                className="bg-surface-hover text-secondary hover:bg-primary-50 hover:text-primary w-full rounded-lg px-4 py-3 text-left transition-colors"
               >
                 {action}
               </button>
@@ -90,30 +90,30 @@ const MockResidentsContent = () => (
   <div className="space-y-6">
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-primary">Residents Management</h1>
-        <p className="mt-2 text-secondary">Manage resident records and information</p>
+        <h1 className="text-primary text-3xl font-bold">Residents Management</h1>
+        <p className="text-secondary mt-2">Manage resident records and information</p>
       </div>
       <div className="flex gap-3">
-        <button className="bg-surface hover:bg-surface-hover rounded-lg border border-default px-4 py-2 text-secondary transition-colors hover:text-primary">
+        <button className="bg-surface hover:bg-surface-hover border-default text-secondary hover:text-primary rounded-lg border px-4 py-2 transition-colors">
           Export
         </button>
-        <button className="rounded-lg bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-600">
+        <button className="bg-primary hover:bg-primary-600 rounded-lg px-4 py-2 text-white transition-colors">
           Add Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-surface overflow-hidden rounded-xl border border-default">
-      <div className="border-b border-default p-4">
+    <div className="bg-surface border-default overflow-hidden rounded-xl border">
+      <div className="border-default border-b p-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-primary">Resident List</h3>
+          <h3 className="text-primary font-semibold">Resident List</h3>
           <div className="flex gap-2">
             <input
               type="search"
               placeholder="Search residents..."
-              className="bg-background placeholder-secondary rounded-lg border border-default px-3 py-2 text-sm text-primary"
+              className="bg-background placeholder-secondary border-default text-primary rounded-lg border px-3 py-2 text-sm"
             />
-            <button className="hover:bg-surface-hover rounded-lg border border-default px-3 py-2 text-sm text-secondary hover:text-primary">
+            <button className="hover:bg-surface-hover border-default text-secondary hover:text-primary rounded-lg border px-3 py-2 text-sm">
               Filter
             </button>
           </div>
@@ -129,11 +129,11 @@ const MockResidentsContent = () => (
           ].map((resident, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-lg border border-default p-3"
+              className="border-default flex items-center justify-between rounded-lg border p-3"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100">
-                  <span className="text-sm font-medium text-primary">
+                <div className="bg-primary-100 flex h-10 w-10 items-center justify-center rounded-full">
+                  <span className="text-primary text-sm font-medium">
                     {resident.name
                       .split(' ')
                       .map(n => n[0])
@@ -141,8 +141,8 @@ const MockResidentsContent = () => (
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-primary">{resident.name}</p>
-                  <p className="text-sm text-secondary">
+                  <p className="text-primary font-medium">{resident.name}</p>
+                  <p className="text-secondary text-sm">
                     Age {resident.age} • {resident.household}
                   </p>
                 </div>
@@ -179,8 +179,8 @@ const MockResidentsContent = () => (
 const MockReportsContent = () => (
   <div className="space-y-6">
     <div>
-      <h1 className="text-3xl font-bold text-primary">Reports & Analytics</h1>
-      <p className="mt-2 text-secondary">Generate and view system reports</p>
+      <h1 className="text-primary text-3xl font-bold">Reports & Analytics</h1>
+      <p className="text-secondary mt-2">Generate and view system reports</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -195,20 +195,20 @@ const MockReportsContent = () => (
       ].map((report, index) => (
         <div
           key={index}
-          className="bg-surface cursor-pointer rounded-xl border border-default p-6 transition-shadow hover:shadow-md"
+          className="bg-surface border-default cursor-pointer rounded-xl border p-6 transition-shadow hover:shadow-md"
         >
           <div className="mb-3 text-3xl">{report.icon}</div>
-          <h3 className="mb-2 font-semibold text-primary">{report.title}</h3>
-          <p className="mb-4 text-sm text-secondary">{report.description}</p>
-          <button className="w-full rounded-lg bg-primary-50 px-4 py-2 text-primary transition-colors hover:bg-primary-100">
+          <h3 className="text-primary mb-2 font-semibold">{report.title}</h3>
+          <p className="text-secondary mb-4 text-sm">{report.description}</p>
+          <button className="bg-primary-50 text-primary hover:bg-primary-100 w-full rounded-lg px-4 py-2 transition-colors">
             Generate Report
           </button>
         </div>
       ))}
     </div>
 
-    <div className="bg-surface rounded-xl border border-default p-6">
-      <h3 className="mb-4 text-lg font-semibold text-primary">Recent Reports</h3>
+    <div className="bg-surface border-default rounded-xl border p-6">
+      <h3 className="text-primary mb-4 text-lg font-semibold">Recent Reports</h3>
       <div className="space-y-3">
         {[
           { name: 'Population Summary Q4 2024', date: '2024-12-01', size: '2.4 MB' },
@@ -217,12 +217,12 @@ const MockReportsContent = () => (
         ].map((report, index) => (
           <div
             key={index}
-            className="flex items-center justify-between rounded-lg border border-default p-3"
+            className="border-default flex items-center justify-between rounded-lg border p-3"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-primary-100">
+              <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded">
                 <svg
-                  className="h-4 w-4 text-primary"
+                  className="text-primary h-4 w-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -236,13 +236,13 @@ const MockReportsContent = () => (
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-primary">{report.name}</p>
-                <p className="text-sm text-secondary">
+                <p className="text-primary font-medium">{report.name}</p>
+                <p className="text-secondary text-sm">
                   {report.date} • {report.size}
                 </p>
               </div>
             </div>
-            <button className="rounded bg-primary-50 px-3 py-1 text-sm text-primary transition-colors hover:bg-primary-100">
+            <button className="bg-primary-50 text-primary hover:bg-primary-100 rounded px-3 py-1 text-sm transition-colors">
               Download
             </button>
           </div>
@@ -361,7 +361,7 @@ export const LayoutFeatures: Story = {
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"
@@ -377,13 +377,13 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Responsive Design</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Responsive Design</h3>
+            <p className="text-secondary text-sm">
               Automatically adapts to different screen sizes with mobile-first approach
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
                 className="h-6 w-6 text-purple-600"
@@ -399,13 +399,13 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Global Search</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Global Search</h3>
+            <p className="text-secondary text-sm">
               Integrated search functionality accessible from anywhere in the application
             </p>
           </div>
 
-          <div className="bg-surface rounded-xl border border-default p-6">
+          <div className="bg-surface border-default rounded-xl border p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"
@@ -421,8 +421,8 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-primary">Accessibility</h3>
-            <p className="text-sm text-secondary">
+            <h3 className="text-primary mb-2 font-semibold">Accessibility</h3>
+            <p className="text-secondary text-sm">
               Built with WCAG guidelines and keyboard navigation support
             </p>
           </div>

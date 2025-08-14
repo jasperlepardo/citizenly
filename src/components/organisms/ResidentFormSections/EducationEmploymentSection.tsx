@@ -67,7 +67,7 @@ export default function EducationEmploymentSection({
             value={formData.education_attainment || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Education Level</option>
             {EDUCATION_LEVEL_OPTIONS.map(option => (
@@ -84,7 +84,7 @@ export default function EducationEmploymentSection({
             value={formData.employment_status || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Employment Status</option>
             {EMPLOYMENT_STATUS_OPTIONS.map(option => (

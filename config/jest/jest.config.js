@@ -2,13 +2,19 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const nextJest = require('next/jest');
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const path = require('path');
+
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files
-  dir: '../../',
+  dir: path.resolve(__dirname, '../../'),
 });
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
+  // Root directory for Jest
+  rootDir: path.resolve(__dirname, '../../'),
+  
   // Setup files to run before tests
   // Default setup for jsdom tests
   setupFilesAfterEnv: ['<rootDir>/config/jest/jest.setup.js'],

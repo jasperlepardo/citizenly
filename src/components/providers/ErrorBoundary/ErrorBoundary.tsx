@@ -61,7 +61,7 @@ function DefaultErrorFallback({ error, resetError }: { error: Error; resetError:
         <div className="flex justify-center gap-2">
           <button
             onClick={resetError}
-            className="text-primary-foreground rounded-md bg-primary px-4 py-2 transition-colors hover:bg-primary/90"
+            className="text-primary-foreground bg-primary hover:bg-primary/90 rounded-md px-4 py-2 transition-colors"
           >
             Try Again
           </button>

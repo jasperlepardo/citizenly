@@ -14,10 +14,10 @@ function BusinessContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
               Business Registration
             </h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <p className="font-montserrat text-secondary text-sm font-normal">
               Manage business permits, licenses, and registrations in your barangay
             </p>
           </div>
@@ -27,7 +27,7 @@ function BusinessContent() {
         </div>
 
         {/* Coming Soon Card */}
-        <div className="bg-surface rounded-lg border border-default p-8 text-center">
+        <div className="bg-surface border-default rounded-lg border p-8 text-center">
           <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
             <svg
               className="size-8 text-blue-600"
@@ -43,10 +43,10 @@ function BusinessContent() {
               />
             </svg>
           </div>
-          <h3 className="mb-2 text-lg font-semibold text-primary">
+          <h3 className="text-primary mb-2 text-lg font-semibold">
             Business Management Coming Soon
           </h3>
-          <p className="mx-auto mb-6 max-w-md text-secondary">
+          <p className="text-secondary mx-auto mb-6 max-w-md">
             We&apos;re working on bringing you comprehensive business registration and permit
             management tools. This feature will allow you to track business licenses, permits, and
             compliance in your barangay.
@@ -70,8 +70,8 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Business Permits</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Business Permits</h4>
+              <p className="text-secondary text-xs">
                 Track and manage business permit applications and renewals
               </p>
             </div>
@@ -92,8 +92,8 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Tax Records</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Tax Records</h4>
+              <p className="text-secondary text-xs">
                 Monitor business tax compliance and payment history
               </p>
             </div>
@@ -114,8 +114,8 @@ function BusinessContent() {
                   />
                 </svg>
               </div>
-              <h4 className="mb-1 text-sm font-medium text-primary">Analytics</h4>
-              <p className="text-xs text-secondary">
+              <h4 className="text-primary mb-1 text-sm font-medium">Analytics</h4>
+              <p className="text-secondary text-xs">
                 View business registration trends and statistics
               </p>
             </div>

@@ -86,7 +86,7 @@ export function BaseSelector<T extends BaseSelectorOption>({
 
     return parts.map((part, index) =>
       regex.test(part) ? (
-        <mark key={index} className="bg-yellow-200 font-medium text-primary">
+        <mark key={index} className="text-primary bg-yellow-200 font-medium">
           {part}
         </mark>
       ) : (

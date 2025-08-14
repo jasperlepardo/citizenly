@@ -40,8 +40,8 @@ export default function SettingsPage() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">Settings</h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">Settings</h1>
+            <p className="font-montserrat text-secondary text-sm font-normal">
               Configure your system preferences and administrative settings
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function SettingsPage() {
 
         {/* Tab Navigation */}
         <div className="mb-6">
-          <div className="border-b border-default">
+          <div className="border-default border-b">
             <nav className="flex space-x-8">
               {tabs.map(tab => (
                 <button
@@ -57,8 +57,8 @@ export default function SettingsPage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`font-montserrat whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-primary'
-                      : 'border-transparent text-secondary hover:border-default hover:text-primary'
+                      ? 'text-primary border-blue-500'
+                      : 'text-secondary hover:border-default hover:text-primary border-transparent'
                   }`}
                 >
                   {tab.name}
@@ -69,16 +69,16 @@ export default function SettingsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-surface overflow-hidden rounded border border-default">
+        <div className="bg-surface border-default overflow-hidden rounded border">
           <div className="p-6">
             {/* General Settings */}
             {activeTab === 'general' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     General Settings
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Basic system configuration and preferences
                   </p>
                 </div>
@@ -86,10 +86,10 @@ export default function SettingsPage() {
                 {/* Theme Selection */}
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-montserrat mb-1 text-base font-medium text-primary">
+                    <h4 className="font-montserrat text-primary mb-1 text-base font-medium">
                       Appearance
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-secondary">
+                    <p className="font-montserrat text-secondary text-sm font-normal">
                       {theme === 'system'
                         ? `Following system preference (${actualTheme})`
                         : `Using ${theme} theme`}
@@ -106,7 +106,7 @@ export default function SettingsPage() {
                           : 'bg-surface hover:bg-surface-hover border-default'
                       }`}
                     >
-                      <div className="bg-surface mb-2 flex size-8 items-center justify-center rounded border border-default">
+                      <div className="bg-surface border-default mb-2 flex size-8 items-center justify-center rounded border">
                         <svg
                           className="size-4 text-amber-500"
                           fill="none"
@@ -174,9 +174,9 @@ export default function SettingsPage() {
                           : 'bg-surface hover:bg-surface-hover border-default'
                       }`}
                     >
-                      <div className="from-surface mb-2 flex size-8 items-center justify-center rounded border border-default bg-gradient-to-br to-slate-800">
+                      <div className="from-surface border-default mb-2 flex size-8 items-center justify-center rounded border bg-gradient-to-br to-slate-800">
                         <svg
-                          className="size-4 text-secondary"
+                          className="text-secondary size-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -203,17 +203,17 @@ export default function SettingsPage() {
 
                 <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="font-montserrat block text-sm font-medium text-secondary">
+                    <label className="font-montserrat text-secondary block text-sm font-medium">
                       System Name
                     </label>
                     <input
                       type="text"
                       defaultValue="RBI System - Barangay Records"
-                      className="bg-surface block w-full rounded border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                      className="bg-surface border-default text-primary block w-full rounded border px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="font-montserrat block text-sm font-medium text-secondary">
+                    <label className="font-montserrat text-secondary block text-sm font-medium">
                       Timezone
                     </label>
                     <DropdownSelect
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="font-montserrat block text-sm font-medium text-secondary">
+                    <label className="font-montserrat text-secondary block text-sm font-medium">
                       Default Language
                     </label>
                     <DropdownSelect
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="font-montserrat block text-sm font-medium text-secondary">
+                    <label className="font-montserrat text-secondary block text-sm font-medium">
                       Date Format
                     </label>
                     <DropdownSelect
@@ -254,21 +254,21 @@ export default function SettingsPage() {
             {activeTab === 'security' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     Security Settings
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Configure authentication and security policies
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Two-Factor Authentication
                       </h4>
-                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary mt-1 text-sm font-normal">
                         Require 2FA for all admin accounts
                       </p>
                     </div>
@@ -280,12 +280,12 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Session Timeout
                       </h4>
-                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary mt-1 text-sm font-normal">
                         Automatic logout after inactivity
                       </p>
                     </div>
@@ -301,12 +301,12 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Password Complexity
                       </h4>
-                      <p className="font-montserrat mt-1 text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary mt-1 text-sm font-normal">
                         Enforce strong password requirements
                       </p>
                     </div>
@@ -325,10 +325,10 @@ export default function SettingsPage() {
             {activeTab === 'database' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     Database Configuration
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Database connection and maintenance settings
                   </p>
                 </div>
@@ -352,29 +352,29 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="bg-surface-hover rounded border border-default p-4">
-                    <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
+                  <div className="bg-surface-hover border-default rounded border p-4">
+                    <h4 className="font-montserrat text-primary mb-4 text-base font-medium">
                       Connection Status
                     </h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Host:
                         </span>
-                        <span className="font-montserrat text-sm font-medium text-primary">
+                        <span className="font-montserrat text-primary text-sm font-medium">
                           Supabase
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Database:
                         </span>
-                        <span className="font-montserrat text-sm font-medium text-primary">
+                        <span className="font-montserrat text-primary text-sm font-medium">
                           postgres
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Status:
                         </span>
                         <span className="inline-flex items-center rounded bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
@@ -384,32 +384,32 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-surface-hover rounded border border-default p-4">
-                    <h4 className="font-montserrat mb-4 text-base font-medium text-primary">
+                  <div className="bg-surface-hover border-default rounded border p-4">
+                    <h4 className="font-montserrat text-primary mb-4 text-base font-medium">
                       Performance
                     </h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Avg Response:
                         </span>
-                        <span className="font-montserrat text-sm font-medium text-primary">
+                        <span className="font-montserrat text-primary text-sm font-medium">
                           &lt;50ms
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Uptime:
                         </span>
-                        <span className="font-montserrat text-sm font-medium text-primary">
+                        <span className="font-montserrat text-primary text-sm font-medium">
                           99.9%
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="font-montserrat text-sm font-normal text-secondary">
+                        <span className="font-montserrat text-secondary text-sm font-normal">
                           Coverage:
                         </span>
-                        <span className="font-montserrat text-sm font-medium text-primary">
+                        <span className="font-montserrat text-primary text-sm font-medium">
                           91.3%
                         </span>
                       </div>
@@ -423,21 +423,21 @@ export default function SettingsPage() {
             {activeTab === 'notifications' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     Notification Preferences
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Configure how you receive system notifications
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Email Notifications
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Receive updates via email
                       </p>
                     </div>
@@ -456,12 +456,12 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         SMS Notifications
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Receive urgent alerts via SMS
                       </p>
                     </div>
@@ -480,12 +480,12 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Push Notifications
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Browser push notifications
                       </p>
                     </div>
@@ -511,10 +511,10 @@ export default function SettingsPage() {
             {activeTab === 'users' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     User Management
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Manage system users and access permissions
                   </p>
                 </div>
@@ -545,21 +545,21 @@ export default function SettingsPage() {
             {activeTab === 'system' && (
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+                  <h3 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                     System Settings
                   </h3>
-                  <p className="font-montserrat text-sm font-normal text-secondary">
+                  <p className="font-montserrat text-secondary text-sm font-normal">
                     Advanced system configuration and maintenance
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Automatic Backup
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Daily database backups
                       </p>
                     </div>
@@ -581,12 +581,12 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Maintenance Mode
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Temporarily disable public access
                       </p>
                     </div>
@@ -608,12 +608,12 @@ export default function SettingsPage() {
                     </button>
                   </div>
 
-                  <div className="bg-surface-hover flex items-center justify-between rounded border border-default p-4">
+                  <div className="bg-surface-hover border-default flex items-center justify-between rounded border p-4">
                     <div>
-                      <h4 className="font-montserrat text-base font-medium text-primary">
+                      <h4 className="font-montserrat text-primary text-base font-medium">
                         Debug Mode
                       </h4>
-                      <p className="font-montserrat text-sm font-normal text-secondary">
+                      <p className="font-montserrat text-secondary text-sm font-normal">
                         Enable detailed error logging
                       </p>
                     </div>
@@ -636,7 +636,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="border-t border-default pt-6">
+                <div className="border-default border-t pt-6">
                   <Button variant="danger" size="md">
                     Reset System Settings
                   </Button>
@@ -645,7 +645,7 @@ export default function SettingsPage() {
             )}
 
             {/* Save Button */}
-            <div className="border-t border-default pt-8">
+            <div className="border-default border-t pt-8">
               <div className="flex justify-end">
                 <Button variant="primary" size="md">
                   Save Changes

@@ -58,7 +58,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
-          eslint_flags: 'src/ --ignore-path .eslintignore'
+          eslint_flags: 'src/'
           fail_level: error
 
       - name: Install reviewdog
@@ -198,8 +198,8 @@ jobs:
 
       - name: Run our custom security checks
         run: |
-          chmod +x ./scripts/security-check.sh
-          ./scripts/security-check.sh
+          chmod +x ./scripts/security/check-security.sh
+          ./scripts/security/check-security.sh
 
   performance-budget:
     name: Performance Budget

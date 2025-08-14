@@ -128,10 +128,10 @@ export default function AddressesPage() {
       <div className="space-y-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="font-montserrat text-2xl font-semibold text-primary">
+          <h1 className="font-montserrat text-primary text-2xl font-semibold">
             Address Management
           </h1>
-          <p className="font-montserrat mt-1 text-secondary">
+          <p className="font-montserrat text-secondary mt-1">
             Complete Philippine administrative address hierarchy and location services
           </p>
         </div>
@@ -139,11 +139,11 @@ export default function AddressesPage() {
         {/* Address Statistics Cards - Dashboard Style */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {addressStats.map(stat => (
-            <div key={stat.name} className="bg-surface rounded-lg border border-default p-6">
-              <div className="font-montserrat mb-2 text-sm font-medium text-secondary">
+            <div key={stat.name} className="bg-surface border-default rounded-lg border p-6">
+              <div className="font-montserrat text-secondary mb-2 text-sm font-medium">
                 {stat.name}
               </div>
-              <div className="font-montserrat mb-1 text-4xl font-bold text-primary">
+              <div className="font-montserrat text-primary mb-1 text-4xl font-bold">
                 {stat.value}
               </div>
               <div className="flex items-center text-sm">
@@ -158,12 +158,12 @@ export default function AddressesPage() {
         </div>
 
         {/* Address Search Section */}
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <div className="mb-6 border-b border-default pb-4">
-            <h3 className="font-montserrat text-lg font-semibold text-primary">
+        <div className="bg-surface border-default rounded-lg border p-6">
+          <div className="border-default mb-6 border-b pb-4">
+            <h3 className="font-montserrat text-primary text-lg font-semibold">
               Search Philippine Addresses
             </h3>
-            <p className="font-montserrat mt-1 text-sm text-secondary">
+            <p className="font-montserrat text-secondary mt-1 text-sm">
               Search across {loading ? '...' : dbStats.barangays.toLocaleString()} barangays
               nationwide
             </p>
@@ -178,13 +178,13 @@ export default function AddressesPage() {
 
         {/* Search Results */}
         {addressResults.length > 0 && (
-          <div className="bg-surface rounded-lg border border-default">
+          <div className="bg-surface border-default rounded-lg border">
             <div className="p-6">
-              <div className="mb-6 border-b border-default pb-4">
-                <h3 className="font-montserrat text-lg font-semibold text-primary">
+              <div className="border-default mb-6 border-b pb-4">
+                <h3 className="font-montserrat text-primary text-lg font-semibold">
                   Recent Selections
                 </h3>
-                <p className="font-montserrat mt-1 text-sm text-secondary">
+                <p className="font-montserrat text-secondary mt-1 text-sm">
                   Recently selected {addressResults.length} address
                   {addressResults.length !== 1 ? 'es' : ''}
                 </p>
@@ -194,46 +194,46 @@ export default function AddressesPage() {
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     <table className="min-w-full">
                       <thead>
-                        <tr className="border-b border-default">
+                        <tr className="border-default border-b">
                           <th
                             scope="col"
-                            className="py-4 pl-4 pr-3 text-left text-sm font-semibold text-primary sm:pl-0"
+                            className="text-primary py-4 pl-4 pr-3 text-left text-sm font-semibold sm:pl-0"
                           >
                             Region
                           </th>
                           <th
                             scope="col"
-                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                            className="text-primary px-3 py-4 text-left text-sm font-semibold"
                           >
                             Province
                           </th>
                           <th
                             scope="col"
-                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                            className="text-primary px-3 py-4 text-left text-sm font-semibold"
                           >
                             City/Municipality
                           </th>
                           <th
                             scope="col"
-                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                            className="text-primary px-3 py-4 text-left text-sm font-semibold"
                           >
                             Barangay
                           </th>
                           <th
                             scope="col"
-                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                            className="text-primary px-3 py-4 text-left text-sm font-semibold"
                           >
                             Type
                           </th>
                           <th
                             scope="col"
-                            className="px-3 py-4 text-left text-sm font-semibold text-primary"
+                            className="text-primary px-3 py-4 text-left text-sm font-semibold"
                           >
                             Status
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-default">
+                      <tbody className="divide-default divide-y">
                         {addressResults.map((address, index) => {
                           const status = (address as any).urban_rural_status
                             ? 'complete'
@@ -244,22 +244,22 @@ export default function AddressesPage() {
                               key={`${address.barangay_code}-${index}`}
                               className="hover:bg-surface-hover transition-colors duration-200"
                             >
-                              <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-primary sm:pl-0">
+                              <td className="text-primary whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-0">
                                 {address.region_name}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                              <td className="text-secondary whitespace-nowrap px-3 py-4 text-sm">
                                 {address.province_name || 'Metro Manila'}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                              <td className="text-secondary whitespace-nowrap px-3 py-4 text-sm">
                                 {address.city_municipality_name}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                              <td className="text-secondary whitespace-nowrap px-3 py-4 text-sm">
                                 {address.barangay_name}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                              <td className="text-secondary whitespace-nowrap px-3 py-4 text-sm">
                                 {address.city_municipality_type}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-sm text-secondary">
+                              <td className="text-secondary whitespace-nowrap px-3 py-4 text-sm">
                                 <span
                                   className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
                                     status === 'complete'
@@ -288,35 +288,35 @@ export default function AddressesPage() {
         )}
 
         {/* Coverage Summary */}
-        <div className="bg-surface rounded-lg border border-default p-6">
-          <div className="mb-6 border-b border-default pb-4">
-            <h3 className="font-montserrat text-lg font-semibold text-primary">
+        <div className="bg-surface border-default rounded-lg border p-6">
+          <div className="border-default mb-6 border-b pb-4">
+            <h3 className="font-montserrat text-primary text-lg font-semibold">
               Philippine Address Coverage
             </h3>
-            <p className="font-montserrat mt-1 text-sm text-secondary">
+            <p className="font-montserrat text-secondary mt-1 text-sm">
               Comprehensive nationwide coverage with real-time data integration
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-background rounded-lg border border-default p-4">
+            <div className="bg-background border-default rounded-lg border p-4">
               <div className="text-2xl font-bold text-emerald-600">
                 {loading ? '...' : calculateCoverage(dbStats.barangays, 42028)}
               </div>
-              <div className="mt-1 text-sm font-medium text-secondary">
+              <div className="text-secondary mt-1 text-sm font-medium">
                 Nationwide Coverage {dbStats.connected ? '(Live)' : '(Offline)'}
               </div>
             </div>
-            <div className="bg-background rounded-lg border border-default p-4">
+            <div className="bg-background border-default rounded-lg border p-4">
               <div className="text-2xl font-bold text-blue-600">
                 {loading ? '...' : dbStats.barangays.toLocaleString()}
               </div>
-              <div className="mt-1 text-sm font-medium text-secondary">
+              <div className="text-secondary mt-1 text-sm font-medium">
                 Barangays {dbStats.connected ? 'Available' : 'Cached'}
               </div>
             </div>
-            <div className="bg-background rounded-lg border border-default p-4">
+            <div className="bg-background border-default rounded-lg border p-4">
               <div className="text-2xl font-bold text-purple-600">{loading ? '...' : '17'}</div>
-              <div className="mt-1 text-sm font-medium text-secondary">Regions Covered</div>
+              <div className="text-secondary mt-1 text-sm font-medium">Regions Covered</div>
             </div>
           </div>
         </div>

@@ -140,11 +140,11 @@ export default function PhysicalCharacteristics({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-default pb-4">
-        <h3 className="mb-2 text-lg font-medium text-primary">
+      <div className="border-default border-b pb-4">
+        <h3 className="text-primary mb-2 text-lg font-medium">
           <span className="text-base">👤</span> Physical Characteristics
         </h3>
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           Physical description for identification and health tracking purposes. All fields are
           optional.
         </p>

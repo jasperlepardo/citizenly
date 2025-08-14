@@ -191,10 +191,10 @@ function HouseholdsContent() {
         {/* Page Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-primary">
+            <h1 className="font-montserrat text-primary mb-0.5 text-xl font-semibold">
               Households
             </h1>
-            <p className="font-montserrat text-sm font-normal text-secondary">
+            <p className="font-montserrat text-secondary text-sm font-normal">
               {totalCount} total households
             </p>
           </div>
@@ -217,7 +217,7 @@ function HouseholdsContent() {
         {/* Table */}
         <div className="bg-surface overflow-hidden">
           {/* Table Header */}
-          <div className="bg-surface flex items-center border-b border-default p-0">
+          <div className="bg-surface border-default flex items-center border-b p-0">
             {/* Select All */}
             <div className="flex items-center p-2">
               <div className="flex items-center gap-2">
@@ -229,7 +229,7 @@ function HouseholdsContent() {
                 >
                   {selectedAll && <div className="size-2 rounded-sm bg-blue-600"></div>}
                 </Button>
-                <span className="font-montserrat text-base font-normal text-primary">
+                <span className="font-montserrat text-primary text-base font-normal">
                   Select all
                 </span>
               </div>
@@ -302,8 +302,8 @@ function HouseholdsContent() {
 
             {/* Search Households */}
             <div className="ml-auto mr-0">
-              <div className="bg-surface flex w-60 items-center gap-2 rounded border border-default p-2">
-                <div className="size-5 text-secondary">
+              <div className="bg-surface border-default flex w-60 items-center gap-2 rounded border p-2">
+                <div className="text-secondary size-5">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -318,37 +318,37 @@ function HouseholdsContent() {
                   placeholder="Search households"
                   value={localSearchTerm}
                   onChange={e => setLocalSearchTerm(e.target.value)}
-                  className="font-montserrat placeholder:text-muted flex-1 bg-transparent text-base font-normal text-primary outline-none"
+                  className="font-montserrat placeholder:text-muted text-primary flex-1 bg-transparent text-base font-normal outline-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Table Column Headers */}
-          <div className="bg-background-muted flex items-center border-b border-default p-0">
+          <div className="bg-background-muted border-default flex items-center border-b p-0">
             {/* Checkbox Column */}
             <div className="w-12 p-2"></div>
 
             {/* Column Headers */}
             <div className="grid flex-1 grid-cols-5 gap-4 p-2">
               <div className="p-2">
-                <span className="font-montserrat text-sm font-medium text-secondary">
+                <span className="font-montserrat text-secondary text-sm font-medium">
                   Household #
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-sm font-medium text-secondary">
+                <span className="font-montserrat text-secondary text-sm font-medium">
                   Head of Household
                 </span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-sm font-medium text-secondary">Address</span>
+                <span className="font-montserrat text-secondary text-sm font-medium">Address</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-sm font-medium text-secondary">Members</span>
+                <span className="font-montserrat text-secondary text-sm font-medium">Members</span>
               </div>
               <div className="p-2">
-                <span className="font-montserrat text-sm font-medium text-secondary">Created</span>
+                <span className="font-montserrat text-secondary text-sm font-medium">Created</span>
               </div>
             </div>
 
@@ -363,7 +363,7 @@ function HouseholdsContent() {
                 return (
                   <div className="p-8 text-center">
                     <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                    <p className="mt-2 text-secondary">Loading households...</p>
+                    <p className="text-secondary mt-2">Loading households...</p>
                   </div>
                 );
               }
@@ -413,22 +413,22 @@ function HouseholdsContent() {
                       </Link>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-base font-normal text-primary">
+                      <div className="font-montserrat text-primary text-base font-normal">
                         {formatFullName(household.head_resident)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-base font-normal text-primary">
+                      <div className="font-montserrat text-primary text-base font-normal">
                         {formatFullAddress(household)}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-base font-normal text-primary">
+                      <div className="font-montserrat text-primary text-base font-normal">
                         {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                       </div>
                     </div>
                     <div className="p-2">
-                      <div className="font-montserrat text-base font-normal text-primary">
+                      <div className="font-montserrat text-primary text-base font-normal">
                         {new Date(household.created_at).toLocaleDateString()}
                       </div>
                     </div>

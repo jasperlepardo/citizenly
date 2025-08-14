@@ -126,7 +126,7 @@ function HouseholdDetailContent() {
           <div className="flex h-64 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-sm text-secondary">Loading household details...</p>
+              <p className="text-secondary mt-4 text-sm">Loading household details...</p>
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ function HouseholdDetailContent() {
       <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="bg-surface rounded-lg border border-default p-6 shadow-md">
+            <div className="bg-surface border-default rounded-lg border p-6 shadow-md">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -155,13 +155,13 @@ function HouseholdDetailContent() {
                   />
                 </svg>
               </div>
-              <h1 className="font-montserrat mb-2 text-lg font-semibold text-primary">
+              <h1 className="font-montserrat text-primary mb-2 text-lg font-semibold">
                 Household Not Found
               </h1>
-              <p className="font-montserrat mb-4 text-sm text-secondary">{error}</p>
+              <p className="font-montserrat text-secondary mb-4 text-sm">{error}</p>
               <Link
                 href="/households"
-                className="hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary"
+                className="hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium"
               >
                 Back to Households
               </Link>
@@ -176,12 +176,12 @@ function HouseholdDetailContent() {
     <DashboardLayout searchTerm={globalSearchTerm} onSearchChange={setGlobalSearchTerm}>
       <div className="mx-auto max-w-7xl">
         {/* Header Section */}
-        <div className="bg-surface -mx-6 mb-8 border-b border-default p-6 shadow-sm">
+        <div className="bg-surface border-default -mx-6 mb-8 border-b p-6 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <Link
                 href="/households"
-                className="bg-surface hover:bg-surface-hover inline-flex items-center rounded-md border border-default px-3 py-2 text-sm font-medium text-secondary shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="bg-surface hover:bg-surface-hover border-default text-secondary inline-flex items-center rounded-md border px-3 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -216,8 +216,8 @@ function HouseholdDetailContent() {
                   </svg>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-primary">Household #{household.code}</h1>
-                  <p className="text-sm text-secondary">
+                  <h1 className="text-primary text-2xl font-bold">Household #{household.code}</h1>
+                  <p className="text-secondary text-sm">
                     {members.length} member{members.length !== 1 ? 's' : ''} • Created{' '}
                     {new Date(household.created_at).toLocaleDateString()}
                   </p>
@@ -253,35 +253,35 @@ function HouseholdDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-8 lg:col-span-2">
             {/* Household Information Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Household Information</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Household Information</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Household Number</dt>
-                    <dd className="mt-1 font-mono text-sm text-primary">#{household.code}</dd>
+                    <dt className="text-secondary text-sm font-medium">Household Number</dt>
+                    <dd className="text-primary mt-1 font-mono text-sm">#{household.code}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Head of Household</dt>
-                    <dd className="mt-1 text-sm text-primary">
+                    <dt className="text-secondary text-sm font-medium">Head of Household</dt>
+                    <dd className="text-primary mt-1 text-sm">
                       {household.household_head_id ? 'Head assigned' : 'No head assigned'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Address</dt>
-                    <dd className="mt-1 text-sm text-primary">
+                    <dt className="text-secondary text-sm font-medium">Address</dt>
+                    <dd className="text-primary mt-1 text-sm">
                       {household.house_number || 'No address specified'}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Total Members</dt>
-                    <dd className="mt-1 text-sm text-primary">{members.length}</dd>
+                    <dt className="text-secondary text-sm font-medium">Total Members</dt>
+                    <dd className="text-primary mt-1 text-sm">{members.length}</dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-secondary">Created Date</dt>
-                    <dd className="mt-1 text-sm text-primary">
+                    <dt className="text-secondary text-sm font-medium">Created Date</dt>
+                    <dd className="text-primary mt-1 text-sm">
                       {new Date(household.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -294,9 +294,9 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Members Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Household Members</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Household Members</h3>
               </div>
 
               {members.length === 0 ? (
@@ -308,22 +308,22 @@ function HouseholdDetailContent() {
                   <table className="divide-border-light min-w-full divide-y">
                     <thead className="bg-background-muted">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Age
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Sex
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Civil Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Contact
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-secondary">
+                        <th className="text-secondary px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -332,7 +332,7 @@ function HouseholdDetailContent() {
                       {members.map(member => (
                         <tr key={member.id} className="hover:bg-surface-hover transition-colors">
                           <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm font-medium text-primary">
+                            <div className="text-primary text-sm font-medium">
                               {formatFullName(member)}
                               {household.household_head_id === member.id && (
                                 <span className="ml-2 inline-flex items-center rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
@@ -341,16 +341,16 @@ function HouseholdDetailContent() {
                               )}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm text-primary">
+                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm">
                             {calculateAge(member.birthdate)} years old
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-primary">
+                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm capitalize">
                             {member.sex}
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-primary">
+                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm capitalize">
                             {member.civil_status.replace('_', ' ')}
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm text-primary">
+                          <td className="text-primary whitespace-nowrap px-6 py-4 text-sm">
                             <div>{member.mobile_number}</div>
                             {member.email && (
                               <div className="text-muted text-xs">{member.email}</div>
@@ -376,9 +376,9 @@ function HouseholdDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-8">
             {/* Quick Actions Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Quick Actions</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Quick Actions</h3>
               </div>
               <div className="space-y-3 px-6 py-4">
                 <Link
@@ -387,7 +387,7 @@ function HouseholdDetailContent() {
                 >
                   Generate RBI Form
                 </Link>
-                <button className="bg-surface hover:bg-surface-hover w-full rounded-md border border-default px-4 py-2 text-sm font-medium text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <button className="bg-surface hover:bg-surface-hover border-default text-secondary w-full rounded-md border px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                   Export Household Data
                 </button>
                 <Link
@@ -400,31 +400,31 @@ function HouseholdDetailContent() {
             </div>
 
             {/* Household Statistics Card */}
-            <div className="bg-surface rounded-lg border border-default shadow">
-              <div className="border-b border-default px-6 py-4">
-                <h3 className="text-lg font-medium text-primary">Statistics</h3>
+            <div className="bg-surface border-default rounded-lg border shadow">
+              <div className="border-default border-b px-6 py-4">
+                <h3 className="text-primary text-lg font-medium">Statistics</h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-secondary">Total Members</dt>
-                    <dd className="text-sm font-medium text-primary">{members.length}</dd>
+                    <dt className="text-secondary text-sm font-medium">Total Members</dt>
+                    <dd className="text-primary text-sm font-medium">{members.length}</dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-secondary">Adults (18+)</dt>
-                    <dd className="text-sm font-medium text-primary">
+                    <dt className="text-secondary text-sm font-medium">Adults (18+)</dt>
+                    <dd className="text-primary text-sm font-medium">
                       {members.filter(m => calculateAge(m.birthdate) >= 18).length}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-secondary">Minors (Under 18)</dt>
-                    <dd className="text-sm font-medium text-primary">
+                    <dt className="text-secondary text-sm font-medium">Minors (Under 18)</dt>
+                    <dd className="text-primary text-sm font-medium">
                       {members.filter(m => calculateAge(m.birthdate) < 18).length}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-secondary">Senior Citizens (60+)</dt>
-                    <dd className="text-sm font-medium text-primary">
+                    <dt className="text-secondary text-sm font-medium">Senior Citizens (60+)</dt>
+                    <dd className="text-primary text-sm font-medium">
                       {members.filter(m => calculateAge(m.birthdate) >= 60).length}
                     </dd>
                   </div>

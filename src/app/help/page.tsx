@@ -199,15 +199,15 @@ function HelpContent() {
           <h1 className="font-montserrat text-foreground mb-0.5 text-xl font-semibold">
             Help & Support
           </h1>
-          <p className="font-montserrat text-sm font-normal text-secondary">
+          <p className="font-montserrat text-secondary text-sm font-normal">
             Find answers to common questions and get help using Citizenly
           </p>
         </div>
 
         {/* Help Content */}
-        <div className="bg-surface rounded-lg border border-default p-6">
+        <div className="bg-surface border-default rounded-lg border p-6">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="font-montserrat text-lg font-semibold text-primary">
+            <h2 className="font-montserrat text-primary text-lg font-semibold">
               Frequently Asked Questions
             </h2>
             <div className="text-muted text-sm">
@@ -258,7 +258,7 @@ function HelpContent() {
                 <h3 className="font-montserrat text-foreground mb-2 font-medium">
                   No results found
                 </h3>
-                <p className="font-montserrat text-sm text-secondary">
+                <p className="font-montserrat text-secondary text-sm">
                   Try adjusting your search terms or browse by category
                 </p>
               </div>
@@ -266,8 +266,8 @@ function HelpContent() {
               Object.entries(groupedContent).map(([category, items]) => (
                 <div key={category} className="space-y-4">
                   {/* Category Header */}
-                  <div className="border-b border-default pb-2">
-                    <h3 className="font-montserrat flex items-center space-x-2 text-lg font-semibold text-primary">
+                  <div className="border-default border-b pb-2">
+                    <h3 className="font-montserrat text-primary flex items-center space-x-2 text-lg font-semibold">
                       <span className="text-primary-600">{getCategoryIcon(category)}</span>
                       <span>{category}</span>
                       <span className="text-muted text-sm font-normal">({items.length})</span>
@@ -281,11 +281,11 @@ function HelpContent() {
                       return (
                         <div
                           key={globalIndex}
-                          className="overflow-hidden rounded-lg border border-default"
+                          className="border-default overflow-hidden rounded-lg border"
                         >
                           <button
                             onClick={() => toggleAccordion(globalIndex)}
-                            className="bg-background-muted hover:bg-surface-hover w-full p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                            className="bg-background-muted hover:bg-surface-hover focus:ring-primary-500 w-full p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-inset"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex-1 pr-4">
@@ -311,8 +311,8 @@ function HelpContent() {
                             </div>
                           </button>
                           {isAccordionOpen(globalIndex) && (
-                            <div className="bg-surface border-t border-default p-4">
-                              <p className="font-montserrat text-sm leading-relaxed text-secondary">
+                            <div className="bg-surface border-default border-t p-4">
+                              <p className="font-montserrat text-secondary text-sm leading-relaxed">
                                 {item.answer}
                               </p>
                             </div>
@@ -328,11 +328,11 @@ function HelpContent() {
         </div>
 
         {/* Contact Support Card */}
-        <div className="mt-6 rounded-lg border border-primary-200 bg-primary-50 p-6">
+        <div className="border-primary-200 bg-primary-50 mt-6 rounded-lg border p-6">
           <div className="flex items-start space-x-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-100">
+            <div className="bg-primary-100 flex size-12 shrink-0 items-center justify-center rounded-full">
               <svg
-                className="size-6 text-primary-600"
+                className="text-primary-600 size-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -346,14 +346,14 @@ function HelpContent() {
               </svg>
             </div>
             <div>
-              <h3 className="font-montserrat mb-2 text-base font-semibold text-primary-900">
+              <h3 className="font-montserrat text-primary-900 mb-2 text-base font-semibold">
                 Still need help?
               </h3>
-              <p className="font-montserrat mb-4 text-sm text-primary-800">
+              <p className="font-montserrat text-primary-800 mb-4 text-sm">
                 If you can&apos;t find the answer you&apos;re looking for, our support team is here
                 to help.
               </p>
-              <button className="font-montserrat rounded bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+              <button className="font-montserrat bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded px-4 py-2 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2">
                 Contact Support
               </button>
             </div>

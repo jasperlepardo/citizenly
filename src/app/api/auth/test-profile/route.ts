@@ -32,7 +32,6 @@ interface TestResults {
   };
 }
 
-
 /**
  * Test endpoint to diagnose profile creation issues
  */

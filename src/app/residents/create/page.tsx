@@ -18,7 +18,7 @@ function CreateResidentForm() {
         <div className="mb-8 flex items-center gap-4">
           <Link
             href="/residents"
-            className="bg-surface hover:bg-surface-hover inline-flex items-center gap-2 rounded-lg border border-default px-3 py-2 text-sm/6 font-medium text-primary shadow-sm"
+            className="bg-surface hover:bg-surface-hover border-default text-primary inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm/6 font-medium shadow-sm"
           >
             <svg
               className="size-4"
@@ -32,8 +32,8 @@ function CreateResidentForm() {
             Back
           </Link>
           <div>
-            <h1 className="text-2xl/8 font-semibold text-primary">Add New Resident</h1>
-            <p className="mt-2 text-sm/6 text-secondary">
+            <h1 className="text-primary text-2xl/8 font-semibold">Add New Resident</h1>
+            <p className="text-secondary mt-2 text-sm/6">
               Complete the form to register a new resident in the system
             </p>
           </div>

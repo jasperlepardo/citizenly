@@ -342,7 +342,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {label && (
           <div
             id={labelId}
-            className="mb-1 block cursor-pointer text-sm font-medium text-primary"
+            className="text-primary mb-1 block cursor-pointer text-sm font-medium"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
@@ -399,7 +399,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         >
           {/* Left Icon - Figma: w-5 (20px width) */}
           {leftIcon && (
-            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
               {leftIcon}
             </div>
           )}
@@ -488,11 +488,11 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
 
           {/* Clear Button */}
           {clearable && selectedOption && !disabled && (
-            <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+            <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex size-full items-center justify-center text-secondary transition-colors hover:text-primary"
+                className="text-secondary hover:text-primary flex size-full items-center justify-center transition-colors"
               >
                 <svg
                   width="16"
@@ -510,7 +510,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
           )}
 
           {/* Dropdown Icon - Figma: w-5 (20px width) */}
-          <div className="flex size-5 shrink-0 items-center justify-center text-secondary">
+          <div className="text-secondary flex size-5 shrink-0 items-center justify-center">
             <svg
               className={cn('h-4 w-4 transition-transform duration-200', isOpen && 'rotate-180')}
               fill="none"
@@ -527,7 +527,7 @@ const DropdownSelect = forwardRef<HTMLDivElement, DropdownSelectProps>(
         {isOpen && (
           <div
             className={cn(
-              'bg-surface absolute z-50 mt-1 w-full rounded-md border border-default shadow-xl',
+              'bg-surface border-default absolute z-50 mt-1 w-full rounded-md border shadow-xl',
               'animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-100',
               dropdownClassName
             )}

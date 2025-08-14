@@ -132,13 +132,13 @@ export default function AddressSearch({
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="bg-surface w-full rounded-md border border-default px-4 py-2 text-primary outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          className="bg-surface border-default text-primary w-full rounded-md border px-4 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         />
 
         {/* Loading indicator only */}
         {isLoading && (
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <div className="size-4 animate-spin rounded-full border-2 border-default border-t-blue-600"></div>
+            <div className="border-default size-4 animate-spin rounded-full border-2 border-t-blue-600"></div>
           </div>
         )}
 
@@ -151,7 +151,7 @@ export default function AddressSearch({
               setIsOpen(false);
               inputRef.current?.focus();
             }}
-            className="text-muted absolute inset-y-0 right-0 flex items-center pr-3 hover:text-secondary"
+            className="text-muted hover:text-secondary absolute inset-y-0 right-0 flex items-center pr-3"
           >
             <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -167,23 +167,23 @@ export default function AddressSearch({
 
       {/* Search Results Dropdown */}
       {isOpen && results.length > 0 && (
-        <div className="bg-surface absolute z-50 mt-1 max-h-96 w-full overflow-y-auto rounded-md border border-default shadow-lg">
+        <div className="bg-surface border-default absolute z-50 mt-1 max-h-96 w-full overflow-y-auto rounded-md border shadow-lg">
           {results.map((address, index) => (
             <button
               key={`${address.barangay_code}-${index}`}
               onClick={() => handleSelect(address)}
-              className={`hover:bg-surface-hover w-full border-b border-default px-4 py-3 text-left last:border-b-0 focus:bg-blue-50 focus:outline-none dark:focus:bg-blue-900/20 ${
+              className={`hover:bg-surface-hover border-default w-full border-b px-4 py-3 text-left last:border-b-0 focus:bg-blue-50 focus:outline-none dark:focus:bg-blue-900/20 ${
                 index === selectedIndex ? 'bg-blue-50 dark:bg-blue-900/20' : ''
               }`}
             >
               <div className="space-y-1">
                 {/* Full Address */}
-                <div className="text-sm font-medium text-primary">
+                <div className="text-primary text-sm font-medium">
                   {highlightMatch(address.full_address, query)}
                 </div>
 
                 {/* Geographic Details */}
-                <div className="space-y-0.5 text-xs text-secondary">
+                <div className="text-secondary space-y-0.5 text-xs">
                   <div>
                     <span className="text-xs">📍</span>{' '}
                     {highlightMatch(address.barangay_name, query)}, {address.city_municipality_name}
@@ -209,7 +209,7 @@ export default function AddressSearch({
           ))}
 
           {/* Search Stats */}
-          <div className="text-muted bg-background-muted border-t border-default px-4 py-2 text-xs">
+          <div className="text-muted bg-background-muted border-default border-t px-4 py-2 text-xs">
             Found {results.length} result{results.length !== 1 ? 's' : ''}
             {results.length === maxResults && ` (showing first ${maxResults})`}
           </div>
@@ -218,7 +218,7 @@ export default function AddressSearch({
 
       {/* No Results */}
       {isOpen && !isLoading && query.trim().length >= 2 && results.length === 0 && (
-        <div className="bg-surface absolute z-50 mt-1 w-full rounded-md border border-default p-4 text-center text-sm text-secondary shadow-lg">
+        <div className="bg-surface border-default text-secondary absolute z-50 mt-1 w-full rounded-md border p-4 text-center text-sm shadow-lg">
           <div className="space-y-2">
             <div className="text-muted">
               <svg className="mx-auto size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

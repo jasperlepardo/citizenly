@@ -34,21 +34,21 @@ interface AdminInfoCardProps {
  */
 export default function AdminInfoCard({ resident, formatDate }: AdminInfoCardProps) {
   return (
-    <div className="bg-surface rounded-xl border border-default p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-primary">
+    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
+      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
         ⚙️ Administrative Information
       </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
-          <span className="block text-sm font-medium text-secondary">Barangay Code</span>
+          <span className="text-secondary block text-sm font-medium">Barangay Code</span>
           <span className="text-primary">{resident.barangay_code}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Status</span>
+          <span className="text-secondary block text-sm font-medium">Status</span>
           <span className="text-primary">{resident.is_active ? 'Active' : 'Inactive'}</span>
         </div>
         <div>
-          <span className="block text-sm font-medium text-secondary">Created</span>
+          <span className="text-secondary block text-sm font-medium">Created</span>
           <span className="text-primary">{formatDate(resident.created_at)}</span>
         </div>
       </div>

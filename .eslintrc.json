@@ -1,11 +1,6 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:tailwindcss/recommended",
-    "prettier"
-  ],
-  "plugins": ["tailwindcss"],
+  "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
+  "plugins": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -31,13 +26,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "jsx-a11y/role-has-required-aria-props": "warn",
     "@next/next/no-img-element": "warn",
-    "import/no-anonymous-default-export": "warn",
-    "tailwindcss/classnames-order": "off",
-    "tailwindcss/enforces-shorthand": "off",
-    "tailwindcss/no-unnecessary-arbitrary-value": "off",
-    "tailwindcss/migration-from-tailwind-2": "off",
-    "tailwindcss/no-contradicting-classname": "error",
-    "tailwindcss/no-custom-classname": "off"
+    "import/no-anonymous-default-export": "warn"
   },
   "settings": {
     "react": {

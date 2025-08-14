@@ -155,10 +155,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         </div>
 
         {/* Helper Text */}
-        {helperText && !errorMessage && <p className="mt-1 text-xs text-secondary">{helperText}</p>}
+        {helperText && !errorMessage && <p className="text-secondary mt-1 text-xs">{helperText}</p>}
 
         {/* Error Message */}
-        {errorMessage && <p className="mt-1 text-xs text-danger-600">{errorMessage}</p>}
+        {errorMessage && <p className="text-danger-600 mt-1 text-xs">{errorMessage}</p>}
       </div>
     );
   }

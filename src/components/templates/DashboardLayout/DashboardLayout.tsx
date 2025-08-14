@@ -270,13 +270,13 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside
         id="navigation"
-        className="bg-background-secondary fixed left-0 top-0 h-full w-56 border-r border-default"
+        className="bg-background-secondary border-default fixed left-0 top-0 h-full w-56 border-r"
         aria-label="Main navigation"
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-default px-4 py-3">
-            <h1 className="font-montserrat text-xl font-semibold text-primary">Citizenly</h1>
+          <div className="border-default flex items-center justify-between border-b px-4 py-3">
+            <h1 className="font-montserrat text-primary text-xl font-semibold">Citizenly</h1>
             <div className="flex gap-1">
               <div className="rounded bg-neutral-200 p-0.5">
                 <div className="size-5 rounded bg-neutral-400"></div>
@@ -297,7 +297,7 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main className="ml-56">
         {/* Top Header */}
-        <header className="bg-background border-b border-default px-6 py-2">
+        <header className="bg-background border-default border-b px-6 py-2">
           <div className="flex items-center justify-between">
             {/* Search */}
             <div className="w-[497px]">

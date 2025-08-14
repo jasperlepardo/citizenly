@@ -15,12 +15,12 @@ function ReviewSection({ title, data }: ReviewSectionProps) {
 
   return (
     <div className="space-y-3">
-      <h5 className="border-b border-gray-200 pb-1 text-sm font-medium text-primary">{title}</h5>
+      <h5 className="text-primary border-b border-gray-200 pb-1 text-sm font-medium">{title}</h5>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {validData.map(([label, value]) => (
           <div key={label} className="flex justify-between py-1">
-            <span className="text-sm font-medium text-secondary">{label}:</span>
-            <span className="text-sm text-primary">{value}</span>
+            <span className="text-secondary text-sm font-medium">{label}:</span>
+            <span className="text-primary text-sm">{value}</span>
           </div>
         ))}
       </div>
@@ -46,13 +46,13 @@ export function ReviewStep({ formData }: StepComponentProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-primary">Review & Submit</h3>
-        <p className="mt-1 text-sm/6 text-secondary">
+        <h3 className="text-primary text-base/7 font-semibold">Review & Submit</h3>
+        <p className="text-secondary mt-1 text-sm/6">
           Please review all information carefully before submitting the resident registration.
         </p>
       </div>
 
-      <div className="bg-background-muted rounded-lg border border-default p-6">
+      <div className="bg-background-muted border-default rounded-lg border p-6">
         <div className="space-y-6">
           {/* Personal Information Summary */}
           <ReviewSection

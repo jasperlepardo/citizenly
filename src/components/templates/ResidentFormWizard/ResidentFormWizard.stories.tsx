@@ -156,7 +156,7 @@ const WizardWrapper = ({
               setSubmissionResult(null);
               setSubmittedData(null);
             }}
-            className="rounded-lg bg-primary px-6 py-3 text-white transition-colors hover:bg-primary-600"
+            className="bg-primary hover:bg-primary-600 rounded-lg px-6 py-3 text-white transition-colors"
           >
             Register Another Resident
           </button>
@@ -215,7 +215,7 @@ export const Step1PersonalInformation: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Step 1: Personal Information</h1>
+        <h1 className="text-primary mb-4 text-3xl font-bold">Step 1: Personal Information</h1>
         <p className="text-secondary">
           Basic personal details and identification information for the resident.
         </p>
@@ -223,7 +223,7 @@ export const Step1PersonalInformation: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Required Information</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Required Information</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-red-200 bg-red-50 p-4">
               <h3 className="mb-2 font-semibold text-red-900">Name Fields (Required)</h3>
@@ -248,13 +248,13 @@ export const Step1PersonalInformation: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Field Features</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Field Features</h2>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-green-500"></div>
               <div>
-                <p className="text-sm font-medium text-primary">Real-time Validation</p>
-                <p className="text-xs text-secondary">
+                <p className="text-primary text-sm font-medium">Real-time Validation</p>
+                <p className="text-secondary text-xs">
                   Form validation occurs as user types and moves between fields
                 </p>
               </div>
@@ -262,8 +262,8 @@ export const Step1PersonalInformation: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-blue-500"></div>
               <div>
-                <p className="text-sm font-medium text-primary">Dropdown Options</p>
-                <p className="text-xs text-secondary">
+                <p className="text-primary text-sm font-medium">Dropdown Options</p>
+                <p className="text-secondary text-xs">
                   Civil status and citizenship use predefined dropdown selections
                 </p>
               </div>
@@ -271,8 +271,8 @@ export const Step1PersonalInformation: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-purple-500"></div>
               <div>
-                <p className="text-sm font-medium text-primary">Accessibility</p>
-                <p className="text-xs text-secondary">
+                <p className="text-primary text-sm font-medium">Accessibility</p>
+                <p className="text-secondary text-xs">
                   All fields include proper labels, ARIA attributes, and keyboard navigation
                 </p>
               </div>
@@ -311,7 +311,7 @@ export const Step2EducationEmployment: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Step 2: Education & Employment</h1>
+        <h1 className="text-primary mb-4 text-3xl font-bold">Step 2: Education & Employment</h1>
         <p className="text-secondary">
           Academic achievements and professional occupation information.
         </p>
@@ -319,7 +319,7 @@ export const Step2EducationEmployment: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Education Details</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Education Details</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-green-200 bg-green-50 p-4">
               <h3 className="mb-2 font-semibold text-green-900">Education Level (Required)</h3>
@@ -345,7 +345,7 @@ export const Step2EducationEmployment: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Employment Information</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Employment Information</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
               <h3 className="mb-2 font-semibold text-purple-900">PSOC Integration</h3>
@@ -412,7 +412,7 @@ export const Step3ContactPhysical: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Step 3: Contact & Physical Details</h1>
+        <h1 className="text-primary mb-4 text-3xl font-bold">Step 3: Contact & Physical Details</h1>
         <p className="text-secondary">
           Communication information, physical characteristics, and family details.
         </p>
@@ -420,7 +420,7 @@ export const Step3ContactPhysical: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Contact Information</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Contact Information</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-red-200 bg-red-50 p-4">
               <h3 className="mb-2 font-semibold text-red-900">Mobile Number (Required)</h3>
@@ -444,7 +444,7 @@ export const Step3ContactPhysical: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Physical Characteristics</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Physical Characteristics</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-green-200 bg-green-50 p-4">
               <h3 className="mb-2 font-semibold text-green-900">Measurements</h3>
@@ -525,7 +525,7 @@ export const Step4AdditionalInfo: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Step 4: Additional Information</h1>
+        <h1 className="text-primary mb-4 text-3xl font-bold">Step 4: Additional Information</h1>
         <p className="text-secondary">
           Migration status, family information, and sectoral classification.
         </p>
@@ -533,7 +533,7 @@ export const Step4AdditionalInfo: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Migration Information</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Migration Information</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
               <h3 className="mb-2 font-semibold text-blue-900">Migration Status</h3>
@@ -560,7 +560,7 @@ export const Step4AdditionalInfo: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-primary">Sectoral Classification</h2>
+          <h2 className="text-primary mb-4 text-xl font-semibold">Sectoral Classification</h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
               <h3 className="mb-2 font-semibold text-purple-900">Auto-Calculated Sectors</h3>
@@ -618,19 +618,19 @@ export const Step5Review: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Step 5: Review & Submit</h1>
+        <h1 className="text-primary mb-4 text-3xl font-bold">Step 5: Review & Submit</h1>
         <p className="text-secondary">
           Final review of all information before creating the resident profile.
         </p>
       </div>
 
       <div className="space-y-8">
-        <div className="bg-surface rounded-xl border border-default p-6">
-          <h2 className="mb-4 text-lg font-semibold text-primary">Review Features</h2>
+        <div className="bg-surface border-default rounded-xl border p-6">
+          <h2 className="text-primary mb-4 text-lg font-semibold">Review Features</h2>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h3 className="mb-3 font-medium text-primary">Data Summary</h3>
-              <ul className="space-y-2 text-sm text-secondary">
+              <h3 className="text-primary mb-3 font-medium">Data Summary</h3>
+              <ul className="text-secondary space-y-2 text-sm">
                 <li>• Personal information overview</li>
                 <li>• Education and employment summary</li>
                 <li>• Contact details verification</li>
@@ -638,8 +638,8 @@ export const Step5Review: Story = {
               </ul>
             </div>
             <div>
-              <h3 className="mb-3 font-medium text-primary">Validation Checks</h3>
-              <ul className="space-y-2 text-sm text-secondary">
+              <h3 className="text-primary mb-3 font-medium">Validation Checks</h3>
+              <ul className="text-secondary space-y-2 text-sm">
                 <li>• Required field completeness</li>
                 <li>• Data format validation</li>
                 <li>• Cross-field consistency</li>
@@ -735,8 +735,8 @@ export const SecurityFeatures: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8 text-center">
-        <h1 className="mb-4 text-3xl font-bold text-primary">Security Features</h1>
-        <p className="mx-auto max-w-2xl text-secondary">
+        <h1 className="text-primary mb-4 text-3xl font-bold">Security Features</h1>
+        <p className="text-secondary mx-auto max-w-2xl">
           The Resident Form Wizard includes comprehensive security measures to protect sensitive
           personal information and ensure data integrity.
         </p>
