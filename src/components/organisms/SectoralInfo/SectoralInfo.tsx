@@ -180,10 +180,10 @@ export default function SectoralInfo({
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-900">
+        <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
           <span className="text-base">👥</span> Sectoral Group Classification
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Some flags are automatically calculated based on age, employment, and education data.
         </p>
       </div>
@@ -305,8 +305,8 @@ export default function SectoralInfo({
 
       {/* Summary */}
       <div className="rounded-lg bg-blue-50 p-4">
-        <h4 className="mb-2 text-sm font-medium text-blue-900">Classification Summary</h4>
-        <div className="text-xs text-blue-700">
+        <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Classification Summary</h4>
+        <div className="text-xs text-gray-700 dark:text-gray-300">
           <span className="font-medium">Active Classifications:</span>{' '}
           {(() => {
             const allClassifications = { ..._autoCalculated, ...value };

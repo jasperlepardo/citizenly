@@ -6,10 +6,14 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { hashPhilSysNumber, extractPhilSysLast4, validatePhilSysFormat } from '@/lib/crypto';
+import {
+  hashPhilSysNumber,
+  extractPhilSysLast4,
+  validatePhilSysFormat,
+  logSecurityOperation,
+} from '@/lib/crypto';
 import { validateResidentData } from '@/lib/validation';
 import { logger, logError, dbLogger } from '@/lib/secure-logger';
-import { logSecurityOperation } from '@/lib/crypto';
 
 // Types
 export interface ResidentFormData {

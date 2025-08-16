@@ -94,7 +94,7 @@ const FormValidationComponent = () => {
   return (
     <div className="w-full max-w-md space-y-4">
       <div>
-        <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Email Address
         </label>
         <input
@@ -106,7 +106,7 @@ const FormValidationComponent = () => {
             validateEmail(e.target.value);
           }}
           onBlur={e => validateEmail(e.target.value)}
-          className={`w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 ${
+          className={`w-full rounded-md border px-3 py-2 focus:outline-hidden focus:ring-2 ${
             error
               ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
@@ -162,7 +162,7 @@ const StatusUpdatesComponent = () => {
         <button
           onClick={() => simulateAction('Saving')}
           disabled={isLoading}
-          className="rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
+          className="rounded bg-blue-500 px-4 py-2 text-white dark:text-black disabled:opacity-50"
         >
           {isLoading ? 'Saving...' : 'Save Document'}
         </button>
@@ -170,7 +170,7 @@ const StatusUpdatesComponent = () => {
         <button
           onClick={() => simulateAction('Uploading')}
           disabled={isLoading}
-          className="rounded bg-green-500 px-4 py-2 text-white disabled:opacity-50"
+          className="rounded bg-green-500 px-4 py-2 text-white dark:text-black disabled:opacity-50"
         >
           {isLoading ? 'Uploading...' : 'Upload File'}
         </button>
@@ -178,7 +178,7 @@ const StatusUpdatesComponent = () => {
         <button
           onClick={() => simulateAction('Deleting')}
           disabled={isLoading}
-          className="rounded bg-red-500 px-4 py-2 text-white disabled:opacity-50"
+          className="rounded bg-red-500 px-4 py-2 text-white dark:text-black disabled:opacity-50"
         >
           {isLoading ? 'Deleting...' : 'Delete Item'}
         </button>
@@ -223,21 +223,21 @@ const AlertMessagesComponent = () => {
       <div className="flex gap-2">
         <button
           onClick={() => addAlert('Operation completed successfully!', 'success')}
-          className="rounded bg-green-500 px-4 py-2 text-white"
+          className="rounded bg-green-500 px-4 py-2 text-white dark:text-black"
         >
           Success Alert
         </button>
 
         <button
           onClick={() => addAlert('An error occurred. Please try again.', 'error')}
-          className="rounded bg-red-500 px-4 py-2 text-white"
+          className="rounded bg-red-500 px-4 py-2 text-white dark:text-black"
         >
           Error Alert
         </button>
 
         <button
           onClick={() => addAlert('Please review your information before proceeding.', 'warning')}
-          className="rounded bg-orange-500 px-4 py-2 text-white"
+          className="rounded bg-orange-500 px-4 py-2 text-white dark:text-black dark:text-white"
         >
           Warning Alert
         </button>
@@ -319,7 +319,7 @@ const SearchResultsComponent = () => {
   return (
     <div className="w-full max-w-md space-y-4">
       <div>
-        <label htmlFor="search" className="mb-2 block text-sm font-medium text-gray-700">
+        <label htmlFor="search" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Search Fruits
         </label>
         <input
@@ -330,7 +330,7 @@ const SearchResultsComponent = () => {
             setQuery(e.target.value);
             performSearch(e.target.value);
           }}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
           placeholder="Type to search..."
         />
       </div>
@@ -338,7 +338,7 @@ const SearchResultsComponent = () => {
       <LiveRegion message={resultMessage} type="polite" visible={false} clearAfter={0} />
 
       {resultMessage && !isSearching && (
-        <div className="text-sm text-gray-600">{resultMessage}</div>
+        <div className="text-sm text-gray-600 dark:text-gray-400">{resultMessage}</div>
       )}
 
       {results.length > 0 && (
@@ -378,21 +378,21 @@ const MultipleRegionsComponent = () => {
       <div className="flex gap-2">
         <button
           onClick={() => setGeneralMessage('General information updated')}
-          className="rounded bg-blue-500 px-4 py-2 text-white"
+          className="rounded bg-blue-500 px-4 py-2 text-white dark:text-black"
         >
           General Update
         </button>
 
         <button
           onClick={() => setErrorMessage('Critical error occurred!')}
-          className="rounded bg-red-500 px-4 py-2 text-white"
+          className="rounded bg-red-500 px-4 py-2 text-white dark:text-black"
         >
           Trigger Error
         </button>
 
         <button
           onClick={() => setSuccessMessage('Task completed successfully')}
-          className="rounded bg-green-500 px-4 py-2 text-white"
+          className="rounded bg-green-500 px-4 py-2 text-white dark:text-black"
         >
           Success Action
         </button>

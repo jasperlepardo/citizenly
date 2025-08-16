@@ -34,7 +34,7 @@ export const Default: Story = {
     <div className="min-h-screen">
       <SkipNavigation />
 
-      <header className="bg-blue-600 p-4 text-white">
+      <header className="bg-blue-600 p-4 text-white dark:text-black">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">My Website</h1>
           <nav className="flex gap-4">
@@ -57,7 +57,7 @@ export const Default: Story = {
           This is the main content area. When users press Tab and focus the skip link, they can
           press Enter to jump directly here, bypassing the header navigation.
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           <strong>To test:</strong> Press Tab to focus the skip link (it will appear), then press
           Enter to jump to this content.
         </p>
@@ -79,7 +79,7 @@ export const CustomSkipTarget: Story = {
     <div className="min-h-screen">
       <SkipNavigation skipTo="#custom-target">Skip to article content</SkipNavigation>
 
-      <header className="bg-gray-800 p-4 text-white">
+      <header className="bg-gray-800 p-4 text-white dark:text-black">
         <h1 className="text-xl font-bold">News Website</h1>
         <nav className="mt-4 flex gap-6">
           <a href="#" className="hover:underline">
@@ -101,17 +101,17 @@ export const CustomSkipTarget: Story = {
         <h2 className="mb-2 font-bold">Sidebar Content</h2>
         <ul className="space-y-1 text-sm">
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
               Recent Articles
             </a>
           </li>
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
               Popular Posts
             </a>
           </li>
           <li>
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
               Categories
             </a>
           </li>
@@ -124,7 +124,7 @@ export const CustomSkipTarget: Story = {
           This article content can be accessed directly using the custom skip link. The skip link
           targets the #custom-target element.
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           <strong>To test:</strong> Press Tab to see the "Skip to article content" link, then press
           Enter to jump here.
         </p>
@@ -145,36 +145,36 @@ export const MultipleSkipLinks: Story = {
         ]}
       />
 
-      <header className="bg-purple-600 p-4 text-white">
+      <header className="bg-purple-600 p-4 text-white dark:text-black">
         <h1 className="text-xl font-bold">Complex Layout Website</h1>
       </header>
 
       <div className="flex min-h-screen">
-        <nav id="navigation" className="w-64 bg-gray-800 p-4 text-white">
+        <nav id="navigation" className="w-64 bg-gray-800 p-4 text-white dark:text-black">
           <h2 className="mb-4 font-bold">Navigation</h2>
           <ul className="space-y-2">
             <li>
-              <a href="#" className="block hover:text-gray-300">
+              <a href="#" className="block hover:text-gray-300 dark:text-gray-700">
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="block hover:text-gray-300">
+              <a href="#" className="block hover:text-gray-300 dark:text-gray-700">
                 Products
               </a>
             </li>
             <li>
-              <a href="#" className="block hover:text-gray-300">
+              <a href="#" className="block hover:text-gray-300 dark:text-gray-700">
                 Services
               </a>
             </li>
             <li>
-              <a href="#" className="block hover:text-gray-300">
+              <a href="#" className="block hover:text-gray-300 dark:text-gray-700">
                 About
               </a>
             </li>
             <li>
-              <a href="#" className="block hover:text-gray-300">
+              <a href="#" className="block hover:text-gray-300 dark:text-gray-700">
                 Contact
               </a>
             </li>
@@ -188,21 +188,21 @@ export const MultipleSkipLinks: Story = {
               This layout has multiple skip links allowing users to jump to different sections of
               the page quickly.
             </p>
-            <p className="mb-8 text-sm text-gray-600">
+            <p className="mb-8 text-sm text-gray-600 dark:text-gray-400">
               <strong>To test:</strong> Press Tab to see all available skip links appear.
             </p>
           </main>
 
           <aside id="sidebar" className="border-t bg-blue-50 p-4">
             <h3 className="mb-2 font-bold">Sidebar</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Additional information and links would be displayed here.
             </p>
           </aside>
         </div>
       </div>
 
-      <footer id="footer" className="bg-gray-800 p-4 text-white">
+      <footer id="footer" className="bg-gray-800 p-4 text-white dark:text-black">
         <p className="text-center">&copy; 2024 My Website. All rights reserved.</p>
       </footer>
     </div>
@@ -222,7 +222,7 @@ export const AccessibilityDemo: Story = {
     <div className="min-h-screen">
       <SkipNavigation />
 
-      <div className="m-4 rounded border border-yellow-200 bg-yellow-50 p-4">
+      <div className="m-4 rounded-sm border border-yellow-200 bg-yellow-50 p-4">
         <h2 className="mb-2 text-lg font-semibold text-yellow-800">
           Accessibility Testing Instructions
         </h2>
@@ -253,7 +253,7 @@ export const AccessibilityDemo: Story = {
         </div>
       </div>
 
-      <header className="bg-indigo-600 p-6 text-white">
+      <header className="bg-indigo-600 p-6 text-white dark:text-black">
         <div className="mx-auto max-w-4xl">
           <h1 className="mb-4 text-2xl font-bold">Accessibility-First Website</h1>
           <nav>
@@ -292,7 +292,7 @@ export const AccessibilityDemo: Story = {
         <h2 className="mb-6 text-3xl font-bold">Main Content Area</h2>
 
         <div className="prose max-w-none">
-          <p className="mb-6 text-lg text-gray-600">
+          <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
             You've successfully used the skip link to bypass the navigation and jump directly to the
             main content. This is essential for users who navigate with keyboards or screen readers.
           </p>
@@ -338,40 +338,40 @@ export const StylingSamples: Story = {
     <div className="space-y-8 p-8">
       <div>
         <h3 className="mb-4 text-lg font-semibold">Default Styling</h3>
-        <div className="relative rounded border-2 border-dashed border-gray-300 p-4">
+        <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <SkipNavigation />
-          <p className="text-sm text-gray-600">Tab here to see the default skip link styling</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Tab here to see the default skip link styling</p>
         </div>
       </div>
 
       <div>
         <h3 className="mb-4 text-lg font-semibold">Custom Styling</h3>
-        <div className="relative rounded border-2 border-dashed border-gray-300 p-4">
+        <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <a
             href="#main-content"
-            className="sr-only transition-all duration-200 focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:scale-105 focus:rounded-lg focus:bg-green-600 focus:px-6 focus:py-3 focus:font-semibold focus:text-white focus:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-600 focus:ring-opacity-50"
+            className="sr-only transition-all duration-200 focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:scale-105 focus:rounded-lg focus:bg-green-600 focus:px-6 focus:py-3 focus:font-semibold focus:text-white dark:text-black focus:shadow-xl focus:outline-hidden focus:ring-4 focus:ring-green-600 focus:ring-opacity-50"
           >
             🚀 Jump to Main Content
           </a>
-          <p className="text-sm text-gray-600">Custom styled skip link with emoji and animations</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Custom styled skip link with emoji and animations</p>
         </div>
       </div>
 
       <div>
         <h3 className="mb-4 text-lg font-semibold">Brand Colors</h3>
-        <div className="relative rounded border-2 border-dashed border-gray-300 p-4">
+        <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white dark:text-black focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
           >
             Skip to Main Content
           </a>
-          <p className="text-sm text-gray-600">Skip link using brand purple colors</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Skip link using brand purple colors</p>
         </div>
       </div>
 
       <div id="main-content" className="rounded bg-gray-50 p-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           This is the main content area where skip links would navigate to.
         </p>
       </div>

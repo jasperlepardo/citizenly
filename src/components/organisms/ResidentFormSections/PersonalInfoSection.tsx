@@ -4,13 +4,14 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { InputField, SelectField, FormSection } from '@/components/molecules';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
   CITIZENSHIP_OPTIONS,
+  EDUCATION_LEVEL_OPTIONS,
+  EMPLOYMENT_STATUS_OPTIONS,
 } from '@/lib/constants/resident-enums';
 
 interface PersonalInfoSectionProps {
@@ -47,141 +48,227 @@ export default function PersonalInfoSection({
   disabled = false,
 }: PersonalInfoSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    updateField(name as keyof ResidentEditFormData, value);
+    const { name, value, type } = e.target;
+
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      updateField(name as keyof ResidentEditFormData, checked as any);
+    } else if (type === 'number') {
+      updateField(name as keyof ResidentEditFormData, value ? Number(value) : (undefined as any));
+    } else {
+      updateField(name as keyof ResidentEditFormData, value);
+    }
+  };
+
+  const handleSelectChange = (fieldName: keyof ResidentEditFormData) => (option: any) => {
+    updateField(fieldName, option?.value || '');
   };
 
   return (
-    <FormSection title="Personal Information" description="Basic personal details">
+    <FormSection title="Section 1: Personal Information" description="Basic personal details, birth information, and educational/employment background">
+      {/* PhilSys Card Number */}
+      <div className="mb-6">
+        <InputField
+          label="PhilSys Card Number"
+          errorMessage={errors.philsys_card_number}
+          inputProps={{
+            name: "philsys_card_number",
+            value: formData.philsys_card_number || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.philsys_card_number,
+            placeholder: "Enter PhilSys Card Number"
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="First Name" required errorMessage={errors.first_name}>
-          <FormInput
-            name="first_name"
-            value={formData.first_name || ''}
+        <InputField
+          label="First Name"
+          required
+          errorMessage={errors.first_name}
+          inputProps={{
+            name: "first_name",
+            value: formData.first_name || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.first_name,
+            required: true,
+            placeholder: "Enter first name"
+          }}
+        />
+
+        <InputField
+          label="Middle Name"
+          errorMessage={errors.middle_name}
+          inputProps={{
+            name: "middle_name",
+            value: formData.middle_name || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.middle_name,
+            placeholder: "Enter middle name (optional)"
+          }}
+        />
+
+        <InputField
+          label="Last Name"
+          required
+          errorMessage={errors.last_name}
+          inputProps={{
+            name: "last_name",
+            value: formData.last_name || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.last_name,
+            required: true,
+            placeholder: "Enter last name"
+          }}
+        />
+
+        <InputField
+          label="Extension Name"
+          errorMessage={errors.extension_name}
+          inputProps={{
+            name: "extension_name",
+            value: formData.extension_name || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.extension_name,
+            placeholder: "Jr., Sr., III, etc."
+          }}
+        />
+
+        <InputField
+          label="Date of Birth"
+          required
+          errorMessage={errors.birthdate}
+          inputProps={{
+            type: "date",
+            name: "birthdate",
+            value: formData.birthdate || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.birthdate,
+            required: true
+          }}
+        />
+
+        <SelectField
+          label="Sex"
+          required
+          errorMessage={errors.sex}
+          selectProps={{
+            placeholder: "Select sex...",
+            options: SEX_OPTIONS,
+            value: formData.sex || '',
+            disabled: disabled,
+            error: errors.sex,
+            onSelect: handleSelectChange('sex')
+          }}
+        />
+
+        <SelectField
+          label="Civil Status"
+          required
+          errorMessage={errors.civil_status}
+          selectProps={{
+            placeholder: "Select civil status...",
+            options: CIVIL_STATUS_OPTIONS,
+            value: formData.civil_status || '',
+            disabled: disabled,
+            error: errors.civil_status,
+            onSelect: handleSelectChange('civil_status')
+          }}
+        />
+
+        <SelectField
+          label="Citizenship"
+          errorMessage={errors.citizenship}
+          selectProps={{
+            placeholder: "Select citizenship...",
+            options: CITIZENSHIP_OPTIONS,
+            value: formData.citizenship || '',
+            disabled: disabled,
+            error: errors.citizenship,
+            onSelect: handleSelectChange('citizenship')
+          }}
+        />
+
+        {/* Education & Employment Fields */}
+        <SelectField
+          label="Highest Educational Attainment"
+          errorMessage={errors.education_attainment}
+          selectProps={{
+            placeholder: "Select education level...",
+            options: EDUCATION_LEVEL_OPTIONS,
+            value: formData.education_attainment || '',
+            disabled: disabled,
+            error: errors.education_attainment,
+            onSelect: handleSelectChange('education_attainment')
+          }}
+        />
+
+        <SelectField
+          label="Employment Status"
+          errorMessage={errors.employment_status}
+          selectProps={{
+            placeholder: "Select employment status...",
+            options: EMPLOYMENT_STATUS_OPTIONS,
+            value: formData.employment_status || '',
+            disabled: disabled,
+            error: errors.employment_status,
+            onSelect: handleSelectChange('employment_status')
+          }}
+        />
+
+        <InputField
+          label="Occupation Name"
+          errorMessage={errors.occupation_title}
+          inputProps={{
+            name: "occupation_title",
+            value: formData.occupation_title || '',
+            onChange: handleInputChange,
+            disabled: disabled,
+            error: errors.occupation_title,
+            placeholder: "e.g., Teacher, Engineer, etc."
+          }}
+        />
+      </div>
+
+      {/* Graduate Status */}
+      <div className="mt-4">
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="is_graduate"
+            name="is_graduate"
+            checked={formData.is_graduate || false}
             onChange={handleInputChange}
             disabled={disabled}
-            error={errors.first_name}
-            required
-            placeholder="Enter first name"
+            className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
-        </FormField>
-
-        <FormField label="Middle Name" errorMessage={errors.middle_name}>
-          <FormInput
-            name="middle_name"
-            value={formData.middle_name || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            error={errors.middle_name}
-            placeholder="Enter middle name (optional)"
-          />
-        </FormField>
-
-        <FormField label="Last Name" required errorMessage={errors.last_name}>
-          <FormInput
-            name="last_name"
-            value={formData.last_name || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            error={errors.last_name}
-            required
-            placeholder="Enter last name"
-          />
-        </FormField>
-
-        <FormField label="Extension Name" errorMessage={errors.extension_name}>
-          <FormInput
-            name="extension_name"
-            value={formData.extension_name || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            error={errors.extension_name}
-            placeholder="Jr., Sr., III, etc."
-          />
-        </FormField>
-
-        <FormField label="Date of Birth" required errorMessage={errors.birthdate}>
-          <FormInput
-            type="date"
-            name="birthdate"
-            value={formData.birthdate || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            error={errors.birthdate}
-            required
-          />
-        </FormField>
-
-        <FormField label="Sex" required errorMessage={errors.sex}>
-          <select
-            name="sex"
-            value={formData.sex || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            required
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-          >
-            <option value="">Select Sex</option>
-            {SEX_OPTIONS.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </FormField>
-
-        <FormField label="Civil Status" required errorMessage={errors.civil_status}>
-          <select
-            name="civil_status"
-            value={formData.civil_status || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            required
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-          >
-            <option value="">Select Civil Status</option>
-            {CIVIL_STATUS_OPTIONS.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </FormField>
-
-        <FormField label="Citizenship" errorMessage={errors.citizenship}>
-          <select
-            name="citizenship"
-            value={formData.citizenship || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-          >
-            <option value="">Select Citizenship</option>
-            {CITIZENSHIP_OPTIONS.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </FormField>
+          <label htmlFor="is_graduate" className="text-gray-600 dark:text-gray-400">
+            Graduate (Y/N)
+          </label>
+        </div>
       </div>
 
       {/* Conditional field for other civil status */}
       {(formData.civil_status as string) === 'others' && (
         <div className="mt-4">
-          <FormField
+          <InputField
             label="Please Specify Civil Status"
             errorMessage={errors.civil_status_others_specify}
-          >
-            <FormInput
-              name="civil_status_others_specify"
-              value={formData.civil_status_others_specify || ''}
-              onChange={handleInputChange}
-              disabled={disabled}
-              error={errors.civil_status_others_specify}
-              placeholder="Please specify"
-            />
-          </FormField>
+            inputProps={{
+              name: "civil_status_others_specify",
+              value: formData.civil_status_others_specify || '',
+              onChange: handleInputChange,
+              disabled: disabled,
+              error: errors.civil_status_others_specify,
+              placeholder: "Please specify"
+            }}
+          />
         </div>
       )}
     </FormSection>

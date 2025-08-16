@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 /**
  * Base form field props that all form components should implement
  */
-export interface BaseFormFieldProps {
+export interface BaseFieldSetProps {
   /** Field label text */
   label?: string;
 
@@ -34,7 +34,7 @@ export interface BaseFormFieldProps {
 /**
  * Props for form fields with icon support
  */
-export interface FormFieldWithIconsProps extends BaseFormFieldProps {
+export interface FieldSetWithIconsProps extends BaseFieldSetProps {
   /** Icon displayed on the left side */
   leftIcon?: ReactNode;
 
@@ -51,7 +51,7 @@ export interface FormFieldWithIconsProps extends BaseFormFieldProps {
 /**
  * Props for clearable form fields
  */
-export interface ClearableFormFieldProps extends FormFieldWithIconsProps {
+export interface ClearableFieldSetProps extends FieldSetWithIconsProps {
   /** Whether the field can be cleared */
   clearable?: boolean;
 
@@ -72,7 +72,7 @@ export type FieldSize = 'sm' | 'md' | 'lg';
 /**
  * Props for form fields with validation states
  */
-export interface ValidatedFormFieldProps extends ClearableFormFieldProps {
+export interface ValidatedFieldSetProps extends ClearableFieldSetProps {
   /** Visual state of the field */
   state?: ValidationState;
 
@@ -83,7 +83,7 @@ export interface ValidatedFormFieldProps extends ClearableFormFieldProps {
 /**
  * Props for form fields with loading states
  */
-export interface LoadableFormFieldProps extends ValidatedFormFieldProps {
+export interface LoadableFieldSetProps extends ValidatedFieldSetProps {
   /** Whether the field is in loading state */
   loading?: boolean;
 }
@@ -115,7 +115,7 @@ export interface GenericSelectOption<T = string> {
 /**
  * Props for select field components
  */
-export interface SelectFieldBaseProps<T = string> extends LoadableFormFieldProps {
+export interface SelectFieldBaseProps<T = string> extends LoadableFieldSetProps {
   /** Available options */
   options: GenericSelectOption<T>[];
 
@@ -169,7 +169,7 @@ export type FieldValidator<T> = (value: T) => string | undefined;
 /**
  * Props for form fields with built-in validation
  */
-export interface ValidatableFormFieldProps<T> extends LoadableFormFieldProps {
+export interface ValidatableFieldSetProps<T> extends LoadableFieldSetProps {
   /** Field value */
   value?: T;
 

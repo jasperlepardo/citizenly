@@ -226,12 +226,12 @@ export const FigmaDesignSystem: Story = {
     <div className="space-y-6 p-4">
       <div className="space-y-3">
         <h2 className="text-xl font-bold">JSPR Design System - Button Component</h2>
-        <p className="text-gray-600">Complete button variants matching Figma specifications</p>
+        <p className="text-gray-600 dark:text-gray-400">Complete button variants matching Figma specifications</p>
       </div>
 
       {/* Primary Color Family */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-blue-700">Primary Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Primary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
             <Button variant="primary" size="regular">
@@ -270,7 +270,7 @@ export const FigmaDesignSystem: Story = {
 
       {/* Secondary Color Family */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-purple-700">Secondary Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Secondary Variants</h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
             <Button variant="secondary" size="regular">
@@ -426,7 +426,7 @@ export const FigmaDesignSystem: Story = {
 
       {/* Neutral & Ghost */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-700">Neutral & Ghost Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Neutral & Ghost Variants</h3>
         <div className="grid grid-cols-5 gap-3">
           <div className="space-y-2">
             <Button variant="neutral" size="regular">
@@ -497,7 +497,7 @@ export const FigmaDesignSystem: Story = {
       </div>
 
       <div className="mt-6 rounded-lg bg-gray-50 p-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           <strong>Design System Notes:</strong> All variants match the Figma design specifications
           including exact colors, spacing (p=8 for regular), Montserrat font, hover states, disabled
           states, and border radius. The &quot;regular&quot; size follows the Figma button component

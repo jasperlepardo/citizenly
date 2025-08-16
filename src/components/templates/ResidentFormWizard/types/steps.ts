@@ -1,7 +1,7 @@
 import { ResidentFormData, ValidationErrors } from './index';
 
 // Step-specific data interfaces
-export interface BasicInfoStepData {
+export interface PersonalInformationStepData {
   firstName: string;
   middleName: string;
   lastName: string;
@@ -31,14 +31,19 @@ export interface ContactAddressStepData {
   zipCode: string;
 }
 
-export interface EducationEmploymentStepData {
-  educationAttainment: string;
-  isGraduate: boolean;
-  employmentStatus: string;
-  psocCode: string;
-  psocLevel: string | number | null;
-  occupationTitle: string;
-  workplace: string;
+export interface SectoralInfoStepData {
+  isLaborForce: boolean;
+  isLaborForceEmployed: boolean;
+  isUnemployed: boolean;
+  isOverseasFilipino: boolean;
+  isPersonWithDisability: boolean;
+  isOutOfSchoolChildren: boolean;
+  isOutOfSchoolYouth: boolean;
+  isSeniorCitizen: boolean;
+  isRegisteredSeniorCitizen: boolean;
+  isSoloParent: boolean;
+  isIndigenousPeople: boolean;
+  isMigrant: boolean;
 }
 
 export interface AdditionalDetailsStepData {

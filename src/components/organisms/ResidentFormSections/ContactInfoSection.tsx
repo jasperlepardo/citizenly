@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 
 interface ContactInfoSectionProps {
@@ -47,14 +47,26 @@ export default function ContactInfoSection({
   };
 
   return (
-    <FormSection title="Contact Information" description="Communication and identification details">
+    <FormSection title="Section 2: Contact Details" description="Contact information and household details">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField
+        <FieldSet label="Email Address" errorMessage={errors.email}>
+          <Input
+            type="email"
+            name="email"
+            value={formData.email || ''}
+            onChange={handleInputChange}
+            disabled={disabled}
+            error={errors.email}
+            placeholder="example@email.com"
+          />
+        </FieldSet>
+
+        <FieldSet
           label="Mobile Number"
           errorMessage={errors.mobile_number}
           helperText="Format: 09XX XXX XXXX"
         >
-          <FormInput
+          <Input
             type="tel"
             name="mobile_number"
             value={formData.mobile_number || ''}
@@ -64,22 +76,10 @@ export default function ContactInfoSection({
             placeholder="09XX XXX XXXX"
             maxLength={11}
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField label="Email Address" errorMessage={errors.email}>
-          <FormInput
-            type="email"
-            name="email"
-            value={formData.email || ''}
-            onChange={handleInputChange}
-            disabled={disabled}
-            error={errors.email}
-            placeholder="example@email.com"
-          />
-        </FormField>
-
-        <FormField label="Telephone Number" errorMessage={errors.telephone_number}>
-          <FormInput
+        <FieldSet label="Telephone Number" errorMessage={errors.telephone_number}>
+          <Input
             type="tel"
             name="telephone_number"
             value={formData.telephone_number || ''}
@@ -88,23 +88,18 @@ export default function ContactInfoSection({
             error={errors.telephone_number}
             placeholder="(02) 123-4567"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
-          label="PhilSys Card Number"
-          errorMessage={errors.philsys_card_number}
-          helperText="Format: XXXX-XXXX-XXXX-XXXX"
-        >
-          <FormInput
-            name="philsys_card_number"
-            value={formData.philsys_card_number || ''}
+        <FieldSet label="Household Name" errorMessage={errors.household_code}>
+          <Input
+            name="household_code"
+            value={formData.household_code || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            error={errors.philsys_card_number}
-            placeholder="XXXX-XXXX-XXXX-XXXX"
-            maxLength={19}
+            error={errors.household_code}
+            placeholder="Enter household name/code"
           />
-        </FormField>
+        </FieldSet>
       </div>
     </FormSection>
   );

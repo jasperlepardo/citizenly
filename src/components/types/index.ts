@@ -5,14 +5,14 @@
 
 // Form field types
 export type {
-  BaseFormFieldProps,
-  FormFieldWithIconsProps,
-  ClearableFormFieldProps,
-  ValidatedFormFieldProps,
-  LoadableFormFieldProps,
+  BaseFieldSetProps,
+  FieldSetWithIconsProps,
+  ClearableFieldSetProps,
+  ValidatedFieldSetProps,
+  LoadableFieldSetProps,
   SelectFieldBaseProps,
   FormSectionProps,
-  ValidatableFormFieldProps,
+  ValidatableFieldSetProps,
   GenericSelectOption,
   ValidationState,
   FieldSize,

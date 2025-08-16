@@ -4,7 +4,7 @@ import LoginForm from './LoginForm';
 
 // Mock the AuthContext
 const createMockAuthContext = (overrides = {}) => ({
-  signIn: jest.fn(),
+  signIn: () => Promise.resolve(),
   loading: false,
   user: null,
   userProfile: null,
@@ -22,10 +22,8 @@ const MockAuthProvider = ({
 }) => {
   const mockUseAuth = () => authValue;
 
-  // Replace useAuth hook for this story
-  jest.doMock('@/contexts/AuthContext', () => ({
-    useAuth: mockUseAuth,
-  }));
+  // Note: AuthContext mocking would be handled by Storybook
+  console.log('AuthContext mock would be configured here');
 
   return <>{children}</>;
 };
@@ -135,7 +133,7 @@ export const InvalidCredentials: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: jest.fn().mockResolvedValue({
+        signIn: () => Promise.resolve({
           error: { message: 'Invalid login credentials' },
         }),
       });
@@ -156,7 +154,7 @@ export const EmailNotConfirmed: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: jest.fn().mockResolvedValue({
+        signIn: () => Promise.resolve({
           error: { message: 'Email not confirmed' },
         }),
       });
@@ -177,7 +175,7 @@ export const NetworkError: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: jest.fn().mockResolvedValue({
+        signIn: () => Promise.resolve({
           error: { message: 'Network request failed' },
         }),
       });
@@ -198,7 +196,7 @@ export const SuccessfulLogin: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: jest.fn().mockResolvedValue({ error: null }),
+        signIn: () => Promise.resolve({ error: null }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>

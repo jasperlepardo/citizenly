@@ -266,6 +266,17 @@ export const EducationEmploymentSchema = ResidentFormSchema.pick({
   occupation_title: true,
 });
 
+export const SectoralInfoSchema = ResidentFormSchema.pick({
+  education_attainment: true,
+  is_graduate: true,
+  employment_status: true,
+  employment_code: true,
+  employment_name: true,
+  psoc_code: true,
+  psoc_level: true,
+  occupation_title: true,
+});
+
 export const PhysicalInfoSchema = ResidentFormSchema.pick({
   blood_type: true,
   height: true,

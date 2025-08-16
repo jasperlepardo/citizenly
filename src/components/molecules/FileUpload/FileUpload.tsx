@@ -8,7 +8,7 @@ import { Button } from '@/components/atoms';
 import { logger } from '@/lib/secure-logger';
 
 const fileUploadVariants = cva(
-  'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+  'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2',
   {
     variants: {
       variant: {
@@ -190,7 +190,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="font-body mb-2 block text-sm font-medium text-[#262626]">{label}</label>
+          <label className="mb-2 block font-body text-sm font-medium text-[#262626]">{label}</label>
         )}
 
         {/* Upload Area */}
@@ -264,7 +264,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="font-body mt-2 text-xs text-[#737373]">
+              <div className="mt-2 font-body text-xs text-[#737373]">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -279,7 +279,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between rounded border border-[#d4d4d4] bg-[#fafafa] p-2"
+                className="flex items-center justify-between rounded-sm border border-[#d4d4d4] bg-[#fafafa] p-2"
               >
                 <div className="flex min-w-0 flex-1 items-center space-x-2">
                   <svg
@@ -293,7 +293,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <p className="font-body truncate text-sm font-medium text-[#262626]">
+                    <p className="truncate font-body text-sm font-medium text-[#262626]">
                       {file.name}
                     </p>
                     <p className="font-body text-xs text-[#737373]">{formatFileSize(file.size)}</p>
@@ -326,7 +326,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
         {(helperText || errorMessage) && (
           <div className="mt-2">
             {errorMessage ? (
-              <p className="font-body text-danger-600 text-xs">{errorMessage}</p>
+              <p className="font-body text-xs text-red-600">{errorMessage}</p>
             ) : (
               <p className="font-body text-xs text-[#737373]">{helperText}</p>
             )}

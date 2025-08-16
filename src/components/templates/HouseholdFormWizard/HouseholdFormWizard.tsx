@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useUserBarangay } from '@/hooks/useUserBarangay';
 import { useCSRFToken } from '@/lib/csrf';
@@ -12,7 +13,8 @@ import { HouseholdTypeSelector } from '@/components/organisms';
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { InputField, DropdownSelect } from '@/components/molecules';
+import { SelectField, InputField } from '@/components/molecules';
+
 
 export interface HouseholdFormData {
   // Step 1: Basic Information
@@ -66,13 +68,16 @@ interface FormStep {
 interface HouseholdFormWizardProps {
   onSubmit?: (data: HouseholdFormData) => Promise<void>;
   onCancel?: () => void;
+  initialData?: Partial<HouseholdFormData>;
 }
 
 export default function HouseholdFormWizard({
   onSubmit,
   onCancel: _onCancel,
+  initialData,
 }: HouseholdFormWizardProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { getToken: getCSRFToken } = useCSRFToken();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -120,6 +125,9 @@ export default function HouseholdFormWizard({
     provinceCode: '',
     cityMunicipalityCode: '',
     barangayCode: '',
+    
+    // Merge initial data if provided
+    ...initialData,
   });
 
   // User's assigned barangay address (auto-populated)
@@ -252,6 +260,8 @@ export default function HouseholdFormWizard({
   const handleSubmit = async () => {
     if (onSubmit) {
       await onSubmit(formData);
+      // Invalidate households cache after custom submission
+      await queryClient.invalidateQueries({ queryKey: ['households'] });
       return;
     }
 
@@ -349,6 +359,9 @@ export default function HouseholdFormWizard({
 
       alert('Household created successfully!');
 
+      // Invalidate households cache to refresh the list
+      await queryClient.invalidateQueries({ queryKey: ['households'] });
+
       // Navigate to households list using Next.js router
       router.push('/households');
     } catch (error) {
@@ -414,7 +427,7 @@ export default function HouseholdFormWizard({
                       <div className="h-0.5 w-full bg-zinc-600" />
                     </div>
                     <div className="relative flex size-8 items-center justify-center rounded-full bg-zinc-600">
-                      <svg className="size-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="size-5 text-white dark:text-black" viewBox="0 0 20 20" fill="currentColor">
                         <path
                           fillRule="evenodd"
                           d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -429,7 +442,7 @@ export default function HouseholdFormWizard({
                       <div className="h-0.5 w-full bg-zinc-200" />
                     </div>
                     <div className="relative flex size-8 items-center justify-center rounded-full border-2 border-zinc-600 bg-white">
-                      <span className="text-sm font-medium text-zinc-600">{step.id}</span>
+                      <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">{step.id}</span>
                     </div>
                   </>
                 ) : (
@@ -438,7 +451,7 @@ export default function HouseholdFormWizard({
                       <div className="h-0.5 w-full bg-zinc-200" />
                     </div>
                     <div className="group relative flex size-8 items-center justify-center rounded-full border-2 border-zinc-300 bg-white">
-                      <span className="text-sm font-medium text-zinc-500">{step.id}</span>
+                      <span className="text-sm font-medium text-zinc-500 dark:text-zinc-500">{step.id}</span>
                     </div>
                   </>
                 )}
@@ -447,7 +460,7 @@ export default function HouseholdFormWizard({
           </ol>
         </nav>
         <div className="mt-6">
-          <h2 className="text-lg/8 font-semibold text-zinc-950 dark:text-white">
+          <h2 className="text-lg/8 font-semibold text-zinc-950 dark:text-white dark:text-black">
             {steps[currentStep - 1].title}
           </h2>
           <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
@@ -457,7 +470,7 @@ export default function HouseholdFormWizard({
       </div>
 
       {/* Form Content */}
-      <div className="rounded-lg bg-white shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
+      <div className="rounded-lg bg-white shadow-xs ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
         <div className="px-6 py-8">{renderStepContent()}</div>
       </div>
 
@@ -486,7 +499,7 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white dark:text-black">
           Basic Information
         </h3>
         <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
@@ -498,7 +511,7 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
       <div className="rounded-lg bg-blue-50 p-4 ring-1 ring-blue-900/10 dark:bg-blue-400/10 dark:ring-blue-400/20">
         <div className="flex">
           <div className="shrink-0">
-            <svg className="size-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="size-5 text-gray-400 dark:text-gray-600" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
@@ -507,10 +520,10 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
             </svg>
           </div>
           <div className="ml-3">
-            <h4 className="text-sm/6 font-medium text-blue-800 dark:text-blue-200">
+            <h4 className="text-sm/6 font-medium text-gray-800 dark:text-gray-200">
               Household Code (Auto-generated)
             </h4>
-            <div className="mt-2 text-sm/6 text-blue-700 dark:text-blue-300">
+            <div className="mt-2 text-sm/6 text-gray-700 dark:text-gray-300">
               <p className="font-mono text-lg font-semibold">{formData.householdCode}</p>
               <p className="mt-1">This unique code will identify this household in the system.</p>
             </div>
@@ -527,7 +540,7 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
 
       {/* Head of Household */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Head of Household</h4>
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">Head of Household</h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
@@ -579,7 +592,7 @@ function LocationDetailsStep({
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white dark:text-black">
           Location Details
         </h3>
         <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
@@ -589,13 +602,13 @@ function LocationDetailsStep({
 
       {/* Geographic Information */}
       <div className="space-y-4">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">
           Geographic Information
         </h4>
 
         {loadingAddress ? (
           <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-4">
-            <svg className="size-5 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+            <svg className="size-5 animate-spin text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -610,7 +623,7 @@ function LocationDetailsStep({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-sm font-medium text-blue-700">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Loading your assigned barangay...
             </span>
           </div>
@@ -663,7 +676,7 @@ function LocationDetailsStep({
 
       {/* Address Details */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Address Details</h4>
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">Address Details</h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
@@ -699,7 +712,7 @@ function LocationDetailsStep({
 
         {/* GPS Coordinates */}
         <div className="space-y-4">
-          <h5 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+          <h5 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">
             GPS Coordinates (Optional)
           </h5>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -736,7 +749,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white dark:text-black">
           Household Composition
         </h3>
         <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
@@ -746,7 +759,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
 
       {/* Total Members */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Total Members</h4>
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">Total Members</h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
@@ -780,7 +793,7 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
 
       {/* Age Groups */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Age Groups</h4>
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">Age Groups</h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
@@ -881,7 +894,7 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white">
+        <h3 className="text-base/7 font-semibold text-zinc-950 dark:text-white dark:text-black">
           Economic & Utilities Information
         </h3>
         <p className="mt-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
@@ -891,32 +904,36 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
 
       {/* Economic Information */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">
           Economic Information
         </h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <DropdownSelect
+          <SelectField
             label="Monthly Household Income"
-            value={formData.monthlyIncome}
-            onChange={val => onChange('monthlyIncome', val)}
-            options={INCOME_RANGES}
-            placeholder="Select income range"
+            selectProps={{
+              value: formData.monthlyIncome,
+              onSelect: (option) => onChange('monthlyIncome', option?.value || ''),
+              options: INCOME_RANGES,
+              placeholder: "Select income range"
+            }}
           />
 
-          <DropdownSelect
+          <SelectField
             label="Primary Income Source"
-            value={formData.incomeSource}
-            onChange={val => onChange('incomeSource', val)}
-            options={INCOME_SOURCES}
-            placeholder="Select income source"
+            selectProps={{
+              value: formData.incomeSource,
+              onSelect: (option) => onChange('incomeSource', option?.value || ''),
+              options: INCOME_SOURCES,
+              placeholder: "Select income source"
+            }}
           />
         </div>
       </div>
 
       {/* Utilities */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">Utilities Access</h4>
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">Utilities Access</h4>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="flex items-center gap-3">
@@ -925,9 +942,9 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasElectricity"
               checked={formData.hasElectricity}
               onChange={e => onChange('hasElectricity', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 dark:text-gray-400 focus:ring-blue-500"
             />
-            <label htmlFor="hasElectricity" className="text-sm text-zinc-950 dark:text-white">
+            <label htmlFor="hasElectricity" className="text-sm text-zinc-950 dark:text-white dark:text-black">
               Has Electricity
             </label>
           </div>
@@ -938,9 +955,9 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasWater"
               checked={formData.hasWater}
               onChange={e => onChange('hasWater', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 dark:text-gray-400 focus:ring-blue-500"
             />
-            <label htmlFor="hasWater" className="text-sm text-zinc-950 dark:text-white">
+            <label htmlFor="hasWater" className="text-sm text-zinc-950 dark:text-white dark:text-black">
               Has Water Supply
             </label>
           </div>
@@ -951,9 +968,9 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
               id="hasInternet"
               checked={formData.hasInternet}
               onChange={e => onChange('hasInternet', e.target.checked)}
-              className="size-4 rounded border-neutral-300 bg-white text-blue-600 focus:ring-blue-500"
+              className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 dark:text-gray-400 focus:ring-blue-500"
             />
-            <label htmlFor="hasInternet" className="text-sm text-zinc-950 dark:text-white">
+            <label htmlFor="hasInternet" className="text-sm text-zinc-950 dark:text-white dark:text-black">
               Has Internet Access
             </label>
           </div>
@@ -962,27 +979,31 @@ function EconomicInformationStep({ formData, onChange, errors }: any) {
 
       {/* Dwelling Information */}
       <div className="space-y-6">
-        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white">
+        <h4 className="text-sm/6 font-medium text-zinc-950 dark:text-white dark:text-black">
           Dwelling Information
         </h4>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <DropdownSelect
+          <SelectField
             label="Dwelling Type"
-            value={formData.dwellingType}
-            onChange={val => onChange('dwellingType', val)}
-            options={DWELLING_TYPES}
-            placeholder="Select dwelling type"
             errorMessage={errors.dwellingType}
+            selectProps={{
+              value: formData.dwellingType,
+              onSelect: (option) => onChange('dwellingType', option?.value || ''),
+              options: DWELLING_TYPES,
+              placeholder: "Select dwelling type"
+            }}
           />
 
-          <DropdownSelect
+          <SelectField
             label="Dwelling Ownership"
-            value={formData.dwellingOwnership}
-            onChange={val => onChange('dwellingOwnership', val)}
-            options={OWNERSHIP_TYPES}
-            placeholder="Select ownership type"
             errorMessage={errors.dwellingOwnership}
+            selectProps={{
+              value: formData.dwellingOwnership,
+              onSelect: (option) => onChange('dwellingOwnership', option?.value || ''),
+              options: OWNERSHIP_TYPES,
+              placeholder: "Select ownership type"
+            }}
           />
         </div>
       </div>

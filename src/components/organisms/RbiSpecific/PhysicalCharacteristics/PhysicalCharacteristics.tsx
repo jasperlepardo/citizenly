@@ -7,8 +7,8 @@
  */
 
 import { Textarea } from '../../../atoms';
-import { DropdownSelect } from '../../../molecules';
-import { FormGroup, InputField } from '../../../molecules';
+
+import { FormGroup, InputField, SelectField } from '../../../molecules';
 
 // Physical Characteristics Interface (matches database schema)
 export interface PhysicalCharacteristics {
@@ -140,11 +140,11 @@ export default function PhysicalCharacteristics({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-default border-b pb-4">
-        <h3 className="text-primary mb-2 text-lg font-medium">
+      <div className="border-b border-gray-300 dark:border-gray-600 pb-4">
+        <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
           <span className="text-base">👤</span> Physical Characteristics
         </h3>
-        <p className="text-secondary text-sm">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Physical description for identification and health tracking purposes. All fields are
           optional.
         </p>
@@ -155,37 +155,39 @@ export default function PhysicalCharacteristics({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <InputField
             label="Height (cm)"
-            type="number"
-            value={value.height_cm || ''}
-            onChange={e =>
-              handleChange('height_cm', e.target.value ? parseInt(e.target.value) : undefined)
-            }
-            placeholder="e.g., 165"
-            min={50}
-            max={250}
-            disabled={disabled}
+            inputProps={{
+              type: "number",
+              value: value.height_cm || '',
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                handleChange('height_cm', e.target.value ? parseInt(e.target.value) : undefined),
+              placeholder: "e.g., 165",
+              min: 50,
+              max: 250,
+              disabled: disabled
+            }}
           />
 
           <InputField
             label="Weight (kg)"
-            type="number"
-            value={value.weight_kg || ''}
-            onChange={e =>
-              handleChange('weight_kg', e.target.value ? parseFloat(e.target.value) : undefined)
-            }
-            placeholder="e.g., 65.5"
-            min={1}
-            max={300}
-            step={0.1}
-            disabled={disabled}
+            inputProps={{
+              type: "number",
+              value: value.weight_kg || '',
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                handleChange('weight_kg', e.target.value ? parseFloat(e.target.value) : undefined),
+              placeholder: "e.g., 65.5",
+              min: 1,
+              max: 300,
+              step: 0.1,
+              disabled: disabled
+            }}
           />
         </div>
 
         {/* BMI Display */}
         {bmiValue && bmiCategory && (
-          <div className="bg-background-muted mt-3 rounded-lg p-3">
+          <div className="bg-gray-100 dark:bg-gray-700 mt-3 rounded-lg p-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-secondary">Body Mass Index (BMI):</span>
+              <span className="text-gray-600 dark:text-gray-400 dark:text-gray-600">Body Mass Index (BMI):</span>
               <span className="font-medium">
                 {bmiValue} kg/m²
                 <span className={`ml-2 ${bmiCategory.color}`}>({bmiCategory.category})</span>
@@ -197,39 +199,51 @@ export default function PhysicalCharacteristics({
 
       {/* Blood Type */}
       <FormGroup title="Blood Type">
-        <DropdownSelect
-          options={BLOOD_TYPE_OPTIONS}
-          value={value.blood_type || ''}
-          onChange={newValue => handleChange('blood_type', newValue || null)}
-          disabled={disabled}
+        <SelectField
+          selectProps={{
+            options: BLOOD_TYPE_OPTIONS,
+            value: value.blood_type || '',
+            onSelect: (option) => handleChange('blood_type', option?.value || null),
+            disabled: disabled,
+            placeholder: "Select blood type"
+          }}
         />
       </FormGroup>
 
       {/* Physical Features */}
       <FormGroup title="Physical Features">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <DropdownSelect
+          <SelectField
             label="Eye Color"
-            options={EYE_COLOR_OPTIONS}
-            value={value.eye_color || ''}
-            onChange={newValue => handleChange('eye_color', newValue || null)}
-            disabled={disabled}
+            selectProps={{
+              options: EYE_COLOR_OPTIONS,
+              value: value.eye_color || '',
+              onSelect: (option) => handleChange('eye_color', option?.value || null),
+              disabled: disabled,
+              placeholder: "Select eye color"
+            }}
           />
 
-          <DropdownSelect
+          <SelectField
             label="Hair Color"
-            options={HAIR_COLOR_OPTIONS}
-            value={value.hair_color || ''}
-            onChange={newValue => handleChange('hair_color', newValue || null)}
-            disabled={disabled}
+            selectProps={{
+              options: HAIR_COLOR_OPTIONS,
+              value: value.hair_color || '',
+              onSelect: (option) => handleChange('hair_color', option?.value || null),
+              disabled: disabled,
+              placeholder: "Select hair color"
+            }}
           />
 
-          <DropdownSelect
+          <SelectField
             label="Complexion"
-            options={COMPLEXION_OPTIONS}
-            value={value.complexion || ''}
-            onChange={newValue => handleChange('complexion', newValue || null)}
-            disabled={disabled}
+            selectProps={{
+              options: COMPLEXION_OPTIONS,
+              value: value.complexion || '',
+              onSelect: (option) => handleChange('complexion', option?.value || null),
+              disabled: disabled,
+              placeholder: "Select complexion"
+            }}
           />
         </div>
       </FormGroup>
@@ -243,7 +257,7 @@ export default function PhysicalCharacteristics({
           disabled={disabled}
           rows={3}
         />
-        <p className="text-muted mt-1 text-xs">
+        <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs">
           Include scars, birthmarks, tattoos, or other identifying features
         </p>
       </FormGroup>
@@ -258,7 +272,7 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="text-muted mt-1 text-xs">
+          <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs">
             List any chronic conditions or ongoing medical issues
           </p>
         </FormGroup>
@@ -271,7 +285,7 @@ export default function PhysicalCharacteristics({
             disabled={disabled}
             rows={3}
           />
-          <p className="text-muted mt-1 text-xs">
+          <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs">
             List any known allergies to food, medicine, or other substances
           </p>
         </FormGroup>
@@ -302,8 +316,8 @@ export default function PhysicalCharacteristics({
         value.hair_color ||
         value.complexion) && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h4 className="mb-2 font-medium text-blue-900">Physical Profile Summary</h4>
-          <div className="space-y-1 text-sm text-blue-800">
+          <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Physical Profile Summary</h4>
+          <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200 dark:text-gray-800">
             {value.height_cm && value.weight_kg && (
               <p>
                 <strong>Physical:</strong> {value.height_cm}cm, {value.weight_kg}kg{' '}

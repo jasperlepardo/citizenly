@@ -105,14 +105,6 @@ export const LazyCreateHouseholdModal = createLazyComponent(
 );
 
 // Complex form sections
-export const LazyEducationEmployment = createLazyComponent(
-  () => import('@/components/organisms/EducationEmployment'),
-  {
-    ...LazyLoadingPresets.form,
-    displayName: 'EducationEmployment',
-  }
-);
-
 export const LazySectoralInfo = createLazyComponent(
   () => import('@/components/organisms/SectoralInfo'),
   {
@@ -147,30 +139,8 @@ export const LazyFamilyRelationshipSelector = createLazyComponent(
 );
 
 // Address and geographic components (can be heavy with map libraries)
-export const LazyAddressSearch = createLazyComponent(
-  () => import('@/components/organisms/AddressSearch'),
-  {
-    fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'AddressSearch',
-  }
-);
-
-export const LazyCascadingGeographicSelector = createLazyComponent(
-  () => import('@/components/molecules/CascadingGeographicSelector'),
-  {
-    fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'CascadingGeographicSelector',
-  }
-);
 
 // Advanced search and filtering components
-export const LazyAdvancedSearchBar = createLazyComponent(
-  () => import('@/components/organisms/AdvancedSearchBar'),
-  {
-    fallback: LazyLoadingPresets.form.fallback,
-    displayName: 'AdvancedSearchBar',
-  }
-);
 
 // Components that use heavy third-party libraries
 export const LazyPSOCSelector = createLazyComponent(
@@ -190,7 +160,6 @@ export const preloadComponents = {
   forms: () => {
     import('@/components/templates/ResidentFormWizard');
     import('@/components/templates/HouseholdFormWizard');
-    import('@/components/organisms/EducationEmployment');
   },
 
   // Preload chart components when user navigates to dashboard/reports
@@ -204,7 +173,6 @@ export const preloadComponents = {
   // Preload data components when user navigates to listing pages
   data: () => {
     import('@/components/organisms/DataTable');
-    import('@/components/organisms/AdvancedSearchBar');
   },
 
   // Preload modal components on user interaction hints

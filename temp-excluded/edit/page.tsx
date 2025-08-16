@@ -188,7 +188,7 @@ export default function HouseholdEditPage() {
       <DashboardLayout>
         <div className="mx-auto max-w-4xl space-y-6">
           {/* Header */}
-          <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
+          <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-primary">Edit Household</h1>
@@ -228,7 +228,7 @@ export default function HouseholdEditPage() {
                     name="household_type"
                     value={formData.household_type}
                     onChange={handleInputChange}
-                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Household Type</option>
                     {HOUSEHOLD_TYPE_OPTIONS.map(option => (
@@ -244,7 +244,7 @@ export default function HouseholdEditPage() {
                     name="household_unit"
                     value={formData.household_unit}
                     onChange={handleInputChange}
-                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Housing Unit</option>
                     {HOUSEHOLD_UNIT_OPTIONS.map(option => (
@@ -339,7 +339,7 @@ export default function HouseholdEditPage() {
                     name="income_class"
                     value={formData.income_class}
                     onChange={handleInputChange}
-                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Income Class</option>
                     {INCOME_CLASS_OPTIONS.map(option => (
@@ -355,7 +355,7 @@ export default function HouseholdEditPage() {
                     name="tenure_status"
                     value={formData.tenure_status}
                     onChange={handleInputChange}
-                    className="bg-surface min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   >
                     <option value="">Select Tenure Status</option>
                     {TENURE_STATUS_OPTIONS.map(option => (
@@ -380,7 +380,7 @@ export default function HouseholdEditPage() {
             </FormSection>
 
             {/* Form Actions */}
-            <div className="bg-surface rounded-xl border border-default p-6 shadow-sm">
+            <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
               <div className="flex justify-end gap-4">
                 <Button
                   type="button"

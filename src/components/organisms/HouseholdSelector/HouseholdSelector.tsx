@@ -338,7 +338,7 @@ export default function HouseholdSelector({
         className={`font-montserrat relative rounded border text-base focus-within:border-transparent focus-within:ring-2 ${
           error
             ? 'border-red-500 focus-within:ring-red-500'
-            : 'border-neutral-300 focus-within:ring-blue-500'
+            : 'border-gray-300 focus-within:ring-blue-500'
         }`}
       >
         <input
@@ -356,14 +356,14 @@ export default function HouseholdSelector({
             }
           }}
           onFocus={() => setIsOpen(true)}
-          className="w-full bg-transparent px-3 py-2 outline-none"
+          className="w-full bg-transparent px-3 py-2 outline-hidden"
           placeholder={placeholder}
         />
 
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300"
         >
           <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -378,9 +378,9 @@ export default function HouseholdSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-neutral-300 bg-white shadow-lg">
+        <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
           {loading ? (
-            <div className="p-3 text-center text-neutral-500">
+            <div className="p-3 text-center text-gray-500 dark:text-gray-500">
               <div className="animate-pulse">Loading households...</div>
             </div>
           ) : (
@@ -392,17 +392,17 @@ export default function HouseholdSelector({
                   setIsOpen(false);
                   setShowCreateModal(true);
                 }}
-                className="w-full border-b border-neutral-100 p-3 text-left hover:bg-blue-50"
+                className="w-full border-b border-gray-100 p-3 text-left hover:bg-blue-50"
               >
-                <div className="font-medium text-blue-600">+ Create New Household</div>
-                <div className="text-xs text-blue-500">
+                <div className="font-medium text-gray-600 dark:text-gray-400">+ Create New Household</div>
+                <div className="text-xs text-gray-500 dark:text-gray-500">
                   This resident will start a new household
                 </div>
               </button>
 
               {/* Show message when no existing households */}
               {filteredHouseholds.length === 0 && !searchTerm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500 dark:text-gray-500">
                   <div className="text-sm">No existing households in this barangay</div>
                   <div className="mt-1 text-xs text-green-600">
                     ✓ Perfect! This will be the first household
@@ -412,7 +412,7 @@ export default function HouseholdSelector({
 
               {/* Show "no search results" when searching */}
               {filteredHouseholds.length === 0 && searchTerm && (
-                <div className="p-3 text-center text-neutral-500">
+                <div className="p-3 text-center text-gray-500 dark:text-gray-500">
                   <div className="text-sm">No households match your search</div>
                 </div>
               )}
@@ -427,19 +427,19 @@ export default function HouseholdSelector({
                     setSearchTerm('');
                     setIsOpen(false);
                   }}
-                  className="w-full border-b border-neutral-100 p-3 text-left last:border-b-0 hover:bg-neutral-50"
+                  className="w-full border-b border-gray-100 p-3 text-left last:border-b-0 hover:bg-gray-50"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="font-medium text-neutral-900">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">
                         Household #{household.code}
                       </div>
-                      <div className="text-sm text-neutral-600">
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         Head: {formatFullName(household.head_resident)}
                       </div>
-                      <div className="text-xs text-neutral-500">{formatFullAddress(household)}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-500">{formatFullAddress(household)}</div>
                     </div>
-                    <div className="ml-2 text-xs text-neutral-500">
+                    <div className="ml-2 text-xs text-gray-500 dark:text-gray-500">
                       {household.member_count} member{household.member_count !== 1 ? 's' : ''}
                     </div>
                   </div>

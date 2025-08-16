@@ -34,7 +34,7 @@ The RBI System frontend follows **Atomic Design principles** with a focus on **r
 | ------------ | ------------------------------------------ | ------------- | ----------- | ----------- |
 | **Button**   | Primary action component with 15+ variants | ✅ 11 stories | ✅ 36 tests | ✅ Complete |
 | **Input**    | Text input with validation and states      | ✅ 8 stories  | ✅ Tests    | ✅ Complete |
-| **Select**   | Dropdown selection with options array API  | ✅ 6 stories  | ✅ Tests    | ✅ Complete |
+| **Select**   | Unified dropdown with enum/API data support | ✅ 12 stories | ✅ Tests    | ✅ Complete |
 | **Textarea** | Multi-line text input                      | ✅ 5 stories  | ✅ Tests    | ✅ Complete |
 | **Checkbox** | Boolean selection with label support       | ✅ 7 stories  | ✅ Tests    | ✅ Complete |
 | **Radio**    | Single selection from group                | ✅ 6 stories  | ✅ Tests    | ✅ Complete |
@@ -56,6 +56,124 @@ The RBI System frontend follows **Atomic Design principles** with a focus on **r
 - **Icon Support**: Left icon, right icon, icon-only buttons
 - **Accessibility**: Proper ARIA attributes, keyboard navigation
 - **Design Tokens**: All styling uses design system tokens
+
+### **Select Component - Unified Data Patterns** ⭐
+
+The **Select** component has been redesigned to follow PSGCSelector patterns with support for both static enum data and API-driven searches:
+
+#### **Pattern 1: Enum/Constant Data** 📋
+
+For predefined options from constants or enums (most common use case):
+
+```typescript
+import Select from '@/components/atoms/Field/Select';
+import { SEX_OPTIONS, CIVIL_STATUS_OPTIONS } from '@/lib/constants/resident-enums';
+
+// Basic enum usage
+<Select
+  enumData={SEX_OPTIONS}
+  value={selectedGender}
+  onSelect={(option) => setSelectedGender(option?.value || '')}
+  placeholder="Select gender..."
+  label="Gender"
+  required
+/>
+
+// With custom options array
+const userRoles = [
+  { value: 'admin', label: 'Administrator', description: 'Full system access' },
+  { value: 'user', label: 'Regular User', description: 'Basic access' }
+];
+
+<Select
+  options={userRoles}
+  value={selectedRole}
+  onSelect={(option) => setSelectedRole(option?.value || '')}
+  placeholder="Select role..."
+  searchable={true}
+/>
+```
+
+#### **Pattern 2: API-Driven Data** 🌐
+
+For dynamic data that requires server requests (similar to PSGCSelector):
+
+```typescript
+import Select from '@/components/atoms/Field/Select';
+
+const [searchOptions, setSearchOptions] = useState([]);
+const [loading, setLoading] = useState(false);
+
+const handleSearch = async (query) => {
+  if (query.length < 2) return;
+  
+  setLoading(true);
+  try {
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const data = await response.json();
+    
+    // Transform API data to SelectOption format
+    const options = data.map(item => ({
+      value: item.id,
+      label: item.name,
+      description: item.description
+    }));
+    
+    setSearchOptions(options);
+  } catch (error) {
+    console.error('Search failed:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+<Select
+  options={searchOptions}
+  onSearch={handleSearch}
+  loading={loading}
+  value={selectedId}
+  onSelect={(option) => setSelectedId(option?.value || '')}
+  placeholder="Search for items..."
+  searchable={true}
+/>
+```
+
+#### **Select Features**
+
+- **🔄 Dual Data Sources**: Static enums OR API-driven search
+- **🎯 PSGCSelector Patterns**: Consistent UX with geographic selectors
+- **⌨️ Full Keyboard Navigation**: Arrow keys, Enter, Escape, Tab support
+- **🔍 Debounced Search**: 300ms delay for optimal API performance  
+- **📱 Mobile Optimized**: Touch-friendly with smart dropdown positioning
+- **♿ Accessibility**: WCAG 2.1 compliant with screen reader support
+- **🎨 Design System**: Integrated with Philippine government color palette
+- **⚡ Smart Positioning**: Dropdown appears above/below based on viewport space
+
+#### **Available Constants**
+
+Use these pre-defined enums for consistent government data:
+
+```typescript
+import {
+  SEX_OPTIONS,                    // Male, Female
+  CIVIL_STATUS_OPTIONS,          // Single, Married, Widowed, etc.
+  CITIZENSHIP_OPTIONS,           // Filipino, Dual Citizen, Foreigner
+  EDUCATION_LEVEL_OPTIONS,       // Elementary to Post Graduate
+  EMPLOYMENT_STATUS_OPTIONS,     // Employed, Unemployed, etc.
+  RELIGION_OPTIONS,              // Major Philippine religions
+  ETHNICITY_OPTIONS,             // Filipino ethnic groups
+  DISABILITY_TYPE_OPTIONS        // PWD classifications
+} from '@/lib/constants/resident-enums';
+```
+
+#### **Implementation Guidelines**
+
+1. **For Static Data**: Use `enumData` prop with resident-enums constants
+2. **For API Data**: Implement `onSearch` callback with debounced API calls
+3. **Consistent Callbacks**: Always use `onSelect(option)` pattern like PSGCSelector
+4. **Option Format**: Ensure API data transforms to `{ value, label, description? }` format
+5. **Loading States**: Include loading indicators for API-driven searches
+6. **Error Handling**: Implement proper error states and fallbacks
 
 ---
 

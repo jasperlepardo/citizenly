@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/atoms';
-import { BarangaySelector } from '@/components/organisms';
 import { ErrorBoundary } from '@/providers';
 
 // Zod validation schema
@@ -196,11 +195,15 @@ export default function HouseholdRegistrationForm({
     <ErrorBoundary level="section">
       <div className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6">
-          <h2 className="mb-2 text-2xl font-bold text-gray-900">Household Registration</h2>
-          <p className="text-gray-600">Register a new household and its members in the system</p>
+          <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Household Registration
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Register a new household and its members in the system
+          </p>
           {householdNumber && (
-            <div className="mt-3 rounded border border-blue-200 bg-blue-50 p-3">
-              <p className="text-sm text-blue-700">
+            <div className="mt-3 rounded-sm border border-blue-200 bg-blue-50 p-3">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 <strong>Household Number:</strong> {householdNumber}
               </p>
             </div>
@@ -210,16 +213,18 @@ export default function HouseholdRegistrationForm({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Household Information */}
           <section>
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">Household Information</h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Household Information
+            </h3>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                   Household Type *
                 </label>
                 <select
                   {...register('household_type')}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                 >
                   <option value="">Select household type</option>
                   {HOUSEHOLD_TYPES.map(type => (
@@ -234,23 +239,25 @@ export default function HouseholdRegistrationForm({
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                   Monthly Income (PHP)
                 </label>
                 <input
                   type="number"
                   {...register('monthly_income', { valueAsNumber: true })}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   placeholder="0"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-gray-700">Address *</label>
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Address *
+                </label>
                 <textarea
                   {...register('address')}
                   rows={3}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   placeholder="House number, street, subdivision, landmark"
                 />
                 {errors.address && (
@@ -259,32 +266,41 @@ export default function HouseholdRegistrationForm({
               </div>
 
               <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-gray-700">Barangay *</label>
-                <BarangaySelector
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Barangay *
+                </label>
+                {/* TODO: Replace with actual BarangaySelector component */}
+                <input
+                  type="text"
                   value={watch('barangay_code') || ''}
-                  onChange={code => setValue('barangay_code', code)}
-                  error={errors.barangay_code?.message}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setValue('barangay_code', e.target.value)
+                  }
+                  placeholder="Enter barangay code"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 dark:border-gray-600 dark:bg-gray-700"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                   Contact Number
                 </label>
                 <input
                   type="tel"
                   {...register('contact_number')}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   placeholder="+63 9XX XXX XXXX"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
+                <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Email
+                </label>
                 <input
                   type="email"
                   {...register('email')}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                   placeholder="email@example.com"
                 />
               </div>
@@ -294,7 +310,9 @@ export default function HouseholdRegistrationForm({
           {/* Household Members */}
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900">Household Members</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Household Members
+              </h3>
               <Button type="button" onClick={addResident} variant="secondary" size="sm">
                 Add Member
               </Button>
@@ -304,10 +322,12 @@ export default function HouseholdRegistrationForm({
               {fields.map((field, index) => (
                 <div key={field.id} className="rounded-lg border border-gray-200 p-4">
                   <div className="mb-3 flex items-center justify-between">
-                    <h4 className="font-medium text-gray-900">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100">
                       Member {index + 1}
                       {index === 0 && (
-                        <span className="ml-2 text-sm text-blue-600">(Head of Household)</span>
+                        <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                          (Head of Household)
+                        </span>
                       )}
                     </h4>
                     {index > 0 && (
@@ -324,12 +344,12 @@ export default function HouseholdRegistrationForm({
 
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         First Name *
                       </label>
                       <input
                         {...register(`residents.${index}.first_name`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       />
                       {errors.residents?.[index]?.first_name && (
                         <p className="mt-1 text-sm text-red-600">
@@ -339,22 +359,22 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         Middle Name
                       </label>
                       <input
                         {...register(`residents.${index}.middle_name`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         Last Name *
                       </label>
                       <input
                         {...register(`residents.${index}.last_name`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       />
                       {errors.residents?.[index]?.last_name && (
                         <p className="mt-1 text-sm text-red-600">
@@ -364,12 +384,12 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         Relationship *
                       </label>
                       <select
                         {...register(`residents.${index}.relationship_to_head`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       >
                         {RELATIONSHIPS.map(rel => (
                           <option key={rel.value} value={rel.value}>
@@ -380,21 +400,23 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         Birth Date *
                       </label>
                       <input
                         type="date"
                         {...register(`residents.${index}.birth_date`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">Sex *</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Sex *
+                      </label>
                       <select
                         {...register(`residents.${index}.sex`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       >
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -402,12 +424,12 @@ export default function HouseholdRegistrationForm({
                     </div>
 
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">
+                      <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
                         Civil Status *
                       </label>
                       <select
                         {...register(`residents.${index}.civil_status`)}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                       >
                         {CIVIL_STATUS.map(status => (
                           <option key={status.value} value={status.value}>

@@ -134,7 +134,7 @@ describe('Design System Utils', () => {
       expect(errorInput.borderColor).toBe('#ef4444');
     });
 
-    it('should include focus ring for focus state', () => {
+    it('should include focus ring-3 for focus state', () => {
       const focusInput = getInputStyles('focus');
 
       expect(focusInput).toHaveProperty('boxShadow', '0 0 0 3px rgba(59, 130, 246, 0.1)');
@@ -156,7 +156,7 @@ describe('Design System Utils', () => {
   });
 
   describe('getFocusRing', () => {
-    it('should return focus ring styles for different variants', () => {
+    it('should return focus ring-3 styles for different variants', () => {
       const primaryFocus = getFocusRing('primary');
       const dangerFocus = getFocusRing('danger');
 
@@ -209,7 +209,7 @@ describe('Design System Utils', () => {
   describe('getSectoralBadgeColor', () => {
     it('should return proper badge colors for different variants', () => {
       const solidBadge = getSectoralBadgeColor('laborForce', 'solid');
-      const outlineBadge = getSectoralBadgeColor('laborForce', 'outline');
+      const outlineBadge = getSectoralBadgeColor('laborForce', 'outline-solid');
       const subtleBadge = getSectoralBadgeColor('laborForce', 'subtle');
 
       expect(solidBadge.backgroundColor).toBe('#059669');

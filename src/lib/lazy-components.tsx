@@ -20,7 +20,7 @@ import { ErrorBoundary } from '@/providers/ErrorBoundary';
 const LoadingSpinner = ({ message = 'Loading...' }: { message?: string }) => (
   <div className="flex items-center justify-center p-8">
     <div className="mr-3 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-    <span className="text-gray-600">{message}</span>
+    <span className="text-gray-600 dark:text-gray-400">{message}</span>
   </div>
 );
 
@@ -39,13 +39,13 @@ const LazyErrorFallback = ({ error }: { error: Error }) => (
         />
       </svg>
     </div>
-    <h3 className="mb-2 text-lg font-medium text-gray-900">Component Failed to Load</h3>
-    <p className="mb-4 text-gray-600">
+    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">Component Failed to Load</h3>
+    <p className="mb-4 text-gray-600 dark:text-gray-400">
       There was an error loading this component. Please try refreshing the page.
     </p>
     <button
       onClick={() => window.location.reload()}
-      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+      className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
     >
       Refresh Page
     </button>
@@ -155,9 +155,9 @@ export const LazyLoadingPresets = {
   table: {
     fallback: (
       <div className="animate-pulse">
-        <div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
-        <div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
-        <div className="h-4 w-3/4 rounded bg-gray-200"></div>
+        <div className="mb-2 h-4 w-full rounded-sm bg-gray-200"></div>
+        <div className="mb-2 h-4 w-full rounded-sm bg-gray-200"></div>
+        <div className="h-4 w-3/4 rounded-sm bg-gray-200"></div>
       </div>
     ),
     errorFallback: <LazyErrorFallback error={new Error('Component loading failed')} />,

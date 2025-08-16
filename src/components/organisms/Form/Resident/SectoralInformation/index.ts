@@ -1,0 +1,1 @@
+export { SectoralInformationForm, type SectoralInformationFormProps } from './SectoralInformation';

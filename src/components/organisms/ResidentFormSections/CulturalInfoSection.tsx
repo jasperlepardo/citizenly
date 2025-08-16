@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 import { RELIGION_OPTIONS, ETHNICITY_OPTIONS } from '@/lib/constants/resident-enums';
 
@@ -50,13 +50,13 @@ export default function CulturalInfoSection({
   return (
     <FormSection title="Cultural Information" description="Religious and ethnic background">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Religion" errorMessage={errors.religion}>
+        <FieldSet label="Religion" errorMessage={errors.religion}>
           <select
             name="religion"
             value={formData.religion || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-white dark:bg-gray-800 min-h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Religion</option>
             {RELIGION_OPTIONS.map(option => (
@@ -65,15 +65,15 @@ export default function CulturalInfoSection({
               </option>
             ))}
           </select>
-        </FormField>
+        </FieldSet>
 
-        <FormField label="Ethnicity" errorMessage={errors.ethnicity}>
+        <FieldSet label="Ethnicity" errorMessage={errors.ethnicity}>
           <select
             name="ethnicity"
             value={formData.ethnicity || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-surface border-default text-primary min-h-10 w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-white dark:bg-gray-800 min-h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Ethnicity</option>
             {ETHNICITY_OPTIONS.map(option => (
@@ -82,14 +82,14 @@ export default function CulturalInfoSection({
               </option>
             ))}
           </select>
-        </FormField>
+        </FieldSet>
       </div>
 
       {/* Conditional field for other religion */}
       {formData.religion === 'others' && (
         <div className="mt-4">
-          <FormField label="Please Specify Religion" errorMessage={errors.religion_others_specify}>
-            <FormInput
+          <FieldSet label="Please Specify Religion" errorMessage={errors.religion_others_specify}>
+            <Input
               name="religion_others_specify"
               value={formData.religion_others_specify || ''}
               onChange={handleInputChange}
@@ -97,7 +97,7 @@ export default function CulturalInfoSection({
               error={errors.religion_others_specify}
               placeholder="Please specify"
             />
-          </FormField>
+          </FieldSet>
         </div>
       )}
     </FormSection>

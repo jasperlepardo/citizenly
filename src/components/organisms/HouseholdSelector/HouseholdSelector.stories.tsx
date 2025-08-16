@@ -123,7 +123,7 @@ export const LoadingState: Story = {
   render: args => (
     <div className="space-y-4">
       <HouseholdSelector {...args} />
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
         💡 In a real implementation, this would show loading spinner while fetching households
       </p>
     </div>
@@ -163,17 +163,17 @@ export const WorkflowDemo: Story = {
       <div className="max-w-2xl space-y-6">
         <div className="flex items-center space-x-2 text-sm">
           <div
-            className={`rounded px-3 py-1 ${step === 'select' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+            className={`rounded-sm px-3 py-1 ${step === 'select' ? 'bg-blue-100 text-gray-800 dark:text-gray-200' : 'bg-gray-100 text-gray-600 dark:text-gray-400'}`}
           >
             1. Select Household
           </div>
           <div
-            className={`rounded px-3 py-1 ${step === 'confirm' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}
+            className={`rounded-sm px-3 py-1 ${step === 'confirm' ? 'bg-blue-100 text-gray-800 dark:text-gray-200' : 'bg-gray-100 text-gray-600 dark:text-gray-400'}`}
           >
             2. Confirm
           </div>
           <div
-            className={`rounded px-3 py-1 ${step === 'complete' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}
+            className={`rounded-sm px-3 py-1 ${step === 'complete' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600 dark:text-gray-400'}`}
           >
             3. Complete
           </div>
@@ -181,7 +181,7 @@ export const WorkflowDemo: Story = {
 
         {step === 'select' && (
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Select Household for New Resident
             </label>
             <HouseholdSelector
@@ -189,7 +189,7 @@ export const WorkflowDemo: Story = {
               onSelect={handleSelect}
               placeholder="Search for existing household or create new"
             />
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
               Search by household code, head resident name, or address. Select "Create New
               Household" if none exist.
             </p>
@@ -209,13 +209,13 @@ export const WorkflowDemo: Story = {
             <div className="flex gap-3">
               <button
                 onClick={handleConfirm}
-                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
               >
                 Confirm Selection
               </button>
               <button
                 onClick={handleReset}
-                className="rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400"
+                className="rounded bg-gray-300 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-400"
               >
                 Change Household
               </button>
@@ -235,7 +235,7 @@ export const WorkflowDemo: Story = {
 
             <button
               onClick={handleReset}
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
             >
               Start Over
             </button>
@@ -266,7 +266,7 @@ export const SearchExamples: Story = {
               onSelect={action('search-by-code')}
               placeholder='Try "HH-001" or "042109001"'
             />
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Search using full or partial household codes
             </p>
           </div>
@@ -278,7 +278,7 @@ export const SearchExamples: Story = {
               onSelect={action('search-by-name')}
               placeholder='Try "Juan dela Cruz" or "Maria"'
             />
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Search by household head's full or partial name
             </p>
           </div>
@@ -290,19 +290,19 @@ export const SearchExamples: Story = {
               onSelect={action('search-by-address')}
               placeholder='Try "Block 5" or "San Lorenzo St"'
             />
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Search by house number, street, or subdivision
             </p>
           </div>
 
           <div className="rounded-lg bg-blue-50 p-4">
-            <h4 className="mb-2 font-medium text-blue-800">Create New</h4>
+            <h4 className="mb-2 font-medium text-gray-800 dark:text-gray-200">Create New</h4>
             <HouseholdSelector
               value=""
               onSelect={action('create-new')}
               placeholder="Click dropdown to see create option"
             />
-            <p className="mt-2 text-sm text-blue-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
               Always available option to create new household
             </p>
           </div>
@@ -351,18 +351,18 @@ export const FormIntegration: Story = {
     return (
       <div className="max-w-md space-y-4">
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Resident Name *</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Resident Name *</label>
           <input
             type="text"
             value={residentName}
             onChange={e => setResidentName(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             placeholder="Enter full name"
           />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Household Assignment *
           </label>
           <HouseholdSelector
@@ -375,14 +375,14 @@ export const FormIntegration: Story = {
 
         <button
           onClick={handleSubmit}
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
         >
           Add Resident to Household
         </button>
 
         {householdCode && (
           <div className="rounded border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-blue-800">
+            <p className="text-sm text-gray-800 dark:text-gray-200">
               <strong>Selected:</strong> {householdCode}
             </p>
           </div>

@@ -39,16 +39,16 @@ export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCar
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {/* Family Information */}
-      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-        <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs transition-shadow hover:shadow-md">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
           👨‍👩‍👧‍👦 Family Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="text-secondary block text-sm font-medium">
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">
               Mother&rsquo;s Maiden Name
             </span>
-            <span className="text-primary">
+            <span className="text-gray-600 dark:text-gray-400">
               {[
                 resident.mother_maiden_first,
                 resident.mother_maiden_middle,
@@ -62,22 +62,22 @@ export default function FamilyVoterCard({ resident, formatDate }: FamilyVoterCar
       </div>
 
       {/* Voter Information */}
-      <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-        <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs transition-shadow hover:shadow-md">
+        <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
           🗳️ Voter Information
         </h2>
         <div className="space-y-3">
           <div>
-            <span className="text-secondary block text-sm font-medium">Registered Voter</span>
-            <span className="text-primary">{resident.is_voter ? 'Yes' : 'No'}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Registered Voter</span>
+            <span className="text-gray-600 dark:text-gray-400">{resident.is_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Resident Voter</span>
-            <span className="text-primary">{resident.is_resident_voter ? 'Yes' : 'No'}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Resident Voter</span>
+            <span className="text-gray-600 dark:text-gray-400">{resident.is_resident_voter ? 'Yes' : 'No'}</span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Last Voted Date</span>
-            <span className="text-primary">{formatDate(resident.last_voted_date || '')}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Last Voted Date</span>
+            <span className="text-gray-600 dark:text-gray-400">{formatDate(resident.last_voted_date || '')}</span>
           </div>
         </div>
       </div>

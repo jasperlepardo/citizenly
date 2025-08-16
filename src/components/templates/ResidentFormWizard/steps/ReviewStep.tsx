@@ -15,12 +15,12 @@ function ReviewSection({ title, data }: ReviewSectionProps) {
 
   return (
     <div className="space-y-3">
-      <h5 className="text-primary border-b border-gray-200 pb-1 text-sm font-medium">{title}</h5>
+      <h5 className="border-b border-gray-200 pb-1 text-sm font-medium text-gray-600 dark:text-gray-400">{title}</h5>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {validData.map(([label, value]) => (
           <div key={label} className="flex justify-between py-1">
-            <span className="text-secondary text-sm font-medium">{label}:</span>
-            <span className="text-primary text-sm">{value}</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}:</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">{value}</span>
           </div>
         ))}
       </div>
@@ -28,7 +28,7 @@ function ReviewSection({ title, data }: ReviewSectionProps) {
   );
 }
 
-export function ReviewStep({ formData }: StepComponentProps) {
+export function ReviewStep({ formData, errors }: StepComponentProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
     try {
@@ -46,13 +46,36 @@ export function ReviewStep({ formData }: StepComponentProps) {
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-primary text-base/7 font-semibold">Review & Submit</h3>
-        <p className="text-secondary mt-1 text-sm/6">
+        <h3 className="text-base/7 font-semibold text-gray-600 dark:text-gray-400">Review & Submit</h3>
+        <p className="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">
           Please review all information carefully before submitting the resident registration.
         </p>
       </div>
 
-      <div className="bg-background-muted border-default rounded-lg border p-6">
+      {/* Display submit error if present */}
+      {errors?.submit && (
+        <div className="rounded-md border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4">
+          <div className="flex">
+            <div className="shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">Submission Error</h3>
+              <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                <p>{errors.submit}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 p-6">
         <div className="space-y-6">
           {/* Personal Information Summary */}
           <ReviewSection
@@ -165,8 +188,8 @@ export function ReviewStep({ formData }: StepComponentProps) {
 
       <div className="rounded-md border border-blue-200 bg-blue-50 p-4">
         <div className="flex">
-          <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+          <div className="shrink-0">
+            <svg className="h-5 w-5 text-gray-400 dark:text-gray-600" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fillRule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -175,8 +198,8 @@ export function ReviewStep({ formData }: StepComponentProps) {
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-blue-800">Ready to Submit</h3>
-            <div className="mt-2 text-sm text-blue-700">
+            <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200">Ready to Submit</h3>
+            <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">
               <p>
                 Once submitted, this resident will be registered in the system. Make sure all
                 information is correct as some fields cannot be easily modified later.

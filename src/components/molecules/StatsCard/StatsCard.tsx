@@ -3,9 +3,9 @@
  * Displays key metrics in dashboard cards
  *
  * Design System Usage (matching chart components):
- * - Background: bg-surface (semantic surface color)
- * - Border: border-default (semantic border color)
- * - Text: text-primary (main value), text-secondary (labels)
+ * - Background: bg-white dark:bg-gray-800 (semantic surface color)
+ * - Border: border-gray-300 dark:border-gray-600 (semantic border color)
+ * - Text: text-gray-600 (main value), text-gray-600 (labels)
  * - Typography: font-display (value), font-body (title)
  * - Spacing: p-6 (24px) for card padding
  * - Border Radius: rounded-lg (8px)
@@ -36,21 +36,21 @@ export default function StatsCard({
 }: StatsCardProps) {
   // Map design system colors to Tailwind classes
   const colorClasses = {
-    primary: `bg-primary-50 dark:bg-primary-950/30 text-primary-600 dark:text-primary-400 border-primary-200 dark:border-primary-800`,
-    success: `bg-success-50 dark:bg-success-950/30 text-success-600 dark:text-success-400 border-success-200 dark:border-success-800`,
-    secondary: `bg-secondary-50 dark:bg-secondary-950/30 text-secondary-600 dark:text-secondary-400 border-secondary-200 dark:border-secondary-800`,
-    warning: `bg-warning-50 dark:bg-warning-950/30 text-warning-600 dark:text-warning-400 border-warning-200 dark:border-warning-800`,
-    danger: `bg-danger-50 dark:bg-danger-950/30 text-danger-600 dark:text-danger-400 border-danger-200 dark:border-danger-800`,
+    primary: `bg-blue-50 dark:bg-primary-950/30 text-gray-600 dark:text-gray-400 border-blue-200 dark:border-blue-800`,
+    success: `bg-green-50 dark:bg-success-950/30 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800`,
+    secondary: `bg-purple-50 dark:bg-secondary-950/30 text-gray-600 dark:text-gray-400 border-purple-200 dark:border-purple-800`,
+    warning: `bg-orange-50 dark:bg-warning-950/30 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800`,
+    danger: `bg-red-50 dark:bg-danger-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800`,
   };
 
   return (
-    <div className="bg-surface border-default rounded-lg border p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="font-body text-secondary text-sm font-medium">{title}</p>
-          <p className="font-display text-primary mt-1 text-2xl font-semibold">{value}</p>
+          <p className="font-body text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+          <p className="mt-1 font-display text-2xl font-semibold text-gray-600 dark:text-gray-400">{value}</p>
 
-          {description && <p className="text-secondary mt-1 text-sm">{description}</p>}
+          {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">{description}</p>}
 
           {trend && (
             <div

@@ -19,7 +19,7 @@ export function ErrorModal({ isOpen, onClose, title, message, details }: ErrorMo
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg
                 className="h-6 w-6 text-red-600"
                 fill="none"
@@ -34,9 +34,9 @@ export function ErrorModal({ isOpen, onClose, title, message, details }: ErrorMo
                 />
               </svg>
             </div>
-            <h3 className="ml-3 text-lg font-semibold text-gray-900">{title}</h3>
+            <h3 className="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
           </div>
-          <button onClick={onClose} className="text-gray-400 transition-colors hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 dark:text-gray-600 transition-colors hover:text-gray-600">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -50,12 +50,12 @@ export function ErrorModal({ isOpen, onClose, title, message, details }: ErrorMo
 
         {/* Body */}
         <div className="p-6">
-          <p className="mb-4 text-gray-700">{message}</p>
+          <p className="mb-4 text-gray-700 dark:text-gray-300">{message}</p>
 
           {details && details.length > 0 && (
             <div className="mt-4">
-              <h4 className="mb-2 text-sm font-medium text-gray-900">Details:</h4>
-              <ul className="space-y-1 text-sm text-gray-600">
+              <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Details:</h4>
+              <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                 {details.map((detail, index) => (
                   <li key={index} className="flex items-start">
                     <span className="mr-2 text-red-500">•</span>
@@ -71,7 +71,7 @@ export function ErrorModal({ isOpen, onClose, title, message, details }: ErrorMo
         <div className="flex justify-end rounded-b-lg bg-gray-50 px-6 py-4">
           <button
             onClick={onClose}
-            className="rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className="rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white dark:text-black transition-colors hover:bg-red-700 focus:outline-hidden focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             OK
           </button>

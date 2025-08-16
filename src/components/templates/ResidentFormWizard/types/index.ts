@@ -75,6 +75,20 @@ export interface ResidentFormData {
   // Household Assignment - Step 5
   householdCode: string;
 
+  // Sectoral Information - Step 4
+  isLaborForce: boolean;
+  isLaborForceEmployed: boolean;
+  isUnemployed: boolean;
+  isOverseasFilipino: boolean;
+  isPersonWithDisability: boolean;
+  isOutOfSchoolChildren: boolean;
+  isOutOfSchoolYouth: boolean;
+  isSeniorCitizen: boolean;
+  isRegisteredSeniorCitizen: boolean;
+  isSoloParent: boolean;
+  isIndigenousPeople: boolean;
+  isMigrant: boolean;
+
   // Migration Information - Step 5 (optional)
   migrationInfo: {
     previousBarangayCode?: string;
@@ -96,7 +110,7 @@ export interface ValidationErrors {
 
 export interface StepComponentProps {
   formData: ResidentFormData;
-  onChange: (field: keyof ResidentFormData, value: string | boolean | number | null) => void;
+  onChange: (field: string, value: string | boolean | number | null) => void;
   errors: ValidationErrors;
   onNext: () => void;
   onPrevious: () => void;
@@ -125,7 +139,7 @@ export interface UseResidentFormReturn {
 
   // Actions
   handleInputChange: (
-    field: keyof ResidentFormData,
+    field: string,
     value: string | boolean | number | null
   ) => void;
   handleNextStep: () => void;

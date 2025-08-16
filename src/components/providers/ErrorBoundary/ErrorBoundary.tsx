@@ -42,17 +42,17 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
 function DefaultErrorFallback({ error, resetError }: { error: Error; resetError: () => void }) {
   return (
-    <div className="bg-background flex min-h-screen items-center justify-center">
+    <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
       <div className="space-y-4 p-8 text-center">
         <div className="space-y-2">
           <h1 className="text-foreground text-2xl font-bold">Something went wrong</h1>
-          <p className="text-muted-foreground">An unexpected error occurred in the application.</p>
+          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400-foreground">An unexpected error occurred in the application.</p>
         </div>
 
         <div className="space-y-2">
           <details className="bg-muted rounded-lg p-4 text-left">
             <summary className="cursor-pointer font-medium">Error Details</summary>
-            <pre className="text-muted-foreground mt-2 whitespace-pre-wrap text-sm">
+            <pre className="text-gray-500 dark:text-gray-400 dark:text-gray-400-foreground mt-2 whitespace-pre-wrap text-sm">
               {error.message}
             </pre>
           </details>
@@ -61,13 +61,13 @@ function DefaultErrorFallback({ error, resetError }: { error: Error; resetError:
         <div className="flex justify-center gap-2">
           <button
             onClick={resetError}
-            className="text-primary-foreground bg-primary hover:bg-primary/90 rounded-md px-4 py-2 transition-colors"
+            className="text-white dark:text-black rounded-md bg-blue-600 px-4 py-2 transition-colors hover:bg-blue-600/90"
           >
             Try Again
           </button>
           <button
             onClick={() => (window.location.href = '/')}
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-md px-4 py-2 transition-colors"
+            className="bg-purple-600 text-white dark:text-black hover:bg-purple-600/90 rounded-md px-4 py-2 transition-colors"
           >
             Go to Homepage
           </button>

@@ -89,8 +89,8 @@ export const getSupabaseConfig = () => {
         autoRefreshToken: true,
         persistSession: !isTest(),
         detectSessionInUrl: !isTest(),
-        // Production-ready auth settings
-        storageKey: 'rbi-auth-token',
+        // Use Supabase default storage key for proper session persistence
+        // storageKey: 'rbi-auth-token', // Custom key causes session persistence issues
         storage: typeof window !== 'undefined' ? window.localStorage : undefined,
         flowType: 'pkce' as const,
         debug: isDebugEnabled(),

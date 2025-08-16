@@ -5,7 +5,6 @@
 
 export { default as PersonalInfoCard } from './PersonalInfoCard';
 export { default as ContactInfoCard } from './ContactInfoCard';
-export { default as EducationEmploymentCard } from './EducationEmploymentCard';
 export { default as HealthPhysicalCard } from './HealthPhysicalCard';
 export { default as FamilyVoterCard } from './FamilyVoterCard';
 export { default as SectoralInfoCard } from './SectoralInfoCard';

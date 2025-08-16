@@ -15,7 +15,12 @@ const config: StorybookConfig = {
   ],
   framework: {
     name: '@storybook/nextjs',
-    options: {},
+    options: {
+      nextConfigPath: '../next.config.js',
+    },
+  },
+  features: {
+    experimentalRSC: true,
   },
   // Use absolute path for static directories
   staticDirs: [join(__dirname, '..', 'public')],
@@ -28,6 +33,7 @@ const config: StorybookConfig = {
         '@': join(__dirname, '../src'),
       },
     };
+    
     return config;
   },
 };

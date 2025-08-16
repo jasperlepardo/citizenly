@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 
 interface VotingInfoSectionProps {
@@ -66,9 +66,9 @@ export default function VotingInfoSection({
             checked={formData.is_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
-          <label htmlFor="is_voter" className="text-primary">
+          <label htmlFor="is_voter" className="text-gray-600 dark:text-gray-400">
             Registered Voter
           </label>
         </div>
@@ -81,9 +81,9 @@ export default function VotingInfoSection({
             checked={formData.is_resident_voter || false}
             onChange={handleInputChange}
             disabled={disabled}
-            className="mr-2 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+            className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
           />
-          <label htmlFor="is_resident_voter" className="text-primary">
+          <label htmlFor="is_resident_voter" className="text-gray-600 dark:text-gray-400">
             Resident Voter (votes in this barangay)
           </label>
         </div>
@@ -93,12 +93,12 @@ export default function VotingInfoSection({
       {formData.is_voter && (
         <div className="mt-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
+            <FieldSet
               label="Last Voted Date"
               errorMessage={errors.last_voted_date}
               helperText="Date of last participation in an election"
             >
-              <FormInput
+              <Input
                 type="date"
                 name="last_voted_date"
                 value={formData.last_voted_date || ''}
@@ -106,7 +106,7 @@ export default function VotingInfoSection({
                 disabled={disabled}
                 error={errors.last_voted_date}
               />
-            </FormField>
+            </FieldSet>
           </div>
         </div>
       )}

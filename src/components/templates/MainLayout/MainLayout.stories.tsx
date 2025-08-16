@@ -4,44 +4,44 @@ import MainLayout from './MainLayout';
 
 // Mock Header component for the stories
 const MockHeader = () => (
-  <header className="border-b bg-white shadow-sm">
+  <header className="border-b bg-white shadow-xs">
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="bg-primary-600 flex size-8 items-center justify-center rounded-lg">
-            <span className="font-display text-sm font-bold text-white">RBI</span>
+          <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
+            <span className="font-display text-sm font-bold text-white dark:text-black">RBI</span>
           </div>
-          <span className="font-display text-xl font-semibold text-gray-900">RBI System</span>
+          <span className="font-display text-xl font-semibold text-gray-900 dark:text-gray-100">RBI System</span>
         </div>
         <nav className="hidden space-x-1 md:flex">
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
           >
             Dashboard
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
           >
             Residents
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
           >
             Households
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
           >
             Reports
           </a>
         </nav>
         <div className="flex items-center space-x-3">
-          <div className="bg-primary-100 flex size-8 items-center justify-center rounded-full">
-            <span className="text-primary-600 text-sm font-medium">JD</span>
+          <div className="flex size-8 items-center justify-center rounded-full bg-blue-100">
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">JD</span>
           </div>
         </div>
       </div>
@@ -80,14 +80,14 @@ type Story = StoryObj<typeof meta>;
 // Mock content components for demonstrations
 const BasicContent = () => (
   <div className="space-y-6">
-    <p className="text-gray-600">
+    <p className="text-gray-600 dark:text-gray-400">
       This is basic content within the MainLayout. The layout provides consistent spacing and
       typography while keeping the design clean and focused.
     </p>
 
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <h3 className="mb-3 text-lg font-semibold text-gray-900">Sample Card</h3>
-      <p className="text-sm text-gray-600">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-xs">
+      <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100">Sample Card</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
         Content cards and components work well within the MainLayout structure, maintaining proper
         spacing and alignment.
       </p>
@@ -95,8 +95,8 @@ const BasicContent = () => (
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-blue-900">Layout Benefits</h4>
-        <ul className="space-y-1 text-sm text-blue-800">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Layout Benefits</h4>
+        <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           <li>• Consistent spacing</li>
           <li>• Responsive design</li>
           <li>• Clean typography</li>
@@ -119,7 +119,7 @@ const BasicContent = () => (
 const RichContent = () => (
   <div className="space-y-8">
     <div className="prose max-w-none">
-      <p className="text-lg leading-relaxed text-gray-600">
+      <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
         The MainLayout component serves as a foundation for pages that need a simple, clean
         structure without complex navigation or specialized layouts.
       </p>
@@ -145,16 +145,16 @@ const RichContent = () => (
       ].map((feature, index) => (
         <div
           key={index}
-          className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+          className="rounded-xl border border-gray-200 bg-white p-6 shadow-xs transition-shadow hover:shadow-md"
         >
           <div className="mb-3 text-3xl">{feature.icon}</div>
-          <h3 className="mb-2 text-lg font-semibold text-gray-900">{feature.title}</h3>
-          <p className="text-sm text-gray-600">{feature.description}</p>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">{feature.title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
         </div>
       ))}
     </div>
 
-    <div className="rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 p-8">
+    <div className="rounded-xl border border-indigo-200 bg-linear-to-r from-indigo-50 to-blue-50 p-8">
       <div className="text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
           <svg
@@ -180,11 +180,11 @@ const RichContent = () => (
     </div>
 
     <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <h3 className="mb-4 text-lg font-semibold text-gray-900">Technical Specifications</h3>
+      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Technical Specifications</h3>
       <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
         <div>
-          <h4 className="mb-2 font-medium text-gray-900">Layout Features</h4>
-          <ul className="space-y-1 text-gray-600">
+          <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Layout Features</h4>
+          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>• Full-height background (min-h-screen)</li>
             <li>• Light gray background (bg-gray-50)</li>
             <li>• Maximum width constraint (max-w-7xl)</li>
@@ -193,8 +193,8 @@ const RichContent = () => (
           </ul>
         </div>
         <div>
-          <h4 className="mb-2 font-medium text-gray-900">Typography</h4>
-          <ul className="space-y-1 text-gray-600">
+          <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Typography</h4>
+          <ul className="space-y-1 text-gray-600 dark:text-gray-400">
             <li>• Optional page titles</li>
             <li>• Consistent heading hierarchy</li>
             <li>• Proper text color contrast</li>
@@ -210,19 +210,19 @@ const RichContent = () => (
 const FormContent = () => (
   <div className="space-y-8">
     <div className="text-center">
-      <p className="text-gray-600">
+      <p className="text-gray-600 dark:text-gray-400">
         MainLayout works excellently for form-based pages, providing clean structure and appropriate
         spacing for form elements.
       </p>
     </div>
 
-    <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-      <h2 className="mb-6 text-xl font-semibold text-gray-900">Sample Form</h2>
+    <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-xs">
+      <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-100">Sample Form</h2>
 
       <form className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">First Name</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
             <input
               type="text"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -230,7 +230,7 @@ const FormContent = () => (
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">Last Name</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
             <input
               type="text"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -240,7 +240,7 @@ const FormContent = () => (
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Email Address</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
           <input
             type="email"
             className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -249,7 +249,7 @@ const FormContent = () => (
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Message</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
           <textarea
             rows={4}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -260,13 +260,13 @@ const FormContent = () => (
         <div className="flex items-center justify-between pt-4">
           <button
             type="button"
-            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-lg bg-indigo-600 px-6 py-2 text-white transition-colors hover:bg-indigo-700"
+            className="rounded-lg bg-indigo-600 px-6 py-2 text-white dark:text-black transition-colors hover:bg-indigo-700"
           >
             Submit Form
           </button>
@@ -277,7 +277,7 @@ const FormContent = () => (
     <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
       <div className="flex items-start gap-3">
         <svg
-          className="mt-0.5 h-5 w-5 text-blue-600"
+          className="mt-0.5 h-5 w-5 text-gray-600 dark:text-gray-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -290,8 +290,8 @@ const FormContent = () => (
           />
         </svg>
         <div>
-          <h4 className="text-sm font-medium text-blue-900">Form Layout Benefits</h4>
-          <p className="mt-1 text-sm text-blue-800">
+          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Form Layout Benefits</h4>
+          <p className="mt-1 text-sm text-gray-800 dark:text-gray-200">
             The MainLayout provides proper spacing and width constraints that make forms more
             readable and user-friendly, especially on larger screens.
           </p>
@@ -400,7 +400,7 @@ export const MinimalContent: Story = {
       <div className="py-12 text-center">
         <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
           <svg
-            className="h-12 w-12 text-gray-400"
+            className="h-12 w-12 text-gray-400 dark:text-gray-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -413,8 +413,8 @@ export const MinimalContent: Story = {
             />
           </svg>
         </div>
-        <h2 className="mb-3 text-2xl font-bold text-gray-900">Simple Content</h2>
-        <p className="mx-auto max-w-md text-gray-600">
+        <h2 className="mb-3 text-2xl font-bold text-gray-900 dark:text-gray-100">Simple Content</h2>
+        <p className="mx-auto max-w-md text-gray-600 dark:text-gray-400">
           This demonstrates how MainLayout handles minimal content while maintaining proper spacing
           and visual hierarchy.
         </p>
@@ -438,7 +438,7 @@ export const LongContent: Story = {
     children: (
       <div className="space-y-8">
         <div className="prose max-w-none">
-          <p className="text-lg leading-relaxed text-gray-600">
+          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-400">
             This example demonstrates how MainLayout handles longer content with multiple sections
             and maintains readability throughout the page.
           </p>
@@ -446,16 +446,16 @@ export const LongContent: Story = {
 
         {/* Generate multiple content sections */}
         {Array.from({ length: 8 }, (_, index) => (
-          <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-3 text-lg font-semibold text-gray-900">
+          <div key={index} className="rounded-lg border border-gray-200 bg-white p-6 shadow-xs">
+            <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
               Section {index + 1}: Content Block
             </h3>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
               exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-500">
               <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
               <span>Content section {index + 1} of 8</span>
             </div>
@@ -488,8 +488,8 @@ export const LayoutStructure: Story = {
     children: (
       <div className="space-y-6">
         <div className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-100 p-8 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-blue-900">Header Area</h3>
-          <p className="text-sm text-blue-800">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Header Area</h3>
+          <p className="text-sm text-gray-800 dark:text-gray-200">
             Contains the RBI System branding and navigation (imported via Header component)
           </p>
         </div>
@@ -500,18 +500,18 @@ export const LayoutStructure: Story = {
         </div>
 
         <div className="rounded-xl border-2 border-dashed border-purple-300 bg-purple-100 p-12 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-purple-900">Main Content Area</h3>
-          <p className="mb-4 text-sm text-purple-800">
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Main Content Area</h3>
+          <p className="mb-4 text-sm text-gray-800 dark:text-gray-200">
             This is where the children prop content is rendered
           </p>
           <div className="mx-auto max-w-md rounded-lg border border-purple-200 bg-white p-4">
-            <p className="text-sm text-purple-900">Your content goes here</p>
+            <p className="text-sm text-gray-900 dark:text-gray-100">Your content goes here</p>
           </div>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
-          <h3 className="mb-4 font-semibold text-gray-900">Layout Specifications</h3>
-          <div className="grid grid-cols-1 gap-4 text-sm text-gray-600 md:grid-cols-2">
+          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Layout Specifications</h3>
+          <div className="grid grid-cols-1 gap-4 text-sm text-gray-600 dark:text-gray-400 md:grid-cols-2">
             <div>
               <span className="font-medium">Container:</span> max-w-7xl mx-auto
             </div>
@@ -544,8 +544,8 @@ export const WithoutTitle: Story = {
   args: {
     children: (
       <div className="py-8 text-center">
-        <h2 className="mb-4 text-2xl font-bold text-gray-900">Custom Content Title</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">Custom Content Title</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           When no title prop is provided, you can include your own custom headings and structure
           within the content area.
         </p>

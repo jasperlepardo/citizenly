@@ -188,7 +188,7 @@ export const CustomStyling: Story = {
     position: 'bottom-right',
     showEnvironment: true,
     showVersion: true,
-    className: 'bg-purple-100 text-purple-800 border-purple-200 font-bold',
+    className: 'bg-purple-100 text-gray-800 dark:text-gray-200 border-purple-200 font-bold',
   },
   parameters: {
     docs: {

@@ -10,6 +10,7 @@ import React from 'react';
 
 interface PersonalInfoCardProps {
   resident: {
+    philsys_card_number?: string;
     first_name: string;
     middle_name?: string;
     last_name: string;
@@ -18,9 +19,11 @@ interface PersonalInfoCardProps {
     birthdate: string;
     civil_status: string;
     citizenship?: string;
-    religion?: string;
-    ethnicity?: string;
     birth_place_name?: string;
+    education_attainment?: string;
+    is_graduate?: boolean;
+    employment_status?: string;
+    occupation_title?: string;
   };
   formatFullName: (resident: any) => string;
   formatDate: (dateString: string) => string;
@@ -51,46 +54,77 @@ export default function PersonalInfoCard({
   calculateAge,
 }: PersonalInfoCardProps) {
   return (
-    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
-        👤 Personal Information
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
+        📋 Section 1: Personal Information
       </h2>
       <div className="space-y-3">
+        {/* PhilSys Card Number */}
+        {resident.philsys_card_number && (
+          <div>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">PhilSys Card Number</span>
+            <span className="text-gray-600 dark:text-gray-400">{resident.philsys_card_number}</span>
+          </div>
+        )}
+        
+        {/* Name Information */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Full Name</span>
-          <span className="text-primary">{formatFullName(resident)}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Full Name</span>
+          <span className="text-gray-600 dark:text-gray-400">{formatFullName(resident)}</span>
         </div>
+        
+        {/* Date of Birth & Age */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Sex</span>
-          <span className="text-primary">
-            {resident.sex ? resident.sex.charAt(0).toUpperCase() + resident.sex.slice(1) : '-'}
-          </span>
-        </div>
-        <div>
-          <span className="text-secondary block text-sm font-medium">Date of Birth</span>
-          <span className="text-primary">
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Date of Birth (Age)</span>
+          <span className="text-gray-600 dark:text-gray-400">
             {formatDate(resident.birthdate)} (Age: {calculateAge(resident.birthdate)})
           </span>
         </div>
+        
+        {/* Birth Place */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Civil Status</span>
-          <span className="text-primary">{resident.civil_status || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Birth Place</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.birth_place_name || '-'}</span>
         </div>
+        
+        {/* Sex */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Citizenship</span>
-          <span className="text-primary">{resident.citizenship || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Sex</span>
+          <span className="text-gray-600 dark:text-gray-400">
+            {resident.sex ? resident.sex.charAt(0).toUpperCase() + resident.sex.slice(1) : '-'}
+          </span>
         </div>
+        
+        {/* Civil Status */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Religion</span>
-          <span className="text-primary">{resident.religion || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Civil Status</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.civil_status || '-'}</span>
         </div>
+        
+        {/* Highest Educational Attainment */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Ethnicity</span>
-          <span className="text-primary">{resident.ethnicity || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Highest Educational Attainment</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.education_attainment || '-'}</span>
         </div>
+        
+        {/* Graduate */}
         <div>
-          <span className="text-secondary block text-sm font-medium">Birth Place</span>
-          <span className="text-primary">{resident.birth_place_name || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Graduate (Y/N)</span>
+          <span className="text-gray-600 dark:text-gray-400">
+            {resident.is_graduate !== undefined ? (resident.is_graduate ? 'Yes' : 'No') : '-'}
+          </span>
+        </div>
+        
+        {/* Employment Status */}
+        <div>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Employment Status</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.employment_status || '-'}</span>
+        </div>
+        
+        {/* Occupation Name */}
+        <div>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Occupation Name</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.occupation_title || '-'}</span>
         </div>
       </div>
     </div>

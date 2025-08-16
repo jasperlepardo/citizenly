@@ -160,7 +160,7 @@ function AdvancedExample() {
 All form components implement standardized interfaces:
 
 ```tsx
-interface BaseFormFieldProps {
+interface BaseFieldSetProps {
   label?: string; // Field label
   helperText?: string; // Helper text
   errorMessage?: string; // Error message

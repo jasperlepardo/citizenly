@@ -216,7 +216,7 @@ const ToggleComponent = () => {
             </svg>
           </Button>
         </ButtonGroup>
-        <p className="mt-2 text-sm text-gray-600">Current: {alignment}</p>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Current: {alignment}</p>
       </div>
 
       <div>
@@ -253,7 +253,7 @@ const ToggleComponent = () => {
             </svg>
           </Button>
         </ButtonGroup>
-        <p className="mt-2 text-sm text-gray-600">Current view: {view}</p>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Current view: {view}</p>
       </div>
     </div>
   );

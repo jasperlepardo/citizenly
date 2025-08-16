@@ -43,15 +43,15 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
   if (!migrantInfo) return null;
 
   return (
-    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
         🏃‍♂️ Migration Information
       </h2>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-3">
           <div>
-            <span className="text-secondary block text-sm font-medium">Previous Location</span>
-            <span className="text-primary">
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Previous Location</span>
+            <span className="text-gray-600 dark:text-gray-400">
               {[
                 migrantInfo.previous_barangay_code,
                 migrantInfo.previous_city_municipality_code,
@@ -63,38 +63,38 @@ export default function MigrationInfoCard({ migrantInfo, formatDate }: Migration
             </span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Reason for Leaving</span>
-            <span className="text-primary">{migrantInfo.reason_for_leaving || '-'}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Reason for Leaving</span>
+            <span className="text-gray-600 dark:text-gray-400">{migrantInfo.reason_for_leaving || '-'}</span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Date of Transfer</span>
-            <span className="text-primary">{formatDate(migrantInfo.date_of_transfer || '')}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Date of Transfer</span>
+            <span className="text-gray-600 dark:text-gray-400">{formatDate(migrantInfo.date_of_transfer || '')}</span>
           </div>
         </div>
         <div className="space-y-3">
           <div>
-            <span className="text-secondary block text-sm font-medium">
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">
               Reason for Transferring
             </span>
-            <span className="text-primary">{migrantInfo.reason_for_transferring || '-'}</span>
+            <span className="text-gray-600 dark:text-gray-400">{migrantInfo.reason_for_transferring || '-'}</span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">
               Duration of Stay (months)
             </span>
-            <span className="text-primary">
+            <span className="text-gray-600 dark:text-gray-400">
               {migrantInfo.duration_of_stay_current_months || '-'}
             </span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Intending to Return</span>
-            <span className="text-primary">
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Intending to Return</span>
+            <span className="text-gray-600 dark:text-gray-400">
               {migrantInfo.is_intending_to_return ? 'Yes' : 'No'}
             </span>
           </div>
           <div>
-            <span className="text-secondary block text-sm font-medium">Migration Type</span>
-            <span className="text-primary">{migrantInfo.migration_type || '-'}</span>
+            <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Migration Type</span>
+            <span className="text-gray-600 dark:text-gray-400">{migrantInfo.migration_type || '-'}</span>
           </div>
         </div>
       </div>

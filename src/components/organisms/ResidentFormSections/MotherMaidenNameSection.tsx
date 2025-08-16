@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 
 interface MotherMaidenNameSectionProps {
@@ -52,11 +52,11 @@ export default function MotherMaidenNameSection({
       description="Mother&rsquo;s full maiden name for identification purposes"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <FormField
+        <FieldSet
           label="Mother&rsquo;s Maiden First Name"
           errorMessage={errors.mother_maiden_first}
         >
-          <FormInput
+          <Input
             name="mother_maiden_first"
             value={formData.mother_maiden_first || ''}
             onChange={handleInputChange}
@@ -64,13 +64,13 @@ export default function MotherMaidenNameSection({
             error={errors.mother_maiden_first}
             placeholder="First name"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
+        <FieldSet
           label="Mother&rsquo;s Maiden Middle Name"
           errorMessage={errors.mother_maiden_middle}
         >
-          <FormInput
+          <Input
             name="mother_maiden_middle"
             value={formData.mother_maiden_middle || ''}
             onChange={handleInputChange}
@@ -78,10 +78,10 @@ export default function MotherMaidenNameSection({
             error={errors.mother_maiden_middle}
             placeholder="Middle name (optional)"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField label="Mother&rsquo;s Maiden Last Name" errorMessage={errors.mother_maiden_last}>
-          <FormInput
+        <FieldSet label="Mother&rsquo;s Maiden Last Name" errorMessage={errors.mother_maiden_last}>
+          <Input
             name="mother_maiden_last"
             value={formData.mother_maiden_last || ''}
             onChange={handleInputChange}
@@ -89,7 +89,7 @@ export default function MotherMaidenNameSection({
             error={errors.mother_maiden_last}
             placeholder="Last name"
           />
-        </FormField>
+        </FieldSet>
       </div>
     </FormSection>
   );

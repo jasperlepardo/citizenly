@@ -3,6 +3,11 @@ import { Montserrat } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/providers/Providers';
 import { VersionTag } from '@/components/molecules/VersionTag';
+import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
+import { PWAStatus } from '@/components/molecules/PWAStatus';
+import { AuthDebug } from '@/components/molecules/AuthDebug';
+import { ConnectionStatus, PWADevTools } from '@/components/molecules';
+import LastVisitedTracker from '@/components/providers/LastVisitedTracker';
 
 // Configure Montserrat font with Next.js font optimization
 const montserrat = Montserrat({
@@ -13,17 +18,77 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'RBI System - Records of Barangay Inhabitant System',
-  description: 'Complete digital solution for Philippine barangay resident management',
+  title: 'Citizenly - Barangay Management System',
+  description: 'Modern barangay management system for efficient resident data management and community services',
+  manifest: '/manifest.json',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Citizenly',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/icons/icon-152x152.png', sizes: '152x152', type: 'image/png' },
+      { url: '/icons/icon-180x180.png', sizes: '180x180', type: 'image/png' },
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
+  keywords: [
+    'barangay',
+    'management',
+    'residents',
+    'government',
+    'Philippines',
+    'PWA',
+    'local government',
+    'community',
+  ],
+  authors: [{ name: 'Citizenly Team' }],
+  creator: 'Citizenly',
+  publisher: 'Citizenly',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
+  themeColor: '#111827',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={montserrat.variable}>
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossOrigin="anonymous" />
+        <script src="https://kit.fontawesome.com/ccbd88a632.js" crossOrigin="anonymous" async></script>
+      </head>
       <body className={montserrat.className} suppressHydrationWarning={true}>
         <Providers>
+          <LastVisitedTracker />
+          <ConnectionStatus />
           {children}
           <VersionTag />
+          <PWAInstallPrompt />
+          <PWAStatus />
+          <PWADevTools />
+          <AuthDebug />
         </Providers>
       </body>
     </html>

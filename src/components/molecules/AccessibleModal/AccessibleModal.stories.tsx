@@ -72,10 +72,10 @@ export const Default: Story = {
     children: (
       <div className="space-y-4">
         <p>This action cannot be undone. Please confirm that you want to proceed.</p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           This modal demonstrates proper accessibility features including:
         </p>
-        <ul className="list-inside list-disc space-y-1 text-sm text-gray-600">
+        <ul className="list-inside list-disc space-y-1 text-sm text-gray-600 dark:text-gray-400">
           <li>Focus trap management</li>
           <li>Keyboard navigation (Escape to close)</li>
           <li>Screen reader announcements</li>

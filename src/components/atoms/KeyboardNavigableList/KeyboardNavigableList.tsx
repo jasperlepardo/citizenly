@@ -71,7 +71,7 @@ export default function KeyboardNavigableList({
       role={role}
       aria-orientation={orientation}
       className={cn(
-        'focus:outline-none',
+        'focus:outline-hidden',
         orientation === 'horizontal' ? 'flex flex-row' : 'flex flex-col',
         className
       )}
@@ -86,9 +86,9 @@ export default function KeyboardNavigableList({
           onClick={() => !item.disabled && onSelect(item)}
           className={cn(
             'flex items-center gap-2 px-3 py-2 text-left transition-colors',
-            'focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500',
+            'focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500',
             selectedId === item.id
-              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+              ? 'bg-blue-50 text-gray-700 dark:bg-blue-900/20 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400'
               : 'hover:bg-gray-100 dark:hover:bg-gray-800',
             item.disabled && 'cursor-not-allowed opacity-50',
             itemClassName
@@ -134,9 +134,9 @@ export function ListItem({
       }}
       className={cn(
         'flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors',
-        'focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500',
+        'focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500',
         selected
-          ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
+          ? 'bg-blue-50 text-gray-700 dark:bg-blue-900/20 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400'
           : 'hover:bg-gray-100 dark:hover:bg-gray-800',
         disabled && 'cursor-not-allowed opacity-50',
         className

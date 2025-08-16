@@ -202,10 +202,10 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
   };
 
   return (
-    <div className="bg-surface border-default mx-auto max-w-md rounded-lg border p-6 shadow-md">
+    <div className="bg-white dark:bg-gray-800 mx-auto max-w-md rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
       <div className="mb-6 text-center">
-        <h2 className="text-primary mb-2 text-xl font-bold">Development Setup</h2>
-        <p className="text-secondary text-sm">Create demo users for testing the RBI System</p>
+        <h2 className="mb-2 text-xl font-bold text-gray-600 dark:text-gray-400">Development Setup</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Create demo users for testing the RBI System</p>
       </div>
 
       <div className="space-y-4">
@@ -213,7 +213,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         <button
           onClick={setupDemoData}
           disabled={isCreating}
-          className="text-inverse bg-primary hover:bg-primary-600 flex w-full items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+          className="text-inverse flex w-full items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isCreating ? (
             <>
@@ -245,8 +245,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         </button>
 
         {/* Quick Login Buttons */}
-        <div className="border-default border-t pt-4">
-          <p className="text-secondary mb-2 text-xs">If users already exist:</p>
+        <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
+          <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">If users already exist:</p>
           <div className="space-y-2">
             <button
               onClick={() => {
@@ -256,13 +256,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
                 }
               }}
               disabled={!devModeAvailable}
-              className="hover:bg-surface-hover disabled:bg-background-muted border-default text-primary w-full rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed"
+              className="hover:bg-gray-50 dark:bg-gray-700 disabled:bg-gray-100 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 disabled:cursor-not-allowed"
             >
               Login as Barangay Admin
             </button>
             <button
               onClick={() => directLogin('clerk@gmail.com')}
-              className="hover:bg-surface-hover border-default text-primary w-full rounded-md border px-3 py-2 text-sm"
+              className="hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
             >
               Login as Clerk
             </button>
@@ -271,15 +271,15 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Status Message */}
         {message && (
-          <div className="bg-surface-hover border-default rounded-md border p-3">
-            <p className="text-primary font-mono text-sm">{message}</p>
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600 p-3">
+            <p className="font-mono text-sm text-gray-600 dark:text-gray-400">{message}</p>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="text-secondary space-y-1 text-xs">
+        <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
           {!devModeAvailable ? (
-            <div className="text-danger">
+            <div className="text-red-600">
               <p>
                 <strong>Development Mode Not Available</strong>
               </p>
@@ -295,7 +295,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
               <p>
                 <strong>Development Mode Active</strong>
               </p>
-              <p className="text-warning">
+              <p className="text-orange-600">
                 <strong>⚠️ Warning:</strong> This should only be used in development!
               </p>
               <p>Credentials are loaded from environment variables</p>

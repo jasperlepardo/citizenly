@@ -1,25 +1,11 @@
-import Link from 'next/link';
-import { Button } from '@/components/atoms';
-import { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Citizenly - Barangay Management System',
-  description:
-    'Modern barangay management system for efficient resident registration, household management, and community administration in the Philippines.',
-  keywords: ['barangay', 'management', 'residents', 'households', 'Philippines', 'PSGC', 'RBI'],
-  authors: [{ name: 'Citizenly Development Team' }],
-  openGraph: {
-    title: 'Citizenly - Barangay Management System',
-    description: 'Streamline your barangay operations with our comprehensive management platform',
-    type: 'website',
-    siteName: 'Citizenly',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Citizenly - Barangay Management System',
-    description: 'Modern barangay management for the digital age',
-  },
-};
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/atoms';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLastVisitedPage } from '@/hooks/useLastVisitedPage';
+import { useEffect } from 'react';
 
 /**
  * HomePage Component
@@ -35,54 +21,117 @@ export const metadata: Metadata = {
  * ```
  */
 export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const { getLastVisitedPage } = useLastVisitedPage();
+
+  useEffect(() => {
+    document.title = 'Citizenly - Barangay Management System';
+  }, []);
+
+  // Handle authentication-based routing
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        // Authenticated users: go to last visited page or dashboard
+        const lastVisited = getLastVisitedPage();
+        console.log('User is authenticated, redirecting to:', lastVisited);
+        router.push(lastVisited);
+      } else {
+        // Unauthenticated users: go directly to login for PWA
+        console.log('User not authenticated, redirecting to login');
+        router.push('/login');
+      }
+    }
+  }, [user, loading, router, getLastVisitedPage]);
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block size-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <h2 className="mt-4 text-lg font-medium text-gray-600 dark:text-gray-400">Loading...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Show landing page only for unauthenticated users
+  if (user) {
+    return null; // Will redirect to dashboard
+  }
+
   return (
-    <div className="from-primary-50 to-primary-100 min-h-screen bg-gradient-to-br dark:from-neutral-900 dark:to-neutral-800">
+    <div className="min-h-screen bg-linear-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
       {/* Header */}
-      <header className="bg-surface border-default border-b shadow-sm">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-xs" role="banner">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <span className="font-display text-primary text-xl font-semibold">Citizenly</span>
+              <h1 className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">Citizenly</h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <nav className="flex items-center space-x-4" role="navigation" aria-label="Main navigation">
               <Link
                 href="/login"
-                className="text-secondary hover:text-primary rounded-md px-3 py-2 text-sm font-medium transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:text-gray-900 dark:hover:text-gray-100 dark:text-gray-900"
               >
                 Sign In
               </Link>
               <Link href="/login">
-                <Button variant="primary" size="sm">
+                <Button variant="primary" size="sm" aria-label="Get started with Citizenly">
                   Get Started
                 </Button>
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h1 className="font-display text-primary text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8" role="main">
+        <section className="text-center" aria-labelledby="hero-title">
+          <h2 id="hero-title" className="font-montserrat text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl md:text-6xl">
             <span className="block">Citizenly</span>
-            <span className="text-primary-600 mt-2 block text-2xl sm:text-3xl md:text-4xl">
+            <span className="mt-2 block text-2xl text-gray-700 dark:text-gray-300 sm:text-3xl md:text-4xl">
               Records of Barangay Inhabitant System
             </span>
-          </h1>
-          <p className="font-body text-secondary mx-auto mt-3 max-w-md text-base sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
+          </h2>
+          <p className="mx-auto mt-3 max-w-md font-montserrat text-base text-gray-700 dark:text-gray-300 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
             Complete digital solution for Philippine barangay resident management, built for local
             government units to efficiently manage their communities.
           </p>
+          
+          {/* Icon Test & Click Test */}
+          <div className="mt-6 flex justify-center items-center space-x-4">
+            <i className="fas fa-home text-xl text-blue-600" title="Home"></i>
+            <i className="fas fa-users text-xl text-green-600" title="Users"></i>
+            <i className="fas fa-tachometer-alt text-xl text-yellow-600" title="Dashboard"></i>
+            <i className="fas fa-cog text-xl text-purple-600" title="Settings"></i>
+          </div>
+          
+          {/* Click Test Button */}
+          <div className="mt-4 text-center">
+            <button 
+              className="debug-click bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+              onClick={() => alert('Button clicked! Interactions are working.')}
+              onMouseEnter={() => console.log('Button hovered')}
+              style={{ position: 'relative', zIndex: 1000 }}
+            >
+              Test Click Here
+            </button>
+          </div>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
-            <div className="rounded-md shadow">
-              <Link href="/login">
+            <div className="rounded-md shadow-sm">
+              <Link href="/login"
+                aria-label="Access the Citizenly barangay management system"
+              >
                 <Button variant="primary" size="lg" className="w-full sm:w-auto">
                   Get Started
                 </Button>
               </Link>
             </div>
-            <div className="mt-3 rounded-md shadow sm:ml-3 sm:mt-0">
+            <div className="mt-3 rounded-md shadow-sm sm:ml-3 sm:mt-0">
               <Link href="/dashboard">
                 <Button variant="secondary" size="lg" className="w-full sm:w-auto">
                   View Demo
@@ -90,22 +139,22 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Features Grid */}
-        <div className="mt-20">
+        <section className="mt-20" aria-labelledby="features-title">
           <div className="text-center">
-            <h2 className="font-display text-primary mb-12 text-3xl font-extrabold">
+            <h3 id="features-title" className="mb-12 font-montserrat text-3xl font-extrabold text-gray-900 dark:text-gray-100">
               Everything you need to manage your barangay
-            </h2>
+            </h3>
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Resident Management */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-primary-100 dark:bg-primary-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/20">
                 <svg
-                  className="text-primary-600 dark:text-primary-400 size-6"
+                  className="size-6 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -118,20 +167,20 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Resident Management
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Complete resident registration with demographics, family relationships, and PSOC
                 integration for comprehensive household management.
               </p>
             </div>
 
             {/* Address System */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-success-100 dark:bg-success-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/20">
                 <svg
-                  className="text-success-600 dark:text-success-400 size-6"
+                  className="size-6 text-green-600 dark:text-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -150,20 +199,20 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Smart Address System
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Complete Philippine geographic hierarchy with cascading dropdowns, address
                 validation, and PSGC compliance.
               </p>
             </div>
 
             {/* Analytics */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-secondary-100 dark:bg-secondary-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/20">
                 <svg
-                  className="text-secondary-600 dark:text-secondary-400 size-6"
+                  className="size-6 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -176,20 +225,20 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Reports & Analytics
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Generate comprehensive reports, population analytics, and demographic insights for
                 informed decision making.
               </p>
             </div>
 
             {/* Search & Filter */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-warning-100 dark:bg-warning-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/20">
                 <svg
-                  className="text-warning-600 dark:text-warning-400 size-6"
+                  className="size-6 text-orange-600 dark:text-orange-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -202,20 +251,20 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Advanced Search
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Powerful search and filtering capabilities to quickly find residents, households,
                 and generate targeted lists.
               </p>
             </div>
 
             {/* Security */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-danger-100 dark:bg-danger-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/20">
                 <svg
-                  className="text-danger-600 dark:text-danger-400 size-6"
+                  className="size-6 text-red-600 dark:text-red-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -228,20 +277,20 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Secure & Compliant
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Built with security best practices, data privacy compliance, and role-based access
                 control for safe operations.
               </p>
             </div>
 
             {/* Digital Forms */}
-            <div className="bg-surface border-default rounded-xl border p-8 shadow-md transition-shadow hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="bg-rbi-govBlue/10 dark:bg-rbi-govBlue/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+              <div className="bg-blue-100 dark:bg-blue-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
                 <svg
-                  className="text-rbi-govBlue dark:text-rbi-govBlue size-6"
+                  className="text-blue-600 dark:text-blue-400 size-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -254,25 +303,26 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="font-display text-primary mb-2 text-xl font-semibold">
+              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Digital Forms
               </h3>
-              <p className="font-body text-secondary">
+              <p className="font-montserrat text-gray-600 dark:text-gray-400">
                 Streamlined digital forms for certifications, business permits, and other barangay
                 documents with automated processing.
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* CTA Section */}
-        <div className="bg-primary-600 dark:bg-primary-700 mt-20 rounded-2xl shadow-xl">
+        <section className="mt-20"  aria-labelledby="cta-title">
+        <div className="mt-20 rounded-2xl bg-blue-600 shadow-xl dark:bg-blue-700">
           <div className="px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
             <div className="text-center">
-              <h2 className="text-inverse font-display text-3xl font-extrabold">
+              <h2 id="cta-title" className="text-white dark:text-black font-montserrat text-3xl font-extrabold">
                 Ready to modernize your barangay?
               </h2>
-              <p className="font-body text-primary-100 dark:text-primary-200 mt-4 text-lg">
+              <p className="mt-4 font-montserrat text-lg text-gray-100 dark:text-gray-200">
                 Join local government units across the Philippines in digitizing their resident
                 management systems.
               </p>
@@ -286,16 +336,17 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-surface border-default mt-20 border-t dark:border-neutral-700 dark:bg-neutral-900">
+      <footer className="bg-white dark:bg-gray-900 mt-20 border-t border-gray-200 dark:border-gray-700" role="contentinfo">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-4 flex items-center justify-center">
-              <span className="font-display text-primary text-xl font-semibold">Citizenly</span>
+              <span className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">Citizenly</span>
             </div>
-            <p className="font-body text-secondary">
+            <p className="font-montserrat text-gray-700 dark:text-gray-300">
               © 2024 Citizenly. Built for Philippine Local Government Units.
             </p>
           </div>

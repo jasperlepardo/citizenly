@@ -4,15 +4,14 @@ import ProtectedRoute from './ProtectedRoute';
 
 // Mock Next.js router
 const mockRouter = {
-  push: jest.fn(),
-  replace: jest.fn(),
-  back: jest.fn(),
+  push: () => {},
+  replace: () => {},
+  back: () => {},
 };
 
 const MockNextRouter = ({ children }: { children: React.ReactNode }) => {
-  jest.doMock('next/navigation', () => ({
-    useRouter: () => mockRouter,
-  }));
+  // Note: Next.js navigation mocking would be handled by Storybook
+  console.log('Router mock would be configured here');
   return <>{children}</>;
 };
 
@@ -23,8 +22,8 @@ const createMockAuthContext = (overrides = {}) => ({
   role: null,
   loading: false,
   profileLoading: false,
-  hasPermission: jest.fn().mockReturnValue(false),
-  isInRole: jest.fn().mockReturnValue(false),
+  hasPermission: () => false,
+  isInRole: () => false,
   ...overrides,
 });
 
@@ -35,9 +34,8 @@ const MockAuthProvider = ({
   children: React.ReactNode;
   authValue: any;
 }) => {
-  jest.doMock('@/contexts/AuthContext', () => ({
-    useAuth: () => authValue,
-  }));
+  // Note: AuthContext mocking would be handled by Storybook
+  console.log('AuthContext mock would be configured here');
 
   return <>{children}</>;
 };
@@ -235,7 +233,7 @@ export const RoleBasedAccessGranted: Story = {
             name: 'barangay_admin',
             permissions: { all: true },
           },
-          isInRole: jest.fn().mockReturnValue(true),
+          isInRole: () => true,
         })}
       >
         <Story />
@@ -270,7 +268,7 @@ export const RoleBasedAccessDenied: Story = {
             name: 'barangay_clerk',
             permissions: { residents_view: true },
           },
-          isInRole: jest.fn().mockReturnValue(false),
+          isInRole: () => false,
         })}
       >
         <Story />
@@ -305,7 +303,7 @@ export const PermissionBasedAccessGranted: Story = {
             name: 'barangay_clerk',
             permissions: { residents_view: true },
           },
-          hasPermission: jest.fn().mockReturnValue(true),
+          hasPermission: () => true,
         })}
       >
         <Story />
@@ -340,7 +338,7 @@ export const PermissionBasedAccessDenied: Story = {
             name: 'barangay_clerk',
             permissions: { residents_view: true },
           },
-          hasPermission: jest.fn().mockReturnValue(false),
+          hasPermission: () => false,
         })}
       >
         <Story />
@@ -380,7 +378,7 @@ export const CustomFallback: Story = {
         <p className="mb-4 text-yellow-700">
           This area requires administrator privileges to access barangay management features.
         </p>
-        <button className="rounded bg-yellow-600 px-4 py-2 text-white hover:bg-yellow-700">
+        <button className="rounded bg-yellow-600 px-4 py-2 text-white dark:text-black hover:bg-yellow-700">
           Request Access
         </button>
       </div>
@@ -402,8 +400,8 @@ export const CustomLoadingComponent: Story = {
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="font-medium text-blue-600">Verifying your credentials...</p>
-          <p className="mt-2 text-sm text-gray-500">Please wait while we check your access level</p>
+          <p className="font-medium text-gray-600 dark:text-gray-400">Verifying your credentials...</p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">Please wait while we check your access level</p>
         </div>
       </div>
     ),
@@ -445,7 +443,7 @@ export const InteractiveRoleHierarchy: Story = {
             name: 'barangay_clerk',
             permissions: { residents_view: true },
           },
-          isInRole: jest.fn().mockReturnValue(false),
+          isInRole: () => false,
         })}
       >
         <Story />
@@ -502,7 +500,7 @@ export const InteractivePermissionMatrix: Story = {
             name: 'barangay_clerk',
             permissions: { residents_view: true, residents_create: false },
           },
-          hasPermission: jest.fn().mockReturnValue(false),
+          hasPermission: () => false,
         })}
       >
         <Story />

@@ -13,9 +13,9 @@ interface ContactInfoCardProps {
     email?: string;
     mobile_number?: string;
     telephone_number?: string;
-    philsys_card_number?: string;
     household_code?: string;
     household?: {
+      name?: string;
       house_number?: string;
       address?: string;
     };
@@ -36,41 +36,27 @@ interface ContactInfoCardProps {
  */
 export default function ContactInfoCard({ resident }: ContactInfoCardProps) {
   return (
-    <div className="bg-surface border-default rounded-xl border p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h2 className="text-primary mb-4 flex items-center gap-2 text-xl font-semibold">
-        📞 Contact Information
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs transition-shadow hover:shadow-md">
+      <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
+        📞 Section 2: Contact Details
       </h2>
       <div className="space-y-3">
         <div>
-          <span className="text-secondary block text-sm font-medium">Email</span>
-          <span className="text-primary">{resident.email || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Email Address</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.email || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Mobile Number</span>
-          <span className="text-primary">{resident.mobile_number || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Mobile Number</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.mobile_number || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">Telephone Number</span>
-          <span className="text-primary">{resident.telephone_number || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Telephone Number</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.telephone_number || '-'}</span>
         </div>
         <div>
-          <span className="text-secondary block text-sm font-medium">PhilSys Card Number</span>
-          <span className="text-primary">{resident.philsys_card_number || '-'}</span>
+          <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Household Name</span>
+          <span className="text-gray-600 dark:text-gray-400">{resident.household?.name || '-'}</span>
         </div>
-        <div>
-          <span className="text-secondary block text-sm font-medium">Household Code</span>
-          <span className="text-primary">{resident.household_code || '-'}</span>
-        </div>
-        {resident.household && (
-          <div>
-            <span className="text-secondary block text-sm font-medium">Address</span>
-            <span className="text-primary">
-              {[resident.household.house_number, resident.household.address]
-                .filter(Boolean)
-                .join(', ') || '-'}
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );

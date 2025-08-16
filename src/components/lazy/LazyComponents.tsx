@@ -13,8 +13,8 @@ function LoadingFallback({ height = '200px' }: { height?: string }) {
       style={{ minHeight: height }}
     >
       <div className="flex flex-col items-center gap-3">
-        <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
-        <span className="text-sm text-gray-600">Loading...</span>
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        <span className="text-sm text-gray-600 dark:text-gray-400">Loading...</span>
       </div>
     </div>
   );
@@ -26,13 +26,13 @@ function FormSkeleton() {
     <div className="space-y-6 p-6">
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="space-y-2">
-          <div className="h-4 w-1/4 rounded bg-gray-200"></div>
-          <div className="h-10 rounded bg-gray-100"></div>
+          <div className="h-4 w-1/4 rounded-sm bg-gray-200"></div>
+          <div className="h-10 rounded-sm bg-gray-100"></div>
         </div>
       ))}
       <div className="flex gap-3">
-        <div className="h-10 w-24 rounded bg-gray-200"></div>
-        <div className="h-10 w-24 rounded bg-gray-200"></div>
+        <div className="h-10 w-24 rounded-sm bg-gray-200"></div>
+        <div className="h-10 w-24 rounded-sm bg-gray-200"></div>
       </div>
     </div>
   );
@@ -42,17 +42,17 @@ function FormSkeleton() {
 function TableSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="h-8 w-1/3 rounded bg-gray-200"></div>
+      <div className="h-8 w-1/3 rounded-sm bg-gray-200"></div>
       <div className="space-y-2">
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-6 rounded bg-gray-300"></div>
+            <div key={i} className="h-6 rounded-sm bg-gray-300"></div>
           ))}
         </div>
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="grid grid-cols-4 gap-4">
             {Array.from({ length: 4 }).map((_, j) => (
-              <div key={j} className="h-6 rounded bg-gray-100"></div>
+              <div key={j} className="h-6 rounded-sm bg-gray-100"></div>
             ))}
           </div>
         ))}
@@ -97,11 +97,6 @@ const UserProfileLazy = lazy(() =>
   }))
 );
 
-const AddressSelectorLazy = lazy(() =>
-  import('@/components/organisms/AddressSelector').then(module => ({
-    default: module.AddressSelector,
-  }))
-);
 
 const PersonalInformationLazy = lazy(() =>
   import('@/components/organisms/PersonalInformation').then(module => ({
@@ -115,11 +110,6 @@ const SectoralInfoLazy = lazy(() =>
   }))
 );
 
-const EducationEmploymentLazy = lazy(() =>
-  import('@/components/organisms/EducationEmployment').then(module => ({
-    default: module.EducationEmployment,
-  }))
-);
 
 const ErrorModalLazy = lazy(() =>
   import('@/components/molecules/ErrorModal').then(module => ({
@@ -134,11 +124,6 @@ const SuccessModalLazy = lazy(() =>
 );
 
 // Geographic selector components
-const CascadingGeographicSelectorLazy = lazy(() =>
-  import('@/components/molecules/CascadingGeographicSelector').then(module => ({
-    default: module.CascadingGeographicSelector,
-  }))
-);
 
 const GeographicLocationStepLazy = lazy(() =>
   import('@/components/organisms/GeographicLocationStep').then(module => ({
@@ -158,26 +143,16 @@ export const PopulationPyramid = withLazyLoading(
 
 export const UserProfile = withLazyLoading(UserProfileLazy, <FormSkeleton />);
 
-export const AddressSelector = withLazyLoading(
-  AddressSelectorLazy,
-  <LoadingFallback height="120px" />
-);
-
 export const PersonalInformation = withLazyLoading(PersonalInformationLazy, <FormSkeleton />);
 
 export const SectoralInfo = withLazyLoading(SectoralInfoLazy, <FormSkeleton />);
 
-export const EducationEmployment = withLazyLoading(EducationEmploymentLazy, <FormSkeleton />);
 
 export const ErrorModal = withLazyLoading(ErrorModalLazy);
 
 export const SuccessModal = withLazyLoading(SuccessModalLazy);
 
 // Geographic selector components with loading states
-export const CascadingGeographicSelector = withLazyLoading(
-  CascadingGeographicSelectorLazy,
-  <LoadingFallback height="300px" />
-);
 
 export const GeographicLocationStep = withLazyLoading(GeographicLocationStepLazy, <FormSkeleton />);
 
@@ -187,13 +162,10 @@ export const preloadComponents = {
   dataTable: () => import('@/components/organisms/DataTable'),
   populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
   userProfile: () => import('@/components/organisms/UserProfile'),
-  addressSelector: () => import('@/components/organisms/AddressSelector'),
   personalInformation: () => import('@/components/organisms/PersonalInformation'),
   sectoralInfo: () => import('@/components/organisms/SectoralInfo'),
-  educationEmployment: () => import('@/components/organisms/EducationEmployment'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),
-  cascadingGeographicSelector: () => import('@/components/molecules/CascadingGeographicSelector'),
   geographicLocationStep: () => import('@/components/organisms/GeographicLocationStep'),
 };
 
