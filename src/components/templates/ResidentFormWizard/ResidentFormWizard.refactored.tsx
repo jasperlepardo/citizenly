@@ -7,21 +7,32 @@
  * All business logic has been extracted to services and hooks.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useResidentOperations } from '@/hooks/useResidentOperations';
 import { ResidentFormData } from '@/services/resident.service';
 
 // Import our organism components
 import {
-  PersonalInformation,
-  EducationEmployment,
-  PhysicalCharacteristics,
+  PersonalInformationForm,
+  RbiPhysicalCharacteristics,
   MigrantInformation,
-  MotherMaidenName,
-  ResidentStatusSelector,
-  SectoralInfo,
 } from '@/components/organisms';
+
+// Helper function to get step indicator classes
+const getStepClasses = (
+  currentStep: number,
+  stepId: number,
+  completedSteps: Set<number>
+): string => {
+  if (currentStep === stepId) {
+    return 'flex h-10 w-10 items-center justify-center rounded-full border-2 border-blue-600 bg-blue-600 text-white dark:text-white';
+  }
+  if (currentStep > stepId || completedSteps.has(stepId)) {
+    return 'flex h-10 w-10 items-center justify-center rounded-full border-2 border-green-600 bg-green-600 text-white dark:text-white';
+  }
+  return 'flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400';
+};
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
@@ -123,23 +134,18 @@ export default function ResidentFormWizard({
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
   // Use the custom hook for all business operations
-  const {
-    createResident,
-    validateResident,
-    isSubmitting,
-    validationErrors,
-    clearValidationErrors,
-  } = useResidentOperations({
-    onSuccess: data => {
-      // Handle success - redirect to residents list or show success message
-      alert('Resident created successfully!');
-      router.push('/residents');
-    },
-    onError: error => {
-      // Handle error - show error message
-      alert(error);
-    },
-  });
+  const { createResident, isSubmitting, validationErrors, clearValidationErrors } =
+    useResidentOperations({
+      onSuccess: _data => {
+        // Handle success - redirect to residents list or show success message
+        alert('Resident created successfully!');
+        router.push('/residents');
+      },
+      onError: error => {
+        // Handle error - show error message
+        alert(error);
+      },
+    });
 
   // Form steps configuration
   const steps: FormStep[] = [
@@ -147,19 +153,19 @@ export default function ResidentFormWizard({
       id: 1,
       title: 'Personal Information',
       description: 'Basic personal details',
-      component: PersonalInformation,
+      component: PersonalInformationForm,
     },
-    {
-      id: 2,
-      title: 'Education & Employment',
-      description: 'Educational background and work details',
-      component: EducationEmployment,
-    },
+    // {
+    //   id: 2,
+    //   title: 'Education & Employment',
+    //   description: 'Educational background and work details',
+    //   component: EducationEmployment,
+    // },
     {
       id: 3,
       title: 'Additional Details',
       description: 'Contact, physical, and family information',
-      component: PhysicalCharacteristics,
+      component: RbiPhysicalCharacteristics,
     },
     {
       id: 4,
@@ -285,15 +291,7 @@ export default function ResidentFormWizard({
             <div className="flex items-center justify-between">
               {steps.map((step, index) => (
                 <div key={step.id} className="flex items-center">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                      currentStep === step.id
-                        ? 'border-blue-600 bg-blue-600 text-white dark:text-black'
-                        : currentStep > step.id || completedSteps.has(step.id)
-                          ? 'border-green-600 bg-green-600 text-white dark:text-black'
-                          : 'border-gray-300 bg-white text-gray-500 dark:text-gray-500 dark:text-gray-500 dark:text-gray-500'
-                    }`}
-                  >
+                  <div className={getStepClasses(currentStep, step.id, completedSteps)}>
                     {currentStep > step.id || completedSteps.has(step.id) ? (
                       <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -323,7 +321,9 @@ export default function ResidentFormWizard({
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {steps[currentStep - 1].title}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{steps[currentStep - 1].description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {steps[currentStep - 1].description}
+              </p>
             </div>
           </div>
         )}
@@ -406,13 +406,17 @@ function HouseholdAssignment({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Household Assignment</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+          Household Assignment
+        </h3>
         <div className="space-y-4">
           <InputField
             label="Household Code"
-            value={data.householdCode}
-            onChange={e => onChange({ householdCode: e.target.value })}
-            placeholder="Enter household code"
+            inputProps={{
+              value: data.householdCode,
+              onChange: e => onChange({ householdCode: e.target.value }),
+              placeholder: 'Enter household code',
+            }}
             required
             errorMessage={errors.householdCode}
           />

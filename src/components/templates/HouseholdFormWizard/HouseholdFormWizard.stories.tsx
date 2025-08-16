@@ -16,8 +16,10 @@ class NextJsErrorBoundary extends React.Component<
 
   static getDerivedStateFromError(error: Error) {
     // Check if it's a Next.js router error
-    if (error.message.includes('NextjsRouterMocksNotAvailable') || 
-        error.message.includes('next/navigation')) {
+    if (
+      error.message.includes('NextjsRouterMocksNotAvailable') ||
+      error.message.includes('next/navigation')
+    ) {
       return { hasError: true, error };
     }
     // Let other errors propagate
@@ -30,18 +32,31 @@ class NextJsErrorBoundary extends React.Component<
         <div className="mx-auto max-w-4xl p-8">
           <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-6">
             <div className="flex items-center gap-3">
-              <svg className="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className="h-6 w-6 text-yellow-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
               <div>
-                <h3 className="text-lg font-semibold text-yellow-800">Next.js Dependencies Required</h3>
+                <h3 className="text-lg font-semibold text-yellow-800">
+                  Next.js Dependencies Required
+                </h3>
                 <p className="mt-1 text-yellow-700">
-                  The HouseholdFormWizard component requires Next.js router and other server-side dependencies 
-                  that are not available in the Storybook environment.
+                  The HouseholdFormWizard component requires Next.js router and other server-side
+                  dependencies that are not available in the Storybook environment.
                 </p>
                 <p className="mt-2 text-sm text-yellow-600">
-                  This component works correctly in the Next.js application but cannot be fully rendered in Storybook 
-                  due to dependencies on useRouter, Supabase client, and custom hooks.
+                  This component works correctly in the Next.js application but cannot be fully
+                  rendered in Storybook due to dependencies on useRouter, Supabase client, and
+                  custom hooks.
                 </p>
               </div>
             </div>
@@ -50,18 +65,19 @@ class NextJsErrorBoundary extends React.Component<
           {/* Show component documentation instead */}
           <div className="mt-8">
             <h2 className="mb-4 text-2xl font-bold text-gray-800">HouseholdFormWizard Component</h2>
-            
+
             <div className="space-y-6">
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <h3 className="font-semibold text-blue-900">Purpose</h3>
                 <p className="text-blue-800">
-                  A comprehensive multi-step form wizard for creating new household records in the barangay system.
+                  A comprehensive multi-step form wizard for creating new household records in the
+                  barangay system.
                 </p>
               </div>
 
               <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                 <h3 className="font-semibold text-green-900">Features</h3>
-                <ul className="list-disc list-inside space-y-1 text-green-800">
+                <ul className="list-inside list-disc space-y-1 text-green-800">
                   <li>4-step wizard: Basic Info → Location → Composition → Economic Data</li>
                   <li>Real-time validation with error handling</li>
                   <li>Integration with PSGC geographic data</li>
@@ -72,7 +88,7 @@ class NextJsErrorBoundary extends React.Component<
 
               <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
                 <h3 className="font-semibold text-purple-900">Dependencies</h3>
-                <ul className="list-disc list-inside space-y-1 text-purple-800">
+                <ul className="list-inside list-disc space-y-1 text-purple-800">
                   <li>Next.js useRouter for navigation</li>
                   <li>Supabase client for data persistence</li>
                   <li>useUserBarangay hook for geographic context</li>
@@ -91,11 +107,7 @@ class NextJsErrorBoundary extends React.Component<
 
 // Mock the required hooks and contexts
 const MockProviders = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <NextJsErrorBoundary>
-      {children}
-    </NextJsErrorBoundary>
-  );
+  return <NextJsErrorBoundary>{children}</NextJsErrorBoundary>;
 };
 
 // Wrapper component to handle form submission
@@ -115,13 +127,10 @@ const WizardWrapper = ({
     } else if (showSubmissionResult) {
       setSubmittedData(data);
       setSubmissionResult('Household created successfully!');
-      console.log('Household Form Data:', data);
     }
   };
 
-  const handleCancel = () => {
-    console.log('Form cancelled');
-  };
+  const handleCancel = () => {};
 
   if (submissionResult && submittedData) {
     return (
@@ -184,7 +193,7 @@ const WizardWrapper = ({
               setSubmissionResult(null);
               setSubmittedData(null);
             }}
-            className="rounded-lg bg-blue-600 px-6 py-3 text-white dark:text-black transition-colors hover:bg-blue-600"
+            className="rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-600 dark:text-white"
           >
             Create Another Household
           </button>
@@ -195,7 +204,7 @@ const WizardWrapper = ({
 
   return (
     <MockProviders>
-      <div className="bg-white dark:bg-gray-800 min-h-screen p-4">
+      <div className="min-h-screen bg-white p-4 dark:bg-gray-800">
         <HouseholdFormWizard onSubmit={handleSubmit} onCancel={handleCancel} />
       </div>
     </MockProviders>
@@ -243,7 +252,9 @@ export const Step1BasicInformation: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">Step 1: Basic Information</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Step 1: Basic Information
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
           The first step collects basic household information and head of household details.
         </p>
@@ -251,10 +262,14 @@ export const Step1BasicInformation: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Information Collected</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Information Collected
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Household Code</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Household Code
+              </h3>
               <p className="text-sm text-gray-800 dark:text-gray-200">
                 Automatically generated unique identifier for the household (e.g., HH-ABC123-XYZ789)
               </p>
@@ -268,7 +283,9 @@ export const Step1BasicInformation: Story = {
             </div>
 
             <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Head of Household</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Head of Household
+              </h3>
               <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
                 <li>• First Name (required)</li>
                 <li>• Middle Name (optional)</li>
@@ -280,12 +297,16 @@ export const Step1BasicInformation: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Validation Rules</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Validation Rules
+          </h2>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-red-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Required Fields</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Required Fields
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Household type, head&rsquo;s first and last name must be filled
                 </p>
@@ -294,7 +315,9 @@ export const Step1BasicInformation: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-yellow-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Auto-Generation</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Auto-Generation
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Household code is automatically created when component loads
                 </p>
@@ -303,7 +326,9 @@ export const Step1BasicInformation: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-blue-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Real-time Validation</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Real-time Validation
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Errors clear automatically as user types valid information
                 </p>
@@ -344,7 +369,9 @@ export const Step2LocationDetails: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">Step 2: Location Details</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Step 2: Location Details
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Geographic and address information with automatic PSGC hierarchy population.
         </p>
@@ -352,13 +379,15 @@ export const Step2LocationDetails: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Geographic Integration</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Geographic Integration
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-green-200 bg-green-50 p-4">
               <h3 className="mb-2 font-semibold text-green-900">PSGC Auto-Population</h3>
               <p className="mb-3 text-sm text-green-800">
                 Region, Province, City/Municipality, and Barangay codes are automatically populated
-                from the user's assigned barangay.
+                from the user&apos;s assigned barangay.
               </p>
               <div className="rounded bg-green-100 p-2 text-xs text-green-800">
                 Example: NCR &gt; Metro Manila &gt; Quezon City &gt; Bagong Pag-asa
@@ -366,7 +395,9 @@ export const Step2LocationDetails: Story = {
             </div>
 
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Address Components</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Address Components
+              </h3>
               <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
                 <li>• Street Name (required)</li>
                 <li>• House Number</li>
@@ -379,12 +410,16 @@ export const Step2LocationDetails: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Address Features</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Address Features
+          </h2>
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-green-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Automatic Loading</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Automatic Loading
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Geographic hierarchy loads from user&rsquo;s barangay assignment
                 </p>
@@ -393,7 +428,9 @@ export const Step2LocationDetails: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-blue-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">GPS Integration</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  GPS Integration
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Optional latitude/longitude coordinates for precise mapping
                 </p>
@@ -402,7 +439,9 @@ export const Step2LocationDetails: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-purple-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Validation States</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Validation States
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Visual feedback for loading, success, and error states
                 </p>
@@ -452,7 +491,9 @@ export const Step3HouseholdComposition: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">Step 3: Household Composition</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Step 3: Household Composition
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Demographic information about household members and age distribution.
         </p>
@@ -460,7 +501,9 @@ export const Step3HouseholdComposition: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Member Information</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Member Information
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
               <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Total Members</h3>
@@ -493,21 +536,23 @@ export const Step3HouseholdComposition: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Validation Logic</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Validation Logic
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-red-200 bg-red-50 p-4">
               <h3 className="mb-2 font-semibold text-red-900">Mathematical Validation</h3>
               <p className="text-sm text-red-800">
                 The system validates that male + female members equals the total member count. An
-                error message appears if numbers don't match.
+                error message appears if numbers don&apos;t match.
               </p>
             </div>
 
             <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
               <h3 className="mb-2 font-semibold text-yellow-900">Visual Feedback</h3>
               <p className="text-sm text-yellow-800">
-                When numbers don't match, an amber warning box appears with specific guidance on
-                correcting the discrepancy.
+                When numbers don&apos;t match, an amber warning box appears with specific guidance
+                on correcting the discrepancy.
               </p>
             </div>
           </div>
@@ -516,14 +561,20 @@ export const Step3HouseholdComposition: Story = {
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-blue-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Real-time Calculation</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Validation occurs as user types numbers</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Real-time Calculation
+                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">
+                  Validation occurs as user types numbers
+                </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-green-500"></div>
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Clear Error Messages</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  Clear Error Messages
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   Specific guidance on what needs to be corrected
                 </p>
@@ -563,7 +614,9 @@ export const Step4EconomicInformation: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">Step 4: Economic & Utilities</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Step 4: Economic & Utilities
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Economic status, utilities access, and dwelling information for comprehensive household
           profiling.
@@ -572,7 +625,9 @@ export const Step4EconomicInformation: Story = {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Economic Data</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Economic Data
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-green-200 bg-green-50 p-4">
               <h3 className="mb-2 font-semibold text-green-900">Income Information</h3>
@@ -587,7 +642,9 @@ export const Step4EconomicInformation: Story = {
             </div>
 
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Utilities Access</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Utilities Access
+              </h3>
               <p className="mb-2 text-sm text-gray-800 dark:text-gray-200">
                 Checkbox-based utility availability tracking:
               </p>
@@ -601,10 +658,14 @@ export const Step4EconomicInformation: Story = {
         </div>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">Dwelling Information</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-600 dark:text-gray-400">
+            Dwelling Information
+          </h2>
           <div className="space-y-4">
             <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Dwelling Type (Required)</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Dwelling Type (Required)
+              </h3>
               <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
                 <li>• Single Detached House</li>
                 <li>• Duplex</li>
@@ -720,7 +781,9 @@ export const ProgressIndicator: Story = {
   render: () => (
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-8">
-        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">Progress Indicator</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Progress Indicator
+        </h1>
         <p className="text-gray-600 dark:text-gray-400">
           Visual progress tracking through the multi-step form with clear step indicators.
         </p>
@@ -728,13 +791,19 @@ export const ProgressIndicator: Story = {
 
       <div className="space-y-8">
         {/* Step states demonstration */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
-          <h2 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Step States</h2>
+        <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
+          <h2 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+            Step States
+          </h2>
           <div className="space-y-6">
             {/* Completed Step */}
             <div className="flex items-center gap-4">
               <div className="relative flex size-8 items-center justify-center rounded-full bg-zinc-600">
-                <svg className="size-5 text-white dark:text-black" viewBox="0 0 20 20" fill="currentColor">
+                <svg
+                  className="size-5 text-white dark:text-white"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
                   <path
                     fillRule="evenodd"
                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -744,7 +813,9 @@ export const ProgressIndicator: Story = {
               </div>
               <div>
                 <h3 className="font-medium text-gray-600 dark:text-gray-400">Completed Step</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Green checkmark indicates completed steps</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Green checkmark indicates completed steps
+                </p>
               </div>
             </div>
 
@@ -768,7 +839,9 @@ export const ProgressIndicator: Story = {
               </div>
               <div>
                 <h3 className="font-medium text-gray-600 dark:text-gray-400">Future Step</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Grayed out for steps not yet reached</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Grayed out for steps not yet reached
+                </p>
               </div>
             </div>
           </div>
@@ -784,12 +857,16 @@ export const ProgressIndicator: Story = {
           ].map((stepInfo, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-4 text-center"
+              className="rounded-lg border border-gray-300 bg-white p-4 text-center dark:border-gray-600 dark:bg-gray-800"
             >
               <div className="mx-auto mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{stepInfo.step}</span>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {stepInfo.step}
+                </span>
               </div>
-              <h3 className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">{stepInfo.title}</h3>
+              <h3 className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+                {stepInfo.title}
+              </h3>
               <p className="text-xs text-gray-600 dark:text-gray-400">{stepInfo.description}</p>
             </div>
           ))}
@@ -813,7 +890,9 @@ export const ProgressIndicator: Story = {
               </svg>
             </div>
             <div>
-              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Progressive Enhancement</h3>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                Progressive Enhancement
+              </h3>
               <p className="text-sm text-gray-800 dark:text-gray-200">
                 Each step builds upon the previous, ensuring data completeness and logical flow.
                 Users can navigate back to previous steps to make corrections while maintaining

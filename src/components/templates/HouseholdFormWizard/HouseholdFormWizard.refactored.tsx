@@ -14,7 +14,7 @@ import { HouseholdFormData } from '@/services/household.service';
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { InputField, SelectField, FieldSet } from '@/components/molecules';
+import { InputField, SelectField } from '@/components/molecules';
 
 interface FormStep {
   id: number;
@@ -103,7 +103,7 @@ export default function HouseholdFormWizard({
     validationErrors,
     clearValidationErrors,
   } = useHouseholdOperations({
-    onSuccess: data => {
+    onSuccess: _data => {
       // Handle success - redirect to households list or show success message
       alert('Household created successfully!');
       router.push('/households');
@@ -161,7 +161,7 @@ export default function HouseholdFormWizard({
    * Validate current step
    */
   const validateStep = (step: number): boolean => {
-    const result = validateHousehold(formData);
+    validateHousehold(formData);
 
     // For step validation, we only check fields relevant to that step
     switch (step) {
@@ -262,10 +262,10 @@ export default function HouseholdFormWizard({
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
                       currentStep === step.id
-                        ? 'border-blue-600 bg-blue-600 text-white dark:text-black'
+                        ? 'border-blue-600 bg-blue-600 text-white dark:text-white'
                         : currentStep > step.id || completedSteps.has(step.id)
-                          ? 'border-green-600 bg-green-600 text-white dark:text-black'
-                          : 'border-gray-300 bg-white text-gray-500 dark:text-gray-500 dark:text-gray-500 dark:text-gray-500'
+                          ? 'border-green-600 bg-green-600 text-white dark:text-white'
+                          : 'border-gray-300 bg-white text-gray-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400'
                     }`}
                   >
                     {currentStep > step.id || completedSteps.has(step.id) ? (
@@ -297,7 +297,9 @@ export default function HouseholdFormWizard({
               <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {steps[currentStep - 1].title}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{steps[currentStep - 1].description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {steps[currentStep - 1].description}
+              </p>
             </div>
           </div>
         )}
@@ -415,15 +417,19 @@ function BasicInformationStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Basic Information</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+          Basic Information
+        </h3>
 
         <div className="space-y-4">
           <div className="flex gap-2">
             <InputField
               label="Household Code"
-              value={data.householdCode}
-              onChange={e => onChange({ householdCode: e.target.value })}
-              placeholder="Auto-generated or enter manually"
+              inputProps={{
+                value: data.householdCode,
+                onChange: e => onChange({ householdCode: e.target.value }),
+                placeholder: 'Auto-generated or enter manually',
+              }}
               errorMessage={errors.householdCode}
               className="flex-1"
             />
@@ -434,9 +440,11 @@ function BasicInformationStep({
 
           <SelectField
             label="Household Type"
-            value={data.householdType}
-            onChange={e => onChange({ householdType: e.target.value })}
-            options={householdTypes}
+            selectProps={{
+              value: data.householdType,
+              onSelect: option => onChange({ householdType: option?.value || '' }),
+              options: householdTypes,
+            }}
             required
             errorMessage={errors.householdType}
           />
@@ -444,29 +452,37 @@ function BasicInformationStep({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="Head First Name"
-              value={data.headFirstName}
-              onChange={e => onChange({ headFirstName: e.target.value })}
+              inputProps={{
+                value: data.headFirstName,
+                onChange: e => onChange({ headFirstName: e.target.value }),
+              }}
               required
               errorMessage={errors.headFirstName}
             />
             <InputField
               label="Head Middle Name"
-              value={data.headMiddleName}
-              onChange={e => onChange({ headMiddleName: e.target.value })}
+              inputProps={{
+                value: data.headMiddleName,
+                onChange: e => onChange({ headMiddleName: e.target.value }),
+              }}
               errorMessage={errors.headMiddleName}
             />
             <InputField
               label="Head Last Name"
-              value={data.headLastName}
-              onChange={e => onChange({ headLastName: e.target.value })}
+              inputProps={{
+                value: data.headLastName,
+                onChange: e => onChange({ headLastName: e.target.value }),
+              }}
               required
               errorMessage={errors.headLastName}
             />
             <InputField
               label="Extension Name"
-              value={data.headExtensionName}
-              onChange={e => onChange({ headExtensionName: e.target.value })}
-              placeholder="Jr., Sr., III, etc."
+              inputProps={{
+                value: data.headExtensionName,
+                onChange: e => onChange({ headExtensionName: e.target.value }),
+                placeholder: 'Jr., Sr., III, etc.',
+              }}
               errorMessage={errors.headExtensionName}
             />
           </div>
@@ -491,20 +507,26 @@ function LocationDetailsStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Location Details</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+          Location Details
+        </h3>
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="House Number"
-              value={data.houseNumber}
-              onChange={e => onChange({ houseNumber: e.target.value })}
+              inputProps={{
+                value: data.houseNumber,
+                onChange: e => onChange({ houseNumber: e.target.value }),
+              }}
               errorMessage={errors.houseNumber}
             />
             <InputField
               label="Street Name"
-              value={data.streetName}
-              onChange={e => onChange({ streetName: e.target.value })}
+              inputProps={{
+                value: data.streetName,
+                onChange: e => onChange({ streetName: e.target.value }),
+              }}
               required
               errorMessage={errors.streetName}
             />
@@ -512,40 +534,46 @@ function LocationDetailsStep({
 
           <InputField
             label="Subdivision/Village"
-            value={data.subdivision}
-            onChange={e => onChange({ subdivision: e.target.value })}
+            inputProps={{
+              value: data.subdivision,
+              onChange: e => onChange({ subdivision: e.target.value }),
+            }}
             errorMessage={errors.subdivision}
           />
 
           <InputField
             label="Landmark"
-            value={data.landmark}
-            onChange={e => onChange({ landmark: e.target.value })}
-            placeholder="Near church, school, etc."
+            inputProps={{
+              value: data.landmark,
+              onChange: e => onChange({ landmark: e.target.value }),
+              placeholder: 'Near church, school, etc.',
+            }}
             errorMessage={errors.landmark}
           />
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="Latitude"
-              value={data.coordinates.latitude}
-              onChange={e =>
-                onChange({
-                  coordinates: { ...data.coordinates, latitude: e.target.value },
-                })
-              }
-              placeholder="e.g., 14.5995"
+              inputProps={{
+                value: data.coordinates.latitude,
+                onChange: e =>
+                  onChange({
+                    coordinates: { ...data.coordinates, latitude: e.target.value },
+                  }),
+                placeholder: 'e.g., 14.5995',
+              }}
               errorMessage={errors['coordinates.latitude']}
             />
             <InputField
               label="Longitude"
-              value={data.coordinates.longitude}
-              onChange={e =>
-                onChange({
-                  coordinates: { ...data.coordinates, longitude: e.target.value },
-                })
-              }
-              placeholder="e.g., 120.9842"
+              inputProps={{
+                value: data.coordinates.longitude,
+                onChange: e =>
+                  onChange({
+                    coordinates: { ...data.coordinates, longitude: e.target.value },
+                  }),
+                placeholder: 'e.g., 120.9842',
+              }}
               errorMessage={errors['coordinates.longitude']}
             />
           </div>
@@ -570,15 +598,19 @@ function HouseholdCompositionStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Household Composition</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+          Household Composition
+        </h3>
 
         <div className="space-y-4">
           <InputField
             label="Total Members"
-            type="number"
-            value={data.totalMembers.toString()}
-            onChange={e => onChange({ totalMembers: parseInt(e.target.value) || 0 })}
-            min="1"
+            inputProps={{
+              type: 'number',
+              value: data.totalMembers.toString(),
+              onChange: e => onChange({ totalMembers: parseInt(e.target.value) || 0 }),
+              min: '1',
+            }}
             required
             errorMessage={errors.totalMembers}
           />
@@ -586,19 +618,23 @@ function HouseholdCompositionStep({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="Total Males"
-              type="number"
-              value={data.totalMales.toString()}
-              onChange={e => onChange({ totalMales: parseInt(e.target.value) || 0 })}
-              min="0"
+              inputProps={{
+                type: 'number',
+                value: data.totalMales.toString(),
+                onChange: e => onChange({ totalMales: parseInt(e.target.value) || 0 }),
+                min: '0',
+              }}
               required
               errorMessage={errors.totalMales}
             />
             <InputField
               label="Total Females"
-              type="number"
-              value={data.totalFemales.toString()}
-              onChange={e => onChange({ totalFemales: parseInt(e.target.value) || 0 })}
-              min="0"
+              inputProps={{
+                type: 'number',
+                value: data.totalFemales.toString(),
+                onChange: e => onChange({ totalFemales: parseInt(e.target.value) || 0 }),
+                min: '0',
+              }}
               required
               errorMessage={errors.totalFemales}
             />
@@ -607,26 +643,32 @@ function HouseholdCompositionStep({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <InputField
               label="Children (0-17)"
-              type="number"
-              value={data.children.toString()}
-              onChange={e => onChange({ children: parseInt(e.target.value) || 0 })}
-              min="0"
+              inputProps={{
+                type: 'number',
+                value: data.children.toString(),
+                onChange: e => onChange({ children: parseInt(e.target.value) || 0 }),
+                min: '0',
+              }}
               errorMessage={errors.children}
             />
             <InputField
               label="Adults (18-59)"
-              type="number"
-              value={data.adults.toString()}
-              onChange={e => onChange({ adults: parseInt(e.target.value) || 0 })}
-              min="0"
+              inputProps={{
+                type: 'number',
+                value: data.adults.toString(),
+                onChange: e => onChange({ adults: parseInt(e.target.value) || 0 }),
+                min: '0',
+              }}
               errorMessage={errors.adults}
             />
             <InputField
               label="Seniors (60+)"
-              type="number"
-              value={data.seniors.toString()}
-              onChange={e => onChange({ seniors: parseInt(e.target.value) || 0 })}
-              min="0"
+              inputProps={{
+                type: 'number',
+                value: data.seniors.toString(),
+                onChange: e => onChange({ seniors: parseInt(e.target.value) || 0 }),
+                min: '0',
+              }}
               errorMessage={errors.seniors}
             />
           </div>
@@ -677,27 +719,35 @@ function EconomicInformationStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Economic Information</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+          Economic Information
+        </h3>
 
         <div className="space-y-4">
           <SelectField
             label="Monthly Income Range"
-            value={data.monthlyIncome}
-            onChange={e => onChange({ monthlyIncome: e.target.value })}
-            options={incomeRanges}
+            selectProps={{
+              value: data.monthlyIncome,
+              onSelect: option => onChange({ monthlyIncome: option?.value || '' }),
+              options: incomeRanges,
+            }}
             errorMessage={errors.monthlyIncome}
           />
 
           <InputField
             label="Primary Income Source"
-            value={data.incomeSource}
-            onChange={e => onChange({ incomeSource: e.target.value })}
-            placeholder="e.g., Employment, Business, Pension"
+            inputProps={{
+              value: data.incomeSource,
+              onChange: e => onChange({ incomeSource: e.target.value }),
+              placeholder: 'e.g., Employment, Business, Pension',
+            }}
             errorMessage={errors.incomeSource}
           />
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Utilities</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Utilities
+            </label>
             <div className="space-y-2">
               <label className="flex items-center">
                 <input
@@ -731,18 +781,22 @@ function EconomicInformationStep({
 
           <SelectField
             label="Dwelling Type"
-            value={data.dwellingType}
-            onChange={e => onChange({ dwellingType: e.target.value })}
-            options={dwellingTypes}
+            selectProps={{
+              value: data.dwellingType,
+              onSelect: option => onChange({ dwellingType: option?.value || '' }),
+              options: dwellingTypes,
+            }}
             required
             errorMessage={errors.dwellingType}
           />
 
           <SelectField
             label="Dwelling Ownership"
-            value={data.dwellingOwnership}
-            onChange={e => onChange({ dwellingOwnership: e.target.value })}
-            options={ownershipTypes}
+            selectProps={{
+              value: data.dwellingOwnership,
+              onSelect: option => onChange({ dwellingOwnership: option?.value || '' }),
+              options: ownershipTypes,
+            }}
             required
             errorMessage={errors.dwellingOwnership}
           />

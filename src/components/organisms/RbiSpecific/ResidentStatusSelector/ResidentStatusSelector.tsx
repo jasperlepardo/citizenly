@@ -116,55 +116,82 @@ const DOCUMENTATION_STATUS_OPTIONS = [
   },
 ] as const;
 
+// Helper function to get voter status text
+const getVoterStatusText = (status: ResidentStatus): string => {
+  if (!status.is_registered_voter) {
+    return 'Not registered';
+  }
+  const precinctText = status.precinct_number ? ` (Precinct ${status.precinct_number})` : '';
+  return `Registered${precinctText}`;
+};
+
+// Helper function to handle status type changes
+const handleStatusTypeChange = (updated: ResidentStatus, newValue: string): void => {
+  if (newValue === 'visitor') {
+    updated.is_registered_voter = false;
+    updated.voter_id_number = undefined;
+    updated.precinct_number = undefined;
+  }
+
+  if (newValue === 'permanent' || newValue === 'temporary') {
+    if (!updated.documentation_status) {
+      updated.documentation_status = 'complete';
+    }
+  }
+};
+
+// Helper function to handle voter registration changes
+const handleVoterRegistrationChange = (updated: ResidentStatus, newValue: boolean): void => {
+  if (!newValue) {
+    updated.voter_id_number = undefined;
+    updated.precinct_number = undefined;
+  }
+};
+
+// Helper function to handle indigenous membership changes
+const handleIndigenousChange = (updated: ResidentStatus, newValue: boolean): void => {
+  if (!newValue) {
+    updated.tribal_affiliation = undefined;
+    updated.indigenous_community = undefined;
+  }
+};
+
+// Helper function to handle legal status changes
+const handleLegalStatusChange = (updated: ResidentStatus, newValue: string): void => {
+  if (newValue === 'citizen' || newValue === 'dual_citizen') {
+    updated.documentation_status = 'not_required';
+  } else if (newValue === 'visitor') {
+    updated.documentation_status = 'complete';
+  }
+};
+
 export default function ResidentStatusSelector({
   value,
   onChange,
   disabled = false,
   className = '',
   residentAge,
-}: ResidentStatusSelectorProps) {
+}: Readonly<ResidentStatusSelectorProps>) {
   const handleChange = (
     field: keyof ResidentStatus,
     newValue: ResidentStatus[keyof ResidentStatus]
   ) => {
     const updated = { ...value, [field]: newValue };
 
-    // Auto-reset dependent fields based on status changes
     if (field === 'status_type') {
-      // Visitors typically can't be registered voters
-      if (newValue === 'visitor') {
-        updated.is_registered_voter = false;
-        updated.voter_id_number = undefined;
-        updated.precinct_number = undefined;
-      }
-
-      // Reset documentation status based on new status type
-      if (newValue === 'permanent' || newValue === 'temporary') {
-        if (!updated.documentation_status) {
-          updated.documentation_status = 'complete';
-        }
-      }
+      handleStatusTypeChange(updated, newValue as string);
     }
 
-    // Clear voter details when not a registered voter
-    if (field === 'is_registered_voter' && !newValue) {
-      updated.voter_id_number = undefined;
-      updated.precinct_number = undefined;
+    if (field === 'is_registered_voter') {
+      handleVoterRegistrationChange(updated, newValue as boolean);
     }
 
-    // Clear indigenous details when not indigenous
-    if (field === 'is_indigenous_member' && !newValue) {
-      updated.tribal_affiliation = undefined;
-      updated.indigenous_community = undefined;
+    if (field === 'is_indigenous_member') {
+      handleIndigenousChange(updated, newValue as boolean);
     }
 
-    // Auto-set documentation status based on legal status
     if (field === 'legal_status') {
-      if (newValue === 'citizen' || newValue === 'dual_citizen') {
-        updated.documentation_status = 'not_required';
-      } else if (newValue === 'visitor') {
-        updated.documentation_status = 'complete'; // Tourists need complete docs
-      }
+      handleLegalStatusChange(updated, newValue as string);
     }
 
     onChange(updated);
@@ -230,38 +257,40 @@ export default function ResidentStatusSelector({
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <InputField
               label="Years"
-              type="number"
-              value={value.length_of_residency_years || ''}
-              onChange={e =>
-                handleChange(
-                  'length_of_residency_years',
-                  e.target.value ? parseInt(e.target.value) : undefined
-                )
-              }
-              placeholder="0"
-              min={0}
-              max={100}
-              disabled={disabled}
+              inputProps={{
+                type: 'number',
+                value: value.length_of_residency_years || '',
+                onChange: e =>
+                  handleChange(
+                    'length_of_residency_years',
+                    e.target.value ? parseInt(e.target.value) : undefined
+                  ),
+                placeholder: '0',
+                min: 0,
+                max: 100,
+                disabled: disabled,
+              }}
             />
 
             <InputField
               label="Additional Months"
-              type="number"
-              value={value.length_of_residency_months || ''}
-              onChange={e =>
-                handleChange(
-                  'length_of_residency_months',
-                  e.target.value ? parseInt(e.target.value) : undefined
-                )
-              }
-              placeholder="0"
-              min={0}
-              max={11}
-              disabled={disabled}
+              inputProps={{
+                type: 'number',
+                value: value.length_of_residency_months || '',
+                onChange: e =>
+                  handleChange(
+                    'length_of_residency_months',
+                    e.target.value ? parseInt(e.target.value) : undefined
+                  ),
+                placeholder: '0',
+                min: 0,
+                max: 11,
+                disabled: disabled,
+              }}
             />
           </div>
 
-          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             <strong>Total residency:</strong> {getResidencyDisplay()}
           </div>
         </FormGroup>
@@ -308,13 +337,16 @@ export default function ResidentStatusSelector({
               checked={value.is_registered_voter}
               onChange={e => handleChange('is_registered_voter', e.target.checked)}
               disabled={disabled || votingEligibility === false}
-              className="mt-1 size-4 rounded-sm border-gray-300 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
+              className="mt-1 size-4 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600"
             />
             <div className="flex-1">
-              <label htmlFor="is_registered_voter" className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <label
+                htmlFor="is_registered_voter"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Registered Voter
               </label>
-              <p className="text-gray-500 dark:text-gray-400 text-xs">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Check if resident is registered to vote in this barangay
               </p>
             </div>
@@ -325,20 +357,24 @@ export default function ResidentStatusSelector({
             <div className="ml-7 grid grid-cols-1 gap-4 md:grid-cols-2">
               <InputField
                 label="Voter ID Number"
-                type="text"
-                value={value.voter_id_number || ''}
-                onChange={e => handleChange('voter_id_number', e.target.value)}
-                placeholder="Enter voter ID number"
-                disabled={disabled}
+                inputProps={{
+                  type: 'text',
+                  value: value.voter_id_number || '',
+                  onChange: e => handleChange('voter_id_number', e.target.value),
+                  placeholder: 'Enter voter ID number',
+                  disabled: disabled,
+                }}
               />
 
               <InputField
                 label="Precinct Number"
-                type="text"
-                value={value.precinct_number || ''}
-                onChange={e => handleChange('precinct_number', e.target.value)}
-                placeholder="Enter precinct number"
-                disabled={disabled}
+                inputProps={{
+                  type: 'text',
+                  value: value.precinct_number || '',
+                  onChange: e => handleChange('precinct_number', e.target.value),
+                  placeholder: 'Enter precinct number',
+                  disabled: disabled,
+                }}
               />
             </div>
           )}
@@ -355,13 +391,16 @@ export default function ResidentStatusSelector({
               checked={value.is_indigenous_member}
               onChange={e => handleChange('is_indigenous_member', e.target.checked)}
               disabled={disabled}
-              className="mt-1 size-4 rounded-sm border-gray-300 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
+              className="mt-1 size-4 rounded-sm border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600"
             />
             <div className="flex-1">
-              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <label
+                htmlFor="is_indigenous_member"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Member of Indigenous Cultural Community
               </label>
-              <p className="text-gray-500 dark:text-gray-400 text-xs">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Check if resident belongs to an Indigenous Cultural Community (ICC) or Indigenous
                 Peoples (IP) group
               </p>
@@ -373,20 +412,24 @@ export default function ResidentStatusSelector({
             <div className="ml-7 grid grid-cols-1 gap-4 md:grid-cols-2">
               <InputField
                 label="Tribal Affiliation"
-                type="text"
-                value={value.tribal_affiliation || ''}
-                onChange={e => handleChange('tribal_affiliation', e.target.value)}
-                placeholder="e.g., Igorot, Lumad, Mangyan"
-                disabled={disabled}
+                inputProps={{
+                  type: 'text',
+                  value: value.tribal_affiliation || '',
+                  onChange: e => handleChange('tribal_affiliation', e.target.value),
+                  placeholder: 'e.g., Igorot, Lumad, Mangyan',
+                  disabled: disabled,
+                }}
               />
 
               <InputField
                 label="Indigenous Community"
-                type="text"
-                value={value.indigenous_community || ''}
-                onChange={e => handleChange('indigenous_community', e.target.value)}
-                placeholder="e.g., Bontoc, T&rsquo;boli, Hanunuo"
-                disabled={disabled}
+                inputProps={{
+                  type: 'text',
+                  value: value.indigenous_community || '',
+                  onChange: e => handleChange('indigenous_community', e.target.value),
+                  placeholder: "e.g., Bontoc, T'boli, Hanunuo",
+                  disabled: disabled,
+                }}
               />
             </div>
           )}
@@ -424,8 +467,10 @@ export default function ResidentStatusSelector({
 
       {/* Status Summary */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Resident Status Summary</h4>
-        <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200 dark:text-gray-800">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
+          Resident Status Summary
+        </h4>
+        <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           <p>
             <strong>Status:</strong>{' '}
             {value.status_type
@@ -444,10 +489,7 @@ export default function ResidentStatusSelector({
             </p>
           )}
           <p>
-            <strong>Voter Status:</strong>{' '}
-            {value.is_registered_voter
-              ? `Registered${value.precinct_number ? ` (Precinct ${value.precinct_number})` : ''}`
-              : 'Not registered'}
+            <strong>Voter Status:</strong> {getVoterStatusText(value)}
           </p>
           {value.is_indigenous_member && (
             <p>

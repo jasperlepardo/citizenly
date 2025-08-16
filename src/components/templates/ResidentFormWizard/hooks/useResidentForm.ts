@@ -114,12 +114,12 @@ const getInitialFormData = (initialData?: Partial<ResidentFormData>): ResidentFo
 
 export function useResidentForm({
   onSubmit,
-  onCancel,
+  onCancel: _onCancel,
   initialData,
 }: ResidentFormWizardProps = {}): UseResidentFormReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { barangayCode: userBarangayCode, loading: barangayLoading } = useUserBarangay();
+  const { barangayCode: userBarangayCode } = useUserBarangay();
 
   // Form state
   const [formData, setFormData] = useState<ResidentFormData>(() => getInitialFormData(initialData));
@@ -146,8 +146,6 @@ export function useResidentForm({
         } = await supabase.auth.getSession();
         if (!session?.user) return;
 
-        console.log('🚀 Pre-loading geographic data for faster form experience...');
-
         // Use dedicated API endpoint for secure auto-populate
         const response = await fetch('/api/user/geographic-location', {
           headers: {
@@ -157,12 +155,10 @@ export function useResidentForm({
         });
 
         if (!response.ok) {
-          console.log('⚠️ Could not pre-load geographic data, user will select manually');
           return;
         }
 
         const hierarchy = await response.json();
-        console.log('✅ Geographic data pre-loaded:', hierarchy);
 
         // Update form data with complete hierarchy
         setFormData(prev => ({
@@ -172,8 +168,6 @@ export function useResidentForm({
           cityMunicipalityCode: hierarchy.city?.code || '',
           barangayCode: hierarchy.barangay?.code || prev.barangayCode, // Don't override if already set
         }));
-
-        console.log('🎉 Form pre-populated with user geographic location');
       } catch (error) {
         console.error('❌ Error pre-loading geographic data:', error);
         // Silently fail - user can still select manually
@@ -182,7 +176,7 @@ export function useResidentForm({
 
     // Only run once when component mounts
     autoPopulateGeographicData();
-  }, []); // Empty dependency array - only run once
+  }, [formData.regionCode, formData.provinceCode, formData.cityMunicipalityCode]); // Add dependencies
 
   // Step configuration
   const steps: FormStep[] = useMemo(
@@ -312,7 +306,8 @@ export function useResidentForm({
     } catch (error) {
       console.error('Form submission error:', error);
       // Set a more user-friendly error message
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred during submission';
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred during submission';
       setErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
@@ -351,7 +346,15 @@ export function useResidentForm({
         educationAttainment: data.educationAttainment,
         isGraduate: data.isGraduate,
         employmentStatus: (() => {
-          const validValues = ['employed', 'unemployed', 'self_employed', 'student', 'retired', 'not_in_labor_force', 'ofw'];
+          const validValues = [
+            'employed',
+            'unemployed',
+            'self_employed',
+            'student',
+            'retired',
+            'not_in_labor_force',
+            'ofw',
+          ];
           const value = data.employmentStatus;
           return validValues.includes(value) ? value : 'not_in_labor_force';
         })(),
@@ -379,9 +382,10 @@ export function useResidentForm({
 
     if (!response.ok) {
       const errorData = await response.json();
-      const errorMessage = typeof errorData.error === 'string' 
-        ? errorData.error 
-        : errorData.message || JSON.stringify(errorData) || 'Failed to create resident';
+      const errorMessage =
+        typeof errorData.error === 'string'
+          ? errorData.error
+          : errorData.message || JSON.stringify(errorData) || 'Failed to create resident';
       throw new Error(errorMessage);
     }
 
@@ -400,7 +404,10 @@ export function useResidentForm({
     isSubmitting,
 
     // Actions
-    handleInputChange,
+    handleInputChange: handleInputChange as (
+      field: string,
+      value: string | number | boolean | null
+    ) => void,
     handleNextStep,
     handlePrevStep,
     handleSubmit,

@@ -15,7 +15,6 @@ import {
   EDUCATION_LEVEL_OPTIONS,
   EDUCATION_STATUS_OPTIONS,
   EMPLOYMENT_STATUS_OPTIONS,
-  BLOOD_TYPE_OPTIONS,
   RELIGION_OPTIONS,
   ETHNICITY_OPTIONS,
   extractValues,
@@ -35,9 +34,9 @@ const Tooltip = ({ children, content }: { children: React.ReactNode; content: st
         {children}
       </div>
       {isVisible && (
-        <div className="tooltip text-inverse absolute bottom-full left-1/2 z-10 -translate-x-1/2 -translate-y-2 whitespace-nowrap rounded-lg bg-gray-800 px-3 py-2 text-sm font-medium shadow-xs">
+        <div className="tooltip text-inverse absolute bottom-full left-1/2 z-10 -translate-x-1/2 -translate-y-2 rounded-lg bg-gray-800 px-3 py-2 text-sm font-medium whitespace-nowrap shadow-xs">
           {content}
-          <div className="tooltip-arrow absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-neutral-800"></div>
+          <div className="tooltip-arrow absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-800"></div>
         </div>
       )}
     </div>
@@ -147,7 +146,7 @@ function ResidentDetailContent() {
   const [editedResident, setEditedResident] = useState<Resident | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -545,9 +544,11 @@ function ResidentDetailContent() {
                   type="checkbox"
                   checked={!!value}
                   onChange={e => handleFieldChange(field, e.target.checked)}
-                  className="rounded border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
+                  className="rounded border-gray-200 text-gray-600 focus:ring-blue-500 dark:border-gray-700 dark:text-gray-400"
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">{value ? 'Yes' : 'No'}</span>
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  {value ? 'Yes' : 'No'}
+                </span>
               </label>
             </dd>
           </div>
@@ -560,7 +561,7 @@ function ResidentDetailContent() {
           <div>
             <label
               htmlFor={selectId}
-              className="block cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-600"
+              className="block cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-400"
             >
               {label}
             </label>
@@ -582,7 +583,7 @@ function ResidentDetailContent() {
         <div>
           <label
             htmlFor={inputId}
-            className="block cursor-pointer text-sm font-medium text-gray-500 dark:text-gray-500"
+            className="block cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-400"
           >
             {label}
           </label>
@@ -592,7 +593,7 @@ function ResidentDetailContent() {
               type={type}
               value={(value as string) || ''}
               onChange={e => handleFieldChange(field, e.target.value)}
-              className="bg-white dark:bg-gray-800 block w-full rounded-md border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500"
+              className="block w-full rounded-md border border-gray-200 bg-white text-sm text-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
             />
           </div>
         </div>
@@ -603,11 +604,15 @@ function ResidentDetailContent() {
     if (type === 'checkbox') {
       return (
         <div className="flex items-center justify-between">
-          <dt className={`text-sm font-medium ${isComputed ? 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'}`}>
+          <dt
+            className={`text-sm font-medium ${isComputed ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}
+          >
             {label}
             {isComputed && (
               <Tooltip content={getComputedFieldTooltip(field)}>
-                <span className="ml-1 cursor-help text-xs text-gray-600 dark:text-gray-400 dark:text-gray-600 underline">(auto)</span>
+                <span className="ml-1 cursor-help text-xs text-gray-500 underline dark:text-gray-500">
+                  (auto)
+                </span>
               </Tooltip>
             )}
           </dt>
@@ -622,7 +627,7 @@ function ResidentDetailContent() {
       return (
         <div>
           <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</dt>
-          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {value
               ? `${new Date(value as string).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -638,7 +643,9 @@ function ResidentDetailContent() {
     return (
       <div>
         <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</dt>
-        <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">{formatEnumValue(value as string)}</dd>
+        <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+          {formatEnumValue(value as string)}
+        </dd>
       </div>
     );
   };
@@ -650,7 +657,9 @@ function ResidentDetailContent() {
           <div className="flex h-64 items-center justify-center">
             <div className="text-center">
               <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Loading resident details...</p>
+              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                Loading resident details...
+              </p>
             </div>
           </div>
         </div>
@@ -663,7 +672,7 @@ function ResidentDetailContent() {
       <div>
         <div className="p-6">
           <div className="mx-auto max-w-md text-center">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-md">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 text-red-600">
                 <svg
                   className="mx-auto size-12"
@@ -682,10 +691,12 @@ function ResidentDetailContent() {
               <h1 className="font-montserrat mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">
                 Resident Not Found
               </h1>
-              <p className="font-montserrat mb-4 text-sm text-gray-600 dark:text-gray-400">{error}</p>
+              <p className="font-montserrat mb-4 text-sm text-gray-600 dark:text-gray-400">
+                {error}
+              </p>
               <Link
                 href="/residents"
-                className="hover:bg-gray-50 dark:bg-gray-700 inline-flex items-center rounded-md border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400"
+                className="inline-flex items-center rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700"
               >
                 Back to Residents
               </Link>
@@ -704,7 +715,7 @@ function ResidentDetailContent() {
           <div className="flex items-center gap-4">
             <Link
               href="/residents"
-              className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 inline-flex items-center rounded-md border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
             >
               <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -720,7 +731,9 @@ function ResidentDetailContent() {
               <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 {formatFullName(resident)}
               </h1>
-              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">Resident Details</p>
+              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
+                Resident Details
+              </p>
             </div>
           </div>
         </div>
@@ -729,33 +742,56 @@ function ResidentDetailContent() {
           {/* Left Column - Main Information */}
           <div className="space-y-6 lg:col-span-2">
             {/* Personal Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Personal Information</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Personal Information
+                </h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
                   <PersonalInformationForm
-                    value={{
+                    formData={{
                       firstName: editedResident?.first_name || '',
                       middleName: editedResident?.middle_name || '',
                       lastName: editedResident?.last_name || '',
                       extensionName: editedResident?.extension_name || '',
-                      sex: (editedResident?.sex as 'male' | 'female') || '',
+                      sex: editedResident?.sex || '',
                       civilStatus: editedResident?.civil_status || '',
                       citizenship: editedResident?.citizenship || 'filipino',
                     }}
-                    onChange={personalData => {
+                    onChange={(field: string, value: string | number | boolean | null) => {
                       if (!editedResident) return;
+
+                      const updates: Partial<Resident> = {};
+
+                      switch (field) {
+                        case 'firstName':
+                          updates.first_name = value as string;
+                          break;
+                        case 'middleName':
+                          updates.middle_name = value as string;
+                          break;
+                        case 'lastName':
+                          updates.last_name = value as string;
+                          break;
+                        case 'extensionName':
+                          updates.extension_name = value as string;
+                          break;
+                        case 'sex':
+                          updates.sex = value as 'male' | 'female';
+                          break;
+                        case 'civilStatus':
+                          updates.civil_status = value as string;
+                          break;
+                        case 'citizenship':
+                          updates.citizenship = value as string;
+                          break;
+                      }
+
                       setEditedResident({
                         ...editedResident,
-                        first_name: personalData.firstName,
-                        middle_name: personalData.middleName,
-                        last_name: personalData.lastName,
-                        extension_name: personalData.extensionName,
-                        sex: personalData.sex as 'male' | 'female',
-                        civil_status: personalData.civilStatus,
-                        citizenship: personalData.citizenship,
+                        ...updates,
                       });
                     }}
                     errors={{}}
@@ -781,13 +817,15 @@ function ResidentDetailContent() {
                       extractValues(CITIZENSHIP_OPTIONS)
                     )}
                     <div className="sm:col-span-2">
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Address</dt>
-                      <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Address
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {resident.household ? (
                           <div>
                             <Link
                               href={`/households/${resident.household.code}`}
-                              className="cursor-pointer text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 dark:text-gray-800 hover:underline"
+                              className="cursor-pointer text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
                             >
                               <div className="font-medium">
                                 {[
@@ -807,7 +845,7 @@ function ResidentDetailContent() {
                           </div>
                         ) : (
                           <div>
-                            <div className="text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                            <div className="text-gray-600 dark:text-gray-400">
                               {resident.address_info
                                 ? [
                                     'No household assigned',
@@ -833,16 +871,21 @@ function ResidentDetailContent() {
             </div>
 
             {/* Education & Employment Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Education & Employment</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Education & Employment
+                </h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="education_level" className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <label
+                          htmlFor="education_level"
+                          className="block text-sm font-medium text-gray-600 dark:text-gray-400"
+                        >
                           Education Level
                         </label>
                         {/* TODO: Replace with SelectField DropdownSelect component
@@ -852,9 +895,12 @@ function ResidentDetailContent() {
                           - options={EDUCATION_LEVEL_OPTIONS}
                         */}
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="employment_status" className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <label
+                          htmlFor="employment_status"
+                          className="block text-sm font-medium text-gray-600 dark:text-gray-400"
+                        >
                           Employment Status
                         </label>
                         {/* TODO: Replace with SelectField DropdownSelect component
@@ -864,35 +910,49 @@ function ResidentDetailContent() {
                           - options={EMPLOYMENT_STATUS_OPTIONS}
                         */}
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="occupation_title" className="block text-sm font-medium text-gray-600 dark:text-gray-400">
+                        <label
+                          htmlFor="occupation_title"
+                          className="block text-sm font-medium text-gray-600 dark:text-gray-400"
+                        >
                           Occupation Title
                         </label>
                         <InputField
-                          id="occupation_title"
-                          value={editedResident?.occupation_title || ''}
-                          onChange={(e) => editedResident && setEditedResident({
-                            ...editedResident,
-                            occupation_title: e.target.value
-                          })}
-                          placeholder="Enter occupation"
+                          label="Occupation Title"
+                          inputProps={{
+                            id: 'occupation_title',
+                            value: editedResident?.occupation_title || '',
+                            onChange: e =>
+                              editedResident &&
+                              setEditedResident({
+                                ...editedResident,
+                                occupation_title: e.target.value,
+                              }),
+                            placeholder: 'Enter occupation',
+                          }}
                         />
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center">
                       <input
                         type="checkbox"
                         id="is_graduate"
                         checked={editedResident?.education_status === 'graduate'}
-                        onChange={(e) => editedResident && setEditedResident({
-                          ...editedResident,
-                          education_status: e.target.checked ? 'graduate' : 'non-graduate'
-                        })}
+                        onChange={e =>
+                          editedResident &&
+                          setEditedResident({
+                            ...editedResident,
+                            education_status: e.target.checked ? 'graduate' : 'non-graduate',
+                          })
+                        }
                         className="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
-                      <label htmlFor="is_graduate" className="text-sm text-gray-600 dark:text-gray-400">
+                      <label
+                        htmlFor="is_graduate"
+                        className="text-sm text-gray-600 dark:text-gray-400"
+                      >
                         Graduate (Y/N)
                       </label>
                     </div>
@@ -921,7 +981,9 @@ function ResidentDetailContent() {
                     {renderEditableField('Workplace', 'workplace', 'text')}
                     {resident.psoc_code && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">PSOC Code</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          PSOC Code
+                        </dt>
                         <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
                           {resident.psoc_code}
                         </dd>
@@ -929,7 +991,9 @@ function ResidentDetailContent() {
                     )}
                     {resident.psoc_level && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">PSOC Level</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          PSOC Level
+                        </dt>
                         <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                           {formatEnumValue(resident.psoc_level)}
                         </dd>
@@ -945,29 +1009,35 @@ function ResidentDetailContent() {
 
             {/* Household Information Card */}
             {resident.household && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-                <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                  <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Household Information</h3>
+              <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                  <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                    Household Information
+                  </h3>
                 </div>
                 <div className="px-6 py-4">
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-600">Household Code</dt>
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Household Code
+                      </dt>
                       <dd className="mt-1">
                         <Link
                           href={`/households/${resident.household.code}`}
-                          className="font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 hover:underline"
+                          className="font-medium text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           #{resident.household.code}
                         </Link>
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Address</dt>
-                      <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Address
+                      </dt>
+                      <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         <Link
                           href={`/households/${resident.household.code}`}
-                          className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 dark:text-gray-800 hover:underline"
+                          className="text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
                         >
                           <div className="font-medium">
                             {[
@@ -988,7 +1058,9 @@ function ResidentDetailContent() {
                     </div>
                     {resident.household.household_number && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Household Number</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          Household Number
+                        </dt>
                         <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
                           {resident.household.household_number}
                         </dd>
@@ -996,7 +1068,9 @@ function ResidentDetailContent() {
                     )}
                     {resident.household.zip_code && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">ZIP Code</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          ZIP Code
+                        </dt>
                         <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
                           {resident.household.zip_code}
                         </dd>
@@ -1004,7 +1078,9 @@ function ResidentDetailContent() {
                     )}
                     {resident.household.total_members && (
                       <div>
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Members</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          Total Members
+                        </dt>
                         <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                           {resident.household.total_members}
                         </dd>
@@ -1012,7 +1088,9 @@ function ResidentDetailContent() {
                     )}
                     {resident.household.head_resident && (
                       <div className="sm:col-span-2">
-                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Household Head</dt>
+                        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                          Household Head
+                        </dt>
                         <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                           {formatFullName(resident.household.head_resident)}
                         </dd>
@@ -1024,45 +1102,57 @@ function ResidentDetailContent() {
             )}
 
             {/* Contact & Physical Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Contact & Physical Information</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Contact & Physical Information
+                </h3>
               </div>
               <div className="px-6 py-4">
                 <div className="space-y-6">
                   {/* Contact Details */}
                   <div>
-                    <h4 className="mb-4 text-sm/6 font-medium text-gray-600 dark:text-gray-400">Contact Information</h4>
+                    <h4 className="mb-4 text-sm/6 font-medium text-gray-600 dark:text-gray-400">
+                      Contact Information
+                    </h4>
                     {isEditing ? (
                       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <InputField
                           label="Mobile Number"
-                          type="tel"
-                          value={editedResident?.mobile_number || ''}
-                          onChange={e => handleFieldChange('mobile_number', e.target.value)}
-                          placeholder="09XXXXXXXXX"
                           required
+                          inputProps={{
+                            type: 'tel',
+                            value: editedResident?.mobile_number || '',
+                            onChange: e => handleFieldChange('mobile_number', e.target.value),
+                            placeholder: '09XXXXXXXXX',
+                          }}
                         />
                         <InputField
                           label="Telephone Number"
-                          type="tel"
-                          value={editedResident?.telephone_number || ''}
-                          onChange={e => handleFieldChange('telephone_number', e.target.value)}
-                          placeholder="(02) XXX-XXXX"
+                          inputProps={{
+                            type: 'tel',
+                            value: editedResident?.telephone_number || '',
+                            onChange: e => handleFieldChange('telephone_number', e.target.value),
+                            placeholder: '(02) XXX-XXXX',
+                          }}
                         />
                         <InputField
                           label="Email Address"
-                          type="email"
-                          value={editedResident?.email || ''}
-                          onChange={e => handleFieldChange('email', e.target.value)}
-                          placeholder="email@example.com"
+                          inputProps={{
+                            type: 'email',
+                            value: editedResident?.email || '',
+                            onChange: e => handleFieldChange('email', e.target.value),
+                            placeholder: 'email@example.com',
+                          }}
                         />
                         <InputField
                           label="PhilSys Card Number"
-                          type="text"
-                          value={editedResident?.philsys_card_number || ''}
-                          onChange={e => handleFieldChange('philsys_card_number', e.target.value)}
-                          placeholder="XXXX-XXXX-XXXX"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.philsys_card_number || '',
+                            onChange: e => handleFieldChange('philsys_card_number', e.target.value),
+                            placeholder: 'XXXX-XXXX-XXXX',
+                          }}
                         />
                       </div>
                     ) : (
@@ -1072,7 +1162,9 @@ function ResidentDetailContent() {
                         {renderEditableField('Email Address', 'email', 'email')}
                         {resident.philsys_last4 && (
                           <div>
-                            <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">PhilSys ID</dt>
+                            <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                              PhilSys ID
+                            </dt>
                             <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
                               ****-****-****-{resident.philsys_last4}
                             </dd>
@@ -1091,21 +1183,29 @@ function ResidentDetailContent() {
                       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <InputField
                           label="Height (cm)"
-                          type="number"
-                          value={editedResident?.height_cm?.toString() || ''}
-                          onChange={e =>
-                            handleFieldChange('height_cm', parseFloat(e.target.value) || undefined)
-                          }
-                          placeholder="170"
+                          inputProps={{
+                            type: 'number',
+                            value: editedResident?.height_cm?.toString() || '',
+                            onChange: e =>
+                              handleFieldChange(
+                                'height_cm',
+                                parseFloat(e.target.value) || undefined
+                              ),
+                            placeholder: '170',
+                          }}
                         />
                         <InputField
                           label="Weight (kg)"
-                          type="number"
-                          value={editedResident?.weight_kg?.toString() || ''}
-                          onChange={e =>
-                            handleFieldChange('weight_kg', parseFloat(e.target.value) || undefined)
-                          }
-                          placeholder="65"
+                          inputProps={{
+                            type: 'number',
+                            value: editedResident?.weight_kg?.toString() || '',
+                            onChange: e =>
+                              handleFieldChange(
+                                'weight_kg',
+                                parseFloat(e.target.value) || undefined
+                              ),
+                            placeholder: '65',
+                          }}
                         />
                         <div>
                           <label className="mb-1 block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -1119,23 +1219,29 @@ function ResidentDetailContent() {
                         </div>
                         <InputField
                           label="Complexion"
-                          type="text"
-                          value={editedResident?.complexion || ''}
-                          onChange={e => handleFieldChange('complexion', e.target.value)}
-                          placeholder="Fair, Medium, Dark, etc."
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.complexion || '',
+                            onChange: e => handleFieldChange('complexion', e.target.value),
+                            placeholder: 'Fair, Medium, Dark, etc.',
+                          }}
                         />
                       </div>
                     ) : (
                       <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div>
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Height</dt>
-                          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Height
+                          </dt>
+                          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {resident.height_cm ? `${resident.height_cm} cm` : 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Weight</dt>
-                          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Weight
+                          </dt>
+                          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {resident.weight_kg ? `${resident.weight_kg} kg` : 'N/A'}
                           </dd>
                         </div>
@@ -1148,46 +1254,43 @@ function ResidentDetailContent() {
                   {/* Mother's Information */}
                   <div>
                     <h4 className="mb-4 text-sm/6 font-medium text-gray-600 dark:text-gray-400">
-                      Mother's Information
+                      Mother&apos;s Information
                     </h4>
                     {isEditing ? (
                       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                         <InputField
                           label="Mother's First Name"
-                          type="text"
-                          value={editedResident?.mother_first_name || ''}
-                          onChange={e => handleFieldChange('mother_first_name', e.target.value)}
-                          placeholder="First name"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.mother_first_name || '',
+                            onChange: e => handleFieldChange('mother_first_name', e.target.value),
+                            placeholder: 'First name',
+                          }}
                         />
                         <InputField
                           label="Mother's Middle Name"
-                          type="text"
-                          value={editedResident?.mother_middle_name || ''}
-                          onChange={e => handleFieldChange('mother_middle_name', e.target.value)}
-                          placeholder="Middle name"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.mother_middle_name || '',
+                            onChange: e => handleFieldChange('mother_middle_name', e.target.value),
+                            placeholder: 'Middle name',
+                          }}
                         />
                         <InputField
                           label="Mother's Maiden Last Name"
-                          type="text"
-                          value={editedResident?.mother_maiden_last_name || ''}
-                          onChange={e =>
-                            handleFieldChange('mother_maiden_last_name', e.target.value)
-                          }
-                          placeholder="Maiden last name"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.mother_maiden_last_name || '',
+                            onChange: e =>
+                              handleFieldChange('mother_maiden_last_name', e.target.value),
+                            placeholder: 'Maiden last name',
+                          }}
                         />
                       </div>
                     ) : (
                       <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-3">
-                        {renderEditableField(
-                          "Mother's First Name",
-                          'mother_first_name',
-                          'text'
-                        )}
-                        {renderEditableField(
-                          "Mother's Middle Name",
-                          'mother_middle_name',
-                          'text'
-                        )}
+                        {renderEditableField("Mother's First Name", 'mother_first_name', 'text')}
+                        {renderEditableField("Mother's Middle Name", 'mother_middle_name', 'text')}
                         {renderEditableField(
                           "Mother's Maiden Last Name",
                           'mother_maiden_last_name',
@@ -1201,9 +1304,11 @@ function ResidentDetailContent() {
             </div>
 
             {/* Migration Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Migration Information</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Migration Information
+                </h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
@@ -1219,9 +1324,12 @@ function ResidentDetailContent() {
                             is_migrant: e.target.checked,
                           })
                         }
-                        className="bg-white dark:bg-gray-800 size-4 rounded-sm border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
+                        className="size-4 rounded-sm border-gray-200 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
                       />
-                      <label htmlFor="is_migrant" className="text-sm text-gray-600 dark:text-gray-400">
+                      <label
+                        htmlFor="is_migrant"
+                        className="text-sm text-gray-600 dark:text-gray-400"
+                      >
                         Is Migrant
                       </label>
                     </div>
@@ -1229,27 +1337,29 @@ function ResidentDetailContent() {
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <InputField
                           label="Previous Address"
-                          type="text"
-                          value={editedResident?.migration_info?.previous_address || ''}
-                          onChange={e =>
-                            handleFieldChange('migration_info', {
-                              ...editedResident?.migration_info,
-                              previous_address: e.target.value,
-                            })
-                          }
-                          placeholder="Previous address"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.migration_info?.previous_address || '',
+                            onChange: e =>
+                              handleFieldChange('migration_info', {
+                                ...editedResident?.migration_info,
+                                previous_address: e.target.value,
+                              }),
+                            placeholder: 'Previous address',
+                          }}
                         />
                         <InputField
                           label="Previous Country"
-                          type="text"
-                          value={editedResident?.migration_info?.previous_country || ''}
-                          onChange={e =>
-                            handleFieldChange('migration_info', {
-                              ...editedResident?.migration_info,
-                              previous_country: e.target.value,
-                            })
-                          }
-                          placeholder="Previous country"
+                          inputProps={{
+                            type: 'text',
+                            value: editedResident?.migration_info?.previous_country || '',
+                            onChange: e =>
+                              handleFieldChange('migration_info', {
+                                ...editedResident?.migration_info,
+                                previous_country: e.target.value,
+                              }),
+                            placeholder: 'Previous country',
+                          }}
                         />
                       </div>
                     )}
@@ -1257,7 +1367,9 @@ function ResidentDetailContent() {
                 ) : (
                   <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Is Migrant</dt>
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Is Migrant
+                      </dt>
                       <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {formatBoolean(resident.migration_info?.is_migrant)}
                       </dd>
@@ -1265,25 +1377,33 @@ function ResidentDetailContent() {
                     {resident.migration_info?.is_migrant && (
                       <>
                         <div>
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Migration Type</dt>
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Migration Type
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {formatEnumValue(resident.migration_info?.migration_type)}
                           </dd>
                         </div>
                         <div className="sm:col-span-2">
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Previous Address</dt>
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Previous Address
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {resident.migration_info?.previous_address || 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Previous Country</dt>
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Previous Country
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {resident.migration_info?.previous_country || 'N/A'}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Migration Date</dt>
+                          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Migration Date
+                          </dt>
                           <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                             {resident.migration_info?.migration_date
                               ? new Date(
@@ -1300,16 +1420,18 @@ function ResidentDetailContent() {
             </div>
 
             {/* Sectoral Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Sectoral Classification</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Sectoral Classification
+                </h3>
               </div>
               <div className="px-6 py-4">
                 {isEditing ? (
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     <p className="mb-4">
                       Sectoral classifications will be automatically calculated when you save the
-                      changes based on the resident's age, employment status, and other
+                      changes based on the resident&apos;s age, employment status, and other
                       information.
                     </p>
                     <div className="grid grid-cols-2 gap-4 text-xs">
@@ -1339,7 +1461,7 @@ function ResidentDetailContent() {
                                   onChange={e =>
                                     handleFieldChange(field as keyof Resident, e.target.checked)
                                   }
-                                  className="bg-white dark:bg-gray-800 size-3 rounded-sm border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
+                                  className="size-3 rounded-sm border-gray-200 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
                                 />
                                 <label htmlFor={field} className="text-xs">
                                   {field.replace(/^is_/, '').replace(/_/g, ' ').toUpperCase()}
@@ -1366,9 +1488,11 @@ function ResidentDetailContent() {
           {/* Right Column - Side Information */}
           <div className="space-y-6">
             {/* Quick Actions Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Quick Actions</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Quick Actions
+                </h3>
               </div>
               <div className="space-y-3 px-6 py-4">
                 {isEditing ? (
@@ -1376,14 +1500,14 @@ function ResidentDetailContent() {
                     <button
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-black"
                     >
                       {isSaving ? 'Saving...' : 'Save Changes'}
                     </button>
                     <button
                       onClick={handleCancel}
                       disabled={isSaving}
-                      className="w-full rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-black"
                     >
                       Cancel
                     </button>
@@ -1395,14 +1519,14 @@ function ResidentDetailContent() {
                   <>
                     <button
                       onClick={handleEdit}
-                      className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:text-black"
                     >
                       Edit Information
                     </button>
-                    <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
                       Generate Certificate
                     </button>
-                    <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
                       Export Data
                     </button>
                   </>
@@ -1411,11 +1535,14 @@ function ResidentDetailContent() {
             </div>
 
             {/* Classifications Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Classifications</h3>
-                <p className="text-gray-500 dark:text-gray-400 mt-1 text-xs">
-                  Fields marked with <span className="text-gray-600 dark:text-gray-400 underline">(auto)</span> are
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Classifications
+                </h3>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+                  Fields marked with{' '}
+                  <span className="text-gray-500 underline dark:text-gray-500">(auto)</span> are
                   calculated automatically. Hover for details.
                 </p>
               </div>
@@ -1460,9 +1587,11 @@ function ResidentDetailContent() {
             </div>
 
             {/* Additional Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Additional Information</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  Additional Information
+                </h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
@@ -1484,18 +1613,26 @@ function ResidentDetailContent() {
             </div>
 
             {/* System Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">System Information</h3>
+            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
+                  System Information
+                </h3>
               </div>
               <div className="px-6 py-4">
                 <dl className="space-y-4">
                   <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Record ID</dt>
-                    <dd className="mt-1 font-mono text-xs text-gray-600 dark:text-gray-400">{resident.id}</dd>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Record ID
+                    </dt>
+                    <dd className="mt-1 font-mono text-xs text-gray-600 dark:text-gray-400">
+                      {resident.id}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Created Date</dt>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Created Date
+                    </dt>
                     <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                       {new Date(resident.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -1508,7 +1645,9 @@ function ResidentDetailContent() {
                   </div>
                   {resident.updated_at && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Last Updated</dt>
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Last Updated
+                      </dt>
                       <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                         {new Date(resident.updated_at).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -1522,14 +1661,18 @@ function ResidentDetailContent() {
                   )}
                   {resident.household_id && (
                     <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Household ID</dt>
+                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Household ID
+                      </dt>
                       <dd className="mt-1 font-mono text-xs text-gray-600 dark:text-gray-400">
                         {resident.household_id}
                       </dd>
                     </div>
                   )}
                   <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-600">Active Status</dt>
+                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Active Status
+                    </dt>
                     <dd
                       className={`text-sm font-medium ${
                         resident.is_active ? 'text-green-600' : 'text-red-600'
@@ -1549,7 +1692,5 @@ function ResidentDetailContent() {
 }
 
 export default function ResidentDetailPage() {
-  return (
-    <ResidentDetailContent />
-  );
+  return <ResidentDetailContent />;
 }
