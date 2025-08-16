@@ -8,7 +8,7 @@ import { Button } from '@/components/atoms';
 import { logger } from '@/lib/secure-logger';
 
 const fileUploadVariants = cva(
-  'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2',
+  'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2',
   {
     variants: {
       variant: {
@@ -279,7 +279,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between rounded border border-[#d4d4d4] bg-[#fafafa] p-2"
+                className="flex items-center justify-between rounded-sm border border-[#d4d4d4] bg-[#fafafa] p-2"
               >
                 <div className="flex min-w-0 flex-1 items-center space-x-2">
                   <svg

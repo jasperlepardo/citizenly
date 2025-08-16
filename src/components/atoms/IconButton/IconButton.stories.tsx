@@ -178,7 +178,7 @@ export const Variants: Story = {
       <IconButton variant="primary" icon={EditIcon} aria-label="Primary edit" />
       <IconButton variant="primary-subtle" icon={EditIcon} aria-label="Primary subtle edit" />
       <IconButton variant="primary-faded" icon={EditIcon} aria-label="Primary faded edit" />
-      <IconButton variant="primary-outline" icon={EditIcon} aria-label="Primary outline edit" />
+      <IconButton variant="primary-outline" icon={EditIcon} aria-label="Primary outline-solid edit" />
 
       {/* Secondary variants */}
       <IconButton variant="secondary" icon={HeartIcon} aria-label="Secondary heart" />
@@ -187,20 +187,20 @@ export const Variants: Story = {
       <IconButton
         variant="secondary-outline"
         icon={HeartIcon}
-        aria-label="Secondary outline heart"
+        aria-label="Secondary outline-solid heart"
       />
 
       {/* Success variants */}
       <IconButton variant="success" icon={PlusIcon} aria-label="Success add" />
       <IconButton variant="success-subtle" icon={PlusIcon} aria-label="Success subtle add" />
       <IconButton variant="success-faded" icon={PlusIcon} aria-label="Success faded add" />
-      <IconButton variant="success-outline" icon={PlusIcon} aria-label="Success outline add" />
+      <IconButton variant="success-outline" icon={PlusIcon} aria-label="Success outline-solid add" />
 
       {/* Danger variants */}
       <IconButton variant="danger" icon={TrashIcon} aria-label="Danger delete" />
       <IconButton variant="danger-subtle" icon={TrashIcon} aria-label="Danger subtle delete" />
       <IconButton variant="danger-faded" icon={TrashIcon} aria-label="Danger faded delete" />
-      <IconButton variant="danger-outline" icon={TrashIcon} aria-label="Danger outline delete" />
+      <IconButton variant="danger-outline" icon={TrashIcon} aria-label="Danger outline-solid delete" />
     </div>
   ),
 };
@@ -233,7 +233,7 @@ export const ActionButtons: Story = {
       <div className="flex items-center justify-between rounded-lg border bg-white p-4">
         <div>
           <h3 className="font-semibold">Document Title</h3>
-          <p className="text-sm text-gray-600">Last modified 2 hours ago</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Last modified 2 hours ago</p>
         </div>
         <div className="flex gap-2">
           <IconButton
@@ -254,7 +254,7 @@ export const ActionButtons: Story = {
       <div className="flex items-center justify-between rounded-lg border bg-white p-4">
         <div>
           <h3 className="font-semibold">Image File</h3>
-          <p className="text-sm text-gray-600">800x600 • 2.5 MB</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">800x600 • 2.5 MB</p>
         </div>
         <div className="flex gap-2">
           <IconButton variant="success-subtle" size="sm" icon={HeartIcon} aria-label="Like image" />
@@ -274,7 +274,7 @@ export const ActionButtons: Story = {
 export const FloatingActionButton: Story = {
   render: () => (
     <div className="relative h-64 rounded-lg bg-gray-100 p-4">
-      <p className="text-gray-600">Content area...</p>
+      <p className="text-gray-600 dark:text-gray-400">Content area...</p>
 
       {/* Floating Action Button */}
       <div className="absolute bottom-4 right-4">

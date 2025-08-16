@@ -13,7 +13,7 @@ import Shadows, {
 } from './Shadows';
 
 const meta = {
-  title: 'Design Tokens/Shadows & Effects',
+  title: 'Design System/Shadows & Effects',
   component: Shadows,
   parameters: {
     layout: 'fullscreen',
@@ -153,8 +153,8 @@ export const BoxShadows: Story = {
   name: '📦 Box Shadows',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Box Shadow System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Box Shadow System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Progressive shadow system that creates depth and visual hierarchy in government
         applications.
       </p>
@@ -168,14 +168,14 @@ export const BoxShadows: Story = {
 
       <ShadowDemo
         title="Interactive Shadow Explorer"
-        description="Click different shadow values to preview them on a card element"
+        description="Click different shadow-sm values to preview them on a card element"
       >
         <InteractiveShadowDemo />
       </ShadowDemo>
 
       <ShadowDemo
         title="Shadow Comparison"
-        description="Side-by-side comparison of different shadow depths"
+        description="Side-by-side comparison of different shadow-sm depths"
       >
         <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {Object.entries(shadowTokens.boxShadows)
@@ -184,20 +184,20 @@ export const BoxShadows: Story = {
             .map(([name, shadow]) => (
               <div key={name} className="text-center">
                 <div
-                  className="mx-auto mb-3 flex h-24 w-24 items-center justify-center rounded-lg border border-gray-200 bg-white font-medium text-gray-700"
+                  className="mx-auto mb-3 flex h-24 w-24 items-center justify-center rounded-lg border border-gray-200 bg-white font-medium text-gray-700 dark:text-gray-300"
                   style={{ boxShadow: shadow }}
                 >
                   {name}
                 </div>
-                <div className="text-sm text-gray-600">{name} shadow</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{name} shadow</div>
               </div>
             ))}
         </div>
       </ShadowDemo>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 font-semibold text-gray-900">📦 Box Shadow Guidelines</h3>
-        <ul className="space-y-1 text-sm text-gray-800">
+        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">📦 Box Shadow Guidelines</h3>
+        <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           <li>
             • <strong>xs-sm</strong>: Subtle elevation for buttons, inputs, small cards
           </li>
@@ -223,8 +223,8 @@ export const BorderRadius: Story = {
   name: '🔄 Border Radius',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Border Radius System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Border Radius System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Modern corner rounding that creates approachable, contemporary government interfaces.
       </p>
 
@@ -232,7 +232,7 @@ export const BorderRadius: Story = {
         title="Radius Scale"
         shadows={radiusTokens}
         type="radius"
-        description="From sharp corners to fully rounded elements"
+        description="From sharp corners to fully rounded-sm elements"
       />
 
       <ShadowDemo
@@ -242,7 +242,7 @@ export const BorderRadius: Story = {
         <div className="space-y-8">
           {/* Buttons */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Buttons</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Buttons</h4>
             <div className="flex flex-wrap gap-4">
               {Object.entries(radiusTokens)
                 .filter(([name]) => !['full'].includes(name))
@@ -250,7 +250,7 @@ export const BorderRadius: Story = {
                 .map(([name, radius]) => (
                   <button
                     key={name}
-                    className="bg-blue-600 px-6 py-3 font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
+                    className="bg-blue-600 px-6 py-3 font-medium text-white dark:text-black shadow-xs transition-colors hover:bg-blue-700"
                     style={{ borderRadius: radius }}
                   >
                     {name} radius
@@ -261,7 +261,7 @@ export const BorderRadius: Story = {
 
           {/* Cards */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Cards</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Cards</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {[radiusTokens.sm, radiusTokens.lg, radiusTokens['2xl']].map((radius, index) => {
                 const names = ['sm', 'lg', '2xl'];
@@ -271,11 +271,11 @@ export const BorderRadius: Story = {
                     className="border border-gray-200 bg-white p-6 shadow-md"
                     style={{ borderRadius: radius }}
                   >
-                    <h5 className="mb-2 font-semibold text-gray-900">Card Component</h5>
-                    <p className="mb-3 text-sm text-gray-600">
+                    <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Card Component</h5>
+                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
                       This card uses {names[index]} border radius ({radius}).
                     </p>
-                    <button className="text-sm font-medium text-gray-600">Learn more →</button>
+                    <button className="text-sm font-medium text-gray-600 dark:text-gray-400">Learn more →</button>
                   </div>
                 );
               })}
@@ -284,16 +284,16 @@ export const BorderRadius: Story = {
 
           {/* Badges and Avatars */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Badges & Avatars</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Badges & Avatars</h4>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
                 <div
-                  className="flex h-12 w-12 items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 font-bold text-white"
+                  className="flex h-12 w-12 items-center justify-center bg-linear-to-r from-blue-500 to-purple-600 font-bold text-white dark:text-black"
                   style={{ borderRadius: radiusTokens.full }}
                 >
                   JD
                 </div>
-                <span className="text-sm text-gray-600">Avatar (full radius)</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Avatar (full radius)</span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -303,7 +303,7 @@ export const BorderRadius: Story = {
                 >
                   Online
                 </span>
-                <span className="text-sm text-gray-600">Badge (full radius)</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Badge (full radius)</span>
               </div>
 
               <div className="flex items-center gap-3">
@@ -313,7 +313,7 @@ export const BorderRadius: Story = {
                 >
                   New
                 </span>
-                <span className="text-sm text-gray-600">Tag (sm radius)</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Tag (sm radius)</span>
               </div>
             </div>
           </div>
@@ -345,8 +345,8 @@ export const OpacityBlur: Story = {
   name: '👻 Opacity & Blur',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Opacity & Blur Effects</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Opacity & Blur Effects</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Transparency and blur effects for modern UI patterns and state management.
       </p>
 
@@ -373,25 +373,25 @@ export const OpacityBlur: Story = {
         <div className="space-y-8">
           {/* Loading States */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Loading & Disabled States</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Loading & Disabled States</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="rounded-lg border border-gray-200 bg-white p-4">
-                <h5 className="mb-2 font-semibold text-gray-900">Normal State</h5>
-                <p className="mb-3 text-sm text-gray-600">
+                <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Normal State</h5>
+                <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
                   This content is fully visible and interactive.
                 </p>
-                <button className="rounded-md bg-blue-600 px-4 py-2 text-white">Action</button>
+                <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black">Action</button>
               </div>
 
               <div
                 className="rounded-lg border border-gray-200 bg-white p-4"
                 style={{ opacity: opacityTokens[60] }}
               >
-                <h5 className="mb-2 font-semibold text-gray-900">Loading State</h5>
-                <p className="mb-3 text-sm text-gray-600">
+                <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Loading State</h5>
+                <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
                   Content is loading, reduced opacity indicates wait.
                 </p>
-                <button className="rounded-md bg-blue-600 px-4 py-2 text-white" disabled>
+                <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black" disabled>
                   Loading...
                 </button>
               </div>
@@ -400,11 +400,11 @@ export const OpacityBlur: Story = {
                 className="rounded-lg border border-gray-200 bg-white p-4"
                 style={{ opacity: opacityTokens[40] }}
               >
-                <h5 className="mb-2 font-semibold text-gray-900">Disabled State</h5>
-                <p className="mb-3 text-sm text-gray-600">
+                <h5 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Disabled State</h5>
+                <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
                   Content is disabled, low opacity shows unavailability.
                 </p>
-                <button className="rounded-md bg-blue-600 px-4 py-2 text-white" disabled>
+                <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black" disabled>
                   Disabled
                 </button>
               </div>
@@ -413,18 +413,18 @@ export const OpacityBlur: Story = {
 
           {/* Overlay Examples */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Overlay Patterns</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Overlay Patterns</h4>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Modal overlay */}
-              <div className="relative h-40 overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-purple-500">
+              <div className="relative h-40 overflow-hidden rounded-lg bg-linear-to-br from-blue-400 to-purple-500">
                 <div className="absolute inset-0 p-4">
-                  <h5 className="mb-2 font-bold text-white">Background Content</h5>
-                  <p className="text-sm text-white">
+                  <h5 className="mb-2 font-bold text-white dark:text-black">Background Content</h5>
+                  <p className="text-sm text-white dark:text-black">
                     This is the main page content that gets overlaid.
                   </p>
                 </div>
                 <div
-                  className="absolute inset-0 flex items-center justify-center font-medium text-white"
+                  className="absolute inset-0 flex items-center justify-center font-medium text-white dark:text-black dark:text-white"
                   style={{ backgroundColor: `rgba(0, 0, 0, ${opacityTokens[60]})` }}
                 >
                   Modal Overlay
@@ -434,13 +434,13 @@ export const OpacityBlur: Story = {
               </div>
 
               {/* Image overlay */}
-              <div className="relative h-40 overflow-hidden rounded-lg bg-gradient-to-br from-green-400 to-teal-500">
+              <div className="relative h-40 overflow-hidden rounded-lg bg-linear-to-br from-green-400 to-teal-500">
                 <div className="absolute inset-0 p-4">
-                  <h5 className="mb-2 font-bold text-white">Image Background</h5>
-                  <p className="text-sm text-white">Background image or video content.</p>
+                  <h5 className="mb-2 font-bold text-white dark:text-black">Image Background</h5>
+                  <p className="text-sm text-white dark:text-black">Background image or video content.</p>
                 </div>
                 <div
-                  className="absolute inset-0 flex items-center justify-center font-medium text-white"
+                  className="absolute inset-0 flex items-center justify-center font-medium text-white dark:text-black dark:text-white"
                   style={{
                     background: `linear-gradient(rgba(0, 0, 0, ${opacityTokens[30]}), rgba(0, 0, 0, ${opacityTokens[70]}))`,
                   }}
@@ -457,25 +457,25 @@ export const OpacityBlur: Story = {
 
       <ShadowDemo
         title="Blur Effect Showcase"
-        description="Modern blur effects for contemporary government interfaces"
+        description="Modern blur-sm effects for contemporary government interfaces"
       >
         <div className="space-y-8">
           {/* Glassmorphism */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Glassmorphism Cards</h4>
-            <div className="relative h-64 overflow-hidden rounded-xl bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-6">
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">Glassmorphism Cards</h4>
+            <div className="relative h-64 overflow-hidden rounded-xl bg-linear-to-br from-blue-400 via-purple-500 to-pink-500 p-6">
               <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Light glass */}
                 <div
-                  className="rounded-xl border border-white border-opacity-30 bg-white bg-opacity-20 p-6 backdrop-blur-sm"
+                  className="rounded-xl border border-white border-opacity-30 bg-white bg-opacity-20 p-6 backdrop-blur-xs"
                   style={{ backdropFilter: `blur(${blurTokens.sm})` }}
                 >
-                  <h5 className="mb-3 font-bold text-white">Government Service Card</h5>
-                  <p className="mb-4 text-sm text-white">
+                  <h5 className="mb-3 font-bold text-white dark:text-black">Government Service Card</h5>
+                  <p className="mb-4 text-sm text-white dark:text-black">
                     Modern glassmorphism effect using backdrop blur for contemporary government
                     interfaces.
                   </p>
-                  <button className="rounded-lg border border-white border-opacity-30 bg-white bg-opacity-20 px-4 py-2 text-white transition-all hover:bg-opacity-30">
+                  <button className="rounded-lg border border-white border-opacity-30 bg-white bg-opacity-20 px-4 py-2 text-white dark:text-black dark:text-white transition-all hover:bg-opacity-30">
                     Learn More
                   </button>
                 </div>
@@ -485,12 +485,12 @@ export const OpacityBlur: Story = {
                   className="rounded-xl border border-white border-opacity-20 bg-black bg-opacity-20 p-6 backdrop-blur-md"
                   style={{ backdropFilter: `blur(${blurTokens.md})` }}
                 >
-                  <h5 className="mb-3 font-bold text-white">Document Portal</h5>
-                  <p className="mb-4 text-sm text-white">
+                  <h5 className="mb-3 font-bold text-white dark:text-black">Document Portal</h5>
+                  <p className="mb-4 text-sm text-white dark:text-black">
                     Enhanced blur effect for more pronounced glass appearance in key interface
                     areas.
                   </p>
-                  <button className="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-20 px-4 py-2 text-white transition-all hover:bg-opacity-30">
+                  <button className="rounded-lg border border-white border-opacity-20 bg-white bg-opacity-20 px-4 py-2 text-white dark:text-black transition-all hover:bg-opacity-30">
                     Access Portal
                   </button>
                 </div>
@@ -500,25 +500,25 @@ export const OpacityBlur: Story = {
 
           {/* Loading blur */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Loading State Blur</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Loading State Blur</h4>
             <div className="relative overflow-hidden rounded-lg border border-gray-200 bg-white">
               <div className="p-6">
-                <h5 className="mb-3 font-semibold text-gray-900">Document Processing System</h5>
+                <h5 className="mb-3 font-semibold text-gray-900 dark:text-gray-100">Document Processing System</h5>
                 <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
                   <div className="rounded border bg-gray-50 p-4">
-                    <div className="text-sm font-medium text-gray-700">Applications</div>
-                    <div className="text-2xl font-bold text-gray-900">1,234</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Applications</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">1,234</div>
                   </div>
                   <div className="rounded border bg-gray-50 p-4">
-                    <div className="text-sm font-medium text-gray-700">Processed</div>
-                    <div className="text-2xl font-bold text-gray-900">856</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Processed</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">856</div>
                   </div>
                   <div className="rounded border bg-gray-50 p-4">
-                    <div className="text-sm font-medium text-gray-700">Pending</div>
-                    <div className="text-2xl font-bold text-gray-900">378</div>
+                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Pending</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">378</div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
                   This interface shows document processing statistics and status information.
                 </p>
               </div>
@@ -530,8 +530,8 @@ export const OpacityBlur: Story = {
               >
                 <div className="text-center">
                   <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
-                  <div className="font-medium text-gray-900">Processing Request...</div>
-                  <div className="text-sm text-gray-600">blur: {blurTokens.md}</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">Processing Request...</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">blur: {blurTokens.md}</div>
                 </div>
               </div>
             </div>
@@ -541,8 +541,8 @@ export const OpacityBlur: Story = {
 
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-          <h3 className="mb-2 font-semibold text-gray-900">👻 Opacity Guidelines</h3>
-          <ul className="space-y-1 text-sm text-gray-800">
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">👻 Opacity Guidelines</h3>
+          <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
             <li>
               • <strong>10-25%</strong>: Subtle overlays, hover effects
             </li>
@@ -580,8 +580,8 @@ export const SemanticShadows: Story = {
   name: '🎯 Semantic Usage',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Semantic Shadow & Effect Usage</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Semantic Shadow & Effect Usage</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Contextual shadow and effect tokens for consistent patterns across government applications.
       </p>
 
@@ -593,7 +593,7 @@ export const SemanticShadows: Story = {
           {/* Button */}
           <div className="text-center">
             <button
-              className="rounded-md bg-blue-600 px-6 py-3 font-medium text-white transition-all hover:shadow-lg active:shadow-sm"
+              className="rounded-md bg-blue-600 px-6 py-3 font-medium text-white dark:text-black transition-all hover:shadow-lg active:shadow-xs"
               style={{
                 boxShadow: semanticShadows.component.button,
                 borderRadius: semanticEffects.radius.button,
@@ -601,7 +601,7 @@ export const SemanticShadows: Story = {
             >
               Primary Button
             </button>
-            <div className="mt-2 text-sm text-gray-600">button shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">button shadow + radius</div>
           </div>
 
           {/* Card */}
@@ -613,10 +613,10 @@ export const SemanticShadows: Story = {
                 borderRadius: semanticEffects.radius.card,
               }}
             >
-              <h4 className="mb-2 font-semibold text-gray-900">Service Card</h4>
-              <p className="text-sm text-gray-600">Government service information</p>
+              <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Service Card</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Government service information</p>
             </div>
-            <div className="mt-2 text-sm text-gray-600">card shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">card shadow + radius</div>
           </div>
 
           {/* Input */}
@@ -624,7 +624,7 @@ export const SemanticShadows: Story = {
             <input
               type="text"
               placeholder="Government ID"
-              className="w-full max-w-48 border border-gray-300 px-4 py-2 transition-all focus:border-blue-500 focus:outline-none"
+              className="w-full max-w-48 border border-gray-300 px-4 py-2 transition-all focus:border-blue-500 focus:outline-hidden"
               style={{
                 boxShadow: semanticShadows.component.input,
                 borderRadius: semanticEffects.radius.input,
@@ -636,7 +636,7 @@ export const SemanticShadows: Story = {
                 e.currentTarget.style.boxShadow = semanticShadows.component.input;
               }}
             />
-            <div className="mt-2 text-sm text-gray-600">input shadow + radius</div>
+            <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">input shadow + radius</div>
           </div>
         </div>
       </ShadowDemo>
@@ -648,7 +648,7 @@ export const SemanticShadows: Story = {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* Hover effects */}
           <div className="space-y-6">
-            <h4 className="font-semibold text-gray-900">Hover Effects</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100">Hover Effects</h4>
             <div className="space-y-4">
               {['Normal', 'Hover Me!', 'Click Me!'].map((text, index) => {
                 const shadows = [
@@ -678,19 +678,19 @@ export const SemanticShadows: Story = {
                         e.currentTarget.style.boxShadow = semanticShadows.component.card;
                     }}
                   >
-                    <div className="text-center font-medium text-gray-700">{text}</div>
+                    <div className="text-center font-medium text-gray-700 dark:text-gray-300">{text}</div>
                     {index === 0 && (
-                      <div className="mt-1 text-center text-xs text-gray-500">
+                      <div className="mt-1 text-center text-xs text-gray-500 dark:text-gray-500">
                         Default card shadow
                       </div>
                     )}
                     {index === 1 && (
-                      <div className="mt-1 text-center text-xs text-gray-500">
+                      <div className="mt-1 text-center text-xs text-gray-500 dark:text-gray-500">
                         Hover to see elevation
                       </div>
                     )}
                     {index === 2 && (
-                      <div className="mt-1 text-center text-xs text-gray-500">
+                      <div className="mt-1 text-center text-xs text-gray-500 dark:text-gray-500">
                         Click and hold for active state
                       </div>
                     )}
@@ -702,12 +702,12 @@ export const SemanticShadows: Story = {
 
           {/* Focus states */}
           <div className="space-y-6">
-            <h4 className="font-semibold text-gray-900">Focus States</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100">Focus States</h4>
             <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Click to focus"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-none"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-hidden"
                 onFocus={e => {
                   e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                   e.currentTarget.style.borderColor = '#3b82f6';
@@ -719,9 +719,9 @@ export const SemanticShadows: Story = {
               />
 
               <textarea
-                placeholder="Text area with focus shadow"
+                placeholder="Text area with focus shadow-sm"
                 rows={3}
-                className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-none"
+                className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-all focus:outline-hidden"
                 onFocus={e => {
                   e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                   e.currentTarget.style.borderColor = '#3b82f6';
@@ -733,7 +733,7 @@ export const SemanticShadows: Story = {
               />
 
               <button
-                className="w-full rounded-lg bg-green-600 px-4 py-3 font-medium text-white transition-all focus:outline-none"
+                className="w-full rounded-lg bg-green-600 px-4 py-3 font-medium text-white dark:text-black transition-all focus:outline-hidden"
                 onFocus={e => {
                   e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                 }}
@@ -744,7 +744,7 @@ export const SemanticShadows: Story = {
                 Button with focus ring
               </button>
 
-              <div className="text-center text-xs text-gray-500">
+              <div className="text-center text-xs text-gray-500 dark:text-gray-500">
                 Focus elements above to see accessibility focus indicators
               </div>
             </div>
@@ -759,9 +759,9 @@ export const SemanticShadows: Story = {
         <div className="space-y-8">
           {/* Navigation */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Navigation Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Navigation Shadow</h4>
             <div
-              className="rounded-lg bg-blue-600 p-4 text-white"
+              className="rounded-lg bg-blue-600 p-4 text-white dark:text-black"
               style={{ boxShadow: semanticShadows.layout.navigation }}
             >
               <div className="flex items-center justify-between">
@@ -773,28 +773,28 @@ export const SemanticShadows: Story = {
 
           {/* Modal */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Modal Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Modal Shadow</h4>
             <div className="relative">
               <div className="rounded-xl bg-gray-900 bg-opacity-50 p-8">
                 <div
                   className="mx-auto max-w-md rounded-xl bg-white p-6"
                   style={{ boxShadow: semanticShadows.layout.modal }}
                 >
-                  <h5 className="mb-3 text-lg font-semibold text-gray-900">
+                  <h5 className="mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Document Confirmation
                   </h5>
-                  <p className="mb-4 text-gray-600">
+                  <p className="mb-4 text-gray-600 dark:text-gray-400">
                     Are you sure you want to submit this application?
                   </p>
                   <div className="flex justify-end gap-3">
-                    <button className="px-4 py-2 text-gray-600 hover:text-gray-800">
+                    <button className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200">
                       Cancel
                     </button>
-                    <button className="rounded-md bg-blue-600 px-4 py-2 text-white">Confirm</button>
+                    <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black">Confirm</button>
                   </div>
                 </div>
               </div>
-              <div className="mt-2 text-center text-sm text-gray-600">
+              <div className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 modal shadow (2xl depth)
               </div>
             </div>
@@ -802,9 +802,9 @@ export const SemanticShadows: Story = {
 
           {/* Dropdown */}
           <div>
-            <h4 className="mb-4 font-semibold text-gray-900">Dropdown Shadow</h4>
+            <h4 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Dropdown Shadow</h4>
             <div className="relative inline-block">
-              <button className="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700">
+              <button className="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 dark:text-gray-300">
                 Select Service ▼
               </button>
               <div
@@ -822,7 +822,7 @@ export const SemanticShadows: Story = {
                 </div>
                 <div className="cursor-pointer px-4 py-2 hover:bg-gray-50">Tax Clearance</div>
               </div>
-              <div className="mt-16 text-sm text-gray-600">dropdown shadow (xl depth)</div>
+              <div className="mt-16 text-sm text-gray-600 dark:text-gray-400">dropdown shadow (xl depth)</div>
             </div>
           </div>
         </div>

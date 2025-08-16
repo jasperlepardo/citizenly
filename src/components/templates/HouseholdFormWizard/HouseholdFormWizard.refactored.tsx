@@ -14,7 +14,7 @@ import { HouseholdFormData } from '@/services/household.service';
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';
-import { InputField, SelectField, FormField } from '@/components/molecules';
+import { InputField, SelectField, FieldSet } from '@/components/molecules';
 
 interface FormStep {
   id: number;
@@ -262,10 +262,10 @@ export default function HouseholdFormWizard({
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
                       currentStep === step.id
-                        ? 'border-blue-600 bg-blue-600 text-white'
+                        ? 'border-blue-600 bg-blue-600 text-white dark:text-black'
                         : currentStep > step.id || completedSteps.has(step.id)
-                          ? 'border-green-600 bg-green-600 text-white'
-                          : 'border-gray-300 bg-white text-gray-500'
+                          ? 'border-green-600 bg-green-600 text-white dark:text-black'
+                          : 'border-gray-300 bg-white text-gray-500 dark:text-gray-500 dark:text-gray-500 dark:text-gray-500'
                     }`}
                   >
                     {currentStep > step.id || completedSteps.has(step.id) ? (
@@ -294,16 +294,16 @@ export default function HouseholdFormWizard({
               ))}
             </div>
             <div className="mt-4">
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {steps[currentStep - 1].title}
               </h2>
-              <p className="text-sm text-gray-600">{steps[currentStep - 1].description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{steps[currentStep - 1].description}</p>
             </div>
           </div>
         )}
 
         {/* Form content */}
-        <div className="rounded-lg bg-white p-6 shadow">
+        <div className="rounded-lg bg-white p-6 shadow-sm">
           {/* Display validation errors */}
           {Object.keys(validationErrors).length > 0 && (
             <div className="mb-4 rounded-md bg-red-50 p-4">
@@ -415,7 +415,7 @@ function BasicInformationStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Basic Information</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Basic Information</h3>
 
         <div className="space-y-4">
           <div className="flex gap-2">
@@ -491,7 +491,7 @@ function LocationDetailsStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Location Details</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Location Details</h3>
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -570,7 +570,7 @@ function HouseholdCompositionStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Household Composition</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Household Composition</h3>
 
         <div className="space-y-4">
           <InputField
@@ -677,7 +677,7 @@ function EconomicInformationStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Economic Information</h3>
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Economic Information</h3>
 
         <div className="space-y-4">
           <SelectField
@@ -697,7 +697,7 @@ function EconomicInformationStep({
           />
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Utilities</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Utilities</label>
             <div className="space-y-2">
               <label className="flex items-center">
                 <input

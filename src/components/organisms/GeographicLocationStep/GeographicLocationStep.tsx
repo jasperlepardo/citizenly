@@ -73,23 +73,23 @@ export function GeographicLocationStep({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Geographic Location</h2>
-        <p className="mt-2 text-gray-600">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Geographic Location</h2>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
           Select your geographic location. This information will be used for administrative purposes
           and data collection.
         </p>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-        <h3 className="mb-4 text-lg font-medium text-gray-900">Geographic Location</h3>
-        <p className="mb-4 text-sm text-gray-600">
+        <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Geographic Location</h3>
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
           This resident will be assigned to your barangay's jurisdiction:
         </p>
 
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="font-medium text-gray-700">Region:</span>
-            <span className="text-gray-900">
+            <span className="font-medium text-gray-700 dark:text-gray-300">Region:</span>
+            <span className="text-gray-900 dark:text-gray-100 dark:text-gray-900">
               {loading
                 ? 'Loading...'
                 : formData.regionCode
@@ -98,8 +98,8 @@ export function GeographicLocationStep({
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium text-gray-700">Province:</span>
-            <span className="text-gray-900">
+            <span className="font-medium text-gray-700 dark:text-gray-300">Province:</span>
+            <span className="text-gray-900 dark:text-gray-100 dark:text-gray-900">
               {loading
                 ? 'Loading...'
                 : formData.provinceCode
@@ -108,8 +108,8 @@ export function GeographicLocationStep({
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium text-gray-700">City/Municipality:</span>
-            <span className="text-gray-900">
+            <span className="font-medium text-gray-700 dark:text-gray-300">City/Municipality:</span>
+            <span className="text-gray-900 dark:text-gray-100 dark:text-gray-900">
               {loading
                 ? 'Loading...'
                 : formData.cityMunicipalityCode
@@ -118,8 +118,8 @@ export function GeographicLocationStep({
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium text-gray-700">Barangay:</span>
-            <span className="font-semibold text-gray-900">
+            <span className="font-medium text-gray-700 dark:text-gray-300">Barangay:</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">
               {loading
                 ? 'Loading...'
                 : formData.barangayCode
@@ -129,8 +129,8 @@ export function GeographicLocationStep({
           </div>
         </div>
 
-        <div className="mt-4 rounded border border-blue-200 bg-blue-50 p-3">
-          <p className="text-sm text-gray-800">
+        <div className="mt-4 rounded-sm border border-blue-200 bg-blue-50 p-3">
+          <p className="text-sm text-gray-800 dark:text-gray-200">
             ✓ Geographic location automatically assigned from your barangay admin profile
           </p>
         </div>
@@ -152,8 +152,8 @@ export function GeographicLocationStep({
 
       {/* Information Note */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 text-sm font-medium text-gray-800">Important Information</h4>
-        <ul className="space-y-1 text-sm text-gray-700">
+        <h4 className="mb-2 text-sm font-medium text-gray-800 dark:text-gray-200">Important Information</h4>
+        <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>• Location automatically populated from your barangay admin profile</li>
           <li>• Geographic location is required for proper data organization</li>
           <li>• Only the location codes are stored in the system, not the names</li>

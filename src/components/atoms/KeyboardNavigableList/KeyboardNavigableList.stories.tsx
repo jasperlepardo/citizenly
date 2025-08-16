@@ -248,12 +248,12 @@ const ComposableListItemsComponent = () => {
         className="p-3"
       >
         <div className="flex items-center gap-3">
-          <div className="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white dark:text-black">
             JD
           </div>
           <div>
             <div className="font-medium">John Doe</div>
-            <div className="text-sm text-gray-500">john@example.com</div>
+            <div className="text-sm text-gray-500 dark:text-gray-500">john@example.com</div>
           </div>
         </div>
       </ListItem>
@@ -264,24 +264,24 @@ const ComposableListItemsComponent = () => {
         className="p-3"
       >
         <div className="flex items-center gap-3">
-          <div className="flex size-8 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-white dark:text-black">
             JS
           </div>
           <div>
             <div className="font-medium">Jane Smith</div>
-            <div className="text-sm text-gray-500">jane@example.com</div>
+            <div className="text-sm text-gray-500 dark:text-gray-500">jane@example.com</div>
           </div>
         </div>
       </ListItem>
 
       <ListItem selected={selected === 'item3'} disabled className="p-3">
         <div className="flex items-center gap-3">
-          <div className="flex size-8 items-center justify-center rounded-full bg-gray-400 text-sm font-bold text-white">
+          <div className="flex size-8 items-center justify-center rounded-full bg-gray-400 text-sm font-bold text-white dark:text-black">
             BJ
           </div>
           <div>
             <div className="font-medium">Bob Johnson</div>
-            <div className="text-sm text-gray-500">Unavailable</div>
+            <div className="text-sm text-gray-500 dark:text-gray-500">Unavailable</div>
           </div>
         </div>
       </ListItem>
@@ -337,7 +337,7 @@ const AccessibilityDemoComponent = () => {
     <div className="space-y-4">
       <div>
         <h3 className="mb-2 text-lg font-semibold">Keyboard Navigation Instructions</h3>
-        <ul className="space-y-1 text-sm text-gray-600">
+        <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
           <li>
             • Use <kbd className="rounded bg-gray-100 px-1 py-0.5">↑</kbd> and{' '}
             <kbd className="rounded bg-gray-100 px-1 py-0.5">↓</kbd> to navigate

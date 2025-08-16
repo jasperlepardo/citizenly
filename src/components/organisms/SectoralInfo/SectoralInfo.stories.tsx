@@ -389,25 +389,25 @@ export const InteractiveDemo: Story = {
       <div className="space-y-6">
         <div>
           <h3 className="mb-3 text-lg font-semibold">Context Controls</h3>
-          <div className="grid grid-cols-1 gap-4 rounded border bg-gray-50 p-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 rounded-sm border bg-gray-50 p-4 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Age</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Age</label>
               <input
                 type="number"
                 value={context.age || ''}
                 onChange={e => setContext({ ...context, age: parseInt(e.target.value) || 0 })}
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Employment Status
               </label>
               <select
                 value={context.employment_status}
                 onChange={e => setContext({ ...context, employment_status: e.target.value })}
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="employed_full_time">Employed (Full-time)</option>
@@ -421,7 +421,7 @@ export const InteractiveDemo: Story = {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Education Level
               </label>
               <select
@@ -429,7 +429,7 @@ export const InteractiveDemo: Story = {
                 onChange={e =>
                   setContext({ ...context, highest_educational_attainment: e.target.value })
                 }
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="elementary_graduate">Elementary Graduate</option>
@@ -441,11 +441,11 @@ export const InteractiveDemo: Story = {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Marital Status</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Marital Status</label>
               <select
                 value={context.marital_status}
                 onChange={e => setContext({ ...context, marital_status: e.target.value })}
-                className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 text-sm"
               >
                 <option value="">Not specified</option>
                 <option value="single">Single</option>
@@ -457,13 +457,13 @@ export const InteractiveDemo: Story = {
           </div>
 
           <div className="mt-4">
-            <h4 className="mb-2 text-sm font-medium text-gray-700">Quick Scenarios:</h4>
+            <h4 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Quick Scenarios:</h4>
             <div className="flex flex-wrap gap-2">
               {presetScenarios.map(scenario => (
                 <button
                   key={scenario.name}
                   onClick={() => setContext(scenario.context)}
-                  className="rounded bg-blue-100 px-3 py-1 text-sm text-gray-700 hover:bg-blue-200"
+                  className="rounded bg-blue-100 px-3 py-1 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-700 hover:bg-blue-200"
                 >
                   {scenario.name}
                 </button>
@@ -535,8 +535,8 @@ export const AgeBasedCalculations: Story = {
                 onClick={() => setCurrentAge(group.age)}
                 className={`rounded px-3 py-2 text-sm ${
                   currentAge === group.age
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-blue-600 text-white dark:text-black'
+                    : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300'
                 }`}
               >
                 {group.label}
@@ -544,7 +544,7 @@ export const AgeBasedCalculations: Story = {
             ))}
           </div>
 
-          <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm text-gray-700">
+          <div className="rounded border border-blue-200 bg-blue-50 p-3 text-sm text-gray-700 dark:text-gray-300">
             <strong>Current:</strong> {ageGroups.find(g => g.age === currentAge)?.description}
           </div>
         </div>

@@ -4,6 +4,7 @@ export { MainLayout } from './MainLayout';
 export { AppShell } from './AppShell';
 export { Header } from './Header';
 
-// Form Wizards
+// Forms
+export { ResidentForm } from './ResidentForm/ResidentForm';
 export { ResidentFormWizard } from './ResidentFormWizard';
 export { HouseholdFormWizard } from './HouseholdFormWizard';

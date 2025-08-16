@@ -6,13 +6,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const themeToggleVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-default hover:bg-default-hover border border-default text-gray-600',
-        ghost: 'hover:bg-default-hover text-gray-600',
-        outline: 'border border-default bg-transparent hover:bg-default-hover text-gray-600',
+        default: 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400',
+        ghost: 'hover:bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
+        outline: 'border border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
       },
       size: {
         sm: 'h-8 w-8 p-1',

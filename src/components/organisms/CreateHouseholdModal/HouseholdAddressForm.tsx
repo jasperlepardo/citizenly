@@ -32,7 +32,7 @@ export default function HouseholdAddressForm({
       <div>
         <label
           htmlFor="house-number"
-          className="font-montserrat mb-2 block text-sm font-medium text-gray-700"
+          className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
           House/Block/Lot Number
         </label>
@@ -42,14 +42,14 @@ export default function HouseholdAddressForm({
           value={formData.house_number}
           onChange={e => onChange('house_number', e.target.value)}
           placeholder="e.g., Blk 1 Lot 5, #123"
-          className="font-montserrat w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-hidden focus:ring-2 focus:ring-blue-500"
           disabled={isSubmitting}
         />
       </div>
 
       {/* Subdivision */}
       <div>
-        <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
+        <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Subdivision/Zone/Sitio/Purok
         </label>
         <SubdivisionSelector
@@ -64,7 +64,7 @@ export default function HouseholdAddressForm({
 
       {/* Street Name */}
       <div>
-        <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
+        <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Street Name *
         </label>
         <StreetSelector
@@ -78,7 +78,7 @@ export default function HouseholdAddressForm({
 
       {/* Info Note */}
       <div className="rounded border border-blue-200 bg-blue-50 p-4">
-        <p className="font-montserrat text-sm text-gray-800">
+        <p className="font-montserrat text-sm text-gray-800 dark:text-gray-200">
           <strong>Note:</strong> This household will be created in your assigned barangay. You can
           assign a resident as the household head after creating the household.
         </p>

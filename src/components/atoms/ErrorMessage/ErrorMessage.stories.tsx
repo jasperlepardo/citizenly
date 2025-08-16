@@ -70,16 +70,16 @@ export const CustomStyling: Story = {
   },
 };
 
-export const FormFieldExample: Story = {
+export const FieldSetExample: Story = {
   render: () => (
     <div className="w-full max-w-md space-y-2">
-      <label htmlFor="email-field" className="block text-sm font-medium text-gray-700">
+      <label htmlFor="email-field" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
         Email Address
       </label>
       <input
         id="email-field"
         type="email"
-        className="w-full rounded-md border border-red-300 px-3 py-2 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+        className="w-full rounded-md border border-red-300 px-3 py-2 focus:border-red-500 focus:outline-hidden focus:ring-2 focus:ring-red-500"
         placeholder="Enter your email"
         aria-describedby="email-error"
         aria-invalid="true"
@@ -101,13 +101,13 @@ export const MultipleErrors: Story = {
   render: () => (
     <div className="w-full max-w-md space-y-4">
       <div className="space-y-2">
-        <label htmlFor="password-field" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="password-field" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Password
         </label>
         <input
           id="password-field"
           type="password"
-          className="w-full rounded-md border border-red-300 px-3 py-2 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="w-full rounded-md border border-red-300 px-3 py-2 focus:border-red-500 focus:outline-hidden focus:ring-2 focus:ring-red-500"
           aria-describedby="password-error-1 password-error-2"
           aria-invalid="true"
         />
@@ -152,7 +152,7 @@ export const DifferentSeverities: Story = {
         <ErrorMessage
           id="error-info"
           error="Info: Additional verification may be required"
-          className="rounded border border-blue-200 bg-blue-50 px-3 py-2 text-gray-600"
+          className="rounded border border-blue-200 bg-blue-50 px-3 py-2 text-gray-600 dark:text-gray-400"
         />
       </div>
     </div>
@@ -172,7 +172,7 @@ export const InlineError: Story = {
     <div className="flex items-center space-x-2">
       <input
         type="text"
-        className="rounded-md border border-red-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+        className="rounded-md border border-red-300 px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-red-500"
         placeholder="Username"
         aria-describedby="username-error"
         aria-invalid="true"
@@ -197,13 +197,13 @@ export const DarkMode: Story = {
   render: () => (
     <div className="dark rounded-lg bg-gray-900 p-6">
       <div className="w-full max-w-md space-y-2">
-        <label htmlFor="dark-field" className="block text-sm font-medium text-gray-300">
+        <label htmlFor="dark-field" className="block text-sm font-medium text-gray-300 dark:text-gray-700">
           Field with Dark Mode Error
         </label>
         <input
           id="dark-field"
           type="text"
-          className="w-full rounded-md border border-red-500 bg-gray-800 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-400"
+          className="w-full rounded-md border border-red-500 bg-gray-800 px-3 py-2 text-white dark:text-black focus:outline-hidden focus:ring-2 focus:ring-red-400"
           aria-describedby="dark-error"
           aria-invalid="true"
         />

@@ -102,11 +102,11 @@ export const Closed: Story = {
       <div className="text-center">
         <button
           onClick={() => args.onClose()}
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
         >
           Open Create Household Modal
         </button>
-        <p className="mt-2 text-sm text-gray-500">Click the button above to open the modal</p>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">Click the button above to open the modal</p>
       </div>
     </div>
   ),
@@ -196,8 +196,8 @@ export const GeographicContextDemo: Story = {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {locations.map(location => (
             <div key={location.id} className="rounded-lg border border-gray-200 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900">{location.name}</h3>
-              <div className="mb-3 space-y-1 text-sm text-gray-600">
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">{location.name}</h3>
+              <div className="mb-3 space-y-1 text-sm text-gray-600 dark:text-gray-400">
                 <div>
                   <strong>Region:</strong> {location.context.region}
                 </div>
@@ -210,11 +210,11 @@ export const GeographicContextDemo: Story = {
                 <div>
                   <strong>Barangay:</strong> {location.context.barangay}
                 </div>
-                <div className="text-xs text-gray-500">Code: {location.context.code}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-500">Code: {location.context.code}</div>
               </div>
               <button
                 onClick={() => setCurrentModal(location.id)}
-                className="w-full rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+                className="w-full rounded-sm bg-blue-600 px-3 py-2 text-sm text-white dark:text-black hover:bg-blue-700"
               >
                 Create Household Here
               </button>
@@ -264,11 +264,11 @@ export const FormValidationDemo: Story = {
           <div className="text-center">
             <button
               onClick={() => setIsOpen(true)}
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
             >
               Reopen Modal
             </button>
-            <div className="mt-4 rounded border border-yellow-200 bg-yellow-50 p-4 text-left">
+            <div className="mt-4 rounded-sm border border-yellow-200 bg-yellow-50 p-4 text-left">
               <h4 className="mb-2 font-semibold text-yellow-800">Form Validation Demo</h4>
               <p className="text-sm text-yellow-700">
                 Try submitting the form without filling in the required "Street Name" field to see
@@ -355,14 +355,14 @@ export const LoadingStatesDemo: Story = {
           <div className="space-y-4 text-center">
             <button
               onClick={() => setIsOpen(true)}
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
             >
               Try Loading States Demo
             </button>
 
             <div className="rounded border border-blue-200 bg-blue-50 p-4 text-left">
-              <h4 className="mb-2 font-semibold text-gray-800">Loading States Demo</h4>
-              <div className="space-y-2 text-sm text-gray-700">
+              <h4 className="mb-2 font-semibold text-gray-800 dark:text-gray-200">Loading States Demo</h4>
+              <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <p>
                   <strong>1. Initial:</strong> Form ready for input
                 </p>
@@ -433,10 +433,10 @@ export const RealWorldScenarios: Story = {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {scenarios.map(scenario => (
             <div key={scenario.id} className="rounded-lg border border-gray-200 p-4">
-              <h3 className="mb-2 font-semibold text-gray-900">{scenario.title}</h3>
-              <p className="mb-3 text-sm text-gray-600">{scenario.description}</p>
+              <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">{scenario.title}</h3>
+              <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">{scenario.description}</p>
 
-              <div className="mb-3 space-y-1 text-xs text-gray-500">
+              <div className="mb-3 space-y-1 text-xs text-gray-500 dark:text-gray-500">
                 <div>
                   <strong>House:</strong> {scenario.example.houseNumber || 'None'}
                 </div>
@@ -453,7 +453,7 @@ export const RealWorldScenarios: Story = {
 
               <button
                 onClick={() => setSelectedScenario(scenario.id)}
-                className="w-full rounded bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700"
+                className="w-full rounded-sm bg-green-600 px-3 py-2 text-sm text-white dark:text-black hover:bg-green-700"
               >
                 Try This Scenario
               </button>

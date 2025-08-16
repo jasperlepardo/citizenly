@@ -379,7 +379,7 @@ export function validateDesignTokenUsage(styles: Record<string, unknown>) {
  */
 export function getSectoralBadgeColor(
   classification: string,
-  variant: 'solid' | 'outline' | 'subtle' = 'solid'
+  variant: 'solid' | 'outline-solid' | 'subtle' = 'solid'
 ) {
   const baseColor = getRBIColor(classification as Parameters<typeof getRBIColor>[0]);
 
@@ -390,7 +390,7 @@ export function getSectoralBadgeColor(
         color: designTokens.colors.neutral[50],
         borderColor: baseColor,
       };
-    case 'outline':
+    case 'outline-solid':
       return {
         backgroundColor: 'transparent',
         color: baseColor,

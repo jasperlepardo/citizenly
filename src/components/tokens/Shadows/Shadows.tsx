@@ -165,7 +165,7 @@ export const semanticEffects = {
 interface ShadowSwatchProps {
   name: string;
   value: string;
-  type?: 'boxShadow' | 'dropShadow' | 'radius' | 'opacity' | 'blur';
+  type?: 'boxShadow' | 'dropShadow' | 'radius' | 'opacity' | 'blur-sm';
 }
 
 export const ShadowSwatch: React.FC<ShadowSwatchProps> = ({ name, value, type = 'boxShadow' }) => {
@@ -181,7 +181,7 @@ export const ShadowSwatch: React.FC<ShadowSwatchProps> = ({ name, value, type = 
       case 'dropShadow':
         return (
           <div
-            className="flex h-16 w-16 items-center justify-center rounded-lg bg-blue-500 text-xl font-bold text-white transition-all"
+            className="flex h-16 w-16 items-center justify-center rounded-lg bg-blue-500 text-xl font-bold text-white dark:text-black transition-all"
             style={{ filter: value === 'none' ? 'none' : `drop-shadow(${value})` }}
           >
             A
@@ -194,38 +194,38 @@ export const ShadowSwatch: React.FC<ShadowSwatchProps> = ({ name, value, type = 
       case 'opacity':
         return (
           <div className="relative h-16 w-16">
-            <div className="absolute inset-0 rounded bg-gradient-to-r from-blue-500 to-purple-500" />
+            <div className="absolute inset-0 rounded-sm bg-linear-to-r from-blue-500 to-purple-500" />
             <div
-              className="absolute inset-0 rounded bg-red-500 transition-all"
+              className="absolute inset-0 rounded-sm bg-red-500 transition-all"
               style={{ opacity: value }}
             />
           </div>
         );
-      case 'blur':
+      case 'blur-sm':
         return (
-          <div className="relative h-16 w-16 overflow-hidden rounded">
+          <div className="relative h-16 w-16 overflow-hidden rounded-sm">
             <div
-              className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-500 transition-all"
+              className="absolute inset-0 bg-linear-to-br from-blue-400 to-purple-500 transition-all"
               style={{ filter: value === '0' ? 'none' : `blur(${value})` }}
             />
-            <div className="absolute inset-0 flex items-center justify-center font-bold text-white">
+            <div className="absolute inset-0 flex items-center justify-center font-bold text-white dark:text-black">
               {value === '0' ? 'SHARP' : 'BLUR'}
             </div>
           </div>
         );
       default:
-        return <div className="h-16 w-16 rounded bg-gray-300" />;
+        return <div className="h-16 w-16 rounded-sm bg-gray-300" />;
     }
   };
 
   return (
     <div className="flex items-center gap-4 rounded-lg border border-gray-200 p-4">
-      <div className="w-24 flex-shrink-0">
-        <div className="font-mono text-sm text-gray-700">{name}</div>
-        <div className="text-xs text-gray-500">{value}</div>
+      <div className="w-24 shrink-0">
+        <div className="font-mono text-sm text-gray-700 dark:text-gray-300">{name}</div>
+        <div className="text-xs text-gray-500 dark:text-gray-500">{value}</div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center rounded bg-gray-50 p-4">
+      <div className="flex flex-1 items-center justify-center rounded-sm bg-gray-50 p-4">
         {getVisualization()}
       </div>
     </div>
@@ -235,7 +235,7 @@ export const ShadowSwatch: React.FC<ShadowSwatchProps> = ({ name, value, type = 
 interface ShadowGroupProps {
   title: string;
   shadows: Record<string, string>;
-  type?: 'boxShadow' | 'dropShadow' | 'radius' | 'opacity' | 'blur';
+  type?: 'boxShadow' | 'dropShadow' | 'radius' | 'opacity' | 'blur-sm';
   description?: string;
 }
 
@@ -247,8 +247,8 @@ export const ShadowGroup: React.FC<ShadowGroupProps> = ({
 }) => (
   <div className="mb-8">
     <div className="mb-4">
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
+      {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
     </div>
     <div className="space-y-3">
       {Object.entries(shadows).map(([name, value]) => (
@@ -267,10 +267,10 @@ interface ShadowDemoProps {
 export const ShadowDemo: React.FC<ShadowDemoProps> = ({ title, description, children }) => (
   <div className="mb-8">
     <div className="mb-4">
-      <h4 className="text-md font-medium text-gray-900">{title}</h4>
-      <p className="text-sm text-gray-600">{description}</p>
+      <h4 className="text-md font-medium text-gray-900 dark:text-gray-100">{title}</h4>
+      <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">{description}</p>
     </div>
-    <div className="rounded-lg border border-gray-200 bg-gradient-to-br from-neutral-50 to-neutral-100 p-6">
+    <div className="rounded-lg border border-gray-200 bg-linear-to-br from-neutral-50 to-neutral-100 p-6">
       {children}
     </div>
   </div>
@@ -293,8 +293,8 @@ export const InteractiveShadowDemo: React.FC = () => {
             onClick={() => setSelectedShadow(shadowName as keyof typeof shadowTokens.boxShadows)}
             className={`rounded-md px-3 py-2 text-sm font-medium transition-all ${
               selectedShadow === shadowName
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                ? 'bg-blue-600 text-white dark:text-black shadow-md'
+                : 'border border-gray-300 bg-white text-gray-700 dark:text-gray-300 hover:bg-gray-50'
             }`}
           >
             {shadowName}
@@ -304,12 +304,12 @@ export const InteractiveShadowDemo: React.FC = () => {
 
       <div className="flex items-center justify-center p-12">
         <div
-          className="flex h-32 w-48 items-center justify-center rounded-xl border border-gray-200 bg-white font-medium text-gray-700 transition-all duration-300"
+          className="flex h-32 w-48 items-center justify-center rounded-xl border border-gray-200 bg-white font-medium text-gray-700 dark:text-gray-300 transition-all duration-300"
           style={{ boxShadow: shadowTokens.boxShadows[selectedShadow] }}
         >
           Shadow: {selectedShadow}
           <br />
-          <span className="font-mono text-sm text-gray-500">
+          <span className="font-mono text-sm text-gray-500 dark:text-gray-500">
             {shadowTokens.boxShadows[selectedShadow]}
           </span>
         </div>
@@ -326,10 +326,10 @@ const Shadows: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900">
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
           Design Tokens: Shadows & Effects
         </h1>
-        <p className="max-w-2xl text-gray-600">
+        <p className="max-w-2xl text-gray-600 dark:text-gray-400">
           Shadow, border radius, opacity, and blur tokens for the Citizenly design system. These
           tokens add depth, hierarchy, and visual interest to government applications.
         </p>
@@ -337,8 +337,8 @@ const Shadows: React.FC = () => {
 
       {/* Box Shadows */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Box Shadows</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Box Shadows</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Layered shadows that create depth and hierarchy in the interface.
         </p>
 
@@ -346,12 +346,12 @@ const Shadows: React.FC = () => {
           title="Shadow Scale"
           shadows={shadowTokens.boxShadows}
           type="boxShadow"
-          description="Progressive shadow depth from subtle to prominent"
+          description="Progressive shadow-sm depth from subtle to prominent"
         />
 
         <ShadowDemo
           title="Interactive Shadow Selector"
-          description="Click different shadow values to see them in action"
+          description="Click different shadow-sm values to see them in action"
         >
           <InteractiveShadowDemo />
         </ShadowDemo>
@@ -359,8 +359,8 @@ const Shadows: React.FC = () => {
 
       {/* Drop Shadows */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Drop Shadows</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Drop Shadows</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Text and icon shadows for improved readability and visual emphasis.
         </p>
 
@@ -368,7 +368,7 @@ const Shadows: React.FC = () => {
           title="Drop Shadow Scale"
           shadows={shadowTokens.dropShadows}
           type="dropShadow"
-          description="CSS filter drop-shadow values for text and icons"
+          description="CSS filter drop-shadow-sm values for text and icons"
         />
 
         <ShadowDemo
@@ -381,12 +381,12 @@ const Shadows: React.FC = () => {
               .map(([name, value]) => (
                 <div key={name} className="text-center">
                   <div
-                    className="mb-2 text-2xl font-bold text-gray-600"
+                    className="mb-2 text-2xl font-bold text-gray-600 dark:text-gray-400 dark:text-gray-600"
                     style={{ filter: `drop-shadow(${value})` }}
                   >
                     Government
                   </div>
-                  <div className="font-mono text-sm text-gray-600">{name}</div>
+                  <div className="font-mono text-sm text-gray-600 dark:text-gray-400">{name}</div>
                 </div>
               ))}
           </div>
@@ -395,8 +395,8 @@ const Shadows: React.FC = () => {
 
       {/* Border Radius */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Border Radius</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Border Radius</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Corner rounding values for modern, approachable interface elements.
         </p>
 
@@ -404,7 +404,7 @@ const Shadows: React.FC = () => {
           title="Radius Scale"
           shadows={radiusTokens}
           type="radius"
-          description="Border radius values from sharp to fully rounded"
+          description="Border radius values from sharp to fully rounded-sm"
         />
 
         <ShadowDemo
@@ -415,13 +415,13 @@ const Shadows: React.FC = () => {
             {Object.entries(radiusTokens).map(([name, value]) => (
               <div key={name} className="text-center">
                 <div
-                  className="mx-auto mb-2 flex h-20 w-20 items-center justify-center bg-gradient-to-br from-blue-400 to-purple-500 font-bold text-white"
+                  className="mx-auto mb-2 flex h-20 w-20 items-center justify-center bg-linear-to-br from-blue-400 to-purple-500 font-bold text-white dark:text-black"
                   style={{ borderRadius: value }}
                 >
                   {name === 'full' ? '●' : name.toUpperCase()}
                 </div>
-                <div className="text-sm text-gray-600">{name}</div>
-                <div className="font-mono text-xs text-gray-500">{value}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{name}</div>
+                <div className="font-mono text-xs text-gray-500 dark:text-gray-500">{value}</div>
               </div>
             ))}
           </div>
@@ -430,8 +430,8 @@ const Shadows: React.FC = () => {
 
       {/* Opacity */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Opacity</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Opacity</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Transparency values for overlays, disabled states, and visual hierarchy.
         </p>
 
@@ -448,9 +448,9 @@ const Shadows: React.FC = () => {
         >
           <div className="space-y-4">
             {/* Overlay example */}
-            <div className="relative h-24 overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-purple-600">
+            <div className="relative h-24 overflow-hidden rounded-lg bg-linear-to-r from-blue-500 to-purple-600">
               <div
-                className="absolute inset-0 flex items-center justify-center bg-black font-medium text-white"
+                className="absolute inset-0 flex items-center justify-center bg-black font-medium text-white dark:text-black"
                 style={{ opacity: opacityTokens[60] }}
               >
                 Modal Overlay (opacity: {opacityTokens[60]})
@@ -459,18 +459,18 @@ const Shadows: React.FC = () => {
 
             {/* Disabled states */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <button className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white">
+              <button className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white dark:text-black">
                 Normal Button
               </button>
               <button
-                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white"
+                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white dark:text-black"
                 style={{ opacity: opacityTokens[50] }}
                 disabled
               >
                 Disabled (opacity: {opacityTokens[50]})
               </button>
               <button
-                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white"
+                className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white dark:text-black"
                 style={{ opacity: opacityTokens[75] }}
               >
                 Loading (opacity: {opacityTokens[75]})
@@ -482,43 +482,43 @@ const Shadows: React.FC = () => {
 
       {/* Blur Effects */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Blur Effects</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Blur Effects</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Blur values for backdrop filters, focus states, and loading indicators.
         </p>
 
         <ShadowGroup
           title="Blur Scale"
           shadows={blurTokens}
-          type="blur"
-          description="CSS blur filter values from sharp to heavily blurred"
+          type="blur-sm"
+          description="CSS blur-sm filter values from sharp to heavily blurred"
         />
 
         <ShadowDemo
           title="Blur Applications"
-          description="Different blur effects in modern UI patterns"
+          description="Different blur-sm effects in modern UI patterns"
         >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Backdrop blur */}
-            <div className="relative h-32 overflow-hidden rounded-lg bg-gradient-to-br from-green-400 to-blue-500">
+            <div className="relative h-32 overflow-hidden rounded-lg bg-linear-to-br from-green-400 to-blue-500">
               <div
-                className="absolute inset-4 flex items-center justify-center rounded-lg border border-white border-opacity-20 bg-white bg-opacity-20 font-medium text-white backdrop-blur-sm"
+                className="absolute inset-4 flex items-center justify-center rounded-lg border border-white border-opacity-20 bg-white bg-opacity-20 font-medium text-white dark:text-black dark:text-white backdrop-blur-xs"
                 style={{ backdropFilter: `blur(${blurTokens.sm})` }}
               >
                 Glassmorphism Card
                 <br />
-                <span className="text-sm opacity-75">backdrop-blur: {blurTokens.sm}</span>
+                <span className="text-sm opacity-75">backdrop-blur-sm: {blurTokens.sm}</span>
               </div>
             </div>
 
             {/* Loading blur */}
-            <div className="relative h-32 overflow-hidden rounded-lg bg-gradient-to-br from-purple-400 to-pink-500">
+            <div className="relative h-32 overflow-hidden rounded-lg bg-linear-to-br from-purple-400 to-pink-500">
               <div className="absolute inset-0 p-4">
-                <h3 className="mb-2 font-bold text-white">Content Area</h3>
-                <p className="text-sm text-white">This content is behind a loading state</p>
+                <h3 className="mb-2 font-bold text-white dark:text-black">Content Area</h3>
+                <p className="text-sm text-white dark:text-black">This content is behind a loading state</p>
               </div>
               <div
-                className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-10 font-medium text-white"
+                className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-10 font-medium text-white dark:text-black dark:text-white"
                 style={{ backdropFilter: `blur(${blurTokens.md})` }}
               >
                 Loading...
@@ -532,8 +532,8 @@ const Shadows: React.FC = () => {
 
       {/* Semantic Usage */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900">Semantic Usage</h2>
-        <p className="mb-6 text-gray-600">
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Semantic Usage</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-400">
           Contextual tokens for consistent shadow and effect patterns across components.
         </p>
 
@@ -545,12 +545,12 @@ const Shadows: React.FC = () => {
             {/* Button */}
             <div className="text-center">
               <button
-                className="rounded-md bg-blue-600 px-6 py-3 font-medium text-white transition-all hover:shadow-lg"
+                className="rounded-md bg-blue-600 px-6 py-3 font-medium text-white dark:text-black transition-all hover:shadow-lg"
                 style={{ boxShadow: semanticShadows.component.button }}
               >
                 Button Component
               </button>
-              <div className="mt-2 text-sm text-gray-600">button shadow</div>
+              <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">button shadow</div>
             </div>
 
             {/* Card */}
@@ -559,10 +559,10 @@ const Shadows: React.FC = () => {
                 className="rounded-lg border border-gray-200 bg-white p-4"
                 style={{ boxShadow: semanticShadows.component.card }}
               >
-                <h4 className="mb-1 font-semibold text-gray-900">Card Component</h4>
-                <p className="text-sm text-gray-600">Card content area</p>
+                <h4 className="mb-1 font-semibold text-gray-900 dark:text-gray-100">Card Component</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Card content area</p>
               </div>
-              <div className="mt-2 text-sm text-gray-600">card shadow</div>
+              <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">card shadow</div>
             </div>
 
             {/* Input */}
@@ -573,7 +573,7 @@ const Shadows: React.FC = () => {
                 className="w-full rounded-md border border-gray-300 px-4 py-2"
                 style={{ boxShadow: semanticShadows.component.input }}
               />
-              <div className="mt-2 text-sm text-gray-600">input shadow</div>
+              <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">input shadow</div>
             </div>
           </div>
         </ShadowDemo>
@@ -585,7 +585,7 @@ const Shadows: React.FC = () => {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* Hover states */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900">Hover Effects</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Hover Effects</h4>
               <div className="space-y-3">
                 <div
                   className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-lg"
@@ -594,7 +594,7 @@ const Shadows: React.FC = () => {
                   Hover me for elevated shadow
                 </div>
                 <button
-                  className="w-full rounded-md bg-green-600 px-4 py-3 font-medium text-white transition-all"
+                  className="w-full rounded-md bg-green-600 px-4 py-3 font-medium text-white dark:text-black transition-all"
                   style={{ boxShadow: semanticShadows.component.button }}
                   onMouseEnter={e => {
                     e.currentTarget.style.boxShadow = semanticShadows.interactive.hover;
@@ -610,12 +610,12 @@ const Shadows: React.FC = () => {
 
             {/* Focus states */}
             <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900">Focus Effects</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100">Focus Effects</h4>
               <div className="space-y-3">
                 <input
                   type="text"
-                  placeholder="Focus to see shadow change"
-                  className="w-full rounded-md border border-gray-300 px-4 py-2 transition-all focus:outline-none"
+                  placeholder="Focus to see shadow-sm change"
+                  className="w-full rounded-md border border-gray-300 px-4 py-2 transition-all focus:outline-hidden"
                   style={{ boxShadow: semanticShadows.component.input }}
                   onFocus={e => {
                     e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
@@ -625,7 +625,7 @@ const Shadows: React.FC = () => {
                   }}
                 />
                 <button
-                  className="w-full rounded-md bg-purple-600 px-4 py-3 font-medium text-white transition-all focus:outline-none"
+                  className="w-full rounded-md bg-purple-600 px-4 py-3 font-medium text-white dark:text-black transition-all focus:outline-hidden"
                   onFocus={e => {
                     e.currentTarget.style.boxShadow = semanticShadows.interactive.focus;
                   }}

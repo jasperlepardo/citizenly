@@ -26,7 +26,7 @@ export function ResidentFormWizard({ onSubmit, onCancel, initialData }: Resident
     <div className="mx-auto max-w-4xl">
       <StepIndicator steps={steps} currentStep={currentStep} />
 
-      <div className="bg-default rounded-lg border border-default shadow-sm">
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs">
         <div className="px-6 py-8">
           <CurrentStepComponent
             formData={formData}

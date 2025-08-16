@@ -122,7 +122,7 @@ export const UIElements: Story = {
         <Typography variant="label" as="label" className="mb-2 block">
           Label - Form Field Label
         </Typography>
-        <Typography variant="input" className="block rounded border p-2">
+        <Typography variant="input" className="block rounded-sm border p-2">
           Input - Text inside form inputs
         </Typography>
       </div>
@@ -131,7 +131,7 @@ export const UIElements: Story = {
         <Typography
           variant="button"
           as="span"
-          className="inline-block rounded bg-blue-500 px-4 py-2 text-white"
+          className="inline-block rounded-sm bg-blue-500 px-4 py-2 text-white dark:text-black"
         >
           Button - Button Text Style
         </Typography>
@@ -186,7 +186,7 @@ export const SemanticUsage: Story = {
     <article className="max-w-3xl space-y-4">
       <Heading1>Article Title</Heading1>
 
-      <Typography variant="bodyLarge" as="p" className="text-gray-600">
+      <Typography variant="bodyLarge" as="p" className="text-gray-600 dark:text-gray-400">
         This is the article introduction or summary paragraph that gives readers an overview of what
         they&rsquo;re about to read.
       </Typography>
@@ -243,19 +243,19 @@ export const Responsive: Story = {
 export const ColorVariations: Story = {
   render: () => (
     <div className="space-y-4">
-      <Typography variant="h2" className="text-gray-900">
+      <Typography variant="h2" className="text-gray-900 dark:text-gray-100">
         Primary Text Color
       </Typography>
 
-      <Typography variant="bodyMedium" className="text-gray-700">
+      <Typography variant="bodyMedium" className="text-gray-700 dark:text-gray-300">
         Secondary text color for regular content
       </Typography>
 
-      <Typography variant="bodySmall" className="text-gray-500">
+      <Typography variant="bodySmall" className="text-gray-500 dark:text-gray-500">
         Muted text color for less important information
       </Typography>
 
-      <Typography variant="bodyMedium" className="text-gray-600">
+      <Typography variant="bodyMedium" className="text-gray-600 dark:text-gray-400">
         Blue accent color for links or highlights
       </Typography>
 

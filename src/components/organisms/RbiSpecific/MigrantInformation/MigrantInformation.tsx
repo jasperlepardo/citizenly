@@ -125,18 +125,18 @@ export default function MigrantInformation({
   if (!value.is_migrant) {
     return (
       <div className={`space-y-6 ${className}`}>
-        <div className="border-b border-default pb-4">
-          <h3 className="mb-2 text-lg font-medium text-gray-600">
+        <div className="border-b border-gray-300 dark:border-gray-600 pb-4">
+          <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
             <span className="text-base">🧳</span> Migration Information
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             This resident is not classified as a migrant. Enable migration status to collect
             details.
           </p>
         </div>
 
-        <div className="bg-default-muted rounded-lg p-4">
-          <p className="text-sm italic text-gray-600">
+        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+          <p className="text-sm italic text-gray-600 dark:text-gray-400 dark:text-gray-600">
             Migration information is automatically collected when a resident is marked as a migrant
             in sectoral classifications.
           </p>
@@ -148,11 +148,11 @@ export default function MigrantInformation({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="border-b border-default pb-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-600">
+      <div className="border-b border-gray-300 dark:border-gray-600 pb-4">
+        <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
           <span className="text-base">🧳</span> Migration Information
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Details about migration history and current status for this resident.
         </p>
       </div>
@@ -296,8 +296,8 @@ export default function MigrantInformation({
 
       {/* Summary Card */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-gray-900">Migration Summary</h4>
-        <div className="space-y-1 text-sm text-gray-800">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Migration Summary</h4>
+        <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200 dark:text-gray-800">
           <p>
             <strong>Type:</strong>{' '}
             {value.migration_type

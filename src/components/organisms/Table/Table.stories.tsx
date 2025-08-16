@@ -170,7 +170,7 @@ export const WithCheckboxes: Story = {
                   className={`rounded-full px-2 py-1 text-xs ${
                     contact.status === 'active'
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
+                      : 'bg-gray-100 text-gray-800 dark:text-gray-200'
                   }`}
                 >
                   {contact.status}
@@ -182,7 +182,7 @@ export const WithCheckboxes: Story = {
 
         {selectedItems.length > 0 && (
           <div className="border-t border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-gray-800">{selectedItems.length} item(s) selected</p>
+            <p className="text-sm text-gray-800 dark:text-gray-200">{selectedItems.length} item(s) selected</p>
           </div>
         )}
       </Table>
@@ -284,13 +284,13 @@ export const WithControls: Story = {
               <div className="flex gap-2">
                 <button
                   onClick={() => action('bulk-delete')(selectedItems)}
-                  className="rounded bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700"
+                  className="rounded bg-red-600 px-3 py-2 text-sm text-white dark:text-black hover:bg-red-700"
                 >
                   Delete Selected
                 </button>
                 <button
                   onClick={() => action('bulk-export')(selectedItems)}
-                  className="rounded bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+                  className="rounded bg-blue-600 px-3 py-2 text-sm text-white dark:text-black hover:bg-blue-700"
                 >
                   Export Selected
                 </button>
@@ -345,7 +345,7 @@ export const WithControls: Story = {
             ) : (
               <TableRow>
                 <TableCell
-                  className="py-8 text-center text-gray-500"
+                  className="py-8 text-center text-gray-500 dark:text-gray-500"
                   style={{ gridColumn: '1 / -1' }}
                 >
                   No contacts found matching "{searchTerm}"
@@ -357,7 +357,7 @@ export const WithControls: Story = {
 
         {selectedItems.length > 0 && (
           <div className="rounded border border-blue-200 bg-blue-50 p-3">
-            <p className="text-sm text-gray-800">
+            <p className="text-sm text-gray-800 dark:text-gray-200">
               {selectedItems.length} of {filteredContacts.length} contacts selected
             </p>
           </div>
@@ -406,10 +406,10 @@ export const ResidentsTable: Story = {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Barangay San Lorenzo - Residents</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Barangay San Lorenzo - Residents</h2>
           <button
             onClick={() => action('add-resident')()}
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
           >
             + Add Resident
           </button>
@@ -451,13 +451,13 @@ export const ResidentsTable: Story = {
             {residents.map(resident => (
               <TableRow key={resident.id} className="border-b last:border-b-0 hover:bg-gray-50">
                 <TableCell>
-                  <div className="font-medium text-gray-900">{resident.name}</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100">{resident.name}</div>
                 </TableCell>
                 <TableCell>{resident.age} years old</TableCell>
-                <TableCell className="text-sm text-gray-600">{resident.address}</TableCell>
+                <TableCell className="text-sm text-gray-600 dark:text-gray-400">{resident.address}</TableCell>
                 <TableCell>{resident.occupation}</TableCell>
                 <TableCell>
-                  <span className="rounded bg-blue-100 px-2 py-1 font-mono text-sm text-gray-800">
+                  <span className="rounded bg-blue-100 px-2 py-1 font-mono text-sm text-gray-800 dark:text-gray-200">
                     {resident.household}
                   </span>
                 </TableCell>
@@ -465,13 +465,13 @@ export const ResidentsTable: Story = {
                   <div className="flex gap-1">
                     <button
                       onClick={() => action('view-resident')(resident)}
-                      className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 hover:bg-gray-200"
+                      className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-200"
                     >
                       View
                     </button>
                     <button
                       onClick={() => action('edit-resident')(resident)}
-                      className="rounded bg-blue-100 px-2 py-1 text-xs text-gray-700 hover:bg-blue-200"
+                      className="rounded bg-blue-100 px-2 py-1 text-xs text-gray-700 dark:text-gray-300 hover:bg-blue-200"
                     >
                       Edit
                     </button>
@@ -482,7 +482,7 @@ export const ResidentsTable: Story = {
           </TableBody>
         </Table>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-gray-500 dark:text-gray-500">
           Showing {residents.length} residents • Last updated: {new Date().toLocaleDateString()}
         </div>
       </div>
@@ -513,7 +513,7 @@ export const EmptyState: Story = {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell className="py-12 text-center text-gray-500" style={{ gridColumn: '1 / -1' }}>
+          <TableCell className="py-12 text-center text-gray-500 dark:text-gray-500" style={{ gridColumn: '1 / -1' }}>
             <div>
               <div className="mb-2 text-4xl">📋</div>
               <div className="font-medium">No data available</div>

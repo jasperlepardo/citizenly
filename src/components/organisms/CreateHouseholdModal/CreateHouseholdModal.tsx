@@ -5,8 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';
-import StreetSelector from '../StreetSelector';
-import SubdivisionSelector from '../SubdivisionSelector';
+import { SelectField } from '../../molecules/FieldSet/SelectField';
 import { logger, logError } from '@/lib/secure-logger';
 
 interface CreateHouseholdModalProps {
@@ -495,7 +494,7 @@ export default function CreateHouseholdModal({
               <div>
                 <strong>Barangay:</strong> {addressDisplayInfo.barangay}
               </div>
-              <div className="mt-1 text-xs text-gray-500">
+              <div className="mt-1 text-xs text-gray-500 dark:text-gray-500">
                 Code: {userProfile?.barangay_code}
               </div>
               <div className="mt-2 text-xs text-green-600">
@@ -512,7 +511,7 @@ export default function CreateHouseholdModal({
         <div>
           <label
             htmlFor="house-number"
-            className="font-montserrat mb-2 block text-sm font-medium text-gray-700"
+            className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             House/Block/Lot Number
           </label>
@@ -522,41 +521,52 @@ export default function CreateHouseholdModal({
             value={formData.house_number}
             onChange={e => handleInputChange('house_number', e.target.value)}
             placeholder="e.g., Blk 1 Lot 5, #123"
-            className="font-montserrat w-full rounded border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             disabled={isSubmitting}
           />
         </div>
 
         {/* Subdivision */}
-        <div>
-          <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
-            Subdivision/Zone/Sitio/Purok
-          </label>
-          <SubdivisionSelector
-            value={formData.subdivision_id}
-            onSelect={subdivisionId => handleInputChange('subdivision_id', subdivisionId || '')}
-            error={errors.subdivision_id}
-            placeholder="🏘️ Select subdivision or create new"
-          />
-        </div>
+        <SelectField
+          label="Subdivision/Zone/Sitio/Purok"
+          selectProps={{
+            placeholder: "🏘️ Select subdivision or create new",
+            options: [
+              { value: '', label: 'None' },
+              { value: 'zone1', label: 'Zone 1' },
+              { value: 'zone2', label: 'Zone 2' },
+              { value: 'purok1', label: 'Purok 1' },
+              { value: 'purok2', label: 'Purok 2' }
+            ],
+            value: formData.subdivision_id,
+            onSelect: (option) => handleInputChange('subdivision_id', option?.value || ''),
+            error: errors.subdivision_id
+          }}
+          errorMessage={errors.subdivision_id}
+        />
 
         {/* Street Name */}
-        <div>
-          <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700">
-            Street Name *
-          </label>
-          <StreetSelector
-            value={formData.street_id}
-            onSelect={streetId => handleInputChange('street_id', streetId || '')}
-            error={errors.street_id}
-            placeholder="🛣️ Select street or create new"
-            subdivisionId={formData.subdivision_id || null}
-          />
-        </div>
+        <SelectField
+          label="Street Name *"
+          required
+          selectProps={{
+            placeholder: "🛣️ Select street or create new",
+            options: [
+              { value: 'main_st', label: 'Main Street' },
+              { value: 'market_st', label: 'Market Street' },
+              { value: 'rizal_st', label: 'Rizal Street' },
+              { value: 'national_rd', label: 'National Road' }
+            ],
+            value: formData.street_id,
+            onSelect: (option) => handleInputChange('street_id', option?.value || ''),
+            error: errors.street_id
+          }}
+          errorMessage={errors.street_id}
+        />
 
         {/* Info Note */}
         <div className="rounded border border-blue-200 bg-blue-50 p-4">
-          <p className="font-montserrat text-sm text-gray-800">
+          <p className="font-montserrat text-sm text-gray-800 dark:text-gray-200">
             <strong>Note:</strong> This household will be created in your assigned barangay. You can
             assign a resident as the household head after creating the household.
           </p>

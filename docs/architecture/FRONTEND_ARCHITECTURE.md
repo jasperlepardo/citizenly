@@ -218,7 +218,7 @@ const SearchBar = ({ onSearch }: { onSearch: (query: string) => void }) => {
         onSearch(e.target.value); // Client-side filtering
       }}
       placeholder="Search residents..."
-      className="w-full p-2 border rounded"
+      className="w-full p-2 border rounded-sm"
     />
   );
 };

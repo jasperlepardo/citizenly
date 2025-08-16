@@ -3,8 +3,8 @@
  * Displays key metrics in dashboard cards
  *
  * Design System Usage (matching chart components):
- * - Background: bg-default (semantic surface color)
- * - Border: border-default (semantic border color)
+ * - Background: bg-white dark:bg-gray-800 (semantic surface color)
+ * - Border: border-gray-300 dark:border-gray-600 (semantic border color)
  * - Text: text-gray-600 (main value), text-gray-600 (labels)
  * - Typography: font-display (value), font-body (title)
  * - Spacing: p-6 (24px) for card padding
@@ -44,13 +44,13 @@ export default function StatsCard({
   };
 
   return (
-    <div className="bg-default rounded-lg border border-default p-6">
+    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="font-body text-sm font-medium text-gray-600">{title}</p>
-          <p className="mt-1 font-display text-2xl font-semibold text-gray-600">{value}</p>
+          <p className="font-body text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
+          <p className="mt-1 font-display text-2xl font-semibold text-gray-600 dark:text-gray-400">{value}</p>
 
-          {description && <p className="mt-1 text-sm text-gray-600">{description}</p>}
+          {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">{description}</p>}
 
           {trend && (
             <div

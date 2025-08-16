@@ -5,16 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const searchBarVariants = cva(
-  'relative flex w-full items-center transition-colors font-system focus-within:outline-none',
+  'relative flex w-full items-center transition-colors font-system focus-within:outline-hidden',
   {
     variants: {
       variant: {
         default:
-          'rounded border bg-default border-default bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded-sm border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         filled:
-          'rounded border bg-default border-default bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded-sm border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
         outlined:
-          'rounded border bg-default border-default bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
+          'rounded-sm border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus-within:border-blue-600 focus-within:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)]',
       },
       size: {
         sm: 'min-h-8 p-1.5 text-sm',
@@ -106,7 +106,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               ref={ref}
               type="text"
               className={cn(
-                'font-montserrat placeholder:text-muted w-full bg-transparent font-normal text-gray-600 dark:text-gray-300',
+                'font-montserrat placeholder:text-gray-500 dark:text-gray-400 w-full bg-transparent font-normal text-gray-600 dark:text-gray-300',
                 // Remove ALL borders and focus states
                 'border-0 shadow-none outline-0 ring-0',
                 'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
@@ -115,7 +115,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
                 size === 'sm' && 'text-sm leading-4',
                 size === 'md' && 'text-base leading-5',
                 size === 'lg' && 'text-lg leading-6',
-                disabled && 'text-muted dark:text-gray-500 cursor-not-allowed'
+                disabled && 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400 cursor-not-allowed'
               )}
               style={{
                 border: 'none',
@@ -140,7 +140,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             <button
               type="button"
               onClick={handleClear}
-              className="flex size-full items-center justify-center text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+              className="flex size-full items-center justify-center text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300 dark:text-gray-700"
               aria-label="Clear search"
               tabIndex={-1}
             >

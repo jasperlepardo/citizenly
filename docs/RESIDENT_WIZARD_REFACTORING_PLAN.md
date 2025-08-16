@@ -369,7 +369,7 @@ export function ResidentFormWizard({ onSubmit, onCancel }: ResidentFormWizardPro
         currentStep={currentStep}
       />
       
-      <div className="bg-surface rounded-lg border border-default shadow-sm">
+      <div className="bg-surface rounded-lg border border-default shadow-xs">
         <div className="px-6 py-8">
           <CurrentStepComponent 
             formData={formData}

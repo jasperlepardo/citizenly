@@ -37,16 +37,16 @@ export default function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="bg-default border-b border-default shadow-sm">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 shadow-xs">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
-                <span className="font-display text-sm font-bold text-white">RBI</span>
+                <span className="font-display text-sm font-bold text-white dark:text-black">RBI</span>
               </div>
-              <span className="font-display text-xl font-semibold text-gray-600">RBI System</span>
+              <span className="font-display text-xl font-semibold text-gray-600 dark:text-gray-400">RBI System</span>
             </Link>
           </div>
 
@@ -54,31 +54,31 @@ export default function Header() {
           <nav className="hidden space-x-1 md:flex">
             <Link
               href="/dashboard"
-              className="hover:bg-default-hover rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="hover:bg-default-hover rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="hover:bg-default-hover rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="hover:bg-default-hover rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="hover:bg-default-hover rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
             >
               Reports
             </Link>
@@ -94,7 +94,7 @@ export default function Header() {
             ) : (
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 hover:text-gray-600"
+                className="rounded-md px-3 py-2 font-body text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-600"
               >
                 Sign In
               </Link>
@@ -105,7 +105,7 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="hover:bg-default-hover inline-flex items-center justify-center rounded-md p-2 text-gray-600 transition-colors hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="hover:bg-gray-50 dark:bg-gray-700 inline-flex items-center justify-center rounded-md p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
               <svg className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
@@ -122,39 +122,39 @@ export default function Header() {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="border-t border-default md:hidden">
-          <div className="bg-default space-y-1 px-2 pb-3 pt-2 sm:px-3">
+        <div className="border-t border-gray-300 dark:border-gray-600 md:hidden">
+          <div className="bg-white dark:bg-gray-800 space-y-1 px-2 pb-3 pt-2 sm:px-3">
             <Link
               href="/dashboard"
-              className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Dashboard
             </Link>
             <Link
               href="/residents"
-              className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Residents
             </Link>
             <Link
               href="/households"
-              className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Households
             </Link>
             <Link
               href="/addresses"
-              className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Addresses
             </Link>
             <Link
               href="/reports"
-              className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
               onClick={() => setIsMenuOpen(false)}
             >
               Reports
@@ -162,17 +162,17 @@ export default function Header() {
 
             {/* Mobile User Menu */}
             {user ? (
-              <div className="mt-2 border-t border-default pt-2">
+              <div className="mt-2 border-t border-gray-300 dark:border-gray-600 pt-2">
                 <div className="px-3 py-2">
                   <div className="flex items-center gap-3 p-2">
-                    <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
+                    <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white dark:text-black">
                       {`${user.user_metadata?.first_name?.[0] || ''}${user.user_metadata?.last_name?.[0] || ''}`.toUpperCase()}
                     </div>
                     <div className="flex-1">
-                      <div className="font-body text-sm font-medium text-gray-600">
+                      <div className="font-body text-sm font-medium text-gray-600 dark:text-gray-400">
                         {user.user_metadata?.first_name} {user.user_metadata?.last_name}
                       </div>
-                      <div className="font-body text-xs text-gray-600">{user.email}</div>
+                      <div className="font-body text-xs text-gray-600 dark:text-gray-400">{user.email}</div>
                     </div>
                   </div>
                 </div>
@@ -181,10 +181,10 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <div className="mt-2 border-t border-default pt-2">
+              <div className="mt-2 border-t border-gray-300 dark:border-gray-600 pt-2">
                 <Link
                   href="/login"
-                  className="hover:bg-default-hover block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 transition-colors hover:text-gray-600"
+                  className="hover:bg-gray-50 dark:bg-gray-700 block rounded-md px-3 py-2 font-body text-base font-medium text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Sign In

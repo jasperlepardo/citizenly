@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AdvancedSearchBar as SearchBar, DataTable } from '@/components/organisms';
+import { DataTable } from '@/components/organisms';
+import { SearchBar } from '@/components/molecules';
 import type { TableColumn, TableAction } from '@/components/organisms';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -72,7 +73,7 @@ export default function HouseholdsContent() {
       key: 'code',
       title: 'Household Code',
       render: (household: Household) => (
-        <span className="font-medium text-gray-600">{household.code}</span>
+        <span className="font-medium text-gray-600 dark:text-gray-400">{household.code}</span>
       ),
     },
     {
@@ -89,7 +90,7 @@ export default function HouseholdsContent() {
             .join(' ');
           return <span>{fullName}</span>;
         }
-        return <span className="text-gray-500">No head assigned</span>;
+        return <span className="text-gray-500 dark:text-gray-500">No head assigned</span>;
       },
     },
     {
@@ -185,7 +186,7 @@ export default function HouseholdsContent() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="inline-block size-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">Loading households...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading households...</p>
         </div>
       </div>
     );
@@ -193,13 +194,13 @@ export default function HouseholdsContent() {
 
   if (error) {
     return (
-      <div className="rounded-xl border bg-white p-8 shadow-sm">
+      <div className="rounded-xl border bg-white p-8 shadow-xs">
         <div className="text-center">
           <h3 className="text-lg font-medium text-red-800">Error Loading Households</h3>
           <p className="mt-2 text-red-700">{error}</p>
           <button
             onClick={() => fetchHouseholds(searchQuery, page)}
-            className="mt-4 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+            className="mt-4 rounded-sm bg-red-600 px-4 py-2 text-white dark:text-black hover:bg-red-700"
           >
             Retry
           </button>
@@ -211,14 +212,19 @@ export default function HouseholdsContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-600">Households Management</h1>
-        <p className="mt-2 text-gray-600">
+        <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Households Management</h1>
+        <p className="mt-2 text-gray-600 dark:text-gray-400 dark:text-gray-600">
           Manage and view household information ({households.length} of{' '}
           {totalPages > 1 ? `${(page - 1) * 10 + households.length}` : households.length} total)
         </p>
       </div>
 
-      <SearchBar onSearch={handleSearch} placeholder="Search households by code or head name..." />
+      <SearchBar 
+        onSearch={handleSearch} 
+        placeholder="Search households by code or head name..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
 
       <DataTable<Household>
         data={households}

@@ -315,7 +315,7 @@ export default function AddressSelector({ barangayCode, value, onChange }) {
       {loading && <small>Loading address options...</small>}
       
       {value?.preview && (
-        <div className="address-preview mt-2 p-2 bg-light rounded">
+        <div className="address-preview mt-2 p-2 bg-light rounded-sm">
           <small><strong>Address Preview:</strong> {value.preview}</small>
         </div>
       )}

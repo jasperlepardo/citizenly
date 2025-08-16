@@ -7,8 +7,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { DropdownSelect } from '../../../molecules';
-import { FormGroup } from '../../../molecules';
+
+import { FormGroup, SelectField } from '../../../molecules';
 
 // Family position types (matches database enum)
 export type FamilyPosition =
@@ -308,23 +308,25 @@ export default function FamilyRelationshipSelector({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="border-b border-gray-200 pb-3">
-        <h3 className="mb-1 text-lg font-medium text-gray-600">
+        <h3 className="mb-1 text-lg font-medium text-gray-600 dark:text-gray-400">
           <span className="text-base">👨‍👩‍👧‍👦</span> Family Position
           {required && <span className="ml-1 text-red-500">*</span>}
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Select this person&apos;s relationship to the household head and position in the family.
         </p>
       </div>
 
       <FormGroup>
-        <DropdownSelect
-          options={selectOptions}
-          value={value || ''}
-          onChange={val => handlePositionChange(val)}
-          placeholder="Select family position..."
-          disabled={disabled}
-          errorMessage={error}
+        <SelectField
+          selectProps={{
+            options: selectOptions,
+            value: value || '',
+            onSelect: (option) => handlePositionChange(option?.value || ''),
+            placeholder: "Select family position...",
+            disabled: disabled,
+            error: error
+          }}
         />
       </FormGroup>
 
@@ -349,13 +351,13 @@ export default function FamilyRelationshipSelector({
       {value && (
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
           <div className="flex items-center space-x-2">
-            <span className="text-gray-600">✓</span>
+            <span className="text-gray-600 dark:text-gray-400">✓</span>
             <div className="flex-1">
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Position: {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.label}
               </span>
               {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description && (
-                <p className="mt-1 text-xs text-gray-600">
+                <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
                   {FAMILY_POSITION_OPTIONS.find(opt => opt.value === value)?.description}
                 </p>
               )}
@@ -366,7 +368,7 @@ export default function FamilyRelationshipSelector({
 
       {/* Context Information */}
       {(personContext.age || personContext.gender) && (
-        <div className="text-muted bg-default-muted rounded-lg p-3 text-xs">
+        <div className="text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg p-3 text-xs">
           <span className="font-medium">📋 Person Context:</span>
           {personContext.age && ` Age: ${personContext.age}`}
           {personContext.gender && ` • Gender: ${personContext.gender}`}

@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { useUserBarangay } from '@/hooks/useUserBarangay';
 import {
@@ -10,10 +11,10 @@ import {
   ResidentFormWizardProps,
 } from '../types';
 import {
-  BasicInfoStep,
+  PersonalInformationStep,
   ContactAddressStep,
-  EducationEmploymentStep,
   AdditionalDetailsStep,
+  SectoralInfoStep,
   ReviewStep,
 } from '../steps';
 import {
@@ -91,6 +92,20 @@ const getInitialFormData = (initialData?: Partial<ResidentFormData>): ResidentFo
   // Household Assignment - Step 5
   householdCode: '',
 
+  // Sectoral Information - Step 4
+  isLaborForce: false,
+  isLaborForceEmployed: false,
+  isUnemployed: false,
+  isOverseasFilipino: false,
+  isPersonWithDisability: false,
+  isOutOfSchoolChildren: false,
+  isOutOfSchoolYouth: false,
+  isSeniorCitizen: false,
+  isRegisteredSeniorCitizen: false,
+  isSoloParent: false,
+  isIndigenousPeople: false,
+  isMigrant: false,
+
   // Migration Information - Step 5 (optional)
   migrationInfo: null,
 
@@ -103,6 +118,7 @@ export function useResidentForm({
   initialData,
 }: ResidentFormWizardProps = {}): UseResidentFormReturn {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { barangayCode: userBarangayCode, loading: barangayLoading } = useUserBarangay();
 
   // Form state
@@ -173,30 +189,30 @@ export function useResidentForm({
     () => [
       {
         id: 1,
-        title: 'Personal Information',
-        description: 'Basic personal details and family information',
-        component: BasicInfoStep,
+        title: 'Section 1: Personal Information',
+        description: 'Basic personal details, education, and employment',
+        component: PersonalInformationStep,
         validation: validateStep1,
       },
       {
         id: 2,
-        title: 'Contact & Address',
-        description: 'Contact information and geographic location',
+        title: 'Section 2: Contact Details',
+        description: 'Contact information and household assignment',
         component: ContactAddressStep,
         validation: validateStep2,
       },
       {
         id: 3,
-        title: 'Education & Employment',
-        description: 'Educational background and occupation details',
-        component: EducationEmploymentStep,
+        title: 'Section 3: Physical & Personal Details',
+        description: 'Physical characteristics, voting info, and personal details',
+        component: AdditionalDetailsStep,
         validation: validateStep3,
       },
       {
         id: 4,
-        title: 'Additional Details',
-        description: 'Physical characteristics, voting info, and documentation',
-        component: AdditionalDetailsStep,
+        title: 'Section 4: Sectoral Information',
+        description: 'Sectoral classifications and group memberships',
+        component: SectoralInfoStep,
         validation: validateStep4,
       },
       {
@@ -284,18 +300,24 @@ export function useResidentForm({
     try {
       if (onSubmit) {
         await onSubmit(formData);
+        // Invalidate residents cache after custom submission
+        await queryClient.invalidateQueries({ queryKey: ['residents'] });
       } else {
         // Default submission logic
         await submitToAPI(formData);
+        // Invalidate residents cache to refresh the list
+        await queryClient.invalidateQueries({ queryKey: ['residents'] });
         router.push('/residents?success=created');
       }
     } catch (error) {
       console.error('Form submission error:', error);
-      // Handle error (could set a global error state)
+      // Set a more user-friendly error message
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred during submission';
+      setErrors({ submit: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, validateForm, steps, onSubmit, router]);
+  }, [formData, validateForm, steps, onSubmit, router, queryClient]);
 
   // Default API submission
   const submitToAPI = async (data: ResidentFormData) => {
@@ -312,50 +334,55 @@ export function useResidentForm({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        resident_data: {
-          firstName: data.firstName,
-          middleName: data.middleName,
-          lastName: data.lastName,
-          extensionName: data.extensionName,
-          birthdate: data.birthdate,
-          sex: data.sex,
-          civilStatus: data.civilStatus,
-          citizenship: data.citizenship,
-          email: data.email,
-          mobileNumber: data.mobileNumber,
-          telephoneNumber: data.telephoneNumber,
-          motherMaidenFirstName: data.motherMaidenFirstName,
-          motherMaidenMiddleName: data.motherMaidenMiddleName,
-          motherMaidenLastName: data.motherMaidenLastName,
-          educationAttainment: data.educationAttainment,
-          isGraduate: data.isGraduate,
-          employmentStatus: data.employmentStatus,
-          psocCode: data.psocCode,
-          psocLevel: data.psocLevel,
-          occupationTitle: data.occupationTitle,
-          workplace: data.workplace,
-          bloodType: data.bloodType,
-          height: data.height,
-          weight: data.weight,
-          ethnicity: data.ethnicity,
-          religion: data.religion,
-          religionOthersSpecify: data.religionOthersSpecify,
-          isVoter: data.isVoter,
-          isResidentVoter: data.isResidentVoter,
-          lastVotedDate: data.lastVotedDate,
-          philsysCardNumber: data.philsysCardNumber,
-          barangayCode: data.barangayCode,
-          cityMunicipalityCode: data.cityMunicipalityCode,
-          provinceCode: data.provinceCode,
-          regionCode: data.regionCode,
-          householdCode: data.householdCode,
-        },
+        firstName: data.firstName,
+        middleName: data.middleName,
+        lastName: data.lastName,
+        extensionName: data.extensionName,
+        birthdate: data.birthdate,
+        sex: data.sex,
+        civilStatus: data.civilStatus,
+        citizenship: data.citizenship,
+        email: data.email,
+        mobileNumber: data.mobileNumber,
+        telephoneNumber: data.telephoneNumber,
+        motherMaidenFirstName: data.motherMaidenFirstName,
+        motherMaidenMiddleName: data.motherMaidenMiddleName,
+        motherMaidenLastName: data.motherMaidenLastName,
+        educationAttainment: data.educationAttainment,
+        isGraduate: data.isGraduate,
+        employmentStatus: (() => {
+          const validValues = ['employed', 'unemployed', 'self_employed', 'student', 'retired', 'not_in_labor_force', 'ofw'];
+          const value = data.employmentStatus;
+          return validValues.includes(value) ? value : 'not_in_labor_force';
+        })(),
+        psocCode: data.psocCode,
+        psocLevel: data.psocLevel,
+        occupationTitle: data.occupationTitle,
+        workplace: data.workplace,
+        bloodType: data.bloodType,
+        height: data.height,
+        weight: data.weight,
+        ethnicity: data.ethnicity,
+        religion: data.religion,
+        religionOthersSpecify: data.religionOthersSpecify,
+        isVoter: data.isVoter,
+        isResidentVoter: data.isResidentVoter,
+        lastVotedDate: data.lastVotedDate,
+        philsysCardNumber: data.philsysCardNumber,
+        barangayCode: data.barangayCode,
+        cityMunicipalityCode: data.cityMunicipalityCode,
+        provinceCode: data.provinceCode,
+        regionCode: data.regionCode,
+        householdCode: data.householdCode,
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to create resident');
+      const errorMessage = typeof errorData.error === 'string' 
+        ? errorData.error 
+        : errorData.message || JSON.stringify(errorData) || 'Failed to create resident';
+      throw new Error(errorMessage);
     }
 
     return response.json();

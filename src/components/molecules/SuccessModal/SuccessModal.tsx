@@ -18,7 +18,7 @@ export function SuccessModal({ isOpen, onClose, title, message }: SuccessModalPr
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg
                 className="h-6 w-6 text-green-600"
                 fill="none"
@@ -33,9 +33,9 @@ export function SuccessModal({ isOpen, onClose, title, message }: SuccessModalPr
                 />
               </svg>
             </div>
-            <h3 className="ml-3 text-lg font-semibold text-gray-900">{title}</h3>
+            <h3 className="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
           </div>
-          <button onClick={onClose} className="text-gray-400 transition-colors hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 dark:text-gray-600 transition-colors hover:text-gray-600">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -49,14 +49,14 @@ export function SuccessModal({ isOpen, onClose, title, message }: SuccessModalPr
 
         {/* Body */}
         <div className="p-6">
-          <p className="text-gray-700">{message}</p>
+          <p className="text-gray-700 dark:text-gray-300">{message}</p>
         </div>
 
         {/* Footer */}
         <div className="flex justify-end rounded-b-lg bg-gray-50 px-6 py-4">
           <button
             onClick={onClose}
-            className="rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white dark:text-black transition-colors hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
             OK
           </button>

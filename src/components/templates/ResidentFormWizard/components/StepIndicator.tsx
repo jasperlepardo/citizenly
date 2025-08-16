@@ -23,10 +23,10 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium ${
                     isActive
-                      ? 'border-blue-600 bg-blue-600 text-white'
+                      ? 'border-blue-600 bg-blue-600 text-white dark:text-black'
                       : isCompleted
-                        ? 'border-green-600 bg-green-600 text-white'
-                        : 'border-gray-300 bg-white text-gray-500'
+                        ? 'border-green-600 bg-green-600 text-white dark:text-black'
+                        : 'border-gray-300 bg-white text-gray-500 dark:text-gray-500 dark:text-gray-500 dark:text-gray-500'
                   } `}
                 >
                   {isCompleted ? (
@@ -46,7 +46,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 <div className="mt-2 max-w-24 text-center">
                   <p
                     className={`text-xs font-medium ${
-                      isActive ? 'text-gray-600' : isCompleted ? 'text-green-600' : 'text-gray-500'
+                      isActive ? 'text-gray-600 dark:text-gray-400' : isCompleted ? 'text-green-600' : 'text-gray-500 dark:text-gray-500 dark:text-gray-500 dark:text-gray-500'
                     } `}
                   >
                     {step.title}

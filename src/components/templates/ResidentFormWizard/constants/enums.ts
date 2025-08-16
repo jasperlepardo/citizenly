@@ -32,14 +32,11 @@ export const EDUCATION_LEVEL_OPTIONS = [
 export const EMPLOYMENT_STATUS_OPTIONS = [
   { value: 'employed', label: 'Employed' },
   { value: 'unemployed', label: 'Unemployed' },
-  { value: 'underemployed', label: 'Underemployed' },
   { value: 'self_employed', label: 'Self-Employed' },
   { value: 'student', label: 'Student' },
   { value: 'retired', label: 'Retired' },
-  { value: 'homemaker', label: 'Homemaker' },
-  { value: 'unable_to_work', label: 'Unable to Work' },
-  { value: 'looking_for_work', label: 'Looking for Work' },
   { value: 'not_in_labor_force', label: 'Not in Labor Force' },
+  { value: 'ofw', label: 'Overseas Filipino Worker (OFW)' },
 ] as const;
 
 export const BLOOD_TYPE_OPTIONS = [

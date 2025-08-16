@@ -22,8 +22,8 @@ export const typography = {
   mono: 'font-mono',
 
   // Heading classes - Figma aligned line heights
-  h1: 'font-display text-4xl font-bold leading-[3rem] tracking-tight', // 48px/48px
-  h2: 'font-display text-3xl font-semibold leading-[2.5rem] tracking-tight', // 30px/40px
+  h1: 'font-display text-4xl font-bold leading-12 tracking-tight', // 48px/48px
+  h2: 'font-display text-3xl font-semibold leading-10 tracking-tight', // 30px/40px
   h3: 'font-display text-2xl font-semibold leading-8 tracking-tight', // 24px/32px
   h4: 'font-display text-xl font-medium leading-7 tracking-tight', // 20px/28px
   h5: 'font-display text-lg font-medium leading-6', // 18px/24px
@@ -57,11 +57,11 @@ export interface TypographyProps {
 
 // Common typography combinations
 export const typographyPresets = {
-  pageTitle: `${typography.h1} text-gray-900 mb-6`,
-  sectionTitle: `${typography.h2} text-gray-800 mb-4`,
-  cardTitle: `${typography.h3} text-gray-800 mb-3`,
-  fieldLabel: `${typography.label} text-gray-700 mb-2`,
-  helpText: `${typography.bodySmall} text-gray-500`,
+  pageTitle: `${typography.h1} text-gray-900 dark:text-gray-100 mb-6`,
+  sectionTitle: `${typography.h2} text-gray-800 dark:text-gray-200 mb-4`,
+  cardTitle: `${typography.h3} text-gray-800 dark:text-gray-200 mb-3`,
+  fieldLabel: `${typography.label} text-gray-700 dark:text-gray-300 mb-2`,
+  helpText: `${typography.bodySmall} text-gray-500 dark:text-gray-400`,
   errorText: `${typography.bodySmall} text-red-600`,
   successText: `${typography.bodySmall} text-green-600`,
 } as const;

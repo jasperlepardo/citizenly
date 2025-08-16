@@ -124,17 +124,17 @@ export default function PopulationPyramid({
   };
 
   return (
-    <div className={`bg-default rounded-lg border border-default p-6 ${className}`}>
+    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 ${className}`}>
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-display text-lg font-semibold text-gray-600">Population Pyramid</h3>
-        <div className="font-body text-sm text-gray-600">
+        <h3 className="font-display text-lg font-semibold text-gray-600 dark:text-gray-400">Population Pyramid</h3>
+        <div className="font-body text-sm text-gray-600 dark:text-gray-400">
           Total: {totalPopulation.toLocaleString()}
         </div>
       </div>
 
       <div className="space-y-1">
         {/* Header */}
-        <div className="mb-3 flex items-center font-body text-xs text-gray-600">
+        <div className="mb-3 flex items-center font-body text-xs text-gray-600 dark:text-gray-400 dark:text-gray-600">
           <div className="w-[45%] pr-3 text-right">Male</div>
           <div className="w-[10%] px-3 text-center">Age</div>
           <div className="w-[45%] pl-3 text-left">Female</div>
@@ -150,12 +150,12 @@ export default function PopulationPyramid({
               key={index}
               className={`flex h-6 cursor-pointer items-center rounded-md transition-all duration-200 ${
                 isSelected
-                  ? 'bg-blue-50 shadow-sm dark:bg-blue-900/20'
+                  ? 'bg-blue-50 shadow-xs dark:bg-blue-900/20'
                   : isHovered
-                    ? 'bg-default-hover shadow-sm'
+                    ? 'bg-gray-50 dark:bg-gray-700 shadow-xs'
                     : hoveredGroup && hoveredGroup !== group.ageRange
                       ? 'opacity-60'
-                      : 'hover:bg-default-hover'
+                      : 'hover:bg-gray-50 dark:bg-gray-700'
               }`}
               onMouseMove={e => handleMouseMove(e, group.ageRange)}
               onMouseLeave={handleMouseLeave}
@@ -166,7 +166,7 @@ export default function PopulationPyramid({
                 <div className="relative flex w-full items-center gap-4">
                   <span
                     className={`min-w-[35px] text-right font-body text-xs transition-all duration-200 ${
-                      isHovered || isSelected ? 'font-medium text-gray-600' : 'text-gray-600'
+                      isHovered || isSelected ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'
                     }`}
                   >
                     {group.male}
@@ -174,7 +174,7 @@ export default function PopulationPyramid({
                   <div className="relative flex flex-1 justify-end">
                     {group.male > 0 && (
                       <div
-                        className={`h-4 cursor-pointer rounded-sm transition-all ${
+                        className={`h-4 cursor-pointer rounded-xs transition-all ${
                           isSelected
                             ? 'scale-y-110 bg-blue-600 shadow-md ring-2 ring-white'
                             : isHovered && hoveredSide === 'male'
@@ -202,8 +202,8 @@ export default function PopulationPyramid({
                 <span
                   className={`font-body text-xs transition-all duration-200 ${
                     isHovered || isSelected
-                      ? 'font-bold text-gray-600'
-                      : 'font-medium text-gray-600'
+                      ? 'font-bold text-gray-600 dark:text-gray-400'
+                      : 'font-medium text-gray-600 dark:text-gray-400'
                   }`}
                 >
                   {group.ageRange}
@@ -216,7 +216,7 @@ export default function PopulationPyramid({
                   <div className="relative flex flex-1 justify-start">
                     {group.female > 0 && (
                       <div
-                        className={`h-4 cursor-pointer rounded-sm transition-all ${
+                        className={`h-4 cursor-pointer rounded-xs transition-all ${
                           isSelected
                             ? 'scale-y-110 bg-purple-600 shadow-md ring-2 ring-white'
                             : isHovered && hoveredSide === 'female'
@@ -238,7 +238,7 @@ export default function PopulationPyramid({
                   </div>
                   <span
                     className={`min-w-[35px] font-body text-xs transition-all duration-200 ${
-                      isHovered || isSelected ? 'font-medium text-gray-600' : 'text-gray-600'
+                      isHovered || isSelected ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'
                     }`}
                   >
                     {group.female}
@@ -250,18 +250,18 @@ export default function PopulationPyramid({
         })}
 
         {/* Legend and Stats */}
-        <div className="mt-6 border-t border-default pt-4">
+        <div className="mt-6 border-t border-gray-300 dark:border-gray-600 pt-4">
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-2">
-              <div className="size-3 rounded bg-blue-500" />
-              <span className="font-body text-xs text-gray-600">
+              <div className="size-3 rounded-sm bg-blue-500" />
+              <span className="font-body text-xs text-gray-600 dark:text-gray-400">
                 Male: {totalMale.toLocaleString()} (
                 {((totalMale / totalPopulation) * 100).toFixed(1)}%)
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="size-3 rounded bg-purple-500" />
-              <span className="font-body text-xs text-gray-600">
+              <div className="size-3 rounded-sm bg-purple-500" />
+              <span className="font-body text-xs text-gray-600 dark:text-gray-400">
                 Female: {totalFemale.toLocaleString()} (
                 {((totalFemale / totalPopulation) * 100).toFixed(1)}%)
               </span>
@@ -270,10 +270,10 @@ export default function PopulationPyramid({
 
           {selectedGroup && (
             <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-center dark:border-blue-800 dark:bg-blue-900/20">
-              <p className="font-body text-sm text-gray-600">
+              <p className="font-body text-sm text-gray-600 dark:text-gray-400">
                 Age group <span className="font-semibold">{selectedGroup}</span> selected
               </p>
-              <p className="mt-1 font-body text-xs text-gray-600">
+              <p className="mt-1 font-body text-xs text-gray-600 dark:text-gray-400">
                 Click another group to compare or click outside to deselect
               </p>
             </div>
@@ -299,7 +299,7 @@ export default function PopulationPyramid({
               const isMale = hoveredSide === 'male';
               return (
                 <div className="text-sm">
-                  <div className="mb-1 flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="mb-1 flex items-center gap-2 font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">
                     <div
                       className={`size-3 rounded-full ${isMale ? 'bg-blue-500' : 'bg-purple-500'}`}
                     ></div>

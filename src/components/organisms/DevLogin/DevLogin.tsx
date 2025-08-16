@@ -202,10 +202,10 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
   };
 
   return (
-    <div className="bg-default mx-auto max-w-md rounded-lg border border-default p-6 shadow-md">
+    <div className="bg-white dark:bg-gray-800 mx-auto max-w-md rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
       <div className="mb-6 text-center">
-        <h2 className="mb-2 text-xl font-bold text-gray-600">Development Setup</h2>
-        <p className="text-sm text-gray-600">Create demo users for testing the RBI System</p>
+        <h2 className="mb-2 text-xl font-bold text-gray-600 dark:text-gray-400">Development Setup</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Create demo users for testing the RBI System</p>
       </div>
 
       <div className="space-y-4">
@@ -245,8 +245,8 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         </button>
 
         {/* Quick Login Buttons */}
-        <div className="border-t border-default pt-4">
-          <p className="mb-2 text-xs text-gray-600">If users already exist:</p>
+        <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
+          <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">If users already exist:</p>
           <div className="space-y-2">
             <button
               onClick={() => {
@@ -256,13 +256,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
                 }
               }}
               disabled={!devModeAvailable}
-              className="hover:bg-default-hover disabled:bg-default-muted w-full rounded-md border border-default px-3 py-2 text-sm text-gray-600 disabled:cursor-not-allowed"
+              className="hover:bg-gray-50 dark:bg-gray-700 disabled:bg-gray-100 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 disabled:cursor-not-allowed"
             >
               Login as Barangay Admin
             </button>
             <button
               onClick={() => directLogin('clerk@gmail.com')}
-              className="hover:bg-default-hover w-full rounded-md border border-default px-3 py-2 text-sm text-gray-600"
+              className="hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
             >
               Login as Clerk
             </button>
@@ -271,13 +271,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Status Message */}
         {message && (
-          <div className="bg-default-hover rounded-md border border-default p-3">
-            <p className="font-mono text-sm text-gray-600">{message}</p>
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600 p-3">
+            <p className="font-mono text-sm text-gray-600 dark:text-gray-400">{message}</p>
           </div>
         )}
 
         {/* Instructions */}
-        <div className="space-y-1 text-xs text-gray-600">
+        <div className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
           {!devModeAvailable ? (
             <div className="text-red-600">
               <p>

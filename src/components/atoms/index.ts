@@ -1,15 +1,10 @@
 // Atomic Components - Basic UI building blocks
 export * from './Button';
-export * from './Input';
-export * from './Select';
-export * from './Checkbox';
-export * from './Radio';
-export * from './Toggle';
-export * from './Textarea';
 export * from './IconButton';
 export * from './Typography';
 export * from './KeyboardNavigableList';
-export * from './FormInput';
+export * from './Field';
+export { default as Icon } from './Icon/Icon';
 
 // Utility Components
 export * from './ErrorMessage';

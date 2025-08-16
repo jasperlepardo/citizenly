@@ -302,12 +302,12 @@ export const SearchExample: Story = {
         />
 
         {isSearching && (
-          <div className="mt-4 rounded bg-gray-50 p-3 text-sm text-gray-600">Searching...</div>
+          <div className="mt-4 rounded-sm bg-gray-50 p-3 text-sm text-gray-600 dark:text-gray-400">Searching...</div>
         )}
 
         {results.length > 0 && !isSearching && (
           <div className="mt-4 rounded-md border">
-            <div className="border-b bg-gray-50 p-2 text-sm font-medium text-gray-700">
+            <div className="border-b bg-gray-50 p-2 text-sm font-medium text-gray-700 dark:text-gray-300">
               Found {results.length} result{results.length !== 1 ? 's' : ''}
             </div>
             <ul className="divide-y">
@@ -321,7 +321,7 @@ export const SearchExample: Story = {
         )}
 
         {searchTerm && results.length === 0 && !isSearching && (
-          <div className="mt-4 rounded bg-gray-50 p-3 text-sm text-gray-500">
+          <div className="mt-4 rounded-sm bg-gray-50 p-3 text-sm text-gray-500 dark:text-gray-500">
             No results found for "{searchTerm}"
           </div>
         )}
@@ -369,7 +369,7 @@ export const FilterExample: Story = {
         />
 
         <div className="mt-4">
-          <p className="mb-3 text-sm text-gray-600">
+          <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
             {filteredItems.length} of {items.length} products
           </p>
 
@@ -379,7 +379,7 @@ export const FilterExample: Story = {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium">{item.name}</h3>
-                    <p className="text-sm text-gray-600">{item.category}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.category}</p>
                   </div>
                   <span className="font-semibold">${item.price}</span>
                 </div>
@@ -399,8 +399,8 @@ export const AccessibilityDemo: Story = {
     return (
       <div className="space-y-6">
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-2 text-lg font-semibold text-gray-800">Keyboard Shortcuts</h3>
-          <ul className="space-y-1 text-sm text-gray-700">
+          <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Keyboard Shortcuts</h3>
+          <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
             <li>
               • <kbd className="rounded bg-blue-100 px-1 py-0.5">Enter</kbd> to perform search
             </li>
@@ -424,7 +424,7 @@ export const AccessibilityDemo: Story = {
             placeholder="Try typing and pressing Enter..."
           />
 
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Type something and press Enter to search, or Escape to clear.
           </p>
         </div>

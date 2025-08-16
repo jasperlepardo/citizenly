@@ -33,7 +33,7 @@ const MockThemeProvider = ({
 
   return (
     <div className={actualTheme === 'dark' ? 'dark' : ''}>
-      <div className="min-h-screen bg-white p-4 text-gray-900 dark:bg-gray-900 dark:text-white">
+      <div className="min-h-screen bg-white p-4 text-gray-900 dark:bg-gray-900 dark:text-white dark:text-black">
         {/* Provide mock context via global variable for component to use */}
         {React.Children.map(children, child =>
           React.isValidElement(child) && child.type === ThemeToggle
@@ -67,7 +67,7 @@ const meta = {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'ghost', 'outline'],
+      options: ['default', 'ghost', 'outline-solid'],
     },
     size: {
       control: { type: 'select' },
@@ -91,14 +91,14 @@ export const Default: Story = {
   render: args => (
     <div className="space-y-4">
       <div className="rounded-lg border bg-gray-50 p-4">
-        <p className="mb-2 text-sm text-gray-600">
+        <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
           <strong>Note:</strong> This component requires ThemeContext implementation. The following
           is a visual representation of how it would appear.
         </p>
 
         <div className="flex items-center gap-4">
           <button
-            className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2"
+            className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2"
             title="Current theme: Light. Click to toggle."
             aria-label="Toggle theme. Current: Light"
             {...args}
@@ -131,7 +131,7 @@ export const WithLabels: Story = {
           <div className="rounded-lg border p-4">
             <h4 className="mb-2 font-medium">Light Theme State</h4>
             <div className="flex items-center gap-2">
-              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -145,10 +145,10 @@ export const WithLabels: Story = {
             </div>
           </div>
 
-          <div className="rounded-lg border bg-gray-800 p-4 text-white">
+          <div className="rounded-lg border bg-gray-800 p-4 text-white dark:text-black">
             <h4 className="mb-2 font-medium">Dark Theme State</h4>
             <div className="flex items-center gap-2">
-              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-white transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2">
+              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-white dark:text-black transition-colors hover:bg-gray-700 focus:outline-hidden focus:ring-2">
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -165,7 +165,7 @@ export const WithLabels: Story = {
           <div className="rounded-lg border bg-gray-100 p-4">
             <h4 className="mb-2 font-medium">System Theme State</h4>
             <div className="flex items-center gap-2">
-              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2">
+              <button className="inline-flex items-center justify-center rounded-md p-2 font-medium transition-colors hover:bg-gray-200 focus:outline-hidden focus:ring-2">
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -191,8 +191,8 @@ export const Variants: Story = {
         <h3 className="mb-4 text-lg font-semibold">Button Variants</h3>
         <div className="flex gap-4">
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Default</p>
-            <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white p-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Default</p>
+            <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-50 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -205,8 +205,8 @@ export const Variants: Story = {
           </div>
 
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Ghost</p>
-            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Ghost</p>
+            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -219,8 +219,8 @@ export const Variants: Story = {
           </div>
 
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Outline</p>
-            <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-transparent p-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Outline</p>
+            <button className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-transparent p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-50 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -244,8 +244,8 @@ export const Sizes: Story = {
         <h3 className="mb-4 text-lg font-semibold">Size Variants</h3>
         <div className="flex items-center gap-4">
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Small</p>
-            <button className="inline-flex h-8 w-8 items-center justify-center rounded-md p-1 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Small</p>
+            <button className="inline-flex h-8 w-8 items-center justify-center rounded-md p-1 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -258,8 +258,8 @@ export const Sizes: Story = {
           </div>
 
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Medium</p>
-            <button className="inline-flex h-9 w-9 items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Medium</p>
+            <button className="inline-flex h-9 w-9 items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -272,8 +272,8 @@ export const Sizes: Story = {
           </div>
 
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Large</p>
-            <button className="inline-flex h-10 w-10 items-center justify-center rounded-md p-2.5 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Large</p>
+            <button className="inline-flex h-10 w-10 items-center justify-center rounded-md p-2.5 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -297,8 +297,8 @@ export const LabelPositions: Story = {
         <h3 className="mb-4 text-lg font-semibold">Label Positions</h3>
         <div className="flex gap-6">
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Label Left</p>
-            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Label Left</p>
+            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <span className="mr-2 text-sm font-medium">Light</span>
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -312,8 +312,8 @@ export const LabelPositions: Story = {
           </div>
 
           <div className="text-center">
-            <p className="mb-2 text-sm text-gray-600">Label Right</p>
-            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">Label Right</p>
+            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -339,20 +339,20 @@ export const InNavigation: Story = {
           <div className="flex items-center gap-6">
             <h1 className="text-xl font-bold">My App</h1>
             <div className="hidden gap-4 md:flex">
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100">
                 Home
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100">
                 About
               </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100">
                 Contact
               </a>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2">
+            <button className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -368,7 +368,7 @@ export const InNavigation: Story = {
 
       <main className="p-8">
         <h2 className="mb-4 text-2xl font-bold">Content Area</h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           The theme toggle is typically placed in the navigation bar for easy access. Users can
           quickly switch between light, dark, and system themes.
         </p>
@@ -381,8 +381,8 @@ export const AccessibilityDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-800">Accessibility Features</h3>
-        <ul className="space-y-1 text-sm text-gray-700">
+        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Accessibility Features</h3>
+        <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>
             • <strong>aria-label</strong>: Describes current theme state and action
           </li>
@@ -403,7 +403,7 @@ export const AccessibilityDemo: Story = {
 
       <div className="flex gap-4">
         <button
-          className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="inline-flex items-center justify-center rounded-md p-2 font-medium text-gray-900 dark:text-gray-100 transition-colors hover:bg-gray-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
           title="Current theme: Light. Click to toggle."
           aria-label="Toggle theme. Current: Light"
         >
@@ -417,7 +417,7 @@ export const AccessibilityDemo: Story = {
           </svg>
         </button>
 
-        <p className="self-center text-sm text-gray-600">
+        <p className="self-center text-sm text-gray-600 dark:text-gray-400">
           Hover to see tooltip, focus to see keyboard indicators
         </p>
       </div>

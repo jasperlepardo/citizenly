@@ -9,7 +9,7 @@ import Layout, {
 } from './Layout';
 
 const meta = {
-  title: 'Design Tokens/Layout',
+  title: 'Design System/Layout',
   component: Layout,
   parameters: {
     layout: 'fullscreen',
@@ -120,8 +120,8 @@ export const ContainerWidths: Story = {
   name: '📐 Container Widths',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Container Width System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Container Width System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Predefined container widths that provide consistent content boundaries across different
         screen sizes.
       </p>
@@ -140,11 +140,11 @@ export const ContainerWidths: Story = {
             .map(([name, width]) => (
               <div key={name} className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="w-8 font-mono text-gray-600">{name}:</span>
-                  <span className="text-gray-500">{width}</span>
+                  <span className="w-8 font-mono text-gray-600 dark:text-gray-400">{name}:</span>
+                  <span className="text-gray-500 dark:text-gray-500">{width}</span>
                 </div>
                 <div
-                  className="mx-auto rounded border border-blue-200 bg-blue-100 p-4 text-center text-gray-800"
+                  className="mx-auto rounded-sm border border-blue-200 bg-blue-100 p-4 text-center text-gray-800 dark:text-gray-200"
                   style={{
                     maxWidth: width === 'full' ? '100%' : width,
                     width: '100%',
@@ -158,8 +158,8 @@ export const ContainerWidths: Story = {
       </LayoutDemo>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 font-semibold text-gray-900">📱 Container Usage</h3>
-        <ul className="space-y-1 text-sm text-gray-800">
+        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">📱 Container Usage</h3>
+        <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           <li>
             • <strong>xs-sm</strong>: Mobile-optimized layouts and forms
           </li>
@@ -185,8 +185,8 @@ export const ResponsiveBreakpoints: Story = {
   name: '📱 Responsive Breakpoints',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Responsive Breakpoint System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Responsive Breakpoint System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Screen width breakpoints for responsive design, ensuring consistent behavior across all
         government applications.
       </p>
@@ -231,8 +231,8 @@ export const ResponsiveBreakpoints: Story = {
         </div>
 
         <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-          <h3 className="mb-2 font-semibold text-gray-900">🎯 Usage Guidelines</h3>
-          <ul className="space-y-1 text-sm text-gray-800">
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">🎯 Usage Guidelines</h3>
+          <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
             <li>• Design mobile-first, enhance for larger screens</li>
             <li>• Test critical features at all breakpoints</li>
             <li>• Use consistent breakpoints across all components</li>
@@ -249,8 +249,8 @@ export const GridSystem: Story = {
   name: '⚏ Grid System',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">12-Column Grid System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">12-Column Grid System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Flexible grid system for consistent layouts and responsive design across government
         applications.
       </p>
@@ -278,10 +278,10 @@ export const GridSystem: Story = {
         <div className="space-y-6">
           {/* 12 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700">12 Columns (1 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">12 Columns (1 each)</div>
             <div className="grid grid-cols-12 gap-1">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="rounded bg-blue-200 p-2 text-center text-xs text-gray-800">
+                <div key={i} className="rounded bg-blue-200 p-2 text-center text-xs text-gray-800 dark:text-gray-200">
                   1
                 </div>
               ))}
@@ -290,7 +290,7 @@ export const GridSystem: Story = {
 
           {/* 6 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700">6 Columns (2 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">6 Columns (2 each)</div>
             <div className="grid grid-cols-6 gap-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
@@ -305,12 +305,12 @@ export const GridSystem: Story = {
 
           {/* 4 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700">4 Columns (3 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">4 Columns (3 each)</div>
             <div className="grid grid-cols-4 gap-3">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded bg-purple-200 p-4 text-center text-xs text-gray-800"
+                  className="rounded bg-purple-200 p-4 text-center text-xs text-gray-800 dark:text-gray-200"
                 >
                   3
                 </div>
@@ -320,7 +320,7 @@ export const GridSystem: Story = {
 
           {/* 3 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700">3 Columns (4 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">3 Columns (4 each)</div>
             <div className="grid grid-cols-3 gap-4">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
@@ -335,12 +335,12 @@ export const GridSystem: Story = {
 
           {/* Mixed columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700">Mixed Layout (8 + 4)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Mixed Layout (8 + 4)</div>
             <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-8 rounded bg-red-200 p-6 text-center text-sm text-red-800">
+              <div className="col-span-8 rounded-sm bg-red-200 p-6 text-center text-sm text-red-800">
                 Main Content (8 columns)
               </div>
-              <div className="col-span-4 rounded bg-yellow-200 p-6 text-center text-sm text-yellow-800">
+              <div className="col-span-4 rounded-sm bg-yellow-200 p-6 text-center text-sm text-yellow-800">
                 Sidebar (4 columns)
               </div>
             </div>
@@ -366,8 +366,8 @@ export const ZIndexLayers: Story = {
   name: '📚 Z-Index Layers',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Z-Index Layering System</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Z-Index Layering System</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Organized layering system for managing stacking context and overlapping elements.
       </p>
 
@@ -382,10 +382,10 @@ export const ZIndexLayers: Story = {
         title="Z-Index Demonstration"
         description="Interactive stacking layers showing proper hierarchy"
       >
-        <div className="relative h-64 overflow-hidden rounded bg-gray-100">
+        <div className="relative h-64 overflow-hidden rounded-sm bg-gray-100">
           {/* Base layer */}
           <div
-            className="absolute inset-6 flex items-center justify-center rounded border-2 border-blue-300 bg-blue-200 font-medium text-gray-800"
+            className="absolute inset-6 flex items-center justify-center rounded-sm border-2 border-blue-300 bg-blue-200 font-medium text-gray-800 dark:text-gray-200"
             style={{ zIndex: parseInt(layoutTokens.zIndex.base) }}
           >
             Base Layer (z: {layoutTokens.zIndex.base})
@@ -393,7 +393,7 @@ export const ZIndexLayers: Story = {
 
           {/* Docked layer */}
           <div
-            className="absolute left-10 right-10 top-10 flex h-20 items-center justify-center rounded border-2 border-green-400 bg-green-300 font-medium text-green-800"
+            className="absolute left-10 right-10 top-10 flex h-20 items-center justify-center rounded-sm border-2 border-green-400 bg-green-300 font-medium text-green-800"
             style={{ zIndex: parseInt(layoutTokens.zIndex.docked) }}
           >
             Docked Element (z: {layoutTokens.zIndex.docked})
@@ -401,7 +401,7 @@ export const ZIndexLayers: Story = {
 
           {/* Dropdown layer */}
           <div
-            className="absolute left-16 top-16 flex h-16 w-40 items-center justify-center rounded border-2 border-purple-500 bg-purple-400 text-sm font-medium text-gray-900"
+            className="absolute left-16 top-16 flex h-16 w-40 items-center justify-center rounded-sm border-2 border-purple-500 bg-purple-400 text-sm font-medium text-gray-900 dark:text-gray-100"
             style={{ zIndex: parseInt(layoutTokens.zIndex.dropdown) }}
           >
             Dropdown (z: {layoutTokens.zIndex.dropdown})
@@ -409,7 +409,7 @@ export const ZIndexLayers: Story = {
 
           {/* Overlay layer */}
           <div
-            className="absolute left-20 top-20 flex h-12 w-32 items-center justify-center rounded border-2 border-yellow-500 bg-yellow-400 text-sm font-medium text-yellow-900"
+            className="absolute left-20 top-20 flex h-12 w-32 items-center justify-center rounded-sm border-2 border-yellow-500 bg-yellow-400 text-sm font-medium text-yellow-900"
             style={{ zIndex: parseInt(layoutTokens.zIndex.overlay) }}
           >
             Overlay (z: {layoutTokens.zIndex.overlay})
@@ -417,7 +417,7 @@ export const ZIndexLayers: Story = {
 
           {/* Modal layer */}
           <div
-            className="absolute left-24 top-24 flex h-10 w-24 items-center justify-center rounded border-2 border-red-600 bg-red-500 text-xs font-medium text-white"
+            className="absolute left-24 top-24 flex h-10 w-24 items-center justify-center rounded-sm border-2 border-red-600 bg-red-500 text-xs font-medium text-white dark:text-black"
             style={{ zIndex: parseInt(layoutTokens.zIndex.modal) }}
           >
             Modal (z: {layoutTokens.zIndex.modal})
@@ -425,7 +425,7 @@ export const ZIndexLayers: Story = {
 
           {/* Tooltip layer */}
           <div
-            className="absolute left-28 top-28 flex h-8 w-20 items-center justify-center rounded bg-gray-800 text-xs font-medium text-white"
+            className="absolute left-28 top-28 flex h-8 w-20 items-center justify-center rounded-sm bg-gray-800 text-xs font-medium text-white dark:text-black"
             style={{ zIndex: parseInt(layoutTokens.zIndex.tooltip) }}
           >
             Tooltip (z: {layoutTokens.zIndex.tooltip})
@@ -471,8 +471,8 @@ export const LayoutPatterns: Story = {
   name: '🏛️ Layout Patterns',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Common Layout Patterns</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Common Layout Patterns</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Predefined dimensions for common government website layout elements and patterns.
       </p>
 
@@ -503,14 +503,14 @@ export const LayoutPatterns: Story = {
         title="Government Website Layout"
         description="Typical layout structure using standard patterns"
       >
-        <div className="overflow-hidden rounded border border-gray-300 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-sm border border-gray-300 bg-white shadow-xs">
           {/* Header */}
           <div
-            className="flex items-center justify-between bg-blue-600 px-6 text-sm font-medium text-white"
+            className="flex items-center justify-between bg-blue-600 px-6 text-sm font-medium text-white dark:text-black"
             style={{ height: layoutTokens.patterns.headerHeights.default }}
           >
             <div className="flex items-center gap-4">
-              <div className="h-8 w-8 rounded bg-white bg-opacity-20"></div>
+              <div className="h-8 w-8 rounded-sm bg-white bg-opacity-20"></div>
               <span>Philippine Government Portal</span>
             </div>
             <div className="text-xs">Header: {layoutTokens.patterns.headerHeights.default}</div>
@@ -525,32 +525,32 @@ export const LayoutPatterns: Story = {
                 minHeight: '240px',
               }}
             >
-              <div className="mb-3 text-sm font-semibold text-gray-700">Navigation</div>
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="rounded bg-blue-100 p-2 text-gray-700">Services</div>
+              <div className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Navigation</div>
+              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="rounded bg-blue-100 p-2 text-gray-700 dark:text-gray-300">Services</div>
                 <div className="rounded p-2 hover:bg-gray-100">About</div>
                 <div className="rounded p-2 hover:bg-gray-100">Contact</div>
                 <div className="rounded p-2 hover:bg-gray-100">Resources</div>
               </div>
-              <div className="mt-4 text-xs text-gray-500">
+              <div className="mt-4 text-xs text-gray-500 dark:text-gray-500">
                 Width: {layoutTokens.patterns.sidebarWidths.default}
               </div>
             </div>
 
             {/* Main Content */}
             <div className="flex-1 p-6">
-              <h2 className="mb-4 text-xl font-bold text-gray-900">
+              <h2 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
                 Welcome to Government Services
               </h2>
-              <div className="space-y-4 text-gray-600">
+              <div className="space-y-4 text-gray-600 dark:text-gray-400">
                 <p>
                   This main content area adapts to the available space after accounting for the
                   sidebar width of {layoutTokens.patterns.sidebarWidths.default}.
                 </p>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="rounded border border-blue-200 bg-blue-50 p-4">
-                    <h3 className="mb-2 font-semibold text-gray-900">Online Services</h3>
-                    <p className="text-sm text-gray-800">Access government services online</p>
+                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Online Services</h3>
+                    <p className="text-sm text-gray-800 dark:text-gray-200">Access government services online</p>
                   </div>
                   <div className="rounded border border-green-200 bg-green-50 p-4">
                     <h3 className="mb-2 font-semibold text-green-900">Document Request</h3>
@@ -563,7 +563,7 @@ export const LayoutPatterns: Story = {
 
           {/* Footer */}
           <div
-            className="flex items-center justify-between border-t border-gray-200 bg-gray-100 px-6 text-sm text-gray-600"
+            className="flex items-center justify-between border-t border-gray-200 bg-gray-100 px-6 text-sm text-gray-600 dark:text-gray-400"
             style={{ height: layoutTokens.patterns.footerHeights.default }}
           >
             <div>© 2024 Republic of the Philippines</div>
@@ -578,9 +578,9 @@ export const LayoutPatterns: Story = {
           title="Compact Layout Variation"
           description="Smaller dimensions for information-dense interfaces"
         >
-          <div className="overflow-hidden rounded border border-gray-300 bg-white">
+          <div className="overflow-hidden rounded-sm border border-gray-300 bg-white">
             <div
-              className="flex items-center bg-blue-500 px-4 text-sm text-white"
+              className="flex items-center bg-blue-500 px-4 text-sm text-white dark:text-black"
               style={{ height: layoutTokens.patterns.headerHeights.compact }}
             >
               Compact Header ({layoutTokens.patterns.headerHeights.compact})
@@ -592,12 +592,12 @@ export const LayoutPatterns: Story = {
               >
                 Narrow Sidebar
                 <br />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-gray-500">
                   ({layoutTokens.patterns.sidebarWidths.narrow})
                 </span>
               </div>
               <div className="flex-1 p-4">
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   Compact layout for dense information display
                 </div>
               </div>
@@ -609,9 +609,9 @@ export const LayoutPatterns: Story = {
           title="Spacious Layout Variation"
           description="Larger dimensions for content-focused interfaces"
         >
-          <div className="overflow-hidden rounded border border-gray-300 bg-white">
+          <div className="overflow-hidden rounded-sm border border-gray-300 bg-white">
             <div
-              className="flex items-center bg-blue-700 px-6 text-lg font-medium text-white"
+              className="flex items-center bg-blue-700 px-6 text-lg font-medium text-white dark:text-black"
               style={{ height: layoutTokens.patterns.headerHeights.large }}
             >
               Large Header ({layoutTokens.patterns.headerHeights.large})
@@ -623,15 +623,15 @@ export const LayoutPatterns: Story = {
               >
                 Wide Sidebar
                 <br />
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-gray-500">
                   ({layoutTokens.patterns.sidebarWidths.wide})
                 </span>
-                <div className="mt-3 text-sm text-gray-600">
+                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
                   More space for navigation and auxiliary content
                 </div>
               </div>
               <div className="flex-1 p-6">
-                <div className="text-gray-600">
+                <div className="text-gray-600 dark:text-gray-400">
                   Spacious layout for content-focused applications
                 </div>
               </div>
@@ -658,22 +658,22 @@ export const SemanticLayout: Story = {
   name: '🎯 Semantic Layout',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Semantic Layout Tokens</h1>
-      <p className="mb-8 text-gray-600">
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Semantic Layout Tokens</h1>
+      <p className="mb-8 text-gray-600 dark:text-gray-400">
         Contextual layout tokens that provide meaning and consistency for specific use cases.
       </p>
 
       <div className="space-y-8">
         {Object.entries(semanticLayout).map(([category, tokens]) => (
           <div key={category} className="rounded-lg border border-gray-200 p-6">
-            <h3 className="mb-4 text-lg font-semibold capitalize text-gray-900">
+            <h3 className="mb-4 text-lg font-semibold capitalize text-gray-900 dark:text-gray-100">
               {category} Layout
             </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {Object.entries(tokens as Record<string, string>).map(([name, value]) => (
-                <div key={name} className="flex items-center gap-3 rounded bg-gray-50 p-3">
-                  <div className="w-20 font-mono text-sm text-gray-700">{name}</div>
-                  <div className="text-sm text-gray-600">{value}</div>
+                <div key={name} className="flex items-center gap-3 rounded-sm bg-gray-50 p-3">
+                  <div className="w-20 font-mono text-sm text-gray-700 dark:text-gray-300">{name}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{value}</div>
                 </div>
               ))}
             </div>
@@ -686,7 +686,7 @@ export const SemanticLayout: Story = {
         description="How semantic tokens create consistent layouts"
       >
         <div
-          className="overflow-hidden rounded border border-gray-200 bg-white"
+          className="overflow-hidden rounded-sm border border-gray-200 bg-white"
           style={{
             maxWidth: semanticLayout.page.maxWidth,
             margin: semanticLayout.page.margin,
@@ -694,7 +694,7 @@ export const SemanticLayout: Story = {
           }}
         >
           <div
-            className="flex items-center bg-blue-600 px-6 text-white"
+            className="flex items-center bg-blue-600 px-6 text-white dark:text-black"
             style={{
               height: semanticLayout.navigation.height,
               padding: semanticLayout.navigation.padding,

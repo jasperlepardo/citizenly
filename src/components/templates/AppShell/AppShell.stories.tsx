@@ -24,8 +24,8 @@ type Story = StoryObj<typeof meta>;
 const MockDashboardContent = () => (
   <div className="space-y-8">
     <div>
-      <h1 className="text-3xl font-bold text-gray-600">Dashboard Overview</h1>
-      <p className="mt-2 text-gray-600">Welcome to the RBI Records Management System</p>
+      <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Dashboard Overview</h1>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">Welcome to the RBI Records Management System</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -35,11 +35,11 @@ const MockDashboardContent = () => (
         { title: 'Active Voters', value: '987', change: '+8%' },
         { title: 'Pending Records', value: '23', change: '-3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-default rounded-xl border border-default p-6 shadow-sm">
+        <div key={index} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-              <p className="text-2xl font-bold text-gray-600">{stat.value}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
+              <p className="text-2xl font-bold text-gray-600 dark:text-gray-400">{stat.value}</p>
             </div>
             <div className="text-right">
               <span className="text-xs font-medium text-green-600">{stat.change}</span>
@@ -50,8 +50,8 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600">Recent Activity</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Recent Activity</h3>
         <div className="space-y-4">
           {[
             'New resident registered: Maria Santos',
@@ -61,20 +61,20 @@ const MockDashboardContent = () => (
           ].map((activity, index) => (
             <div key={index} className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-blue-600"></div>
-              <p className="text-sm text-gray-600">{activity}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{activity}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="bg-default rounded-xl border border-default p-6 shadow-sm">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600">Quick Actions</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Quick Actions</h3>
         <div className="space-y-3">
           {['Add New Resident', 'Create Household', 'Generate Report', 'Manage Users'].map(
             (action, index) => (
               <button
                 key={index}
-                className="bg-default-hover w-full rounded-lg px-4 py-3 text-left text-gray-600 transition-colors hover:bg-blue-50 hover:text-gray-600"
+                className="bg-gray-50 dark:bg-gray-700 w-full rounded-lg px-4 py-3 text-left text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-50 hover:text-gray-600"
               >
                 {action}
               </button>
@@ -90,30 +90,30 @@ const MockResidentsContent = () => (
   <div className="space-y-6">
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-gray-600">Residents Management</h1>
-        <p className="mt-2 text-gray-600">Manage resident records and information</p>
+        <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Residents Management</h1>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">Manage resident records and information</p>
       </div>
       <div className="flex gap-3">
-        <button className="bg-default hover:bg-default-hover rounded-lg border border-default px-4 py-2 text-gray-600 transition-colors hover:text-gray-600">
+        <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600">
           Export
         </button>
-        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white dark:text-black transition-colors hover:bg-blue-600">
           Add Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-default overflow-hidden rounded-xl border border-default">
-      <div className="border-b border-default p-4">
+    <div className="bg-white dark:bg-gray-800 overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600">
+      <div className="border-b border-gray-300 dark:border-gray-600 p-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-600">Resident List</h3>
+          <h3 className="font-semibold text-gray-600 dark:text-gray-400">Resident List</h3>
           <div className="flex gap-2">
             <input
               type="search"
               placeholder="Search residents..."
-              className="bg-default placeholder-secondary rounded-lg border border-default px-3 py-2 text-sm text-gray-600"
+              className="bg-white dark:bg-gray-800 placeholder-secondary rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
             />
-            <button className="hover:bg-default-hover rounded-lg border border-default px-3 py-2 text-sm text-gray-600 hover:text-gray-600">
+            <button className="hover:bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-600">
               Filter
             </button>
           </div>
@@ -129,11 +129,11 @@ const MockResidentsContent = () => (
           ].map((resident, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-lg border border-default p-3"
+              className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 p-3"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                  <span className="text-sm font-medium text-gray-600">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     {resident.name
                       .split(' ')
                       .map(n => n[0])
@@ -141,8 +141,8 @@ const MockResidentsContent = () => (
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-600">{resident.name}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium text-gray-600 dark:text-gray-400">{resident.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Age {resident.age} • {resident.household}
                   </p>
                 </div>
@@ -152,12 +152,12 @@ const MockResidentsContent = () => (
                   className={`rounded-full px-2 py-1 text-xs font-medium ${
                     resident.status === 'Active'
                       ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-800'
+                      : 'bg-gray-100 text-gray-800 dark:text-gray-200'
                   }`}
                 >
                   {resident.status}
                 </span>
-                <button className="text-gray-600 hover:text-gray-600">
+                <button className="text-gray-600 dark:text-gray-400 hover:text-gray-600">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -179,8 +179,8 @@ const MockResidentsContent = () => (
 const MockReportsContent = () => (
   <div className="space-y-6">
     <div>
-      <h1 className="text-3xl font-bold text-gray-600">Reports & Analytics</h1>
-      <p className="mt-2 text-gray-600">Generate and view system reports</p>
+      <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Reports & Analytics</h1>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">Generate and view system reports</p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -195,20 +195,20 @@ const MockReportsContent = () => (
       ].map((report, index) => (
         <div
           key={index}
-          className="bg-default cursor-pointer rounded-xl border border-default p-6 transition-shadow hover:shadow-md"
+          className="bg-white dark:bg-gray-800 cursor-pointer rounded-xl border border-gray-300 dark:border-gray-600 p-6 transition-shadow hover:shadow-md"
         >
           <div className="mb-3 text-3xl">{report.icon}</div>
-          <h3 className="mb-2 font-semibold text-gray-600">{report.title}</h3>
-          <p className="mb-4 text-sm text-gray-600">{report.description}</p>
-          <button className="w-full rounded-lg bg-blue-50 px-4 py-2 text-gray-600 transition-colors hover:bg-blue-100">
+          <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">{report.title}</h3>
+          <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{report.description}</p>
+          <button className="w-full rounded-lg bg-blue-50 px-4 py-2 text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-100">
             Generate Report
           </button>
         </div>
       ))}
     </div>
 
-    <div className="bg-default rounded-xl border border-default p-6">
-      <h3 className="mb-4 text-lg font-semibold text-gray-600">Recent Reports</h3>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+      <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Recent Reports</h3>
       <div className="space-y-3">
         {[
           { name: 'Population Summary Q4 2024', date: '2024-12-01', size: '2.4 MB' },
@@ -217,12 +217,12 @@ const MockReportsContent = () => (
         ].map((report, index) => (
           <div
             key={index}
-            className="flex items-center justify-between rounded-lg border border-default p-3"
+            className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 p-3"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded bg-blue-100">
+              <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-blue-100">
                 <svg
-                  className="h-4 w-4 text-gray-600"
+                  className="h-4 w-4 text-gray-600 dark:text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -236,13 +236,13 @@ const MockReportsContent = () => (
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-gray-600">{report.name}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-medium text-gray-600 dark:text-gray-400">{report.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {report.date} • {report.size}
                 </p>
               </div>
             </div>
-            <button className="rounded bg-blue-50 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-blue-100">
+            <button className="rounded bg-blue-50 px-3 py-1 text-sm text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-100">
               Download
             </button>
           </div>
@@ -336,7 +336,7 @@ export const LayoutFeatures: Story = {
   render: () => (
     <AppShell>
       <div className="space-y-8">
-        <div className="rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-purple-50 p-8">
+        <div className="rounded-xl border border-indigo-200 bg-linear-to-r from-indigo-50 to-purple-50 p-8">
           <h1 className="mb-4 text-3xl font-bold text-indigo-900">AppShell Layout Features</h1>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
@@ -361,7 +361,7 @@ export const LayoutFeatures: Story = {
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="bg-default rounded-xl border border-default p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"
@@ -377,16 +377,16 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600">Responsive Design</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Responsive Design</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Automatically adapts to different screen sizes with mobile-first approach
             </p>
           </div>
 
-          <div className="bg-default rounded-xl border border-default p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
-                className="h-6 w-6 text-gray-600"
+                className="h-6 w-6 text-gray-600 dark:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -399,13 +399,13 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600">Global Search</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Global Search</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Integrated search functionality accessible from anywhere in the application
             </p>
           </div>
 
-          <div className="bg-default rounded-xl border border-default p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"
@@ -421,8 +421,8 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600">Accessibility</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Accessibility</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Built with WCAG guidelines and keyboard navigation support
             </p>
           </div>
@@ -461,18 +461,18 @@ export const LayoutStructure: Story = {
   args: {
     children: (
       <div className="space-y-6">
-        <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-gradient-to-r from-blue-100 to-indigo-100">
-          <p className="font-medium text-gray-800">Main Content Area</p>
+        <div className="flex h-32 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-linear-to-r from-blue-100 to-indigo-100">
+          <p className="font-medium text-gray-800 dark:text-gray-200">Main Content Area</p>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-green-300 bg-gradient-to-r from-green-100 to-emerald-100">
+          <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-green-300 bg-linear-to-r from-green-100 to-emerald-100">
             <p className="font-medium text-green-800">Content Block 1</p>
           </div>
-          <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-purple-300 bg-gradient-to-r from-purple-100 to-pink-100">
-            <p className="font-medium text-gray-800">Content Block 2</p>
+          <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-purple-300 bg-linear-to-r from-purple-100 to-pink-100">
+            <p className="font-medium text-gray-800 dark:text-gray-200">Content Block 2</p>
           </div>
         </div>
-        <div className="flex h-48 items-center justify-center rounded-xl border-2 border-dashed border-yellow-300 bg-gradient-to-r from-yellow-100 to-orange-100">
+        <div className="flex h-48 items-center justify-center rounded-xl border-2 border-dashed border-yellow-300 bg-linear-to-r from-yellow-100 to-orange-100">
           <p className="font-medium text-orange-800">Large Content Section</p>
         </div>
       </div>

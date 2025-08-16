@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 
 interface BirthPlaceSectionProps {
@@ -56,12 +56,12 @@ export default function BirthPlaceSection({
   return (
     <FormSection title="Birth Place Information" description="Location where the resident was born">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField
+        <FieldSet
           label="Birth Place Name"
           errorMessage={errors.birth_place_name}
           helperText="Full name of the place of birth"
         >
-          <FormInput
+          <Input
             name="birth_place_name"
             value={formData.birth_place_name || ''}
             onChange={handleInputChange}
@@ -69,14 +69,14 @@ export default function BirthPlaceSection({
             error={errors.birth_place_name}
             placeholder="e.g., Manila, Metro Manila"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
+        <FieldSet
           label="Birth Place Code"
           errorMessage={errors.birth_place_code}
           helperText="Official PSGC code if known"
         >
-          <FormInput
+          <Input
             name="birth_place_code"
             value={formData.birth_place_code || ''}
             onChange={handleInputChange}
@@ -84,9 +84,9 @@ export default function BirthPlaceSection({
             error={errors.birth_place_code}
             placeholder="e.g., 137404000"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
+        <FieldSet
           label="Birth Place Level"
           errorMessage={errors.birth_place_level}
           helperText="Administrative level of the place"
@@ -96,7 +96,7 @@ export default function BirthPlaceSection({
             value={formData.birth_place_level || ''}
             onChange={handleInputChange}
             disabled={disabled}
-            className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+            className="bg-white dark:bg-gray-800 min-h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
             <option value="">Select Level</option>
             {BIRTH_PLACE_LEVEL_OPTIONS.map(option => (
@@ -105,7 +105,7 @@ export default function BirthPlaceSection({
               </option>
             ))}
           </select>
-        </FormField>
+        </FieldSet>
       </div>
     </FormSection>
   );

@@ -20,16 +20,16 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
   return (
     <div className="space-y-8">
       <div>
-        <h3 className="text-base/7 font-semibold text-gray-600">Additional Details</h3>
-        <p className="mt-1 text-sm/6 text-gray-600">
-          Provide additional identification and personal information.
+        <h3 className="text-base/7 font-semibold text-gray-600 dark:text-gray-400">Section 3: Physical & Personal Details</h3>
+        <p className="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">
+          Provide physical characteristics, voting information, and personal details.
         </p>
       </div>
 
       {/* Physical Characteristics */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-gray-600">Physical Characteristics</h4>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400">Physical Characteristics</h4>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <SelectField
             label="Blood Type"
             value={formData.bloodType}
@@ -37,6 +37,15 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
             options={bloodTypeOptionsWithEmpty}
             errorMessage={errors.bloodType}
           />
+          <InputField
+            label="Complexion"
+            value={formData.complexion}
+            onChange={e => onChange('complexion', e.target.value)}
+            errorMessage={errors.complexion}
+            placeholder="e.g., Fair, Medium, Dark"
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="Height (cm)"
             type="number"
@@ -54,7 +63,14 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
             placeholder="65"
           />
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <InputField
+            label="Citizenship"
+            value={formData.citizenship}
+            onChange={e => onChange('citizenship', e.target.value)}
+            errorMessage={errors.citizenship}
+            placeholder="Filipino"
+          />
           <SelectField
             label="Ethnicity"
             value={formData.ethnicity}
@@ -83,7 +99,7 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
 
       {/* Voting Information */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-gray-600">Voting Information</h4>
+        <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400">Voting Information</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <SelectField
             label="Registered Voter?"
@@ -122,31 +138,21 @@ export function AdditionalDetailsStep({ formData, onChange, errors }: StepCompon
         </div>
         {(formData.isVoter === true || formData.isResidentVoter === true) && (
           <InputField
-            label="Last Voted Date"
-            type="date"
+            label="Last Voted Year"
+            type="number"
             value={formData.lastVotedDate}
             onChange={e => onChange('lastVotedDate', e.target.value)}
             errorMessage={errors.lastVotedDate}
+            placeholder="2024"
+            min="1900"
+            max={new Date().getFullYear()}
           />
         )}
       </div>
 
-      {/* Documentation */}
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium text-gray-600">Documentation</h4>
-        <InputField
-          label="PhilSys Card Number"
-          value={formData.philsysCardNumber}
-          onChange={e => onChange('philsysCardNumber', e.target.value)}
-          errorMessage={errors.philsysCardNumber}
-          placeholder="XXXX-XXXX-XXXX"
-          helperText="Enter PhilSys (National ID) card number if available"
-        />
-      </div>
-
       {/* Family Information */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-gray-600">Mother&rsquo;s Maiden Name</h4>
+        <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400">Mother&rsquo;s Maiden Name</h4>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="First Name"

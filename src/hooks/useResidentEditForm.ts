@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ResidentEditFormData,
   ResidentFormSchema,
@@ -139,6 +140,8 @@ export function useResidentEditForm(
     autoSave = false,
     autoSaveKey = 'resident-form-draft',
   } = options;
+  
+  const queryClient = useQueryClient();
 
   // Form state
   const [formData, setFormData] = useState<Partial<ResidentEditFormData>>(() => {
@@ -288,6 +291,9 @@ export function useResidentEditForm(
       if (validation.data) {
         await onSubmit(validation.data);
 
+        // Invalidate residents cache to refresh the list
+        await queryClient.invalidateQueries({ queryKey: ['residents'] });
+
         // Clear auto-saved data on successful submit
         if (autoSave) {
           try {
@@ -309,7 +315,7 @@ export function useResidentEditForm(
     } finally {
       setIsSubmitting(false);
     }
-  }, [onSubmit, validateForm, autoSave, autoSaveKey]);
+  }, [onSubmit, validateForm, autoSave, autoSaveKey, queryClient]);
 
   /**
    * Utility methods

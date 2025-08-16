@@ -1,1 +1,0 @@
-export { SimpleGeographicSelector } from './SimpleGeographicSelector';

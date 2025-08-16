@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import FormSection from './FormSection';
-import { InputField } from '@/components/molecules';
+import { FieldSet } from '@/components/molecules/FieldSet/InputField';
 import { Button, Checkbox, Radio } from '@/components/atoms';
 
 const meta = {
@@ -38,11 +38,11 @@ export const Default: Story = {
     children: (
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <InputField label="First Name" placeholder="Enter your first name" required />
-          <InputField label="Last Name" placeholder="Enter your last name" required />
+          <FieldSet label="First Name" placeholder="Enter your first name" required />
+          <FieldSet label="Last Name" placeholder="Enter your last name" required />
         </div>
-        <InputField label="Email Address" type="email" placeholder="Enter your email" required />
-        <InputField label="Phone Number" type="tel" placeholder="Enter your phone number" />
+        <FieldSet label="Email Address" type="email" placeholder="Enter your email" required />
+        <FieldSet label="Phone Number" type="tel" placeholder="Enter your phone number" />
       </div>
     ),
   },
@@ -55,13 +55,13 @@ export const Required: Story = {
     required: true,
     children: (
       <div className="space-y-4">
-        <InputField
+        <FieldSet
           label="Password"
           type="password"
           placeholder="Enter a secure password"
           required
         />
-        <InputField
+        <FieldSet
           label="Confirm Password"
           type="password"
           placeholder="Confirm your password"
@@ -114,9 +114,9 @@ export const CompactLayout: Story = {
     className: 'max-w-md',
     children: (
       <div className="space-y-3">
-        <InputField label="Email" type="email" placeholder="your@email.com" required />
-        <InputField label="Phone" type="tel" placeholder="+1 (555) 123-4567" />
-        <InputField label="Website" type="url" placeholder="https://yourwebsite.com" />
+        <FieldSet label="Email" type="email" placeholder="your@email.com" required />
+        <FieldSet label="Phone" type="tel" placeholder="+1 (555) 123-4567" />
+        <FieldSet label="Website" type="url" placeholder="https://yourwebsite.com" />
       </div>
     ),
   },
@@ -127,16 +127,16 @@ export const MultipleFormSections: Story = {
     <div className="max-w-2xl space-y-8">
       <FormSection legend="Basic Information" description="Your personal details" required>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <InputField label="First Name" required />
-          <InputField label="Last Name" required />
+          <FieldSet label="First Name" required />
+          <FieldSet label="Last Name" required />
         </div>
-        <InputField label="Date of Birth" type="date" required />
+        <FieldSet label="Date of Birth" type="date" required />
       </FormSection>
 
       <FormSection legend="Contact Information" description="How we can reach you">
         <div className="space-y-4">
-          <InputField label="Email" type="email" required />
-          <InputField label="Phone" type="tel" />
+          <FieldSet label="Email" type="email" required />
+          <FieldSet label="Phone" type="tel" />
           <div>
             <label className="mb-2 block text-sm font-medium">Preferred Contact Method</label>
             <div className="space-y-2">
@@ -153,8 +153,8 @@ export const MultipleFormSections: Story = {
         description="Optional details to help us serve you better"
       >
         <div className="space-y-4">
-          <InputField label="Company" placeholder="Your organization" />
-          <InputField label="Job Title" placeholder="Your role" />
+          <FieldSet label="Company" placeholder="Your organization" />
+          <FieldSet label="Job Title" placeholder="Your role" />
           <div className="space-y-2">
             <label className="block text-sm font-medium">Areas of Interest</label>
             <div className="space-y-2">
@@ -183,8 +183,8 @@ export const AccessibilityShowcase: Story = {
     children: (
       <div className="space-y-6">
         <div className="rounded-lg border-l-4 border-blue-400 bg-blue-50 p-4">
-          <h4 className="mb-2 font-medium text-gray-900">Accessibility Features:</h4>
-          <ul className="space-y-1 text-sm text-gray-800">
+          <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Accessibility Features:</h4>
+          <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
             <li>• Uses semantic &lt;fieldset&gt; and &lt;legend&gt; elements</li>
             <li>• Proper ARIA relationships with aria-describedby</li>
             <li>• Screen reader announces section purpose</li>
@@ -194,13 +194,13 @@ export const AccessibilityShowcase: Story = {
         </div>
 
         <div className="space-y-4">
-          <InputField
+          <FieldSet
             label="Full Name"
             placeholder="Enter your full name"
             required
             helpText="This field is required and announced by screen readers"
           />
-          <InputField
+          <FieldSet
             label="Accessibility Preference"
             placeholder="Any accessibility needs?"
             helpText="Optional: Let us know how we can better accommodate you"

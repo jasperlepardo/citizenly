@@ -7,7 +7,7 @@ import Typography, {
 } from './Typography';
 
 const meta = {
-  title: 'Design Tokens/Typography',
+  title: 'Design System/Typography',
   component: Typography,
   parameters: {
     layout: 'fullscreen',
@@ -76,7 +76,7 @@ export const FontFamilies: Story = {
   name: '🔤 Font Families',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Font Families</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Font Families</h1>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {Object.entries(typographyTokens.fontFamily).map(([name, fonts]) => (
@@ -89,8 +89,8 @@ export const FontFamilies: Story = {
       </div>
 
       <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 font-semibold text-gray-900">🎯 Font Selection Rationale</h3>
-        <div className="grid grid-cols-1 gap-4 text-sm text-gray-800 md:grid-cols-2">
+        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">🎯 Font Selection Rationale</h3>
+        <div className="grid grid-cols-1 gap-4 text-sm text-gray-800 dark:text-gray-200 md:grid-cols-2">
           <div>
             <strong>Inter (Sans-serif):</strong> Highly legible, excellent Filipino character
             support, optimized for UI text and government forms.
@@ -149,7 +149,7 @@ export const Headings: Story = {
 
       {/* Content Hierarchy Example */}
       <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
           📋 Content Hierarchy Example
         </h3>
 
@@ -194,11 +194,11 @@ export const BodyText: Story = {
 
       {/* Reading Example */}
       <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">📖 Reading Example</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">📖 Reading Example</h3>
 
         <div className="space-y-6">
           <div>
-            <h4 className="mb-2 font-medium text-gray-700">Large Body Text (xl)</h4>
+            <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">Large Body Text (xl)</h4>
             <p style={typographyScale.body.xl}>
               Ang Citizenly ay isang digital platform na naglalayong mapabuti ang serbisyong
               barangay sa pamamagitan ng modernong teknolohiya. Nagbibigay ito ng madaling paraan
@@ -207,7 +207,7 @@ export const BodyText: Story = {
           </div>
 
           <div>
-            <h4 className="mb-2 font-medium text-gray-700">Regular Body Text (md)</h4>
+            <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">Regular Body Text (md)</h4>
             <p style={typographyScale.body.md}>
               The platform enables efficient management of resident records, household information,
               and barangay services. It streamlines processes like certificate requests, complaint
@@ -216,7 +216,7 @@ export const BodyText: Story = {
           </div>
 
           <div>
-            <h4 className="mb-2 font-medium text-gray-700">Small Body Text (sm)</h4>
+            <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">Small Body Text (sm)</h4>
             <p style={typographyScale.body.sm}>
               Built with accessibility in mind, the system supports multiple languages and ensures
               all residents can access government services regardless of their technical expertise
@@ -241,11 +241,11 @@ export const FormTypography: Story = {
 
       {/* Form Example */}
       <div className="mt-8 rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">🏷️ Form Typography Example</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">🏷️ Form Typography Example</h3>
 
         <div className="max-w-md space-y-4">
           <div>
-            <label style={typographyScale.label.lg} className="mb-1 block text-gray-900">
+            <label style={typographyScale.label.lg} className="mb-1 block text-gray-900 dark:text-gray-100">
               First Name *
             </label>
             <input
@@ -254,13 +254,13 @@ export const FormTypography: Story = {
               placeholder="Enter your first name"
               style={typographyScale.body.md}
             />
-            <p style={typographyScale.body.xs} className="mt-1 text-gray-500">
+            <p style={typographyScale.body.xs} className="mt-1 text-gray-500 dark:text-gray-500">
               As written on your birth certificate
             </p>
           </div>
 
           <div>
-            <label style={typographyScale.label.md} className="mb-1 block text-gray-900">
+            <label style={typographyScale.label.md} className="mb-1 block text-gray-900 dark:text-gray-100">
               Email Address
             </label>
             <input
@@ -272,7 +272,7 @@ export const FormTypography: Story = {
           </div>
 
           <div>
-            <label style={typographyScale.label.sm} className="mb-1 block text-gray-700">
+            <label style={typographyScale.label.sm} className="mb-1 block text-gray-700 dark:text-gray-300">
               Phone Number (Optional)
             </label>
             <input
@@ -301,7 +301,7 @@ export const CodeTypography: Story = {
       {/* Code Examples */}
       <div className="mt-8 space-y-6">
         <div className="rounded-lg bg-gray-900 p-4">
-          <h4 className="mb-3 font-medium text-white">Code Block Example</h4>
+          <h4 className="mb-3 font-medium text-white dark:text-black dark:text-white">Code Block Example</h4>
           <pre style={typographyScale.code.md} className="overflow-x-auto text-green-400">
             {`// Resident registration function
 async function registerResident(data) {
@@ -320,7 +320,7 @@ async function registerResident(data) {
 
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
           <h4 className="mb-3 font-medium">Inline Code Example</h4>
-          <p style={typographyScale.body.md} className="text-gray-900">
+          <p style={typographyScale.body.md} className="text-gray-900 dark:text-gray-100">
             To update a resident record, use the{' '}
             <code style={typographyScale.code.sm} className="rounded bg-gray-200 px-1">
               updateResident()
@@ -345,7 +345,7 @@ export const AccessibilityExamples: Story = {
   name: '♿ Typography Accessibility',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900">Typography Accessibility</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Typography Accessibility</h1>
 
       <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Good Examples */}
@@ -355,16 +355,16 @@ export const AccessibilityExamples: Story = {
           </div>
           <div className="space-y-4 p-4">
             <div>
-              <p className="text-base leading-normal text-gray-900">
+              <p className="text-base leading-normal text-gray-900 dark:text-gray-100">
                 16px body text with 1.5 line height - highly readable
               </p>
             </div>
             <div>
-              <p className="text-lg leading-relaxed text-gray-800">
+              <p className="text-lg leading-relaxed text-gray-800 dark:text-gray-200">
                 18px large text with 1.625 line height - excellent for important content
               </p>
             </div>
-            <div className="rounded bg-blue-600 p-3 text-white">
+            <div className="rounded bg-blue-600 p-3 text-white dark:text-black">
               <p className="text-sm font-medium">
                 White text on blue background - 4.5:1 contrast ratio
               </p>
@@ -379,12 +379,12 @@ export const AccessibilityExamples: Story = {
           </div>
           <div className="space-y-4 p-4">
             <div>
-              <p className="text-xs leading-tight text-gray-600">
+              <p className="text-xs leading-tight text-gray-600 dark:text-gray-400">
                 12px text with tight line height - hard to read
               </p>
             </div>
             <div>
-              <p className="text-base leading-none text-gray-900">
+              <p className="text-base leading-none text-gray-900 dark:text-gray-100">
                 16px text with no line height spacing - cramped and difficult
               </p>
             </div>
@@ -397,8 +397,8 @@ export const AccessibilityExamples: Story = {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-2 font-semibold text-gray-900">📏 Size Guidelines</h3>
-          <ul className="space-y-1 text-sm text-gray-800">
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">📏 Size Guidelines</h3>
+          <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
             <li>• Minimum 16px (1rem) for body text</li>
             <li>• 18px (1.125rem) for large/important text</li>
             <li>• 14px (0.875rem) minimum for secondary text</li>
@@ -418,8 +418,8 @@ export const AccessibilityExamples: Story = {
       </div>
 
       <div className="mt-6 rounded-lg border border-purple-200 bg-purple-50 p-4">
-        <h3 className="mb-2 font-semibold text-gray-900">🧪 Testing Checklist</h3>
-        <ul className="space-y-1 text-sm text-gray-800">
+        <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">🧪 Testing Checklist</h3>
+        <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           <li>• Test with 200% browser zoom</li>
           <li>• Verify contrast ratios with WebAIM tool</li>
           <li>• Test with screen readers</li>

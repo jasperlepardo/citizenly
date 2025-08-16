@@ -142,7 +142,11 @@ export const POST = withSecurityHeaders(
 
         // Parse and validate request body
         const body = await request.json();
-        logger.debug('Received create resident request', { hasBody: !!body });
+        logger.debug('Received create resident request', { 
+          hasBody: !!body,
+          employmentStatus: body.employmentStatus,
+          employmentStatusType: typeof body.employmentStatus,
+        });
 
         const validationResult = createResidentSchema.safeParse(body);
 
@@ -150,6 +154,8 @@ export const POST = withSecurityHeaders(
           logger.error('Resident validation failed', {
             issueCount: validationResult.error.issues.length,
             hasIssues: !!validationResult.error.issues,
+            employmentStatusIssues: validationResult.error.issues.filter(i => i.path.includes('employmentStatus')),
+            allIssues: validationResult.error.issues.map(i => ({ path: i.path, message: i.message, received: (i as any).received })),
           });
           return createValidationErrorResponse(
             validationResult.error.issues.map((err: z.ZodIssue) => ({

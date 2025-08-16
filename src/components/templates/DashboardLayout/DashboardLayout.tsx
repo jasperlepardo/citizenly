@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { SearchBar } from '@/components/molecules';
+import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { Navigation } from '@/components/organisms';
+import { Toaster } from 'react-hot-toast';
 import { logger, logError } from '@/lib/secure-logger';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
 
@@ -145,7 +146,7 @@ function UserDropdown() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded px-2 py-1 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="flex items-center gap-2 rounded-sm px-2 py-1 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label="User menu"
@@ -157,7 +158,7 @@ function UserDropdown() {
               'url(\'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23e5e7eb"%2F%3E%3Ctext x="16" y="20" text-anchor="middle" fill="%236b7280" font-size="14"%3EU%3C%2Ftext%3E%3C%2Fsvg%3E\')',
           }}
         ></div>
-        <div className="font-montserrat text-sm font-medium text-gray-800 dark:text-gray-200">
+        <div className="font-montserrat text-sm font-medium text-gray-800 dark:text-gray-200 dark:text-gray-800">
           {`${userProfile.first_name} ${userProfile.last_name}`}
         </div>
         <div className="size-4 text-gray-600 dark:text-gray-400">
@@ -193,7 +194,7 @@ function UserDropdown() {
                   }}
                 ></div>
                 <div>
-                  <div className="font-montserrat font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="font-montserrat font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">
                     {`${userProfile.first_name} ${userProfile.last_name}`}
                   </div>
                   <div className="font-montserrat text-sm text-gray-600 dark:text-gray-400">
@@ -227,19 +228,19 @@ function UserDropdown() {
                   // Add profile editing functionality later
                   alert('Profile editing coming soon!');
                 }}
-                className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 Edit Profile
               </button>
               <Link href="/settings">
-                <button className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
+                <button className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
                   Settings
                 </button>
               </Link>
               <hr className="my-2 border-gray-200 dark:border-gray-700" />
               <button
                 onClick={handleLogout}
-                className="font-montserrat w-full rounded px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
+                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
               >
                 Sign Out
               </button>
@@ -253,36 +254,30 @@ function UserDropdown() {
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  searchTerm?: string;
-  onSearchChange?: (value: string) => void;
 }
 
-export default function DashboardLayout({
-  children,
-  searchTerm = '',
-  onSearchChange,
-}: DashboardLayoutProps) {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="bg-default min-h-screen bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-800 min-h-screen dark:bg-gray-900">
       {/* Skip Navigation */}
       <SkipNavigation skipTo="#main-content" />
 
       {/* Sidebar */}
       <aside
         id="navigation"
-        className="bg-default-secondary fixed left-0 top-0 h-full w-56 border-r border-default bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+        className="fixed left-0 top-0 h-full w-56 border-r border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
         aria-label="Main navigation"
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-default border-gray-200 dark:border-gray-700 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-gray-300 dark:border-gray-600 border-gray-200 dark:border-gray-700 px-4 py-3">
             <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-300">Citizenly</h1>
             <div className="flex gap-1">
               <div className="rounded bg-gray-200 dark:bg-gray-600 p-0.5">
-                <div className="size-5 rounded bg-gray-400 dark:bg-gray-500"></div>
+                <div className="size-5 rounded-sm bg-gray-400 dark:bg-gray-500"></div>
               </div>
               <div className="rounded bg-gray-200 dark:bg-gray-600 p-0.5">
-                <div className="size-5 rounded bg-gray-400 dark:bg-gray-500"></div>
+                <div className="size-5 rounded-sm bg-gray-400 dark:bg-gray-500"></div>
               </div>
             </div>
           </div>
@@ -297,23 +292,16 @@ export default function DashboardLayout({
       {/* Main Content */}
       <main className="ml-56">
         {/* Top Header */}
-        <header className="bg-default border-b border-default bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 px-6 py-2">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-900 border-gray-200 dark:border-gray-700 px-6 py-2">
           <div className="flex items-center justify-between">
-            {/* Search */}
+            {/* Inline Command Menu */}
             <div className="w-[497px]">
-              <SearchBar
-                placeholder="Search Citizenly"
-                value={searchTerm}
-                onChange={e => onSearchChange?.(e.target.value)}
-                onClear={() => onSearchChange?.('')}
-                onSearch={value => {
-                  // Handle search action (Enter key pressed)
-                  logger.debug('Search initiated', { searchValue: value });
-                  // Add your search logic here
-                }}
-                variant="default"
+              <InlineCommandMenu 
+                placeholder="Search for anything..."
+                maxResults={10}
+                showShortcuts={true}
+                showRecentSection={true}
                 size="md"
-                showClearButton={true}
               />
             </div>
 
@@ -354,6 +342,21 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
+
+      {/* Note: Command menu is now inline in the header */}
+      
+      {/* Toast Notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: 'var(--background)',
+            color: 'var(--foreground)',
+            border: '1px solid var(--border)',
+          },
+        }}
+      />
     </div>
   );
 }

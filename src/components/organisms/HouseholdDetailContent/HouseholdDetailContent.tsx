@@ -89,8 +89,8 @@ export default function HouseholdDetailContent() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="inline-block size-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
-          <h2 className="mt-4 text-lg font-medium text-gray-900">Loading household details</h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <h2 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">Loading household details</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Please wait while we fetch the information...
           </p>
         </div>
@@ -100,13 +100,13 @@ export default function HouseholdDetailContent() {
 
   if (error) {
     return (
-      <div className="rounded-xl border bg-white p-8 shadow-sm">
+      <div className="rounded-xl border bg-white p-8 shadow-xs">
         <div className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
             <span className="text-xl text-red-600">⚠️</span>
           </div>
-          <h3 className="mt-4 text-lg font-semibold text-gray-900">Error Loading Household</h3>
-          <p className="mt-2 text-gray-600">{error}</p>
+          <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Error Loading Household</h3>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">{error}</p>
           <div className="mt-6 flex justify-center gap-4">
             <Button
               variant="primary"
@@ -130,13 +130,13 @@ export default function HouseholdDetailContent() {
 
   if (!household) {
     return (
-      <div className="rounded-xl border bg-white p-8 shadow-sm">
+      <div className="rounded-xl border bg-white p-8 shadow-xs">
         <div className="text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
             <span className="text-xl text-yellow-600">🔍</span>
           </div>
-          <h3 className="mt-4 text-lg font-semibold text-gray-900">Household Not Found</h3>
-          <p className="mt-2 text-gray-600">
+          <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Household Not Found</h3>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
             The requested household could not be found in our records.
           </p>
           <div className="mt-6">
@@ -156,13 +156,13 @@ export default function HouseholdDetailContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="rounded-xl border bg-white p-6 shadow-xs">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Household {household.code}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Household {household.code}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-4">
-              <span className="text-sm text-gray-600">Members: {household.member_count || 0}</span>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">Members: {household.member_count || 0}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
                 Created: {new Date(household.created_at).toLocaleDateString()}
               </span>
             </div>
@@ -188,55 +188,55 @@ export default function HouseholdDetailContent() {
 
       {/* Household Information */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900">
+        <div className="rounded-xl border bg-white p-6 shadow-xs transition-shadow hover:shadow-md">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
             🏠 Household Information
           </h2>
           <div className="space-y-3">
             <div>
-              <span className="block text-sm font-medium text-gray-600">Household Code</span>
-              <span className="text-gray-600">{household.code}</span>
+              <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Household Code</span>
+              <span className="text-gray-600 dark:text-gray-400">{household.code}</span>
             </div>
             {household.name && (
               <div>
-                <span className="block text-sm font-medium text-gray-600">Household Name</span>
-                <span className="text-gray-600">{household.name}</span>
+                <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Household Name</span>
+                <span className="text-gray-600 dark:text-gray-400">{household.name}</span>
               </div>
             )}
             <div>
-              <span className="block text-sm font-medium text-gray-600">Address</span>
-              <span className="text-gray-600">
+              <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Address</span>
+              <span className="text-gray-600 dark:text-gray-400">
                 {[household.house_number, household.street_name, household.subdivision]
                   .filter(Boolean)
                   .join(', ') || 'N/A'}
               </span>
             </div>
             <div>
-              <span className="block text-sm font-medium text-gray-600">Barangay Code</span>
-              <span className="text-gray-600">{household.barangay_code}</span>
+              <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Barangay Code</span>
+              <span className="text-gray-600 dark:text-gray-400">{household.barangay_code}</span>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900">
+        <div className="rounded-xl border bg-white p-6 shadow-xs transition-shadow hover:shadow-md">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
             👤 Household Head
           </h2>
           <div className="space-y-3">
             {household.head_resident ? (
               <>
                 <div>
-                  <span className="block text-sm font-medium text-gray-600">Name</span>
-                  <span className="text-gray-600">{formatFullName(household.head_resident)}</span>
+                  <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Name</span>
+                  <span className="text-gray-600 dark:text-gray-400">{formatFullName(household.head_resident)}</span>
                 </div>
                 <div>
-                  <span className="block text-sm font-medium text-gray-600">Resident ID</span>
-                  <span className="text-gray-600">{household.head_resident.id}</span>
+                  <span className="block text-sm font-medium text-gray-600 dark:text-gray-400">Resident ID</span>
+                  <span className="text-gray-600 dark:text-gray-400">{household.head_resident.id}</span>
                 </div>
               </>
             ) : (
               <div className="py-4 text-center">
-                <span className="text-gray-500">No household head assigned</span>
+                <span className="text-gray-500 dark:text-gray-500">No household head assigned</span>
               </div>
             )}
           </div>
@@ -245,18 +245,18 @@ export default function HouseholdDetailContent() {
 
       {/* Members */}
       {household.members && household.members.length > 0 && (
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
-          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900">
+        <div className="rounded-xl border bg-white p-6 shadow-xs">
+          <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
             👥 Household Members ({household.members.length})
           </h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {household.members.map(member => (
               <div key={member.id} className="rounded-lg border p-4">
-                <h4 className="font-medium text-gray-900">{formatFullName(member)}</h4>
-                <p className="mt-1 text-sm text-gray-600">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">{formatFullName(member)}</h4>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                   {member.relationship_to_head || 'Member'}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">ID: {member.id}</p>
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">ID: {member.id}</p>
               </div>
             ))}
           </div>

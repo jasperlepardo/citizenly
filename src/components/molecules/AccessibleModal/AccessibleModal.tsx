@@ -90,7 +90,7 @@ export default function AccessibleModal({
   const modalContent = (
     <div
       ref={backdropRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
       onClick={handleBackdropClick}
       aria-modal="true"
       role="dialog"
@@ -110,7 +110,7 @@ export default function AccessibleModal({
         {/* Header */}
         <div className="flex items-start justify-between border-b border-gray-200 p-4 dark:border-gray-700">
           <div>
-            <h2 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-white">
+            <h2 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-white dark:text-black">
               {title}
             </h2>
             {description && (
@@ -122,7 +122,7 @@ export default function AccessibleModal({
           {showCloseButton && (
             <button
               onClick={onClose}
-              className="ml-4 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+              className="ml-4 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:text-gray-800"
               aria-label="Close dialog"
             >
               <svg

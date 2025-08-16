@@ -84,7 +84,7 @@ export const DESIGN_SYSTEM_NAME = 'Citizenly RBI Design System';
  * The design tokens are automatically available as Tailwind classes:
  * ```tsx
  * <div className="bg-blue-500 text-gray-50 p-4 rounded-lg shadow-md">
- * <div className="bg-rbi-labor-force text-white p-2 rounded">
+ * <div className="bg-rbi-labor-force text-white p-2 rounded-sm">
  * <div className="focus-ring-primary border-blue-500">
  * ```
  *

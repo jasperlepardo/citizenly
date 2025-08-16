@@ -8,7 +8,8 @@
 
 import React, { useState } from 'react';
 import { Checkbox, Button } from '../../../atoms';
-import { FormGroup, InputField, DropdownSelect } from '../../../molecules';
+import { FormGroup, InputField, SelectField } from '../../../molecules';
+
 
 // Mother's Information Interface (matches database schema)
 export interface MotherInformation {
@@ -89,10 +90,10 @@ export default function MotherMaidenName({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-900">
+        <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
           <span className="text-base">👩‍👧‍👦</span> Mother&apos;s Information
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
           Mother&apos;s maiden name and related information for genealogical records and identity
           verification.
         </p>
@@ -127,45 +128,54 @@ export default function MotherMaidenName({
               <div className="md:col-span-2">
                 <InputField
                   label="First Name *"
-                  type="text"
-                  value={value.mother_first_name || ''}
-                  onChange={e => handleChange('mother_first_name', e.target.value)}
-                  placeholder="Enter first name"
-                  disabled={disabled}
                   required
+                  inputProps={{
+                    type: "text",
+                    value: value.mother_first_name || '',
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_first_name', e.target.value),
+                    placeholder: "Enter first name",
+                    disabled: disabled
+                  }}
                 />
               </div>
 
               <div>
                 <InputField
                   label="Middle Name"
-                  type="text"
-                  value={value.mother_middle_name || ''}
-                  onChange={e => handleChange('mother_middle_name', e.target.value)}
-                  placeholder="Enter middle name"
-                  disabled={disabled}
+                  inputProps={{
+                    type: "text",
+                    value: value.mother_middle_name || '',
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_middle_name', e.target.value),
+                    placeholder: "Enter middle name",
+                    disabled: disabled
+                  }}
                 />
               </div>
 
-              <DropdownSelect
+              <SelectField
                 label="Suffix"
-                options={SUFFIX_OPTIONS}
-                value={value.mother_suffix || ''}
-                onChange={newValue => handleChange('mother_suffix', newValue || undefined)}
-                disabled={disabled}
+                selectProps={{
+                  options: SUFFIX_OPTIONS,
+                  value: value.mother_suffix || '',
+                  onSelect: (option) => handleChange('mother_suffix', option?.value || undefined),
+                  disabled: disabled,
+                  placeholder: "Select suffix"
+                }}
               />
             </div>
           </FormGroup>
 
           <FormGroup title="Mother&rsquo;s Maiden Last Name">
             <InputField
-              type="text"
-              value={value.mother_maiden_last_name || ''}
-              onChange={e => handleChange('mother_maiden_last_name', e.target.value)}
-              placeholder="Enter maiden last name (family name before marriage)"
-              disabled={disabled}
               required
               helperText="This should be the family name your mother had before marriage"
+              inputProps={{
+                type: "text",
+                value: value.mother_maiden_last_name || '',
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_maiden_last_name', e.target.value),
+                placeholder: "Enter maiden last name (family name before marriage)",
+                disabled: disabled
+              }}
             />
           </FormGroup>
 
@@ -203,29 +213,32 @@ export default function MotherMaidenName({
 
                 <FormGroup title="Birth Year">
                   <InputField
-                    type="number"
-                    value={value.mother_birth_year || ''}
-                    onChange={e =>
-                      handleChange(
-                        'mother_birth_year',
-                        e.target.value ? parseInt(e.target.value) : undefined
-                      )
-                    }
-                    placeholder="YYYY"
-                    min={1900}
-                    max={new Date().getFullYear()}
-                    disabled={disabled}
+                    inputProps={{
+                      type: "number",
+                      value: value.mother_birth_year || '',
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleChange(
+                          'mother_birth_year',
+                          e.target.value ? parseInt(e.target.value) : undefined
+                        ),
+                      placeholder: "YYYY",
+                      min: 1900,
+                      max: new Date().getFullYear(),
+                      disabled: disabled
+                    }}
                   />
                 </FormGroup>
               </div>
 
               <FormGroup title="Mother&rsquo;s Birthplace">
                 <InputField
-                  type="text"
-                  value={value.mother_birthplace || ''}
-                  onChange={e => handleChange('mother_birthplace', e.target.value)}
-                  placeholder="Enter city/municipality and province where mother was born"
-                  disabled={disabled}
+                  inputProps={{
+                    type: "text",
+                    value: value.mother_birthplace || '',
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mother_birthplace', e.target.value),
+                    placeholder: "Enter city/municipality and province where mother was born",
+                    disabled: disabled
+                  }}
                 />
               </FormGroup>
             </div>
@@ -241,14 +254,14 @@ export default function MotherMaidenName({
           placeholder="Any additional information or special circumstances regarding mother&rsquo;s information"
           disabled={disabled}
           rows={3}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-xs focus:border-blue-500 focus:outline-hidden focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500 dark:text-gray-500"
         />
       </FormGroup>
 
       {/* Information Summary */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-gray-900">Mother&apos;s Information Summary</h4>
-        <div className="space-y-1 text-sm text-gray-800">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Mother&apos;s Information Summary</h4>
+        <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
           {value.is_confidential && (
             <p className="rounded bg-yellow-100 px-2 py-1 text-yellow-800">
               🔒 This information is marked as confidential
@@ -274,7 +287,7 @@ export default function MotherMaidenName({
                   <strong>Birthplace:</strong> {value.mother_birthplace}
                 </p>
               )}
-              {value.mother_is_deceased && <p className="text-gray-600">📿 Mother is deceased</p>}
+              {value.mother_is_deceased && <p className="text-gray-600 dark:text-gray-400">📿 Mother is deceased</p>}
             </>
           )}
           {!hasEssentialInfo && !value.is_unknown_mother && (

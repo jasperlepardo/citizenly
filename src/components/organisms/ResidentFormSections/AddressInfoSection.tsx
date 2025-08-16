@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { FormField, FormSection } from '@/components/molecules';
-import { FormInput } from '@/components/atoms';
+import { FieldSet, FormSection } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 import { ResidentEditFormData } from '@/lib/validation/resident-schema';
 
 interface AddressInfoSectionProps {
@@ -52,12 +52,12 @@ export default function AddressInfoSection({
       description="Detailed address and location information"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField
+        <FieldSet
           label="Household Code"
           errorMessage={errors.household_code}
           helperText="The household this resident belongs to"
         >
-          <FormInput
+          <Input
             name="household_code"
             value={formData.household_code || ''}
             onChange={handleInputChange}
@@ -65,10 +65,10 @@ export default function AddressInfoSection({
             error={errors.household_code}
             placeholder="e.g., 042114014-2025-000001"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField label="ZIP Code" errorMessage={errors.zip_code} helperText="Postal ZIP code">
-          <FormInput
+        <FieldSet label="ZIP Code" errorMessage={errors.zip_code} helperText="Postal ZIP code">
+          <Input
             name="zip_code"
             value={formData.zip_code || ''}
             onChange={handleInputChange}
@@ -77,14 +77,14 @@ export default function AddressInfoSection({
             placeholder="e.g., 1234"
             maxLength={10}
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
+        <FieldSet
           label="Street ID"
           errorMessage={errors.street_id}
           helperText="Internal street identifier (UUID)"
         >
-          <FormInput
+          <Input
             name="street_id"
             value={formData.street_id || ''}
             onChange={handleInputChange}
@@ -92,14 +92,14 @@ export default function AddressInfoSection({
             error={errors.street_id}
             placeholder="Street UUID"
           />
-        </FormField>
+        </FieldSet>
 
-        <FormField
+        <FieldSet
           label="Subdivision ID"
           errorMessage={errors.subdivision_id}
           helperText="Internal subdivision identifier (UUID)"
         >
-          <FormInput
+          <Input
             name="subdivision_id"
             value={formData.subdivision_id || ''}
             onChange={handleInputChange}
@@ -107,7 +107,7 @@ export default function AddressInfoSection({
             error={errors.subdivision_id}
             placeholder="Subdivision UUID"
           />
-        </FormField>
+        </FieldSet>
       </div>
 
       <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">

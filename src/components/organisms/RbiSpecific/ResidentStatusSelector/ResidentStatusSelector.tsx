@@ -198,10 +198,10 @@ export default function ResidentStatusSelector({
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-600">
+        <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
           <span className="text-base">🏠</span> Resident Status Classification
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Legal and administrative classification of the resident&apos;s status in the barangay.
         </p>
       </div>
@@ -261,7 +261,7 @@ export default function ResidentStatusSelector({
             />
           </div>
 
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
             <strong>Total residency:</strong> {getResidencyDisplay()}
           </div>
         </FormGroup>
@@ -308,13 +308,13 @@ export default function ResidentStatusSelector({
               checked={value.is_registered_voter}
               onChange={e => handleChange('is_registered_voter', e.target.checked)}
               disabled={disabled || votingEligibility === false}
-              className="mt-1 size-4 rounded border-gray-300 text-gray-600 focus:ring-blue-500"
+              className="mt-1 size-4 rounded-sm border-gray-300 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
             />
             <div className="flex-1">
-              <label htmlFor="is_registered_voter" className="text-sm font-medium text-gray-600">
+              <label htmlFor="is_registered_voter" className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Registered Voter
               </label>
-              <p className="text-muted text-xs">
+              <p className="text-gray-500 dark:text-gray-400 text-xs">
                 Check if resident is registered to vote in this barangay
               </p>
             </div>
@@ -355,13 +355,13 @@ export default function ResidentStatusSelector({
               checked={value.is_indigenous_member}
               onChange={e => handleChange('is_indigenous_member', e.target.checked)}
               disabled={disabled}
-              className="mt-1 size-4 rounded border-gray-300 text-gray-600 focus:ring-blue-500"
+              className="mt-1 size-4 rounded-sm border-gray-300 text-gray-600 dark:text-gray-400 focus:ring-blue-500"
             />
             <div className="flex-1">
-              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-gray-600">
+              <label htmlFor="is_indigenous_member" className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Member of Indigenous Cultural Community
               </label>
-              <p className="text-muted text-xs">
+              <p className="text-gray-500 dark:text-gray-400 text-xs">
                 Check if resident belongs to an Indigenous Cultural Community (ICC) or Indigenous
                 Peoples (IP) group
               </p>
@@ -424,8 +424,8 @@ export default function ResidentStatusSelector({
 
       {/* Status Summary */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h4 className="mb-2 font-medium text-gray-900">Resident Status Summary</h4>
-        <div className="space-y-1 text-sm text-gray-800">
+        <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Resident Status Summary</h4>
+        <div className="space-y-1 text-sm text-gray-800 dark:text-gray-200 dark:text-gray-800">
           <p>
             <strong>Status:</strong>{' '}
             {value.status_type

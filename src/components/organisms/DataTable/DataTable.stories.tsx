@@ -138,7 +138,7 @@ const basicColumns = [
     render: (value: string) => {
       const statusColors = {
         active: 'bg-green-100 text-green-800',
-        inactive: 'bg-gray-100 text-gray-800',
+        inactive: 'bg-gray-100 text-gray-800 dark:text-gray-200',
         pending: 'bg-yellow-100 text-yellow-800',
       };
       return (
@@ -276,9 +276,9 @@ export const EmptyState: Story = {
     columns: basicColumns,
     emptyText: (
       <div className="py-8 text-center">
-        <div className="mb-2 text-4xl text-gray-400">📋</div>
-        <div className="font-medium text-gray-500">No users found</div>
-        <div className="mt-1 text-sm text-gray-400">Add some users to see them appear here</div>
+        <div className="mb-2 text-4xl text-gray-400 dark:text-gray-600">📋</div>
+        <div className="font-medium text-gray-500 dark:text-gray-500">No users found</div>
+        <div className="mt-1 text-sm text-gray-400 dark:text-gray-600">Add some users to see them appear here</div>
       </div>
     ),
   },
@@ -328,15 +328,15 @@ export const CustomRendering: Story = {
         title: 'User',
         render: (_, record: UserData) => (
           <div className="flex items-center space-x-3">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-semibold text-white dark:text-black">
               {record.name
                 .split(' ')
                 .map(n => n[0])
                 .join('')}
             </div>
             <div>
-              <div className="font-medium text-gray-900">{record.name}</div>
-              <div className="text-sm text-gray-500">{record.email}</div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">{record.name}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-500">{record.email}</div>
             </div>
           </div>
         ),
@@ -347,13 +347,13 @@ export const CustomRendering: Story = {
         title: 'Role & Status',
         render: (_, record: UserData) => (
           <div>
-            <div className="font-medium text-gray-900">{record.role}</div>
+            <div className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-900">{record.role}</div>
             <span
               className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                 record.status === 'active'
                   ? 'bg-green-100 text-green-800'
                   : record.status === 'inactive'
-                    ? 'bg-gray-100 text-gray-800'
+                    ? 'bg-gray-100 text-gray-800 dark:text-gray-200'
                     : 'bg-yellow-100 text-yellow-800'
               }`}
             >
@@ -368,10 +368,10 @@ export const CustomRendering: Story = {
         title: 'Activity',
         render: (_, record: UserData) => (
           <div className="text-sm">
-            <div className="text-gray-900">
+            <div className="text-gray-900 dark:text-gray-100">
               Joined: {new Date(record.joinDate).toLocaleDateString()}
             </div>
-            <div className="text-gray-500">
+            <div className="text-gray-500 dark:text-gray-500">
               Last active: {new Date(record.lastActive).toLocaleDateString()}
             </div>
           </div>
@@ -479,7 +479,7 @@ export const ResidentsTable: Story = {
             <div>
               {record.age} years old, {record.gender}
             </div>
-            <div className="text-gray-500">{record.civilStatus}</div>
+            <div className="text-gray-500 dark:text-gray-500">{record.civilStatus}</div>
           </div>
         ),
       },

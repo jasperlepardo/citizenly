@@ -50,9 +50,9 @@ export const VersionTag: React.FC<VersionTagProps> = ({
       case 'staging':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'development':
-        return 'bg-blue-100 text-gray-800 border-blue-200';
+        return 'bg-blue-100 text-gray-800 border-blue-200 dark:bg-blue-900 dark:text-gray-200 dark:border-blue-800';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600';
     }
   };
 
@@ -71,7 +71,7 @@ export const VersionTag: React.FC<VersionTagProps> = ({
   return (
     <div
       className={cn(
-        'z-50 flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-sm backdrop-blur-sm',
+        'z-50 flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium shadow-xs backdrop-blur-xs',
         positionStyles[position],
         getEnvironmentStyles(environment),
         className

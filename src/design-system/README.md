@@ -136,7 +136,7 @@ Consistent shadow system for elevation and focus states:
 
 | Token                  | Usage                             |
 | ---------------------- | --------------------------------- |
-| `shadow-sm`            | Subtle cards, input borders       |
+| `shadow-xs`            | Subtle cards, input borders       |
 | `shadow-md`            | **Default cards**, dropdown menus |
 | `shadow-lg`            | Modal overlays, important cards   |
 | `shadow-xl`            | Major modals, toast notifications |
@@ -176,7 +176,7 @@ import { getSectoralBadgeColor } from '@/design-system';
 
 // Get badge colors for sectoral groups
 const laborForceBadge = getSectoralBadgeColor('laborForce', 'solid');
-const seniorBadge = getSectoralBadgeColor('seniorCitizen', 'outline');
+const seniorBadge = getSectoralBadgeColor('seniorCitizen', 'outline-solid');
 const youthBadge = getSectoralBadgeColor('youth', 'subtle');
 ```
 
@@ -282,7 +282,7 @@ function ResidentCard({ resident }) {
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-gray-50 transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-gray-50 transition-colors hover:bg-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           View Details
         </button>
         <button className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200">
