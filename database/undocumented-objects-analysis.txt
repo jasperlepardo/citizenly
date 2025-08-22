@@ -1,0 +1,58 @@
+
+🏗️  SUPABASE OBJECTS ANALYSIS
+============================
+Date: 2025-08-17T11:58:43.822Z
+
+DISCOVERED OBJECTS:
+📊 Views: 13
+   ✓ psoc_occupation_search
+   ✓ address_hierarchy
+   ✓ birth_place_options
+   ✓ household_search
+   ✓ settings_management_summary
+   ✓ migrants_complete
+   ✓ household_income_analytics
+   ✓ api_residents_with_geography
+   ✓ api_households_with_members
+   ✓ api_dashboard_stats
+   ✓ api_address_search
+   ✓ psoc_unified_search
+   ✓ residents_with_occupation
+
+🔧 RPC Functions: 11  
+   ✓ search_birth_places
+   ✓ get_birth_place_details
+   ✓ search_occupations
+   ✓ get_occupation_details
+   ✓ search_households
+   ✓ get_household_for_resident
+   ✓ get_psoc_title
+   ✓ search_psoc_occupations
+   ✓ user_barangay_code
+   ✓ user_role
+   ✓ is_admin
+
+📝 Custom Types: 14
+   ? sex_enum
+   ? civil_status_enum
+   ? citizenship_enum
+   ? education_level_enum
+   ? employment_status_enum
+   ? blood_type_enum
+   ? religion_enum
+   ? ethnicity_enum
+   ? household_type_enum
+   ? tenure_status_enum
+   ? household_unit_enum
+   ? family_position_enum
+   ? income_class_enum
+   ? birth_place_level_enum
+
+RECOMMENDATIONS:
+✅ Views are accessible
+✅ RPC functions are accessible
+
+NEXT STEPS:
+- Compare this list with schema.sql to identify missing documentation
+- Check if any objects exist in Supabase but not in schema.sql
+- Verify all documented objects actually exist in Supabase

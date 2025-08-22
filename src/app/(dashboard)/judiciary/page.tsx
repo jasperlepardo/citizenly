@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Button } from '@/components/atoms';
 
 
 function JudiciaryContent() {
-  const [searchTerm, setSearchTerm] = useState('');
-
   return (
     
       <div className="p-6">

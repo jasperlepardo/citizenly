@@ -140,7 +140,7 @@ export async function GET(request: NextRequest) {
 
     // Sort by level hierarchy (major_group -> occupation) and then by match score
     const levelOrder = { major_group: 1, sub_major_group: 2, unit_group: 3, unit_sub_group: 4, occupation: 5 };
-    uniqueResults.sort((a, b) => {
+    uniqueResults.sort((a: any, b: any) => {
       const levelDiff = levelOrder[a.level as keyof typeof levelOrder] - levelOrder[b.level as keyof typeof levelOrder];
       if (levelDiff !== 0) return levelDiff;
       return b.match_score - a.match_score;

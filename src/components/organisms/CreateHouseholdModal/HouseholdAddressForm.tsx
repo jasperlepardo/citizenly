@@ -4,8 +4,9 @@
  */
 
 import React from 'react';
-import StreetSelector from '../StreetSelector/StreetSelector';
-import SubdivisionSelector from '../SubdivisionSelector/SubdivisionSelector';
+// TODO: Implement StreetSelector and SubdivisionSelector components
+// import StreetSelector from '../StreetSelector/StreetSelector';
+// import SubdivisionSelector from '../SubdivisionSelector/SubdivisionSelector';
 
 interface HouseholdFormData {
   house_number: string;
@@ -52,14 +53,10 @@ export default function HouseholdAddressForm({
         <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Subdivision/Zone/Sitio/Purok
         </label>
-        <SubdivisionSelector
-          value={formData.subdivision_id}
-          onSelect={(subdivisionId: string | null) =>
-            onChange('subdivision_id', subdivisionId || '')
-          }
-          error={errors.subdivision_id}
-          placeholder="🏘️ Select subdivision or create new"
-        />
+        {/* TODO: Replace with actual SubdivisionSelector component */}
+        <div className="p-2 border border-gray-300 rounded bg-gray-50 text-gray-500">
+          SubdivisionSelector - Component not implemented yet
+        </div>
       </div>
 
       {/* Street Name */}
@@ -67,13 +64,10 @@ export default function HouseholdAddressForm({
         <label className="font-montserrat mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Street Name *
         </label>
-        <StreetSelector
-          value={formData.street_id}
-          onSelect={(streetId: string | null) => onChange('street_id', streetId || '')}
-          error={errors.street_id}
-          placeholder="🛣️ Select street or create new"
-          subdivisionId={formData.subdivision_id || null}
-        />
+        {/* TODO: Replace with actual StreetSelector component */}
+        <div className="p-2 border border-gray-300 rounded bg-gray-50 text-gray-500">
+          StreetSelector - Component not implemented yet
+        </div>
       </div>
 
       {/* Info Note */}

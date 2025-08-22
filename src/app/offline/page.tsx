@@ -11,8 +11,10 @@ export default function OfflinePage() {
 
   const handleRetry = () => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.sync.register('background-sync');
+      navigator.serviceWorker.ready.then((registration: any) => {
+        if (registration.sync) {
+          registration.sync.register('background-sync');
+        }
       });
     }
     window.history.back();

@@ -1,0 +1,106 @@
+[
+  {
+    "table": "auth_roles",
+    "exists": true
+  },
+  {
+    "table": "auth_user_profiles",
+    "exists": true
+  },
+  {
+    "table": "auth_barangay_accounts",
+    "exists": true
+  },
+  {
+    "table": "psgc_regions",
+    "exists": true
+  },
+  {
+    "table": "psgc_provinces",
+    "exists": true
+  },
+  {
+    "table": "psgc_cities_municipalities",
+    "exists": true
+  },
+  {
+    "table": "psgc_barangays",
+    "exists": true
+  },
+  {
+    "table": "psoc_major_groups",
+    "exists": true
+  },
+  {
+    "table": "psoc_sub_major_groups",
+    "exists": true
+  },
+  {
+    "table": "psoc_minor_groups",
+    "exists": true
+  },
+  {
+    "table": "psoc_unit_groups",
+    "exists": true
+  },
+  {
+    "table": "psoc_unit_sub_groups",
+    "exists": true
+  },
+  {
+    "table": "psoc_position_titles",
+    "exists": true
+  },
+  {
+    "table": "psoc_occupation_cross_references",
+    "exists": true
+  },
+  {
+    "table": "geo_subdivisions",
+    "exists": true
+  },
+  {
+    "table": "geo_streets",
+    "exists": true
+  },
+  {
+    "table": "households",
+    "exists": true
+  },
+  {
+    "table": "residents",
+    "exists": true
+  },
+  {
+    "table": "household_members",
+    "exists": true
+  },
+  {
+    "table": "resident_relationships",
+    "exists": true
+  },
+  {
+    "table": "resident_sectoral_info",
+    "exists": true
+  },
+  {
+    "table": "resident_benefits",
+    "exists": false,
+    "error": "Could not find the table 'public.resident_benefits' in the schema cache"
+  },
+  {
+    "table": "resident_benefit_history",
+    "exists": false,
+    "error": "Could not find the table 'public.resident_benefit_history' in the schema cache"
+  },
+  {
+    "table": "audit_logs",
+    "exists": false,
+    "error": "Could not find the table 'public.audit_logs' in the schema cache"
+  },
+  {
+    "table": "data_versions",
+    "exists": false,
+    "error": "Could not find the table 'public.data_versions' in the schema cache"
+  }
+]

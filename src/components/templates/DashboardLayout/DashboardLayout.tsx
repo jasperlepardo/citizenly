@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/supabase';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { Navigation } from '@/components/organisms';
 import { Toaster } from 'react-hot-toast';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secureLogger';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)
@@ -302,6 +302,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 showShortcuts={true}
                 showRecentSection={true}
                 size="md"
+                items={[]}
               />
             </div>
 
