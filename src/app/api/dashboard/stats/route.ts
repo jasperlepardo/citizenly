@@ -84,9 +84,10 @@ export async function GET(request: NextRequest) {
 
     // Get individual residents data for additional processing if needed
     const { data: residentsData, error: residentsError } = await supabaseAdmin
-      .from('api_residents_with_geography')
-      .select('birthdate, sex, civil_status, employment_status, is_labor_force_employed')
-      .eq('barangay_code', barangayCode);
+      .from('residents')
+      .select('birthdate, sex, civil_status, employment_status')
+      .eq('barangay_code', barangayCode)
+      .eq('is_active', true);
 
     console.log('Residents data query result:', {
       barangayCode,
