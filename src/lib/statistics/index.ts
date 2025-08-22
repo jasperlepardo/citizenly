@@ -13,10 +13,10 @@ export {
   calculateMaxPercentage,
   generateTooltipData,
   populationPyramidStats,
-} from './populationPyramid';
+} from './population-pyramid';
 
 export type {
   AgeGroupData,
   PopulationStats,
   TooltipData,
-} from './populationPyramid';
+} from './population-pyramid';

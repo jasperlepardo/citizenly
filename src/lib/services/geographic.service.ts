@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { logger, logError } from '@/lib/logging/secureLogger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 export interface Region {
   code: string;

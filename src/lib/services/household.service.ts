@@ -6,7 +6,7 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { logger, logError, dbLogger } from '@/lib/logging/secureLogger';
+import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
 
 // Types
 export interface HouseholdFormData {

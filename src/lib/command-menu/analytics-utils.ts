@@ -3,7 +3,7 @@
  * Production-ready tracking for command menu usage and performance
  */
 
-import { logger } from '@/lib/secure-logger';
+import { logger } from '@/lib/logging/secure-logger';
 
 // Analytics event types
 export interface CommandMenuAnalyticsEvent {

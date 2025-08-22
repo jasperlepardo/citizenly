@@ -19,7 +19,7 @@ export {
   createValidationError,
   createNetworkError,
   errorUtils,
-} from './errorUtils';
+} from './error-utils';
 
 export {
   createErrorBoundaryState,
@@ -43,6 +43,6 @@ export type {
   FieldError,
   ValidationError,
   NetworkError,
-} from './errorTypes';
+} from './error-types';
 
-export { ErrorSeverity, ErrorCode } from './errorTypes';
+export { ErrorSeverity, ErrorCode } from './error-types';

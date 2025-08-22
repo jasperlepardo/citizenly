@@ -6,10 +6,10 @@
 // Font stack definitions
 export const fontStacks = {
   system:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+    'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
   display:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
-  body: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+    'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
+  body: 'var(--font-montserrat, "Montserrat"), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif',
   mono: 'ui-monospace, "SFMono-Regular", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace',
 } as const;
 
@@ -57,11 +57,11 @@ export interface TypographyProps {
 
 // Common typography combinations
 export const typographyPresets = {
-  pageTitle: `${typography.h1} text-zinc-900 dark:text-zinc-100 mb-6`,
-  sectionTitle: `${typography.h2} text-zinc-800 dark:text-zinc-200 mb-4`,
-  cardTitle: `${typography.h3} text-zinc-800 dark:text-zinc-200 mb-3`,
-  fieldLabel: `${typography.label} text-zinc-700 dark:text-zinc-300 mb-2`,
-  helpText: `${typography.bodySmall} text-zinc-500 dark:text-zinc-400`,
+  pageTitle: `${typography.h1} text-gray-900 dark:text-gray-100 mb-6`,
+  sectionTitle: `${typography.h2} text-gray-800 dark:text-gray-200 mb-4`,
+  cardTitle: `${typography.h3} text-gray-800 dark:text-gray-200 mb-3`,
+  fieldLabel: `${typography.label} text-gray-700 dark:text-gray-300 mb-2`,
+  helpText: `${typography.bodySmall} text-gray-500 dark:text-gray-400`,
   errorText: `${typography.bodySmall} text-red-600`,
   successText: `${typography.bodySmall} text-green-600`,
 } as const;

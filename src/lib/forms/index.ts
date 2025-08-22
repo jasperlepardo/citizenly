@@ -16,7 +16,7 @@ export {
   createFormSubmitHandler,
   fieldValidators,
   buildErrorsFromValidation,
-} from './formHandlers';
+} from './form-handlers';
 
 // Field business logic
 export {
@@ -26,4 +26,4 @@ export {
   getSelectDisplayValue,
   fieldLogic,
   fieldState,
-} from './fieldLogic';
+} from './field-logic';

@@ -32,7 +32,7 @@ export {
   type UserRole,
   type UserProfile,
   type RegistrationData,
-} from './authHelpers';
+} from './auth-helpers';
 
 export * from './errors';
-export * from './csrfUtils';
+export * from './csrf-utils';

@@ -29,5 +29,5 @@ export * from './database';
 // Domain types - use namespace import to avoid conflicts
 import * as ResidentTypes from './resident';
 export { ResidentTypes };
-export * from './residentDetail';
-export * from './residentListing';
+export * from './resident-detail';
+export * from './resident-listing';

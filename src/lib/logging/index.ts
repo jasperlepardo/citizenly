@@ -4,7 +4,7 @@
  */
 
 // Export all from clientLogger
-export * from './clientLogger';
+export * from './client-logger';
 
 // Export specific functions from secureLogger, renaming conflicts
 export {
@@ -14,4 +14,4 @@ export {
   dbLogger,
   apiLogger,
   authLogger,
-} from './secureLogger';
+} from './secure-logger';

@@ -4,8 +4,8 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { logger } from '@/lib/secure-logger';
-import { startCommandMenuSearchTimer, endCommandMenuSearchTimer } from '@/lib/command-menu-analytics';
+import { logger } from '@/lib/logging/secure-logger';
+import { startCommandMenuSearchTimer, endCommandMenuSearchTimer } from '@/lib/command-menu/analytics-utils';
 
 // Types for API responses
 interface SearchResult {
@@ -68,42 +68,13 @@ export async function searchData(query: string, limit = 10): Promise<SearchResul
       );
     }
 
-    // Search households - try both the view and the base table as fallback
-    let households, householdsError;
-    
-    // First try the optimized view
-    const viewResult = await supabase
-      .from('api_households_with_members')
-      .select('id, code, name, address, street_name, barangay_code')
-      .or(`code.ilike.%${query}%,name.ilike.%${query}%,street_name.ilike.%${query}%,address.ilike.%${query}%`)
-      .limit(Math.floor(limit / 2));
-    
-    if (viewResult.error && viewResult.error.message?.includes('does not exist')) {
-      // Fallback to base table (households table uses 'code' as primary key, not 'id')
-      const baseResult = await supabase
-        .from('households')
-        .select('code, name, address, house_number, barangay_code')
-        .or(`code.ilike.%${query}%,name.ilike.%${query}%,address.ilike.%${query}%,house_number.ilike.%${query}%`)
-        .limit(Math.floor(limit / 2));
-      households = baseResult.data;
-      householdsError = baseResult.error;
-    } else {
-      households = viewResult.data;
-      householdsError = viewResult.error;
-    }
-
-    if (!householdsError && households) {
-      const householdResults = households.map((household: any) => ({
-        id: household.id || household.code, // Use code as fallback ID
-        title: `Household ${household.code}`,
-        description: `${household.street_name || household.address || household.house_number || 'Address'} • Barangay ${household.barangay_code}`,
-        type: 'household' as const,
-        href: `/households/${household.id || household.code}`, // Use code for URL if no id
-      }));
-      results.push(...householdResults);
-    } else if (householdsError) {
-      logger.error('Household search error:', householdsError);
-    }
+    // Search households - temporarily disabled due to RLS issues
+    // The RLS policy references non-existent functions (user_access_level, user_barangay_code, etc.)
+    // causing household queries to fail silently
+    logger.info('Household search temporarily disabled due to RLS policy issues', {
+      query: sanitizedQuery,
+      reason: 'Missing RLS functions: user_access_level(), user_barangay_code(), etc.'
+    });
 
     // Cache the results
     searchCache.set(cacheKey, {
@@ -185,7 +156,7 @@ export async function exportData(options: ExportOptions): Promise<boolean> {
 // Get recent items from user activity
 export async function getRecentItems(): Promise<SearchResult[]> {
   try {
-    const { getStoredRecentItems } = await import('./recent-items-storage');
+    const { getStoredRecentItems } = await import('../storage/recentItemsStorage');
     const recentItems = getStoredRecentItems();
     
     return recentItems.map(item => ({
@@ -204,7 +175,7 @@ export async function getRecentItems(): Promise<SearchResult[]> {
 // Clear recent items history
 export async function clearRecentItems(): Promise<boolean> {
   try {
-    const { clearRecentItems: clearStored } = await import('./recent-items-storage');
+    const { clearRecentItems: clearStored } = await import('../storage/recentItemsStorage');
     clearStored();
     logger.info('Recent items cleared');
     return true;

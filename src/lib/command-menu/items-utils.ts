@@ -1,4 +1,4 @@
-import type { CommandMenuItem } from '@/components/molecules/CommandMenu/types';
+import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import React from 'react';
 
 // Icon helper function - creates React components for SVG icons
@@ -133,7 +133,7 @@ export const getCommandMenuItems = (): CommandMenuItem[] => [
     description: 'Fill out resident basic information form',
     icon: Icons.ClipboardList,
     group: 'Quick Actions',
-    href: '/rbi-form',
+    href: '/reports/records-of-barangay-inhabitants-by-household',
     keywords: ['rbi', 'form', 'registration', 'basic information'],
     shortcut: ['⌘', 'R'],
   },
