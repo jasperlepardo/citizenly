@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { useUserBarangay } from '@/hooks/useUserBarangay';
-import { useCSRFToken } from '@/lib/csrf';
-import { logger, logError, dbLogger } from '@/lib/secure-logger';
+import { useUserBarangay } from '@/hooks/utilities';
+import { useCSRFToken } from '@/lib/auth/csrf';
+import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
 
 // Import our organism components
 import { HouseholdTypeSelector } from '@/components/organisms';

@@ -7,7 +7,7 @@ import {
   isValidPhilSysCardNumber, 
   isValidMobileNumber, 
   isValidBirthdate 
-} from '@/lib/business-rules/residentFormRules';
+} from '@/lib/business-rules';
 
 // Basic field validators
 export const phoneNumberValidator = z.string().refine(isValidMobileNumber, {

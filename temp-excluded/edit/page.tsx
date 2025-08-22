@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/organisms';
 import { DashboardLayout } from '@/components/templates';
-import { Button, FormInput } from '@/components/atoms';
-import { FormField, FormSection } from '@/components/molecules';
+import { Button } from '@/components/atoms';
+// import { FormField, FormSection } from '@/components/molecules';
 import { useAuth } from '@/contexts/AuthContext';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,7 +111,7 @@ export default function HouseholdEditPage() {
           no_of_migrants: household.no_of_migrants || 0,
         });
       } catch (err) {
-        logError(err instanceof Error ? err : new Error(String(err)));
+        logError(err instanceof Error ? err.message : String(err));
         setError(err instanceof Error ? err.message : 'Failed to load household');
       } finally {
         setLoading(false);
@@ -161,7 +161,7 @@ export default function HouseholdEditPage() {
       // Redirect back to household detail page
       router.push(`/households/${householdCode}`);
     } catch (err) {
-      logError(err instanceof Error ? err : new Error(String(err)));
+      logError(err instanceof Error ? err.message : String(err));
       setError(err instanceof Error ? err.message : 'Failed to update household');
     } finally {
       setSaving(false);
@@ -212,18 +212,22 @@ export default function HouseholdEditPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
-            <FormSection title="Basic Information">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Household Name">
-                  <FormInput
+                <div>
+                  <label className="block text-sm font-medium mb-2">Household Name</label>
+                  <input
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Optional household name"
+                    className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Household Type">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Household Type</label>
                   <select
                     name="household_type"
                     value={formData.household_type}
@@ -237,9 +241,9 @@ export default function HouseholdEditPage() {
                       </option>
                     ))}
                   </select>
-                </FormField>
+                </div>
 
-                <FormField label="Housing Unit">
+                <div><label className="block text-sm font-medium mb-2">Housing Unit</label>
                   <select
                     name="household_unit"
                     value={formData.household_unit}
@@ -253,77 +257,77 @@ export default function HouseholdEditPage() {
                       </option>
                     ))}
                   </select>
-                </FormField>
+                </div>
 
-                <FormField label="Number of Families">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Number of Families</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     type="number"
                     name="no_of_families"
                     value={formData.no_of_families || ''}
                     onChange={handleInputChange}
                     min="1"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Number of Household Members">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Number of Household Members</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     type="number"
                     name="no_of_household_members"
                     value={formData.no_of_household_members || ''}
                     onChange={handleInputChange}
                     min="0"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Number of Migrants">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Number of Migrants</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     type="number"
                     name="no_of_migrants"
                     value={formData.no_of_migrants || ''}
                     onChange={handleInputChange}
                     min="0"
                   />
-                </FormField>
+                </div>
               </div>
-            </FormSection>
+            </div>
 
             {/* Address Information */}
-            <FormSection title="Address Information">
+            <div className="space-y-4"><h3 className="text-lg font-semibold">Address Information</h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="House Number">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">House Number</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     name="house_number"
                     value={formData.house_number}
                     onChange={handleInputChange}
                     placeholder="e.g., 123, Block 1 Lot 2"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Street Name">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Street Name</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     name="street_name"
                     value={formData.street_name}
                     onChange={handleInputChange}
                     placeholder="e.g., Main Street, Rizal Avenue"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Subdivision">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Subdivision</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     name="subdivision"
                     value={formData.subdivision}
                     onChange={handleInputChange}
                     placeholder="e.g., Greenfield Village"
                   />
-                </FormField>
+                </div>
               </div>
-            </FormSection>
+            </div>
 
             {/* Economic Information */}
-            <FormSection title="Economic Information">
+            <div className="space-y-4"><h3 className="text-lg font-semibold">Economic Information</h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField label="Monthly Income (₱)">
-                  <FormInput
+                <div><label className="block text-sm font-medium mb-2">Monthly Income (₱)</label>
+                  <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     type="number"
                     name="monthly_income"
                     value={formData.monthly_income || ''}
@@ -332,9 +336,9 @@ export default function HouseholdEditPage() {
                     step="0.01"
                     placeholder="0.00"
                   />
-                </FormField>
+                </div>
 
-                <FormField label="Income Class">
+                <div><label className="block text-sm font-medium mb-2">Income Class</label>
                   <select
                     name="income_class"
                     value={formData.income_class}
@@ -348,9 +352,9 @@ export default function HouseholdEditPage() {
                       </option>
                     ))}
                   </select>
-                </FormField>
+                </div>
 
-                <FormField label="Tenure Status">
+                <div><label className="block text-sm font-medium mb-2">Tenure Status</label>
                   <select
                     name="tenure_status"
                     value={formData.tenure_status}
@@ -364,20 +368,20 @@ export default function HouseholdEditPage() {
                       </option>
                     ))}
                   </select>
-                </FormField>
+                </div>
 
                 {formData.tenure_status === 'other' && (
-                  <FormField label="Tenure Details">
-                    <FormInput
+                  <div><label className="block text-sm font-medium mb-2">Tenure Details</label>
+                    <input className="bg-default min-h-10 w-full rounded-md border border-default px-3 py-2 text-primary focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       name="tenure_others_specify"
                       value={formData.tenure_others_specify}
                       onChange={handleInputChange}
                       placeholder="Please specify"
                     />
-                  </FormField>
+                  </div>
                 )}
               </div>
-            </FormSection>
+            </div>
 
             {/* Form Actions */}
             <div className="bg-default rounded-xl border border-default p-6 shadow-sm">

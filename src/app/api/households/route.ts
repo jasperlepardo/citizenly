@@ -5,7 +5,7 @@
 
 import { NextRequest } from 'next/server';
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
-import { createRateLimitHandler } from '@/lib/rate-limit';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { createHouseholdSchema } from '@/lib/api-validation';
 import {
   createPaginatedResponse,
@@ -17,7 +17,7 @@ import {
   withSecurityHeaders,
 } from '@/lib/api-responses';
 import { auditDataOperation } from '@/lib/api-audit';
-import { RequestContext, Role } from '@/lib/api-types';
+import { RequestContext, Role } from '@/lib/api/types';
 import { z } from 'zod';
 
 // Type the auth result properly
@@ -60,10 +60,30 @@ export const GET = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Build base query using the optimized view
+        // Build base query using actual households table (view doesn't exist in Supabase)
         let query = supabaseAdmin
-          .from('api_households_with_members')
-          .select('*', { count: 'exact' })
+          .from('households')
+          .select(`
+            code,
+            house_number,
+            street_id,
+            subdivision_id,
+            barangay_code,
+            city_municipality_code,
+            province_code,
+            region_code,
+            household_type,
+            tenure_status,
+            household_unit,
+            monthly_income,
+            income_class,
+            no_of_household_members,
+            household_head_id,
+            is_active,
+            created_at,
+            updated_at
+          `, { count: 'exact' })
+          .eq('is_active', true)
           .order('code', { ascending: true });
 
         // Apply geographic filtering based on user's access level
@@ -71,7 +91,7 @@ export const GET = withSecurityHeaders(
 
         // Apply search filter if provided
         if (search) {
-          query = applySearchFilter(query, search, ['code', 'street_name']);
+          query = applySearchFilter(query, search, ['code', 'house_number']);
         }
 
         // Apply pagination

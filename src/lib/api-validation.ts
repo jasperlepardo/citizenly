@@ -168,6 +168,32 @@ export const createResidentSchema = z.object({
 
   // Household
   householdCode: z.string().max(50).optional().or(z.literal('')),
+
+  // Sectoral Information (optional, defaults to false)
+  isLaborForce: z.boolean().optional().default(false),
+  isLaborForceEmployed: z.boolean().optional().default(false),
+  isUnemployed: z.boolean().optional().default(false),
+  isOverseasFilipinoWorker: z.boolean().optional().default(false),
+  isPersonWithDisability: z.boolean().optional().default(false),
+  isOutOfSchoolChildren: z.boolean().optional().default(false),
+  isOutOfSchoolYouth: z.boolean().optional().default(false),
+  isSeniorCitizen: z.boolean().optional().default(false),
+  isRegisteredSeniorCitizen: z.boolean().optional().default(false),
+  isSoloParent: z.boolean().optional().default(false),
+  isIndigenousPeople: z.boolean().optional().default(false),
+  isMigrant: z.boolean().optional().default(false),
+
+  // Migration Information (optional)
+  previousBarangayCode: z.string().max(10).optional().or(z.literal('')),
+  previousCityMunicipalityCode: z.string().max(10).optional().or(z.literal('')),
+  previousProvinceCode: z.string().max(10).optional().or(z.literal('')),
+  previousRegionCode: z.string().max(10).optional().or(z.literal('')),
+  lengthOfStayPreviousMonths: z.number().int().min(0).optional(),
+  reasonForLeaving: z.string().max(500).optional().or(z.literal('')),
+  dateOfTransfer: z.string().optional().or(z.literal('')),
+  reasonForTransferring: z.string().max(500).optional().or(z.literal('')),
+  durationOfStayCurrentMonths: z.number().int().min(0).optional(),
+  isIntendingToReturn: z.boolean().optional().default(false),
 });
 
 export const updateResidentSchema = createResidentSchema.partial();

@@ -94,8 +94,19 @@ export interface DashboardResponse {
       divorced: number;
     };
     employment: {
+      laborForce: number;
       employed: number;
       unemployed: number;
+    };
+    specialCategories: {
+      pwd: number;
+      soloParents: number;
+      ofw: number;
+      indigenous: number;
+      outOfSchoolChildren: number;
+      outOfSchoolYouth: number;
+      registeredSeniorCitizens: number;
+      migrants: number;
     };
   };
   residentsData: {
@@ -104,6 +115,20 @@ export interface DashboardResponse {
     civil_status: string;
     employment_status: string;
     is_labor_force_employed?: boolean;
+    resident_sectoral_info?: {
+      is_labor_force: boolean;
+      is_labor_force_employed: boolean;
+      is_unemployed: boolean;
+      is_overseas_filipino_worker: boolean;
+      is_person_with_disability: boolean;
+      is_out_of_school_children: boolean;
+      is_out_of_school_youth: boolean;
+      is_senior_citizen: boolean;
+      is_registered_senior_citizen: boolean;
+      is_solo_parent: boolean;
+      is_indigenous_people: boolean;
+      is_migrant: boolean;
+    }[];
   }[];
 }
 

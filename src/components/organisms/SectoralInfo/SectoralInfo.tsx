@@ -9,20 +9,21 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox } from '../../atoms';
 import { FormGroup } from '../../molecules';
+import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 
-// Sectoral Information Interface (matches database schema)
+// Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {
-  is_labor_force: boolean; // Auto from employment_status
-  is_employed: boolean; // Auto from employment_status
+  is_labor_force: boolean; // Auto from employment_status (in labor force)
+  is_labor_force_employed: boolean; // Auto from employment_status
   is_unemployed: boolean; // Auto from employment_status
-  is_ofw: boolean; // Manual - Overseas Filipino Worker
-  is_pwd: boolean; // Manual - Person with Disability
+  is_overseas_filipino_worker: boolean; // Manual - Overseas Filipino Worker
+  is_person_with_disability: boolean; // Manual - Person with Disability
   is_out_of_school_children: boolean; // Auto from age + education (5-17)
   is_out_of_school_youth: boolean; // Auto from age + education + employment (18-30)
   is_senior_citizen: boolean; // Auto from age (60+)
   is_registered_senior_citizen: boolean; // Manual, conditional on is_senior_citizen
   is_solo_parent: boolean; // Manual
-  is_indigenous_people: boolean; // Manual
+  is_indigenous_people: boolean; // Auto from ethnicity
   is_migrant: boolean; // Manual
 }
 
@@ -33,6 +34,7 @@ export interface SectoralContext {
   employment_status?: string;
   highest_educational_attainment?: string;
   marital_status?: string;
+  ethnicity?: string;
 }
 
 interface SectoralInfoProps {
@@ -43,18 +45,18 @@ interface SectoralInfoProps {
   className?: string;
 }
 
-// Employment statuses that qualify as labor force
+// Employment statuses that qualify as labor force (aligned with database)
 const LABOR_FORCE_STATUSES = [
-  'employed_full_time',
-  'employed_part_time',
+  'employed',
   'self_employed',
-  'unemployed_looking',
+  'unemployed',
+  'looking_for_work',
   'underemployed',
 ];
 
-const EMPLOYED_STATUSES = ['employed_full_time', 'employed_part_time', 'self_employed'];
+const EMPLOYED_STATUSES = ['employed', 'self_employed'];
 
-const UNEMPLOYED_STATUSES = ['unemployed_looking', 'underemployed'];
+const UNEMPLOYED_STATUSES = ['unemployed', 'looking_for_work'];
 
 export default function SectoralInfo({
   value,
@@ -65,21 +67,23 @@ export default function SectoralInfo({
 }: SectoralInfoProps) {
   const [_autoCalculated, setAutoCalculated] = useState({
     is_labor_force: false,
-    is_employed: false,
+    is_labor_force_employed: false,
     is_unemployed: false,
     is_out_of_school_children: false,
     is_out_of_school_youth: false,
     is_senior_citizen: false,
+    is_indigenous_people: false,
   });
 
   // Auto-calculate sectoral flags based on context
   useEffect(() => {
     const age = context.age || (context.birthdate ? calculateAge(context.birthdate) : 0);
     const employment = context.employment_status || '';
+    const ethnicity = context.ethnicity || '';
 
     const calculated = {
       is_labor_force: LABOR_FORCE_STATUSES.includes(employment),
-      is_employed: EMPLOYED_STATUSES.includes(employment),
+      is_labor_force_employed: EMPLOYED_STATUSES.includes(employment),
       is_unemployed: UNEMPLOYED_STATUSES.includes(employment),
       is_out_of_school_children: isOutOfSchoolChildren(age, context.highest_educational_attainment),
       is_out_of_school_youth: isOutOfSchoolYouth(
@@ -88,6 +92,7 @@ export default function SectoralInfo({
         employment
       ),
       is_senior_citizen: age >= 60,
+      is_indigenous_people: isIndigenousPeople(ethnicity),
     };
 
     setAutoCalculated(calculated);
@@ -111,6 +116,7 @@ export default function SectoralInfo({
     context.birthdate,
     context.employment_status,
     context.highest_educational_attainment,
+    context.ethnicity,
     onChange,
     value,
   ]);
@@ -178,147 +184,140 @@ export default function SectoralInfo({
     };
 
   return (
-    <div className={`space-y-6 ${className}`}>
-      <div className="border-b border-gray-200 pb-4">
-        <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
-          <span className="text-base">👥</span> Sectoral Group Classification
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Some flags are automatically calculated based on age, employment, and education data.
-        </p>
-      </div>
+      <div className="space-y-6">
 
-      {/* Auto-Calculated Flags (Read-only) */}
-      <FormGroup title="Auto-Calculated Classifications" className="rounded-lg bg-gray-50 p-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Checkbox
-            label="Labor Force"
-            description="Based on employment status"
-            checked={_autoCalculated.is_labor_force}
-            disabled={true}
-            size="md"
-          />
 
-          <Checkbox
-            label="Employed"
-            description="Currently employed (full/part-time, self-employed)"
-            checked={_autoCalculated.is_employed}
-            disabled={true}
-            size="md"
-          />
 
-          <Checkbox
-            label="Unemployed"
-            description="Unemployed but looking for work"
-            checked={_autoCalculated.is_unemployed}
-            disabled={true}
-            size="md"
-          />
-
-          <Checkbox
-            label="Out-of-School Children"
-            description="Ages 5-17, not attending school"
-            checked={_autoCalculated.is_out_of_school_children}
-            disabled={true}
-            size="md"
-          />
-
-          <Checkbox
-            label="Out-of-School Youth"
-            description="Ages 18-30, not in school/employed"
-            checked={_autoCalculated.is_out_of_school_youth}
-            disabled={true}
-            size="md"
-          />
-
-          <Checkbox
-            label="Senior Citizen"
-            description="Age 60 and above"
-            checked={_autoCalculated.is_senior_citizen}
-            disabled={true}
-            size="md"
-          />
-        </div>
-      </FormGroup>
-
-      {/* Manual Flags */}
-      <FormGroup title="Manual Classifications">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Checkbox
-            label="Overseas Filipino Worker (OFW)"
-            description="Currently working abroad"
-            checked={value.is_ofw}
-            onChange={handleFlagChange('is_ofw')}
-            disabled={disabled}
-            size="md"
-          />
-
-          <Checkbox
-            label="Person with Disability (PWD)"
-            description="Has physical, mental, or sensory disability"
-            checked={value.is_pwd}
-            onChange={handleFlagChange('is_pwd')}
-            disabled={disabled}
-            size="md"
-          />
-
-          <Checkbox
-            label="Solo Parent"
-            description="Single parent raising children alone"
-            checked={value.is_solo_parent}
-            onChange={handleFlagChange('is_solo_parent')}
-            disabled={disabled}
-            size="md"
-          />
-
-          <Checkbox
-            label="Indigenous People"
-            description="Belongs to indigenous cultural community"
-            checked={value.is_indigenous_people}
-            onChange={handleFlagChange('is_indigenous_people')}
-            disabled={disabled}
-            size="md"
-          />
-
-          <Checkbox
-            label="Migrant"
-            description="Recently moved to this barangay"
-            checked={value.is_migrant}
-            onChange={handleFlagChange('is_migrant')}
-            disabled={disabled}
-            size="md"
-          />
-
-          {/* Conditional: Registered Senior Citizen */}
-          {value.is_senior_citizen && (
+        {/* Auto-Calculated Flags (Read-only) */}
+        <FormGroup title="Auto-Calculated Classifications">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Checkbox
-              label="Registered Senior Citizen"
-              description="Officially registered with OSCA"
-              checked={value.is_registered_senior_citizen}
-              onChange={handleFlagChange('is_registered_senior_citizen')}
+              label="Labor Force"
+              description="Part of the labor force (employed, unemployed, looking for work)"
+              checked={_autoCalculated.is_labor_force}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Labor Force Employed"
+              description="Currently employed (employed, self-employed)"
+              checked={_autoCalculated.is_labor_force_employed}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Unemployed"
+              description="Unemployed but looking for work"
+              checked={_autoCalculated.is_unemployed}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Out-of-School Children"
+              description="Ages 5-17, not attending school"
+              checked={_autoCalculated.is_out_of_school_children}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Out-of-School Youth"
+              description="Ages 18-30, not in school/employed"
+              checked={_autoCalculated.is_out_of_school_youth}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Senior Citizen"
+              description="Age 60 and above"
+              checked={_autoCalculated.is_senior_citizen}
+              disabled={true}
+              size="md"
+            />
+
+            <Checkbox
+              label="Indigenous People"
+              description="Based on ethnicity selection"
+              checked={_autoCalculated.is_indigenous_people}
+              disabled={true}
+              size="md"
+            />
+          </div>
+        </FormGroup>
+
+        {/* Manual Flags */}
+        <FormGroup title="Manual Classifications">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Checkbox
+              label="Overseas Filipino Worker (OFW)"
+              description="Currently working abroad"
+              checked={value.is_overseas_filipino_worker}
+              onChange={handleFlagChange('is_overseas_filipino_worker')}
               disabled={disabled}
               size="md"
             />
-          )}
-        </div>
-      </FormGroup>
 
-      {/* Summary */}
-      <div className="rounded-lg bg-blue-50 p-4">
-        <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Classification Summary</h4>
-        <div className="text-xs text-gray-700 dark:text-gray-300">
-          <span className="font-medium">Active Classifications:</span>{' '}
-          {(() => {
-            const allClassifications = { ..._autoCalculated, ...value };
-            return (
-              Object.entries(allClassifications)
-                .filter(([, val]) => val === true)
-                .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
-                .join(', ') || 'None'
-            );
-          })()}
+            <Checkbox
+              label="Person with Disability (PWD)"
+              description="Has physical, mental, or sensory disability"
+              checked={value.is_person_with_disability}
+              onChange={handleFlagChange('is_person_with_disability')}
+              disabled={disabled}
+              size="md"
+            />
+
+            <Checkbox
+              label="Solo Parent"
+              description="Single parent raising children alone"
+              checked={value.is_solo_parent}
+              onChange={handleFlagChange('is_solo_parent')}
+              disabled={disabled}
+              size="md"
+            />
+
+            <Checkbox
+              label="Migrant"
+              description="Recently moved to this barangay"
+              checked={value.is_migrant}
+              onChange={handleFlagChange('is_migrant')}
+              disabled={disabled}
+              size="md"
+            />
+
+            {/* Conditional: Registered Senior Citizen */}
+            {value.is_senior_citizen && (
+              <Checkbox
+                label="Registered Senior Citizen"
+                description="Officially registered with OSCA"
+                checked={value.is_registered_senior_citizen}
+                onChange={handleFlagChange('is_registered_senior_citizen')}
+                disabled={disabled}
+                size="md"
+              />
+            )}
+          </div>
+        </FormGroup>
+
+        {/* Summary */}
+        <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-4">
+          <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Classification Summary</h4>
+          <div className="text-xs text-gray-700 dark:text-gray-300">
+            <span className="font-medium">Active Classifications:</span>{' '}
+            {(() => {
+              const allClassifications = { ..._autoCalculated, ...value };
+              return (
+                Object.entries(allClassifications)
+                  .filter(([, val]) => val === true)
+                  .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
+                  .join(', ') || 'None'
+              );
+            })()}
+          </div>
         </div>
       </div>
-    </div>
   );
 }

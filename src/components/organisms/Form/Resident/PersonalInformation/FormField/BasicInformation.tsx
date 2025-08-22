@@ -1,5 +1,10 @@
 import React from 'react';
-import { InputField, SelectField } from '@/components/molecules';
+import { InputField, SelectField, ControlFieldSet } from '@/components/molecules';
+import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
+import { 
+  SEX_OPTIONS_WITH_DEFAULT, 
+  CIVIL_STATUS_OPTIONS_WITH_DEFAULT
+} from '@/lib/constants/resident-enums';
 
 export interface BasicInformationData {
   firstName: string;
@@ -8,7 +13,7 @@ export interface BasicInformationData {
   extensionName: string;
   sex: 'male' | 'female' | '';
   civilStatus: string;
-  citizenship: string;
+  civilStatusOthersSpecify?: string;
 }
 
 interface BasicInformationProps {
@@ -18,27 +23,7 @@ interface BasicInformationProps {
   className?: string;
 }
 
-const CIVIL_STATUS_OPTIONS = [
-  { value: 'single', label: 'Single' },
-  { value: 'married', label: 'Married' },
-  { value: 'widowed', label: 'Widowed' },
-  { value: 'divorced', label: 'Divorced' },
-  { value: 'separated', label: 'Separated' },
-  { value: 'annulled', label: 'Annulled' },
-  { value: 'registered_partnership', label: 'Registered Partnership' },
-  { value: 'live_in', label: 'Live-in' },
-];
-
-const CITIZENSHIP_OPTIONS = [
-  { value: 'filipino', label: 'Filipino' },
-  { value: 'dual_citizen', label: 'Dual Citizen' },
-  { value: 'foreign_national', label: 'Foreign National' },
-];
-
-const SEX_OPTIONS = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-];
+// Use imported options with default empty values
 
 export function BasicInformation({
   value,
@@ -66,8 +51,9 @@ export function BasicInformation({
         </p>
       </div>
 
-      {/* Name Fields */}
+      {/* All Fields in One Grid */}
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Name Fields */}
         <InputField
           label="First Name"
           required
@@ -113,23 +99,33 @@ export function BasicInformation({
             placeholder: "Jr., Sr., III, etc."
           }}
         />
-      </div>
 
-      {/* Sex, Civil Status, Citizenship */}
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-        <SelectField
+        {/* Sex, Civil Status, Civil Status Other (conditional), Citizenship */}
+        <ControlFieldSet
+          type="radio"
           label="Sex"
-          required
           labelSize="sm"
+          radioName="sex"
+          radioValue={value.sex}
+          onRadioChange={(selectedValue: string) => handleChange('sex', selectedValue)}
           errorMessage={errors.sex}
-          selectProps={{
-            placeholder: "Select sex...",
-            options: SEX_OPTIONS,
-            value: value.sex,
-            searchable: true,
-            onSelect: handleSelectChange('sex')
-          }}
-        />
+          orientation="horizontal"
+          spacing="sm"
+        >
+          {SEX_OPTIONS_WITH_DEFAULT.map((option) => (
+            <Radio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+              size="md"
+              style="button"
+              buttonProps={{
+                variant: 'neutral-outline',
+                size: 'lg'
+              }}
+            />
+          ))}
+        </ControlFieldSet>
 
         <SelectField
           label="Civil Status"
@@ -137,23 +133,28 @@ export function BasicInformation({
           errorMessage={errors.civilStatus}
           selectProps={{
             placeholder: "Select civil status...",
-            options: CIVIL_STATUS_OPTIONS,
+            options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as any,
             value: value.civilStatus,
             onSelect: handleSelectChange('civilStatus')
           }}
         />
+        
+        {/* Show input field when "others" is selected */}
+        {value.civilStatus === 'others' && (
+          <InputField
+            label="Specify Civil Status"
+            required
+            labelSize="sm"
+            errorMessage={errors.civilStatusOthersSpecify}
+            inputProps={{
+              value: value.civilStatusOthersSpecify || '',
+              onChange: e => handleChange('civilStatusOthersSpecify', e.target.value),
+              placeholder: "Please specify civil status",
+              required: true
+            }}
+          />
+        )}
 
-        <SelectField
-          label="Citizenship"
-          labelSize="sm"
-          errorMessage={errors.citizenship}
-          selectProps={{
-            placeholder: "Select citizenship...",
-            options: CITIZENSHIP_OPTIONS,
-            value: value.citizenship,
-            onSelect: handleSelectChange('citizenship')
-          }}
-        />
       </div>
     </div>
   );

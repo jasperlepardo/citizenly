@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { InputField, SelectField } from '@/components/molecules';
 import Link from 'next/link';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 export const dynamic = 'force-dynamic';
 

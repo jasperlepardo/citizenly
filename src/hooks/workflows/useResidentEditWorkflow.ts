@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import { ResidentEditFormData } from '@/lib/validation/residentSchema';
+import type { ResidentFormData as ResidentEditFormData } from '@/lib/types/resident';
 import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 import { useResidentSubmission, UseResidentSubmissionOptions } from '../utilities/useResidentSubmission';
@@ -32,19 +32,19 @@ export interface UseResidentEditWorkflowReturn {
   resetForm: ReturnType<typeof useResidentFormState>['resetForm'];
   
   // Validation errors
-  errors: ReturnType<typeof useResidentFormValidationErrors>['errors'];
-  isValid: ReturnType<typeof useResidentFormValidationErrors>['isValid'];
-  validateField: ReturnType<typeof useResidentFormValidationErrors>['validateField'];
-  getFieldError: ReturnType<typeof useResidentFormValidationErrors>['getFieldError'];
-  hasFieldError: ReturnType<typeof useResidentFormValidationErrors>['hasFieldError'];
-  clearFieldError: ReturnType<typeof useResidentFormValidationErrors>['clearFieldError'];
+  errors: ReturnType<typeof useResidentValidationErrors>['errors'];
+  isValid: ReturnType<typeof useResidentValidationErrors>['isValid'];
+  validateField: ReturnType<typeof useResidentValidationErrors>['validateField'];
+  getFieldError: ReturnType<typeof useResidentValidationErrors>['getFieldError'];
+  hasFieldError: ReturnType<typeof useResidentValidationErrors>['hasFieldError'];
+  clearFieldError: ReturnType<typeof useResidentValidationErrors>['clearFieldError'];
   
   // Submission
-  isSubmitting: ReturnType<typeof useResidentFormSubmission>['isSubmitting'];
-  submissionError: ReturnType<typeof useResidentFormSubmission>['submissionError'];
+  isSubmitting: ReturnType<typeof useResidentSubmission>['isSubmitting'];
+  submissionError: ReturnType<typeof useResidentSubmission>['submissionError'];
   
   // Workflow methods
-  validateForm: () => ReturnType<typeof useResidentFormValidationErrors>['validateForm'];
+  validateForm: ReturnType<typeof useResidentValidationErrors>['validateForm'];
   submitForm: () => Promise<void>;
   resetWorkflow: () => void;
 }
@@ -160,8 +160,8 @@ export function useResidentEditWorkflow(
     // Form state
     formData: stateHook.formData,
     isDirty: stateHook.isDirty,
-    updateField,
-    updateFields,
+    updateField: stateHook.updateField,
+    updateFields: stateHook.updateFields,
     resetForm: stateHook.resetForm,
     
     // Validation errors
@@ -177,7 +177,7 @@ export function useResidentEditWorkflow(
     submissionError: submissionHook.submissionError,
     
     // Workflow methods
-    validateForm,
+    validateForm: validationHook.validateForm,
     submitForm,
     resetWorkflow,
   };

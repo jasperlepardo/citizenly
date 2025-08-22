@@ -1,5 +1,5 @@
 import { logger } from '../logging/secure-logger';
-import { ErrorCode } from '../api-types';
+import { ErrorCode } from '../api/types';
 
 /**
  * Advanced Rate Limiting System

@@ -4,6 +4,17 @@
  */
 
 import { z } from 'zod';
+import {
+  sexSchema,
+  civil_statusSchema,
+  citizenshipSchema,
+  education_levelSchema,
+  employment_statusSchema,
+  blood_typeSchema,
+  religionSchema,
+  ethnicitySchema,
+  income_classSchema
+} from '@/lib/validation/generated-schemas';
 
 // Base schema for common validations
 const nameSchema = z.string().min(1, 'Required').max(100, 'Too long (max 100 characters)');
@@ -70,17 +81,14 @@ export const ResidentFormSchema = z.object({
   last_name: nameSchema,
   extension_name: z.string().max(20, 'Too long (max 20 characters)').optional().or(z.literal('')),
   birthdate: dateSchema,
-  sex: z.enum(['male', 'female'], { message: 'Sex is required' }),
-  civil_status: z.enum(['single', 'married', 'divorced', 'widowed', 'separated'], {
-    message: 'Civil status is required',
-  }),
+  sex: sexSchema,
+  civil_status: civil_statusSchema,
   civil_status_others_specify: z.string().max(200, 'Too long').optional().or(z.literal('')),
-  citizenship: z.enum(['filipino', 'foreign'], { message: 'Citizenship is required' }).optional(),
+  citizenship: citizenshipSchema.optional(),
 
   // Birth Place Information
   birth_place_name: z.string().max(200, 'Too long').optional().or(z.literal('')),
   birth_place_code: z.string().max(20, 'Too long').optional().or(z.literal('')),
-  birth_place_level: z.enum(['region', 'province', 'city_municipality', 'barangay']).optional(),
 
   // Contact Information
   mobile_number: phoneSchema,
@@ -95,90 +103,25 @@ export const ResidentFormSchema = z.object({
   zip_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
 
   // Education & Employment
-  education_attainment: z
-    .enum([
-      'no_formal_education',
-      'pre_primary',
-      'primary',
-      'junior_high_school',
-      'senior_high_school',
-      'post_secondary_non_tertiary',
-      'short_cycle_tertiary',
-      'bachelors_degree',
-      'masters_degree',
-      'doctoral_degree',
-    ])
-    .optional(),
+  education_attainment: education_levelSchema.optional(),
   is_graduate: z.boolean().optional(),
-  employment_status: z
-    .enum([
-      'employed',
-      'unemployed',
-      'not_in_labor_force',
-      'student',
-      'homemaker',
-      'retired',
-      'disabled',
-      'others',
-    ])
-    .optional(),
+  employment_status: employment_statusSchema.optional(),
   employment_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
   employment_name: z.string().max(300, 'Too long').optional().or(z.literal('')),
-  psoc_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
+  occupation_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
   psoc_level: z.number().int().min(1).max(9).optional(),
   occupation_title: z.string().max(300, 'Too long').optional().or(z.literal('')),
 
   // Physical Characteristics
-  blood_type: z
-    .enum([
-      'a_positive',
-      'a_negative',
-      'b_positive',
-      'b_negative',
-      'ab_positive',
-      'ab_negative',
-      'o_positive',
-      'o_negative',
-      'unknown',
-    ])
-    .optional(),
+  blood_type: blood_typeSchema.optional(),
   height: heightSchema,
   weight: weightSchema,
   complexion: z.string().max(50, 'Too long').optional().or(z.literal('')),
 
   // Cultural & Religious Information
-  religion: z
-    .enum([
-      'roman_catholic',
-      'protestant',
-      'islam',
-      'iglesia_ni_cristo',
-      'buddhism',
-      'hinduism',
-      'judaism',
-      'others',
-      'prefer_not_to_say',
-    ])
-    .optional(),
+  religion: religionSchema.optional(),
   religion_others_specify: z.string().max(200, 'Too long').optional().or(z.literal('')),
-  ethnicity: z
-    .enum([
-      'tagalog',
-      'cebuano',
-      'ilocano',
-      'bisaya',
-      'hiligaynon',
-      'bikol',
-      'waray',
-      'kapampangan',
-      'pangasinan',
-      'maranao',
-      'maguindanao',
-      'tausug',
-      'others',
-      'not_reported',
-    ])
-    .optional(),
+  ethnicity: ethnicitySchema.optional(),
 
   // Voting Information
   is_voter: z.boolean().optional(),
@@ -261,7 +204,7 @@ export const EducationEmploymentSchema = ResidentFormSchema.pick({
   employment_status: true,
   employment_code: true,
   employment_name: true,
-  psoc_code: true,
+  occupation_code: true,
   psoc_level: true,
   occupation_title: true,
 });
@@ -272,7 +215,7 @@ export const SectoralInfoSchema = ResidentFormSchema.pick({
   employment_status: true,
   employment_code: true,
   employment_name: true,
-  psoc_code: true,
+  occupation_code: true,
   psoc_level: true,
   occupation_title: true,
 });
@@ -305,7 +248,6 @@ export const MotherMaidenNameSchema = ResidentFormSchema.pick({
 export const BirthPlaceSchema = ResidentFormSchema.pick({
   birth_place_name: true,
   birth_place_code: true,
-  birth_place_level: true,
 });
 
 export const AddressInfoSchema = ResidentFormSchema.pick({

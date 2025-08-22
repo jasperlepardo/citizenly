@@ -209,6 +209,7 @@ export interface PsocOption {
   occupation_code: string;
   occupation_title: string;
   hierarchy?: string;
+  badge?: string;
 }
 
 // PSGC (geographic) interfaces

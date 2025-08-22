@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/atoms';
-import { trackPWAEvents } from '@/lib/pwa-performance';
+import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;

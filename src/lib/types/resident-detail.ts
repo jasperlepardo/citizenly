@@ -111,7 +111,7 @@ export interface Resident {
   /** Name/description of current employment */
   employment_name?: string;
   /** Detailed PSOC classification code */
-  psoc_code?: string;
+  occupation_code?: string;
   /** PSOC classification level (1-4, with 4 being most specific) */
   psoc_level?: number;
   /** Specific job title or occupation */

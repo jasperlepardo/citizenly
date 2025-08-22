@@ -10,7 +10,7 @@
 import { useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { logger } from '@/lib/logging/secureLogger';
+import { logger } from '@/lib/logging/secure-logger';
 
 /**
  * Return type for useHouseholdCodeGeneration hook

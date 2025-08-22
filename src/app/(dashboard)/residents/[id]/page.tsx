@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { PersonalInformationForm } from '@/components/organisms';
 
 import { InputField } from '@/components/molecules';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
@@ -62,7 +62,7 @@ interface Resident {
   education_level?: string;
   education_status?: string;
   employment_status?: string;
-  psoc_code?: string;
+  occupation_code?: string;
   psoc_level?: string;
   occupation_title?: string;
   occupation_details?: string;
@@ -291,12 +291,12 @@ function ResidentDetailContent() {
         // Household information is now included in the main API response
 
         // Try to load PSOC information if available
-        if (residentData.psoc_code) {
+        if (residentData.occupation_code) {
           try {
             const { data: psocData } = await supabase
-              .from('psoc_codes')
+              .from('occupation_codes')
               .select('code, title, level')
-              .eq('code', residentData.psoc_code)
+              .eq('code', residentData.occupation_code)
               .single();
 
             if (psocData) {
@@ -979,13 +979,13 @@ function ResidentDetailContent() {
                     )}
                     {renderEditableField('Occupation Title', 'occupation_title', 'text')}
                     {renderEditableField('Workplace', 'workplace', 'text')}
-                    {resident.psoc_code && (
+                    {resident.occupation_code && (
                       <div>
                         <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
                           PSOC Code
                         </dt>
                         <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">
-                          {resident.psoc_code}
+                          {resident.occupation_code}
                         </dd>
                       </div>
                     )}

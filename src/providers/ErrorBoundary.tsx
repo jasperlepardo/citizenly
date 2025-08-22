@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/logging/secure-logger';
 
 interface Props {
   children: ReactNode;

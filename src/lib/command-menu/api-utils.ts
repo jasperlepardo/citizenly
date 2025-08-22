@@ -156,7 +156,7 @@ export async function exportData(options: ExportOptions): Promise<boolean> {
 // Get recent items from user activity
 export async function getRecentItems(): Promise<SearchResult[]> {
   try {
-    const { getStoredRecentItems } = await import('../storage/recentItemsStorage');
+    const { getStoredRecentItems } = await import('../storage');
     const recentItems = getStoredRecentItems();
     
     return recentItems.map(item => ({
@@ -175,7 +175,7 @@ export async function getRecentItems(): Promise<SearchResult[]> {
 // Clear recent items history
 export async function clearRecentItems(): Promise<boolean> {
   try {
-    const { clearRecentItems: clearStored } = await import('../storage/recentItemsStorage');
+    const { clearRecentItems: clearStored } = await import('../storage');
     clearStored();
     logger.info('Recent items cleared');
     return true;

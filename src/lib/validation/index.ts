@@ -11,6 +11,7 @@ export {
   residentSchema,
   householdSchema,
   userSchema,
+  residentSchema as ResidentFormSchema,
 } from './schemas';
 
 // Field validators

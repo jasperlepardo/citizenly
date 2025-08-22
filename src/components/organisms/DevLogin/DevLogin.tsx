@@ -8,7 +8,7 @@ import {
   getDemoUserConfig,
   logDevModeWarning,
   validateDevEnvironment,
-} from '@/lib/dev-config';
+} from '@/lib/config/dev-config';
 
 interface DevLoginProps {
   onSuccess?: () => void;

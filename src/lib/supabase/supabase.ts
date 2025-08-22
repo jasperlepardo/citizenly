@@ -202,7 +202,7 @@ export type Database = {
           education_level: string;
           education_status: string;
           employment_status: string | null;
-          psoc_code: string | null;
+          occupation_code: string | null;
           psoc_level: string | null;
           occupation_title: string | null;
           mobile_number: string;
@@ -253,7 +253,7 @@ export type Database = {
           education_level: string;
           education_status: string;
           employment_status?: string | null;
-          psoc_code?: string | null;
+          occupation_code?: string | null;
           psoc_level?: string | null;
           occupation_title?: string | null;
           mobile_number: string;
@@ -304,7 +304,7 @@ export type Database = {
           education_level?: string;
           education_status?: string;
           employment_status?: string | null;
-          psoc_code?: string | null;
+          occupation_code?: string | null;
           psoc_level?: string | null;
           occupation_title?: string | null;
           mobile_number?: string;

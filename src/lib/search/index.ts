@@ -2,4 +2,4 @@
  * Search utilities module
  */
 
-export * from './publicSearch';
+export * from './public-search';

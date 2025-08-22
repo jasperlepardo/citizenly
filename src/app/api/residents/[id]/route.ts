@@ -51,31 +51,51 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       );
     }
 
-    // Get resident data
-    const { data: resident, error: residentError } = await supabaseAdmin
+    // Get resident data with household join to check barangay access
+    const { data: residentWithHousehold, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select('*')
+      .select(`
+        *,
+        households!inner(
+          code,
+          barangay_code,
+          name,
+          address,
+          house_number,
+          street_id,
+          subdivision_id,
+          city_municipality_code,
+          province_code,
+          region_code,
+          zip_code,
+          no_of_families,
+          no_of_household_members,
+          no_of_migrants,
+          household_type,
+          tenure_status,
+          tenure_others_specify,
+          household_unit,
+          monthly_income,
+          income_class,
+          household_head_id,
+          household_head_position,
+          is_active,
+          created_by,
+          updated_by,
+          created_at,
+          updated_at
+        )
+      `)
       .eq('id', residentId)
-      .eq('barangay_code', userProfile.barangay_code) // Ensure same barangay
+      .eq('households.barangay_code', userProfile.barangay_code) // Ensure same barangay through household
       .single();
 
-    if (residentError || !resident) {
+    if (residentError || !residentWithHousehold) {
       return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
     }
 
-    // Get household information if exists
-    let household = null;
-    if (resident.household_code) {
-      const { data: householdData, error: householdError } = await supabaseAdmin
-        .from('households')
-        .select('*')
-        .eq('code', resident.household_code)
-        .single();
-
-      if (!householdError && householdData) {
-        household = householdData;
-      }
-    }
+    const resident = residentWithHousehold;
+    const household = resident.households;
 
     // Get geographic information
     let geoInfo = {};
@@ -101,7 +121,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           )
           `
         )
-        .eq('code', resident.barangay_code)
+        .eq('code', household.barangay_code)
         .single();
 
       if (barangayData) {
@@ -197,7 +217,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       );
     }
 
-    // Update resident data (only allow updates within same barangay)
+    // First check if resident exists and user has access through household
+    const { data: existingResident, error: checkError } = await supabaseAdmin
+      .from('residents')
+      .select(`
+        id,
+        household_code,
+        households!inner(barangay_code)
+      `)
+      .eq('id', residentId)
+      .eq('households.barangay_code', userProfile.barangay_code)
+      .single();
+
+    if (checkError || !existingResident) {
+      return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
+    }
+
+    // Update resident data (access already verified)
     const { data: updatedResident, error: updateError } = await supabaseAdmin
       .from('residents')
       .update({
@@ -205,7 +241,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         updated_at: new Date().toISOString(),
       })
       .eq('id', residentId)
-      .eq('barangay_code', userProfile.barangay_code) // Ensure same barangay
       .select()
       .single();
 

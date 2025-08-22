@@ -1,9 +1,10 @@
 import React from 'react';
-import { InputField, SelectField } from '@/components/molecules';
+import { InputField, ControlFieldSet } from '@/components/molecules';
+import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 
 export interface VotingInformationData {
-  isVoter: boolean | null;
-  isResidentVoter: boolean | null;
+  isVoter: string; // 'yes' | 'no' (defaults to 'no')
+  isResidentVoter: string; // 'yes' | 'no' (defaults to 'no')
   lastVotedDate: string;
 }
 
@@ -28,10 +29,10 @@ export function VotingInformation({
     });
   };
 
-  const yesNoOptions = [
-    { value: '', label: 'Not specified' },
+  // Yes/No options for voter status
+  const VOTER_STATUS_OPTIONS = [
     { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' },
+    { value: 'no', label: 'No' }
   ];
 
   return (
@@ -43,39 +44,58 @@ export function VotingInformation({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <SelectField
+      {/* All Fields in One Grid */}
+      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        <ControlFieldSet
+          type="radio"
           label="Registered Voter?"
           labelSize="sm"
+          radioName="isVoter"
+          radioValue={value.isVoter || 'no'}
+          onRadioChange={(selectedValue: string) => handleChange('isVoter', selectedValue)}
           errorMessage={errors.isVoter}
-          selectProps={{
-            placeholder: "Select status...",
-            options: yesNoOptions,
-            value: value.isVoter === true ? 'yes' : value.isVoter === false ? 'no' : '',
-            onSelect: (option) => {
-              const optionValue = option?.value;
-              handleChange('isVoter', optionValue === 'yes' ? true : optionValue === 'no' ? false : null);
-            }
-          }}
-        />
+          orientation="horizontal"
+          spacing="sm"
+        >
+          {VOTER_STATUS_OPTIONS.map((option) => (
+            <Radio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+              style="button"
+              buttonProps={{
+                variant: 'neutral-outline',
+                size: 'lg'
+              }}
+            />
+          ))}
+        </ControlFieldSet>
         
-        <SelectField
+        <ControlFieldSet
+          type="radio"
           label="Resident Voter?"
           labelSize="sm"
+          radioName="isResidentVoter"
+          radioValue={value.isResidentVoter || 'no'}
+          onRadioChange={(selectedValue: string) => handleChange('isResidentVoter', selectedValue)}
           errorMessage={errors.isResidentVoter}
-          selectProps={{
-            placeholder: "Select status...",
-            options: yesNoOptions,
-            value: value.isResidentVoter === true ? 'yes' : value.isResidentVoter === false ? 'no' : '',
-            onSelect: (option) => {
-              const optionValue = option?.value;
-              handleChange('isResidentVoter', optionValue === 'yes' ? true : optionValue === 'no' ? false : null);
-            }
-          }}
-        />
-      </div>
+          orientation="horizontal"
+          spacing="sm"
+        >
+          {VOTER_STATUS_OPTIONS.map((option) => (
+            <Radio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+              style="button"
+              buttonProps={{
+                variant: 'neutral-outline',
+                size: 'lg'
+              }}
+            />
+          ))}
+        </ControlFieldSet>
 
-      {(value.isVoter === true || value.isResidentVoter === true) && (
         <InputField
           label="Last Voted Year"
           labelSize="sm"
@@ -87,10 +107,11 @@ export function VotingInformation({
             placeholder: "2024",
             min: "1900",
             max: new Date().getFullYear().toString(),
+            disabled: value.isVoter !== 'yes' && value.isResidentVoter !== 'yes',
             error: errors.lastVotedDate
           }}
         />
-      )}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import type { ResidentFormData } from '@/lib/types/resident';
 // FormMode type definition
 type FormMode = 'create' | 'edit' | 'view';
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';
-import { createFormSubmitHandler } from '@/lib/forms/formHandlers';
+import { createFormSubmitHandler } from '@/lib/forms';
 
 interface UseFormSubmissionProps {
   onSubmit?: (data: ResidentFormData) => void | Promise<void>;

@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { HouseholdOption, PsocOption, PsgcOption } from '@/lib/types/resident';
 import { formatPsocOption, formatPsgcOption } from '@/lib/mappers/residentMapper';
-import { searchHouseholdsCached } from '@/lib/optimizers/householdFetcher';
+import { searchHouseholdsCached } from '@/lib/optimizers/household-fetcher';
 
 interface UseFormSearchesReturn {
   // PSOC search state

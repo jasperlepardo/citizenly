@@ -122,7 +122,7 @@ export async function logSecurityOperation(
 ): Promise<void> {
   try {
     // Import here to avoid circular dependencies
-    const { storeSecurityAuditLog } = await import('./auditStorage');
+    const { storeSecurityAuditLog } = await import('./audit-storage');
     
     const auditLog = {
       operation,

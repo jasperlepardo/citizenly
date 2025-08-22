@@ -31,7 +31,7 @@ export interface ResidentFormData {
   // Education & Employment - Step 2
   educationLevel: string;
   educationStatus: string;
-  psocCode: string;
+  occupationCode: string;
   psocLevel: string;
   positionTitleId: string;
   occupationDescription: string;
@@ -128,7 +128,7 @@ export class ResidentService {
         return {
           isValid: false,
           success: false,
-          errors: result.errors || [{ field: 'general', message: 'Validation failed' }],
+          errors: result.errors ? Object.entries(result.errors).map(([field, message]) => ({ field, message })) : [{ field: 'general', message: 'Validation failed' }],
         };
       }
       return { isValid: true, success: true };
@@ -204,7 +204,7 @@ export class ResidentService {
       citizenship: formData.citizenship as any,
       education_level: formData.educationLevel as any,
       education_status: formData.educationStatus as any,
-      psoc_code: formData.psocCode || null,
+      occupation_code: formData.occupationCode || null,
       psoc_level: formData.psocLevel || null,
       occupation_title: formData.occupationDescription || null,
       employment_status: (formData.employmentStatus as any) || 'not_in_labor_force',

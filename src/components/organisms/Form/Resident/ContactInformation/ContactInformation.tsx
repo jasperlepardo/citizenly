@@ -11,19 +11,12 @@ export interface ContactInformationFormProps {
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
-  // Household search functionality
-  onHouseholdSearch?: (query: string) => void;
-  householdOptions?: any[];
-  householdLoading?: boolean;
 }
 
 export function ContactInformationForm({ 
   formData, 
   onChange, 
-  errors,
-  onHouseholdSearch,
-  householdOptions = [],
-  householdLoading = false
+  errors
 }: ContactInformationFormProps) {
 
   // Map form data to ContactDetails component props
@@ -75,9 +68,6 @@ export function ContactInformationForm({
             value={householdInfoValue}
             onChange={handleHouseholdInfoChange}
             errors={errors}
-            onHouseholdSearch={onHouseholdSearch}
-            householdOptions={householdOptions}
-            householdLoading={householdLoading}
           />
         </div>
       </div>

@@ -12,7 +12,7 @@ export default function ReportsPage() {
       description: 'Records of Barangay Inhabitant form submissions and analytics',
       icon: '📋',
       status: 'Available',
-      link: '/rbi-form',
+      link: '/reports/records-of-barangay-inhabitants-by-household',
     },
   ];
 
