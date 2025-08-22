@@ -16,7 +16,7 @@ import {
   createPaginatedSearchState,
   createPaginatedSearchExecutor,
   createPaginatedSearchUtilities,
-} from '@/lib/utilities/searchUtilities';
+} from '@/lib/utilities';
 
 /**
  * Return type for useGenericPaginatedSearch hook

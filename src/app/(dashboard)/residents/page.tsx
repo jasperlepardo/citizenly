@@ -6,7 +6,7 @@ import { DataTable } from '@/components/organisms';
 import type { TableColumn, TableAction } from '@/components/organisms';
 import { SearchBar } from '@/components/molecules';
 import { Button } from '@/components/atoms';
-import { useResidents, type Resident } from '@/hooks/useResidents';
+import { useResidents, type Resident } from '@/hooks/crud/useResidents';
 
 
 interface SearchFilter {

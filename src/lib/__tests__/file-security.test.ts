@@ -8,7 +8,7 @@ import {
   generateUniqueFileName,
   scanFileForViruses,
   logFileOperation,
-} from '../security/fileSecurity';
+} from '../security/file-security';
 
 // Mock console methods
 const consoleSpy = jest.spyOn(console, 'info').mockImplementation();

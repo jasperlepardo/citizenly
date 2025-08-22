@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
-import { logger } from '@/lib/secure-logger';
+import { logger } from '@/lib/logging/secure-logger';
 
 interface CommandMenuErrorBoundaryState {
   hasError: boolean;

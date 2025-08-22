@@ -4,7 +4,7 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getCommandMenuHealth } from '@/lib/command-menu-analytics';
+import { getCommandMenuHealth } from '@/lib/command-menu/analytics-utils';
 import { withSecurityHeaders } from '@/lib/api-responses';
 
 // GET /api/health/command-menu - Health check for command menu system

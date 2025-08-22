@@ -3,7 +3,7 @@
  * Centralized exports for all storage functionality
  */
 
-export * from './offlineStorage';
-export * from './queryCache';
-export * from './recentItemsStorage';
-export * from './syncQueue';
+export * from './offline-storage';
+export * from './query-cache';
+export * from './recent-items-storage';
+export * from './sync-queue';

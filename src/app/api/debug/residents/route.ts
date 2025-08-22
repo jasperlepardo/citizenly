@@ -56,32 +56,32 @@ export async function GET(request: NextRequest) {
       .from('residents')
       .select('*', { count: 'exact', head: true });
 
-    // Check residents for user's barangay
+    // Check residents for user's barangay (via households join)
     let residentsInBarangay = 0;
     if (userProfile?.barangay_code) {
       const { count } = await supabaseAdmin
         .from('residents')
-        .select('*', { count: 'exact', head: true })
-        .eq('barangay_code', userProfile.barangay_code)
+        .select('*, households!inner(barangay_code)', { count: 'exact', head: true })
+        .eq('households.barangay_code', userProfile.barangay_code)
         .eq('is_active', true);
       residentsInBarangay = count || 0;
     }
 
-    // Check what barangay codes exist in residents table
+    // Check what barangay codes exist in households table (residents don't have geographic fields)
     const { data: barangayCodes } = await supabaseAdmin
-      .from('residents')
+      .from('households')
       .select('barangay_code')
       .limit(10);
 
-    // Check with user RLS policies (using user token)
+    // Check with user RLS policies (using user token) - need to join via households
     let rls_error = null;
     let rls_count = 0;
     try {
       if (userProfile?.barangay_code) {
         const { count, error } = await supabase
           .from('residents')
-          .select('*', { count: 'exact', head: true })
-          .eq('barangay_code', userProfile.barangay_code)
+          .select('*, households!inner(barangay_code)', { count: 'exact', head: true })
+          .eq('households.barangay_code', userProfile.barangay_code)
           .eq('is_active', true);
 
         if (error) {

@@ -5,6 +5,7 @@
  * Contains reusable error boundary logic and fallback component generators.
  */
 
+import React from 'react';
 import type { 
   ErrorBoundaryState, 
   ErrorFallbackProps, 
@@ -37,7 +38,7 @@ export function handleErrorBoundaryError(
     component: 'ErrorBoundary',
     action: 'componentDidCatch',
     errorInfo: {
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack || undefined,
     },
   });
 }

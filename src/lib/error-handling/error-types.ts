@@ -15,6 +15,7 @@ export interface AppError extends Error {
   context?: Record<string, any>;
   timestamp?: Date;
   severity?: ErrorSeverity;
+  cause?: Error;
 }
 
 /**
@@ -78,8 +79,12 @@ export interface ErrorLogContext {
   url?: string;
   component?: string;
   action?: string;
+  field?: string;
   timestamp: Date;
   environment: 'development' | 'staging' | 'production';
+  errorInfo?: {
+    componentStack?: string;
+  };
 }
 
 /**

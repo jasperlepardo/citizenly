@@ -1,10 +1,17 @@
 import React from 'react';
-import { SelectField } from '@/components/molecules';
-import { EDUCATION_LEVEL_OPTIONS } from '@/lib/constants/resident-enums';
+import { SelectField, ControlFieldSet } from '@/components/molecules';
+import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
+import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
+
+// Graduate status options
+const GRADUATE_STATUS_OPTIONS = [
+  { value: 'yes', label: 'Yes, graduated' },
+  { value: 'no', label: 'No, not graduated' }
+];
 
 export interface EducationInformationData {
   educationAttainment: string;
-  isGraduate: boolean;
+  isGraduate: string; // 'yes' | 'no' (defaults to 'yes')
 }
 
 export interface EducationInformationProps {
@@ -45,26 +52,36 @@ export function EducationInformation({
           errorMessage={errors.educationAttainment}
           selectProps={{
             placeholder: "Select education level...",
-            options: EDUCATION_LEVEL_OPTIONS,
+            options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
             value: value.educationAttainment,
             onSelect: (option) => handleChange('educationAttainment', option?.value || '')
           }}
         />
         
-        <SelectField
+        <ControlFieldSet
+          type="radio"
           label="Graduate Status"
           labelSize="sm"
+          radioName="isGraduate"
+          radioValue={value.isGraduate}
+          onRadioChange={(selectedValue: string) => handleChange('isGraduate', selectedValue)}
           errorMessage={errors.isGraduate}
-          selectProps={{
-            placeholder: "Select status...",
-            options: [
-              { value: 'yes', label: 'Yes' },
-              { value: 'no', label: 'No' }
-            ],
-            value: value.isGraduate ? 'yes' : 'no',
-            onSelect: (option) => handleChange('isGraduate', option?.value === 'yes')
-          }}
-        />
+          orientation="horizontal"
+          spacing="sm"
+        >
+          {GRADUATE_STATUS_OPTIONS.map((option) => (
+            <Radio
+              key={option.value}
+              value={option.value}
+              label={option.label}
+              style="button"
+              buttonProps={{
+                variant: 'neutral-outline',
+                size: 'lg'
+              }}
+            />
+          ))}
+        </ControlFieldSet>
       </div>
     </div>
   );

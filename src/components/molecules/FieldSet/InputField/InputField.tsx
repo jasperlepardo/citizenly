@@ -12,7 +12,7 @@ export interface InputFieldProps {
   errorMessage?: string;
   className?: string;
   orientation?: 'vertical' | 'horizontal';
-  labelWidth?: string;
+  labelWidth?: 'sm' | 'md' | 'lg';
   htmlFor?: string;
   labelSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   // Input component props (when used directly with Input)
@@ -29,13 +29,22 @@ export const InputField = ({
   errorMessage,
   className,
   orientation = 'vertical',
-  labelWidth = 'w-32',
+  labelWidth = 'md',
   htmlFor,
   labelSize = 'md',
   inputProps,
   labelProps,
 }: InputFieldProps) => {
   const isHorizontal = orientation === 'horizontal';
+  
+  const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
+    const widthClasses = {
+      sm: 'w-32', // 128px
+      md: 'w-40', // 160px  
+      lg: 'w-48', // 192px
+    };
+    return widthClasses[width];
+  };
   
   // Generate unique ID if not provided
   const fieldId = htmlFor || inputProps?.id || `field-${Math.random().toString(36).substr(2, 9)}`;
@@ -59,7 +68,7 @@ export const InputField = ({
     <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
-        <div className={cn(isHorizontal ? `${labelWidth} shrink-0 pt-2` : 'mb-1')}>
+        <div className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}>
           <Label
             htmlFor={fieldId}
             required={required}

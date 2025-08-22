@@ -37,7 +37,7 @@ export {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from './idGenerators';
+} from './id-generators';
 
 // Async utilities
 export {
@@ -56,10 +56,10 @@ export {
 // Resident utilities
 export * from './residentDetailHelpers';
 export * from './residentHelpers';
-export * from './residentListingHelpers';
+export * from './resident-listing-helpers';
 
 // Search utilities
-export * from './searchUtilities';
+export * from './search-utilities';
 
 // Validation utilities
-export * from './validationUtilities';
+export * from './validation-utilities';

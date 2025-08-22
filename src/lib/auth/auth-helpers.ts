@@ -420,7 +420,7 @@ export const searchBarangays = async (searchTerm: string, limit = 10) => {
 export const searchOccupations = async (searchTerm: string, limit = 10) => {
   const { data, error } = await supabase
     .from('psoc_unified_search')
-    .select('psoc_code, occupation_title, psoc_level, parent_title')
+    .select('occupation_code, occupation_title, psoc_level, parent_title')
     .ilike('search_text', `%${searchTerm}%`)
     .limit(limit);
 

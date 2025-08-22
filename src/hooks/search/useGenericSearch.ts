@@ -15,7 +15,7 @@ import {
   SearchFunction,
   createSearchState,
   createSearchUtilities,
-} from '@/lib/utilities/searchUtilities';
+} from '@/lib/utilities';
 
 /**
  * Return type for useGenericSearch hook
@@ -103,7 +103,7 @@ export function useGenericSearch<T>(
   // Execute search when debounced query changes
   useEffect(() => {
     executeSearch(debouncedQuery);
-  }, [debouncedQuery, executeSearch]);
+  }, [debouncedQuery]); // Remove executeSearch from dependencies to prevent infinite loop
 
   return {
     query: state.query,

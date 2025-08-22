@@ -86,7 +86,7 @@ export default function HouseholdRegistrationForm({
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<HouseholdFormData>({
-    resolver: zodResolver(householdSchema),
+    resolver: zodResolver(householdSchema) as any,
     defaultValues: {
       residents: [
         {

@@ -30,12 +30,9 @@ export interface PersonalInformationFormProps {
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
-  // API handlers for search functionality
-  onPsgcSearch?: (query: string) => void;
+  // API handlers for search functionality (only PSOC needed now)
   onPsocSearch?: (query: string) => void;
-  psgcOptions?: any[];
   psocOptions?: any[];
-  psgcLoading?: boolean;
   psocLoading?: boolean;
 }
 
@@ -43,11 +40,8 @@ export function PersonalInformationForm({
   formData, 
   onChange, 
   errors,
-  onPsgcSearch,
   onPsocSearch,
-  psgcOptions = [],
   psocOptions = [],
-  psgcLoading = false,
   psocLoading = false
 }: PersonalInformationFormProps) {
 
@@ -60,7 +54,6 @@ export function PersonalInformationForm({
     extensionName: formData.extensionName || '',
     sex: (formData.sex || '') as '' | 'male' | 'female',
     civilStatus: formData.civilStatus || '',
-    citizenship: formData.citizenship || '',
   };
 
   // Handle changes from BasicInformation component
@@ -125,16 +118,13 @@ export function PersonalInformationForm({
             }}
             onChange={handleBirthInfoChange}
             errors={errors}
-            onPsgcSearch={onPsgcSearch}
-            psgcOptions={psgcOptions}
-            psgcLoading={psgcLoading}
           />
 
           {/* Education Information */}
           <EducationInformation
             value={{
               educationAttainment: formData.educationAttainment || '',
-              isGraduate: formData.isGraduate || false,
+              isGraduate: formData.isGraduate ? 'yes' : 'no',
             }}
             onChange={handleEducationInfoChange}
             errors={errors}

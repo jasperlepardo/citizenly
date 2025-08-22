@@ -132,12 +132,11 @@ export default function PhysicalInfoSection({
         <FieldSet label="Citizenship" errorMessage={errors.citizenship}>
           <select
             name="citizenship"
-            value={formData.citizenship || ''}
+            value={formData.citizenship || 'filipino'}
             onChange={handleInputChange}
             disabled={disabled}
             className="bg-white dark:bg-gray-800 min-h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
           >
-            <option value="">Select Citizenship</option>
             {CITIZENSHIP_OPTIONS.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}

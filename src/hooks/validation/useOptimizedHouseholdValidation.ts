@@ -17,7 +17,7 @@ import {
   ValidationResult,
   FieldValidationResult,
   validationUtils,
-} from '@/lib/utilities/validationUtilities';
+} from '@/lib/utilities';
 
 /**
  * Household validation result (backward compatible)

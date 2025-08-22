@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-import { Resident } from '@/lib/types/residentDetail';
+import { Resident } from '@/lib/types/resident-detail';
 import { formatDate as libFormatDate } from './dataTransformers';
 
 /**

@@ -9,12 +9,12 @@ export {
   storeThreatDetectionEvent,
   querySecurityAuditLogs,
   getSecurityStatistics,
-} from './auditStorage';
+} from './audit-storage';
 
 export type {
   SecurityAuditLog,
   ThreatDetectionEvent,
-} from './auditStorage';
+} from './audit-storage';
 
 // Threat detection
 export {
@@ -22,19 +22,19 @@ export {
   getThreatLevel,
   shouldBlockIp,
   getSecurityInsights,
-} from './threatDetection';
+} from './threat-detection';
 
 export type {
   SecurityContext,
   ThreatPattern,
   SecurityEvent,
-} from './threatDetection';
+} from './threat-detection';
 
 // Crypto utilities
 export * from './crypto';
 
 // File security utilities
-export * from './fileSecurity';
+export * from './file-security';
 
 // Rate limiting utilities
-export * from './rateLimit';
+export * from './rate-limit';

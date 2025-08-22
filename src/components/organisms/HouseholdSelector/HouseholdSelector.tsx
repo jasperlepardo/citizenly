@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { CreateHouseholdModal } from '../CreateHouseholdModal';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 interface Region {
   code: string;
@@ -167,53 +167,34 @@ export default function HouseholdSelector({
           // Get geographic information from PSGC tables
           let geoInfo = {};
           try {
-            const { data: barangayData } = await supabase
-              .from('psgc_barangays')
-              .select(
-                `
-                  code,
-                  name,
-                  psgc_cities_municipalities!inner(
-                    code,
-                    name,
-                    type,
-                    psgc_provinces!inner(
-                      code,
-                      name,
-                      psgc_regions!inner(
-                        code,
-                        name
-                      )
-                    )
-                  )
-                `
-              )
-              .eq('code', household.barangay_code)
-              .single();
+            // Use API endpoint to get barangay info (avoids complex nested query issues)
+            const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(household.barangay_code)}`);
+            let barangayData = null;
+            
+            if (response.ok) {
+              const result = await response.json();
+              barangayData = result.data;
+            }
 
             if (barangayData) {
-              const cityMun =
-                barangayData.psgc_cities_municipalities as unknown as CityMunicipality;
-              const province = cityMun.psgc_provinces as Province;
-              const region = province.psgc_regions as Region;
-
+              // API returns flattened structure
               geoInfo = {
                 barangay_info: {
-                  code: barangayData.code,
-                  name: barangayData.name,
+                  code: barangayData.code || barangayData.barangay_code,
+                  name: barangayData.name || barangayData.barangay_name,
                 },
                 city_municipality_info: {
-                  code: cityMun.code,
-                  name: cityMun.name,
-                  type: cityMun.type,
+                  code: barangayData.city_code,
+                  name: barangayData.city_name,
+                  type: barangayData.city_type,
                 },
                 province_info: {
-                  code: province.code,
-                  name: province.name,
+                  code: barangayData.province_code,
+                  name: barangayData.province_name,
                 },
                 region_info: {
-                  code: region.code,
-                  name: region.name,
+                  code: barangayData.region_code,
+                  name: barangayData.region_name,
                 },
               };
             }

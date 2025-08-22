@@ -2,7 +2,7 @@
  * Generated Enums - Single Source of Truth
  * 
  * This file is auto-generated. Do not edit manually.
- * Generated at: 2025-08-14T09:48:14.341Z
+ * Generated at: 2025-08-22T16:48:38.722Z
  * 
  * To update enums, modify scripts/generate-enums.ts and run:
  * npm run generate:enums
@@ -22,6 +22,7 @@ export const CIVIL_STATUS_OPTIONS = [
   { value: 'divorced', label: 'Divorced' },
   { value: 'separated', label: 'Separated' },
   { value: 'annulled', label: 'Annulled' },
+  { value: 'others', label: 'Others (specify)' },
 ] as const;
 
 // Employment status options - synced with API validation
@@ -37,7 +38,6 @@ export const EMPLOYMENT_STATUS_OPTIONS = [
 
 // Blood type options
 export const BLOOD_TYPE_OPTIONS = [
-  { value: '', label: 'Select blood type' },
   { value: 'A+', label: 'A+' },
   { value: 'A-', label: 'A-' },
   { value: 'B+', label: 'B+' },
@@ -46,29 +46,28 @@ export const BLOOD_TYPE_OPTIONS = [
   { value: 'AB-', label: 'AB-' },
   { value: 'O+', label: 'O+' },
   { value: 'O-', label: 'O-' },
-  { value: 'unknown', label: 'Unknown' },
 ] as const;
 
 // Citizenship options
 export const CITIZENSHIP_OPTIONS = [
   { value: 'filipino', label: 'Filipino' },
   { value: 'dual_citizen', label: 'Dual Citizen' },
-  { value: 'foreign_national', label: 'Foreign National' },
+  { value: 'foreigner', label: 'Foreigner' },
 ] as const;
 
 // Religious affiliation options
 export const RELIGION_OPTIONS = [
   { value: 'roman_catholic', label: 'Roman Catholic' },
-  { value: 'protestant', label: 'Protestant' },
-  { value: 'iglesia_ni_cristo', label: 'Iglesia ni Cristo' },
   { value: 'islam', label: 'Islam' },
-  { value: 'buddhism', label: 'Buddhism' },
-  { value: 'judaism', label: 'Judaism' },
-  { value: 'hinduism', label: 'Hinduism' },
-  { value: 'indigenous_beliefs', label: 'Indigenous Beliefs' },
-  { value: 'other', label: 'Other' },
-  { value: 'none', label: 'None' },
-  { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+  { value: 'iglesia_ni_cristo', label: 'Iglesia ni Cristo' },
+  { value: 'christian', label: 'Christian' },
+  { value: 'aglipayan_church', label: 'Aglipayan Church' },
+  { value: 'seventh_day_adventist', label: 'Seventh Day Adventist' },
+  { value: 'bible_baptist_church', label: 'Bible Baptist Church' },
+  { value: 'jehovahs_witnesses', label: 'Jehovahs Witnesses' },
+  { value: 'church_of_jesus_christ_latter_day_saints', label: 'Church of Jesus Christ of Latter-day Saints' },
+  { value: 'united_church_of_christ_philippines', label: 'United Church of Christ Philippines' },
+  { value: 'others', label: 'Others (specify)' },
 ] as const;
 
 // Ethnicity/tribal affiliation options
@@ -78,30 +77,61 @@ export const ETHNICITY_OPTIONS = [
   { value: 'ilocano', label: 'Ilocano' },
   { value: 'bisaya', label: 'Bisaya' },
   { value: 'hiligaynon', label: 'Hiligaynon' },
-  { value: 'bicolano', label: 'Bicolano' },
+  { value: 'bikolano', label: 'Bikolano' },
   { value: 'waray', label: 'Waray' },
   { value: 'kapampangan', label: 'Kapampangan' },
-  { value: 'pangasinan', label: 'Pangasinan' },
+  { value: 'pangasinense', label: 'Pangasinense' },
   { value: 'maranao', label: 'Maranao' },
   { value: 'maguindanao', label: 'Maguindanao' },
   { value: 'tausug', label: 'Tausug' },
-  { value: 'indigenous_group', label: 'Indigenous Group' },
-  { value: 'mixed_heritage', label: 'Mixed Heritage' },
-  { value: 'other', label: 'Other' },
-  { value: 'not_reported', label: 'Not Reported' },
+  { value: 'yakan', label: 'Yakan' },
+  { value: 'samal', label: 'Samal' },
+  { value: 'badjao', label: 'Badjao' },
+  { value: 'aeta', label: 'Aeta' },
+  { value: 'agta', label: 'Agta' },
+  { value: 'ati', label: 'Ati' },
+  { value: 'batak', label: 'Batak' },
+  { value: 'bukidnon', label: 'Bukidnon' },
+  { value: 'gaddang', label: 'Gaddang' },
+  { value: 'higaonon', label: 'Higaonon' },
+  { value: 'ibaloi', label: 'Ibaloi' },
+  { value: 'ifugao', label: 'Ifugao' },
+  { value: 'igorot', label: 'Igorot' },
+  { value: 'ilongot', label: 'Ilongot' },
+  { value: 'isneg', label: 'Isneg' },
+  { value: 'ivatan', label: 'Ivatan' },
+  { value: 'kalinga', label: 'Kalinga' },
+  { value: 'kankanaey', label: 'Kankanaey' },
+  { value: 'mangyan', label: 'Mangyan' },
+  { value: 'mansaka', label: 'Mansaka' },
+  { value: 'palawan', label: 'Palawan' },
+  { value: 'subanen', label: 'Subanen' },
+  { value: 'tboli', label: 'Tboli' },
+  { value: 'teduray', label: 'Teduray' },
+  { value: 'tumandok', label: 'Tumandok' },
+  { value: 'chinese', label: 'Chinese' },
+  { value: 'others', label: 'Others' },
 ] as const;
 
-// Education attainment levels
+// Education attainment levels - aligned with Supabase schema
 export const EDUCATION_LEVEL_OPTIONS = [
-  { value: 'no_schooling', label: 'No Schooling' },
-  { value: 'elementary_undergraduate', label: 'Elementary Undergraduate' },
-  { value: 'elementary_graduate', label: 'Elementary Graduate' },
-  { value: 'high_school_undergraduate', label: 'High School Undergraduate' },
-  { value: 'high_school_graduate', label: 'High School Graduate' },
-  { value: 'college_undergraduate', label: 'College Undergraduate' },
-  { value: 'college_graduate', label: 'College Graduate' },
+  { value: 'elementary', label: 'Elementary' },
+  { value: 'high_school', label: 'High School' },
+  { value: 'college', label: 'College' },
   { value: 'post_graduate', label: 'Post Graduate' },
   { value: 'vocational', label: 'Vocational' },
+] as const;
+
+// Income Classifications (NEDA standards)
+export const INCOME_CLASS_OPTIONS = [
+  { value: 'rich', label: 'Rich' },
+  { value: 'high_income', label: 'High Income' },
+  { value: 'upper_middle_income', label: 'Upper Middle Income' },
+  { value: 'middle_class', label: 'Middle Class' },
+  { value: 'lower_middle_class', label: 'Lower Middle Class' },
+  { value: 'low_income', label: 'Low Income' },
+  { value: 'poor', label: 'Poor' },
+  { value: 'not_determined', label: 'Not Determined' },
 ] as const;
 
 // Type helpers for strict typing
@@ -113,6 +143,7 @@ export type CitizenshipValue = (typeof CITIZENSHIP_OPTIONS)[number]['value'];
 export type ReligionValue = (typeof RELIGION_OPTIONS)[number]['value'];
 export type EthnicityValue = (typeof ETHNICITY_OPTIONS)[number]['value'];
 export type EducationLevelValue = (typeof EDUCATION_LEVEL_OPTIONS)[number]['value'];
+export type IncomeClassValue = (typeof INCOME_CLASS_OPTIONS)[number]['value'];
 
 // Helper function to extract just the values
 export const extractValues = (options: { value: string; label: string }[]) =>

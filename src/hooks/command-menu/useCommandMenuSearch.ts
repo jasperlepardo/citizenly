@@ -9,9 +9,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { searchData } from '@/lib/command-menu/apiUtils';
-import { trackSearch } from '@/lib/storage/recentItemsStorage';
-import { trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu/analyticsUtils';
+import { searchData } from '@/lib/command-menu';
+import { trackSearch } from '@/lib/storage';
+import { trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 /**

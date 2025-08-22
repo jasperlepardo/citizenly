@@ -5,7 +5,7 @@
 
 import { NextRequest } from 'next/server';
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
-import { createRateLimitHandler } from '@/lib/rate-limit';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { createResidentSchema } from '@/lib/api-validation';
 import {
   createPaginatedResponse,
@@ -17,9 +17,9 @@ import {
   withSecurityHeaders,
 } from '@/lib/api-responses';
 import { auditDataOperation } from '@/lib/api-audit';
-import { RequestContext, Role } from '@/lib/api-types';
+import { RequestContext, Role } from '@/lib/api/types';
 import { z } from 'zod';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 // Type the auth result properly
 interface AuthenticatedUser {
@@ -61,7 +61,7 @@ export const GET = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Build base query with proper field selection
+        // Build base query with proper field selection including sectoral info
         let query = supabaseAdmin
           .from('residents')
           .select(
@@ -71,11 +71,33 @@ export const GET = withSecurityHeaders(
            last_name, 
            birthdate, 
            sex, 
-           barangay_code, 
-           city_municipality_code, 
-           province_code, 
-           region_code, 
-           created_at`,
+           birth_place_code, 
+           household_code,
+           email,
+           mobile_number,
+           created_at,
+           resident_sectoral_info(
+             is_labor_force,
+             is_labor_force_employed,
+             is_unemployed,
+             is_overseas_filipino_worker,
+             is_person_with_disability,
+             is_out_of_school_children,
+             is_out_of_school_youth,
+             is_senior_citizen,
+             is_registered_senior_citizen,
+             is_solo_parent,
+             is_indigenous_people,
+             is_migrant
+           ),
+           resident_migrant_info(
+             previous_barangay_code,
+             previous_city_municipality_code,
+             previous_province_code,
+             previous_region_code,
+             date_of_transfer,
+             is_intending_to_return
+           )`,
             { count: 'exact' }
           )
           .order('created_at', { ascending: false });
@@ -168,27 +190,17 @@ export const POST = withSecurityHeaders(
 
         const residentData = validationResult.data;
 
-        // Use user's barangay code if not provided
-        const effectiveBarangayCode = residentData.barangayCode || user.barangayCode;
-        if (!effectiveBarangayCode) {
-          return createValidationErrorResponse(
-            [{ field: 'barangayCode', message: 'Barangay code is required' }],
-            context
-          );
-        }
-
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Prepare data for insertion
+        // Prepare data for insertion (using actual database schema)
         const insertData = {
           // Required fields
           first_name: residentData.firstName,
           last_name: residentData.lastName,
           birthdate: residentData.birthdate,
           sex: residentData.sex,
-          barangay_code: effectiveBarangayCode,
 
-          // Optional fields
+          // Optional fields (matching actual database schema)
           middle_name: residentData.middleName || null,
           extension_name: residentData.extensionName || null,
           mobile_number: residentData.mobileNumber || null,
@@ -198,13 +210,7 @@ export const POST = withSecurityHeaders(
           mother_maiden_middle: residentData.motherMaidenMiddleName || null,
           mother_maiden_last: residentData.motherMaidenLastName || null,
           birth_place_code: residentData.birthPlaceCode || null,
-          birth_place_level: residentData.birthPlaceLevel || null,
-          birth_place_name: residentData.birthPlaceName || null,
           household_code: residentData.householdCode || null,
-          city_municipality_code: residentData.cityMunicipalityCode || user.cityCode || null,
-          province_code: residentData.provinceCode || user.provinceCode || null,
-          region_code: residentData.regionCode || user.regionCode || null,
-          zip_code: residentData.zipCode || null,
 
           // Additional fields with defaults
           civil_status: residentData.civilStatus,
@@ -216,9 +222,7 @@ export const POST = withSecurityHeaders(
           employment_status: residentData.employmentStatus,
           education_attainment: residentData.educationAttainment || null,
           is_graduate: residentData.isGraduate,
-          psoc_code: residentData.psocCode || null,
-          psoc_level: residentData.psocLevel || null,
-          occupation_title: residentData.occupationTitle || null,
+          occupation_code: residentData.psocCode || null, // Using occupation_code instead of psoc_code
           height: residentData.height ? parseFloat(residentData.height) : null,
           weight: residentData.weight ? parseFloat(residentData.weight) : null,
           complexion: residentData.complexion || null,
@@ -235,7 +239,7 @@ export const POST = withSecurityHeaders(
         const { data: newResident, error: insertError } = await supabaseAdmin
           .from('residents')
           .insert([insertData])
-          .select('id, first_name, last_name, birthdate, sex, barangay_code, created_at')
+          .select('id, first_name, last_name, birthdate, sex, birth_place_code, created_at')
           .single();
 
         if (insertError) {
@@ -243,9 +247,78 @@ export const POST = withSecurityHeaders(
           throw insertError;
         }
 
+        // Insert sectoral information if provided
+        if (residentData.isLaborForce !== undefined || 
+            residentData.isLaborForceEmployed !== undefined ||
+            residentData.isOverseasFilipinoWorker !== undefined ||
+            residentData.isPersonWithDisability !== undefined ||
+            residentData.isSeniorCitizen !== undefined ||
+            residentData.isSoloParent !== undefined ||
+            residentData.isIndigenousPeople !== undefined ||
+            residentData.isMigrant !== undefined) {
+          
+          const sectoralData = {
+            resident_id: newResident.id,
+            is_labor_force: residentData.isLaborForce || false,
+            is_labor_force_employed: residentData.isLaborForceEmployed || false,
+            is_unemployed: residentData.isUnemployed || false,
+            is_overseas_filipino_worker: residentData.isOverseasFilipinoWorker || false,
+            is_person_with_disability: residentData.isPersonWithDisability || false,
+            is_out_of_school_children: residentData.isOutOfSchoolChildren || false,
+            is_out_of_school_youth: residentData.isOutOfSchoolYouth || false,
+            is_senior_citizen: residentData.isSeniorCitizen || false,
+            is_registered_senior_citizen: residentData.isRegisteredSeniorCitizen || false,
+            is_solo_parent: residentData.isSoloParent || false,
+            is_indigenous_people: residentData.isIndigenousPeople || false,
+            is_migrant: residentData.isMigrant || false,
+            created_by: user.id,
+            updated_by: user.id,
+          };
+
+          const { error: sectoralError } = await supabaseAdmin
+            .from('resident_sectoral_info')
+            .insert([sectoralData]);
+
+          if (sectoralError) {
+            logError(new Error('Sectoral info creation error'), JSON.stringify(sectoralError));
+            // Don't throw - sectoral data is optional
+          }
+        }
+
+        // Insert migration information if provided
+        if (residentData.isMigrant && (
+            residentData.previousBarangayCode ||
+            residentData.previousCityMunicipalityCode ||
+            residentData.dateOfTransfer)) {
+          
+          const migrantData = {
+            resident_id: newResident.id,
+            previous_barangay_code: residentData.previousBarangayCode || null,
+            previous_city_municipality_code: residentData.previousCityMunicipalityCode || null,
+            previous_province_code: residentData.previousProvinceCode || null,
+            previous_region_code: residentData.previousRegionCode || null,
+            length_of_stay_previous_months: residentData.lengthOfStayPreviousMonths || null,
+            reason_for_leaving: residentData.reasonForLeaving || null,
+            date_of_transfer: residentData.dateOfTransfer || null,
+            reason_for_transferring: residentData.reasonForTransferring || null,
+            duration_of_stay_current_months: residentData.durationOfStayCurrentMonths || null,
+            is_intending_to_return: residentData.isIntendingToReturn || false,
+            created_by: user.id,
+            updated_by: user.id,
+          };
+
+          const { error: migrantError } = await supabaseAdmin
+            .from('resident_migrant_info')
+            .insert([migrantData]);
+
+          if (migrantError) {
+            logError(new Error('Migrant info creation error'), JSON.stringify(migrantError));
+            // Don't throw - migration data is optional
+          }
+        }
+
         // Audit the creation
         await auditDataOperation('create', 'resident', newResident.id, context, {
-          barangayCode: effectiveBarangayCode,
           fullName: `${residentData.firstName} ${residentData.lastName}`,
         });
 

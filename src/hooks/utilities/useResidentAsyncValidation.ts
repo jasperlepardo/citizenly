@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import { asyncValidationUtils } from '@/lib/utilities/validationUtilities';
+import { asyncValidationUtils } from '@/lib/utilities';
 import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
 
 /**

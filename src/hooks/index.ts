@@ -6,9 +6,7 @@
  */
 
 // Export hooks
-export { useResidentOperations } from './useResidentOperations';
-export { useHouseholdOperations } from './useHouseholdOperations';
+export { useResidentOperations } from './crud/useResidentOperations';
 
 // Export types
-export type { UseResidentOperationsOptions } from './useResidentOperations';
-export type { UseHouseholdOperationsOptions } from './useHouseholdOperations';
+export type { UseResidentOperationsOptions } from './crud/useResidentOperations';

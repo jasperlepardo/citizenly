@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';
 import { SelectField } from '../../molecules/FieldSet/SelectField';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;
@@ -137,29 +137,51 @@ export default function CreateHouseholdModal({
     try {
       logger.debug('Loading address display info', { barangayCode });
 
-      // Query the PSGC tables to get full address hierarchy
-      const { data: barangayData, error } = await supabase
-        .from('psgc_barangays')
-        .select(
-          `
-          name,
-          psgc_cities_municipalities!inner(
-            name,
-            type,
-            psgc_provinces!inner(
-              name,
-              psgc_regions!inner(
-                name
-              )
-            )
-          )
-        `
-        )
-        .eq('code', barangayCode)
-        .single();
+      // Check if user is authenticated before making database queries
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        logger.debug('No active session, skipping address info load');
+        setAddressDisplayInfo({
+          region: 'Session required',
+          province: 'Session required',
+          cityMunicipality: 'Session required',
+          barangay: 'Session required',
+        });
+        return;
+      }
+
+      // Validate barangay code before querying
+      if (!barangayCode || barangayCode.trim() === '') {
+        logger.warn('Empty barangay code provided', { barangayCode });
+        setAddressDisplayInfo({
+          region: 'Region information not available',
+          province: 'Province information not available',
+          cityMunicipality: 'City/Municipality information not available',
+          barangay: 'Barangay information not available',
+        });
+        return;
+      }
+
+      // Use our API endpoint to get full address hierarchy (avoids complex nested query issues)
+      logger.debug('Querying PSGC lookup API for barangay', { barangayCode });
+      const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(barangayCode)}`);
+      
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      const barangayData = result.data;
+      const error = result.error;
 
       if (error) {
-        logger.error('Error loading address display info', { error, barangayCode });
+        logger.error('Error loading address display info', { 
+          error: error?.message || 'Unknown error', 
+          barangayCode,
+          errorCode: error?.code || 'Unknown code',
+          errorDetails: error?.details || 'No details',
+          fullError: JSON.stringify(error)
+        });
         setAddressDisplayInfo({
           region: 'Region information not available',
           province: 'Province information not available',
@@ -170,19 +192,24 @@ export default function CreateHouseholdModal({
       }
 
       if (barangayData) {
-        const cityMun = (barangayData as unknown as BarangayData).psgc_cities_municipalities;
-        const province = cityMun.psgc_provinces;
-        const region = province.psgc_regions;
-
+        // API returns flattened structure
         setAddressDisplayInfo({
-          region: region.name,
-          province: province.name,
-          cityMunicipality: `${cityMun.name} (${cityMun.type})`,
-          barangay: barangayData.name,
+          region: barangayData.region_name || 'Region information not available',
+          province: barangayData.province_name || 'Province information not available',
+          cityMunicipality: barangayData.city_type ? 
+            `${barangayData.city_name} (${barangayData.city_type})` : 
+            (barangayData.city_name || 'City/Municipality information not available'),
+          barangay: barangayData.name || barangayData.barangay_name || `Barangay ${barangayCode}`,
         });
         logger.debug('Loaded address display info from database');
       }
     } catch (error) {
+      logger.error('Exception in loadAddressDisplayInfo', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        barangayCode,
+        errorType: typeof error,
+        fullError: JSON.stringify(error)
+      });
       logError(error as Error, 'ADDRESS_INFO_LOAD_ERROR');
       setAddressDisplayInfo({
         region: 'Region information not available',
@@ -195,10 +222,30 @@ export default function CreateHouseholdModal({
 
   // Load address info when userProfile changes
   useEffect(() => {
-    if (userProfile?.barangay_code) {
-      loadAddressDisplayInfo(userProfile.barangay_code);
+    // Early exit if modal is not open to prevent unnecessary operations
+    if (!isOpen) {
+      return;
     }
-  }, [userProfile?.barangay_code]);
+
+    // Only attempt to load address info if user is properly authenticated and has profile
+    if (userProfile?.barangay_code && userProfile.id) {
+      loadAddressDisplayInfo(userProfile.barangay_code);
+    } else {
+      logger.debug('No barangay code or user ID in profile', { 
+        hasBarangayCode: !!userProfile?.barangay_code,
+        hasUserId: !!userProfile?.id,
+        isModalOpen: isOpen,
+        userProfile 
+      });
+      // Set fallback info when no barangay code is available
+      setAddressDisplayInfo({
+        region: 'Authentication required',
+        province: 'Authentication required',
+        cityMunicipality: 'Authentication required',
+        barangay: 'Authentication required',
+      });
+    }
+  }, [userProfile?.barangay_code, userProfile?.id, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,58 +291,42 @@ export default function CreateHouseholdModal({
       if (!addressInfo) {
         logger.debug('Using fallback query to get address info');
         try {
-          // Get barangay info with related geographic data
-          const { data: barangayData, error: barangayError } = await supabase
-            .from('psgc_barangays')
-            .select(
-              `
-              code,
-              name,
-              city_municipality_code,
-              psgc_cities_municipalities!inner(
-                code,
-                name,
-                type,
-                province_code,
-                psgc_provinces!inner(
-                  code,
-                  name,
-                  region_code,
-                  psgc_regions!inner(
-                    code,
-                    name
-                  )
-                )
-              )
-            `
-            )
-            .eq('code', userProfile.barangay_code)
-            .single();
-
-          if (barangayError) {
+          // Use our API endpoint to get barangay info (avoids complex nested query issues)
+          logger.debug('Using PSGC lookup API for fallback query');
+          const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(userProfile.barangay_code)}`);
+          
+          let barangayData = null;
+          let barangayError = null;
+          
+          if (!response.ok) {
+            barangayError = { message: `API request failed: ${response.status}` };
             logger.error('Error fetching barangay info', { error: barangayError });
             logger.debug('Fallback query failed, will use minimal data approach');
-            // Don't return here, let it fall through to minimal data approach
+          } else {
+            const result = await response.json();
+            barangayData = result.data;
+            barangayError = result.error;
+            
+            if (barangayError) {
+              logger.error('Error fetching barangay info', { error: barangayError });
+              logger.debug('Fallback query failed, will use minimal data approach');
+            }
           }
 
           if (barangayData && !barangayError) {
             logger.debug('Fallback query successful', { hasData: !!barangayData });
 
-            // Map the data to match expected format
-            const cityMun = (barangayData as unknown as BarangayData).psgc_cities_municipalities;
-            const province = cityMun.psgc_provinces;
-            const region = province.psgc_regions;
-
+            // Map the flattened API response data to expected format
             addressInfo = {
-              barangay_code: barangayData.code,
-              barangay_name: barangayData.name,
-              city_municipality_code: cityMun.code,
-              city_municipality_name: cityMun.name,
-              city_municipality_type: cityMun.type,
-              province_code: province.code,
-              province_name: province.name,
-              region_code: region.code,
-              region_name: region.name,
+              barangay_code: barangayData.code || barangayData.barangay_code,
+              barangay_name: barangayData.name || barangayData.barangay_name,
+              city_municipality_code: barangayData.city_code,
+              city_municipality_name: barangayData.city_name,
+              city_municipality_type: barangayData.city_type,
+              province_code: barangayData.province_code,
+              province_name: barangayData.province_name,
+              region_code: barangayData.region_code,
+              region_name: barangayData.region_name,
             };
           }
         } catch (fallbackError) {

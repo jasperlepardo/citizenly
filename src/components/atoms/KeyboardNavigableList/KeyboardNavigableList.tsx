@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback } from 'react';
-import { useArrowKeyNavigation } from '@/lib/accessibility';
+import { useArrowKeyNavigation } from '@/lib/ui/accessibility';
 import { cn } from '@/lib/utils';
 
 interface ListItem {

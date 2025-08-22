@@ -160,18 +160,30 @@ export const ControlGroup = ({
   spacing = 'md',
   orientation = 'vertical',
 }: ControlGroupProps) => {
+  const getSpacingClass = (spacing: 'sm' | 'md' | 'lg') => {
+    const spacingMap = {
+      sm: '2',
+      md: '4', 
+      lg: '6'
+    };
+    return spacingMap[spacing];
+  };
+
+  const spacingClass = getSpacingClass(spacing);
+  const orientationClass = orientation === 'vertical' ? 'flex-col' : 'flex-row flex-wrap';
+
   return (
-    <div className={cn('control-group', className)}>
+    <div className={cn('w-full', className)}>
       {/* Title and Description */}
       {(title || description) && (
-        <div className="control-group-header">
-          {title && <h3 className="control-group-title">{title}</h3>}
-          {description && <p className="control-group-description">{description}</p>}
+        <div className="mb-3">
+          {title && <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200">{title}</h3>}
+          {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
         </div>
       )}
 
       {/* Controls */}
-      <div className={`control-group-items--${orientation}-${spacing}`}>{children}</div>
+      <div className={cn('flex', orientationClass, `gap-${spacingClass}`)}>{children}</div>
     </div>
   );
 };

@@ -25,16 +25,10 @@ const defaultNavigation: NavigationItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
   { name: 'Residents', href: '/residents', icon: 'users' },
   { name: 'Households', href: '/households', icon: 'household' },
-  { name: 'Business', href: '/business', icon: 'business' },
-  { name: 'Judiciary', href: '/judiciary', icon: 'gavel' },
-  { name: 'Certification', href: '/certification', icon: 'certificate' },
-  { name: 'Addresses', href: '/addresses', icon: 'map' },
   { name: 'Reports', href: '/reports', icon: 'chart-bar' },
 ];
 
 const bottomNavigation: NavigationItem[] = [
-  { name: 'Help', href: '/help', icon: 'help' },
-  { name: 'Notifications', href: '/notifications', icon: 'bell' },
   { name: 'Settings', href: '/settings', icon: 'settings' },
 ];
 

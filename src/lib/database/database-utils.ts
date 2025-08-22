@@ -170,60 +170,37 @@ export async function searchAddresses(
   limit: number = 50
 ): Promise<AddressHierarchy[]> {
   try {
-    // Search across barangays with related data
-    const { data, error } = await supabase
-      .from('psgc_barangays')
-      .select(
-        `
-        code,
-        name,
-        city_municipality_code,
-        psgc_cities_municipalities (
-          code,
-          name,
-          type,
-          is_independent,
-          province_code,
-          psgc_provinces (
-            code,
-            name,
-            region_code,
-            psgc_regions (
-              code,
-              name
-            )
-          )
-        )
-      `
-      )
-      .ilike('name', `%${searchTerm}%`)
-      .limit(limit);
-
-    if (error) {
-      console.error('Error searching addresses:', error);
+    // Use API endpoint to avoid complex nested queries
+    const response = await fetch(`/api/psgc/search?q=${encodeURIComponent(searchTerm)}&levels=barangay&limit=${limit}`);
+    
+    if (!response.ok) {
+      console.error('Error searching addresses:', response.status);
       return [];
     }
+    
+    const result = await response.json();
+    const data = result.data || [];
+    const error = result.error;
 
-    // Transform the data to match AddressHierarchy interface
+    // Transform the flattened API response to match AddressHierarchy interface
     const results: AddressHierarchy[] = (data || []).map((barangay: any) => {
-      const city = barangay.psgc_cities_municipalities;
-      const province = city?.psgc_provinces;
-      const region = province?.psgc_regions;
-
       return {
-        region_code: region?.code || null,
-        region_name: region?.name || '',
-        province_code: province?.code || null,
-        province_name: province?.name || null,
-        city_municipality_code: city?.code || null,
-        city_municipality_name: city?.name || '',
-        city_municipality_type: city?.type || '',
-        is_independent: city?.is_independent || false,
-        barangay_code: barangay.code,
-        barangay_name: barangay.name,
-        full_address: [barangay.name, city?.name, province?.name, region?.name]
-          .filter(Boolean)
-          .join(', '),
+        region_code: barangay.region_code || null,
+        region_name: barangay.region_name || '',
+        province_code: barangay.province_code || null,
+        province_name: barangay.province_name || null,
+        city_municipality_code: barangay.city_code || null,
+        city_municipality_name: barangay.city_name || '',
+        city_municipality_type: barangay.city_type || '',
+        is_independent: false, // Default value
+        barangay_code: barangay.code || barangay.barangay_code,
+        barangay_name: barangay.name || barangay.barangay_name,
+        full_address: barangay.full_address || [
+          barangay.name || barangay.barangay_name, 
+          barangay.city_name, 
+          barangay.province_name, 
+          barangay.region_name
+        ].filter(Boolean).join(', '),
       };
     });
 

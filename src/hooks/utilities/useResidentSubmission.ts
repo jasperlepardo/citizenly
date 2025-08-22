@@ -9,7 +9,8 @@
 
 import { useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ResidentEditFormData, ValidationResult } from '@/lib/validation/residentSchema';
+import { ValidationResult } from '@/lib/validation';
+import type { ResidentFormData as ResidentEditFormData } from '@/lib/types/resident';
 
 /**
  * Submission options

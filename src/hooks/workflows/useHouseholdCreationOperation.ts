@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
-import { logger, logError } from '@/lib/logging/secureLogger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 import type { HouseholdFormData } from '../utilities/useHouseholdForm';
 
 /**
@@ -107,7 +107,7 @@ export function useHouseholdCreationOperation(): UseHouseholdCreationOperationRe
         code: householdCode,
         house_number: formData.house_number.trim(),
         street_id: formData.street_id,
-        subdivision_id: formData.subdivision_id || null,
+        subdivision_id: formData.subdivision_id || undefined,
         barangay_code: userProfile.barangay_code,
         region_code: geoCodes.region_code,
         province_code: geoCodes.province_code,
@@ -148,11 +148,7 @@ export function useHouseholdCreationOperation(): UseHouseholdCreationOperationRe
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
       setCreationError(errorMessage);
-      logError('Household creation failed', error, {
-        householdCode,
-        formData,
-        barangayCode: userProfile?.barangay_code,
-      });
+      logError(error instanceof Error ? error : new Error('Household creation failed'));
       return null;
     } finally {
       setIsCreating(false);
