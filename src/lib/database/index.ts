@@ -3,6 +3,6 @@
  * Centralized exports for all database-related utilities
  */
 
-export * from './databaseUtils';
-export * from './fieldUtils';
-export * from './queryUtils';
+export * from './database-utils';
+export * from './field-utils';
+export * from './query-utils';

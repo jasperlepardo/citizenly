@@ -5,7 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { RequestContext, ErrorCode } from './api-types';
-import { logger } from './secure-logger';
+import { logger } from "./logging/secure-logger";
 
 export enum AuditEventType {
   // Authentication events
@@ -69,7 +69,7 @@ export interface AuditEvent {
   userRole?: string;
   resourceType?: string;
   resourceId?: string;
-  action: string;
+  operation: string;
   outcome: 'success' | 'failure';
   details?: Record<string, any>;
   context: RequestContext;
@@ -85,7 +85,7 @@ interface AuditLogEntry {
   user_role?: string;
   resource_type?: string;
   resource_id?: string;
-  action: string;
+  operation: string; // Changed from 'action' to match database schema
   outcome: string;
   details?: Record<string, any>;
   error_code?: string;
@@ -204,7 +204,7 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       userRole: event.userRole,
       resourceType: event.resourceType,
       resourceId: event.resourceId,
-      action: event.action!,
+      operation: event.operation!,
       outcome: event.outcome || 'success',
       details: event.details ? maskSensitiveData(event.details) : undefined,
       context: event.context!,
@@ -220,7 +220,7 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       user_role: auditEvent.userRole,
       resource_type: auditEvent.resourceType,
       resource_id: auditEvent.resourceId,
-      action: auditEvent.action,
+      operation: auditEvent.operation,
       outcome: auditEvent.outcome,
       details: auditEvent.details,
       error_code: auditEvent.errorCode,
@@ -273,7 +273,7 @@ export async function auditAuth(
   await auditLog({
     eventType,
     userId: context.userId !== 'anonymous' ? context.userId : undefined,
-    action: eventType.replace('_', ' '),
+    operation: eventType.replace('_', ' '),
     outcome: eventType.includes('failed') ? 'failure' : 'success',
     details,
     context,
@@ -286,7 +286,7 @@ export async function auditAuth(
 export async function auditResourceAccess(
   resourceType: string,
   resourceId: string,
-  action: string,
+  operation: string,
   outcome: 'success' | 'failure',
   context: RequestContext,
   details?: Record<string, any>
@@ -300,7 +300,7 @@ export async function auditResourceAccess(
     userRole: context.userRole,
     resourceType,
     resourceId,
-    action,
+    operation,
     outcome,
     details,
     context,
@@ -340,7 +340,7 @@ export async function auditDataOperation(
       userRole: context.userRole,
       resourceType,
       resourceId,
-      action: `${operation} ${resourceType}`,
+      operation: `${operation} ${resourceType}`,
       outcome: 'success',
       details,
       context,
@@ -360,7 +360,7 @@ export async function auditSecurityViolation(
   await auditLog({
     eventType,
     userId: context.userId !== 'anonymous' ? context.userId : undefined,
-    action: 'security_violation',
+    operation: 'security_violation',
     outcome: 'failure',
     details,
     context,
@@ -379,7 +379,7 @@ export async function auditError(
   await auditLog({
     eventType: AuditEventType.API_ERROR,
     userId: context.userId !== 'anonymous' ? context.userId : undefined,
-    action: 'api_error',
+    operation: 'api_error',
     outcome: 'failure',
     details: {
       errorName: error.name,

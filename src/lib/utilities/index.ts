@@ -14,7 +14,7 @@ export {
   isValidEmail,
   isValidPhilippineMobile,
   formatPhoneNumber,
-} from './stringUtils';
+} from './string-utils';
 
 // Data transformation utilities
 export {
@@ -45,13 +45,13 @@ export {
   throttle,
   sleep,
   retry,
-} from './asyncUtils';
+} from './async-utils';
 
 // CSS utilities
 export {
   cn,
   mergeClassNames,
-} from './cssUtils';
+} from './css-utils';
 
 // Resident utilities
 export * from './residentDetailHelpers';

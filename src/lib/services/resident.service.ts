@@ -13,7 +13,7 @@ import {
   logSecurityOperation,
 } from '@/lib/security/crypto';
 import { validateResidentData } from '@/lib/validation';
-import { logger, logError, dbLogger } from '@/lib/logging/secureLogger';
+import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
 import type { ValidationResult as BaseValidationResult } from '../validation/types';
 
 // Types

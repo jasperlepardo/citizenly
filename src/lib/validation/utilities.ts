@@ -4,7 +4,7 @@
  */
 
 import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
-import { debounce } from '../utilities/asyncUtils';
+import { debounce } from '../utilities/async-utils';
 
 /**
  * Check if email is valid

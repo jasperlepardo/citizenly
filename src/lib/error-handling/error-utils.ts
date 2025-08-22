@@ -11,9 +11,9 @@ import type {
   NetworkError, 
   ValidationError,
   FieldError,
-} from './errorTypes';
-import { ErrorSeverity, ErrorCode } from './errorTypes';
-import { retry } from '../utilities/asyncUtils';
+} from './error-types';
+import { ErrorSeverity, ErrorCode } from './error-types';
+import { retry } from '../utilities/async-utils';
 import { generateId } from '../utilities/idGenerators';
 
 /**

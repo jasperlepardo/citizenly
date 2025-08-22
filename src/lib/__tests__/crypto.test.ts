@@ -12,7 +12,7 @@ import {
 } from '../crypto';
 
 // Mock the secure logger
-jest.mock('../secure-logger', () => ({
+jest.mock('../logging/secure-logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),

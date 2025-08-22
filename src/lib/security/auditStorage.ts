@@ -4,7 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '../logging/secureLogger';
+import { logger } from '../logging/secure-logger';
 
 export interface SecurityAuditLog {
   id?: string;

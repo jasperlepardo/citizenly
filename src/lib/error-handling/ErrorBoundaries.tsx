@@ -9,8 +9,8 @@ import type {
   ErrorBoundaryState, 
   ErrorFallbackProps, 
   ErrorLogContext,
-} from './errorTypes';
-import { logError, errorUtils, getErrorMessage } from './errorUtils';
+} from './error-types';
+import { logError, errorUtils, getErrorMessage } from './error-utils';
 
 /**
  * Create error boundary state from error

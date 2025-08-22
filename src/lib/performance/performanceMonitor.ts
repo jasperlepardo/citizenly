@@ -13,7 +13,7 @@
  */
 
 import React from 'react';
-import { logger } from '../logging/secureLogger';
+import { logger } from '../logging/secure-logger';
 
 // Performance thresholds based on Core Web Vitals
 export const PERFORMANCE_THRESHOLDS = {

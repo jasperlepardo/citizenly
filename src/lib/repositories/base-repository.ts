@@ -4,7 +4,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { logger } from '../logging/secureLogger';
+import { logger } from '../logging/secure-logger';
 import { storeSecurityAuditLog } from '../security/auditStorage';
 import type { ValidationContext } from '../validation/types';
 

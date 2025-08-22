@@ -4,5 +4,5 @@
  */
 
 export * from './accessibility';
-export * from './lazyComponents';
+export * from './lazy-components';
 export * from './typography';

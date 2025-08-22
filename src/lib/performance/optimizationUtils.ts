@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import { logInfo } from '@/lib/logging/clientLogger';
+import { logInfo } from '@/lib/logging/client-logger';
 
 /**
  * Enhanced debounce hook with cleanup

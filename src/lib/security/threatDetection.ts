@@ -3,7 +3,7 @@
  * Monitors and detects security threats in real-time
  */
 
-import { logger } from '../logging/secureLogger';
+import { logger } from '../logging/secure-logger';
 import { storeThreatDetectionEvent, ThreatDetectionEvent } from './auditStorage';
 
 export interface SecurityContext {

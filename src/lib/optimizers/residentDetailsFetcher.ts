@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { logger } from '@/lib/logging/secureLogger';
+import { logger } from '@/lib/logging/secure-logger';
 
 export interface AddressInfo {
   barangay_name?: string;

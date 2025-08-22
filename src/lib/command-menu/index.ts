@@ -3,9 +3,9 @@
  * Centralized exports for all command menu functionality
  */
 
-export * from './analyticsUtils';
+export * from './analytics-utils';
 
-// Export from apiUtils with renamed conflicts
+// Export from api-utils with renamed conflicts
 export {
   getRecentItems as getRecentApiItems,
   clearRecentItems as clearRecentApiItems,
@@ -19,7 +19,7 @@ export {
   backupData,
   generateCertificate,
   generateReport,
-} from './apiUtils';
+} from './api-utils';
 
-// Export from itemsUtils (primary getRecentItems)
-export * from './itemsUtils';
+// Export from items-utils (primary getRecentItems)
+export * from './items-utils';

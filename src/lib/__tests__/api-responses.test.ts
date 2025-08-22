@@ -11,10 +11,10 @@ import {
   handleDatabaseError,
   handleUnexpectedError,
 } from '../api-responses';
-import { ErrorCode, Role } from '../api-types';
+import { ErrorCode, Role } from '.../api-types';
 
 // Mock logger to avoid console output during tests
-jest.mock('../secure-logger', () => ({
+jest.mock('../logging/secure-logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),

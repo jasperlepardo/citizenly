@@ -5,7 +5,7 @@
 import { createRateLimitHandler, RATE_LIMIT_RULES } from '../rate-limit';
 
 // Mock logger to avoid console output during tests
-jest.mock('../secure-logger', () => ({
+jest.mock('../logging/secure-logger', () => ({
   logger: {
     info: jest.fn(),
     warn: jest.fn(),

@@ -4,8 +4,8 @@
  */
 
 import { offlineStorage } from './offlineStorage';
-import { createAppError } from '../error-handling/errorUtils';
-import { ErrorCode, ErrorSeverity } from '../error-handling/errorTypes';
+import { createAppError } from '../error-handling/error-utils';
+import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
 
 interface SyncResult {
   success: boolean;

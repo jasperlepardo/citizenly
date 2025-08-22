@@ -13,7 +13,7 @@ import {
 } from './api-types';
 import { auditError, auditSecurityViolation, AuditEventType } from './api-audit';
 import { sanitizeSearchInput } from './api-validation';
-import { logger } from './secure-logger';
+import { logger } from "./logging/secure-logger";
 
 /**
  * Create a successful API response
