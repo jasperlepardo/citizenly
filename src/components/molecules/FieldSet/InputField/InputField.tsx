@@ -61,7 +61,6 @@ export const InputField = ({
       {label && (
         <div className={cn(isHorizontal ? `${labelWidth} shrink-0 pt-2` : 'mb-1')}>
           <Label
-            id={labelId}
             htmlFor={fieldId}
             required={required}
             size={labelSize}
@@ -86,7 +85,7 @@ export const InputField = ({
             />
           ) : (
             React.isValidElement(children) 
-              ? React.cloneElement(children as React.ReactElement, {
+              ? React.cloneElement(children as React.ReactElement<any>, {
                   id: fieldId,
                   'aria-labelledby': ariaLabelledBy,
                   'aria-describedby': ariaDescribedByString,

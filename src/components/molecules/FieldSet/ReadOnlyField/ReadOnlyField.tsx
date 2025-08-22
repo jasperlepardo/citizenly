@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { Label, HelperText } from '../../../atoms/Field';
-import { Select, SelectProps } from '../../../atoms/Field/Select';
+import { cn } from '@/lib/utilities';
+import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib';
+import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
 
-export interface SelectFieldProps {
+export interface ReadOnlyFieldProps {
   children?: React.ReactNode;
   label?: string;
   required?: boolean;
@@ -13,16 +13,16 @@ export interface SelectFieldProps {
   errorMessage?: string;
   className?: string;
   orientation?: 'vertical' | 'horizontal';
-  labelWidth?: string;
+  labelWidth?: 'sm' | 'md' | 'lg';
   htmlFor?: string;
   labelSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  // Select component props (when used directly with Select)
-  selectProps?: SelectProps;
+  // ReadOnly component props (when used directly with ReadOnly)
+  readOnlyProps?: React.ComponentProps<typeof ReadOnly>;
   // Label component props
   labelProps?: Omit<React.ComponentProps<typeof Label>, 'htmlFor' | 'required' | 'children' | 'size'>;
 }
 
-export const SelectField = ({
+export const ReadOnlyField = ({
   children,
   label,
   required = false,
@@ -30,37 +30,44 @@ export const SelectField = ({
   errorMessage,
   className,
   orientation = 'vertical',
-  labelWidth = 'w-32',
+  labelWidth = 'md',
   htmlFor,
   labelSize = 'md',
-  selectProps,
+  readOnlyProps,
   labelProps,
-}: SelectFieldProps) => {
+}: ReadOnlyFieldProps) => {
   const isHorizontal = orientation === 'horizontal';
   
-  // Generate unique ID if not provided
-  const fieldId = htmlFor || selectProps?.id || `field-${Math.random().toString(36).substring(2, 11)}`;
-  const labelId = `${fieldId}-label`;
-  const helperTextId = `${fieldId}-helper`;
-  const errorId = `${fieldId}-error`;
+  // Generate secure unique ID if not provided
+  const fieldId = getFieldId(htmlFor, readOnlyProps?.id, 'readonly-field');
+  const { labelId, helperTextId, errorId } = getFieldIds(fieldId);
   
-  // Use errorMessage as the select error if provided
-  const selectError = errorMessage || selectProps?.error;
   const hasHelperText = helperText || errorMessage;
   
-  // Build aria-labelledby and aria-describedby for accessibility
-  const ariaLabelledBy = label ? labelId : undefined;
-  
-  const ariaDescribedBy = [];
-  if (helperText) ariaDescribedBy.push(helperTextId);
-  if (errorMessage) ariaDescribedBy.push(errorId);
-  const ariaDescribedByString = ariaDescribedBy.length > 0 ? ariaDescribedBy.join(' ') : undefined;
+  // Build ARIA attributes for accessibility
+  const ariaLabelledBy = buildAriaLabelledBy(label ? labelId : undefined);
+  const ariaDescribedByString = buildAriaDescribedBy(
+    helperText ? helperTextId : undefined,
+    errorMessage ? errorId : undefined
+  );
+
+  const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
+    const widthClasses = {
+      sm: 'w-32', // 128px
+      md: 'w-40', // 160px  
+      lg: 'w-48', // 192px
+    };
+    return widthClasses[width];
+  };
 
   return (
-    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
+    <div className={cn('w-full', isHorizontal ? 'flex items-start gap-3' : 'flex flex-col', className)}>
       {/* Label */}
       {label && (
-        <div className={cn(isHorizontal ? `${labelWidth} shrink-0 pt-2` : 'mb-1')}>
+        <div className={cn(
+          'flex items-start',
+          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-1.5` : 'mb-2'
+        )}>
           <Label
             htmlFor={fieldId}
             required={required}
@@ -73,14 +80,15 @@ export const SelectField = ({
       )}
 
       {/* Field Container */}
-      <div className={cn(isHorizontal && 'flex-1')}>
-        {/* Select/Field */}
+      <div className={cn('flex-1', isHorizontal ? 'min-w-0' : 'flex flex-col')}>
+        {/* ReadOnly Field */}
         <div>
-          {selectProps ? (
-            <Select
-              {...selectProps}
+          {readOnlyProps ? (
+            <ReadOnly
               id={fieldId}
-              error={selectError}
+              aria-labelledby={ariaLabelledBy}
+              aria-describedby={ariaDescribedByString}
+              {...readOnlyProps}
             />
           ) : (
             (() => {
@@ -89,7 +97,6 @@ export const SelectField = ({
                   id: fieldId,
                   'aria-labelledby': ariaLabelledBy,
                   'aria-describedby': ariaDescribedByString,
-                  error: selectError,
                 });
               }
               return children;
@@ -99,7 +106,7 @@ export const SelectField = ({
 
         {/* Helper Text and Error Messages */}
         {hasHelperText && (
-          <div className="space-y-1">
+          <div className="flex flex-col gap-2 mt-1">
             {/* Helper Text */}
             {helperText && (
               <HelperText id={helperTextId}>
@@ -120,4 +127,4 @@ export const SelectField = ({
   );
 };
 
-// Note: Form and FormGroup are exported from InputField to avoid conflicts
+export default ReadOnlyField;
