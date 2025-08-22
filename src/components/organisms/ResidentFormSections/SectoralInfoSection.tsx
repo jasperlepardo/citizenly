@@ -70,7 +70,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_labor_force"
               name="is_labor_force"
-              checked={formData.is_labor_force || false}
+              checked={(formData as any).is_labor_force || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -86,7 +86,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_unemployed"
               name="is_unemployed"
-              checked={formData.is_unemployed || false}
+              checked={(formData as any).is_unemployed || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -102,7 +102,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_overseas_filipino_worker"
               name="is_overseas_filipino_worker"
-              checked={formData.is_overseas_filipino_worker || false}
+              checked={(formData as any).is_overseas_filipino_worker || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -118,7 +118,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_person_with_disability"
               name="is_person_with_disability"
-              checked={formData.is_person_with_disability || false}
+              checked={(formData as any).is_person_with_disability || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -134,7 +134,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_out_of_school_children"
               name="is_out_of_school_children"
-              checked={formData.is_out_of_school_children || false}
+              checked={(formData as any).is_out_of_school_children || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -150,7 +150,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_out_of_school_youth"
               name="is_out_of_school_youth"
-              checked={formData.is_out_of_school_youth || false}
+              checked={(formData as any).is_out_of_school_youth || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -166,7 +166,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_senior_citizen"
               name="is_senior_citizen"
-              checked={formData.is_senior_citizen || false}
+              checked={(formData as any).is_senior_citizen || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -182,7 +182,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_solo_parent"
               name="is_solo_parent"
-              checked={formData.is_solo_parent || false}
+              checked={(formData as any).is_solo_parent || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -198,7 +198,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_indigenous_people"
               name="is_indigenous_people"
-              checked={formData.is_indigenous_people || false}
+              checked={(formData as any).is_indigenous_people || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -214,7 +214,7 @@ export default function SectoralInfoSection({
               type="checkbox"
               id="is_migrant"
               name="is_migrant"
-              checked={formData.is_migrant || false}
+              checked={(formData as any).is_migrant || false}
               onChange={handleInputChange}
               disabled={disabled}
               className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
@@ -226,14 +226,14 @@ export default function SectoralInfoSection({
         </div>
 
         {/* Registered Senior Citizen - conditional */}
-        {formData.is_senior_citizen && (
+        {(formData as any).is_senior_citizen && (
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <div className="flex items-center">
               <input
                 type="checkbox"
                 id="is_registered_senior_citizen"
                 name="is_registered_senior_citizen"
-                checked={formData.is_registered_senior_citizen || false}
+                checked={(formData as any).is_registered_senior_citizen || false}
                 onChange={handleInputChange}
                 disabled={disabled}
                 className="mr-2 h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"

@@ -1,0 +1,53 @@
+
+🔍 COLUMN STRUCTURE VERIFICATION REPORT
+======================================
+Date: 2025-08-17T12:05:33.133Z
+
+ANALYZED TABLES: 6
+SUCCESSFUL: 6
+ERRORS: 0
+
+DETAILED RESULTS:
+
+📋 TABLE: residents
+   Status: ✅ Accessible
+   Columns: 53
+   Sample Columns: id, philsys_last4, extension_name, birthdate, birth_place_code, birth_place_level, birth_place_name, sex, civil_status, civil_status_others_specify...
+
+📋 TABLE: households
+   Status: ✅ Accessible
+   Columns: 26
+   Sample Columns: code, name, address, house_number, street_id, subdivision_id, barangay_code, city_municipality_code, province_code, region_code...
+
+📋 TABLE: auth_user_profiles
+   Status: ✅ Accessible
+   Columns: 23
+   Sample Columns: id, first_name, middle_name, last_name, email, phone, role_id, barangay_code, city_municipality_code, province_code...
+
+📋 TABLE: household_members
+   Status: ✅ Accessible
+   Columns: 0
+   Sample Columns: 
+
+📋 TABLE: resident_relationships
+   Status: ✅ Accessible
+   Columns: 0
+   Sample Columns: 
+
+📋 TABLE: resident_sectoral_info
+   Status: ✅ Accessible
+   Columns: 18
+   Sample Columns: id, resident_id, is_labor_force, is_labor_force_employed, is_unemployed, is_overseas_filipino_worker, is_person_with_disability, is_out_of_school_children, is_out_of_school_youth, is_senior_citizen...
+
+
+RECOMMENDATIONS:
+✅ All critical tables are accessible. Manual column order verification needed against schema.sql
+
+NEXT STEPS:
+1. Compare actual column order with schema.sql CREATE TABLE statements
+2. Verify column data types match between Supabase and schema.sql
+3. Check if COMMENT ON COLUMN statements exist for documented columns
+4. Ensure primary keys and constraints are correctly documented
+
+NOTE: This script verified table accessibility. For detailed column comparison,
+manual review of schema.sql CREATE TABLE statements is recommended.

@@ -545,34 +545,42 @@ function BasicInformationStep({ formData, onChange, errors }: any) {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="First Name"
-            value={formData.headFirstName}
-            onChange={e => onChange('headFirstName', e.target.value)}
-            placeholder="Enter first name"
             required
             errorMessage={errors.headFirstName}
+            inputProps={{
+              value: formData.headFirstName,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('headFirstName', e.target.value),
+              placeholder: "Enter first name"
+            }}
           />
 
           <InputField
             label="Middle Name"
-            value={formData.headMiddleName}
-            onChange={e => onChange('headMiddleName', e.target.value)}
-            placeholder="Enter middle name"
+            inputProps={{
+              value: formData.headMiddleName,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('headMiddleName', e.target.value),
+              placeholder: "Enter middle name"
+            }}
           />
 
           <InputField
             label="Last Name"
-            value={formData.headLastName}
-            onChange={e => onChange('headLastName', e.target.value)}
-            placeholder="Enter last name"
             required
             errorMessage={errors.headLastName}
+            inputProps={{
+              value: formData.headLastName,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('headLastName', e.target.value),
+              placeholder: "Enter last name"
+            }}
           />
 
           <InputField
             label="Extension Name"
-            value={formData.headExtensionName}
-            onChange={e => onChange('headExtensionName', e.target.value)}
-            placeholder="Jr., Sr., III, etc."
+            inputProps={{
+              value: formData.headExtensionName,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('headExtensionName', e.target.value),
+              placeholder: "Jr., Sr., III, etc."
+            }}
           />
         </div>
       </div>
@@ -681,32 +689,40 @@ function LocationDetailsStep({
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <InputField
             label="Street Name"
-            value={formData.streetName}
-            onChange={e => onChange('streetName', e.target.value)}
-            placeholder="Enter street name"
             required
             errorMessage={errors.streetName}
+            inputProps={{
+              value: formData.streetName,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('streetName', e.target.value),
+              placeholder: "Enter street name"
+            }}
           />
 
           <InputField
             label="House Number"
-            value={formData.houseNumber}
-            onChange={e => onChange('houseNumber', e.target.value)}
-            placeholder="e.g., 123, Blk 4 Lot 5"
+            inputProps={{
+              value: formData.houseNumber,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('houseNumber', e.target.value),
+              placeholder: "e.g., 123, Blk 4 Lot 5"
+            }}
           />
 
           <InputField
             label="Subdivision"
-            value={formData.subdivision}
-            onChange={e => onChange('subdivision', e.target.value)}
-            placeholder="Subdivision/Village name"
+            inputProps={{
+              value: formData.subdivision,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('subdivision', e.target.value),
+              placeholder: "Subdivision/Village name"
+            }}
           />
 
           <InputField
             label="Landmark"
-            value={formData.landmark}
-            onChange={e => onChange('landmark', e.target.value)}
-            placeholder="Nearby landmark"
+            inputProps={{
+              value: formData.landmark,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('landmark', e.target.value),
+              placeholder: "Nearby landmark"
+            }}
           />
         </div>
 
@@ -718,24 +734,26 @@ function LocationDetailsStep({
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <InputField
               label="Latitude"
-              type="number"
-              step="any"
-              value={formData.coordinates.latitude}
-              onChange={e =>
-                onChange('coordinates', { ...formData.coordinates, latitude: e.target.value })
-              }
-              placeholder="e.g., 14.5995"
+              inputProps={{
+                type: "number",
+                step: "any",
+                value: formData.coordinates.latitude,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChange('coordinates', { ...formData.coordinates, latitude: e.target.value }),
+                placeholder: "e.g., 14.5995"
+              }}
             />
 
             <InputField
               label="Longitude"
-              type="number"
-              step="any"
-              value={formData.coordinates.longitude}
-              onChange={e =>
-                onChange('coordinates', { ...formData.coordinates, longitude: e.target.value })
-              }
-              placeholder="e.g., 120.9842"
+              inputProps={{
+                type: "number",
+                step: "any",
+                value: formData.coordinates.longitude,
+                onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                  onChange('coordinates', { ...formData.coordinates, longitude: e.target.value }),
+                placeholder: "e.g., 120.9842"
+              }}
             />
           </div>
         </div>
@@ -764,29 +782,35 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="Total Members"
-            type="number"
-            min="1"
-            value={formData.totalMembers.toString()}
-            onChange={e => onChange('totalMembers', parseInt(e.target.value) || 1)}
             required
             errorMessage={errors.totalMembers}
+            inputProps={{
+              type: "number",
+              min: "1",
+              value: formData.totalMembers.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('totalMembers', parseInt(e.target.value) || 1)
+            }}
           />
 
           <InputField
             label="Male Members"
-            type="number"
-            min="0"
-            value={formData.totalMales.toString()}
-            onChange={e => onChange('totalMales', parseInt(e.target.value) || 0)}
             errorMessage={errors.totalMales}
+            inputProps={{
+              type: "number",
+              min: "0",
+              value: formData.totalMales.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('totalMales', parseInt(e.target.value) || 0)
+            }}
           />
 
           <InputField
             label="Female Members"
-            type="number"
-            min="0"
-            value={formData.totalFemales.toString()}
-            onChange={e => onChange('totalFemales', parseInt(e.target.value) || 0)}
+            inputProps={{
+              type: "number",
+              min: "0",
+              value: formData.totalFemales.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('totalFemales', parseInt(e.target.value) || 0)
+            }}
           />
         </div>
       </div>
@@ -798,26 +822,32 @@ function HouseholdCompositionStep({ formData, onChange, errors }: any) {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           <InputField
             label="Children (0-17)"
-            type="number"
-            min="0"
-            value={formData.children.toString()}
-            onChange={e => onChange('children', parseInt(e.target.value) || 0)}
+            inputProps={{
+              type: "number",
+              min: "0",
+              value: formData.children.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('children', parseInt(e.target.value) || 0)
+            }}
           />
 
           <InputField
             label="Adults (18-59)"
-            type="number"
-            min="0"
-            value={formData.adults.toString()}
-            onChange={e => onChange('adults', parseInt(e.target.value) || 0)}
+            inputProps={{
+              type: "number",
+              min: "0",
+              value: formData.adults.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('adults', parseInt(e.target.value) || 0)
+            }}
           />
 
           <InputField
             label="Seniors (60+)"
-            type="number"
-            min="0"
-            value={formData.seniors.toString()}
-            onChange={e => onChange('seniors', parseInt(e.target.value) || 0)}
+            inputProps={{
+              type: "number",
+              min: "0",
+              value: formData.seniors.toString(),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => onChange('seniors', parseInt(e.target.value) || 0)
+            }}
           />
         </div>
       </div>

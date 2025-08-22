@@ -26,7 +26,7 @@ const commandMenuVariants = cva(
 );
 
 interface CommandMenuComponentProps 
-  extends Omit<CommandMenuProps, 'isOpen' | 'onClose'>,
+  extends Omit<CommandMenuProps, 'isOpen' | 'onClose' | 'items'>,
     VariantProps<typeof commandMenuVariants> {
   items?: CommandMenuItem[]; // Made optional since we get items from API
 }
