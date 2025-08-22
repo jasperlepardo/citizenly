@@ -62,7 +62,6 @@ export const SelectField = ({
       {label && (
         <div className={cn(isHorizontal ? `${labelWidth} shrink-0 pt-2` : 'mb-1')}>
           <Label
-            id={labelId}
             htmlFor={fieldId}
             required={required}
             size={labelSize}

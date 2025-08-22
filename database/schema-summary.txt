@@ -1,0 +1,40 @@
+SUPABASE SCHEMA EXTRACTION SUMMARY
+=====================================
+Date: 2025-08-17T11:45:06.413Z
+Database: https://cdtcbelaimyftpxmzkjf.supabase.co
+
+EXISTING TABLES (21):
+  ✓ auth_roles
+  ✓ auth_user_profiles
+  ✓ auth_barangay_accounts
+  ✓ psgc_regions
+  ✓ psgc_provinces
+  ✓ psgc_cities_municipalities
+  ✓ psgc_barangays
+  ✓ psoc_major_groups
+  ✓ psoc_sub_major_groups
+  ✓ psoc_minor_groups
+  ✓ psoc_unit_groups
+  ✓ psoc_unit_sub_groups
+  ✓ psoc_position_titles
+  ✓ psoc_occupation_cross_references
+  ✓ geo_subdivisions
+  ✓ geo_streets
+  ✓ households
+  ✓ residents
+  ✓ household_members
+  ✓ resident_relationships
+  ✓ resident_sectoral_info
+
+MISSING TABLES (4):
+  ✗ resident_benefits
+  ✗ resident_benefit_history
+  ✗ audit_logs
+  ✗ data_versions
+
+RECOMMENDATIONS:
+- The following tables need to be created in Supabase:
+  - resident_benefits
+  - resident_benefit_history
+  - audit_logs
+  - data_versions

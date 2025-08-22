@@ -196,11 +196,13 @@ export default function MigrantInformation({
       {value.migration_type === 'international' && (
         <FormGroup title="Previous Country">
           <InputField
-            type="text"
-            value={value.previous_country || ''}
-            onChange={e => handleChange('previous_country', e.target.value)}
-            placeholder="Enter country name"
-            disabled={disabled}
+            inputProps={{
+              type: "text",
+              value: value.previous_country || '',
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('previous_country', e.target.value),
+              placeholder: "Enter country name",
+              disabled: disabled
+            }}
           />
         </FormGroup>
       )}
@@ -210,35 +212,37 @@ export default function MigrantInformation({
         {/* Year of Migration */}
         <FormGroup title="Year of Migration">
           <InputField
-            type="number"
-            value={value.year_of_migration || ''}
-            onChange={e =>
-              handleChange(
-                'year_of_migration',
-                e.target.value ? parseInt(e.target.value) : undefined
-              )
-            }
-            placeholder="YYYY"
-            min={1900}
-            max={new Date().getFullYear()}
-            disabled={disabled}
+            inputProps={{
+              type: "number",
+              value: value.year_of_migration || '',
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                handleChange(
+                  'year_of_migration',
+                  e.target.value ? parseInt(e.target.value) : undefined
+                ),
+              placeholder: "YYYY",
+              min: 1900,
+              max: new Date().getFullYear(),
+              disabled: disabled
+            }}
           />
         </FormGroup>
 
         {/* Length of Stay */}
         <FormGroup title="Length of Stay (Months)">
           <InputField
-            type="number"
-            value={value.length_of_stay_months || ''}
-            onChange={e =>
-              handleChange(
-                'length_of_stay_months',
-                e.target.value ? parseInt(e.target.value) : undefined
-              )
-            }
-            placeholder="Number of months"
-            min={0}
-            disabled={disabled}
+            inputProps={{
+              type: "number",
+              value: value.length_of_stay_months || '',
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                handleChange(
+                  'length_of_stay_months',
+                  e.target.value ? parseInt(e.target.value) : undefined
+                ),
+              placeholder: "Number of months",
+              min: 0,
+              disabled: disabled
+            }}
           />
         </FormGroup>
       </div>

@@ -99,8 +99,8 @@ const UserProfileLazy = lazy(() =>
 
 
 const PersonalInformationLazy = lazy(() =>
-  import('@/components/organisms/PersonalInformation').then(module => ({
-    default: module.PersonalInformation,
+  import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation').then(module => ({
+    default: module.PersonalInformationForm,
   }))
 );
 
@@ -162,7 +162,7 @@ export const preloadComponents = {
   dataTable: () => import('@/components/organisms/DataTable'),
   populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
   userProfile: () => import('@/components/organisms/UserProfile'),
-  personalInformation: () => import('@/components/organisms/PersonalInformation'),
+  personalInformation: () => import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation'),
   sectoralInfo: () => import('@/components/organisms/SectoralInfo'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),

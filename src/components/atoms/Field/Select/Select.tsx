@@ -49,7 +49,7 @@ const normalizeOptions = (data: SelectOption[] | Record<string, string> | undefi
   // Convert enum or object to options
   return Object.entries(data).map(([key, value]) => ({
     value: key,
-    label: typeof value === 'string' ? value : value.toString(),
+    label: typeof value === 'string' ? value : String(value),
   }));
 };
 

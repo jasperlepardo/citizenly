@@ -168,7 +168,10 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
             }
           : 'translate-x-0';
 
-        return cn(baseClasses, sizeClasses[size!], translateClasses[size!] || translateClasses);
+        const translateClass = typeof translateClasses === 'string' 
+          ? translateClasses 
+          : translateClasses[size!];
+        return cn(baseClasses, sizeClasses[size!], translateClass);
       };
 
       return (

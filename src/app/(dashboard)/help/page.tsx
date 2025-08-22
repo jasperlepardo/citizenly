@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { InputField } from '@/components/molecules';
+import { Input } from '@/components/atoms';
 
 export default function HelpPage() {
   const [faqSearchTerm, setFaqSearchTerm] = useState('');
@@ -213,12 +213,12 @@ export default function HelpPage() {
 
           {/* FAQ Search Box */}
           <div className="mb-6">
-            <InputField
+            <Input
               type="text"
               placeholder="Search FAQs..."
               value={faqSearchTerm}
-              onChange={e => setFaqSearchTerm(e.target.value)}
-              size="lg"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFaqSearchTerm(e.target.value)}
+              size={20}
               clearable
               onClear={() => setFaqSearchTerm('')}
               leftIcon={
