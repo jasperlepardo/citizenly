@@ -15,6 +15,8 @@ export interface OptionProps {
   description?: string;
   /** Optional value for the option */
   value?: string;
+  /** Optional badge text to display on the right */
+  badge?: string;
   /** Click handler */
   onClick?: () => void;
   /** Mouse enter handler for focus management */
@@ -33,6 +35,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
     label,
     description,
     value,
+    badge,
     onClick,
     onMouseEnter,
     className = '',
@@ -76,24 +79,33 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
         {children ? (
           children
         ) : (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex-1 min-w-0">
               <div className="font-medium text-sm truncate">
-                {label}
+                {label.includes(',') ? (
+                  <>
+                    {label.split(',')[0]}
+                    <span className="text-gray-500 dark:text-gray-400 font-normal">
+                      , {label.split(',').slice(1).join(',')}
+                    </span>
+                  </>
+                ) : (
+                  label
+                )}
               </div>
-              {description && (
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {description}
-                </div>
-              )}
             </div>
-            {selected && (
-              <div className="ml-2 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {badge && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                  {badge}
+                </span>
+              )}
+              {selected && (
                 <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SelectField } from '@/components/molecules';
+import HouseholdSelector from '@/components/organisms/HouseholdSelector/HouseholdSelector';
 
 export interface HouseholdInformationData {
   householdCode: string;
@@ -9,10 +9,6 @@ export interface HouseholdInformationProps {
   value: HouseholdInformationData;
   onChange: (value: HouseholdInformationData) => void;
   errors: Record<string, string>;
-  // Household search functionality
-  onHouseholdSearch?: (query: string) => void;
-  householdOptions?: any[];
-  householdLoading?: boolean;
   className?: string;
 }
 
@@ -20,16 +16,12 @@ export function HouseholdInformation({
   value, 
   onChange, 
   errors,
-  onHouseholdSearch,
-  householdOptions = [],
-  householdLoading = false,
   className = '' 
 }: HouseholdInformationProps) {
   
-  const handleChange = (field: keyof HouseholdInformationData, fieldValue: string) => {
+  const handleHouseholdSelect = (householdCode: string | null) => {
     onChange({
-      ...value,
-      [field]: fieldValue,
+      householdCode: householdCode || '',
     });
   };
 
@@ -42,21 +34,17 @@ export function HouseholdInformation({
         </p>
       </div>
 
-      <SelectField
-        label="Current Household"
-        labelSize="sm"
-        errorMessage={errors.householdCode}
-        selectProps={{
-          placeholder: "🏠 Search household by code, head name, or address...",
-          options: householdOptions,
-          value: value.householdCode,
-          loading: householdLoading,
-          onSearch: onHouseholdSearch,
-          onSelect: (option) => {
-            handleChange('householdCode', option?.value || '');
-          }
-        }}
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Current Household
+        </label>
+        <HouseholdSelector
+          value={value.householdCode}
+          onSelect={handleHouseholdSelect}
+          error={errors.householdCode}
+          placeholder="🏠 Search households or leave blank to create new"
+        />
+      </div>
     </div>
   );
 }

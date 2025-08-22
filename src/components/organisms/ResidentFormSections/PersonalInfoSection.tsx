@@ -160,7 +160,7 @@ export default function PersonalInfoSection({
           errorMessage={errors.sex}
           selectProps={{
             placeholder: "Select sex...",
-            options: SEX_OPTIONS,
+            options: SEX_OPTIONS as any,
             value: formData.sex || '',
             disabled: disabled,
             error: errors.sex,
@@ -174,7 +174,7 @@ export default function PersonalInfoSection({
           errorMessage={errors.civil_status}
           selectProps={{
             placeholder: "Select civil status...",
-            options: CIVIL_STATUS_OPTIONS,
+            options: CIVIL_STATUS_OPTIONS as any,
             value: formData.civil_status || '',
             disabled: disabled,
             error: errors.civil_status,
@@ -187,8 +187,8 @@ export default function PersonalInfoSection({
           errorMessage={errors.citizenship}
           selectProps={{
             placeholder: "Select citizenship...",
-            options: CITIZENSHIP_OPTIONS,
-            value: formData.citizenship || '',
+            options: CITIZENSHIP_OPTIONS as any,
+            value: formData.citizenship || 'filipino',
             disabled: disabled,
             error: errors.citizenship,
             onSelect: handleSelectChange('citizenship')
@@ -201,7 +201,7 @@ export default function PersonalInfoSection({
           errorMessage={errors.education_attainment}
           selectProps={{
             placeholder: "Select education level...",
-            options: EDUCATION_LEVEL_OPTIONS,
+            options: EDUCATION_LEVEL_OPTIONS as any,
             value: formData.education_attainment || '',
             disabled: disabled,
             error: errors.education_attainment,
@@ -214,7 +214,7 @@ export default function PersonalInfoSection({
           errorMessage={errors.employment_status}
           selectProps={{
             placeholder: "Select employment status...",
-            options: EMPLOYMENT_STATUS_OPTIONS,
+            options: EMPLOYMENT_STATUS_OPTIONS as any,
             value: formData.employment_status || '',
             disabled: disabled,
             error: errors.employment_status,

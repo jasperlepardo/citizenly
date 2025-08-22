@@ -35,7 +35,7 @@ const residentValidationSchema = z.object({
   
   // Demographics
   sex: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Please select a valid sex' }),
+    message: 'Please select a valid sex',
   }),
   
   civil_status: z.enum([
@@ -48,7 +48,7 @@ const residentValidationSchema = z.object({
     'registered_partnership',
     'live_in'
   ], {
-    errorMap: () => ({ message: 'Please select a valid civil status' }),
+    message: 'Please select a valid civil status'
   }),
   
   citizenship: z.string().min(1, 'Citizenship is required').max(50, 'Citizenship too long'),
@@ -82,7 +82,7 @@ const residentValidationSchema = z.object({
     'disabled',
     'other'
   ], {
-    errorMap: () => ({ message: 'Please select a valid employment status' }),
+    message: 'Please select a valid employment status'
   }),
   
   occupation: z.string().max(100, 'Occupation too long').optional(),
@@ -100,7 +100,7 @@ const residentValidationSchema = z.object({
     'vocational',
     'post_graduate'
   ], {
-    errorMap: () => ({ message: 'Please select a valid educational attainment' }),
+    message: 'Please select a valid educational attainment'
   }),
   
   // Physical Characteristics

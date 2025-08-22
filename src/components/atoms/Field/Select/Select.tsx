@@ -16,6 +16,7 @@ export type SelectOption = {
   disabled?: boolean;
   description?: string;
   category?: string;
+  badge?: string;
 };
 
 interface SelectProps {
@@ -36,6 +37,11 @@ interface SelectProps {
   // API integration (similar to PSGCSelector)
   onSearch?: (query: string) => void;
   loading?: boolean;
+  // Lazy loading support
+  hasMore?: boolean;
+  onLoadMore?: () => void;
+  loadingMore?: boolean;
+  infiniteScroll?: boolean; // Enable infinite scroll vs manual button
 }
 
 // Utility function to convert enum/constant data to SelectOption array
@@ -68,6 +74,10 @@ export default function Select({
   allowCustom = false,
   onSearch, // For API-driven searches
   loading = false,
+  hasMore = false,
+  onLoadMore,
+  loadingMore = false,
+  infiniteScroll = true, // Default to infinite scroll
 }: SelectProps) {
   const [inputValue, setInputValue] = useState('');
   const [normalizedOptions, setNormalizedOptions] = useState<SelectOption[]>([]);
@@ -173,7 +183,7 @@ export default function Select({
     // BUT don't show if the inputValue exactly matches the selectedOption (means it's not user typing)
     if (inputValue.trim().length > 0 && !(selectedOption && inputValue === selectedOption.label)) {
       const shouldShow = onSearch 
-        ? inputValue.trim().length >= 2 && filteredOptions.length > 0 // For API search: show only if we have results
+        ? true // For API search: always show when user is typing, let dropdown content handle the messaging
         : filteredOptions.length > 0; // For static data: only show if there are options
       
       if (shouldShow) {
@@ -217,6 +227,7 @@ export default function Select({
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation(); // Prevent event bubbling to parent components
     const query = e.target.value;
     setInputValue(query);
     
@@ -262,7 +273,8 @@ export default function Select({
   };
 
   // Handle input focus - show options with selected value highlighted
-  const handleInputFocus = () => {
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.stopPropagation(); // Prevent event bubbling to parent components
     if (!disabled) {
       // Reset just selected flag to allow dropdown to show
       setJustSelected(false);
@@ -301,7 +313,13 @@ export default function Select({
   const handleInputBlur = () => {
     // Delay hiding dropdown to allow clicks on options
     setTimeout(() => {
-      if (!dropdownRef.current?.contains(document.activeElement)) {
+      // More specific check: only hide if the active element is not within this component
+      const activeElement = document.activeElement;
+      const isWithinThisComponent = dropdownRef.current?.contains(activeElement) || 
+                                   inputRef.current?.contains(activeElement) ||
+                                   inputRef.current === activeElement;
+      
+      if (!isWithinThisComponent) {
         setShowDropdown(false);
         setFocusedIndex(-1);
       }
@@ -448,6 +466,21 @@ export default function Select({
     }
   }, [options, onSearch, justSelected, selectedOption, calculateDropdownPosition, showDropdown, inputValue]);
 
+  // Handle clear button click
+  const handleClearClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setSelectedOption(null);
+    setInputValue('');
+    setShowDropdown(false);
+    setFocusedIndex(-1);
+    onSelect(null);
+    
+    // Focus back to input for better UX
+    inputRef.current?.focus();
+  };
+
   // Handle dropdown icon click
   const handleDropdownIconClick = () => {
     if (!disabled) {
@@ -483,6 +516,20 @@ export default function Select({
     }
   };
 
+  // Create the clear button icon
+  const clearIcon = (
+    <svg 
+      className="size-4 cursor-pointer hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke="currentColor"
+      onClick={handleClearClick}
+      title="Clear selection"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+
   // Create the dropdown chevron icon
   const dropdownIcon = (
     <svg 
@@ -491,6 +538,7 @@ export default function Select({
       viewBox="0 0 24 24" 
       stroke="currentColor"
       onClick={handleDropdownIconClick}
+      title="Open dropdown"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>
@@ -512,7 +560,7 @@ export default function Select({
         disabled={disabled}
         error={error}
         loading={loading}
-        rightIcon={dropdownIcon}
+        rightIcon={selectedOption && inputValue ? clearIcon : dropdownIcon}
         suppressActions={true}
         autoComplete="off"
         role="combobox"
@@ -535,25 +583,90 @@ export default function Select({
               e.preventDefault();
             }}
           >
-            <div role="listbox" className="py-1">
+            <div 
+              role="listbox" 
+              className="py-1"
+              onScroll={(e) => {
+                // Enhanced infinite scroll debugging
+                const target = e.currentTarget;
+                const scrollTop = target.scrollTop;
+                const scrollHeight = target.scrollHeight;
+                const clientHeight = target.clientHeight;
+                const threshold = 50;
+                const isScrollable = scrollHeight > clientHeight;
+                const isNearBottom = scrollTop + clientHeight >= scrollHeight - threshold;
+                
+                console.log('📊 Scroll Debug:', {
+                  infiniteScroll,
+                  hasMore,
+                  hasOnLoadMore: !!onLoadMore,
+                  loadingMore,
+                  scrollTop,
+                  scrollHeight,
+                  clientHeight,
+                  isScrollable,
+                  isNearBottom,
+                  distanceFromBottom: scrollHeight - (scrollTop + clientHeight)
+                });
+                
+                // Infinite scroll: trigger when scrolled near bottom
+                if (infiniteScroll && hasMore && onLoadMore && !loadingMore) {
+                  if (isScrollable && isNearBottom) {
+                    console.log('🚀 Infinite scroll triggered');
+                    onLoadMore();
+                  }
+                }
+              }}
+            >
               {filteredOptions.length > 0 ? (
-                filteredOptions.map((option, index) => (
-                  <Option
-                    key={`${option.value}-${index}`}
-                    ref={(el) => { optionRefs.current[index] = el; }}
-                    selected={selectedOption?.value === option.value}
-                    focused={focusedIndex === index}
-                    disabled={option.disabled}
-                    label={option.label}
-                    description={option.description}
-                    value={option.value}
-                    onClick={() => handleOptionSelect(option)}
-                    onMouseEnter={() => setFocusedIndex(index)}
-                  />
-                ))
+                <>
+                  {filteredOptions.map((option, index) => (
+                    <Option
+                      key={`${option.value}-${index}`}
+                      ref={(el) => { optionRefs.current[index] = el; }}
+                      selected={selectedOption?.value === option.value}
+                      focused={focusedIndex === index}
+                      disabled={option.disabled}
+                      label={option.label}
+                      description={option.description}
+                      value={option.value}
+                      badge={option.badge}
+                      onClick={() => handleOptionSelect(option)}
+                      onMouseEnter={() => setFocusedIndex(index)}
+                    />
+                  ))}
+                  
+                  {/* Load More Indicator */}
+                  {hasMore && (
+                    <div className="px-4 py-2 text-center border-t border-gray-200 dark:border-gray-600">
+                      {loadingMore ? (
+                        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 dark:border-blue-400"></div>
+                          {infiniteScroll ? 'Loading more...' : 'Loading...'}
+                        </div>
+                      ) : !infiniteScroll ? (
+                        <button
+                          onClick={onLoadMore}
+                          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 focus:outline-none"
+                        >
+                          Load more results
+                        </button>
+                      ) : (
+                        <div className="text-xs text-gray-400 py-1">
+                          Scroll for more results
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                   {loading ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 dark:border-blue-400"></div>
+                      <p className="text-sm">Searching...</p>
+                    </div>
+                  ) : onSearch && inputValue.length >= 2 && filteredOptions.length === 0 ? (
                     <div className="flex flex-col items-center gap-3">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 dark:border-blue-400"></div>
                       <p className="text-sm">Searching...</p>

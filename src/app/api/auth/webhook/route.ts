@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { WebhookUserRecord } from '@/types/database';
+import { WebhookUserRecord } from '@/lib/types/database';
 import { createAdminSupabaseClient } from '@/lib/api-auth';
 import type { SupabaseClient } from '@supabase/supabase-js';
 

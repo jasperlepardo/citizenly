@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectField } from '@/components/molecules';
-import { EMPLOYMENT_STATUS_OPTIONS } from '@/lib/constants/resident-enums';
+import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
 
 export interface EmploymentInformationData {
   employmentStatus: string;
@@ -52,7 +52,7 @@ export function EmploymentInformation({
           errorMessage={errors.employmentStatus}
           selectProps={{
             placeholder: "Select employment status...",
-            options: EMPLOYMENT_STATUS_OPTIONS,
+            options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
             value: value.employmentStatus,
             onSelect: (option) => handleChange('employmentStatus', option?.value || '')
           }}

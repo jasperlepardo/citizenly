@@ -1,6 +1,6 @@
 'use client';
 
-import { useLastVisitedPage } from '@/hooks/useLastVisitedPage';
+import { useLastVisitedPage } from '@/hooks/utilities';
 
 /**
  * Component that automatically tracks the last visited page

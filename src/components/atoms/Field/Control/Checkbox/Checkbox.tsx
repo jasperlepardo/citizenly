@@ -55,6 +55,8 @@ export interface CheckboxProps
   errorMessage?: string;
   indeterminate?: boolean;
   variant?: 'default' | 'primary' | 'error' | 'disabled';
+  /** Whether this checkbox is used within a group (affects width behavior) */
+  inGroup?: boolean;
 }
 
 const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
@@ -69,6 +71,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       indeterminate = false,
       disabled,
       checked,
+      inGroup = false,
       ...props
     },
     ref
@@ -87,7 +90,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const inputRef = ref || checkboxRef;
 
     return (
-      <div className="w-full">
+      <div className={inGroup ? '' : 'w-full'}>
         <label className={cn(checkboxVariants({ size }), className)}>
           <div className="relative flex items-start">
             {/* Checkbox Input */}
@@ -161,5 +164,60 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 );
 
 Checkbox.displayName = 'Checkbox';
+
+// Checkbox Group Component
+export interface CheckboxGroupProps {
+  value?: string[];
+  onChange?: (value: string[]) => void;
+  children: React.ReactNode;
+  className?: string;
+  orientation?: 'horizontal' | 'vertical';
+  errorMessage?: string;
+}
+
+export const CheckboxGroup = ({
+  value = [],
+  onChange,
+  children,
+  className,
+  orientation = 'vertical',
+  errorMessage,
+}: CheckboxGroupProps) => {
+  const handleChange = (checked: boolean, itemValue: string) => {
+    const newValue = checked
+      ? [...value, itemValue]
+      : value.filter(v => v !== itemValue);
+    onChange?.(newValue);
+  };
+
+  return (
+    <div className={cn('w-full', className)}>
+      <div
+        className={cn('flex gap-4', orientation === 'vertical' ? 'flex-col' : 'flex-row flex-wrap')}
+      >
+        {React.Children.map(children, child => {
+          if (React.isValidElement(child) && child.type === Checkbox) {
+            const childElement = child as React.ReactElement<CheckboxProps & { value?: string }>;
+            const itemValue = childElement.props.value || '';
+            return React.cloneElement(childElement, {
+              checked: value.includes(itemValue),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                handleChange(e.target.checked, itemValue);
+              },
+              errorMessage: undefined, // Don't show individual error messages
+              inGroup: true, // Mark as being used in a group
+            });
+          }
+          return child;
+        })}
+      </div>
+
+      {/* Group Error Message */}
+      {errorMessage && (
+        <p className="mt-2 font-['Montserrat'] text-xs text-[#b91c1c]">{errorMessage}</p>
+      )}
+    </div>
+  );
+};
 
 export { Checkbox, checkboxVariants };

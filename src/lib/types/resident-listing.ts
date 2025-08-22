@@ -6,7 +6,7 @@
  * @version 1.0.0
  */
 
-import { Resident } from './residentDetail';
+import { Resident } from './resident-detail';
 
 /**
  * Optimized resident data structure for listing and table views

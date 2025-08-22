@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface Household {
@@ -219,7 +219,7 @@ function HouseholdDetailContent() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href={`/rbi-form?household=${household.code}`}
+              href={`/reports/records-of-barangay-inhabitants-by-household?household=${household.code}`}
               className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white dark:text-black shadow-xs hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <svg
@@ -374,7 +374,7 @@ function HouseholdDetailContent() {
               </div>
               <div className="space-y-3 px-6 py-4">
                 <Link
-                  href={`/rbi-form?household=${household.code}`}
+                  href={`/reports/records-of-barangay-inhabitants-by-household?household=${household.code}`}
                   className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white dark:text-black hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   Generate RBI Form

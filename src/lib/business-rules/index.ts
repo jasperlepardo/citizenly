@@ -17,4 +17,22 @@ export {
   EMPLOYED_STATUSES,
   UNEMPLOYED_STATUSES,
   INDIGENOUS_ETHNICITIES,
-} from './sectoralClassification';
+} from './sectoral-classification';
+
+// Resident form validation rules
+export {
+  isValidMobileNumber,
+  isValidPhilSysCardNumber,
+  isValidBirthdate,
+  shouldShowReligionOthersField,
+  shouldShowCivilStatusOthersField,
+  shouldShowMigrationFields,
+  shouldShowPreviousAddressFields,
+  shouldShowOccupationFields,
+  shouldShowUnemploymentFields,
+  shouldShowGraduationStatus,
+  shouldShowSectoralDetails,
+  calculateFormCompletionPercentage,
+  getFieldDependencies,
+  isMinor,
+} from './resident-form-rules';

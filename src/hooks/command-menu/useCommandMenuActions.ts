@@ -21,12 +21,12 @@ import {
   findSoloParents, 
   generateCertificate, 
   generateReport 
-} from '@/lib/command-menu/apiUtils';
-import { trackNavigation, trackAction } from '@/lib/storage/recentItemsStorage';
+} from '@/lib/command-menu';
+import { trackNavigation, trackAction } from '@/lib/storage';
 import { 
   trackCommandMenuNavigation, 
   trackCommandMenuAction 
-} from '@/lib/command-menu/analyticsUtils';
+} from '@/lib/command-menu';
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 /**

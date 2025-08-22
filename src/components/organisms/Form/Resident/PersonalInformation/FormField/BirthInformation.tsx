@@ -1,5 +1,6 @@
 import React from 'react';
 import { InputField, SelectField } from '@/components/molecules';
+import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
 
 export interface BirthInformationData {
   birthdate: string;
@@ -11,10 +12,6 @@ export interface BirthInformationProps {
   value: BirthInformationData;
   onChange: (value: BirthInformationData) => void;
   errors: Record<string, string>;
-  // PSGC search functionality
-  onPsgcSearch?: (query: string) => void;
-  psgcOptions?: any[];
-  psgcLoading?: boolean;
   className?: string;
 }
 
@@ -22,12 +19,25 @@ export function BirthInformation({
   value, 
   onChange, 
   errors,
-  onPsgcSearch,
-  psgcOptions = [],
-  psgcLoading = false,
   className = '' 
 }: BirthInformationProps) {
   
+  // PSGC search hook for birth place
+  const { 
+    query: searchQuery, 
+    setQuery: setSearchQuery, 
+    options: psgcOptions, 
+    isLoading,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    totalCount
+  } = useOptimizedPsgcSearch({
+    levels: 'province,city', // Show provinces and cities/municipalities for flexible birth place selection
+    limit: 20, // Smaller initial load for better performance
+    debounceMs: 300,
+  });
+
   const handleChange = (field: keyof BirthInformationData, fieldValue: any) => {
     onChange({
       ...value,
@@ -65,26 +75,40 @@ export function BirthInformation({
           errorMessage={errors.birthPlaceName}
           selectProps={{
             placeholder: "Search for province or city/municipality...",
-            options: psgcOptions,
+            options: psgcOptions.map(place => {
+              // Format consistent display text
+              let displayText = place.name;
+              if (place.level === 'city' && (place as any).province_name) {
+                displayText = `${place.name}, ${(place as any).province_name}`;
+              }
+              
+              return {
+                value: place.code,
+                label: displayText,
+                description: place.full_address,
+                level: place.level,
+                full_address: place.full_address || place.name,
+                badge: (place as any).type || place.level
+              };
+            }),
             value: value.birthPlaceCode,
-            loading: psgcLoading,
-            onSearch: onPsgcSearch,
+            loading: isLoading,
+            searchable: true,
+            onSearch: setSearchQuery,
             onSelect: (option) => {
               if (option) {
-                // Only allow city/municipality selection as final result
-                if ((option as any).level === 'city') {
-                  handleChange('birthPlaceName', (option as any).full_hierarchy);
-                  handleChange('birthPlaceCode', (option as any).code);
-                } else {
-                  // If province is selected, clear the fields
-                  handleChange('birthPlaceName', '');
-                  handleChange('birthPlaceCode', '');
-                }
+                handleChange('birthPlaceName', (option as any).full_address || (option as any).label);
+                handleChange('birthPlaceCode', (option as any).value);
               } else {
                 handleChange('birthPlaceName', '');
                 handleChange('birthPlaceCode', '');
               }
-            }
+            },
+            // Lazy loading props
+            hasMore: hasMore,
+            onLoadMore: loadMore,
+            loadingMore: isLoadingMore,
+            infiniteScroll: true
           }}
         />
       </div>

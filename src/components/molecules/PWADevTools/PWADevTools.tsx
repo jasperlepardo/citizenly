@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { pwaPerformance } from '@/lib/pwa-performance';
-import { syncQueue } from '@/lib/sync-queue';
-import { offlineStorage } from '@/lib/offline-storage';
+import { pwaPerformance } from '@/lib/performance/pwaPerformanceUtils';
+import { syncQueue } from '@/lib/storage';
+import { offlineStorage } from '@/lib/storage';
 
 interface PWADevToolsProps {
   className?: string;

@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase/supabase';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { Navigation } from '@/components/organisms';
 import { Toaster } from 'react-hot-toast';
-import { logger, logError } from '@/lib/logging/secureLogger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)
@@ -33,26 +33,19 @@ function UserDropdown() {
 
       logger.debug('Loading barangay info', { barangayCode });
 
-      // Query the PSGC tables to get full address hierarchy
-      const { data: barangayData, error } = await supabase
-        .from('psgc_barangays')
-        .select(
-          `
-          name,
-          psgc_cities_municipalities!inner(
-            name,
-            type,
-            psgc_provinces!inner(
-              name,
-              psgc_regions!inner(
-                name
-              )
-            )
-          )
-        `
-        )
-        .eq('code', barangayCode)
-        .single();
+      // Use API endpoint to get full address hierarchy (avoids complex nested query issues)
+      const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(barangayCode)}`);
+      
+      let barangayData = null;
+      let error = null;
+      
+      if (!response.ok) {
+        error = { message: `API request failed: ${response.status}` };
+      } else {
+        const result = await response.json();
+        barangayData = result.data;
+        error = result.error;
+      }
 
       if (error) {
         // Don't log error if it's just an authentication issue
@@ -77,11 +70,14 @@ function UserDropdown() {
       }
 
       if (barangayData) {
-        const cityMun = (barangayData as any).psgc_cities_municipalities;
-        const province = cityMun.psgc_provinces;
+        // API returns flattened structure
+        const barangayName = barangayData.name || barangayData.barangay_name;
+        const cityName = barangayData.city_name;
+        const cityType = barangayData.city_type;
+        const provinceName = barangayData.province_name;
 
-        const fullAddress = `${barangayData.name}, ${cityMun.name} (${cityMun.type}), ${province.name}`;
-        logger.debug('Loaded barangay info from database', { address: fullAddress });
+        const fullAddress = `${barangayName}, ${cityName} (${cityType}), ${provinceName}`;
+        logger.debug('Loaded barangay info from API', { address: fullAddress });
         setBarangayInfo(fullAddress);
       } else {
         setBarangayInfo(`Barangay ${barangayCode}`);

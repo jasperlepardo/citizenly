@@ -21,6 +21,7 @@ export interface SectoralInformationFormProps {
     employmentStatus?: string;
     educationAttainment?: string;
     civilStatus?: string;
+    ethnicity?: string;
   };
   onChange: (field: string | number | symbol, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
@@ -35,10 +36,10 @@ export function SectoralInformationForm({
   // Map form data to SectoralInfo component props
   const sectoralValue: SectoralInformation = {
     is_labor_force: formData.isLaborForce || false,
-    is_employed: formData.isLaborForceEmployed || false,
+    is_labor_force_employed: formData.isLaborForceEmployed || false,
     is_unemployed: formData.isUnemployed || false,
-    is_ofw: formData.isOverseasFilipino || false,
-    is_pwd: formData.isPersonWithDisability || false,
+    is_overseas_filipino_worker: formData.isOverseasFilipino || false,
+    is_person_with_disability: formData.isPersonWithDisability || false,
     is_out_of_school_children: formData.isOutOfSchoolChildren || false,
     is_out_of_school_youth: formData.isOutOfSchoolYouth || false,
     is_senior_citizen: formData.isSeniorCitizen || false,
@@ -54,6 +55,7 @@ export function SectoralInformationForm({
     employment_status: formData.employmentStatus,
     highest_educational_attainment: formData.educationAttainment,
     marital_status: formData.civilStatus,
+    ethnicity: formData.ethnicity,
   };
 
   // Handle changes from SectoralInfo component

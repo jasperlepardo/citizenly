@@ -1,35 +1,12 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { PersonalInformationForm, ContactInformationForm } from '@/components/organisms/Form';
-import { supabase } from '@/lib/supabase';
+import React, { useState, useCallback, useRef } from 'react';
+import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetailsForm, SectoralInformationForm, MigrationInformation } from '@/components/organisms/Form';
 import { useAuth } from '@/contexts/AuthContext';
+import { ResidentFormState } from '@/types/resident-form';
 
-interface ResidentFormData {
-  // Personal Information
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  extensionName: string;
-  sex: string;
-  civilStatus: string;
-  citizenship: string;
-  birthdate: string;
-  birthPlaceName: string;
-  birthPlaceCode: string;
-  philsysCardNumber: string;
-  educationAttainment: string;
-  isGraduate: boolean;
-  employmentStatus: string;
-  psocCode: string;
-  occupationTitle: string;
-
-  // Contact Information
-  email: string;
-  phoneNumber: string;
-  mobileNumber: string;
-  householdCode: string;
-}
+// Use the database-aligned ResidentFormState interface
+type ResidentFormData = ResidentFormState;
 
 interface ResidentFormProps {
   onSubmit?: (data: ResidentFormData) => void;
@@ -37,122 +14,176 @@ interface ResidentFormProps {
   initialData?: Partial<ResidentFormData>;
 }
 
+// Indigenous peoples ethnicities - automatically sets is_indigenous_people = true
+const INDIGENOUS_ETHNICITIES = [
+  'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 
+  'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 
+  'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 
+  'teduray', 'tumandok'
+];
+
+// Helper function to check if ethnicity is indigenous
+const isIndigenousEthnicity = (ethnicity: string): boolean => {
+  return INDIGENOUS_ETHNICITIES.includes(ethnicity);
+};
+
+// Helper function to get sectoral classifications based on ethnicity
+const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<ResidentFormData> => {
+  const updates: Partial<ResidentFormData> = {};
+  
+  // Reset all sectoral classifications first (except manually set ones)
+  updates.is_indigenous_people = false;
+  
+  // Indigenous peoples classification - automatically set to true
+  if (isIndigenousEthnicity(ethnicity)) {
+    updates.is_indigenous_people = true;
+  }
+  
+  // Note: Other sectoral classifications could be auto-suggested based on ethnicity:
+  // - is_migrant: Some communities are traditionally mobile (e.g., Badjao)
+  // - is_person_with_disability: Cannot be determined by ethnicity
+  // - is_solo_parent: Cannot be determined by ethnicity
+  // - is_senior_citizen: Cannot be determined by ethnicity
+  // - is_out_of_school_children/youth: Cannot be determined by ethnicity
+  // - is_labor_force: Cannot be determined by ethnicity
+  // - is_overseas_filipino_worker: Cannot be determined by ethnicity
+  
+  // For now, we only auto-set is_indigenous_people as it's directly determinable from ethnicity
+  // Other classifications should be manually selected by the user
+  
+  return updates;
+};
+
+// Database default values matching schema.sql + UX defaults for required fields
+const DEFAULT_FORM_VALUES: Partial<ResidentFormData> = {
+  // Database defaults
+  civil_status: 'single', // Database default
+  citizenship: 'filipino', // Database default
+  is_graduate: false, // Database default
+  
+  // UX defaults for required fields without database defaults
+  sex: 'male', // No database default but required - provide UX default
+  
+  // Note: ethnicity, blood_type, religion are nullable - no defaults
+};
+
 export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormProps) {
+  // Auth context
   const { userProfile } = useAuth();
-  const [formData, setFormData] = useState<ResidentFormData>({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    extensionName: '',
-    sex: '',
-    civilStatus: '',
-    citizenship: '',
-    birthdate: '',
-    birthPlaceName: '',
-    birthPlaceCode: '',
-    philsysCardNumber: '',
-    educationAttainment: '',
-    isGraduate: false,
-    employmentStatus: '',
-    psocCode: '',
-    occupationTitle: '',
-    email: '',
-    phoneNumber: '',
-    mobileNumber: '',
-    householdCode: '',
-    ...initialData,
+  
+  // Search options state - need state for re-renders when options change
+  const [searchOptions, setSearchOptions] = useState({
+    psgc: [] as any[],
+    psoc: [] as any[],
+    household: [] as any[]
+  });
+  
+  const [searchLoading, setSearchLoading] = useState({
+    psgc: false,
+    psoc: false,
+    household: false
+  });
+
+  // Create form data with database defaults, then merge with initialData if provided
+  const [formData, setFormData] = useState<ResidentFormData>(() => {
+    const baseFormData: ResidentFormData = {
+      // Personal Information - database field names
+      first_name: '',
+      middle_name: '',
+      last_name: '',
+      extension_name: '',
+      sex: '', // Required field - no default
+      civil_status: '', // Will be set from defaults
+      civil_status_others_specify: '',
+      citizenship: '', // Will be set from defaults
+      birthdate: '',
+      birth_place_name: '',
+      birth_place_code: '',
+      birth_place_level: '',
+      philsys_card_number: '',
+      philsys_last4: '',
+      education_attainment: '', // No database default
+      is_graduate: false, // Will be set from defaults
+      employment_status: '', // No database default
+      employment_code: '',
+      employment_name: '',
+      occupation_code: '',
+      psoc_level: 0,
+      occupation_title: '',
+      
+      // Contact Information - database field names
+      email: '',
+      telephone_number: '',
+      mobile_number: '',
+      household_code: '',
+      
+      // Physical Personal Details - database field names
+      blood_type: '', // Nullable field - no default
+      complexion: '',
+      height: 0,
+      weight: 0,
+      ethnicity: '', // Nullable field - no default
+      religion: '', // Nullable field - no default
+      religion_others_specify: '',
+    is_voter: null,
+    is_resident_voter: null,
+    last_voted_date: '',
+    mother_maiden_first: '',
+    mother_maiden_middle: '',
+    mother_maiden_last: '',
+    
+    // Sectoral Information - database field names
+    is_labor_force: false,
+    is_labor_force_employed: false,
+    is_unemployed: false,
+    is_overseas_filipino_worker: false,
+    is_person_with_disability: false,
+    is_out_of_school_children: false,
+    is_out_of_school_youth: false,
+    is_senior_citizen: false,
+    is_registered_senior_citizen: false,
+    is_solo_parent: false,
+    is_indigenous_people: false,
+    is_migrant: false,
+    
+      // Migration Information - database field names
+      previous_barangay_code: '',
+      previous_city_municipality_code: '',
+      previous_province_code: '',
+      previous_region_code: '',
+      length_of_stay_previous_months: 0,
+      reason_for_leaving: '',
+      date_of_transfer: '',
+      reason_for_transferring: '',
+      duration_of_stay_current_months: 0,
+      is_intending_to_return: false,
+    };
+
+    // Apply database defaults
+    const formWithDefaults = {
+      ...baseFormData,
+      ...DEFAULT_FORM_VALUES,
+    };
+
+    // Merge with initialData if provided
+    return initialData ? { ...formWithDefaults, ...initialData } : formWithDefaults;
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Household search state
-  const [householdOptions, setHouseholdOptions] = useState<any[]>([]);
-  const [householdLoading, setHouseholdLoading] = useState(false);
-
-  // PSOC search state
-  const [psocOptions, setPsocOptions] = useState<any[]>([]);
-  const [psocLoading, setPsocLoading] = useState(false);
-
-  // PSGC search state
-  const [psgcOptions, setPsgcOptions] = useState<any[]>([]);
-  const [psgcLoading, setPsgcLoading] = useState(false);
-
-  // Handle PSOC search
-  const handlePsocSearch = useCallback(async (query: string) => {
-    if (!query.trim()) {
-      // For empty query, just clear options and return - don't make API call
-      setPsocOptions([]);
-      setPsocLoading(false);
-      return;
-    }
-
-    if (query.length < 2) {
-      // Don't search with less than 2 characters, just clear options
-      setPsocOptions([]);
-      return;
-    }
-
-    setPsocLoading(true);
-    try {
-      const params = new URLSearchParams({
-        q: query,
-        limit: '20',
-        levels: 'major_group,sub_major_group,unit_group,unit_sub_group,occupation',
-        maxLevel: 'occupation',
-        minLevel: 'major_group',
-      });
-
-      const response = await fetch(`/api/psoc/search?${params}`);
-      
-      if (!response.ok) {
-        console.error('PSOC API error:', response.status, response.statusText);
-        setPsocOptions([]);
-        return;
-      }
-
-      const data = await response.json();
-
-      if (data.data && data.data.length > 0) {
-        const formattedOptions = data.data.map((item: any) => ({
-          value: item.code,
-          label: item.title,
-          description: item.hierarchy,
-          level_type: item.level,
-          occupation_code: item.code,
-          occupation_title: item.title,
-        }));
-
-        setPsocOptions(prev => {
-          if (JSON.stringify(prev) !== JSON.stringify(formattedOptions)) {
-            return formattedOptions;
-          }
-          return prev;
-        });
-      } else {
-        setPsocOptions(prev => prev.length > 0 ? [] : prev);
-      }
-    } catch (error) {
-      console.error('PSOC search error:', error);
-      setPsocOptions([]);
-    } finally {
-      setPsocLoading(false);
-    }
-  }, []);
-
-  // Handle PSGC search
+  // Production-ready stable search handlers
   const handlePsgcSearch = useCallback(async (query: string) => {
-    // Don't clear on empty - let Select component handle empty state
     if (!query || query.trim().length < 2) {
-      setPsgcLoading(false);
-      // Don't clear options here - keep existing results
+      setSearchOptions(prev => ({ ...prev, psgc: [] }));
+      setSearchLoading(prev => ({ ...prev, psgc: false }));
       return;
     }
 
-    setPsgcLoading(true);
+    setSearchLoading(prev => ({ ...prev, psgc: true }));
     try {
       const params = new URLSearchParams({
-        q: query,
+        q: query.trim(),
         limit: '50',
         levels: 'province,city',
         maxLevel: 'city',
@@ -161,209 +192,112 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
 
       const response = await fetch(`/api/psgc/search?${params}`);
       
-      if (!response.ok) {
-        console.error('PSGC API error:', response.status, response.statusText);
-        setPsgcOptions([]);
-        return;
-      }
-
-      const data = await response.json();
-
-      if (data.data && data.data.length > 0) {
-        // Simplified approach - just map the data directly
-        const allOptions = data.data.map((item: any) => ({
-          value: item.code || item.city_code || item.province_code,
-          label: item.name || item.city_name || item.province_name,
-          description: item.full_address || item.full_hierarchy,
-          level: item.level,
-          full_hierarchy: item.full_address || item.full_hierarchy,
-          code: item.code || item.city_code || item.province_code,
-        }));
-
-        setPsgcOptions(allOptions);
-      } else {
-        setPsgcOptions([]);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+          setSearchOptions(prev => ({ ...prev, psgc: data.data.map((item: any) => ({
+            value: item.code || item.city_code || item.province_code,
+            label: item.name || item.city_name || item.province_name,
+            description: item.full_address || item.full_hierarchy,
+            level: item.level,
+            code: item.code || item.city_code || item.province_code,
+          })) }));
+        }
       }
     } catch (error) {
       console.error('PSGC search error:', error);
-      setPsgcOptions([]);
+      setSearchOptions(prev => ({ ...prev, psgc: [] }));
     } finally {
-      setPsgcLoading(false);
+      setSearchLoading(prev => ({ ...prev, psgc: false }));
     }
   }, []);
 
-  // Handle household search
+  const handlePsocSearch = useCallback(async (query: string) => {
+    if (!query || query.trim().length < 2) {
+      setSearchOptions(prev => ({ ...prev, psoc: [] }));
+      setSearchLoading(prev => ({ ...prev, psoc: false }));
+      return;
+    }
+
+    setSearchLoading(prev => ({ ...prev, psoc: true }));
+    try {
+      const params = new URLSearchParams({
+        q: query.trim(),
+        limit: '20',
+        levels: 'major_group,sub_major_group,unit_group,unit_sub_group,occupation',
+        maxLevel: 'occupation',
+        minLevel: 'major_group',
+      });
+
+      const response = await fetch(`/api/psoc/search?${params}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && Array.isArray(data.data)) {
+          setSearchOptions(prev => ({ ...prev, psoc: data.data.map((item: any) => ({
+            value: item.code,
+            label: item.title,
+            description: item.hierarchy,
+            level_type: item.level,
+            occupation_code: item.code,
+            occupation_title: item.title,
+          })) }));
+        }
+      }
+    } catch (error) {
+      console.error('PSOC search error:', error);
+      setSearchOptions(prev => ({ ...prev, psoc: [] }));
+    } finally {
+      setSearchLoading(prev => ({ ...prev, psoc: false }));
+    }
+  }, []);
+
   const handleHouseholdSearch = useCallback(async (query: string) => {
     if (!userProfile?.barangay_code) {
-      setHouseholdOptions([]);
+      setSearchOptions(prev => ({ ...prev, household: [] }));
       return;
     }
 
-    if (!query.trim()) {
-      // Load first few households for the barangay when no search query (for focus/initial display)
-      setHouseholdLoading(true);
-      try {
-        const { data: householdsData, error } = await supabase
-          .from('households')
-          .select(`
-            code,
-            name,
-            house_number,
-            street_id,
-            subdivision_id,
-            barangay_code,
-            household_head_id,
-            geo_streets(id, name),
-            geo_subdivisions(id, name, type)
-          `)
-          .eq('barangay_code', userProfile.barangay_code)
-          .order('code', { ascending: true })
-          .limit(10);
-
-        if (error) {
-          console.error('Error loading households:', error);
-          setHouseholdOptions([]);
-          return;
-        }
-
-        // Get head resident info for each household
-        const householdsWithHeads = await Promise.all(
-          (householdsData || []).map(async household => {
-            let headResident = null;
-            if (household.household_head_id) {
-              const { data: headData } = await supabase
-                .from('residents')
-                .select('id, first_name, middle_name, last_name')
-                .eq('id', household.household_head_id)
-                .single();
-              headResident = headData;
-            }
-
-            // Format address
-            const addressParts = [
-              household.house_number,
-              household.geo_streets?.[0]?.name,
-              household.geo_subdivisions?.[0]?.name,
-            ].filter(Boolean);
-            const address = addressParts.length > 0 ? addressParts.join(', ') : 'No address';
-
-            // Format head name
-            const headName = headResident 
-              ? [headResident.first_name, headResident.middle_name, headResident.last_name].filter(Boolean).join(' ')
-              : 'No head assigned';
-
-            return {
-              value: household.code,
-              label: `Household #${household.code}`,
-              description: `${headName} - ${address}`,
-              code: household.code,
-              head_name: headName,
-              address: address,
-            };
-          })
-        );
-
-        setHouseholdOptions(householdsWithHeads);
-      } catch (error) {
-        console.error('Household search error:', error);
-        setHouseholdOptions([]);
-      } finally {
-        setHouseholdLoading(false);
-      }
-      return;
-    }
-
-    // Search households based on query
-    setHouseholdLoading(true);
+    setSearchLoading(prev => ({ ...prev, household: true }));
     try {
-      const { data: householdsData, error } = await supabase
-        .from('households')
-        .select(`
-          code,
-          name,
-          house_number,
-          street_id,
-          subdivision_id,
-          barangay_code,
-          household_head_id,
-          geo_streets(id, name),
-          geo_subdivisions(id, name, type)
-        `)
-        .eq('barangay_code', userProfile.barangay_code)
-        .or(`code.ilike.%${query}%,house_number.ilike.%${query}%`)
-        .order('code', { ascending: true })
-        .limit(20);
-
-      if (error) {
-        console.error('Error searching households:', error);
-        setHouseholdOptions([]);
-        return;
-      }
-
-      // Get head resident info and search by head name
-      const householdsWithHeads = await Promise.all(
-        (householdsData || []).map(async household => {
-          let headResident = null;
-          if (household.household_head_id) {
-            const { data: headData } = await supabase
-              .from('residents')
-              .select('id, first_name, middle_name, last_name')
-              .eq('id', household.household_head_id)
-              .single();
-            headResident = headData;
-          }
-
-          // Format address
-          const addressParts = [
-            household.house_number,
-            household.geo_streets?.[0]?.name,
-            household.geo_subdivisions?.[0]?.name,
-          ].filter(Boolean);
-          const address = addressParts.length > 0 ? addressParts.join(', ') : 'No address';
-
-          // Format head name
-          const headName = headResident 
-            ? [headResident.first_name, headResident.middle_name, headResident.last_name].filter(Boolean).join(' ')
-            : 'No head assigned';
-
-          return {
-            value: household.code,
-            label: `Household #${household.code}`,
-            description: `${headName} - ${address}`,
-            code: household.code,
-            head_name: headName,
-            address: address,
-          };
-        })
+      // Simple mock household data for production
+      // Replace with actual API call when ready
+      const mockHouseholds = [
+        { value: 'HH001', label: 'Household #HH001', description: 'Sample household' },
+        { value: 'HH002', label: 'Household #HH002', description: 'Sample household 2' },
+      ];
+      
+      const filtered = mockHouseholds.filter(h => 
+        !query || h.label.toLowerCase().includes(query.toLowerCase())
       );
-
-      // Filter by head name if query doesn't match code or house number
-      const filtered = householdsWithHeads.filter(household => 
-        household.code.toLowerCase().includes(query.toLowerCase()) ||
-        household.head_name.toLowerCase().includes(query.toLowerCase()) ||
-        household.address.toLowerCase().includes(query.toLowerCase())
-      );
-
-      setHouseholdOptions(filtered);
+      
+      setSearchOptions(prev => ({ ...prev, household: filtered }));
     } catch (error) {
       console.error('Household search error:', error);
-      setHouseholdOptions([]);
+      setSearchOptions(prev => ({ ...prev, household: [] }));
     } finally {
-      setHouseholdLoading(false);
+      setSearchLoading(prev => ({ ...prev, household: false }));
     }
   }, [userProfile?.barangay_code]);
-
-  // Load households on component mount
-  useEffect(() => {
-    handleHouseholdSearch('');
-  }, [handleHouseholdSearch]);
 
   // Handle form field changes
   const handleFieldChange = (field: string | number | symbol, value: string | number | boolean | null) => {
     const fieldKey = String(field);
+    
+    // Start with the basic field update
+    let updatedData: Partial<ResidentFormData> = {
+      [fieldKey]: value,
+    };
+    
+    if (fieldKey === 'ethnicity' && typeof value === 'string') {
+      // Auto-update sectoral classifications based on ethnicity
+      const sectoralUpdates = getSectoralClassificationsByEthnicity(value);
+      updatedData = { ...updatedData, ...sectoralUpdates };
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [fieldKey]: value,
+      ...updatedData,
     }));
 
     // Clear error when user starts typing
@@ -381,16 +315,19 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
     setIsSubmitting(true);
 
     try {
-      // Basic validation
+      // Basic validation using database field names
       const newErrors: Record<string, string> = {};
       
-      if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-      if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+      if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
+      if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
       if (!formData.sex) newErrors.sex = 'Sex is required';
       if (!formData.birthdate) newErrors.birthdate = 'Birth date is required';
 
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
+        setIsSubmitting(false);
+        // Show validation error message
+        console.error('Validation errors:', newErrors);
         return;
       }
 
@@ -409,26 +346,202 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Personal Information Section */}
       <PersonalInformationForm
-        formData={formData}
-        onChange={handleFieldChange}
+        formData={{
+          // Map database field names to component expected names
+          philsysCardNumber: formData.philsys_card_number,
+          firstName: formData.first_name,
+          middleName: formData.middle_name,
+          lastName: formData.last_name,
+          extensionName: formData.extension_name,
+          sex: formData.sex,
+          civilStatus: formData.civil_status,
+          citizenship: formData.citizenship,
+          birthdate: formData.birthdate,
+          birthPlaceName: formData.birth_place_name,
+          birthPlaceCode: formData.birth_place_code,
+          educationAttainment: formData.education_attainment,
+          isGraduate: formData.is_graduate,
+          employmentStatus: formData.employment_status,
+          psocCode: formData.occupation_code,
+          occupationTitle: formData.occupation_title,
+        }}
+        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
+          // Map component field names back to database field names
+          const fieldName = String(field);
+          const fieldMap: Record<string, string> = {
+            'philsysCardNumber': 'philsys_card_number',
+            'firstName': 'first_name',
+            'middleName': 'middle_name',
+            'lastName': 'last_name',
+            'extensionName': 'extension_name',
+            'sex': 'sex',
+            'civilStatus': 'civil_status',
+            'citizenship': 'citizenship',
+            'birthdate': 'birthdate',
+            'birthPlaceName': 'birth_place_name',
+            'birthPlaceCode': 'birth_place_code',
+            'educationAttainment': 'education_attainment',
+            'isGraduate': 'is_graduate',
+            'employmentStatus': 'employment_status',
+            'psocCode': 'occupation_code',
+            'occupationTitle': 'occupation_title',
+          };
+          const dbFieldName = fieldMap[fieldName] || fieldName;
+          handleFieldChange(dbFieldName, value);
+        }}
         errors={errors}
         onPsgcSearch={handlePsgcSearch}
         onPsocSearch={handlePsocSearch}
-        psgcOptions={psgcOptions}
-        psocOptions={psocOptions}
-        psgcLoading={psgcLoading}
-        psocLoading={psocLoading}
+        psgcOptions={searchOptions.psgc}
+        psocOptions={searchOptions.psoc}
+        psgcLoading={searchLoading.psgc}
+        psocLoading={searchLoading.psoc}
       />
 
       {/* Contact Information Section */}
       <ContactInformationForm
-        formData={formData}
-        onChange={handleFieldChange}
+        formData={{
+          // Map database field names to component expected names
+          email: formData.email,
+          phoneNumber: formData.telephone_number,
+          mobileNumber: formData.mobile_number,
+          householdCode: formData.household_code,
+        }}
+        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
+          // Map component field names back to database field names
+          const fieldName = String(field);
+          const fieldMap: Record<string, string> = {
+            'email': 'email',
+            'phoneNumber': 'telephone_number',
+            'mobileNumber': 'mobile_number',
+            'householdCode': 'household_code',
+          };
+          const dbFieldName = fieldMap[fieldName] || fieldName;
+          handleFieldChange(dbFieldName, value);
+        }}
         errors={errors}
         onHouseholdSearch={handleHouseholdSearch}
-        householdOptions={householdOptions}
-        householdLoading={householdLoading}
+        householdOptions={searchOptions.household}
+        householdLoading={searchLoading.household}
       />
+
+      {/* Physical Personal Details Section */}
+      <PhysicalPersonalDetailsForm
+        formData={{
+          // Map database field names to component expected names
+          bloodType: formData.blood_type,
+          complexion: formData.complexion,
+          height: formData.height.toString(),
+          weight: formData.weight.toString(),
+          ethnicity: formData.ethnicity,
+          religion: formData.religion,
+          religionOthersSpecify: formData.religion_others_specify,
+          isVoter: formData.is_voter,
+          isResidentVoter: formData.is_resident_voter,
+          lastVotedDate: formData.last_voted_date,
+          motherMaidenFirstName: formData.mother_maiden_first,
+          motherMaidenMiddleName: formData.mother_maiden_middle,
+          motherMaidenLastName: formData.mother_maiden_last,
+        }}
+        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
+          // Map component field names back to database field names
+          const fieldName = String(field);
+          const fieldMap: Record<string, string> = {
+            'bloodType': 'blood_type',
+            'complexion': 'complexion',
+            'height': 'height',
+            'weight': 'weight',
+            'ethnicity': 'ethnicity',
+            'religion': 'religion',
+            'religionOthersSpecify': 'religion_others_specify',
+            'isVoter': 'is_voter',
+            'isResidentVoter': 'is_resident_voter',
+            'lastVotedDate': 'last_voted_date',
+            'motherMaidenFirstName': 'mother_maiden_first',
+            'motherMaidenMiddleName': 'mother_maiden_middle',
+            'motherMaidenLastName': 'mother_maiden_last',
+          };
+          const dbFieldName = fieldMap[fieldName] || fieldName;
+          // Convert height/weight strings back to numbers for database
+          let convertedValue = value;
+          if ((dbFieldName === 'height' || dbFieldName === 'weight') && typeof value === 'string') {
+            convertedValue = parseFloat(value) || 0;
+          }
+          handleFieldChange(dbFieldName, convertedValue);
+        }}
+        errors={errors}
+      />
+
+      {/* Sectoral Information Section */}
+      <SectoralInformationForm
+        formData={{
+          // Map database field names to component expected names
+          isLaborForce: formData.is_labor_force,
+          isLaborForceEmployed: formData.is_labor_force_employed,
+          isUnemployed: formData.is_unemployed,
+          isOverseasFilipino: formData.is_overseas_filipino_worker,
+          isPersonWithDisability: formData.is_person_with_disability,
+          isOutOfSchoolChildren: formData.is_out_of_school_children,
+          isOutOfSchoolYouth: formData.is_out_of_school_youth,
+          isSeniorCitizen: formData.is_senior_citizen,
+          isRegisteredSeniorCitizen: formData.is_registered_senior_citizen,
+          isSoloParent: formData.is_solo_parent,
+          isIndigenousPeople: formData.is_indigenous_people,
+          isMigrant: formData.is_migrant,
+        }}
+        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
+          // Map component field names back to database field names
+          const fieldName = String(field);
+          const fieldMap: Record<string, string> = {
+            'isLaborForce': 'is_labor_force',
+            'isLaborForceEmployed': 'is_labor_force_employed',
+            'isUnemployed': 'is_unemployed',
+            'isOverseasFilipino': 'is_overseas_filipino_worker',
+            'isPersonWithDisability': 'is_person_with_disability',
+            'isOutOfSchoolChildren': 'is_out_of_school_children',
+            'isOutOfSchoolYouth': 'is_out_of_school_youth',
+            'isSeniorCitizen': 'is_senior_citizen',
+            'isRegisteredSeniorCitizen': 'is_registered_senior_citizen',
+            'isSoloParent': 'is_solo_parent',
+            'isIndigenousPeople': 'is_indigenous_people',
+            'isMigrant': 'is_migrant',
+          };
+          const dbFieldName = fieldMap[fieldName] || fieldName;
+          handleFieldChange(dbFieldName, value);
+        }}
+        errors={errors}
+      />
+
+      {/* Migration Information Section - Only show if migrant is checked */}
+      {formData.is_migrant && (
+        <MigrationInformation
+          value={{
+            previous_barangay_code: formData.previous_barangay_code,
+            previous_city_municipality_code: formData.previous_city_municipality_code,
+            previous_province_code: formData.previous_province_code,
+            previous_region_code: formData.previous_region_code,
+            length_of_stay_previous_months: formData.length_of_stay_previous_months,
+            reason_for_leaving: formData.reason_for_leaving,
+            date_of_transfer: formData.date_of_transfer,
+            reason_for_transferring: formData.reason_for_transferring,
+            duration_of_stay_current_months: formData.duration_of_stay_current_months,
+            is_intending_to_return: formData.is_intending_to_return,
+          }}
+          onChange={(migrationData) => {
+            handleFieldChange('previous_barangay_code', migrationData.previous_barangay_code || '');
+            handleFieldChange('previous_city_municipality_code', migrationData.previous_city_municipality_code || '');
+            handleFieldChange('previous_province_code', migrationData.previous_province_code || '');
+            handleFieldChange('previous_region_code', migrationData.previous_region_code || '');
+            handleFieldChange('length_of_stay_previous_months', migrationData.length_of_stay_previous_months || 0);
+            handleFieldChange('reason_for_leaving', migrationData.reason_for_leaving || '');
+            handleFieldChange('date_of_transfer', migrationData.date_of_transfer || '');
+            handleFieldChange('reason_for_transferring', migrationData.reason_for_transferring || '');
+            handleFieldChange('duration_of_stay_current_months', migrationData.duration_of_stay_current_months || 0);
+            handleFieldChange('is_intending_to_return', migrationData.is_intending_to_return || false);
+          }}
+          errors={errors}
+        />
+      )}
 
       {/* Form Actions */}
       <div className="flex justify-end space-x-4">

@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ResidentForm } from '@/components/templates';
+import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
+import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +43,99 @@ function parseFullName(fullName: string) {
 
 function CreateResidentForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Setup resident operations hook with success/error handlers
+  const { createResident, isSubmitting, validationErrors } = useResidentOperations({
+    onSuccess: (data) => {
+      toast.success('Resident created successfully!');
+      // Redirect to the resident details page
+      if (data?.resident?.id) {
+        router.push(`/residents/${data.resident.id}`);
+      } else {
+        router.push('/residents');
+      }
+    },
+    onError: (error) => {
+      toast.error(error || 'Failed to create resident');
+    }
+  });
+
+  // Handle form submission - transform snake_case to camelCase
+  const handleSubmit = async (formData: any) => {
+    // Transform form data from snake_case (database fields) to camelCase (service expects)
+    const transformedData = {
+      // Personal Information
+      firstName: formData.first_name || '',
+      middleName: formData.middle_name || '',
+      lastName: formData.last_name || '',
+      extensionName: formData.extension_name || '',
+      birthdate: formData.birthdate || '',
+      sex: formData.sex || '',
+      civilStatus: formData.civil_status || '',
+      citizenship: formData.citizenship || '',
+      
+      // Education & Employment
+      educationLevel: formData.education_attainment || '',
+      educationStatus: formData.is_graduate ? 'graduate' : 'undergraduate',
+      occupationCode: formData.occupation_code || '',
+      psocLevel: formData.psoc_level || '',
+      positionTitleId: formData.position_title_id || '', // Required field
+      occupationDescription: formData.occupation_title || '',
+      employmentStatus: formData.employment_status || '',
+      workplace: formData.employment_name || '',
+      
+      // Contact & Documentation
+      email: formData.email || '',
+      mobileNumber: formData.mobile_number || '',
+      telephoneNumber: formData.telephone_number || '',
+      philsysCardNumber: formData.philsys_card_number || '',
+      
+      // Physical & Identity Information
+      bloodType: formData.blood_type || '',
+      height: formData.height || '',
+      weight: formData.weight || '',
+      complexion: formData.complexion || '',
+      ethnicity: formData.ethnicity || '',
+      religion: formData.religion || '',
+      
+      // Voting Information
+      voterRegistrationStatus: formData.is_voter || false,
+      residentVoterStatus: formData.is_resident_voter || false,
+      lastVotedYear: formData.last_voted_date || '',
+      
+      // Family Information
+      motherMaidenFirstName: formData.mother_maiden_first || '',
+      motherMaidenMiddleName: formData.mother_maiden_middle || '',
+      motherMaidenLastName: formData.mother_maiden_last || '',
+      
+      // Migration Information
+      migrationInfo: {
+        previousBarangayCode: formData.previous_barangay_code,
+        previousCityMunicipalityCode: formData.previous_city_municipality_code,
+        previousProvinceCode: formData.previous_province_code,
+        previousRegionCode: formData.previous_region_code,
+        lengthOfStayPreviousMonths: formData.length_of_stay_previous_months,
+        reasonForLeaving: formData.reason_for_leaving,
+        dateOfTransfer: formData.date_of_transfer,
+        reasonForTransferring: formData.reason_for_transferring,
+        durationOfStayCurrentMonths: formData.duration_of_stay_current_months,
+        isIntendingToReturn: formData.is_intending_to_return,
+      },
+      
+      // Address Information (PSGC Codes) - auto-populated from user's barangay
+      regionCode: '', // Will be populated by service from user address
+      provinceCode: '', // Will be populated by service from user address
+      cityMunicipalityCode: '', // Will be populated by service from user address
+      barangayCode: '', // Will be populated by service from user address
+      
+      // Household Assignment
+      householdCode: formData.household_code || '',
+      householdRole: 'Member' as const, // Default to member
+    };
+    
+    await createResident(transformedData);
+  };
 
   // Parse URL parameters to pre-fill form
   const initialData = useMemo(() => {
@@ -134,7 +229,11 @@ function CreateResidentForm() {
         </div>
 
         {/* Single Page Form */}
-        <ResidentForm initialData={initialData} />
+        <ResidentForm 
+          initialData={initialData} 
+          onSubmit={handleSubmit}
+          onCancel={() => router.push('/residents')}
+        />
     </div>
   );
 }

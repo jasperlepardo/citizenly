@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/atoms';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { logError } from '@/lib/secure-logger';
+import { logError } from '@/lib/logging/secure-logger';
 
 export const dynamic = 'force-dynamic';
 

@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import type { CommandMenuItem } from '../types';
-import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu-items';
-import { searchData, exportData, backupData, getRecentItems, clearRecentItems, createResident, createHousehold, findSeniorCitizens, findPWDs, findSoloParents, generateCertificate, generateReport } from '@/lib/command-menu-api';
-import { trackSearch, trackNavigation, trackAction } from '@/lib/recent-items-storage';
-import { trackCommandMenuSearch, trackCommandMenuNavigation, trackCommandMenuAction, trackCommandMenuError } from '@/lib/command-menu-analytics';
+import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
+import { searchData, exportData, backupData, getRecentItems, clearRecentItems, createResident, createHousehold, findSeniorCitizens, findPWDs, findSoloParents, generateCertificate, generateReport } from '@/lib/command-menu/api-utils';
+import { trackSearch, trackNavigation, trackAction } from '@/lib/storage';
+import { trackCommandMenuSearch, trackCommandMenuNavigation, trackCommandMenuAction, trackCommandMenuError } from '@/lib/command-menu/analytics-utils';
 
 interface UseCommandMenuWithApiProps {
   maxResults?: number;

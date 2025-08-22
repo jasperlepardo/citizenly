@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { InputField, SelectField } from '@/components/molecules';
 import { Button } from '@/components/atoms';
 import Link from 'next/link';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 // import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {

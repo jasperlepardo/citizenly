@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputField, SelectField } from '@/components/molecules';
-import { BLOOD_TYPE_OPTIONS, ETHNICITY_OPTIONS, RELIGION_OPTIONS } from '@/lib/constants/resident-enums';
+import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
 
 export interface PhysicalCharacteristicsData {
   bloodType: string;
@@ -10,7 +10,7 @@ export interface PhysicalCharacteristicsData {
   citizenship: string;
   ethnicity: string;
   religion: string;
-  religionOthersSpecify: string;
+  religionOthersSpecify?: string;
 }
 
 export interface PhysicalCharacteristicsProps {
@@ -34,21 +34,11 @@ export function PhysicalCharacteristics({
     });
   };
 
-  // Add empty option for dropdowns
-  const bloodTypeOptionsWithEmpty = [
-    { value: '', label: 'Select blood type' },
-    ...BLOOD_TYPE_OPTIONS,
-  ];
-
-  const ethnicityOptionsWithEmpty = [
-    { value: '', label: 'Select ethnicity' },
-    ...ETHNICITY_OPTIONS,
-  ];
-
-  const religionOptionsWithEmpty = [
-    { value: '', label: 'Select religion' }, 
-    ...RELIGION_OPTIONS
-  ];
+  // Use pre-defined options - these fields have database defaults so no empty options needed
+  const bloodTypeOptions = BLOOD_TYPE_OPTIONS_WITH_DEFAULT as any;
+  const ethnicityOptions = ETHNICITY_OPTIONS_WITH_DEFAULT as any;
+  const religionOptions = RELIGION_OPTIONS_WITH_DEFAULT as any;
+  const citizenshipOptions = CITIZENSHIP_OPTIONS_WITH_DEFAULT as any;
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -59,14 +49,15 @@ export function PhysicalCharacteristics({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      {/* All Fields in One Grid */}
+      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
         <SelectField
           label="Blood Type"
           labelSize="sm"
           errorMessage={errors.bloodType}
           selectProps={{
             placeholder: "Select blood type...",
-            options: bloodTypeOptionsWithEmpty,
+            options: bloodTypeOptions,
             value: value.bloodType,
             onSelect: (option) => handleChange('bloodType', option?.value || '')
           }}
@@ -83,9 +74,7 @@ export function PhysicalCharacteristics({
             error: errors.complexion
           }}
         />
-      </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <InputField
           label="Height (cm)"
           labelSize="sm"
@@ -111,18 +100,16 @@ export function PhysicalCharacteristics({
             error: errors.weight
           }}
         />
-      </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-        <InputField
+        <SelectField
           label="Citizenship"
           labelSize="sm"
           errorMessage={errors.citizenship}
-          inputProps={{
-            value: value.citizenship,
-            onChange: (e) => handleChange('citizenship', e.target.value),
-            placeholder: "Filipino",
-            error: errors.citizenship
+          selectProps={{
+            placeholder: "Select citizenship...",
+            options: citizenshipOptions,
+            value: value.citizenship || 'filipino',
+            onSelect: (option) => handleChange('citizenship', option?.value || 'filipino')
           }}
         />
         
@@ -132,11 +119,12 @@ export function PhysicalCharacteristics({
           errorMessage={errors.ethnicity}
           selectProps={{
             placeholder: "Select ethnicity...",
-            options: ethnicityOptionsWithEmpty,
+            options: ethnicityOptions,
             value: value.ethnicity,
             onSelect: (option) => handleChange('ethnicity', option?.value || '')
           }}
         />
+
         
         <SelectField
           label="Religion"
@@ -144,26 +132,28 @@ export function PhysicalCharacteristics({
           errorMessage={errors.religion}
           selectProps={{
             placeholder: "Select religion...",
-            options: religionOptionsWithEmpty,
+            options: religionOptions,
             value: value.religion,
             onSelect: (option) => handleChange('religion', option?.value || '')
           }}
         />
-      </div>
 
-      {value.religion === 'others' && (
-        <InputField
-          label="Please specify religion"
-          labelSize="sm"
-          errorMessage={errors.religionOthersSpecify}
-          inputProps={{
-            value: value.religionOthersSpecify,
-            onChange: (e) => handleChange('religionOthersSpecify', e.target.value),
-            placeholder: "Specify other religion",
-            error: errors.religionOthersSpecify
-          }}
-        />
-      )}
+        {/* Conditional Religion Other Specify - shows next to religion when religion = 'others' */}
+        {value.religion === 'others' && (
+          <InputField
+            label="Specify Religion"
+            required
+            labelSize="sm"
+            errorMessage={errors.religionOthersSpecify}
+            inputProps={{
+              value: value.religionOthersSpecify || '',
+              onChange: (e) => handleChange('religionOthersSpecify', e.target.value),
+              placeholder: "Please specify religion",
+              required: true
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }

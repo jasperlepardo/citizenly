@@ -3,8 +3,8 @@
  * Search functions that don't require authentication (for registration, etc.)
  */
 
-import { supabase } from './supabase';
-import { createLogger } from './environment';
+import { supabase } from '../supabase/supabase';
+import { createLogger } from '../environment';
 
 const logger = createLogger('PublicSearch');
 
@@ -155,7 +155,7 @@ export const searchOccupationsPublic = async (searchTerm: string, limit = 20) =>
 
     const { data, error } = await supabase
       .from('psoc_unified_search')
-      .select('psoc_code, occupation_title, psoc_level, parent_title')
+      .select('occupation_code, occupation_title, psoc_level, parent_title')
       .ilike('search_text', `%${searchTerm}%`)
       .limit(limit)
       .order('occupation_title');

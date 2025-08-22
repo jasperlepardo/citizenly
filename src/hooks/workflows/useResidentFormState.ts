@@ -8,54 +8,17 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { ResidentEditFormData } from '@/lib/validation/residentSchema';
+import type { ResidentFormData as ResidentEditFormData } from '@/lib/types/resident';
 
 /**
  * Default form data with proper typing
  */
 const DEFAULT_FORM_DATA: Partial<ResidentEditFormData> = {
-  first_name: '',
-  middle_name: '',
-  last_name: '',
-  extension_name: '',
+  firstName: '',
+  lastName: '',
   birthdate: '',
-  sex: 'male',
-  civil_status: 'single',
-  civil_status_others_specify: '',
-  citizenship: 'filipino',
-  birth_place_name: '',
-  birth_place_code: '',
-  mobile_number: '',
-  email: '',
-  telephone_number: '',
-  philsys_card_number: '',
-  household_code: '',
-  street_id: '',
-  subdivision_id: '',
-  zip_code: '',
-  education_attainment: undefined,
-  is_graduate: false,
-  employment_status: undefined,
-  employment_code: '',
-  employment_name: '',
-  psoc_code: '',
-  psoc_level: undefined,
-  occupation_title: '',
-  blood_type: undefined,
-  height: undefined,
-  weight: undefined,
-  complexion: '',
-  religion: undefined,
-  religion_others_specify: '',
-  ethnicity: undefined,
-  is_voter: false,
-  is_resident_voter: false,
-  last_voted_date: '',
-  mother_maiden_first: '',
-  mother_maiden_middle: '',
-  mother_maiden_last: '',
+  sex: 'male'
 };
-
 /**
  * Form state options
  */

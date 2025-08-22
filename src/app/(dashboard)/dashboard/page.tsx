@@ -10,10 +10,8 @@ import {
   EmploymentStatusPieChart,
 } from '@/components/molecules';
 import { PopulationPyramid } from '@/components/organisms';
-import { logger } from '@/lib/secure-logger';
-import Icon from '@/components/atoms/Icon/Icon';
-import { useDashboard } from '@/hooks/useDashboard';
-
+import { logger } from '@/lib/logging/secure-logger';
+import { useDashboard } from '@/hooks/dashboard/useDashboard';
 
 function DashboardContent() {
   const { userProfile, profileLoading } = useAuth();
@@ -21,16 +19,17 @@ function DashboardContent() {
   // Use React Query for dashboard data
   const { 
     stats, 
-    dependencyData, 
-    sexData, 
-    civilStatusData, 
-    employmentData, 
-    populationData, 
+    calculations,
     isLoading, 
     error 
   } = useDashboard();
 
-
+  const {
+    sexDistribution,
+    civilStatusData,
+    employmentData,
+    populationData
+  } = calculations;
 
   if (profileLoading) {
     return <div className="flex h-screen items-center justify-center text-gray-600 dark:text-gray-400">Loading...</div>;
@@ -43,29 +42,6 @@ function DashboardContent() {
           <h1 className="font-display text-2xl font-semibold text-gray-600 dark:text-gray-300">
             Welcome back, {userProfile ? userProfile.first_name : 'User'}!
           </h1>
-        </div>
-
-        {/* FontAwesome Test Section */}
-        <div className="mb-8 p-4 border border-gray-300 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
-          <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">FontAwesome Test</h2>
-          <div className="flex items-center space-x-8">
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Our Icon Component:</p>
-              <div className="flex space-x-4">
-                <Icon name="home" size="2xl" color="primary" />
-                <Icon name="users" size="2xl" color="success" />
-                <Icon name="dashboard" size="2xl" color="warning" />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Direct FontAwesome:</p>
-              <div className="flex space-x-4">
-                <i className="fas fa-home text-2xl text-blue-600"></i>
-                <i className="fas fa-users text-2xl text-green-600"></i>
-                <i className="fas fa-tachometer-alt text-2xl text-yellow-600"></i>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Statistics Cards */}
@@ -127,10 +103,10 @@ function DashboardContent() {
         {/* Charts */}
         <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div>
-            <DependencyRatioPieChart title="Age Distribution" data={dependencyData || { youngDependents: 0, workingAge: 0, oldDependents: 0 }} />
+            <DependencyRatioPieChart title="Age Distribution" data={calculations.dependencyData || { youngDependents: 0, workingAge: 0, oldDependents: 0 }} />
           </div>
           <div>
-            <SexDistributionPieChart data={sexData || { male: 0, female: 0 }} />
+            <SexDistributionPieChart data={sexDistribution || { male: 0, female: 0 }} />
           </div>
         </div>
 

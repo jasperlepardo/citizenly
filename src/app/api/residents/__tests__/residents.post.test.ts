@@ -31,7 +31,7 @@ jest.mock('@/lib/api-responses', () => ({
 }));
 
 // Mock other dependencies
-jest.mock('@/lib/rate-limit', () => ({
+jest.mock('@/lib/security/rate-limit', () => ({
   createRateLimitHandler: jest.fn(() => () => ({ success: true })),
 }));
 
@@ -39,7 +39,7 @@ jest.mock('@/lib/api-audit', () => ({
   auditDataOperation: jest.fn(),
 }));
 
-jest.mock('@/lib/secure-logger', () => ({
+jest.mock('@/li./logging/secure-logger', () => ({
   logger: { info: jest.fn(), error: jest.fn() },
   logError: jest.fn(),
 }));

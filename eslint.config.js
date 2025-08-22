@@ -31,6 +31,39 @@ export default [
       'jsx-a11y/role-has-required-aria-props': 'warn',
       '@next/next/no-img-element': 'warn',
       'import/no-anonymous-default-export': 'warn',
+      
+      // Production readiness rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-debugger': 'error',
+      'no-alert': 'error',
+      
+      // File naming and organization rules
+      'import/no-duplicates': 'error',
+      'import/no-unresolved': 'error',
+      'import/order': ['warn', {
+        'groups': [
+          'builtin',
+          'external', 
+          'internal',
+          'parent',
+          'sibling',
+          'index'
+        ],
+        'newlines-between': 'always',
+        'alphabetize': { 'order': 'asc' }
+      }],
+      
+      // Prevent common TypeScript issues
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+      '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/prefer-optional-chain': 'warn',
+      
+      // Security rules
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-new-func': 'error',
+      'no-script-url': 'error',
     },
     settings: {
       react: {
@@ -38,6 +71,13 @@ export default [
       },
     },
   },
+  // Specific rules for lib files to enforce naming conventions
+  {
+    files: ['src/lib/**/*.ts', 'src/lib/**/*.tsx'],
+    rules: {
+    },
+  },
+  
   // Disable rules for story files
   {
     files: ['**/*.stories.*', '**/*.story.*'],

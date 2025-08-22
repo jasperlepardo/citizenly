@@ -181,14 +181,27 @@ export const formatHouseholdOption = (
  * Format PSOC data for select options
  */
 export const formatPsocOption = (psocData: any): PsocOption => {
+  // Format hierarchical display for main label
+  let displayLabel = psocData.title;
+  if (psocData.hierarchy && psocData.hierarchy !== psocData.title) {
+    // Extract parent hierarchy (everything before the last " > ")
+    const hierarchyParts = psocData.hierarchy.split(' > ');
+    if (hierarchyParts.length > 1) {
+      const mainTitle = hierarchyParts[hierarchyParts.length - 1];
+      const parentHierarchy = hierarchyParts.slice(0, -1).join(' > ');
+      displayLabel = `${mainTitle}, ${parentHierarchy}`;
+    }
+  }
+
   return {
     value: psocData.code,
-    label: psocData.title,
+    label: displayLabel,
     description: psocData.hierarchy || psocData.full_hierarchy || psocData.title,
     level_type: psocData.level,
     occupation_code: psocData.code,
     occupation_title: psocData.title,
     hierarchy: psocData.hierarchy || psocData.full_hierarchy,
+    badge: psocData.level_name || psocData.level || 'occupation',
   };
 };
 

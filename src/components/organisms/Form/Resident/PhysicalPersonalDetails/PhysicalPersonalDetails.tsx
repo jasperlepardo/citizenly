@@ -12,6 +12,7 @@ export interface PhysicalPersonalDetailsFormProps {
     weight?: string;
     citizenship?: string;
     ethnicity?: string;
+    ethnicityOthersSpecify?: string;
     religion?: string;
     religionOthersSpecify?: string;
     // Voting Information
@@ -47,8 +48,8 @@ export function PhysicalPersonalDetailsForm({
 
   // Map form data to VotingInformation component props
   const votingInfoValue: VotingInformationData = {
-    isVoter: formData.isVoter ?? null,
-    isResidentVoter: formData.isResidentVoter ?? null,
+    isVoter: formData.isVoter ? 'yes' : 'no',
+    isResidentVoter: formData.isResidentVoter ? 'yes' : 'no',
     lastVotedDate: formData.lastVotedDate || '',
   };
 
@@ -69,7 +70,11 @@ export function PhysicalPersonalDetailsForm({
   // Handle changes from VotingInformation component
   const handleVotingInfoChange = (value: VotingInformationData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      if (field === 'isVoter' || field === 'isResidentVoter') {
+        onChange(field as keyof typeof value, fieldValue === 'yes');
+      } else {
+        onChange(field as keyof typeof value, fieldValue);
+      }
     });
   };
 

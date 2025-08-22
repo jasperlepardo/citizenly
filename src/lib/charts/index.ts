@@ -16,7 +16,7 @@ export {
   chartUtils,
   DEFAULT_CHART_TITLES,
   CHART_COLORS,
-} from './chartTransformers';
+} from './chart-transformers';
 
 export type {
   ChartDataPoint,
@@ -25,4 +25,4 @@ export type {
   SexData,
   CivilStatusData,
   EmploymentStatusData,
-} from './chartTransformers';
+} from './chart-transformers';

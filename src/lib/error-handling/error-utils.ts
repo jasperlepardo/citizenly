@@ -14,7 +14,7 @@ import type {
 } from './error-types';
 import { ErrorSeverity, ErrorCode } from './error-types';
 import { retry } from '../utilities/async-utils';
-import { generateId } from '../utilities/idGenerators';
+import { generateId } from '../utilities/id-generators';
 
 /**
  * Create a standardized application error

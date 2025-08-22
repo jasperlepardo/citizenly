@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/atoms';
-import { logger, logError } from '@/lib/secure-logger';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 export const dynamic = 'force-dynamic';
 
