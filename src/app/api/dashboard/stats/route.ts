@@ -56,9 +56,9 @@ export async function GET(request: NextRequest) {
 
     const barangayCode = userProfile.barangay_code;
 
-    // Get dashboard stats using optimized flat view - handle case where no data exists
+    // Get dashboard stats from system table - handle case where no data exists
     const { data: dashboardStats, error: statsError } = await supabaseAdmin
-      .from('api_dashboard_stats')
+      .from('system_dashboard_summaries')
       .select('*')
       .eq('barangay_code', barangayCode)
       .maybeSingle();
@@ -84,9 +84,10 @@ export async function GET(request: NextRequest) {
 
     // Get individual residents data for additional processing if needed
     const { data: residentsData, error: residentsError } = await supabaseAdmin
-      .from('api_residents_with_geography')
-      .select('birthdate, sex, civil_status, employment_status, is_labor_force_employed')
-      .eq('barangay_code', barangayCode);
+      .from('residents')
+      .select('birthdate, sex, civil_status, employment_status')
+      .eq('barangay_code', barangayCode)
+      .eq('is_active', true);
 
     console.log('Residents data query result:', {
       barangayCode,
@@ -117,36 +118,36 @@ export async function GET(request: NextRequest) {
         households: statsData.total_households || 0,
         businesses: 0, // TODO: Add when businesses table exists
         certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: statsData.old_dependents || 0, // Using dependency ratio standard (65+)
-        employedResidents: statsData.employed || 0,
+        seniorCitizens: statsData.age_65_plus || 0, // Using 65+ from system_dashboard_summaries
+        employedResidents: statsData.employed_count || 0,
       },
       // Additional demographic data for charts
       demographics: {
         ageGroups: {
-          youngDependents: statsData.young_dependents || 0,
-          workingAge: statsData.working_age || 0,
-          oldDependents: statsData.old_dependents || 0,
+          youngDependents: statsData.age_0_14 || 0,
+          workingAge: statsData.age_15_64 || 0,
+          oldDependents: statsData.age_65_plus || 0,
         },
         sexDistribution: {
-          male: statsData.male_residents || 0,
-          female: statsData.female_residents || 0,
+          male: statsData.male_count || 0,
+          female: statsData.female_count || 0,
         },
         civilStatus: {
-          single: statsData.single_residents || 0,
-          married: statsData.married_residents || 0,
-          widowed: statsData.widowed_residents || 0,
-          divorced: statsData.divorced_residents || 0,
+          single: statsData.single_count || 0,
+          married: statsData.married_count || 0,
+          widowed: statsData.widowed_count || 0,
+          divorced: statsData.divorced_separated_count || 0,
         },
         employment: {
-          laborForce: statsData.labor_force || 0,
-          employed: statsData.employed || 0,
-          unemployed: statsData.unemployed || 0,
+          laborForce: (statsData.employed_count || 0) + (statsData.unemployed_count || 0),
+          employed: statsData.employed_count || 0,
+          unemployed: statsData.unemployed_count || 0,
         },
         specialCategories: {
-          pwd: statsData.pwd_residents || 0,
-          soloParents: statsData.solo_parents || 0,
-          ofw: statsData.ofw_residents || 0,
-          indigenous: statsData.indigenous_residents || 0,
+          pwd: 0, // Not available in system_dashboard_summaries
+          soloParents: 0, // Not available in system_dashboard_summaries  
+          ofw: 0, // Not available in system_dashboard_summaries
+          indigenous: 0, // Not available in system_dashboard_summaries
         },
       },
       residentsData: residentsData || [],
