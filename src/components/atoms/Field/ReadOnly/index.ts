@@ -1,0 +1,1 @@
+export { ReadOnly, type ReadOnlyProps } from './ReadOnly';

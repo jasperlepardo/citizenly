@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       const regionResults = await Promise.all(regionSearchPromises);
       regionResults.forEach(result => {
         if (result.data) {
-          result.data.forEach(region => {
+          result.data.forEach((region: any) => {
             allResults.push({
               code: region.code,
               name: region.name,
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       const provinceResults = await Promise.all(provinceSearchPromises);
       provinceResults.forEach(result => {
         if (result.data) {
-          result.data.forEach(province => {
+          result.data.forEach((province: any) => {
             const region = province.psgc_regions;
             allResults.push({
               code: province.code,
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
       const cityResults = await Promise.all(citySearchPromises);
       cityResults.forEach(result => {
         if (result.data) {
-          result.data.forEach(city => {
+          result.data.forEach((city: any) => {
             const province = city.psgc_provinces;
             const region = province?.psgc_regions;
             allResults.push({
@@ -184,7 +184,7 @@ export async function GET(request: NextRequest) {
       const barangayResults = await Promise.all(barangaySearchPromises);
       barangayResults.forEach(result => {
         if (result.data) {
-          result.data.forEach(barangay => {
+          result.data.forEach((barangay: any) => {
             const city = barangay.psgc_cities_municipalities;
             const province = city?.psgc_provinces;
             const region = province?.psgc_regions;
@@ -210,7 +210,7 @@ export async function GET(request: NextRequest) {
 
     // Remove duplicates based on code
     const uniqueResults = allResults.reduce((acc, current) => {
-      const exists = acc.find(item => item.code === current.code);
+      const exists = acc.find((item: any) => item.code === current.code);
       if (!exists) {
         acc.push(current);
       }
@@ -219,7 +219,7 @@ export async function GET(request: NextRequest) {
 
     // Sort by level hierarchy (region -> province -> city -> barangay) and then by name
     const levelOrder = { region: 1, province: 2, city: 3, barangay: 4 };
-    uniqueResults.sort((a, b) => {
+    uniqueResults.sort((a: any, b: any) => {
       const levelDiff = levelOrder[a.level as keyof typeof levelOrder] - levelOrder[b.level as keyof typeof levelOrder];
       if (levelDiff !== 0) return levelDiff;
       return a.name.localeCompare(b.name);

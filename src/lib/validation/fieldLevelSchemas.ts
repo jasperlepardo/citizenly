@@ -53,7 +53,7 @@ export const ageValidator = z.number()
 
 // Selection validators
 export const sexValidator = z.enum(['male', 'female'], {
-  errorMap: () => ({ message: 'Please select a valid sex' }),
+  message: 'Please select a valid sex',
 });
 
 export const requiredSelectValidator = z.string()

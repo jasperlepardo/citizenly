@@ -1,0 +1,37 @@
+-- ACTUAL SUPABASE SCHEMA
+-- Generated on: 2025-08-17T11:50:10.351Z
+-- Tables that exist in Supabase: 25
+-- Tables that don't exist: 4
+
+-- EXISTING TABLES:
+-- ✓ auth_roles
+-- ✓ auth_user_profiles
+-- ✓ auth_barangay_accounts
+-- ✓ psgc_regions
+-- ✓ psgc_provinces
+-- ✓ psgc_cities_municipalities
+-- ✓ psgc_barangays
+-- ✓ psoc_major_groups
+-- ✓ psoc_sub_major_groups
+-- ✓ psoc_minor_groups
+-- ✓ psoc_unit_groups
+-- ✓ psoc_unit_sub_groups
+-- ✓ psoc_position_titles
+-- ✓ psoc_occupation_cross_references
+-- ✓ geo_subdivisions
+-- ✓ geo_streets
+-- ✓ households
+-- ✓ residents
+-- ✓ household_members
+-- ✓ resident_relationships
+-- ✓ resident_sectoral_info
+-- ✓ system_audit_logs
+-- ✓ system_schema_versions
+-- ✓ resident_migrant_info
+-- ✓ system_dashboard_summaries
+
+-- MISSING TABLES:
+-- ✗ resident_benefits
+-- ✗ resident_benefit_history
+-- ✗ audit_logs
+-- ✗ data_versions

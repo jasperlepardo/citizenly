@@ -1,0 +1,30 @@
+
+DETAILED COLUMN ANALYSIS REPORT
+===============================
+Table: residents
+Date: 2025-08-17T12:08:58.776Z
+
+COLUMN COUNT:
+- Supabase: 53
+- Schema.sql: 55
+- Difference: -2
+
+COLUMN ALIGNMENT:
+- Common columns: 53
+- Missing in schema.sql: 0
+- Documented but not in Supabase: 2
+- Order matches: 28/53 (53%)
+
+MISSING IN SCHEMA.SQL:
+
+
+DOCUMENTED BUT NOT IN SUPABASE:
+- 2
+- 2
+
+RECOMMENDATIONS:
+✅ All Supabase columns are documented in schema.sql
+⚠️  Remove non-existent columns from schema.sql
+⚠️  Column order differs between Supabase and schema.sql
+
+OVERALL STATUS: ⚠️  NEEDS ATTENTION
