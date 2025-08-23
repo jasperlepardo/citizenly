@@ -7,7 +7,11 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q');
     const limit = parseInt(searchParams.get('limit') || '20', 10);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
-    const levels = searchParams.get('levels')?.split(',') || ['city']; // Default to cities only
+    const rawLevels = searchParams.get('levels') || 'city';
+    // Handle 'all' levels parameter by including all geographic levels
+    const levels = rawLevels === 'all' 
+      ? ['region', 'province', 'city', 'barangay'] 
+      : rawLevels.split(',');
     const maxLevel = searchParams.get('maxLevel') || 'city';
     const minLevel = searchParams.get('minLevel') || 'region';
 
