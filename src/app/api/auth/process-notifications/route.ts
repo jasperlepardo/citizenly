@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/api-auth';
+import { createAdminSupabaseClient } from '@/lib/api/authUtils';
 
 interface NotificationRecord {
   id: string;

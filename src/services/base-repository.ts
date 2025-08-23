@@ -4,9 +4,9 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { logger } from '../logging/secure-logger';
-import { storeSecurityAuditLog } from '../security/audit-storage';
-import type { ValidationContext } from '../validation/types';
+import { logger } from '@/lib/logging/secure-logger';
+import { storeSecurityAuditLog } from '@/lib/security/audit-storage';
+import type { ValidationContext } from '@/lib/validation/types';
 
 export interface QueryOptions {
   limit?: number;

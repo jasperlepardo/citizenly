@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { ResidentFormData } from '@/lib/types/resident';
+import type { ResidentFormData } from '@/types/residents';
 // FormMode type definition
 type FormMode = 'create' | 'edit' | 'view';
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';

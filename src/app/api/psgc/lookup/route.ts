@@ -75,16 +75,22 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'Province not found' }, { status: 404 });
         }
 
-        const region = provinceData.psgc_regions;
+        const province = provinceData as { 
+          code: string; 
+          name: string; 
+          region_code: string;
+          psgc_regions: { code: string; name: string }[] | null 
+        };
+        const region = Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions;
         result = {
-          code: provinceData.code,
-          name: provinceData.name,
+          code: province.code,
+          name: province.name,
           level: 'province',
-          province_code: provinceData.code,
-          province_name: provinceData.name,
+          province_code: province.code,
+          province_name: province.name,
           region_code: region?.code,
           region_name: region?.name,
-          full_address: [provinceData.name, region?.name].filter(Boolean).join(', ')
+          full_address: [province.name, region?.name].filter(Boolean).join(', ')
         };
         break;
       }
@@ -112,21 +118,34 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'City/Municipality not found' }, { status: 404 });
         }
 
-        const cityProvince = cityData.psgc_provinces;
-        const cityRegion = cityProvince?.psgc_regions;
+        const city = cityData as { 
+          code: string; 
+          name: string; 
+          type: string;
+          is_independent: boolean;
+          province_code: string;
+          psgc_provinces: { 
+            code: string; 
+            name: string;
+            region_code: string;
+            psgc_regions: { code: string; name: string }[] | null
+          }[] | null
+        };
+        const cityProvince = Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces;
+        const cityRegion = cityProvince?.psgc_regions ? (Array.isArray(cityProvince.psgc_regions) ? cityProvince.psgc_regions[0] : cityProvince.psgc_regions) : null;
         result = {
-          code: cityData.code,
-          name: cityData.name,
+          code: city.code,
+          name: city.name,
           level: 'city',
-          type: cityData.type,
-          city_code: cityData.code,
-          city_name: cityData.name,
-          city_type: cityData.type,
+          type: city.type,
+          city_code: city.code,
+          city_name: city.name,
+          city_type: city.type,
           province_code: cityProvince?.code,
           province_name: cityProvince?.name,
           region_code: cityRegion?.code,
           region_name: cityRegion?.name,
-          full_address: [cityData.name, cityProvince?.name, cityRegion?.name].filter(Boolean).join(', ')
+          full_address: [city.name, cityProvince?.name, cityRegion?.name].filter(Boolean).join(', ')
         };
         break;
       }

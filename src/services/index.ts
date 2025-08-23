@@ -1,6 +1,6 @@
 /**
- * Repository Pattern Exports
- * Centralized exports for all repository classes and types
+ * Services Layer Exports
+ * Centralized exports for all services, repositories, and business logic
  */
 
 // Base repository exports
@@ -11,32 +11,45 @@ export {
   type RepositoryResult,
 } from './base-repository';
 
-// Repository class imports for factory
-import { ResidentRepository } from './resident-repository';
-import { HouseholdRepository } from './household-repository';
-import { UserRepository } from './user-repository';
-
-// Resident repository exports
+// Repository exports  
 export {
   ResidentRepository,
-  type ResidentData,
   type ResidentSearchOptions,
 } from './resident-repository';
 
-// Household repository exports
+// Import database types directly from types layer
+export type { ResidentDatabaseRecord as ResidentData } from '@/types/residents';
+
 export {
   HouseholdRepository,
   type HouseholdData,
   type HouseholdSearchOptions,
 } from './household-repository';
 
-// User repository exports
 export {
   UserRepository,
   type UserData,
   type UserSearchOptions,
   type UserSecurityData,
 } from './user-repository';
+
+// Business services
+export { default as ResidentService } from './resident.service';
+export { default as HouseholdService } from './household.service';
+export { default as GeographicService } from './geographic.service';
+
+// Data transformers and mappers
+export * from './residentMapper';
+export * from './formDataTransformers';
+
+// Optimized data fetchers
+export * from './household-fetcher';
+export * from './resident-details-fetcher';
+
+// Repository class imports for factory
+import { ResidentRepository } from './resident-repository';
+import { HouseholdRepository } from './household-repository';
+import { UserRepository } from './user-repository';
 
 // Repository factory for dependency injection
 export class RepositoryFactory {

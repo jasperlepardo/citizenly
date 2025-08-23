@@ -229,7 +229,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
   // Enhanced fetch function with retry logic
   const fetchWithRetry = async (): Promise<DashboardResponse> => {
     return retryLogic.execute(async () => {
-      const result = await wrapAsync(fetchDashboardStats, 'dashboard stats fetch');
+      const result = await wrapAsync(fetchDashboardStats, 'dashboard stats fetch')();
       if (result === null) {
         throw new Error('Dashboard data fetch returned null');
       }

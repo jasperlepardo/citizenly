@@ -3,8 +3,8 @@
  * Consolidated asynchronous operation utilities
  */
 
-import { createAppError } from '../error-handling/error-utils';
-import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
+import { createAppError } from '@/lib/error-handling/error-utils';
+import { ErrorCode, ErrorSeverity } from '@/lib/error-handling/error-types';
 
 /**
  * Debounce function execution

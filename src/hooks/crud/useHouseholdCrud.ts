@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { householdService, HouseholdFormData } from '@/lib/services/household.service';
+import { householdService, HouseholdFormData } from '@/services/household.service';
 
 /**
  * CRUD operation result

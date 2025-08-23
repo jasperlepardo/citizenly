@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { HouseholdOption, PsocOption, PsgcOption } from '@/lib/types/resident';
-import { formatPsocOption, formatPsgcOption } from '@/lib/mappers/residentMapper';
-import { searchHouseholdsCached } from '@/lib/optimizers/household-fetcher';
+import { PsocOption, PsgcOption } from '@/types/residents';
+import { HouseholdOption } from '@/types/households';
+import { formatPsocOption, formatPsgcOption } from '@/services/residentMapper';
+import { searchHouseholdsCached } from '@/services/household-fetcher';
 
 interface UseFormSearchesReturn {
   // PSOC search state

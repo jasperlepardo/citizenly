@@ -4,7 +4,15 @@
 
 The `src/lib` directory contains the core business logic, utilities, and shared code for the Citizenly application. This library follows a security-first, modular architecture with comprehensive TypeScript typing and proper separation of concerns.
 
-**Architecture Grade: B+** - Well-designed with some areas for optimization
+**Architecture Grade: A-** - Reorganized with clear separation between lib utilities and services layer
+
+## Recent Reorganization (August 2023)
+
+This directory has been **significantly reorganized** to follow traditional React/Next.js patterns:
+- **Services layer moved to `src/services/`** - All data access, repositories, business services
+- **Utilities remain in `src/lib/`** - Core utilities, configurations, security, validation
+- **Types consolidated in `src/types/`** - Centralized type definitions
+- **Improved barrel exports** - Better developer experience with cleaner imports
 
 ## Directory Structure
 

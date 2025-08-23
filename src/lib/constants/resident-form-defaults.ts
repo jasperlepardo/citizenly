@@ -1,4 +1,4 @@
-import type { ResidentFormData } from '@/lib/types/resident';
+import type { ResidentFormData } from '@/types/residents';
 
 export const DEFAULT_FORM_VALUES: ResidentFormData = {
   firstName: '',
@@ -38,7 +38,7 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   // Sectoral Information
   isLaborForceEmployed: false,
   isUnemployed: false,
-  isOverseasFilipino: false,
+  isOverseasFilipinoWorker: false,
   isPersonWithDisability: false,
   isOutOfSchoolChildren: false,
   isOutOfSchoolYouth: false,

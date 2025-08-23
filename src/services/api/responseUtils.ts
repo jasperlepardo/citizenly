@@ -11,9 +11,9 @@ import {
   ErrorCode,
   RequestContext,
 } from './types';
-import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
-import { sanitizeSearchQuery } from '../validation/sanitizers';
-import { logger } from '../logging/secure-logger';
+import { auditError, auditSecurityViolation, AuditEventType } from '@/lib/security/audit-storage';
+import { sanitizeSearchQuery } from '@/lib/validation/sanitizers';
+import { logger } from '@/lib/logging/secure-logger';
 
 /**
  * Create a successful API response

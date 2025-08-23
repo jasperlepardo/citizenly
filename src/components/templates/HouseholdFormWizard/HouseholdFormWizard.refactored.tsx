@@ -10,7 +10,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 // import { useHouseholdOperationsWorkflow } from '@/hooks/workflows'; // Deprecated
-import { HouseholdFormData } from '@/lib/services/household.service';
+import { HouseholdFormData } from '@/services/household.service';
 
 // Import molecules and atoms
 import { Button } from '@/components/atoms';

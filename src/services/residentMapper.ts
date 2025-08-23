@@ -7,12 +7,14 @@ import {
   ResidentFormData, 
   ResidentApiData, 
   ResidentWithRelations,
-  HouseholdData,
-  HouseholdHead,
-  HouseholdOption,
   PsocOption,
   PsgcOption
-} from '@/lib/types/resident';
+} from '@/types/residents';
+import { 
+  HouseholdData,
+  HouseholdHead,
+  HouseholdOption
+} from '@/types/households';
 
 /**
  * Map form data (camelCase) to API format (snake_case for database)

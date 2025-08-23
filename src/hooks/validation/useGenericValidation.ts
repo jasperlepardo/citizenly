@@ -19,7 +19,7 @@ import {
   useValidationState,
   createFormValidationExecutor,
   createFieldValidationExecutor,
-} from '@/lib/utilities';
+} from '@/utils';
 
 /**
  * Generic validation options

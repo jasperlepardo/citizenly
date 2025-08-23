@@ -104,7 +104,7 @@ export function useCommandMenuSearch(
         const apiResults = await wrapAsync(
           () => searchData(searchQuery, maxResults),
           'command menu search'
-        );
+        )();
         
         if (apiResults) {
           // Track search analytics

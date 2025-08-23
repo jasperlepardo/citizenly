@@ -11,7 +11,7 @@
  * - Query deduplication
  */
 
-import { logger } from '../logging/secure-logger';
+import { logger } from '@/lib/logging/secure-logger';
 
 interface CacheEntry<T = any> {
   data: T;

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormMode } from '@/lib/types/forms';
+import type { FormMode } from '@/types/forms';
 
 // Helper function to get button variant
 const getButtonVariant = (isOptimisticallyUpdated: boolean): string => {

@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { useParams, useRouter } from 'next/navigation';
 import ResidentEditPage from './page';
 import { useAuth } from '@/contexts/AuthContext';
-import { useResidentEditForm } from '@/hooks/useResidentEditForm';
+import { useResidentEditWorkflow } from '@/hooks/workflows/useResidentEditWorkflow';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -21,8 +21,8 @@ jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock('@/hooks/useResidentEditForm', () => ({
-  useResidentEditForm: jest.fn(),
+jest.mock('@/hooks/workflows/useResidentEditWorkflow', () => ({
+  useResidentEditWorkflow: jest.fn(),
 }));
 
 jest.mock('@/components/organisms', () => ({
@@ -95,7 +95,7 @@ describe('ResidentEditPage', () => {
     (useParams as jest.Mock).mockReturnValue({ id: 'test-resident-id' });
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useAuth as jest.Mock).mockReturnValue({ session: mockSession });
-    (useResidentEditForm as jest.Mock).mockReturnValue(mockFormHook);
+    (useResidentEditWorkflow as jest.Mock).mockReturnValue(mockFormHook);
 
     (fetch as jest.Mock).mockResolvedValue({
       ok: true,
@@ -180,7 +180,7 @@ describe('ResidentEditPage', () => {
       render(<ResidentEditPage />);
 
       await waitFor(() => {
-        expect(useResidentEditForm).toHaveBeenCalledWith(
+        expect(useResidentEditWorkflow).toHaveBeenCalledWith(
           expect.objectContaining({
             initialData: expect.objectContaining({
               birthdate: '1990-01-01',
@@ -227,7 +227,7 @@ describe('ResidentEditPage', () => {
     });
 
     it('should show unsaved changes indicator when form is dirty', async () => {
-      (useResidentEditForm as jest.Mock).mockReturnValue({
+      (useResidentEditWorkflow as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isDirty: true,
       });
@@ -260,7 +260,7 @@ describe('ResidentEditPage', () => {
       const user = userEvent.setup();
       window.confirm = jest.fn().mockReturnValue(true);
 
-      (useResidentEditForm as jest.Mock).mockReturnValue({
+      (useResidentEditWorkflow as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isDirty: true,
       });
@@ -284,7 +284,7 @@ describe('ResidentEditPage', () => {
       const user = userEvent.setup();
       window.confirm = jest.fn().mockReturnValue(false);
 
-      (useResidentEditForm as jest.Mock).mockReturnValue({
+      (useResidentEditWorkflow as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isDirty: true,
       });
@@ -307,7 +307,7 @@ describe('ResidentEditPage', () => {
     it('should handle successful form submission', async () => {
       const mockSubmit = jest.fn().mockResolvedValue(undefined);
 
-      (useResidentEditForm as jest.Mock).mockReturnValue({
+      (useResidentEditWorkflow as jest.Mock).mockReturnValue({
         ...mockFormHook,
         submitForm: mockSubmit,
       });
@@ -325,7 +325,7 @@ describe('ResidentEditPage', () => {
     });
 
     it('should disable form during submission', async () => {
-      (useResidentEditForm as jest.Mock).mockReturnValue({
+      (useResidentEditWorkflow as jest.Mock).mockReturnValue({
         ...mockFormHook,
         isSubmitting: true,
       });
@@ -425,7 +425,7 @@ describe('ResidentEditPage Integration', () => {
     (useAuth as jest.Mock).mockReturnValue({ session: { access_token: 'token' } });
 
     // Use real form hook for integration test
-    jest.unmock('@/hooks/useResidentEditForm');
+    jest.unmock('@/hooks/useResidentEditWorkflow');
 
     render(<ResidentEditPage />);
 

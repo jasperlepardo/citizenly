@@ -2,15 +2,15 @@
  * Consolidated Type Exports
  * Central barrel export for all application types
  * 
- * This replaces scattered type imports from multiple locations with a single,
- * organized source of truth for TypeScript interfaces and types.
+ * Clean, direct imports with no legacy aliases or duplicates.
+ * Use specific type names from their respective modules.
  */
 
 // =============================================================================
 // CORE DOMAIN TYPES
 // =============================================================================
 
-// Database types - explicit exports to avoid conflicts
+// Database types
 export type {
   PSGCRegion,
   PSGCProvince,
@@ -28,8 +28,37 @@ export type {
   EmploymentStatistics
 } from './database';
 
-// Resident types - explicit exports to avoid conflicts
+// Authentication types
 export type {
+  AuthUser,
+  AuthUserProfile,
+  AuthSession,
+  AuthState,
+  AuthRole,
+  AuthPermission,
+  RolePermission,
+  UserRole,
+  WebhookUserRecord,
+  LoginRequest,
+  SignupRequest,
+  PasswordResetRequest,
+  PasswordUpdateRequest,
+  ProfileUpdateRequest,
+  AccessControlResult,
+  AuthProvider,
+  AuthErrorType,
+  AuthError,
+  LoginFormData,
+  SignupFormData,
+  ProfileFormData
+} from './auth';
+
+// Export auth constants
+export { DEFAULT_ROLES, PERMISSION_ACTIONS, RESOURCE_TYPES } from './auth';
+
+// Resident types
+export type {
+  // Enums
   SexEnum,
   CivilStatusEnum,
   CitizenshipEnum,
@@ -39,32 +68,33 @@ export type {
   ReligionEnum,
   EthnicityEnum,
   BirthPlaceLevelEnum,
+  
+  // Core interfaces
   ResidentDatabaseRecord,
-  // Legacy aliases
-  ResidentDatabaseRecord as ResidentRecord,
-  ResidentDatabaseRecord as ResidentData,
-  ResidentDatabaseRecord as ResidentDetail,
-  ResidentDatabaseRecord as ResidentListing,
   ResidentApiData,
   ResidentSectoralInfo,
   ResidentMigrantInfo,
   ResidentFormData,
   ResidentFormState,
+  ResidentWithRelations,
+  CombinedResidentFormData,
+  
+  // Search and API
   PsocData,
   PsocOption,
   PsgcData,
   PsgcOption,
   AddressInfo,
-  ResidentWithRelations,
-  CombinedResidentFormData,
-  SectoralInformation,
-  SectoralContext,
-  FormValidationError,
   ResidentApiResponse,
   ResidentsListResponse,
   ResidentSearchParams,
   ResidentTableAction,
-  ResidentTableColumn
+  ResidentTableColumn,
+  
+  // Validation
+  FormValidationError,
+  SectoralInformation,
+  SectoralContext
 } from './residents';
 
 // Export resident option constants
@@ -80,11 +110,9 @@ export {
   BIRTH_PLACE_LEVEL_OPTIONS
 } from './residents';
 
-// Household types - explicit exports
+// Household types
 export type {
   HouseholdRecord,
-  // Legacy aliases
-  HouseholdRecord as Household,
   HouseholdData,
   HouseholdHead,
   HouseholdWithMembersResult,
@@ -106,49 +134,26 @@ export {
   INCOME_CLASS_OPTIONS
 } from './households';
 
-// Authentication and authorization types
+// Form types
 export type {
-  AuthUser,
-  // Legacy aliases
-  AuthUser as User,
-  AuthUserProfile,
-  AuthUserProfile as UserProfile,
-  AuthRole,
-  AuthRole as Role,
-  AuthSession,
-  AuthState,
-  AuthPermission,
-  RolePermission,
-  UserRole,
-  LoginRequest,
-  SignupRequest,
-  PasswordResetRequest,
-  PasswordUpdateRequest,
-  ProfileUpdateRequest,
-  SupabaseAuthResponse,
-  UserProfileQueryResult,
-  PermissionContext,
-  AccessControlResult,
-  WebhookUserRecord,
-  UserNotificationRecord,
-  AuthProvider,
-  OAuthConfig,
-  SessionStorageOptions,
-  SessionValidationResult,
-  RouteProtection,
-  AuthMiddlewareContext,
-  AuthErrorType,
-  AuthError,
-  LoginFormData,
-  SignupFormData,
-  ProfileFormData
-} from './auth';
-
-// Export auth constants
-export { DEFAULT_ROLES, PERMISSION_ACTIONS, RESOURCE_TYPES } from './auth';
+  BaseFieldSetProps,
+  FieldSetWithIconsProps,
+  ClearableFieldSetProps,
+  ValidationState,
+  FieldSize,
+  ValidatedFieldSetProps,
+  LoadableFieldSetProps,
+  GenericSelectOption,
+  SelectFieldBaseProps,
+  FormSectionProps,
+  FieldValidator,
+  ValidatableFieldSetProps,
+  FormMode,
+  FormSubmissionState
+} from './forms';
 
 // =============================================================================
-// API AND FORM TYPES
+// API AND COMMUNICATION TYPES
 // =============================================================================
 
 // API request/response types
@@ -177,42 +182,26 @@ export type {
 } from './api';
 
 // Export API type guards
-export { isApiSuccess, isApiError, isValidationError, isRateLimitError, isAuthError } from './api';
-
-// Form field and validation types
-export type {
-  BaseFieldSetProps,
-  FieldSetWithIconsProps,
-  ClearableFieldSetProps,
-  ValidationState,
-  FieldSize,
-  ValidatedFieldSetProps,
-  LoadableFieldSetProps,
-  GenericSelectOption,
-  SelectFieldBaseProps,
-  FormSectionProps,
-  FieldValidator,
-  ValidatableFieldSetProps,
-  FormMode,
-  FormSubmissionState
-} from './forms';
+export { 
+  isApiSuccess, 
+  isApiError, 
+  isValidationError, 
+  isRateLimitError, 
+  isAuthError 
+} from './api';
 
 // =============================================================================
-// VALIDATION RESULT TYPE
+// UTILITY TYPES
 // =============================================================================
 
-// Re-export validation types from lib/validation/types if needed
-import type { ValidationError } from './database';
-
+/**
+ * Generic validation result wrapper
+ */
 export type ValidationResult<T = any> = {
   isValid: boolean;
-  errors: ValidationError[];
+  errors: string[];
   data?: T;
 };
-
-// =============================================================================
-// COMMON UTILITY TYPES
-// =============================================================================
 
 /**
  * Make all properties optional recursively
@@ -341,8 +330,6 @@ export type ClickHandler<T = HTMLElement> = (event: React.MouseEvent<T>) => void
  * Generic form submit handler
  */
 export type SubmitHandler<T = any> = (data: T) => void | Promise<void>;
-
-// Note: Legacy type aliases are now included in the main export sections above
 
 // =============================================================================
 // TYPE GUARDS

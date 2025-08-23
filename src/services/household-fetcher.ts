@@ -4,8 +4,8 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { HouseholdData, HouseholdHead, HouseholdOption } from '@/lib/types/resident';
-import { formatHouseholdOption } from '@/lib/mappers/residentMapper';
+import { HouseholdData, HouseholdHead, HouseholdOption } from '@/types/households';
+import { formatHouseholdOption } from '@/services/residentMapper';
 
 /**
  * Batch fetch household heads to eliminate N+1 queries

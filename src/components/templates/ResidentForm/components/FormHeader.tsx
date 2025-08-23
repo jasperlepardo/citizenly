@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormMode } from '@/lib/types/forms';
+import type { FormMode } from '@/types/forms';
 
 interface FormHeaderProps {
   mode: FormMode;

@@ -22,10 +22,12 @@ import type {
   ResidentFormData,
   ResidentApiData,
   ResidentWithRelations,
+} from '@/types/residents';
+import type {
   HouseholdData,
   HouseholdHead,
   HouseholdOption,
-} from '@/lib/types/resident';
+} from '@/types/households';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {
@@ -67,7 +69,7 @@ describe('Resident Mapper Utilities', () => {
         // Additional sectoral fields
         isLaborForceEmployed: false,
         isUnemployed: false,
-        isOverseasFilipino: false,
+        isOverseasFilipinoWorker: false,
         isPersonWithDisability: false,
         isOutOfSchoolChildren: false,
         isOutOfSchoolYouth: false,
@@ -153,7 +155,7 @@ describe('Resident Mapper Utilities', () => {
         // Additional sectoral fields
         isLaborForceEmployed: false,
         isUnemployed: false,
-        isOverseasFilipino: false,
+        isOverseasFilipinoWorker: false,
         isPersonWithDisability: false,
         isOutOfSchoolChildren: false,
         isOutOfSchoolYouth: false,
@@ -166,11 +168,11 @@ describe('Resident Mapper Utilities', () => {
 
       const result = mapFormToApi(formData);
 
-      expect(result.middleName).toBeUndefined();
-      expect(result.civilStatus).toBeUndefined();
+      expect(result.middle_name).toBeUndefined();
+      expect(result.civil_status).toBeUndefined();
       expect(result.email).toBeUndefined();
-      expect(result.isVoter).toBeUndefined();
-      expect(result.isResidentVoter).toBeUndefined();
+      expect(result.is_voter).toBeUndefined();
+      expect(result.is_resident_voter).toBeUndefined();
     });
   });
 

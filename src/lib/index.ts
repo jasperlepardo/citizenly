@@ -224,22 +224,19 @@ export {
 // Repository pattern exports
 export {
   BaseRepository,
-  ResidentRepository,
-  HouseholdRepository,
-  UserRepository,
-  RepositoryFactory,
-  createRepositories,
   type QueryOptions,
   type RepositoryError,
-  type RepositoryResult,
-  type ResidentData,
-  type ResidentSearchOptions,
-  type HouseholdData,
-  type HouseholdSearchOptions,
-  type UserData,
-  type UserSearchOptions,
-  type UserSecurityData,
-} from './repositories';
+  type RepositoryResult
+} from '@/services/base-repository';
+
+// Import types directly from proper sources
+export type { ResidentDatabaseRecord as ResidentData } from '@/types/residents';
+export type { ResidentSearchOptions } from '@/services/resident-repository';
+export type { HouseholdData, HouseholdSearchOptions } from '@/services/household-repository';
+export type { UserData } from '@/services/user-repository';
+// NOTE: ResidentRepository, HouseholdRepository, UserRepository, RepositoryFactory, createRepositories moved to services layer
+// Repository types - moved to services  
+// NOTE: UserSearchOptions, UserSecurityData moved to services layer
 
 // API utilities exports
 export * from './api';
@@ -254,10 +251,10 @@ export * from './command-menu';
 export * from './database';
 
 // Environment configuration exports
-export * from './environment';
+export * from './config/environment';
 
 // Logging utilities exports (conflicts resolved at module level)
-export * from './logging';
+export * from '@/lib/logging';
 
 // Direct logger exports for convenience
 export {
@@ -265,7 +262,7 @@ export {
   dbLogger,
   apiLogger,
   authLogger,
-} from './logging';
+} from '@/lib/logging';
 
 // Performance utilities exports
 export * from './performance';

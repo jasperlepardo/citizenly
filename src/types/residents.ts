@@ -260,9 +260,10 @@ export interface ResidentFormData {
   motherMaidenLastName: string;
   
   // Sectoral Information
+  isLaborForce?: boolean;
   isLaborForceEmployed?: boolean;
   isUnemployed?: boolean;
-  isOverseasFilipino?: boolean;
+  isOverseasFilipinoWorker?: boolean;
   isPersonWithDisability?: boolean;
   isOutOfSchoolChildren?: boolean;
   isOutOfSchoolYouth?: boolean;
@@ -695,3 +696,5 @@ export const BIRTH_PLACE_LEVEL_OPTIONS: OptionType[] = [
   { value: 'city_municipality', label: 'City/Municipality' },
   { value: 'barangay', label: 'Barangay' }
 ];
+
+// Legacy aliases removed - use ResidentDatabaseRecord directly or proper service layer imports

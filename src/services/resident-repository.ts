@@ -4,45 +4,12 @@
  */
 
 import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
-import { validateResidentData } from '../validation/schemas';
-import type { ValidationContext } from '../validation/types';
+import { validateResidentData } from '@/lib/validation/schemas';
+import type { ValidationContext } from '@/lib/validation/types';
+import { ResidentDatabaseRecord } from '@/types/residents';
 
-export interface ResidentData {
-  id?: string;
-  firstName: string;
-  lastName: string;
-  middleName?: string;
-  extensionName?: string;
-  birthdate: string;
-  sex: string;
-  civilStatus?: string;
-  citizenship?: string;
-  email?: string;
-  mobileNumber?: string;
-  telephoneNumber?: string;
-  bloodType?: string;
-  ethnicity?: string;
-  religion?: string;
-  religionOthersSpecify?: string;
-  height?: number;
-  weight?: number;
-  complexion?: string;
-  birthPlaceCode?: string;
-  philsysCardNumber?: string;
-  motherMaidenFirst?: string;
-  motherMaidenMiddle?: string;
-  motherMaidenLast?: string;
-  educationAttainment?: string;
-  isGraduate?: boolean;
-  employmentStatus?: string;
-  occupationCode?: string;
-  isVoter?: boolean;
-  isResidentVoter?: boolean;
-  lastVotedDate?: string;
-  householdCode?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// Use database record directly for consistent typing
+export type ResidentData = ResidentDatabaseRecord;
 
 export interface ResidentSearchOptions extends QueryOptions {
   name?: string;

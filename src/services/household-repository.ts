@@ -4,8 +4,8 @@
  */
 
 import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
-import { validateHouseholdData } from '../validation/schemas';
-import type { ValidationContext } from '../validation/types';
+import { validateHouseholdData } from '@/lib/validation/schemas';
+import type { ValidationContext } from '@/lib/validation/types';
 
 export interface HouseholdData {
   id?: string;

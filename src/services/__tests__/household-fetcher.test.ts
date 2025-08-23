@@ -8,9 +8,9 @@ import {
   processHouseholdsOptimized,
   searchHouseholdsOptimized,
   householdCache,
-} from '../householdFetcher';
+} from '../household-fetcher';
 
-import type { HouseholdData, HouseholdHead } from '@/lib/types/resident';
+import type { HouseholdData, HouseholdHead } from '@/types/households';
 
 // Mock supabase
 jest.mock('@/lib/supabase', () => ({

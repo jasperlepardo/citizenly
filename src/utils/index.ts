@@ -53,10 +53,10 @@ export {
   mergeClassNames,
 } from './css-utils';
 
-// Resident utilities
-export * from './residentDetailHelpers';
-export * from './residentHelpers';
-export * from './resident-listing-helpers';
+// Resident utilities - now in lib/utilities
+// export * from './residentDetailHelpers';  // REMOVED - duplicate
+// export * from './residentHelpers';        // REMOVED - duplicate  
+// export * from './resident-listing-helpers'; // REMOVED - duplicate
 
 // Search utilities
 export * from './search-utilities';

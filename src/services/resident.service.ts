@@ -14,7 +14,7 @@ import {
 } from '@/lib/security/crypto';
 import { validateResidentData } from '@/lib/validation';
 import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
-import type { ValidationResult as BaseValidationResult } from '../validation/types';
+import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
 
 // Types
 export interface ResidentFormData {

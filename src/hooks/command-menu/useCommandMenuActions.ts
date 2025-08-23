@@ -75,14 +75,13 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
   ) => {
     toast.loading('Preparing export...', { id: 'export' });
     
-    const success = await wrapAsync(
-      () => exportData({ type, format }),
-      'export data'
-    );
-    
-    if (success) {
+    try {
+      await wrapAsync(
+        () => exportData({ type, format }),
+        'export data'
+      )();
       toast.success('Export completed successfully', { id: 'export' });
-    } else {
+    } catch (error) {
       toast.error('Export failed', { id: 'export' });
     }
   }, [wrapAsync]);
@@ -93,11 +92,10 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
   const handleBackupData = useCallback(async () => {
     toast.loading('Creating backup...', { id: 'backup' });
     
-    const success = await wrapAsync(backupData, 'backup data');
-    
-    if (success) {
+    try {
+      await wrapAsync(backupData, 'backup data')();
       toast.success('Backup created successfully', { id: 'backup' });
-    } else {
+    } catch (error) {
       toast.error('Backup failed', { id: 'backup' });
     }
   }, [wrapAsync]);
@@ -107,7 +105,7 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
    */
   const handleQuickAction = useCallback(async (actionFn: () => Promise<string>) => {
     try {
-      const href = await wrapAsync(actionFn, 'quick action');
+      const href = await wrapAsync(actionFn, 'quick action')();
       if (href) {
         router.push(href);
       }

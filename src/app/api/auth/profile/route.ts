@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/api-auth';
+import { createAdminSupabaseClient } from '@/lib/api/authUtils';
 import { createClient } from '@supabase/supabase-js';
 import {
   createSuccessResponse,
@@ -7,7 +7,7 @@ import {
   createNotFoundResponse,
   handleDatabaseError,
   handleUnexpectedError,
-} from '@/lib/api-responses';
+} from '@/lib/api/responseUtils';
 
 /**
  * GET API Handler for auth/profile

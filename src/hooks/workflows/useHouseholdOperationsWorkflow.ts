@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import { HouseholdFormData } from '@/lib/services/household.service';
+import { HouseholdFormData } from '@/services/household.service';
 import { useHouseholdCrud, UseHouseholdCrudOptions } from '../crud/useHouseholdCrud';
 import { useHouseholdValidation } from '../validation/useOptimizedHouseholdValidation';
 import { useHouseholdCreationService, UseHouseholdCreationServiceOptions } from './useHouseholdCreationService';

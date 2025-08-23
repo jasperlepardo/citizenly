@@ -14,7 +14,7 @@
  */
 
 import { useCallback } from 'react';
-import type { ResidentFormData } from '@/lib/types/resident';
+import type { ResidentFormData } from '@/types/residents';
 import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
 import { 
   useResidentValidationCore, 

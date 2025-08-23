@@ -68,7 +68,7 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
     setIsLoading(true);
     
     try {
-      const recent = await wrapAsync(getRecentItems, 'load recent items');
+      const recent = await wrapAsync(getRecentItems, 'load recent items')();
       
       if (recent) {
         const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
@@ -98,14 +98,9 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
    */
   const handleClearRecentItems = useCallback(async () => {
     try {
-      const success = await wrapAsync(clearRecentItems, 'clear recent items');
-      
-      if (success) {
-        setRecentItems([]); // Clear the UI immediately
-        toast.success('Recent items cleared');
-      } else {
-        toast.error('Failed to clear recent items');
-      }
+      await wrapAsync(clearRecentItems, 'clear recent items')();
+      setRecentItems([]); // Clear the UI immediately
+      toast.success('Recent items cleared');
     } catch (error) {
       // Error handled by async error boundary
       toast.error('Failed to clear recent items');

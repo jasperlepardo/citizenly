@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities';
+import { cn } from '@/utils';
 import { Label, HelperText } from '../../../atoms/Field';
 import { Control } from '../../../atoms/Field/Control/Control';
 import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib';

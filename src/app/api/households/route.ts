@@ -4,9 +4,9 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api/authUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createHouseholdSchema } from '@/lib/api-validation';
+import { createHouseholdSchema } from '@/lib/api/validationUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -15,8 +15,8 @@ import {
   applySearchFilter,
   withNextRequestErrorHandling,
   withSecurityHeaders,
-} from '@/lib/api-responses';
-import { auditDataOperation } from '@/lib/api-audit';
+} from '@/lib/api/responseUtils';
+import { auditDataOperation } from '@/lib/api/auditUtils';
 import { RequestContext, Role } from '@/lib/api/types';
 import { z } from 'zod';
 

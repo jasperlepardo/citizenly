@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import type { ResidentFormData as ResidentEditFormData } from '@/lib/types/resident';
+import type { ResidentFormData as ResidentEditFormData } from '@/types/residents';
 import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 import { useResidentSubmission, UseResidentSubmissionOptions } from '../utilities/useResidentSubmission';

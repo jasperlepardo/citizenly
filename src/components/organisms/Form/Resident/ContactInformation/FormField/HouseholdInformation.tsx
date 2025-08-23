@@ -10,13 +10,20 @@ export interface HouseholdInformationProps {
   onChange: (value: HouseholdInformationData) => void;
   errors: Record<string, string>;
   className?: string;
+  // Optional external search functionality (HouseholdSelector has its own built-in search)
+  onHouseholdSearch?: (query: string) => Promise<any>;
+  householdOptions?: any[];
+  householdLoading?: boolean;
 }
 
 export function HouseholdInformation({ 
   value, 
   onChange, 
   errors,
-  className = '' 
+  className = '',
+  onHouseholdSearch,
+  householdOptions,
+  householdLoading
 }: HouseholdInformationProps) {
   
   const handleHouseholdSelect = (householdCode: string | null) => {
