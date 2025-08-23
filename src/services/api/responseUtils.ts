@@ -79,7 +79,7 @@ export function createErrorResponse(
   code: ErrorCode,
   message: string,
   status: number = 500,
-  details?: any,
+  details?: Record<string, unknown> | string,
   field?: string,
   context?: RequestContext
 ): Response {
@@ -179,20 +179,21 @@ export function createRateLimitResponse(retryAfter: number, context?: RequestCon
 /**
  * Handle database errors consistently
  */
-export async function handleDatabaseError(error: any, context?: RequestContext): Promise<Response> {
+export async function handleDatabaseError(error: unknown, context?: RequestContext): Promise<Response> {
   logger.error('Database error', { error, context });
 
   if (context) {
-    await auditError(error, context, ErrorCode.DATABASE_ERROR);
+    await auditError(error as Error, context, ErrorCode.DATABASE_ERROR);
   }
 
+  const dbError = error as any;
   // Check for specific database error codes
-  if (error?.code === '23505') {
+  if (dbError?.code === '23505') {
     // Unique constraint violation
     return createConflictResponse('Resource already exists', context);
   }
 
-  if (error?.code === '23503') {
+  if (dbError?.code === '23503') {
     // Foreign key violation
     return createErrorResponse(
       ErrorCode.VALIDATION_ERROR,
@@ -236,7 +237,7 @@ export async function handleDatabaseError(error: any, context?: RequestContext):
  * Handle unexpected errors
  */
 export async function handleUnexpectedError(
-  error: any,
+  error: unknown,
   context?: RequestContext
 ): Promise<Response> {
   logger.error('Unexpected API error', { error, context });

@@ -2,7 +2,7 @@
 
 import React, { ElementType, HTMLAttributes } from 'react';
 import { typography, type TypographyVariant } from '@/lib/ui/typography';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 export interface TypographyProps extends HTMLAttributes<HTMLElement> {
   variant?: TypographyVariant;

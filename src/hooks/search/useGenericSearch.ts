@@ -15,7 +15,7 @@ import {
   SearchFunction,
   createSearchState,
   createSearchUtilities,
-} from '@/utils';
+} from '@/lib/utilities/search-utilities';
 
 /**
  * Return type for useGenericSearch hook

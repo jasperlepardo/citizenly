@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import packageJson from '../../../../package.json';
 
 export interface VersionTagProps {

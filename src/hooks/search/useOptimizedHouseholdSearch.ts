@@ -10,7 +10,7 @@
 import { useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGenericSearch } from './useGenericSearch';
-import { searchFormatters } from '@/utils';
+import { searchFormatters } from '@/lib/utilities/search-utilities';
 
 /**
  * Household search result interface

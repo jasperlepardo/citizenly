@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 interface ChartTitleProps {
   readonly children: React.ReactNode;

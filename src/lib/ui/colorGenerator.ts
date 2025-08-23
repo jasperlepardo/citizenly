@@ -27,11 +27,7 @@ export const SEMANTIC_CHART_PALETTE = [
   '#991B1B', // Danger Darker (brandColors.danger[800])
 ];
 
-/**
- * Legacy Chart.js palette for backward compatibility
- * @deprecated Use SEMANTIC_CHART_PALETTE instead
- */
-export const CHARTJS_COLOR_PALETTE = SEMANTIC_CHART_PALETTE;
+// REMOVED: CHARTJS_COLOR_PALETTE - Use SEMANTIC_CHART_PALETTE instead
 
 /**
  * Generate color variations using semantic chart palette

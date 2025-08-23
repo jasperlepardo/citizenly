@@ -8,16 +8,55 @@ import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
 
 /**
  * Debounce function execution
+ * 
+ * @description Delays function execution until after a specified delay has elapsed since the last call.
+ * Useful for limiting the rate of function calls, especially for expensive operations like API requests or DOM updates.
+ * 
+ * @template T - The type of the function being debounced
+ * @param func - The function to debounce
+ * @param delay - The delay in milliseconds to wait before executing
+ * @param immediate - If true, execute immediately on the leading edge instead of trailing edge
+ * @returns A debounced version of the input function
+ * 
+ * @example
+ * ```typescript
+ * // Debounce search input
+ * const debouncedSearch = debounce((query: string) => {
+ *   console.log('Searching for:', query);
+ * }, 300);
+ * 
+ * // Multiple rapid calls - only last one executes after 300ms
+ * debouncedSearch('a');
+ * debouncedSearch('ab');
+ * debouncedSearch('abc'); // Only this executes
+ * 
+ * // Immediate execution example
+ * const immediateDebounce = debounce(saveData, 1000, true);
+ * immediateDebounce(); // Executes immediately, then ignores calls for 1000ms
+ * ```
+ * 
+ * @since 2.0.0
+ * @public
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout;
+export function debounce<TArgs extends readonly unknown[], TReturn>(
+  func: (...args: TArgs) => TReturn,
+  delay: number,
+  immediate?: boolean
+): (...args: TArgs) => void {
+  let timeoutId: NodeJS.Timeout | null = null;
 
-  return function (...args: Parameters<T>) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
+  return function (...args: TArgs) {
+    const later = () => {
+      timeoutId = null;
+      if (!immediate) func(...args);
+    };
+    
+    const callNow = immediate && !timeoutId;
+    
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(later, delay);
+    
+    if (callNow) func(...args);
   };
 }
 

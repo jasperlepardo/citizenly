@@ -1,19 +1,63 @@
 /**
  * Chart Data Transformers Library
+ * @fileoverview Pure business logic for transforming raw demographic data into chart-ready formats.
+ * Provides type-safe transformations for various chart types used in the Citizenly dashboard.
  * 
- * @description Pure business logic for transforming raw data into chart-ready formats.
- * Contains data transformation utilities separated from UI components.
+ * @description 
+ * This module contains data transformation utilities that are completely separated from UI components,
+ * making them highly testable and reusable across different visualization contexts.
+ * 
+ * Supported chart types:
+ * - Dependency ratio charts (age demographics)
+ * - Sex distribution charts 
+ * - Civil status breakdown charts
+ * - Employment status analysis charts
+ * 
+ * @author Citizenly Development Team
+ * @since 2.0.0
+ * @version 2.1.0
+ * 
+ * @example
+ * ```typescript
+ * import { transformSexData, ChartDataPoint } from './chart-transformers';
+ * 
+ * const rawData = { male: 150, female: 175 };
+ * const chartPoints: ChartDataPoint[] = transformSexData(rawData);
+ * // Result: [
+ * //   { label: 'Male', value: 150, percentage: 46.15, color: '#3B82F6' },
+ * //   { label: 'Female', value: 175, percentage: 53.85, color: '#EC4899' }
+ * // ]
+ * ```
  */
 
-// Chart data types
+/**
+ * Raw demographic data for dependency ratio analysis
+ * @typedef {Object} DependencyData
+ * @property {number} youngDependents - Population under 15 years old
+ * @property {number} workingAge - Population 15-64 years old  
+ * @property {number} oldDependents - Population 65+ years old
+ * @since 2.0.0
+ */
 export type DependencyData = {
+  /** Population under 15 years old */
   youngDependents: number;
+  /** Population 15-64 years old */
   workingAge: number;
+  /** Population 65+ years old */
   oldDependents: number;
 };
 
+/**
+ * Raw sex distribution data
+ * @typedef {Object} SexData
+ * @property {number} male - Male population count
+ * @property {number} female - Female population count
+ * @since 2.0.0
+ */
 export type SexData = {
+  /** Male population count */
   male: number;
+  /** Female population count */
   female: number;
 };
 
@@ -39,13 +83,36 @@ export type EmploymentStatusData = {
   other: number;
 };
 
+/**
+ * Supported chart types for demographic visualization
+ * @typedef {'dependency' | 'sex' | 'civilStatus' | 'employment'} ChartType
+ * @since 2.0.0
+ */
 export type ChartType = 'dependency' | 'sex' | 'civilStatus' | 'employment';
 
-// Standard chart data point interface
+/**
+ * Standard chart data point interface used across all chart types
+ * @interface ChartDataPoint
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * const dataPoint: ChartDataPoint = {
+ *   label: 'Male',
+ *   value: 150,
+ *   percentage: 46.15,
+ *   color: '#3B82F6'
+ * };
+ * ```
+ */
 export interface ChartDataPoint {
+  /** Display label for the data point */
   label: string;
+  /** Raw numeric value */
   value: number;
+  /** Calculated percentage of total (0-100) */
   percentage: number;
+  /** Hex color code for visualization */
   color: string;
 }
 
@@ -238,11 +305,21 @@ export function transformEmploymentData(data: EmploymentStatusData): ChartDataPo
 }
 
 /**
- * Transform chart data based on type
+ * Map chart types to their corresponding data types
  */
-export function transformChartData(
-  type: ChartType,
-  data: DependencyData | SexData | CivilStatusData | EmploymentStatusData
+type ChartDataMap = {
+  dependency: DependencyData;
+  sex: SexData;
+  civilStatus: CivilStatusData;
+  employment: EmploymentStatusData;
+};
+
+/**
+ * Transform chart data based on type - type-safe version
+ */
+export function transformChartData<T extends ChartType>(
+  type: T,
+  data: ChartDataMap[T]
 ): ChartDataPoint[] {
   switch (type) {
     case 'dependency':
@@ -256,6 +333,17 @@ export function transformChartData(
     default:
       throw new Error(`Unknown chart type: ${type}`);
   }
+}
+
+/**
+ * Legacy function - kept for backward compatibility
+ * @deprecated Use the type-safe version above
+ */
+export function transformChartDataLegacy(
+  type: ChartType,
+  data: DependencyData | SexData | CivilStatusData | EmploymentStatusData
+): ChartDataPoint[] {
+  return transformChartData(type, data as any);
 }
 
 /**

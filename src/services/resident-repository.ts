@@ -7,6 +7,7 @@ import { BaseRepository, type QueryOptions, type RepositoryResult } from './base
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { ResidentDatabaseRecord } from '@/types/residents';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Use database record directly for consistent typing
 export type ResidentData = ResidentDatabaseRecord;
@@ -97,7 +98,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
    */
   async searchResidents(options: ResidentSearchOptions = {}): Promise<RepositoryResult<ResidentData[]>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         let query = supabase
           .from(this.tableName)
           .select('*', { count: 'exact' });
@@ -190,7 +191,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
       const maxBirthDate = new Date(currentDate.getFullYear() - minAge, currentDate.getMonth(), currentDate.getDate());
       const minBirthDate = new Date(currentDate.getFullYear() - maxAge - 1, currentDate.getMonth(), currentDate.getDate());
 
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*', { count: 'exact' })
@@ -218,7 +219,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
     voterTurnoutRate: number;
   }>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select(`
@@ -266,7 +267,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
     birthdate: string
   ): Promise<RepositoryResult<ResidentData[]>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*')

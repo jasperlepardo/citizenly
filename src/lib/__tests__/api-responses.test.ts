@@ -10,8 +10,8 @@ import {
   createNotFoundResponse,
   handleDatabaseError,
   handleUnexpectedError,
-} from '../api-responses';
-import { ErrorCode, Role } from '.../api-types';
+} from '../authentication/responseUtils';
+import { ErrorCode, Role } from '../authentication/types';
 
 // Mock logger to avoid console output during tests
 jest.mock('../logging/secure-logger', () => ({

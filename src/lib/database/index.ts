@@ -1,8 +1,10 @@
 /**
- * Database Utilities Exports
- * Centralized exports for all database-related utilities
+ * Database Compatibility Layer
+ * @deprecated Use @/lib/data instead - this module will be removed in v3.0.0
+ * @description Temporary re-export for backward compatibility during migration
  */
 
-export * from './database-utils';
-export * from './field-utils';
-export * from './query-utils';
+// Re-export from new location
+export * from '../data/database-utils';
+export * from '../data/field-utils';
+export * from '../data/query-utils';

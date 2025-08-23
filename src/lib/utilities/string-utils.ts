@@ -31,6 +31,13 @@ export function truncateText(text: string, length: number, suffix = '...'): stri
 }
 
 /**
+ * Truncate string with ellipsis (shorter alias)
+ */
+export function truncate(str: string, length: number): string {
+  return str.length > length ? str.substring(0, length) + '...' : str;
+}
+
+/**
  * Sanitize string for safe usage
  */
 export function sanitizeString(str: string): string {
@@ -40,25 +47,11 @@ export function sanitizeString(str: string): string {
     .toLowerCase();
 }
 
-/**
- * Check if string is valid email
- */
-export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+// REMOVED: isValidEmail - Use @/lib/validation/utilities instead
+// The validation version has better null checking and error handling
 
-/**
- * Check if string is valid Philippine mobile number
- */
-export function isValidPhilippineMobile(mobile: string): boolean {
-  const cleaned = mobile.replace(/\D/g, '');
-  
-  return (
-    /^09\d{9}$/.test(cleaned) ||
-    /^639\d{9}$/.test(cleaned)
-  );
-}
+// REMOVED: isValidPhilippineMobile - Use @/lib/validation/utilities instead
+// The validation version has better null checking and error handling
 
 /**
  * Format phone number for display

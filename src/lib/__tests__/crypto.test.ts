@@ -9,7 +9,7 @@ import {
   generateSecureToken,
   validateHash,
   secureCompare,
-} from '../crypto';
+} from '../security/crypto';
 
 // Mock the secure logger
 jest.mock('../logging/secure-logger', () => ({

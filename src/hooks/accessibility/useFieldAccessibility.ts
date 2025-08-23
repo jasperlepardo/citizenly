@@ -3,7 +3,7 @@
  * Standardizes ARIA patterns and ID generation for form elements
  */
 import { useMemo } from 'react';
-import { generateId } from '@/lib';
+import { generateId } from '@/lib/utilities/id-generators';
 
 export interface FieldAccessibilityOptions {
   /** Base identifier for the field */

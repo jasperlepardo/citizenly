@@ -1,38 +1,8 @@
 /**
- * Authentication Utilities Exports
- * Centralized exports for all authentication-related utilities
+ * Authentication Compatibility Layer
+ * @deprecated Use @/lib/authentication instead - this module will be removed in v3.0.0
+ * @description Temporary re-export for backward compatibility during migration
  */
 
-// Export specific auth functions (excluding location functions that belong in database)
-export {
-  // User management
-  registerUser,
-  signInUser,
-  signOutUser,
-  getCurrentUser,
-  updateUserProfile,
-  // Password management
-  requestPasswordReset,
-  updatePassword,
-  // Session management
-  getCurrentSession,
-  onAuthStateChange,
-  // Role and permission functions  
-  hasRole,
-  isAdmin,
-  canAccessBarangay,
-  getUserAccessibleBarangays,
-  // Profile functions
-  getUserProfile,
-  // Utility functions
-  searchBarangays,
-  searchOccupations,
-  getAuthErrorMessage,
-  // Types
-  type UserRole,
-  type UserProfile,
-  type RegistrationData,
-} from './auth-helpers';
-
-export * from './errors';
-export * from './csrf-utils';
+// Re-export from new location
+export * from '../authentication';

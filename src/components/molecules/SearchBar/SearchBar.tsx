@@ -2,7 +2,7 @@
 
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 const searchBarVariants = cva(
   'relative flex w-full items-center transition-colors font-system focus-within:outline-hidden',

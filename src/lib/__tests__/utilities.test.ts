@@ -35,7 +35,7 @@ import {
   retry,
   // CSS utilities
   cn,
-  mergeClassNames,
+  // mergeClassNames - REMOVED: Use `cn` instead
 } from '../utilities';
 
 describe('Utilities - String Utils', () => {
@@ -443,10 +443,10 @@ describe('Utilities - Async Utils', () => {
 });
 
 describe('Utilities - CSS Utils', () => {
-  describe('cn and mergeClassNames', () => {
+  describe('cn', () => {
     it('should merge class names', () => {
       expect(cn('class1', 'class2')).toBe('class1 class2');
-      expect(mergeClassNames('class1', 'class2')).toBe('class1 class2');
+      // mergeClassNames - REMOVED: Use `cn` instead
     });
 
     it('should handle conditional classes', () => {

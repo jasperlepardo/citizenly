@@ -6,6 +6,7 @@
 import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface UserData {
   id?: string;
@@ -148,7 +149,7 @@ export class UserRepository extends BaseRepository<UserData> {
    */
   async findByEmail(email: string): Promise<RepositoryResult<UserData>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*')
@@ -170,7 +171,7 @@ export class UserRepository extends BaseRepository<UserData> {
    */
   async searchUsers(options: UserSearchOptions = {}): Promise<RepositoryResult<UserData[]>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         let query = supabase
           .from(this.tableName)
           .select('*', { count: 'exact' });
@@ -386,7 +387,7 @@ export class UserRepository extends BaseRepository<UserData> {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysSinceLastLogin);
 
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*')

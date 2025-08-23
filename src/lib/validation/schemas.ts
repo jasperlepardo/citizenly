@@ -61,13 +61,13 @@ export const residentSchema = createFormValidator({
   
   // Education and employment
   educationAttainment: validateLength(0, 50),
-  isGraduate: (value: any) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  isGraduate: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
   employmentStatus: validateLength(0, 50),
   occupationCode: validateLength(0, 20),
   
   // Voting information
-  isVoter: (value: any) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
-  isResidentVoter: (value: any) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  isVoter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  isResidentVoter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
   lastVotedDate: validateDate,
   
   // Household
@@ -102,7 +102,7 @@ export const userSchema = createFormValidator({
   lastName: composeValidators(validateRequired, validateName),
   role: validateRequired,
   barangayCode: validateLength(0, 20),
-  isActive: (value: any) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  isActive: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
 });
 
 /**
@@ -143,7 +143,7 @@ export const searchQuerySchema = createFormValidator({
       customMessage: 'Search query contains invalid characters',
     })
   ),
-  filters: (value: any) => ({ isValid: typeof value === 'object' && value !== null, error: 'Must be a valid object' }),
+  filters: (value: unknown) => ({ isValid: typeof value === 'object' && value !== null, error: 'Must be a valid object' }),
   page: validateRange(1, 1000),
   limit: validateRange(1, 100),
 });
@@ -177,68 +177,68 @@ export const fileUploadSchema = createFormValidator({
  * Validate resident data
  */
 export async function validateResidentData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await residentSchema(data, context);
+  return await residentSchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate household data
  */
 export async function validateHouseholdData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await householdSchema(data, context);
+  return await householdSchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate user data
  */
 export async function validateUserData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await userSchema(data, context);
+  return await userSchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate login data
  */
 export async function validateLoginData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await loginSchema(data, context);
+  return await loginSchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate password change data
  */
 export async function validatePasswordChangeData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await passwordChangeSchema(data, context);
+  return await passwordChangeSchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate search query data
  */
 export async function validateSearchQueryData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await searchQuerySchema(data, context);
+  return await searchQuerySchema(data as Record<string, any>, context);
 }
 
 /**
  * Validate file upload data
  */
 export async function validateFileUploadData(
-  data: any,
+  data: unknown,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await fileUploadSchema(data, context);
+  return await fileUploadSchema(data as Record<string, any>, context);
 }

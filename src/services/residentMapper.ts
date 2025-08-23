@@ -83,14 +83,14 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     lastName: resident.last_name,
     extensionName: resident.extension_name || '',
     sex: resident.sex,
-    civilStatus: resident.civil_status,
+    civilStatus: resident.civil_status || '',
     citizenship: resident.citizenship || 'filipino',
     birthdate: resident.birthdate,
     birthPlaceName: resident.birth_place_name || '',
     birthPlaceCode: resident.birth_place_code || '',
     philsysCardNumber: resident.philsys_card_number || '',
     educationAttainment: resident.education_attainment || '',
-    isGraduate: resident.is_graduate,
+    isGraduate: resident.is_graduate || false,
     employmentStatus: resident.employment_status || '',
     occupationTitle: resident.psoc_info?.hierarchy || resident.psoc_info?.title || '', // Get hierarchy or title from PSOC lookup
     psocCode: resident.occupation_code || '', // Store the actual PSOC code
@@ -123,7 +123,7 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     // Sectoral information - these would need to be computed or stored separately
     isLaborForceEmployed: false, // Computed field
     isUnemployed: false, // Computed field
-    isOverseasFilipino: false, // Would need separate storage
+    isOverseasFilipinoWorker: false, // Would need separate storage
     isPersonWithDisability: false, // Would need separate storage
     isOutOfSchoolChildren: false, // Would need separate storage
     isOutOfSchoolYouth: false, // Would need separate storage
@@ -180,9 +180,21 @@ export const formatHouseholdOption = (
 };
 
 /**
+ * Raw PSOC data structure from database/API
+ */
+interface RawPsocData {
+  code: string;
+  title: string;
+  level?: string;
+  level_name?: string;
+  hierarchy?: string;
+  full_hierarchy?: string;
+}
+
+/**
  * Format PSOC data for select options
  */
-export const formatPsocOption = (psocData: any): PsocOption => {
+export const formatPsocOption = (psocData: RawPsocData): PsocOption => {
   // Format hierarchical display for main label
   let displayLabel = psocData.title;
   if (psocData.hierarchy && psocData.hierarchy !== psocData.title) {
@@ -208,9 +220,24 @@ export const formatPsocOption = (psocData: any): PsocOption => {
 };
 
 /**
+ * Raw PSGC data structure from database/API
+ */
+interface RawPsgcData {
+  code?: string;
+  city_code?: string;
+  province_code?: string;
+  name?: string;
+  city_name?: string;
+  province_name?: string;
+  level: string;
+  full_address?: string;
+  full_hierarchy?: string;
+}
+
+/**
  * Format PSGC data for select options
  */
-export const formatPsgcOption = (psgcData: any): PsgcOption => {
+export const formatPsgcOption = (psgcData: RawPsgcData): PsgcOption => {
   return {
     value: psgcData.code || psgcData.city_code || psgcData.province_code,
     label: psgcData.name || psgcData.city_name || psgcData.province_name,

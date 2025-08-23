@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import { Label, Input, HelperText } from '../../../atoms/Field';
 
 export interface InputFieldProps {

@@ -29,7 +29,7 @@
 import React, { forwardRef, AnchorHTMLAttributes } from 'react';
 import NextLink from 'next/link';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 // Link variants using pure Tailwind classes
 const linkVariants = cva(
