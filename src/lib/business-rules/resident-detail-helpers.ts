@@ -7,7 +7,7 @@
  */
 
 import { ResidentDatabaseRecord as Resident } from '@/types/residents';
-import { formatDate as libFormatDate } from './dataTransformers';
+import { formatDate as libFormatDate } from '../utilities/data-transformers';
 
 /**
  * Formats resident's full name from individual name components with proper spacing

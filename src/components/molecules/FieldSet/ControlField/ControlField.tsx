@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import { Label, HelperText } from '../../../atoms/Field';
 import { Control } from '../../../atoms/Field/Control/Control';
-import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib';
+import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib/utilities/id-generators';
 
 export interface ControlFieldProps {
   children?: React.ReactNode;

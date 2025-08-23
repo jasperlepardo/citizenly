@@ -6,6 +6,7 @@
 import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface HouseholdData {
   id?: string;
@@ -141,7 +142,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
    */
   async findByCode(code: string): Promise<RepositoryResult<HouseholdData>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*')
@@ -163,7 +164,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
    */
   async searchHouseholds(options: HouseholdSearchOptions = {}): Promise<RepositoryResult<HouseholdData[]>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         let query = supabase
           .from(this.tableName)
           .select('*', { count: 'exact' });
@@ -326,7 +327,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
     southWest: { lat: number; lng: number }
   ): Promise<RepositoryResult<HouseholdData[]>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('*')
@@ -354,7 +355,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
     try {
       // This would typically involve a join with residents table
       // For now, we'll provide the structure
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         // This is a complex query that would need to be implemented
         // based on the actual database schema and relationships
         return supabase
@@ -375,7 +376,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
    */
   async generateNextCode(barangayCode: string): Promise<RepositoryResult<string>> {
     try {
-      const queryBuilder = (supabase: any) => {
+      const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
           .select('code')

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import type { CommandMenuItem as CommandMenuItemType } from './types';
 
 const commandMenuItemVariants = cva(

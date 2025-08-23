@@ -47,8 +47,4 @@ export function cn(...inputs: ClassValue[]): string {
   return hasDesignTokens ? classString : twMerge(classString);
 }
 
-/**
- * Alternative name for cn function for backward compatibility
- * @deprecated Use `cn` instead for consistency
- */
-export const mergeClassNames = cn;
+// REMOVED: mergeClassNames - Use `cn` instead for consistency

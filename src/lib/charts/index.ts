@@ -1,28 +1,17 @@
 /**
- * Charts Library Module
- * 
- * @description Centralized chart data transformation and utilities.
- * Provides reusable chart transformers and configuration separated from UI components.
+ * Charts Compatibility Layer
+ * @deprecated Use @/lib/ui instead - this module will be removed in v3.0.0
+ * @description Temporary re-export for backward compatibility during migration
  */
 
-// Explicit exports to prevent circular dependencies
-export {
-  transformChartData,
-  transformDependencyData,
-  transformSexData,
-  transformCivilStatusData,
-  transformEmploymentData,
-  getChartTitle,
-  chartUtils,
-  DEFAULT_CHART_TITLES,
-  CHART_COLORS,
-} from './chart-transformers';
+// Development warning for deprecated import
+if (process.env.NODE_ENV === 'development') {
+  console.warn(
+    '⚠️  DEPRECATED IMPORT: @/lib/charts is deprecated.\n' +
+    '   Please use: @/lib/ui instead.\n' +
+    '   This compatibility layer will be removed in v3.0.0'
+  );
+}
 
-export type {
-  ChartDataPoint,
-  ChartType,
-  DependencyData,
-  SexData,
-  CivilStatusData,
-  EmploymentStatusData,
-} from './chart-transformers';
+// Re-export from new location
+export * from '../ui/chart-transformers';

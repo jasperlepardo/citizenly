@@ -2,7 +2,7 @@
 
 import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
 import { Button } from '@/components/atoms';
 import { logger } from '@/lib/logging/secure-logger';

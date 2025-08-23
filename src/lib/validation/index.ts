@@ -54,14 +54,38 @@ export {
   isValidAge,
   formatValidationError,
   createValidationResult,
+  createFieldValidationResult,
+  mergeValidationResults,
+  getErrorFields,
+  hasFieldError,
+  getFieldError,
+  hasWarnings,
+  validationResultToErrors,
+  filterEmptyErrors,
+  normalizeFieldName,
+  createValidationSummary,
+  debounceValidation,
+  createValidationPipeline,
+  validateWithTimeout,
+  // React hook utilities
+  useValidationState,
+  createFormValidationExecutor,
+  createFieldValidationExecutor,
+  asyncValidationUtils,
 } from './utilities';
 
 // Types
 export type {
   ValidationResult,
+  FieldValidationResult,
   FieldValidator,
   FormValidator,
   ValidationError,
   ValidationContext,
   SanitizationOptions,
+  ValidationRule,
+  SchemaValidationConfig,
+  BaseValidationConfig,
+  ValidateFormFunction,
+  ValidateFieldFunction,
 } from './types';

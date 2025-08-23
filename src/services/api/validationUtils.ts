@@ -248,17 +248,8 @@ export function handleValidationError(error: z.ZodError): {
   };
 }
 
-/**
- * Sanitize search input to prevent SQL injection
- */
-export function sanitizeSearchInput(input: string): string {
-  return input
-    .replace(/[%_]/g, '\\$&') // Escape SQL wildcards
-    .replace(/['"]/g, '') // Remove quotes
-    .replace(/[;\\]/g, '') // Remove dangerous characters
-    .trim()
-    .slice(0, 100); // Limit length
-}
+// REMOVED: sanitizeSearchInput - Use @/lib/authentication/validationUtils instead
+// This prevents function duplication and ensures single source of truth for security
 
 /**
  * Validate and sanitize pagination parameters

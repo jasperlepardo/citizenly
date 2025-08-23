@@ -11,8 +11,8 @@ export {
   toTitleCase,
   truncateText,
   sanitizeString,
-  isValidEmail,
-  isValidPhilippineMobile,
+  // isValidEmail, - REMOVED: Use @/lib/validation/utilities instead
+  // isValidPhilippineMobile, - REMOVED: Use @/lib/validation/utilities instead
   formatPhoneNumber,
 } from './string-utils';
 
@@ -27,7 +27,7 @@ export {
   formatDate,
   parseQueryString,
   buildQueryString,
-} from './dataTransformers';
+} from './data-transformers';
 
 // ID generation utilities
 export {
@@ -50,16 +50,16 @@ export {
 // CSS utilities
 export {
   cn,
-  mergeClassNames,
+  // mergeClassNames - REMOVED: Use `cn` instead
 } from './css-utils';
 
-// Resident utilities
-export * from './residentDetailHelpers';
-export * from './residentHelpers';
-export * from './resident-listing-helpers';
+// Resident utilities (moved to @/lib/business-rules)
+// export * from './resident-detail-helpers';  // MOVED to business-rules/
+// export * from './resident-helpers';         // MOVED to business-rules/ 
+// export * from './resident-listing-helpers'; // MOVED to business-rules/
 
 // Search utilities
 export * from './search-utilities';
 
-// Validation utilities
-export * from './validation-utilities';
+// Validation utilities (moved to @/lib/validation)
+// Use: import from '@/lib/validation/utilities' instead

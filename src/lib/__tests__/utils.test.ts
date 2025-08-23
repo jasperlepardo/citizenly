@@ -1,4 +1,4 @@
-import { cn } from '../utils';
+import { cn } from '../core';
 
 describe('Utils', () => {
   describe('cn (className utility)', () => {

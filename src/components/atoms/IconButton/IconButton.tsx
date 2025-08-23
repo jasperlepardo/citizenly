@@ -2,7 +2,7 @@
 
 import React, { forwardRef } from 'react';
 import { Button, ButtonProps } from '../Button/Button';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 export interface IconButtonProps extends Omit<ButtonProps, 'leftIcon' | 'rightIcon' | 'iconOnly'> {
   icon: React.ReactNode;

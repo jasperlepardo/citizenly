@@ -7,7 +7,7 @@
 
 import React, { useCallback } from 'react';
 import { useArrowKeyNavigation } from '@/lib/ui/accessibility';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 
 interface ListItem {
   id: string;

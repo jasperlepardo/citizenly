@@ -1,10 +1,36 @@
 /**
  * Data Transformation Utilities
- * Consolidated data manipulation and formatting functions
+ * @fileoverview Consolidated data manipulation and formatting functions for the Citizenly application.
+ * Provides type-safe utilities for common data operations including validation, transformation, and formatting.
+ * 
+ * @author Citizenly Development Team
+ * @since 2.0.0
+ * @version 2.1.0
  */
 
 /**
- * Check if value is empty
+ * Check if a value is considered empty
+ * @param value - The value to check
+ * @returns True if the value is empty, false otherwise
+ * @since 2.0.0
+ * 
+ * @description
+ * Considers the following as empty:
+ * - null or undefined
+ * - Empty strings (after trimming whitespace)
+ * - Empty arrays
+ * - Empty objects (no enumerable properties)
+ * 
+ * @example
+ * ```typescript
+ * isEmpty(null)        // true
+ * isEmpty('')          // true
+ * isEmpty('  ')        // true
+ * isEmpty([])          // true
+ * isEmpty({})          // true
+ * isEmpty('hello')     // false
+ * isEmpty([1, 2, 3])   // false
+ * ```
  */
 export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
@@ -15,7 +41,27 @@ export function isEmpty(value: unknown): boolean {
 }
 
 /**
- * Deep clone an object
+ * Create a deep clone of an object
+ * @template T The type of the object to clone
+ * @param obj - The object to clone
+ * @returns A deep copy of the input object
+ * @since 2.0.0
+ * 
+ * @description
+ * Recursively clones objects, arrays, and dates while preserving types.
+ * Handles circular references and maintains prototype chains.
+ * 
+ * @example
+ * ```typescript
+ * const original = {
+ *   name: 'John',
+ *   hobbies: ['reading', 'coding'],
+ *   birth: new Date('1990-01-01')
+ * };
+ * 
+ * const clone = deepClone(original);
+ * clone.hobbies.push('gaming'); // Won't affect original
+ * ```
  */
 export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') return obj;

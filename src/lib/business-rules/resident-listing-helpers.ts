@@ -7,7 +7,7 @@
  */
 
 import { ResidentDatabaseRecord as ResidentListItem } from '@/types/residents';
-import { formatDate as libFormatDate } from './dataTransformers';
+import { formatDate as libFormatDate } from '../utilities/data-transformers';
 
 /**
  * Formats resident's full name for display in listing views with proper spacing

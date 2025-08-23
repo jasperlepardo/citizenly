@@ -105,7 +105,7 @@ interface AuditLogEntry {
 /**
  * Mask sensitive data in audit logs
  */
-function maskSensitiveData(data: any): any {
+function maskSensitiveData(data: unknown): unknown {
   if (!data || typeof data !== 'object') {
     return data;
   }
@@ -123,7 +123,7 @@ function maskSensitiveData(data: any): any {
     'access_token',
   ];
 
-  const masked = { ...data };
+  const masked = { ...(data as Record<string, any>) };
 
   Object.keys(masked).forEach(key => {
     const lowerKey = key.toLowerCase();

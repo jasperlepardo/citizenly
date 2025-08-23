@@ -36,3 +36,23 @@ export {
   getFieldDependencies,
   isMinor,
 } from './resident-form-rules';
+
+// Resident utility functions (moved from utilities/) - explicit exports to avoid conflicts
+export {
+  initializeResidentFields,
+  getComputedFieldTooltip,
+  getAuthSession,
+  fetchResidentData,
+} from './resident-helpers';
+
+export {
+  formatResidentDetailFullName,
+  formatDate as formatDetailDate,
+  calculateAge as calculateAgeFromDate,
+} from './resident-detail-helpers';
+
+export {
+  formatResidentListFullName,
+  formatDate as formatListingDate,
+  fetchResidents,
+} from './resident-listing-helpers';

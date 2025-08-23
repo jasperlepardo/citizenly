@@ -277,3 +277,197 @@ export async function validateWithTimeout<T>(
     }),
   ]);
 }
+
+// React Hook-based validation utilities (moved from validation-utilities.ts)
+
+import { useState, useCallback } from 'react';
+
+/**
+ * Validation state interface for React hooks
+ */
+export interface ValidationState {
+  errors: Record<string, string>;
+  isValid: boolean;
+  hasValidated: boolean;
+}
+
+/**
+ * Create initial validation state
+ */
+export function createValidationState(): ValidationState {
+  return {
+    errors: {},
+    isValid: true,
+    hasValidated: false,
+  };
+}
+
+/**
+ * Validation state management hook
+ */
+export function useValidationState(config: any = {}) {
+  const [state, setState] = useState<ValidationState>(createValidationState);
+
+  const setErrors = useCallback((errors: Record<string, string>) => {
+    const isValid = Object.keys(errors).length === 0;
+    
+    setState({
+      errors,
+      isValid,
+      hasValidated: true,
+    });
+  }, []);
+
+  const clearErrors = useCallback(() => {
+    setState(createValidationState());
+  }, []);
+
+  const setFieldError = useCallback((field: string, error: string) => {
+    setState(prev => ({
+      ...prev,
+      errors: { ...prev.errors, [field]: error },
+      isValid: false,
+      hasValidated: true,
+    }));
+  }, []);
+
+  const clearFieldError = useCallback((field: string) => {
+    setState(prev => {
+      const newErrors = { ...prev.errors };
+      delete newErrors[field];
+      const isValid = Object.keys(newErrors).length === 0;
+      
+      return {
+        errors: newErrors,
+        isValid,
+        hasValidated: prev.hasValidated,
+      };
+    });
+  }, []);
+
+  const getFieldError = useCallback((field: string): string | undefined => {
+    return state.errors[field];
+  }, [state.errors]);
+
+  const hasFieldError = useCallback((field: string): boolean => {
+    return Boolean(state.errors[field]);
+  }, [state.errors]);
+
+  return {
+    ...state,
+    setErrors,
+    clearErrors,
+    setFieldError,
+    clearFieldError,
+    getFieldError,
+    hasFieldError,
+  };
+}
+
+/**
+ * Create validation executor for forms
+ */
+export function createFormValidationExecutor<T>(
+  validateFn: any,
+  setErrors: (errors: Record<string, string>) => void
+) {
+  return useCallback((formData: T): ValidationResult => {
+    const result = validateFn(formData);
+    
+    const normalizedResult: ValidationResult = {
+      isValid: result.isValid || result.success === true,
+      errors: result.errors || {},
+    };
+
+    setErrors(normalizedResult.errors);
+    
+    return normalizedResult;
+  }, [validateFn, setErrors]);
+}
+
+/**
+ * Create field validation executor
+ */
+export function createFieldValidationExecutor(
+  validateFn: any,
+  setFieldError: (field: string, error: string) => void,
+  clearFieldError: (field: string) => void
+) {
+  return useCallback((fieldName: string, value: any): FieldValidationResult => {
+    const result = validateFn(fieldName, value);
+    
+    if (result.isValid) {
+      clearFieldError(fieldName);
+    } else if (result.error) {
+      setFieldError(fieldName, result.error);
+    }
+    
+    return result;
+  }, [validateFn, setFieldError, clearFieldError]);
+}
+
+/**
+ * Async validation utilities
+ */
+export const asyncValidationUtils = {
+  /**
+   * Create debounced async validator
+   */
+  createDebouncedAsyncValidator: (
+    asyncValidator: (value: any) => Promise<FieldValidationResult>,
+    delay = 500
+  ) => {
+    let timeoutId: NodeJS.Timeout;
+    
+    return (
+      fieldName: string,
+      value: any,
+      onResult: (result: FieldValidationResult) => void
+    ) => {
+      clearTimeout(timeoutId);
+      
+      timeoutId = setTimeout(async () => {
+        try {
+          const result = await asyncValidator(value);
+          onResult(result);
+        } catch (error) {
+          onResult({
+            isValid: false,
+            error: 'Validation failed',
+          });
+        }
+      }, delay);
+    };
+  },
+
+  /**
+   * Create batch async validator
+   */
+  createBatchAsyncValidator: (
+    asyncValidators: Record<string, (value: any) => Promise<FieldValidationResult>>
+  ) => {
+    return async (data: Record<string, any>): Promise<Record<string, string>> => {
+      const validationPromises = Object.entries(asyncValidators).map(
+        async ([field, validator]) => {
+          try {
+            const result = await validator(data[field]);
+            return [field, result.error] as const;
+          } catch (error) {
+            return [field, 'Validation failed'] as const;
+          }
+        }
+      );
+      
+      const results = await Promise.all(validationPromises);
+      const errors: Record<string, string> = {};
+      
+      results.forEach(([field, error]) => {
+        if (error) {
+          errors[field] = error;
+        }
+      });
+      
+      return errors;
+    };
+  },
+};

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { createRateLimitHandler, RATE_LIMIT_RULES } from '../rate-limit';
+import { createRateLimitHandler, RATE_LIMIT_RULES } from '../security/rate-limit';
 
 // Mock logger to avoid console output during tests
 jest.mock('../logging/secure-logger', () => ({

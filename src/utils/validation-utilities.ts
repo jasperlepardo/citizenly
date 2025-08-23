@@ -24,9 +24,9 @@ export type {
 };
 import { 
   isValidEmail, 
-  isValidPhilippineMobile, 
-  toTitleCase 
-} from './string-utils';
+  isValidPhilippineMobile 
+} from '@/lib/validation/utilities';
+import { toTitleCase } from './string-utils';
 
 // All types are now imported from the centralized validation types
 // This eliminates duplication and ensures consistency

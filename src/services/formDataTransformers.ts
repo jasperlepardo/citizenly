@@ -202,10 +202,10 @@ export const extractMigrationInfoFromFormData = (
 };
 
 // Generic field change handler factory
-export const createFieldChangeHandler = <T extends Record<string, any>>(
+export const createFieldChangeHandler = <T extends Record<string, unknown>>(
   currentValue: T,
   onChange: (value: T) => void
-) => (field: keyof T, value: any) => {
+) => (field: keyof T, value: T[keyof T]) => {
   onChange({
     ...currentValue,
     [field]: value,

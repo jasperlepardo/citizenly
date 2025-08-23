@@ -16,8 +16,19 @@ import {
 import {
   ValidationResult,
   FieldValidationResult,
-  validationUtils,
-} from '@/utils';
+} from '@/lib/validation/types';
+import { toTitleCase } from '@/lib/utilities/string-utils';
+
+// Simple validation utilities for backward compatibility
+const validationUtils = {
+  isEmpty: (value: any): boolean => {
+    return value === null || value === undefined || value === '';
+  },
+  formatFieldName: (fieldName: string): string => {
+    const formatted = fieldName.replace(/([A-Z])/g, ' $1').trim();
+    return toTitleCase(formatted);
+  },
+};
 
 /**
  * Household validation result (backward compatible)

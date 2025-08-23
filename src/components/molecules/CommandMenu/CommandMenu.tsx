@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utilities/css-utils';
 import { CommandMenuGroup } from './CommandMenuGroup';
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { useCommandMenuWithApi } from './hooks/useCommandMenuWithApi';
