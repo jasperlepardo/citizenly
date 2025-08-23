@@ -1,0 +1,65 @@
+/**
+ * Utilities Library Module
+ * 
+ * @description Centralized utility functions for the application.
+ * All utility functions are consolidated here to eliminate duplication.
+ */
+
+// String utilities
+export {
+  capitalize,
+  toTitleCase,
+  truncateText,
+  sanitizeString,
+  isValidEmail,
+  isValidPhilippineMobile,
+  formatPhoneNumber,
+} from './string-utils';
+
+// Data transformation utilities
+export {
+  isEmpty,
+  deepClone,
+  groupBy,
+  removeDuplicates,
+  sortBy,
+  formatCurrency,
+  formatDate,
+  parseQueryString,
+  buildQueryString,
+} from './dataTransformers';
+
+// ID generation utilities
+export {
+  generateId,
+  generateFieldId,
+  getFieldId,
+  getFieldIds,
+  buildAriaDescribedBy,
+  buildAriaLabelledBy,
+} from './id-generators';
+
+// Async utilities
+export {
+  debounce,
+  throttle,
+  sleep,
+  retry,
+} from './async-utils';
+
+// CSS utilities
+export {
+  cn,
+  mergeClassNames,
+} from './css-utils';
+
+// Resident utilities
+export * from './residentDetailHelpers';
+export * from './residentHelpers';
+export * from './resident-listing-helpers';
+
+// Search utilities
+export * from './search-utilities';
+
+// Validation utilities
+export * from './validation-utilities';
