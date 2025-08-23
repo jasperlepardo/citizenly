@@ -30,9 +30,12 @@ export interface PersonalInformationFormProps {
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
-  // API handlers for search functionality (only PSOC needed now)
+  // API handlers for search functionality
+  onPsgcSearch?: (query: string) => void;
   onPsocSearch?: (query: string) => void;
+  psgcOptions?: any[];
   psocOptions?: any[];
+  psgcLoading?: boolean;
   psocLoading?: boolean;
 }
 
@@ -40,8 +43,11 @@ export function PersonalInformationForm({
   formData, 
   onChange, 
   errors,
+  onPsgcSearch,
   onPsocSearch,
+  psgcOptions = [],
   psocOptions = [],
+  psgcLoading = false,
   psocLoading = false
 }: PersonalInformationFormProps) {
 

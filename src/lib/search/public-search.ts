@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../supabase/supabase';
-import { createLogger } from '../environment';
+import { createLogger } from '../config/environment';
 
 const logger = createLogger('PublicSearch');
 

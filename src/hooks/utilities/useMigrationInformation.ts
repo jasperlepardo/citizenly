@@ -67,7 +67,7 @@ export function useMigrationInformation({
     loadMore,
     isLoadingMore,
     totalCount
-  } = usePsgcSearch({ levels: 'province,city,barangay', limit: 20 });
+  } = usePsgcSearch({ levels: 'all', limit: 20 });
 
   // Function to lookup PSGC data by code
   const lookupPsgcByCode = useCallback(async (code: string) => {

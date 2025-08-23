@@ -9,7 +9,7 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox } from '../../atoms';
 import { FormGroup } from '../../molecules';
-import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
+import { isIndigenousPeople } from '@/services/business-rules/sectoral-classification';
 
 // Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {

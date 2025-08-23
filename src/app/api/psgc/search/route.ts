@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Remove duplicates and empty variations
-    const uniqueVariations = [...new Set(variations)].filter(v => v.length > 2);
+    const uniqueVariations = Array.from(new Set(variations)).filter(v => v.length > 2);
 
     const allResults: any[] = [];
 

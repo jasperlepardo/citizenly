@@ -8,7 +8,7 @@
  */
 
 import { useMemo } from 'react';
-import type { ResidentFormData } from '@/lib/types/resident';
+import type { ResidentFormData } from '@/types/residents';
 
 /**
  * Cross-field validation rule definition

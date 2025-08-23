@@ -4,9 +4,9 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api-auth';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api/authUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createResidentSchema } from '@/lib/api-validation';
+import { createResidentSchema } from '@/lib/api/validationUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -15,9 +15,10 @@ import {
   applySearchFilter,
   withNextRequestErrorHandling,
   withSecurityHeaders,
-} from '@/lib/api-responses';
-import { auditDataOperation } from '@/lib/api-audit';
+} from '@/lib/api/responseUtils';
+import { auditDataOperation } from '@/lib/api/auditUtils';
 import { RequestContext, Role } from '@/lib/api/types';
+import { ResidentFormData } from '@/types/residents';
 import { z } from 'zod';
 import { logger, logError } from '@/lib/logging/secure-logger';
 
@@ -188,7 +189,7 @@ export const POST = withSecurityHeaders(
           );
         }
 
-        const residentData = validationResult.data;
+        const residentData = validationResult.data as ResidentFormData;
 
         const supabaseAdmin = createAdminSupabaseClient();
 
@@ -204,7 +205,7 @@ export const POST = withSecurityHeaders(
           middle_name: residentData.middleName || null,
           extension_name: residentData.extensionName || null,
           mobile_number: residentData.mobileNumber || null,
-          telephone_number: residentData.telephoneNumber || null,
+          telephone_number: residentData.phoneNumber || null,
           email: residentData.email || null,
           mother_maiden_first: residentData.motherMaidenFirstName || null,
           mother_maiden_middle: residentData.motherMaidenMiddleName || null,

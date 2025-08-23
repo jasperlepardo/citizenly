@@ -33,7 +33,7 @@ export function BirthInformation({
     isLoadingMore,
     totalCount
   } = useOptimizedPsgcSearch({
-    levels: 'province,city', // Show provinces and cities/municipalities for flexible birth place selection
+    levels: 'all', // Show all levels for flexible birth place selection
     limit: 20, // Smaller initial load for better performance
     debounceMs: 300,
   });

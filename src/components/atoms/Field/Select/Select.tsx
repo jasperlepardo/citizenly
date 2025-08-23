@@ -524,7 +524,6 @@ export default function Select({
       viewBox="0 0 24 24" 
       stroke="currentColor"
       onClick={handleClearClick}
-      title="Clear selection"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
@@ -538,7 +537,6 @@ export default function Select({
       viewBox="0 0 24 24" 
       stroke="currentColor"
       onClick={handleDropdownIconClick}
-      title="Open dropdown"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>

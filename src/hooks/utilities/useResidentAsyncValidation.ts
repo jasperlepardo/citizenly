@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import { asyncValidationUtils } from '@/lib/utilities';
+import { asyncValidationUtils } from '@/utils';
 import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
 
 /**
@@ -120,7 +120,7 @@ export function useResidentAsyncValidation(
               default:
                 return { isValid: true };
             }
-          }, `async validation for ${fieldName}`);
+          }, `async validation for ${fieldName}`)();
 
           result = validationResult || { isValid: false, error: 'Validation failed' };
 

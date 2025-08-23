@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities';
+import { cn } from '@/utils';
 import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '../../atoms/Field/Control/Radio/Radio';
 import { ControlGroup } from './ControlField/ControlField';

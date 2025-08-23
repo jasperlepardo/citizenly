@@ -1,0 +1,1253 @@
+
+> rbi-system-frontend@0.2.0 test
+> jest
+
+FAIL src/app/api/residents/__tests__/residents.post.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/components/atoms/Button/__tests__/Button.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/[id]/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/create/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/[id]/edit/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/households/__tests__/layout.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/optimizers/__tests__/household-fetcher.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/mappers/__tests__/resident-mapper.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/utils.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/utilities.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/rate-limit.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/crypto.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/api-responses.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/file-security.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/business-rules.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/design-system/__tests__/utils.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/hooks/__tests__/useOptimizedResidentValidation.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/hooks/__tests__/useAsyncErrorBoundary.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/test-utils.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/setup.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/setup.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/accessibility.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+Summary of all failing tests
+FAIL src/app/api/residents/__tests__/residents.post.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/components/atoms/Button/__tests__/Button.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/[id]/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/create/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/[id]/edit/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/households/__tests__/layout.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/optimizers/__tests__/household-fetcher.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/mappers/__tests__/resident-mapper.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/utils.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/app/(dashboard)/residents/page.test.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/utilities.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/rate-limit.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/crypto.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/api-responses.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/file-security.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/lib/__tests__/business-rules.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/design-system/__tests__/utils.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/hooks/__tests__/useOptimizedResidentValidation.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/hooks/__tests__/useAsyncErrorBoundary.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/test-utils.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/setup.tsx
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/setup.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+FAIL src/__tests__/accessibility.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/crypto mapped as:
+    /Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/(.*)$/": "/Users/jasperjohnlepardo/Documents/GitHub/citizenly/src/$1"
+      },
+      "resolver": undefined
+    }
+
+      144 | // Set up module mocks that will be used across tests
+      145 | jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
+    > 146 | jest.mock('@/lib/crypto', () => mockCrypto);
+          |      ^
+      147 | jest.mock('@/lib/database', () => mockDatabase);
+      148 | jest.mock('@/contexts/AuthContext', () => ({
+      149 |   useAuth: () => mockAuthContext,
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/index.js:1117:17)
+      at Object.mock (config/jest/jest.setup.js:146:6)
+
+
+Test Suites: 23 failed, 23 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.94 s
+Ran all test suites.

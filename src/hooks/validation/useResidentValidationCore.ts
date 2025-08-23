@@ -8,13 +8,13 @@
  */
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import type { ResidentFormData } from '@/lib/types/resident';
+import type { ResidentFormData } from '@/types/residents';
 import { ResidentFormSchema } from '@/lib/validation';
 import { 
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
   mapFormToApi
-} from '@/lib/mappers/residentMapper';
+} from '@/services/residentMapper';
 import { VALIDATION_DEBOUNCE_MS } from '@/lib/constants/resident-form-defaults';
 import { 
   validateField as validateFieldValue, 

@@ -9,7 +9,7 @@ import {
   validateEnvironment,
   createLogger,
   isProductionLike,
-} from '../environment';
+} from '../config/environment';
 
 const logger = createLogger('Supabase');
 

@@ -1,4 +1,4 @@
-import { HouseholdFormData } from '@/lib/types/database';
+import { HouseholdFormData } from '@/types/households';
 
 /**
  * Form Mode Types

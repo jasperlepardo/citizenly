@@ -51,7 +51,7 @@ const radioInputVariants = cva(
 );
 
 export interface RadioProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'style'>,
     VariantProps<typeof radioVariants> {
   label?: string;
   description?: string;

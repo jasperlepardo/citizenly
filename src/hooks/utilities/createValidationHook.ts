@@ -155,7 +155,7 @@ export function createValidationHook<T>(
         const result = await wrapAsync(
           () => Promise.resolve(schema.parse(data)),
           'async validation'
-        );
+        )();
         
         const validationResult: ValidationResult<T> = {
           isValid: true,

@@ -9,7 +9,7 @@
 
 import { useCallback, useState } from 'react';
 import { useGenericSearch } from './useGenericSearch';
-import { useSearchCache, searchFormatters } from '@/lib/utilities';
+import { useSearchCache, searchFormatters } from '@/utils';
 
 /**
  * PSGC search result interface
@@ -19,6 +19,7 @@ export interface PsgcSearchResult {
   name: string;
   level: 'region' | 'province' | 'city' | 'municipality' | 'barangay';
   parent_code?: string;
+  full_address?: string;
 }
 
 /**

@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import { householdService, HouseholdFormData } from '@/lib/services/household.service';
+import { householdService, HouseholdFormData } from '@/services/household.service';
 import {
   useGenericValidation,
   UseGenericValidationReturn,
@@ -17,7 +17,7 @@ import {
   ValidationResult,
   FieldValidationResult,
   validationUtils,
-} from '@/lib/utilities';
+} from '@/utils';
 
 /**
  * Household validation result (backward compatible)

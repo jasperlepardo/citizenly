@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../supabase';
-import { createLogger } from '../environment';
+import { createLogger } from '../config/environment';
 import type { User, Session, AuthError } from '@supabase/supabase-js';
 
 const logger = createLogger('Auth');

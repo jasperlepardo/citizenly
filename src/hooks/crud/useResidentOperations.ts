@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { residentService, ResidentFormData } from '@/lib/services/resident.service';
+import { residentService, ResidentFormData } from '@/services/resident.service';
 import { useCSRFToken } from '@/lib/auth';
 import { useAuth } from '@/contexts/AuthContext';
 

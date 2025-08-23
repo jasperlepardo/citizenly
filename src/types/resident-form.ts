@@ -372,3 +372,5 @@ export const BIRTH_PLACE_LEVEL_OPTIONS: EnumOption[] = [
   { value: 'city_municipality', label: 'City/Municipality' },
   { value: 'barangay', label: 'Barangay' }
 ];
+
+// Legacy aliases removed - use ResidentDatabaseRecord directly

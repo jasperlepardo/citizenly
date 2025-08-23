@@ -1,0 +1,260 @@
+/**
+ * Household Types
+ * Comprehensive TypeScript interfaces for household-related functionality
+ */
+
+import { ReactNode } from 'react';
+
+// =============================================================================
+// CORE HOUSEHOLD INTERFACES
+// =============================================================================
+
+/**
+ * Database record interface for households
+ */
+export interface HouseholdRecord {
+  id: string;
+  code: string;
+  street_name?: string | null;
+  subdivision_name?: string | null;
+  household_number?: string | null;
+  barangay_code: string;
+  city_municipality_code?: string | null;
+  province_code?: string | null;
+  region_code?: string | null;
+  head_resident_id?: string | null;
+  household_type?: string | null;
+  tenure_status?: string | null;
+  monthly_income?: number | null;
+  income_class?: string | null;
+  no_of_families?: number | null;
+  no_of_household_members?: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by?: string | null;
+  updated_by?: string | null;
+}
+
+/**
+ * Extended household data with related information
+ */
+export interface HouseholdData {
+  code: string;
+  name?: string;
+  house_number?: string;
+  street_id?: string;
+  subdivision_id?: string;
+  barangay_code: string;
+  household_head_id?: string;
+  geo_streets?: Array<{
+    id: string;
+    name: string;
+  }>;
+  geo_subdivisions?: Array<{
+    id: string;
+    name: string;
+    type: string;
+  }>;
+}
+
+/**
+ * Household head information
+ */
+export interface HouseholdHead {
+  id: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+}
+
+/**
+ * Household with member count and head information
+ */
+export interface HouseholdWithMembersResult {
+  id: string;
+  code: string;
+  street_name?: string | null;
+  subdivision_name?: string | null;
+  household_number?: string | null;
+  barangay_code: string;
+  city_municipality_code?: string | null;
+  province_code?: string | null;
+  region_code?: string | null;
+  head_resident_id?: string | null;
+  household_type?: string | null;
+  tenure_status?: string | null;
+  monthly_income?: number | null;
+  income_class?: string | null;
+  no_of_families?: number | null;
+  no_of_household_members?: number | null;
+  member_count?: number;
+  head_name?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// =============================================================================
+// FORM AND UI INTERFACES
+// =============================================================================
+
+/**
+ * Household form data interface
+ */
+export interface HouseholdFormData {
+  code: string;
+  streetName?: string;
+  subdivisionName?: string;
+  householdNumber?: string;
+  barangayCode?: string;
+  cityMunicipalityCode?: string;
+  provinceCode?: string;
+  regionCode?: string;
+  headResidentId?: string;
+  householdType?: string;
+  tenureStatus?: string;
+  monthlyIncome?: number;
+  incomeClass?: string;
+}
+
+/**
+ * Household option for select components
+ */
+export interface HouseholdOption {
+  value: string;
+  label: string;
+  description: string;
+  code: string;
+  head_name: string;
+  address: string;
+}
+
+/**
+ * Household search parameters
+ */
+export interface HouseholdSearchParams {
+  page?: number;
+  pageSize?: number;
+  searchTerm?: string;
+  barangayCode?: string;
+  householdType?: string;
+  incomeClass?: string;
+}
+
+// =============================================================================
+// API AND RESPONSE INTERFACES
+// =============================================================================
+
+/**
+ * API response for household creation/update
+ */
+export interface HouseholdApiResponse {
+  household: HouseholdRecord;
+  members?: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    relationship?: string;
+  }>;
+}
+
+/**
+ * API response for household listing
+ */
+export interface HouseholdsListResponse {
+  data: HouseholdWithMembersResult[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  message: string;
+}
+
+// =============================================================================
+// TABLE AND DISPLAY INTERFACES
+// =============================================================================
+
+/**
+ * Household table column configuration
+ */
+export interface HouseholdTableColumn {
+  key: string;
+  title: string;
+  dataIndex: string | ((record: HouseholdWithMembersResult) => any);
+  render?: (value: any, record: HouseholdWithMembersResult) => ReactNode;
+  sortable?: boolean;
+}
+
+/**
+ * Household table action configuration
+ */
+export interface HouseholdTableAction {
+  key: string;
+  label: string;
+  href?: (record: HouseholdWithMembersResult) => string;
+  onClick?: (record: HouseholdWithMembersResult) => void;
+  variant: 'primary' | 'secondary' | 'danger';
+}
+
+// =============================================================================
+// ENUM OPTIONS AND CONSTANTS
+// =============================================================================
+
+// Note: EnumOption moved to forms.ts to avoid conflicts
+
+type OptionType = { value: string; label: string };
+
+export const HOUSEHOLD_TYPE_OPTIONS: OptionType[] = [
+  { value: 'nuclear', label: 'Nuclear Family' },
+  { value: 'extended', label: 'Extended Family' },
+  { value: 'single_parent', label: 'Single Parent' },
+  { value: 'childless_couple', label: 'Childless Couple' },
+  { value: 'single_person', label: 'Single Person' },
+  { value: 'multi_family', label: 'Multi-Family' },
+  { value: 'others', label: 'Others' }
+];
+
+export const TENURE_STATUS_OPTIONS: OptionType[] = [
+  { value: 'owned', label: 'Owned' },
+  { value: 'rented', label: 'Rented' },
+  { value: 'rent_free', label: 'Rent-Free' },
+  { value: 'caretaker', label: 'Caretaker' },
+  { value: 'squatter', label: 'Informal Settler' },
+  { value: 'others', label: 'Others' }
+];
+
+export const INCOME_CLASS_OPTIONS: OptionType[] = [
+  { value: 'poor', label: 'Poor (Below ₱12,030/month)' },
+  { value: 'low_income_but_not_poor', label: 'Low Income but not Poor (₱12,030-₱24,120)' },
+  { value: 'lower_middle_class', label: 'Lower Middle Class (₱24,120-₱43,828)' },
+  { value: 'middle_class', label: 'Middle Class (₱43,828-₱76,699)' },
+  { value: 'upper_middle_class', label: 'Upper Middle Class (₱76,699-₱131,484)' },
+  { value: 'upper_income_but_not_rich', label: 'Upper Income but not Rich (₱131,484-₱219,140)' },
+  { value: 'rich', label: 'Rich (Above ₱219,140)' }
+];
+
+// =============================================================================
+// VALIDATION AND ERROR INTERFACES
+// =============================================================================
+
+/**
+ * Household validation error
+ */
+export interface HouseholdValidationError {
+  field: string;
+  message: string;
+}
+
+// Note: FormMode moved to forms.ts to avoid conflicts
+
+/**
+ * Household form submission state
+ */
+export interface HouseholdFormSubmissionState {
+  isSubmitting: boolean;
+  isSubmitted: boolean;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+}

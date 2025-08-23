@@ -61,10 +61,10 @@ export function SectoralInformationForm({
   // Handle changes from SectoralInfo component
   const handleSectoralChange = (value: SectoralInformation) => {
     onChange('isLaborForce', value.is_labor_force);
-    onChange('isLaborForceEmployed', value.is_employed);
+    onChange('isLaborForceEmployed', value.is_labor_force_employed);
     onChange('isUnemployed', value.is_unemployed);
-    onChange('isOverseasFilipino', value.is_ofw);
-    onChange('isPersonWithDisability', value.is_pwd);
+    onChange('isOverseasFilipinoWorker', value.is_overseas_filipino_worker);
+    onChange('isPersonWithDisability', value.is_person_with_disability);
     onChange('isOutOfSchoolChildren', value.is_out_of_school_children);
     onChange('isOutOfSchoolYouth', value.is_out_of_school_youth);
     onChange('isSeniorCitizen', value.is_senior_citizen);
