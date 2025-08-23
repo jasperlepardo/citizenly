@@ -20,18 +20,16 @@ export function BirthInformation({
   onChange, 
   errors,
   className = '' 
-}: BirthInformationProps) {
+}: Readonly<BirthInformationProps>) {
   
   // PSGC search hook for birth place
   const { 
-    query: searchQuery, 
     setQuery: setSearchQuery, 
     options: psgcOptions, 
     isLoading,
     hasMore,
     loadMore,
-    isLoadingMore,
-    totalCount
+    isLoadingMore
   } = useOptimizedPsgcSearch({
     levels: 'all', // Show all levels for flexible birth place selection
     limit: 20, // Smaller initial load for better performance
@@ -73,22 +71,51 @@ export function BirthInformation({
           required
           labelSize="sm"
           errorMessage={errors.birthPlaceName}
+          helperText="Search for the place of birth"
           selectProps={{
-            placeholder: "Search for province or city/municipality...",
+            placeholder: "Search for birth place...",
             options: psgcOptions.map(place => {
-              // Format consistent display text
-              let displayText = place.name;
-              if (place.level === 'city' && (place as any).province_name) {
-                displayText = `${place.name}, ${(place as any).province_name}`;
+              // Format hierarchical display based on level
+              let displayLabel = place.name;
+              let description = '';
+              let badge = place.level;
+              
+              if (place.level === 'barangay') {
+                // For barangay: "Barangay Name, City, Province"
+                if ((place as any).city_name && (place as any).province_name) {
+                  displayLabel = `${place.name}, ${(place as any).city_name}, ${(place as any).province_name}`;
+                } else if ((place as any).city_name) {
+                  displayLabel = `${place.name}, ${(place as any).city_name}`;
+                }
+                badge = 'barangay';
+              } else if (place.level === 'city') {
+                // For city/municipality: "City Name, Province"
+                if ((place as any).province_name) {
+                  displayLabel = `${place.name}, ${(place as any).province_name}`;
+                }
+                badge = (place as any).type || 'city';
+              } else if (place.level === 'province') {
+                // For province: just "Province Name"
+                displayLabel = place.name;
+                badge = 'province';
+              }
+              
+              // Format description for subtext
+              if ((place as any).full_address) {
+                // Use full address but trim to province level (remove region)
+                const parts = (place as any).full_address.split(', ');
+                if (parts.length >= 3) {
+                  description = parts.slice(0, 3).join(', '); // Up to Province
+                } else {
+                  description = (place as any).full_address;
+                }
               }
               
               return {
                 value: place.code,
-                label: displayText,
-                description: place.full_address,
-                level: place.level,
-                full_address: place.full_address || place.name,
-                badge: (place as any).type || place.level
+                label: displayLabel,
+                description: description,
+                badge: badge
               };
             }),
             value: value.birthPlaceCode,
@@ -97,20 +124,34 @@ export function BirthInformation({
             onSearch: setSearchQuery,
             onSelect: (option) => {
               if (option) {
-                handleChange('birthPlaceName', (option as any).full_address || (option as any).label);
+                handleChange('birthPlaceName', (option as any).label);
                 handleChange('birthPlaceCode', (option as any).value);
               } else {
                 handleChange('birthPlaceName', '');
                 handleChange('birthPlaceCode', '');
               }
             },
-            // Lazy loading props
+            // Infinite scroll props
+            infiniteScroll: true,
             hasMore: hasMore,
             onLoadMore: loadMore,
-            loadingMore: isLoadingMore,
-            infiniteScroll: true
+            loadingMore: isLoadingMore
           }}
         />
+          
+          {/* Display selected birth place info (read-only) */}
+          {value.birthPlaceCode && value.birthPlaceName && (
+            <div className="bg-gray-500 border border-info/20 rounded-md p-3">
+              <h6 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Selected Birth Place</h6>
+              <div className="text-sm">
+                <div>
+                  <span className="form-info-title">Location:</span>
+                  <div className="form-info-content">{value.birthPlaceName}</div>
+                  <div className="text-xs text-zinc-500 dark:text-zinc-400">{value.birthPlaceCode}</div>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
