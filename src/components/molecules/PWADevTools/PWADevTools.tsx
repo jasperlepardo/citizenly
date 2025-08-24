@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { pwaPerformance } from '@/lib/performance/pwaPerformanceUtils';
-import { syncQueue } from '@/lib/storage';
-import { offlineStorage } from '@/lib/storage';
+import { syncQueue } from '@/lib/data';
+import { offlineStorage } from '@/lib/data';
 
 interface PWADevToolsProps {
   className?: string;

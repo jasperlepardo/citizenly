@@ -239,12 +239,12 @@ interface RawPsgcData {
  */
 export const formatPsgcOption = (psgcData: RawPsgcData): PsgcOption => {
   return {
-    value: psgcData.code || psgcData.city_code || psgcData.province_code,
-    label: psgcData.name || psgcData.city_name || psgcData.province_name,
+    value: psgcData.code || psgcData.city_code || psgcData.province_code || '',
+    label: psgcData.name || psgcData.city_name || psgcData.province_name || '',
     description: psgcData.full_address || psgcData.full_hierarchy,
     level: psgcData.level,
     full_hierarchy: psgcData.full_address || psgcData.full_hierarchy,
-    code: psgcData.code || psgcData.city_code || psgcData.province_code,
+    code: psgcData.code || psgcData.city_code || psgcData.province_code || '',
   };
 };
 

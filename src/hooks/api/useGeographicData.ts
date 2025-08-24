@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 
 export interface GeographicOption {
   value: string;

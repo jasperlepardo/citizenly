@@ -1,6 +1,7 @@
 import React from 'react';
 import { SelectField } from '@/components/molecules';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
+import type { FormMode } from '@/types/forms';
 
 export interface EmploymentInformationData {
   employmentStatus: string;
@@ -16,6 +17,8 @@ export interface EmploymentInformationProps {
   onPsocSearch?: (query: string) => void;
   psocOptions?: any[];
   psocLoading?: boolean;
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   className?: string;
 }
 
@@ -26,6 +29,7 @@ export function EmploymentInformation({
   onPsocSearch,
   psocOptions = [],
   psocLoading = false,
+  mode = 'create',
   className = '' 
 }: EmploymentInformationProps) {
   
@@ -50,6 +54,7 @@ export function EmploymentInformation({
           label="Employment Status"
           labelSize="sm"
           errorMessage={errors.employmentStatus}
+          mode={mode}
           selectProps={{
             placeholder: "Select employment status...",
             options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
@@ -62,6 +67,7 @@ export function EmploymentInformation({
           label="Occupation Name"
           labelSize="sm"
           errorMessage={errors.occupationTitle || errors.psocCode}
+          mode={mode}
           selectProps={{
             placeholder: "Search occupation from level 1-5...",
             options: psocOptions,

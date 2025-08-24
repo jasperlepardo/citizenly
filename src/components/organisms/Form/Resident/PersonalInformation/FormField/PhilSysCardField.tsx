@@ -1,7 +1,10 @@
 import React from 'react';
 import { InputField } from '@/components/molecules';
+import type { FormMode } from '@/types/forms';
 
 export interface PhilSysCardFieldProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: string;
   onChange: (value: string) => void;
   error?: string;
@@ -10,6 +13,7 @@ export interface PhilSysCardFieldProps {
 }
 
 export function PhilSysCardField({ 
+  mode = 'create',
   value, 
   onChange, 
   error, 
@@ -19,6 +23,7 @@ export function PhilSysCardField({
   return (
     <div className={className}>
       <InputField
+        mode={mode}
         label="PhilSys Card Number"
         required={required}
         labelSize="sm"

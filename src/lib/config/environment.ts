@@ -87,13 +87,13 @@ export const getSupabaseConfig = () => {
     options: {
       auth: {
         autoRefreshToken: true,
-        persistSession: !isTest(),
-        detectSessionInUrl: !isTest(),
-        // Use Supabase default storage key for proper session persistence
-        // storageKey: 'rbi-auth-token', // Custom key causes session persistence issues
+        persistSession: true,
+        detectSessionInUrl: true,
         storage: typeof window !== 'undefined' ? window.localStorage : undefined,
         flowType: 'pkce' as const,
         debug: isDebugEnabled(),
+        // Force session refresh on page load
+        storageKey: `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] || 'default'}-auth-token`,
       },
 
       db: {
@@ -111,6 +111,8 @@ export const getSupabaseConfig = () => {
 
       global: {
         headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
           'Cache-Control': isProduction() ? 'public, max-age=3600' : 'no-cache',
           Pragma: isProduction() ? 'cache' : 'no-cache',
           'X-Environment': config.environment,

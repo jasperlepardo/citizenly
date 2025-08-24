@@ -5,7 +5,7 @@
  * Handles data transformation, validation, and database operations.
  */
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import {
   hashPhilSysNumber,
   extractPhilSysLast4,

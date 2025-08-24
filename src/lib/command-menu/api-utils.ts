@@ -3,7 +3,7 @@
  * Provides real API functionality for command menu actions
  */
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { logger } from '@/lib/logging/secure-logger';
 import { startCommandMenuSearchTimer, endCommandMenuSearchTimer } from '@/lib/command-menu/analytics-utils';
 

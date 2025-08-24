@@ -72,11 +72,11 @@ function ResidentsContent() {
   };
 
   const formatAddress = (resident: Resident) => {
-    if (!resident.household) return 'No household assigned';
+    if (!resident.households) return 'No household assigned';
     const parts = [
-      resident.household.house_number,
-      resident.household.street_name,
-      resident.household.subdivision,
+      resident.households.house_number,
+      // Note: street_name and subdivision would need to be fetched separately from geo_streets and geo_subdivisions
+      // For now, just show house number
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : 'No address';
   };

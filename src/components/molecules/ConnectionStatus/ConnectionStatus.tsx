@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { syncQueue } from '@/lib/storage';
-import { offlineStorage } from '@/lib/storage';
+import { syncQueue } from '@/lib/data';
+import { offlineStorage } from '@/lib/data';
 
 interface ConnectionStatusProps {
   className?: string;

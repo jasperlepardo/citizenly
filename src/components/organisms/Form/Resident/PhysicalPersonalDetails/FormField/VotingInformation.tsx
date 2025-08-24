@@ -1,4 +1,5 @@
 import React from 'react';
+import type { FormMode } from '@/types/forms';
 import { InputField, ControlFieldSet } from '@/components/molecules';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 
@@ -9,6 +10,8 @@ export interface VotingInformationData {
 }
 
 export interface VotingInformationProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: VotingInformationData;
   onChange: (value: VotingInformationData) => void;
   errors: Record<string, string>;
@@ -16,6 +19,7 @@ export interface VotingInformationProps {
 }
 
 export function VotingInformation({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -56,6 +60,7 @@ export function VotingInformation({
           errorMessage={errors.isVoter}
           orientation="horizontal"
           spacing="sm"
+          mode={mode}
         >
           {VOTER_STATUS_OPTIONS.map((option) => (
             <Radio
@@ -81,6 +86,7 @@ export function VotingInformation({
           errorMessage={errors.isResidentVoter}
           orientation="horizontal"
           spacing="sm"
+          mode={mode}
         >
           {VOTER_STATUS_OPTIONS.map((option) => (
             <Radio
@@ -100,6 +106,7 @@ export function VotingInformation({
           label="Last Voted Year"
           labelSize="sm"
           errorMessage={errors.lastVotedDate}
+          mode={mode}
           inputProps={{
             type: "number",
             value: value.lastVotedDate,

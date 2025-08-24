@@ -1,4 +1,5 @@
 import React from 'react';
+import type { FormMode } from '@/types/forms';
 import { InputField } from '@/components/molecules';
 
 export interface ContactDetailsData {
@@ -8,6 +9,8 @@ export interface ContactDetailsData {
 }
 
 export interface ContactDetailsProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: ContactDetailsData;
   onChange: (value: ContactDetailsData) => void;
   errors: Record<string, string>;
@@ -15,6 +18,7 @@ export interface ContactDetailsProps {
 }
 
 export function ContactDetails({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -42,6 +46,7 @@ export function ContactDetails({
           label="Email Address"
           labelSize="sm"
           errorMessage={errors.email}
+          mode={mode}
           inputProps={{
             type: "email",
             value: value.email,
@@ -55,6 +60,7 @@ export function ContactDetails({
           label="Phone Number"
           labelSize="sm"
           errorMessage={errors.phoneNumber}
+          mode={mode}
           inputProps={{
             type: "tel",
             value: value.phoneNumber,
@@ -68,6 +74,7 @@ export function ContactDetails({
           label="Mobile Number"
           labelSize="sm"
           errorMessage={errors.mobileNumber}
+          mode={mode}
           inputProps={{
             type: "tel",
             value: value.mobileNumber,

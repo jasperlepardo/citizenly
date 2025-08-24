@@ -4,39 +4,21 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/atoms';
+import { ResidentForm } from '@/components/templates/ResidentForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { logError } from '@/lib/logging/secure-logger';
+import type { ResidentFormState } from '@/types/resident-form';
 
 export const dynamic = 'force-dynamic';
-
-interface ResidentData {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  extension_name?: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-  civil_status?: string;
-  citizenship?: string;
-  occupation_title?: string;
-  place_of_birth?: string;
-  email?: string;
-  phone_number?: string;
-  barangay_code: string;
-  household_id?: string;
-}
 
 export default function ResidentEditPage() {
   const params = useParams();
   const router = useRouter();
   const { userProfile } = useAuth();
-  const [resident, setResident] = useState<ResidentData | null>(null);
+  const [resident, setResident] = useState<ResidentFormState | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Partial<ResidentData>>({});
 
   const residentId = params.id as string;
 
@@ -51,18 +33,108 @@ export default function ResidentEditPage() {
       setLoading(true);
       setError(null);
 
-      const { data, error: fetchError } = await supabase
-        .from('residents')
-        .select('*')
-        .eq('id', residentId)
-        .single();
+      // Use the API endpoint instead of direct Supabase query for consistency
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (fetchError) {
-        throw fetchError;
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
       }
 
-      setResident(data);
-      setFormData(data);
+      const response = await fetch(`/api/residents/${residentId}`, {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const { resident: residentData } = await response.json();
+
+      if (!residentData) {
+        throw new Error('No resident data found');
+      }
+
+      // Transform the data to match ResidentFormState interface
+      const formData: ResidentFormState = {
+        // Personal Information
+        first_name: residentData.first_name || '',
+        middle_name: residentData.middle_name || '',
+        last_name: residentData.last_name || '',
+        extension_name: residentData.extension_name || '',
+        sex: residentData.sex || '',
+        civil_status: residentData.civil_status || '',
+        civil_status_others_specify: residentData.civil_status_others_specify || '',
+        citizenship: residentData.citizenship || '',
+        birthdate: residentData.birthdate || '',
+        birth_place_name: residentData.birth_place_name || '',
+        birth_place_code: residentData.birth_place_code || '',
+        birth_place_level: residentData.birth_place_level || '',
+        philsys_card_number: residentData.philsys_card_number || '',
+        philsys_last4: residentData.philsys_last4 || '',
+        education_attainment: residentData.education_attainment || '',
+        is_graduate: residentData.is_graduate || false,
+        employment_status: residentData.employment_status || '',
+        employment_code: residentData.employment_code || '',
+        employment_name: residentData.employment_name || '',
+        occupation_code: residentData.occupation_code || '',
+        psoc_level: residentData.psoc_level || 0,
+        occupation_title: residentData.occupation_title || '',
+        
+        // Contact Information
+        email: residentData.email || '',
+        telephone_number: residentData.telephone_number || '',
+        mobile_number: residentData.mobile_number || '',
+        household_code: residentData.household_code || '',
+        
+        // Physical Personal Details
+        blood_type: residentData.blood_type || '',
+        complexion: residentData.complexion || '',
+        height: residentData.height || 0,
+        weight: residentData.weight || 0,
+        ethnicity: residentData.ethnicity || '',
+        religion: residentData.religion || '',
+        religion_others_specify: residentData.religion_others_specify || '',
+        is_voter: residentData.is_voter,
+        is_resident_voter: residentData.is_resident_voter,
+        last_voted_date: residentData.last_voted_date || '',
+        mother_maiden_first: residentData.mother_maiden_first || '',
+        mother_maiden_middle: residentData.mother_maiden_middle || '',
+        mother_maiden_last: residentData.mother_maiden_last || '',
+        
+        // Sectoral Information
+        is_labor_force: residentData.is_labor_force || false,
+        is_labor_force_employed: residentData.is_labor_force_employed || false,
+        is_unemployed: residentData.is_unemployed || false,
+        is_overseas_filipino_worker: residentData.is_overseas_filipino_worker || false,
+        is_person_with_disability: residentData.is_person_with_disability || false,
+        is_out_of_school_children: residentData.is_out_of_school_children || false,
+        is_out_of_school_youth: residentData.is_out_of_school_youth || false,
+        is_senior_citizen: residentData.is_senior_citizen || false,
+        is_registered_senior_citizen: residentData.is_registered_senior_citizen || false,
+        is_solo_parent: residentData.is_solo_parent || false,
+        is_indigenous_people: residentData.is_indigenous_people || false,
+        is_migrant: residentData.is_migrant || false,
+        
+        // Migration Information
+        previous_barangay_code: residentData.previous_barangay_code || '',
+        previous_city_municipality_code: residentData.previous_city_municipality_code || '',
+        previous_province_code: residentData.previous_province_code || '',
+        previous_region_code: residentData.previous_region_code || '',
+        length_of_stay_previous_months: residentData.length_of_stay_previous_months || 0,
+        reason_for_leaving: residentData.reason_for_leaving || '',
+        date_of_transfer: residentData.date_of_transfer || '',
+        reason_for_transferring: residentData.reason_for_transferring || '',
+        duration_of_stay_current_months: residentData.duration_of_stay_current_months || 0,
+        is_intending_to_return: residentData.is_intending_to_return || false,
+      };
+
+      setResident(formData);
     } catch (err) {
       const error = err as Error;
       logError(error, 'FETCH_RESIDENT_ERROR');
@@ -72,37 +144,43 @@ export default function ResidentEditPage() {
     }
   };
 
-  const handleInputChange = (field: keyof ResidentData, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async (formData: ResidentFormState) => {
     try {
-      setSaving(true);
-      setError(null);
+      // Use the API endpoint for updating the resident
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const { error: updateError } = await supabase
-        .from('residents')
-        .update(formData)
-        .eq('id', residentId);
-
-      if (updateError) {
-        throw updateError;
+      if (!session?.access_token) {
+        throw new Error('No valid session found');
       }
 
+      const response = await fetch(`/api/residents/${residentId}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to update resident');
+      }
+
+      // Navigate back to the resident detail page
       router.push(`/residents/${residentId}`);
     } catch (err) {
       const error = err as Error;
       logError(error, 'UPDATE_RESIDENT_ERROR');
       setError(error.message || 'Failed to update resident');
-    } finally {
-      setSaving(false);
+      throw error; // Let the form handle the error display
     }
+  };
+
+  const handleCancel = () => {
+    router.push(`/residents/${residentId}`);
   };
 
   if (loading) {
@@ -166,109 +244,16 @@ export default function ResidentEditPage() {
         </div>
       )}
 
-      {/* Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                First Name *
-              </label>
-              <input
-                type="text"
-                value={formData.first_name || ''}
-                onChange={(e) => handleInputChange('first_name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Last Name *
-              </label>
-              <input
-                type="text"
-                value={formData.last_name || ''}
-                onChange={(e) => handleInputChange('last_name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Middle Name
-              </label>
-              <input
-                type="text"
-                value={formData.middle_name || ''}
-                onChange={(e) => handleInputChange('middle_name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Extension Name
-              </label>
-              <input
-                type="text"
-                value={formData.extension_name || ''}
-                onChange={(e) => handleInputChange('extension_name', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Birthdate *
-              </label>
-              <input
-                type="date"
-                value={formData.birthdate || ''}
-                onChange={(e) => handleInputChange('birthdate', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Sex *
-              </label>
-              <select
-                value={formData.sex || ''}
-                onChange={(e) => handleInputChange('sex', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              >
-                <option value="">Select Sex</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <Link href={`/residents/${residentId}`}>
-              <Button variant="neutral-outline" size="md">
-                Cancel
-              </Button>
-            </Link>
-            <Button 
-              type="submit" 
-              variant="primary" 
-              size="md"
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save Changes'}
-            </Button>
-          </div>
-        </form>
-      </div>
+      {/* ResidentForm Template */}
+      {resident && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+          <ResidentForm
+            initialData={resident}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
     </div>
   );
 }

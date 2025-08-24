@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api/authUtils';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel } from '@/lib/api/authUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { createResidentSchema } from '@/lib/api/validationUtils';
 import {
@@ -62,7 +62,7 @@ export const GET = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Build base query with proper field selection including sectoral info
+        // Build base query with proper field selection including sectoral info and household
         let query = supabaseAdmin
           .from('residents')
           .select(
@@ -76,7 +76,20 @@ export const GET = withSecurityHeaders(
            household_code,
            email,
            mobile_number,
+           civil_status,
+           occupation_code,
            created_at,
+           households!inner(
+             code,
+             name,
+             barangay_code,
+             city_municipality_code,
+             province_code,
+             region_code,
+             house_number,
+             street_id,
+             subdivision_id
+           ),
            resident_sectoral_info(
              is_labor_force,
              is_labor_force_employed,
@@ -103,8 +116,41 @@ export const GET = withSecurityHeaders(
           )
           .order('created_at', { ascending: false });
 
-        // Apply geographic filtering based on user's access level
-        query = applyGeographicFilter(query, user);
+        // Apply geographic filtering based on user's access level through households
+        // First, we need to filter based on the household relationship
+        const accessLevel = getAccessLevel(user.role);
+        
+        // Since we're using a foreign key join, we need to filter residents who have households in the right location
+        // We'll add a filter that only includes residents with non-null household_code
+        query = query.not('household_code', 'is', null);
+        
+        // Then apply the geographic filter based on the joined household data
+        switch (accessLevel) {
+          case 'barangay':
+            if (user.barangayCode) {
+              // Filter residents whose households are in the user's barangay
+              query = query.eq('households.barangay_code', user.barangayCode);
+            }
+            break;
+          case 'city':
+            if (user.cityCode) {
+              query = query.eq('households.city_municipality_code', user.cityCode);
+            }
+            break;
+          case 'province':
+            if (user.provinceCode) {
+              query = query.eq('households.province_code', user.provinceCode);
+            }
+            break;
+          case 'region':
+            if (user.regionCode) {
+              query = query.eq('households.region_code', user.regionCode);
+            }
+            break;
+          case 'national':
+            // No filtering for national access
+            break;
+        }
 
         // Apply search filter if provided
         if (search) {
@@ -167,8 +213,7 @@ export const POST = withSecurityHeaders(
         const body = await request.json();
         logger.debug('Received create resident request', { 
           hasBody: !!body,
-          employmentStatus: body.employmentStatus,
-          employmentStatusType: typeof body.employmentStatus,
+          bodyKeys: Object.keys(body),
         });
 
         const validationResult = createResidentSchema.safeParse(body);
@@ -178,7 +223,14 @@ export const POST = withSecurityHeaders(
             issueCount: validationResult.error.issues.length,
             hasIssues: !!validationResult.error.issues,
             employmentStatusIssues: validationResult.error.issues.filter(i => i.path.includes('employmentStatus')),
-            allIssues: validationResult.error.issues.map(i => ({ path: i.path, message: i.message, received: (i as any).received })),
+            allIssues: validationResult.error.issues.map(i => ({ 
+              path: i.path, 
+              message: i.message, 
+              received: (i as any).received,
+              expected: (i as any).expected,
+              code: (i as any).code 
+            })),
+            detailedErrors: validationResult.error.format(),
           });
           return createValidationErrorResponse(
             validationResult.error.issues.map((err: z.ZodIssue) => ({
@@ -205,7 +257,7 @@ export const POST = withSecurityHeaders(
           middle_name: residentData.middleName || null,
           extension_name: residentData.extensionName || null,
           mobile_number: residentData.mobileNumber || null,
-          telephone_number: residentData.phoneNumber || null,
+          telephone_number: residentData.telephoneNumber || null,
           email: residentData.email || null,
           mother_maiden_first: residentData.motherMaidenFirstName || null,
           mother_maiden_middle: residentData.motherMaidenMiddleName || null,
@@ -223,14 +275,14 @@ export const POST = withSecurityHeaders(
           employment_status: residentData.employmentStatus,
           education_attainment: residentData.educationAttainment || null,
           is_graduate: residentData.isGraduate,
-          occupation_code: residentData.psocCode || null, // Using occupation_code instead of psoc_code
+          occupation_code: residentData.psocCode || residentData.occupationCode || null,
           height: residentData.height ? parseFloat(residentData.height) : null,
           weight: residentData.weight ? parseFloat(residentData.weight) : null,
           complexion: residentData.complexion || null,
           philsys_card_number: residentData.philsysCardNumber || null,
           is_voter: residentData.isVoter,
           is_resident_voter: residentData.isResidentVoter,
-          last_voted_date: residentData.lastVotedDate || null,
+          last_voted_date: residentData.lastVotedDate && residentData.lastVotedDate !== '' ? residentData.lastVotedDate : null,
           is_active: true,
           created_by: user.id,
           updated_by: user.id,

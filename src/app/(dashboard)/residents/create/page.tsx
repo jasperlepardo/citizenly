@@ -62,76 +62,62 @@ function CreateResidentForm() {
   });
 
   // Handle form submission - transform snake_case to camelCase
-  const handleSubmit = async (formData: any) => {
-    // Transform form data from snake_case (database fields) to camelCase (service expects)
+  const handleSubmit = async (formData: any) => {    
+    // Transform form data to match validation schema EXACTLY
     const transformedData = {
-      // Personal Information
+      // Required fields - validation schema
       firstName: formData.first_name || '',
-      middleName: formData.middle_name || '',
       lastName: formData.last_name || '',
-      extensionName: formData.extension_name || '',
       birthdate: formData.birthdate || '',
       sex: formData.sex || '',
-      civilStatus: formData.civil_status || '',
-      citizenship: formData.citizenship || '',
-      
-      // Education & Employment
-      educationLevel: formData.education_attainment || '',
-      educationStatus: formData.is_graduate ? 'graduate' : 'undergraduate',
-      occupationCode: formData.occupation_code || '',
-      psocLevel: formData.psoc_level || '',
-      positionTitleId: formData.position_title_id || '', // Required field
-      occupationDescription: formData.occupation_title || '',
-      employmentStatus: formData.employment_status || '',
-      workplace: formData.employment_name || '',
-      
-      // Contact & Documentation
+
+      // Optional personal info - validation schema
+      middleName: formData.middle_name || '',
+      extensionName: formData.extension_name || '',
+
+      // Contact information - validation schema
       email: formData.email || '',
       mobileNumber: formData.mobile_number || '',
       telephoneNumber: formData.telephone_number || '',
-      philsysCardNumber: formData.philsys_card_number || '',
-      
-      // Physical & Identity Information
+
+      // Personal details - validation schema (with defaults)
+      civilStatus: formData.civil_status || 'single',
+      civilStatusOthersSpecify: formData.civil_status_others_specify || '',
+      citizenship: formData.citizenship || 'filipino',
       bloodType: formData.blood_type || '',
-      height: formData.height || '',
-      weight: formData.weight || '',
-      complexion: formData.complexion || '',
       ethnicity: formData.ethnicity || '',
-      religion: formData.religion || '',
-      
-      // Voting Information
-      voterRegistrationStatus: formData.is_voter || false,
-      residentVoterStatus: formData.is_resident_voter || false,
-      lastVotedYear: formData.last_voted_date || '',
-      
-      // Family Information
+      religion: formData.religion || 'roman_catholic',
+      religionOthersSpecify: formData.religion_others_specify || '',
+
+      // Physical characteristics - validation schema
+      height: formData.height?.toString() || '',
+      weight: formData.weight?.toString() || '',
+      complexion: formData.complexion || '',
+
+      // Birth place information - validation schema
+      birthPlaceCode: formData.birth_place_code || '',
+
+      // Documentation - validation schema
+      philsysCardNumber: formData.philsys_card_number || '',
+
+      // Family information - validation schema
       motherMaidenFirstName: formData.mother_maiden_first || '',
       motherMaidenMiddleName: formData.mother_maiden_middle || '',
       motherMaidenLastName: formData.mother_maiden_last || '',
-      
-      // Migration Information
-      migrationInfo: {
-        previousBarangayCode: formData.previous_barangay_code,
-        previousCityMunicipalityCode: formData.previous_city_municipality_code,
-        previousProvinceCode: formData.previous_province_code,
-        previousRegionCode: formData.previous_region_code,
-        lengthOfStayPreviousMonths: formData.length_of_stay_previous_months,
-        reasonForLeaving: formData.reason_for_leaving,
-        dateOfTransfer: formData.date_of_transfer,
-        reasonForTransferring: formData.reason_for_transferring,
-        durationOfStayCurrentMonths: formData.duration_of_stay_current_months,
-        isIntendingToReturn: formData.is_intending_to_return,
-      },
-      
-      // Address Information (PSGC Codes) - auto-populated from user's barangay
-      regionCode: '', // Will be populated by service from user address
-      provinceCode: '', // Will be populated by service from user address
-      cityMunicipalityCode: '', // Will be populated by service from user address
-      barangayCode: '', // Will be populated by service from user address
-      
-      // Household Assignment
+
+      // Education and employment - validation schema (with defaults)
+      educationAttainment: formData.education_attainment || '',
+      isGraduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
+      employmentStatus: formData.employment_status || 'not_in_labor_force',
+      occupationCode: formData.occupation_code || '',
+
+      // Voting information - validation schema
+      isVoter: formData.is_voter,
+      isResidentVoter: formData.is_resident_voter,
+      lastVotedDate: formData.last_voted_date || '',
+
+      // Household - validation schema
       householdCode: formData.household_code || '',
-      householdRole: 'Member' as const, // Default to member
     };
     
     await createResident(transformedData);

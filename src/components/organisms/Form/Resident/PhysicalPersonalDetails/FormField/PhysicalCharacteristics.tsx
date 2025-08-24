@@ -1,4 +1,5 @@
 import React from 'react';
+import type { FormMode } from '@/types/forms';
 import { InputField, SelectField } from '@/components/molecules';
 import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
 
@@ -14,6 +15,8 @@ export interface PhysicalCharacteristicsData {
 }
 
 export interface PhysicalCharacteristicsProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: PhysicalCharacteristicsData;
   onChange: (value: PhysicalCharacteristicsData) => void;
   errors: Record<string, string>;
@@ -21,6 +24,7 @@ export interface PhysicalCharacteristicsProps {
 }
 
 export function PhysicalCharacteristics({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -55,6 +59,7 @@ export function PhysicalCharacteristics({
           label="Blood Type"
           labelSize="sm"
           errorMessage={errors.bloodType}
+          mode={mode}
           selectProps={{
             placeholder: "Select blood type...",
             options: bloodTypeOptions,
@@ -67,6 +72,7 @@ export function PhysicalCharacteristics({
           label="Complexion"
           labelSize="sm"
           errorMessage={errors.complexion}
+          mode={mode}
           inputProps={{
             value: value.complexion,
             onChange: (e) => handleChange('complexion', e.target.value),
@@ -79,6 +85,7 @@ export function PhysicalCharacteristics({
           label="Height (cm)"
           labelSize="sm"
           errorMessage={errors.height}
+          mode={mode}
           inputProps={{
             type: "number",
             value: value.height,
@@ -92,6 +99,7 @@ export function PhysicalCharacteristics({
           label="Weight (kg)"
           labelSize="sm"
           errorMessage={errors.weight}
+          mode={mode}
           inputProps={{
             type: "number",
             value: value.weight,
@@ -105,6 +113,7 @@ export function PhysicalCharacteristics({
           label="Citizenship"
           labelSize="sm"
           errorMessage={errors.citizenship}
+          mode={mode}
           selectProps={{
             placeholder: "Select citizenship...",
             options: citizenshipOptions,
@@ -117,6 +126,7 @@ export function PhysicalCharacteristics({
           label="Ethnicity"
           labelSize="sm"
           errorMessage={errors.ethnicity}
+          mode={mode}
           selectProps={{
             placeholder: "Select ethnicity...",
             options: ethnicityOptions,
@@ -130,6 +140,7 @@ export function PhysicalCharacteristics({
           label="Religion"
           labelSize="sm"
           errorMessage={errors.religion}
+          mode={mode}
           selectProps={{
             placeholder: "Select religion...",
             options: religionOptions,
@@ -145,6 +156,7 @@ export function PhysicalCharacteristics({
             required
             labelSize="sm"
             errorMessage={errors.religionOthersSpecify}
+            mode={mode}
             inputProps={{
               value: value.religionOthersSpecify || '',
               onChange: (e) => handleChange('religionOthersSpecify', e.target.value),

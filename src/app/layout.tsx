@@ -21,12 +21,6 @@ export const metadata: Metadata = {
   title: 'Citizenly - Barangay Management System',
   description: 'Modern barangay management system for efficient resident data management and community services',
   manifest: '/manifest.json',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

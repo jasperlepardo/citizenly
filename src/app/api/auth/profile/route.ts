@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return createUnauthorizedResponse('No auth token provided');
+      return createUnauthorizedResponse('No auth token provided. Please log in again.');
     }
 
     const token = authHeader.split(' ')[1];
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
-      return createUnauthorizedResponse('Invalid token');
+      return createUnauthorizedResponse('Invalid or expired token. Please log in again.');
     }
 
     // Use service role client to bypass RLS for this specific query

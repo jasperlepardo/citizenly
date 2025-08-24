@@ -1,11 +1,16 @@
 import React from 'react';
-import HouseholdSelector from '@/components/organisms/HouseholdSelector/HouseholdSelector';
+import type { FormMode } from '@/types/forms';
+import { SelectField } from '@/components/molecules';
+import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
 
 export interface HouseholdInformationData {
   householdCode: string;
+  householdName: string;
 }
 
 export interface HouseholdInformationProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: HouseholdInformationData;
   onChange: (value: HouseholdInformationData) => void;
   errors: Record<string, string>;
@@ -17,6 +22,7 @@ export interface HouseholdInformationProps {
 }
 
 export function HouseholdInformation({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -26,9 +32,23 @@ export function HouseholdInformation({
   householdLoading
 }: HouseholdInformationProps) {
   
-  const handleHouseholdSelect = (householdCode: string | null) => {
+  // Household search hook
+  const { 
+    setQuery: setSearchQuery, 
+    options: householdSearchOptions = [], 
+    isLoading,
+    hasMore,
+    loadMore,
+    isLoadingMore
+  } = useOptimizedHouseholdSearch({
+    limit: 20,
+    debounceMs: 300,
+  });
+
+  const handleChange = (field: keyof HouseholdInformationData, fieldValue: any) => {
     onChange({
-      householdCode: householdCode || '',
+      ...value,
+      [field]: fieldValue,
     });
   };
 
@@ -42,15 +62,54 @@ export function HouseholdInformation({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Current Household
-        </label>
-        <HouseholdSelector
-          value={value.householdCode}
-          onSelect={handleHouseholdSelect}
-          error={errors.householdCode}
-          placeholder="🏠 Search households or leave blank to create new"
+        <SelectField
+          mode={mode}
+          label="Current Household"
+          labelSize="sm"
+          errorMessage={errors.householdCode}
+          helperText="Search for an existing household or leave blank to create new"
+          selectProps={{
+            placeholder: "🏠 Search households...",
+            options: (householdSearchOptions || []).map((household: any) => ({
+              value: household.code,
+              label: household.head_name || `Household ${household.code}`,
+              description: `Code: ${household.code}${household.address ? ` • ${household.address}` : ''}`,
+              badge: 'household'
+            })),
+            value: value.householdCode,
+            loading: isLoading,
+            searchable: true,
+            onSearch: setSearchQuery,
+            onSelect: (option) => {
+              if (option) {
+                handleChange('householdCode', (option as any).value);
+                handleChange('householdName', (option as any).label);
+              } else {
+                handleChange('householdCode', '');
+                handleChange('householdName', '');
+              }
+            },
+            // Infinite scroll props
+            infiniteScroll: true,
+            hasMore: hasMore,
+            onLoadMore: loadMore,
+            loadingMore: isLoadingMore
+          }}
         />
+        
+        {/* Display selected household info (read-only) */}
+        {value.householdCode && value.householdName && (
+          <div className="bg-info/5 border border-info/20 rounded-md p-3 mt-3">
+            <h6 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Selected Household</h6>
+            <div className="text-sm">
+              <div>
+                <span className="form-info-title">Household:</span>
+                <div className="form-info-content">{value.householdName}</div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-400">{value.householdCode}</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

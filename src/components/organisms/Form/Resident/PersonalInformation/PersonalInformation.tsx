@@ -4,8 +4,11 @@ import { BasicInformation, BasicInformationData } from './FormField/BasicInforma
 import { BirthInformation, BirthInformationData } from './FormField/BirthInformation';
 import { EducationInformation, EducationInformationData } from './FormField/EducationInformation';
 import { EmploymentInformation, EmploymentInformationData } from './FormField/EmploymentInformation';
+import type { FormMode } from '@/types/forms';
 
 export interface PersonalInformationFormProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   formData: {
     // PhilSys and Personal Info
     philsysCardNumber?: string;
@@ -40,6 +43,7 @@ export interface PersonalInformationFormProps {
 }
 
 export function PersonalInformationForm({ 
+  mode = 'create',
   formData, 
   onChange, 
   errors,
@@ -103,6 +107,7 @@ export function PersonalInformationForm({
         <div className="space-y-8">
           {/* PhilSys Card Number */}
           <PhilSysCardField
+            mode={mode}
             value={formData.philsysCardNumber || ''}
             onChange={(value) => onChange('philsysCardNumber', value)}
             error={errors.philsysCardNumber}
@@ -110,6 +115,7 @@ export function PersonalInformationForm({
 
           {/* Basic Information Component - Names, Sex, Civil Status, Citizenship */}
           <BasicInformation
+            mode={mode}
             value={basicInfoValue}
             onChange={handleBasicInfoChange}
             errors={errors}
@@ -117,6 +123,7 @@ export function PersonalInformationForm({
 
           {/* Birth Information */}
           <BirthInformation
+            mode={mode}
             value={{
               birthdate: formData.birthdate || '',
               birthPlaceName: formData.birthPlaceName || '',
@@ -128,6 +135,7 @@ export function PersonalInformationForm({
 
           {/* Education Information */}
           <EducationInformation
+            mode={mode}
             value={{
               educationAttainment: formData.educationAttainment || '',
               isGraduate: formData.isGraduate ? 'yes' : 'no',
@@ -138,6 +146,7 @@ export function PersonalInformationForm({
 
           {/* Employment Information */}
           <EmploymentInformation
+            mode={mode}
             value={{
               employmentStatus: formData.employmentStatus || '',
               psocCode: formData.psocCode || '',

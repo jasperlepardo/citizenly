@@ -1,6 +1,7 @@
 import React from 'react';
 import { InputField, SelectField } from '@/components/molecules';
 import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
+import type { FormMode } from '@/types/forms';
 
 export interface BirthInformationData {
   birthdate: string;
@@ -9,6 +10,8 @@ export interface BirthInformationData {
 }
 
 export interface BirthInformationProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: BirthInformationData;
   onChange: (value: BirthInformationData) => void;
   errors: Record<string, string>;
@@ -16,6 +19,7 @@ export interface BirthInformationProps {
 }
 
 export function BirthInformation({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -54,6 +58,7 @@ export function BirthInformation({
 
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
         <InputField
+          mode={mode}
           label="Birth Date"
           required
           labelSize="sm"
@@ -67,6 +72,7 @@ export function BirthInformation({
         />
         
         <SelectField
+          mode={mode}
           label="Birth Place"
           required
           labelSize="sm"

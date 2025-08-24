@@ -181,7 +181,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
       return {
         code: 'UNIQUE_VIOLATION',
         message: 'A record with this information already exists',
-        details: error.details,
+        details: error.details as string | Record<string, unknown> | undefined,
       };
     }
 
@@ -189,7 +189,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
       return {
         code: 'FOREIGN_KEY_VIOLATION',
         message: 'Referenced record does not exist',
-        details: error.details,
+        details: error.details as string | Record<string, unknown> | undefined,
       };
     }
 
@@ -197,7 +197,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
       return {
         code: 'TABLE_NOT_FOUND',
         message: 'Database table not found',
-        details: error.details,
+        details: error.details as string | Record<string, unknown> | undefined,
       };
     }
 
@@ -205,14 +205,14 @@ export abstract class BaseRepository<T extends Record<string, any>> {
       return {
         code: 'NOT_FOUND',
         message: 'Record not found',
-        details: error.details,
+        details: error.details as string | Record<string, unknown> | undefined,
       };
     }
 
     return {
       code: 'DATABASE_ERROR',
       message: error.message || 'Database operation failed',
-      details: error.details,
+      details: error.details as string | Record<string, unknown> | undefined,
     };
   }
 

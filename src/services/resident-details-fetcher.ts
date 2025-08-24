@@ -3,7 +3,7 @@
  * Replaces sequential queries with optimized batch operations
  */
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { logger } from '@/lib/logging/secure-logger';
 
 export interface AddressInfo {

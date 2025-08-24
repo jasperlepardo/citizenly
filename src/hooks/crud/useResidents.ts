@@ -5,7 +5,7 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface Resident {
@@ -24,14 +24,18 @@ interface Resident {
   profession?: string;
   education_level?: string;
   household_code?: string;
-  barangay_code: string;
   status?: string;
   created_at: string;
-  household?: {
+  households?: {
     code: string;
-    street_name?: string;
+    name?: string;
+    barangay_code: string;
+    city_municipality_code?: string;
+    province_code?: string;
+    region_code?: string;
     house_number?: string;
-    subdivision?: string;
+    street_id?: string;
+    subdivision_id?: string;
   };
 }
 
