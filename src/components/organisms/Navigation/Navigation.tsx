@@ -8,7 +8,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Icon from '../../atoms/Icon/Icon';
+// Icon component removed - using inline SVG or icon library instead
 
 // Navigation item interface
 interface NavigationItem {
@@ -81,12 +81,9 @@ function NavigationItemComponent({
         aria-current={isActive ? 'page' : undefined}
       >
         {item.icon && (
-          <Icon
-            name={item.icon}
-            className={isActive ? navigationStyles.iconActive : navigationStyles.iconInactive}
-            size="md"
-            color="inherit"
-          />
+          <span className={isActive ? navigationStyles.iconActive : navigationStyles.iconInactive}>
+            {/* Icon placeholder - replace with actual icon library */}
+          </span>
         )}
         {item.name}
       </Link>

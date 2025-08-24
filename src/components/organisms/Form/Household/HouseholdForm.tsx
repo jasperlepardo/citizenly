@@ -94,17 +94,14 @@ export function HouseholdForm({
       <div className="space-y-4">
         <HouseholdDetailsForm
           formData={{
-            houseNumber: formData.houseNumber,
-            streetId: formData.streetId,
-            subdivisionId: formData.subdivisionId,
-            barangayCode: formData.barangayCode,
-            cityMunicipalityCode: formData.cityMunicipalityCode,
-            provinceCode: formData.provinceCode,
-            regionCode: formData.regionCode,
-            zipCode: formData.zipCode,
-            noOfFamilies: formData.noOfFamilies,
-            noOfHouseholdMembers: formData.noOfHouseholdMembers,
-            noOfMigrants: formData.noOfMigrants,
+            householdType: formData.householdType || '',
+            tenureStatus: formData.tenureStatus || '',
+            tenureOthersSpecify: formData.tenureOthersSpecify || '',
+            householdUnit: formData.householdUnit || '',
+            householdName: formData.householdName || '',
+            monthlyIncome: formData.monthlyIncome || 0,
+            householdHeadId: formData.householdHeadId || '',
+            householdHeadPosition: formData.householdHeadPosition || '',
           }}
           onChange={handleFieldChange}
           errors={errors}

@@ -62,12 +62,7 @@ CREATE TYPE family_position_enum AS ENUM (
     'spouse', 'sibling', 'guardian', 'ward', 'other'
 );
 
--- Household head position enum (for households table) - same as family_position_enum
-CREATE TYPE household_head_position_enum AS ENUM (
-    'father', 'mother', 'son', 'daughter', 'grandmother', 'grandfather',
-    'father_in_law', 'mother_in_law', 'brother_in_law', 'sister_in_law', 
-    'spouse', 'sibling', 'guardian', 'ward', 'other'
-);
+-- Note: household_head_position uses family_position_enum in actual database
 
 -- Income Classifications (NEDA standards)
 CREATE TYPE income_class_enum AS ENUM (
@@ -396,7 +391,7 @@ CREATE TABLE households (
     monthly_income NUMERIC,
     income_class income_class_enum,
     household_head_id UUID,
-    household_head_position household_head_position_enum,
+    household_head_position family_position_enum,
     is_active BOOLEAN DEFAULT true,
     created_by UUID REFERENCES auth_user_profiles(id),
     updated_by UUID REFERENCES auth_user_profiles(id),
@@ -461,13 +456,9 @@ CREATE TABLE household_members (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     household_code VARCHAR(50) NOT NULL REFERENCES households(code) ON DELETE CASCADE,
     resident_id UUID NOT NULL REFERENCES residents(id),
-    relationship_to_head VARCHAR(50) NOT NULL,
-    family_position family_position_enum,
-    position_notes TEXT,
+    family_position family_position_enum NOT NULL DEFAULT 'other',
     is_active BOOLEAN DEFAULT true,
-    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(household_code, resident_id)
 );
@@ -480,12 +471,8 @@ CREATE TABLE resident_relationships (
     relationship_type VARCHAR(50) NOT NULL CHECK (relationship_type IN 
         ('Spouse', 'Parent', 'Child', 'Sibling', 'Guardian', 'Ward', 'Other')),
     relationship_description TEXT,
-    is_reciprocal BOOLEAN DEFAULT true,
-    start_date DATE DEFAULT CURRENT_DATE,
-    end_date DATE,
-    created_by UUID REFERENCES auth_user_profiles(id),
+    is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT no_self_relationship CHECK (resident_a_id != resident_b_id),
     CONSTRAINT unique_relationship UNIQUE(resident_a_id, resident_b_id, relationship_type)
@@ -493,25 +480,21 @@ CREATE TABLE resident_relationships (
 
 -- 8.3 RESIDENT SECTORAL INFORMATION TABLE
 CREATE TABLE resident_sectoral_info (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    resident_id UUID NOT NULL REFERENCES residents(id) ON DELETE CASCADE,
-    is_labor_force BOOLEAN DEFAULT false,
-    is_labor_force_employed BOOLEAN DEFAULT false,
-    is_unemployed BOOLEAN DEFAULT false,
-    is_overseas_filipino_worker BOOLEAN DEFAULT false,
-    is_person_with_disability BOOLEAN DEFAULT false,
-    is_out_of_school_children BOOLEAN DEFAULT false,
-    is_out_of_school_youth BOOLEAN DEFAULT false,
-    is_senior_citizen BOOLEAN DEFAULT false,
-    is_registered_senior_citizen BOOLEAN DEFAULT false,
-    is_solo_parent BOOLEAN DEFAULT false,
-    is_indigenous_people BOOLEAN DEFAULT false,
-    is_migrant BOOLEAN DEFAULT false,
-    created_by UUID REFERENCES auth_user_profiles(id),
+    resident_id UUID PRIMARY KEY REFERENCES residents(id) ON DELETE CASCADE,
+    is_labor_force BOOLEAN,
+    is_labor_force_employed BOOLEAN,
+    is_unemployed BOOLEAN,
+    is_overseas_filipino_worker BOOLEAN,
+    is_person_with_disability BOOLEAN,
+    is_out_of_school_children BOOLEAN,
+    is_out_of_school_youth BOOLEAN,
+    is_senior_citizen BOOLEAN,
+    is_registered_senior_citizen BOOLEAN,
+    is_solo_parent BOOLEAN,
+    is_indigenous_people BOOLEAN,
+    is_migrant BOOLEAN,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_by UUID REFERENCES auth_user_profiles(id),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(resident_id)
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- 8.4 RESIDENT MIGRANT INFORMATION TABLE
@@ -522,17 +505,14 @@ CREATE TABLE resident_migrant_info (
     previous_city_municipality_code VARCHAR(10) REFERENCES psgc_cities_municipalities(code),
     previous_province_code VARCHAR(10) REFERENCES psgc_provinces(code),
     previous_region_code VARCHAR(10) REFERENCES psgc_regions(code),
-    length_of_stay_previous_months INTEGER,
-    reason_for_leaving TEXT,
     date_of_transfer DATE,
-    reason_for_transferring TEXT,
-    duration_of_stay_current_months INTEGER,
+    reason_for_migration TEXT,
     is_intending_to_return BOOLEAN,
+    length_of_stay_previous_months INTEGER,
+    duration_of_stay_current_months INTEGER,
     migration_type VARCHAR(50),
     is_whole_family_migrated BOOLEAN,
-    created_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_by UUID REFERENCES auth_user_profiles(id),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
 
     -- Constraints
@@ -1336,17 +1316,9 @@ CREATE TRIGGER trigger_update_name_on_resident_change
 -- created_by, updated_by, and updated_at fields across all data tables.
 -- Essential for Data Privacy Act compliance and audit trail requirements.
 
--- Sectoral information user tracking
-CREATE TRIGGER trigger_resident_sectoral_info_user_tracking
-    BEFORE INSERT OR UPDATE ON resident_sectoral_info
-    FOR EACH ROW
-    EXECUTE FUNCTION populate_user_tracking_fields();
+-- Sectoral information user tracking - removed as table doesn't have created_by/updated_by fields
 
--- Migration information user tracking  
-CREATE TRIGGER trigger_resident_migrant_info_user_tracking
-    BEFORE INSERT OR UPDATE ON resident_migrant_info
-    FOR EACH ROW
-    EXECUTE FUNCTION populate_user_tracking_fields();
+-- Migration information user tracking - removed as table doesn't have created_by/updated_by fields
 
 -- Resident relationships user tracking
 CREATE TRIGGER trigger_resident_relationships_user_tracking

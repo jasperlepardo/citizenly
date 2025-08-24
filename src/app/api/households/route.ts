@@ -60,11 +60,13 @@ export const GET = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Build base query using actual households table (view doesn't exist in Supabase)
+        // Build base query using exact database field names
         let query = supabaseAdmin
           .from('households')
           .select(`
             code,
+            name,
+            address,
             house_number,
             street_id,
             subdivision_id,
@@ -72,13 +74,18 @@ export const GET = withSecurityHeaders(
             city_municipality_code,
             province_code,
             region_code,
+            zip_code,
+            no_of_families,
+            no_of_household_members,
+            no_of_migrants,
             household_type,
             tenure_status,
+            tenure_others_specify,
             household_unit,
             monthly_income,
             income_class,
-            no_of_household_members,
             household_head_id,
+            household_head_position,
             is_active,
             created_at,
             updated_at
@@ -168,17 +175,30 @@ export const POST = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Prepare data for insertion
+        // Prepare data for insertion - using exact database field names
         const insertData = {
           code: householdData.code,
-          street_name: householdData.streetName || null,
-          subdivision_name: householdData.subdivisionName || null,
-          household_number: householdData.householdNumber || null,
+          name: householdData.name || null,
+          address: householdData.address || null,
+          house_number: householdData.houseNumber,
+          street_id: householdData.streetId, // UUID reference
+          subdivision_id: householdData.subdivisionId || null, // UUID reference
           barangay_code: effectiveBarangayCode,
           city_municipality_code: householdData.cityMunicipalityCode || user.cityCode || null,
           province_code: householdData.provinceCode || user.provinceCode || null,
           region_code: householdData.regionCode || user.regionCode || null,
-          head_resident_id: householdData.headResidentId || null,
+          zip_code: householdData.zipCode || null,
+          no_of_families: householdData.noOfFamilies || 1,
+          no_of_household_members: householdData.noOfHouseholdMembers || 0,
+          no_of_migrants: householdData.noOfMigrants || 0,
+          household_type: householdData.householdType || null,
+          tenure_status: householdData.tenureStatus || null,
+          tenure_others_specify: householdData.tenureOthersSpecify || null,
+          household_unit: householdData.householdUnit || null,
+          monthly_income: householdData.monthlyIncome || null,
+          income_class: householdData.incomeClass || null,
+          household_head_id: householdData.householdHeadId || null, // UUID reference
+          household_head_position: householdData.householdHeadPosition || null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };

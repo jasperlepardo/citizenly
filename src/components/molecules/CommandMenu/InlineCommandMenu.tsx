@@ -8,7 +8,7 @@ import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/lib/command-menu/analytics-utils';
-import type { CommandMenuItem, CommandMenuProps } from './types';
+import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
 
 const inlineCommandMenuVariants = cva(
   'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-xl ring-1 ring-black/5 dark:ring-white/10',

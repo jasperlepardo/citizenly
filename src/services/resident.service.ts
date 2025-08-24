@@ -16,64 +16,63 @@ import { validateResidentData } from '@/lib/validation';
 import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
 import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
 
-// Types
+// Import database types
+import { ResidentRecord } from '@/types/database';
+
+// Types - aligned with exact database structure (38 fields)
 export interface ResidentFormData {
-  // Personal Information - Step 1
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  extensionName: string;
+  // Primary identification
+  id?: string; // Optional for create operations
+  philsys_card_number?: string;
+  
+  // Personal details
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  extension_name?: string;
   birthdate: string;
-  sex: 'male' | 'female' | '';
-  civilStatus: string;
-  citizenship: string;
-
-  // Education & Employment - Step 2
-  educationLevel: string;
-  educationStatus: string;
-  occupationCode: string;
-  psocLevel: string;
-  positionTitleId: string;
-  occupationDescription: string;
-  employmentStatus: string;
-  workplace: string;
-
-  // Contact & Documentation - Step 3
-  email: string;
-  mobileNumber: string;
-  telephoneNumber: string;
-  philsysCardNumber: string;
-
-  // Physical & Identity Information - Step 3
-  bloodType: string;
-  height: string;
-  weight: string;
-  complexion: string;
-  ethnicity: string;
-  religion: string;
-
-  // Voting Information - Step 3
-  voterRegistrationStatus: boolean;
-  residentVoterStatus: boolean;
-  lastVotedYear: string;
-
-  // Family Information - Step 3
-  motherMaidenFirstName: string;
-  motherMaidenMiddleName: string;
-  motherMaidenLastName: string;
-
-  // Migration Information - Step 4
-  migrationInfo: any;
-
-  // Address Information (PSGC Codes) - auto-populated
-  regionCode: string;
-  provinceCode: string;
-  cityMunicipalityCode: string;
-  barangayCode: string;
-
-  // Household Assignment - Step 5
-  householdCode: string;
-  householdRole: 'Head' | 'Member';
+  birth_place_code?: string;
+  sex: 'male' | 'female';
+  
+  // Civil status
+  civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
+  civil_status_others_specify?: string;
+  
+  // Education and employment
+  education_attainment?: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational';
+  is_graduate?: boolean;
+  employment_status?: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force';
+  occupation_code?: string;
+  
+  // Contact information
+  email?: string;
+  mobile_number?: string;
+  telephone_number?: string;
+  
+  // Household membership
+  household_code?: string;
+  
+  // Physical characteristics
+  height?: number;
+  weight?: number;
+  complexion?: string;
+  
+  // Voting information
+  is_voter?: boolean;
+  is_resident_voter?: boolean;
+  last_voted_date?: string;
+  
+  // Cultural/religious identity
+  religion?: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others';
+  religion_others_specify?: string;
+  ethnicity?: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others';
+  citizenship?: 'filipino' | 'dual_citizen' | 'foreigner';
+  blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  
+  // Family information
+  mother_maiden_first?: string;
+  mother_maiden_middle?: string;
+  mother_maiden_last?: string;
 }
 
 export interface UserAddress {
@@ -184,7 +183,7 @@ export class ResidentService {
   }
 
   /**
-   * Transform form data to database schema
+   * Transform form data to database schema - exact field mapping
    */
   private transformToDbSchema(
     formData: ResidentFormData,
@@ -192,45 +191,62 @@ export class ResidentService {
     barangayCode?: string,
     philsysHash?: string,
     philsysLast4?: string
-  ) {
+  ): Partial<ResidentRecord> {
     return {
-      first_name: formData.firstName,
-      middle_name: formData.middleName || null,
-      last_name: formData.lastName,
-      extension_name: formData.extensionName || null,
+      // Primary identification
+      philsys_card_number: philsysHash || formData.philsys_card_number || null,
+      
+      // Personal details
+      first_name: formData.first_name,
+      middle_name: formData.middle_name || null,
+      last_name: formData.last_name,
+      extension_name: formData.extension_name || null,
       birthdate: formData.birthdate,
-      sex: formData.sex as 'male' | 'female',
-      civil_status: formData.civilStatus as any,
-      citizenship: formData.citizenship as any,
-      education_level: formData.educationLevel as any,
-      education_status: formData.educationStatus as any,
-      occupation_code: formData.occupationCode || null,
-      psoc_level: formData.psocLevel || null,
-      occupation_title: formData.occupationDescription || null,
-      employment_status: (formData.employmentStatus as any) || 'not_in_labor_force',
-      mobile_number: formData.mobileNumber,
+      birth_place_code: formData.birth_place_code || null,
+      sex: formData.sex,
+      
+      // Civil status
+      civil_status: formData.civil_status || 'single',
+      civil_status_others_specify: formData.civil_status_others_specify || null,
+      
+      // Education and employment
+      education_attainment: formData.education_attainment || null,
+      is_graduate: formData.is_graduate || false,
+      employment_status: formData.employment_status || null,
+      occupation_code: formData.occupation_code || null,
+      
+      // Contact information
       email: formData.email || null,
-      // Securely hashed PhilSys card number
-      philsys_card_number_hash: philsysHash || null,
-      philsys_last4: philsysLast4 || null,
-      // Physical information
-      blood_type: (formData.bloodType as any) || 'unknown',
-      ethnicity: (formData.ethnicity as any) || 'not_reported',
-      religion: (formData.religion as any) || 'other',
+      mobile_number: formData.mobile_number || null,
+      telephone_number: formData.telephone_number || null,
+      
+      // Household membership
+      household_code: formData.household_code || null,
+      
+      // Physical characteristics
+      height: formData.height || null,
+      weight: formData.weight || null,
+      complexion: formData.complexion || null,
+      
       // Voting information
-      is_voter: formData.voterRegistrationStatus,
-      is_resident_voter: formData.residentVoterStatus,
-      // Geographic hierarchy - auto-populated from user's assigned barangay
-      region_code: userAddress?.region_code || null,
-      province_code: userAddress?.province_code || null,
-      city_municipality_code: userAddress?.city_municipality_code || null,
-      barangay_code: barangayCode || null,
-      // Household assignment
-      household_code: formData.householdCode || null,
-      // Address details will be populated from household assignment
-      street_name: null,
-      house_number: null,
-      subdivision: null,
+      is_voter: formData.is_voter || null,
+      is_resident_voter: formData.is_resident_voter || null,
+      last_voted_date: formData.last_voted_date || null,
+      
+      // Cultural/religious identity
+      religion: formData.religion || 'roman_catholic',
+      religion_others_specify: formData.religion_others_specify || null,
+      ethnicity: formData.ethnicity || null,
+      citizenship: formData.citizenship || 'filipino',
+      blood_type: formData.blood_type || null,
+      
+      // Family information
+      mother_maiden_first: formData.mother_maiden_first || null,
+      mother_maiden_middle: formData.mother_maiden_middle || null,
+      mother_maiden_last: formData.mother_maiden_last || null,
+      
+      // Status and audit fields
+      is_active: true,
     };
   }
 
@@ -255,7 +271,7 @@ export class ResidentService {
       }
 
       // Process PhilSys card number
-      const philsysResult = await this.processPhilSysNumber(formData.philsysCardNumber);
+      const philsysResult = await this.processPhilSysNumber(formData.philsys_card_number);
       if (!philsysResult.success) {
         return {
           success: false,
@@ -275,14 +291,14 @@ export class ResidentService {
       // Log security operation before database insert
       logSecurityOperation('RESIDENT_CREATE_ATTEMPT', 'current-user', {
         action: 'resident_creation',
-        has_philsys: !!formData.philsysCardNumber,
-        household_code: formData.householdCode,
+        has_philsys: !!formData.philsys_card_number,
+        household_code: formData.household_code,
         barangay_code: barangayCode,
         csrf_token_used: !!csrfToken,
       });
 
       logger.info('Creating resident with household assignment', {
-        householdCode: formData.householdCode,
+        householdCode: formData.household_code,
       });
 
       // Insert resident into database

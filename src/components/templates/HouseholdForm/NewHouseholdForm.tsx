@@ -274,7 +274,7 @@ export default function HouseholdForm({
         }
         
         // Apply auto-fill if we have valid address data
-        if (addressData?.region_code) {
+        if (addressData && 'region_code' in addressData && addressData.region_code) {
           console.log('🔍 Validating and applying address data...');
           
           // Validate the region exists in our options
@@ -288,18 +288,24 @@ export default function HouseholdForm({
             
             // Step 2: Wait for provinces to load, then set province and trigger city loading
             setTimeout(() => {
-              if (addressData.province_code) {
+              if ('province_code' in addressData && addressData.province_code) {
                 handleProvinceChange(addressData.province_code);
                 
                 // Step 3: Wait for cities to load, then set city and trigger barangay loading
                 setTimeout(() => {
-                  const cityCode = addressData.city_municipality_code || addressData.city_code;
+                  let cityCode: string | undefined;
+                  if ('city_municipality_code' in addressData && typeof addressData.city_municipality_code === 'string' && addressData.city_municipality_code) {
+                    cityCode = addressData.city_municipality_code;
+                  } else if ('city_code' in addressData && typeof addressData.city_code === 'string' && addressData.city_code) {
+                    cityCode = addressData.city_code;
+                  }
+                  
                   if (cityCode) {
                     handleCityChange(cityCode);
                     
                     // Step 4: Wait for barangays to load, then set barangay
                     setTimeout(() => {
-                      if (addressData.barangay_code) {
+                      if ('barangay_code' in addressData && addressData.barangay_code) {
                         handleBarangayChange(addressData.barangay_code);
                       }
                     }, 300);

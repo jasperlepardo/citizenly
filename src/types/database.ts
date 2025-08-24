@@ -57,43 +57,65 @@ export interface PSGCBarangay {
 // RESIDENT TYPES
 // =============================================================================
 
+/**
+ * Resident record interface - EXACTLY matching residents table (38 fields)
+ */
 export interface ResidentRecord {
+  // Primary identification
   id: string;
   philsys_card_number?: string | null;
-  philsys_last4?: string | null;
+  
+  // Personal details
   first_name: string;
   middle_name?: string | null;
   last_name: string;
   extension_name?: string | null;
   birthdate: string;
   birth_place_code?: string | null;
-  birth_place_name?: string | null;
   sex: 'male' | 'female';
-  civil_status: string;
+  
+  // Civil status
+  civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others' | null; // Default: 'single'
   civil_status_others_specify?: string | null;
-  education_attainment?: string | null;
-  is_graduate?: boolean | null;
-  employment_status?: string | null;
+  
+  // Education and employment
+  education_attainment?: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational' | null;
+  is_graduate?: boolean | null; // Default: false
+  employment_status?: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force' | null;
   occupation_code?: string | null;
+  
+  // Contact information
   email?: string | null;
   mobile_number?: string | null;
   telephone_number?: string | null;
+  
+  // Household membership
   household_code?: string | null;
-  blood_type?: string | null;
+  
+  // Physical characteristics
   height?: number | null;
   weight?: number | null;
   complexion?: string | null;
-  citizenship: string;
+  
+  // Voting information
   is_voter?: boolean | null;
   is_resident_voter?: boolean | null;
   last_voted_date?: string | null;
-  ethnicity?: string | null;
-  religion?: string | null;
+  
+  // Cultural/religious identity
+  religion?: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others' | null;
   religion_others_specify?: string | null;
+  ethnicity?: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others' | null;
+  citizenship?: 'filipino' | 'dual_citizen' | 'foreigner' | null; // Default: 'filipino'
+  blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
+  
+  // Family information
   mother_maiden_first?: string | null;
   mother_maiden_middle?: string | null;
   mother_maiden_last?: string | null;
-  is_active: boolean;
+  
+  // Status and audit
+  is_active?: boolean | null; // Default: true
   created_by?: string | null;
   updated_by?: string | null;
   created_at: string;
@@ -237,4 +259,69 @@ export interface EmploymentStatistics {
   employment_status: string;
   count: number;
   percentage: number;
+}
+
+// =============================================================================
+// PSOC (PHILIPPINE STANDARD OCCUPATIONAL CLASSIFICATION) TYPES
+// =============================================================================
+
+/**
+ * PSOC Major Groups (Level 1) - 10 major occupational categories
+ */
+export interface PSOCMajorGroup {
+  code: string; // VARCHAR(10) PRIMARY KEY
+  title: string; // VARCHAR(200) NOT NULL  
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
+}
+
+/**
+ * PSOC Sub-Major Groups (Level 2) - 39 sub-major categories
+ */
+export interface PSOCSubMajorGroup {
+  code: string; // VARCHAR(10) PRIMARY KEY
+  title: string; // VARCHAR(200) NOT NULL
+  major_code: string; // VARCHAR(10) NOT NULL REFERENCES psoc_major_groups(code)
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
+}
+
+/**
+ * PSOC Minor Groups (Level 3) - 124 minor categories  
+ */
+export interface PSOCMinorGroup {
+  code: string; // VARCHAR(10) PRIMARY KEY
+  title: string; // VARCHAR(200) NOT NULL
+  sub_major_code: string; // VARCHAR(10) NOT NULL REFERENCES psoc_sub_major_groups(code)
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
+}
+
+/**
+ * PSOC Unit Groups (Level 4) - 444 unit categories
+ */
+export interface PSOCUnitGroup {
+  code: string; // VARCHAR(10) PRIMARY KEY
+  title: string; // VARCHAR(200) NOT NULL
+  minor_code: string; // VARCHAR(10) NOT NULL REFERENCES psoc_minor_groups(code)
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
+}
+
+/**
+ * PSOC Unit Sub-Groups (Level 5) - 1,000 detailed occupational categories
+ */
+export interface PSOCUnitSubGroup {
+  code: string; // VARCHAR(10) PRIMARY KEY
+  title: string; // VARCHAR(200) NOT NULL
+  unit_code: string; // VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code)
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
+}
+
+/**
+ * PSOC Position Titles - Specific job titles (currently empty table)
+ */
+export interface PSOCPositionTitle {
+  id: string; // UUID PRIMARY KEY DEFAULT uuid_generate_v4()
+  title: string; // VARCHAR(200) NOT NULL
+  unit_group_code: string; // VARCHAR(10) NOT NULL REFERENCES psoc_unit_groups(code)
+  is_primary?: boolean | null; // BOOLEAN DEFAULT false
+  description?: string | null; // TEXT
+  created_at: string; // TIMESTAMPTZ DEFAULT NOW()
 }

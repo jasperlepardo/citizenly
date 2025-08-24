@@ -12,4 +12,4 @@ export type {
   CommandMenuContextValue,
   CommandMenuVariant,
   CommandMenuSize,
-} from './types';
+} from '@/types/components/command-menu';

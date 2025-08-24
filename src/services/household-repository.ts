@@ -7,34 +7,19 @@ import { BaseRepository, type QueryOptions, type RepositoryResult } from './base
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { HouseholdRecord } from '@/types/households';
 
-export interface HouseholdData {
-  id?: string;
-  code: string;
-  houseNumber?: string;
-  streetName?: string;
-  subdivisionName?: string;
-  barangayCode: string;
-  cityCode: string;
-  provinceCode: string;
-  regionCode: string;
-  zipCode?: string;
-  latitude?: number;
-  longitude?: number;
-  householdSize?: number;
-  headOfHousehold?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// Use database record directly for consistent typing
+export type HouseholdData = HouseholdRecord;
 
 export interface HouseholdSearchOptions extends QueryOptions {
   code?: string;
-  barangayCode?: string;
-  cityCode?: string;
-  provinceCode?: string;
-  regionCode?: string;
-  streetName?: string;
-  headOfHousehold?: string;
+  barangay_code?: string;
+  city_municipality_code?: string;
+  province_code?: string;
+  region_code?: string;
+  street_id?: string;
+  household_head_id?: string;
 }
 
 export class HouseholdRepository extends BaseRepository<HouseholdData> {
@@ -175,19 +160,19 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
         }
 
         // Geographic filters
-        if (options.barangayCode) query = query.eq('barangayCode', options.barangayCode);
-        if (options.cityCode) query = query.eq('cityCode', options.cityCode);
-        if (options.provinceCode) query = query.eq('provinceCode', options.provinceCode);
-        if (options.regionCode) query = query.eq('regionCode', options.regionCode);
+        if (options.barangay_code) query = query.eq('barangay_code', options.barangay_code);
+        if (options.city_municipality_code) query = query.eq('city_municipality_code', options.city_municipality_code);
+        if (options.province_code) query = query.eq('province_code', options.province_code);
+        if (options.region_code) query = query.eq('region_code', options.region_code);
 
-        // Street name search
-        if (options.streetName) {
-          query = query.ilike('streetName', `%${options.streetName}%`);
+        // Street ID search
+        if (options.street_id) {
+          query = query.eq('street_id', options.street_id);
         }
 
         // Head of household search
-        if (options.headOfHousehold) {
-          query = query.ilike('headOfHousehold', `%${options.headOfHousehold}%`);
+        if (options.household_head_id) {
+          query = query.eq('household_head_id', options.household_head_id);
         }
 
         // Apply other filters
@@ -242,10 +227,10 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
     try {
       const filters: Record<string, string> = {};
       
-      if (regionCode) filters.regionCode = regionCode;
-      if (provinceCode) filters.provinceCode = provinceCode;
-      if (cityCode) filters.cityCode = cityCode;
-      if (barangayCode) filters.barangayCode = barangayCode;
+      if (regionCode) filters.region_code = regionCode;
+      if (provinceCode) filters.province_code = provinceCode;
+      if (cityCode) filters.city_municipality_code = cityCode;
+      if (barangayCode) filters.barangay_code = barangayCode;
 
       return await this.findAll({
         filters,
@@ -273,7 +258,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
     try {
       const filters: Record<string, any> = {};
       if (barangayCode) {
-        filters.barangayCode = barangayCode;
+        filters.barangay_code = barangayCode;
       }
 
       const householdsResult = await this.findAll({ filters });
@@ -291,12 +276,12 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
       const households = householdsResult.data;
       const totalHouseholds = households.length;
       
-      const totalSize = households.reduce((sum, h) => sum + (h.householdSize || 0), 0);
+      const totalSize = households.reduce((sum, h) => sum + (h.no_of_household_members || 0), 0);
       const averageHouseholdSize = totalHouseholds > 0 ? totalSize / totalHouseholds : 0;
       
-      const householdsWithCoordinates = households.filter(
-        h => h.latitude && h.longitude
-      ).length;
+      // Note: HouseholdRecord doesn't include latitude/longitude fields
+      // This would require a separate location/coordinates table
+      const householdsWithCoordinates = 0;
       
       const coordinateCoverage = totalHouseholds > 0 
         ? (householdsWithCoordinates / totalHouseholds) * 100 
@@ -380,7 +365,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
         return supabase
           .from(this.tableName)
           .select('code')
-          .eq('barangayCode', barangayCode)
+          .eq('barangay_code', barangayCode)
           .order('code', { ascending: false })
           .limit(1);
       };

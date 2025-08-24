@@ -51,13 +51,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       );
     }
 
-    // Get household data with head resident info
+    // Get household data with head resident info using correct foreign key reference
     const { data: household, error: householdError } = await supabaseAdmin
       .from('households')
       .select(
         `
         *,
-        head_resident:residents!households_household_head_id_fkey(
+        head_resident:residents!household_head_id(
           id,
           first_name,
           middle_name,

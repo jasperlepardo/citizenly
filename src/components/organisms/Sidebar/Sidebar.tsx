@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { clsx } from 'clsx';
 import Navigation, { type NavigationItem } from '../Navigation/Navigation';
-import Icon from '../../atoms/Icon/Icon';
+// Icon component removed - using inline SVG or icon library instead
 
 // Sidebar variant styles using CVA
 const sidebarVariants = cva(
@@ -118,14 +118,14 @@ function ToggleButton({ isCollapsed, onToggle, className }: ToggleButtonProps) {
       )}
       aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
     >
-      <Icon
-        name="chevron-left"
+      <span
         className={clsx('transition-transform duration-200', {
           'rotate-180': isCollapsed,
         })}
-        size="xs"
-        color="inherit"
-      />
+      >
+        {/* Icon placeholder - replace with actual icon library */}
+        ←
+      </span>
     </button>
   );
 }

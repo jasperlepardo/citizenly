@@ -4,15 +4,44 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { supabase } from '@/lib/data/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
-// User profile types based on database schema
+// User profile types - EXACTLY matching auth_user_profiles table (23 fields)
 export interface UserProfile {
+  // Core identification fields
   id: string;
-  email: string;
   first_name: string;
+  middle_name?: string | null;
   last_name: string;
-  barangay_code: string;
+  email: string;
+  phone?: string | null;
+  
+  // Role and access control
   role_id: string;
+  
+  // Geographic assignment
+  barangay_code?: string | null;
+  city_municipality_code?: string | null;
+  province_code?: string | null;
+  region_code?: string | null;
+  
+  // Status and activity
   is_active: boolean;
+  last_login?: string | null;
+  
+  // Email verification
+  email_verified: boolean;
+  email_verified_at?: string | null;
+  
+  // Welcome email tracking
+  welcome_email_sent: boolean;
+  welcome_email_sent_at?: string | null;
+  
+  // Onboarding tracking
+  onboarding_completed: boolean;
+  onboarding_completed_at?: string | null;
+  
+  // Audit fields
+  created_by?: string | null;
+  updated_by?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -184,10 +213,24 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
             id: profileData.id || userId,
             email: profileData.email || '',
             first_name: profileData.first_name || '',
+            middle_name: profileData.middle_name || null,
             last_name: profileData.last_name || '',
-            barangay_code: profileData.barangay_code || '',
+            phone: profileData.phone || null,
             role_id: profileData.role_id || '',
+            barangay_code: profileData.barangay_code || null,
+            city_municipality_code: profileData.city_municipality_code || null,
+            province_code: profileData.province_code || null,
+            region_code: profileData.region_code || null,
             is_active: profileData.is_active !== undefined ? profileData.is_active : true,
+            last_login: profileData.last_login || null,
+            email_verified: profileData.email_verified || false,
+            email_verified_at: profileData.email_verified_at || null,
+            welcome_email_sent: profileData.welcome_email_sent || false,
+            welcome_email_sent_at: profileData.welcome_email_sent_at || null,
+            onboarding_completed: profileData.onboarding_completed || false,
+            onboarding_completed_at: profileData.onboarding_completed_at || null,
+            created_by: profileData.created_by || null,
+            updated_by: profileData.updated_by || null,
             created_at: profileData.created_at || new Date().toISOString(),
             updated_at: profileData.updated_at || new Date().toISOString(),
           };

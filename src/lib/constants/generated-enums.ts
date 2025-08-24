@@ -14,14 +14,13 @@ export const SEX_OPTIONS = [
   { value: 'female', label: 'Female' },
 ] as const;
 
-// Marital status options
+// Marital status options - EXACTLY matching civil_status_enum in database
 export const CIVIL_STATUS_OPTIONS = [
   { value: 'single', label: 'Single' },
   { value: 'married', label: 'Married' },
-  { value: 'widowed', label: 'Widowed' },
   { value: 'divorced', label: 'Divorced' },
   { value: 'separated', label: 'Separated' },
-  { value: 'annulled', label: 'Annulled' },
+  { value: 'widowed', label: 'Widowed' },
   { value: 'others', label: 'Others (specify)' },
 ] as const;
 
@@ -39,7 +38,7 @@ export const EMPLOYMENT_STATUS_OPTIONS = [
   { value: 'not_in_labor_force', label: 'Not in Labor Force' },
 ] as const;
 
-// Blood type options
+// Blood type options - EXACTLY matching blood_type_enum in database
 export const BLOOD_TYPE_OPTIONS = [
   { value: 'A+', label: 'A+' },
   { value: 'A-', label: 'A-' },

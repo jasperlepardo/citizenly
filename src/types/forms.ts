@@ -275,22 +275,42 @@ export interface ResidentFormData {
 }
 
 /**
- * Household form data
+ * Household form data - aligned with database structure (27 fields)
  */
 export interface HouseholdFormData {
+  // Primary identification
   code: string;
-  streetName?: string;
-  subdivisionName?: string;
-  householdNumber?: string;
-  barangayCode?: string;
-  cityMunicipalityCode?: string;
+  name?: string;
+  address?: string;
+  
+  // Location details
+  houseNumber: string;
+  streetId: string; // UUID reference to geo_streets
+  subdivisionId?: string; // UUID reference to geo_subdivisions
+  barangayCode: string;
+  cityMunicipalityCode: string;
   provinceCode?: string;
-  regionCode?: string;
-  headResidentId?: string;
-  householdType?: string;
-  tenureStatus?: string;
+  regionCode: string;
+  zipCode?: string;
+  
+  // Household metrics
+  noOfFamilies?: number;
+  noOfHouseholdMembers?: number;
+  noOfMigrants?: number;
+  
+  // Household classifications (enums)
+  householdType?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
+  tenureStatus?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  tenureOthersSpecify?: string;
+  householdUnit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
+  
+  // Economic information
   monthlyIncome?: number;
-  incomeClass?: string;
+  incomeClass?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
+  
+  // Head of household
+  householdHeadId?: string; // UUID reference to residents
+  householdHeadPosition?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
 }
 
 // =============================================================================
@@ -299,33 +319,50 @@ export interface HouseholdFormData {
 
 /**
  * Extended Household Form Data with additional UI fields
+ * Now that HouseholdFormData includes all database fields, this mainly adds UI-specific fields
  */
 export interface ExtendedHouseholdFormData extends HouseholdFormData {
-  // Additional fields for the form that aren't in the database
-  houseNumber?: string;
-  streetId?: string;
-  subdivisionId?: string;
-  zipCode?: string;
-  noOfFamilies?: number;
-  noOfHouseholdMembers?: number;
-  noOfMigrants?: number;
+  // Additional UI-specific fields (not in database)
+  householdName?: string; // Display name for UI
+  
+  // Form-specific metadata
+  isEditing?: boolean;
+  isDirty?: boolean;
+  lastModified?: string;
 }
 
 /**
- * Household Details Form Data
+ * Household Details Form Data - subset of full household data for form sections
  */
 export interface HouseholdDetailsData {
-  houseNumber?: string;
-  streetId?: string;
+  // Location details
+  houseNumber: string;
+  streetId: string;
   subdivisionId?: string;
-  barangayCode?: string;
-  cityMunicipalityCode?: string;
+  barangayCode: string;
+  cityMunicipalityCode: string;
   provinceCode?: string;
-  regionCode?: string;
+  regionCode: string;
   zipCode?: string;
+  
+  // Household metrics
   noOfFamilies?: number;
   noOfHouseholdMembers?: number;
   noOfMigrants?: number;
+  
+  // Household classifications
+  householdType?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
+  tenureStatus?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  tenureOthersSpecify?: string;
+  householdUnit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
+  
+  // Economic information
+  monthlyIncome?: number;
+  incomeClass?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
+  
+  // Head of household
+  householdHeadId?: string;
+  householdHeadPosition?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
 }
 
 /**

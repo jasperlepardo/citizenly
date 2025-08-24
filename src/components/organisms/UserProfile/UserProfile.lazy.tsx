@@ -9,9 +9,7 @@ import { withLazyLoading } from '@/lib/ui/lazy-loading';
 import { FormSkeleton } from '@/components/atoms/Loading';
 
 const UserProfileLazy = lazy(() =>
-  import('./UserProfile').then(module => ({
-    default: module.UserProfile,
-  }))
+  import('./UserProfile')
 );
 
 export const LazyUserProfile = withLazyLoading(UserProfileLazy, <FormSkeleton />);

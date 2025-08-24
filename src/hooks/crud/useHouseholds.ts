@@ -8,16 +8,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
-interface Household {
-  code: string;
-  street_name?: string;
-  house_number?: string;
-  subdivision?: string;
-  barangay_code: string;
-  region_code?: string;
-  province_code?: string;
-  city_municipality_code?: string;
-  created_at: string;
+// Import the properly typed interface
+import { HouseholdRecord } from '@/types/households';
+
+interface Household extends HouseholdRecord {
+  // Additional computed/joined fields for display
   head_resident?: {
     id: string;
     first_name: string;

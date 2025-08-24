@@ -9,9 +9,7 @@ import { withLazyLoading } from '@/lib/ui/lazy-loading';
 import { FormSkeleton } from '@/components/atoms/Loading';
 
 const SectoralInfoLazy = lazy(() =>
-  import('./SectoralInformation').then(module => ({
-    default: module.SectoralClassifications,
-  }))
+  import('./SectoralInformation')
 );
 
 export const LazySectoralInfo = withLazyLoading(SectoralInfoLazy, <FormSkeleton />);

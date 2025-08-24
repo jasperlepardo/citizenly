@@ -3,7 +3,7 @@
 import React from 'react';
 import { cn } from '@/lib/utilities/css-utils';
 import { CommandMenuItem } from './CommandMenuItem';
-import type { CommandMenuItem as CommandMenuItemType } from './types';
+import type { CommandMenuItem as CommandMenuItemType } from '@/types/components/command-menu';
 
 interface CommandMenuGroupProps {
   label: string;
