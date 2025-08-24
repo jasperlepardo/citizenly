@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/data/supabase';
 import { logger, logError } from '@/lib/logging/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
+import HouseholdForm, { HouseholdFormData, HouseholdFormMode } from '@/components/templates/HouseholdForm/NewHouseholdForm';
+import { Button } from '@/components/atoms';
+import { lookupAddressLabels, lookupHouseholdTypeLabels, lookupHouseholdHeadLabel } from '@/lib/utilities/address-lookup';
 
 interface Household {
   code: string;
@@ -34,11 +37,17 @@ interface HouseholdMember {
 function HouseholdDetailContent() {
   const { user, loading: authLoading } = useAuth();
   const params = useParams();
+  const router = useRouter();
   const householdCode = params.id as string;
   const [household, setHousehold] = useState<Household | null>(null);
   const [members, setMembers] = useState<HouseholdMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [formMode, setFormMode] = useState<HouseholdFormMode>('view');
+  const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData | null>(null);
+  const [addressLabels, setAddressLabels] = useState<any>(null);
+  const [householdTypeLabels, setHouseholdTypeLabels] = useState<any>(null);
+  const [householdHeadLabel, setHouseholdHeadLabel] = useState<string>('');
 
   useEffect(() => {
     console.log('useEffect triggered:', { householdCode, authLoading, user: !!user });
@@ -71,6 +80,54 @@ function HouseholdDetailContent() {
         console.log('Setting household data:', householdData);
         setHousehold(householdData);
 
+        // Transform household data to form data format
+        const formData: HouseholdFormData = {
+          houseNumber: householdData.house_number || '',
+          streetId: householdData.street_id || '',
+          subdivisionId: householdData.subdivision_id || '',
+          barangayCode: householdData.barangay_code || '',
+          cityMunicipalityCode: householdData.city_municipality_code || '',
+          provinceCode: householdData.province_code || '',
+          regionCode: householdData.region_code || '',
+          noOfFamilies: householdData.no_of_families || 1,
+          noOfHouseholdMembers: householdData.no_of_household_members || 0,
+          noOfMigrants: householdData.no_of_migrants || 0,
+          householdType: householdData.household_type || '',
+          tenureStatus: householdData.tenure_status || '',
+          tenureOthersSpecify: householdData.tenure_others_specify || '',
+          householdUnit: householdData.household_unit || '',
+          householdName: householdData.name || '',
+          monthlyIncome: householdData.monthly_income || 0,
+          householdHeadId: householdData.household_head_id || '',
+          householdHeadPosition: householdData.household_head_position || '',
+          code: householdData.code,
+          isActive: householdData.is_active,
+        };
+        setHouseholdFormData(formData);
+
+        // Lookup labels for display in view mode
+        const [addressLookup, householdTypeLookup, householdHeadLookup] = await Promise.all([
+          lookupAddressLabels({
+            regionCode: formData.regionCode,
+            provinceCode: formData.provinceCode,
+            cityMunicipalityCode: formData.cityMunicipalityCode,
+            barangayCode: formData.barangayCode,
+            streetId: formData.streetId,
+            subdivisionId: formData.subdivisionId,
+          }),
+          lookupHouseholdTypeLabels({
+            householdType: formData.householdType,
+            tenureStatus: formData.tenureStatus,
+            householdUnit: formData.householdUnit,
+            householdHeadPosition: formData.householdHeadPosition,
+          }),
+          lookupHouseholdHeadLabel(formData.householdHeadId)
+        ]);
+
+        setAddressLabels(addressLookup);
+        setHouseholdTypeLabels(householdTypeLookup);
+        setHouseholdHeadLabel(householdHeadLookup || '');
+
         // Load all household members
         const { data: membersData, error: membersError } = await supabase
           .from('residents')
@@ -96,6 +153,58 @@ function HouseholdDetailContent() {
 
     loadHouseholdDetails();
   }, [householdCode, authLoading, user]);
+
+  const handleFormSubmit = async (formData: HouseholdFormData) => {
+    // The form handles the database operations
+    // After successful save, reload the household data
+    const updatedHousehold = { ...household, ...formData };
+    setHousehold(updatedHousehold);
+    setHouseholdFormData(formData);
+  };
+
+  const handleModeChange = (mode: HouseholdFormMode) => {
+    setFormMode(mode);
+  };
+
+  // Create options for view mode display
+  const getViewModeOptions = () => {
+    const options: any = {};
+
+    // Address options with current values
+    if (addressLabels && householdFormData) {
+      options.regionOptions = householdFormData.regionCode ? 
+        [{ value: householdFormData.regionCode, label: addressLabels.regionLabel || householdFormData.regionCode }] : [];
+      options.provinceOptions = householdFormData.provinceCode ? 
+        [{ value: householdFormData.provinceCode, label: addressLabels.provinceLabel || householdFormData.provinceCode }] : [];
+      options.cityOptions = householdFormData.cityMunicipalityCode ? 
+        [{ value: householdFormData.cityMunicipalityCode, label: addressLabels.cityLabel || householdFormData.cityMunicipalityCode }] : [];
+      options.barangayOptions = householdFormData.barangayCode ? 
+        [{ value: householdFormData.barangayCode, label: addressLabels.barangayLabel || householdFormData.barangayCode }] : [];
+      options.streetOptions = householdFormData.streetId ? 
+        [{ value: householdFormData.streetId, label: addressLabels.streetLabel || householdFormData.streetId }] : [];
+      options.subdivisionOptions = householdFormData.subdivisionId ? 
+        [{ value: householdFormData.subdivisionId, label: addressLabels.subdivisionLabel || householdFormData.subdivisionId }] : [];
+    }
+
+    // Household type options with current values
+    if (householdTypeLabels && householdFormData) {
+      options.householdTypeOptions = householdFormData.householdType ? 
+        [{ value: householdFormData.householdType, label: householdTypeLabels.householdTypeLabel || householdFormData.householdType }] : [];
+      options.tenureStatusOptions = householdFormData.tenureStatus ? 
+        [{ value: householdFormData.tenureStatus, label: householdTypeLabels.tenureStatusLabel || householdFormData.tenureStatus }] : [];
+      options.householdUnitOptions = householdFormData.householdUnit ? 
+        [{ value: householdFormData.householdUnit, label: householdTypeLabels.householdUnitLabel || householdFormData.householdUnit }] : [];
+      options.householdHeadPositionOptions = householdFormData.householdHeadPosition ? 
+        [{ value: householdFormData.householdHeadPosition, label: householdTypeLabels.householdHeadPositionLabel || householdFormData.householdHeadPosition }] : [];
+    }
+
+    // Household head options
+    if (householdFormData?.householdHeadId && householdHeadLabel) {
+      options.householdHeadOptions = [{ value: householdFormData.householdHeadId, label: householdHeadLabel }];
+    }
+
+    return options;
+  };
 
   const formatFullName = (person: {
     first_name: string;
@@ -242,49 +351,29 @@ function HouseholdDetailContent() {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Left Column - Main Information */}
+          {/* Left Column - Household Form */}
           <div className="space-y-8 lg:col-span-2">
-            {/* Household Information Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">Household Information</h3>
-              </div>
-              <div className="px-6 py-4">
-                <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Household Number</dt>
-                    <dd className="mt-1 font-mono text-sm text-gray-600 dark:text-gray-400">#{household.code}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Head of Household</dt>
-                    <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {household.household_head_id ? 'Head assigned' : 'No head assigned'}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Address</dt>
-                    <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {household.house_number || 'No address specified'}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Members</dt>
-                    <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">{members.length}</dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">Created Date</dt>
-                    <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {new Date(household.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
+            {/* Household Form */}
+            {householdFormData && (
+              <HouseholdForm
+                mode={formMode}
+                initialData={householdFormData}
+                householdId={household.id}
+                onSubmit={handleFormSubmit}
+                onModeChange={handleModeChange}
+                onCancel={() => router.push('/households')}
+                // Pass view mode options for proper label display
+                viewModeOptions={formMode === 'view' ? {
+                  addressLabels,
+                  householdTypeLabels,
+                  householdHeadLabel
+                } : undefined}
+              />
+            )}
+          </div>
 
+          {/* Right Column - Side Information */}
+          <div className="space-y-8">
             {/* Household Members Card */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
               <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
@@ -296,77 +385,50 @@ function HouseholdDetailContent() {
                   <p className="text-gray-600 dark:text-gray-400">No members found in this household.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="divide-y divide-gray-200 dark:divide-gray-700 min-w-full">
-                    <thead className="bg-gray-100 dark:bg-gray-700">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Age
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Sex
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Civil Status
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Contact
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                      {members.map(member => (
-                        <tr key={member.id} className="hover:bg-gray-50 dark:bg-gray-700 transition-colors">
-                          <td className="whitespace-nowrap px-6 py-4">
-                            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                              {formatFullName(member)}
-                              {household.household_head_id === member.id && (
-                                <span className="ml-2 inline-flex items-center rounded-sm bg-blue-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-200">
-                                  Head
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                            {calculateAge(member.birthdate)} years old
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-gray-600 dark:text-gray-400">
-                            {member.sex}
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm capitalize text-gray-600 dark:text-gray-400">
-                            {member.civil_status.replace('_', ' ')}
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                            <div>{member.mobile_number}</div>
-                            {member.email && (
-                              <div className="text-gray-500 dark:text-gray-400 dark:text-gray-600 text-xs">{member.email}</div>
+                <div className="space-y-3 px-6 py-4">
+                  {members.slice(0, 5).map(member => (
+                    <div key={member.id} className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-shrink-0">
+                          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                            <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                              {formatFullName(member).split(' ').map(n => n[0]).join('')}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            {formatFullName(member)}
+                            {household.household_head_id === member.id && (
+                              <span className="ml-1 inline-flex items-center rounded-sm bg-blue-100 px-1 py-0.5 text-xs font-medium text-gray-800 dark:text-gray-200">
+                                Head
+                              </span>
                             )}
-                          </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                            <Link
-                              href={`/residents/${member.id}`}
-                              className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 hover:underline"
-                            >
-                              View Details
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500">
+                            {calculateAge(member.birthdate)} y/o, {member.sex}
+                          </p>
+                        </div>
+                      </div>
+                      <Link
+                        href={`/residents/${member.id}`}
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-xs font-medium"
+                      >
+                        View
+                      </Link>
+                    </div>
+                  ))}
+                  {members.length > 5 && (
+                    <div className="pt-3 text-center">
+                      <span className="text-sm text-gray-500 dark:text-gray-500">
+                        +{members.length - 5} more members
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Right Column - Side Information */}
-          <div className="space-y-8">
             {/* Quick Actions Card */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
               <div className="border-b border-gray-200 dark:border-gray-700 px-6 py-4">

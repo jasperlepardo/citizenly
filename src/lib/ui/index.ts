@@ -6,6 +6,7 @@
 // Core UI utilities
 export * from './accessibility';
 export * from './lazy-components';
+export * from './lazy-loading';
 export * from './typography';
 
 // Charts (moved from charts/)

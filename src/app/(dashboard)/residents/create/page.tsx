@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ResidentForm } from '@/components/templates';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
+import { EducationLevelEnum } from '@/types/residents';
 import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
@@ -105,19 +106,55 @@ function CreateResidentForm() {
       motherMaidenMiddleName: formData.mother_maiden_middle || '',
       motherMaidenLastName: formData.mother_maiden_last || '',
 
+      // Birth place information - validation schema
+      birthPlaceName: formData.birth_place_name || '',
+      birthPlaceLevel: formData.birth_place_level || '',
+
       // Education and employment - validation schema (with defaults)
-      educationAttainment: formData.education_attainment || '',
+      educationLevel: (formData.education_attainment as EducationLevelEnum) || 'elementary',
+      educationStatus: formData.is_graduate ? 'graduate' : 'not_graduate',
       isGraduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
       employmentStatus: formData.employment_status || 'not_in_labor_force',
+      employmentCode: formData.employment_code || '',
+      employmentName: formData.employment_name || '',
       occupationCode: formData.occupation_code || '',
+      psocLevel: parseInt(formData.psoc_level?.toString() || '0'),
+      positionTitleId: formData.position_title_id || '',
+      occupationTitle: formData.occupation_title || '',
 
       // Voting information - validation schema
-      isVoter: formData.is_voter,
-      isResidentVoter: formData.is_resident_voter,
+      isVoter: formData.is_voter ?? null,
+      isResidentVoter: formData.is_resident_voter ?? null,
       lastVotedDate: formData.last_voted_date || '',
 
       // Household - validation schema
       householdCode: formData.household_code || '',
+      
+      // Sectoral Information
+      isLaborForce: formData.is_labor_force,
+      isLaborForceEmployed: formData.is_labor_force_employed,
+      isUnemployed: formData.is_unemployed,
+      isOverseasFilipinoWorker: formData.is_overseas_filipino_worker,
+      isPersonWithDisability: formData.is_person_with_disability,
+      isOutOfSchoolChildren: formData.is_out_of_school_children,
+      isOutOfSchoolYouth: formData.is_out_of_school_youth,
+      isSeniorCitizen: formData.is_senior_citizen,
+      isRegisteredSeniorCitizen: formData.is_registered_senior_citizen,
+      isSoloParent: formData.is_solo_parent,
+      isIndigenousPeople: formData.is_indigenous_people,
+      isMigrant: formData.is_migrant,
+      
+      // Migration Information
+      previousBarangayCode: formData.previous_barangay_code,
+      previousCityMunicipalityCode: formData.previous_city_municipality_code,
+      previousProvinceCode: formData.previous_province_code,
+      previousRegionCode: formData.previous_region_code,
+      lengthOfStayPreviousMonths: formData.length_of_stay_previous_months,
+      reasonForLeaving: formData.reason_for_leaving,
+      dateOfTransfer: formData.date_of_transfer,
+      reasonForTransferring: formData.reason_for_transferring,
+      durationOfStayCurrentMonths: formData.duration_of_stay_current_months,
+      isIntendingToReturn: formData.is_intending_to_return,
     };
     
     await createResident(transformedData);

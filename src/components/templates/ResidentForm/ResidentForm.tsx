@@ -8,6 +8,7 @@ import { FormActions } from './components/FormActions';
 import { useAuth } from '@/contexts/AuthContext';
 import { ResidentFormState } from '@/types/resident-form';
 import type { FormMode } from '@/types/forms';
+import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 
 // Use the database-aligned ResidentFormState interface
 type ResidentFormData = ResidentFormState;
@@ -20,19 +21,6 @@ interface ResidentFormProps {
   onModeChange?: (mode: FormMode) => void;
 }
 
-// Indigenous peoples ethnicities - automatically sets is_indigenous_people = true
-const INDIGENOUS_ETHNICITIES = [
-  'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 
-  'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 
-  'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 
-  'teduray', 'tumandok'
-];
-
-// Helper function to check if ethnicity is indigenous
-const isIndigenousEthnicity = (ethnicity: string): boolean => {
-  return INDIGENOUS_ETHNICITIES.includes(ethnicity);
-};
-
 // Helper function to get sectoral classifications based on ethnicity
 const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<ResidentFormData> => {
   const updates: Partial<ResidentFormData> = {};
@@ -41,7 +29,7 @@ const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<Resid
   updates.is_indigenous_people = false;
   
   // Indigenous peoples classification - automatically set to true
-  if (isIndigenousEthnicity(ethnicity)) {
+  if (isIndigenousPeople(ethnicity)) {
     updates.is_indigenous_people = true;
   }
   

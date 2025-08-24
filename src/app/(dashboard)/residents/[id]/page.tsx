@@ -11,6 +11,15 @@ import { InputField } from '@/components/molecules';
 import { logger, logError } from '@/lib/logging/secure-logger';
 import type { ResidentFormState } from '@/types/resident-form';
 import type { FormMode } from '@/types/forms';
+import { 
+  CivilStatusEnum, 
+  CitizenshipEnum, 
+  EducationLevelEnum, 
+  EmploymentStatusEnum, 
+  BloodTypeEnum, 
+  EthnicityEnum, 
+  ReligionEnum 
+} from '@/types/residents';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
@@ -534,18 +543,18 @@ function ResidentDetailContent() {
       last_name: resident.last_name || '',
       extension_name: resident.extension_name || '',
       sex: resident.sex || '',
-      civil_status: resident.civil_status || '',
+      civil_status: (resident.civil_status as CivilStatusEnum) || '',
       civil_status_others_specify: '', // Not in current Resident type
-      citizenship: resident.citizenship || '',
+      citizenship: (resident.citizenship as CitizenshipEnum) || '',
       birthdate: resident.birthdate || '',
       birth_place_name: '', // Not in current Resident type
       birth_place_code: '', // Not in current Resident type
       birth_place_level: '', // Not in current Resident type
       philsys_card_number: resident.philsys_card_number || '',
       philsys_last4: resident.philsys_last4 || '',
-      education_attainment: resident.education_level || '',
+      education_attainment: (resident.education_level as EducationLevelEnum) || '',
       is_graduate: resident.education_status === 'graduate',
-      employment_status: resident.employment_status || '',
+      employment_status: (resident.employment_status as EmploymentStatusEnum) || '',
       employment_code: '', // Not in current Resident type
       employment_name: '', // Not in current Resident type
       occupation_code: resident.occupation_code || '',
@@ -559,15 +568,15 @@ function ResidentDetailContent() {
       household_code: resident.household_code || '',
       
       // Physical Personal Details
-      blood_type: resident.blood_type || '',
+      blood_type: (resident.blood_type as BloodTypeEnum) || '',
       complexion: resident.complexion || '',
       height: resident.height_cm || 0,
       weight: resident.weight_kg || 0,
-      ethnicity: resident.ethnicity || '',
-      religion: resident.religion || '',
+      ethnicity: (resident.ethnicity as EthnicityEnum) || '',
+      religion: (resident.religion as ReligionEnum) || '',
       religion_others_specify: '', // Not in current Resident type
-      is_voter: resident.is_voter,
-      is_resident_voter: resident.is_resident_voter,
+      is_voter: resident.is_voter ?? null,
+      is_resident_voter: resident.is_resident_voter ?? null,
       last_voted_date: '', // Not in current Resident type
       mother_maiden_first: resident.mother_first_name || '',
       mother_maiden_middle: resident.mother_middle_name || '',

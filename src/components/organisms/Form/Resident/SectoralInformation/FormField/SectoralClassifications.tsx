@@ -382,4 +382,4 @@ export default function SectoralClassifications({
   );
 }
 
-export type { SectoralInformation, SectoralContext };
+// Types already exported in index.ts to avoid conflicts

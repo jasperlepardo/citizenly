@@ -6,7 +6,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utilities/css-utils';
 import { CommandMenuGroup } from './CommandMenuGroup';
 import { CommandMenuEmpty } from './CommandMenuEmpty';
-import { useCommandMenuWithApi } from './hooks/useCommandMenuWithApi';
+import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import type { CommandMenuItem, CommandMenuProps } from './types';
 
 const commandMenuVariants = cva(

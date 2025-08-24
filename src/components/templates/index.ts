@@ -6,4 +6,4 @@ export { Header } from './Header';
 
 // Forms
 export { ResidentForm } from './ResidentForm/ResidentForm';
-export { HouseholdFormWizard } from './HouseholdFormWizard';
+export { NewHouseholdForm } from './HouseholdForm';

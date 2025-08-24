@@ -3,131 +3,48 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/atoms';
 import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
+import { 
+  loadUserMetrics, 
+  updatePageViewMetrics, 
+  trackUserInteraction, 
+  trackTimeSpent, 
+  shouldShowInstallPrompt, 
+  getPersonalizedInstallMessage, 
+  isPWAInstalled, 
+  recordInstallDismissal, 
+  getInstallPromptDelay,
+  setupUserInteractionTracking,
+  setupTimeTracking,
+  type UserBehaviorMetrics 
+} from '@/lib/analytics/user-behavior';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-interface UserBehaviorMetrics {
-  pageViews: number;
-  timeSpent: number;
-  interactions: number;
-  revisits: number;
-  lastVisit: number;
-}
-
 export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [userMetrics, setUserMetrics] = useState<UserBehaviorMetrics>({
-    pageViews: 0,
-    timeSpent: 0,
-    interactions: 0,
-    revisits: 0,
-    lastVisit: 0,
-  });
+  const [isInstalled, setIsInstalled] = useState(isPWAInstalled);
+  const [userMetrics, setUserMetrics] = useState<UserBehaviorMetrics>(loadUserMetrics);
 
   useEffect(() => {
-    // Load user behavior metrics
-    const loadUserMetrics = (): UserBehaviorMetrics => {
-      try {
-        const stored = localStorage.getItem('pwa-user-metrics');
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch (error) {
-        console.warn('Failed to load user metrics:', error);
-      }
-      return {
-        pageViews: 0,
-        timeSpent: 0,
-        interactions: 0,
-        revisits: 0,
-        lastVisit: 0,
-      };
-    };
+    // Initialize PWA installation check
+    setIsInstalled(isPWAInstalled());
 
-    // Save user behavior metrics
-    const saveUserMetrics = (metrics: UserBehaviorMetrics) => {
-      try {
-        localStorage.setItem('pwa-user-metrics', JSON.stringify(metrics));
-      } catch (error) {
-        console.warn('Failed to save user metrics:', error);
-      }
-    };
+    // Update page view metrics
+    const updatedMetrics = updatePageViewMetrics();
+    setUserMetrics(updatedMetrics);
 
-    // Check if PWA is already installed
-    const checkIfInstalled = () => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        setIsInstalled(true);
-        return true;
-      }
-      
-      if ((window.navigator as any).standalone === true) {
-        setIsInstalled(true);
-        return true;
-      }
-      return false;
-    };
-
-    // Update user behavior metrics
-    const updateUserMetrics = () => {
-      const metrics = loadUserMetrics();
-      const now = Date.now();
-      const isRevisit = metrics.lastVisit > 0 && (now - metrics.lastVisit > 24 * 60 * 60 * 1000); // 24 hours
-
-      const updatedMetrics = {
-        pageViews: metrics.pageViews + 1,
-        timeSpent: metrics.timeSpent,
-        interactions: metrics.interactions,
-        revisits: isRevisit ? metrics.revisits + 1 : metrics.revisits,
-        lastVisit: now,
-      };
-
-      setUserMetrics(updatedMetrics);
-      saveUserMetrics(updatedMetrics);
-    };
-
-    // Check install eligibility based on user behavior
-    const shouldShowInstallPrompt = (metrics: UserBehaviorMetrics): boolean => {
-      // Don't show if recently dismissed (within 7 days)
-      const dismissedDate = localStorage.getItem('pwa-prompt-dismissed-date');
-      if (dismissedDate) {
-        const daysSinceDismissed = (Date.now() - parseInt(dismissedDate)) / (1000 * 60 * 60 * 24);
-        if (daysSinceDismissed < 7) {
-          return false;
-        }
-      }
-
-      // Smart timing criteria
-      const criteria = {
-        // User has visited multiple times
-        isReturningUser: metrics.revisits >= 2,
-        // User has engaged with the app
-        hasInteracted: metrics.interactions >= 5,
-        // User has spent reasonable time
-        hasSpentTime: metrics.timeSpent >= 60000, // 1 minute
-        // Multiple page views indicate engagement
-        hasExplored: metrics.pageViews >= 3,
-      };
-
-      // Must meet at least 2 of the 4 criteria
-      const metCriteria = Object.values(criteria).filter(Boolean).length;
-      return metCriteria >= 2;
-    };
-
-    // Listen for beforeinstallprompt event
+    // Setup beforeinstallprompt event listener
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       
-      // Use smart timing instead of fixed delay
-      const metrics = loadUserMetrics();
-      if (!checkIfInstalled() && shouldShowInstallPrompt(metrics)) {
-        // Show prompt with intelligent delay based on user behavior
-        const delay = metrics.revisits > 0 ? 2000 : 5000; // Shorter delay for returning users
+      // Use smart timing based on user behavior
+      if (!isPWAInstalled() && shouldShowInstallPrompt(updatedMetrics)) {
+        const delay = getInstallPromptDelay(updatedMetrics);
         setTimeout(() => {
           if (!isInstalled) {
             setShowPrompt(true);
@@ -137,7 +54,7 @@ export default function PWAInstallPrompt() {
       }
     };
 
-    // Listen for app installed event
+    // Setup app installed event listener
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setShowPrompt(false);
@@ -145,50 +62,27 @@ export default function PWAInstallPrompt() {
       trackPWAEvents.installAccepted();
     };
 
-    // Track user interactions
-    const trackUserInteraction = () => {
-      setUserMetrics(prev => {
-        const updated = { ...prev, interactions: prev.interactions + 1 };
-        saveUserMetrics(updated);
-        return updated;
-      });
-    };
+    // Setup user interaction tracking
+    const cleanupInteractionTracking = setupUserInteractionTracking(() => {
+      const updatedMetrics = trackUserInteraction();
+      setUserMetrics(updatedMetrics);
+    });
 
-    // Track time spent
-    const sessionStart = Date.now();
-    const trackTimeSpent = () => {
-      const timeSpent = Date.now() - sessionStart;
-      setUserMetrics(prev => {
-        const updated = { ...prev, timeSpent: prev.timeSpent + timeSpent };
-        saveUserMetrics(updated);
-        return updated;
-      });
-    };
+    // Setup time tracking
+    const cleanupTimeTracking = setupTimeTracking((sessionTime) => {
+      const updatedMetrics = trackTimeSpent(Date.now() - sessionTime);
+      setUserMetrics(updatedMetrics);
+    });
 
-    // Initialize
-    checkIfInstalled();
-    updateUserMetrics();
-    
-    // Event listeners
+    // Add PWA event listeners
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
-    
-    // Track interactions
-    window.addEventListener('click', trackUserInteraction);
-    window.addEventListener('scroll', trackUserInteraction);
-    window.addEventListener('keydown', trackUserInteraction);
-    
-    // Track time on beforeunload
-    window.addEventListener('beforeunload', trackTimeSpent);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
-      window.removeEventListener('click', trackUserInteraction);
-      window.removeEventListener('scroll', trackUserInteraction);
-      window.removeEventListener('keydown', trackUserInteraction);
-      window.removeEventListener('beforeunload', trackTimeSpent);
-      trackTimeSpent(); // Track time when component unmounts
+      cleanupInteractionTracking();
+      cleanupTimeTracking();
     };
   }, [isInstalled]);
 
@@ -208,8 +102,8 @@ export default function PWAInstallPrompt() {
       } else {
         console.log('PWA install dismissed by user');
         trackPWAEvents.installDismissed();
-        // Store dismissal date for smart timing
-        localStorage.setItem('pwa-prompt-dismissed-date', Date.now().toString());
+        // Record dismissal for smart timing
+        recordInstallDismissal();
       }
     } catch (error) {
       console.error('PWA install error:', error);
@@ -223,12 +117,7 @@ export default function PWAInstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false);
     trackPWAEvents.installDismissed();
-    
-    // Store dismissal date for smart timing (7 days cooldown)
-    localStorage.setItem('pwa-prompt-dismissed-date', Date.now().toString());
-    
-    // Also set session storage for immediate dismissal
-    sessionStorage.setItem('pwa-prompt-dismissed', 'true');
+    recordInstallDismissal();
   };
 
   // Don't show if already installed, dismissed this session, or conditions not met
@@ -237,35 +126,7 @@ export default function PWAInstallPrompt() {
   }
 
   // Generate personalized message based on user behavior
-  const getPersonalizedMessage = () => {
-    if (userMetrics.revisits >= 2) {
-      return {
-        title: "Welcome back! Install Citizenly",
-        description: "You've been using Citizenly regularly. Install it for faster access and offline use."
-      };
-    }
-    
-    if (userMetrics.pageViews >= 5) {
-      return {
-        title: "Enjoying Citizenly? Install it!",
-        description: "You've explored multiple features. Get the full experience with our app."
-      };
-    }
-    
-    if (userMetrics.timeSpent >= 120000) { // 2 minutes
-      return {
-        title: "Install Citizenly for convenience",
-        description: "You've spent quality time here. Install for quicker access and offline capabilities."
-      };
-    }
-
-    return {
-      title: "Install Citizenly",
-      description: "Add to your home screen for quick access and offline use"
-    };
-  };
-
-  const personalizedMessage = getPersonalizedMessage();
+  const personalizedMessage = getPersonalizedInstallMessage(userMetrics);
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-sm">

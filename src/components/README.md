@@ -8,7 +8,7 @@ The component library follows **Brad Frost's Atomic Design methodology**:
 
 ```
 ├── tokens/          # Design tokens (colors, spacing, typography)
-├── atoms/           # Basic UI elements (Button, Input, Typography)
+├── atoms/           # Basic UI elements (Button, Input, Loading)
 ├── molecules/       # Simple component combinations (InputField, SearchBar)
 ├── organisms/       # Complex UI sections (DataTable, Navigation, Forms)
 ├── templates/       # Page layouts (DashboardLayout, MainLayout)

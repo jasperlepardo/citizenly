@@ -223,21 +223,34 @@ export interface ResidentFormData {
   extensionName: string;
   sex: string;
   civilStatus: string;
+  civilStatusOthersSpecify?: string;
   citizenship: string;
   birthdate: string;
   birthPlaceName: string;
   birthPlaceCode: string;
+  birthPlaceLevel: string;
   philsysCardNumber: string;
-  educationAttainment: string;
+  philsysLast4?: string;
+  educationLevel: EducationLevelEnum;
+  educationAttainment: string; // Legacy field name for compatibility
+  educationStatus: string;
   isGraduate: boolean;
   employmentStatus: string;
-  psocCode: string;
+  employmentCode?: string;
+  employmentName?: string;
+  occupationCode?: string;
+  occupationDescription?: string;
+  workplace?: string;
+  psocCode?: string; // Legacy field name
+  psocLevel: number;
+  positionTitleId?: string;
   occupationTitle: string;
   ethnicity: string;
 
   // Contact Information
   email: string;
   phoneNumber: string;
+  telephoneNumber: string;
   mobileNumber: string;
   householdCode: string;
   
@@ -250,8 +263,10 @@ export interface ResidentFormData {
   religionOthersSpecify: string;
   
   // Voting Information
-  isVoter?: boolean;
-  isResidentVoter?: boolean;
+  isVoter?: boolean | null;
+  isResidentVoter?: boolean | null;
+  voterRegistrationStatus?: string;
+  residentVoterStatus?: string;
   lastVotedDate: string;
   
   // Mother's Maiden Name

@@ -36,16 +36,7 @@ jest.mock('@/components/atoms', () => ({
   ),
 }));
 
-jest.mock('@/components/organisms/ResidentDetailSections', () => ({
-  PersonalInfoCard: jest.fn(() => <div data-testid="personal-info-card" />),
-  ContactInfoCard: jest.fn(() => <div data-testid="contact-info-card" />),
-  EducationEmploymentCard: jest.fn(() => <div data-testid="education-employment-card" />),
-  HealthPhysicalCard: jest.fn(() => <div data-testid="health-physical-card" />),
-  FamilyVoterCard: jest.fn(() => <div data-testid="family-voter-card" />),
-  SectoralInfoCard: jest.fn(() => <div data-testid="sectoral-info-card" />),
-  MigrationInfoCard: jest.fn(() => <div data-testid="migration-info-card" />),
-  AdminInfoCard: jest.fn(() => <div data-testid="admin-info-card" />),
-}));
+// ResidentDetailSections mock removed - no longer used (component uses ResidentForm template now)
 
 // Mock fetch globally
 global.fetch = jest.fn();

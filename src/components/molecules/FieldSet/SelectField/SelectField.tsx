@@ -91,7 +91,12 @@ export const SelectField = ({
             selectProps ? (
               <ReadOnly
                 id={fieldId}
-                value={selectProps.value?.toString() || '—'}
+                value={(() => {
+                  if (!selectProps.value) return '—';
+                  // Find the matching option and return its label
+                  const matchingOption = selectProps.options?.find(option => option.value === selectProps.value);
+                  return matchingOption ? matchingOption.label : selectProps.value?.toString() || '—';
+                })()}
                 aria-labelledby={ariaLabelledBy}
                 aria-describedby={ariaDescribedByString}
               />

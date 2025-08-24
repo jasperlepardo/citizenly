@@ -1,11 +1,9 @@
-export { HouseholdDetails } from './HouseholdDetails';
+export { HouseholdDetailsForm } from './HouseholdDetails';
 export type { HouseholdDetailsFormProps } from './HouseholdDetails';
 
-// Export FormField components
-export { AddressDetails } from './FormField/AddressDetails';
-export { GeographicLocation } from './FormField/GeographicLocation';
-export { HouseholdStatistics } from './FormField/HouseholdStatistics';
+// FormField components
+export { HouseholdTypeInformation } from './FormField/HouseholdTypeInformation';
+export type { HouseholdTypeInformationData, HouseholdTypeInformationProps } from './FormField/HouseholdTypeInformation';
 
-export type { AddressDetailsProps } from './FormField/AddressDetails';
-export type { GeographicLocationProps } from './FormField/GeographicLocation';
-export type { HouseholdStatisticsProps } from './FormField/HouseholdStatistics';
+export { IncomeAndHeadInformation } from './FormField/IncomeAndHeadInformation';
+export type { IncomeAndHeadInformationData, IncomeAndHeadInformationProps } from './FormField/IncomeAndHeadInformation';

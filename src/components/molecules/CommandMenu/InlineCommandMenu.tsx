@@ -6,7 +6,7 @@ import { cn } from '@/lib/utilities/css-utils';
 import { CommandMenuGroup } from './CommandMenuGroup';
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
-import { useCommandMenuWithApi } from './hooks/useCommandMenuWithApi';
+import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/lib/command-menu/analytics-utils';
 import type { CommandMenuItem, CommandMenuProps } from './types';
 
