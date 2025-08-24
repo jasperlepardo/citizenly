@@ -68,33 +68,33 @@ function CreateResidentForm() {
     // Transform form data to match ResidentFormData service interface
     const transformedData: ResidentFormData = {
       // Personal Information - Step 1
-      firstName: formData.first_name || '',
-      middleName: formData.middle_name || '',
-      lastName: formData.last_name || '',
-      extensionName: formData.extension_name || '',
+      firstName: formData.firstName || '',
+      middleName: formData.middleName || '',
+      lastName: formData.lastName || '',
+      extensionName: formData.extensionName || '',
       birthdate: formData.birthdate || '',
       sex: (formData.sex as 'male' | 'female') || '',
-      civilStatus: formData.civil_status || 'single',
+      civilStatus: formData.civilStatus || 'single',
       citizenship: formData.citizenship || 'filipino',
 
       // Education & Employment - Step 2 (defaults for missing fields)
-      educationLevel: formData.education_attainment || '',
-      educationStatus: formData.is_graduate ? 'graduate' : 'not_graduate',
-      occupationCode: formData.occupation_code || '',
+      educationLevel: formData.educationAttainment || '',
+      educationStatus: formData.isGraduate ? 'graduate' : 'not_graduate',
+      occupationCode: formData.occupationCode || '',
       psocLevel: '',
       positionTitleId: '',
       occupationDescription: '',
-      employmentStatus: formData.employment_status || 'not_in_labor_force',
+      employmentStatus: formData.employmentStatus || 'not_in_labor_force',
       workplace: '',
 
       // Contact & Documentation - Step 3
       email: formData.email || '',
-      mobileNumber: formData.mobile_number || '',
-      telephoneNumber: formData.telephone_number || '',
-      philsysCardNumber: formData.philsys_card_number || '',
+      mobileNumber: formData.mobileNumber || '',
+      telephoneNumber: formData.telephoneNumber || '',
+      philsysCardNumber: formData.philsysCardNumber || '',
 
       // Physical & Identity Information - Step 3
-      bloodType: formData.blood_type || '',
+      bloodType: formData.bloodType || '',
       height: formData.height?.toString() || '',
       weight: formData.weight?.toString() || '',
       complexion: formData.complexion || '',

@@ -11,10 +11,14 @@ export {
   toTitleCase,
   truncateText,
   sanitizeString,
-  // isValidEmail, - REMOVED: Use @/lib/validation/utilities instead
-  // isValidPhilippineMobile, - REMOVED: Use @/lib/validation/utilities instead
   formatPhoneNumber,
 } from './string-utils';
+
+// Re-export validation functions from validation library (backward compatibility)
+export {
+  isValidEmail,
+  isValidPhilippineMobile,
+} from '@/lib/validation/utilities';
 
 // Data transformation utilities
 export {
