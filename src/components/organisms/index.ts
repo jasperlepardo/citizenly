@@ -8,7 +8,6 @@ export { default as Sidebar, SidebarHeader, SidebarFooter, ToggleButton } from '
 export type { SidebarProps, NavigationItem } from './Sidebar';
 export { Table } from './Table';
 export { CreateHouseholdModal } from './CreateHouseholdModal';
-export { HouseholdSelector } from './HouseholdSelector';
 export { PopulationPyramid } from './PopulationPyramid';
 
 // Address Components
@@ -29,7 +28,7 @@ export { UserProfile } from './UserProfile';
 export { PersonalInformationForm } from './Form/Resident/PersonalInformation';
 
 // Barangay Components
-export { SectoralInfo } from './SectoralInfo';
+// SectoralInfo moved to Form/Resident/SectoralInformation structure
 
 // RBI-Specific Components - Specific imports to avoid conflicts
 export { default as FamilyRelationshipSelector } from './RbiSpecific/FamilyRelationshipSelector';

@@ -2,12 +2,15 @@
 
 import React from 'react';
 import { cn } from '@/lib/utilities/css-utils';
-import { Label, HelperText } from '../../../atoms/Field';
+import { Label, HelperText, ReadOnly } from '../../../atoms/Field';
 import { Control } from '../../../atoms/Field/Control/Control';
 import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib/utilities/id-generators';
+import type { FormMode } from '@/types/forms';
 
 export interface ControlFieldProps {
   children?: React.ReactNode;
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   label?: string;
   required?: boolean;
   helperText?: string;
@@ -30,6 +33,7 @@ export interface ControlFieldProps {
 
 export const ControlField = ({
   children,
+  mode = 'create',
   label,
   required = false,
   helperText,
@@ -38,7 +42,7 @@ export const ControlField = ({
   orientation = 'vertical',
   labelWidth = 'md',
   htmlFor,
-  labelSize = 'md',
+  labelSize = 'sm',
   controlProps,
   labelProps,
   toggleText,
@@ -70,12 +74,11 @@ export const ControlField = ({
   };
 
   return (
-    <div className={cn('w-full', isHorizontal ? 'flex items-start gap-3' : 'flex flex-col', className)}>
+    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
         <div className={cn(
-          'flex items-start',
-          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-1.5` : 'mb-2'
+          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1'
         )}>
           <Label
             htmlFor={fieldId}
@@ -92,36 +95,65 @@ export const ControlField = ({
       <div className={cn('flex-1', isHorizontal ? 'min-w-0' : 'flex flex-col')}>
         {/* Control/Field */}
         <div>
-          {controlProps ? (
-            <Control
-              id={fieldId}
-              errorMessage={controlError}
-              aria-labelledby={ariaLabelledBy}
-              aria-describedby={ariaDescribedBy || (toggleText ? `${fieldId}-description` : undefined)}
-              description={
-                controlProps.type === 'toggle' && toggleText
-                  ? (controlProps.checked ? toggleText.checked : toggleText.unchecked)
-                  : controlProps.description
-              }
-              {...controlProps}
-            />
+          {mode === 'view' ? (
+            controlProps ? (
+              <ReadOnly
+                id={fieldId}
+                value={
+                  controlProps.type === 'toggle' && toggleText
+                    ? (controlProps.checked ? toggleText.checked : toggleText.unchecked)
+                    : controlProps.checked 
+                      ? 'Yes' 
+                      : 'No'
+                }
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+              />
+            ) : (
+              React.Children.map(children, (child) => {
+                if (React.isValidElement(child)) {
+                  return React.cloneElement(child as React.ReactElement<any>, {
+                    id: fieldId,
+                    'aria-labelledby': ariaLabelledBy,
+                    'aria-describedby': ariaDescribedBy,
+                    mode: 'view',
+                  });
+                }
+                return child;
+              })
+            )
           ) : (
-            React.Children.map(children, (child) => {
-              if (React.isValidElement(child)) {
-                return React.cloneElement(child as React.ReactElement<any>, {
-                  id: fieldId,
-                  'aria-labelledby': ariaLabelledBy,
-                  'aria-describedby': ariaDescribedBy,
-                });
-              }
-              return child;
-            })
+            controlProps ? (
+              <Control
+                id={fieldId}
+                errorMessage={controlError}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy || (toggleText ? `${fieldId}-description` : undefined)}
+                description={
+                  controlProps.type === 'toggle' && toggleText
+                    ? (controlProps.checked ? toggleText.checked : toggleText.unchecked)
+                    : controlProps.description || label
+                }
+                {...controlProps}
+              />
+            ) : (
+              React.Children.map(children, (child) => {
+                if (React.isValidElement(child)) {
+                  return React.cloneElement(child as React.ReactElement<any>, {
+                    id: fieldId,
+                    'aria-labelledby': ariaLabelledBy,
+                    'aria-describedby': ariaDescribedBy,
+                  });
+                }
+                return child;
+              })
+            )
           )}
         </div>
 
         {/* Helper Text and Error Messages */}
         {hasHelperText && (
-          <div className="flex flex-col gap-2 mt-1">
+          <div className="mt-1 space-y-1">
             {/* Helper Text */}
             {helperText && (
               <HelperText id={helperTextId}>
@@ -129,9 +161,9 @@ export const ControlField = ({
               </HelperText>
             )}
             
-            {/* Error Message with aria-live for screen reader announcements */}
+            {/* Error Message */}
             {errorMessage && (
-              <HelperText id={errorId} error aria-live="polite" aria-atomic="true">
+              <HelperText id={errorId} error>
                 {errorMessage}
               </HelperText>
             )}

@@ -6,10 +6,14 @@ import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '../../atoms/Field/Control/Radio/Radio';
 import { ControlGroup } from './ControlField/ControlField';
 import { Label } from '../../atoms/Field/Label/Label';
+import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';
+import type { FormMode } from '@/types/forms';
 
 export interface ControlFieldSetProps {
   /** Type of fieldset - checkbox for multiple selections, radio for single selection */
   type: 'checkbox' | 'radio';
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   /** Field label */
   label?: string;
   /** Label size variant */
@@ -44,8 +48,9 @@ export interface ControlFieldSetProps {
 
 export const ControlFieldSet = ({
   type,
+  mode = 'create',
   label,
-  labelSize = 'md',
+  labelSize = 'sm',
   description,
   errorMessage,
   orientation = 'vertical',
@@ -58,6 +63,32 @@ export const ControlFieldSet = ({
   onRadioChange,
   radioName,
 }: ControlFieldSetProps) => {
+
+  // Helper function to format values for display in view mode
+  const formatDisplayValue = (value: string[] | string | undefined) => {
+    if (!value) return '—';
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value.join(', ') : '—';
+    }
+    return value || '—';
+  };
+
+  // If in view mode, render as ReadOnlyField
+  if (mode === 'view') {
+    const displayValue = type === 'checkbox' ? checkboxValue : radioValue;
+    return (
+      <ReadOnlyField
+        label={label}
+        helperText={description}
+        errorMessage={errorMessage}
+        labelSize={labelSize}
+        className={className}
+        readOnlyProps={{
+          value: formatDisplayValue(displayValue)
+        }}
+      />
+    );
+  }
 
   if (type === 'checkbox') {
     return (
