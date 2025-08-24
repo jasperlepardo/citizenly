@@ -33,10 +33,10 @@ export {
   type UserSecurityData,
 } from './user-repository';
 
-// Business services  
+// Business services
 export { residentService as ResidentService } from './resident.service';
 export { householdService as HouseholdService } from './household.service';
-export { geographicService as GeographicService } from './geographic.service';
+export * from './geographic.service';
 
 // Data transformers and mappers
 export * from './residentMapper';
