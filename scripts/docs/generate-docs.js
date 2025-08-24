@@ -1,246 +1,193 @@
 #!/usr/bin/env node
 
 /**
- * Quick Documentation Generator
- * Automatically adds basic JSDoc comments to undocumented functions
+ * API Documentation Generator
+ * Generates markdown documentation from JSDoc comments
  */
 
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Generate basic JSDoc for a function
- */
-function generateJSDocForFunction(functionName, functionLine, isComponent = false, isAPI = false) {
-  if (isComponent) {
-    const componentDescription = functionName.replace(/([A-Z])/g, ' $1').trim().toLowerCase();
-    return `/**
- * ${functionName} Component
- * 
- * @description Renders the ${componentDescription} interface
- * @returns {JSX.Element} The rendered component
- */`;
+class DocumentationGenerator {
+  constructor() {
+    this.apiDocs = {};
+    this.components = {};
+    this.hooks = {};
   }
-  
-  if (isAPI) {
-    const method = functionName.toUpperCase();
-    const methodDescriptions = {
-      'GET': 'Retrieves data from',
-      'POST': 'Creates new data in',
-      'PUT': 'Updates existing data in',
-      'DELETE': 'Removes data from',
-      'PATCH': 'Partially updates data in'
-    };
-    const description = methodDescriptions[method] || 'Handles requests for';
-    
-    return `/**
- * ${method} API Handler
- * 
- * @description ${description} this endpoint
- * @param {NextRequest} request - The incoming request object
- * @returns {Promise<NextResponse>} The API response
- */`;
-  }
-  
-  const description = functionName.replace(/([A-Z])/g, ' $1').trim();
-  return `/**
- * ${description}
- * 
- * @description ${description} function
- * @returns {unknown} Function result
- */`;
-}
 
-/**
- * Add documentation to a file
- */
-function addDocumentationToFile(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    const lines = content.split('\n');
-    const newLines = [];
-    let i = 0;
-    let addedDocs = 0;
+  parseJSDoc(comment, functionName) {
+    const lines = comment.split('\n').map(line => line.replace(/^\s*\*\s?/, ''));
     
-    while (i < lines.length) {
-      const line = lines[i];
-      const trimmed = line.trim();
-      
-      // Check if this line starts a function that needs documentation
-      const patterns = [
-        { pattern: /^export\s+(?:default\s+)?(?:async\s+)?function\s+(\w+)/, type: 'function' },
-        { pattern: /^export\s+const\s+(\w+)\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/, type: 'function' },
-        { pattern: /^export\s+(?:default\s+)?function\s+([A-Z]\w+).*\{/, type: 'component' },
-        { pattern: /^export\s+(?:async\s+)?function\s+(GET|POST|PUT|DELETE|PATCH)/, type: 'api' }
-      ];
-      
-      let needsDoc = false;
-      let functionName = '';
-      let docType = 'function';
-      
-      for (const { pattern, type } of patterns) {
-        const match = trimmed.match(pattern);
+    let description = '';
+    const params = [];
+    const returns = { type: '', description: '' };
+    const examples = [];
+    
+    let currentSection = 'description';
+    
+    for (const line of lines) {
+      if (line.startsWith('@param')) {
+        currentSection = 'params';
+        const match = line.match(/@param\s+\{([^}]+)\}\s+(\w+)\s+-?\s*(.*)/);
         if (match) {
-          functionName = match[1];
-          docType = type;
-          
-          // Check if there's already JSDoc above (within 3 lines)
-          let hasDoc = false;
-          for (let j = Math.max(0, i - 3); j < i; j++) {
-            if (lines[j].trim().includes('/**') || lines[j].trim().includes('*')) {
-              hasDoc = true;
-              break;
-            }
-          }
-          
-          if (!hasDoc) {
-            needsDoc = true;
-          }
-          break;
+          params.push({
+            name: match[2],
+            type: match[1],
+            description: match[3] || ''
+          });
+        }
+      } else if (line.startsWith('@returns') || line.startsWith('@return')) {
+        currentSection = 'returns';
+        const match = line.match(/@returns?\s+\{([^}]+)\}\s*(.*)/);
+        if (match) {
+          returns.type = match[1];
+          returns.description = match[2] || '';
+        }
+      } else if (line.startsWith('@example')) {
+        currentSection = 'examples';
+      } else if (currentSection === 'description' && line.trim()) {
+        description += (description ? ' ' : '') + line.trim();
+      } else if (currentSection === 'examples' && line.trim()) {
+        examples.push(line);
+      }
+    }
+    
+    return { description, params, returns, examples };
+  }
+
+  processFile(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const relativePath = path.relative(process.cwd(), filePath);
+    
+    // Match JSDoc + function pairs
+    const docFunctionRegex = /\/\*\*([\s\S]*?)\*\/\s*(?:export\s+)?(?:async\s+)?(?:function\s+(\w+)|const\s+(\w+)\s*=)/g;
+    
+    let match;
+    while ((match = docFunctionRegex.exec(content)) !== null) {
+      const jsdoc = match[1];
+      const functionName = match[2] || match[3];
+      
+      if (functionName) {
+        const parsed = this.parseJSDoc(jsdoc, functionName);
+        
+        const docEntry = {
+          name: functionName,
+          file: relativePath,
+          ...parsed
+        };
+        
+        // Categorize by file type/location
+        if (relativePath.includes('/hooks/')) {
+          this.hooks[functionName] = docEntry;
+        } else if (relativePath.includes('/components/')) {
+          this.components[functionName] = docEntry;
+        } else if (relativePath.includes('/api/') || relativePath.includes('/services/')) {
+          this.apiDocs[functionName] = docEntry;
         }
       }
+    }
+  }
+
+  processDirectory(dir) {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const file of files) {
+      const filePath = path.join(dir, file.name);
       
-      if (needsDoc) {
-        // Add JSDoc comment before the function
-        const indent = line.match(/^(\s*)/)[1];
-        const jsDoc = generateJSDocForFunction(
-          functionName, 
-          i + 1, 
-          docType === 'component', 
-          docType === 'api'
-        );
-        
-        const jsDocLines = jsDoc.split('\n').map(docLine => indent + docLine);
-        newLines.push(...jsDocLines);
-        addedDocs++;
+      if (file.isDirectory() && !file.name.startsWith('.') && file.name !== 'node_modules') {
+        this.processDirectory(filePath);
+      } else if (file.name.match(/\.(ts|tsx|js|jsx)$/) && !file.name.includes('.test.')) {
+        this.processFile(filePath);
+      }
+    }
+  }
+
+  generateMarkdown(category, items, title) {
+    if (Object.keys(items).length === 0) return '';
+    
+    let md = `## ${title}\n\n`;
+    
+    Object.values(items).forEach(item => {
+      md += `### \`${item.name}\`\n\n`;
+      md += `**File:** \`${item.file}\`\n\n`;
+      
+      if (item.description) {
+        md += `${item.description}\n\n`;
       }
       
-      newLines.push(line);
-      i++;
-    }
-    
-    if (addedDocs > 0) {
-      fs.writeFileSync(filePath, newLines.join('\n'));
-      console.log(`   ✅ Added ${addedDocs} JSDoc comments to ${filePath}`);
-      return addedDocs;
-    }
-    
-    return 0;
-  } catch (error) {
-    console.warn(`   ⚠️  Could not process ${filePath}: ${error.message}`);
-    return 0;
-  }
-}
-
-/**
- * Get file processing limit based on priority
- */
-function getFileLimit(priority) {
-  switch (priority) {
-    case 'high': return 50;
-    case 'medium': return 30;
-    case 'low': return 20;
-    default: return 10;
-  }
-}
-
-/**
- * Process files by priority
- */
-function processFilesByPriority() {
-  const priorities = [
-    {
-      name: 'API Routes',
-      pattern: 'src/app/api/**/route.ts',
-      priority: 'high'
-    },
-    {
-      name: 'Page Components', 
-      pattern: 'src/app/**/page.tsx',
-      priority: 'high'
-    },
-    {
-      name: 'Utility Libraries',
-      pattern: 'src/lib/**/*.ts',
-      priority: 'high'
-    },
-    {
-      name: 'React Components',
-      pattern: 'src/components/**/*.tsx',
-      priority: 'medium'
-    },
-    {
-      name: 'Hooks',
-      pattern: 'src/hooks/**/*.ts',
-      priority: 'medium'
-    },
-    {
-      name: 'Context Providers',
-      pattern: 'src/contexts/**/*.tsx',
-      priority: 'medium'
-    },
-    {
-      name: 'Additional TypeScript Files',
-      pattern: 'src/**/*.ts',
-      priority: 'low'
-    }
-  ];
-  
-  let totalAdded = 0;
-  
-  priorities.forEach(({ name, pattern, priority }) => {
-    console.log(`\n📁 Processing ${name} (${priority} priority)...`);
-    
-    const { execSync } = require('child_process');
-    try {
-      const files = execSync(`find . -path "./${pattern}" -type f`, { encoding: 'utf8' })
-        .split('\n')
-        .filter(f => f.length > 0)
-        .slice(0, getFileLimit(priority)); // Scaled limits by priority
+      if (item.params.length > 0) {
+        md += `**Parameters:**\n\n`;
+        item.params.forEach(param => {
+          md += `- \`${param.name}\` (\`${param.type}\`) - ${param.description}\n`;
+        });
+        md += '\n';
+      }
       
-      files.forEach(file => {
-        const added = addDocumentationToFile(file);
-        totalAdded += added;
-      });
+      if (item.returns.type) {
+        md += `**Returns:** \`${item.returns.type}\``;
+        if (item.returns.description) {
+          md += ` - ${item.returns.description}`;
+        }
+        md += '\n\n';
+      }
       
-      console.log(`   📊 Processed ${files.length} files in ${name}`);
-    } catch (error) {
-      console.warn(`   ⚠️  Could not find files for pattern: ${pattern}`);
-    }
-  });
-  
-  return totalAdded;
-}
+      if (item.examples.length > 0) {
+        md += `**Example:**\n\n\`\`\`typescript\n${item.examples.join('\n')}\n\`\`\`\n\n`;
+      }
+      
+      md += '---\n\n';
+    });
+    
+    return md;
+  }
 
-/**
- * Main execution
- */
-function main() {
-  console.log('📚 Quick Documentation Generator');
-  console.log('🎯 Adding basic JSDoc comments to undocumented functions...\n');
-  
-  const startTime = Date.now();
-  const totalAdded = processFilesByPriority();
-  const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-  
-  console.log(`\n🎉 Documentation Enhancement Complete!`);
-  console.log(`   📝 Added ${totalAdded} JSDoc comments`);
-  console.log(`   ⏱️  Completed in ${duration} seconds`);
-  
-  if (totalAdded > 0) {
-    console.log('\n💡 Next steps:');
-    console.log('   1. Review and enhance the generated documentation');
-    console.log('   2. Add @param and @returns tags where needed');
-    console.log('   3. Run npm run quality:docs to check coverage');
-    console.log('   4. Commit the documentation improvements');
+  generateDocumentation() {
+    const docsDir = path.join(process.cwd(), 'docs/api-reference');
+    
+    // Ensure docs directory exists
+    fs.mkdirSync(docsDir, { recursive: true });
+    
+    let fullDoc = '# API Documentation\n\n';
+    fullDoc += `Generated on: ${new Date().toISOString()}\n\n`;
+    
+    const hooksDocs = this.generateMarkdown('hooks', this.hooks, 'React Hooks');
+    const componentsDocs = this.generateMarkdown('components', this.components, 'Components');
+    const apiDocs = this.generateMarkdown('api', this.apiDocs, 'API Functions');
+    
+    if (hooksDocs) {
+      fullDoc += hooksDocs;
+      fs.writeFileSync(path.join(docsDir, 'hooks.md'), `# React Hooks\n\n${hooksDocs}`);
+    }
+    
+    if (componentsDocs) {
+      fullDoc += componentsDocs;
+      fs.writeFileSync(path.join(docsDir, 'components.md'), `# Components\n\n${componentsDocs}`);
+    }
+    
+    if (apiDocs) {
+      fullDoc += apiDocs;
+      fs.writeFileSync(path.join(docsDir, 'api.md'), `# API Functions\n\n${apiDocs}`);
+    }
+    
+    // Write combined documentation
+    fs.writeFileSync(path.join(docsDir, 'README.md'), fullDoc);
+    
+    console.log('📖 Documentation generated:');
+    console.log(`  - Hooks: ${Object.keys(this.hooks).length} documented`);
+    console.log(`  - Components: ${Object.keys(this.components).length} documented`);
+    console.log(`  - API Functions: ${Object.keys(this.apiDocs).length} documented`);
+    console.log(`  - Output: ${docsDir}`);
   }
 }
 
+// CLI usage
 if (require.main === module) {
-  main();
+  const srcDir = path.join(process.cwd(), 'src');
+  const generator = new DocumentationGenerator();
+  
+  console.log('Generating API documentation...');
+  generator.processDirectory(srcDir);
+  generator.generateDocumentation();
 }
 
-module.exports = {
-  addDocumentationToFile,
-  generateJSDocForFunction
-};
+module.exports = { DocumentationGenerator };

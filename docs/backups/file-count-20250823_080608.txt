@@ -1,4 +1,0 @@
-Total files:      683
-TypeScript files:      660
-JavaScript files:        4
-Component files:      312

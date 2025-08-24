@@ -1,29 +1,35 @@
-# Development Scripts
+# Essential Production Scripts
 
-This directory contains automation scripts organized by category to streamline development workflows, code quality, and project maintenance.
+This directory contains **23 essential scripts** for core development workflows and production operations. One-off migration scripts have been removed, but essential maintenance and analysis tools have been restored.
 
 ## 📁 Organization
 
-### `git/` - Git Workflow Automation
-Scripts for branching, committing, and pull request creation following best practices.
+### `git/` - Git Workflow Automation (5 scripts)
+Production-ready scripts for branching, committing, and pull request creation following best practices.
 
-### `build/` - Build & Bundle Management  
-Scripts for build optimization, bundle analysis, and deployment preparation.
+### `build/` - Build & Performance (4 scripts)
+- `create-build-env.mjs` - Build environment setup
+- `prepare-storybook.js` - Storybook preparation  
+- `analyze-bundle.js` - Bundle size analysis and optimization recommendations
+- `track-bundle-size.js` - Bundle size tracking over time with budget violations
 
-### `quality/` - Code Quality & Analysis
-Scripts for complexity checking, import management, and technical debt tracking.
+### `docs/` - Documentation Tools (2 scripts)
+- `check-documentation.js` - JSDoc validation and completeness checking
+- `generate-docs.js` - API documentation generation from JSDoc comments
 
-### `docs/` - Documentation Management
-Scripts for JSDoc fixing, documentation generation, and consistency checking.
+### `security/` - Security Analysis (3 scripts)
+Automated dependency vulnerability scanning and security policy enforcement.
 
-### `security/` - Security Analysis
-Scripts for dependency vulnerability scanning and security policy enforcement.
+### `quality/` - Code Quality (5 scripts)
+- `refresh-stats.js` - Quality metrics tracking
+- `setup-deployment.sh` - Deployment setup automation
+- `setup-secrets.sh` - Secret management
+- `check-complexity.js` - Cyclomatic complexity analysis 
+- `analyze-imports.js` - Import structure and circular dependency detection
 
-### `database/` - Database Utilities
-Scripts for database cleanup, analysis, and maintenance.
-
-### `testing/` - Test Infrastructure
-Scripts for test generation, coverage monitoring, and test infrastructure setup.
+### **Root Level** - Core Utilities (2 scripts)
+- `generate-enums.ts` - Database enum generation
+- `validate-enums.ts` - Enum validation
 
 ## 🚀 Quick Start
 
@@ -50,6 +56,17 @@ npm run create-pr                                       # Create PR
 | `npm run complete-flow` | Complete workflow: branch → commit → PR | `npm run complete-flow user-auth "Add authentication"` |
 | `npm run git-status`    | Show current workflow status            | -                                                      |
 | `npm run git-cleanup`   | Clean up merged branches                | -                                                      |
+
+### Documentation & Quality Scripts
+
+| Command                     | Description                             | Example                                                |
+| --------------------------- | --------------------------------------- | ------------------------------------------------------ |
+| `npm run docs:check`        | Check JSDoc documentation completeness  | -                                                      |
+| `npm run docs:generate`     | Generate API documentation from JSDoc   | -                                                      |
+| `npm run bundle:analyze`    | Analyze bundle sizes and optimization   | -                                                      |
+| `npm run bundle:track`      | Track bundle size changes over time     | -                                                      |
+| `npm run quality:complexity`| Check code complexity and identify issues| -                                                      |
+| `npm run quality:imports`   | Analyze import patterns and circular deps| -                                                     |
 
 ### Direct Script Usage
 

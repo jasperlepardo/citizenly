@@ -177,6 +177,7 @@ $RECYCLE.BIN/
 # Logs
 logs
 *.log
+dev.log
 
 # Database
 *.db
@@ -186,6 +187,8 @@ logs
 # Backup files
 *.bak
 *.backup
+backups/
+temp-excluded/
 
 # Temporary files
 *.tmp

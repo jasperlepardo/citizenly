@@ -1,6 +1,0 @@
-first_name,middle_name,last_name,extension_name,birthdate,sex,civil_status,citizenship,education_level,education_status,employment_status,mobile_number,email,barangay_code,psoc_code,psoc_level,occupation_title,blood_type,religion,ethnicity,is_voter,is_resident_voter,is_pwd,is_ofw,philsys_card_number
-Juan,Santos,Dela Cruz,,1990-05-15,male,married,filipino,college,graduated,employed,09123456789,juan.delacruz@email.com,042114014,2512,unit_group,Software Developer,A+,roman_catholic,tagalog,true,true,false,false,1234567890123456
-Maria,Garcia,Santos,,1985-12-03,female,single,filipino,high_school,graduated,self_employed,09234567890,maria.santos@email.com,042114014,5221,unit_group,Shop Owner,O+,protestant,cebuano,true,true,false,false,
-Pedro,,Reyes,,1965-08-20,male,widowed,filipino,elementary,graduated,retired,09345678901,,042114014,,,Retired,B+,roman_catholic,ilocano,true,true,true,false,
-Ana,Luz,Mendoza,,2005-03-10,female,single,filipino,high_school,currently_studying,student,09456789012,,042114014,,,Student,AB+,iglesia_ni_cristo,bisaya,false,false,false,false,
-Carlos,Ramos,Villanueva,,1988-11-25,male,married,filipino,vocational,graduated,employed,09567890123,carlos.villanueva@email.com,042114014,7231,unit_group,Motor Vehicle Mechanic,O-,roman_catholic,tagalog,true,true,false,false,
