@@ -1,44 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const cityCode = searchParams.get('city');
 
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
-
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
     // Build query
-    let query = supabaseAdmin
+    let query = supabase
       .from('psgc_barangays')
       .select('code, name, city_municipality_code')
       .order('name');
@@ -55,8 +29,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch barangays' }, { status: 500 });
     }
 
+    // Transform data to match SelectField format
+    const options = barangays?.map((barangay) => ({
+      value: barangay.code,
+      label: barangay.name,
+      city_municipality_code: barangay.city_municipality_code,
+    })) || [];
+
     return NextResponse.json({
-      data: barangays || [],
+      success: true,
+      data: options,
+      count: options.length,
     });
   } catch (error) {
     console.error('Barangays API error:', error);

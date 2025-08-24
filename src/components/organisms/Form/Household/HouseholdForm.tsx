@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { HouseholdDetails } from './HouseholdDetails';
+import { HouseholdDetailsForm } from './HouseholdDetails';
 import { ExtendedHouseholdFormData, FormMode } from './types';
 
 export interface HouseholdFormProps {
@@ -92,7 +92,7 @@ export function HouseholdForm({
 
       {/* Household Details Section */}
       <div className="space-y-4">
-        <HouseholdDetails
+        <HouseholdDetailsForm
           formData={{
             houseNumber: formData.houseNumber,
             streetId: formData.streetId,

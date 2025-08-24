@@ -61,5 +61,13 @@ export {
 // Search utilities
 export * from './search-utilities';
 
+// File utilities
+export {
+  formatFileSize,
+  getFileExtension,
+  isImageFile,
+  exceedsMaxSize,
+} from './file-utils';
+
 // Validation utilities (moved to @/lib/validation)
 // Use: import from '@/lib/validation/utilities' instead

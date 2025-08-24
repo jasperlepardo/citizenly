@@ -2,7 +2,7 @@
 
 import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn, formatFileSize } from '@/lib/utilities';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
 import { Button } from '@/components/atoms';
 import { logger } from '@/lib/logging/secure-logger';
@@ -178,13 +178,6 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       setSelectedFiles(newFiles);
     };
 
-    const formatFileSize = (bytes: number) => {
-      if (bytes === 0) return '0 Bytes';
-      const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    };
 
     return (
       <div className="w-full">

@@ -3,7 +3,7 @@ export { InlineCommandMenu } from './InlineCommandMenu';
 export { CommandMenuItem } from './CommandMenuItem';
 export { CommandMenuGroup } from './CommandMenuGroup';
 export { CommandMenuEmpty } from './CommandMenuEmpty';
-export { useCommandMenu } from './hooks/useCommandMenu';
+export { useCommandMenu } from '@/hooks/ui/useCommandMenu';
 
 export type {
   CommandMenuItem as CommandMenuItemType,

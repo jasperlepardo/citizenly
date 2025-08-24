@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { HouseholdFormWizard } from '@/components/templates';
+import { NewHouseholdForm } from '@/components/templates';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,14 +49,11 @@ export default function CreateHouseholdPage() {
 
     let data: any = {};
 
-    // Auto-fill household head name if provided
+    // Auto-fill household name if provided (since we now have household name instead of head name)
     if (suggestedName) {
-      const { firstName, middleName, lastName } = parseFullName(suggestedName);
       data = {
         ...data,
-        headFirstName: firstName,
-        headMiddleName: middleName,
-        headLastName: lastName,
+        householdName: suggestedName,
       };
     }
 
@@ -64,7 +61,7 @@ export default function CreateHouseholdPage() {
     if (suggestedCode) {
       data = {
         ...data,
-        householdCode: suggestedCode,
+        code: suggestedCode,
       };
     }
 
@@ -125,7 +122,7 @@ export default function CreateHouseholdPage() {
                 <div className="ml-3">
                   <p className="text-sm text-blue-700 dark:text-blue-300">
                     <strong>Form pre-filled:</strong>
-                    {suggestedName && ` The household head name has been populated with "${suggestedName}".`}
+                    {suggestedName && ` The household name has been populated with "${suggestedName}".`}
                     {suggestedCode && ` The household code has been set to "${suggestedCode}".`}
                     {' '}You can edit these values as needed.
                   </p>
@@ -136,8 +133,8 @@ export default function CreateHouseholdPage() {
         </div>
       </div>
 
-      {/* Form Wizard */}
-      <HouseholdFormWizard initialData={initialData} />
+      {/* Household Form */}
+      <NewHouseholdForm initialData={initialData} />
     </div>
   );
 }

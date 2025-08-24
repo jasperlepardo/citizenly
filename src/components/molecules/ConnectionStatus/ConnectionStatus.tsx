@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { syncQueue } from '@/lib/data';
-import { offlineStorage } from '@/lib/data';
+import { useConnectionStatus } from '@/hooks/utilities/useConnectionStatus';
 
 interface ConnectionStatusProps {
   className?: string;
 }
 
 export default function ConnectionStatus({ className = '' }: ConnectionStatusProps) {
-  const [isOnline, setIsOnline] = useState(true);
+  const { isOnline, syncPending } = useConnectionStatus();
   const [syncStatus, setSyncStatus] = useState({
     isProcessing: false,
     pendingCount: 0,
@@ -17,12 +17,8 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Initialize online status
-    setIsOnline(navigator.onLine);
-
-    // Setup online/offline event listeners
+    // Setup enhanced sync status monitoring
     const handleOnline = async () => {
-      setIsOnline(true);
       setShowBanner(true);
       
       // Check for pending sync items
@@ -38,7 +34,6 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
     };
 
     const handleOffline = () => {
-      setIsOnline(false);
       setShowBanner(true);
     };
 
@@ -191,39 +186,4 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
       </div>
     </div>
   );
-}
-
-// Connection Status Hook
-export function useConnectionStatus() {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [syncPending, setSyncPending] = useState(false);
-
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    // Check for pending sync items
-    const checkPendingSync = async () => {
-      const status = await syncQueue.getStatus();
-      setSyncPending(status.pendingCount > 0);
-    };
-
-    checkPendingSync();
-    const interval = setInterval(checkPendingSync, 10000); // Check every 10 seconds
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-      clearInterval(interval);
-    };
-  }, []);
-
-  return {
-    isOnline,
-    syncPending,
-    canSync: isOnline && syncPending,
-  };
 }

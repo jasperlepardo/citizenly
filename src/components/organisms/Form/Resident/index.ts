@@ -25,4 +25,4 @@ export {
   renderCheckboxField,
   renderDateField,
   renderNumberField,
-} from './utils/fieldRenderers';
+} from '@/lib/forms/field-renderers';

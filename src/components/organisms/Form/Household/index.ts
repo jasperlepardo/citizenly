@@ -1,29 +1,21 @@
-// Main Household Form Component
-export { HouseholdForm } from './HouseholdForm';
-export type { HouseholdFormProps } from './HouseholdForm';
-
-// Household Form Sections
-export { HouseholdDetails } from './HouseholdDetails';
-export type { HouseholdDetailsFormProps } from './HouseholdDetails';
-
-// Form Field Components
-export {
-  AddressDetails,
-  GeographicLocation,
-  HouseholdStatistics,
-} from './HouseholdDetails';
-
-export type {
-  AddressDetailsProps,
-  GeographicLocationProps,
-  HouseholdStatisticsProps,
-} from './HouseholdDetails';
-
-// Types and Interfaces
-export type {
+// Types
+export type { 
   FormMode,
   ExtendedHouseholdFormData,
   HouseholdDetailsData,
   FormSectionProps,
   FieldConfig,
+  HouseholdFormProps
 } from './types';
+
+// Location and Demographics
+export { LocationAndDemographicsForm, LocationDemographicsForm } from './LocationAndDemographics/LocationAndDemographics';
+
+// Household Details
+export { HouseholdDetailsForm } from './HouseholdDetails/HouseholdDetails';
+
+// FormField components
+export { AddressInformation } from './LocationAndDemographics/FormField/AddressInformation';
+export { DemographicsInformation } from './LocationAndDemographics/FormField/DemographicsInformation';
+export { HouseholdTypeInformation } from './HouseholdDetails/FormField/HouseholdTypeInformation';
+export { IncomeAndHeadInformation } from './HouseholdDetails/FormField/IncomeAndHeadInformation';
