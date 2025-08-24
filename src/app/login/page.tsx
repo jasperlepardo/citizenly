@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginForm, DevLogin } from '@/components/organisms';
 import { ThemeToggle } from '@/components/molecules';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { useLastVisitedPage } from '@/hooks/utilities';
 
 export const dynamic = 'force-dynamic';

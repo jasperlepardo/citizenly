@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/data/supabase';
 import { logger, logError } from '@/lib/logging/secure-logger';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import HouseholdForm, { HouseholdFormData, HouseholdFormMode } from '@/components/templates/HouseholdForm/NewHouseholdForm';
 import { Button } from '@/components/atoms';
 import { lookupAddressLabels, lookupHouseholdTypeLabels, lookupHouseholdHeadLabel } from '@/lib/utilities/address-lookup';

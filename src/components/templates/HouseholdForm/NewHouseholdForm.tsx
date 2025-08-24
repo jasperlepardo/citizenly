@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/data/supabase';
 import { useUserBarangay } from '@/hooks/utilities';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { useCSRFToken } from '@/lib/auth/csrf';
 import { useQuery } from '@tanstack/react-query';
 import { logger, logError } from '@/lib/logging/secure-logger';

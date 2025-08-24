@@ -5,7 +5,7 @@ import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetail
 import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
 import { FormHeader } from './components/FormHeader';
 import { FormActions } from './components/FormActions';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { ResidentFormState } from '@/types/resident-form';
 import type { FormMode } from '@/types/forms';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';

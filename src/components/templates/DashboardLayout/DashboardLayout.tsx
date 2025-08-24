@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase/supabase';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { Navigation } from '@/components/organisms';

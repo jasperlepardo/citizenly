@@ -8,7 +8,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/atoms';
 import { SelectField } from '@/components/molecules';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts';
 
 export default function SettingsPage() {
   const { theme, actualTheme, setTheme } = useTheme();

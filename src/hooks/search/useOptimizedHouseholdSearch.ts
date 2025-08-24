@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import { useGenericSearch } from './useGenericSearch';
 import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
 
