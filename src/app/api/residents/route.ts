@@ -4,7 +4,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel } from '@/lib/api/authUtils';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel } from '@/lib/authentication/authUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { createResidentSchema } from '@/lib/api/validationUtils';
 import {

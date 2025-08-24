@@ -4,9 +4,9 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/api/authUtils';
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib/authentication/authUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createHouseholdSchema } from '@/services/api/validationUtils';
+import { createHouseholdSchema } from '@/lib/api/validationUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
