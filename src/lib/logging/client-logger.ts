@@ -198,8 +198,13 @@ export const logWarn = (message: string, context?: LogContext) =>
  * @description log Error utility function
  * @returns {unknown} Function execution result
  */
-export const logError = (message: string, context?: LogContext) =>
-  clientLogger.error(message, context);
+export const logError = (messageOrError: string | Error, context?: LogContext) => {
+  const message = messageOrError instanceof Error ? messageOrError.message : messageOrError;
+  const errorContext = messageOrError instanceof Error 
+    ? { ...context, error: messageOrError }
+    : context;
+  return clientLogger.error(message, errorContext);
+};
 /**
  * log Component
  *

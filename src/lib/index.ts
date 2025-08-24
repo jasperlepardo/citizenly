@@ -54,4 +54,6 @@ export {
   dbLogger,
   apiLogger,
   authLogger,
-} from '@/lib';
+  logError,
+  logSecureError,
+} from './logging';
