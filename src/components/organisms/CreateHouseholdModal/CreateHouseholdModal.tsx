@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';

@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger, logError } from '@/lib/logging/secure-logger';
 import type { HouseholdFormData } from '../utilities/useHouseholdForm';

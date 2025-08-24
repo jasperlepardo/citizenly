@@ -109,7 +109,7 @@ export function createValidationErrorResponse(
     ErrorCode.VALIDATION_ERROR,
     'Invalid input data',
     422,
-    details,
+    { validationErrors: details },
     undefined,
     context
   );
@@ -205,7 +205,7 @@ export async function handleDatabaseError(error: unknown, context?: RequestConte
     );
   }
 
-  if (error?.code === '42P01') {
+  if (dbError?.code === '42P01') {
     // Table does not exist
     return createErrorResponse(
       ErrorCode.INTERNAL_ERROR,
@@ -224,8 +224,8 @@ export async function handleDatabaseError(error: unknown, context?: RequestConte
     500,
     process.env.NODE_ENV === 'development'
       ? {
-          code: error?.code,
-          message: error?.message,
+          code: dbError?.code,
+          message: dbError?.message,
         }
       : undefined,
     undefined,
@@ -243,18 +243,19 @@ export async function handleUnexpectedError(
   logger.error('Unexpected API error', { error, context });
 
   if (context) {
-    await auditError(error, context, ErrorCode.INTERNAL_ERROR);
+    await auditError(error as Error, context, ErrorCode.INTERNAL_ERROR);
   }
 
+  const err = error as any;
   return createErrorResponse(
     ErrorCode.INTERNAL_ERROR,
     'An unexpected error occurred',
     500,
     process.env.NODE_ENV === 'development'
       ? {
-          name: error?.name,
-          message: error?.message,
-          stack: error?.stack?.split('\n').slice(0, 5),
+          name: err?.name,
+          message: err?.message,
+          stack: err?.stack?.split('\n').slice(0, 5),
         }
       : undefined,
     undefined,

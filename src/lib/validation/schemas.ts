@@ -177,68 +177,68 @@ export const fileUploadSchema = createFormValidator({
  * Validate resident data
  */
 export async function validateResidentData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await residentSchema(data as Record<string, any>, context);
+  return await residentSchema(data, context);
 }
 
 /**
  * Validate household data
  */
 export async function validateHouseholdData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await householdSchema(data as Record<string, any>, context);
+  return await householdSchema(data, context);
 }
 
 /**
  * Validate user data
  */
 export async function validateUserData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await userSchema(data as Record<string, any>, context);
+  return await userSchema(data, context);
 }
 
 /**
  * Validate login data
  */
 export async function validateLoginData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await loginSchema(data as Record<string, any>, context);
+  return await loginSchema(data, context);
 }
 
 /**
  * Validate password change data
  */
 export async function validatePasswordChangeData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await passwordChangeSchema(data as Record<string, any>, context);
+  return await passwordChangeSchema(data, context);
 }
 
 /**
  * Validate search query data
  */
 export async function validateSearchQueryData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await searchQuerySchema(data as Record<string, any>, context);
+  return await searchQuerySchema(data, context);
 }
 
 /**
  * Validate file upload data
  */
 export async function validateFileUploadData(
-  data: unknown,
+  data: any,
   context?: ValidationContext
 ): Promise<ValidationResult> {
-  return await fileUploadSchema(data as Record<string, any>, context);
+  return await fileUploadSchema(data, context);
 }

@@ -32,7 +32,7 @@ export const ReadOnlyField = ({
   orientation = 'vertical',
   labelWidth = 'md',
   htmlFor,
-  labelSize = 'md',
+  labelSize = 'sm',
   readOnlyProps,
   labelProps,
 }: ReadOnlyFieldProps) => {
@@ -61,12 +61,11 @@ export const ReadOnlyField = ({
   };
 
   return (
-    <div className={cn('w-full', isHorizontal ? 'flex items-start gap-3' : 'flex flex-col', className)}>
+    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
         <div className={cn(
-          'flex items-start',
-          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-1.5` : 'mb-2'
+          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1'
         )}>
           <Label
             htmlFor={fieldId}
@@ -80,7 +79,7 @@ export const ReadOnlyField = ({
       )}
 
       {/* Field Container */}
-      <div className={cn('flex-1', isHorizontal ? 'min-w-0' : 'flex flex-col')}>
+      <div className={cn(isHorizontal && 'flex-1 min-w-0')}>
         {/* ReadOnly Field */}
         <div>
           {readOnlyProps ? (
@@ -106,7 +105,7 @@ export const ReadOnlyField = ({
 
         {/* Helper Text and Error Messages */}
         {hasHelperText && (
-          <div className="flex flex-col gap-2 mt-1">
+          <div className="mt-1 space-y-1">
             {/* Helper Text */}
             {helperText && (
               <HelperText id={helperTextId}>

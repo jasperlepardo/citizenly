@@ -41,11 +41,6 @@ export async function GET(request: NextRequest) {
       .eq('id', user.id)
       .single();
 
-    console.log('User profile query result:', {
-      userId: user.id,
-      userProfile,
-      profileError,
-    });
 
     if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
@@ -63,11 +58,6 @@ export async function GET(request: NextRequest) {
       .eq('barangay_code', barangayCode)
       .maybeSingle();
 
-    console.log('Dashboard query result:', {
-      barangayCode,
-      dashboardStats,
-      statsError,
-    });
 
     if (statsError) {
       console.error('Dashboard stats query error:', statsError);
@@ -90,6 +80,7 @@ export async function GET(request: NextRequest) {
         sex, 
         civil_status, 
         employment_status,
+        household_code,
         households!inner(barangay_code),
         resident_sectoral_info(
           is_labor_force,
@@ -109,12 +100,6 @@ export async function GET(request: NextRequest) {
       .eq('households.barangay_code', barangayCode)
       .eq('is_active', true);
 
-    console.log('Residents data query result:', {
-      barangayCode,
-      residentsCount: residentsData?.length || 0,
-      residentsError,
-      sampleResident: residentsData?.[0],
-    });
 
     // Calculate real sectoral statistics from residents data
     const sectoralStats = {
@@ -152,12 +137,18 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log('Calculated sectoral statistics:', sectoralStats);
+
+    // Calculate actual counts from the data we retrieved
+    const actualResidentCount = residentsData?.length || 0;
+    const uniqueHouseholds = new Set(
+      residentsData?.map(r => r.household_code).filter(Boolean) || []
+    );
+    const actualHouseholdCount = uniqueHouseholds.size;
 
     const response = {
       stats: {
-        residents: statsData.total_residents || 0,
-        households: statsData.total_households || 0,
+        residents: actualResidentCount,
+        households: actualHouseholdCount,
         businesses: 0, // TODO: Add when businesses table exists
         certifications: 0, // TODO: Add when certifications table exists
         seniorCitizens: sectoralStats.seniorCitizens || statsData.age_65_plus || 0,
@@ -200,7 +191,6 @@ export async function GET(request: NextRequest) {
       barangayCode: barangayCode,
     };
 
-    console.log('Final API response:', JSON.stringify(response, null, 2));
 
     return NextResponse.json(response);
   } catch (error) {

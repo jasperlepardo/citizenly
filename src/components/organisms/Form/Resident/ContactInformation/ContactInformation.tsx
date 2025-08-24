@@ -1,13 +1,17 @@
 import React from 'react';
+import type { FormMode } from '@/types/forms';
 import { ContactDetails, ContactDetailsData } from './FormField/ContactDetails';
 import { HouseholdInformation, HouseholdInformationData } from './FormField/HouseholdInformation';
 
 export interface ContactInformationFormProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   formData: {
     email?: string;
     phoneNumber?: string;
     mobileNumber?: string;
     householdCode?: string;
+    householdName?: string;
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
@@ -18,6 +22,7 @@ export interface ContactInformationFormProps {
 }
 
 export function ContactInformationForm({ 
+  mode = 'create',
   formData, 
   onChange, 
   errors,
@@ -36,6 +41,7 @@ export function ContactInformationForm({
   // Map form data to HouseholdInformation component props
   const householdInfoValue: HouseholdInformationData = {
     householdCode: formData.householdCode || '',
+    householdName: formData.householdName || '',
   };
 
   // Handle changes from ContactDetails component
@@ -68,6 +74,7 @@ export function ContactInformationForm({
             value={contactDetailsValue}
             onChange={handleContactDetailsChange}
             errors={errors}
+            mode={mode}
           />
 
           {/* Household Information */}
@@ -78,6 +85,7 @@ export function ContactInformationForm({
             onHouseholdSearch={onHouseholdSearch}
             householdOptions={householdOptions}
             householdLoading={householdLoading}
+            mode={mode}
           />
         </div>
       </div>

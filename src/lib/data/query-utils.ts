@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { logError } from '@/lib/logging/secure-logger';
 
 /**

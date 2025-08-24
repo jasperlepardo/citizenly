@@ -85,17 +85,25 @@ export const createResidentSchema = z.object({
   mobileNumber: phoneSchema,
   telephoneNumber: z.string().max(50).optional().or(z.literal('')),
 
-  // Personal details
+  // Personal details (aligned with database enums)
   civilStatus: z
-    .enum(['single', 'married', 'widowed', 'separated', 'divorced', 'annulled'])
+    .enum(['single', 'married', 'widowed', 'separated', 'divorced', 'others'])
     .default('single'),
   civilStatusOthersSpecify: z.string().max(200).optional().or(z.literal('')),
-  citizenship: z.string().max(50).default('filipino'),
+  citizenship: z
+    .enum(['filipino', 'dual_citizen', 'foreigner'])
+    .default('filipino'),
   bloodType: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'])
-    .default('unknown'),
-  ethnicity: z.string().max(50).default('not_reported'),
-  religion: z.string().max(50).default('prefer_not_to_say'),
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    .optional()
+    .or(z.literal('')),
+  ethnicity: z
+    .enum(['tagalog', 'cebuano', 'ilocano', 'bisaya', 'hiligaynon', 'bikolano', 'waray', 'kapampangan', 'pangasinense', 'maranao', 'maguindanao', 'tausug', 'yakan', 'samal', 'badjao', 'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 'teduray', 'tumandok', 'chinese', 'others'])
+    .optional()
+    .or(z.literal('')),
+  religion: z
+    .enum(['roman_catholic', 'islam', 'iglesia_ni_cristo', 'christian', 'aglipayan_church', 'seventh_day_adventist', 'bible_baptist_church', 'jehovahs_witnesses', 'church_of_jesus_christ_latter_day_saints', 'united_church_of_christ_philippines', 'others'])
+    .default('roman_catholic'),
   religionOthersSpecify: z.string().max(200).optional().or(z.literal('')),
 
   // Physical characteristics
@@ -114,21 +122,14 @@ export const createResidentSchema = z.object({
   motherMaidenMiddleName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
   motherMaidenLastName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
 
-  // Education and employment
+  // Education and employment (aligned with database enum)
   educationAttainment: z
     .union([
       z.enum([
-        'no_schooling',
-        'elementary_undergraduate',
-        'elementary_graduate',
-        'high_school_undergraduate',
-        'high_school_graduate',
-        'college_undergraduate',
-        'college_graduate',
-        'post_graduate',
-        'college',
         'elementary',
         'high_school',
+        'college',
+        'post_graduate',
         'vocational',
       ]),
       z.literal(''),
@@ -136,18 +137,22 @@ export const createResidentSchema = z.object({
     .optional(),
   isGraduate: z.boolean().default(false),
   employmentStatus: z
-    .enum([
-      'employed',
-      'unemployed',
-      'underemployed',
-      'self_employed',
-      'student',
-      'retired',
-      'homemaker',
-      'unable_to_work',
-      'looking_for_work',
-      'not_in_labor_force',
+    .union([
+      z.enum([
+        'employed',
+        'unemployed',
+        'underemployed',
+        'self_employed',
+        'student',
+        'retired',
+        'homemaker',
+        'unable_to_work',
+        'looking_for_work',
+        'not_in_labor_force',
+      ]),
+      z.literal(''),
     ])
+    .optional()
     .default('not_in_labor_force'),
   occupationCode: z.string().max(10).optional().or(z.literal('')),
 

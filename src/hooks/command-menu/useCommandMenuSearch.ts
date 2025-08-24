@@ -10,7 +10,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { searchData } from '@/lib/command-menu';
-import { trackSearch } from '@/lib/storage';
+import { trackSearch } from '@/lib/data';
 import { trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 

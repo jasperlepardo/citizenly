@@ -106,7 +106,9 @@ export const LazyCreateHouseholdModal = createLazyComponent(
 
 // Complex form sections
 export const LazySectoralInfo = createLazyComponent(
-  () => import('@/components/organisms/SectoralInfo'),
+  () => import('@/components/organisms/Form/Resident/SectoralInformation').then(module => ({
+    default: module.SectoralClassifications
+  })),
   {
     ...LazyLoadingPresets.form,
     displayName: 'SectoralInfo',

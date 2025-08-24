@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
 // User profile types based on database schema
@@ -132,7 +132,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
           } = await supabase.auth.getSession();
 
           if (!session?.access_token) {
-            throw new Error('No valid session found');
+            throw new Error('No valid authentication session. Please log in again.');
           }
 
           // Use server-side API to fetch profile data (bypasses RLS issues)
@@ -147,6 +147,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
               }),
               timeoutPromise,
             ]);
+            console.log('Profile API response status:', (result as Response).status);
             return result;
           })) as Response;
 
@@ -245,6 +246,8 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     const initAuth = async () => {
       try {
         console.log('Starting auth initialization...');
+        
+        // First try to get session
         const {
           data: { session },
           error,
@@ -258,6 +261,22 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
             hint: (error as any).hint,
             fullError: JSON.stringify(error, null, 2),
           });
+          
+          // If session fails, try to refresh from storage
+          try {
+            console.log('Attempting session recovery from storage...');
+            await supabase.auth.refreshSession();
+            const { data: { session: refreshedSession } } = await supabase.auth.getSession();
+            
+            if (refreshedSession) {
+              console.log('Session recovered successfully');
+              setSession(refreshedSession);
+              setUser(refreshedSession.user);
+            }
+          } catch (refreshError) {
+            console.warn('Session recovery failed:', refreshError);
+          }
+          
           setLoading(false);
           return;
         }

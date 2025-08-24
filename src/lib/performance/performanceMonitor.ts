@@ -206,11 +206,14 @@ class PerformanceMonitor {
    * Handle long tasks
    */
   private handleLongTask(entry: PerformanceEntry): void {
-    logger.warn('Long task detected', {
-      duration: entry.duration,
-      startTime: entry.startTime,
-      name: entry.name,
-    });
+    // Only log in development and only for very long tasks
+    if (process.env.NODE_ENV === 'development' && entry.duration > 300) {
+      logger.warn('Long task detected', {
+        duration: entry.duration,
+        startTime: entry.startTime,
+        name: entry.name,
+      });
+    }
 
     // Long tasks over 50ms can affect user experience
     if (entry.duration > 50) {

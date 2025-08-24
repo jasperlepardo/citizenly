@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { syncQueue } from '@/lib/storage';
+import { syncQueue } from '@/lib/data';
 
 /**
  * Return type for connection status hook

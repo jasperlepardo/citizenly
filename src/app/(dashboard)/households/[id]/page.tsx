@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { logger, logError } from '@/lib/logging/secure-logger';
 import { useAuth } from '@/contexts/AuthContext';
 

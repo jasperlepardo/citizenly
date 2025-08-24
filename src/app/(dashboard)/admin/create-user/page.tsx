@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { InputField, SelectField } from '@/components/molecules';
 import Link from 'next/link';
 import { logger, logError } from '@/lib/logging/secure-logger';

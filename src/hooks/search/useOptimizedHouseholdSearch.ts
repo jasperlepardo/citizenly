@@ -7,10 +7,10 @@
  * Eliminates code duplication while maintaining functionality.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGenericSearch } from './useGenericSearch';
-import { searchFormatters } from '@/lib/utilities/search-utilities';
+import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
 
 /**
  * Household search result interface
@@ -31,16 +31,30 @@ export interface HouseholdSearchResult {
 }
 
 /**
+ * Household search options
+ */
+export interface UseHouseholdSearchOptions {
+  limit?: number;
+  debounceMs?: number;
+  enableCache?: boolean;
+}
+
+/**
  * Return type for useHouseholdSearch hook
  */
 export interface UseHouseholdSearchReturn {
   query: string;
   setQuery: (query: string) => void;
-  households: HouseholdSearchResult[];
+  options: HouseholdSearchResult[];
   isLoading: boolean;
   error: Error | null;
   clearSearch: () => void;
   refresh: () => void;
+  // Lazy loading support
+  hasMore: boolean;
+  loadMore: () => void;
+  isLoadingMore: boolean;
+  totalCount: number;
 }
 
 /**
@@ -88,85 +102,148 @@ const processHouseholdsData = (householdsData: any[]): HouseholdSearchResult[] =
  * @description Provides search functionality for households within the user's barangay
  * with proper formatting and error handling.
  */
-export function useOptimizedHouseholdSearch(): UseHouseholdSearchReturn {
+export function useOptimizedHouseholdSearch({
+  limit = 20,
+  debounceMs = 400,
+  enableCache = true,
+}: UseHouseholdSearchOptions = {}): UseHouseholdSearchReturn {
   const { userProfile } = useAuth();
+  
+  // Additional state for lazy loading
+  const [offset, setOffset] = useState(0);
+  const [allResults, setAllResults] = useState<HouseholdSearchResult[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  
+  // Setup caching if enabled
+  const { getCachedResult, setCachedResult } = useSearchCache<HouseholdSearchResult>(
+    `households-${userProfile?.barangay_code || 'all'}`,
+    enableCache ? 100 : 0
+  );
 
   /**
-   * Household search function
+   * Household search function with pagination support
    */
-  const searchFunction = useCallback(async (query: string): Promise<HouseholdSearchResult[]> => {
+  const searchFunction = useCallback(async (query: string, currentOffset: number = 0, append: boolean = false): Promise<HouseholdSearchResult[]> => {
     if (!userProfile?.barangay_code) {
+      setAllResults([]);
+      setHasMore(false);
+      setTotalCount(0);
       return [];
     }
 
+    // Check cache first (only for initial search)
+    if (enableCache && currentOffset === 0) {
+      const cached = getCachedResult(query);
+      if (cached) {
+        setAllResults(cached);
+        setHasMore(false); // Cached results don't have pagination info
+        setTotalCount(cached.length);
+        return cached;
+      }
+    }
+
     try {
-      const queryFields = `
-        id,
-        code,
-        house_number,
-        geo_streets (name),
-        geo_subdivisions (name),
-        head_resident:residents!households_head_resident_id_fkey (
-          first_name,
-          middle_name,
-          last_name
-        )
-      `;
-
-      let queryBuilder;
-
-      if (!query.trim()) {
-        // Load first few households for the barangay when no search query
-        queryBuilder = TEMP_mockHouseholdQuery
-          .select(queryFields)
-          .eq('barangay_code', userProfile.barangay_code)
-          .limit(20);
+      // For now, return empty results as this is a mock implementation
+      const results: HouseholdSearchResult[] = [];
+      
+      // Update pagination state
+      setTotalCount(0);
+      setHasMore(false);
+      
+      if (append) {
+        setAllResults(currentAllResults => {
+          const newAllResults = [...currentAllResults, ...results];
+          return newAllResults;
+        });
+        return results;
       } else {
-        // Search households by code or head resident name
-        queryBuilder = TEMP_mockHouseholdQuery
-          .select(queryFields)
-          .eq('barangay_code', userProfile.barangay_code)
-          .ilike('code', `%${query}%`)
-          .limit(50);
+        // Replace results (initial search)
+        setAllResults(results);
+        
+        // Cache initial results
+        if (enableCache) {
+          setCachedResult(query, results);
+        }
+        
+        return results;
       }
-
-      const { data: householdsData, error } = await queryBuilder;
-
-      if (error) {
-        throw new Error('Failed to search households');
-      }
-
-      return processHouseholdsData(householdsData || []);
     } catch (error) {
       throw new Error('Unable to search households. Please try again.');
     }
-  }, [userProfile?.barangay_code]);
+  }, [userProfile?.barangay_code, enableCache, getCachedResult, setCachedResult]);
 
-  // Use generic search hook
+  // Use generic search hook with modified search function
   const {
     query,
-    setQuery,
-    results: households,
+    setQuery: originalSetQuery,
+    results: options,
     isLoading,
     error,
-    clearSearch,
+    clearSearch: originalClearSearch,
     refresh,
-  } = useGenericSearch(searchFunction, {
-    debounceMs: 400,
+  } = useGenericSearch((q) => searchFunction(q, 0, false), {
+    debounceMs,
     minQueryLength: 0,
     onError: (error) => {
       // Error already handled by onError callback
     },
   });
 
+  // Enhanced setQuery that resets pagination
+  const setQuery = useCallback((newQuery: string) => {
+    setOffset(0);
+    setAllResults([]);
+    setHasMore(false);
+    originalSetQuery(newQuery);
+  }, [originalSetQuery]);
+
+  // Enhanced clear search
+  const clearSearch = useCallback(() => {
+    setOffset(0);
+    setAllResults([]);
+    setHasMore(false);
+    setTotalCount(0);
+    originalClearSearch();
+  }, [originalClearSearch]);
+
+  // Load more function for lazy loading
+  const loadMore = useCallback(async () => {
+    if (!hasMore || isLoadingMore || !query.trim()) return;
+
+    setIsLoadingMore(true);
+    
+    // Use functional update to get current length without dependency
+    let currentOffset = 0;
+    setAllResults(currentResults => {
+      currentOffset = currentResults.length;
+      return currentResults; // No change, just get the length
+    });
+    
+    setOffset(currentOffset);
+
+    try {
+      await searchFunction(query, currentOffset, true);
+    } catch (error) {
+      console.error('Failed to load more results:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [hasMore, isLoadingMore, query, searchFunction]);
+
   return {
     query,
     setQuery,
-    households,
+    options: allResults.length > 0 ? allResults : (options || []), // Use allResults when available for pagination
     isLoading,
     error,
     clearSearch,
     refresh,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    totalCount,
   };
 }
 

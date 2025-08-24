@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 
 export default function AuthDebug() {
   const [debugInfo, setDebugInfo] = useState<any>({});

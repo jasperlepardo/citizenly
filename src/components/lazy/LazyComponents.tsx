@@ -105,8 +105,8 @@ const PersonalInformationLazy = lazy(() =>
 );
 
 const SectoralInfoLazy = lazy(() =>
-  import('@/components/organisms/SectoralInfo').then(module => ({
-    default: module.SectoralInfo,
+  import('@/components/organisms/Form/Resident/SectoralInformation').then(module => ({
+    default: module.SectoralClassifications,
   }))
 );
 
@@ -163,7 +163,7 @@ export const preloadComponents = {
   populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
   userProfile: () => import('@/components/organisms/UserProfile'),
   personalInformation: () => import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation'),
-  sectoralInfo: () => import('@/components/organisms/SectoralInfo'),
+  sectoralInfo: () => import('@/components/organisms/Form/Resident/SectoralInformation'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),
   geographicLocationStep: () => import('@/components/organisms/GeographicLocationStep'),

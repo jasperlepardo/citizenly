@@ -206,7 +206,7 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       resourceId: event.resourceId,
       action: event.action!,
       outcome: event.outcome || 'success',
-      details: event.details ? maskSensitiveData(event.details) : undefined,
+      details: event.details ? (maskSensitiveData(event.details) as Record<string, any>) : undefined,
       context: event.context!,
       errorCode: event.errorCode,
       errorMessage: event.errorMessage,

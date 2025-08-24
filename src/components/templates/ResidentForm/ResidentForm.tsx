@@ -2,16 +2,22 @@
 
 import React, { useState, useCallback, useRef } from 'react';
 import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetailsForm, SectoralInformationForm, MigrationInformation } from '@/components/organisms/Form';
+import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
+import { FormHeader } from './components/FormHeader';
+import { FormActions } from './components/FormActions';
 import { useAuth } from '@/contexts/AuthContext';
 import { ResidentFormState } from '@/types/resident-form';
+import type { FormMode } from '@/types/forms';
 
 // Use the database-aligned ResidentFormState interface
 type ResidentFormData = ResidentFormState;
 
 interface ResidentFormProps {
+  mode?: FormMode;
   onSubmit?: (data: ResidentFormData) => void;
   onCancel?: () => void;
   initialData?: Partial<ResidentFormData>;
+  onModeChange?: (mode: FormMode) => void;
 }
 
 // Indigenous peoples ethnicities - automatically sets is_indigenous_people = true
@@ -67,7 +73,13 @@ const DEFAULT_FORM_VALUES: Partial<ResidentFormData> = {
   // Note: ethnicity, blood_type, religion are nullable - no defaults
 };
 
-export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormProps) {
+export function ResidentForm({ 
+  mode = 'create', 
+  onSubmit, 
+  onCancel, 
+  initialData,
+  onModeChange 
+}: ResidentFormProps) {
   // Auth context
   const { userProfile } = useAuth();
   
@@ -343,9 +355,14 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Personal Information Section */}
+    <div className="space-y-8">
+      {/* Form Header */}
+      <FormHeader mode={mode} onModeChange={onModeChange} />
+      
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Personal Information Section */}
       <PersonalInformationForm
+        mode={mode}
         formData={{
           // Map database field names to component expected names
           philsysCardNumber: formData.philsys_card_number,
@@ -400,6 +417,7 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
 
       {/* Contact Information Section */}
       <ContactInformationForm
+        mode={mode}
         formData={{
           // Map database field names to component expected names
           email: formData.email,
@@ -427,6 +445,7 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
 
       {/* Physical Personal Details Section */}
       <PhysicalPersonalDetailsForm
+        mode={mode}
         formData={{
           // Map database field names to component expected names
           bloodType: formData.blood_type,
@@ -474,6 +493,7 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
 
       {/* Sectoral Information Section */}
       <SectoralInformationForm
+        mode={mode}
         formData={{
           // Map database field names to component expected names
           isLaborForce: formData.is_labor_force,
@@ -515,6 +535,7 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
       {/* Migration Information Section - Only show if migrant is checked */}
       {formData.is_migrant && (
         <MigrationInformation
+          mode={mode}
           value={{
             previous_barangay_code: formData.previous_barangay_code,
             previous_city_municipality_code: formData.previous_city_municipality_code,
@@ -563,6 +584,7 @@ export function ResidentForm({ onSubmit, onCancel, initialData }: ResidentFormPr
         </button>
       </div>
     </form>
+    </div>
   );
 }
 

@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import type { CommandMenuItem } from '../types';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
 import { searchData, exportData, backupData, getRecentItems, clearRecentItems, createResident, createHousehold, findSeniorCitizens, findPWDs, findSoloParents, generateCertificate, generateReport } from '@/lib/command-menu/api-utils';
-import { trackSearch, trackNavigation, trackAction } from '@/lib/storage';
+import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
 import { trackCommandMenuSearch, trackCommandMenuNavigation, trackCommandMenuAction, trackCommandMenuError } from '@/lib/command-menu/analytics-utils';
 
 interface UseCommandMenuWithApiProps {

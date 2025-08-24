@@ -2,6 +2,7 @@ import React from 'react';
 import { SelectField, ControlFieldSet } from '@/components/molecules';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
+import type { FormMode } from '@/types/forms';
 
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [
@@ -18,6 +19,8 @@ export interface EducationInformationProps {
   value: EducationInformationData;
   onChange: (value: EducationInformationData) => void;
   errors: Record<string, string>;
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   className?: string;
 }
 
@@ -25,6 +28,7 @@ export function EducationInformation({
   value, 
   onChange, 
   errors,
+  mode = 'create',
   className = '' 
 }: EducationInformationProps) {
   
@@ -50,6 +54,7 @@ export function EducationInformation({
           required
           labelSize="sm"
           errorMessage={errors.educationAttainment}
+          mode={mode}
           selectProps={{
             placeholder: "Select education level...",
             options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
@@ -68,6 +73,7 @@ export function EducationInformation({
           errorMessage={errors.isGraduate}
           orientation="horizontal"
           spacing="sm"
+          mode={mode}
         >
           {GRADUATE_STATUS_OPTIONS.map((option) => (
             <Radio

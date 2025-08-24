@@ -22,7 +22,7 @@ import {
   generateCertificate, 
   generateReport 
 } from '@/lib/command-menu';
-import { trackNavigation, trackAction } from '@/lib/storage';
+import { trackNavigation, trackAction } from '@/lib/data';
 import { 
   trackCommandMenuNavigation, 
   trackCommandMenuAction 

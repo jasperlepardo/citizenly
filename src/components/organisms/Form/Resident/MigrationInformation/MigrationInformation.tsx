@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
+import type { FormMode } from '@/types/forms';
 import { InputField, SelectField, ControlField } from '@/components/molecules';
 import { useMigrationInformation, MigrationInformationData } from '@/hooks/utilities/useMigrationInformation';
 
 export type { MigrationInformationData };
 
 export interface MigrationInformationProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: MigrationInformationData;
   onChange: (value: MigrationInformationData) => void;
   errors: Record<string, string>;
@@ -12,6 +15,7 @@ export interface MigrationInformationProps {
 }
 
 export function MigrationInformation({ 
+  mode = 'create',
   value, 
   onChange, 
   errors,
@@ -67,6 +71,7 @@ export function MigrationInformation({
               labelSize="sm"
               errorMessage={errors.previous_barangay_code}
               helperText="Search for the previous barangay"
+              mode={mode}
               selectProps={{
                 placeholder: "Search for previous barangay...",
                 options: barangayOptions.map(place => {
@@ -170,6 +175,7 @@ export function MigrationInformation({
             label="Length of Stay in Previous Location (months)"
             labelSize="sm"
             errorMessage={errors.length_of_stay_previous_months}
+            mode={mode}
             inputProps={{
               type: "number",
               value: migrationData.length_of_stay_previous_months || '',
@@ -183,6 +189,7 @@ export function MigrationInformation({
             label="Reason for Leaving Previous Location"
             labelSize="sm"
             errorMessage={errors.reason_for_leaving}
+            mode={mode}
             inputProps={{
               value: migrationData.reason_for_leaving || '',
               onChange: (e) => updateMigrationData('reason_for_leaving', e.target.value),
@@ -194,6 +201,7 @@ export function MigrationInformation({
             label="Date of Transfer"
             labelSize="sm"
             errorMessage={errors.date_of_transfer}
+            mode={mode}
             inputProps={{
               type: "date",
               value: migrationData.date_of_transfer || '',
@@ -205,6 +213,7 @@ export function MigrationInformation({
             label="Reason for Transferring Here"
             labelSize="sm"
             errorMessage={errors.reason_for_transferring}
+            mode={mode}
             inputProps={{
               value: migrationData.reason_for_transferring || '',
               onChange: (e) => updateMigrationData('reason_for_transferring', e.target.value),
@@ -216,6 +225,7 @@ export function MigrationInformation({
             label="Duration of Stay in Current Location (months)"
             labelSize="sm"
             errorMessage={errors.duration_of_stay_current_months}
+            mode={mode}
             inputProps={{
               type: "number",
               value: migrationData.duration_of_stay_current_months || '',
@@ -229,6 +239,7 @@ export function MigrationInformation({
             label="Intending to Return?"
             labelSize="sm"
             errorMessage={errors.is_intending_to_return}
+            mode={mode}
             toggleText={{
               checked: 'Yes, resident plans to return to previous residence',
               unchecked: 'No, resident does not plan to return'

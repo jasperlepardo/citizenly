@@ -1,9 +1,12 @@
 import React from 'react';
+import type { FormMode } from '@/types/forms';
 import { PhysicalCharacteristics, PhysicalCharacteristicsData } from './FormField/PhysicalCharacteristics';
 import { VotingInformation, VotingInformationData } from './FormField/VotingInformation';
 import { MotherMaidenName, MotherMaidenNameData } from './FormField/MotherMaidenName';
 
 export interface PhysicalPersonalDetailsFormProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   formData: {
     // Physical Characteristics
     bloodType?: string;
@@ -29,6 +32,7 @@ export interface PhysicalPersonalDetailsFormProps {
 }
 
 export function PhysicalPersonalDetailsForm({ 
+  mode = 'create',
   formData, 
   onChange, 
   errors
@@ -101,6 +105,7 @@ export function PhysicalPersonalDetailsForm({
             value={physicalCharacteristicsValue}
             onChange={handlePhysicalCharacteristicsChange}
             errors={errors}
+            mode={mode}
           />
 
           {/* Voting Information */}
@@ -108,6 +113,7 @@ export function PhysicalPersonalDetailsForm({
             value={votingInfoValue}
             onChange={handleVotingInfoChange}
             errors={errors}
+            mode={mode}
           />
 
           {/* Mother's Maiden Name */}
@@ -115,6 +121,7 @@ export function PhysicalPersonalDetailsForm({
             value={motherMaidenNameValue}
             onChange={handleMotherMaidenNameChange}
             errors={errors}
+            mode={mode}
           />
         </div>
       </div>

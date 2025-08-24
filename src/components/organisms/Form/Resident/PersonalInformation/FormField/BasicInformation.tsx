@@ -5,6 +5,7 @@ import {
   SEX_OPTIONS_WITH_DEFAULT, 
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT
 } from '@/lib/constants/resident-enums';
+import type { FormMode } from '@/types/forms';
 
 export interface BasicInformationData {
   firstName: string;
@@ -17,6 +18,8 @@ export interface BasicInformationData {
 }
 
 interface BasicInformationProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   value: BasicInformationData;
   onChange: (value: BasicInformationData) => void;
   errors?: Partial<Record<keyof BasicInformationData, string>>;
@@ -26,6 +29,7 @@ interface BasicInformationProps {
 // Use imported options with default empty values
 
 export function BasicInformation({
+  mode = 'create',
   value,
   onChange,
   errors = {},
@@ -42,6 +46,17 @@ export function BasicInformation({
     handleChange(field, option?.value || '');
   };
 
+  // Helper function to format full name
+  const formatFullName = () => {
+    const parts = [
+      value.firstName?.trim(),
+      value.middleName?.trim(), 
+      value.lastName?.trim(),
+      value.extensionName?.trim()
+    ].filter(Boolean);
+    return parts.length > 0 ? parts.join(' ') : '—';
+  };
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
@@ -53,55 +68,76 @@ export function BasicInformation({
 
       {/* All Fields in One Grid */}
       <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Name Fields */}
-        <InputField
-          label="First Name"
-          required
-          labelSize="sm"
-          errorMessage={errors.firstName}
-          inputProps={{
-            value: value.firstName,
-            onChange: e => handleChange('firstName', e.target.value),
-            placeholder: "Enter first name",
-            required: true
-          }}
-        />
+        {/* Name Fields - Combined in view mode */}
+        {mode === 'view' ? (
+          <div className="col-span-full">
+            <InputField
+              mode={mode}
+              label="Full Name"
+              labelSize="sm"
+              inputProps={{
+                value: formatFullName(),
+                readOnly: true
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            <InputField
+              mode={mode}
+              label="First Name"
+              required
+              labelSize="sm"
+              errorMessage={errors.firstName}
+              inputProps={{
+                value: value.firstName,
+                onChange: e => handleChange('firstName', e.target.value),
+                placeholder: "Enter first name",
+                required: true
+              }}
+            />
 
-        <InputField
-          label="Middle Name"
-          labelSize="sm"
-          inputProps={{
-            value: value.middleName,
-            onChange: e => handleChange('middleName', e.target.value),
-            placeholder: "Enter middle name"
-          }}
-        />
+            <InputField
+              mode={mode}
+              label="Middle Name"
+              labelSize="sm"
+              inputProps={{
+                value: value.middleName,
+                onChange: e => handleChange('middleName', e.target.value),
+                placeholder: "Enter middle name"
+              }}
+            />
 
-        <InputField
-          label="Last Name"
-          required
-          labelSize="sm"
-          errorMessage={errors.lastName}
-          inputProps={{
-            value: value.lastName,
-            onChange: e => handleChange('lastName', e.target.value),
-            placeholder: "Enter last name",
-            required: true
-          }}
-        />
+            <InputField
+              mode={mode}
+              label="Last Name"
+              required
+              labelSize="sm"
+              errorMessage={errors.lastName}
+              inputProps={{
+                value: value.lastName,
+                onChange: e => handleChange('lastName', e.target.value),
+                placeholder: "Enter last name",
+                required: true
+              }}
+            />
 
-        <InputField
-          label="Extension Name"
-          labelSize="sm"
-          inputProps={{
-            value: value.extensionName,
-            onChange: e => handleChange('extensionName', e.target.value),
-            placeholder: "Jr., Sr., III, etc."
-          }}
-        />
+            <InputField
+              mode={mode}
+              label="Extension Name"
+              labelSize="sm"
+              inputProps={{
+                value: value.extensionName,
+                onChange: e => handleChange('extensionName', e.target.value),
+                placeholder: "Jr., Sr., III, etc."
+              }}
+            />
+          </>
+        )}
 
         {/* Sex, Civil Status, Civil Status Other (conditional), Citizenship */}
         <ControlFieldSet
+          mode={mode}
           type="radio"
           label="Sex"
           labelSize="sm"
@@ -128,6 +164,7 @@ export function BasicInformation({
         </ControlFieldSet>
 
         <SelectField
+          mode={mode}
           label="Civil Status"
           labelSize="sm"
           errorMessage={errors.civilStatus}
@@ -142,6 +179,7 @@ export function BasicInformation({
         {/* Show input field when "others" is selected */}
         {value.civilStatus === 'others' && (
           <InputField
+            mode={mode}
             label="Specify Civil Status"
             required
             labelSize="sm"

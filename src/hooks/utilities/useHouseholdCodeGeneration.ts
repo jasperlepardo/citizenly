@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logging/secure-logger';
 

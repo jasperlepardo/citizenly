@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import { useUserBarangay } from '@/hooks/utilities';
 import { useCSRFToken } from '@/lib/auth/csrf';
 import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';

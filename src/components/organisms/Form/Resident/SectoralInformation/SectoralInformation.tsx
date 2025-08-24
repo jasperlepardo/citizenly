@@ -1,7 +1,10 @@
 import React from 'react';
-import SectoralInfo, { SectoralInformation, SectoralContext } from '@/components/organisms/SectoralInfo/SectoralInfo';
+import type { FormMode } from '@/types/forms';
+import SectoralClassifications, { SectoralInformation, SectoralContext } from './FormField/SectoralClassifications';
 
 export interface SectoralInformationFormProps {
+  /** Form mode - determines if field is editable or read-only */
+  mode?: FormMode;
   formData: {
     // Sectoral Information
     isLaborForce?: boolean;
@@ -28,6 +31,7 @@ export interface SectoralInformationFormProps {
 }
 
 export function SectoralInformationForm({ 
+  mode = 'create',
   formData, 
   onChange, 
   errors
@@ -84,10 +88,12 @@ export function SectoralInformationForm({
           </p>
         </div>
 
-        <SectoralInfo
+        <SectoralClassifications
           value={sectoralValue}
           onChange={handleSectoralChange}
           context={sectoralContext}
+          mode={mode}
+          disabled={mode === 'view'}
         />
       </div>
     </div>
