@@ -5,9 +5,21 @@
 
 // Core UI utilities
 export * from './accessibility';
-export * from './lazy-components';
-export * from './lazy-loading';
 export * from './typography';
+
+// Lazy loading utilities (selective exports to avoid conflicts)
+export {
+  createLazyComponent,
+  preloadLazyComponent,
+  LazyLoadingPresets,
+  useLazyLoadOnIntersection,
+} from './lazy-components';
+
+// Use withLazyLoading from lazy-loading.tsx as primary implementation
+export {
+  withLazyLoading,
+  preloadComponents,
+} from './lazy-loading';
 
 // Charts (moved from charts/)
 export * from './chart-transformers';

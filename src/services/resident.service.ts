@@ -325,7 +325,7 @@ export class ResidentService {
       logSecurityOperation('RESIDENT_CREATED', 'current-user', {
         resident_id: data[0]?.id,
         household_code: formData.householdCode,
-        is_household_head: formData.householdRole === 'Head',
+        // is_household_head: formData.householdRole === 'Head', // householdRole not in ResidentFormData
       });
 
       dbLogger.info('Resident created successfully', {
@@ -334,6 +334,8 @@ export class ResidentService {
       });
 
       // Handle household head assignment
+      // TODO: householdRole not in ResidentFormData interface - need to handle separately
+      /*
       if (formData.householdRole === 'Head' && formData.householdCode && data?.[0]?.id) {
         const householdResult = await this.updateHouseholdHead(formData.householdCode, data[0].id);
 
@@ -346,6 +348,7 @@ export class ResidentService {
           };
         }
       }
+      */
 
       return {
         success: true,

@@ -34,29 +34,9 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   motherMaidenFirstName: '',
   motherMaidenMiddleName: '',
   motherMaidenLastName: '',
-  // Sectoral Information
-  isLaborForceEmployed: false,
-  isUnemployed: false,
-  isOverseasFilipinoWorker: false,
-  isPersonWithDisability: false,
-  isOutOfSchoolChildren: false,
-  isOutOfSchoolYouth: false,
-  isSeniorCitizen: false,
-  isRegisteredSeniorCitizen: false,
-  isSoloParent: false,
-  isIndigenousPeople: false,
-  isMigrant: false,
-  // Migration Information
-  previousBarangayCode: '',
-  previousCityMunicipalityCode: '',
-  previousProvinceCode: '',
-  previousRegionCode: '',
-  lengthOfStayPreviousMonths: 0,
-  reasonForLeaving: '',
-  dateOfTransfer: '',
-  reasonForTransferring: '',
-  durationOfStayCurrentMonths: 0,
-  isIntendingToReturn: false,
+  // Note: Sectoral and migration information are handled separately
+  // These properties are stored in separate tables (resident_sectoral_info, resident_migrant_info)
+  // and should not be part of the core ResidentFormData interface
 };
 
 export const CRITICAL_VALIDATION_FIELDS = [

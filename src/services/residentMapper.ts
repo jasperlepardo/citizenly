@@ -120,30 +120,8 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     motherMaidenMiddleName: resident.mother_maiden_middle || '',
     motherMaidenLastName: resident.mother_maiden_last || '',
     
-    // Sectoral information - these would need to be computed or stored separately
-    isLaborForceEmployed: false, // Computed field
-    isUnemployed: false, // Computed field
-    isOverseasFilipinoWorker: false, // Would need separate storage
-    isPersonWithDisability: false, // Would need separate storage
-    isOutOfSchoolChildren: false, // Would need separate storage
-    isOutOfSchoolYouth: false, // Would need separate storage
-    isSeniorCitizen: false, // Computed from birthdate
-    isRegisteredSeniorCitizen: false, // Would need separate storage
-    isSoloParent: false, // Would need separate storage
-    isIndigenousPeople: false, // Would need separate storage
-    isMigrant: false, // Would need separate storage
-    
-    // Migration Information - would need separate table
-    previousBarangayCode: undefined,
-    previousCityMunicipalityCode: undefined,
-    previousProvinceCode: undefined,
-    previousRegionCode: undefined,
-    lengthOfStayPreviousMonths: undefined,
-    reasonForLeaving: undefined,
-    dateOfTransfer: undefined,
-    reasonForTransferring: undefined,
-    durationOfStayCurrentMonths: undefined,
-    isIntendingToReturn: undefined,
+    // Note: Sectoral and migration information are handled separately
+    // These should be fetched/stored via separate services and tables
   };
 };
 
