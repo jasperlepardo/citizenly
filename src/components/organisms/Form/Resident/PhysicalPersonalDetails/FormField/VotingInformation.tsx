@@ -1,6 +1,6 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField, ControlFieldSet } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 
 export interface VotingInformationData {

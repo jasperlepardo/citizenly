@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/data/supabase';
-import { Button } from '@/components/atoms';
-import { logger, logError } from '@/lib/logging/secure-logger';
+import { supabase } from '@/lib';
+import { Button } from '@/components';
+import { logger, logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
 

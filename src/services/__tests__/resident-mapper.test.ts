@@ -22,12 +22,12 @@ import type {
   ResidentFormData,
   ResidentApiData,
   ResidentWithRelations,
-} from '@/types/residents';
+} from '@/types';
 import type {
   HouseholdData,
   HouseholdHead,
   HouseholdOption,
-} from '@/types/households';
+} from '@/types';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {

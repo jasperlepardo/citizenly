@@ -9,12 +9,12 @@ import {
   ResidentWithRelations,
   PsocOption,
   PsgcOption
-} from '@/types/residents';
+} from '@/types';
 import { 
   HouseholdData,
   HouseholdHead,
   HouseholdOption
-} from '@/types/households';
+} from '@/types';
 
 /**
  * Map form data (camelCase) to API format (snake_case for database)

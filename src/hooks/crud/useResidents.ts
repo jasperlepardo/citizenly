@@ -5,7 +5,7 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 import { useAuth } from '@/contexts';
 
 // Import the properly typed ResidentRecord

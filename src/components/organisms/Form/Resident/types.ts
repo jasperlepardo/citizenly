@@ -3,4 +3,4 @@ export type {
   FormMode,
   FormSectionProps,
   FieldConfig
-} from '@/types/forms';
+} from '@/types';

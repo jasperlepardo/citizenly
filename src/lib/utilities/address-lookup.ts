@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 
 export interface AddressLabels {
   regionLabel?: string;

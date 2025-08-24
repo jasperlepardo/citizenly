@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import type { ResidentFormData } from '@/types/residents';
+import type { ResidentFormData } from '@/types';
 import { ResidentFormSchema } from '@/lib/validation';
 import { 
   getFormToSchemaFieldMapping,

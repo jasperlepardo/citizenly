@@ -8,8 +8,8 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/lib/data/supabase';
-import { logger } from '@/lib/logging/secure-logger';
+import { supabase } from '@/lib';
+import { logger } from '@/lib';
 import { useAuth } from '@/contexts';
 
 /**

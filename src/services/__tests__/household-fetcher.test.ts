@@ -10,7 +10,7 @@ import {
   householdCache,
 } from '../household-fetcher';
 
-import type { HouseholdData, HouseholdHead } from '@/types/households';
+import type { HouseholdData, HouseholdHead } from '@/types';
 
 // Mock supabase
 jest.mock('@/lib/supabase', () => ({

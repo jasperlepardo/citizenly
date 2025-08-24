@@ -5,11 +5,11 @@
  * Handles data transformation, validation, and database operations.
  */
 
-import { supabase } from '@/lib/data/supabase';
-import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
+import { supabase } from '@/lib';
+import { logger, logError, dbLogger } from '@/lib';
 
 // Import database types
-import { HouseholdRecord } from '@/types/households';
+import { HouseholdRecord } from '@/types';
 
 // Types - aligned with exact database structure (27 fields)
 export interface HouseholdFormData {

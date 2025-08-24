@@ -7,7 +7,7 @@ import { BaseRepository, type QueryOptions, type RepositoryResult } from './base
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { HouseholdRecord } from '@/types/households';
+import { HouseholdRecord } from '@/types';
 
 // Use database record directly for consistent typing
 export type HouseholdData = HouseholdRecord;

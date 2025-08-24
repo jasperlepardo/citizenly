@@ -1,6 +1,6 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField, SelectField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField, SelectField } from '@/components';
 import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
 
 export interface PhysicalCharacteristicsData {

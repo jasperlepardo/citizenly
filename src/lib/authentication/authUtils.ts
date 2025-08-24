@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest } from 'next/server';
 import { Role, ROLE_PERMISSIONS, ErrorCode, RequestContext } from './types';
 import { v4 as uuidv4 } from 'uuid';
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 import { AuthUserProfile } from '@/types/auth';
 
 export interface AuthResult {

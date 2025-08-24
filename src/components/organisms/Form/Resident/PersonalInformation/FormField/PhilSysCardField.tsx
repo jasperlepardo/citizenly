@@ -1,6 +1,6 @@
 import React from 'react';
-import { InputField } from '@/components/molecules';
-import type { FormMode } from '@/types/forms';
+import { InputField } from '@/components';
+import type { FormMode } from '@/types';
 
 export interface PhilSysCardFieldProps {
   /** Form mode - determines if field is editable or read-only */

@@ -1,7 +1,7 @@
 import React from 'react';
-import { InputField, SelectField } from '@/components/molecules';
+import { InputField, SelectField } from '@/components';
 import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 export interface BirthInformationData {
   birthdate: string;

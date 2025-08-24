@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField, SelectField, ControlField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField, SelectField, ControlField } from '@/components';
 import { useMigrationInformation, MigrationInformationData } from '@/hooks/utilities/useMigrationInformation';
 
 export type { MigrationInformationData };

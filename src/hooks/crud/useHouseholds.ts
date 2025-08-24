@@ -5,11 +5,11 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 import { useAuth } from '@/contexts';
 
 // Import the properly typed interface
-import { HouseholdRecord } from '@/types/households';
+import { HouseholdRecord } from '@/types';
 
 interface Household extends HouseholdRecord {
   // Additional computed/joined fields for display

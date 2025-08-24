@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 import { Navigation } from '@/components/organisms/Navigation';
 
 interface AppShellProps {

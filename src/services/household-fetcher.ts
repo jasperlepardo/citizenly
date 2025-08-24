@@ -3,8 +3,8 @@
  * Eliminates N+1 query problem by batching database calls
  */
 
-import { supabase } from '@/lib/data/supabase';
-import { HouseholdData, HouseholdHead, HouseholdOption } from '@/types/households';
+import { supabase } from '@/lib';
+import { HouseholdData, HouseholdHead, HouseholdOption } from '@/types';
 import { formatHouseholdOption } from '@/services/residentMapper';
 
 /**

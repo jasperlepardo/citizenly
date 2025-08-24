@@ -1,6 +1,6 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField, SelectField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField, SelectField } from '@/components';
 
 export interface HouseholdTypeInformationData {
   householdType: string;

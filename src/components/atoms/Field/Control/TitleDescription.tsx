@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 
 const titleDescriptionVariants = cva(
   'ml-3 flex flex-col',

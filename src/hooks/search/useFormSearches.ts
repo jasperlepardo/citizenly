@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { PsocOption, PsgcOption } from '@/types/residents';
-import { HouseholdOption } from '@/types/households';
+import { PsocOption, PsgcOption } from '@/types';
+import { HouseholdOption } from '@/types';
 import { formatPsocOption, formatPsgcOption } from '@/services/residentMapper';
 import { searchHouseholdsCached } from '@/services/household-fetcher';
 

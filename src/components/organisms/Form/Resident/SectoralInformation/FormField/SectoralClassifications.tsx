@@ -7,9 +7,9 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { ControlField } from '@/components/molecules';
+import { ControlField } from '@/components';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 // Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {

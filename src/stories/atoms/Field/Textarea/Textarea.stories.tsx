@@ -22,7 +22,7 @@ Enhanced Textarea component following Input component design patterns for consis
 
 ## Usage
 \`\`\`tsx
-import { Textarea } from '@/components/atoms';
+import { Textarea } from '@/components';
 
 <Textarea
   placeholder="Enter your message..."

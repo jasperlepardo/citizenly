@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/data/supabase';
-import { PersonalInformationForm } from '@/components/organisms';
+import { supabase } from '@/lib';
+import { PersonalInformationForm } from '@/components';
 import { ResidentForm } from '@/components/templates/ResidentForm';
 
-import { InputField } from '@/components/molecules';
-import { logger, logError } from '@/lib/logging/secure-logger';
+import { InputField } from '@/components';
+import { logger, logError } from '@/lib';
 import type { ResidentFormState } from '@/types/resident-form';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import { 
   CivilStatusEnum, 
   CitizenshipEnum, 
@@ -19,7 +19,7 @@ import {
   BloodTypeEnum, 
   EthnicityEnum, 
   ReligionEnum 
-} from '@/types/residents';
+} from '@/types';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,

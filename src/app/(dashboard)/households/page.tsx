@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 import { useHouseholds, type Household } from '@/hooks/crud/useHouseholds';
 
 

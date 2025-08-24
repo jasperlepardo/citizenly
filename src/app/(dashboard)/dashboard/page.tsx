@@ -8,9 +8,9 @@ import {
   SexDistributionPieChart,
   CivilStatusPieChart,
   EmploymentStatusPieChart,
-} from '@/components/molecules';
-import { PopulationPyramid } from '@/components/organisms';
-import { logger } from '@/lib/logging/secure-logger';
+} from '@/components';
+import { PopulationPyramid } from '@/components';
+import { logger } from '@/lib';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 
 function DashboardContent() {

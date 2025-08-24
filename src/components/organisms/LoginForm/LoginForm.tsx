@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts';
-import { InputField } from '@/components/molecules';
-import { Button } from '@/components/atoms';
+import { InputField } from '@/components';
+import { Button } from '@/components';
 
 interface LoginFormProps {
   onSuccess?: () => void;

@@ -8,9 +8,9 @@
  */
 
 import { useCallback } from 'react';
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 import { useAuth } from '@/contexts';
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 
 /**
  * Return type for useHouseholdCodeGeneration hook

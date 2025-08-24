@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import SectoralClassifications, { SectoralInformation, SectoralContext } from './FormField/SectoralClassifications';
 
 export interface SectoralInformationFormProps {

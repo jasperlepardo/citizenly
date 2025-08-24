@@ -2,10 +2,10 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { DataTable } from '@/components/organisms';
-import type { TableColumn, TableAction } from '@/components/organisms';
-import { SearchBar } from '@/components/molecules';
-import { Button } from '@/components/atoms';
+import { DataTable } from '@/components';
+import type { TableColumn, TableAction } from '@/components';
+import { SearchBar } from '@/components';
+import { Button } from '@/components';
 import { useResidents, type Resident } from '@/hooks/crud/useResidents';
 
 

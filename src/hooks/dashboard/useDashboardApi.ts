@@ -6,7 +6,7 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 import { useAuth } from '@/contexts';
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '../utilities/useRetryLogic';

@@ -1,6 +1,6 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { SelectField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { SelectField } from '@/components';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
 
 export interface HouseholdInformationData {

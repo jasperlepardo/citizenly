@@ -18,7 +18,7 @@ export {
 } from './resident-repository';
 
 // Import database types directly from types layer
-export type { ResidentDatabaseRecord as ResidentData } from '@/types/residents';
+export type { ResidentDatabaseRecord as ResidentData } from '@/types';
 
 export {
   HouseholdRepository,

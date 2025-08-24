@@ -1,4 +1,4 @@
-import type { ResidentFormData } from '@/types/residents';
+import type { ResidentFormData } from '@/types';
 
 export const DEFAULT_FORM_VALUES: ResidentFormData = {
   firstName: '',

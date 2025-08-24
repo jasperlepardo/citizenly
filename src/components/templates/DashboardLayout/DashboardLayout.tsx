@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase/supabase';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
-import { Navigation } from '@/components/organisms';
+import { Navigation } from '@/components';
 import { Toaster } from 'react-hot-toast';
-import { logger, logError } from '@/lib/logging/secure-logger';
+import { logger, logError } from '@/lib';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)

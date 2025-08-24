@@ -3,9 +3,9 @@
 import React, { useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ResidentForm } from '@/components/templates';
+import { ResidentForm } from '@/components';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
-import { EducationLevelEnum } from '@/types/residents';
+import { EducationLevelEnum } from '@/types';
 import { ResidentFormData } from '@/services/resident.service';
 import { toast } from 'react-hot-toast';
 

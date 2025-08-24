@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 
 // Define the variant types for TypeScript
 interface BadgeVariants {

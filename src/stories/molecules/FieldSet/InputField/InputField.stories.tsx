@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { InputField, FormGroup, Form } from '@/components/molecules/InputField';
 import { Input, Textarea } from '@/components/../../atoms/Field';
 import { Checkbox, Radio, RadioGroup, Toggle } from '@/components/../../atoms/Field';
-import { Button } from '@/components/../../atoms/Button/Button';
+import { Button } from '@/components';
 
 const meta = {
   title: 'Molecules/InputField/InputField',

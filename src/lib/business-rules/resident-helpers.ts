@@ -3,7 +3,7 @@
  * Extracted from components for reusability and maintainability
  */
 
-import { ResidentWithRelations } from '@/types/residents';
+import { ResidentWithRelations } from '@/types';
 
 /**
  * Initialize missing fields in resident data with default values

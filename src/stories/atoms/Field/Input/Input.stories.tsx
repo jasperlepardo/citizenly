@@ -54,7 +54,7 @@ Enhanced Input component following Select component design patterns with compreh
 
 ## Usage
 \`\`\`tsx
-import { Input } from '@/components/atoms';
+import { Input } from '@/components';
 
 <Input
   type="email"

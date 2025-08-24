@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { NewHouseholdForm } from '@/components/templates';
+import { NewHouseholdForm } from '@/components';
 
 export const dynamic = 'force-dynamic';
 

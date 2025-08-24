@@ -4,7 +4,7 @@
  * Based on RBI (Registry of Basic Information) requirements
  */
 
-import { SectoralInformation, SectoralContext } from '@/types/residents';
+import { SectoralInformation, SectoralContext } from '@/types';
 
 // Employment statuses for auto-calculation (aligned with database enum)
 export const EMPLOYED_STATUSES = ['employed', 'self_employed'];

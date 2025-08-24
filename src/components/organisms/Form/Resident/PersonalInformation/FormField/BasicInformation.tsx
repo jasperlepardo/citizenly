@@ -1,11 +1,11 @@
 import React from 'react';
-import { InputField, SelectField, ControlFieldSet } from '@/components/molecules';
+import { InputField, SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import { 
   SEX_OPTIONS_WITH_DEFAULT, 
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT
 } from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 export interface BasicInformationData {
   firstName: string;

@@ -129,7 +129,7 @@ export interface HouseholdWithMembersResult {
 /**
  * Household form data interface - re-export from forms.ts for backward compatibility
  */
-export type { HouseholdFormData } from '@/types/forms';
+export type { HouseholdFormData } from '@/types';
 
 /**
  * Household option for select components

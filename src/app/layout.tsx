@@ -6,7 +6,7 @@ import { VersionTag } from '@/components/molecules/VersionTag';
 import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
 import { PWAStatus } from '@/components/molecules/PWAStatus';
 import { AuthDebug } from '@/components/molecules/AuthDebug';
-import { ConnectionStatus, PWADevTools } from '@/components/molecules';
+import { ConnectionStatus, PWADevTools } from '@/components';
 import LastVisitedTracker from '@/components/providers/LastVisitedTracker';
 
 // Configure Montserrat font with Next.js font optimization

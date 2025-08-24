@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '@/lib/data/supabase';
+import { supabase } from '@/lib';
 import type { User, Session } from '@supabase/supabase-js';
 
 // User profile types - EXACTLY matching auth_user_profiles table (23 fields)

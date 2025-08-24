@@ -7,7 +7,7 @@ import { FormHeader } from './components/FormHeader';
 import { FormActions } from './components/FormActions';
 import { useAuth } from '@/contexts';
 import { ResidentFormState } from '@/types/resident-form';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 
 // Use the database-aligned ResidentFormState interface

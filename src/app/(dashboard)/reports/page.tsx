@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 
 export default function ReportsPage() {
 

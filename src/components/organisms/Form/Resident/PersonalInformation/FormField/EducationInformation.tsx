@@ -1,8 +1,8 @@
 import React from 'react';
-import { SelectField, ControlFieldSet } from '@/components/molecules';
+import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [

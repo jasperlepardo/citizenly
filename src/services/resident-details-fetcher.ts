@@ -3,8 +3,8 @@
  * Replaces sequential queries with optimized batch operations
  */
 
-import { supabase } from '@/lib/data/supabase';
-import { logger } from '@/lib/logging/secure-logger';
+import { supabase } from '@/lib';
+import { logger } from '@/lib';
 
 export interface AddressInfo {
   barangay_name?: string;
