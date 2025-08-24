@@ -41,8 +41,9 @@ export * from './ui';
 // Command menu system
 export * from './command-menu';
 
-// Environment configuration
-export * from './config/environment';
+// Environment configuration and constants
+export * from './config';
+export * from './constants';
 
 // Legacy compatibility exports (for gradual migration)
 export * from './data/supabase';  // For @/lib/supabase imports

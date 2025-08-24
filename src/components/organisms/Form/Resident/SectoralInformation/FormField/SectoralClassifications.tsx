@@ -8,7 +8,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ControlField } from '@/components/molecules';
-import { isIndigenousPeople } from '@/services/business-rules/sectoral-classification';
+import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 import type { FormMode } from '@/types/forms';
 
 // Sectoral Information Interface (matches database schema exactly)

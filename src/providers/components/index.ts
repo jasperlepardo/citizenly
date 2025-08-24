@@ -1,4 +1,4 @@
 // Provider Components
 export * from './ClientProviders';
-export * from './Providers/ErrorBoundary';
+// ErrorBoundary now exported from main providers/ErrorBoundary.tsx
 export * from './Providers';
