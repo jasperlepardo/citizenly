@@ -58,7 +58,6 @@ export const transformBirthInfoToFormData = (
 ): Partial<ResidentFormData> => {
   return {
     birthdate: birthInfo.birthdate,
-    birthPlaceName: birthInfo.birthPlaceName,
     birthPlaceCode: birthInfo.birthPlaceCode,
   };
 };
@@ -68,7 +67,6 @@ export const extractBirthInfoFromFormData = (
 ): BirthInformationData => {
   return {
     birthdate: formData.birthdate || '',
-    birthPlaceName: formData.birthPlaceName || '',
     birthPlaceCode: formData.birthPlaceCode || '',
   };
 };
@@ -100,8 +98,7 @@ export const extractEducationInfoFromFormData = (
 // Data transformer for EmploymentInformation
 export interface EmploymentInformationData {
   employmentStatus: string;
-  occupationTitle: string;
-  psocCode: string;
+  occupationCode: string;
 }
 
 export const transformEmploymentInfoToFormData = (
@@ -109,8 +106,7 @@ export const transformEmploymentInfoToFormData = (
 ): Partial<ResidentFormData> => {
   return {
     employmentStatus: employmentInfo.employmentStatus,
-    occupationTitle: employmentInfo.occupationTitle,
-    psocCode: employmentInfo.psocCode,
+    occupationCode: employmentInfo.occupationCode,
   };
 };
 
@@ -119,8 +115,7 @@ export const extractEmploymentInfoFromFormData = (
 ): EmploymentInformationData => {
   return {
     employmentStatus: formData.employmentStatus || '',
-    occupationTitle: formData.occupationTitle || '',
-    psocCode: formData.psocCode || '',
+    occupationCode: formData.occupationCode || '',
   };
 };
 

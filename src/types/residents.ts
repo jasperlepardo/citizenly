@@ -161,51 +161,45 @@ export interface ResidentApiData {
 // =============================================================================
 
 /**
- * Sectoral information interface matching resident_sectoral_info table
+ * Sectoral information interface matching resident_sectoral_info table exactly (15 fields)
  */
 export interface ResidentSectoralInfo {
-  id?: string;
-  resident_id?: string;
-  is_labor_force?: boolean;
-  is_labor_force_employed?: boolean;
-  is_unemployed?: boolean;
-  is_overseas_filipino_worker?: boolean;
-  is_person_with_disability?: boolean;
-  is_out_of_school_children?: boolean;
-  is_out_of_school_youth?: boolean;
-  is_senior_citizen?: boolean;
-  is_registered_senior_citizen?: boolean;
-  is_solo_parent?: boolean;
-  is_indigenous_people?: boolean;
-  is_migrant?: boolean;
-  created_by?: string;
-  created_at?: string;
-  updated_by?: string;
-  updated_at?: string;
+  resident_id: string; // Primary key - UUID, NOT NULL
+  is_labor_force?: boolean | null;
+  is_labor_force_employed?: boolean | null;
+  is_unemployed?: boolean | null;
+  is_overseas_filipino_worker?: boolean | null;
+  is_person_with_disability?: boolean | null;
+  is_out_of_school_children?: boolean | null;
+  is_out_of_school_youth?: boolean | null;
+  is_senior_citizen?: boolean | null;
+  is_registered_senior_citizen?: boolean | null;
+  is_solo_parent?: boolean | null;
+  is_indigenous_people?: boolean | null;
+  is_migrant?: boolean | null;
+  created_at?: string | null; // TIMESTAMPTZ with DEFAULT NOW()
+  updated_at?: string | null; // TIMESTAMPTZ with DEFAULT NOW()
 }
 
 /**
- * Migration information interface matching resident_migrant_info table
+ * Migration information interface matching resident_migrant_info table exactly (15 fields)
  */
 export interface ResidentMigrantInfo {
-  id?: string;
-  resident_id?: string;
-  previous_barangay_code?: string;
-  previous_city_municipality_code?: string;
-  previous_province_code?: string;
-  previous_region_code?: string;
-  length_of_stay_previous_months?: number;
-  reason_for_leaving?: string;
-  date_of_transfer?: string; // DATE format
-  reason_for_transferring?: string;
-  duration_of_stay_current_months?: number;
-  is_intending_to_return?: boolean;
-  migration_type?: string;
-  is_whole_family_migrated?: boolean;
-  created_by?: string;
-  created_at?: string;
-  updated_by?: string;
-  updated_at?: string;
+  id?: string | null; // UUID PRIMARY KEY with DEFAULT uuid_generate_v4()
+  resident_id: string; // UUID NOT NULL
+  previous_barangay_code?: string | null; // VARCHAR(10)
+  previous_city_municipality_code?: string | null; // VARCHAR(10)
+  previous_province_code?: string | null; // VARCHAR(10)  
+  previous_region_code?: string | null; // VARCHAR(10)
+  date_of_transfer?: string | null; // DATE format
+  reason_for_migration?: string | null; // TEXT (single field, not reason_for_leaving + reason_for_transferring)
+  is_intending_to_return?: boolean | null;
+  length_of_stay_previous_months?: number | null; // INTEGER
+  duration_of_stay_current_months?: number | null; // INTEGER
+  migration_type?: string | null; // VARCHAR(50)
+  is_whole_family_migrated?: boolean | null;
+  created_at?: string | null; // TIMESTAMPTZ with DEFAULT NOW()
+  updated_at?: string | null; // TIMESTAMPTZ with DEFAULT NOW()
 }
 
 // =============================================================================
@@ -216,7 +210,7 @@ export interface ResidentMigrantInfo {
  * Form data structure (camelCase for React forms)
  */
 export interface ResidentFormData {
-  // Personal Information
+  // Personal Information (matching database fields exactly)
   firstName: string;
   middleName: string;
   lastName: string;
@@ -226,33 +220,19 @@ export interface ResidentFormData {
   civilStatusOthersSpecify?: string;
   citizenship: string;
   birthdate: string;
-  birthPlaceName: string;
-  birthPlaceCode: string;
-  birthPlaceLevel: string;
+  birthPlaceCode: string; // Database only has birth_place_code, not birth_place_name or birth_place_level
   philsysCardNumber: string;
-  philsysLast4?: string;
-  educationLevel: EducationLevelEnum;
-  educationAttainment: string; // Legacy field name for compatibility
-  educationStatus: string;
+  educationAttainment: string; // This maps to education_attainment education_level_enum in DB
   isGraduate: boolean;
   employmentStatus: string;
-  employmentCode?: string;
-  employmentName?: string;
-  occupationCode?: string;
-  occupationDescription?: string;
-  workplace?: string;
-  psocCode?: string; // Legacy field name
-  psocLevel: number;
-  positionTitleId?: string;
-  occupationTitle: string;
+  occupationCode?: string; // This maps to occupation_code in DB
   ethnicity: string;
 
-  // Contact Information
+  // Contact Information (matching database fields exactly)
   email: string;
-  phoneNumber: string;
-  telephoneNumber: string;
-  mobileNumber: string;
-  householdCode: string;
+  telephoneNumber: string; // Maps to telephone_number in DB
+  mobileNumber: string; // Maps to mobile_number in DB  
+  householdCode: string; // Maps to household_code in DB
   
   // Physical Characteristics
   bloodType: string;
@@ -262,11 +242,9 @@ export interface ResidentFormData {
   religion: string;
   religionOthersSpecify: string;
   
-  // Voting Information
+  // Voting Information (matching database fields exactly)
   isVoter?: boolean | null;
   isResidentVoter?: boolean | null;
-  voterRegistrationStatus?: string;
-  residentVoterStatus?: string;
   lastVotedDate: string;
   
   // Mother's Maiden Name
@@ -274,31 +252,9 @@ export interface ResidentFormData {
   motherMaidenMiddleName: string;
   motherMaidenLastName: string;
   
-  // Sectoral Information
-  isLaborForce?: boolean;
-  isLaborForceEmployed?: boolean;
-  isUnemployed?: boolean;
-  isOverseasFilipinoWorker?: boolean;
-  isPersonWithDisability?: boolean;
-  isOutOfSchoolChildren?: boolean;
-  isOutOfSchoolYouth?: boolean;
-  isSeniorCitizen?: boolean;
-  isRegisteredSeniorCitizen?: boolean;
-  isSoloParent?: boolean;
-  isIndigenousPeople?: boolean;
-  isMigrant?: boolean;
-  
-  // Migration Information
-  previousBarangayCode?: string;
-  previousCityMunicipalityCode?: string;
-  previousProvinceCode?: string;
-  previousRegionCode?: string;
-  lengthOfStayPreviousMonths?: number;
-  reasonForLeaving?: string;
-  dateOfTransfer?: string;
-  reasonForTransferring?: string;
-  durationOfStayCurrentMonths?: number;
-  isIntendingToReturn?: boolean;
+  // Note: Sectoral and Migration information are stored in separate tables:
+  // - resident_sectoral_info
+  // - resident_migrant_info
 }
 
 /**
@@ -369,12 +325,13 @@ export interface ResidentFormState {
   previous_city_municipality_code: string;
   previous_province_code: string;
   previous_region_code: string;
-  length_of_stay_previous_months: number;
-  reason_for_leaving: string;
   date_of_transfer: string;
-  reason_for_transferring: string;
-  duration_of_stay_current_months: number;
+  reason_for_migration: string;
   is_intending_to_return: boolean;
+  length_of_stay_previous_months: number;
+  duration_of_stay_current_months: number;
+  migration_type: string;
+  is_whole_family_migrated: boolean;
 }
 
 // =============================================================================

@@ -110,7 +110,12 @@ export const GET = withSecurityHeaders(
              previous_province_code,
              previous_region_code,
              date_of_transfer,
-             is_intending_to_return
+             reason_for_migration,
+             is_intending_to_return,
+             length_of_stay_previous_months,
+             duration_of_stay_current_months,
+             migration_type,
+             is_whole_family_migrated
            )`,
             { count: 'exact' }
           )
@@ -245,44 +250,45 @@ export const POST = withSecurityHeaders(
 
         const supabaseAdmin = createAdminSupabaseClient();
 
-        // Prepare data for insertion (using actual database schema)
+        // Prepare data for insertion (using exact database field names)
         const insertData = {
           // Required fields
-          first_name: residentData.firstName,
-          last_name: residentData.lastName,
+          first_name: residentData.first_name,
+          last_name: residentData.last_name,
           birthdate: residentData.birthdate,
           sex: residentData.sex,
 
-          // Optional fields (matching actual database schema)
-          middle_name: residentData.middleName || null,
-          extension_name: residentData.extensionName || null,
-          mobile_number: residentData.mobileNumber || null,
-          telephone_number: residentData.phoneNumber || residentData.telephoneNumber || null,
+          // Optional fields (using exact database field names)
+          middle_name: residentData.middle_name || null,
+          extension_name: residentData.extension_name || null,
+          mobile_number: residentData.mobile_number || null,
+          telephone_number: residentData.telephone_number || null,
           email: residentData.email || null,
-          mother_maiden_first: residentData.motherMaidenFirstName || null,
-          mother_maiden_middle: residentData.motherMaidenMiddleName || null,
-          mother_maiden_last: residentData.motherMaidenLastName || null,
-          birth_place_code: residentData.birthPlaceCode || null,
-          household_code: residentData.householdCode || null,
+          mother_maiden_first: residentData.mother_maiden_first || null,
+          mother_maiden_middle: residentData.mother_maiden_middle || null,
+          mother_maiden_last: residentData.mother_maiden_last || null,
+          birth_place_code: residentData.birth_place_code || null,
+          household_code: residentData.household_code || null,
 
           // Additional fields with defaults
-          civil_status: residentData.civilStatus,
-          citizenship: residentData.citizenship,
-          blood_type: residentData.bloodType,
-          ethnicity: residentData.ethnicity,
-          religion: residentData.religion,
-          religion_others_specify: residentData.religionOthersSpecify || null,
-          employment_status: residentData.employmentStatus,
-          education_attainment: residentData.educationLevel || residentData.educationAttainment || null,
-          is_graduate: residentData.isGraduate,
-          occupation_code: residentData.occupationCode || null,
-          height: residentData.height ? parseFloat(residentData.height) : null,
-          weight: residentData.weight ? parseFloat(residentData.weight) : null,
+          civil_status: residentData.civil_status || 'single',
+          civil_status_others_specify: residentData.civil_status_others_specify || null,
+          citizenship: residentData.citizenship || 'filipino',
+          blood_type: residentData.blood_type || null,
+          ethnicity: residentData.ethnicity || null,
+          religion: residentData.religion || 'roman_catholic',
+          religion_others_specify: residentData.religion_others_specify || null,
+          employment_status: residentData.employment_status || null,
+          education_attainment: residentData.education_attainment || null,
+          is_graduate: residentData.is_graduate || false,
+          occupation_code: residentData.occupation_code || null,
+          height: residentData.height || null,
+          weight: residentData.weight || null,
           complexion: residentData.complexion || null,
-          philsys_card_number: residentData.philsysCardNumber || null,
-          is_voter: residentData.isVoter,
-          is_resident_voter: residentData.isResidentVoter,
-          last_voted_date: residentData.lastVotedDate && residentData.lastVotedDate !== '' ? residentData.lastVotedDate : null,
+          philsys_card_number: residentData.philsys_card_number || null,
+          is_voter: residentData.is_voter || null,
+          is_resident_voter: residentData.is_resident_voter || null,
+          last_voted_date: residentData.last_voted_date && residentData.last_voted_date !== '' ? residentData.last_voted_date : null,
           is_active: true,
           created_by: user.id,
           updated_by: user.id,
@@ -300,75 +306,13 @@ export const POST = withSecurityHeaders(
           throw insertError;
         }
 
-        // Insert sectoral information if provided
-        if (residentData.isLaborForce !== undefined || 
-            residentData.isLaborForceEmployed !== undefined ||
-            residentData.isOverseasFilipinoWorker !== undefined ||
-            residentData.isPersonWithDisability !== undefined ||
-            residentData.isSeniorCitizen !== undefined ||
-            residentData.isSoloParent !== undefined ||
-            residentData.isIndigenousPeople !== undefined ||
-            residentData.isMigrant !== undefined) {
-          
-          const sectoralData = {
-            resident_id: newResident.id,
-            is_labor_force: residentData.isLaborForce || false,
-            is_labor_force_employed: residentData.isLaborForceEmployed || false,
-            is_unemployed: residentData.isUnemployed || false,
-            is_overseas_filipino_worker: residentData.isOverseasFilipinoWorker || false,
-            is_person_with_disability: residentData.isPersonWithDisability || false,
-            is_out_of_school_children: residentData.isOutOfSchoolChildren || false,
-            is_out_of_school_youth: residentData.isOutOfSchoolYouth || false,
-            is_senior_citizen: residentData.isSeniorCitizen || false,
-            is_registered_senior_citizen: residentData.isRegisteredSeniorCitizen || false,
-            is_solo_parent: residentData.isSoloParent || false,
-            is_indigenous_people: residentData.isIndigenousPeople || false,
-            is_migrant: residentData.isMigrant || false,
-            created_by: user.id,
-            updated_by: user.id,
-          };
+        // TODO: Handle sectoral information separately
+        // Note: Sectoral fields removed from ResidentFormData to maintain database schema alignment
+        // These should be handled via separate API endpoints for resident_sectoral_info table
 
-          const { error: sectoralError } = await supabaseAdmin
-            .from('resident_sectoral_info')
-            .insert([sectoralData]);
-
-          if (sectoralError) {
-            logError(new Error('Sectoral info creation error'), JSON.stringify(sectoralError));
-            // Don't throw - sectoral data is optional
-          }
-        }
-
-        // Insert migration information if provided
-        if (residentData.isMigrant && (
-            residentData.previousBarangayCode ||
-            residentData.previousCityMunicipalityCode ||
-            residentData.dateOfTransfer)) {
-          
-          const migrantData = {
-            resident_id: newResident.id,
-            previous_barangay_code: residentData.previousBarangayCode || null,
-            previous_city_municipality_code: residentData.previousCityMunicipalityCode || null,
-            previous_province_code: residentData.previousProvinceCode || null,
-            previous_region_code: residentData.previousRegionCode || null,
-            length_of_stay_previous_months: residentData.lengthOfStayPreviousMonths || null,
-            reason_for_leaving: residentData.reasonForLeaving || null,
-            date_of_transfer: residentData.dateOfTransfer || null,
-            reason_for_transferring: residentData.reasonForTransferring || null,
-            duration_of_stay_current_months: residentData.durationOfStayCurrentMonths || null,
-            is_intending_to_return: residentData.isIntendingToReturn || false,
-            created_by: user.id,
-            updated_by: user.id,
-          };
-
-          const { error: migrantError } = await supabaseAdmin
-            .from('resident_migrant_info')
-            .insert([migrantData]);
-
-          if (migrantError) {
-            logError(new Error('Migrant info creation error'), JSON.stringify(migrantError));
-            // Don't throw - migration data is optional
-          }
-        }
+        // TODO: Handle migration information separately  
+        // Note: Migration fields removed from ResidentFormData to maintain database schema alignment
+        // These should be handled via separate API endpoints for resident_migrant_info table
 
         // Audit the creation
         await auditDataOperation('create', 'resident', newResident.id, context, {

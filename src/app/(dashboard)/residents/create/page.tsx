@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ResidentForm } from '@/components/templates';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { EducationLevelEnum } from '@/types/residents';
+import { ResidentFormData } from '@/services/resident.service';
 import { toast } from 'react-hot-toast';
 
 export const dynamic = 'force-dynamic';
@@ -64,97 +65,64 @@ function CreateResidentForm() {
 
   // Handle form submission - transform snake_case to camelCase
   const handleSubmit = async (formData: any) => {    
-    // Transform form data to match validation schema EXACTLY
-    const transformedData = {
-      // Required fields - validation schema
+    // Transform form data to match ResidentFormData service interface
+    const transformedData: ResidentFormData = {
+      // Personal Information - Step 1
       firstName: formData.first_name || '',
-      lastName: formData.last_name || '',
-      birthdate: formData.birthdate || '',
-      sex: formData.sex || '',
-
-      // Optional personal info - validation schema
       middleName: formData.middle_name || '',
+      lastName: formData.last_name || '',
       extensionName: formData.extension_name || '',
+      birthdate: formData.birthdate || '',
+      sex: (formData.sex as 'male' | 'female') || '',
+      civilStatus: formData.civil_status || 'single',
+      citizenship: formData.citizenship || 'filipino',
 
-      // Contact information - validation schema
+      // Education & Employment - Step 2 (defaults for missing fields)
+      educationLevel: formData.education_attainment || '',
+      educationStatus: formData.is_graduate ? 'graduate' : 'not_graduate',
+      occupationCode: formData.occupation_code || '',
+      psocLevel: '',
+      positionTitleId: '',
+      occupationDescription: '',
+      employmentStatus: formData.employment_status || 'not_in_labor_force',
+      workplace: '',
+
+      // Contact & Documentation - Step 3
       email: formData.email || '',
       mobileNumber: formData.mobile_number || '',
       telephoneNumber: formData.telephone_number || '',
+      philsysCardNumber: formData.philsys_card_number || '',
 
-      // Personal details - validation schema (with defaults)
-      civilStatus: formData.civil_status || 'single',
-      civilStatusOthersSpecify: formData.civil_status_others_specify || '',
-      citizenship: formData.citizenship || 'filipino',
+      // Physical & Identity Information - Step 3
       bloodType: formData.blood_type || '',
-      ethnicity: formData.ethnicity || '',
-      religion: formData.religion || 'roman_catholic',
-      religionOthersSpecify: formData.religion_others_specify || '',
-
-      // Physical characteristics - validation schema
       height: formData.height?.toString() || '',
       weight: formData.weight?.toString() || '',
       complexion: formData.complexion || '',
+      ethnicity: formData.ethnicity || '',
+      religion: formData.religion || 'roman_catholic',
 
-      // Birth place information - validation schema
-      birthPlaceCode: formData.birth_place_code || '',
+      // Voting Information - Step 3 (transform boolean fields)
+      voterRegistrationStatus: formData.is_voter || false,
+      residentVoterStatus: formData.is_resident_voter || false,
+      lastVotedYear: formData.last_voted_date || '',
 
-      // Documentation - validation schema
-      philsysCardNumber: formData.philsys_card_number || '',
-
-      // Family information - validation schema
+      // Family Information - Step 3
       motherMaidenFirstName: formData.mother_maiden_first || '',
       motherMaidenMiddleName: formData.mother_maiden_middle || '',
       motherMaidenLastName: formData.mother_maiden_last || '',
 
-      // Birth place information - validation schema
-      birthPlaceName: formData.birth_place_name || '',
-      birthPlaceLevel: formData.birth_place_level || '',
+      // Migration Information - Step 4 (default empty)
+      migrationInfo: {},
 
-      // Education and employment - validation schema (with defaults)
-      educationLevel: (formData.education_attainment as EducationLevelEnum) || 'elementary',
-      educationStatus: formData.is_graduate ? 'graduate' : 'not_graduate',
-      isGraduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
-      employmentStatus: formData.employment_status || 'not_in_labor_force',
-      employmentCode: formData.employment_code || '',
-      employmentName: formData.employment_name || '',
-      occupationCode: formData.occupation_code || '',
-      psocLevel: parseInt(formData.psoc_level?.toString() || '0'),
-      positionTitleId: formData.position_title_id || '',
-      occupationTitle: formData.occupation_title || '',
+      // Address Information (PSGC Codes) - auto-populated with defaults
+      regionCode: formData.region_code || '',
+      provinceCode: formData.province_code || '',
+      cityMunicipalityCode: formData.city_municipality_code || '',
+      barangayCode: formData.barangay_code || '',
 
-      // Voting information - validation schema
-      isVoter: formData.is_voter ?? null,
-      isResidentVoter: formData.is_resident_voter ?? null,
-      lastVotedDate: formData.last_voted_date || '',
-
-      // Household - validation schema
+      // Household Assignment - Step 5
       householdCode: formData.household_code || '',
-      
-      // Sectoral Information
-      isLaborForce: formData.is_labor_force,
-      isLaborForceEmployed: formData.is_labor_force_employed,
-      isUnemployed: formData.is_unemployed,
-      isOverseasFilipinoWorker: formData.is_overseas_filipino_worker,
-      isPersonWithDisability: formData.is_person_with_disability,
-      isOutOfSchoolChildren: formData.is_out_of_school_children,
-      isOutOfSchoolYouth: formData.is_out_of_school_youth,
-      isSeniorCitizen: formData.is_senior_citizen,
-      isRegisteredSeniorCitizen: formData.is_registered_senior_citizen,
-      isSoloParent: formData.is_solo_parent,
-      isIndigenousPeople: formData.is_indigenous_people,
-      isMigrant: formData.is_migrant,
-      
-      // Migration Information
-      previousBarangayCode: formData.previous_barangay_code,
-      previousCityMunicipalityCode: formData.previous_city_municipality_code,
-      previousProvinceCode: formData.previous_province_code,
-      previousRegionCode: formData.previous_region_code,
-      lengthOfStayPreviousMonths: formData.length_of_stay_previous_months,
-      reasonForLeaving: formData.reason_for_leaving,
-      dateOfTransfer: formData.date_of_transfer,
-      reasonForTransferring: formData.reason_for_transferring,
-      durationOfStayCurrentMonths: formData.duration_of_stay_current_months,
-      isIntendingToReturn: formData.is_intending_to_return,
+      householdRole: 'Member', // Default to Member
     };
     
     await createResident(transformedData);

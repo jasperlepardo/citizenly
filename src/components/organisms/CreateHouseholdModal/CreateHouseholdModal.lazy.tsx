@@ -9,9 +9,7 @@ import { withLazyLoading } from '@/lib/ui/lazy-loading';
 import { FormSkeleton } from '@/components/atoms/Loading';
 
 const CreateHouseholdModalLazy = lazy(() =>
-  import('./CreateHouseholdModal').then(module => ({
-    default: module.CreateHouseholdModal,
-  }))
+  import('./CreateHouseholdModal')
 );
 
 export const LazyCreateHouseholdModal = withLazyLoading(CreateHouseholdModalLazy, <FormSkeleton />);

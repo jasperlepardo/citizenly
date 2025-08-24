@@ -6,11 +6,11 @@
 import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import { ResidentDatabaseRecord } from '@/types/residents';
+import { ResidentRecord } from '@/types/database';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Use database record directly for consistent typing
-export type ResidentData = ResidentDatabaseRecord;
+export type ResidentData = ResidentRecord;
 
 export interface ResidentSearchOptions extends QueryOptions {
   name?: string;
@@ -107,7 +107,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
         if (options.name) {
           const searchTerm = `%${options.name}%`;
           query = query.or(
-            `firstName.ilike.${searchTerm},middleName.ilike.${searchTerm},lastName.ilike.${searchTerm}`
+            `first_name.ilike.${searchTerm},middle_name.ilike.${searchTerm},last_name.ilike.${searchTerm}`
           );
         }
 
@@ -121,9 +121,9 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
 
         // Direct field filters
         if (options.sex) query = query.eq('sex', options.sex);
-        if (options.civilStatus) query = query.eq('civilStatus', options.civilStatus);
-        if (options.householdCode) query = query.eq('householdCode', options.householdCode);
-        if (options.isVoter !== undefined) query = query.eq('isVoter', options.isVoter);
+        if (options.civilStatus) query = query.eq('civil_status', options.civilStatus);
+        if (options.householdCode) query = query.eq('household_code', options.householdCode);
+        if (options.isVoter !== undefined) query = query.eq('is_voter', options.isVoter);
 
         // Apply other filters
         if (options.filters) {
@@ -141,7 +141,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           });
         } else {
           // Default order by last name, first name
-          query = query.order('lastName').order('firstName');
+          query = query.order('last_name').order('first_name');
         }
 
         // Apply pagination
@@ -171,8 +171,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   async findByHousehold(householdCode: string): Promise<RepositoryResult<ResidentData[]>> {
     try {
       return await this.findAll({
-        filters: { householdCode },
-        orderBy: 'lastName',
+        filters: { household_code: householdCode },
+        orderBy: 'last_name',
       });
     } catch (error) {
       return {
@@ -224,8 +224,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           .from(this.tableName)
           .select(`
             count(*) as totalResidents,
-            isVoter,
-            isResidentVoter
+            is_voter,
+            is_resident_voter
           `)
           .gte('birthdate', '1900-01-01'); // Basic filter to ensure valid data
       };
@@ -271,8 +271,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
         return supabase
           .from(this.tableName)
           .select('*')
-          .eq('firstName', firstName)
-          .eq('lastName', lastName)
+          .eq('first_name', firstName)
+          .eq('last_name', lastName)
           .eq('birthdate', birthdate);
       };
 
@@ -291,7 +291,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   async softDeleteResident(id: string): Promise<RepositoryResult<ResidentData>> {
     try {
       return await this.update(id, {
-        isActive: false,
+        is_active: false,
         updated_at: new Date().toISOString(),
       } as any);
     } catch (error) {

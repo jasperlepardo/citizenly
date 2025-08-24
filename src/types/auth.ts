@@ -31,6 +31,7 @@ export interface AuthUserProfile {
   id: string;
   email: string;
   first_name: string;
+  middle_name?: string | null;
   last_name: string;
   phone?: string | null;
   barangay_code: string;
@@ -40,7 +41,14 @@ export interface AuthUserProfile {
   role_id: string;
   email_verified: boolean;
   email_verified_at?: string | null;
+  onboarding_completed: boolean;
+  onboarding_completed_at?: string | null;
+  welcome_email_sent: boolean;
+  welcome_email_sent_at?: string | null;
+  last_login?: string | null;
   is_active: boolean;
+  created_by?: string | null;
+  updated_by?: string | null;
   created_at: string;
   updated_at: string;
 }

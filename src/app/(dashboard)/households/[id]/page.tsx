@@ -11,6 +11,7 @@ import { Button } from '@/components/atoms';
 import { lookupAddressLabels, lookupHouseholdTypeLabels, lookupHouseholdHeadLabel } from '@/lib/utilities/address-lookup';
 
 interface Household {
+  id: string;
   code: string;
   name?: string;
   house_number?: string;
@@ -157,9 +158,11 @@ function HouseholdDetailContent() {
   const handleFormSubmit = async (formData: HouseholdFormData) => {
     // The form handles the database operations
     // After successful save, reload the household data
-    const updatedHousehold = { ...household, ...formData };
-    setHousehold(updatedHousehold);
-    setHouseholdFormData(formData);
+    if (household?.id) {
+      const updatedHousehold = { ...household, ...formData, id: household.id };
+      setHousehold(updatedHousehold);
+      setHouseholdFormData(formData);
+    }
   };
 
   const handleModeChange = (mode: HouseholdFormMode) => {

@@ -33,8 +33,9 @@ export const mapFormToApi = (formData: ResidentFormData): ResidentApiData => {
     extension_name: formData.extensionName || undefined,
     email: formData.email || undefined,
     mobile_number: formData.mobileNumber || undefined,
-    telephone_number: formData.phoneNumber || undefined, // CONSISTENT: phoneNumber -> telephone_number
+    telephone_number: formData.telephoneNumber || undefined, // Maps to telephone_number in DB
     civil_status: formData.civilStatus || undefined,
+    civil_status_others_specify: formData.civilStatusOthersSpecify || undefined,
     citizenship: formData.citizenship || undefined,
     blood_type: formData.bloodType || undefined,
     ethnicity: formData.ethnicity || undefined,
@@ -59,7 +60,7 @@ export const mapFormToApi = (formData: ResidentFormData): ResidentApiData => {
     education_attainment: formData.educationAttainment || undefined,
     is_graduate: formData.isGraduate || false,
     employment_status: formData.employmentStatus || undefined,
-    occupation_code: formData.psocCode || undefined, // CONSISTENT: psocCode -> occupation_code
+    occupation_code: formData.occupationCode || undefined, // Maps to occupation_code in DB
     
     // Voting information
     is_voter: formData.isVoter ?? undefined,
@@ -84,21 +85,20 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     extensionName: resident.extension_name || '',
     sex: resident.sex,
     civilStatus: resident.civil_status || '',
+    civilStatusOthersSpecify: resident.civil_status_others_specify || '',
     citizenship: resident.citizenship || 'filipino',
     birthdate: resident.birthdate,
-    birthPlaceName: resident.birth_place_name || '',
     birthPlaceCode: resident.birth_place_code || '',
     philsysCardNumber: resident.philsys_card_number || '',
     educationAttainment: resident.education_attainment || '',
     isGraduate: resident.is_graduate || false,
     employmentStatus: resident.employment_status || '',
-    occupationTitle: resident.psoc_info?.hierarchy || resident.psoc_info?.title || '', // Get hierarchy or title from PSOC lookup
-    psocCode: resident.occupation_code || '', // Store the actual PSOC code
+    occupationCode: resident.occupation_code || '', // Maps to occupation_code in DB
     ethnicity: resident.ethnicity || '',
 
     // Contact Information
     email: resident.email || '',
-    phoneNumber: resident.telephone_number || '', // CONSISTENT: telephone_number -> phoneNumber
+    telephoneNumber: resident.telephone_number || '', // Maps from telephone_number in DB
     mobileNumber: resident.mobile_number || '',
     householdCode: resident.household_code || '',
     
@@ -376,14 +376,13 @@ export const getFormToSchemaFieldMapping = (): Record<string, string> => ({
   extensionName: 'extension_name',
   mobileNumber: 'mobile_number',
   civilStatus: 'civil_status',
-  phoneNumber: 'telephone_number',
-  birthPlaceName: 'birth_place_name',
+  telephoneNumber: 'telephone_number',
   birthPlaceCode: 'birth_place_code',
   philsysCardNumber: 'philsys_card_number',
   educationAttainment: 'education_attainment',
   isGraduate: 'is_graduate',
   employmentStatus: 'employment_status',
-  psocCode: 'occupation_code', // This is the correct mapping!
+  occupationCode: 'occupation_code',
   householdCode: 'household_code',
   motherMaidenFirstName: 'mother_maiden_first',
   motherMaidenMiddleName: 'mother_maiden_middle',

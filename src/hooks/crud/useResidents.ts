@@ -8,24 +8,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/data/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 
-interface Resident {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  extension_name?: string;
-  email?: string;
-  mobile_number?: string;
-  sex: 'male' | 'female' | '';
-  birthdate: string;
-  civil_status?: string;
-  occupation?: string;
-  job_title?: string;
-  profession?: string;
-  education_level?: string;
-  household_code?: string;
-  status?: string;
-  created_at: string;
+// Import the properly typed ResidentRecord
+import { ResidentRecord } from '@/types/database';
+
+interface Resident extends Omit<ResidentRecord, 'sex'> {
+  sex: 'male' | 'female' | ''; // Allow empty for forms
   households?: {
     code: string;
     name?: string;

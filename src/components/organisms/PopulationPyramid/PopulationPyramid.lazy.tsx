@@ -9,9 +9,7 @@ import { withLazyLoading } from '@/lib/ui/lazy-loading';
 import { LoadingFallback } from '@/components/atoms/Loading';
 
 const PopulationPyramidLazy = lazy(() =>
-  import('./PopulationPyramid').then(module => ({
-    default: module.PopulationPyramid,
-  }))
+  import('./PopulationPyramid')
 );
 
 export const LazyPopulationPyramid = withLazyLoading(

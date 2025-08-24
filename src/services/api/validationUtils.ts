@@ -68,115 +68,113 @@ export const searchSchema = z.object({
     .optional(),
 });
 
-// Resident validation schemas
+// Resident validation schemas - aligned with exact database structure (38 fields)
 export const createResidentSchema = z.object({
   // Required fields
-  firstName: nameSchema,
-  lastName: nameSchema,
+  first_name: nameSchema,
+  last_name: nameSchema,
   birthdate: dateSchema,
   sex: z.enum(['male', 'female']),
 
   // Optional personal info
-  middleName: z.string().max(100).optional().or(z.literal('')),
-  extensionName: z.string().max(20).optional().or(z.literal('')),
+  middle_name: z.string().max(100).optional().or(z.literal('')),
+  extension_name: z.string().max(20).optional().or(z.literal('')),
+  birth_place_code: z.string().max(10).optional().or(z.literal('')),
 
   // Contact information
   email: emailSchema.optional().or(z.literal('')),
-  mobileNumber: phoneSchema,
-  telephoneNumber: z.string().max(50).optional().or(z.literal('')),
+  mobile_number: phoneSchema,
+  telephone_number: z.string().max(20).optional().or(z.literal('')),
 
-  // Personal details
-  civilStatus: z
-    .enum(['single', 'married', 'widowed', 'separated', 'divorced', 'annulled'])
-    .default('single'),
-  civilStatusOthersSpecify: z.string().max(200).optional().or(z.literal('')),
-  citizenship: z.string().max(50).default('filipino'),
-  bloodType: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'])
-    .default('unknown'),
-  ethnicity: z.string().max(50).default('not_reported'),
-  religion: z.string().max(50).default('prefer_not_to_say'),
-  religionOthersSpecify: z.string().max(200).optional().or(z.literal('')),
-
-  // Physical characteristics
-  height: z.string().max(10).optional().or(z.literal('')),
-  weight: z.string().max(10).optional().or(z.literal('')),
-  complexion: z.string().max(50).optional().or(z.literal('')),
-
-  // Birth place information
-  birthPlaceCode: z.string().max(10).optional().or(z.literal('')),
-
-  // Documentation
-  philsysCardNumber: z.string().max(20).optional().or(z.literal('')),
-
-  // Family information (allow empty strings)
-  motherMaidenFirstName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
-  motherMaidenMiddleName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
-  motherMaidenLastName: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
+  // Civil status
+  civil_status: z.enum(['single', 'married', 'divorced', 'separated', 'widowed', 'others']).optional(),
+  civil_status_others_specify: z.string().optional().or(z.literal('')),
 
   // Education and employment
-  educationAttainment: z
-    .union([
-      z.enum([
-        'no_schooling',
-        'elementary_undergraduate',
-        'elementary_graduate',
-        'high_school_undergraduate',
-        'high_school_graduate',
-        'college_undergraduate',
-        'college_graduate',
-        'post_graduate',
-        'college',
-        'elementary',
-        'high_school',
-        'vocational',
-      ]),
-      z.literal(''),
-    ])
-    .optional(),
-  isGraduate: z.boolean().default(false),
-  employmentStatus: z
-    .enum([
-      'employed',
-      'unemployed',
-      'underemployed',
-      'self_employed',
-      'student',
-      'retired',
-      'homemaker',
-      'unable_to_work',
-      'looking_for_work',
-      'not_in_labor_force',
-    ])
-    .default('not_in_labor_force'),
-  occupationCode: z.string().max(10).optional().or(z.literal('')),
+  education_attainment: z.enum(['elementary', 'high_school', 'college', 'post_graduate', 'vocational']).optional(),
+  is_graduate: z.boolean().optional(),
+  employment_status: z.enum([
+    'employed', 'unemployed', 'underemployed', 'self_employed', 'student', 
+    'retired', 'homemaker', 'unable_to_work', 'looking_for_work', 'not_in_labor_force'
+  ]).optional(),
+  occupation_code: z.string().max(10).optional().or(z.literal('')),
+
+  // Physical characteristics
+  height: z.number().min(0).optional(),
+  weight: z.number().min(0).optional(),
+  complexion: z.string().max(50).optional().or(z.literal('')),
 
   // Voting information
-  isVoter: z.union([z.boolean(), z.null()]).optional(),
-  isResidentVoter: z.union([z.boolean(), z.null()]).optional(),
-  lastVotedDate: z.string().optional().or(z.literal('')),
+  is_voter: z.boolean().optional(),
+  is_resident_voter: z.boolean().optional(),
+  last_voted_date: z.string().optional().or(z.literal('')),
 
-  // Household
-  householdCode: z.string().max(50).optional().or(z.literal('')),
+  // Cultural/religious identity  
+  religion: z.enum([
+    'roman_catholic', 'islam', 'iglesia_ni_cristo', 'christian', 'aglipayan_church',
+    'seventh_day_adventist', 'bible_baptist_church', 'jehovahs_witnesses',
+    'church_of_jesus_christ_latter_day_saints', 'united_church_of_christ_philippines', 'others'
+  ]).optional(),
+  religion_others_specify: z.string().optional().or(z.literal('')),
+  ethnicity: z.enum([
+    'tagalog', 'cebuano', 'ilocano', 'bisaya', 'hiligaynon', 'bikolano', 'waray', 'kapampangan', 'pangasinense',
+    'maranao', 'maguindanao', 'tausug', 'yakan', 'samal', 'badjao', 'aeta', 'agta', 'ati', 'batak', 
+    'bukidnon', 'gaddang', 'higaonon', 'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 
+    'kalinga', 'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 'teduray', 'tumandok', 
+    'chinese', 'others'
+  ]).optional(),
+  citizenship: z.enum(['filipino', 'dual_citizen', 'foreigner']).optional(),
+  blood_type: z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).optional(),
+
+  // Family information
+  mother_maiden_first: z.string().max(100).optional().or(z.literal('')),
+  mother_maiden_middle: z.string().max(100).optional().or(z.literal('')),
+  mother_maiden_last: z.string().max(100).optional().or(z.literal('')),
+
+  // Documentation
+  philsys_card_number: z.string().max(20).optional().or(z.literal('')),
+
+  // Household membership
+  household_code: z.string().max(50).optional().or(z.literal('')),
 });
 
 export const updateResidentSchema = createResidentSchema.partial();
 
-// Household validation schemas
+// Household validation schemas - aligned with exact database structure (27 fields)
 export const createHouseholdSchema = z.object({
+  // Primary identification
   code: z.string().min(1).max(50),
-  streetName: z.string().max(200).optional(),
-  subdivisionName: z.string().max(200).optional(),
-  householdNumber: z.string().max(50).optional(),
-
-  // Geographic codes
+  name: z.string().max(200).optional(),
+  address: z.string().optional(),
+  
+  // Location details - required fields
+  houseNumber: z.string().min(1).max(50),
+  streetId: z.string().uuid(), // UUID reference to geo_streets
+  subdivisionId: z.string().uuid().optional(), // UUID reference to geo_subdivisions
   barangayCode: psgcCodeSchema,
-  cityMunicipalityCode: psgcCodeSchema.optional(),
+  cityMunicipalityCode: psgcCodeSchema,
   provinceCode: psgcCodeSchema.optional(),
-  regionCode: psgcCodeSchema.optional(),
-
+  regionCode: psgcCodeSchema,
+  zipCode: z.string().max(10).optional(),
+  
+  // Household metrics
+  noOfFamilies: z.number().int().min(0).optional(),
+  noOfHouseholdMembers: z.number().int().min(0).optional(),
+  noOfMigrants: z.number().int().min(0).optional(),
+  
+  // Household classifications (enums)
+  householdType: z.enum(['nuclear', 'single_parent', 'extended', 'childless', 'one_person', 'non_family', 'other']).optional(),
+  tenureStatus: z.enum(['owned', 'owned_with_mortgage', 'rented', 'occupied_for_free', 'occupied_without_consent', 'others']).optional(),
+  tenureOthersSpecify: z.string().max(200).optional(),
+  householdUnit: z.enum(['single_house', 'duplex', 'apartment', 'townhouse', 'condominium', 'boarding_house', 'institutional', 'makeshift', 'others']).optional(),
+  
+  // Economic information
+  monthlyIncome: z.number().min(0).optional(),
+  incomeClass: z.enum(['rich', 'high_income', 'upper_middle_income', 'middle_class', 'lower_middle_class', 'low_income', 'poor', 'not_determined']).optional(),
+  
   // Head of household
-  headResidentId: z.string().uuid().optional(),
+  householdHeadId: z.string().uuid().optional(), // UUID reference to residents
+  householdHeadPosition: z.enum(['father', 'mother', 'son', 'daughter', 'grandmother', 'grandfather', 'father_in_law', 'mother_in_law', 'brother_in_law', 'sister_in_law', 'spouse', 'sibling', 'guardian', 'ward', 'other']).optional(),
 });
 
 export const updateHouseholdSchema = createHouseholdSchema.partial();

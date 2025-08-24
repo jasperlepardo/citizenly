@@ -8,48 +8,44 @@
 import { supabase } from '@/lib/data/supabase';
 import { logger, logError, dbLogger } from '@/lib/logging/secure-logger';
 
-// Types
+// Import database types
+import { HouseholdRecord } from '@/types/households';
+
+// Types - aligned with exact database structure (27 fields)
 export interface HouseholdFormData {
-  // Step 1: Basic Information
-  householdCode: string;
-  householdType: string;
-  headFirstName: string;
-  headMiddleName: string;
-  headLastName: string;
-  headExtensionName: string;
-
-  // Step 2: Location Details
-  streetName: string;
+  // Primary identification
+  code: string;
+  name?: string;
+  address?: string;
+  
+  // Location details
   houseNumber: string;
-  subdivision: string;
-  landmark: string;
-  coordinates: {
-    latitude: string;
-    longitude: string;
-  };
-
-  // Step 3: Household Composition
-  totalMembers: number;
-  totalMales: number;
-  totalFemales: number;
-  children: number;
-  adults: number;
-  seniors: number;
-
-  // Step 4: Economic Information
-  monthlyIncome: string;
-  incomeSource: string;
-  hasElectricity: boolean;
-  hasWater: boolean;
-  hasInternet: boolean;
-  dwellingType: string;
-  dwellingOwnership: string;
-
-  // Address Information (PSGC Codes) - auto-populated
-  regionCode: string;
-  provinceCode: string;
-  cityMunicipalityCode: string;
+  streetId: string; // UUID reference to geo_streets
+  subdivisionId?: string; // UUID reference to geo_subdivisions
   barangayCode: string;
+  cityMunicipalityCode: string;
+  provinceCode?: string;
+  regionCode: string;
+  zipCode?: string;
+  
+  // Household metrics
+  noOfFamilies?: number;
+  noOfHouseholdMembers?: number;
+  noOfMigrants?: number;
+  
+  // Household classifications (enums)
+  householdType?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
+  tenureStatus?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  tenureOthersSpecify?: string;
+  householdUnit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
+  
+  // Economic information
+  monthlyIncome?: number;
+  incomeClass?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
+  
+  // Head of household
+  householdHeadId?: string; // UUID reference to residents
+  householdHeadPosition?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
 }
 
 export interface UserAddress {
@@ -93,42 +89,44 @@ export interface HouseholdValidationResult {
  */
 export class HouseholdService {
   /**
-   * Validate household form data
+   * Validate household form data - aligned with database structure
    */
   validateHousehold(formData: HouseholdFormData): HouseholdValidationResult {
     const errors: Record<string, string> = {};
 
     try {
-      // Step 1: Basic Information
-      if (!formData.householdType) {
-        errors.householdType = 'Household type is required';
+      // Required fields validation
+      if (!formData.code?.trim()) {
+        errors.code = 'Household code is required';
       }
-      if (!formData.headFirstName?.trim()) {
-        errors.headFirstName = 'Head first name is required';
+      if (!formData.houseNumber?.trim()) {
+        errors.houseNumber = 'House number is required';
       }
-      if (!formData.headLastName?.trim()) {
-        errors.headLastName = 'Head last name is required';
+      if (!formData.streetId?.trim()) {
+        errors.streetId = 'Street ID is required';
       }
-
-      // Step 2: Location Details
-      if (!formData.streetName?.trim()) {
-        errors.streetName = 'Street name is required';
+      if (!formData.barangayCode?.trim()) {
+        errors.barangayCode = 'Barangay code is required';
       }
-
-      // Step 3: Household Composition
-      if (formData.totalMembers < 1) {
-        errors.totalMembers = 'Total members must be at least 1';
+      if (!formData.cityMunicipalityCode?.trim()) {
+        errors.cityMunicipalityCode = 'City/Municipality code is required';
       }
-      if (formData.totalMales + formData.totalFemales !== formData.totalMembers) {
-        errors.totalMales = 'Total male and female members must equal total members';
+      if (!formData.regionCode?.trim()) {
+        errors.regionCode = 'Region code is required';
       }
 
-      // Step 4: Economic Information
-      if (!formData.dwellingType) {
-        errors.dwellingType = 'Dwelling type is required';
+      // Validate numeric fields if provided
+      if (formData.noOfFamilies !== undefined && formData.noOfFamilies < 0) {
+        errors.noOfFamilies = 'Number of families cannot be negative';
       }
-      if (!formData.dwellingOwnership) {
-        errors.dwellingOwnership = 'Dwelling ownership is required';
+      if (formData.noOfHouseholdMembers !== undefined && formData.noOfHouseholdMembers < 0) {
+        errors.noOfHouseholdMembers = 'Number of household members cannot be negative';
+      }
+      if (formData.noOfMigrants !== undefined && formData.noOfMigrants < 0) {
+        errors.noOfMigrants = 'Number of migrants cannot be negative';
+      }
+      if (formData.monthlyIncome !== undefined && formData.monthlyIncome < 0) {
+        errors.monthlyIncome = 'Monthly income cannot be negative';
       }
 
       return {
@@ -145,53 +143,63 @@ export class HouseholdService {
   }
 
   /**
-   * Generate unique household code
+   * Generate unique household code - should use proper format based on geographic hierarchy
+   * For now using simple format, but should ideally use barangay-based format from schema
    */
-  generateHouseholdCode(): string {
+  generateHouseholdCode(barangayCode?: string): string {
+    if (barangayCode) {
+      // Use geographic hierarchy format as defined in schema function
+      const timestamp = Date.now().toString().slice(-6);
+      return `${barangayCode}-HH-${timestamp}`;
+    }
+    
+    // Fallback format
     const timestamp = Date.now().toString(36);
-    const randomStr = Math.random().toString(36).substring(2, 8);
+    const randomStr = Math.random().toString(36).substring(2, 6);
     return `HH-${timestamp}-${randomStr}`.toUpperCase();
   }
 
   /**
-   * Transform form data to database schema
+   * Transform form data to database schema - exact field mapping
    */
-  private transformToDbSchema(formData: HouseholdFormData, userAddress?: UserAddress) {
+  private transformToDbSchema(formData: HouseholdFormData, userAddress?: UserAddress): Partial<HouseholdRecord> {
     return {
-      code: formData.householdCode,
-      household_type: formData.householdType as any,
-      head_first_name: formData.headFirstName,
-      head_middle_name: formData.headMiddleName || null,
-      head_last_name: formData.headLastName,
-      head_extension_name: formData.headExtensionName || null,
-      street_name: formData.streetName,
-      house_number: formData.houseNumber || null,
-      subdivision: formData.subdivision || null,
-      landmark: formData.landmark || null,
-      coordinates:
-        formData.coordinates.latitude && formData.coordinates.longitude
-          ? `POINT(${formData.coordinates.longitude} ${formData.coordinates.latitude})`
-          : null,
-      total_members: formData.totalMembers,
-      total_males: formData.totalMales,
-      total_females: formData.totalFemales,
-      children_count: formData.children,
-      adults_count: formData.adults,
-      seniors_count: formData.seniors,
-      monthly_income_range: formData.monthlyIncome || null,
-      primary_income_source: formData.incomeSource || null,
-      has_electricity: formData.hasElectricity,
-      has_water_supply: formData.hasWater,
-      has_internet: formData.hasInternet,
-      dwelling_type: formData.dwellingType as any,
-      dwelling_ownership: formData.dwellingOwnership as any,
-      // Geographic hierarchy - auto-populated from user's assigned barangay
-      region_code: userAddress?.region_code || null,
-      province_code: userAddress?.province_code || null,
-      city_municipality_code: userAddress?.city_municipality_code || null,
-      barangay_code: userAddress?.barangay_code || null,
-      // No household head initially - will be set when first resident is added
-      household_head_id: null,
+      // Primary identification
+      code: formData.code,
+      name: formData.name || null,
+      address: formData.address || null,
+      
+      // Location details
+      house_number: formData.houseNumber,
+      street_id: formData.streetId,
+      subdivision_id: formData.subdivisionId || null,
+      barangay_code: formData.barangayCode || userAddress?.barangay_code,
+      city_municipality_code: formData.cityMunicipalityCode || userAddress?.city_municipality_code,
+      province_code: formData.provinceCode || userAddress?.province_code || null,
+      region_code: formData.regionCode || userAddress?.region_code,
+      zip_code: formData.zipCode || null,
+      
+      // Household metrics
+      no_of_families: formData.noOfFamilies || 1,
+      no_of_household_members: formData.noOfHouseholdMembers || 0,
+      no_of_migrants: formData.noOfMigrants || 0,
+      
+      // Household classifications
+      household_type: formData.householdType || null,
+      tenure_status: formData.tenureStatus || null,
+      tenure_others_specify: formData.tenureOthersSpecify || null,
+      household_unit: formData.householdUnit || null,
+      
+      // Economic information
+      monthly_income: formData.monthlyIncome || null,
+      income_class: formData.incomeClass || null,
+      
+      // Head of household
+      household_head_id: formData.householdHeadId || null,
+      household_head_position: formData.householdHeadPosition || null,
+      
+      // Status and audit fields
+      is_active: true,
     };
   }
 
@@ -216,8 +224,8 @@ export class HouseholdService {
       }
 
       // Generate household code if not provided
-      if (!formData.householdCode) {
-        formData.householdCode = this.generateHouseholdCode();
+      if (!formData.code) {
+        formData.code = this.generateHouseholdCode(barangayCode || formData.barangayCode);
       }
 
       // Transform data to database schema
@@ -228,7 +236,7 @@ export class HouseholdService {
         householdData.barangay_code = barangayCode;
       }
 
-      logger.info('Creating household', { householdCode: formData.householdCode });
+      logger.info('Creating household', { householdCode: formData.code });
 
       // Insert household into database
       const { data, error } = await supabase.from('households').insert([householdData]).select();
@@ -246,8 +254,8 @@ export class HouseholdService {
       }
 
       dbLogger.info('Household created successfully', {
-        recordId: data[0]?.id,
-        householdCode: formData.householdCode,
+        recordId: data[0]?.code,
+        householdCode: formData.code,
       });
 
       return {
@@ -264,14 +272,19 @@ export class HouseholdService {
   }
 
   /**
-   * Get household by ID
+   * Get household by code (primary key)
    */
-  async getHousehold(id: string) {
+  async getHousehold(code: string) {
     try {
-      const { data, error } = await supabase.from('households').select('*').eq('id', id).single();
+      const { data, error } = await supabase
+        .from('households')
+        .select('*')
+        .eq('code', code)
+        .eq('is_active', true)
+        .single();
 
       if (error) {
-        dbLogger.error('Failed to fetch household', { error: error.message, id });
+        dbLogger.error('Failed to fetch household', { error: error.message, code });
         return { success: false, error: error.message };
       }
 
@@ -315,6 +328,7 @@ export class HouseholdService {
       const { data, error, count } = await supabase
         .from('households')
         .select('*', { count: 'exact' })
+        .eq('is_active', true)
         .range(offset, offset + limit - 1)
         .order('created_at', { ascending: false });
 
@@ -340,58 +354,51 @@ export class HouseholdService {
   }
 
   /**
-   * Update household information
+   * Update household information - using exact database field names
    */
-  async updateHousehold(id: string, updates: Partial<HouseholdFormData>) {
+  async updateHousehold(code: string, updates: Partial<HouseholdFormData>) {
     try {
-      // Transform updates to database schema
-      const dbUpdates: Record<string, any> = {};
+      // Transform updates to match exact database schema
+      const dbUpdates: Partial<HouseholdRecord> = {};
 
-      if (updates.householdType) dbUpdates.household_type = updates.householdType;
-      if (updates.headFirstName) dbUpdates.head_first_name = updates.headFirstName;
-      if (updates.headMiddleName !== undefined)
-        dbUpdates.head_middle_name = updates.headMiddleName || null;
-      if (updates.headLastName) dbUpdates.head_last_name = updates.headLastName;
-      if (updates.headExtensionName !== undefined)
-        dbUpdates.head_extension_name = updates.headExtensionName || null;
-      if (updates.streetName) dbUpdates.street_name = updates.streetName;
-      if (updates.houseNumber !== undefined) dbUpdates.house_number = updates.houseNumber || null;
-      if (updates.subdivision !== undefined) dbUpdates.subdivision = updates.subdivision || null;
-      if (updates.landmark !== undefined) dbUpdates.landmark = updates.landmark || null;
-      if (updates.totalMembers !== undefined) dbUpdates.total_members = updates.totalMembers;
-      if (updates.totalMales !== undefined) dbUpdates.total_males = updates.totalMales;
-      if (updates.totalFemales !== undefined) dbUpdates.total_females = updates.totalFemales;
-      if (updates.children !== undefined) dbUpdates.children_count = updates.children;
-      if (updates.adults !== undefined) dbUpdates.adults_count = updates.adults;
-      if (updates.seniors !== undefined) dbUpdates.seniors_count = updates.seniors;
-      if (updates.monthlyIncome !== undefined)
-        dbUpdates.monthly_income_range = updates.monthlyIncome || null;
-      if (updates.incomeSource !== undefined)
-        dbUpdates.primary_income_source = updates.incomeSource || null;
-      if (updates.hasElectricity !== undefined) dbUpdates.has_electricity = updates.hasElectricity;
-      if (updates.hasWater !== undefined) dbUpdates.has_water_supply = updates.hasWater;
-      if (updates.hasInternet !== undefined) dbUpdates.has_internet = updates.hasInternet;
-      if (updates.dwellingType) dbUpdates.dwelling_type = updates.dwellingType;
-      if (updates.dwellingOwnership) dbUpdates.dwelling_ownership = updates.dwellingOwnership;
+      // Only update fields that are provided
+      if (updates.name !== undefined) dbUpdates.name = updates.name;
+      if (updates.address !== undefined) dbUpdates.address = updates.address;
+      if (updates.houseNumber !== undefined) dbUpdates.house_number = updates.houseNumber;
+      if (updates.streetId !== undefined) dbUpdates.street_id = updates.streetId;
+      if (updates.subdivisionId !== undefined) dbUpdates.subdivision_id = updates.subdivisionId;
+      if (updates.barangayCode !== undefined) dbUpdates.barangay_code = updates.barangayCode;
+      if (updates.cityMunicipalityCode !== undefined) dbUpdates.city_municipality_code = updates.cityMunicipalityCode;
+      if (updates.provinceCode !== undefined) dbUpdates.province_code = updates.provinceCode;
+      if (updates.regionCode !== undefined) dbUpdates.region_code = updates.regionCode;
+      if (updates.zipCode !== undefined) dbUpdates.zip_code = updates.zipCode;
+      if (updates.noOfFamilies !== undefined) dbUpdates.no_of_families = updates.noOfFamilies;
+      if (updates.noOfHouseholdMembers !== undefined) dbUpdates.no_of_household_members = updates.noOfHouseholdMembers;
+      if (updates.noOfMigrants !== undefined) dbUpdates.no_of_migrants = updates.noOfMigrants;
+      if (updates.householdType !== undefined) dbUpdates.household_type = updates.householdType;
+      if (updates.tenureStatus !== undefined) dbUpdates.tenure_status = updates.tenureStatus;
+      if (updates.tenureOthersSpecify !== undefined) dbUpdates.tenure_others_specify = updates.tenureOthersSpecify;
+      if (updates.householdUnit !== undefined) dbUpdates.household_unit = updates.householdUnit;
+      if (updates.monthlyIncome !== undefined) dbUpdates.monthly_income = updates.monthlyIncome;
+      if (updates.incomeClass !== undefined) dbUpdates.income_class = updates.incomeClass;
+      if (updates.householdHeadId !== undefined) dbUpdates.household_head_id = updates.householdHeadId;
+      if (updates.householdHeadPosition !== undefined) dbUpdates.household_head_position = updates.householdHeadPosition;
 
-      if (updates.coordinates) {
-        if (updates.coordinates.latitude && updates.coordinates.longitude) {
-          dbUpdates.coordinates = `POINT(${updates.coordinates.longitude} ${updates.coordinates.latitude})`;
-        }
-      }
+      // Always update the timestamp
+      dbUpdates.updated_at = new Date().toISOString();
 
       const { data, error } = await supabase
         .from('households')
         .update(dbUpdates)
-        .eq('id', id)
+        .eq('code', code) // Use code instead of id as primary key
         .select();
 
       if (error) {
-        dbLogger.error('Failed to update household', { error: error.message, id });
+        dbLogger.error('Failed to update household', { error: error.message, code });
         return { success: false, error: error.message };
       }
 
-      dbLogger.info('Household updated successfully', { id });
+      dbLogger.info('Household updated successfully', { code });
       return { success: true, data: data[0] };
     } catch (error) {
       logger.error('Unexpected error updating household', error);
@@ -400,18 +407,25 @@ export class HouseholdService {
   }
 
   /**
-   * Delete household
+   * Delete household (soft delete by setting is_active = false)
    */
-  async deleteHousehold(id: string) {
+  async deleteHousehold(code: string) {
     try {
-      const { error } = await supabase.from('households').delete().eq('id', id);
+      // Soft delete - set is_active to false instead of hard delete
+      const { error } = await supabase
+        .from('households')
+        .update({ 
+          is_active: false,
+          updated_at: new Date().toISOString()
+        })
+        .eq('code', code); // Use code as primary key
 
       if (error) {
-        dbLogger.error('Failed to delete household', { error: error.message, id });
+        dbLogger.error('Failed to delete household', { error: error.message, code });
         return { success: false, error: error.message };
       }
 
-      dbLogger.info('Household deleted successfully', { id });
+      dbLogger.info('Household deleted successfully', { code });
       return { success: true };
     } catch (error) {
       logger.error('Unexpected error deleting household', error);

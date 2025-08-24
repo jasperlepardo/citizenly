@@ -7,7 +7,7 @@ import { cn } from '@/lib/utilities/css-utils';
 import { CommandMenuGroup } from './CommandMenuGroup';
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
-import type { CommandMenuItem, CommandMenuProps } from './types';
+import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
 
 const commandMenuVariants = cva(
   'relative mx-auto w-full overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-black/5 dark:ring-white/10',
