@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     const payload: WebhookPayload = JSON.parse(body);
 
-    console.log('🔄 Auth webhook received:', {
+    console.warn('🔄 Auth webhook received:', {
       type: payload.type,
       table: payload.table,
       userId: payload.record?.id,
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled webhook type: ${payload.type}`);
+        console.warn(`Unhandled webhook type: ${payload.type}`);
     }
 
     return NextResponse.json({ message: 'Webhook processed successfully' });
@@ -80,7 +80,7 @@ async function handleUserUpdate(
 
   // Check if email was just confirmed
   if (oldRecord.email_confirmed_at === null && newRecord.email_confirmed_at !== null) {
-    console.log(`✅ Email confirmed for user: ${userId}`);
+    console.warn(`✅ Email confirmed for user: ${userId}`);
 
     try {
       // Update profile verification status
@@ -104,20 +104,20 @@ async function handleUserUpdate(
       // Queue welcome notifications
       await queueWelcomeNotifications(supabaseAdmin, userId);
 
-      console.log(`✅ Post-confirmation processing completed for user: ${userId}`);
+      console.warn(`✅ Post-confirmation processing completed for user: ${userId}`);
     } catch (error) {
       console.error(`❌ Post-confirmation processing failed for user ${userId}:`, error);
     }
   }
 }
 
-async function handleUserInsert(supabaseAdmin: any, record: WebhookUserRecord) {
+async function handleUserInsert(supabaseAdmin: SupabaseClient, record: WebhookUserRecord) {
   const userId = record.id;
-  console.log(`👤 New user created: ${userId}`);
+  console.warn(`👤 New user created: ${userId}`);
 
   // If user is already confirmed (rare but possible), process immediately
   if (record.email_confirmed_at) {
-    console.log(`✅ User already confirmed at signup: ${userId}`);
+    console.warn(`✅ User already confirmed at signup: ${userId}`);
     const mockOldRecord: WebhookUserRecord = {
       ...record,
       email_confirmed_at: null,
@@ -126,7 +126,7 @@ async function handleUserInsert(supabaseAdmin: any, record: WebhookUserRecord) {
   }
 }
 
-async function completeAddressHierarchy(supabaseAdmin: any, userId: string) {
+async function completeAddressHierarchy(supabaseAdmin: SupabaseClient, userId: string) {
   try {
     // Get user profile with barangay code
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -136,13 +136,13 @@ async function completeAddressHierarchy(supabaseAdmin: any, userId: string) {
       .single();
 
     if (profileError || !profile || !profile.barangay_code) {
-      console.log(`No address hierarchy to complete for user: ${userId}`);
+      console.warn(`No address hierarchy to complete for user: ${userId}`);
       return;
     }
 
     // If hierarchy is already complete, skip
     if (profile.city_municipality_code && profile.province_code && profile.region_code) {
-      console.log(`Address hierarchy already complete for user: ${userId}`);
+      console.warn(`Address hierarchy already complete for user: ${userId}`);
       return;
     }
 
@@ -178,8 +178,8 @@ async function completeAddressHierarchy(supabaseAdmin: any, userId: string) {
       .from('auth_user_profiles')
       .update({
         city_municipality_code: hierarchy.city_municipality_code,
-        province_code: (hierarchy as any).psgc_cities_municipalities.province_code,
-        region_code: (hierarchy as any).psgc_cities_municipalities.psgc_provinces.region_code,
+        province_code: (hierarchy as { psgc_cities_municipalities: { province_code: string; psgc_provinces: { region_code: string } } }).psgc_cities_municipalities.province_code,
+        region_code: (hierarchy as { psgc_cities_municipalities: { province_code: string; psgc_provinces: { region_code: string } } }).psgc_cities_municipalities.psgc_provinces.region_code,
         updated_at: new Date().toISOString(),
       })
       .eq('id', userId);
@@ -187,14 +187,14 @@ async function completeAddressHierarchy(supabaseAdmin: any, userId: string) {
     if (updateError) {
       console.error(`Failed to update address hierarchy for user ${userId}:`, updateError);
     } else {
-      console.log(`✅ Address hierarchy completed for user: ${userId}`);
+      console.warn(`✅ Address hierarchy completed for user: ${userId}`);
     }
   } catch (error) {
     console.error(`Error completing address hierarchy for user ${userId}:`, error);
   }
 }
 
-async function queueWelcomeNotifications(supabaseAdmin: any, userId: string) {
+async function queueWelcomeNotifications(supabaseAdmin: SupabaseClient, userId: string) {
   try {
     // Get user profile for notification data
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -224,7 +224,7 @@ async function queueWelcomeNotifications(supabaseAdmin: any, userId: string) {
       metadata: {
         email: profile.email,
         first_name: profile.first_name,
-        role_name: (profile as any).auth_roles.name,
+        role_name: (profile as { auth_roles: { name: string } }).auth_roles.name,
       },
     });
 
@@ -248,7 +248,7 @@ async function queueWelcomeNotifications(supabaseAdmin: any, userId: string) {
     if (notifError) {
       console.error(`Failed to queue notifications for user ${userId}:`, notifError);
     } else {
-      console.log(`✅ Welcome notifications queued for user: ${userId}`);
+      console.warn(`✅ Welcome notifications queued for user: ${userId}`);
     }
   } catch (error) {
     console.error(`Error queuing notifications for user ${userId}:`, error);

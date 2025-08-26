@@ -1,14 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Missing Supabase configuration');
+  }
+  
+  return createClient(supabaseUrl, serviceRoleKey);
+}
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
-
+    const supabase = createSupabaseClient();
+    
     // Get regions data
     const { data: regions, error: regionsError } = await supabase
       .from('psgc_regions')
@@ -21,10 +28,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = regions?.map((region) => ({
-      value: region.code,
-      label: region.name,
-    })) || [];
+    const options =
+      regions?.map(region => ({
+        value: region.code,
+        label: region.name,
+      })) || [];
 
     return NextResponse.json({
       success: true,

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { PSGCRegion, PSGCProvince, PSGCCityMunicipality, PSGCBarangay, PSGCSearchResponse } from '@/types/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -95,7 +96,7 @@ export async function GET(request: NextRequest) {
     // Remove duplicates and empty variations
     const uniqueVariations = Array.from(new Set(variations)).filter(v => v.length > 2);
 
-    const allResults: any[] = [];
+    const allResults: PSGCSearchResponse[] = [];
 
     // Search regions if requested
     if (levels.includes('region')) {
@@ -110,7 +111,7 @@ export async function GET(request: NextRequest) {
       const regionResults = await Promise.all(regionSearchPromises);
       regionResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((region: any) => {
+          result.data.forEach((region: PSGCRegion) => {
             allResults.push({
               code: region.code,
               name: region.name,
@@ -142,7 +143,7 @@ export async function GET(request: NextRequest) {
       const provinceResults = await Promise.all(provinceSearchPromises);
       provinceResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((province: any) => {
+          result.data.forEach((province: PSGCProvince) => {
             const region = province.psgc_regions;
             allResults.push({
               code: province.code,
@@ -209,7 +210,7 @@ export async function GET(request: NextRequest) {
       // Process direct city name matches
       cityResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((city: any) => {
+          result.data.forEach((city: PSGCCityMunicipality) => {
             const province = city.psgc_provinces;
             const region = province?.psgc_regions;
             allResults.push({
@@ -233,7 +234,7 @@ export async function GET(request: NextRequest) {
       // Process cities found by province name (hierarchical matches)
       provinceMatchResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((city: any) => {
+          result.data.forEach((city: PSGCCityMunicipality) => {
             const province = city.psgc_provinces;
             const region = province?.psgc_regions;
             allResults.push({
@@ -340,7 +341,7 @@ export async function GET(request: NextRequest) {
       // Process direct barangay name matches
       barangayResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: any) => {
+          result.data.forEach((barangay: PSGCBarangay) => {
             const city = barangay.psgc_cities_municipalities;
             const province = city?.psgc_provinces;
             const region = province?.psgc_regions;
@@ -366,7 +367,7 @@ export async function GET(request: NextRequest) {
       // Process hierarchical matches (barangays within provinces)
       barangayByProvinceResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: any) => {
+          result.data.forEach((barangay: PSGCBarangay) => {
             const city = barangay.psgc_cities_municipalities;
             const province = city?.psgc_provinces;
             const region = province?.psgc_regions;
@@ -392,7 +393,7 @@ export async function GET(request: NextRequest) {
       // Process hierarchical matches (barangays within cities)
       barangayByCityResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: any) => {
+          result.data.forEach((barangay: PSGCBarangay) => {
             const city = barangay.psgc_cities_municipalities;
             const province = city?.psgc_provinces;
             const region = province?.psgc_regions;
@@ -418,15 +419,15 @@ export async function GET(request: NextRequest) {
 
     // Remove duplicates based on code
     const uniqueResults = allResults.reduce((acc, current) => {
-      const exists = acc.find((item: any) => item.code === current.code);
+      const exists = acc.find((item: PSGCSearchResponse) => item.code === current.code);
       if (!exists) {
         acc.push(current);
       }
       return acc;
-    }, [] as any[]);
+    }, [] as PSGCSearchResponse[]);
 
     // Enhanced sorting by relevance and geographic hierarchy
-    uniqueResults.sort((a: any, b: any) => {
+    uniqueResults.sort((a: PSGCSearchResponse, b: PSGCSearchResponse) => {
       // First priority: Direct name matches (exact or starts with query)
       const aDirectMatch = a.name.toLowerCase().startsWith(rawQuery) ? 1 : 0;
       const bDirectMatch = b.name.toLowerCase().startsWith(rawQuery) ? 1 : 0;
