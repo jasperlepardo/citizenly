@@ -46,11 +46,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     ]);
 
     // Helper to safely get stats from settled promises
-    const getStatsValue = (result: PromiseSettledResult<any>, defaultValue: any = {}) => {
+    const getStatsValue = (result: PromiseSettledResult<unknown>, defaultValue: Record<string, unknown> = {}) => {
       return result.status === 'fulfilled' ? result.value : defaultValue;
     };
 
-    const stats: any = {
+    const stats: Record<string, unknown> = {
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV,
       
@@ -156,7 +156,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { action, pattern, tags } = await request.json();
 
-    let result: any = { success: false };
+    let result: Record<string, unknown> = { success: false };
 
     switch (action) {
       case 'clear':

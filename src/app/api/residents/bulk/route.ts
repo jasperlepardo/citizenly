@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 // Bulk operations validation schema
 const bulkOperationSchema = z.object({
@@ -41,10 +41,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -56,11 +53,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
     }
 
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Use admin client for bulk operations
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -197,7 +191,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the bulk operation
-    console.log('Bulk operation completed:', {
+    console.info('Bulk operation completed:', {
       operation,
       userId: user.id,
       residentCount: resident_ids.length,

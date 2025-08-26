@@ -29,6 +29,10 @@ export {
   addRecentItem,
   // Repository pattern
   BaseRepository,
+  // Supabase clients
+  createAdminSupabaseClient,
+  createPublicSupabaseClient,
+  createSupabaseClient,
   // Types for compatibility
   type QueryOptions,
   type RepositoryError,

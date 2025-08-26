@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -16,10 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -32,10 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -165,7 +159,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         };
       }
     } catch (geoError) {
-      console.warn('Geographic info load failed:', geoError);
+      console.debug('Geographic info load failed:', geoError?.message);
     }
 
     // Get birth place information if birth_place_code exists
@@ -255,13 +249,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 };
               } else {
                 // All fallbacks failed
-                console.warn('Could not resolve birth place:', resident.birth_place_code);
+                console.debug('Could not resolve birth place:', resident.birth_place_code);
               }
             }
           }
         }
       } catch (birthPlaceError) {
-        console.warn('Birth place info load failed:', birthPlaceError);
+        console.debug('Birth place info load failed:', birthPlaceError?.message);
       }
     }
 
@@ -299,7 +293,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           };
         }
       } catch (occupationError) {
-        console.warn('Occupation info load failed:', occupationError);
+        console.debug('Occupation info load failed:', occupationError?.message);
       }
     }
 
@@ -334,10 +328,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -350,10 +341,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -442,7 +430,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         .maybeSingle(); // Use maybeSingle instead of single to avoid error when no record exists
 
       // Log the check result for debugging
-      console.log('Sectoral record check:', { 
+      console.debug('Sectoral record check:', { 
         exists: !!existingSectoral, 
         residentId,
         checkError: checkError?.message 
@@ -471,7 +459,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           }, { status: 500 });
         }
         
-        console.log('Successfully updated sectoral data:', updatedData);
+        console.debug('Successfully updated sectoral data for resident:', residentId);
       } else {
         // Create new sectoral record (table doesn't have created_by/updated_by columns)
         const sectoralInsertData = {
@@ -481,7 +469,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           updated_at: new Date().toISOString(),
         };
         
-        console.log('Attempting to insert sectoral data:', JSON.stringify(sectoralInsertData, null, 2));
+        console.debug('Attempting to insert sectoral data for resident:', residentId);
         
         const { data: insertedData, error: sectoralInsertError } = await supabaseAdmin
           .from('resident_sectoral_info')
@@ -579,10 +567,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -595,10 +580,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin

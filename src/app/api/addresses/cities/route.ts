@@ -1,20 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase configuration');
-  }
-  
-  return createClient(supabaseUrl, serviceRoleKey);
-}
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const provinceCode = searchParams.get('province');
 
@@ -31,13 +20,21 @@ export async function GET(request: NextRequest) {
 
     const { data: cities, error: citiesError } = await query;
 
+    // Type the cities array properly
+    type CityResult = {
+      code: string;
+      name: string;
+      type: string;
+      province_code: string | null;
+    };
+
     if (citiesError) {
       console.error('Cities query error:', citiesError);
       return NextResponse.json({ error: 'Failed to fetch cities/municipalities' }, { status: 500 });
     }
 
     // Transform data to match SelectField format
-    const options = cities?.map((city) => ({
+    const options = (cities as CityResult[])?.map((city) => ({
       value: city.code,
       label: city.name,
       province_code: city.province_code,

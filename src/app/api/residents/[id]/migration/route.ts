@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { z } from 'zod';
 
 // Migration information validation schema
@@ -32,10 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -48,10 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -136,10 +130,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -152,10 +143,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -267,10 +255,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -283,10 +268,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin

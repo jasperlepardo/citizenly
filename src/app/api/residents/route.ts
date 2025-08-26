@@ -5,8 +5,8 @@
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import { ResidentRecord, ResidentMigrantInfo } from '@/types/database';
-import { ResidentSectoralInfo } from '@/types/residents';
+import { ResidentRecord } from '@/types/database';
+import { ResidentSectoralInfo, ResidentMigrantInfo } from '@/types/residents';
 
 import {
   withAuth,
@@ -133,8 +133,8 @@ export const GET = withSecurityHeaders(
         // All residents must have households, and filtering is done based on household location
         const accessLevel = getAccessLevel(user.role);
 
-        // Ensure we only show residents with households and active residents (soft delete support)
-        query = query.not('household_code', 'is', null).eq('is_active', true);
+        // Ensure we only show active residents (households!inner already ensures household presence)
+        query = query.eq('is_active', true);
 
         // Apply geographic filter based on the joined household data
         switch (accessLevel) {
@@ -359,8 +359,8 @@ export const POST = withSecurityHeaders(
 
             // Add sectoral fields that are present
             sectoralFields.forEach(field => {
-              if (field in residentData) {
-                sectoralData[field as keyof ResidentSectoralInfo] = (residentData as Record<string, unknown>)[field] || false;
+              if (Object.prototype.hasOwnProperty.call(residentData, field)) {
+                sectoralData[field as keyof ResidentSectoralInfo] = (residentData as unknown as Record<string, unknown>)[field] as any;
               }
             });
 
@@ -391,7 +391,7 @@ export const POST = withSecurityHeaders(
           ];
 
           const hasMigrationData = migrationFields.some(
-            field => field in residentData && (residentData as Record<string, unknown>)[field]
+            field => field in residentData && (residentData as unknown as Record<string, unknown>)[field]
           );
 
           if (hasMigrationData && newResident?.id) {
@@ -403,8 +403,8 @@ export const POST = withSecurityHeaders(
 
             // Add migration fields that are present and not empty
             migrationFields.forEach(field => {
-              if (field in residentData && (residentData as Record<string, unknown>)[field]) {
-                migrationData[field as keyof ResidentMigrantInfo] = (residentData as Record<string, unknown>)[field];
+              if (field in residentData && (residentData as unknown as Record<string, unknown>)[field]) {
+                migrationData[field as keyof ResidentMigrantInfo] = (residentData as unknown as Record<string, unknown>)[field];
               }
             });
 

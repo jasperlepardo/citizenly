@@ -235,7 +235,7 @@ describe('Create New Resident - Complete Flow', () => {
       
       // Mock ResidentForm to return empty data
       const MockResidentForm = require('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel }) => (
+      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: { onSubmit: (data: any) => void; onCancel: () => void }) => (
         <div data-testid="resident-form">
           <button onClick={() => onSubmit({
             first_name: '',  // Empty required field

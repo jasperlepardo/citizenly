@@ -1,27 +1,28 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient } from '@/lib/data/client-factory';
+import { PSGCSearchResponse, PSGCProvinceWithRegion, PSGCCityWithProvince } from '@/types/database';
+import { validatePsgcCode, createValidationErrorResponse } from '@/lib/validation/api-validators';
 // Force rebuild - fixed switch case scoping issue (v2)
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const code = searchParams.get('code');
-
-    if (!code || code.trim().length < 6) {
-      return NextResponse.json({ error: 'Valid PSGC code is required' }, { status: 400 });
+    
+    const validation = validatePsgcCode(searchParams);
+    if (!validation.success) {
+      return NextResponse.json(createValidationErrorResponse(validation.error.issues), { status: 400 });
     }
 
-    // Use service role client to bypass RLS for geographic data
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const { code } = validation.data;
+
+    // Use public client for geographic data lookup
+    const supabase = createPublicSupabaseClient();
 
     const lookupCode = code.trim();
     
     // Determine level based on code length and structure
     let level: string;
-    let result: any = null;
+    let result: PSGCSearchResponse | null = null;
 
     if (lookupCode.length === 2) {
       level = 'region';
@@ -75,12 +76,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'Province not found' }, { status: 404 });
         }
 
-        const province = provinceData as { 
-          code: string; 
-          name: string; 
-          region_code: string;
-          psgc_regions: { code: string; name: string }[] | null 
-        };
+        const province = provinceData as PSGCProvinceWithRegion;
         const region = Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions;
         result = {
           code: province.code,
@@ -118,19 +114,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'City/Municipality not found' }, { status: 404 });
         }
 
-        const city = cityData as { 
-          code: string; 
-          name: string; 
-          type: string;
-          is_independent: boolean;
-          province_code: string;
-          psgc_provinces: { 
-            code: string; 
-            name: string;
-            region_code: string;
-            psgc_regions: { code: string; name: string }[] | null
-          }[] | null
-        };
+        const city = cityData as PSGCCityWithProvince;
         const cityProvince = Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces;
         const cityRegion = cityProvince?.psgc_regions ? (Array.isArray(cityProvince.psgc_regions) ? cityProvince.psgc_regions[0] : cityProvince.psgc_regions) : null;
         result = {

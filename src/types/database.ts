@@ -19,18 +19,20 @@
 export interface PSGCRegion {
   code: string;
   name: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface PSGCProvince {
   code: string;
   name: string;
   region_code: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  // Joined relations
+  psgc_regions?: PSGCRegion;
 }
 
 export interface PSGCCityMunicipality {
@@ -38,19 +40,44 @@ export interface PSGCCityMunicipality {
   name: string;
   type: string;
   province_code: string | null;
-  is_independent: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_independent?: boolean;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  // Joined relations
+  psgc_provinces?: PSGCProvince;
 }
 
 export interface PSGCBarangay {
   code: string;
   name: string;
   city_municipality_code: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  // Joined relations
+  psgc_cities_municipalities?: PSGCCityMunicipality;
+}
+
+export interface PSGCSearchResponse {
+  code: string;
+  name: string;
+  level: 'region' | 'province' | 'city' | 'barangay';
+  type?: string;
+  // Region fields
+  region_code?: string;
+  region_name?: string;
+  // Province fields
+  province_code?: string;
+  province_name?: string;
+  // City fields
+  city_code?: string;
+  city_name?: string;
+  city_type?: string;
+  // Barangay fields
+  barangay_code?: string;
+  barangay_name?: string;
+  full_address: string;
 }
 
 // =============================================================================
@@ -194,6 +221,9 @@ export interface ResidentRecord {
 // Note: ResidentSectoralInfo moved to residents.ts
 // Note: HouseholdRecord moved to households.ts
 
+// Re-export commonly used form types
+export type { ResidentFormData } from './forms';
+
 // =============================================================================
 // API RESPONSE TYPES
 // =============================================================================
@@ -241,14 +271,143 @@ export interface GeographicHierarchySingleResult {
 // Note: HouseholdWithMembersResult moved to households.ts
 
 // =============================================================================
+// RATE LIMITING TYPES
+// =============================================================================
+
+export interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetTime: number;
+  limit: number;
+}
+
+export type RateLimitAction = 
+  | 'SEARCH_RESIDENTS' 
+  | 'RESIDENT_CREATE' 
+  | 'RESIDENT_UPDATE' 
+  | 'RESIDENT_DELETE'
+  | 'HOUSEHOLD_CREATE'
+  | 'HOUSEHOLD_UPDATE';
+
+// =============================================================================
 // WEBHOOK AND NOTIFICATION TYPES
 // =============================================================================
 
-// Note: Webhook and notification types moved to auth.ts
+export interface NotificationRecord {
+  id: string;
+  user_id: string;
+  notification_type: 'welcome_email' | 'sms_welcome' | 'password_reset' | 'account_verified';
+  status: 'pending' | 'sent' | 'failed';
+  metadata: Record<string, unknown>;
+  retry_count: number;
+  error_message?: string | null;
+  scheduled_for?: string | null;
+  sent_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebhookPayload {
+  type: 'INSERT' | 'UPDATE' | 'DELETE';
+  table: string;
+  schema: string;
+  record: Record<string, unknown>;
+  old_record?: Record<string, unknown>;
+}
+
+export interface UserProfileWithRole {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone?: string | null;
+  barangay_code?: string | null;
+  city_municipality_code?: string | null;
+  province_code?: string | null;
+  region_code?: string | null;
+  auth_roles: {
+    name: string;
+  };
+}
+
+export interface AddressHierarchyWebhookResult {
+  city_municipality_code: string;
+  psgc_cities_municipalities: {
+    code: string;
+    province_code: string;
+    psgc_provinces: {
+      code: string;
+      region_code: string;
+    };
+  };
+}
 
 // =============================================================================
-// SUPABASE QUERY RESPONSE TYPES
+// API RESPONSE STANDARDS
 // =============================================================================
+
+export interface ApiSuccessResponse<T = unknown> {
+  success: true;
+  data: T;
+  count?: number;
+  totalCount?: number;
+  offset?: number;
+  hasMore?: boolean;
+  message?: string;
+}
+
+export interface ApiErrorResponse {
+  success?: false;
+  error: string;
+  details?: string;
+  validationErrors?: Record<string, string[]>;
+  code?: string;
+}
+
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
+
+// =============================================================================
+// VALIDATION TYPES
+// =============================================================================
+
+export interface ValidationError {
+  field: string;
+  message: string;
+  code?: string;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: ValidationError[];
+}
+
+// =============================================================================
+// SUPABASE QUERY RESPONSE TYPES  
+// =============================================================================
+
+// Database query result types for joined relations
+export interface PSGCProvinceWithRegion {
+  code: string;
+  name: string;
+  region_code: string;
+  psgc_regions: PSGCRegion | PSGCRegion[] | null;
+}
+
+export interface PSGCCityWithProvince {
+  code: string;
+  name: string;
+  type: string;
+  province_code: string | null;
+  is_independent?: boolean;
+  psgc_provinces: PSGCProvinceWithRegion | PSGCProvinceWithRegion[] | null;
+}
+
+export interface PSGCBarangayWithCity {
+  code: string;
+  name: string;
+  city_municipality_code: string;
+  psgc_cities_municipalities: PSGCCityWithProvince | PSGCCityWithProvince[] | null;
+}
 
 export interface SupabaseQueryResponse<T> {
   data: T | null;

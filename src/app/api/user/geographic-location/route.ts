@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,10 +13,7 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -28,11 +25,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
     }
 
-    // Use service role client to get complete geographic hierarchy
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Use admin client to get complete geographic hierarchy
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile with geographic codes
     const { data: profile, error: profileError } = await supabaseAdmin

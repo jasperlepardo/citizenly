@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { WebhookUserRecord } from '@/types/auth';
 import { createAdminSupabaseClient } from '@/lib';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -21,14 +21,23 @@ export async function POST(request: NextRequest) {
     const body = await request.text();
     const signature = request.headers.get('x-webhook-signature');
 
-    // Verify webhook signature in production
-    if (process.env.NODE_ENV === 'production' && signature) {
-      const expectedSignature = crypto
-        .createHmac('sha256', WEBHOOK_SECRET)
+    // Verify webhook signature in production (fail closed)
+    if (process.env.NODE_ENV === 'production') {
+      if (!signature) {
+        console.error('Missing webhook signature');
+        return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+      }
+      if (!process.env.SUPABASE_WEBHOOK_SECRET || WEBHOOK_SECRET === 'dev-webhook-secret') {
+        console.error('Webhook secret not configured in production');
+        return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+      }
+      const expectedSignature = createHmac('sha256', WEBHOOK_SECRET)
         .update(body)
         .digest('hex');
-
-      if (signature !== expectedSignature) {
+      // timing-safe comparison
+      const sigBuf = Buffer.from(signature, 'hex');
+      const expBuf = Buffer.from(expectedSignature, 'hex');
+      if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
         console.error('Invalid webhook signature');
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }

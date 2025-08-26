@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// This route needs admin access for geographic subdivision data
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -12,6 +9,7 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
 
   try {
+    const supabase = createAdminSupabaseClient();
     let query = supabase
       .from('geo_subdivisions')
       .select(`
@@ -36,6 +34,15 @@ export async function GET(request: NextRequest) {
 
     const { data: subdivisions, error } = await query.limit(100);
 
+    // Type the subdivisions properly
+    type SubdivisionResult = {
+      id: string;
+      name: string;
+      type: string;
+      barangay_code: string;
+      is_active: boolean;
+    };
+
     if (error) {
       console.error('Error fetching subdivisions:', error);
       return NextResponse.json(
@@ -45,7 +52,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = subdivisions?.map((subdivision) => ({
+    const options = (subdivisions as SubdivisionResult[])?.map((subdivision) => ({
       value: subdivision.id,
       label: subdivision.name,
       barangay_code: subdivision.barangay_code,
