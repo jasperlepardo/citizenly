@@ -117,7 +117,7 @@ function ResidentsContent() {
       render: (value: unknown, record: Resident) => (
         <Link
           href={`/residents/${record.id}`}
-          className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 dark:text-gray-800 hover:underline"
+          className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400 hover:text-gray-800 hover:underline"
         >
           {String(value)}
         </Link>
