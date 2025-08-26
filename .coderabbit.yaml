@@ -14,7 +14,7 @@ reviews:
     - "accessibility"
 
   # Request more detailed analysis for complex files
-  profile: "codebase"
+  profile: "assertive"
   
   # Auto-approve simple changes (documentation, formatting)
   auto_approve:
@@ -25,22 +25,9 @@ reviews:
 # ==============================================================================
 # LANGUAGE-SPECIFIC CONFIGURATION
 # ==============================================================================
-language:
-  typescript:
-    # Critical for this TypeScript-heavy project
-    rules:
-      - "no-explicit-any"           # Enforce proper typing
-      - "prefer-const"              # Immutability best practices
-      - "no-unused-vars"           # Clean code
-      - "strict-boolean-expressions" # Prevent truthy/falsy bugs
-      - "prefer-optional-chain"     # Modern syntax
-      - "no-non-null-assertion"    # Safer null handling
+language: "en"
 
-  javascript:
-    rules:
-      - "prefer-const"
-      - "no-unused-vars"
-      - "no-console"               # Prevent console.log in production
+# TypeScript-specific rules applied via custom rules below
 
 # ==============================================================================
 # PROJECT-SPECIFIC CUSTOM RULES
