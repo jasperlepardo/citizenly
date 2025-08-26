@@ -8,14 +8,9 @@
  */
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import type { ResidentFormData } from '@/types';
-import { ResidentFormSchema } from '@/lib/validation';
-import { 
-  getFormToSchemaFieldMapping,
-  getSchemaToFormFieldMapping,
-  mapFormToApi
-} from '@/services/residentMapper';
+
 import { VALIDATION_DEBOUNCE_MS } from '@/lib/constants/resident-form-defaults';
+import { ResidentFormSchema } from '@/lib/validation';
 import { 
   validateField as validateFieldValue, 
   validateFormSection, 
@@ -25,15 +20,23 @@ import {
   createDebouncedValidator
 } from '@/lib/validation/fieldLevelSchemas';
 import {
-  useGenericValidation,
-  UseGenericValidationReturn,
-} from './useGenericValidation';
-import {
   ValidationResult,
   FieldValidationResult,
 } from '@/lib/validation/types';
-import { useResidentCrossFieldValidation } from '../utilities/useResidentCrossFieldValidation';
+import { 
+  getFormToSchemaFieldMapping,
+  getSchemaToFormFieldMapping,
+  mapFormToApi
+} from '@/services/residentMapper';
+import type { ResidentFormData } from '@/types';
+
 import { useResidentAsyncValidation } from '../utilities/useResidentAsyncValidation';
+import { useResidentCrossFieldValidation } from '../utilities/useResidentCrossFieldValidation';
+
+import {
+  useGenericValidation,
+  UseGenericValidationReturn,
+} from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
 
 /**

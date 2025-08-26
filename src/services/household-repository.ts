@@ -3,11 +3,13 @@
  * Domain-specific repository for household data operations
  */
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { HouseholdRecord } from '@/types';
+
+import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 
 // Use database record directly for consistent typing
 export type HouseholdData = HouseholdRecord;

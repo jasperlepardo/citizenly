@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback } from 'react';
+
 import { 
   ValidationResult, 
   FieldValidationResult, 
@@ -26,6 +27,7 @@ import {
   isValidEmail, 
   isValidPhilippineMobile 
 } from '@/lib/validation/utilities';
+
 import { toTitleCase } from '../lib/utilities/string-utils';
 
 // All types are now imported from the centralized validation types

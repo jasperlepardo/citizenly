@@ -4,14 +4,15 @@ import ClientInit from './client-init';
 
 import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
+
 import './globals.css';
-import Providers from '@/components/providers/Providers';
-import { VersionTag } from '@/components/molecules/VersionTag';
+import { ConnectionStatus, PWADevTools } from '@/components';
+import { AuthDebug } from '@/components/molecules/AuthDebug';
 import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
 import { PWAStatus } from '@/components/molecules/PWAStatus';
-import { AuthDebug } from '@/components/molecules/AuthDebug';
-import { ConnectionStatus, PWADevTools } from '@/components';
+import { VersionTag } from '@/components/molecules/VersionTag';
 import LastVisitedTracker from '@/components/providers/LastVisitedTracker';
+import Providers from '@/components/providers/Providers';
 import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
 
 // Configure Montserrat font with Next.js font optimization

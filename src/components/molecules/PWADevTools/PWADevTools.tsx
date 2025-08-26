@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+
+import { syncQueue , offlineStorage } from '@/lib/data';
 import { pwaPerformance } from '@/lib/performance/pwaPerformanceUtils';
-import { syncQueue } from '@/lib/data';
-import { offlineStorage } from '@/lib/data';
 
 interface PWADevToolsProps {
   className?: string;
@@ -59,7 +60,7 @@ export default function PWADevTools({ className = '' }: PWADevToolsProps) {
     localStorage.removeItem('pwa-prompt-dismissed-date');
     sessionStorage.removeItem('pwa-prompt-dismissed');
     pwaPerformance.instance?.reset();
-    alert('PWA data cleared');
+    toast.success('PWA data cleared');
     window.location.reload();
   };
 

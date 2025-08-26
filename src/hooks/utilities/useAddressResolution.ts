@@ -8,9 +8,9 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/lib';
-import { logger } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase , logger } from '@/lib';
 
 /**
  * Address hierarchy information for display purposes

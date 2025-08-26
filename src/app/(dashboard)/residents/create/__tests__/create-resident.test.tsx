@@ -3,13 +3,16 @@
  * Tests the complete flow of creating a new resident
  */
 
-import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { toast } from 'react-hot-toast';
-import CreateResidentPage from '../page';
-import { useAuth } from '@/contexts';
 import { useRouter, useSearchParams } from 'next/navigation';
+import React from 'react';
+import { toast } from 'react-hot-toast';
+
+import { useAuth } from '@/contexts';
+
+import CreateResidentPage from '../page';
+
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -51,7 +54,7 @@ jest.mock('react-hot-toast', () => ({
 
 // Mock the service and hooks
 const mockCreateResident = jest.fn();
-const mockUseResidentOperations = require('@/hooks/crud/useResidentOperations').useResidentOperations;
+const mockUseResidentOperations = jest.fn();
 
 describe('Create New Resident - Complete Flow', () => {
   const mockRouter = {
@@ -234,8 +237,8 @@ describe('Create New Resident - Complete Flow', () => {
       const user = userEvent.setup();
       
       // Mock ResidentForm to return empty data
-      const MockResidentForm = require('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel }) => (
+      const MockResidentForm = jest.requireMock('@/components').ResidentForm;
+      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: any) => (
         <div data-testid="resident-form">
           <button onClick={() => onSubmit({
             first_name: '',  // Empty required field

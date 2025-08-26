@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase , logger, logError } from '@/lib';
+
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';
 import { SelectField } from '../../molecules/FieldSet/SelectField';
-import { logger, logError } from '@/lib';
+
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;

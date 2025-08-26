@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { InputField, SelectField } from '@/components';
 import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
 import type { FormMode } from '@/types';
@@ -81,7 +82,7 @@ export function BirthInformation({
           selectProps={{
             placeholder: "Search for birth place...",
             options: (() => {
-              let allOptions = psgcOptions.map(place => {
+              const allOptions = psgcOptions.map(place => {
               // Format hierarchical display based on level
               let displayLabel = place.name;
               let description = '';

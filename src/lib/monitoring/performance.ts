@@ -4,6 +4,7 @@
  */
 
 import { clientLogger } from '@/lib/logging/client-logger';
+
 import { startSentryTransaction } from './sentry-config';
 
 interface PerformanceMetrics {

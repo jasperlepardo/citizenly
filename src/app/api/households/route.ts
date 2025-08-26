@@ -4,9 +4,10 @@
  */
 
 import { NextRequest } from 'next/server';
+import { z } from 'zod';
+
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib';
-import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createHouseholdSchema } from '@/lib/api/validationUtils';
+import { auditDataOperation } from '@/lib/api/auditUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -16,9 +17,9 @@ import {
   withNextRequestErrorHandling,
   withSecurityHeaders,
 } from '@/lib/api/responseUtils';
-import { auditDataOperation } from '@/lib/api/auditUtils';
 import { RequestContext, Role } from '@/lib/api/types';
-import { z } from 'zod';
+import { createHouseholdSchema } from '@/lib/api/validationUtils';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
 
 // Type the auth result properly
 interface AuthenticatedUser {

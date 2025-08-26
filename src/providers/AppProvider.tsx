@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+
 import { logger } from '@/lib';
 
 // Types

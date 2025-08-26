@@ -1,5 +1,6 @@
-import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+
+import bcrypt from 'bcryptjs';
 
 /**
  * Cryptographic utilities for government data handling

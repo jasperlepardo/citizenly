@@ -4,8 +4,10 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { RequestContext, ErrorCode } from './types';
+
 import { logger } from '@/lib';
+
+import { RequestContext, ErrorCode } from './types';
 
 export enum AuditEventType {
   // Authentication events

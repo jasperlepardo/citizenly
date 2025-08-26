@@ -6,11 +6,12 @@
  * Built following atomic design principles and Philippines government UI standards
  */
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { clsx } from 'clsx';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import Navigation, { type NavigationItem } from '../Navigation/Navigation';
 // Icon component removed - using inline SVG or icon library instead
 

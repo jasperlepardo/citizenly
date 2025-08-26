@@ -7,6 +7,7 @@
  */
 
 import { ResidentDatabaseRecord as Resident } from '@/types';
+
 import { formatDate as libFormatDate } from '../utilities/data-transformers';
 
 /**

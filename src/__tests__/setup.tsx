@@ -1,5 +1,5 @@
-import { beforeEach, afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { beforeEach, afterEach, vi } from 'vitest';
 import '@testing-library/jest-dom';
 
 // Mock Next.js router

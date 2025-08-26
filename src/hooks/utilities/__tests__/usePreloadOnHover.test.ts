@@ -3,8 +3,9 @@
  * @description Comprehensive test coverage for component preloading hook
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { usePreloadOnHover } from '../usePreloadOnHover';
 
 // Mock the preloadComponents import
@@ -143,7 +144,7 @@ describe('usePreloadOnHover', () => {
     expect(preloadComponents.dataTable).toHaveBeenCalledTimes(1);
     
     // Change component key
-    rerender({ componentKey: 'createHouseholdModal' as const });
+    rerender({ componentKey: 'dataTable' as const });
     
     // Test second component
     result.current.onMouseEnter();

@@ -5,8 +5,9 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase } from '@/lib';
 
 // Import the properly typed interface
 import { HouseholdRecord } from '@/types';

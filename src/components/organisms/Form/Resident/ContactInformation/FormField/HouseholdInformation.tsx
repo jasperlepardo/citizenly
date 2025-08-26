@@ -1,7 +1,8 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { SelectField } from '@/components';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
+import type { FormMode } from '@/types';
 
 export interface HouseholdInformationData {
   household_code: string;

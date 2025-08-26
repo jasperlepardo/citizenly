@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/contexts';
+
 import {
   StatsCard,
   DependencyRatioPieChart,
@@ -9,10 +9,10 @@ import {
   CivilStatusPieChart,
   EmploymentStatusPieChart,
   StatsSkeleton,
-} from '@/components';
-import { PopulationPyramid } from '@/components';
-import { logger } from '@/lib';
+ PopulationPyramid } from '@/components';
+import { useAuth } from '@/contexts';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
+import { logger } from '@/lib';
 
 function DashboardContent() {
   const { userProfile, profileLoading } = useAuth();

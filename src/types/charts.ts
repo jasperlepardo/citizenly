@@ -27,8 +27,8 @@ export type {
 } from '@/lib/ui/population-pyramid';
 
 // Import types for local use in interface definitions
-import type { PieSliceData } from '@/lib/ui/pieChartMath';
 import type { ChartDataPoint } from '@/lib/ui/chart-transformers';
+import type { PieSliceData } from '@/lib/ui/pieChartMath';
 import type { AgeGroupData } from '@/lib/ui/population-pyramid';
 
 // Common chart component props

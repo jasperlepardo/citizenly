@@ -22,6 +22,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 import { logger } from '@/lib';
 import { storeSecurityAuditLog } from '@/lib/security/audit-storage';
 import type { ValidationContext } from '@/lib/validation/types';

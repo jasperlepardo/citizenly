@@ -6,8 +6,10 @@
 'use client';
 
 import React, { Component, ReactNode } from 'react';
-import { captureError, addSentryBreadcrumb } from '../sentry-config';
+
 import { clientLogger } from '@/lib/logging/client-logger';
+
+import { captureError, addSentryBreadcrumb } from '../sentry-config';
 
 interface ErrorBoundaryState {
   hasError: boolean;

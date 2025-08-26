@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { DataTable } from '@/components';
+import React, { useState, useCallback, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+
+import { DataTable , SearchBar , Button } from '@/components';
 import type { TableColumn, TableAction } from '@/components';
-import { SearchBar } from '@/components';
-import { Button } from '@/components';
-import { useResidents, useResidentFilterFields, type Resident, type AdvancedFilters } from '@/hooks/crud/useResidents';
-import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
 import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
+import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
+import { useResidents, useResidentFilterFields, type Resident, type AdvancedFilters } from '@/hooks/crud/useResidents';
 
 
 interface SearchFilter {
@@ -189,11 +189,11 @@ function ResidentsContent() {
               // Refresh the residents list
               window.location.reload();
             } else {
-              alert('Failed to delete resident');
+              toast.error('Failed to delete resident');
             }
           } catch (error) {
             console.error('Delete error:', error);
-            alert('Error deleting resident');
+            toast.error('Error deleting resident');
           }
         }
       },

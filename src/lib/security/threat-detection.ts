@@ -4,6 +4,7 @@
  */
 
 import { logger } from '@/lib';
+
 import { storeThreatDetectionEvent, ThreatDetectionEvent } from './audit-storage';
 
 export interface SecurityContext {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
@@ -33,7 +34,7 @@ export function EducationInformation({
 }: EducationInformationProps) {
   
   const handleChange = (field: keyof EducationInformationData, fieldValue: any) => {
-    let updatedValue = {
+    const updatedValue = {
       ...value,
       [field]: fieldValue,
     };

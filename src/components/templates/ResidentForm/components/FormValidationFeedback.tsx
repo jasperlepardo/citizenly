@@ -6,7 +6,7 @@ interface FormValidationFeedbackProps {
   isOptimisticallyUpdated: boolean;
 }
 
-export const FormValidationFeedback = React.memo(({ 
+const FormValidationFeedbackComponent = ({ 
   errorCount, 
   isSubmitting, 
   isOptimisticallyUpdated 
@@ -27,4 +27,8 @@ export const FormValidationFeedback = React.memo(({
       {isOptimisticallyUpdated && <div>Changes saved successfully!</div>}
     </div>
   );
-});
+};
+
+FormValidationFeedbackComponent.displayName = 'FormValidationFeedback';
+
+export const FormValidationFeedback = React.memo(FormValidationFeedbackComponent);

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib';
-import { CommandMenuGroup } from './CommandMenuGroup';
-import { CommandMenuEmpty } from './CommandMenuEmpty';
-import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
+import { cn } from '@/lib';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/lib/command-menu/analytics-utils';
 import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
+
+import { CommandMenuEmpty } from './CommandMenuEmpty';
+import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
+import { CommandMenuGroup } from './CommandMenuGroup';
 
 const inlineCommandMenuVariants = cva(
   'absolute top-full left-0 right-0 z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-xl ring-1 ring-black/5 dark:ring-white/10',

@@ -5,6 +5,8 @@
  * Contains error transformation, classification, and processing utilities.
  */
 
+import { generateId } from '../utilities/id-generators';
+
 import type { 
   AppError, 
   ErrorLogContext, 
@@ -13,8 +15,6 @@ import type {
   FieldError,
 } from './error-types';
 import { ErrorSeverity, ErrorCode } from './error-types';
-import { retry } from '../utilities/async-utils';
-import { generateId } from '../utilities/id-generators';
 
 /**
  * Create a standardized application error
@@ -279,11 +279,6 @@ export function createNetworkError(
  * Error handling utilities
  */
 export const errorUtils = {
-  /**
-   * Retry function with exponential backoff (uses consolidated retry utility)
-   */
-  retryWithBackoff: retry,
-
   /**
    * Check if error is retryable
    */

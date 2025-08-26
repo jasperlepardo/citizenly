@@ -5,8 +5,9 @@
  */
 
 import { lazy } from 'react';
-import { withLazyLoading } from '@/lib';
+
 import { FormSkeleton } from '@/components/atoms/Loading';
+import { withLazyLoading } from '@/lib';
 
 const PersonalInformationLazy = lazy(() =>
   import('./PersonalInformation').then(module => ({

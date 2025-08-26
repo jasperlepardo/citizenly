@@ -1,7 +1,8 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
+import type { FormMode } from '@/types';
 
 export interface VotingInformationData {
   is_voter: string; // 'yes' | 'no' (defaults to 'no')

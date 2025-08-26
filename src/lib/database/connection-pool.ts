@@ -4,6 +4,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 import { getSupabaseConfig, isProduction, createLogger } from '@/lib/config/environment';
 
 const logger = createLogger('ConnectionPool');

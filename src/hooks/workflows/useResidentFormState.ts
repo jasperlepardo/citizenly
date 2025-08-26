@@ -8,6 +8,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+
 import type { ResidentFormData as ResidentEditFormData } from '@/types';
 
 /**

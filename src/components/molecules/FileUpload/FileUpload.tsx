@@ -1,11 +1,13 @@
 'use client';
 
-import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn, formatFileSize } from '@/lib/utilities';
-import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
+import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components';
 import { logger } from '@/lib';
+import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
+import { cn, formatFileSize } from '@/lib/utilities';
 
 const fileUploadVariants = cva(
   'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2',
@@ -153,7 +155,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       if (errors.length > 0) {
         logger.error('File upload validation errors', { errors, filesAttempted: fileArray.length });
         // You might want to show these errors in the UI
-        alert('File validation errors:\n' + errors.join('\n'));
+        toast.error(`File validation errors: ${errors.join(', ')}`);
       }
 
       // Only proceed with valid files

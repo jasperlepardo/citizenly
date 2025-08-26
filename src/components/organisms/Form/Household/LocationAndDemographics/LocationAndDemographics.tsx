@@ -1,7 +1,9 @@
 import React from 'react';
+
+import type { FormMode } from '@/types';
+
 import { AddressInformation, AddressInformationData } from './FormField/AddressInformation';
 import { DemographicsInformation, DemographicsInformationData } from './FormField/DemographicsInformation';
-import type { FormMode } from '@/types';
 
 export interface LocationAndDemographicsFormProps {
   /** Form mode - determines if field is editable or read-only */

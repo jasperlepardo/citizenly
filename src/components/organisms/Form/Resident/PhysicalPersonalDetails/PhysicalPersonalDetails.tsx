@@ -1,8 +1,10 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
+
+import { MotherMaidenName, MotherMaidenNameData } from './FormField/MotherMaidenName';
 import { PhysicalCharacteristics, PhysicalCharacteristicsData } from './FormField/PhysicalCharacteristics';
 import { VotingInformation, VotingInformationData } from './FormField/VotingInformation';
-import { MotherMaidenName, MotherMaidenNameData } from './FormField/MotherMaidenName';
 
 export interface PhysicalPersonalDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
+
 import { logger } from '@/lib';
 
 interface CommandMenuErrorBoundaryState {

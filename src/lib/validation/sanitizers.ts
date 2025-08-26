@@ -165,7 +165,7 @@ export function sanitizeUrl(url: string): string {
   }
 
   // Basic URL sanitization
-  let sanitized = sanitizeInput(url, {
+  const sanitized = sanitizeInput(url, {
     trimWhitespace: true,
     maxLength: 2048,
   });

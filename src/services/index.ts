@@ -47,10 +47,12 @@ export * from './household-fetcher';
 export * from './resident-details-fetcher';
 
 // Repository class imports for factory
-import { ResidentRepository } from './resident-repository';
-import { HouseholdRepository } from './household-repository';
-import { UserRepository } from './user-repository';
 import type { ValidationContext } from '@/lib/validation/types';
+
+import { HouseholdRepository } from './household-repository';
+import { ResidentRepository } from './resident-repository';
+import { UserRepository } from './user-repository';
+
 
 // Repository factory for dependency injection
 export class RepositoryFactory {

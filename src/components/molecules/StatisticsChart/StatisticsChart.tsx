@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import GenericPieChart from '../GenericPieChart/GenericPieChart';
+
 import { 
   transformChartData, 
   getChartTitle,
@@ -11,6 +11,8 @@ import {
   type CivilStatusData,
   type EmploymentStatusData,
 } from '@/lib/charts';
+
+import GenericPieChart from '../GenericPieChart/GenericPieChart';
 
 interface BaseStatisticsChartProps {
   title?: string;

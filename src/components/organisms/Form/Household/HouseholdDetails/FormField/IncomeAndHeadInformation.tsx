@@ -1,6 +1,7 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField, SelectField } from '@/components';
+import type { FormMode } from '@/types';
 
 export interface IncomeAndHeadInformationData {
   monthlyIncome: number;

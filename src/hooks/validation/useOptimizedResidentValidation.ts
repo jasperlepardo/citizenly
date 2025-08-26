@@ -14,21 +14,24 @@
  */
 
 import { useCallback } from 'react';
-import type { ResidentFormData } from '@/types';
+
 import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
+import type { ResidentFormData } from '@/types';
+
+import { 
+  useResidentAsyncValidation,
+  type UseResidentAsyncValidationReturn 
+} from '../utilities/useResidentAsyncValidation';
+import { 
+  useResidentCrossFieldValidation,
+  type UseResidentCrossFieldValidationReturn 
+} from '../utilities/useResidentCrossFieldValidation';
+
 import { 
   useResidentValidationCore, 
   type ResidentValidationOptions,
   type UseResidentValidationCoreReturn 
 } from './useResidentValidationCore';
-import { 
-  useResidentCrossFieldValidation,
-  type UseResidentCrossFieldValidationReturn 
-} from '../utilities/useResidentCrossFieldValidation';
-import { 
-  useResidentAsyncValidation,
-  type UseResidentAsyncValidationReturn 
-} from '../utilities/useResidentAsyncValidation';
 import { 
   useResidentValidationProgress,
   type UseResidentValidationProgressReturn 

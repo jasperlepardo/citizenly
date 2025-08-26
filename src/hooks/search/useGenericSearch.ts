@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useDebounce } from '../utilities/useDebounce';
+
 import {
   BaseSearchConfig,
   SearchState,
@@ -16,6 +16,8 @@ import {
   createSearchState,
   createSearchUtilities,
 } from '@/lib/utilities/search-utilities';
+
+import { useDebounce } from '../utilities/useDebounce';
 
 /**
  * Return type for useGenericSearch hook

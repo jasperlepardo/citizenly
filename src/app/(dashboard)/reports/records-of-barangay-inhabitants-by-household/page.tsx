@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '@/lib';
+import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import { useAuth } from '@/contexts';
-import { logError } from '@/lib';
+import { supabase , logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
 

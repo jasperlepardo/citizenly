@@ -6,8 +6,8 @@
  */
 
 import React, { useState } from 'react';
-import { Button } from '@/components';
-import { SelectField } from '@/components';
+
+import { Button , SelectField } from '@/components';
 import { useTheme } from '@/contexts';
 
 export default function SettingsPage() {

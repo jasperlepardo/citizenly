@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { logger, createErrorResponseObject } from '@/lib';
 import { isProduction, getEnvironment } from '@/lib/config/environment';
 

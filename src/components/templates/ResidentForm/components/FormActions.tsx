@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
 
 // Helper function to get button variant
@@ -48,7 +49,7 @@ interface FormActionsProps {
   errorCount: number;
 }
 
-export const FormActions = React.memo(({ 
+const FormActionsComponent = ({ 
   mode, 
   isSubmitting, 
   isOptimisticallyUpdated, 
@@ -87,4 +88,8 @@ export const FormActions = React.memo(({
       </div>
     </div>
   );
-});
+};
+
+FormActionsComponent.displayName = 'FormActions';
+
+export const FormActions = React.memo(FormActionsComponent);

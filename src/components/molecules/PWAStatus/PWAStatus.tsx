@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components';
 
 interface PWAStatusInfo {
@@ -83,7 +85,7 @@ export default function PWAStatus() {
 
   const handleTestOffline = () => {
     // Simulate offline mode for testing
-    alert('To test offline mode:\n1. Open DevTools (F12)\n2. Go to Network tab\n3. Check "Offline" checkbox\n4. Try navigating pages');
+    toast('To test offline mode: 1. Open DevTools (F12), 2. Go to Network tab, 3. Check "Offline" checkbox, 4. Try navigating pages');
   };
 
   if (!showDetails) {

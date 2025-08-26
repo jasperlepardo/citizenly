@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 
 interface UseCommandMenuProps {

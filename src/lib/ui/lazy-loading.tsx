@@ -6,6 +6,7 @@
  */
 
 import { Suspense, ComponentType, ReactNode } from 'react';
+
 import { LoadingFallback } from '@/components/atoms/Loading';
 
 /**

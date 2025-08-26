@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
-import { useTheme } from '@/contexts';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
+
+import { useTheme } from '@/contexts';
 import { cn } from '@/lib';
 
 const themeToggleVariants = cva(

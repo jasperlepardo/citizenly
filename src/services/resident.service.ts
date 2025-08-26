@@ -5,7 +5,7 @@
  * Handles data transformation, validation, and database operations.
  */
 
-import { supabase } from '@/lib';
+import { supabase , logger, logError, dbLogger } from '@/lib';
 import {
   hashPhilSysNumber,
   extractPhilSysLast4,
@@ -13,7 +13,6 @@ import {
   logSecurityOperation,
 } from '@/lib/security/crypto';
 import { validateResidentData } from '@/lib/validation';
-import { logger, logError, dbLogger } from '@/lib';
 import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
 
 // Import database types
@@ -83,7 +82,7 @@ export class ResidentService {
       
       // Ensure the result matches our interface
       if (!result.success) {
-        let errors = result.errors 
+        const errors = result.errors 
           ? Array.isArray(result.errors) 
             ? result.errors 
             : Object.entries(result.errors).map(([field, message]) => ({ field, message }))

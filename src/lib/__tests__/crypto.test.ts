@@ -118,17 +118,17 @@ describe('Crypto Utilities', () => {
 
   describe('generateSecureToken', () => {
     it('should generate tokens of correct length', () => {
-      const token16 = generateSecureToken(16);
-      const token32 = generateSecureToken(32);
-      const token64 = generateSecureToken(64);
+      const token1 = generateSecureToken();
+      const token2 = generateSecureToken();
+      const token3 = generateSecureToken();
       
-      expect(token16).toHaveLength(32); // 16 bytes = 32 hex chars
-      expect(token32).toHaveLength(64); // 32 bytes = 64 hex chars
-      expect(token64).toHaveLength(128); // 64 bytes = 128 hex chars
+      expect(token1).toHaveLength(64); // 32 bytes = 64 hex chars
+      expect(token2).toHaveLength(64); // 32 bytes = 64 hex chars
+      expect(token3).toHaveLength(64); // 32 bytes = 64 hex chars
     });
 
     it('should generate unique tokens', () => {
-      const tokens = Array.from({ length: 100 }, () => generateSecureToken(16));
+      const tokens = Array.from({ length: 100 }, () => generateSecureToken());
       const uniqueTokens = new Set(tokens);
       
       expect(uniqueTokens.size).toBe(100); // All should be unique
@@ -140,7 +140,7 @@ describe('Crypto Utilities', () => {
     });
 
     it('should only contain hex characters', () => {
-      const token = generateSecureToken(16);
+      const token = generateSecureToken();
       expect(token).toMatch(/^[a-f0-9]+$/);
     });
   });

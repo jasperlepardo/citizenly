@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+
 import { InputField, SelectField } from '@/components/molecules/FieldSet';
-import { HouseholdDetailsData } from '../../types';
 import { useGeographicData } from '@/hooks/api/useGeographicData';
+
+import { HouseholdDetailsData } from '../../types';
 
 export interface AddressDetailsProps {
   formData: HouseholdDetailsData;

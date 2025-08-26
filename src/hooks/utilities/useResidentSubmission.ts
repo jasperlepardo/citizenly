@@ -7,8 +7,9 @@
  * Extracted from useResidentEditForm to follow single responsibility principle.
  */
 
-import { useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useState, useCallback } from 'react';
+
 import { ValidationResult } from '@/lib/validation';
 import type { ResidentFormData as ResidentEditFormData } from '@/types';
 

@@ -4,9 +4,10 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel } from '@/lib';
-import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createResidentSchema } from '@/lib/api/validationUtils';
+import { z } from 'zod';
+
+import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel , logger, logError } from '@/lib';
+import { auditDataOperation } from '@/lib/api/auditUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -16,11 +17,10 @@ import {
   withNextRequestErrorHandling,
   withSecurityHeaders,
 } from '@/lib/api/responseUtils';
-import { auditDataOperation } from '@/lib/api/auditUtils';
 import { RequestContext, Role } from '@/lib/api/types';
+import { createResidentSchema } from '@/lib/api/validationUtils';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { ResidentFormData } from '@/types';
-import { z } from 'zod';
-import { logger, logError } from '@/lib';
 
 // Type the auth result properly
 interface AuthenticatedUser {

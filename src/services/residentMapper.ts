@@ -9,8 +9,7 @@ import {
   ResidentWithRelations,
   PsocOption,
   PsgcOption
-} from '@/types';
-import { 
+, 
   HouseholdData,
   HouseholdHead,
   HouseholdOption

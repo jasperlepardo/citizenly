@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 const imgDots = 'http://localhost:3845/assets/ab2f4963fe08a77bf05c65af4e1be5c6eb4c8d1d.svg';
 const imgList = 'http://localhost:3845/assets/446e2a5e5c3189109c4e06042fc9f4d68e425e77.svg';

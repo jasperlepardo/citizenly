@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { Button } from '@/components';
-import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
 import { 
   loadUserMetrics, 
   updatePageViewMetrics, 
@@ -17,6 +17,7 @@ import {
   setupTimeTracking,
   type UserBehaviorMetrics 
 } from '@/lib/analytics/user-behavior';
+import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;

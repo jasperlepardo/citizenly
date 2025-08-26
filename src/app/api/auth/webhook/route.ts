@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { WebhookUserRecord } from '@/types/auth';
-import { createAdminSupabaseClient } from '@/lib';
+
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { createAdminSupabaseClient } from '@/lib';
+import { WebhookUserRecord } from '@/types/auth';
+
 
 // Webhook secret for verifying Supabase webhook signatures
 const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secret';

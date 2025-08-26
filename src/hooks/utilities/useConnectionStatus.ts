@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
+
 import { syncQueue } from '@/lib/data';
 
 /**

@@ -26,8 +26,9 @@
  * </Button>
  * ```
  */
-import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, ButtonHTMLAttributes } from 'react';
+
 import { cn } from '@/lib';
 
 const buttonVariants = cva(

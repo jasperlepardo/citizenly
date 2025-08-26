@@ -5,8 +5,9 @@
  */
 
 import { lazy } from 'react';
-import { withLazyLoading } from '@/lib';
+
 import { TableSkeleton } from '@/components/atoms/Loading';
+import { withLazyLoading } from '@/lib';
 
 const DataTableLazy = lazy(() =>
   import('./DataTable')

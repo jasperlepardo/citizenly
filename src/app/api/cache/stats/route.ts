@@ -4,12 +4,13 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { responseCache } from '@/lib/caching/response-cache';
-import { cacheManager } from '@/lib/caching/redis-client';
-import { queryOptimizer } from '@/lib/database/query-optimizer';
-import { getConnectionPoolStats } from '@/lib/database/connection-pool';
+
 import { createErrorResponseObject } from '@/lib';
+import { cacheManager } from '@/lib/caching/redis-client';
+import { responseCache } from '@/lib/caching/response-cache';
 import { isProduction } from '@/lib/config/environment';
+import { getConnectionPoolStats } from '@/lib/database/connection-pool';
+import { queryOptimizer } from '@/lib/database/query-optimizer';
 
 export const dynamic = 'force-dynamic';
 

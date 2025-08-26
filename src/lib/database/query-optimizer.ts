@@ -4,6 +4,7 @@
  */
 
 import { SupabaseClient } from '@supabase/supabase-js';
+
 import { createLogger } from '@/lib/config/environment';
 import { performanceMonitor } from '@/lib/monitoring/performance';
 

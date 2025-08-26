@@ -3,6 +3,8 @@
  * Tests performance improvements and caching functionality
  */
 
+import type { HouseholdData, HouseholdHead } from '@/types';
+
 import {
   batchFetchHouseholdHeads,
   processHouseholdsOptimized,
@@ -10,7 +12,6 @@ import {
   householdCache,
 } from '../household-fetcher';
 
-import type { HouseholdData, HouseholdHead } from '@/types';
 
 // Mock supabase
 jest.mock('@/lib/supabase', () => ({

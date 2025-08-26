@@ -3,10 +3,13 @@
  * Domain-specific repository for user data operations
  */
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+
 
 export interface UserData {
   id?: string;

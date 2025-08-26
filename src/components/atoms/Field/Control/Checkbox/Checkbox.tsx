@@ -1,8 +1,10 @@
 'use client';
 
-import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
+
 import { cn } from '@/lib';
+
 import { TitleDescription } from '../TitleDescription';
 
 const checkboxVariants = cva(

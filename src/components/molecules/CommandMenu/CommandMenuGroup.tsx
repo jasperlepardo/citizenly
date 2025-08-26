@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@/lib';
-import { CommandMenuItem } from './CommandMenuItem';
 import type { CommandMenuItem as CommandMenuItemType } from '@/types/components/command-menu';
+
+import { CommandMenuItem } from './CommandMenuItem';
 
 interface CommandMenuGroupProps {
   label: string;

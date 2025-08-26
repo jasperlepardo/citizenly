@@ -8,16 +8,18 @@
  */
 
 import { useCallback } from 'react';
-import { householdService, HouseholdFormData } from '@/services/household.service';
-import {
-  useGenericValidation,
-  UseGenericValidationReturn,
-} from './useGenericValidation';
+
+import { toTitleCase } from '@/lib/utilities/string-utils';
 import {
   ValidationResult,
   FieldValidationResult,
 } from '@/lib/validation/types';
-import { toTitleCase } from '@/lib/utilities/string-utils';
+import { householdService, HouseholdFormData } from '@/services/household.service';
+
+import {
+  useGenericValidation,
+  UseGenericValidationReturn,
+} from './useGenericValidation';
 
 // Simple validation utilities for backward compatibility
 const validationUtils = {

@@ -5,8 +5,9 @@
  */
 
 import { lazy } from 'react';
-import { withLazyLoading } from '@/lib';
+
 import { LoadingFallback } from '@/components/atoms/Loading';
+import { withLazyLoading } from '@/lib';
 
 const PopulationPyramidLazy = lazy(() =>
   import('./PopulationPyramid')

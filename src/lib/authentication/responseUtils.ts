@@ -4,6 +4,12 @@
  */
 
 import { NextResponse, NextRequest } from 'next/server';
+
+import { logger } from '@/lib';
+
+import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
+import { sanitizeSearchQuery } from '../validation/sanitizers';
+
 import {
   ApiResponse,
   PaginatedResponse,
@@ -11,9 +17,7 @@ import {
   ErrorCode,
   RequestContext,
 } from './types';
-import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
-import { sanitizeSearchQuery } from '../validation/sanitizers';
-import { logger } from '@/lib';
+
 
 /**
  * Create a successful API response

@@ -4,9 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { cacheManager } from './redis-client';
+
 import { createLogger, isProduction } from '@/lib/config/environment';
 import { performanceMonitor } from '@/lib/monitoring/performance';
+
+import { cacheManager } from './redis-client';
 
 const logger = createLogger('ResponseCache');
 

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
 
 interface FormHeaderProps {
@@ -6,7 +7,7 @@ interface FormHeaderProps {
   onModeChange?: (mode: FormMode) => void;
 }
 
-export const FormHeader = React.memo(({ mode, onModeChange }: FormHeaderProps) => {
+const FormHeaderComponent = ({ mode, onModeChange }: FormHeaderProps) => {
   if (mode === 'create' || !onModeChange) return null;
 
   return (
@@ -28,4 +29,8 @@ export const FormHeader = React.memo(({ mode, onModeChange }: FormHeaderProps) =
       </button>
     </div>
   );
-});
+};
+
+FormHeaderComponent.displayName = 'FormHeader';
+
+export const FormHeader = React.memo(FormHeaderComponent);

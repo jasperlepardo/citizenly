@@ -12,6 +12,7 @@
  */
 
 import React, { lazy, Suspense, ComponentType, ReactNode } from 'react';
+
 import { ErrorBoundary } from '@/providers/ErrorBoundary';
 
 /**

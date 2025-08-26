@@ -5,6 +5,7 @@
  */
 
 import { lazy } from 'react';
+
 import { withLazyLoading } from '@/lib';
 
 const SuccessModalLazy = lazy(() =>

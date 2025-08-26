@@ -5,9 +5,9 @@
  * Consolidates navigation patterns from DashboardLayout and AppShell
  */
 
-import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 // Icon component removed - using inline SVG or icon library instead
 
 // Navigation item interface

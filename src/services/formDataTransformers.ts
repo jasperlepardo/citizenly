@@ -2,8 +2,8 @@
  * Data transformation utilities for form data mapping
  */
 
-import type { ResidentFormData } from '@/types';
 import { MigrationInformationData } from '@/hooks/utilities/useMigrationInformation';
+import type { ResidentFormData } from '@/types';
 
 // Data transformer for BasicInformation
 export interface BasicInformationData {

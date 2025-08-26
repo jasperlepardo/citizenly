@@ -225,7 +225,7 @@ describe('Business Rules - Sectoral Classification', () => {
       const employedSet = new Set(EMPLOYED_STATUSES);
       const unemployedSet = new Set(UNEMPLOYED_STATUSES);
       
-      const intersection = new Set([...employedSet].filter(x => unemployedSet.has(x)));
+      const intersection = new Set(Array.from(employedSet).filter(x => unemployedSet.has(x)));
       expect(intersection.size).toBe(0);
     });
 

@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import React, { useState, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
+
 import { ResidentForm } from '@/components';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
-import { EducationLevelEnum } from '@/types';
 import { ResidentFormData } from '@/services/resident.service';
-import { toast } from 'react-hot-toast';
+import { EducationLevelEnum } from '@/types';
 
 export const dynamic = 'force-dynamic';
 

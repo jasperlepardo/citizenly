@@ -1,10 +1,13 @@
 import React from 'react';
-import { PhilSysCardField } from './FormField/PhilSysCardField';
+
+import type { FormMode } from '@/types';
+
 import { BasicInformation, BasicInformationData } from './FormField/BasicInformation';
 import { BirthInformation, BirthInformationData } from './FormField/BirthInformation';
 import { EducationInformation, EducationInformationData } from './FormField/EducationInformation';
 import { EmploymentInformation, EmploymentInformationData } from './FormField/EmploymentInformation';
-import type { FormMode } from '@/types';
+import { PhilSysCardField } from './FormField/PhilSysCardField';
+
 
 export interface PersonalInformationFormProps {
   /** Form mode - determines if field is editable or read-only */

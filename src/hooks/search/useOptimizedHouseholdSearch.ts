@@ -8,10 +8,13 @@
  */
 
 import { useCallback, useState } from 'react';
+
 import { useAuth } from '@/contexts';
-import { useGenericSearch } from './useGenericSearch';
-import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
 import { supabase } from '@/lib';
+import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
+
+import { useGenericSearch } from './useGenericSearch';
+
 
 /**
  * Household search result interface

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SelectField } from '@/components';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';

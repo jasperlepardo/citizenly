@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib';
-import { InputField, SelectField } from '@/components';
-import { Button } from '@/components';
 import Link from 'next/link';
-import { logger, logError } from '@/lib';
+import React, { useState, useEffect } from 'react';
+
+import { InputField, SelectField , Button } from '@/components';
+import { supabase , logger, logError } from '@/lib';
 // import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {

@@ -8,6 +8,7 @@
  */
 
 import { useMemo } from 'react';
+
 import type { ResidentFormData } from '@/types';
 
 /**

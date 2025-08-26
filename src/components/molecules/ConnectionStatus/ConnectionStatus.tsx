@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { syncQueue } from '@/lib/data';
+
 import { useConnectionStatus } from '@/hooks/utilities/useConnectionStatus';
+import { syncQueue } from '@/lib/data';
 
 // Custom hook to handle client-side mounting
 function useIsClient() {

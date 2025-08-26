@@ -1,9 +1,10 @@
 'use client';
 
+import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+
 import { supabase } from '@/lib';
 import type { AuthRole } from '@/types/auth';
-import type { User, Session } from '@supabase/supabase-js';
 
 // User profile types - EXACTLY matching auth_user_profiles table (23 fields)
 export interface UserProfile {
@@ -278,7 +279,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
       } finally {
         setProfileLoading(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+       
     },
     [profileCache, profileLoading, lastProfileLoad]
   );

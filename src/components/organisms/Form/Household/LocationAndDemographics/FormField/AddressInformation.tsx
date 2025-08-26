@@ -1,8 +1,9 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField, SelectField } from '@/components';
-import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
+import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
+import type { FormMode } from '@/types';
 
 export interface AddressInformationData {
   houseNumber: string;

@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts';
+import React from 'react';
+
 import { Button } from '@/components';
+import { useAuth } from '@/contexts';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

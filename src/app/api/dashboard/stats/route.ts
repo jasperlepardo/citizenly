@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+
 import { logger, createErrorResponseObject, type ErrorCode } from '@/lib';
+import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
 import { getEnvironmentConfig, isProduction } from '@/lib/config/environment';
 import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
 import { queryOptimizer } from '@/lib/database/query-optimizer';
-import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute

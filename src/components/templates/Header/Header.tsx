@@ -5,11 +5,11 @@
  * Main navigation header for RBI System
  */
 
-import React, { useState } from 'react';
 import Link from 'next/link';
+import React, { useState } from 'react';
+
+import { UserProfile , Button } from '@/components';
 import { useAuth } from '@/contexts';
-import { UserProfile } from '@/components';
-import { Button } from '@/components';
 import { logError } from '@/lib';
 
 // Simple logout button component

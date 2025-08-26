@@ -1,15 +1,17 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetailsForm, SectoralInformationForm, MigrationInformation } from '@/components/organisms/Form';
+
 import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
-import { FormHeader } from './components/FormHeader';
-import { FormActions } from './components/FormActions';
+import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetailsForm, SectoralInformationForm, MigrationInformation } from '@/components/organisms/Form';
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
-import { ResidentFormState } from '@/types/resident-form';
-import type { FormMode } from '@/types';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
+import type { FormMode } from '@/types';
+import { ResidentFormState } from '@/types/resident-form';
+
+import { FormActions } from './components/FormActions';
+import { FormHeader } from './components/FormHeader';
 
 // Use the database-aligned ResidentFormState interface
 type ResidentFormData = ResidentFormState;
@@ -403,7 +405,7 @@ export function ResidentForm({
       // Call onSubmit callback
       if (onSubmit) {
         // Create a filtered version of form data that excludes hidden fields
-        let filteredFormData = { ...formData };
+        const filteredFormData = { ...formData };
         
         // Remove Physical & Personal Details fields if section is hidden
         if (hidePhysicalDetails) {

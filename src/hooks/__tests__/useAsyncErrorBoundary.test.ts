@@ -3,6 +3,7 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
+
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 // Mock console methods to avoid noise in tests

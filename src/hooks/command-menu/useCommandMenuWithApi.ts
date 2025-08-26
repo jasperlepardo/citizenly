@@ -14,21 +14,23 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { getCommandMenuItems } from '@/lib/command-menu';
+
+import { useCommandMenu } from './useCommandMenu';
 import { 
-  useCommandMenuSearch,
-  type UseCommandMenuSearchReturn 
-} from './useCommandMenuSearch';
+  useCommandMenuActions,
+  type UseCommandMenuActionsReturn 
+} from './useCommandMenuActions';
 import { 
   useCommandMenuRecents,
   type UseCommandMenuRecentsReturn 
 } from './useCommandMenuRecents';
 import { 
-  useCommandMenuActions,
-  type UseCommandMenuActionsReturn 
-} from './useCommandMenuActions';
-import { useCommandMenu } from './useCommandMenu';
+  useCommandMenuSearch,
+  type UseCommandMenuSearchReturn 
+} from './useCommandMenuSearch';
 
 /**
  * Options for command menu with API

@@ -3,8 +3,7 @@
  * Handles PSGC (Philippine Standard Geographic Code) data operations
  */
 
-import { supabase } from '@/lib';
-import { logger, logError } from '@/lib';
+import { supabase , logger, logError } from '@/lib';
 
 export interface Region {
   code: string;

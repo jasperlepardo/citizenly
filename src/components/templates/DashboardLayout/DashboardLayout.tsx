@@ -13,13 +13,16 @@ function useIsClient() {
   return isClient;
 }
 import Link from 'next/link';
-import { useAuth } from '@/contexts';
-import { supabase } from '@/lib/supabase/supabase';
-import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
-import { Navigation } from '@/components';
 import { Toaster } from 'react-hot-toast';
-import { logger, logError } from '@/lib';
+
+import { Navigation } from '@/components';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
+import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
+import { useAuth } from '@/contexts';
+import { logger, logError } from '@/lib';
+import { supabase } from '@/lib/supabase/supabase';
+
+
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {

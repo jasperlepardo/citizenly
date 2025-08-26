@@ -8,6 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
+
 import { validateResidentData, ValidationResult } from '@/lib/validation';
 import type { ResidentFormData as ResidentEditFormData } from '@/types';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import type { CommandMenuItem } from '@/types/components/command-menu';
 
 // Safe router hook that works in both Next.js and Storybook environments

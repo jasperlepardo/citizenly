@@ -3,9 +3,10 @@
  * Handles offline data synchronization when connection is restored
  */
 
-import { offlineStorage } from './offline-storage';
-import { createAppError } from '../error-handling/error-utils';
 import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
+import { createAppError } from '../error-handling/error-utils';
+
+import { offlineStorage } from './offline-storage';
 
 interface SyncResult {
   success: boolean;

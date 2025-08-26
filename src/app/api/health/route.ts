@@ -3,8 +3,9 @@
  * Production monitoring and system status checks
  */
 
-import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { performRuntimeHealthCheck, validateEnvironment, getEnvironmentConfig } from '@/lib/config/environment';
 
 export const dynamic = 'force-dynamic';

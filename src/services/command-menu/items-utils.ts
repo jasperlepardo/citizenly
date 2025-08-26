@@ -1,5 +1,6 @@
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import React from 'react';
+
+import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 
 // Icon helper function - creates React components for SVG icons
 const createIcon = (path: string) => ({ className }: { className?: string }) => 

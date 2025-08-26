@@ -8,8 +8,10 @@
  */
 
 import { useCallback, useState } from 'react';
-import { useGenericSearch } from './useGenericSearch';
+
 import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
+
+import { useGenericSearch } from './useGenericSearch';
 
 /**
  * PSGC search result interface

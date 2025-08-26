@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components';
 import { useAuth } from '@/contexts';
 import { useLastVisitedPage } from '@/hooks/utilities';
-import { useEffect } from 'react';
 
 /**
  * HomePage Component
@@ -114,7 +116,7 @@ export default function HomePage() {
           <div className="mt-4 text-center">
             <button 
               className="debug-click bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
-              onClick={() => alert('Button clicked! Interactions are working.')}
+              onClick={() => toast.success('Button clicked! Interactions are working.')}
               onMouseEnter={() => console.log('Button hovered')}
               style={{ position: 'relative', zIndex: 1000 }}
             >

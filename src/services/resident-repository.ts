@@ -3,11 +3,14 @@
  * Domain-specific repository for resident data operations
  */
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { ResidentRecord } from '@/types/database';
-import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+
 
 // Use database record directly for consistent typing
 export type ResidentData = ResidentRecord;

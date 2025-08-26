@@ -1,28 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib';
-import { PersonalInformationForm, SectoralBadges } from '@/components';
-import { ResidentForm } from '@/components/templates/ResidentForm';
-import { SectoralInformationForm } from '@/components/organisms/Form';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { InputField } from '@/components';
-import { logger, logError } from '@/lib';
-import { fetchWithAuth, getSessionWithFallback } from '@/lib/utils/sessionUtils';
-import type { ResidentFormState } from '@/types/resident-form';
-import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
-import { 
-  CivilStatusEnum, 
-  CitizenshipEnum, 
-  EducationLevelEnum, 
-  EmploymentStatusEnum, 
-  BloodTypeEnum, 
-  EthnicityEnum, 
-  ReligionEnum 
-} from '@/types';
+import { PersonalInformationForm, SectoralBadges , InputField } from '@/components';
+import { SectoralInformationForm } from '@/components/organisms/Form';
+import { ResidentForm } from '@/components/templates/ResidentForm';
+import { supabase , logger, logError } from '@/lib';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
@@ -34,6 +20,18 @@ import {
   ETHNICITY_OPTIONS,
   extractValues,
 } from '@/lib/constants/resident-enums';
+import { fetchWithAuth, getSessionWithFallback } from '@/lib/utils/sessionUtils';
+import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
+import { 
+  CivilStatusEnum, 
+  CitizenshipEnum, 
+  EducationLevelEnum, 
+  EmploymentStatusEnum, 
+  BloodTypeEnum, 
+  EthnicityEnum, 
+  ReligionEnum 
+} from '@/types';
+import type { ResidentFormState } from '@/types/resident-form';
 
 // Tooltip Component
 const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {

@@ -5,8 +5,9 @@
  * Helper functions for validation operations
  */
 
-import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 import { debounce } from '../utilities/async-utils';
+
+import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 
 /**
  * Check if email is valid

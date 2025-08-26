@@ -1,7 +1,8 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField, SelectField } from '@/components';
 import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
+import type { FormMode } from '@/types';
 
 export interface PhysicalCharacteristicsData {
   blood_type: string;

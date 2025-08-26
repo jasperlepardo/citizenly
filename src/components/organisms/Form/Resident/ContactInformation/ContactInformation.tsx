@@ -1,5 +1,7 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
+
 import { ContactDetails, ContactDetailsData } from './FormField/ContactDetails';
 import { HouseholdInformation, HouseholdInformationData } from './FormField/HouseholdInformation';
 

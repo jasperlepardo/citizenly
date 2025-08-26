@@ -4,8 +4,10 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import { performanceMonitor } from '../performance';
+
 import { clientLogger } from '@/lib/logging/client-logger';
+
+import { performanceMonitor } from '../performance';
 
 interface UsePerformanceTrackingOptions {
   componentName: string;

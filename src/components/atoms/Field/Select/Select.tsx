@@ -7,7 +7,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Input } from '../';
+
+import { Input } from '../Input';
+
 import { Option } from './Option';
 
 export type SelectOption = {

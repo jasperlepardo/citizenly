@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components';
-import { logger, logError } from '@/lib';
+import { supabase , logger, logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -249,14 +250,14 @@ function UsersManagementContent() {
         'USER_APPROVAL_ERROR'
       );
       logger.error('User approval failed', { userId, userEmail });
-      alert('Failed to approve user. Please try again.');
+      toast.error('Failed to approve user. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
 
   const rejectUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to reject the registration for ${userEmail}?`)) {
+    if (!window.confirm(`Are you sure you want to reject the registration for ${userEmail}?`)) {
       return;
     }
 
@@ -300,14 +301,14 @@ function UsersManagementContent() {
         'USER_REJECTION_ERROR'
       );
       logger.error('User rejection failed', { userId, userEmail });
-      alert('Failed to reject user. Please try again.');
+      toast.error('Failed to reject user. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
 
   const suspendUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to suspend ${userEmail}?`)) {
+    if (!window.confirm(`Are you sure you want to suspend ${userEmail}?`)) {
       return;
     }
 
@@ -350,7 +351,7 @@ function UsersManagementContent() {
         'USER_SUSPENSION_ERROR'
       );
       logger.error('User suspension failed', { userId, userEmail });
-      alert('Failed to suspend user. Please try again.');
+      toast.error('Failed to suspend user. Please try again.');
     } finally {
       setActionLoading(null);
     }

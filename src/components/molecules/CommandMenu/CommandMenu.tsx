@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
 import { Dialog } from '@headlessui/react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib';
-import { CommandMenuGroup } from './CommandMenuGroup';
-import { CommandMenuEmpty } from './CommandMenuEmpty';
+import React, { useEffect, useRef } from 'react';
+
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
+import { cn } from '@/lib';
 import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
+
+import { CommandMenuEmpty } from './CommandMenuEmpty';
+import { CommandMenuGroup } from './CommandMenuGroup';
 
 const commandMenuVariants = cva(
   'relative mx-auto w-full overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-2xl ring-1 ring-black/5 dark:ring-white/10',

@@ -3,11 +3,6 @@
  * Pre-built validation schemas for common data types
  */
 
-import { 
-  createFormValidator, 
-  createFieldValidator,
-  crossFieldValidators 
-} from './formValidators';
 import {
   validateRequired,
   validateEmail,
@@ -20,6 +15,11 @@ import {
   validateDate,
   composeValidators,
 } from './fieldValidators';
+import { 
+  createFormValidator, 
+  createFieldValidator,
+  crossFieldValidators 
+} from './formValidators';
 import type { FormValidator, ValidationResult, ValidationContext } from './types';
 
 /**

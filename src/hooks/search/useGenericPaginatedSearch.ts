@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useDebounce } from '../utilities/useDebounce';
+
 import {
   PaginatedSearchConfig,
   PaginatedSearchState,
@@ -17,6 +17,8 @@ import {
   createPaginatedSearchExecutor,
   createPaginatedSearchUtilities,
 } from '@/lib/utilities/search-utilities';
+
+import { useDebounce } from '../utilities/useDebounce';
 
 /**
  * Return type for useGenericPaginatedSearch hook

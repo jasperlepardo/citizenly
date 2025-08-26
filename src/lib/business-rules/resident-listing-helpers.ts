@@ -7,6 +7,7 @@
  */
 
 import { ResidentDatabaseRecord as ResidentListItem } from '@/types';
+
 import { formatDate as libFormatDate } from '../utilities/data-transformers';
 
 /**

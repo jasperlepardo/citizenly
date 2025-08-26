@@ -26,9 +26,10 @@
  * </Link>
  * ```
  */
-import React, { forwardRef, AnchorHTMLAttributes } from 'react';
-import NextLink from 'next/link';
 import { cva, type VariantProps } from 'class-variance-authority';
+import NextLink from 'next/link';
+import React, { forwardRef, AnchorHTMLAttributes } from 'react';
+
 import { cn } from '@/lib';
 
 // Link variants using pure Tailwind classes

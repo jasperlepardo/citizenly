@@ -8,6 +8,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
+
 import { useLogger } from './useLogger';
 
 /**

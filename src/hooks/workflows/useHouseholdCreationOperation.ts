@@ -8,9 +8,10 @@
  */
 
 import { useState, useCallback } from 'react';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
-import { logger, logError } from '@/lib';
+import { supabase , logger, logError } from '@/lib';
+
 import type { HouseholdFormData } from '../utilities/useHouseholdForm';
 
 /**

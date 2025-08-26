@@ -5,13 +5,15 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
-import { useResilientQuery } from './useResilientQuery';
+import { supabase } from '@/lib';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 // Import the properly typed ResidentRecord
 import { ResidentRecord } from '@/types/database';
+
+import { useResilientQuery } from './useResilientQuery';
 
 interface Resident extends Omit<ResidentRecord, 'sex'> {
   sex: 'male' | 'female' | ''; // Allow empty for forms

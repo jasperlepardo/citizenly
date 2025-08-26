@@ -3,8 +3,8 @@
  * Uses axe-core for WCAG compliance testing
  */
 
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 
 // Mock axe-core for now - will be implemented when dependencies are installed
 const axe = async (container: any, config?: any) => {
