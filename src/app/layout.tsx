@@ -12,7 +12,7 @@ import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
 import { PWAStatus } from '@/components/molecules/PWAStatus';
 import { VersionTag } from '@/components/molecules/VersionTag';
 import LastVisitedTracker from '@/providers/components/LastVisitedTracker';
-import Providers from '@/components/providers/Providers';
+import Providers from '@/providers/components/Providers';
 import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
 
 // Configure Montserrat font with Next.js font optimization
