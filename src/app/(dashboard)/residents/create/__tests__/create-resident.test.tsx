@@ -22,7 +22,11 @@ jest.mock('@/contexts/AuthContext', () => ({
 }));
 
 jest.mock('@/components', () => ({
-  ResidentForm: jest.fn(({ onSubmit, onCancel, initialData }) => (
+  ResidentForm: jest.fn(({ onSubmit, onCancel, initialData }: { 
+    onSubmit: (data: any) => void; 
+    onCancel: () => void; 
+    initialData?: any; 
+  }) => (
     <div data-testid="resident-form">
       <button onClick={() => onSubmit({
         first_name: 'John',
@@ -235,7 +239,7 @@ describe('Create New Resident - Complete Flow', () => {
       
       // Mock ResidentForm to return empty data
       const MockResidentForm = require('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: { onSubmit: (data: any) => void; onCancel: () => void }) => (
+      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: { onSubmit: (data: any) => void; onCancel: () => void; }) => (
         <div data-testid="resident-form">
           <button onClick={() => onSubmit({
             first_name: '',  // Empty required field

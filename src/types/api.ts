@@ -10,7 +10,7 @@
 /**
  * Standard API success response structure
  */
-export interface ApiSuccessResponse<T = any> {
+export interface ApiSuccessResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;

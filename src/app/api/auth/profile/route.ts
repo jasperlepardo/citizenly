@@ -89,6 +89,6 @@ export async function GET(request: NextRequest) {
       'Profile retrieved successfully'
     );
   } catch (error) {
-    return await handleUnexpectedError(error);
+    return await handleUnexpectedError(error instanceof Error ? error : new Error(String(error)));
   }
 }

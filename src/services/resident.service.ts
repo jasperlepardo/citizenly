@@ -18,7 +18,8 @@ import type { ValidationResult as BaseValidationResult } from '@/lib/validation/
 
 // Import database types
 import { ResidentRecord } from '@/types/database';
-import { ResidentFormData as BaseResidentFormData, EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/forms';
+import { ResidentFormData as BaseResidentFormData } from '@/types/forms';
+import { EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/resident-form';
 
 // Service-specific form data extends base form data with optional id for updates
 export interface ResidentFormData extends BaseResidentFormData {

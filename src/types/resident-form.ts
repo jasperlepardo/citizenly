@@ -201,6 +201,12 @@ export interface ResidentFormState {
   telephone_number: string;
   household_code: string;
 
+  // Address Information (PSGC Codes)
+  region_code: string;
+  province_code: string;
+  city_municipality_code: string;
+  barangay_code: string;
+
   // Physical Personal Details
   blood_type: BloodTypeEnum | '';
   complexion: string;
