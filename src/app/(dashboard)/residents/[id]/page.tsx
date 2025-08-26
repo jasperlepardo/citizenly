@@ -2,25 +2,14 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { PersonalInformationForm, SectoralBadges , InputField } from '@/components';
-import { SectoralInformationForm } from '@/components/organisms/Form';
+// SectoralBadges import removed - not currently used in this component
 import { ResidentForm } from '@/components/templates/ResidentForm';
 import { supabase , logger, logError } from '@/lib';
-import {
-  SEX_OPTIONS,
-  CIVIL_STATUS_OPTIONS,
-  CITIZENSHIP_OPTIONS,
-  EDUCATION_LEVEL_OPTIONS,
-  EDUCATION_STATUS_OPTIONS,
-  EMPLOYMENT_STATUS_OPTIONS,
-  RELIGION_OPTIONS,
-  ETHNICITY_OPTIONS,
-  extractValues,
-} from '@/lib/constants/resident-enums';
-import { fetchWithAuth, getSessionWithFallback } from '@/lib/utils/sessionUtils';
+// Remove unused enum imports - using types instead
+import { fetchWithAuth } from '@/lib/utils/sessionUtils';
 import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
 import { 
   CivilStatusEnum, 
@@ -33,28 +22,7 @@ import {
 } from '@/types';
 import type { ResidentFormState } from '@/types/resident-form';
 
-// Tooltip Component
-const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  return (
-    <div className="relative inline-block">
-      <div
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        className="cursor-help"
-      >
-        {children}
-      </div>
-      {isVisible && (
-        <div className="tooltip text-inverse absolute bottom-full left-1/2 z-10 -translate-x-1/2 -translate-y-2 rounded-lg bg-gray-800 px-3 py-2 text-sm font-medium whitespace-nowrap shadow-xs">
-          {content}
-          <div className="tooltip-arrow absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-800"></div>
-        </div>
-      )}
-    </div>
-  );
-};
+// Tooltip component removed - not used in current implementation
 
 export const dynamic = 'force-dynamic';
 
@@ -73,7 +41,6 @@ function ResidentDetailContent() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentFormData, setCurrentFormData] = useState<ResidentFormState | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const loadResidentDetails = async () => {
@@ -83,14 +50,14 @@ function ResidentDetailContent() {
         setLoading(true);
 
         logger.debug('Loading resident details', { residentId });
-        console.log('Loading resident details for ID:', residentId);
+        // Loading resident details for the specified ID
 
         // Use API endpoint with session fallback
         const response = await fetchWithAuth(`/api/residents/${residentId}`);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          console.error('❌ [ResidentPage] API Error:', errorData);
+          logger.error('API Error loading resident', errorData);
           throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
         }
 
@@ -104,8 +71,8 @@ function ResidentDetailContent() {
         }
 
         logger.debug('Resident data loaded successfully via API', { residentId: residentData.id });
-        console.log('Resident loaded successfully:', !!residentData);
-        console.log('Resident has is_migrant:', residentData?.is_migrant);
+        // Resident data loaded successfully
+        // Checking resident migration status
 
         // Household data is already included in the API response
         if (householdData) {
@@ -250,7 +217,7 @@ function ResidentDetailContent() {
           },
         };
 
-        console.log('✅ [ResidentPage] Setting resident state with initialized data');
+        // Setting resident state with initialized data
         setResident(initializedResident);
         setEditedResident(updateComputedFields({ ...initializedResident }));
       } catch (err) {
@@ -260,7 +227,7 @@ function ResidentDetailContent() {
         );
         setError('Failed to load resident details');
       } finally {
-        console.log('✅ [ResidentPage] Setting loading to false');
+        // Setting loading to false after data load attempt
         setLoading(false);
       }
     };
@@ -268,18 +235,19 @@ function ResidentDetailContent() {
     loadResidentDetails();
   }, [residentId]);
 
-  const formatFullName = (person: {
-    first_name: string;
-    middle_name?: string;
-    last_name: string;
-    extension_name?: string;
-  }) => {
-    return [person.first_name, person.middle_name, person.last_name, person.extension_name]
-      .filter(Boolean)
-      .join(' ');
-  };
+  // Utility functions (kept for potential future use)
+  // const formatFullName = (person: {
+  //   first_name: string;
+  //   middle_name?: string;
+  //   last_name: string;
+  //   extension_name?: string;
+  // }) => {
+  //   return [person.first_name, person.middle_name, person.last_name, person.extension_name]
+  //     .filter(Boolean)
+  //     .join(' ');
+  // };
 
-  const calculateAge = (birthdate: string) => {
+  const _calculateAge = (birthdate: string) => {
     if (!birthdate) return 'N/A';
     const today = new Date();
     const birth = new Date(birthdate);
@@ -291,40 +259,40 @@ function ResidentDetailContent() {
     return age.toString();
   };
 
-  const formatAddress = (household?: Resident['household']) => {
-    if (!household) return 'No household assigned';
-    const parts = [household.house_number, household.street_name, household.subdivision].filter(
-      Boolean
-    );
-    return parts.length > 0 ? parts.join(', ') : 'No address';
-  };
+  // const formatAddress = (household?: Resident['household']) => {
+  //   if (!household) return 'No household assigned';
+  //   const parts = [household.house_number, household.street_name, household.subdivision].filter(
+  //     Boolean
+  //   );
+  //   return parts.length > 0 ? parts.join(', ') : 'No address';
+  // };
 
-  const formatEnumValue = (value: string | undefined) => {
+  const _formatEnumValue = (value: string | undefined) => {
     if (!value) return 'N/A';
     return value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const formatBoolean = (value: boolean | undefined) => {
+  const _formatBoolean = (value: boolean | undefined) => {
     if (value === undefined || value === null) return 'N/A';
     return value ? 'Yes' : 'No';
   };
 
-  // Extract sectoral information from resident data for badges
-  const extractSectoralInfo = (resident: Resident): SectoralInformation => {
-    return {
-      is_labor_force_employed: resident.is_employed || false,
-      is_unemployed: resident.is_unemployed || false,
-      is_overseas_filipino_worker: resident.is_ofw || false,
-      is_person_with_disability: resident.is_pwd || false,
-      is_out_of_school_children: resident.is_out_of_school_children || false,
-      is_out_of_school_youth: resident.is_out_of_school_youth || false,
-      is_senior_citizen: resident.is_senior_citizen || false,
-      is_registered_senior_citizen: resident.is_registered_senior_citizen || false,
-      is_solo_parent: resident.is_solo_parent || false,
-      is_indigenous_people: resident.is_indigenous_people || false,
-      is_migrant: resident.is_migrant || false,
-    };
-  };
+  // Extract sectoral information from resident data for badges (kept for future use)
+  // const extractSectoralInfo = (resident: Resident): SectoralInformation => {
+  //   return {
+  //     is_labor_force_employed: resident.is_employed || false,
+  //     is_unemployed: resident.is_unemployed || false,
+  //     is_overseas_filipino_worker: resident.is_ofw || false,
+  //     is_person_with_disability: resident.is_pwd || false,
+  //     is_out_of_school_children: resident.is_out_of_school_children || false,
+  //     is_out_of_school_youth: resident.is_out_of_school_youth || false,
+  //     is_senior_citizen: resident.is_senior_citizen || false,
+  //     is_registered_senior_citizen: resident.is_registered_senior_citizen || false,
+  //     is_solo_parent: resident.is_solo_parent || false,
+  //     is_indigenous_people: resident.is_indigenous_people || false,
+  //     is_migrant: resident.is_migrant || false,
+  //   };
+  // };
 
 
   const updateComputedFields = (updatedResident: Resident) => {
@@ -343,7 +311,7 @@ function ResidentDetailContent() {
     return updatedResident;
   };
 
-  const handleFieldChange = (field: keyof Resident, value: unknown) => {
+  const _handleFieldChange = (field: keyof Resident, value: unknown) => {
     if (!editedResident) return;
 
     let updatedResident = {
@@ -359,7 +327,7 @@ function ResidentDetailContent() {
     setEditedResident(updatedResident);
   };
 
-  const getComputedFieldTooltip = (field: keyof Resident) => {
+  const _getComputedFieldTooltip = (field: keyof Resident) => {
     switch (field) {
       case 'is_employed':
         return `Automatically calculated from Employment Status. Includes: employed, self-employed`;
@@ -373,17 +341,19 @@ function ResidentDetailContent() {
   };
 
   const transformToFormState = (resident: Resident): ResidentFormState => {
-    console.log('🔄 TRANSFORM: transformToFormState called');
-    console.log('🔄 TRANSFORM: resident.first_name:', resident.first_name);
-    console.log('🔄 TRANSFORM: resident.email:', resident.email);
-    console.log('🔄 TRANSFORM: resident.mobile_number:', resident.mobile_number);
-    console.log('🔄 TRANSFORM: resident.birthdate:', resident.birthdate);
-    console.log('🔄 TRANSFORM: resident.civil_status:', resident.civil_status);
-    console.log('🔄 TRANSFORM: resident.civil_status type:', typeof resident.civil_status);
+    // Transform resident data to form state format
+    // Processing basic resident fields for form
     
     // Extract sectoral information from the nested object if it exists
-    const sectoralInfo = (resident as any).sectoral_info || (resident as any).resident_sectoral_info?.[0] || null;
-    const migrantInfo = (resident as any).migrant_info || (resident as any).resident_migrant_info?.[0] || null;
+    const residentWithNested = resident as Resident & {
+      sectoral_info?: SectoralInformation;
+      resident_sectoral_info?: SectoralInformation[];
+      migrant_info?: Record<string, unknown>;
+      resident_migrant_info?: Record<string, unknown>[];
+      birth_place_info?: { name?: string; level?: string };
+    };
+    const sectoralInfo = residentWithNested.sectoral_info || residentWithNested.resident_sectoral_info?.[0] || null;
+    const migrantInfo = residentWithNested.migrant_info || residentWithNested.resident_migrant_info?.[0] || null;
     
     
     const formState = {
@@ -397,9 +367,9 @@ function ResidentDetailContent() {
       civil_status_others_specify: '', // Not in current Resident type
       citizenship: (resident.citizenship as CitizenshipEnum) || '',
       birthdate: resident.birthdate || '',
-      birth_place_name: (resident as any).birth_place_info?.name || (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
+      birth_place_name: residentWithNested.birth_place_info?.name || (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
       birth_place_code: resident.birth_place_code || '',
-      birth_place_level: (resident as any).birth_place_info?.level || '',
+      birth_place_level: residentWithNested.birth_place_info?.level || '',
       philsys_card_number: resident.philsys_card_number || '',
       philsys_last4: resident.philsys_last4 || '',
       education_attainment: (resident.education_attainment as EducationLevelEnum) || '',
@@ -458,8 +428,8 @@ function ResidentDetailContent() {
       is_intending_to_return: migrantInfo?.is_intending_to_return ?? false,
     };
 
-    console.log('✅ [TRANSFORM] Returning formState with first_name:', formState.first_name);
-    console.log('🔥 TRANSFORM: Final is_migrant value:', formState.is_migrant);
+    // Returning transformed form state
+    // Final form state includes migration status
     return formState;
   };
 
@@ -487,7 +457,7 @@ function ResidentDetailContent() {
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_DELETE');
-      console.error('Failed to delete resident:', error.message);
+      logger.error('Failed to delete resident', { error: error.message });
       toast.error(error.message || 'Failed to delete resident');
     } finally {
       setIsDeleting(false);
@@ -497,14 +467,13 @@ function ResidentDetailContent() {
 
   // Handle form submission
   const handleFormSubmit = async (formData: ResidentFormState) => {
-    console.log('🚀 HANDLEFORMSUBMIT CALLED');
-    console.log('📊 Form data is_migrant:', formData.is_migrant);
-    console.log('⏰ Called at:', new Date().toISOString());
-    console.log('📋 Full form data keys:', Object.keys(formData));
+    // Handle form submission with form data
+    // Form includes migration status and other resident details
+    // Processing form submission at current timestamp
     
     try {
       // Use the API endpoint for updating with session fallback
-      console.log('🔐 Getting session for form submission...');
+      // Getting session for form submission authentication
 
       // Include both resident fields and sectoral information
       // Convert empty strings to null for enum fields to avoid validation errors
@@ -567,17 +536,17 @@ function ResidentDetailContent() {
       }
 
       const responseData = await response.json();
-      console.log('🎉 SUCCESS: Received API response:', responseData);
+      // Successfully received API response
       
       const { resident: updatedResident } = responseData;
-      console.log('📦 Updated resident data:', updatedResident);
+      // Processing updated resident data from API
       
       // Transform the nested sectoral data from the API response
       let transformedResident = { ...updatedResident };
       
       if (updatedResident?.resident_sectoral_info?.[0]) {
         const sectoralInfo = updatedResident.resident_sectoral_info[0];
-        console.log('Flattening sectoral info:', sectoralInfo);
+        // Flattening sectoral information into main resident object
         
         // Flatten sectoral information into the main resident object
         transformedResident = {
@@ -601,7 +570,7 @@ function ResidentDetailContent() {
       
       if (updatedResident?.resident_migrant_info?.[0]) {
         const migrantInfo = updatedResident.resident_migrant_info[0];
-        console.log('Flattening migrant info:', migrantInfo);
+        // Flattening migrant information into main resident object
         
         // Flatten migrant information into the main resident object
         transformedResident = {
@@ -622,11 +591,11 @@ function ResidentDetailContent() {
         delete transformedResident.resident_migrant_info;
       }
       
-      console.log('✨ FINAL: Setting transformed resident state:', transformedResident);
-      console.log('✨ FINAL: is_migrant value being set:', transformedResident.is_migrant);
+      // Setting transformed resident state with flattened data
+      // Migration status preserved in transformation
       
       // Update local state and return to view mode
-      console.log('📝 UPDATING STATE: setResident called');
+      // Updating resident state with transformed data
       setResident(transformedResident);
       setFormMode('view');
       setCurrentFormData(null); // Clear current form data after successful save
@@ -635,139 +604,12 @@ function ResidentDetailContent() {
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_FORM_UPDATE');
-      console.error('Failed to update resident:', error.message);
+      logger.error('Failed to update resident', { error: error.message });
       toast.error(`Failed to update resident: ${error.message}`);
     }
   };
 
-  const renderEditableField = (
-    label: string,
-    field: keyof Resident,
-    type: 'text' | 'email' | 'tel' | 'date' | 'select' | 'checkbox' = 'text',
-    options?: string[],
-    isComputed = false
-  ) => {
-    const currentResident = (formMode === 'edit') ? editedResident : resident;
-    if (!currentResident) return null;
-
-    const value = currentResident[field] as string | boolean | undefined;
-
-    if ((formMode === 'edit') && !isComputed) {
-      if (type === 'checkbox') {
-        return (
-          <div>
-            <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</dt>
-            <dd className="mt-1">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={!!value}
-                  onChange={e => handleFieldChange(field, e.target.checked)}
-                  className="rounded border-gray-200 text-gray-600 focus:ring-blue-500 dark:border-gray-700 dark:text-gray-400"
-                />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                  {value ? 'Yes' : 'No'}
-                </span>
-              </label>
-            </dd>
-          </div>
-        );
-      }
-
-      if (type === 'select' && options) {
-        const selectId = `edit-select-${field}-${Date.now()}`;
-        return (
-          <div>
-            <label
-              htmlFor={selectId}
-              className="block cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-400"
-            >
-              {label}
-            </label>
-            <div className="mt-1">
-              {/* TODO: Replace with SelectField DropdownSelect component
-                - id={selectId}
-                - options=[{ value: '', label: 'Select...' }, ...options.map(...)]
-                - value={(value as string) || ''}
-                - onChange={val => handleFieldChange(field, val)}
-                - size="sm"
-              */}
-            </div>
-          </div>
-        );
-      }
-
-      const inputId = `edit-${field}-${Date.now()}`;
-      return (
-        <div>
-          <label
-            htmlFor={inputId}
-            className="block cursor-pointer text-sm font-medium text-gray-600 dark:text-gray-400"
-          >
-            {label}
-          </label>
-          <div className="mt-1">
-            <input
-              id={inputId}
-              type={type}
-              value={(value as string) || ''}
-              onChange={e => handleFieldChange(field, e.target.value)}
-              className="block w-full rounded-md border border-gray-200 bg-white text-sm text-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    // Display mode
-    if (type === 'checkbox') {
-      return (
-        <div className="flex items-center justify-between">
-          <dt
-            className={`text-sm font-medium ${isComputed ? 'text-gray-500 dark:text-gray-500' : 'text-gray-600 dark:text-gray-400'}`}
-          >
-            {label}
-            {isComputed && (
-              <Tooltip content={getComputedFieldTooltip(field)}>
-                <span className="ml-1 cursor-help text-xs text-gray-500 underline dark:text-gray-500">
-                  (auto)
-                </span>
-              </Tooltip>
-            )}
-          </dt>
-          <dd className={`text-sm font-medium ${value ? 'text-green-600' : 'text-red-600'}`}>
-            {formatBoolean(value as boolean)}
-          </dd>
-        </div>
-      );
-    }
-
-    if (type === 'date') {
-      return (
-        <div>
-          <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</dt>
-          <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {value
-              ? `${new Date(value as string).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })} (${calculateAge(value as string)} y/o)`
-              : 'N/A'}
-          </dd>
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</dt>
-        <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          {formatEnumValue(value as string)}
-        </dd>
-      </div>
-    );
-  };
+  // Removed unused renderEditableField function
 
   if (loading) {
     return (
@@ -787,7 +629,7 @@ function ResidentDetailContent() {
   }
 
   if (error || !resident) {
-    console.log('❌ [ResidentPage] Rendering error state - error:', error, 'resident exists:', !!resident);
+    // Rendering error state - no resident data available
     return (
       <div>
         <div className="p-6">
@@ -827,7 +669,7 @@ function ResidentDetailContent() {
     );
   }
 
-  console.log('✅ [ResidentPage] Rendering main content - resident ID:', resident?.id);
+  // Rendering main resident content
 
   return (
     <div className="min-h-screen" style={{ minHeight: '100vh' }}>
@@ -867,11 +709,7 @@ function ResidentDetailContent() {
             {/* ResidentForm Template */}
             {(() => {
               const formData = editedResident ? transformToFormState(editedResident) : undefined;
-              console.log('  - first_name:', formData?.first_name);
-              console.log('  - civil_status:', formData?.civil_status);
-              console.log('  - email:', formData?.email);
-              console.log('  - mobile_number:', formData?.mobile_number);
-              console.log('  - mode:', formMode);
+              // Form data includes resident details and current mode
               return (
                 <ResidentForm
                   mode={formMode}
@@ -900,31 +738,27 @@ function ResidentDetailContent() {
                   type="button"
                   onClick={async (e) => {
                     e.preventDefault();
-                    console.log('===== SAVE BUTTON ONCLICK FIRED =====');
-                    console.log('Time:', new Date().toISOString());
-                    console.log('formMode:', formMode);
-                    console.log('hasCurrentFormData:', !!currentFormData);
-                    console.log('hasResident:', !!resident);
+                    // Save button clicked - processing form action
+                    // Checking form mode and data availability
                     
                     if (formMode === 'view') {
-                      console.log('ACTION: Switching to edit mode');
+                      // Switching to edit mode
                       setFormMode('edit');
                     } else {
-                      console.log('ACTION: Attempting to save data');
+                      // Attempting to save form data
                       // The form component handles its own validation and submission
-                      // We need to trigger the form's submit event
-                      console.log('🔥 TRIGGERING FORM SUBMISSION');
+                      // Triggering form submission event
                       const formElement = document.querySelector('form');
                       if (formElement) {
-                        console.log('✅ Found form element, triggering submit event');
+                        // Found form element, triggering submit event
                         const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
                         formElement.dispatchEvent(submitEvent);
                       } else {
-                        console.error('❌ ERROR: Could not find form element!');
+                        logger.error('Form element not found for submission');
                         toast.error('Unable to submit form');
                       }
                     }
-                    console.log('===== END SAVE BUTTON ONCLICK =====');
+                    // Form action completed
                   }}
                   className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg transition-colors font-medium"
                 >

@@ -257,7 +257,7 @@ function UsersManagementContent() {
   };
 
   const rejectUser = async (userId: string, userEmail: string) => {
-    if (!window.confirm(`Are you sure you want to reject the registration for ${userEmail}?`)) {
+    if (!globalThis.window?.confirm(`Are you sure you want to reject the registration for ${userEmail}?`)) {
       return;
     }
 
@@ -308,7 +308,7 @@ function UsersManagementContent() {
   };
 
   const suspendUser = async (userId: string, userEmail: string) => {
-    if (!window.confirm(`Are you sure you want to suspend ${userEmail}?`)) {
+    if (!globalThis.window?.confirm(`Are you sure you want to suspend ${userEmail}?`)) {
       return;
     }
 

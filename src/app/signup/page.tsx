@@ -36,7 +36,7 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
-  const [_assignedRole, setAssignedRole] = useState<string>('');
+  const [_assignedRole, _setAssignedRole] = useState<string>('');
   const [submitStatus, setSubmitStatus] = useState<string>('');
 
   // Load barangays directly from Supabase (simplified without joins)
@@ -61,7 +61,7 @@ export default function SignupPage() {
         return;
       }
 
-      const options = data?.map((item: any) => ({
+      const options = data?.map((item: { code: string; name: string }) => ({
         value: item.code,
         label: `${item.name} (${item.code})`,
       })) || [];
@@ -162,7 +162,7 @@ export default function SignupPage() {
     try {
       // Step 1: Create auth user with metadata for post-confirmation processing
       setSubmitStatus('Creating your account...');
-      console.log('🔄 Attempting signup with email:', formData.email);
+      // Attempting signup with provided email
 
       // Check if we're in development mode (disable emails to prevent bounces)
       const isDevelopment = process.env.NODE_ENV === 'development';
@@ -183,16 +183,10 @@ export default function SignupPage() {
         },
       });
 
-      console.log('📋 Signup result:', {
-        success: !authError,
-        hasUser: !!authData.user,
-        userId: authData.user?.id,
-        error: authError?.message,
-        errorCode: authError?.code,
-      });
+      // Signup attempt completed, checking result status
 
       if (authError || !authData.user) {
-        console.error('❌ Signup failed:', {
+        logger.error('Signup failed', {
           error: authError?.message,
           code: authError?.code,
           status: authError?.status,
@@ -200,8 +194,7 @@ export default function SignupPage() {
         throw new Error(authError?.message || 'Failed to create account');
       }
 
-      console.log('✅ Auth user created successfully:', authData.user.id);
-      console.log('📧 Email confirmation required:', !authData.user.email_confirmed_at);
+      // Auth user created successfully, email confirmation required
 
       // Signup data is already stored in user metadata during supabase.auth.signUp()
       // Database trigger will process this after email confirmation

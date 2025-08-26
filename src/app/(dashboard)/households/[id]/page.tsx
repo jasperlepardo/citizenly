@@ -45,20 +45,20 @@ function HouseholdDetailContent() {
   const [error, setError] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<HouseholdFormMode>('view');
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData | null>(null);
-  const [addressLabels, setAddressLabels] = useState<any>(null);
-  const [householdTypeLabels, setHouseholdTypeLabels] = useState<any>(null);
+  const [addressLabels, setAddressLabels] = useState<Record<string, string> | null>(null);
+  const [householdTypeLabels, setHouseholdTypeLabels] = useState<Record<string, string> | null>(null);
   const [householdHeadLabel, setHouseholdHeadLabel] = useState<string>('');
 
   useEffect(() => {
-    console.log('useEffect triggered:', { householdCode, authLoading, user: !!user });
+    // Load household details when params are available
 
     const loadHouseholdDetails = async () => {
       if (!householdCode || authLoading || !user) {
-        console.log('Early return:', { householdCode, authLoading, user: !!user });
+        // Wait for authentication and household code
         return;
       }
 
-      console.log('Starting to load household details...');
+      // Starting to load household details
       try {
         setLoading(true);
 
@@ -69,15 +69,15 @@ function HouseholdDetailContent() {
           .eq('code', householdCode)
           .single();
 
-        console.log('Household query result:', { householdData, householdError });
+        // Household query completed
 
         if (householdError) {
-          console.error('Household error:', householdError);
+          logger.error('Household query failed', { householdError });
           setError('Household not found');
           return;
         }
 
-        console.log('Setting household data:', householdData);
+        // Setting household data from query result
         setHousehold(householdData);
 
         // Transform household data to form data format
@@ -168,9 +168,9 @@ function HouseholdDetailContent() {
     setFormMode(mode);
   };
 
-  // Create options for view mode display
-  const getViewModeOptions = () => {
-    const options: any = {};
+  // Create options for view mode display (unused for now, kept for future implementation)
+  // const getViewModeOptions = () => {
+  //   const options: Record<string, SelectOption[]> = {};
 
     // Address options with current values
     if (addressLabels && householdFormData) {
@@ -205,8 +205,8 @@ function HouseholdDetailContent() {
       options.householdHeadOptions = [{ value: householdFormData.householdHeadId, label: householdHeadLabel }];
     }
 
-    return options;
-  };
+  //   return options;
+  // };
 
   const formatFullName = (person: {
     first_name: string;
