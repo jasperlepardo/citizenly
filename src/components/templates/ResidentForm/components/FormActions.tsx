@@ -1,10 +1,11 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
 
 // Helper function to get button variant
 const getButtonVariant = (isOptimisticallyUpdated: boolean): string => {
-  return isOptimisticallyUpdated 
-    ? 'px-4 py-2 bg-success-600 hover:bg-success-700 text-white font-medium rounded-lg transition-colors' 
+  return isOptimisticallyUpdated
+    ? 'px-4 py-2 bg-success-600 hover:bg-success-700 text-white font-medium rounded-lg transition-colors'
     : 'px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors';
 };
 
@@ -18,7 +19,7 @@ const getButtonContent = (isSubmitting: boolean, isOptimisticallyUpdated: boolea
       </>
     );
   }
-  
+
   if (isOptimisticallyUpdated) {
     return (
       <>
@@ -27,7 +28,7 @@ const getButtonContent = (isSubmitting: boolean, isOptimisticallyUpdated: boolea
       </>
     );
   }
-  
+
   return 'Save Resident';
 };
 
@@ -48,27 +49,34 @@ interface FormActionsProps {
   errorCount: number;
 }
 
-export const FormActions = React.memo(({ 
-  mode, 
-  isSubmitting, 
-  isOptimisticallyUpdated, 
-  onCancel, 
-  errorCount 
+const FormActionsComponent = ({
+  mode,
+  isSubmitting,
+  isOptimisticallyUpdated,
+  onCancel,
+  errorCount,
 }: FormActionsProps) => {
-  console.log('🎬 FormActions render - mode:', mode, 'errorCount:', errorCount, 'isSubmitting:', isSubmitting);
-  
+  console.log(
+    '🎬 FormActions render - mode:',
+    mode,
+    'errorCount:',
+    errorCount,
+    'isSubmitting:',
+    isSubmitting
+  );
+
   if (mode === 'view') {
     console.log('👁️ FormActions: returning null because mode is "view"');
     return null;
   }
 
   return (
-    <div className="flex items-center justify-end gap-3 pt-8 mt-8 border-t border-zinc-200 dark:border-zinc-800">
+    <div className="mt-8 flex items-center justify-end gap-3 border-t border-zinc-200 pt-8 dark:border-zinc-800">
       {onCancel && (
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg transition-colors font-medium"
+          className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-2 font-medium text-zinc-900 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
         >
           Cancel
         </button>
@@ -77,7 +85,9 @@ export const FormActions = React.memo(({
         type="submit"
         disabled={isSubmitting}
         aria-describedby="submit-help"
-        aria-label={isSubmitting ? 'Saving resident data, please wait' : 'Save resident information'}
+        aria-label={
+          isSubmitting ? 'Saving resident data, please wait' : 'Save resident information'
+        }
         className={getButtonVariant(isOptimisticallyUpdated)}
       >
         {getButtonContent(isSubmitting, isOptimisticallyUpdated)}
@@ -87,4 +97,8 @@ export const FormActions = React.memo(({
       </div>
     </div>
   );
-});
+};
+
+FormActionsComponent.displayName = 'FormActions';
+
+export const FormActions = React.memo(FormActionsComponent);

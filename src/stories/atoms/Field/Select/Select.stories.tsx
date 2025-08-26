@@ -1,18 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import Select from '@/components/atoms/Select';
-import { 
+import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
   CITIZENSHIP_OPTIONS,
   EDUCATION_LEVEL_OPTIONS,
-  EMPLOYMENT_STATUS_OPTIONS
+  EMPLOYMENT_STATUS_OPTIONS,
 } from '@/lib/constants/resident-enums';
-import { 
-  withAuthenticatedSupabase, 
-  withUnauthenticatedSupabase, 
-  mockPSGCData, 
-  mockPSOCData 
+import {
+  withAuthenticatedSupabase,
+  withUnauthenticatedSupabase,
+  mockPSGCData,
+  mockPSOCData,
 } from '@/../.storybook/decorators/SupabaseDecorator';
 
 const meta: Meta<typeof Select> = {
@@ -84,12 +84,12 @@ type Story = StoryObj<typeof Select>;
 export const WithSexOptions: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <Select
         enumData={SEX_OPTIONS}
         value={value}
-        onSelect={(option) => setValue(option?.value || '')}
+        onSelect={option => setValue(option?.value || '')}
         placeholder="Select gender..."
       />
     );
@@ -97,7 +97,8 @@ export const WithSexOptions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Select using SEX_OPTIONS constant from resident-enums.ts. Type to search or use arrow keys to navigate.',
+        story:
+          'Select using SEX_OPTIONS constant from resident-enums.ts. Type to search or use arrow keys to navigate.',
       },
     },
   },
@@ -106,12 +107,12 @@ export const WithSexOptions: Story = {
 export const WithCivilStatusOptions: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <Select
         enumData={CIVIL_STATUS_OPTIONS}
         value={value}
-        onSelect={(option) => setValue(option?.value || '')}
+        onSelect={option => setValue(option?.value || '')}
         placeholder="Select civil status..."
       />
     );
@@ -128,12 +129,12 @@ export const WithCivilStatusOptions: Story = {
 export const WithEducationLevels: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <Select
         enumData={EDUCATION_LEVEL_OPTIONS}
         value={value}
-        onSelect={(option) => setValue(option?.value || '')}
+        onSelect={option => setValue(option?.value || '')}
         placeholder="Select education level..."
       />
     );
@@ -151,36 +152,36 @@ export const WithEducationLevels: Story = {
 export const WithDescriptions: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     const optionsWithDescriptions = [
-      { 
-        value: 'admin', 
-        label: 'Administrator', 
-        description: 'Full access to all system features' 
+      {
+        value: 'admin',
+        label: 'Administrator',
+        description: 'Full access to all system features',
       },
-      { 
-        value: 'moderator', 
-        label: 'Moderator', 
-        description: 'Can manage users and content' 
+      {
+        value: 'moderator',
+        label: 'Moderator',
+        description: 'Can manage users and content',
       },
-      { 
-        value: 'user', 
-        label: 'Regular User', 
-        description: 'Basic access to system features' 
+      {
+        value: 'user',
+        label: 'Regular User',
+        description: 'Basic access to system features',
       },
-      { 
-        value: 'guest', 
-        label: 'Guest', 
+      {
+        value: 'guest',
+        label: 'Guest',
         description: 'Limited read-only access',
-        disabled: true
+        disabled: true,
       },
     ];
-    
+
     return (
       <Select
         options={optionsWithDescriptions}
         value={value}
-        onSelect={(option) => setValue(option?.value || '')}
+        onSelect={option => setValue(option?.value || '')}
         placeholder="Select user role..."
       />
     );
@@ -198,7 +199,7 @@ export const WithDescriptions: Story = {
 export const SearchableSelect: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     const countries = [
       { value: 'ph', label: 'Philippines' },
       { value: 'us', label: 'United States' },
@@ -211,19 +212,17 @@ export const SearchableSelect: Story = {
       { value: 'id', label: 'Indonesia' },
       { value: 'au', label: 'Australia' },
     ];
-    
+
     return (
       <div className="space-y-2">
         <Select
           options={countries}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Search countries..."
           searchable={true}
         />
-        <p className="text-sm text-gray-500">
-          Selected: {value || 'None'} • Type to search
-        </p>
+        <p className="text-sm text-gray-500">Selected: {value || 'None'} • Type to search</p>
       </div>
     );
   },
@@ -240,13 +239,13 @@ export const SearchableSelect: Story = {
 export const AllowCustomInput: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="space-y-2">
         <Select
           enumData={EMPLOYMENT_STATUS_OPTIONS}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Select or type employment status..."
           allowCustom={true}
           searchable={true}
@@ -270,12 +269,12 @@ export const AllowCustomInput: Story = {
 export const ErrorState: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <Select
         enumData={CITIZENSHIP_OPTIONS}
         value={value}
-        onSelect={(option) => setValue(option?.value || '')}
+        onSelect={option => setValue(option?.value || '')}
         placeholder="Select citizenship..."
         error="Please select a citizenship option"
       />
@@ -303,11 +302,11 @@ export const InteractiveDemo: Story = {
     const [sex, setSex] = useState('');
     const [civilStatus, setCivilStatus] = useState('');
     const [education, setEducation] = useState('');
-    
+
     return (
-      <div className="space-y-6 max-w-md">
+      <div className="max-w-md space-y-6">
         <h3 className="text-lg font-semibold">Resident Information Form</h3>
-        
+
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
             Gender <span className="text-red-500">*</span>
@@ -315,11 +314,11 @@ export const InteractiveDemo: Story = {
           <Select
             enumData={SEX_OPTIONS}
             value={sex}
-            onSelect={(option) => setSex(option?.value || '')}
+            onSelect={option => setSex(option?.value || '')}
             placeholder="Select gender..."
           />
         </div>
-        
+
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
             Civil Status <span className="text-red-500">*</span>
@@ -327,11 +326,11 @@ export const InteractiveDemo: Story = {
           <Select
             enumData={CIVIL_STATUS_OPTIONS}
             value={civilStatus}
-            onSelect={(option) => setCivilStatus(option?.value || '')}
+            onSelect={option => setCivilStatus(option?.value || '')}
             placeholder="Select civil status..."
           />
         </div>
-        
+
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
             Education Level
@@ -339,19 +338,23 @@ export const InteractiveDemo: Story = {
           <Select
             enumData={EDUCATION_LEVEL_OPTIONS}
             value={education}
-            onSelect={(option) => setEducation(option?.value || '')}
+            onSelect={option => setEducation(option?.value || '')}
             placeholder="Select education level..."
           />
         </div>
-        
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h4 className="font-medium mb-2">Form Values:</h4>
+
+        <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <h4 className="mb-2 font-medium">Form Values:</h4>
           <pre className="text-sm">
-{JSON.stringify({
-  sex,
-  civilStatus,
-  education
-}, null, 2)}
+            {JSON.stringify(
+              {
+                sex,
+                civilStatus,
+                education,
+              },
+              null,
+              2
+            )}
           </pre>
         </div>
       </div>
@@ -360,7 +363,8 @@ export const InteractiveDemo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive form demo showing multiple selects working with resident enum constants.',
+        story:
+          'Interactive form demo showing multiple selects working with resident enum constants.',
       },
     },
   },
@@ -370,7 +374,7 @@ export const InteractiveDemo: Story = {
 export const KeyboardNavigation: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="space-y-4">
         <div className="space-y-2">
@@ -380,16 +384,29 @@ export const KeyboardNavigation: Story = {
           <Select
             enumData={CIVIL_STATUS_OPTIONS}
             value={value}
-            onSelect={(option) => setValue(option?.value || '')}
+            onSelect={option => setValue(option?.value || '')}
             placeholder="Try keyboard navigation..."
           />
         </div>
-        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-          <p><kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">↓</kbd> Open dropdown / Next option</p>
-          <p><kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">↑</kbd> Previous option</p>
-          <p><kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Enter</kbd> Select highlighted option</p>
-          <p><kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Esc</kbd> Close dropdown</p>
-          <p><kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Type</kbd> Filter options</p>
+        <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+          <p>
+            <kbd className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-700">↓</kbd> Open dropdown /
+            Next option
+          </p>
+          <p>
+            <kbd className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-700">↑</kbd> Previous option
+          </p>
+          <p>
+            <kbd className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-700">Enter</kbd> Select
+            highlighted option
+          </p>
+          <p>
+            <kbd className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-700">Esc</kbd> Close dropdown
+          </p>
+          <p>
+            <kbd className="rounded bg-gray-200 px-2 py-1 dark:bg-gray-700">Type</kbd> Filter
+            options
+          </p>
         </div>
       </div>
     );
@@ -409,42 +426,50 @@ export const PSGCPattern: Story = {
     const [value, setValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    
+
     // Mock PSGC API search - use useMemo to prevent recreation
-    const mockPSGCData = useMemo(() => [
-      { code: '137401001', name: 'Barangay Bagong Silang, Caloocan City, Metro Manila' },
-      { code: '137401002', name: 'Barangay Bagong Barrio, Caloocan City, Metro Manila' },
-      { code: '137402001', name: 'Barangay Baesa, Quezon City, Metro Manila' },
-      { code: '137402002', name: 'Barangay Bagbag, Quezon City, Metro Manila' },
-      { code: '137403001', name: 'Barangay Bangkal, Makati City, Metro Manila' },
-      { code: '137403002', name: 'Barangay Bel-Air, Makati City, Metro Manila' },
-    ], []);
-    
-    const handleSearch = useCallback((query) => {
-      if (query.length < 2) {
-        setSearchResults([]);
-        setLoading(false);
-        return;
-      }
-      
-      setLoading(true);
-      
-      // Simulate API delay
-      setTimeout(() => {
-        const filtered = mockPSGCData.filter(item =>
-          item.name.toLowerCase().includes(query.toLowerCase()) ||
-          item.code.includes(query)
-        ).map(item => ({
-          value: item.code,
-          label: item.name,
-          description: `Code: ${item.code}`
-        }));
-        
-        setSearchResults(filtered);
-        setLoading(false);
-      }, 500);
-    }, [mockPSGCData]);
-    
+    const mockPSGCData = useMemo(
+      () => [
+        { code: '137401001', name: 'Barangay Bagong Silang, Caloocan City, Metro Manila' },
+        { code: '137401002', name: 'Barangay Bagong Barrio, Caloocan City, Metro Manila' },
+        { code: '137402001', name: 'Barangay Baesa, Quezon City, Metro Manila' },
+        { code: '137402002', name: 'Barangay Bagbag, Quezon City, Metro Manila' },
+        { code: '137403001', name: 'Barangay Bangkal, Makati City, Metro Manila' },
+        { code: '137403002', name: 'Barangay Bel-Air, Makati City, Metro Manila' },
+      ],
+      []
+    );
+
+    const handleSearch = useCallback(
+      query => {
+        if (query.length < 2) {
+          setSearchResults([]);
+          setLoading(false);
+          return;
+        }
+
+        setLoading(true);
+
+        // Simulate API delay
+        setTimeout(() => {
+          const filtered = mockPSGCData
+            .filter(
+              item =>
+                item.name.toLowerCase().includes(query.toLowerCase()) || item.code.includes(query)
+            )
+            .map(item => ({
+              value: item.code,
+              label: item.name,
+              description: `Code: ${item.code}`,
+            }));
+
+          setSearchResults(filtered);
+          setLoading(false);
+        }, 500);
+      },
+      [mockPSGCData]
+    );
+
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -455,7 +480,7 @@ export const PSGCPattern: Story = {
           onSearch={handleSearch}
           loading={loading}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Search for barangay..."
           searchable={true}
         />
@@ -468,7 +493,8 @@ export const PSGCPattern: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'API-driven Select following PSGCSelector patterns for geographic location search. Demonstrates debounced search with loading states.',
+        story:
+          'API-driven Select following PSGCSelector patterns for geographic location search. Demonstrates debounced search with loading states.',
       },
     },
   },
@@ -479,44 +505,73 @@ export const PSOCPattern: Story = {
     const [value, setValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    
+
     // Mock PSOC API search - use useMemo to prevent recreation
-    const mockPSOCData = useMemo(() => [
-      { code: '1111', title: 'Chief Executives, Senior Officials and Legislators', description: 'Leadership and governance roles' },
-      { code: '2111', title: 'Physicists and Astronomers', description: 'Physical sciences professionals' },
-      { code: '2112', title: 'Meteorologists', description: 'Weather and climate specialists' },
-      { code: '2113', title: 'Chemists', description: 'Chemical sciences professionals' },
-      { code: '2114', title: 'Geologists and Geophysicists', description: 'Earth sciences professionals' },
-      { code: '3111', title: 'Chemical and Physical Science Technicians', description: 'Laboratory and research support' },
-      { code: '5111', title: 'Travel Attendants and Travel Stewards', description: 'Tourism and hospitality services' },
-    ], []);
-    
-    const handleSearch = useCallback((query) => {
-      if (query.length < 2) {
-        setSearchResults([]);
-        setLoading(false);
-        return;
-      }
-      
-      setLoading(true);
-      
-      // Simulate API delay
-      setTimeout(() => {
-        const filtered = mockPSOCData.filter(item =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase()) ||
-          item.code.includes(query)
-        ).map(item => ({
-          value: item.code,
-          label: item.title,
-          description: `${item.code} - ${item.description}`
-        }));
-        
-        setSearchResults(filtered);
-        setLoading(false);
-      }, 400);
-    }, [mockPSOCData]);
-    
+    const mockPSOCData = useMemo(
+      () => [
+        {
+          code: '1111',
+          title: 'Chief Executives, Senior Officials and Legislators',
+          description: 'Leadership and governance roles',
+        },
+        {
+          code: '2111',
+          title: 'Physicists and Astronomers',
+          description: 'Physical sciences professionals',
+        },
+        { code: '2112', title: 'Meteorologists', description: 'Weather and climate specialists' },
+        { code: '2113', title: 'Chemists', description: 'Chemical sciences professionals' },
+        {
+          code: '2114',
+          title: 'Geologists and Geophysicists',
+          description: 'Earth sciences professionals',
+        },
+        {
+          code: '3111',
+          title: 'Chemical and Physical Science Technicians',
+          description: 'Laboratory and research support',
+        },
+        {
+          code: '5111',
+          title: 'Travel Attendants and Travel Stewards',
+          description: 'Tourism and hospitality services',
+        },
+      ],
+      []
+    );
+
+    const handleSearch = useCallback(
+      query => {
+        if (query.length < 2) {
+          setSearchResults([]);
+          setLoading(false);
+          return;
+        }
+
+        setLoading(true);
+
+        // Simulate API delay
+        setTimeout(() => {
+          const filtered = mockPSOCData
+            .filter(
+              item =>
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.description.toLowerCase().includes(query.toLowerCase()) ||
+                item.code.includes(query)
+            )
+            .map(item => ({
+              value: item.code,
+              label: item.title,
+              description: `${item.code} - ${item.description}`,
+            }));
+
+          setSearchResults(filtered);
+          setLoading(false);
+        }, 400);
+      },
+      [mockPSOCData]
+    );
+
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -527,7 +582,7 @@ export const PSOCPattern: Story = {
           onSearch={handleSearch}
           loading={loading}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Search for occupation..."
           searchable={true}
         />
@@ -540,7 +595,8 @@ export const PSOCPattern: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'API-driven Select following PSOCSelector patterns for occupation search. Shows how to implement Philippine Standard Occupational Classification searches.',
+        story:
+          'API-driven Select following PSOCSelector patterns for occupation search. Shows how to implement Philippine Standard Occupational Classification searches.',
       },
     },
   },
@@ -554,79 +610,85 @@ export const APIComparison: Story = {
     const [psocResults, setPsocResults] = useState([]);
     const [psgcLoading, setPsgcLoading] = useState(false);
     const [psocLoading, setPsocLoading] = useState(false);
-    
+
     // Refs to track timeouts
     const psgcTimeoutRef = useRef(null);
     const psocTimeoutRef = useRef(null);
-    
+
     // Mock data - moved to useMemo to prevent recreating on every render
-    const mockPSGCData = useMemo(() => [
-      { code: '137401001', name: 'Barangay Bagong Silang, Caloocan City' },
-      { code: '137402001', name: 'Barangay Baesa, Quezon City' },
-      { code: '137403001', name: 'Barangay Bangkal, Makati City' },
-    ], []);
-    
-    const mockPSOCData = useMemo(() => [
-      { code: '1111', title: 'Chief Executives', description: 'Leadership roles' },
-      { code: '2111', title: 'Physicists', description: 'Physical sciences' },
-      { code: '3111', title: 'Science Technicians', description: 'Laboratory support' },
-    ], []);
-    
-    const handlePSGCSearch = useCallback((query) => {
+    const mockPSGCData = useMemo(
+      () => [
+        { code: '137401001', name: 'Barangay Bagong Silang, Caloocan City' },
+        { code: '137402001', name: 'Barangay Baesa, Quezon City' },
+        { code: '137403001', name: 'Barangay Bangkal, Makati City' },
+      ],
+      []
+    );
+
+    const mockPSOCData = useMemo(
+      () => [
+        { code: '1111', title: 'Chief Executives', description: 'Leadership roles' },
+        { code: '2111', title: 'Physicists', description: 'Physical sciences' },
+        { code: '3111', title: 'Science Technicians', description: 'Laboratory support' },
+      ],
+      []
+    );
+
+    const handlePSGCSearch = useCallback(query => {
       // Clear existing timeout
       if (psgcTimeoutRef.current) {
         clearTimeout(psgcTimeoutRef.current);
       }
-      
+
       if (query.length < 2) {
         setPsgcResults([]);
         setPsgcLoading(false);
         return;
       }
-      
+
       setPsgcLoading(true);
       psgcTimeoutRef.current = setTimeout(() => {
-        const filtered = mockPSGCData.filter(item =>
-          item.name.toLowerCase().includes(query.toLowerCase())
-        ).map(item => ({
-          value: item.code,
-          label: item.name,
-          description: `Code: ${item.code}`
-        }));
+        const filtered = mockPSGCData
+          .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
+          .map(item => ({
+            value: item.code,
+            label: item.name,
+            description: `Code: ${item.code}`,
+          }));
         setPsgcResults(filtered);
         setPsgcLoading(false);
         psgcTimeoutRef.current = null;
       }, 300);
     }, []); // Empty dependency array - mockPSGCData is stable from useMemo
-    
-    const handlePSOCSearch = useCallback((query) => {
+
+    const handlePSOCSearch = useCallback(query => {
       // Clear existing timeout
       if (psocTimeoutRef.current) {
         clearTimeout(psocTimeoutRef.current);
       }
-      
+
       if (query.length < 2) {
         setPsocResults([]);
         setPsocLoading(false);
         return;
       }
-      
+
       setPsocLoading(true);
       psocTimeoutRef.current = setTimeout(() => {
-        const filtered = mockPSOCData.filter(item =>
-          item.title.toLowerCase().includes(query.toLowerCase())
-        ).map(item => ({
-          value: item.code,
-          label: item.title,
-          description: `${item.code} - ${item.description}`
-        }));
-        
+        const filtered = mockPSOCData
+          .filter(item => item.title.toLowerCase().includes(query.toLowerCase()))
+          .map(item => ({
+            value: item.code,
+            label: item.title,
+            description: `${item.code} - ${item.description}`,
+          }));
+
         setPsocResults(filtered);
         setPsocLoading(false);
         psocTimeoutRef.current = null;
       }, 350);
     }, []); // Empty dependency array - mockPSOCData is stable from useMemo
-    
+
     // Cleanup timeouts on unmount
     useEffect(() => {
       return () => {
@@ -638,12 +700,12 @@ export const APIComparison: Story = {
         }
       };
     }, []);
-    
+
     return (
-      <div className="space-y-6 max-w-2xl">
+      <div className="max-w-2xl space-y-6">
         <h3 className="text-lg font-semibold">API Pattern Comparison</h3>
-        
-        <div className="grid md:grid-cols-2 gap-6">
+
+        <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
               PSGC Geographic Search
@@ -653,14 +715,12 @@ export const APIComparison: Story = {
               onSearch={handlePSGCSearch}
               loading={psgcLoading}
               value={psgcValue}
-              onSelect={(option) => setPsgcValue(option?.value || '')}
+              onSelect={option => setPsgcValue(option?.value || '')}
               placeholder="Search barangay..."
             />
-            <p className="text-xs text-gray-500">
-              PSGC Code: {psgcValue || 'None'}
-            </p>
+            <p className="text-xs text-gray-500">PSGC Code: {psgcValue || 'None'}</p>
           </div>
-          
+
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
               PSOC Occupation Search
@@ -670,22 +730,24 @@ export const APIComparison: Story = {
               onSearch={handlePSOCSearch}
               loading={psocLoading}
               value={psocValue}
-              onSelect={(option) => setPsocValue(option?.value || '')}
+              onSelect={option => setPsocValue(option?.value || '')}
               placeholder="Search occupation..."
             />
-            <p className="text-xs text-gray-500">
-              PSOC Code: {psocValue || 'None'}
-            </p>
+            <p className="text-xs text-gray-500">PSOC Code: {psocValue || 'None'}</p>
           </div>
         </div>
-        
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h4 className="font-medium mb-2">Selected Values:</h4>
+
+        <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <h4 className="mb-2 font-medium">Selected Values:</h4>
           <pre className="text-sm">
-{JSON.stringify({
-  psgcCode: psgcValue,
-  psocCode: psocValue
-}, null, 2)}
+            {JSON.stringify(
+              {
+                psgcCode: psgcValue,
+                psocCode: psocValue,
+              },
+              null,
+              2
+            )}
           </pre>
         </div>
       </div>
@@ -694,7 +756,8 @@ export const APIComparison: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Side-by-side comparison showing Select component with both PSGC and PSOC API patterns. Demonstrates consistent UX across different data sources.',
+        story:
+          'Side-by-side comparison showing Select component with both PSGC and PSOC API patterns. Demonstrates consistent UX across different data sources.',
       },
     },
   },
@@ -705,7 +768,7 @@ export const UnauthenticatedDemo: Story = {
   decorators: [withUnauthenticatedSupabase],
   render: () => {
     const [value, setValue] = useState('');
-    
+
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -714,15 +777,16 @@ export const UnauthenticatedDemo: Story = {
         <Select
           enumData={SEX_OPTIONS}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="No authentication required..."
         />
         <p className="text-sm text-gray-500">
           Selected: {value || 'None'} • Using unauthenticated mock context
         </p>
-        <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+        <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-800 dark:bg-yellow-900/20">
           <p className="text-sm text-yellow-600 dark:text-yellow-400">
-            <strong>⚠️ Unauthenticated Context:</strong> This story simulates components that work without authentication.
+            <strong>⚠️ Unauthenticated Context:</strong> This story simulates components that work
+            without authentication.
           </p>
         </div>
       </div>
@@ -731,7 +795,8 @@ export const UnauthenticatedDemo: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates components using unauthenticated context with mock Supabase decorators.',
+        story:
+          'Demonstrates components using unauthenticated context with mock Supabase decorators.',
       },
     },
   },
@@ -744,31 +809,34 @@ export const RealPSGCAPI: Story = {
     const [value, setValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    
-    const handleSearch = useCallback((query) => {
+
+    const handleSearch = useCallback(query => {
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
-      
+
       setLoading(true);
-      
+
       // Simulate API delay with mock data
       setTimeout(() => {
-        const filtered = mockPSGCData.filter(item =>
-          item.name.toLowerCase().includes(query.toLowerCase()) ||
-          item.full_address.toLowerCase().includes(query.toLowerCase())
-        ).map(item => ({
-          value: item.code,
-          label: item.full_address,
-          description: `Code: ${item.code} | Level: ${item.level} | 🔐 Mock Auth Context`
-        }));
-        
+        const filtered = mockPSGCData
+          .filter(
+            item =>
+              item.name.toLowerCase().includes(query.toLowerCase()) ||
+              item.full_address.toLowerCase().includes(query.toLowerCase())
+          )
+          .map(item => ({
+            value: item.code,
+            label: item.full_address,
+            description: `Code: ${item.code} | Level: ${item.level} | 🔐 Mock Auth Context`,
+          }));
+
         setSearchResults(filtered);
         setLoading(false);
       }, 400);
     }, []);
-    
+
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -779,16 +847,17 @@ export const RealPSGCAPI: Story = {
           onSearch={handleSearch}
           loading={loading}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Search Philippine locations..."
           searchable={true}
         />
         <p className="text-sm text-gray-500">
           Selected PSGC Code: {value || 'None'} • Using mock Supabase authentication context
         </p>
-        <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+        <div className="rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-900/20">
           <p className="text-sm text-green-600 dark:text-green-400">
-            <strong>✅ Mock Authentication Active:</strong> This story uses Storybook decorators to provide authenticated context.
+            <strong>✅ Mock Authentication Active:</strong> This story uses Storybook decorators to
+            provide authenticated context.
           </p>
         </div>
       </div>
@@ -823,31 +892,34 @@ export const RealPSOCAPI: Story = {
     const [value, setValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
-    
-    const handleSearch = useCallback((query) => {
+
+    const handleSearch = useCallback(query => {
       if (query.length < 2) {
         setSearchResults([]);
         return;
       }
-      
+
       setLoading(true);
-      
+
       // Simulate API delay with mock data
       setTimeout(() => {
-        const filtered = mockPSOCData.filter(item =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.hierarchy.toLowerCase().includes(query.toLowerCase())
-        ).map(item => ({
-          value: item.code,
-          label: item.title,
-          description: `${item.code} - ${item.level} | ${item.hierarchy} | 🔐 Mock Auth Context`
-        }));
-        
+        const filtered = mockPSOCData
+          .filter(
+            item =>
+              item.title.toLowerCase().includes(query.toLowerCase()) ||
+              item.hierarchy.toLowerCase().includes(query.toLowerCase())
+          )
+          .map(item => ({
+            value: item.code,
+            label: item.title,
+            description: `${item.code} - ${item.level} | ${item.hierarchy} | 🔐 Mock Auth Context`,
+          }));
+
         setSearchResults(filtered);
         setLoading(false);
       }, 350);
     }, []);
-    
+
     return (
       <div className="space-y-2">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -858,16 +930,17 @@ export const RealPSOCAPI: Story = {
           onSearch={handleSearch}
           loading={loading}
           value={value}
-          onSelect={(option) => setValue(option?.value || '')}
+          onSelect={option => setValue(option?.value || '')}
           placeholder="Search Philippine occupations..."
           searchable={true}
         />
         <p className="text-sm text-gray-500">
           Selected PSOC Code: {value || 'None'} • Using mock Supabase authentication context
         </p>
-        <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+        <div className="rounded-md border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-900/20">
           <p className="text-sm text-green-600 dark:text-green-400">
-            <strong>✅ Mock Authentication Active:</strong> This story simulates authenticated API calls with consistent UX patterns.
+            <strong>✅ Mock Authentication Active:</strong> This story simulates authenticated API
+            calls with consistent UX patterns.
           </p>
         </div>
       </div>
@@ -901,26 +974,32 @@ export const APIImplementationGuide: Story = {
     return (
       <div className="max-w-4xl space-y-6">
         <h3 className="text-xl font-bold">API Integration Implementation Guide</h3>
-        
-        <div className="grid md:grid-cols-2 gap-6">
+
+        <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-blue-600">1. PSGC API Setup</h4>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h5 className="font-medium mb-2">Required API Endpoint:</h5>
-              <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+              <h5 className="mb-2 font-medium">Required API Endpoint:</h5>
+              <code className="rounded bg-gray-200 px-2 py-1 text-sm dark:bg-gray-700">
                 GET /api/psgc/search
               </code>
-              
-              <h5 className="font-medium mb-2 mt-4">Query Parameters:</h5>
-              <ul className="text-sm space-y-1">
-                <li>• <code>q</code> - Search query string</li>
-                <li>• <code>limit</code> - Maximum results (optional, default: 20)</li>
-                <li>• <code>levels</code> - Geographic levels: region,province,city,barangay</li>
+
+              <h5 className="mt-4 mb-2 font-medium">Query Parameters:</h5>
+              <ul className="space-y-1 text-sm">
+                <li>
+                  • <code>q</code> - Search query string
+                </li>
+                <li>
+                  • <code>limit</code> - Maximum results (optional, default: 20)
+                </li>
+                <li>
+                  • <code>levels</code> - Geographic levels: region,province,city,barangay
+                </li>
               </ul>
-              
-              <h5 className="font-medium mb-2 mt-4">Response Format:</h5>
-              <pre className="text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded overflow-x-auto">
-{`{
+
+              <h5 className="mt-4 mb-2 font-medium">Response Format:</h5>
+              <pre className="overflow-x-auto rounded bg-gray-200 p-2 text-xs dark:bg-gray-700">
+                {`{
   "data": [
     {
       "code": "137401001",
@@ -938,25 +1017,31 @@ export const APIImplementationGuide: Story = {
               </pre>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-green-600">2. PSOC API Setup</h4>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-              <h5 className="font-medium mb-2">Required API Endpoint:</h5>
-              <code className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+            <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+              <h5 className="mb-2 font-medium">Required API Endpoint:</h5>
+              <code className="rounded bg-gray-200 px-2 py-1 text-sm dark:bg-gray-700">
                 GET /api/psoc/search
               </code>
-              
-              <h5 className="font-medium mb-2 mt-4">Query Parameters:</h5>
-              <ul className="text-sm space-y-1">
-                <li>• <code>q</code> - Search query string</li>
-                <li>• <code>limit</code> - Maximum results (optional, default: 20)</li>
-                <li>• <code>levels</code> - Occupation levels: major_group,unit_group,occupation</li>
+
+              <h5 className="mt-4 mb-2 font-medium">Query Parameters:</h5>
+              <ul className="space-y-1 text-sm">
+                <li>
+                  • <code>q</code> - Search query string
+                </li>
+                <li>
+                  • <code>limit</code> - Maximum results (optional, default: 20)
+                </li>
+                <li>
+                  • <code>levels</code> - Occupation levels: major_group,unit_group,occupation
+                </li>
               </ul>
-              
-              <h5 className="font-medium mb-2 mt-4">Response Format:</h5>
-              <pre className="text-xs bg-gray-200 dark:bg-gray-700 p-2 rounded overflow-x-auto">
-{`{
+
+              <h5 className="mt-4 mb-2 font-medium">Response Format:</h5>
+              <pre className="overflow-x-auto rounded bg-gray-200 p-2 text-xs dark:bg-gray-700">
+                {`{
   "data": [
     {
       "code": "1111",
@@ -972,28 +1057,37 @@ export const APIImplementationGuide: Story = {
             </div>
           </div>
         </div>
-        
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">🔧 Next.js API Routes Implementation</h4>
+
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
+          <h4 className="mb-2 font-medium text-blue-800 dark:text-blue-200">
+            🔧 Next.js API Routes Implementation
+          </h4>
           <p className="text-sm text-blue-700 dark:text-blue-300">
             Create the API endpoints in your Next.js application:
           </p>
-          <ul className="text-sm text-blue-700 dark:text-blue-300 mt-2 space-y-1">
-            <li>• <code>src/app/api/psgc/search/route.ts</code> - PSGC search endpoint</li>
-            <li>• <code>src/app/api/psoc/search/route.ts</code> - PSOC search endpoint</li>
+          <ul className="mt-2 space-y-1 text-sm text-blue-700 dark:text-blue-300">
+            <li>
+              • <code>src/app/api/psgc/search/route.ts</code> - PSGC search endpoint
+            </li>
+            <li>
+              • <code>src/app/api/psoc/search/route.ts</code> - PSOC search endpoint
+            </li>
             <li>• Connect to your PostgreSQL database with PSGC/PSOC tables</li>
             <li>• Implement proper error handling and validation</li>
             <li>• Add rate limiting and caching for production use</li>
           </ul>
         </div>
 
-        <div className="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-          <h4 className="font-medium text-purple-800 dark:text-purple-200 mb-2">📖 Storybook API Proxy Setup (Optional)</h4>
+        <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-900/20">
+          <h4 className="mb-2 font-medium text-purple-800 dark:text-purple-200">
+            📖 Storybook API Proxy Setup (Optional)
+          </h4>
           <p className="text-sm text-purple-700 dark:text-purple-300">
-            To connect Storybook stories to real APIs, configure proxy in <code>.storybook/main.ts</code>:
+            To connect Storybook stories to real APIs, configure proxy in{' '}
+            <code>.storybook/main.ts</code>:
           </p>
-          <pre className="text-xs bg-purple-100 dark:bg-purple-900/40 p-2 rounded mt-2 overflow-x-auto">
-{`webpackFinal: async (config) => {
+          <pre className="mt-2 overflow-x-auto rounded bg-purple-100 p-2 text-xs dark:bg-purple-900/40">
+            {`webpackFinal: async (config) => {
   config.devServer = {
     ...config.devServer,
     proxy: [{
@@ -1008,15 +1102,18 @@ export const APIImplementationGuide: Story = {
   return config;
 }`}
           </pre>
-          <p className="text-xs text-purple-600 dark:text-purple-400 mt-2">
-            Note: Stories will show mock data if proxy isn't configured, demonstrating the same API patterns.
+          <p className="mt-2 text-xs text-purple-600 dark:text-purple-400">
+            Note: Stories will show mock data if proxy isn't configured, demonstrating the same API
+            patterns.
           </p>
         </div>
-        
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <h4 className="font-medium text-green-800 dark:text-green-200 mb-2">✨ Component Usage</h4>
-          <pre className="text-sm text-green-700 dark:text-green-300 mt-2">
-{`// Real API integration with error handling
+
+        <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <h4 className="mb-2 font-medium text-green-800 dark:text-green-200">
+            ✨ Component Usage
+          </h4>
+          <pre className="mt-2 text-sm text-green-700 dark:text-green-300">
+            {`// Real API integration with error handling
 const [results, setResults] = useState([]);
 const [loading, setLoading] = useState(false);
 
@@ -1054,7 +1151,8 @@ const handleSearch = useCallback(async (query) => {
   parameters: {
     docs: {
       description: {
-        story: 'Complete implementation guide for integrating the Select component with real PSGC and PSOC APIs.',
+        story:
+          'Complete implementation guide for integrating the Select component with real PSGC and PSOC APIs.',
       },
     },
   },

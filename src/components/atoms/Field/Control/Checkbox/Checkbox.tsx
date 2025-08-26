@@ -1,8 +1,10 @@
 'use client';
 
-import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
+
 import { cn } from '@/lib';
+
 import { TitleDescription } from '../TitleDescription';
 
 const checkboxVariants = cva(
@@ -184,9 +186,7 @@ export const CheckboxGroup = ({
   errorMessage,
 }: CheckboxGroupProps) => {
   const handleChange = (checked: boolean, itemValue: string) => {
-    const newValue = checked
-      ? [...value, itemValue]
-      : value.filter(v => v !== itemValue);
+    const newValue = checked ? [...value, itemValue] : value.filter(v => v !== itemValue);
     onChange?.(newValue);
   };
 

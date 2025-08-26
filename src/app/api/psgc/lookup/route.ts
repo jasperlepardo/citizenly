@@ -1,28 +1,27 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createPublicSupabaseClient } from '@/lib/data/client-factory';
-import { PSGCSearchResponse, PSGCProvinceWithRegion, PSGCCityWithProvince } from '@/types/database';
-import { validatePsgcCode, createValidationErrorResponse } from '@/lib/validation/api-validators';
 // Force rebuild - fixed switch case scoping issue (v2)
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    
-    const validation = validatePsgcCode(searchParams);
-    if (!validation.success) {
-      return NextResponse.json(createValidationErrorResponse(validation.error.issues), { status: 400 });
+    const code = searchParams.get('code');
+
+    if (!code || code.trim().length < 6) {
+      return NextResponse.json({ error: 'Valid PSGC code is required' }, { status: 400 });
     }
 
-    const { code } = validation.data;
-
-    // Use public client for geographic data lookup
-    const supabase = createPublicSupabaseClient();
+    // Use service role client to bypass RLS for geographic data
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     const lookupCode = code.trim();
-    
+
     // Determine level based on code length and structure
     let level: string;
-    let result: PSGCSearchResponse | null = null;
+    let result: any = null;
 
     if (lookupCode.length === 2) {
       level = 'region';
@@ -55,7 +54,7 @@ export async function GET(request: NextRequest) {
           level: 'region',
           region_code: regionData.code,
           region_name: regionData.name,
-          full_address: regionData.name
+          full_address: regionData.name,
         };
         break;
       }
@@ -63,12 +62,14 @@ export async function GET(request: NextRequest) {
       case 'province': {
         const { data: provinceData, error: provinceError } = await supabase
           .from('psgc_provinces')
-          .select(`
+          .select(
+            `
             code,
             name,
             region_code,
             psgc_regions (code, name)
-          `)
+          `
+          )
           .eq('code', lookupCode)
           .single();
 
@@ -76,8 +77,15 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'Province not found' }, { status: 404 });
         }
 
-        const province = provinceData as PSGCProvinceWithRegion;
-        const region = Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions;
+        const province = provinceData as {
+          code: string;
+          name: string;
+          region_code: string;
+          psgc_regions: { code: string; name: string }[] | null;
+        };
+        const region = Array.isArray(province.psgc_regions)
+          ? province.psgc_regions[0]
+          : province.psgc_regions;
         result = {
           code: province.code,
           name: province.name,
@@ -86,7 +94,7 @@ export async function GET(request: NextRequest) {
           province_name: province.name,
           region_code: region?.code,
           region_name: region?.name,
-          full_address: [province.name, region?.name].filter(Boolean).join(', ')
+          full_address: [province.name, region?.name].filter(Boolean).join(', '),
         };
         break;
       }
@@ -94,7 +102,8 @@ export async function GET(request: NextRequest) {
       case 'city': {
         const { data: cityData, error: cityError } = await supabase
           .from('psgc_cities_municipalities')
-          .select(`
+          .select(
+            `
             code,
             name,
             type,
@@ -106,7 +115,8 @@ export async function GET(request: NextRequest) {
               region_code,
               psgc_regions (code, name)
             )
-          `)
+          `
+          )
           .eq('code', lookupCode)
           .single();
 
@@ -114,9 +124,29 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({ error: 'City/Municipality not found' }, { status: 404 });
         }
 
-        const city = cityData as PSGCCityWithProvince;
-        const cityProvince = Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces;
-        const cityRegion = cityProvince?.psgc_regions ? (Array.isArray(cityProvince.psgc_regions) ? cityProvince.psgc_regions[0] : cityProvince.psgc_regions) : null;
+        const city = cityData as {
+          code: string;
+          name: string;
+          type: string;
+          is_independent: boolean;
+          province_code: string;
+          psgc_provinces:
+            | {
+                code: string;
+                name: string;
+                region_code: string;
+                psgc_regions: { code: string; name: string }[] | null;
+              }[]
+            | null;
+        };
+        const cityProvince = Array.isArray(city.psgc_provinces)
+          ? city.psgc_provinces[0]
+          : city.psgc_provinces;
+        const cityRegion = cityProvince?.psgc_regions
+          ? Array.isArray(cityProvince.psgc_regions)
+            ? cityProvince.psgc_regions[0]
+            : cityProvince.psgc_regions
+          : null;
         result = {
           code: city.code,
           name: city.name,
@@ -129,7 +159,9 @@ export async function GET(request: NextRequest) {
           province_name: cityProvince?.name,
           region_code: cityRegion?.code,
           region_name: cityRegion?.name,
-          full_address: [city.name, cityProvince?.name, cityRegion?.name].filter(Boolean).join(', ')
+          full_address: [city.name, cityProvince?.name, cityRegion?.name]
+            .filter(Boolean)
+            .join(', '),
         };
         break;
       }
@@ -156,16 +188,16 @@ export async function GET(request: NextRequest) {
         // Then get the province data separately
         let provinceData = null;
         let regionData = null;
-        
+
         if (cityData && !cityError) {
           const { data: provData, error: provError } = await supabase
             .from('psgc_provinces')
             .select('code, name, region_code')
             .eq('code', cityData.province_code)
             .single();
-          
+
           provinceData = provData;
-          
+
           // Finally get the region data
           if (provData && !provError) {
             const { data: regData, error: regError } = await supabase
@@ -173,7 +205,7 @@ export async function GET(request: NextRequest) {
               .select('code, name')
               .eq('code', provData.region_code)
               .single();
-            
+
             regionData = regData;
           }
         }
@@ -191,7 +223,9 @@ export async function GET(request: NextRequest) {
           province_name: provinceData?.name,
           region_code: regionData?.code,
           region_name: regionData?.name,
-          full_address: [barangayData.name, cityData?.name, provinceData?.name, regionData?.name].filter(Boolean).join(', ')
+          full_address: [barangayData.name, cityData?.name, provinceData?.name, regionData?.name]
+            .filter(Boolean)
+            .join(', '),
         };
         break;
       }
@@ -202,7 +236,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       data: result,
-      level: level
+      level: level,
     });
   } catch (error) {
     console.error('PSGC lookup API error:', error);

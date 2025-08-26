@@ -301,7 +301,7 @@ export function sanitizeJsonInput(input: string): string {
 /**
  * Deep sanitize object (recursively sanitize all string values)
  */
-export function sanitizeObject<T extends Record<string, unknown>>(
+export function sanitizeObject<T extends Record<string, any>>(
   obj: T,
   options: SanitizationOptions = {}
 ): T {
@@ -313,9 +313,9 @@ export function sanitizeObject<T extends Record<string, unknown>>(
 
   for (const [key, value] of Object.entries(sanitized)) {
     if (typeof value === 'string') {
-      (sanitized as Record<string, unknown>)[key] = sanitizeInput(value, options);
+      (sanitized as any)[key] = sanitizeInput(value, options);
     } else if (Array.isArray(value)) {
-      (sanitized as Record<string, unknown>)[key] = value.map(item =>
+      (sanitized as any)[key] = value.map(item =>
         typeof item === 'string' ? sanitizeInput(item, options) : item
       );
     } else if (value && typeof value === 'object') {

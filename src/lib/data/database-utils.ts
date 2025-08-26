@@ -171,13 +171,15 @@ export async function searchAddresses(
 ): Promise<AddressHierarchy[]> {
   try {
     // Use API endpoint to avoid complex nested queries
-    const response = await fetch(`/api/psgc/search?q=${encodeURIComponent(searchTerm)}&levels=barangay&limit=${limit}`);
-    
+    const response = await fetch(
+      `/api/psgc/search?q=${encodeURIComponent(searchTerm)}&levels=barangay&limit=${limit}`
+    );
+
     if (!response.ok) {
       console.error('Error searching addresses:', response.status);
       return [];
     }
-    
+
     const result = await response.json();
     const data = result.data || [];
     const error = result.error;
@@ -204,12 +206,16 @@ export async function searchAddresses(
         is_independent: false, // Default value
         barangay_code: barangay.code || barangay.barangay_code,
         barangay_name: barangay.name || barangay.barangay_name,
-        full_address: barangay.full_address || [
-          barangay.name || barangay.barangay_name, 
-          barangay.city_name, 
-          barangay.province_name, 
-          barangay.region_name
-        ].filter(Boolean).join(', '),
+        full_address:
+          barangay.full_address ||
+          [
+            barangay.name || barangay.barangay_name,
+            barangay.city_name,
+            barangay.province_name,
+            barangay.region_name,
+          ]
+            .filter(Boolean)
+            .join(', '),
       };
     });
 

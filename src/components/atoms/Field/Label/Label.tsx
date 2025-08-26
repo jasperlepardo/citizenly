@@ -35,7 +35,7 @@ export interface LabelProps {
 
 const sizeClasses = {
   xs: 'text-xs leading-4',
-  sm: 'text-sm leading-5', 
+  sm: 'text-sm leading-5',
   md: 'text-base leading-6',
   lg: 'text-lg leading-7',
   xl: 'text-xl leading-8',
@@ -43,7 +43,7 @@ const sizeClasses = {
 
 const variantClasses = {
   default: 'text-gray-600 dark:text-gray-400',
-  muted: 'text-gray-500 dark:text-gray-400', 
+  muted: 'text-gray-500 dark:text-gray-400',
   error: 'text-red-600 dark:text-red-400',
   success: 'text-green-600 dark:text-green-400',
 };
@@ -79,7 +79,7 @@ export const Label: React.FC<LabelProps> = ({
 
   const effectiveSecondarySize = secondarySize || getDefaultSecondarySize(size);
   const effectiveSecondaryVariant = secondaryVariant || 'muted';
-  
+
   const labelClasses = `
     block
     font-medium
@@ -122,7 +122,7 @@ export const Label: React.FC<LabelProps> = ({
       <span className={`inline-flex items-baseline ${mainTextClasses}`}>
         {children}
         {required && showRequiredIndicator && (
-          <abbr 
+          <abbr
             className={`${requiredIndicatorClasses} no-underline`}
             title="required field"
             aria-label="This field is required"
@@ -133,19 +133,15 @@ export const Label: React.FC<LabelProps> = ({
       </span>
 
       {/* Secondary text on new line */}
-      {secondaryText && (
-        <span className={secondaryTextClasses}>
-          {secondaryText}
-        </span>
-      )}
-      
+      {secondaryText && <span className={secondaryTextClasses}>{secondaryText}</span>}
+
       {/* Screen reader text for required fields when indicator is hidden */}
       {required && !showRequiredIndicator && (
         <span className="sr-only" aria-hidden="false">
           (This field is required)
         </span>
       )}
-      
+
       {/* Help text for tooltips - referenced by aria-describedby on the input */}
       {helpText && htmlFor && (
         <span id={`${htmlFor}-help`} className="sr-only" role="note" aria-live="polite">

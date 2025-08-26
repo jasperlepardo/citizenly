@@ -10,7 +10,12 @@ const ArrowLeftIcon = () => (
 
 const ExternalLinkIcon = () => (
   <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+    />
   </svg>
 );
 
@@ -22,8 +27,18 @@ const PlusIcon = () => (
 
 const SettingsIcon = () => (
   <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+    />
   </svg>
 );
 
@@ -160,20 +175,40 @@ export const AllVariants: Story = {
     <div className="flex flex-col gap-4 p-4">
       <h3 className="text-lg font-semibold">Button-style Variants</h3>
       <div className="flex flex-wrap gap-2">
-        <Link href="#" variant="primary">Primary</Link>
-        <Link href="#" variant="primary-outline">Primary Outline</Link>
-        <Link href="#" variant="secondary">Secondary</Link>
-        <Link href="#" variant="success">Success</Link>
-        <Link href="#" variant="warning">Warning</Link>
-        <Link href="#" variant="danger">Danger</Link>
-        <Link href="#" variant="zinc">Neutral</Link>
-        <Link href="#" variant="ghost">Ghost</Link>
+        <Link href="#" variant="primary">
+          Primary
+        </Link>
+        <Link href="#" variant="primary-outline">
+          Primary Outline
+        </Link>
+        <Link href="#" variant="secondary">
+          Secondary
+        </Link>
+        <Link href="#" variant="success">
+          Success
+        </Link>
+        <Link href="#" variant="warning">
+          Warning
+        </Link>
+        <Link href="#" variant="danger">
+          Danger
+        </Link>
+        <Link href="#" variant="zinc">
+          Neutral
+        </Link>
+        <Link href="#" variant="ghost">
+          Ghost
+        </Link>
       </div>
-      
-      <h3 className="text-lg font-semibold mt-4">Link-style Variants</h3>
+
+      <h3 className="mt-4 text-lg font-semibold">Link-style Variants</h3>
       <div className="flex flex-wrap gap-4">
-        <Link href="#" variant="link">Traditional Link</Link>
-        <Link href="#" variant="link-subtle">Subtle Link</Link>
+        <Link href="#" variant="link">
+          Traditional Link
+        </Link>
+        <Link href="#" variant="link-subtle">
+          Subtle Link
+        </Link>
       </div>
     </div>
   ),
@@ -190,10 +225,18 @@ export const AllVariants: Story = {
 export const Sizes: Story = {
   render: () => (
     <div className="flex items-center gap-4">
-      <Link href="#" variant="primary" size="sm">Small</Link>
-      <Link href="#" variant="primary" size="md">Medium</Link>
-      <Link href="#" variant="primary" size="regular">Regular</Link>
-      <Link href="#" variant="primary" size="lg">Large</Link>
+      <Link href="#" variant="primary" size="sm">
+        Small
+      </Link>
+      <Link href="#" variant="primary" size="md">
+        Medium
+      </Link>
+      <Link href="#" variant="primary" size="regular">
+        Regular
+      </Link>
+      <Link href="#" variant="primary" size="lg">
+        Large
+      </Link>
     </div>
   ),
   parameters: {
@@ -271,14 +314,20 @@ export const NavigationExamples: Story = {
   render: () => (
     <div className="flex flex-col gap-4 p-4">
       <h3 className="text-lg font-semibold">Common Navigation Patterns</h3>
-      
+
       <div className="flex flex-col gap-2">
-        <Link href="/dashboard" variant="ghost">Dashboard</Link>
-        <Link href="/residents" variant="ghost">Residents</Link>
-        <Link href="/households" variant="ghost">Households</Link>
+        <Link href="/dashboard" variant="ghost">
+          Dashboard
+        </Link>
+        <Link href="/residents" variant="ghost">
+          Residents
+        </Link>
+        <Link href="/households" variant="ghost">
+          Households
+        </Link>
       </div>
-      
-      <div className="flex items-center gap-2 mt-4">
+
+      <div className="mt-4 flex items-center gap-2">
         <Link href="/residents" variant="zinc-outline" size="sm" leftIcon={<ArrowLeftIcon />}>
           Back to Residents
         </Link>
@@ -319,9 +368,15 @@ export const InteractiveStates: Story = {
     <div className="flex flex-col gap-4 p-4">
       <h3 className="text-lg font-semibold">Interactive States</h3>
       <div className="flex flex-col gap-2">
-        <Link href="#" variant="primary">Normal State</Link>
-        <Link href="#" variant="primary" className="hover:bg-blue-500">Hover State (hover me)</Link>
-        <Link href="#" variant="primary" className="focus:ring-2 focus:ring-blue-600">Focus State (tab to me)</Link>
+        <Link href="#" variant="primary">
+          Normal State
+        </Link>
+        <Link href="#" variant="primary" className="hover:bg-blue-500">
+          Hover State (hover me)
+        </Link>
+        <Link href="#" variant="primary" className="focus:ring-2 focus:ring-blue-600">
+          Focus State (tab to me)
+        </Link>
       </div>
     </div>
   ),
@@ -337,12 +392,20 @@ export const InteractiveStates: Story = {
 // Dark Mode Preview
 export const DarkMode: Story = {
   render: () => (
-    <div className="dark bg-zinc-900 p-4 rounded-lg">
+    <div className="dark rounded-lg bg-zinc-900 p-4">
       <div className="flex flex-col gap-4">
-        <Link href="#" variant="primary">Primary Link</Link>
-        <Link href="#" variant="zinc-outline">Neutral Outline</Link>
-        <Link href="#" variant="link">Traditional Link</Link>
-        <Link href="#" variant="success">Success Link</Link>
+        <Link href="#" variant="primary">
+          Primary Link
+        </Link>
+        <Link href="#" variant="zinc-outline">
+          Neutral Outline
+        </Link>
+        <Link href="#" variant="link">
+          Traditional Link
+        </Link>
+        <Link href="#" variant="success">
+          Success Link
+        </Link>
       </div>
     </div>
   ),

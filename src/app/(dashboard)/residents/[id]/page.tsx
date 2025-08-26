@@ -40,7 +40,7 @@ function ResidentDetailContent() {
   const [formMode, setFormMode] = useState<FormMode>('view');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [_currentFormData, setCurrentFormData] = useState<ResidentFormState | null>(null);
+  const [currentFormData, setCurrentFormData] = useState<ResidentFormState | null>(null);
 
   useEffect(() => {
     const loadResidentDetails = async () => {
@@ -388,12 +388,6 @@ function ResidentDetailContent() {
       telephone_number: resident.telephone_number || '',
       mobile_number: resident.mobile_number || '',
       household_code: resident.household_code || '',
-
-      // Address Information (PSGC Codes)
-      region_code: resident.region_code || '',
-      province_code: resident.province_code || '',
-      city_municipality_code: resident.city_municipality_code || '',
-      barangay_code: resident.barangay_code || '',
 
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',

@@ -1,9 +1,13 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const provinceCode = searchParams.get('province');
 
@@ -20,26 +24,19 @@ export async function GET(request: NextRequest) {
 
     const { data: cities, error: citiesError } = await query;
 
-    // Type the cities array properly
-    type CityResult = {
-      code: string;
-      name: string;
-      type: string;
-      province_code: string | null;
-    };
-
     if (citiesError) {
       console.error('Cities query error:', citiesError);
       return NextResponse.json({ error: 'Failed to fetch cities/municipalities' }, { status: 500 });
     }
 
     // Transform data to match SelectField format
-    const options = (cities as CityResult[])?.map((city) => ({
-      value: city.code,
-      label: city.name,
-      province_code: city.province_code,
-      type: city.type,
-    })) || [];
+    const options =
+      cities?.map(city => ({
+        value: city.code,
+        label: city.name,
+        province_code: city.province_code,
+        type: city.type,
+      })) || [];
 
     return NextResponse.json({
       success: true,

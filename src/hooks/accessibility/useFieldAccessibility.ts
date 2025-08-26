@@ -3,6 +3,7 @@
  * Standardizes ARIA patterns and ID generation for form elements
  */
 import { useMemo } from 'react';
+
 import { generateId } from '@/lib/utilities/id-generators';
 
 export interface FieldAccessibilityOptions {
@@ -44,7 +45,7 @@ export interface FieldAccessibilityProps {
 
 /**
  * Hook for standardizing field accessibility patterns
- * 
+ *
  * @example
  * ```tsx
  * function MyInput({ label, error, helperText, required, ...props }) {
@@ -55,7 +56,7 @@ export interface FieldAccessibilityProps {
  *     required,
  *     label
  *   });
- * 
+ *
  *   return (
  *     <div>
  *       <label id={accessibility.ids.label}>
@@ -85,7 +86,7 @@ export function useFieldAccessibility({
   hasError = false,
   hasHelperText = false,
   required = false,
-  label
+  label,
 }: FieldAccessibilityOptions = {}): FieldAccessibilityProps {
   const ids = useMemo(() => {
     const fieldId = baseId || generateId('field');
@@ -99,15 +100,15 @@ export function useFieldAccessibility({
 
   const ariaDescribedBy = useMemo(() => {
     const describedByIds: string[] = [];
-    
+
     if (hasHelperText) {
       describedByIds.push(ids.helper);
     }
-    
+
     if (hasError) {
       describedByIds.push(ids.error);
     }
-    
+
     return describedByIds.length > 0 ? describedByIds.join(' ') : undefined;
   }, [hasHelperText, hasError, ids.helper, ids.error]);
 

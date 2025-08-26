@@ -1,6 +1,6 @@
 /**
  * Error Handling Library Module
- * 
+ *
  * @description Centralized error handling utilities and patterns.
  * Provides reusable error types, utilities, and boundary components separated from UI logic.
  */

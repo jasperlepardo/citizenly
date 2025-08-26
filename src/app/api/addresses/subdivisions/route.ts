@@ -1,7 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
-// This route needs admin access for geographic subdivision data
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -9,16 +12,17 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
 
   try {
-    const supabase = createAdminSupabaseClient();
     let query = supabase
       .from('geo_subdivisions')
-      .select(`
+      .select(
+        `
         id,
         name,
         type,
         barangay_code,
         is_active
-      `)
+      `
+      )
       .eq('is_active', true)
       .order('name');
 
@@ -34,15 +38,6 @@ export async function GET(request: NextRequest) {
 
     const { data: subdivisions, error } = await query.limit(100);
 
-    // Type the subdivisions properly
-    type SubdivisionResult = {
-      id: string;
-      name: string;
-      type: string;
-      barangay_code: string;
-      is_active: boolean;
-    };
-
     if (error) {
       console.error('Error fetching subdivisions:', error);
       return NextResponse.json(
@@ -52,24 +47,21 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = (subdivisions as SubdivisionResult[])?.map((subdivision) => ({
-      value: subdivision.id,
-      label: subdivision.name,
-      barangay_code: subdivision.barangay_code,
-      type: subdivision.type,
-    })) || [];
+    const options =
+      subdivisions?.map(subdivision => ({
+        value: subdivision.id,
+        label: subdivision.name,
+        barangay_code: subdivision.barangay_code,
+        type: subdivision.type,
+      })) || [];
 
     return NextResponse.json({
       success: true,
       data: options,
       count: options.length,
     });
-
   } catch (error) {
     console.error('Unexpected error in subdivisions API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

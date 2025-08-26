@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+
+import { InputField, Button } from '@/components';
 import { useAuth } from '@/contexts';
-import { InputField } from '@/components';
-import { Button } from '@/components';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -88,10 +88,14 @@ export default function LoginForm({
 
   return (
     <div className={`mx-auto w-full max-w-md ${className}`}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-8 shadow-lg">
+      <div className="rounded-lg border border-gray-300 bg-white p-8 shadow-lg dark:border-gray-600 dark:bg-gray-800">
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-2xl font-bold text-gray-600 dark:text-gray-400">Sign In to RBI System</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Records of Barangay Inhabitant System</p>
+          <h1 className="mb-2 text-2xl font-bold text-gray-600 dark:text-gray-400">
+            Sign In to RBI System
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Records of Barangay Inhabitant System
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -114,13 +118,13 @@ export default function LoginForm({
             required
             errorMessage={errors.email}
             inputProps={{
-              id: "email",
-              type: "email",
+              id: 'email',
+              type: 'email',
               value: formData.email,
               onChange: e => handleChange('email', e.target.value),
-              placeholder: "your.email@barangay.gov.ph",
+              placeholder: 'your.email@barangay.gov.ph',
               disabled: isSubmitting,
-              autoComplete: "email",
+              autoComplete: 'email',
               autoFocus: true,
               leftIcon: (
                 <svg
@@ -134,7 +138,7 @@ export default function LoginForm({
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
-              )
+              ),
             }}
           />
 
@@ -144,13 +148,13 @@ export default function LoginForm({
             required
             errorMessage={errors.password}
             inputProps={{
-              id: "password",
-              type: "password",
+              id: 'password',
+              type: 'password',
               value: formData.password,
               onChange: e => handleChange('password', e.target.value),
-              placeholder: "Enter your password",
+              placeholder: 'Enter your password',
               disabled: isSubmitting,
-              autoComplete: "current-password",
+              autoComplete: 'current-password',
               showPasswordToggle: true,
               leftIcon: (
                 <svg
@@ -165,7 +169,7 @@ export default function LoginForm({
                   <circle cx="12" cy="16" r="1"></circle>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-              )
+              ),
             }}
           />
 
@@ -186,11 +190,16 @@ export default function LoginForm({
         <div className="mt-6 space-y-3 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Don&apos;t have an account?{' '}
-            <a href="/signup" className="font-medium text-gray-400 hover:text-gray-300 dark:text-gray-700">
+            <a
+              href="/signup"
+              className="font-medium text-gray-400 hover:text-gray-300 dark:text-gray-700"
+            >
               Create one here
             </a>
           </p>
-          <p className="text-gray-500 dark:text-gray-400 text-xs">Need help? Contact your Barangay Administrator</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Need help? Contact your Barangay Administrator
+          </p>
         </div>
       </div>
     </div>

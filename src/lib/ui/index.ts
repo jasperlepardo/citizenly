@@ -16,10 +16,7 @@ export {
 } from './lazy-components';
 
 // Use withLazyLoading from lazy-loading.tsx as primary implementation
-export {
-  withLazyLoading,
-  preloadComponents,
-} from './lazy-loading';
+export { withLazyLoading, preloadComponents } from './lazy-loading';
 
 // Charts (moved from charts/)
 export * from './chart-transformers';
@@ -38,8 +35,4 @@ export {
   populationPyramidStats,
 } from './population-pyramid';
 
-export type {
-  AgeGroupData,
-  PopulationStats,
-  TooltipData,
-} from './population-pyramid';
+export type { AgeGroupData, PopulationStats, TooltipData } from './population-pyramid';

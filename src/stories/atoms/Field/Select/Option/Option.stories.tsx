@@ -111,8 +111,10 @@ export const SelectedAndFocused: Story = {
 
 export const LongContent: Story = {
   args: {
-    label: 'This is a very long option label that might wrap or be truncated depending on the container width',
-    description: 'This is also a very long description that demonstrates how the option component handles longer text content and maintains proper spacing and alignment.',
+    label:
+      'This is a very long option label that might wrap or be truncated depending on the container width',
+    description:
+      'This is also a very long description that demonstrates how the option component handles longer text content and maintains proper spacing and alignment.',
   },
 };
 
@@ -123,14 +125,19 @@ export const DropdownExample: Story = {
       { label: 'JavaScript', description: 'Dynamic programming language', value: 'js' },
       { label: 'TypeScript', description: 'Typed superset of JavaScript', value: 'ts' },
       { label: 'Python', description: 'Versatile programming language', value: 'py' },
-      { label: 'Java', description: 'Object-oriented programming language', value: 'java', disabled: true },
+      {
+        label: 'Java',
+        description: 'Object-oriented programming language',
+        value: 'java',
+        disabled: true,
+      },
       { label: 'C++', description: 'Systems programming language', value: 'cpp' },
     ];
 
     return (
       <div className="w-80">
-        <h3 className="text-lg font-semibold mb-2">Programming Languages</h3>
-        <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
+        <h3 className="mb-2 text-lg font-semibold">Programming Languages</h3>
+        <div className="max-h-60 overflow-y-auto rounded-md border border-gray-300 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800">
           <div role="listbox" className="py-1">
             {options.map((option, index) => (
               <Option
@@ -138,7 +145,7 @@ export const DropdownExample: Story = {
                 label={option.label}
                 description={option.description}
                 selected={index === 1} // TypeScript selected
-                focused={index === 2}  // Python focused
+                focused={index === 2} // Python focused
                 disabled={option.disabled}
                 onClick={() => console.log('Selected:', option.value)}
               />
@@ -161,29 +168,24 @@ export const DropdownExample: Story = {
 export const CustomContent: Story = {
   render: () => (
     <div className="w-80">
-      <h3 className="text-lg font-semibold mb-2">Custom Option Content</h3>
-      <div className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
+      <h3 className="mb-2 text-lg font-semibold">Custom Option Content</h3>
+      <div className="rounded-md border border-gray-300 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800">
         <div role="listbox" className="py-1">
-          <Option
-            label="Custom Option"
-            onClick={() => console.log('Custom clicked')}
-          >
+          <Option label="Custom Option" onClick={() => console.log('Custom clicked')}>
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">JS</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500">
+                <span className="text-sm font-bold text-white">JS</span>
               </div>
               <div className="flex-1">
-                <div className="font-medium text-sm">JavaScript</div>
+                <div className="text-sm font-medium">JavaScript</div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
                   Most popular web programming language
                 </div>
               </div>
-              <div className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
-                Popular
-              </div>
+              <div className="rounded bg-green-100 px-2 py-1 text-xs text-green-600">Popular</div>
             </div>
           </Option>
-          
+
           <Option
             label="TypeScript"
             description="Adds static typing to JavaScript"

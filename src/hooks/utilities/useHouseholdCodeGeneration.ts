@@ -2,15 +2,15 @@
 
 /**
  * Household Code Generation Hook
- * 
+ *
  * @description Focused hook for generating PSGC-compliant household codes.
  * Extracted from useHouseholdCreation to follow single responsibility principle.
  */
 
 import { useCallback } from 'react';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
-import { logger } from '@/lib';
+import { supabase, logger } from '@/lib';
 
 /**
  * Return type for useHouseholdCodeGeneration hook
@@ -28,7 +28,7 @@ export interface UseHouseholdCodeGenerationReturn {
 
 /**
  * Custom hook for household code generation
- * 
+ *
  * @description Handles the generation of PSGC-compliant household codes
  * following the format: RRPPMMBBB-SSSS-TTTT-HHHH
  */
@@ -68,7 +68,7 @@ export function useHouseholdCodeGeneration(): UseHouseholdCodeGenerationReturn {
 
       // Format: RRPPMMBBB-SSSS-TTTT-HHHH
       const householdCode = `${barangayCode}-0000-0001-${nextSequence.toString().padStart(4, '0')}`;
-      
+
       logger.debug('Generated household code', { householdCode, sequence: nextSequence });
       return householdCode;
     } catch (error) {

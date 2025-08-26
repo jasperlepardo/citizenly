@@ -7,8 +7,9 @@
 
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useFocusTrap, announceToScreenReader } from '@/lib/ui/accessibility';
+
 import { cn } from '@/lib';
+import { useFocusTrap, announceToScreenReader } from '@/lib/ui/accessibility';
 
 interface AccessibleModalProps {
   isOpen: boolean;
@@ -110,7 +111,10 @@ export default function AccessibleModal({
         {/* Header */}
         <div className="flex items-start justify-between border-b border-gray-200 p-4 dark:border-gray-700">
           <div>
-            <h2 id="modal-title" className="text-xl font-semibold text-gray-900 dark:text-white dark:text-black">
+            <h2
+              id="modal-title"
+              className="text-xl font-semibold text-gray-900 dark:text-black dark:text-white"
+            >
               {title}
             </h2>
             {description && (
@@ -122,7 +126,7 @@ export default function AccessibleModal({
           {showCloseButton && (
             <button
               onClick={onClose}
-              className="ml-4 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:text-gray-800"
+              className="ml-4 rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:text-gray-800 dark:hover:bg-gray-700 dark:hover:text-gray-200"
               aria-label="Close dialog"
             >
               <svg

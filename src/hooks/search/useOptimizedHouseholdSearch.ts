@@ -2,16 +2,18 @@
 
 /**
  * Optimized Household Search Hook
- * 
+ *
  * @description Refactored household search hook using common utilities.
  * Eliminates code duplication while maintaining functionality.
  */
 
 import { useCallback, useState } from 'react';
+
 import { useAuth } from '@/contexts';
-import { useGenericSearch } from './useGenericSearch';
-import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
 import { supabase } from '@/lib';
+import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
+
+import { useGenericSearch } from './useGenericSearch';
 
 /**
  * Household search result interface
@@ -58,7 +60,6 @@ export interface UseHouseholdSearchReturn {
   totalCount: number;
 }
 
-
 /**
  * Process households data and add computed fields
  */
@@ -67,11 +68,13 @@ const processHouseholdsData = (householdsData: any[]): HouseholdSearchResult[] =
     id: household.id || household.code,
     code: household.code,
     head_name: household.name || `Household ${household.code}`,
-    address: household.address || searchFormatters.formatAddress([
-      household.house_number,
-      household.geo_streets?.[0]?.name || '',
-      household.geo_subdivisions?.[0]?.name || '',
-    ]),
+    address:
+      household.address ||
+      searchFormatters.formatAddress([
+        household.house_number,
+        household.geo_streets?.[0]?.name || '',
+        household.geo_subdivisions?.[0]?.name || '',
+      ]),
     house_number: household.house_number,
     geo_streets: household.geo_streets,
     geo_subdivisions: household.geo_subdivisions,
@@ -81,7 +84,7 @@ const processHouseholdsData = (householdsData: any[]): HouseholdSearchResult[] =
 
 /**
  * Optimized household search hook
- * 
+ *
  * @description Provides search functionality for households within the user's barangay
  * with proper formatting and error handling.
  */
@@ -91,14 +94,14 @@ export function useOptimizedHouseholdSearch({
   enableCache = true,
 }: UseHouseholdSearchOptions = {}): UseHouseholdSearchReturn {
   const { userProfile, session } = useAuth();
-  
+
   // Additional state for lazy loading
   const [offset, setOffset] = useState(0);
   const [allResults, setAllResults] = useState<HouseholdSearchResult[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  
+
   // Setup caching if enabled
   const { getCachedResult, setCachedResult } = useSearchCache<HouseholdSearchResult>(
     `households-${userProfile?.barangay_code || 'all'}`,
@@ -108,83 +111,96 @@ export function useOptimizedHouseholdSearch({
   /**
    * Household search function with pagination support
    */
-  const searchFunction = useCallback(async (query: string, currentOffset: number = 0, append: boolean = false): Promise<HouseholdSearchResult[]> => {
-    if (!userProfile?.barangay_code || !session?.access_token) {
-      setAllResults([]);
-      setHasMore(false);
-      setTotalCount(0);
-      return [];
-    }
-
-    // Check cache first (only for initial search)
-    if (enableCache && currentOffset === 0) {
-      const cached = getCachedResult(query);
-      if (cached) {
-        setAllResults(cached);
-        setHasMore(false); // Cached results don't have pagination info
-        setTotalCount(cached.length);
-        return cached;
-      }
-    }
-
-    try {
-      // Build API request URL
-      const searchParams = new URLSearchParams({
-        page: Math.floor(currentOffset / limit) + 1 + '', // API expects 1-based page
-        limit: limit.toString(),
-      });
-
-      if (query && query.trim()) {
-        searchParams.set('search', query.trim());
+  const searchFunction = useCallback(
+    async (
+      query: string,
+      currentOffset: number = 0,
+      append: boolean = false
+    ): Promise<HouseholdSearchResult[]> => {
+      if (!userProfile?.barangay_code || !session?.access_token) {
+        setAllResults([]);
+        setHasMore(false);
+        setTotalCount(0);
+        return [];
       }
 
-      const response = await fetch(`/api/households?${searchParams}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const apiResponse = await response.json();
-      
-      // The API response structure: { data, pagination, message, metadata }
-      // No 'success' field - if response.ok is true, the request succeeded
-      
-      const householdsData = apiResponse.data || [];
-      const results = processHouseholdsData(householdsData);
-      
-      // Update pagination state based on API response
-      const { total, page: currentPage, limit: currentLimit } = apiResponse.pagination || {};
-      setTotalCount(total || 0);
-      setHasMore(results.length >= currentLimit && (currentPage * currentLimit) < (total || 0));
-      
-      if (append) {
-        setAllResults(currentAllResults => {
-          const newAllResults = [...currentAllResults, ...results];
-          return newAllResults;
-        });
-        return results;
-      } else {
-        // Replace results (initial search)
-        setAllResults(results);
-        
-        // Cache initial results
-        if (enableCache) {
-          setCachedResult(query, results);
+      // Check cache first (only for initial search)
+      if (enableCache && currentOffset === 0) {
+        const cached = getCachedResult(query);
+        if (cached) {
+          setAllResults(cached);
+          setHasMore(false); // Cached results don't have pagination info
+          setTotalCount(cached.length);
+          return cached;
         }
-        
-        return results;
       }
-    } catch (error) {
-      console.error('Household search API error:', error);
-      throw new Error('Unable to search households. Please try again.');
-    }
-  }, [userProfile?.barangay_code, session?.access_token, enableCache, getCachedResult, setCachedResult]);
+
+      try {
+        // Build API request URL
+        const searchParams = new URLSearchParams({
+          page: Math.floor(currentOffset / limit) + 1 + '', // API expects 1-based page
+          limit: limit.toString(),
+        });
+
+        if (query && query.trim()) {
+          searchParams.set('search', query.trim());
+        }
+
+        const response = await fetch(`/api/households?${searchParams}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const apiResponse = await response.json();
+
+        // The API response structure: { data, pagination, message, metadata }
+        // No 'success' field - if response.ok is true, the request succeeded
+
+        const householdsData = apiResponse.data || [];
+        const results = processHouseholdsData(householdsData);
+
+        // Update pagination state based on API response
+        const { total, page: currentPage, limit: currentLimit } = apiResponse.pagination || {};
+        setTotalCount(total || 0);
+        setHasMore(results.length >= currentLimit && currentPage * currentLimit < (total || 0));
+
+        if (append) {
+          setAllResults(currentAllResults => {
+            const newAllResults = [...currentAllResults, ...results];
+            return newAllResults;
+          });
+          return results;
+        } else {
+          // Replace results (initial search)
+          setAllResults(results);
+
+          // Cache initial results
+          if (enableCache) {
+            setCachedResult(query, results);
+          }
+
+          return results;
+        }
+      } catch (error) {
+        console.error('Household search API error:', error);
+        throw new Error('Unable to search households. Please try again.');
+      }
+    },
+    [
+      userProfile?.barangay_code,
+      session?.access_token,
+      enableCache,
+      getCachedResult,
+      setCachedResult,
+    ]
+  );
 
   // Use generic search hook with modified search function
   const {
@@ -195,7 +211,7 @@ export function useOptimizedHouseholdSearch({
     error,
     clearSearch: originalClearSearch,
     refresh,
-  } = useGenericSearch((q) => searchFunction(q, 0, false), {
+  } = useGenericSearch(q => searchFunction(q, 0, false), {
     debounceMs,
     minQueryLength: 0,
     onError: () => {
@@ -204,12 +220,15 @@ export function useOptimizedHouseholdSearch({
   });
 
   // Enhanced setQuery that resets pagination
-  const setQuery = useCallback((newQuery: string) => {
-    setOffset(0);
-    setAllResults([]);
-    setHasMore(false);
-    originalSetQuery(newQuery);
-  }, [originalSetQuery]);
+  const setQuery = useCallback(
+    (newQuery: string) => {
+      setOffset(0);
+      setAllResults([]);
+      setHasMore(false);
+      originalSetQuery(newQuery);
+    },
+    [originalSetQuery]
+  );
 
   // Enhanced clear search
   const clearSearch = useCallback(() => {
@@ -225,14 +244,14 @@ export function useOptimizedHouseholdSearch({
     if (!hasMore || isLoadingMore || !query.trim()) return;
 
     setIsLoadingMore(true);
-    
+
     // Use functional update to get current length without dependency
     let currentOffset = 0;
     setAllResults(currentResults => {
       currentOffset = currentResults.length;
       return currentResults; // No change, just get the length
     });
-    
+
     setOffset(currentOffset);
 
     try {
@@ -247,7 +266,7 @@ export function useOptimizedHouseholdSearch({
   return {
     query,
     setQuery,
-    options: allResults.length > 0 ? allResults : (options || []), // Use allResults when available for pagination
+    options: allResults.length > 0 ? allResults : options || [], // Use allResults when available for pagination
     isLoading,
     error,
     clearSearch,

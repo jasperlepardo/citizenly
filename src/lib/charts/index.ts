@@ -8,8 +8,8 @@
 if (process.env.NODE_ENV === 'development') {
   console.warn(
     '⚠️  DEPRECATED IMPORT: @/lib/charts is deprecated.\n' +
-    '   Please use: @/lib/ui instead.\n' +
-    '   This compatibility layer will be removed in v3.0.0'
+      '   Please use: @/lib/ui instead.\n' +
+      '   This compatibility layer will be removed in v3.0.0'
   );
 }
 

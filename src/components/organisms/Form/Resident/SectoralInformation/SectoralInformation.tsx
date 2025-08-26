@@ -1,6 +1,11 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
-import SectoralClassifications, { SectoralInformation, SectoralContext } from './FormField/SectoralClassifications';
+
+import SectoralClassifications, {
+  SectoralInformation,
+  SectoralContext,
+} from './FormField/SectoralClassifications';
 
 export interface SectoralInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -46,18 +51,20 @@ const SECTORAL_FIELD_MAPPING = [
   { formKey: 'is_migrant', dbKey: 'is_migrant' },
 ];
 
-export function SectoralInformationForm({ 
+export function SectoralInformationForm({
   mode = 'create',
-  formData, 
-  onChange, 
-  errors
+  formData,
+  onChange,
+  errors,
 }: SectoralInformationFormProps) {
-
   // Map form data to SectoralInfo component props using configuration
-  const sectoralValue: SectoralInformation = SECTORAL_FIELD_MAPPING.reduce((acc, field) => ({
-    ...acc,
-    [field.dbKey]: (formData as any)[field.formKey] || false,
-  }), {} as SectoralInformation);
+  const sectoralValue: SectoralInformation = SECTORAL_FIELD_MAPPING.reduce(
+    (acc, field) => ({
+      ...acc,
+      [field.dbKey]: (formData as any)[field.formKey] || false,
+    }),
+    {} as SectoralInformation
+  );
 
   // Context for auto-calculation
   const sectoralContext: SectoralContext = {
@@ -76,12 +83,15 @@ export function SectoralInformationForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Sectoral Information</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Sectoral Information
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Sectoral classifications and group memberships. Some fields are automatically calculated based on age, employment, and education data.
+            Sectoral classifications and group memberships. Some fields are automatically calculated
+            based on age, employment, and education data.
           </p>
         </div>
 

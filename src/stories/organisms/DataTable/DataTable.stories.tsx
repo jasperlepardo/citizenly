@@ -278,7 +278,9 @@ export const EmptyState: Story = {
       <div className="py-8 text-center">
         <div className="mb-2 text-4xl text-gray-400 dark:text-gray-600">📋</div>
         <div className="font-medium text-gray-500 dark:text-gray-500">No users found</div>
-        <div className="mt-1 text-sm text-gray-400 dark:text-gray-600">Add some users to see them appear here</div>
+        <div className="mt-1 text-sm text-gray-400 dark:text-gray-600">
+          Add some users to see them appear here
+        </div>
       </div>
     ),
   },
@@ -347,7 +349,9 @@ export const CustomRendering: Story = {
         title: 'Role & Status',
         render: (_, record: UserData) => (
           <div>
-            <div className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-900">{record.role}</div>
+            <div className="font-medium text-gray-900 dark:text-gray-100 dark:text-gray-900">
+              {record.role}
+            </div>
             <span
               className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                 record.status === 'active'

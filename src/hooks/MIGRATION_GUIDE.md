@@ -7,12 +7,14 @@ This guide helps you migrate from the old flat hooks structure to the new organi
 ## 📋 **Migration Checklist**
 
 ### **✅ Immediate Actions (Optional)**
+
 - [ ] Update import statements to use category-based imports
 - [ ] Replace deprecated hooks with new alternatives
 - [ ] Add error boundaries to async operations
 - [ ] Review and update validation logic
 
 ### **✅ Recommended Improvements**
+
 - [ ] Add performance monitoring to critical hooks
 - [ ] Implement centralized logging
 - [ ] Add proper TypeScript types
@@ -23,6 +25,7 @@ This guide helps you migrate from the old flat hooks structure to the new organi
 ### **Category-Based Imports (Recommended)**
 
 #### **Before (Flat Structure)**
+
 ```typescript
 // OLD - Direct file imports
 import { useOptimizedResidentValidation } from '@/hooks/useOptimizedResidentValidation';
@@ -33,6 +36,7 @@ import { useAsyncErrorBoundary } from '@/hooks/useAsyncErrorBoundary';
 ```
 
 #### **After (Organized Structure)**
+
 ```typescript
 // NEW - Category-based imports
 import { useOptimizedResidentValidation } from '@/hooks/validation';
@@ -43,14 +47,15 @@ import { useAsyncErrorBoundary } from '@/hooks/utilities';
 ```
 
 #### **Backward Compatible (Still Works)**
+
 ```typescript
 // LEGACY COMPATIBLE - Root level imports
-import { 
+import {
   useOptimizedResidentValidation,
   useGenericSearch,
   useDashboard,
   useCommandMenuWithApi,
-  useAsyncErrorBoundary 
+  useAsyncErrorBoundary,
 } from '@/hooks';
 ```
 
@@ -59,6 +64,7 @@ import {
 ### **Deprecated Hooks → New Alternatives**
 
 #### **1. Resident Operations**
+
 ```typescript
 // OLD - Legacy hook
 import { useResidents } from '@/hooks/useResidents';
@@ -72,19 +78,15 @@ import { useResidentOperations } from '@/hooks';
 const MyComponent = () => {
   // OLD
   // const { residents, loading } = useResidents();
-  
+
   // NEW
-  const { 
-    residents, 
-    isLoading, 
-    createResident, 
-    updateResident, 
-    deleteResident 
-  } = useResidentOperations();
+  const { residents, isLoading, createResident, updateResident, deleteResident } =
+    useResidentOperations();
 };
 ```
 
 #### **2. Household Operations**
+
 ```typescript
 // OLD - Legacy hook
 import { useHouseholds } from '@/hooks/useHouseholds';
@@ -96,21 +98,17 @@ import { useHouseholdCrud } from '@/hooks/crud';
 const MyComponent = () => {
   // OLD
   // const { households, loading } = useHouseholds();
-  
+
   // NEW
-  const { 
-    households, 
-    isLoading, 
-    createHousehold, 
-    updateHousehold, 
-    deleteHousehold 
-  } = useHouseholdCrud();
+  const { households, isLoading, createHousehold, updateHousehold, deleteHousehold } =
+    useHouseholdCrud();
 };
 ```
 
 #### **3. Large Hook Refactoring**
 
 **useOptimizedResidentValidation (Split from 547 → 138 lines)**
+
 ```typescript
 // OLD - Monolithic hook
 import { useOptimizedResidentValidation } from '@/hooks/useOptimizedResidentValidation';
@@ -123,14 +121,15 @@ import { useOptimizedResidentValidation } from '@/hooks/validation';
 const { validateField, errors } = useOptimizedResidentValidation();
 
 // NEW - Access to individual validation components (optional)
-import { 
+import {
   useResidentValidationCore,
   useResidentCrossFieldValidation,
-  useResidentAsyncValidation 
+  useResidentAsyncValidation,
 } from '@/hooks/validation';
 ```
 
 **useCommandMenuWithApi (Split from 355 → 196 lines)**
+
 ```typescript
 // OLD - Large hook
 import { useCommandMenuWithApi } from '@/hooks/useCommandMenuWithApi';
@@ -139,14 +138,15 @@ import { useCommandMenuWithApi } from '@/hooks/useCommandMenuWithApi';
 import { useCommandMenuWithApi } from '@/hooks/command-menu';
 
 // NEW - Access to individual components (optional)
-import { 
+import {
   useCommandMenuSearch,
   useCommandMenuRecents,
-  useCommandMenuActions 
+  useCommandMenuActions,
 } from '@/hooks/command-menu';
 ```
 
 **useDashboard (Split from 266 → 102 lines)**
+
 ```typescript
 // OLD - Large hook
 import { useDashboard } from '@/hooks/useDashboard';
@@ -155,20 +155,18 @@ import { useDashboard } from '@/hooks/useDashboard';
 import { useDashboard } from '@/hooks/dashboard';
 
 // NEW - Access to individual components (optional)
-import { 
-  useDashboardApi,
-  useDashboardCalculations 
-} from '@/hooks/dashboard';
+import { useDashboardApi, useDashboardCalculations } from '@/hooks/dashboard';
 ```
 
 ## ⚡ **Performance Migration**
 
 ### **Add Error Boundaries**
+
 ```typescript
 // OLD - No error handling
 const MyComponent = () => {
   const [data, setData] = useState(null);
-  
+
   const fetchData = async () => {
     try {
       const result = await apiCall();
@@ -185,7 +183,7 @@ import { useAsyncErrorBoundary } from '@/hooks/utilities';
 const MyComponent = () => {
   const [data, setData] = useState(null);
   const { wrapAsync, error, retry } = useAsyncErrorBoundary();
-  
+
   const fetchData = useCallback(async () => {
     const result = await wrapAsync(
       () => apiCall(),
@@ -193,7 +191,7 @@ const MyComponent = () => {
     );
     if (result) setData(result);
   }, [wrapAsync]);
-  
+
   if (error) {
     return (
       <div>
@@ -206,6 +204,7 @@ const MyComponent = () => {
 ```
 
 ### **Add Performance Monitoring**
+
 ```typescript
 // OLD - No performance tracking
 const useMyCustomHook = () => {
@@ -218,24 +217,25 @@ import { usePerformanceMonitor } from '@/hooks/utilities';
 
 const useMyCustomHook = () => {
   const { metrics } = usePerformanceMonitor('useMyCustomHook');
-  
+
   // Hook logic with memoization
   const result = useMemo(() => {
     // Expensive computation
   }, [dependencies]);
-  
+
   // Optional: Log performance in development
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && metrics.renderCount > 10) {
       console.warn(`useMyCustomHook rendered ${metrics.renderCount} times`);
     }
   }, [metrics]);
-  
+
   return result;
 };
 ```
 
 ### **Replace Console Logging**
+
 ```typescript
 // OLD - Direct console logging
 const MyComponent = () => {
@@ -249,7 +249,7 @@ import { useLogger } from '@/hooks/utilities';
 
 const MyComponent = () => {
   const { log, warn, error } = useLogger('MyComponent');
-  
+
   useEffect(() => {
     log('Component mounted');
   }, [log]);
@@ -259,12 +259,13 @@ const MyComponent = () => {
 ## 🔧 **Custom Hook Migration**
 
 ### **Validation Hook Migration**
+
 ```typescript
 // OLD - Custom validation with manual error handling
-const useCustomValidation = (schema) => {
+const useCustomValidation = schema => {
   const [errors, setErrors] = useState({});
-  
-  const validate = (data) => {
+
+  const validate = data => {
     try {
       schema.parse(data);
       setErrors({});
@@ -274,7 +275,7 @@ const useCustomValidation = (schema) => {
       return false;
     }
   };
-  
+
   return { validate, errors };
 };
 
@@ -284,8 +285,8 @@ import { createValidationHook } from '@/hooks/validation';
 const useCustomValidation = createValidationHook(schema, {
   validateOnBlur: true,
   customMessages: {
-    email: 'Please enter a valid email address'
-  }
+    email: 'Please enter a valid email address',
+  },
 });
 
 // Usage remains clean and type-safe
@@ -293,14 +294,15 @@ const { validation, validateAsync, clearErrors } = useCustomValidation();
 ```
 
 ### **Search Hook Migration**
+
 ```typescript
 // OLD - Manual search implementation
 const useCustomSearch = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  const search = async (searchQuery) => {
+
+  const search = async searchQuery => {
     setLoading(true);
     try {
       const results = await searchAPI(searchQuery);
@@ -311,7 +313,7 @@ const useCustomSearch = () => {
       setLoading(false);
     }
   };
-  
+
   return { query, setQuery, results, loading, search };
 };
 
@@ -321,18 +323,18 @@ import { useAsyncErrorBoundary } from '@/hooks/utilities';
 
 const useCustomSearch = () => {
   const { wrapAsync } = useAsyncErrorBoundary();
-  
-  const searchFunction = useCallback(async (query) => {
-    return wrapAsync(
-      () => searchAPI(query),
-      'custom search operation'
-    );
-  }, [wrapAsync]);
-  
+
+  const searchFunction = useCallback(
+    async query => {
+      return wrapAsync(() => searchAPI(query), 'custom search operation');
+    },
+    [wrapAsync]
+  );
+
   return useGenericSearch({
     searchFn: searchFunction,
     debounceMs: 300,
-    minQueryLength: 2
+    minQueryLength: 2,
   });
 };
 ```
@@ -340,6 +342,7 @@ const useCustomSearch = () => {
 ## 📁 **File Structure Migration**
 
 ### **Before: Flat Structure**
+
 ```
 src/hooks/
 ├── useOptimizedResidentValidation.ts (547 lines)
@@ -352,6 +355,7 @@ src/hooks/
 ```
 
 ### **After: Organized Structure**
+
 ```
 src/hooks/
 ├── validation/
@@ -384,6 +388,7 @@ src/hooks/
 ## 🧪 **Testing Migration**
 
 ### **Add Tests for Custom Hooks**
+
 ```typescript
 // NEW - Comprehensive testing
 import { renderHook, act } from '@testing-library/react';
@@ -392,17 +397,17 @@ import { useMyCustomHook } from '../useMyCustomHook';
 describe('useMyCustomHook', () => {
   it('should handle happy path', () => {
     const { result } = renderHook(() => useMyCustomHook());
-    
+
     expect(result.current.data).toBeDefined();
   });
-  
+
   it('should handle errors gracefully', async () => {
     const { result } = renderHook(() => useMyCustomHook());
-    
+
     await act(async () => {
       await result.current.triggerError();
     });
-    
+
     expect(result.current.error).toBeDefined();
     expect(result.current.retry).toBeDefined();
   });
@@ -412,15 +417,18 @@ describe('useMyCustomHook', () => {
 ## 📊 **Migration Timeline**
 
 ### **Phase 1: Immediate (Optional)**
+
 - Update import statements to category-based imports
 - No functional changes required
 
 ### **Phase 2: Short-term (Recommended)**
+
 - Replace deprecated hooks (`useResidents`, `useHouseholds`)
 - Add error boundaries to async operations
 - Implement centralized logging
 
 ### **Phase 3: Long-term (Optional)**
+
 - Add performance monitoring to critical components
 - Write comprehensive tests
 - Implement custom validation hooks using the factory
@@ -430,6 +438,7 @@ describe('useMyCustomHook', () => {
 ### **Common Issues**
 
 #### **Import Errors**
+
 ```typescript
 // Problem: Import not found
 import { useMyHook } from '@/hooks/validation';
@@ -441,6 +450,7 @@ import { useMyHook } from '@/hooks';
 ```
 
 #### **Type Errors**
+
 ```typescript
 // Problem: Type not exported
 import { MyHookOptions } from '@/hooks/validation';
@@ -452,6 +462,7 @@ import type { MyHookOptions } from '@/hooks';
 ```
 
 #### **Performance Issues**
+
 ```typescript
 // Problem: Hook re-rendering too much
 const MyComponent = () => {

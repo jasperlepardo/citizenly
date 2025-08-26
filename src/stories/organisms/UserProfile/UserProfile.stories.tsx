@@ -430,7 +430,7 @@ export const InteractiveRoleComparison: Story = {
           </MockAuthProvider>
           <button
             onClick={cycleRole}
-            className="mt-4 rounded-sm bg-blue-600 px-4 py-2 text-white dark:text-black dark:text-white hover:bg-blue-700"
+            className="mt-4 rounded-sm bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:text-black dark:text-white"
           >
             Switch User Role
           </button>

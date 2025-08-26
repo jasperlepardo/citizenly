@@ -3,8 +3,8 @@
  * Search functions that don't require authentication (for registration, etc.)
  */
 
-import { supabase } from '@/lib/supabase/supabase';
 import { createLogger } from '@/lib/config/environment';
+import { supabase } from '@/lib/supabase/supabase';
 
 const logger = createLogger('PublicSearch');
 

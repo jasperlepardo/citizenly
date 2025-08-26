@@ -1,6 +1,6 @@
 /**
  * Error Types Library
- * 
+ *
  * @description Standardized error types and interfaces for consistent error handling
  * across the application. Provides type-safe error definitions and utilities.
  */
@@ -135,33 +135,33 @@ export enum ErrorCode {
   UNAUTHORIZED = 'UNAUTHORIZED',
   FORBIDDEN = 'FORBIDDEN',
   SESSION_EXPIRED = 'SESSION_EXPIRED',
-  
+
   // Validation errors
   VALIDATION_FAILED = 'VALIDATION_FAILED',
   REQUIRED_FIELD_MISSING = 'REQUIRED_FIELD_MISSING',
   INVALID_FORMAT = 'INVALID_FORMAT',
-  
+
   // Network errors
   NETWORK_ERROR = 'NETWORK_ERROR',
   REQUEST_TIMEOUT = 'REQUEST_TIMEOUT',
   SERVER_ERROR = 'SERVER_ERROR',
-  
+
   // Form errors
   FORM_SUBMISSION_FAILED = 'FORM_SUBMISSION_FAILED',
   FIELD_RENDER_ERROR = 'FIELD_RENDER_ERROR',
-  
+
   // Data errors
   DATA_NOT_FOUND = 'DATA_NOT_FOUND',
   DATA_CORRUPTED = 'DATA_CORRUPTED',
-  
+
   // Component errors
   COMPONENT_RENDER_ERROR = 'COMPONENT_RENDER_ERROR',
   HOOK_ERROR = 'HOOK_ERROR',
-  
+
   // Operation errors
   OPERATION_FAILED = 'OPERATION_FAILED',
   INVALID_OPERATION = 'INVALID_OPERATION',
-  
+
   // Unknown errors
   UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }

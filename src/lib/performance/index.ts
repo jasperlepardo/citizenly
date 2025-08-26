@@ -4,22 +4,22 @@
  */
 
 // Export from main performance monitor (avoiding conflicts)
-export { 
-  performanceMonitor, 
+export {
+  performanceMonitor,
   usePerformanceTracking,
-  markUserInteraction
+  markUserInteraction,
 } from './performanceMonitor';
 
 // Export optimization utilities
 export * from './optimizationUtils';
 
-// Export PWA performance utilities  
+// Export PWA performance utilities
 export * from './pwaPerformanceUtils';
 
 // Export specific utilities from performanceUtils to avoid conflicts
-export { 
+export {
   timed,
   reportPerformanceMetrics,
   measurePropsSize,
-  usePerformanceTracking as usePerformanceTrackingUtils
+  usePerformanceTracking as usePerformanceTrackingUtils,
 } from './performanceUtils';

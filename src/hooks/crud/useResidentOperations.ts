@@ -7,11 +7,12 @@
  * Provides a clean interface between UI components and business logic.
  */
 
-import { useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { residentService, ResidentFormData } from '@/services/resident.service';
-import { useCSRFToken } from '@/lib/auth';
+import { useState, useCallback } from 'react';
+
 import { useAuth } from '@/contexts';
+import { useCSRFToken } from '@/lib/auth';
+import { residentService, ResidentFormData } from '@/services/resident.service';
 
 export interface UseResidentOperationsOptions {
   onSuccess?: (data: any) => void;

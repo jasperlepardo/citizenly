@@ -1,7 +1,8 @@
 'use client';
 
-import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
+
 import { cn } from '@/lib';
 
 const searchBarVariants = cva(
@@ -101,21 +102,21 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
         {/* Content Area - Figma: basis-0 grow flex-col gap-0.5 items-center justify-center px-1 py-0 */}
         <div className="flex min-h-0 min-w-0 grow basis-0 flex-col items-center justify-center gap-0.5 px-1 py-0">
           {/* Input wrapped in flex container - Figma: flex flex-col justify-center */}
-          <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden text-ellipsis text-nowrap font-normal leading-5">
+          <div className="font-montserrat flex w-full flex-col justify-center overflow-hidden leading-5 font-normal text-nowrap text-ellipsis">
             <input
               ref={ref}
               type="text"
               className={cn(
-                'font-montserrat placeholder:text-gray-500 dark:text-gray-400 w-full bg-transparent font-normal text-gray-600 dark:text-gray-300',
+                'font-montserrat w-full bg-transparent font-normal text-gray-600 placeholder:text-gray-500 dark:text-gray-300 dark:text-gray-400',
                 // Remove ALL borders and focus states
-                'border-0 shadow-none outline-0 ring-0',
-                'focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0',
-                'active:border-0 active:shadow-none active:outline-0 active:ring-0',
+                'border-0 shadow-none ring-0 outline-0',
+                'focus:border-0 focus:shadow-none focus:ring-0 focus:outline-0',
+                'active:border-0 active:shadow-none active:ring-0 active:outline-0',
                 // Figma text-base-regular: 16px/20px (leading-5 = 20px)
                 size === 'sm' && 'text-sm leading-4',
                 size === 'md' && 'text-base leading-5',
                 size === 'lg' && 'text-lg leading-6',
-                disabled && 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400 cursor-not-allowed'
+                disabled && 'cursor-not-allowed text-gray-500 dark:text-gray-400 dark:text-gray-600'
               )}
               style={{
                 border: 'none',
@@ -140,7 +141,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             <button
               type="button"
               onClick={handleClear}
-              className="flex size-full items-center justify-center text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300 dark:text-gray-700"
+              className="flex size-full items-center justify-center text-gray-600 transition-colors hover:text-gray-600 dark:text-gray-400 dark:text-gray-700 dark:hover:text-gray-300"
               aria-label="Clear search"
               tabIndex={-1}
             >

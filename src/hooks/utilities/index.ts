@@ -1,6 +1,6 @@
 /**
  * Utility Hooks Module
- * 
+ *
  * @description General-purpose utility hooks for common functionality
  * like error handling, performance monitoring, logging, and state management.
  */

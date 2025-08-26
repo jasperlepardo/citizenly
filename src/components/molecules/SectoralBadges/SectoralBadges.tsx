@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import type { SectoralInformation } from '@/types';
 
 interface SectoralBadgesProps {
@@ -36,11 +37,11 @@ export default function SectoralBadges({ sectoral, className = '' }: SectoralBad
   }
 
   return (
-    <div className={`flex flex-wrap gap-2 mt-2 ${className}`}>
-      {activeBadges.map((label) => (
+    <div className={`mt-2 flex flex-wrap gap-2 ${className}`}>
+      {activeBadges.map(label => (
         <span
           key={label}
-          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+          className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
         >
           {label}
         </span>

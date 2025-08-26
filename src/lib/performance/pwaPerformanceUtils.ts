@@ -20,7 +20,7 @@ interface PerformanceEntry {
   timestamp: number;
   duration?: number;
   success?: boolean;
-  details?: Record<string, string | number | boolean>;
+  details?: any;
 }
 
 class PWAPerformanceMonitor {
@@ -231,7 +231,7 @@ class PWAPerformanceMonitor {
   /**
    * Track sync operation start
    */
-  trackSyncStart(details?: Record<string, string | number | boolean>): void {
+  trackSyncStart(details?: any): void {
     this.addEntry({
       name: 'sync_start',
       type: 'sync',
@@ -243,7 +243,7 @@ class PWAPerformanceMonitor {
   /**
    * Track successful sync
    */
-  trackSyncSuccess(details?: Record<string, string | number | boolean>): void {
+  trackSyncSuccess(details?: any): void {
     this.metrics.syncOperations++;
     this.addEntry({
       name: 'sync_success',
@@ -258,7 +258,7 @@ class PWAPerformanceMonitor {
   /**
    * Track failed sync
    */
-  trackSyncFailure(details?: Record<string, string | number | boolean>): void {
+  trackSyncFailure(details?: any): void {
     this.metrics.syncFailures++;
     this.addEntry({
       name: 'sync_failure',
@@ -432,6 +432,6 @@ export const trackPWAEvents = {
   offlineUsage: () => pwaPerformance.instance?.trackOfflineUsage(),
   cacheHit: (resource?: string) => pwaPerformance.instance?.trackCacheHit(resource),
   cacheMiss: (resource?: string) => pwaPerformance.instance?.trackCacheMiss(resource),
-  syncSuccess: (details?: Record<string, string | number | boolean>) => pwaPerformance.instance?.trackSyncSuccess(details),
-  syncFailure: (details?: Record<string, string | number | boolean>) => pwaPerformance.instance?.trackSyncFailure(details),
+  syncSuccess: (details?: any) => pwaPerformance.instance?.trackSyncSuccess(details),
+  syncFailure: (details?: any) => pwaPerformance.instance?.trackSyncFailure(details),
 };

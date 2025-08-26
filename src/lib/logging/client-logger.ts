@@ -157,7 +157,7 @@ class ClientLogger {
       // Sentry integration
       if (typeof window !== 'undefined' && (window as any).Sentry) {
         const Sentry = (window as any).Sentry;
-        
+
         if (level === 'error') {
           Sentry.captureException(context?.error || new Error(message), {
             tags: { component: context?.component },
@@ -166,8 +166,8 @@ class ClientLogger {
                 action: context?.action,
                 data: context?.data,
                 url: logEntry.url,
-              }
-            }
+              },
+            },
           });
         } else if (level === 'warn') {
           Sentry.captureMessage(message, 'warning');
@@ -192,17 +192,17 @@ class ClientLogger {
     if (this.isDevelopment) {
       const colorMap = {
         error: '\x1b[31m', // Red
-        warn: '\x1b[33m',  // Yellow
-        info: '\x1b[36m',  // Cyan
+        warn: '\x1b[33m', // Yellow
+        info: '\x1b[36m', // Cyan
         debug: '\x1b[90m', // Gray
       };
       const resetColor = '\x1b[0m';
       const color = colorMap[level as keyof typeof colorMap] || '';
-      
+
       console.log(`${color}[${logEntry.level}] ${logEntry.message}${resetColor}`, {
         timestamp: logEntry.timestamp,
         context: logEntry.context,
-        url: logEntry.url
+        url: logEntry.url,
       });
     }
   }
@@ -244,16 +244,16 @@ export const logWarn = (message: string, context?: LogContext) =>
  */
 export const logError = (messageOrError: string | Error, context?: LogContext | string) => {
   const message = messageOrError instanceof Error ? messageOrError.message : messageOrError;
-  
+
   // Handle string context by converting to LogContext
-  const normalizedContext: LogContext | undefined = typeof context === 'string' 
-    ? { action: context }
-    : context;
-    
-  const errorContext = messageOrError instanceof Error 
-    ? { ...normalizedContext, error: messageOrError }
-    : normalizedContext;
-    
+  const normalizedContext: LogContext | undefined =
+    typeof context === 'string' ? { action: context } : context;
+
+  const errorContext =
+    messageOrError instanceof Error
+      ? { ...normalizedContext, error: messageOrError }
+      : normalizedContext;
+
   return clientLogger.error(message, errorContext);
 };
 /**

@@ -45,10 +45,7 @@ export function getFieldIds(fieldId: string) {
 /**
  * Build aria-describedby string from available elements
  */
-export function buildAriaDescribedBy(
-  helperTextId?: string,
-  errorId?: string
-): string | undefined {
+export function buildAriaDescribedBy(helperTextId?: string, errorId?: string): string | undefined {
   const ids = [];
   if (helperTextId) ids.push(helperTextId);
   if (errorId) ids.push(errorId);

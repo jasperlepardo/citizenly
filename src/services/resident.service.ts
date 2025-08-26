@@ -5,7 +5,7 @@
  * Handles data transformation, validation, and database operations.
  */
 
-import { supabase } from '@/lib';
+import { supabase, logger, logError, dbLogger } from '@/lib';
 import {
   hashPhilSysNumber,
   extractPhilSysLast4,
@@ -13,7 +13,6 @@ import {
   logSecurityOperation,
 } from '@/lib/security/crypto';
 import { validateResidentData } from '@/lib/validation';
-import { logger, logError, dbLogger } from '@/lib';
 import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
 
 // Import database types
@@ -81,15 +80,15 @@ export class ResidentService {
       if (result.warnings) {
         console.log('Validation warnings detail:', JSON.stringify(result.warnings, null, 2));
       }
-      
+
       // Ensure the result matches our interface
       if (!result.success) {
-        let errors = result.errors 
-          ? Array.isArray(result.errors) 
-            ? result.errors 
+        const errors = result.errors
+          ? Array.isArray(result.errors)
+            ? result.errors
             : Object.entries(result.errors).map(([field, message]) => ({ field, message }))
           : [{ field: 'general', message: 'Validation failed' }];
-        
+
         // Filter out validation errors for fields that weren't submitted
         // This handles cases where hidden form sections have fields that fail validation
         // but the user never had the opportunity to fill them out
@@ -101,13 +100,13 @@ export class ResidentService {
           }
           return isFieldSubmitted;
         });
-        
+
         // If we filtered out all errors, consider validation successful
         if (filteredErrors.length === 0) {
           console.log('All validation errors were for non-submitted fields. Treating as valid.');
           return { isValid: true, success: true };
         }
-        
+
         console.error('Validation failed with errors:', filteredErrors);
         return {
           isValid: false,
@@ -122,7 +121,12 @@ export class ResidentService {
       return {
         isValid: false,
         success: false,
-        errors: [{ field: 'general', message: error instanceof Error ? error.message : 'Validation error occurred' }],
+        errors: [
+          {
+            field: 'general',
+            message: error instanceof Error ? error.message : 'Validation error occurred',
+          },
+        ],
       };
     }
   }
@@ -181,7 +185,7 @@ export class ResidentService {
     return {
       // Primary identification
       philsys_card_number: philsysHash || formData.philsys_card_number || null,
-      
+
       // Personal details
       first_name: formData.first_name,
       middle_name: formData.middle_name || null,
@@ -190,47 +194,47 @@ export class ResidentService {
       birthdate: formData.birthdate,
       birth_place_code: formData.birth_place_code || null,
       sex: formData.sex,
-      
+
       // Civil status
       civil_status: formData.civil_status || 'single',
       civil_status_others_specify: formData.civil_status_others_specify || null,
-      
+
       // Education and employment
       education_attainment: (formData.education_attainment as EducationLevelEnum) || null,
       is_graduate: formData.is_graduate || false,
       employment_status: (formData.employment_status as EmploymentStatusEnum) || null,
       occupation_code: formData.occupation_code || null,
-      
+
       // Contact information
       email: formData.email || null,
       mobile_number: formData.mobile_number || null,
       telephone_number: formData.telephone_number || null,
-      
+
       // Household membership
       household_code: formData.household_code || null,
-      
+
       // Physical characteristics
       height: formData.height || null,
       weight: formData.weight || null,
       complexion: formData.complexion || null,
-      
+
       // Voting information
       is_voter: formData.is_voter || null,
       is_resident_voter: formData.is_resident_voter || null,
       last_voted_date: formData.last_voted_date || null,
-      
+
       // Cultural/religious identity
       religion: (formData.religion as ReligionEnum) || 'roman_catholic',
       religion_others_specify: formData.religion_others_specify || null,
       ethnicity: (formData.ethnicity as EthnicityEnum) || null,
       citizenship: formData.citizenship || 'filipino',
       blood_type: formData.blood_type || null,
-      
+
       // Family information
       mother_maiden_first: formData.mother_maiden_first || null,
       mother_maiden_middle: formData.mother_maiden_middle || null,
       mother_maiden_last: formData.mother_maiden_last || null,
-      
+
       // Status and audit fields
       is_active: true,
     };
@@ -247,7 +251,7 @@ export class ResidentService {
   }: CreateResidentRequest): Promise<CreateResidentResponse> {
     try {
       console.log('Creating resident with data:', { formData, barangayCode });
-      
+
       // Validate form data
       const validationResult = await this.validateResident(formData);
       if (!validationResult.success) {

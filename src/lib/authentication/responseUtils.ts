@@ -4,16 +4,13 @@
  */
 
 import { NextResponse, NextRequest } from 'next/server';
-import {
-  ApiResponse,
-  PaginatedResponse,
-  ErrorResponse,
-  ErrorCode,
-  RequestContext,
-} from './types';
+
+import { logger } from '@/lib';
+
 import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
 import { sanitizeSearchQuery } from '../validation/sanitizers';
-import { logger } from '@/lib';
+
+import { ApiResponse, PaginatedResponse, ErrorResponse, ErrorCode, RequestContext } from './types';
 
 /**
  * Create a successful API response
@@ -279,11 +276,9 @@ export async function detectSQLInjection(
   const isSQLInjection = sqlPatterns.some(pattern => pattern.test(input));
 
   if (isSQLInjection && context) {
-    await auditSecurityViolation(
-      AuditEventType.SQL_INJECTION_ATTEMPT,
-      context,
-      { suspiciousInput: input }
-    );
+    await auditSecurityViolation(AuditEventType.SQL_INJECTION_ATTEMPT, context, {
+      suspiciousInput: input,
+    });
   }
 
   return isSQLInjection;

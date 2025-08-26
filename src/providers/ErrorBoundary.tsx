@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+
 import { logError } from '@/lib';
 
 interface Props {
@@ -156,7 +157,9 @@ export class ErrorBoundary extends Component<Props, State> {
               <summary className="cursor-pointer text-red-600 hover:text-red-700">
                 Error Details
               </summary>
-              <pre className="mt-2 overflow-auto rounded-sm bg-red-100 p-3 text-xs">{error.stack}</pre>
+              <pre className="mt-2 overflow-auto rounded-sm bg-red-100 p-3 text-xs">
+                {error.stack}
+              </pre>
             </details>
 
             {errorInfo && (
@@ -173,13 +176,13 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex gap-3">
               <button
                 onClick={this.resetErrorBoundary}
-                className="rounded bg-red-600 px-4 py-2 text-white dark:text-black transition-colors hover:bg-red-700"
+                className="rounded bg-red-600 px-4 py-2 text-white transition-colors hover:bg-red-700 dark:text-black"
               >
                 Reset Component
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="rounded bg-gray-600 px-4 py-2 text-white dark:text-black dark:text-white transition-colors hover:bg-gray-700"
+                className="rounded bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700 dark:text-black dark:text-white"
               >
                 Reload Page
               </button>
@@ -226,7 +229,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="flex justify-center gap-3">
             <button
               onClick={this.resetErrorBoundary}
-              className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black transition-colors hover:bg-blue-700"
+              className="rounded bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 dark:text-black"
             >
               Try Again
             </button>
@@ -234,7 +237,7 @@ export class ErrorBoundary extends Component<Props, State> {
             {level === 'page' && (
               <button
                 onClick={() => (window.location.href = '/')}
-                className="rounded bg-gray-200 dark:bg-gray-600 px-4 py-2 text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-300 dark:hover:bg-gray-500"
+                className="rounded bg-gray-200 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
               >
                 Go Home
               </button>

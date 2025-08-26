@@ -296,7 +296,7 @@ export enum ErrorCode {
  */
 export async function auditError(
   error: Error,
-  context: Record<string, string | number | boolean>,
+  context: any,
   errorCode: ApiErrorCode
 ): Promise<void> {
   try {
@@ -331,7 +331,7 @@ export async function auditError(
  */
 export async function auditSecurityViolation(
   eventType: AuditEventType,
-  context: Record<string, string | number | boolean>,
+  context: any,
   details?: Record<string, unknown>
 ): Promise<void> {
   try {

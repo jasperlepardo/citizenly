@@ -62,7 +62,7 @@ export const fieldLogic = {
   /**
    * Validate required fields
    */
-  validateRequired: (value: string | number | boolean | null | undefined, fieldName: string): string | null => {
+  validateRequired: (value: any, fieldName: string): string | null => {
     if (!value || (typeof value === 'string' && value.trim() === '')) {
       return `${fieldName} is required`;
     }
@@ -132,7 +132,7 @@ export const fieldState = {
   /**
    * Get field validation state
    */
-  getValidationState: (value: string | number | boolean | null | undefined, validators: Array<(value: string | number | boolean | null | undefined) => string | null>) => {
+  getValidationState: (value: any, validators: Array<(value: any) => string | null>) => {
     for (const validator of validators) {
       const error = validator(value);
       if (error) {

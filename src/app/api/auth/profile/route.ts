@@ -1,6 +1,7 @@
-import { NextRequest } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
+
+import { createAdminSupabaseClient } from '@/lib';
 import {
   createSuccessResponse,
   createUnauthorizedResponse,

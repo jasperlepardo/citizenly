@@ -3,12 +3,14 @@
  * Comprehensive test suite following development standards
  */
 
-import React from 'react';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/navigation';
-import ResidentsPage from './page';
+import React from 'react';
+
 import { useAuth } from '@/contexts';
+
+import ResidentsPage from './page';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({

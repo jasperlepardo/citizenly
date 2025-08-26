@@ -2,13 +2,15 @@
 
 /**
  * Resident Async Validation Hook
- * 
+ *
  * @description Handles asynchronous validation operations for resident forms.
  * Extracted from useOptimizedResidentValidation for better maintainability.
  */
 
 import { useState, useCallback, useRef } from 'react';
+
 import { asyncValidationUtils } from '@/lib/validation/utilities';
+
 import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
 
 /**
@@ -57,15 +59,14 @@ const ASYNC_VALIDATION_FIELDS = [
 
 /**
  * Hook for resident async validation
- * 
+ *
  * @description Provides asynchronous validation for fields that require server-side checks.
  */
 export function useResidentAsyncValidation(
   options: AsyncValidationOptions = {}
 ): UseResidentAsyncValidationReturn {
-  
   const { debounceDelay = 1000, enabled = true } = options;
-  
+
   const [isAsyncValidating, setIsAsyncValidating] = useState(false);
   const [asyncValidationErrors, setAsyncValidationErrors] = useState<Record<string, string>>({});
   const asyncValidationTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
@@ -85,78 +86,81 @@ export function useResidentAsyncValidation(
   /**
    * Validate field asynchronously
    */
-  const validateFieldAsync = useCallback(async (
-    fieldName: string, 
-    value: unknown
-  ): Promise<AsyncValidationResult> => {
-    if (!enabled || !ASYNC_VALIDATION_FIELDS.includes(fieldName as typeof ASYNC_VALIDATION_FIELDS[number])) {
-      return { isValid: true };
-    }
+  const validateFieldAsync = useCallback(
+    async (fieldName: string, value: unknown): Promise<AsyncValidationResult> => {
+      if (
+        !enabled ||
+        !ASYNC_VALIDATION_FIELDS.includes(fieldName as (typeof ASYNC_VALIDATION_FIELDS)[number])
+      ) {
+        return { isValid: true };
+      }
 
-    // Clear existing timeout for this field
-    const existingTimeout = asyncValidationTimeouts.current.get(fieldName);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
-    }
+      // Clear existing timeout for this field
+      const existingTimeout = asyncValidationTimeouts.current.get(fieldName);
+      if (existingTimeout) {
+        clearTimeout(existingTimeout);
+      }
 
-    return new Promise((resolve) => {
-      const timeout = setTimeout(async () => {
-        setIsAsyncValidating(true);
-        
-        try {
-          let result: AsyncValidationResult = { isValid: true };
-          
-          // Wrap validation calls with error boundary
-          const validationResult = await wrapAsync(async () => {
-            switch (fieldName) {
-              case 'email':
-                return await validateEmailUniqueness(value as string);
-              case 'mobileNumber':
-                return await validateMobileNumberUniqueness(value as string);
-              case 'philsysCardNumber':
-                return await validatePhilsysCardUniqueness(value as string);
-              case 'householdCode':
-                return await validateHouseholdCodeExists(value as string);
-              default:
-                return { isValid: true };
-            }
-          }, `async validation for ${fieldName}`)();
+      return new Promise(resolve => {
+        const timeout = setTimeout(async () => {
+          setIsAsyncValidating(true);
 
-          result = validationResult || { isValid: false, error: 'Validation failed' };
+          try {
+            let result: AsyncValidationResult = { isValid: true };
 
-          // Update async validation errors
-          setAsyncValidationErrors(prev => {
-            const newErrors = { ...prev };
-            if (result.isValid) {
-              delete newErrors[fieldName];
-            } else if (result.error) {
-              newErrors[fieldName] = result.error;
-            }
-            return newErrors;
-          });
+            // Wrap validation calls with error boundary
+            const validationResult = await wrapAsync(async () => {
+              switch (fieldName) {
+                case 'email':
+                  return await validateEmailUniqueness(value as string);
+                case 'mobileNumber':
+                  return await validateMobileNumberUniqueness(value as string);
+                case 'philsysCardNumber':
+                  return await validatePhilsysCardUniqueness(value as string);
+                case 'householdCode':
+                  return await validateHouseholdCodeExists(value as string);
+                default:
+                  return { isValid: true };
+              }
+            }, `async validation for ${fieldName}`)();
 
-          resolve(result);
-        } catch (error) {
-          const errorResult = {
-            isValid: false,
-            error: 'Validation failed. Please try again.'
-          };
-          
-          setAsyncValidationErrors(prev => ({
-            ...prev,
-            [fieldName]: errorResult.error!
-          }));
-          
-          resolve(errorResult);
-        } finally {
-          setIsAsyncValidating(false);
-          asyncValidationTimeouts.current.delete(fieldName);
-        }
-      }, debounceDelay);
+            result = validationResult || { isValid: false, error: 'Validation failed' };
 
-      asyncValidationTimeouts.current.set(fieldName, timeout);
-    });
-  }, [enabled, debounceDelay]);
+            // Update async validation errors
+            setAsyncValidationErrors(prev => {
+              const newErrors = { ...prev };
+              if (result.isValid) {
+                delete newErrors[fieldName];
+              } else if (result.error) {
+                newErrors[fieldName] = result.error;
+              }
+              return newErrors;
+            });
+
+            resolve(result);
+          } catch (error) {
+            const errorResult = {
+              isValid: false,
+              error: 'Validation failed. Please try again.',
+            };
+
+            setAsyncValidationErrors(prev => ({
+              ...prev,
+              [fieldName]: errorResult.error!,
+            }));
+
+            resolve(errorResult);
+          } finally {
+            setIsAsyncValidating(false);
+            asyncValidationTimeouts.current.delete(fieldName);
+          }
+        }, debounceDelay);
+
+        asyncValidationTimeouts.current.set(fieldName, timeout);
+      });
+    },
+    [enabled, debounceDelay]
+  );
 
   /**
    * Clear all async validation errors
@@ -194,17 +198,19 @@ async function validateEmailUniqueness(email: string): Promise<AsyncValidationRe
   }
 
   try {
-    const response = await fetch(`/api/residents/validate-email?email=${encodeURIComponent(email)}`);
+    const response = await fetch(
+      `/api/residents/validate-email?email=${encodeURIComponent(email)}`
+    );
     const data = await response.json();
-    
+
     return {
       isValid: data.isUnique,
-      error: data.isUnique ? undefined : 'Email address is already registered'
+      error: data.isUnique ? undefined : 'Email address is already registered',
     };
   } catch {
     return {
       isValid: false,
-      error: 'Unable to validate email. Please try again.'
+      error: 'Unable to validate email. Please try again.',
     };
   }
 }
@@ -212,23 +218,27 @@ async function validateEmailUniqueness(email: string): Promise<AsyncValidationRe
 /**
  * Validate mobile number uniqueness
  */
-async function validateMobileNumberUniqueness(mobileNumber: string): Promise<AsyncValidationResult> {
+async function validateMobileNumberUniqueness(
+  mobileNumber: string
+): Promise<AsyncValidationResult> {
   if (!mobileNumber || mobileNumber.length < 10) {
     return { isValid: true }; // Let synchronous validation handle format
   }
 
   try {
-    const response = await fetch(`/api/residents/validate-mobile?mobile=${encodeURIComponent(mobileNumber)}`);
+    const response = await fetch(
+      `/api/residents/validate-mobile?mobile=${encodeURIComponent(mobileNumber)}`
+    );
     const data = await response.json();
-    
+
     return {
       isValid: data.isUnique,
-      error: data.isUnique ? undefined : 'Mobile number is already registered'
+      error: data.isUnique ? undefined : 'Mobile number is already registered',
     };
   } catch {
     return {
       isValid: false,
-      error: 'Unable to validate mobile number. Please try again.'
+      error: 'Unable to validate mobile number. Please try again.',
     };
   }
 }
@@ -242,17 +252,19 @@ async function validatePhilsysCardUniqueness(cardNumber: string): Promise<AsyncV
   }
 
   try {
-    const response = await fetch(`/api/residents/validate-philsys?cardNumber=${encodeURIComponent(cardNumber)}`);
+    const response = await fetch(
+      `/api/residents/validate-philsys?cardNumber=${encodeURIComponent(cardNumber)}`
+    );
     const data = await response.json();
-    
+
     return {
       isValid: data.isUnique,
-      error: data.isUnique ? undefined : 'PhilSys card number is already registered'
+      error: data.isUnique ? undefined : 'PhilSys card number is already registered',
     };
   } catch {
     return {
       isValid: false,
-      error: 'Unable to validate PhilSys card. Please try again.'
+      error: 'Unable to validate PhilSys card. Please try again.',
     };
   }
 }
@@ -266,17 +278,19 @@ async function validateHouseholdCodeExists(householdCode: string): Promise<Async
   }
 
   try {
-    const response = await fetch(`/api/households/validate-code?code=${encodeURIComponent(householdCode)}`);
+    const response = await fetch(
+      `/api/households/validate-code?code=${encodeURIComponent(householdCode)}`
+    );
     const data = await response.json();
-    
+
     return {
       isValid: data.exists,
-      error: data.exists ? undefined : 'Household code does not exist'
+      error: data.exists ? undefined : 'Household code does not exist',
     };
   } catch {
     return {
       isValid: false,
-      error: 'Unable to validate household code. Please try again.'
+      error: 'Unable to validate household code. Please try again.',
     };
   }
 }

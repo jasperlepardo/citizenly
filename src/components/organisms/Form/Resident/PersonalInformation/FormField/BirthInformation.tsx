@@ -3,15 +3,6 @@ import React from 'react';
 import { InputField, SelectField } from '@/components';
 import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
 import type { FormMode } from '@/types';
-import { PSGCSearchResponse, SelectOption } from '@/types/database';
-
-// Extended PSGC response with additional geographic information
-interface ExtendedPSGCResponse extends PSGCSearchResponse {
-  city_name?: string;
-  province_name?: string;
-  type?: string;
-  full_address?: string;
-}
 
 export interface BirthInformationData {
   birthdate: string;
@@ -49,7 +40,7 @@ export function BirthInformation({
     debounceMs: 300,
   });
 
-  const handleChange = (field: keyof BirthInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof BirthInformationData, fieldValue: any) => {
     onChange({
       ...value,
       [field]: fieldValue,
@@ -98,18 +89,18 @@ export function BirthInformation({
 
                 if (place.level === 'barangay') {
                   // For barangay: "Barangay Name, City, Province"
-                  if ((place as ExtendedPSGCResponse).city_name && (place as ExtendedPSGCResponse).province_name) {
-                    displayLabel = `${place.name}, ${(place as ExtendedPSGCResponse).city_name}, ${(place as ExtendedPSGCResponse).province_name}`;
-                  } else if ((place as ExtendedPSGCResponse).city_name) {
-                    displayLabel = `${place.name}, ${(place as ExtendedPSGCResponse).city_name}`;
+                  if ((place as any).city_name && (place as any).province_name) {
+                    displayLabel = `${place.name}, ${(place as any).city_name}, ${(place as any).province_name}`;
+                  } else if ((place as any).city_name) {
+                    displayLabel = `${place.name}, ${(place as any).city_name}`;
                   }
                   badge = 'barangay';
                 } else if (place.level === 'city') {
                   // For city/municipality: "City Name, Province"
-                  if ((place as ExtendedPSGCResponse).province_name) {
-                    displayLabel = `${place.name}, ${(place as ExtendedPSGCResponse).province_name}`;
+                  if ((place as any).province_name) {
+                    displayLabel = `${place.name}, ${(place as any).province_name}`;
                   }
-                  badge = (place as ExtendedPSGCResponse).type || 'city';
+                  badge = (place as any).type || 'city';
                 } else if (place.level === 'province') {
                   // For province: just "Province Name"
                   displayLabel = place.name;
@@ -117,13 +108,13 @@ export function BirthInformation({
                 }
 
                 // Format description for subtext
-                if ((place as ExtendedPSGCResponse).full_address) {
+                if ((place as any).full_address) {
                   // Use full address but trim to province level (remove region)
-                  const parts = (place as ExtendedPSGCResponse).full_address.split(', ');
+                  const parts = (place as any).full_address.split(', ');
                   if (parts.length >= 3) {
                     description = parts.slice(0, 3).join(', '); // Up to Province
                   } else {
-                    description = (place as ExtendedPSGCResponse).full_address;
+                    description = (place as any).full_address;
                   }
                 }
 
@@ -154,7 +145,7 @@ export function BirthInformation({
                     value: value.birth_place_code,
                     label: value.birth_place_name,
                     description: '',
-                    badge: badge as string,
+                    badge: badge as any,
                   });
                 }
               }
@@ -167,8 +158,8 @@ export function BirthInformation({
             onSearch: setSearchQuery,
             onSelect: option => {
               if (option) {
-                handleChange('birth_place_name', (option as SelectOption).label);
-                handleChange('birth_place_code', (option as SelectOption).value);
+                handleChange('birth_place_name', (option as any).label);
+                handleChange('birth_place_code', (option as any).value);
               } else {
                 handleChange('birth_place_name', '');
                 handleChange('birth_place_code', '');

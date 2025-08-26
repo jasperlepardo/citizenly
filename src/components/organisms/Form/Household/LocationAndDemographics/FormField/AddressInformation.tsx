@@ -1,14 +1,14 @@
 import React from 'react';
-import type { FormMode } from '@/types';
-import { SelectOption } from '@/types/database';
+
 import { InputField, SelectField } from '@/components';
-import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
+import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
+import type { FormMode } from '@/types';
 
 export interface AddressInformationData {
   houseNumber: string;
-  streetId: string;  // Changed from streetName to streetId (UUID)
-  subdivisionId: string;  // Changed from subdivisionName to subdivisionId (UUID)
+  streetId: string; // Changed from streetName to streetId (UUID)
+  subdivisionId: string; // Changed from subdivisionName to subdivisionId (UUID)
   barangayCode: string;
   cityMunicipalityCode: string;
   provinceCode: string;
@@ -39,10 +39,10 @@ export interface AddressInformationProps {
   onBarangayChange?: (barangayCode: string) => void;
 }
 
-export function AddressInformation({ 
+export function AddressInformation({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
   className = '',
   regionOptions = [],
@@ -56,28 +56,21 @@ export function AddressInformation({
   onRegionChange,
   onProvinceChange,
   onCityChange,
-  onBarangayChange
+  onBarangayChange,
 }: AddressInformationProps) {
-  
   // Fetch subdivisions based on selected barangay
-  const { 
-    subdivisions: subdivisionOptions, 
-    loading: subdivisionsLoading 
-  } = useSubdivisionsSearch({
+  const { subdivisions: subdivisionOptions, loading: subdivisionsLoading } = useSubdivisionsSearch({
     barangayCode: value.barangayCode,
-    enabled: !!value.barangayCode
+    enabled: !!value.barangayCode,
   });
 
   // Fetch streets based on selected barangay and subdivision
-  const { 
-    streets: streetOptions, 
-    loading: streetsLoading 
-  } = useStreetsSearch({
+  const { streets: streetOptions, loading: streetsLoading } = useStreetsSearch({
     barangayCode: value.barangayCode,
     subdivisionId: value.subdivisionId,
-    enabled: !!value.barangayCode
+    enabled: !!value.barangayCode,
   });
-  
+
   const handleChange = (field: keyof AddressInformationData, fieldValue: string) => {
     onChange({
       ...value,
@@ -85,7 +78,7 @@ export function AddressInformation({
     });
   };
 
-  const handleRegionSelect = (option: SelectOption | null) => {
+  const handleRegionSelect = (option: any) => {
     const regionCode = option?.value || '';
     handleChange('regionCode', regionCode);
     if (onRegionChange) {
@@ -93,7 +86,7 @@ export function AddressInformation({
     }
   };
 
-  const handleProvinceSelect = (option: SelectOption | null) => {
+  const handleProvinceSelect = (option: any) => {
     const provinceCode = option?.value || '';
     handleChange('provinceCode', provinceCode);
     if (onProvinceChange) {
@@ -101,7 +94,7 @@ export function AddressInformation({
     }
   };
 
-  const handleCitySelect = (option: SelectOption | null) => {
+  const handleCitySelect = (option: any) => {
     const cityCode = option?.value || '';
     handleChange('cityMunicipalityCode', cityCode);
     if (onCityChange) {
@@ -109,7 +102,7 @@ export function AddressInformation({
     }
   };
 
-  const handleBarangaySelect = (option: SelectOption | null) => {
+  const handleBarangaySelect = (option: any) => {
     const barangayCode = option?.value || '';
     handleChange('barangayCode', barangayCode);
     // Clear dependent fields when barangay changes
@@ -125,7 +118,9 @@ export function AddressInformation({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Address Information</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Address Information
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Complete household address with geographic information.
         </p>
@@ -141,12 +136,12 @@ export function AddressInformation({
           mode={mode}
           inputProps={{
             value: value.houseNumber,
-            onChange: (e) => handleChange('houseNumber', e.target.value),
-            placeholder: "Enter house number",
-            error: errors.houseNumber
+            onChange: e => handleChange('houseNumber', e.target.value),
+            placeholder: 'Enter house number',
+            error: errors.houseNumber,
           }}
         />
-        
+
         {/* Street Name */}
         <SelectField
           label="Street Name"
@@ -157,15 +152,15 @@ export function AddressInformation({
           selectProps={{
             options: streetOptions,
             value: value.streetId,
-            onSelect: (option: SelectOption | null) => {
+            onSelect: (option: any) => {
               handleChange('streetId', option?.value || '');
             },
-            placeholder: streetsLoading ? "Loading streets..." : "Select street",
+            placeholder: streetsLoading ? 'Loading streets...' : 'Select street',
             loading: streetsLoading,
-            disabled: !value.barangayCode
+            disabled: !value.barangayCode,
           }}
         />
-        
+
         {/* Subdivision */}
         <SelectField
           label="Subdivision"
@@ -174,7 +169,7 @@ export function AddressInformation({
           selectProps={{
             options: subdivisionOptions,
             value: value.subdivisionId,
-            onSelect: (option: SelectOption | null) => {
+            onSelect: (option: any) => {
               const newSubdivisionId = option?.value || '';
               handleChange('subdivisionId', newSubdivisionId);
               // Clear street when subdivision changes
@@ -182,9 +177,11 @@ export function AddressInformation({
                 handleChange('streetId', '');
               }
             },
-            placeholder: subdivisionsLoading ? "Loading subdivisions..." : "Select subdivision (optional)",
+            placeholder: subdivisionsLoading
+              ? 'Loading subdivisions...'
+              : 'Select subdivision (optional)',
             loading: subdivisionsLoading,
-            disabled: !value.barangayCode
+            disabled: !value.barangayCode,
           }}
         />
 
@@ -199,9 +196,9 @@ export function AddressInformation({
             options: barangayOptions,
             value: value.barangayCode,
             onSelect: handleBarangaySelect,
-            placeholder: barangaysLoading ? "Loading barangays..." : "Select barangay",
+            placeholder: barangaysLoading ? 'Loading barangays...' : 'Select barangay',
             loading: barangaysLoading,
-            disabled: !value.cityMunicipalityCode
+            disabled: !value.cityMunicipalityCode,
           }}
         />
 
@@ -216,9 +213,9 @@ export function AddressInformation({
             options: cityOptions,
             value: value.cityMunicipalityCode,
             onSelect: handleCitySelect,
-            placeholder: citiesLoading ? "Loading cities..." : "Select city/municipality",
+            placeholder: citiesLoading ? 'Loading cities...' : 'Select city/municipality',
             loading: citiesLoading,
-            disabled: !value.provinceCode
+            disabled: !value.provinceCode,
           }}
         />
 
@@ -233,9 +230,9 @@ export function AddressInformation({
             options: provinceOptions,
             value: value.provinceCode,
             onSelect: handleProvinceSelect,
-            placeholder: provincesLoading ? "Loading provinces..." : "Select province",
+            placeholder: provincesLoading ? 'Loading provinces...' : 'Select province',
             loading: provincesLoading,
-            disabled: !value.regionCode
+            disabled: !value.regionCode,
           }}
         />
 
@@ -250,8 +247,8 @@ export function AddressInformation({
             options: regionOptions,
             value: value.regionCode,
             onSelect: handleRegionSelect,
-            placeholder: regionsLoading ? "Loading regions..." : "Select region",
-            loading: regionsLoading
+            placeholder: regionsLoading ? 'Loading regions...' : 'Select region',
+            loading: regionsLoading,
           }}
         />
       </div>

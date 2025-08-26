@@ -141,9 +141,10 @@ export const InvalidCredentials: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Invalid login credentials' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Invalid login credentials' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>
@@ -162,9 +163,10 @@ export const EmailNotConfirmed: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Email not confirmed' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Email not confirmed' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>
@@ -183,9 +185,10 @@ export const NetworkError: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Network request failed' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Network request failed' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>

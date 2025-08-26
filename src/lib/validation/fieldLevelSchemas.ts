@@ -4,8 +4,6 @@
 
 import { z } from 'zod';
 
-import type { ResidentFormData } from '@/types/resident-form';
-
 import {
   isValidPhilSysCardNumber,
   isValidMobileNumber,
@@ -72,7 +70,7 @@ export const requiredSelectValidator = z.string().min(1, 'Please make a selectio
 // Field-specific validation functions
 export const validateField = (
   fieldName: string,
-  value: unknown
+  value: any
 ): { isValid: boolean; error?: string } => {
   try {
     switch (fieldName) {
@@ -140,7 +138,7 @@ export const validateField = (
 
 // Batch validation for multiple fields
 export const validateFields = (
-  data: Partial<ResidentFormData>,
+  data: Record<string, any>,
   fieldNames: string[]
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
@@ -174,7 +172,7 @@ export const getRequiredFieldsForSection = (section: keyof typeof REQUIRED_FIELD
 
 // Validate a complete form section
 export const validateFormSection = (
-  data: Partial<ResidentFormData>,
+  data: Record<string, any>,
   section: keyof typeof REQUIRED_FIELDS
 ): { isValid: boolean; errors: Record<string, string> } => {
   const requiredFields = getRequiredFieldsForSection(section);
@@ -194,7 +192,7 @@ export const createDebouncedValidator = (
 ) => {
   let timeoutId: NodeJS.Timeout;
 
-  return (value: string | number | boolean | null | undefined) => {
+  return (value: any) => {
     clearTimeout(timeoutId);
 
     timeoutId = setTimeout(() => {

@@ -1,17 +1,18 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const regionCode = searchParams.get('region');
 
     // Build query
-    let query = supabase
-      .from('psgc_provinces')
-      .select('code, name, region_code')
-      .order('name');
+    let query = supabase.from('psgc_provinces').select('code, name, region_code').order('name');
 
     // Filter by region if provided
     if (regionCode) {
@@ -26,11 +27,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = provinces?.map((province: { code: string; name: string; region_code: string }) => ({
-      value: province.code,
-      label: province.name,
-      region_code: province.region_code,
-    })) || [];
+    const options =
+      provinces?.map(province => ({
+        value: province.code,
+        label: province.name,
+        region_code: province.region_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,

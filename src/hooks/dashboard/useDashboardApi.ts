@@ -1,13 +1,15 @@
 /**
  * Dashboard API Hook
- * 
+ *
  * @description Handles API calls and data fetching for dashboard statistics.
  * Extracted from useDashboard for better separation of concerns.
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase, logger } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase, logger } from '@/lib';
+
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '../utilities/useRetryLogic';
 
@@ -137,7 +139,9 @@ export interface DashboardResponse {
  */
 export async function fetchDashboardStats(): Promise<DashboardResponse> {
   // Get current session to pass auth token
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session?.access_token) {
     throw new Error('No valid session found');
@@ -147,7 +151,7 @@ export async function fetchDashboardStats(): Promise<DashboardResponse> {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${session.access_token}`,
     },
   });
 
@@ -173,7 +177,7 @@ export interface UseDashboardApiReturn {
 
 /**
  * Hook for dashboard API operations
- * 
+ *
  * @description Provides dashboard data fetching with React Query integration.
  * Handles authentication, caching, and error states with advanced retry logic.
  */
@@ -187,7 +191,11 @@ export function useDashboardApi(): UseDashboardApiReturn {
     name: 'DashboardAPI',
     shouldRetry: (error: Error) => {
       // Don't retry on authentication errors
-      if (error.message.includes('No valid session') || error.message.includes('401') || error.message.includes('403')) {
+      if (
+        error.message.includes('No valid session') ||
+        error.message.includes('401') ||
+        error.message.includes('403')
+      ) {
         return false;
       }
       // Don't retry on client errors (4xx)
@@ -201,7 +209,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
       if (attempt > 0) {
         logger.info('Dashboard API retry succeeded', {
           attempts: attempt + 1,
-          operation: 'dashboard-fetch'
+          operation: 'dashboard-fetch',
         });
       }
     },
@@ -209,14 +217,14 @@ export function useDashboardApi(): UseDashboardApiReturn {
       logger.warn('Dashboard API retry attempt failed', {
         attempt: attempt + 1,
         error: error.message,
-        operation: 'dashboard-fetch'
+        operation: 'dashboard-fetch',
       });
     },
-    onMaxAttemptsReached: (error) => {
+    onMaxAttemptsReached: error => {
       logger.error('Dashboard API max retry attempts reached', {
         error: error.message,
         operation: 'dashboard-fetch',
-        maxAttempts: RetryStrategies.standard.maxAttempts
+        maxAttempts: RetryStrategies.standard.maxAttempts,
       });
     },
   });
@@ -229,7 +237,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
         error: error.message,
         errorInfo,
         operation: 'dashboard-fetch',
-        userId: user?.id
+        userId: user?.id,
       });
     },
     enableRecovery: false, // Let our retry logic handle retries

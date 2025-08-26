@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts';
+import React from 'react';
+
 import { Button } from '@/components';
+import { useAuth } from '@/contexts';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -54,7 +55,7 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
         <div className="text-center">
           <svg
             className="mx-auto size-12 animate-spin text-gray-600 dark:text-gray-400"
@@ -88,7 +89,7 @@ export default function ProtectedRoute({
     }
 
     return (
-      <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
         <div className="text-center">
           <svg
             className="mx-auto size-12 animate-spin text-gray-600 dark:text-gray-400"
@@ -121,7 +122,7 @@ export default function ProtectedRoute({
     // If profile is still loading, show loading state
     if (profileLoading) {
       return (
-        <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+        <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
           <div className="text-center">
             <svg
               className="mx-auto size-12 animate-spin text-gray-600 dark:text-gray-400"
@@ -150,9 +151,9 @@ export default function ProtectedRoute({
 
     // If not loading and no profile for permission checks, show error
     return (
-      <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
         <div className="w-full max-w-md text-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
+          <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-md dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 text-yellow-600">
               <svg
                 className="mx-auto size-12"
@@ -168,7 +169,9 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">Profile Loading Error</h1>
+            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">
+              Profile Loading Error
+            </h1>
             <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
               Unable to load your profile. Please try refreshing the page.
             </p>
@@ -184,9 +187,9 @@ export default function ProtectedRoute({
   // Check role requirement
   if (requireRole && !isInRole(requireRole)) {
     return (
-      <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
         <div className="w-full max-w-md text-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
+          <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-md dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 text-yellow-600">
               <svg
                 className="mx-auto size-12"
@@ -202,11 +205,13 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">Access Denied</h1>
+            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">
+              Access Denied
+            </h1>
             <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
               You need the <strong>{requireRole}</strong> role to access this page.
             </p>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 text-xs">
+            <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
               Your current role: <strong>{role?.name}</strong>
             </p>
             <Button
@@ -226,9 +231,9 @@ export default function ProtectedRoute({
   // Check permission requirement
   if (requirePermission && !hasPermission(requirePermission)) {
     return (
-      <div className="bg-white dark:bg-gray-800 flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-gray-800">
         <div className="w-full max-w-md text-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
+          <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-md dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 text-red-600">
               <svg
                 className="mx-auto size-12"
@@ -244,11 +249,13 @@ export default function ProtectedRoute({
                 />
               </svg>
             </div>
-            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">Insufficient Permissions</h1>
+            <h1 className="mb-2 text-lg font-semibold text-gray-600 dark:text-gray-400">
+              Insufficient Permissions
+            </h1>
             <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
               You don&apos;t have permission to access this page.
             </p>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 text-xs">
+            <p className="mb-4 text-xs text-gray-500 dark:text-gray-400">
               Required permission: <strong>{requirePermission}</strong>
             </p>
             <Button

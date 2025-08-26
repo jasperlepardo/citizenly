@@ -2,8 +2,6 @@
  * Business rules for resident form conditional fields and logic
  */
 
-import type { ResidentFormData } from '@/types/resident-form';
-
 // Religion-related business rules
 export const shouldShowReligionOthersField = (religion: string): boolean => {
   return religion === 'others';
@@ -77,7 +75,7 @@ export const shouldShowSectoralDetails = (sectoralType: string): boolean => {
 };
 
 // Form completion business rules
-export const calculateFormCompletionPercentage = (formData: Partial<ResidentFormData>): number => {
+export const calculateFormCompletionPercentage = (formData: Record<string, any>): number => {
   const requiredFields = ['firstName', 'lastName', 'sex', 'birthdate', 'civilStatus'];
 
   const optionalFields = ['middleName', 'citizenship', 'mobileNumber', 'email'];

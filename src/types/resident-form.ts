@@ -6,27 +6,38 @@
 // Database enum types
 export type SexEnum = 'male' | 'female';
 
-export type CivilStatusEnum = 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
+export type CivilStatusEnum =
+  | 'single'
+  | 'married'
+  | 'divorced'
+  | 'separated'
+  | 'widowed'
+  | 'others';
 
 export type CitizenshipEnum = 'filipino' | 'dual_citizen' | 'foreigner';
 
-export type EducationLevelEnum = 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational';
+export type EducationLevelEnum =
+  | 'elementary'
+  | 'high_school'
+  | 'college'
+  | 'post_graduate'
+  | 'vocational';
 
-export type EmploymentStatusEnum = 
-  | 'employed' 
-  | 'unemployed' 
-  | 'underemployed' 
-  | 'self_employed' 
-  | 'student' 
-  | 'retired' 
-  | 'homemaker' 
-  | 'unable_to_work' 
-  | 'looking_for_work' 
+export type EmploymentStatusEnum =
+  | 'employed'
+  | 'unemployed'
+  | 'underemployed'
+  | 'self_employed'
+  | 'student'
+  | 'retired'
+  | 'homemaker'
+  | 'unable_to_work'
+  | 'looking_for_work'
   | 'not_in_labor_force';
 
 export type BloodTypeEnum = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
 
-export type ReligionEnum = 
+export type ReligionEnum =
   | 'roman_catholic'
   | 'islam'
   | 'iglesia_ni_cristo'
@@ -39,13 +50,46 @@ export type ReligionEnum =
   | 'united_church_of_christ_philippines'
   | 'others';
 
-export type EthnicityEnum = 
-  | 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense'
-  | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao'
-  | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot'
-  | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen'
-  | 'tboli' | 'teduray' | 'tumandok'
-  | 'chinese' | 'others';
+export type EthnicityEnum =
+  | 'tagalog'
+  | 'cebuano'
+  | 'ilocano'
+  | 'bisaya'
+  | 'hiligaynon'
+  | 'bikolano'
+  | 'waray'
+  | 'kapampangan'
+  | 'pangasinense'
+  | 'maranao'
+  | 'maguindanao'
+  | 'tausug'
+  | 'yakan'
+  | 'samal'
+  | 'badjao'
+  | 'aeta'
+  | 'agta'
+  | 'ati'
+  | 'batak'
+  | 'bukidnon'
+  | 'gaddang'
+  | 'higaonon'
+  | 'ibaloi'
+  | 'ifugao'
+  | 'igorot'
+  | 'ilongot'
+  | 'isneg'
+  | 'ivatan'
+  | 'kalinga'
+  | 'kankanaey'
+  | 'mangyan'
+  | 'mansaka'
+  | 'palawan'
+  | 'subanen'
+  | 'tboli'
+  | 'teduray'
+  | 'tumandok'
+  | 'chinese'
+  | 'others';
 
 export type BirthPlaceLevelEnum = 'region' | 'province' | 'city_municipality' | 'barangay';
 
@@ -162,7 +206,7 @@ export interface ResidentMigrantInfo {
 export interface ResidentFormData extends ResidentDatabaseRecord {
   // Sectoral information (flattened for form usage)
   sectoral_info?: ResidentSectoralInfo;
-  
+
   // Migration information (flattened for form usage)
   migrant_info?: ResidentMigrantInfo;
 }
@@ -258,7 +302,7 @@ export interface EnumOption {
 
 export const SEX_OPTIONS: EnumOption[] = [
   { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' }
+  { value: 'female', label: 'Female' },
 ];
 
 export const CIVIL_STATUS_OPTIONS: EnumOption[] = [
@@ -267,13 +311,13 @@ export const CIVIL_STATUS_OPTIONS: EnumOption[] = [
   { value: 'divorced', label: 'Divorced' },
   { value: 'separated', label: 'Separated' },
   { value: 'widowed', label: 'Widowed' },
-  { value: 'others', label: 'Others' }
+  { value: 'others', label: 'Others' },
 ];
 
 export const CITIZENSHIP_OPTIONS: EnumOption[] = [
   { value: 'filipino', label: 'Filipino' },
   { value: 'dual_citizen', label: 'Dual Citizen' },
-  { value: 'foreigner', label: 'Foreigner' }
+  { value: 'foreigner', label: 'Foreigner' },
 ];
 
 export const EDUCATION_LEVEL_OPTIONS: EnumOption[] = [
@@ -281,7 +325,7 @@ export const EDUCATION_LEVEL_OPTIONS: EnumOption[] = [
   { value: 'high_school', label: 'High School' },
   { value: 'college', label: 'College' },
   { value: 'post_graduate', label: 'Post Graduate' },
-  { value: 'vocational', label: 'Vocational' }
+  { value: 'vocational', label: 'Vocational' },
 ];
 
 export const EMPLOYMENT_STATUS_OPTIONS: EnumOption[] = [
@@ -294,7 +338,7 @@ export const EMPLOYMENT_STATUS_OPTIONS: EnumOption[] = [
   { value: 'homemaker', label: 'Homemaker' },
   { value: 'unable_to_work', label: 'Unable to Work' },
   { value: 'looking_for_work', label: 'Looking for Work' },
-  { value: 'not_in_labor_force', label: 'Not in Labor Force' }
+  { value: 'not_in_labor_force', label: 'Not in Labor Force' },
 ];
 
 export const BLOOD_TYPE_OPTIONS: EnumOption[] = [
@@ -305,7 +349,7 @@ export const BLOOD_TYPE_OPTIONS: EnumOption[] = [
   { value: 'AB+', label: 'AB+' },
   { value: 'AB-', label: 'AB-' },
   { value: 'O+', label: 'O+' },
-  { value: 'O-', label: 'O-' }
+  { value: 'O-', label: 'O-' },
 ];
 
 // Export common religion options (subset for UI)
@@ -317,10 +361,13 @@ export const RELIGION_OPTIONS: EnumOption[] = [
   { value: 'aglipayan_church', label: 'Aglipayan Church' },
   { value: 'seventh_day_adventist', label: 'Seventh Day Adventist' },
   { value: 'bible_baptist_church', label: 'Bible Baptist Church' },
-  { value: 'jehovahs_witnesses', label: 'Jehovah\'s Witnesses' },
-  { value: 'church_of_jesus_christ_latter_day_saints', label: 'Church of Jesus Christ of Latter-day Saints' },
+  { value: 'jehovahs_witnesses', label: "Jehovah's Witnesses" },
+  {
+    value: 'church_of_jesus_christ_latter_day_saints',
+    label: 'Church of Jesus Christ of Latter-day Saints',
+  },
   { value: 'united_church_of_christ_philippines', label: 'United Church of Christ Philippines' },
-  { value: 'others', label: 'Others (specify)' }
+  { value: 'others', label: 'Others (specify)' },
 ];
 
 // Export common ethnicity options (subset for UI)
@@ -362,19 +409,19 @@ export const ETHNICITY_OPTIONS: EnumOption[] = [
   { value: 'mansaka', label: 'Mansaka' },
   { value: 'palawan', label: 'Palawan' },
   { value: 'subanen', label: 'Subanen' },
-  { value: 'tboli', label: 'T\'boli' },
+  { value: 'tboli', label: "T'boli" },
   { value: 'teduray', label: 'Teduray' },
   { value: 'tumandok', label: 'Tumandok' },
   // Other groups
   { value: 'chinese', label: 'Chinese' },
-  { value: 'others', label: 'Others' }
+  { value: 'others', label: 'Others' },
 ];
 
 export const BIRTH_PLACE_LEVEL_OPTIONS: EnumOption[] = [
   { value: 'region', label: 'Region' },
   { value: 'province', label: 'Province' },
   { value: 'city_municipality', label: 'City/Municipality' },
-  { value: 'barangay', label: 'Barangay' }
+  { value: 'barangay', label: 'Barangay' },
 ];
 
 // Legacy aliases removed - use ResidentDatabaseRecord directly

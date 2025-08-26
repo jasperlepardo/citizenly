@@ -1,9 +1,13 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const cityCode = searchParams.get('city');
 
@@ -26,11 +30,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = barangays?.map((barangay: { code: string; name: string; city_municipality_code: string }) => ({
-      value: barangay.code,
-      label: barangay.name,
-      city_municipality_code: barangay.city_municipality_code,
-    })) || [];
+    const options =
+      barangays?.map(barangay => ({
+        value: barangay.code,
+        label: barangay.name,
+        city_municipality_code: barangay.city_municipality_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,

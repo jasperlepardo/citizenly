@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect, useCallback } from 'react';
 
 interface SubdivisionOption {
   value: string;
@@ -38,38 +38,33 @@ export function useSubdivisionsSearch({
 
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams();
-    
+
     if (barangayCode) {
       params.append('barangay_code', barangayCode);
     }
-    
+
     if (debouncedSearch && debouncedSearch.trim() !== '') {
       params.append('search', debouncedSearch.trim());
     }
-    
+
     return params.toString();
   }, [barangayCode, debouncedSearch]);
 
   const queryKey = ['subdivisions', barangayCode, debouncedSearch];
-  
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
+
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: async (): Promise<SubdivisionsResponse> => {
       const queryString = buildQueryParams();
       const url = `/api/addresses/subdivisions${queryString ? `?${queryString}` : ''}`;
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch subdivisions');
       }
-      
+
       return response.json();
     },
     enabled: enabled && !!barangayCode, // Only fetch when barangay is selected

@@ -11,7 +11,7 @@ export interface CommandMenuAnalyticsEvent {
   timestamp: number;
   userId?: string;
   sessionId?: string;
-  data: Record<string, string | number | boolean>;
+  data: Record<string, any>;
 }
 
 // Performance metrics
@@ -148,7 +148,7 @@ class CommandMenuAnalytics {
     });
   }
 
-  trackError(error: Error, context: Record<string, string | number | boolean> = {}): void {
+  trackError(error: Error, context: Record<string, any> = {}): void {
     this.errorCount++;
     this.metrics.errorRate = this.errorCount / Math.max(this.totalEvents, 1);
 
@@ -287,7 +287,7 @@ export const trackWorkflowSuggestion = (
   suggestionTitle: string
 ) => commandMenuAnalytics.trackWorkflowSuggestion(suggestionId, query, suggestionTitle);
 
-export const trackCommandMenuError = (error: Error, context: Record<string, string | number | boolean> = {}) =>
+export const trackCommandMenuError = (error: Error, context: Record<string, any> = {}) =>
   commandMenuAnalytics.trackError(error, context);
 
 export const startCommandMenuSearchTimer = (query: string) =>

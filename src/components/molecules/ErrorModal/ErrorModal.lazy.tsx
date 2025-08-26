@@ -1,10 +1,11 @@
 /**
  * Lazy-loaded Error Modal
- * 
+ *
  * @description Lazy version of ErrorModal for code splitting
  */
 
 import { lazy } from 'react';
+
 import { withLazyLoading } from '@/lib';
 
 const ErrorModalLazy = lazy(() =>

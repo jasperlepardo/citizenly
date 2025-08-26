@@ -5,15 +5,13 @@
 
 import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
 import { createAppError } from '../error-handling/error-utils';
-import { ResidentRecord, HouseholdRecord } from '@/types/database';
-import { UserProfile } from '@/contexts/AuthContext';
 
 import { offlineStorage } from './offline-storage';
 
 interface SyncResult {
   success: boolean;
   error?: string;
-  data?: ResidentRecord | HouseholdRecord | UserProfile;
+  data?: any;
 }
 
 export class SyncQueue {
@@ -27,7 +25,7 @@ export class SyncQueue {
   async addToQueue(
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     type: 'resident' | 'household' | 'user',
-    data: ResidentRecord | HouseholdRecord | UserProfile
+    data: any
   ): Promise<void> {
     if (typeof window === 'undefined') return;
 
@@ -93,7 +91,7 @@ export class SyncQueue {
   /**
    * Sync individual item
    */
-  private async syncItem(item: { action: string; type: string; data: ResidentRecord | HouseholdRecord | UserProfile }): Promise<SyncResult> {
+  private async syncItem(item: any): Promise<SyncResult> {
     const { action, type, data } = item;
 
     try {
@@ -149,7 +147,7 @@ export class SyncQueue {
   /**
    * Handle CREATE operations
    */
-  private async handleCreate(type: string, data: ResidentRecord | HouseholdRecord | UserProfile, headers: HeadersInit): Promise<Response> {
+  private async handleCreate(type: string, data: any, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: '/api/residents',
       household: '/api/households',
@@ -175,7 +173,7 @@ export class SyncQueue {
   /**
    * Handle UPDATE operations
    */
-  private async handleUpdate(type: string, data: ResidentRecord | HouseholdRecord | UserProfile, headers: HeadersInit): Promise<Response> {
+  private async handleUpdate(type: string, data: any, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: `/api/residents/${data.id}`,
       household: `/api/households/${data.code || data.id}`,
@@ -201,7 +199,7 @@ export class SyncQueue {
   /**
    * Handle DELETE operations
    */
-  private async handleDelete(type: string, data: { id: string }, headers: HeadersInit): Promise<Response> {
+  private async handleDelete(type: string, data: any, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: `/api/residents/${data.id}`,
       household: `/api/households/${data.code || data.id}`,

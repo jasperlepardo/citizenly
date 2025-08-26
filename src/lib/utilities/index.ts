@@ -1,6 +1,6 @@
 /**
  * Utilities Library Module
- * 
+ *
  * @description Centralized utility functions for the application.
  * All utility functions are consolidated here to eliminate duplication.
  */
@@ -15,10 +15,7 @@ export {
 } from './string-utils';
 
 // Re-export validation functions from validation library (backward compatibility)
-export {
-  isValidEmail,
-  isValidPhilippineMobile,
-} from '@/lib/validation/utilities';
+export { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
 
 // Data transformation utilities
 export {
@@ -44,12 +41,7 @@ export {
 } from './id-generators';
 
 // Async utilities
-export {
-  debounce,
-  throttle,
-  sleep,
-  retry,
-} from './async-utils';
+export { debounce, throttle, sleep, retry } from './async-utils';
 
 // CSS utilities
 export {
@@ -59,19 +51,14 @@ export {
 
 // Resident utilities (moved to @/lib/business-rules)
 // export * from './resident-detail-helpers';  // MOVED to business-rules/
-// export * from './resident-helpers';         // MOVED to business-rules/ 
+// export * from './resident-helpers';         // MOVED to business-rules/
 // export * from './resident-listing-helpers'; // MOVED to business-rules/
 
 // Search utilities
 export * from './search-utilities';
 
 // File utilities
-export {
-  formatFileSize,
-  getFileExtension,
-  isImageFile,
-  exceedsMaxSize,
-} from './file-utils';
+export { formatFileSize, getFileExtension, isImageFile, exceedsMaxSize } from './file-utils';
 
 // Validation utilities (moved to @/lib/validation)
 // Use: import from '@/lib/validation/utilities' instead

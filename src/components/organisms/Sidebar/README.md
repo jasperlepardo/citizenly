@@ -28,9 +28,7 @@ function App() {
         logo={<YourLogo />}
         footer={<YourFooter />}
       />
-      <main className="flex-1">
-        {/* Your main content */}
-      </main>
+      <main className="flex-1">{/* Your main content */}</main>
     </div>
   );
 }
@@ -40,26 +38,26 @@ function App() {
 
 ### `SidebarProps`
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `navigationItems` | `NavigationItem[]` | `[]` | Main navigation items array |
-| `bottomNavigationItems` | `NavigationItem[]` | `[]` | Bottom section navigation items |
-| `logo` | `ReactNode` | - | Logo component or element |
-| `title` | `string` | `'Citizenly'` | Sidebar header title |
-| `subtitle` | `string` | `'Barangay Management System'` | Sidebar header subtitle |
-| `footer` | `ReactNode` | - | Footer content |
-| `collapsible` | `boolean` | `true` | Enable collapse functionality |
-| `defaultCollapsed` | `boolean` | `false` | Initial collapsed state |
-| `onCollapsedChange` | `(collapsed: boolean) => void` | - | Callback when collapse state changes |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Sidebar width |
-| `position` | `'fixed' \| 'sticky' \| 'relative'` | `'sticky'` | Positioning behavior |
-| `mobile` | `'hidden' \| 'overlay' \| 'push'` | `'hidden'` | Mobile display behavior |
-| `mobileOpen` | `boolean` | `false` | Mobile sidebar open state |
-| `onMobileToggle` | `() => void` | - | Mobile toggle callback |
-| `showSubmenu` | `boolean` | `true` | Show navigation submenus |
-| `showIcons` | `boolean` | `true` | Show navigation icons |
-| `className` | `string` | - | Additional CSS classes |
-| `children` | `ReactNode` | - | Custom content (overrides navigation) |
+| Prop                    | Type                                | Default                        | Description                           |
+| ----------------------- | ----------------------------------- | ------------------------------ | ------------------------------------- |
+| `navigationItems`       | `NavigationItem[]`                  | `[]`                           | Main navigation items array           |
+| `bottomNavigationItems` | `NavigationItem[]`                  | `[]`                           | Bottom section navigation items       |
+| `logo`                  | `ReactNode`                         | -                              | Logo component or element             |
+| `title`                 | `string`                            | `'Citizenly'`                  | Sidebar header title                  |
+| `subtitle`              | `string`                            | `'Barangay Management System'` | Sidebar header subtitle               |
+| `footer`                | `ReactNode`                         | -                              | Footer content                        |
+| `collapsible`           | `boolean`                           | `true`                         | Enable collapse functionality         |
+| `defaultCollapsed`      | `boolean`                           | `false`                        | Initial collapsed state               |
+| `onCollapsedChange`     | `(collapsed: boolean) => void`      | -                              | Callback when collapse state changes  |
+| `size`                  | `'sm' \| 'md' \| 'lg' \| 'xl'`      | `'md'`                         | Sidebar width                         |
+| `position`              | `'fixed' \| 'sticky' \| 'relative'` | `'sticky'`                     | Positioning behavior                  |
+| `mobile`                | `'hidden' \| 'overlay' \| 'push'`   | `'hidden'`                     | Mobile display behavior               |
+| `mobileOpen`            | `boolean`                           | `false`                        | Mobile sidebar open state             |
+| `onMobileToggle`        | `() => void`                        | -                              | Mobile toggle callback                |
+| `showSubmenu`           | `boolean`                           | `true`                         | Show navigation submenus              |
+| `showIcons`             | `boolean`                           | `true`                         | Show navigation icons                 |
+| `className`             | `string`                            | -                              | Additional CSS classes                |
+| `children`              | `ReactNode`                         | -                              | Custom content (overrides navigation) |
 
 ### `NavigationItem`
 
@@ -111,9 +109,7 @@ interface NavigationItem {
   ]}
   footer={
     <div className="text-center">
-      <p className="text-xs text-gray-500 dark:text-gray-400">
-        Bersyon 2.1.0 | DILG Approved
-      </p>
+      <p className="text-xs text-gray-500 dark:text-gray-400">Bersyon 2.1.0 | DILG Approved</p>
     </div>
   }
 />
@@ -125,9 +121,9 @@ interface NavigationItem {
 <Sidebar
   collapsible
   defaultCollapsed={false}
-  onCollapsedChange={(collapsed) => console.log('Sidebar collapsed:', collapsed)}
+  onCollapsedChange={collapsed => console.log('Sidebar collapsed:', collapsed)}
   logo={
-    <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
+    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
       <Shield className="h-5 w-5 text-white" />
     </div>
   }
@@ -149,10 +145,7 @@ function MobileLayout() {
         onMobileToggle={() => setMobileOpen(!mobileOpen)}
       />
       <main className="flex-1">
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="lg:hidden p-2"
-        >
+        <button onClick={() => setMobileOpen(true)} className="p-2 lg:hidden">
           <Menu />
         </button>
         {/* Content */}

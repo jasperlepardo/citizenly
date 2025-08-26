@@ -4,6 +4,7 @@
  */
 
 import { logger } from '@/lib';
+
 import { storeThreatDetectionEvent, ThreatDetectionEvent } from './audit-storage';
 
 export interface SecurityContext {
@@ -53,13 +54,13 @@ export async function recordSecurityEvent(
   // Store in cache for pattern analysis
   const cacheKey = context.ipAddress || 'unknown';
   const events = eventCache.get(cacheKey) || [];
-  
+
   // Add new event and maintain cache size
   events.push(event);
   if (events.length > MAX_EVENTS_PER_IP) {
     events.shift(); // Remove oldest event
   }
-  
+
   eventCache.set(cacheKey, events);
 
   // Clean old events periodically
@@ -161,13 +162,14 @@ const bruteForceDetector: ThreatPattern = {
   description: 'Multiple failed login attempts detected',
   severity: 'high',
   detector: (context, history) => {
-    const recentFailedLogins = history.filter(event => 
-      event.type === 'login_failed' &&
-      Date.now() - new Date(event.timestamp).getTime() < 5 * 60 * 1000 // Last 5 minutes
+    const recentFailedLogins = history.filter(
+      event =>
+        event.type === 'login_failed' &&
+        Date.now() - new Date(event.timestamp).getTime() < 5 * 60 * 1000 // Last 5 minutes
     );
     return recentFailedLogins.length >= 5;
   },
-  mitigation: async (context) => {
+  mitigation: async context => {
     // TODO: Implement IP blocking or account lockout
     logger.warn('Brute force mitigation triggered', { ipAddress: context.ipAddress });
   },
@@ -189,7 +191,7 @@ const sqlInjectionDetector: ThreatPattern = {
       /'.*or.*'.*='.*'/i,
       /exec\s*\(/i,
     ];
-    
+
     const requestPath = context.requestPath || '';
     return sqlPatterns.some(pattern => pattern.test(requestPath));
   },
@@ -210,7 +212,7 @@ const xssAttemptDetector: ThreatPattern = {
       /<iframe[^>]*>/i,
       /eval\s*\(/i,
     ];
-    
+
     const requestPath = context.requestPath || '';
     return xssPatterns.some(pattern => pattern.test(requestPath));
   },
@@ -224,16 +226,16 @@ const suspiciousNavigationDetector: ThreatPattern = {
   description: 'Unusual navigation patterns detected',
   severity: 'medium',
   detector: (context, history) => {
-    const recentRequests = history.filter(event => 
-      Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
+    const recentRequests = history.filter(
+      event => Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
     );
-    
+
     // Check for directory traversal attempts
-    const traversalAttempts = recentRequests.filter(event =>
-      event.context.requestPath?.includes('../') ||
-      event.context.requestPath?.includes('..\\')
+    const traversalAttempts = recentRequests.filter(
+      event =>
+        event.context.requestPath?.includes('../') || event.context.requestPath?.includes('..\\')
     );
-    
+
     return traversalAttempts.length > 0;
   },
 };
@@ -246,13 +248,13 @@ const rapidRequestDetector: ThreatPattern = {
   description: 'Unusually high request rate detected',
   severity: 'medium',
   detector: (context, history) => {
-    const recentRequests = history.filter(event => 
-      Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
+    const recentRequests = history.filter(
+      event => Date.now() - new Date(event.timestamp).getTime() < 1 * 60 * 1000 // Last 1 minute
     );
-    
+
     return recentRequests.length > 100; // More than 100 requests per minute
   },
-  mitigation: async (context) => {
+  mitigation: async context => {
     // TODO: Implement rate limiting
     logger.warn('Rate limiting triggered', { ipAddress: context.ipAddress });
   },
@@ -266,12 +268,13 @@ const privilegeEscalationDetector: ThreatPattern = {
   description: 'Potential privilege escalation attempt detected',
   severity: 'critical',
   detector: (context, history) => {
-    const adminAttempts = history.filter(event => 
-      event.type === 'access_denied' &&
-      event.context.requestPath?.includes('/admin') &&
-      Date.now() - new Date(event.timestamp).getTime() < 10 * 60 * 1000 // Last 10 minutes
+    const adminAttempts = history.filter(
+      event =>
+        event.type === 'access_denied' &&
+        event.context.requestPath?.includes('/admin') &&
+        Date.now() - new Date(event.timestamp).getTime() < 10 * 60 * 1000 // Last 10 minutes
     );
-    
+
     return adminAttempts.length >= 3;
   },
 };
@@ -284,16 +287,15 @@ const dataExfiltrationDetector: ThreatPattern = {
   description: 'Potential data exfiltration detected',
   severity: 'critical',
   detector: (context, history) => {
-    const dataRequests = history.filter(event => 
-      event.type === 'data_access' &&
-      Date.now() - new Date(event.timestamp).getTime() < 5 * 60 * 1000 // Last 5 minutes
+    const dataRequests = history.filter(
+      event =>
+        event.type === 'data_access' &&
+        Date.now() - new Date(event.timestamp).getTime() < 5 * 60 * 1000 // Last 5 minutes
     );
-    
+
     // Check for unusual data access patterns
-    const uniqueResources = new Set(
-      dataRequests.map(event => event.context.requestPath)
-    );
-    
+    const uniqueResources = new Set(dataRequests.map(event => event.context.requestPath));
+
     return dataRequests.length > 50 && uniqueResources.size > 20;
   },
 };
@@ -303,12 +305,12 @@ const dataExfiltrationDetector: ThreatPattern = {
  */
 function cleanupOldEvents(): void {
   const now = Date.now();
-  
+
   for (const [key, events] of Array.from(eventCache.entries())) {
-    const filteredEvents = events.filter(event => 
-      now - new Date(event.timestamp).getTime() < CACHE_TTL
+    const filteredEvents = events.filter(
+      event => now - new Date(event.timestamp).getTime() < CACHE_TTL
     );
-    
+
     if (filteredEvents.length === 0) {
       eventCache.delete(key);
     } else {
@@ -322,14 +324,14 @@ function cleanupOldEvents(): void {
  */
 export function getThreatLevel(ipAddress: string): 'low' | 'medium' | 'high' | 'critical' {
   const events = eventCache.get(ipAddress) || [];
-  const recentEvents = events.filter(event => 
-    Date.now() - new Date(event.timestamp).getTime() < 10 * 60 * 1000 // Last 10 minutes
+  const recentEvents = events.filter(
+    event => Date.now() - new Date(event.timestamp).getTime() < 10 * 60 * 1000 // Last 10 minutes
   );
-  
+
   const failedLogins = recentEvents.filter(event => event.type === 'login_failed').length;
   const accessDenied = recentEvents.filter(event => event.type === 'access_denied').length;
   const totalEvents = recentEvents.length;
-  
+
   if (failedLogins >= 10 || accessDenied >= 5) {
     return 'critical';
   } else if (failedLogins >= 5 || accessDenied >= 3 || totalEvents > 200) {
@@ -360,22 +362,22 @@ export function getSecurityInsights(): {
 } {
   const allIps = Array.from(eventCache.keys());
   const threatLevels = allIps.map(ip => getThreatLevel(ip));
-  
+
   const blockedIps = allIps.filter(ip => shouldBlockIp(ip)).length;
-  const activeThreats = threatLevels.filter(level => 
-    level === 'high' || level === 'critical'
+  const activeThreats = threatLevels.filter(
+    level => level === 'high' || level === 'critical'
   ).length;
-  
+
   // Calculate average threat level (simplified)
   const levelValues = { low: 1, medium: 2, high: 3, critical: 4 };
-  const avgValue = threatLevels.reduce((sum, level) => 
-    sum + levelValues[level], 0
-  ) / threatLevels.length || 1;
-  
-  const avgThreatLevel = Object.keys(levelValues).find(level => 
-    levelValues[level as keyof typeof levelValues] >= Math.round(avgValue)
-  ) || 'low';
-  
+  const avgValue =
+    threatLevels.reduce((sum, level) => sum + levelValues[level], 0) / threatLevels.length || 1;
+
+  const avgThreatLevel =
+    Object.keys(levelValues).find(
+      level => levelValues[level as keyof typeof levelValues] >= Math.round(avgValue)
+    ) || 'low';
+
   return {
     activeThreats,
     blockedIps,

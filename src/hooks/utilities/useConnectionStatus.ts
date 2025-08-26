@@ -2,12 +2,13 @@
 
 /**
  * Connection Status Hook
- * 
+ *
  * @description Hook for monitoring network connection and sync status.
  * Extracted from ConnectionStatus component for better maintainability.
  */
 
 import { useState, useEffect } from 'react';
+
 import { syncQueue } from '@/lib/data';
 
 /**
@@ -32,7 +33,7 @@ export function useConnectionStatus(): UseConnectionStatusReturn {
   useEffect(() => {
     // Set initial online status on client
     setIsOnline(navigator.onLine);
-    
+
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 

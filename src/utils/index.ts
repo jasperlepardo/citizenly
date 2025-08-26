@@ -1,6 +1,6 @@
 /**
  * Utilities Library Module
- * 
+ *
  * @description Centralized utility functions for the application.
  * All utility functions are consolidated here to eliminate duplication.
  */
@@ -40,12 +40,7 @@ export {
 } from '../lib/utilities/id-generators';
 
 // Async utilities - consolidated to lib/utilities
-export {
-  debounce,
-  throttle,
-  sleep,
-  retry,
-} from '../lib/utilities/async-utils';
+export { debounce, throttle, sleep, retry } from '../lib/utilities/async-utils';
 
 // CSS utilities - consolidated to lib/utilities
 export {
@@ -55,7 +50,7 @@ export {
 
 // Resident utilities - now in lib/utilities
 // export * from './resident-detail-helpers';  // REMOVED - duplicate
-// export * from './resident-helpers';        // REMOVED - duplicate  
+// export * from './resident-helpers';        // REMOVED - duplicate
 // export * from './resident-listing-helpers'; // REMOVED - duplicate
 
 // Search utilities - consolidated to lib/utilities

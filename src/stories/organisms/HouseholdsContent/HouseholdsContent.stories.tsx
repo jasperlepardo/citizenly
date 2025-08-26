@@ -16,7 +16,7 @@ const meta = {
   },
   tags: ['autodocs'],
   decorators: [
-    (Story) => (
+    Story => (
       <div className="min-h-screen bg-gray-50 p-6">
         <Story />
       </div>
@@ -145,37 +145,40 @@ const mockFetch = (households: typeof mockHouseholds, delay = 500) => {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
-    
+
     // Filter households based on search
     let filteredHouseholds = households;
     if (search) {
-      filteredHouseholds = households.filter(h => 
-        h.code.toLowerCase().includes(search.toLowerCase()) ||
-        (h.head_resident && 
-         `${h.head_resident.first_name} ${h.head_resident.middle_name || ''} ${h.head_resident.last_name}`
-           .toLowerCase().includes(search.toLowerCase()))
+      filteredHouseholds = households.filter(
+        h =>
+          h.code.toLowerCase().includes(search.toLowerCase()) ||
+          (h.head_resident &&
+            `${h.head_resident.first_name} ${h.head_resident.middle_name || ''} ${h.head_resident.last_name}`
+              .toLowerCase()
+              .includes(search.toLowerCase()))
       );
     }
-    
+
     // Paginate
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedHouseholds = filteredHouseholds.slice(startIndex, endIndex);
-    
+
     return Promise.resolve({
       ok: true,
       status: 200,
-      json: () => Promise.resolve({
-        data: paginatedHouseholds,
-        pagination: {
-          page,
-          limit,
-          total: filteredHouseholds.length,
-          pages: Math.ceil(filteredHouseholds.length / limit),
-          hasNext: endIndex < filteredHouseholds.length,
-          hasPrev: page > 1,
-        },
-      }),
+      json: () =>
+        Promise.resolve({
+          data: paginatedHouseholds,
+          pagination: {
+            page,
+            limit,
+            total: filteredHouseholds.length,
+            pages: Math.ceil(filteredHouseholds.length / limit),
+            hasNext: endIndex < filteredHouseholds.length,
+            hasPrev: page > 1,
+          },
+        }),
     });
   };
 };
@@ -184,13 +187,13 @@ const mockFetch = (households: typeof mockHouseholds, delay = 500) => {
 export const Default: Story = {
   render: () => {
     global.fetch = mockFetch(mockHouseholds);
-    
+
     // Mock useAuth hook
     const mockUseAuth = () => ({ session: mockSession });
     const mockUseRouter = () => ({
       push: (path: string) => console.log('Navigating to:', path),
     });
-    
+
     return (
       <div>
         {/* Mock the auth context */}
@@ -215,8 +218,17 @@ export const LargeDataset: Story = {
       code: `HH-2024-${String(index + 1).padStart(3, '0')}`,
       name: `Household ${index + 1}`,
       house_number: String(100 + index),
-      street_name: ['Rizal Street', 'Bonifacio Avenue', 'Del Pilar Street', 'Mabini Street', 'Luna Street'][index % 5],
-      subdivision: index % 3 === 0 ? ['Green Valley', 'Palm Heights', 'Sunrise Village'][index % 3] : undefined,
+      street_name: [
+        'Rizal Street',
+        'Bonifacio Avenue',
+        'Del Pilar Street',
+        'Mabini Street',
+        'Luna Street',
+      ][index % 5],
+      subdivision:
+        index % 3 === 0
+          ? ['Green Valley', 'Palm Heights', 'Sunrise Village'][index % 3]
+          : undefined,
       barangay_code: `04210800${(index % 10) + 1}`,
       created_at: new Date(2024, 0, index + 1).toISOString(),
       head_resident: {
@@ -231,15 +243,16 @@ export const LargeDataset: Story = {
       city_municipality_info: { code: '042108', name: 'Lipa City', type: 'City' },
       barangay_info: { code: `04210800${(index % 10) + 1}`, name: `Barangay ${(index % 10) + 1}` },
     }));
-    
+
     global.fetch = mockFetch(largeHouseholdData);
-    
+
     return <HouseholdsContent />;
   },
   parameters: {
     docs: {
       description: {
-        story: 'Household management with a large dataset (50 households) to test pagination and performance.',
+        story:
+          'Household management with a large dataset (50 households) to test pagination and performance.',
       },
     },
   },
@@ -249,7 +262,7 @@ export const LargeDataset: Story = {
 export const EmptyState: Story = {
   render: () => {
     global.fetch = mockFetch([]);
-    
+
     return <HouseholdsContent />;
   },
   parameters: {
@@ -264,9 +277,8 @@ export const EmptyState: Story = {
 // Loading state story
 export const LoadingState: Story = {
   render: () => {
-    global.fetch = () => 
-      new Promise(resolve => setTimeout(resolve, 10000)); // Never resolves to show loading
-    
+    global.fetch = () => new Promise(resolve => setTimeout(resolve, 10000)); // Never resolves to show loading
+
     return <HouseholdsContent />;
   },
   parameters: {
@@ -281,14 +293,13 @@ export const LoadingState: Story = {
 // Error state story
 export const ErrorState: Story = {
   render: () => {
-    global.fetch = () => 
+    global.fetch = () =>
       Promise.resolve({
         ok: false,
         status: 500,
         json: () => Promise.resolve({ error: 'Internal server error' }),
-      })
-;
-    
+      });
+
     return <HouseholdsContent />;
   },
   parameters: {
@@ -307,9 +318,9 @@ export const HouseholdsWithoutHeads: Story = {
       ...h,
       head_resident: undefined,
     }));
-    
+
     global.fetch = mockFetch(householdsWithoutHeads);
-    
+
     return <HouseholdsContent />;
   },
   parameters: {
@@ -330,9 +341,9 @@ export const MinimalAddressInfo: Story = {
       street_name: undefined,
       subdivision: undefined,
     }));
-    
+
     global.fetch = mockFetch(minimalAddressHouseholds);
-    
+
     return <HouseholdsContent />;
   },
   parameters: {
@@ -359,15 +370,16 @@ export const MixedHouseholdData: Story = {
       // Large household
       { ...mockHouseholds[4], member_count: 15 },
     ];
-    
+
     global.fetch = mockFetch(mixedData);
-    
+
     return <HouseholdsContent />;
   },
   parameters: {
     docs: {
       description: {
-        story: 'Mix of different household data scenarios including complete, incomplete, and edge cases.',
+        story:
+          'Mix of different household data scenarios including complete, incomplete, and edge cases.',
       },
     },
   },
@@ -377,7 +389,7 @@ export const MixedHouseholdData: Story = {
 export const SearchFunctionality: Story = {
   render: () => {
     global.fetch = mockFetch(mockHouseholds);
-    
+
     return (
       <div className="space-y-4">
         <div className="rounded-lg bg-blue-50 p-4">
@@ -412,9 +424,9 @@ export const PaginationDemo: Story = {
         last_name: ['Santos', 'Reyes', 'Garcia', 'Cruz', 'Martinez'][index % 5],
       },
     }));
-    
+
     global.fetch = mockFetch(paginationData);
-    
+
     return (
       <div className="space-y-4">
         <div className="rounded-lg bg-green-50 p-4">
@@ -471,9 +483,9 @@ export const RegionalDiversity: Story = {
         city_municipality_info: { code: '130101', name: 'Butuan City', type: 'City' },
       },
     ];
-    
+
     global.fetch = mockFetch(regionalData);
-    
+
     return (
       <div className="space-y-4">
         <div className="rounded-lg bg-purple-50 p-4">
@@ -489,7 +501,8 @@ export const RegionalDiversity: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Households from different regions showcasing geographic diversity across the Philippines.',
+        story:
+          'Households from different regions showcasing geographic diversity across the Philippines.',
       },
     },
   },
@@ -499,7 +512,7 @@ export const RegionalDiversity: Story = {
 export const DarkMode: Story = {
   render: () => {
     global.fetch = mockFetch(mockHouseholds);
-    
+
     return (
       <div className="dark min-h-screen bg-gray-900">
         <HouseholdsContent />

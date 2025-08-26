@@ -6,7 +6,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 import { getSupabaseConfig, isProduction, createLogger } from '@/lib/config/environment';
-import type { Database } from '@/lib/data/supabase';
 
 const logger = createLogger('ConnectionPool');
 
@@ -19,7 +18,7 @@ interface ConnectionPoolConfig {
 }
 
 interface PooledConnection {
-  client: SupabaseClient<Database>;
+  client: SupabaseClient;
   createdAt: number;
   lastUsed: number;
   isActive: boolean;
@@ -95,7 +94,7 @@ class DatabaseConnectionPool {
     const supabaseConfig = getSupabaseConfig();
     const now = Date.now();
 
-    let client: SupabaseClient<Database>;
+    let client: SupabaseClient<any, 'public', any>;
 
     if (type === 'service') {
       if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -109,13 +108,13 @@ class DatabaseConnectionPool {
           autoRefreshToken: false,
           persistSession: false,
         },
-      }) as SupabaseClient<Database>;
+      }) as SupabaseClient<any, 'public', any>;
     } else {
       client = createClient(
         supabaseConfig.url,
         supabaseConfig.anonKey,
         supabaseConfig.options
-      ) as SupabaseClient<Database>;
+      ) as SupabaseClient<any, 'public', any>;
     }
 
     const pooledConnection: PooledConnection = {

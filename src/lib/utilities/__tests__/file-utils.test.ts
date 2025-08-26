@@ -4,12 +4,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  formatFileSize,
-  getFileExtension,
-  isImageFile,
-  exceedsMaxSize,
-} from '../file-utils';
+
+import { formatFileSize, getFileExtension, isImageFile, exceedsMaxSize } from '../file-utils';
 
 describe('formatFileSize', () => {
   it('should format zero bytes correctly', () => {
@@ -51,7 +47,9 @@ describe('formatFileSize', () => {
   });
 
   it('should throw error for non-finite values', () => {
-    expect(() => formatFileSize(Infinity)).toThrow('File size must be a non-negative finite number');
+    expect(() => formatFileSize(Infinity)).toThrow(
+      'File size must be a non-negative finite number'
+    );
     expect(() => formatFileSize(NaN)).toThrow('File size must be a non-negative finite number');
   });
 
@@ -161,13 +159,13 @@ describe('isImageFile', () => {
 describe('exceedsMaxSize', () => {
   it('should return false when file size is within limit', () => {
     expect(exceedsMaxSize(1048576, 1)).toBe(false); // 1MB = 1MB limit
-    expect(exceedsMaxSize(524288, 1)).toBe(false);  // 0.5MB < 1MB limit
-    expect(exceedsMaxSize(0, 5)).toBe(false);       // 0 bytes < 5MB limit
+    expect(exceedsMaxSize(524288, 1)).toBe(false); // 0.5MB < 1MB limit
+    expect(exceedsMaxSize(0, 5)).toBe(false); // 0 bytes < 5MB limit
   });
 
   it('should return true when file size exceeds limit', () => {
-    expect(exceedsMaxSize(2097152, 1)).toBe(true);  // 2MB > 1MB limit
-    expect(exceedsMaxSize(1048577, 1)).toBe(true);  // 1MB + 1 byte > 1MB limit
+    expect(exceedsMaxSize(2097152, 1)).toBe(true); // 2MB > 1MB limit
+    expect(exceedsMaxSize(1048577, 1)).toBe(true); // 1MB + 1 byte > 1MB limit
     expect(exceedsMaxSize(10485760, 5)).toBe(true); // 10MB > 5MB limit
   });
 
@@ -178,12 +176,12 @@ describe('exceedsMaxSize', () => {
 
   it('should handle zero limits', () => {
     expect(exceedsMaxSize(0, 0)).toBe(false); // 0 bytes = 0MB limit
-    expect(exceedsMaxSize(1, 0)).toBe(true);  // Any size > 0MB limit
+    expect(exceedsMaxSize(1, 0)).toBe(true); // Any size > 0MB limit
   });
 
   it('should handle fractional MB limits', () => {
     expect(exceedsMaxSize(524288, 0.5)).toBe(false); // 0.5MB = 0.5MB limit
-    expect(exceedsMaxSize(524289, 0.5)).toBe(true);  // 0.5MB + 1 byte > 0.5MB limit
+    expect(exceedsMaxSize(524289, 0.5)).toBe(true); // 0.5MB + 1 byte > 0.5MB limit
   });
 
   it('should throw error for negative file size', () => {
@@ -191,20 +189,28 @@ describe('exceedsMaxSize', () => {
   });
 
   it('should throw error for negative max size', () => {
-    expect(() => exceedsMaxSize(1000, -1)).toThrow('Maximum size must be a non-negative finite number');
+    expect(() => exceedsMaxSize(1000, -1)).toThrow(
+      'Maximum size must be a non-negative finite number'
+    );
   });
 
   it('should throw error for non-finite values', () => {
-    expect(() => exceedsMaxSize(Infinity, 1)).toThrow('File size must be a non-negative finite number');
+    expect(() => exceedsMaxSize(Infinity, 1)).toThrow(
+      'File size must be a non-negative finite number'
+    );
     expect(() => exceedsMaxSize(NaN, 1)).toThrow('File size must be a non-negative finite number');
-    expect(() => exceedsMaxSize(1000, Infinity)).toThrow('Maximum size must be a non-negative finite number');
-    expect(() => exceedsMaxSize(1000, NaN)).toThrow('Maximum size must be a non-negative finite number');
+    expect(() => exceedsMaxSize(1000, Infinity)).toThrow(
+      'Maximum size must be a non-negative finite number'
+    );
+    expect(() => exceedsMaxSize(1000, NaN)).toThrow(
+      'Maximum size must be a non-negative finite number'
+    );
   });
 
   it('should handle large file sizes accurately', () => {
     // Test with GB-sized files
     const oneGB = 1024 * 1024 * 1024;
     expect(exceedsMaxSize(oneGB, 1024)).toBe(false); // 1GB < 1024MB
-    expect(exceedsMaxSize(oneGB, 1023)).toBe(true);  // 1GB > 1023MB
+    expect(exceedsMaxSize(oneGB, 1023)).toBe(true); // 1GB > 1023MB
   });
 });

@@ -40,13 +40,13 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
 };
 
 export const CRITICAL_VALIDATION_FIELDS = [
-  'first_name', 
-  'last_name', 
-  'sex', 
-  'birthdate', 
-  'civil_status', 
-  'mobile_number', 
-  'email'
+  'first_name',
+  'last_name',
+  'sex',
+  'birthdate',
+  'civil_status',
+  'mobile_number',
+  'email',
 ] as const;
 
 export const VALIDATION_DEBOUNCE_MS = 800;

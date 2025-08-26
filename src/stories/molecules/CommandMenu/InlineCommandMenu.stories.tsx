@@ -8,36 +8,37 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'An inline command menu that appears as a dropdown from a search input, providing quick access to commands, navigation, and search results.'
-      }
-    }
+        component:
+          'An inline command menu that appears as a dropdown from a search input, providing quick access to commands, navigation, and search results.',
+      },
+    },
   },
   argTypes: {
     placeholder: {
       control: 'text',
-      description: 'Placeholder text for the search input'
+      description: 'Placeholder text for the search input',
     },
     maxResults: {
       control: { type: 'number', min: 1, max: 20 },
-      description: 'Maximum number of results to show'
+      description: 'Maximum number of results to show',
     },
     showShortcuts: {
       control: 'boolean',
-      description: 'Whether to show keyboard shortcuts in menu items'
+      description: 'Whether to show keyboard shortcuts in menu items',
     },
     showRecentSection: {
       control: 'boolean',
-      description: 'Whether to show recent items section when no search query'
+      description: 'Whether to show recent items section when no search query',
     },
     size: {
       control: { type: 'radio' },
       options: ['sm', 'md', 'lg'],
-      description: 'Size variant of the dropdown'
+      description: 'Size variant of the dropdown',
     },
     emptyStateText: {
       control: 'text',
-      description: 'Custom text to show when no results are found'
-    }
+      description: 'Custom text to show when no results are found',
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof InlineCommandMenu>;
@@ -79,10 +80,10 @@ export const NoShortcuts: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Command menu without keyboard shortcut indicators'
-      }
-    }
-  }
+        story: 'Command menu without keyboard shortcut indicators',
+      },
+    },
+  },
 };
 
 export const NoRecent: Story = {
@@ -93,10 +94,10 @@ export const NoRecent: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Command menu without recent items section'
-      }
-    }
-  }
+        story: 'Command menu without recent items section',
+      },
+    },
+  },
 };
 
 export const CustomEmptyState: Story = {
@@ -107,10 +108,10 @@ export const CustomEmptyState: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Command menu with custom empty state message'
-      }
-    }
-  }
+        story: 'Command menu with custom empty state message',
+      },
+    },
+  },
 };
 
 export const InHeaderLayout: Story = {
@@ -118,9 +119,9 @@ export const InHeaderLayout: Story = {
     ...Default.args,
   },
   decorators: [
-    (Story) => (
-      <div className="bg-gray-50 dark:bg-gray-900 p-6">
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-2">
+    Story => (
+      <div className="bg-gray-50 p-6 dark:bg-gray-900">
+        <div className="border-b border-gray-200 bg-white px-6 py-2 dark:border-gray-700 dark:bg-gray-800">
           <div className="flex items-center justify-between">
             <div className="w-[497px]">
               <Story />
@@ -140,8 +141,9 @@ export const InHeaderLayout: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Example of how the inline command menu appears in a typical dashboard header layout'
-      }
-    }
-  }
+        story:
+          'Example of how the inline command menu appears in a typical dashboard header layout',
+      },
+    },
+  },
 };

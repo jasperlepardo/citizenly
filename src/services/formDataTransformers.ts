@@ -3,7 +3,7 @@
  */
 
 import { MigrationInformationData } from '@/hooks/utilities/useMigrationInformation';
-import type { ResidentFormData, CivilStatusEnum, CitizenshipEnum, BloodTypeEnum } from '@/types';
+import type { ResidentFormData } from '@/types';
 
 // Data transformer for BasicInformation
 export interface BasicInformationData {
@@ -26,8 +26,8 @@ export const transformBasicInfoToFormData = (
     last_name: basicInfo.last_name,
     extension_name: basicInfo.extension_name,
     sex: basicInfo.sex === '' ? undefined : (basicInfo.sex as 'male' | 'female'),
-    civil_status: basicInfo.civil_status as CivilStatusEnum,
-    citizenship: basicInfo.citizenship as CitizenshipEnum,
+    civil_status: basicInfo.civil_status as any,
+    citizenship: basicInfo.citizenship as any,
   };
 };
 
@@ -39,7 +39,7 @@ export const extractBasicInfoFromFormData = (formData: ResidentFormData): BasicI
     extension_name: formData.extension_name || '',
     sex: (formData.sex || '') as '' | 'male' | 'female',
     civil_status: formData.civil_status || '',
-    civil_status_others_specify: formData.civil_status_others_specify || '',
+    civil_status_others_specify: (formData as any).civil_status_others_specify || '',
     citizenship: formData.citizenship || '',
   };
 };
@@ -132,11 +132,11 @@ export const transformPhysicalCharacteristicsToFormData = (
   physicalInfo: PhysicalCharacteristicsData
 ): Partial<ResidentFormData> => {
   return {
-    blood_type: physicalInfo.blood_type as BloodTypeEnum,
+    blood_type: physicalInfo.blood_type as any,
     complexion: physicalInfo.complexion,
     height: parseFloat(physicalInfo.height) || 0,
     weight: parseFloat(physicalInfo.weight) || 0,
-    citizenship: physicalInfo.citizenship as CitizenshipEnum,
+    citizenship: physicalInfo.citizenship as any,
     ethnicity: physicalInfo.ethnicity,
     religion: physicalInfo.religion,
     religion_others_specify: physicalInfo.religion_others_specify,

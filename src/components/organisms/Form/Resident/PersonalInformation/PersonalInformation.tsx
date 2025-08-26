@@ -1,7 +1,6 @@
 import React from 'react';
 
 import type { FormMode } from '@/types';
-import { SelectOption } from '@/types/database';
 
 import { BasicInformation, BasicInformationData } from './FormField/BasicInformation';
 import { BirthInformation, BirthInformationData } from './FormField/BirthInformation';
@@ -42,8 +41,8 @@ export interface PersonalInformationFormProps {
   // API handlers for search functionality
   onPsgcSearch?: (query: string) => void;
   onPsocSearch?: (query: string) => void;
-  psgcOptions?: SelectOption[];
-  psocOptions?: SelectOption[];
+  psgcOptions?: any[];
+  psocOptions?: any[];
   psgcLoading?: boolean;
   psocLoading?: boolean;
 }

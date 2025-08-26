@@ -1,15 +1,18 @@
 // Types
-export type { 
+export type {
   FormMode,
   ExtendedHouseholdFormData,
   HouseholdDetailsData,
   FormSectionProps,
   FieldConfig,
-  HouseholdFormProps
+  HouseholdFormProps,
 } from './types';
 
 // Location and Demographics
-export { LocationAndDemographicsForm, LocationDemographicsForm } from './LocationAndDemographics/LocationAndDemographics';
+export {
+  LocationAndDemographicsForm,
+  LocationDemographicsForm,
+} from './LocationAndDemographics/LocationAndDemographics';
 
 // Household Details
 export { HouseholdDetailsForm } from './HouseholdDetails/HouseholdDetails';

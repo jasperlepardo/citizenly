@@ -1,5 +1,6 @@
-import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+
+import bcrypt from 'bcryptjs';
 
 /**
  * Cryptographic utilities for government data handling
@@ -124,7 +125,7 @@ export async function logSecurityOperation(
   try {
     // Import here to avoid circular dependencies
     const { storeSecurityAuditLog } = await import('./audit-storage');
-    
+
     const auditLog = {
       operation,
       user_id: userId,
@@ -139,25 +140,30 @@ export async function logSecurityOperation(
 
     // Store in secure audit database
     await storeSecurityAuditLog(auditLog);
-    
-    // Also log to console for immediate visibility
-    console.info('[SECURITY AUDIT]', JSON.stringify({
-      operation,
-      userId,
-      success,
-      timestamp: auditLog.timestamp,
-    }));
 
+    // Also log to console for immediate visibility
+    console.info(
+      '[SECURITY AUDIT]',
+      JSON.stringify({
+        operation,
+        userId,
+        success,
+        timestamp: auditLog.timestamp,
+      })
+    );
   } catch (error) {
     // Fallback to console logging if audit storage fails
     console.error('Failed to store security audit log', error);
-    console.info('[SECURITY AUDIT FALLBACK]', JSON.stringify({
-      operation,
-      userId,
-      success,
-      timestamp: new Date().toISOString(),
-      details,
-    }));
+    console.info(
+      '[SECURITY AUDIT FALLBACK]',
+      JSON.stringify({
+        operation,
+        userId,
+        success,
+        timestamp: new Date().toISOString(),
+        details,
+      })
+    );
   }
 }
 
@@ -168,7 +174,7 @@ export async function encryptPII(data: string): Promise<string> {
 }
 
 export async function decryptPII(encryptedData: string): Promise<string> {
-  // Mock implementation for tests - not actually used  
+  // Mock implementation for tests - not actually used
   return encryptedData.replace('encrypted_', '');
 }
 

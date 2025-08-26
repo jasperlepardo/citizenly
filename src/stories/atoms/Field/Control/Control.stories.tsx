@@ -205,25 +205,32 @@ export const SizeVariations: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Size Variations - Checkbox</h3>
+        <h3 className="mb-4 text-lg font-semibold">Size Variations - Checkbox</h3>
         <div className="flex flex-col gap-4">
           <Control type="checkbox" size="sm" label="Small checkbox" checked={true} />
           <Control type="checkbox" size="md" label="Medium checkbox" checked={true} />
           <Control type="checkbox" size="lg" label="Large checkbox" checked={true} />
         </div>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Size Variations - Radio</h3>
+        <h3 className="mb-4 text-lg font-semibold">Size Variations - Radio</h3>
         <div className="flex flex-col gap-4">
-          <Control type="radio" size="sm" label="Small radio" name="size-radio" value="sm" checked={true} />
+          <Control
+            type="radio"
+            size="sm"
+            label="Small radio"
+            name="size-radio"
+            value="sm"
+            checked={true}
+          />
           <Control type="radio" size="md" label="Medium radio" name="size-radio" value="md" />
           <Control type="radio" size="lg" label="Large radio" name="size-radio" value="lg" />
         </div>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Size Variations - Toggle</h3>
+        <h3 className="mb-4 text-lg font-semibold">Size Variations - Toggle</h3>
         <div className="flex flex-col gap-4">
           <Control type="toggle" size="sm" label="Small toggle" checked={true} />
           <Control type="toggle" size="md" label="Medium toggle" checked={true} />
@@ -239,32 +246,70 @@ export const VariantExamples: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Variants - Checkbox</h3>
+        <h3 className="mb-4 text-lg font-semibold">Variants - Checkbox</h3>
         <div className="flex flex-col gap-4">
           <Control type="checkbox" variant="default" label="Default checkbox" checked={true} />
           <Control type="checkbox" variant="primary" label="Primary checkbox" checked={true} />
           <Control type="checkbox" variant="error" label="Error checkbox" checked={true} />
-          <Control type="checkbox" variant="disabled" label="Disabled checkbox" checked={true} disabled />
+          <Control
+            type="checkbox"
+            variant="disabled"
+            label="Disabled checkbox"
+            checked={true}
+            disabled
+          />
         </div>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Variants - Radio</h3>
+        <h3 className="mb-4 text-lg font-semibold">Variants - Radio</h3>
         <div className="flex flex-col gap-4">
-          <Control type="radio" variant="default" label="Default radio" name="variant-radio" value="default" checked={true} />
-          <Control type="radio" variant="primary" label="Primary radio" name="variant-radio" value="primary" />
-          <Control type="radio" variant="error" label="Error radio" name="variant-radio" value="error" />
-          <Control type="radio" variant="disabled" label="Disabled radio" name="variant-radio" value="disabled" disabled />
+          <Control
+            type="radio"
+            variant="default"
+            label="Default radio"
+            name="variant-radio"
+            value="default"
+            checked={true}
+          />
+          <Control
+            type="radio"
+            variant="primary"
+            label="Primary radio"
+            name="variant-radio"
+            value="primary"
+          />
+          <Control
+            type="radio"
+            variant="error"
+            label="Error radio"
+            name="variant-radio"
+            value="error"
+          />
+          <Control
+            type="radio"
+            variant="disabled"
+            label="Disabled radio"
+            name="variant-radio"
+            value="disabled"
+            disabled
+          />
         </div>
       </div>
-      
+
       <div>
-        <h3 className="text-lg font-semibold mb-4">Variants - Toggle</h3>
+        <h3 className="mb-4 text-lg font-semibold">Variants - Toggle</h3>
         <div className="flex flex-col gap-4">
           <Control type="toggle" variant="default" label="Default toggle" checked={true} />
           <Control type="toggle" variant="primary" label="Primary toggle" checked={true} />
           <Control type="toggle" variant="error" label="Error toggle" checked={true} />
-          <Control type="toggle" variant="disabled" label="Disabled toggle" checked={true} disabled />
+          <Control
+            type="toggle"
+            variant="disabled"
+            label="Disabled toggle"
+            checked={true}
+            disabled
+          />
         </div>
       </div>
     </div>
@@ -337,9 +382,7 @@ export const InteractiveRadioGroup: Story = {
             onChange={e => setValue(e.target.value)}
           />
         ))}
-        <p className="text-sm text-gray-500">
-          Selected: {value}
-        </p>
+        <p className="text-sm text-gray-500">Selected: {value}</p>
       </div>
     );
   },
@@ -354,7 +397,7 @@ export const InteractiveToggle: Story = {
     return (
       <div className="flex flex-col gap-4">
         <h3 className="text-lg font-semibold">Interactive Toggles</h3>
-        
+
         <Control
           type="toggle"
           label="Enable feature"
@@ -362,7 +405,7 @@ export const InteractiveToggle: Story = {
           checked={enabled}
           onToggle={setEnabled}
         />
-        
+
         <Control
           type="toggle"
           label="Notifications"
@@ -370,7 +413,7 @@ export const InteractiveToggle: Story = {
           checked={notifications}
           onToggle={setNotifications}
         />
-        
+
         <Control
           type="toggle"
           label="Dark mode"
@@ -378,15 +421,19 @@ export const InteractiveToggle: Story = {
           checked={darkMode}
           onToggle={setDarkMode}
         />
-        
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h4 className="font-medium mb-2">Current Settings:</h4>
+
+        <div className="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <h4 className="mb-2 font-medium">Current Settings:</h4>
           <pre className="text-sm">
-{JSON.stringify({
-  enabled,
-  notifications,
-  darkMode
-}, null, 2)}
+            {JSON.stringify(
+              {
+                enabled,
+                notifications,
+                darkMode,
+              },
+              null,
+              2
+            )}
           </pre>
         </div>
       </div>
@@ -399,18 +446,35 @@ export const ComponentComparison: Story = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Unified Control Component</h3>
+        <h3 className="mb-4 text-lg font-semibold">Unified Control Component</h3>
         <div className="flex flex-col gap-4">
-          <Control type="checkbox" label="Unified Checkbox" description="Using Control component" checked={true} />
-          <Control type="radio" label="Unified Radio" description="Using Control component" name="unified" value="radio" checked={true} />
-          <Control type="toggle" label="Unified Toggle" description="Using Control component" checked={true} />
+          <Control
+            type="checkbox"
+            label="Unified Checkbox"
+            description="Using Control component"
+            checked={true}
+          />
+          <Control
+            type="radio"
+            label="Unified Radio"
+            description="Using Control component"
+            name="unified"
+            value="radio"
+            checked={true}
+          />
+          <Control
+            type="toggle"
+            label="Unified Toggle"
+            description="Using Control component"
+            checked={true}
+          />
         </div>
       </div>
-      
+
       <div className="border-t pt-8">
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          The unified Control component provides consistent styling and behavior across all input types,
-          with shared TitleDescription layout and unified prop interface.
+          The unified Control component provides consistent styling and behavior across all input
+          types, with shared TitleDescription layout and unified prop interface.
         </p>
       </div>
     </div>

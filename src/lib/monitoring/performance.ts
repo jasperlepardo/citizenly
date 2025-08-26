@@ -12,7 +12,7 @@ interface PerformanceMetrics {
   startTime: number;
   endTime?: number;
   duration?: number;
-  metadata?: Record<string, string | number | boolean>;
+  metadata?: Record<string, any>;
 }
 
 class PerformanceMonitor {
@@ -22,7 +22,7 @@ class PerformanceMonitor {
   /**
    * Start tracking a performance metric
    */
-  startMetric(name: string, metadata?: Record<string, string | number | boolean>): () => void {
+  startMetric(name: string, metadata?: Record<string, any>): () => void {
     const startTime = performance.now();
 
     this.metrics.set(name, {
@@ -56,7 +56,7 @@ class PerformanceMonitor {
   /**
    * End tracking and log performance metric
    */
-  endMetric(name: string, additionalData?: Record<string, string | number | boolean>): number | null {
+  endMetric(name: string, additionalData?: Record<string, any>): number | null {
     const metric = this.metrics.get(name);
     if (!metric) {
       clientLogger.warn(`Performance metric not found: ${name}`);
@@ -126,7 +126,7 @@ class PerformanceMonitor {
   async measureFunction<T>(
     name: string,
     fn: () => T | Promise<T>,
-    metadata?: Record<string, string | number | boolean>
+    metadata?: Record<string, any>
   ): Promise<T> {
     this.startMetric(name, metadata);
 
@@ -146,7 +146,7 @@ class PerformanceMonitor {
   /**
    * Track component render time
    */
-  trackComponentRender(componentName: string, props?: Record<string, unknown>): () => void {
+  trackComponentRender(componentName: string, props?: any): () => void {
     const metricName = `component_render_${componentName}`;
     this.startMetric(metricName, {
       component: componentName,
@@ -159,7 +159,7 @@ class PerformanceMonitor {
   /**
    * Track API call performance
    */
-  trackApiCall(method: string, endpoint: string, metadata?: Record<string, string | number | boolean>): () => void {
+  trackApiCall(method: string, endpoint: string, metadata?: Record<string, any>): () => void {
     const metricName = `api_${method.toLowerCase()}_${endpoint.replace(/[^a-zA-Z0-9]/g, '_')}`;
     this.startMetric(metricName, {
       method,
@@ -173,7 +173,7 @@ class PerformanceMonitor {
   /**
    * Track data loading operations
    */
-  trackDataLoad(resource: string, metadata?: Record<string, string | number | boolean>): () => void {
+  trackDataLoad(resource: string, metadata?: Record<string, any>): () => void {
     const metricName = `data_load_${resource}`;
     this.startMetric(metricName, {
       resource,
@@ -186,11 +186,11 @@ class PerformanceMonitor {
   /**
    * Get Web Vitals if available
    */
-  getWebVitals(): Promise<{ fcp: number; lcp: number; cls: number; fid: number; ttfb: number }> {
+  getWebVitals(): Promise<any> {
     return new Promise(resolve => {
       if (typeof window !== 'undefined' && 'web-vitals' in window) {
         // If web-vitals library is loaded
-        resolve((window as Record<string, unknown>)['web-vitals'] as { fcp: number; lcp: number; cls: number; fid: number; ttfb: number });
+        resolve((window as any)['web-vitals']);
       } else {
         // Fallback to basic performance API
         const navigation = performance.getEntriesByType(
@@ -244,25 +244,25 @@ class PerformanceMonitor {
 export const performanceMonitor = new PerformanceMonitor();
 
 // Convenience functions
-export const startPerformanceMetric = (name: string, metadata?: Record<string, string | number | boolean>) =>
+export const startPerformanceMetric = (name: string, metadata?: Record<string, any>) =>
   performanceMonitor.startMetric(name, metadata);
 
-export const endPerformanceMetric = (name: string, additionalData?: Record<string, string | number | boolean>) =>
+export const endPerformanceMetric = (name: string, additionalData?: Record<string, any>) =>
   performanceMonitor.endMetric(name, additionalData);
 
 export const measureFunction = <T>(
   name: string,
   fn: () => T | Promise<T>,
-  metadata?: Record<string, string | number | boolean>
+  metadata?: Record<string, any>
 ) => performanceMonitor.measureFunction(name, fn, metadata);
 
-export const trackComponentRender = (componentName: string, props?: Record<string, unknown>) =>
+export const trackComponentRender = (componentName: string, props?: any) =>
   performanceMonitor.trackComponentRender(componentName, props);
 
-export const trackApiCall = (method: string, endpoint: string, metadata?: Record<string, string | number | boolean>) =>
+export const trackApiCall = (method: string, endpoint: string, metadata?: Record<string, any>) =>
   performanceMonitor.trackApiCall(method, endpoint, metadata);
 
-export const trackDataLoad = (resource: string, metadata?: Record<string, string | number | boolean>) =>
+export const trackDataLoad = (resource: string, metadata?: Record<string, any>) =>
   performanceMonitor.trackDataLoad(resource, metadata);
 
 export default performanceMonitor;

@@ -5,6 +5,7 @@
 
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { useCallback, useRef, useEffect } from 'react';
+
 import { clientLogger } from '@/lib/logging/client-logger';
 import { performanceMonitor } from '@/lib/monitoring/performance';
 
@@ -15,7 +16,8 @@ interface RetryConfig {
   onRetry?: (error: any, attempt: number) => void;
 }
 
-interface ResilientQueryOptions<TData> extends Omit<UseQueryOptions<TData>, 'retry' | 'retryDelay'> {
+interface ResilientQueryOptions<TData>
+  extends Omit<UseQueryOptions<TData>, 'retry' | 'retryDelay'> {
   retryConfig?: RetryConfig;
   performanceTracking?: {
     enabled?: boolean;
@@ -43,9 +45,9 @@ const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
     clientLogger.warn(`Query retry attempt ${attempt}`, {
       error: error,
       action: 'query_retry',
-      data: { attempt }
+      data: { attempt },
     });
-  }
+  },
 };
 
 /**
@@ -64,7 +66,7 @@ export function useResilientQuery<TData = unknown>(
     successfulQueries: 0,
     failedQueries: 0,
     averageResponseTime: 0,
-    lastError: null as any
+    lastError: null as any,
   });
 
   const {
@@ -78,55 +80,59 @@ export function useResilientQuery<TData = unknown>(
   const finalRetryConfig = { ...DEFAULT_RETRY_CONFIG, ...retryConfig };
 
   // Enhanced query function with performance tracking
-  const enhancedQueryFn = useCallback(async (context: any) => {
-    const operationName = performanceTracking.operationName || 
-      `query_${Array.isArray(options.queryKey) ? options.queryKey.join('_') : 'unknown'}`;
+  const enhancedQueryFn = useCallback(
+    async (context: any) => {
+      const operationName =
+        performanceTracking.operationName ||
+        `query_${Array.isArray(options.queryKey) ? options.queryKey.join('_') : 'unknown'}`;
 
-    performanceMonitor.startMetric(operationName);
-    metricsRef.current.totalAttempts++;
+      performanceMonitor.startMetric(operationName);
+      metricsRef.current.totalAttempts++;
 
-    try {
-      const startTime = performance.now();
-      if (!options.queryFn || typeof options.queryFn !== 'function') {
-        throw new Error('Query function is required but not provided');
+      try {
+        const startTime = performance.now();
+        if (!options.queryFn || typeof options.queryFn !== 'function') {
+          throw new Error('Query function is required but not provided');
+        }
+
+        const result = await options.queryFn(context);
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
+        // Update metrics
+        metricsRef.current.successfulQueries++;
+        metricsRef.current.averageResponseTime =
+          (metricsRef.current.averageResponseTime + duration) / 2;
+
+        performanceMonitor.endMetric(operationName);
+
+        clientLogger.info(`Query successful: ${operationName}`, {
+          action: 'query_success',
+          data: {
+            duration: Math.round(duration),
+            attempt: context.meta?.attempt || 1,
+          },
+        });
+
+        return result;
+      } catch (error) {
+        metricsRef.current.failedQueries++;
+        metricsRef.current.lastError = error;
+        performanceMonitor.endMetric(operationName);
+
+        clientLogger.error(`Query failed: ${operationName}`, {
+          error: error instanceof Error ? error : new Error(String(error)),
+          action: 'query_error',
+          data: {
+            attempt: context.meta?.attempt || 1,
+          },
+        });
+
+        throw error;
       }
-      
-      const result = await options.queryFn(context);
-      const endTime = performance.now();
-      const duration = endTime - startTime;
-
-      // Update metrics
-      metricsRef.current.successfulQueries++;
-      metricsRef.current.averageResponseTime = 
-        (metricsRef.current.averageResponseTime + duration) / 2;
-
-      performanceMonitor.endMetric(operationName);
-      
-      clientLogger.info(`Query successful: ${operationName}`, {
-        action: 'query_success',
-        data: {
-          duration: Math.round(duration),
-          attempt: context.meta?.attempt || 1
-        }
-      });
-
-      return result;
-    } catch (error) {
-      metricsRef.current.failedQueries++;
-      metricsRef.current.lastError = error;
-      performanceMonitor.endMetric(operationName);
-      
-      clientLogger.error(`Query failed: ${operationName}`, {
-        error: error instanceof Error ? error : new Error(String(error)),
-        action: 'query_error',
-        data: {
-          attempt: context.meta?.attempt || 1
-        }
-      });
-
-      throw error;
-    }
-  }, [options.queryFn, performanceTracking.operationName, options.queryKey]);
+    },
+    [options.queryFn, performanceTracking.operationName, options.queryKey]
+  );
 
   // Enhanced query with retry logic
   const query = useQuery({
@@ -136,12 +142,12 @@ export function useResilientQuery<TData = unknown>(
       if (failureCount >= finalRetryConfig.maxRetries) {
         return false;
       }
-      
+
       const shouldRetry = finalRetryConfig.retryCondition(error);
       if (shouldRetry) {
         finalRetryConfig.onRetry(error, failureCount + 1);
       }
-      
+
       return shouldRetry;
     },
     retryDelay: finalRetryConfig.retryDelay,
@@ -159,15 +165,15 @@ export function useResilientQuery<TData = unknown>(
       // Show error notification if enabled
       if (errorNotification.enabled) {
         const title = errorNotification.title || 'Query Error';
-        const message = errorNotification.message 
+        const message = errorNotification.message
           ? errorNotification.message(query.error)
-          : query.error instanceof Error 
-            ? query.error.message 
+          : query.error instanceof Error
+            ? query.error.message
             : 'An unexpected error occurred';
 
         clientLogger.error(title, {
           error: query.error instanceof Error ? query.error : new Error(String(query.error)),
-          action: 'query_error_notification'
+          action: 'query_error_notification',
         });
       }
     }
@@ -178,8 +184,8 @@ export function useResilientQuery<TData = unknown>(
     clientLogger.info('Manual retry triggered', {
       action: 'manual_retry',
       data: {
-        queryKey: options.queryKey
-      }
+        queryKey: options.queryKey,
+      },
     });
     query.refetch();
   }, [query, options.queryKey]);
@@ -194,9 +200,10 @@ export function useResilientQuery<TData = unknown>(
   const getMetrics = useCallback(() => {
     return {
       ...metricsRef.current,
-      successRate: metricsRef.current.totalAttempts > 0 
-        ? (metricsRef.current.successfulQueries / metricsRef.current.totalAttempts) * 100
-        : 0
+      successRate:
+        metricsRef.current.totalAttempts > 0
+          ? (metricsRef.current.successfulQueries / metricsRef.current.totalAttempts) * 100
+          : 0,
     };
   }, []);
 
@@ -204,7 +211,7 @@ export function useResilientQuery<TData = unknown>(
     ...query,
     retryManually,
     clearError,
-    getMetrics
+    getMetrics,
   };
 }
 
@@ -219,34 +226,37 @@ export function useResilientQueries<TData = unknown>(
   }
 ) {
   const { parallel = true, failFast = false } = options || {};
-  
+
   const results = queries.map((queryOptions, index) => {
     return useResilientQuery({
       ...queryOptions,
-      enabled: parallel ? queryOptions.enabled : (
-        queryOptions.enabled && (index === 0 || queries[index - 1])
-      ) as any
+      enabled: parallel
+        ? queryOptions.enabled
+        : ((queryOptions.enabled && (index === 0 || queries[index - 1])) as any),
     });
   });
 
   // Aggregate metrics
   const aggregateMetrics = useCallback(() => {
-    return results.reduce((acc, result) => {
-      const metrics = result.getMetrics();
-      return {
-        totalQueries: acc.totalQueries + 1,
-        totalAttempts: acc.totalAttempts + metrics.totalAttempts,
-        successfulQueries: acc.successfulQueries + metrics.successfulQueries,
-        failedQueries: acc.failedQueries + metrics.failedQueries,
-        averageResponseTime: (acc.averageResponseTime + metrics.averageResponseTime) / 2
-      };
-    }, {
-      totalQueries: 0,
-      totalAttempts: 0,
-      successfulQueries: 0,
-      failedQueries: 0,
-      averageResponseTime: 0
-    });
+    return results.reduce(
+      (acc, result) => {
+        const metrics = result.getMetrics();
+        return {
+          totalQueries: acc.totalQueries + 1,
+          totalAttempts: acc.totalAttempts + metrics.totalAttempts,
+          successfulQueries: acc.successfulQueries + metrics.successfulQueries,
+          failedQueries: acc.failedQueries + metrics.failedQueries,
+          averageResponseTime: (acc.averageResponseTime + metrics.averageResponseTime) / 2,
+        };
+      },
+      {
+        totalQueries: 0,
+        totalAttempts: 0,
+        successfulQueries: 0,
+        failedQueries: 0,
+        averageResponseTime: 0,
+      }
+    );
   }, [results]);
 
   return {
@@ -256,6 +266,6 @@ export function useResilientQueries<TData = unknown>(
     errors: results.map(r => r.error).filter(Boolean),
     retryAll: () => results.forEach(r => r.retryManually()),
     clearAllErrors: () => results.forEach(r => r.clearError()),
-    getAggregateMetrics: aggregateMetrics
+    getAggregateMetrics: aggregateMetrics,
   };
 }

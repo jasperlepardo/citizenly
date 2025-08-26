@@ -2,25 +2,26 @@
 
 /**
  * Dashboard Hook (Refactored)
- * 
+ *
  * @description Lightweight orchestrator for dashboard functionality.
  * Composes specialized hooks for better maintainability.
- * 
+ *
  * Architecture:
  * - useDashboardApi: API calls and data fetching
  * - useDashboardCalculations: Data processing and calculations
  */
 
 import { useMemo } from 'react';
-import { 
-  useDashboardApi, 
+
+import {
+  useDashboardApi,
   type DashboardResponse,
   type DashboardStats,
-  type AgeGroup 
+  type AgeGroup,
 } from './useDashboardApi';
-import { 
+import {
   useDashboardCalculations,
-  type UseDashboardCalculationsReturn 
+  type UseDashboardCalculationsReturn,
 } from './useDashboardCalculations';
 
 /**
@@ -47,20 +48,13 @@ export interface UseDashboardReturn {
 
 /**
  * Dashboard hook (Refactored)
- * 
+ *
  * @description Orchestrates dashboard data fetching and processing.
  * Much smaller and more maintainable than the original implementation.
  */
 export function useDashboard(): UseDashboardReturn {
   // API data fetching
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-    isRefetching,
-    isFetching,
-  } = useDashboardApi();
+  const { data, isLoading, error, refetch, isRefetching, isFetching } = useDashboardApi();
 
   // Extract residents data for calculations
   const residentsData = useMemo(() => {
@@ -83,26 +77,23 @@ export function useDashboard(): UseDashboardReturn {
 }
 
 // Re-export types and utilities for convenience
-export type { 
-  DashboardStats, 
-  AgeGroup, 
+export type {
+  DashboardStats,
+  AgeGroup,
   DashboardResponse,
   DependencyData,
   SexData,
   CivilStatusData,
-  EmploymentStatusData 
+  EmploymentStatusData,
 } from './useDashboardApi';
-export type { 
-  ResidentData,
-  UseDashboardCalculationsReturn 
-} from './useDashboardCalculations';
-export { 
-  calculateAge, 
-  getAgeGroup, 
+export type { ResidentData, UseDashboardCalculationsReturn } from './useDashboardCalculations';
+export {
+  calculateAge,
+  getAgeGroup,
   processPopulationData,
   calculateDependencyRatios,
   calculateSexDistribution,
-  STANDARD_AGE_GROUPS 
+  STANDARD_AGE_GROUPS,
 } from './useDashboardCalculations';
 
 // Export for backward compatibility

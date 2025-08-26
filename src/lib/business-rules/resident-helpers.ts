@@ -57,7 +57,9 @@ export const getComputedFieldTooltip = (field: keyof ResidentWithRelations): str
  * Centralized auth validation for API calls
  */
 export const getAuthSession = async () => {
-  const { data: { session } } = await import('@/lib/data/supabase').then(m => m.supabase.auth.getSession());
+  const {
+    data: { session },
+  } = await import('@/lib/data/supabase').then(m => m.supabase.auth.getSession());
   if (!session?.access_token) {
     throw new Error('No valid session found');
   }

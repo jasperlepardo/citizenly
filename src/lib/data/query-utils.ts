@@ -1,5 +1,4 @@
-import { supabase } from '@/lib';
-import { logError } from '@/lib';
+import { supabase, logError } from '@/lib';
 
 /**
  * Database utility functions for optimized operations

@@ -1,9 +1,8 @@
 'use client';
 
-import { AuthProvider } from '@/contexts';
-import { ThemeProvider } from '@/contexts';
-import QueryProvider from '@/providers/QueryProvider';
+import { AuthProvider, ThemeProvider } from '@/contexts';
 import { ErrorBoundary } from '@/providers/ErrorBoundary';
+import QueryProvider from '@/providers/QueryProvider';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (

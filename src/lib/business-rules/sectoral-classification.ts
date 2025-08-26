@@ -15,18 +15,38 @@ export const LABOR_FORCE_STATUSES = [...EMPLOYED_STATUSES, ...UNEMPLOYED_STATUSE
 export const INDIGENOUS_ETHNICITIES = [
   // Current frontend options that are indigenous
   'indigenous_group', // General indigenous group selection
-  'maranao',         // Maranao people of Mindanao
-  'maguindanao',     // Maguindanao people of Mindanao
-  'tausug',          // Tausug people of Sulu
-  
+  'maranao', // Maranao people of Mindanao
+  'maguindanao', // Maguindanao people of Mindanao
+  'tausug', // Tausug people of Sulu
+
   // Additional Muslim/Moro groups from database schema
-  'yakan', 'samal', 'badjao',
-  
+  'yakan',
+  'samal',
+  'badjao',
+
   // Indigenous Peoples from database schema
-  'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 
-  'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 
-  'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 
-  'teduray', 'tumandok'
+  'aeta',
+  'agta',
+  'ati',
+  'batak',
+  'bukidnon',
+  'gaddang',
+  'higaonon',
+  'ibaloi',
+  'ifugao',
+  'igorot',
+  'ilongot',
+  'isneg',
+  'ivatan',
+  'kalinga',
+  'kankanaey',
+  'mangyan',
+  'mansaka',
+  'palawan',
+  'subanen',
+  'tboli',
+  'teduray',
+  'tumandok',
 ];
 
 /**
@@ -52,11 +72,7 @@ export function isOutOfSchoolChildren(age: number, education?: string): boolean 
   if (age < 5 || age > 17) return false;
 
   // If still in elementary/high school, not out-of-school
-  const inSchoolEducation = [
-    'elementary_graduate',
-    'high_school_graduate',
-    'senior_high_graduate',
-  ];
+  const inSchoolEducation = ['elementary_graduate', 'high_school_graduate', 'senior_high_graduate'];
   return !inSchoolEducation.some(level => education?.includes(level));
 }
 
@@ -67,11 +83,7 @@ export function isOutOfSchoolYouth(age: number, education?: string, employment?:
   if (age < 18 || age > 30) return false;
 
   // Must not be in tertiary education
-  const inTertiaryEducation = [
-    'college_undergraduate',
-    'college_graduate',
-    'vocational_graduate',
-  ];
+  const inTertiaryEducation = ['college_undergraduate', 'college_graduate', 'vocational_graduate'];
   const isInSchool = inTertiaryEducation.some(level => education?.includes(level));
 
   // Must not be employed

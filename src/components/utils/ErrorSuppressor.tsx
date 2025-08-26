@@ -11,40 +11,44 @@ export function ErrorSuppressor() {
     if (process.env.NODE_ENV === 'development') {
       // Additional suppression at the component level
       // This runs after the initial import-time suppression
-      
+
       console.log('🔧 ErrorSuppressor: Additional Next.js warning filters active');
-      
+
       // Store original console methods
       const originalError = console.error;
       const originalWarn = console.warn;
-      
+
       // Create separate suppression functions for error and warn
       const suppressKeyError = (...args: any[]) => {
         const message = args[0];
-        
+
         // ONLY suppress if it's specifically about OuterLayoutRouter
-        if (typeof message === 'string' && 
-            message.includes('Each child in a list should have a unique "key" prop') &&
-            message.includes('OuterLayoutRouter')) {
+        if (
+          typeof message === 'string' &&
+          message.includes('Each child in a list should have a unique "key" prop') &&
+          message.includes('OuterLayoutRouter')
+        ) {
           // This is the specific Next.js 15.5.0 internal warning - suppress it
           return;
         }
-        
+
         // Allow ALL other errors through
         return originalError(...args);
       };
 
       const suppressKeyWarn = (...args: any[]) => {
         const message = args[0];
-        
+
         // ONLY suppress if it's specifically about OuterLayoutRouter (unlikely for warnings)
-        if (typeof message === 'string' && 
-            message.includes('Each child in a list should have a unique "key" prop') &&
-            message.includes('OuterLayoutRouter')) {
+        if (
+          typeof message === 'string' &&
+          message.includes('Each child in a list should have a unique "key" prop') &&
+          message.includes('OuterLayoutRouter')
+        ) {
           // This is the specific Next.js 15.5.0 internal warning - suppress it
           return;
         }
-        
+
         // Allow ALL other warnings through (including performance warnings)
         return originalWarn(...args);
       };
@@ -52,17 +56,19 @@ export function ErrorSuppressor() {
       // Override console methods with correct handlers
       console.error = suppressKeyError;
       console.warn = suppressKeyWarn;
-      
+
       // Also patch the global error handler if it exists
       if (typeof window !== 'undefined') {
         const originalOnError = window.onerror;
         window.onerror = (message, source, lineno, colno, error) => {
-          if (typeof message === 'string' && 
-              message.includes('Each child in a list should have a unique "key" prop') &&
-              message.includes('OuterLayoutRouter')) {
+          if (
+            typeof message === 'string' &&
+            message.includes('Each child in a list should have a unique "key" prop') &&
+            message.includes('OuterLayoutRouter')
+          ) {
             return true; // Suppress the error
           }
-          
+
           if (originalOnError) {
             return originalOnError(message, source, lineno, colno, error);
           }

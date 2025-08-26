@@ -43,21 +43,21 @@ export const ErrorMessage: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <div>
         <h3 className="mb-2 font-semibold">Extra Small (xs)</h3>
         <HelperText size="xs">
           This is extra small helper text, typically used for subtle hints.
         </HelperText>
       </div>
-      
+
       <div>
         <h3 className="mb-2 font-semibold">Small (sm)</h3>
         <HelperText size="sm">
           This is small helper text, good for secondary information.
         </HelperText>
       </div>
-      
+
       <div>
         <h3 className="mb-2 font-semibold">Medium (md)</h3>
         <HelperText size="md">
@@ -70,14 +70,12 @@ export const Sizes: Story = {
 
 export const VariantComparison: Story = {
   render: () => (
-    <div className="space-y-4 w-96">
+    <div className="w-96 space-y-4">
       <div>
         <h3 className="mb-2 font-semibold">Normal Helper Text</h3>
-        <HelperText>
-          Enter your full name as it appears on official documents.
-        </HelperText>
+        <HelperText>Enter your full name as it appears on official documents.</HelperText>
       </div>
-      
+
       <div>
         <h3 className="mb-2 font-semibold">Error Message</h3>
         <HelperText error>
@@ -92,9 +90,9 @@ export const LongText: Story = {
   render: () => (
     <div className="w-96">
       <HelperText>
-        This is a longer helper text example that demonstrates how the component 
-        handles wrapping for more detailed explanations or guidance. It maintains 
-        proper spacing and readability even with multiple lines of content.
+        This is a longer helper text example that demonstrates how the component handles wrapping
+        for more detailed explanations or guidance. It maintains proper spacing and readability even
+        with multiple lines of content.
       </HelperText>
     </div>
   ),

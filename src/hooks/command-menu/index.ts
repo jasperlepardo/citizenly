@@ -1,6 +1,6 @@
 /**
  * Command Menu Hooks Module
- * 
+ *
  * @description Hooks for command menu functionality including search,
  * recent items, actions, and command execution.
  */

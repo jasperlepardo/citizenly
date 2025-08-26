@@ -47,7 +47,8 @@ export const ShortMessage: Story = {
 
 export const LongMessage: Story = {
   args: {
-    message: 'There are currently no statistics available for this time period. Please check back later or contact your administrator.',
+    message:
+      'There are currently no statistics available for this time period. Please check back later or contact your administrator.',
   },
 };
 
@@ -59,12 +60,12 @@ export const WithCustomStyling: Story = {
 };
 
 export const InChartContainer: Story = {
-  render: (args) => (
-    <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-300 dark:border-zinc-600 p-6 w-80">
-      <h3 className="mb-4 font-display text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+  render: args => (
+    <div className="w-80 rounded-lg border border-zinc-300 bg-white p-6 dark:border-zinc-600 dark:bg-zinc-800">
+      <h3 className="font-display mb-4 text-lg font-semibold text-zinc-800 dark:text-zinc-200">
         Employment Statistics
       </h3>
-      <div className="w-full h-48 flex items-center justify-center">
+      <div className="flex h-48 w-full items-center justify-center">
         <ChartEmptyState {...args} />
       </div>
     </div>
@@ -78,11 +79,11 @@ export const InChartContainer: Story = {
 };
 
 export const WithIcon: Story = {
-  render: (args) => (
+  render: args => (
     <div className="text-center">
       <div className="mb-3 flex justify-center">
         <svg
-          className="w-12 h-12 text-zinc-300 dark:text-zinc-600"
+          className="h-12 w-12 text-zinc-300 dark:text-zinc-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

@@ -1,9 +1,9 @@
 /**
  * Command Menu with API Hook (Refactored)
- * 
+ *
  * @description Lightweight orchestrator for command menu functionality with API integration.
  * Composes specialized hooks for better maintainability.
- * 
+ *
  * Architecture:
  * - useCommandMenuSearch: Search functionality
  * - useCommandMenuRecents: Recent items management
@@ -14,21 +14,14 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { getCommandMenuItems } from '@/lib/command-menu';
-import { 
-  useCommandMenuSearch,
-  type UseCommandMenuSearchReturn 
-} from './useCommandMenuSearch';
-import { 
-  useCommandMenuRecents,
-  type UseCommandMenuRecentsReturn 
-} from './useCommandMenuRecents';
-import { 
-  useCommandMenuActions,
-  type UseCommandMenuActionsReturn 
-} from './useCommandMenuActions';
+
 import { useCommandMenu } from './useCommandMenu';
+import { useCommandMenuActions, type UseCommandMenuActionsReturn } from './useCommandMenuActions';
+import { useCommandMenuRecents, type UseCommandMenuRecentsReturn } from './useCommandMenuRecents';
+import { useCommandMenuSearch, type UseCommandMenuSearchReturn } from './useCommandMenuSearch';
 
 /**
  * Options for command menu with API
@@ -41,10 +34,10 @@ export interface UseCommandMenuWithApiProps {
 /**
  * Return type for command menu with API hook
  */
-export interface UseCommandMenuWithApiReturn 
+export interface UseCommandMenuWithApiReturn
   extends Pick<UseCommandMenuSearchReturn, 'searchQuery' | 'setSearchQuery' | 'isLoading'>,
-          Pick<UseCommandMenuRecentsReturn, 'handleClearRecentItems'>,
-          Pick<UseCommandMenuActionsReturn, 'executeCommand'> {
+    Pick<UseCommandMenuRecentsReturn, 'handleClearRecentItems'>,
+    Pick<UseCommandMenuActionsReturn, 'executeCommand'> {
   /** Menu open state */
   isOpen: boolean;
   /** Open menu */
@@ -67,14 +60,13 @@ export interface UseCommandMenuWithApiReturn
 
 /**
  * Command menu with API integration hook (Refactored)
- * 
+ *
  * @description Orchestrates command menu functionality with API integration.
  * Much smaller and more maintainable than the original implementation.
  */
-export function useCommandMenuWithApi({ 
-  maxResults = 10 
+export function useCommandMenuWithApi({
+  maxResults = 10,
 }: UseCommandMenuWithApiProps = {}): UseCommandMenuWithApiReturn {
-  
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -103,15 +95,16 @@ export function useCommandMenuWithApi({
     if (search.searchQuery.trim()) {
       // Show dynamic search results first, then filtered static items
       items = [...search.dynamicResults];
-      
+
       // Add matching static items
       const query = search.searchQuery.toLowerCase();
-      const matchingStaticItems = staticMenuItems.filter(item => 
-        item.label.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.keywords?.some(keyword => keyword.includes(query))
+      const matchingStaticItems = staticMenuItems.filter(
+        item =>
+          item.label.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query) ||
+          item.keywords?.some(keyword => keyword.includes(query))
       );
-      
+
       items.push(...matchingStaticItems);
     } else {
       // Show recent items first, then all static items
@@ -124,14 +117,16 @@ export function useCommandMenuWithApi({
     }
 
     // Only limit results for search queries - show all static items when browsing
-    const limit = search.searchQuery.trim() ? maxResults : Math.max(maxResults, staticMenuItems.length);
+    const limit = search.searchQuery.trim()
+      ? maxResults
+      : Math.max(maxResults, staticMenuItems.length);
     return items.slice(0, limit);
   }, [search.searchQuery, search.dynamicResults, staticMenuItems, recents.recentItems, maxResults]);
 
   // Use base command menu for keyboard handling
-  const baseMenu = useCommandMenu({ 
+  const baseMenu = useCommandMenu({
     items: allItems,
-    maxResults 
+    maxResults,
   });
 
   // Reset selected index when filtered items change
@@ -161,10 +156,13 @@ export function useCommandMenuWithApi({
   }, [isOpen, open, close]);
 
   // Enhanced execute command with close
-  const executeCommand = useCallback((item: CommandMenuItem) => {
-    close();
-    actions.executeCommand(item);
-  }, [close, actions]);
+  const executeCommand = useCallback(
+    (item: CommandMenuItem) => {
+      close();
+      actions.executeCommand(item);
+    },
+    [close, actions]
+  );
 
   return {
     // Menu state
@@ -172,24 +170,24 @@ export function useCommandMenuWithApi({
     open,
     close,
     toggle,
-    
+
     // Search functionality
     searchQuery: search.searchQuery,
     setSearchQuery: search.setSearchQuery,
     isLoading: search.isLoading,
-    
+
     // Items and selection
     filteredItems: allItems,
     selectedIndex,
     setSelectedIndex,
-    
+
     // Actions
     executeCommand,
-    
+
     // Statistics
     dynamicResults: search.dynamicResults.length,
     recentItems: recents.recentItemsCount,
-    
+
     // Recent items management
     handleClearRecentItems: recents.handleClearRecentItems,
   };

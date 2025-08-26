@@ -7,7 +7,9 @@ This document provides a comprehensive architectural overview of the `src/lib` d
 ## Architectural Principles
 
 ### 1. Security-First Design
+
 Every module prioritizes security with:
+
 - Input validation and sanitization
 - PII encryption and protection
 - SQL injection prevention
@@ -15,7 +17,9 @@ Every module prioritizes security with:
 - Proper error handling without data leakage
 
 ### 2. Separation of Concerns
+
 Clear boundaries between:
+
 - **Business Logic**: Domain-specific rules and calculations
 - **Data Access**: Database and API interactions
 - **Utilities**: Helper functions and transformations
@@ -23,12 +27,14 @@ Clear boundaries between:
 - **Validation**: Input validation and schemas
 
 ### 3. Modularity and Reusability
+
 - Self-contained modules with clear interfaces
 - Minimal coupling between modules
 - Reusable utilities across the application
 - Proper abstraction layers
 
 ### 4. Performance Optimization
+
 - Query batching to eliminate N+1 problems
 - Intelligent caching strategies
 - Debouncing and throttling
@@ -49,12 +55,14 @@ Clear boundaries between:
 ### Layer Responsibilities
 
 **UI Layer (Components)**
+
 - Presentation logic only
 - User interaction handling
 - State management for UI
 - Delegating business logic to lib
 
 **Business Logic Layer (src/lib)**
+
 - Domain rules and calculations
 - Data validation and transformation
 - Error handling and logging
@@ -62,6 +70,7 @@ Clear boundaries between:
 - Security implementations
 
 **Data Layer (Database/Services)**
+
 - Data persistence
 - External API integrations
 - Raw data operations
@@ -102,6 +111,7 @@ module-name/
 ```
 
 **Key Principles:**
+
 - `types` module has no dependencies (foundational)
 - `business-rules` depends only on `types` and `validation`
 - `utils` provides helper functions for other modules
@@ -126,6 +136,7 @@ module-name/
 ### Security Layers Implementation
 
 **1. Input Validation (`/validation`)**
+
 ```typescript
 // Zod schemas with strict validation
 const nameSchema = z
@@ -137,6 +148,7 @@ const nameSchema = z
 ```
 
 **2. Data Sanitization (`validation.ts`)**
+
 ```typescript
 function sanitizeString(str: string): string {
   return str
@@ -147,6 +159,7 @@ function sanitizeString(str: string): string {
 ```
 
 **3. PII Protection (`crypto.ts`)**
+
 ```typescript
 export async function encryptPII(data: string): Promise<string> {
   // AES-256-GCM encryption for sensitive data
@@ -156,6 +169,7 @@ export async function encryptPII(data: string): Promise<string> {
 ```
 
 **4. SQL Injection Prevention**
+
 ```typescript
 function sanitizeSearchInput(input: string): string {
   return input
@@ -172,9 +186,10 @@ function sanitizeSearchInput(input: string): string {
 ### Optimization Strategies
 
 **1. Query Optimization (`/optimizers`)**
+
 ```typescript
 // Before: N+1 Problem
-households.forEach(async (household) => {
+households.forEach(async household => {
   const head = await fetchHouseholdHead(household.head_id);
 });
 
@@ -183,16 +198,17 @@ const heads = await batchFetchHouseholdHeads(householdIds);
 ```
 
 **2. Caching Strategy (`query-cache.ts`)**
+
 ```typescript
 class QueryCache {
   private cache = new Map<string, CacheEntry>();
-  
+
   async get<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
     const cached = this.cache.get(key);
     if (cached && !this.isExpired(cached)) {
       return cached.data;
     }
-    
+
     const data = await fetcher();
     this.set(key, data);
     return data;
@@ -201,13 +217,14 @@ class QueryCache {
 ```
 
 **3. Debouncing (`performance.ts`)**
+
 ```typescript
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): DebounceFunction<T> {
   let timeout: NodeJS.Timeout;
-  
+
   return function executedFunction(...args: Parameters<T>) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -334,11 +351,11 @@ enum ErrorCode {
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   MISSING_REQUIRED_FIELD = 'MISSING_REQUIRED_FIELD',
   INVALID_FORMAT = 'INVALID_FORMAT',
-  
+
   // Business Logic Errors (4xx equivalent)
   BUSINESS_RULE_VIOLATION = 'BUSINESS_RULE_VIOLATION',
   DUPLICATE_ENTRY = 'DUPLICATE_ENTRY',
-  
+
   // System Errors (5xx equivalent)
   DATABASE_ERROR = 'DATABASE_ERROR',
   NETWORK_ERROR = 'NETWORK_ERROR',
@@ -350,9 +367,9 @@ enum ErrorCode {
 
 ```typescript
 enum ErrorSeverity {
-  LOW = 'low',       // User can continue, minor issues
+  LOW = 'low', // User can continue, minor issues
   MEDIUM = 'medium', // User should be notified, recoverable
-  HIGH = 'high',     // User action blocked, needs attention
+  HIGH = 'high', // User action blocked, needs attention
   CRITICAL = 'critical', // System integrity at risk
 }
 ```
@@ -400,17 +417,20 @@ Error Occurs
 ### Current Testing Strategy
 
 **Unit Tests** (`__tests__/`)
+
 - Pure function testing
 - Business logic validation
 - Utility function verification
 - Error handling scenarios
 
 **Integration Tests** (Planned)
+
 - Module interaction testing
 - API integration testing
 - Database operation testing
 
 **Security Tests** (Planned)
+
 - Input validation testing
 - XSS prevention verification
 - SQL injection prevention
@@ -456,16 +476,20 @@ interface EnvironmentConfig {
 
 // Development
 const developmentConfig: EnvironmentConfig = {
-  database: { /* dev settings */ },
+  database: {
+    /* dev settings */
+  },
   security: { strictMode: false },
-  performance: { cacheEnabled: false }
+  performance: { cacheEnabled: false },
 };
 
 // Production
 const productionConfig: EnvironmentConfig = {
-  database: { /* prod settings */ },
+  database: {
+    /* prod settings */
+  },
   security: { strictMode: true },
-  performance: { cacheEnabled: true }
+  performance: { cacheEnabled: true },
 };
 ```
 

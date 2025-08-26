@@ -1,6 +1,6 @@
 /**
  * Statistics Library Module
- * 
+ *
  * @description Centralized statistical calculations and data processing utilities.
  * Provides reusable statistical functions separated from UI components.
  */
@@ -15,8 +15,4 @@ export {
   populationPyramidStats,
 } from './population-pyramid';
 
-export type {
-  AgeGroupData,
-  PopulationStats,
-  TooltipData,
-} from './population-pyramid';
+export type { AgeGroupData, PopulationStats, TooltipData } from './population-pyramid';

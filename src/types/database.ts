@@ -19,20 +19,18 @@
 export interface PSGCRegion {
   code: string;
   name: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PSGCProvince {
   code: string;
   name: string;
   region_code: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-  // Joined relations
-  psgc_regions?: PSGCRegion;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PSGCCityMunicipality {
@@ -40,44 +38,19 @@ export interface PSGCCityMunicipality {
   name: string;
   type: string;
   province_code: string | null;
-  is_independent?: boolean;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-  // Joined relations
-  psgc_provinces?: PSGCProvince;
+  is_independent: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PSGCBarangay {
   code: string;
   name: string;
   city_municipality_code: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-  // Joined relations
-  psgc_cities_municipalities?: PSGCCityMunicipality;
-}
-
-export interface PSGCSearchResponse {
-  code: string;
-  name: string;
-  level: 'region' | 'province' | 'city' | 'barangay';
-  type?: string;
-  // Region fields
-  region_code?: string;
-  region_name?: string;
-  // Province fields
-  province_code?: string;
-  province_name?: string;
-  // City fields
-  city_code?: string;
-  city_name?: string;
-  city_type?: string;
-  // Barangay fields
-  barangay_code?: string;
-  barangay_name?: string;
-  full_address: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // =============================================================================
@@ -221,9 +194,6 @@ export interface ResidentRecord {
 // Note: ResidentSectoralInfo moved to residents.ts
 // Note: HouseholdRecord moved to households.ts
 
-// Re-export commonly used form types
-export type { ResidentFormData } from './forms';
-
 // =============================================================================
 // API RESPONSE TYPES
 // =============================================================================
@@ -271,143 +241,14 @@ export interface GeographicHierarchySingleResult {
 // Note: HouseholdWithMembersResult moved to households.ts
 
 // =============================================================================
-// RATE LIMITING TYPES
-// =============================================================================
-
-export interface RateLimitResult {
-  allowed: boolean;
-  remaining: number;
-  resetTime: number;
-  limit: number;
-}
-
-export type RateLimitAction = 
-  | 'SEARCH_RESIDENTS' 
-  | 'RESIDENT_CREATE' 
-  | 'RESIDENT_UPDATE' 
-  | 'RESIDENT_DELETE'
-  | 'HOUSEHOLD_CREATE'
-  | 'HOUSEHOLD_UPDATE';
-
-// =============================================================================
 // WEBHOOK AND NOTIFICATION TYPES
 // =============================================================================
 
-export interface NotificationRecord {
-  id: string;
-  user_id: string;
-  notification_type: 'welcome_email' | 'sms_welcome' | 'password_reset' | 'account_verified';
-  status: 'pending' | 'sent' | 'failed';
-  metadata: Record<string, unknown>;
-  retry_count: number;
-  error_message?: string | null;
-  scheduled_for?: string | null;
-  sent_at?: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface WebhookPayload {
-  type: 'INSERT' | 'UPDATE' | 'DELETE';
-  table: string;
-  schema: string;
-  record: Record<string, unknown>;
-  old_record?: Record<string, unknown>;
-}
-
-export interface UserProfileWithRole {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone?: string | null;
-  barangay_code?: string | null;
-  city_municipality_code?: string | null;
-  province_code?: string | null;
-  region_code?: string | null;
-  auth_roles: {
-    name: string;
-  };
-}
-
-export interface AddressHierarchyWebhookResult {
-  city_municipality_code: string;
-  psgc_cities_municipalities: {
-    code: string;
-    province_code: string;
-    psgc_provinces: {
-      code: string;
-      region_code: string;
-    };
-  };
-}
+// Note: Webhook and notification types moved to auth.ts
 
 // =============================================================================
-// API RESPONSE STANDARDS
+// SUPABASE QUERY RESPONSE TYPES
 // =============================================================================
-
-export interface ApiSuccessResponse<T = unknown> {
-  success: true;
-  data: T;
-  count?: number;
-  totalCount?: number;
-  offset?: number;
-  hasMore?: boolean;
-  message?: string;
-}
-
-export interface ApiErrorResponse {
-  success?: false;
-  error: string;
-  details?: string;
-  validationErrors?: Record<string, string[]>;
-  code?: string;
-}
-
-export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
-
-// =============================================================================
-// VALIDATION TYPES
-// =============================================================================
-
-export interface ValidationError {
-  field: string;
-  message: string;
-  code?: string;
-}
-
-export interface ValidationResult {
-  isValid: boolean;
-  errors: ValidationError[];
-}
-
-// =============================================================================
-// SUPABASE QUERY RESPONSE TYPES  
-// =============================================================================
-
-// Database query result types for joined relations
-export interface PSGCProvinceWithRegion {
-  code: string;
-  name: string;
-  region_code: string;
-  psgc_regions: PSGCRegion | PSGCRegion[] | null;
-}
-
-export interface PSGCCityWithProvince {
-  code: string;
-  name: string;
-  type: string;
-  province_code: string | null;
-  is_independent?: boolean;
-  psgc_provinces: PSGCProvinceWithRegion | PSGCProvinceWithRegion[] | null;
-}
-
-export interface PSGCBarangayWithCity {
-  code: string;
-  name: string;
-  city_municipality_code: string;
-  psgc_cities_municipalities: PSGCCityWithProvince | PSGCCityWithProvince[] | null;
-}
 
 export interface SupabaseQueryResponse<T> {
   data: T | null;
@@ -552,71 +393,4 @@ export interface PSOCPositionTitle {
   is_primary?: boolean | null; // BOOLEAN DEFAULT false
   description?: string | null; // TEXT
   created_at: string; // TIMESTAMPTZ DEFAULT NOW()
-}
-
-// =============================================================================
-// ADDITIONAL UTILITY TYPES FOR ANY FIXES
-// =============================================================================
-
-import { ChangeEvent } from 'react';
-
-// API Event Handler Types (alias for convenience)
-export type FormChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>;
-
-// PSGC Search Response Types  
-export interface PSGCSearchResponse {
-  code: string;
-  name: string;
-  level: number;
-  parent_code?: string;
-  is_active: boolean;
-  type?: string;
-  full_address?: string;
-}
-
-// Generic API Response Wrapper
-export interface APIResponse<T = unknown> {
-  data: T;
-  success: boolean;
-  error?: string;
-  count?: number;
-}
-
-// Legacy Supabase Query Response Type - keeping for compatibility
-export interface LegacySupabaseQueryResponse<T> {
-  data: T | null;
-  error: {
-    message: string;
-    code?: string;
-    details?: string;
-  } | null;
-}
-
-// Table Component Types
-export interface TableRecord extends Record<string, unknown> {
-  id: string | number;
-}
-
-// Select Option Interface for dropdowns
-export interface SelectOption {
-  value: string;
-  label: string;
-  description?: string;
-}
-
-// Migration Information Type
-export interface ResidentMigrantInfo {
-  id: string;
-  resident_id: string;
-  previous_barangay_code?: string;
-  previous_city_municipality_code?: string;
-  previous_province_code?: string;
-  previous_region_code?: string;
-  date_of_transfer?: string;
-  reason_for_migration?: string;
-  is_intending_to_return?: boolean;
-  length_of_stay_previous_months?: number;
-  migration_type?: string;
-  created_at: string;
-  updated_at: string;
 }

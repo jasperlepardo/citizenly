@@ -1,10 +1,12 @@
 'use client';
 
-import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib';
-import { TitleDescription } from '../TitleDescription';
+import React, { forwardRef, InputHTMLAttributes } from 'react';
+
 import { Button, type ButtonProps } from '@/components/atoms/Button/Button';
+import { cn } from '@/lib';
+
+import { TitleDescription } from '../TitleDescription';
 
 const radioVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
@@ -91,13 +93,13 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
         fullWidth: true,
         ...buttonProps,
       };
-      
+
       const selectedButtonVariant = checked ? 'neutral' : defaultButtonProps.variant;
 
       const handleClick = () => {
         if (!disabled && props.onChange) {
           const event = {
-            target: { value: props.value }
+            target: { value: props.value },
           } as React.ChangeEvent<HTMLInputElement>;
           props.onChange(event);
         }
@@ -211,10 +213,11 @@ export const RadioGroup = ({
   };
 
   // Check if any child has button style to determine layout
-  const hasButtonStyle = React.Children.toArray(children).some(child => 
-    React.isValidElement(child) && 
-    child.type === Radio && 
-    (child as React.ReactElement<RadioProps>).props.style === 'button'
+  const hasButtonStyle = React.Children.toArray(children).some(
+    child =>
+      React.isValidElement(child) &&
+      child.type === Radio &&
+      (child as React.ReactElement<RadioProps>).props.style === 'button'
   );
 
   // Get layout classes based on button style and orientation
@@ -233,22 +236,24 @@ export const RadioGroup = ({
             const childElement = child as React.ReactElement<RadioProps>;
             const isFirst = index === 0;
             const isLast = index === React.Children.count(children) - 1;
-            
+
             return React.cloneElement(childElement, {
               name,
               checked: childElement.props.value === value,
               onChange: handleChange,
               errorMessage: undefined, // Don't show individual error messages
               inGroup: true, // Mark as being used in a group
-              buttonProps: hasButtonStyle ? {
-                ...childElement.props.buttonProps,
-                className: cn(
-                  'appearance-none relative rounded-none -mr-px',
-                  isFirst && 'rounded-l-sm mr-0',
-                  isLast && 'rounded-r-sm',
-                  childElement.props.buttonProps?.className
-                )
-              } : childElement.props.buttonProps,
+              buttonProps: hasButtonStyle
+                ? {
+                    ...childElement.props.buttonProps,
+                    className: cn(
+                      'appearance-none relative rounded-none -mr-px',
+                      isFirst && 'rounded-l-sm mr-0',
+                      isLast && 'rounded-r-sm',
+                      childElement.props.buttonProps?.className
+                    ),
+                  }
+                : childElement.props.buttonProps,
             });
           }
           return child;

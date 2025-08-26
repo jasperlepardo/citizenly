@@ -1,6 +1,7 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField } from '@/components';
+import type { FormMode } from '@/types';
 
 export interface DemographicsInformationData {
   noOfFamilies: number;
@@ -17,14 +18,13 @@ export interface DemographicsInformationProps {
   className?: string;
 }
 
-export function DemographicsInformation({ 
+export function DemographicsInformation({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: DemographicsInformationProps) {
-  
   const handleChange = (field: keyof DemographicsInformationData, fieldValue: number) => {
     onChange({
       ...value,
@@ -35,7 +35,9 @@ export function DemographicsInformation({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Demographics Information</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Demographics Information
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Household composition and family statistics.
         </p>
@@ -50,15 +52,15 @@ export function DemographicsInformation({
           errorMessage={errors.noOfFamilies}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             min: 1,
             value: value.noOfFamilies,
-            onChange: (e) => handleChange('noOfFamilies', parseInt(e.target.value) || 1),
-            placeholder: "Enter number of families",
-            error: errors.noOfFamilies
+            onChange: e => handleChange('noOfFamilies', parseInt(e.target.value) || 1),
+            placeholder: 'Enter number of families',
+            error: errors.noOfFamilies,
           }}
         />
-        
+
         {/* Number of Household Members */}
         <InputField
           label="Number of Household Members"
@@ -67,15 +69,15 @@ export function DemographicsInformation({
           errorMessage={errors.noOfHouseholdMembers}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             min: 0,
             value: value.noOfHouseholdMembers,
-            onChange: (e) => handleChange('noOfHouseholdMembers', parseInt(e.target.value) || 0),
-            placeholder: "Enter number of members",
-            error: errors.noOfHouseholdMembers
+            onChange: e => handleChange('noOfHouseholdMembers', parseInt(e.target.value) || 0),
+            placeholder: 'Enter number of members',
+            error: errors.noOfHouseholdMembers,
           }}
         />
-        
+
         {/* Number of Migrants */}
         <InputField
           label="Number of Migrants"
@@ -83,12 +85,12 @@ export function DemographicsInformation({
           errorMessage={errors.noOfMigrants}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             min: 0,
             value: value.noOfMigrants,
-            onChange: (e) => handleChange('noOfMigrants', parseInt(e.target.value) || 0),
-            placeholder: "Enter number of migrants",
-            error: errors.noOfMigrants
+            onChange: e => handleChange('noOfMigrants', parseInt(e.target.value) || 0),
+            placeholder: 'Enter number of migrants',
+            error: errors.noOfMigrants,
           }}
         />
       </div>
@@ -96,11 +98,17 @@ export function DemographicsInformation({
       {/* Helper Information */}
       <div className="rounded-md bg-blue-50 p-3 dark:bg-blue-900/20">
         <div className="text-sm text-blue-700 dark:text-blue-300">
-          <p className="font-medium mb-1">Information Guidelines:</p>
-          <ul className="text-xs space-y-1 list-disc list-inside">
-            <li><strong>Families:</strong> Number of family units living in this household</li>
-            <li><strong>Members:</strong> Total number of people residing in the household</li>
-            <li><strong>Migrants:</strong> Number of household members who are migrants or OFWs</li>
+          <p className="mb-1 font-medium">Information Guidelines:</p>
+          <ul className="list-inside list-disc space-y-1 text-xs">
+            <li>
+              <strong>Families:</strong> Number of family units living in this household
+            </li>
+            <li>
+              <strong>Members:</strong> Total number of people residing in the household
+            </li>
+            <li>
+              <strong>Migrants:</strong> Number of household members who are migrants or OFWs
+            </li>
           </ul>
         </div>
       </div>

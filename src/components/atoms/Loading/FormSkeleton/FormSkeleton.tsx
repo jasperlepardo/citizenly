@@ -1,6 +1,6 @@
 /**
  * Form Skeleton Component
- * 
+ *
  * @description Skeleton loader for form components during lazy loading
  */
 
@@ -11,10 +11,7 @@ interface FormSkeletonProps {
   className?: string;
 }
 
-export function FormSkeleton({ 
-  fieldCount = 5, 
-  className = '' 
-}: FormSkeletonProps) {
+export function FormSkeleton({ fieldCount = 5, className = '' }: FormSkeletonProps) {
   return (
     <div className={`space-y-6 p-6 ${className}`}>
       {Array.from({ length: fieldCount }).map((_, i) => (

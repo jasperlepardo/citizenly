@@ -3,10 +3,12 @@
  * Domain-specific repository for user data operations
  */
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 
 export interface UserData {
   id?: string;
@@ -123,7 +125,7 @@ export class UserRepository extends BaseRepository<UserData> {
       // Merge with existing data for validation
       const mergedData = { ...existingResult.data, ...data };
       const validationResult = await validateUserData(mergedData, this.context);
-      
+
       if (!validationResult.isValid) {
         return {
           success: false,
@@ -150,11 +152,7 @@ export class UserRepository extends BaseRepository<UserData> {
   async findByEmail(email: string): Promise<RepositoryResult<UserData>> {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
-        return supabase
-          .from(this.tableName)
-          .select('*')
-          .eq('email', email.toLowerCase())
-          .single();
+        return supabase.from(this.tableName).select('*').eq('email', email.toLowerCase()).single();
       };
 
       return await this.executeQuery(queryBuilder, 'FIND_BY_EMAIL');
@@ -172,9 +170,7 @@ export class UserRepository extends BaseRepository<UserData> {
   async searchUsers(options: UserSearchOptions = {}): Promise<RepositoryResult<UserData[]>> {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
-        let query = supabase
-          .from(this.tableName)
-          .select('*', { count: 'exact' });
+        let query = supabase.from(this.tableName).select('*', { count: 'exact' });
 
         // Email search (partial match)
         if (options.email) {
@@ -184,9 +180,7 @@ export class UserRepository extends BaseRepository<UserData> {
         // Name search (across first and last names)
         if (options.name) {
           const searchTerm = `%${options.name}%`;
-          query = query.or(
-`first_name.ilike.${searchTerm},last_name.ilike.${searchTerm}`
-          );
+          query = query.or(`first_name.ilike.${searchTerm},last_name.ilike.${searchTerm}`);
         }
 
         // Role filter
@@ -217,8 +211,8 @@ export class UserRepository extends BaseRepository<UserData> {
 
         // Apply ordering
         if (options.orderBy) {
-          query = query.order(options.orderBy, { 
-            ascending: options.orderDirection !== 'desc' 
+          query = query.order(options.orderBy, {
+            ascending: options.orderDirection !== 'desc',
           });
         } else {
           // Default order by last name, first name
@@ -416,7 +410,7 @@ export class UserRepository extends BaseRepository<UserData> {
       };
 
       const result = await this.update(userId, updateData);
-      
+
       if (result.success) {
         await this.auditOperation('DEACTIVATE', userId, true, { reason });
       }
@@ -443,7 +437,7 @@ export class UserRepository extends BaseRepository<UserData> {
       };
 
       const result = await this.update(userId, updateData);
-      
+
       if (result.success) {
         await this.auditOperation('ACTIVATE', userId, true);
       }

@@ -14,15 +14,15 @@ interface UsePerformanceTrackingOptions {
   trackRenders?: boolean;
   trackMounts?: boolean;
   trackUpdates?: boolean;
-  metadata?: Record<string, string | number | boolean>;
+  metadata?: Record<string, any>;
 }
 
 interface PerformanceTrackingReturn {
-  trackOperation: (name: string, metadata?: Record<string, string | number | boolean>) => () => void;
+  trackOperation: (name: string, metadata?: Record<string, any>) => () => void;
   trackAsyncOperation: <T>(
     name: string,
     operation: () => Promise<T>,
-    metadata?: Record<string, string | number | boolean>
+    metadata?: Record<string, any>
   ) => Promise<T>;
 }
 
@@ -107,7 +107,7 @@ export const usePerformanceTracking = (
 
   // Track custom operations
   const trackOperation = useCallback(
-    (name: string, operationMetadata?: Record<string, string | number | boolean>) => {
+    (name: string, operationMetadata?: Record<string, any>) => {
       const metricName = `${componentName}_${name}`;
       performanceMonitor.startMetric(metricName, {
         component: componentName,
@@ -126,7 +126,7 @@ export const usePerformanceTracking = (
     async <T>(
       name: string,
       operation: () => Promise<T>,
-      operationMetadata?: Record<string, string | number | boolean>
+      operationMetadata?: Record<string, any>
     ): Promise<T> => {
       const metricName = `${componentName}_async_${name}`;
 

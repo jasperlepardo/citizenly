@@ -2,12 +2,13 @@
 
 /**
  * Resident Cross-Field Validation Hook
- * 
+ *
  * @description Handles complex validation rules that span multiple fields.
  * Extracted from useOptimizedResidentValidation for better maintainability.
  */
 
 import { useMemo } from 'react';
+
 import type { ResidentFormData } from '@/types';
 
 /**
@@ -30,7 +31,7 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
         errors.occupation_title = 'Occupation title is required when employed';
       }
       return errors;
-    }
+    },
   },
   {
     fields: ['religion', 'religion_others_specify'],
@@ -40,17 +41,18 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
         errors.religion_others_specify = 'Please specify other religion';
       }
       return errors;
-    }
+    },
   },
   {
     fields: ['is_senior_citizen', 'is_registered_senior_citizen'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
       if (!(data as any).is_senior_citizen && (data as any).is_registered_senior_citizen) {
-        (errors as any).is_registered_senior_citizen = 'Cannot be registered senior citizen if not a senior citizen';
+        (errors as any).is_registered_senior_citizen =
+          'Cannot be registered senior citizen if not a senior citizen';
       }
       return errors;
-    }
+    },
   },
   {
     fields: ['isMigrant', 'previousBarangayCode', 'reasonForTransferring'],
@@ -65,8 +67,8 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
         }
       }
       return errors;
-    }
-  }
+    },
+  },
 ];
 
 /**
@@ -83,18 +85,17 @@ export interface UseResidentCrossFieldValidationReturn {
 
 /**
  * Hook for resident cross-field validation
- * 
+ *
  * @description Provides validation for complex rules that depend on multiple fields.
  * Optimized with memoization for performance.
  */
 export function useResidentCrossFieldValidation(): UseResidentCrossFieldValidationReturn {
-  
   /**
    * Map of field to rules that affect it (memoized for performance)
    */
   const fieldToRulesMap = useMemo(() => {
     const map = new Map<string, CrossFieldValidationRule[]>();
-    
+
     crossFieldValidationRules.forEach(rule => {
       rule.fields.forEach(field => {
         if (!map.has(field)) {
@@ -103,7 +104,7 @@ export function useResidentCrossFieldValidation(): UseResidentCrossFieldValidati
         map.get(field)?.push(rule);
       });
     });
-    
+
     return map;
   }, []);
 
@@ -113,12 +114,12 @@ export function useResidentCrossFieldValidation(): UseResidentCrossFieldValidati
   const validateCrossFields = useMemo(() => {
     return (data: ResidentFormData): Record<string, string> => {
       const allErrors: Record<string, string> = {};
-      
+
       crossFieldValidationRules.forEach(rule => {
         const ruleErrors = rule.validate(data);
         Object.assign(allErrors, ruleErrors);
       });
-      
+
       return allErrors;
     };
   }, []);
@@ -130,7 +131,7 @@ export function useResidentCrossFieldValidation(): UseResidentCrossFieldValidati
     return (fieldName: string): string[] => {
       const rules = fieldToRulesMap.get(fieldName) || [];
       const dependencies = new Set<string>();
-      
+
       rules.forEach(rule => {
         rule.fields.forEach(field => {
           if (field !== fieldName) {
@@ -138,7 +139,7 @@ export function useResidentCrossFieldValidation(): UseResidentCrossFieldValidati
           }
         });
       });
-      
+
       return Array.from(dependencies);
     };
   }, [fieldToRulesMap]);

@@ -1,23 +1,23 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { PsocOption, PsgcOption } from '@/types';
-import { HouseholdOption } from '@/types';
-import { formatPsocOption, formatPsgcOption } from '@/services/residentMapper';
+
 import { searchHouseholdsCached } from '@/services/household-fetcher';
+import { formatPsocOption, formatPsgcOption } from '@/services/residentMapper';
+import { PsocOption, PsgcOption, HouseholdOption } from '@/types';
 
 interface UseFormSearchesReturn {
   // PSOC search state
   psocOptions: PsocOption[];
   psocLoading: boolean;
   handlePsocSearch: (query: string) => Promise<void>;
-  
+
   // PSGC search state
   psgcOptions: PsgcOption[];
   psgcLoading: boolean;
   handlePsgcSearch: (query: string) => Promise<void>;
   setPsgcOptions: React.Dispatch<React.SetStateAction<PsgcOption[]>>;
-  
+
   // Household search state
   householdOptions: HouseholdOption[];
   householdLoading: boolean;
@@ -56,10 +56,10 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
         q: query,
         limit: '20',
       });
-      
+
       const response = await fetch(`/api/psoc/search?${params}`);
       if (!response.ok) throw new Error('PSOC search failed');
-      
+
       const data = await response.json();
       const formattedOptions = (data.data || []).map(formatPsocOption);
       setPsocOptions(formattedOptions);
@@ -77,7 +77,7 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
       setPsgcLoading(false);
       return;
     }
-    
+
     setPsgcLoading(true);
     try {
       const params = new URLSearchParams({
@@ -87,10 +87,10 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
         maxLevel: 'city',
         minLevel: 'province',
       });
-      
+
       const response = await fetch(`/api/psgc/search?${params}`);
       if (!response.ok) throw new Error('PSGC search failed');
-      
+
       const data = await response.json();
       const formattedOptions = (data.data || []).map(formatPsgcOption);
       setPsgcOptions(formattedOptions);
@@ -103,36 +103,39 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
   }, []);
 
   // Handle household search
-  const handleHouseholdSearch = useCallback(async (query: string) => {
-    if (!userBarangayCode) {
-      // No barangay code available
-      return;
-    }
+  const handleHouseholdSearch = useCallback(
+    async (query: string) => {
+      if (!userBarangayCode) {
+        // No barangay code available
+        return;
+      }
 
-    setHouseholdLoading(true);
-    try {
-      const households = await searchHouseholdsCached(query, userBarangayCode);
-      setHouseholdOptions(households);
-    } catch (error) {
-      // Error handled by setting empty options
-      setHouseholdOptions([]);
-    } finally {
-      setHouseholdLoading(false);
-    }
-  }, [userBarangayCode]);
+      setHouseholdLoading(true);
+      try {
+        const households = await searchHouseholdsCached(query, userBarangayCode);
+        setHouseholdOptions(households);
+      } catch (error) {
+        // Error handled by setting empty options
+        setHouseholdOptions([]);
+      } finally {
+        setHouseholdLoading(false);
+      }
+    },
+    [userBarangayCode]
+  );
 
   return {
     // PSOC
     psocOptions,
     psocLoading,
     handlePsocSearch,
-    
+
     // PSGC
     psgcOptions,
     psgcLoading,
     handlePsgcSearch,
     setPsgcOptions,
-    
+
     // Household
     householdOptions,
     householdLoading,

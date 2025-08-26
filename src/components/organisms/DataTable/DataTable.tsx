@@ -4,13 +4,12 @@ import Link from 'next/link';
 import React, { useState, useMemo } from 'react';
 
 import { Button } from '@/components';
-import { TableRecord } from '@/types/database';
 
-export interface TableColumn<T extends TableRecord = TableRecord> {
-  key: keyof T | string;
+export interface TableColumn<T = any> {
+  key: string;
   title: string;
-  dataIndex?: keyof T | ((record: T) => unknown);
-  render?: (value: unknown, record: T, index: number) => React.ReactNode;
+  dataIndex?: keyof T | ((record: T) => any);
+  render?: (value: any, record: T, index: number) => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   width?: string | number;
@@ -18,7 +17,7 @@ export interface TableColumn<T extends TableRecord = TableRecord> {
   fixed?: 'left' | 'right';
 }
 
-export interface TableAction<T extends TableRecord = TableRecord> {
+export interface TableAction<T = any> {
   key: string;
   label: string;
   icon?: React.ReactNode;
@@ -29,7 +28,7 @@ export interface TableAction<T extends TableRecord = TableRecord> {
   variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
 }
 
-export interface DataTableProps<T extends TableRecord = TableRecord> {
+export interface DataTableProps<T = any> {
   data: T[];
   columns: TableColumn<T>[];
   actions?: TableAction<T>[];
@@ -162,7 +161,7 @@ export default function DataTable<T extends Record<string, any>>({
 
   // Get cell value
   const getCellValue = (record: T, column: TableColumn<T>, index: number) => {
-    let value: unknown;
+    let value: any;
 
     if (column.dataIndex) {
       if (typeof column.dataIndex === 'function') {

@@ -26,7 +26,7 @@ export {
   BaseRepository,
   type QueryOptions,
   type RepositoryError,
-  type RepositoryResult
+  type RepositoryResult,
 } from '@/services/base-repository';
 
 // Data types

@@ -65,15 +65,12 @@ export const EMPLOYMENT_STATUS_OPTIONS = [
 export const withEmptyOption = (
   options: { value: string; label: string }[],
   placeholder = 'Select...'
-): { value: string; label: string }[] => [
-  { value: '', label: placeholder },
-  ...options
-];
+): { value: string; label: string }[] => [{ value: '', label: placeholder }, ...options];
 
 // Type helpers for form option values
-export type CivilStatusValue = typeof CIVIL_STATUS_OPTIONS[number]['value'];
-export type CitizenshipValue = typeof CITIZENSHIP_OPTIONS[number]['value'];
-export type SexValue = typeof SEX_OPTIONS[number]['value'];
-export type BloodTypeValue = typeof BLOOD_TYPE_OPTIONS[number]['value'];
-export type EducationAttainmentValue = typeof EDUCATION_ATTAINMENT_OPTIONS[number]['value'];
-export type EmploymentStatusValue = typeof EMPLOYMENT_STATUS_OPTIONS[number]['value'];
+export type CivilStatusValue = (typeof CIVIL_STATUS_OPTIONS)[number]['value'];
+export type CitizenshipValue = (typeof CITIZENSHIP_OPTIONS)[number]['value'];
+export type SexValue = (typeof SEX_OPTIONS)[number]['value'];
+export type BloodTypeValue = (typeof BLOOD_TYPE_OPTIONS)[number]['value'];
+export type EducationAttainmentValue = (typeof EDUCATION_ATTAINMENT_OPTIONS)[number]['value'];
+export type EmploymentStatusValue = (typeof EMPLOYMENT_STATUS_OPTIONS)[number]['value'];

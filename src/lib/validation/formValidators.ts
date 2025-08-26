@@ -10,18 +10,16 @@ import type {
   FieldValidator,
   FieldValidationResult,
 } from './types';
-import type { ResidentFormData } from '@/types/resident-form';
-import type { HouseholdFormData } from '@/types/households';
 
 /**
  * Create a validation result
  */
-function createValidationResult<T = unknown>(
+function createValidationResult(
   isValid: boolean,
   errors: Record<string, string> = {},
   warnings: Record<string, string> = {},
-  data?: T
-): ValidationResult<T> {
+  data?: any
+): ValidationResult {
   return {
     isValid,
     errors,
@@ -33,14 +31,14 @@ function createValidationResult<T = unknown>(
 /**
  * Create a form validator from field validators
  */
-export function createFormValidator<T extends ResidentFormData | HouseholdFormData | Record<string, unknown>>(
+export function createFormValidator<T extends Record<string, any>>(
   fieldValidators: Record<keyof T, FieldValidator | FieldValidator[]>,
   crossFieldValidators?: ((data: T, context?: ValidationContext) => ValidationResult)[]
 ): FormValidator<T> {
   return async (data, context) => {
     const errors: Record<string, string> = {};
     const warnings: Record<string, string> = {};
-    const sanitizedData: Partial<T> = { ...data } as Partial<T>;
+    const sanitizedData: Record<string, any> = { ...data };
 
     // Validate individual fields
     for (const [fieldName, validators] of Object.entries(fieldValidators)) {
@@ -232,7 +230,7 @@ export function createFieldValidator(rules: {
 /**
  * Validate form data with a schema
  */
-export async function validateFormData<T extends ResidentFormData | HouseholdFormData | Record<string, unknown>>(
+export async function validateFormData<T extends Record<string, any>>(
   data: T,
   validator: FormValidator<T>,
   context?: ValidationContext
@@ -269,7 +267,7 @@ export const crossFieldValidators = {
    * Validate that two fields match (e.g., password confirmation)
    */
   fieldsMatch: (field1: string, field2: string, message?: string) => {
-    return (data: Record<string, unknown>) => {
+    return (data: Record<string, any>) => {
       if (data[field1] !== data[field2]) {
         return createValidationResult(false, {
           [field2]: message || `${field2} must match ${field1}`,
@@ -283,7 +281,7 @@ export const crossFieldValidators = {
    * Validate that at least one of the fields is provided
    */
   atLeastOneRequired: (fields: string[], message?: string) => {
-    return (data: Record<string, unknown>) => {
+    return (data: Record<string, any>) => {
       const hasValue = fields.some(
         field => data[field] !== null && data[field] !== undefined && data[field] !== ''
       );
@@ -304,7 +302,7 @@ export const crossFieldValidators = {
    * Validate that a date range is valid (start <= end)
    */
   validDateRange: (startField: string, endField: string, message?: string) => {
-    return (data: Record<string, unknown>) => {
+    return (data: Record<string, any>) => {
       const startDate = data[startField];
       const endDate = data[endField];
 
@@ -327,7 +325,7 @@ export const crossFieldValidators = {
    * Validate conditional fields (if field A has value, field B is required)
    */
   conditionalRequired: (triggerField: string, requiredField: string, message?: string) => {
-    return (data: Record<string, unknown>) => {
+    return (data: Record<string, any>) => {
       const triggerValue = data[triggerField];
       const requiredValue = data[requiredField];
 

@@ -12,8 +12,8 @@ import { Badge } from '@/components/atoms';
 <Badge variant="success">Success</Badge>
 
 // With icons (SVG icons should have w-full h-full classes)
-<Badge 
-  variant="info" 
+<Badge
+  variant="info"
   icon={
     <svg className="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
       <path d="..." />
@@ -33,16 +33,16 @@ import { Badge } from '@/components/atoms';
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Badge content |
-| `variant` | `'default' \| 'success' \| 'warning' \| 'error' \| 'info' \| 'secondary'` | `'default'` | Visual style variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Badge size |
-| `shape` | `'rounded' \| 'pill'` | `'rounded'` | Badge shape |
-| `outlined` | `boolean` | `false` | Use outlined style instead of filled |
-| `icon` | `React.ReactNode` | - | Optional icon element |
-| `iconPosition` | `'left' \| 'right'` | `'left'` | Icon position relative to text |
-| `className` | `string` | - | Additional CSS classes |
+| Prop           | Type                                                                      | Default     | Description                          |
+| -------------- | ------------------------------------------------------------------------- | ----------- | ------------------------------------ |
+| `children`     | `React.ReactNode`                                                         | -           | Badge content                        |
+| `variant`      | `'default' \| 'success' \| 'warning' \| 'error' \| 'info' \| 'secondary'` | `'default'` | Visual style variant                 |
+| `size`         | `'sm' \| 'md' \| 'lg'`                                                    | `'md'`      | Badge size                           |
+| `shape`        | `'rounded' \| 'pill'`                                                     | `'rounded'` | Badge shape                          |
+| `outlined`     | `boolean`                                                                 | `false`     | Use outlined style instead of filled |
+| `icon`         | `React.ReactNode`                                                         | -           | Optional icon element                |
+| `iconPosition` | `'left' \| 'right'`                                                       | `'left'`    | Icon position relative to text       |
+| `className`    | `string`                                                                  | -           | Additional CSS classes               |
 
 ## Icon Guidelines
 
@@ -55,6 +55,7 @@ When using icons with the Badge component:
 ## Examples
 
 ### Status Badges
+
 ```tsx
 <Badge variant="success" shape="pill">Active</Badge>
 <Badge variant="warning" shape="pill">Pending</Badge>
@@ -62,16 +63,18 @@ When using icons with the Badge component:
 ```
 
 ### Count Badges
+
 ```tsx
 <Badge variant="error" size="sm" shape="pill">3</Badge>
 <Badge variant="info" size="sm" shape="pill">12</Badge>
 ```
 
 ### With Custom Styling
+
 ```tsx
-<Badge 
-  variant="info" 
-  className="cursor-pointer hover:opacity-80 transition-opacity"
+<Badge
+  variant="info"
+  className="cursor-pointer transition-opacity hover:opacity-80"
   onClick={handleClick}
 >
   Clickable Badge

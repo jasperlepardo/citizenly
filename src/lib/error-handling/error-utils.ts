@@ -24,7 +24,7 @@ export function createAppError(
   options: {
     code?: ErrorCode;
     cause?: Error;
-    context?: Record<string, string | number | boolean>;
+    context?: Record<string, any>;
     severity?: ErrorSeverity;
   } = {}
 ): AppError {
@@ -46,14 +46,14 @@ export function createAppError(
 /**
  * Check if error is an application error
  */
-export function isAppError(error: unknown): error is AppError {
+export function isAppError(error: any): error is AppError {
   return error instanceof Error && 'code' in error && 'severity' in error;
 }
 
 /**
  * Check if error is a network error
  */
-export function isNetworkError(error: unknown): error is NetworkError {
+export function isNetworkError(error: any): error is NetworkError {
   return (
     isAppError(error) &&
     (error.code === ErrorCode.NETWORK_ERROR ||
@@ -66,7 +66,7 @@ export function isNetworkError(error: unknown): error is NetworkError {
 /**
  * Check if error is a validation error
  */
-export function isValidationError(error: unknown): error is ValidationError {
+export function isValidationError(error: any): error is ValidationError {
   return isAppError(error) && (error.code === ErrorCode.VALIDATION_FAILED || 'fields' in error);
 }
 
@@ -155,7 +155,7 @@ export function createErrorLogContext(
 ): ErrorLogContext {
   return {
     timestamp: new Date(),
-    environment: (process.env.NODE_ENV as 'development' | 'test' | 'production') || 'development',
+    environment: (process.env.NODE_ENV as any) || 'development',
     userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
     url: typeof window !== 'undefined' ? window.location.href : undefined,
     ...additionalContext,
@@ -196,12 +196,12 @@ export function logError(error: unknown, context: Partial<ErrorLogContext> = {})
 /**
  * Sanitize error for safe logging (remove sensitive data)
  */
-export function sanitizeError(error: unknown): Record<string, string | number | boolean> {
+export function sanitizeError(error: unknown): Record<string, any> {
   const message = getErrorMessage(error);
   const code = classifyError(error);
   const severity = getErrorSeverity(error);
 
-  const sanitized: Record<string, string | number | boolean> = {
+  const sanitized: Record<string, any> = {
     message,
     code,
     severity,

@@ -9,20 +9,16 @@ import { clientLogger } from '@/lib/logging/client-logger';
 
 import { captureError, addSentryBreadcrumb } from '../sentry-config';
 
-interface ReactErrorInfo {
-  componentStack: string;
-}
-
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
-  errorInfo: ReactErrorInfo | null;
+  errorInfo: any;
 }
 
 interface UseErrorBoundaryOptions {
   componentName: string;
   fallbackComponent?: React.ComponentType<{ error: Error; reset: () => void }>;
-  onError?: (error: Error, errorInfo: ReactErrorInfo) => void;
+  onError?: (error: Error, errorInfo: any) => void;
   enableReporting?: boolean;
 }
 
@@ -30,7 +26,7 @@ interface ErrorBoundaryReturn {
   error: Error | null;
   hasError: boolean;
   resetError: () => void;
-  captureError: (error: Error, context?: Record<string, string | number | boolean>) => void;
+  captureError: (error: Error, context?: Record<string, any>) => void;
   wrapAsync: <T>(operation: () => Promise<T>, operationName?: string) => Promise<T>;
 }
 
@@ -62,7 +58,7 @@ export const useErrorBoundary = (options: UseErrorBoundaryOptions): ErrorBoundar
   }, [componentName]);
 
   const handleError = useCallback(
-    (error: Error, context?: Record<string, string | number | boolean>) => {
+    (error: Error, context?: Record<string, any>) => {
       const errorInfo = {
         component: componentName,
         timestamp: new Date().toISOString(),

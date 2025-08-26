@@ -111,7 +111,7 @@ export const getSupabaseConfig = () => {
 
       global: {
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'Cache-Control': isProduction() ? 'public, max-age=3600' : 'no-cache',
           Pragma: isProduction() ? 'cache' : 'no-cache',
@@ -163,7 +163,7 @@ export const validateEnvironment = () => {
   const requiredVars = [
     { name: 'NEXT_PUBLIC_SUPABASE_URL', value: process.env.NEXT_PUBLIC_SUPABASE_URL },
     { name: 'NEXT_PUBLIC_SUPABASE_ANON_KEY', value: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY },
-    { name: 'SUPABASE_SERVICE_ROLE_KEY', value: process.env.SUPABASE_SERVICE_ROLE_KEY }
+    { name: 'SUPABASE_SERVICE_ROLE_KEY', value: process.env.SUPABASE_SERVICE_ROLE_KEY },
   ];
 
   // Check required variables
@@ -207,11 +207,17 @@ export const validateEnvironment = () => {
     }
 
     // Key length validation
-    if (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length < 100) {
+    if (
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.length < 100
+    ) {
       warnings.push('SUPABASE_ANON_KEY appears to be too short');
     }
 
-    if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY.length < 100) {
+    if (
+      process.env.SUPABASE_SERVICE_ROLE_KEY &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY.length < 100
+    ) {
       warnings.push('SUPABASE_SERVICE_ROLE_KEY appears to be too short');
     }
 
@@ -246,12 +252,16 @@ export const validateEnvironment = () => {
     config,
     environment: getEnvironment(),
     checks: {
-      hasDatabase: !!process.env.NEXT_PUBLIC_SUPABASE_URL && !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder'),
+      hasDatabase:
+        !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+        !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder'),
       hasAuth: !!process.env.NEXTAUTH_SECRET,
       hasMonitoring: !!process.env.SENTRY_DSN,
       hasCaching: !!process.env.REDIS_URL,
-      isSecure: isProduction() ? process.env.NEXT_PUBLIC_SUPABASE_URL?.startsWith('https://') ?? false : true
-    }
+      isSecure: isProduction()
+        ? (process.env.NEXT_PUBLIC_SUPABASE_URL?.startsWith('https://') ?? false)
+        : true,
+    },
   };
 };
 
@@ -270,28 +280,34 @@ export const performRuntimeHealthCheck = async (): Promise<{
     status: envValidation.isValid ? 'pass' : 'fail',
     message: envValidation.isValid
       ? `Environment configured for ${envValidation.environment}`
-      : `Environment issues: ${envValidation.errors.join(', ')}`
+      : `Environment issues: ${envValidation.errors.join(', ')}`,
   };
 
   // Database connectivity (if we can test it)
-  if (typeof window === 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (
+    typeof window === 'undefined' &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  ) {
     try {
       // Simple connectivity check
       const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`, {
         headers: {
-          'apikey': process.env.SUPABASE_SERVICE_ROLE_KEY,
-          'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`
-        }
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        },
       });
-      
+
       checks.database = {
         status: response.ok ? 'pass' : 'fail',
-        message: response.ok ? 'Database connection successful' : `Database connection failed: ${response.status}`
+        message: response.ok
+          ? 'Database connection successful'
+          : `Database connection failed: ${response.status}`,
       };
     } catch (error) {
       checks.database = {
         status: 'fail',
-        message: `Database connection error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Database connection error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -302,10 +318,10 @@ export const performRuntimeHealthCheck = async (): Promise<{
     const heapUsedMB = memory.heapUsed / 1024 / 1024;
     const heapTotalMB = memory.heapTotal / 1024 / 1024;
     const usagePercent = (heapUsedMB / heapTotalMB) * 100;
-    
+
     checks.memory = {
       status: usagePercent > 90 ? 'fail' : usagePercent > 70 ? 'warn' : 'pass',
-      message: `Heap usage: ${heapUsedMB.toFixed(1)}MB / ${heapTotalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`
+      message: `Heap usage: ${heapUsedMB.toFixed(1)}MB / ${heapTotalMB.toFixed(1)}MB (${usagePercent.toFixed(1)}%)`,
     };
   }
 
@@ -313,7 +329,7 @@ export const performRuntimeHealthCheck = async (): Promise<{
 
   return {
     healthy,
-    checks
+    checks,
   };
 };
 
@@ -323,22 +339,22 @@ export const performRuntimeHealthCheck = async (): Promise<{
 export const logEnvironmentStatus = () => {
   const validation = validateEnvironment();
   const logger = createLogger('Environment');
-  
+
   if (validation.isValid) {
     logger.info(`✅ Environment validation passed for ${validation.environment}`);
-    
+
     if (validation.warnings.length > 0) {
       logger.warn('⚠️  Warnings:', validation.warnings);
     }
   } else {
     logger.error('❌ Environment validation failed:', validation.errors);
   }
-  
+
   if (isDevelopment()) {
     logger.debug('Environment status:', {
       valid: validation.isValid,
       environment: validation.environment,
-      checks: validation.checks
+      checks: validation.checks,
     });
   }
 };

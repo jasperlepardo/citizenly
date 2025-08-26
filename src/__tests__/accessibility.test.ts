@@ -3,24 +3,30 @@
  * Uses axe-core for WCAG compliance testing
  */
 
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 
 // Mock axe-core for now - will be implemented when dependencies are installed
-const axe = async (container: any, config?: any) => {
+const axe = async (_container: Element, _config?: Record<string, unknown>) => {
   // Mock implementation that simulates axe-core behavior
   return {
-    violations: [] as any[],
+    violations: [] as Array<Record<string, unknown>>,
   };
 };
 
 // Mock toHaveNoViolations matcher
-const expectNoViolations = (results: any) => {
+const expectNoViolations = (results: { violations: Array<Record<string, unknown>> }) => {
   expect(results.violations).toHaveLength(0);
 };
 
 // Mock components for testing
-const MockButton = ({ children, ...props }: any) => {
+const MockButton = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   return React.createElement('button', props, children);
 };
 

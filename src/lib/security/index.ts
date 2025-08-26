@@ -11,10 +11,7 @@ export {
   getSecurityStatistics,
 } from './audit-storage';
 
-export type {
-  SecurityAuditLog,
-  ThreatDetectionEvent,
-} from './audit-storage';
+export type { SecurityAuditLog, ThreatDetectionEvent } from './audit-storage';
 
 // Threat detection
 export {
@@ -24,11 +21,7 @@ export {
   getSecurityInsights,
 } from './threat-detection';
 
-export type {
-  SecurityContext,
-  ThreatPattern,
-  SecurityEvent,
-} from './threat-detection';
+export type { SecurityContext, ThreatPattern, SecurityEvent } from './threat-detection';
 
 // Crypto utilities
 export * from './crypto';

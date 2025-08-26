@@ -1,10 +1,11 @@
 /**
  * Lazy-loaded Success Modal
- * 
+ *
  * @description Lazy version of SuccessModal for code splitting
  */
 
 import { lazy } from 'react';
+
 import { withLazyLoading } from '@/lib';
 
 const SuccessModalLazy = lazy(() =>

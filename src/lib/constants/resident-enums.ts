@@ -41,15 +41,21 @@ export const EDUCATION_STATUS_OPTIONS = [
 
 // Helper function to extract just the values (string values only)
 export const extractValues = (options: readonly { value: string; label: string }[]) =>
-  options.map(option => option.value).filter(value => value !== '' && value !== null && value !== undefined);
+  options
+    .map(option => option.value)
+    .filter(value => value !== '' && value !== null && value !== undefined);
 
 // Helper function to extract values including booleans
 export const extractAllValues = (options: readonly { value: string | boolean; label: string }[]) =>
-  options.map(option => option.value).filter(value => value !== '' && value !== null && value !== undefined);
+  options
+    .map(option => option.value)
+    .filter(value => value !== '' && value !== null && value !== undefined);
 
 // Helper function to get label by value
-export const getLabelByValue = (options: readonly { value: string | boolean; label: string }[], value: string | boolean) =>
-  options.find(option => option.value === value)?.label || String(value);
+export const getLabelByValue = (
+  options: readonly { value: string | boolean; label: string }[],
+  value: string | boolean
+) => options.find(option => option.value === value)?.label || String(value);
 
 // Fields WITH database defaults - no empty option needed since form starts with default value
 export const BLOOD_TYPE_OPTIONS_WITH_DEFAULT = BLOOD_TYPE_OPTIONS;

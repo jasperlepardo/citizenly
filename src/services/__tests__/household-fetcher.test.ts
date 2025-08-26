@@ -3,14 +3,14 @@
  * Tests performance improvements and caching functionality
  */
 
+import type { HouseholdData, HouseholdHead } from '@/types';
+
 import {
   batchFetchHouseholdHeads,
   processHouseholdsOptimized,
   searchHouseholdsOptimized,
   householdCache,
 } from '../household-fetcher';
-
-import type { HouseholdData, HouseholdHead } from '@/types';
 
 // Mock supabase
 jest.mock('@/lib/supabase', () => ({
@@ -202,7 +202,7 @@ describe('Household Fetcher Optimization', () => {
       // Mock the cache with expired timestamp
       (householdCache as any).cache.set(cacheKey, {
         data: testData,
-        timestamp: Date.now() - (6 * 60 * 1000), // 6 minutes ago (expired)
+        timestamp: Date.now() - 6 * 60 * 1000, // 6 minutes ago (expired)
       });
 
       // Should return null for expired data

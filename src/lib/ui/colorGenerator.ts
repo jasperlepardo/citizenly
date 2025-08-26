@@ -1,6 +1,6 @@
 /**
  * Color Generation Library
- * 
+ *
  * @description Pure utility functions for generating colors for charts and graphics.
  * Contains color palette management and color generation utilities.
  */
@@ -53,13 +53,13 @@ export function applyColorsToData<T extends { color: string }>(
   colorGenerator: (count: number) => string[] = generateColorVariations
 ): T[] {
   const colorVariations = colorGenerator(data.length);
-  
+
   return data.map((item, index) => {
     // If item has a valid predefined color, use it; otherwise use generated color
     if (isValidColor(item.color)) {
       return item;
     }
-    
+
     return {
       ...item,
       color: colorVariations[index],
@@ -131,7 +131,7 @@ export const colorUtils = {
 
     // Calculate luminance
     const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
-    
+
     return luminance > 0.5 ? '#000000' : '#ffffff';
   },
 };

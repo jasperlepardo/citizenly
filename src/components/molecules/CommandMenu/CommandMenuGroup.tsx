@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@/lib';
-import { CommandMenuItem } from './CommandMenuItem';
 import type { CommandMenuItem as CommandMenuItemType } from '@/types/components/command-menu';
+
+import { CommandMenuItem } from './CommandMenuItem';
 
 interface CommandMenuGroupProps {
   label: string;
@@ -33,15 +35,15 @@ export function CommandMenuGroup({
   return (
     <div className={cn('py-2', className)}>
       {/* Group Label */}
-      <div className="px-3 pb-2 flex items-center justify-between">
-        <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+      <div className="flex items-center justify-between px-3 pb-2">
+        <h3 className="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
           {label}
         </h3>
         {showClearButton && (
           <button
             type="button"
             onClick={onClearGroup}
-            className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+            className="text-xs text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           >
             Clear
           </button>

@@ -42,8 +42,8 @@ const civilStatusOptions: SelectOption[] = [
 const educationOptions: SelectOption[] = [
   { value: 'elementary', label: 'Elementary', description: 'Grade 1-6' },
   { value: 'high_school', label: 'High School', description: 'Grade 7-12' },
-  { value: 'college', label: 'College', description: 'Bachelor\'s degree' },
-  { value: 'graduate', label: 'Graduate', description: 'Master\'s or Doctorate' },
+  { value: 'college', label: 'College', description: "Bachelor's degree" },
+  { value: 'graduate', label: 'Graduate', description: "Master's or Doctorate" },
   { value: 'vocational', label: 'Vocational', description: 'Technical or trade school' },
 ];
 
@@ -54,7 +54,7 @@ export const Basic: Story = {
     selectProps: {
       placeholder: 'Select sex...',
       options: sampleOptions,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -66,7 +66,7 @@ export const WithHelperText: Story = {
     selectProps: {
       placeholder: 'Select civil status...',
       options: civilStatusOptions,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -80,7 +80,7 @@ export const WithError: Story = {
       placeholder: 'Select education level...',
       options: educationOptions,
       error: 'Education level is required',
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -93,7 +93,7 @@ export const HorizontalLayout: Story = {
     selectProps: {
       placeholder: 'Select sex...',
       options: sampleOptions,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -106,7 +106,7 @@ export const Searchable: Story = {
       placeholder: 'Search education level...',
       options: educationOptions,
       searchable: true,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -122,7 +122,7 @@ export const WithEnumData: Story = {
         pending: 'Pending',
         suspended: 'Suspended',
       },
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -141,7 +141,7 @@ export const AllowCustom: Story = {
         { value: 'farmer', label: 'Farmer' },
       ],
       allowCustom: true,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -153,7 +153,7 @@ export const Disabled: Story = {
       placeholder: 'This field is disabled...',
       options: sampleOptions,
       disabled: true,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -165,7 +165,7 @@ export const Loading: Story = {
       placeholder: 'Loading options...',
       options: [],
       loading: true,
-      onSelect: (option) => console.log('Selected:', option),
+      onSelect: option => console.log('Selected:', option),
     },
   },
 };
@@ -175,7 +175,7 @@ export const WithChildren: Story = {
     label: 'Custom Select',
     helperText: 'This uses a custom select component as children',
     children: (
-      <select className="w-full p-2 border border-gray-300 rounded-md">
+      <select className="w-full rounded-md border border-gray-300 p-2">
         <option value="">Select an option</option>
         <option value="option1">Option 1</option>
         <option value="option2">Option 2</option>
@@ -186,26 +186,26 @@ export const WithChildren: Story = {
 
 export const FormExample: Story = {
   render: () => (
-    <div className="space-y-6 max-w-md">
+    <div className="max-w-md space-y-6">
       <SelectField
         label="Sex"
         required
         selectProps={{
           placeholder: 'Select sex...',
           options: sampleOptions,
-          onSelect: (option) => console.log('Sex selected:', option),
+          onSelect: option => console.log('Sex selected:', option),
         }}
       />
-      
+
       <SelectField
         label="Civil Status"
         selectProps={{
           placeholder: 'Select civil status...',
           options: civilStatusOptions,
-          onSelect: (option) => console.log('Civil status selected:', option),
+          onSelect: option => console.log('Civil status selected:', option),
         }}
       />
-      
+
       <SelectField
         label="Education Level"
         helperText="Highest level of education completed"
@@ -213,7 +213,7 @@ export const FormExample: Story = {
           placeholder: 'Search education level...',
           options: educationOptions,
           searchable: true,
-          onSelect: (option) => console.log('Education selected:', option),
+          onSelect: option => console.log('Education selected:', option),
         }}
       />
     </div>

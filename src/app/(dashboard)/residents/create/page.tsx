@@ -2,17 +2,17 @@
 
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { ResidentForm } from '@/components';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
-import { ResidentFormState } from '@/types/resident-form';
+import { ResidentFormData } from '@/services/resident.service';
+import { EducationLevelEnum } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-// Utility function to parse a full name into components (currently unused)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// Utility function to parse a full name into components
 function parseFullName(fullName: string) {
   const nameParts = fullName.trim().split(/\s+/);
 
@@ -50,9 +50,11 @@ function CreateResidentForm() {
 
   // Setup resident operations hook with success/error handlers
   const { createResident, isSubmitting, validationErrors } = useResidentOperations({
-    onSuccess: _data => {
+    onSuccess: data => {
       toast.success('Resident created successfully!');
-      // Successfully created resident - redirecting to list
+      console.log(
+        'Resident created successfully - redirecting to residents list to check visibility'
+      );
       // Always redirect to residents list to check if the new resident is visible
       router.push('/residents');
     },
@@ -63,16 +65,15 @@ function CreateResidentForm() {
   });
 
   // Handle form submission - transform snake_case to camelCase
-  const handleSubmit = async (formData: ResidentFormState) => {
-    // Development debugging - replace with console.warn for production
-    console.warn('Raw form data received:', formData);
-    console.warn('Form data keys:', Object.keys(formData));
-    console.warn('is_voter value:', formData.is_voter);
-    console.warn('is_resident_voter value:', formData.is_resident_voter);
+  const handleSubmit = async (formData: any) => {
+    console.log('Raw form data received:', formData);
+    console.log('Form data keys:', Object.keys(formData));
+    console.log('is_voter value:', formData.is_voter);
+    console.log('is_resident_voter value:', formData.is_resident_voter);
 
     // Validate required fields before submission
-    const requiredFields = ['first_name', 'last_name', 'birthdate', 'sex', 'household_code'] as const;
-    const missingFields = requiredFields.filter(field => !formData[field as keyof ResidentFormState]);
+    const requiredFields = ['first_name', 'last_name', 'birthdate', 'sex', 'household_code'];
+    const missingFields = requiredFields.filter(field => !formData[field]);
 
     if (missingFields.length > 0) {
       const fieldLabels: Record<string, string> = {
@@ -152,8 +153,8 @@ function CreateResidentForm() {
       ),
     };
 
-    console.warn('Submitting resident data (filtered by form):', transformedData);
-    console.warn('Fields included:', Object.keys(transformedData));
+    console.log('Submitting resident data (filtered by form):', transformedData);
+    console.log('Fields included:', Object.keys(transformedData));
 
     const result = await createResident(transformedData);
 
@@ -168,7 +169,7 @@ function CreateResidentForm() {
     const suggestedName = searchParams.get('suggested_name');
     const suggestedId = searchParams.get('suggested_id');
 
-    let data: Partial<ResidentFormState> = {};
+    let data: any = {};
 
     // Auto-fill name if provided
     if (suggestedName) {

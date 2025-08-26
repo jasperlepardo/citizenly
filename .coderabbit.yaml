@@ -22,6 +22,12 @@ reviews:
   # Review only changed files and their direct dependencies
   changed_files_only: true
   
+  # Timeout settings for large PRs
+  timeout_minutes: 15
+  
+  # Enable smart filtering to focus on important changes
+  smart_filter: true
+  
   # Auto-approve simple changes (documentation, formatting)
   auto_approve:
     - "docs/**"
@@ -137,11 +143,17 @@ github:
     # Focus review on most impactful files first
     prioritize_changes: true
     
+    # Process files in smaller batches for better performance
+    batch_size: 20
+    
     # Skip detailed review if too many files (fallback to summary)
-    max_files_detailed_review: 50
+    max_files_detailed_review: 9999
     
     # Always provide summary even if skipping detailed review
     always_summarize: true
+    
+    # Enable parallel processing for faster reviews
+    parallel_processing: true
 
 # ==============================================================================
 # NOTIFICATION SETTINGS
@@ -151,6 +163,22 @@ notifications:
   on_review_complete: true
   on_high_severity: true
   on_security_issue: true
+
+# ==============================================================================
+# PERFORMANCE OPTIMIZATION
+# ==============================================================================
+performance:
+  # Enable caching for faster subsequent reviews
+  enable_cache: true
+  
+  # Skip reviewing generated files
+  skip_generated: true
+  
+  # Focus on files with highest impact first
+  prioritize_by_impact: true
+  
+  # Limit concurrent file processing for stability
+  max_concurrent_files: 10
 
 # ==============================================================================
 # BARANGAY SYSTEM SPECIFIC PATTERNS

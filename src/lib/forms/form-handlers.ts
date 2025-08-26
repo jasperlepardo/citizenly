@@ -13,11 +13,11 @@ import { logError } from '../error-handling/error-utils';
  * Generic field change handler factory
  * Creates a type-safe handler for updating nested object fields
  */
-export function createFieldChangeHandler<T extends Record<string, unknown>>(
+export function createFieldChangeHandler<T extends Record<string, any>>(
   currentValue: T,
   onChange: (value: T) => void
 ) {
-  return (field: keyof T, fieldValue: string | number | boolean | null) => {
+  return (field: keyof T, fieldValue: any) => {
     onChange({
       ...currentValue,
       [field]: fieldValue,
@@ -29,11 +29,11 @@ export function createFieldChangeHandler<T extends Record<string, unknown>>(
  * Generic select change handler factory
  * Creates a handler specifically for select field option changes
  */
-export function createSelectChangeHandler<T extends Record<string, unknown>>(
+export function createSelectChangeHandler<T extends Record<string, any>>(
   currentValue: T,
   onChange: (value: T) => void
 ) {
-  return (field: keyof T) => (option: { value: string } | null) => {
+  return (field: keyof T) => (option: any) => {
     onChange({
       ...currentValue,
       [field]: option?.value || '',
@@ -45,7 +45,7 @@ export function createSelectChangeHandler<T extends Record<string, unknown>>(
  * Boolean field change handler factory
  * Creates a handler specifically for checkbox/boolean fields
  */
-export function createBooleanChangeHandler<T extends Record<string, unknown>>(
+export function createBooleanChangeHandler<T extends Record<string, any>>(
   currentValue: T,
   onChange: (value: T) => void
 ) {
@@ -93,7 +93,7 @@ export function createFormSubmitHandler<T>(
  * Provides common validation patterns for form fields
  */
 export const fieldValidators = {
-  required: (value: unknown, fieldName: string) => {
+  required: (value: any, fieldName: string) => {
     if (!value || (typeof value === 'string' && value.trim() === '')) {
       return `${fieldName} is required`;
     }
@@ -134,14 +134,14 @@ export const fieldValidators = {
 /**
  * Utility to build error object from validation results
  */
-export function buildErrorsFromValidation<T extends Record<string, unknown>>(
+export function buildErrorsFromValidation<T extends Record<string, any>>(
   data: T,
-  validationRules: Record<keyof T, Array<(value: unknown) => string | null>>
+  validationRules: Record<keyof T, Array<(value: any) => string | null>>
 ): Partial<Record<keyof T, string>> {
   const errors: Partial<Record<keyof T, string>> = {};
 
   for (const [field, rules] of Object.entries(validationRules) as Array<
-    [keyof T, Array<(value: unknown) => string | null>]
+    [keyof T, Array<(value: any) => string | null>]
   >) {
     for (const rule of rules) {
       const error = rule(data[field]);

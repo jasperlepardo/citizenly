@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib';
+import { toast } from 'react-hot-toast';
+
 import { Button } from '@/components';
-import { logger, logError } from '@/lib';
+import { supabase, logger, logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
 
@@ -249,14 +250,18 @@ function UsersManagementContent() {
         'USER_APPROVAL_ERROR'
       );
       logger.error('User approval failed', { userId, userEmail });
-      alert('Failed to approve user. Please try again.');
+      toast.error('Failed to approve user. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
 
   const rejectUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to reject the registration for ${userEmail}?`)) {
+    if (
+      !globalThis.window?.confirm(
+        `Are you sure you want to reject the registration for ${userEmail}?`
+      )
+    ) {
       return;
     }
 
@@ -300,14 +305,14 @@ function UsersManagementContent() {
         'USER_REJECTION_ERROR'
       );
       logger.error('User rejection failed', { userId, userEmail });
-      alert('Failed to reject user. Please try again.');
+      toast.error('Failed to reject user. Please try again.');
     } finally {
       setActionLoading(null);
     }
   };
 
   const suspendUser = async (userId: string, userEmail: string) => {
-    if (!confirm(`Are you sure you want to suspend ${userEmail}?`)) {
+    if (!globalThis.window?.confirm(`Are you sure you want to suspend ${userEmail}?`)) {
       return;
     }
 
@@ -350,7 +355,7 @@ function UsersManagementContent() {
         'USER_SUSPENSION_ERROR'
       );
       logger.error('User suspension failed', { userId, userEmail });
-      alert('Failed to suspend user. Please try again.');
+      toast.error('Failed to suspend user. Please try again.');
     } finally {
       setActionLoading(null);
     }
@@ -369,141 +374,145 @@ function UsersManagementContent() {
 
   return (
     <div className="p-6">
-        <div className="flex flex-col gap-6 p-6">
-          {/* Header */}
-          <div className="flex w-full flex-row items-start justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
-                User Management
-              </h1>
-              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
-                Manage user registrations and permissions
-              </p>
-            </div>
-            <Button variant="primary" size="md" onClick={loadUsers} disabled={loading}>
-              Refresh
+      <div className="flex flex-col gap-6 p-6">
+        {/* Header */}
+        <div className="flex w-full flex-row items-start justify-between gap-4">
+          <div className="flex flex-col gap-0.5">
+            <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              User Management
+            </h1>
+            <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
+              Manage user registrations and permissions
+            </p>
+          </div>
+          <Button variant="primary" size="md" onClick={loadUsers} disabled={loading}>
+            Refresh
+          </Button>
+        </div>
+
+        {/* Tabs */}
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <Button
+              onClick={() => setActiveTab('pending')}
+              variant="ghost"
+              size="sm"
+              className={`rounded-none border-b-2 ${
+                activeTab === 'pending'
+                  ? 'border-blue-500 text-gray-600 dark:text-gray-400'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400'
+              }`}
+            >
+              Pending Approvals ({pendingUsers.length})
             </Button>
-          </div>
+            <Button
+              onClick={() => setActiveTab('active')}
+              variant="ghost"
+              size="sm"
+              className={`rounded-none border-b-2 ${
+                activeTab === 'active'
+                  ? 'border-blue-500 text-gray-600 dark:text-gray-400'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400'
+              }`}
+            >
+              Active Users ({activeUsers.length})
+            </Button>
+          </nav>
+        </div>
 
-          {/* Tabs */}
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <Button
-                onClick={() => setActiveTab('pending')}
-                variant="ghost"
-                size="sm"
-                className={`rounded-none border-b-2 ${
-                  activeTab === 'pending'
-                    ? 'border-blue-500 text-gray-600 dark:text-gray-400'
-                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700'
-                }`}
-              >
-                Pending Approvals ({pendingUsers.length})
-              </Button>
-              <Button
-                onClick={() => setActiveTab('active')}
-                variant="ghost"
-                size="sm"
-                className={`rounded-none border-b-2 ${
-                  activeTab === 'active'
-                    ? 'border-blue-500 text-gray-600 dark:text-gray-400'
-                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700'
-                }`}
-              >
-                Active Users ({activeUsers.length})
-              </Button>
-            </nav>
-          </div>
+        {/* Content */}
+        <div className="space-y-4">
+          {activeTab === 'pending' && (
+            <>
+              {pendingUsers.length === 0 ? (
+                <div className="py-12 text-center">
+                  <div className="mb-4 text-gray-500 dark:text-gray-400">
+                    <svg
+                      className="mx-auto size-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
+                    No Pending Registrations
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    All user registrations have been processed.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {pendingUsers.map(user => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      actionLoading={actionLoading}
+                      onApprove={approveUser}
+                      onReject={rejectUser}
+                      onSuspend={suspendUser}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
 
-          {/* Content */}
-          <div className="space-y-4">
-            {activeTab === 'pending' && (
-              <>
-                {pendingUsers.length === 0 ? (
-                  <div className="py-12 text-center">
-                    <div className="text-gray-500 dark:text-gray-400 mb-4">
-                      <svg
-                        className="mx-auto size-12"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
-                      No Pending Registrations
-                    </h3>
-                    <p className="text-gray-500 dark:text-gray-400">All user registrations have been processed.</p>
+          {activeTab === 'active' && (
+            <>
+              {activeUsers.length === 0 ? (
+                <div className="py-12 text-center">
+                  <div className="mb-4 text-gray-500 dark:text-gray-400">
+                    <svg
+                      className="mx-auto size-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                      ></path>
+                    </svg>
                   </div>
-                ) : (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {pendingUsers.map(user => (
-                      <UserCard
-                        key={user.id}
-                        user={user}
-                        actionLoading={actionLoading}
-                        onApprove={approveUser}
-                        onReject={rejectUser}
-                        onSuspend={suspendUser}
-                      />
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-
-            {activeTab === 'active' && (
-              <>
-                {activeUsers.length === 0 ? (
-                  <div className="py-12 text-center">
-                    <div className="text-gray-500 dark:text-gray-400 mb-4">
-                      <svg
-                        className="mx-auto size-12"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">No Active Users</h3>
-                    <p className="text-gray-500 dark:text-gray-400">No users have been approved yet.</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {activeUsers.map(user => (
-                      <UserCard
-                        key={user.id}
-                        user={user}
-                        actionLoading={actionLoading}
-                        onApprove={approveUser}
-                        onReject={rejectUser}
-                        onSuspend={suspendUser}
-                      />
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                  <h3 className="mb-2 text-lg font-medium text-gray-600 dark:text-gray-400">
+                    No Active Users
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No users have been approved yet.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {activeUsers.map(user => (
+                    <UserCard
+                      key={user.id}
+                      user={user}
+                      actionLoading={actionLoading}
+                      onApprove={approveUser}
+                      onReject={rejectUser}
+                      onSuspend={suspendUser}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
+    </div>
   );
 }
 
 export default function UsersManagementPage() {
-  return (
-    <UsersManagementContent />
-  );
+  return <UsersManagementContent />;
 }

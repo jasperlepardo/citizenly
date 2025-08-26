@@ -249,50 +249,50 @@ export interface ResidentFormData {
   birth_place_code?: string;
   birth_place_name?: string; // For UI display purposes
   sex: 'male' | 'female';
-  
+
   // Civil status
   civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
   civil_status_others_specify?: string;
-  
+
   // Citizenship and identity
   citizenship?: 'filipino' | 'dual_citizen' | 'foreigner';
   philsys_card_number?: string;
-  
+
   // Contact information
   mobile_number?: string;
   telephone_number?: string;
   email?: string;
-  
+
   // Physical characteristics
   height?: number;
   weight?: number;
   complexion?: string;
   blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  
+
   // Family information
   mother_maiden_first?: string;
   mother_maiden_middle?: string;
   mother_maiden_last?: string;
-  
+
   // Location and affiliation
   household_code?: string;
-  
+
   // Cultural and religious
   ethnicity?: string;
   religion?: string;
   religion_others_specify?: string;
-  
+
   // Education and employment
   employment_status?: string;
   education_attainment?: string;
   is_graduate?: boolean;
   occupation_code?: string;
-  
+
   // Voting information (matching database schema)
   is_voter?: boolean;
   is_resident_voter?: boolean;
   last_voted_date?: string;
-  
+
   // Migration information (matching database schema)
   previous_barangay_code?: string;
   previous_city_municipality_code?: string;
@@ -312,7 +312,7 @@ export interface HouseholdFormData {
   code: string;
   name?: string;
   address?: string;
-  
+
   // Location details (matching database schema)
   house_number: string;
   street_id: string; // UUID reference to geo_streets
@@ -322,25 +322,70 @@ export interface HouseholdFormData {
   province_code?: string;
   region_code: string;
   zip_code?: string;
-  
+
   // Household metrics (matching database schema)
   no_of_families?: number;
   no_of_household_members?: number;
   no_of_migrants?: number;
-  
+
   // Household classifications (enums, matching database schema)
-  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
-  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  household_type?:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'one_person'
+    | 'non_family'
+    | 'other';
+  tenure_status?:
+    | 'owned'
+    | 'owned_with_mortgage'
+    | 'rented'
+    | 'occupied_for_free'
+    | 'occupied_without_consent'
+    | 'others';
   tenure_others_specify?: string;
-  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
-  
+  household_unit?:
+    | 'single_house'
+    | 'duplex'
+    | 'apartment'
+    | 'townhouse'
+    | 'condominium'
+    | 'boarding_house'
+    | 'institutional'
+    | 'makeshift'
+    | 'others';
+
   // Economic information (matching database schema)
   monthly_income?: number;
-  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
-  
+  income_class?:
+    | 'rich'
+    | 'high_income'
+    | 'upper_middle_income'
+    | 'middle_class'
+    | 'lower_middle_class'
+    | 'low_income'
+    | 'poor'
+    | 'not_determined';
+
   // Head of household (matching database schema)
   household_head_id?: string; // UUID reference to residents
-  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
+  household_head_position?:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other';
 }
 
 // =============================================================================
@@ -354,7 +399,7 @@ export interface HouseholdFormData {
 export interface ExtendedHouseholdFormData extends HouseholdFormData {
   // Additional UI-specific fields (not in database)
   householdName?: string; // Display name for UI
-  
+
   // Form-specific metadata
   isEditing?: boolean;
   isDirty?: boolean;
@@ -374,25 +419,70 @@ export interface HouseholdDetailsData {
   province_code?: string;
   region_code: string;
   zip_code?: string;
-  
+
   // Household metrics (matching database schema)
   no_of_families?: number;
   no_of_household_members?: number;
   no_of_migrants?: number;
-  
+
   // Household classifications (matching database schema)
-  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
-  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  household_type?:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'one_person'
+    | 'non_family'
+    | 'other';
+  tenure_status?:
+    | 'owned'
+    | 'owned_with_mortgage'
+    | 'rented'
+    | 'occupied_for_free'
+    | 'occupied_without_consent'
+    | 'others';
   tenure_others_specify?: string;
-  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
-  
+  household_unit?:
+    | 'single_house'
+    | 'duplex'
+    | 'apartment'
+    | 'townhouse'
+    | 'condominium'
+    | 'boarding_house'
+    | 'institutional'
+    | 'makeshift'
+    | 'others';
+
   // Economic information (matching database schema)
   monthly_income?: number;
-  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
-  
+  income_class?:
+    | 'rich'
+    | 'high_income'
+    | 'upper_middle_income'
+    | 'middle_class'
+    | 'lower_middle_class'
+    | 'low_income'
+    | 'poor'
+    | 'not_determined';
+
   // Head of household (matching database schema)
   household_head_id?: string;
-  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
+  household_head_position?:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other';
 }
 
 /**

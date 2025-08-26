@@ -3,7 +3,6 @@ import React from 'react';
 import { SelectField } from '@/components';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
 import type { FormMode } from '@/types';
-import { SelectOption } from '@/types/database';
 
 export interface HouseholdInformationData {
   household_code: string;
@@ -18,8 +17,8 @@ export interface HouseholdInformationProps {
   errors: Record<string, string>;
   className?: string;
   // Optional external search functionality (HouseholdSelector has its own built-in search)
-  onHouseholdSearch?: (query: string) => Promise<SelectOption[]>;
-  householdOptions?: SelectOption[];
+  onHouseholdSearch?: (query: string) => Promise<any>;
+  householdOptions?: any[];
   householdLoading?: boolean;
 }
 
@@ -46,7 +45,7 @@ export function HouseholdInformation({
     debounceMs: 300,
   });
 
-  const handleChange = (field: keyof HouseholdInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof HouseholdInformationData, fieldValue: any) => {
     onChange({
       ...value,
       [field]: fieldValue,
@@ -73,7 +72,7 @@ export function HouseholdInformation({
           helperText="Search for an existing household or leave blank to create new"
           selectProps={{
             placeholder: '🏠 Search households...',
-            options: (householdSearchOptions || []).map((household: SelectOption) => ({
+            options: (householdSearchOptions || []).map((household: any) => ({
               value: household.code,
               label: household.head_name || `Household ${household.code}`,
               description: `Code: ${household.code}${household.address ? ` • ${household.address}` : ''}`,

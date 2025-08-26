@@ -1,6 +1,7 @@
 import React from 'react';
-import type { FormMode } from '@/types';
+
 import { InputField } from '@/components';
+import type { FormMode } from '@/types';
 
 export interface MotherMaidenNameData {
   mother_maiden_first: string;
@@ -17,14 +18,13 @@ export interface MotherMaidenNameProps {
   className?: string;
 }
 
-export function MotherMaidenName({ 
+export function MotherMaidenName({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: MotherMaidenNameProps) {
-  
   const handleChange = (field: keyof MotherMaidenNameData, fieldValue: string) => {
     onChange({
       ...value,
@@ -36,8 +36,8 @@ export function MotherMaidenName({
   const formatFullMaidenName = () => {
     const parts = [
       value.mother_maiden_first?.trim(),
-      value.mother_maiden_middle?.trim(), 
-      value.mother_maiden_last?.trim()
+      value.mother_maiden_middle?.trim(),
+      value.mother_maiden_last?.trim(),
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(' ') : '—';
   };
@@ -45,7 +45,9 @@ export function MotherMaidenName({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Mother's Maiden Name</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Mother's Maiden Name
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Complete maiden name of mother for identification purposes.
         </p>
@@ -60,7 +62,7 @@ export function MotherMaidenName({
               mode={mode}
               inputProps={{
                 value: formatFullMaidenName(),
-                readOnly: true
+                readOnly: true,
               }}
             />
           </div>
@@ -73,12 +75,12 @@ export function MotherMaidenName({
               mode={mode}
               inputProps={{
                 value: value.mother_maiden_first,
-                onChange: (e) => handleChange('mother_maiden_first', e.target.value),
+                onChange: e => handleChange('mother_maiden_first', e.target.value),
                 placeholder: "Mother's maiden first name",
-                error: errors.mother_maiden_first
+                error: errors.mother_maiden_first,
               }}
             />
-            
+
             <InputField
               label="Middle Name"
               labelSize="sm"
@@ -86,12 +88,12 @@ export function MotherMaidenName({
               mode={mode}
               inputProps={{
                 value: value.mother_maiden_middle,
-                onChange: (e) => handleChange('mother_maiden_middle', e.target.value),
+                onChange: e => handleChange('mother_maiden_middle', e.target.value),
                 placeholder: "Mother's maiden middle name",
-                error: errors.mother_maiden_middle
+                error: errors.mother_maiden_middle,
               }}
             />
-            
+
             <InputField
               label="Last Name"
               labelSize="sm"
@@ -99,9 +101,9 @@ export function MotherMaidenName({
               mode={mode}
               inputProps={{
                 value: value.mother_maiden_last,
-                onChange: (e) => handleChange('mother_maiden_last', e.target.value),
+                onChange: e => handleChange('mother_maiden_last', e.target.value),
                 placeholder: "Mother's maiden last name",
-                error: errors.mother_maiden_last
+                error: errors.mother_maiden_last,
               }}
             />
           </>

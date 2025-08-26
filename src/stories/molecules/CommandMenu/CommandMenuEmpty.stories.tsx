@@ -8,8 +8,8 @@ const meta: Meta<typeof CommandMenuEmpty> = {
     layout: 'centered',
   },
   decorators: [
-    (Story) => (
-      <div className="w-[400px] max-h-96 border border-gray-200 rounded-lg bg-white">
+    Story => (
+      <div className="max-h-96 w-[400px] rounded-lg border border-gray-200 bg-white">
         <Story />
       </div>
     ),

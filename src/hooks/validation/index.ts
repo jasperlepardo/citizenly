@@ -1,6 +1,6 @@
 /**
  * Validation Hooks Module
- * 
+ *
  * @description Collection of validation hooks for form validation,
  * data validation, and input validation across the application.
  */
@@ -8,14 +8,14 @@
 // Core validation hooks
 // DEPRECATED: useGenericValidation - generic utility not currently used
 // export { useGenericValidation } from './useGenericValidation';
-export { 
-  useOptimizedResidentValidation, 
-  useResidentFormValidation 
+export {
+  useOptimizedResidentValidation,
+  useResidentFormValidation,
 } from './useOptimizedResidentValidation';
 // DEPRECATED: useOptimizedHouseholdValidation - not currently used
-// export { 
-//   useOptimizedHouseholdValidation, 
-//   useHouseholdValidation 
+// export {
+//   useOptimizedHouseholdValidation,
+//   useHouseholdValidation
 // } from './useOptimizedHouseholdValidation';
 
 // Specialized resident validation hooks
@@ -26,25 +26,25 @@ export { useResidentValidationProgress } from './useResidentValidationProgress';
 export { useResidentValidationErrors } from './useResidentValidationErrors';
 
 // Validation factory and utilities
-export { 
+export {
   createValidationHook,
   useEmailValidation,
-  usePhoneValidation, 
+  usePhoneValidation,
   useRequiredValidation,
-  CommonSchemas 
+  CommonSchemas,
 } from '../utilities/createValidationHook';
 
 // Advanced validation hooks using validation factory
-export { 
+export {
   useResidentValidation,
   ResidentValidationSections,
-  validateResidentData 
+  validateResidentData,
 } from './useResidentValidation';
 export type { ResidentFormData } from './useResidentValidation';
 
 // Export types
-export type { 
+export type {
   ValidationResult,
   ValidationHookOptions,
-  UseValidationReturn 
+  UseValidationReturn,
 } from '../utilities/createValidationHook';

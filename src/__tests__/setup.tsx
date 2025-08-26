@@ -1,5 +1,5 @@
-import { beforeEach, afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { beforeEach, afterEach, vi } from 'vitest';
 import '@testing-library/jest-dom';
 
 // Mock Next.js router
@@ -18,7 +18,7 @@ vi.mock('next/navigation', () => ({
 
 // Mock Next.js image
 vi.mock('next/image', () => ({
-  default: ({ src, alt, ...props }: any) => {
+  default: ({ src, alt, ...props }: { src: string; alt: string; [key: string]: unknown }) => {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt={alt} {...props} />;
   },

@@ -413,7 +413,9 @@ export const DirectInputUsage: Story = {
   render: () => (
     <div className="w-80 space-y-6">
       <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Direct Input Integration</h3>
+        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+          Direct Input Integration
+        </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
           FieldSet can now directly integrate with Input components using the `inputProps` prop,
           providing automatic label association and error handling.
@@ -449,7 +451,12 @@ export const DirectInputUsage: Story = {
           placeholder: 'Search...',
           leftIcon: (
             <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           ),
           clearable: true,
@@ -476,10 +483,12 @@ export const HelperTextIntegration: Story = {
   render: () => (
     <div className="w-80 space-y-6">
       <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Centralized Helper Text</h3>
+        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+          Centralized Helper Text
+        </h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          All helper text and error handling is now managed by FieldSet using the dedicated HelperText component.
-          This provides consistent styling and accessibility features.
+          All helper text and error handling is now managed by FieldSet using the dedicated
+          HelperText component. This provides consistent styling and accessibility features.
         </p>
       </div>
 
@@ -522,11 +531,7 @@ export const HelperTextIntegration: Story = {
         label="Description"
         helperText="Provide a detailed description of your project or needs"
       >
-        <Textarea 
-          placeholder="Tell us about your project..."
-          showCharCount
-          maxLength={500}
-        />
+        <Textarea placeholder="Tell us about your project..." showCharCount maxLength={500} />
       </InputField>
     </div>
   ),
@@ -536,7 +541,9 @@ export const AccessibilityDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Accessibility Features</h3>
+        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+          Accessibility Features
+        </h3>
         <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>
             • <strong>Proper labeling</strong>: All form fields have associated labels

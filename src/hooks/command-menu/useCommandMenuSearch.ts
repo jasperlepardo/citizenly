@@ -1,6 +1,6 @@
 /**
  * Command Menu Search Hook
- * 
+ *
  * @description Handles search functionality for command menu.
  * Extracted from useCommandMenuWithApi for better maintainability.
  */
@@ -8,10 +8,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { searchData } from '@/lib/command-menu';
+import { searchData, trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
 import { trackSearch } from '@/lib/data';
-import { trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
+
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 /**
@@ -53,16 +54,15 @@ export interface UseCommandMenuSearchReturn {
 
 /**
  * Hook for command menu search functionality
- * 
+ *
  * @description Provides search capabilities with debouncing, error handling,
  * and analytics tracking.
  */
 export function useCommandMenuSearch(
   options: CommandMenuSearchOptions = {}
 ): UseCommandMenuSearchReturn {
-  
   const { maxResults = 5, debounceDelay = 300 } = options;
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [dynamicResults, setDynamicResults] = useState<CommandMenuItem[]>([]);
@@ -75,7 +75,7 @@ export function useCommandMenuSearch(
         context: 'search',
         query: searchQuery.slice(0, 50),
       });
-      
+
       if (process.env.NODE_ENV === 'development') {
         console.error('Command Menu Search Error:', errorInfo, error);
       }
@@ -95,21 +95,21 @@ export function useCommandMenuSearch(
       }
 
       setIsLoading(true);
-      
+
       try {
         // Track the search query in recent items
         trackSearch(searchQuery);
-        
+
         // Wrap search API call with error boundary
         const apiResults = await wrapAsync(
           () => searchData(searchQuery, maxResults),
           'command menu search'
         )();
-        
+
         if (apiResults) {
           // Track search analytics
           trackCommandMenuSearch(searchQuery, apiResults.length);
-          
+
           // Convert API results to menu items
           const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
             id: `search-${result.id}`,
@@ -120,7 +120,7 @@ export function useCommandMenuSearch(
             keywords: [result.title.toLowerCase(), result.type],
             icon: getIconForType(result.type),
           }));
-          
+
           setDynamicResults(dynamicMenuItems);
         } else {
           setDynamicResults([]);

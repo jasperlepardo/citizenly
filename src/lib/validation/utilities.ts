@@ -77,7 +77,7 @@ export function createValidationResult(
   isValid: boolean,
   errors: Record<string, string> = {},
   warnings: Record<string, string> = {},
-  data?: unknown
+  data?: any
 ): ValidationResult {
   return {
     isValid,
@@ -94,7 +94,7 @@ export function createFieldValidationResult(
   isValid: boolean,
   error?: string,
   warning?: string,
-  sanitizedValue?: unknown
+  sanitizedValue?: any
 ): FieldValidationResult {
   return {
     isValid,
@@ -110,7 +110,7 @@ export function createFieldValidationResult(
 export function mergeValidationResults(...results: ValidationResult[]): ValidationResult {
   const mergedErrors: Record<string, string> = {};
   const mergedWarnings: Record<string, string> = {};
-  let mergedData: Record<string, unknown> = {};
+  let mergedData: any = {};
 
   for (const result of results) {
     Object.assign(mergedErrors, result.errors);
@@ -235,7 +235,7 @@ export function createValidationSummary(validationResult: ValidationResult): {
 /**
  * Debounce validation function (uses centralized debounce utility)
  */
-export function debounceValidation<T extends (...args: unknown[]) => unknown>(
+export function debounceValidation<T extends (...args: any[]) => any>(
   validationFn: T,
   delay: number = 300
 ): T {
@@ -316,7 +316,7 @@ export function createValidationState(): ValidationState {
 /**
  * Validation state management hook
  */
-export function useValidationState(config: Record<string, unknown> = {}) {
+export function useValidationState(config: any = {}) {
   const [state, setState] = useState<ValidationState>(createValidationState);
 
   const setErrors = useCallback((errors: Record<string, string>) => {
@@ -385,7 +385,7 @@ export function useValidationState(config: Record<string, unknown> = {}) {
  * Create validation executor for forms
  */
 export function createFormValidationExecutor<T>(
-  validateFn: (data: T) => ValidationResult,
+  validateFn: any,
   setErrors: (errors: Record<string, string>) => void
 ) {
   return useCallback(
@@ -409,12 +409,12 @@ export function createFormValidationExecutor<T>(
  * Create field validation executor
  */
 export function createFieldValidationExecutor(
-  validateFn: ValidateFieldFunction,
+  validateFn: any,
   setFieldError: (field: string, error: string) => void,
   clearFieldError: (field: string) => void
 ) {
   return useCallback(
-    (fieldName: string, value: unknown): FieldValidationResult => {
+    (fieldName: string, value: any): FieldValidationResult => {
       const result = validateFn(fieldName, value);
 
       if (result.isValid) {
@@ -437,12 +437,12 @@ export const asyncValidationUtils = {
    * Create debounced async validator
    */
   createDebouncedAsyncValidator: (
-    asyncValidator: (value: unknown) => Promise<FieldValidationResult>,
+    asyncValidator: (value: any) => Promise<FieldValidationResult>,
     delay = 500
   ) => {
     let timeoutId: NodeJS.Timeout;
 
-    return (fieldName: string, value: unknown, onResult: (result: FieldValidationResult) => void) => {
+    return (fieldName: string, value: any, onResult: (result: FieldValidationResult) => void) => {
       clearTimeout(timeoutId);
 
       timeoutId = setTimeout(async () => {
@@ -463,9 +463,9 @@ export const asyncValidationUtils = {
    * Create batch async validator
    */
   createBatchAsyncValidator: (
-    asyncValidators: Record<string, (value: unknown) => Promise<FieldValidationResult>>
+    asyncValidators: Record<string, (value: any) => Promise<FieldValidationResult>>
   ) => {
-    return async (data: Record<string, unknown>): Promise<Record<string, string>> => {
+    return async (data: Record<string, any>): Promise<Record<string, string>> => {
       const validationPromises = Object.entries(asyncValidators).map(async ([field, validator]) => {
         try {
           const result = await validator(data[field]);

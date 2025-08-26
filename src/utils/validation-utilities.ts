@@ -23,7 +23,6 @@ export type {
   ValidateFormFunction,
   ValidateFieldFunction,
 };
-
 import { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
 
 import { toTitleCase } from '../lib/utilities/string-utils';
@@ -177,7 +176,7 @@ export function createFieldValidationExecutor(
   setFieldError: (field: string, error: string) => void,
   clearFieldError: (field: string) => void
 ) {
-  return (fieldName: string, value: unknown): FieldValidationResult => {
+  return (fieldName: string, value: any): FieldValidationResult => {
     const result = validateFn(fieldName, value);
 
     if (result.isValid) {
@@ -197,7 +196,7 @@ export const validationUtils = {
   /**
    * Check if value is empty
    */
-  isEmpty: (value: unknown): boolean => {
+  isEmpty: (value: any): boolean => {
     return value === null || value === undefined || value === '';
   },
 
@@ -229,7 +228,7 @@ export const validationUtils = {
    * Validate required fields
    */
   validateRequiredFields: (
-    data: Record<string, unknown>,
+    data: Record<string, any>,
     requiredFields: string[]
   ): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -262,10 +261,10 @@ export const validationUtils = {
    * Create field validator with custom message
    */
   createFieldValidator: (
-    predicate: (value: unknown) => boolean,
+    predicate: (value: any) => boolean,
     errorMessage: string
   ): ValidateFieldFunction => {
-    return (fieldName: string, value: unknown): FieldValidationResult => {
+    return (fieldName: string, value: any): FieldValidationResult => {
       const isValid = predicate(value);
       return {
         isValid,
@@ -278,7 +277,7 @@ export const validationUtils = {
    * Create required field validator
    */
   createRequiredValidator: (customMessage?: string): ValidateFieldFunction => {
-    return (fieldName: string, value: unknown): FieldValidationResult => {
+    return (fieldName: string, value: any): FieldValidationResult => {
       const isValid = !validationUtils.isEmpty(value);
       const fieldDisplayName = validationUtils.formatFieldName(fieldName);
 
@@ -297,7 +296,7 @@ export const validationUtils = {
     maxLength?: number,
     customMessage?: string
   ): ValidateFieldFunction => {
-    return (fieldName: string, value: unknown): FieldValidationResult => {
+    return (fieldName: string, value: any): FieldValidationResult => {
       const stringValue = String(value || '');
       const length = stringValue.length;
 
@@ -320,7 +319,7 @@ export const validationUtils = {
    * Create regex validator
    */
   createRegexValidator: (pattern: RegExp, errorMessage: string): ValidateFieldFunction => {
-    return (fieldName: string, value: unknown): FieldValidationResult => {
+    return (fieldName: string, value: any): FieldValidationResult => {
       const stringValue = String(value || '');
       const isValid = pattern.test(stringValue);
 
@@ -335,7 +334,7 @@ export const validationUtils = {
    * Compose multiple validators
    */
   composeValidators: (...validators: ValidateFieldFunction[]): ValidateFieldFunction => {
-    return (fieldName: string, value: unknown): FieldValidationResult => {
+    return (fieldName: string, value: any): FieldValidationResult => {
       for (const validator of validators) {
         const result = validator(fieldName, value);
         if (!result.isValid) {
@@ -384,19 +383,19 @@ export const asyncValidationUtils = {
    * Create debounced async validator
    */
   createDebouncedAsyncValidator: (
-    asyncValidator: (value: unknown) => Promise<FieldValidationResult>,
+    asyncValidator: (value: any) => Promise<FieldValidationResult>,
     delay = 500
   ) => {
     let timeoutId: NodeJS.Timeout;
 
-    return (fieldName: string, value: unknown, onResult: (result: FieldValidationResult) => void) => {
+    return (fieldName: string, value: any, onResult: (result: FieldValidationResult) => void) => {
       clearTimeout(timeoutId);
 
       timeoutId = setTimeout(async () => {
         try {
           const result = await asyncValidator(value);
           onResult(result);
-        } catch (_error) {
+        } catch (error) {
           onResult({
             isValid: false,
             error: 'Validation failed',
@@ -410,14 +409,14 @@ export const asyncValidationUtils = {
    * Create batch async validator
    */
   createBatchAsyncValidator: (
-    asyncValidators: Record<string, (value: unknown) => Promise<FieldValidationResult>>
+    asyncValidators: Record<string, (value: any) => Promise<FieldValidationResult>>
   ) => {
-    return async (data: Record<string, unknown>): Promise<Record<string, string>> => {
+    return async (data: Record<string, any>): Promise<Record<string, string>> => {
       const validationPromises = Object.entries(asyncValidators).map(async ([field, validator]) => {
         try {
           const result = await validator(data[field]);
           return [field, result.error] as const;
-        } catch (_error) {
+        } catch (error) {
           return [field, 'Validation failed'] as const;
         }
       });

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+
 import { AppProvider } from './AppProvider';
 import { ErrorBoundary } from './ErrorBoundary';
 

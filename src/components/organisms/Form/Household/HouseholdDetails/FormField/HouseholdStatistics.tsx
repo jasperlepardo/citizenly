@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { InputField } from '@/components/molecules/FieldSet';
+
 import { HouseholdDetailsData } from '../../types';
 
 export interface HouseholdStatisticsProps {
@@ -12,7 +14,7 @@ export interface HouseholdStatisticsProps {
 
 /**
  * Household Statistics Form Fields Component
- * 
+ *
  * Handles the numerical statistics for households:
  * - Number of families
  * - Number of household members
@@ -39,21 +41,22 @@ export function HouseholdStatistics({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {/* Number of Families */}
         <InputField
           label="Number of Families"
           helperText="Total families in this household"
           errorMessage={errors?.no_of_families}
           inputProps={{
-            name: "no_of_families",
-            type: "number",
+            name: 'no_of_families',
+            type: 'number',
             value: formData.no_of_families?.toString() || '1',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_families')(e.target.value),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              handleNumberChange('no_of_families')(e.target.value),
             readOnly: isReadOnly,
-            placeholder: "1",
+            placeholder: '1',
             min: 1,
-            max: 50
+            max: 50,
           }}
         />
 
@@ -63,14 +66,15 @@ export function HouseholdStatistics({
           helperText="Total people living in household"
           errorMessage={errors?.no_of_household_members}
           inputProps={{
-            name: "no_of_household_members",
-            type: "number",
+            name: 'no_of_household_members',
+            type: 'number',
             value: formData.no_of_household_members?.toString() || '0',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_household_members')(e.target.value),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              handleNumberChange('no_of_household_members')(e.target.value),
             readOnly: isReadOnly,
-            placeholder: "0",
+            placeholder: '0',
             min: 0,
-            max: 100
+            max: 100,
           }}
         />
 
@@ -80,34 +84,45 @@ export function HouseholdStatistics({
           helperText="Household members who are migrants"
           errorMessage={errors?.no_of_migrants}
           inputProps={{
-            name: "no_of_migrants",
-            type: "number",
+            name: 'no_of_migrants',
+            type: 'number',
             value: formData.no_of_migrants?.toString() || '0',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_migrants')(e.target.value),
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              handleNumberChange('no_of_migrants')(e.target.value),
             readOnly: isReadOnly,
-            placeholder: "0",
+            placeholder: '0',
             min: 0,
-            max: 100
+            max: 100,
           }}
         />
       </div>
 
       {/* Statistics Information Panel */}
-      <div className="bg-info/5 border border-info/20 rounded-md p-3">
+      <div className="bg-info/5 border-info/20 rounded-md border p-3">
         <div>
-          <p className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Household Statistics Guidelines:</p>
+          <p className="mb-2 font-medium text-zinc-900 dark:text-zinc-100">
+            Household Statistics Guidelines:
+          </p>
           <ul className="space-y-2 text-xs">
             <li className="flex items-start">
               <span className="mr-2">•</span>
-              <span><strong>Families:</strong> Count each family unit living in the household (minimum 1)</span>
+              <span>
+                <strong>Families:</strong> Count each family unit living in the household (minimum
+                1)
+              </span>
             </li>
             <li className="flex items-start">
               <span className="mr-2">•</span>
-              <span><strong>Members:</strong> Total number of people who regularly live in this household</span>
+              <span>
+                <strong>Members:</strong> Total number of people who regularly live in this
+                household
+              </span>
             </li>
             <li className="flex items-start">
               <span className="mr-2">•</span>
-              <span><strong>Migrants:</strong> Household members who moved from another location</span>
+              <span>
+                <strong>Migrants:</strong> Household members who moved from another location
+              </span>
             </li>
           </ul>
         </div>
@@ -115,11 +130,14 @@ export function HouseholdStatistics({
 
       {/* Validation Summary */}
       {(formData.no_of_migrants || 0) > (formData.no_of_household_members || 0) && (
-        <div className="bg-warning/5 border border-warning/20 rounded-md p-3">
+        <div className="bg-warning/5 border-warning/20 rounded-md border p-3">
           <div>
-            <p className="font-medium text-yellow-600 dark:text-yellow-400">⚠️ Data Validation Warning</p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1.5">
-              Number of migrants ({formData.no_of_migrants}) cannot exceed the total household members ({formData.no_of_household_members}).
+            <p className="font-medium text-yellow-600 dark:text-yellow-400">
+              ⚠️ Data Validation Warning
+            </p>
+            <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+              Number of migrants ({formData.no_of_migrants}) cannot exceed the total household
+              members ({formData.no_of_household_members}).
             </p>
           </div>
         </div>

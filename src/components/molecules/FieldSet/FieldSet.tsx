@@ -1,13 +1,16 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@/lib';
+import type { FormMode } from '@/types';
+
 import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '../../atoms/Field/Control/Radio/Radio';
-import { ControlGroup } from './ControlField/ControlField';
 import { Label } from '../../atoms/Field/Label/Label';
+
+import { ControlGroup } from './ControlField/ControlField';
 import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';
-import type { FormMode } from '@/types';
 
 export interface ControlFieldSetProps {
   /** Type of fieldset - checkbox for multiple selections, radio for single selection */
@@ -30,13 +33,13 @@ export interface ControlFieldSetProps {
   className?: string;
   /** Child components (Checkbox or Radio components) */
   children: React.ReactNode;
-  
+
   // Checkbox-specific props
   /** Selected values for checkboxes */
   checkboxValue?: string[];
   /** Change handler for checkboxes */
   onCheckboxChange?: (value: string[]) => void;
-  
+
   // Radio-specific props
   /** Selected value for radio group */
   radioValue?: string;
@@ -63,7 +66,6 @@ export const ControlFieldSet = ({
   onRadioChange,
   radioName,
 }: ControlFieldSetProps) => {
-
   // Helper function to format values for display in view mode
   const formatDisplayValue = (value: string[] | string | undefined) => {
     if (!value) return '—';
@@ -84,7 +86,7 @@ export const ControlFieldSet = ({
         labelSize={labelSize}
         className={className}
         readOnlyProps={{
-          value: formatDisplayValue(displayValue)
+          value: formatDisplayValue(displayValue),
         }}
       />
     );
@@ -123,15 +125,13 @@ export const ControlFieldSet = ({
         {/* Label and Description */}
         {(label || description) && (
           <div className="mb-1">
-            {label && (
-              <Label size={labelSize}>
-                {label}
-              </Label>
+            {label && <Label size={labelSize}>{label}</Label>}
+            {description && (
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
             )}
-            {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
           </div>
         )}
-        
+
         {/* Radio Group */}
         <RadioGroup
           name={radioName}

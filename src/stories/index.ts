@@ -1,6 +1,6 @@
 /**
  * Stories Index
- * 
+ *
  * @description Central export file for all Storybook stories.
  * This file provides a programmatic way to access story metadata
  * and is used for automated documentation generation.
@@ -19,18 +19,13 @@ export const STORY_COUNTS = {
   molecules: 23,
   organisms: 25,
   templates: 5,
-  total: 80
+  total: 80,
 } as const;
 
 // Atomic design levels
-export const ATOMIC_LEVELS = [
-  'atoms',
-  'molecules', 
-  'organisms',
-  'templates'
-] as const;
+export const ATOMIC_LEVELS = ['atoms', 'molecules', 'organisms', 'templates'] as const;
 
-export type AtomicLevel = typeof ATOMIC_LEVELS[number];
+export type AtomicLevel = (typeof ATOMIC_LEVELS)[number];
 
 // Story metadata for automated tools
 export interface StoryMetadata {

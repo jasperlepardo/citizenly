@@ -1,7 +1,15 @@
 import React from 'react';
-import { HouseholdTypeInformation, HouseholdTypeInformationData } from './FormField/HouseholdTypeInformation';
-import { IncomeAndHeadInformation, IncomeAndHeadInformationData } from './FormField/IncomeAndHeadInformation';
+
 import type { FormMode } from '@/types';
+
+import {
+  HouseholdTypeInformation,
+  HouseholdTypeInformationData,
+} from './FormField/HouseholdTypeInformation';
+import {
+  IncomeAndHeadInformation,
+  IncomeAndHeadInformationData,
+} from './FormField/IncomeAndHeadInformation';
 
 export interface HouseholdDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -25,15 +33,14 @@ export interface HouseholdDetailsFormProps {
   householdHeadsLoading?: boolean;
 }
 
-export function HouseholdDetailsForm({ 
+export function HouseholdDetailsForm({
   mode = 'create',
-  formData, 
-  onChange, 
+  formData,
+  onChange,
   errors,
   householdHeadOptions,
-  householdHeadsLoading
+  householdHeadsLoading,
 }: HouseholdDetailsFormProps) {
-
   // Map form data to HouseholdTypeInformation component props
   const householdTypeValue: HouseholdTypeInformationData = {
     householdType: formData.householdType || '',
@@ -65,10 +72,12 @@ export function HouseholdDetailsForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Household Details</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Household Details
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Household classification, tenure status, income, and head of family information.
           </p>

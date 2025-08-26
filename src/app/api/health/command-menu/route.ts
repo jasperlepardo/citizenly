@@ -4,14 +4,15 @@
  */
 
 import { NextResponse } from 'next/server';
-import { getCommandMenuHealth } from '@/lib/command-menu/analytics-utils';
+
 import { withSecurityHeaders } from '@/lib/api/responseUtils';
+import { getCommandMenuHealth } from '@/lib/command-menu/analytics-utils';
 
 // GET /api/health/command-menu - Health check for command menu system
 export const GET = withSecurityHeaders(async () => {
   try {
     const health = getCommandMenuHealth();
-    
+
     return NextResponse.json({
       status: 'success',
       timestamp: new Date().toISOString(),

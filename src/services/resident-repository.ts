@@ -3,11 +3,13 @@
  * Domain-specific repository for resident data operations
  */
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { ResidentRecord } from '@/types/database';
-import type { SupabaseClient } from '@supabase/supabase-js';
+
+import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
 
 // Use database record directly for consistent typing
 export type ResidentData = ResidentRecord;
@@ -72,7 +74,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
       // Merge with existing data for validation
       const mergedData = { ...existingResult.data, ...data };
       const validationResult = await validateResidentData(mergedData, this.context);
-      
+
       if (!validationResult.isValid) {
         return {
           success: false,
@@ -96,12 +98,12 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   /**
    * Search residents with advanced filtering
    */
-  async searchResidents(options: ResidentSearchOptions = {}): Promise<RepositoryResult<ResidentData[]>> {
+  async searchResidents(
+    options: ResidentSearchOptions = {}
+  ): Promise<RepositoryResult<ResidentData[]>> {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
-        let query = supabase
-          .from(this.tableName)
-          .select('*', { count: 'exact' });
+        let query = supabase.from(this.tableName).select('*', { count: 'exact' });
 
         // Name search (across first, middle, last names)
         if (options.name) {
@@ -115,8 +117,9 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
         if (options.age) {
           const currentYear = new Date().getFullYear();
           const birthYear = currentYear - options.age;
-          query = query.gte('birthdate', `${birthYear}-01-01`)
-                      .lt('birthdate', `${birthYear + 1}-01-01`);
+          query = query
+            .gte('birthdate', `${birthYear}-01-01`)
+            .lt('birthdate', `${birthYear + 1}-01-01`);
         }
 
         // Direct field filters
@@ -136,8 +139,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
 
         // Apply ordering
         if (options.orderBy) {
-          query = query.order(options.orderBy, { 
-            ascending: options.orderDirection !== 'desc' 
+          query = query.order(options.orderBy, {
+            ascending: options.orderDirection !== 'desc',
           });
         } else {
           // Default order by last name, first name
@@ -188,8 +191,16 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   async findByAgeRange(minAge: number, maxAge: number): Promise<RepositoryResult<ResidentData[]>> {
     try {
       const currentDate = new Date();
-      const maxBirthDate = new Date(currentDate.getFullYear() - minAge, currentDate.getMonth(), currentDate.getDate());
-      const minBirthDate = new Date(currentDate.getFullYear() - maxAge - 1, currentDate.getMonth(), currentDate.getDate());
+      const maxBirthDate = new Date(
+        currentDate.getFullYear() - minAge,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+      const minBirthDate = new Date(
+        currentDate.getFullYear() - maxAge - 1,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
 
       const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
@@ -212,26 +223,30 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   /**
    * Get voter statistics
    */
-  async getVoterStatistics(): Promise<RepositoryResult<{
-    totalResidents: number;
-    totalVoters: number;
-    residentVoters: number;
-    voterTurnoutRate: number;
-  }>> {
+  async getVoterStatistics(): Promise<
+    RepositoryResult<{
+      totalResidents: number;
+      totalVoters: number;
+      residentVoters: number;
+      voterTurnoutRate: number;
+    }>
+  > {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
         return supabase
           .from(this.tableName)
-          .select(`
+          .select(
+            `
             count(*) as totalResidents,
             is_voter,
             is_resident_voter
-          `)
+          `
+          )
           .gte('birthdate', '1900-01-01'); // Basic filter to ensure valid data
       };
 
       const result = await this.executeQuery(queryBuilder, 'GET_VOTER_STATISTICS');
-      
+
       if (!result.success || !result.data) {
         return result;
       }

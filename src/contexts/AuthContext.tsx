@@ -1,9 +1,10 @@
 'use client';
 
+import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+
 import { supabase } from '@/lib';
 import type { AuthRole } from '@/types/auth';
-import type { User, Session } from '@supabase/supabase-js';
 
 // User profile types - EXACTLY matching auth_user_profiles table (23 fields)
 export interface UserProfile {
@@ -14,32 +15,32 @@ export interface UserProfile {
   last_name: string;
   email: string;
   phone?: string | null;
-  
+
   // Role and access control
   role_id: string;
-  
+
   // Geographic assignment
   barangay_code?: string | null;
   city_municipality_code?: string | null;
   province_code?: string | null;
   region_code?: string | null;
-  
+
   // Status and activity
   is_active: boolean;
   last_login?: string | null;
-  
+
   // Email verification
   email_verified: boolean;
   email_verified_at?: string | null;
-  
+
   // Welcome email tracking
   welcome_email_sent: boolean;
   welcome_email_sent_at?: string | null;
-  
+
   // Onboarding tracking
   onboarding_completed: boolean;
   onboarding_completed_at?: string | null;
-  
+
   // Audit fields
   created_by?: string | null;
   updated_by?: string | null;
@@ -278,7 +279,6 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
       } finally {
         setProfileLoading(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [profileCache, profileLoading, lastProfileLoad]
   );
@@ -289,7 +289,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
     const initAuth = async () => {
       try {
         console.log('Starting auth initialization...');
-        
+
         // First try to get session
         const {
           data: { session },
@@ -304,13 +304,15 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
             hint: (error as any).hint,
             fullError: JSON.stringify(error, null, 2),
           });
-          
+
           // If session fails, try to refresh from storage
           try {
             console.log('Attempting session recovery from storage...');
             await supabase.auth.refreshSession();
-            const { data: { session: refreshedSession } } = await supabase.auth.getSession();
-            
+            const {
+              data: { session: refreshedSession },
+            } = await supabase.auth.getSession();
+
             if (refreshedSession) {
               console.log('Session recovered successfully');
               setSession(refreshedSession);
@@ -319,7 +321,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
           } catch (refreshError) {
             console.warn('Session recovery failed:', refreshError);
           }
-          
+
           setLoading(false);
           return;
         }

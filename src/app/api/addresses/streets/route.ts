@@ -1,5 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -8,16 +13,17 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
 
   try {
-    const supabase = createAdminSupabaseClient();
     let query = supabase
       .from('geo_streets')
-      .select(`
+      .select(
+        `
         id,
         name,
         subdivision_id,
         barangay_code,
         is_active
-      `)
+      `
+      )
       .eq('is_active', true)
       .order('name');
 
@@ -28,10 +34,7 @@ export async function GET(request: NextRequest) {
 
     // Filter by subdivision if provided
     if (subdivisionId) {
-      const subdivisionIdNum = Number(subdivisionId);
-      if (!Number.isNaN(subdivisionIdNum)) {
-        query = query.eq('subdivision_id', subdivisionIdNum);
-      }
+      query = query.eq('subdivision_id', subdivisionId);
     }
 
     // Add search filter if provided
@@ -44,30 +47,27 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching streets:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch streets' },
+        { error: 'Failed to fetch streets', details: error.message },
         { status: 500 }
       );
     }
 
     // Transform data to match SelectField format
-    const options = streets?.map((street: { id: string; name: string; subdivision_id: number | null; barangay_code: string | null }) => ({
-      value: street.id,
-      label: street.name,
-      subdivision_id: street.subdivision_id,
-      barangay_code: street.barangay_code,
-    })) || [];
+    const options =
+      streets?.map(street => ({
+        value: street.id,
+        label: street.name,
+        subdivision_id: street.subdivision_id,
+        barangay_code: street.barangay_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,
       data: options,
       count: options.length,
     });
-
   } catch (error) {
     console.error('Unexpected error in streets API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

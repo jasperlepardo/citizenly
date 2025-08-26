@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+
 import { logger, createErrorResponseObject, type ErrorCode } from '@/lib';
+import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
 import { getEnvironmentConfig, isProduction } from '@/lib/config/environment';
 import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
 import { queryOptimizer } from '@/lib/database/query-optimizer';
-import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -16,16 +17,16 @@ function checkRateLimit(userAgent: string, ip: string): boolean {
   const key = `${ip}-${userAgent?.substring(0, 50) || 'unknown'}`;
   const now = Date.now();
   const current = requestCounts.get(key);
-  
+
   if (!current || now > current.resetTime) {
     requestCounts.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return true;
   }
-  
+
   if (current.count >= RATE_LIMIT_MAX_REQUESTS) {
     return false;
   }
-  
+
   current.count++;
   return true;
 }
@@ -48,8 +49,9 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
 
     // Rate limiting
     const userAgent = request.headers.get('user-agent') || '';
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    
+    const ip =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+
     if (!checkRateLimit(userAgent, ip)) {
       return NextResponse.json(
         createErrorResponseObject('RATE_001', 'Rate limit exceeded. Please try again later.'),
@@ -95,7 +97,6 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
       .eq('id', user.id)
       .single();
 
-
     if (profileError) {
       logger.error('Profile query error:', profileError);
       return NextResponse.json(
@@ -103,7 +104,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
         { status: 400 }
       );
     }
-    
+
     if (!userProfile?.barangay_code) {
       return NextResponse.json(
         createErrorResponseObject('USER_002', 'No barangay assignment found for user'),
@@ -114,12 +115,15 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     const barangayCode = userProfile.barangay_code;
 
     // Get dashboard stats using query optimizer
-    const { data: dashboardStats, error: statsError, fromCache } = await queryOptimizer.getDashboardStats(
+    const {
+      data: dashboardStats,
+      error: statsError,
+      fromCache,
+    } = await queryOptimizer.getDashboardStats(
       supabaseAdmin,
       barangayCode,
       { cacheTTL: 2 * 60 * 1000 } // 2 minutes cache
     );
-
 
     if (statsError) {
       logger.error('Dashboard stats query error:', statsError);
@@ -140,17 +144,25 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     // Parse pagination parameters
     const url = new URL(request.url);
     const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
-    const limit = Math.min(MAX_RESIDENTS_PER_PAGE, parseInt(url.searchParams.get('limit') || DEFAULT_PAGE_SIZE.toString()));
+    const limit = Math.min(
+      MAX_RESIDENTS_PER_PAGE,
+      parseInt(url.searchParams.get('limit') || DEFAULT_PAGE_SIZE.toString())
+    );
     const offset = (page - 1) * limit;
 
     // Get individual residents data using optimized query
-    const { data: residentsData, error: residentsError, fromCache: residentsFromCache } = await queryOptimizer.executeQuery(
+    const {
+      data: residentsData,
+      error: residentsError,
+      fromCache: residentsFromCache,
+    } = await queryOptimizer.executeQuery(
       supabaseAdmin,
       `residents_sectoral_${barangayCode}_${page}_${limit}`,
       async () => {
         return await supabaseAdmin
           .from('residents')
-          .select(`
+          .select(
+            `
             birthdate, 
             sex, 
             civil_status, 
@@ -170,17 +182,18 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
               is_indigenous_people,
               is_migrant
             )
-          `)
+          `
+          )
           .eq('households.barangay_code', barangayCode)
           .eq('is_active', true)
           .range(offset, offset + limit - 1);
       },
-      { 
+      {
         cacheTTL: 1 * 60 * 1000, // 1 minute cache for residents
-        enableCache: true
+        enableCache: true,
       }
     );
-      
+
     if (residentsError) {
       logger.error('Residents query error:', residentsError);
       return NextResponse.json(
@@ -188,7 +201,6 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
         { status: 500 }
       );
     }
-
 
     // Calculate real sectoral statistics from residents data
     const sectoralStats = {
@@ -211,7 +223,8 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
         const sectoral = resident.resident_sectoral_info?.[0];
         if (sectoral) {
           // Labor force includes employed and unemployed
-          if (sectoral.is_labor_force_employed || sectoral.is_unemployed) sectoralStats.laborForce++;
+          if (sectoral.is_labor_force_employed || sectoral.is_unemployed)
+            sectoralStats.laborForce++;
           if (sectoral.is_labor_force_employed) sectoralStats.employed++;
           if (sectoral.is_unemployed) sectoralStats.unemployed++;
           if (sectoral.is_overseas_filipino_worker) sectoralStats.ofw++;
@@ -226,7 +239,6 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
         }
       });
     }
-
 
     // Calculate actual counts from the data we retrieved
     const actualResidentCount = residentsData?.length || 0;
@@ -262,7 +274,9 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
           divorced: statsData?.divorced_separated_count || 0,
         },
         employment: {
-          laborForce: sectoralStats.laborForce || (statsData?.employed_count || 0) + (statsData?.unemployed_count || 0),
+          laborForce:
+            sectoralStats.laborForce ||
+            (statsData?.employed_count || 0) + (statsData?.unemployed_count || 0),
           employed: sectoralStats.employed || statsData?.employed_count || 0,
           unemployed: sectoralStats.unemployed || statsData?.unemployed_count || 0,
         },
@@ -282,20 +296,19 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
         page,
         limit,
         total: actualResidentCount,
-        hasNextPage: residentsData?.length === limit
+        hasNextPage: residentsData?.length === limit,
       },
       // Performance metadata
       performance: {
         dashboardStatsFromCache: fromCache,
         residentsDataFromCache: residentsFromCache,
-        queryOptimizationEnabled: true
-      }
+        queryOptimizationEnabled: true,
+      },
     };
 
     // Release pooled connections
     releasePooledConnection(supabase);
     releasePooledConnection(supabaseAdmin);
-
 
     return NextResponse.json(response);
   } catch (error) {
@@ -309,8 +322,5 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
 
 // Wrap the handler with response caching
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  return withResponseCache(CachePresets.dashboard)(
-    request,
-    () => dashboardStatsHandler(request)
-  );
+  return withResponseCache(CachePresets.dashboard)(request, () => dashboardStatsHandler(request));
 }

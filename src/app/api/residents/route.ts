@@ -5,8 +5,6 @@
 
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import { ResidentRecord } from '@/types/database';
-import { ResidentSectoralInfo, ResidentMigrantInfo } from '@/types/residents';
 
 import {
   withAuth,
@@ -133,8 +131,8 @@ export const GET = withSecurityHeaders(
         // All residents must have households, and filtering is done based on household location
         const accessLevel = getAccessLevel(user.role);
 
-        // Ensure we only show active residents (households!inner already ensures household presence)
-        query = query.eq('is_active', true);
+        // Ensure we only show residents with households and active residents (soft delete support)
+        query = query.not('household_code', 'is', null).eq('is_active', true);
 
         // Apply geographic filter based on the joined household data
         switch (accessLevel) {
@@ -351,7 +349,7 @@ export const POST = withSecurityHeaders(
           const hasSectoralData = sectoralFields.some(field => field in residentData);
 
           if (hasSectoralData && newResident?.id) {
-            const sectoralData: Partial<ResidentSectoralInfo> = {
+            const sectoralData: any = {
               resident_id: newResident.id,
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
@@ -359,8 +357,8 @@ export const POST = withSecurityHeaders(
 
             // Add sectoral fields that are present
             sectoralFields.forEach(field => {
-              if (Object.prototype.hasOwnProperty.call(residentData, field)) {
-                sectoralData[field as keyof ResidentSectoralInfo] = (residentData as unknown as Record<string, unknown>)[field] as any;
+              if (field in residentData) {
+                sectoralData[field] = (residentData as any)[field] || false;
               }
             });
 
@@ -391,11 +389,11 @@ export const POST = withSecurityHeaders(
           ];
 
           const hasMigrationData = migrationFields.some(
-            field => field in residentData && (residentData as unknown as Record<string, unknown>)[field]
+            field => field in residentData && (residentData as any)[field]
           );
 
           if (hasMigrationData && newResident?.id) {
-            const migrationData: Partial<ResidentMigrantInfo> = {
+            const migrationData: any = {
               resident_id: newResident.id,
               created_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
@@ -403,8 +401,8 @@ export const POST = withSecurityHeaders(
 
             // Add migration fields that are present and not empty
             migrationFields.forEach(field => {
-              if (field in residentData && (residentData as unknown as Record<string, unknown>)[field]) {
-                migrationData[field as keyof ResidentMigrantInfo] = (residentData as unknown as Record<string, unknown>)[field];
+              if (field in residentData && (residentData as any)[field]) {
+                migrationData[field] = (residentData as any)[field];
               }
             });
 

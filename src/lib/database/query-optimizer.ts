@@ -18,8 +18,8 @@ interface QueryMetrics {
   timestamp: number;
 }
 
-interface QueryCache<T = unknown> {
-  data: T;
+interface QueryCache {
+  data: any;
   timestamp: number;
   ttl: number;
   key: string;
@@ -46,9 +46,9 @@ class DatabaseQueryOptimizer {
   async executeQuery<T>(
     client: SupabaseClient,
     queryName: string,
-    queryFn: () => Promise<{ data: T; error: Error | null }>,
+    queryFn: () => Promise<{ data: T; error: any }>,
     options: OptimizedQueryOptions = {}
-  ): Promise<{ data: T; error: Error | null; fromCache?: boolean }> {
+  ): Promise<{ data: T; error: any; fromCache?: boolean }> {
     const {
       cacheTTL = this.defaultCacheTTL,
       enableCache = true,
@@ -80,7 +80,7 @@ class DatabaseQueryOptimizer {
     }
 
     // Execute query with retry logic and timeout
-    let lastError: Error | null = null;
+    let lastError: any = null;
 
     for (let attempt = 1; attempt <= retryAttempts + 1; attempt++) {
       try {
@@ -160,11 +160,11 @@ class DatabaseQueryOptimizer {
     client: SupabaseClient,
     queries: Array<{
       name: string;
-      queryFn: () => Promise<{ data: T; error: Error | null }>;
+      queryFn: () => Promise<{ data: T; error: any }>;
       options?: OptimizedQueryOptions;
     }>,
     options: { concurrency?: number; failFast?: boolean } = {}
-  ): Promise<Array<{ data: T; error: Error | null; fromCache?: boolean }>> {
+  ): Promise<Array<{ data: T; error: any; fromCache?: boolean }>> {
     const { concurrency = 5, failFast = false } = options;
 
     logger.info(`Executing batch queries`, {
@@ -178,7 +178,7 @@ class DatabaseQueryOptimizer {
       batches.push(queries.slice(i, i + concurrency));
     }
 
-    const results: Array<{ data: T; error: Error | null; fromCache?: boolean }> = [];
+    const results: Array<{ data: T; error: any; fromCache?: boolean }> = [];
 
     for (const batch of batches) {
       try {
@@ -280,7 +280,7 @@ class DatabaseQueryOptimizer {
   private async calculateDashboardStatsDirectly(
     client: SupabaseClient,
     barangayCode: string
-  ): Promise<{ data: unknown; error: Error | null }> {
+  ): Promise<{ data: any; error: any }> {
     try {
       // Get basic counts using proper Supabase count syntax
       const { count: residentCount, error: residentError } = await client
@@ -345,7 +345,7 @@ class DatabaseQueryOptimizer {
 
       // Calculate demographics
       if (demographics) {
-        demographics.forEach((resident: { sex?: string; birthdate?: string; civil_status?: string }) => {
+        demographics.forEach((resident: any) => {
           // Sex distribution
           if (resident.sex === 'male') stats.male_count++;
           else if (resident.sex === 'female') stats.female_count++;
@@ -463,7 +463,7 @@ class DatabaseQueryOptimizer {
   /**
    * Get cached result if valid
    */
-  private getCachedResult<T>(cacheKey: string): { data: T; error: Error | null } | null {
+  private getCachedResult<T>(cacheKey: string): { data: T; error: any } | null {
     const cached = this.queryCache.get(cacheKey);
 
     if (cached && Date.now() - cached.timestamp < cached.ttl) {
@@ -481,7 +481,7 @@ class DatabaseQueryOptimizer {
   /**
    * Set cached result
    */
-  private setCacheResult<T>(cacheKey: string, result: T, ttl: number): void {
+  private setCacheResult(cacheKey: string, result: any, ttl: number): void {
     // Clean cache if at capacity
     if (this.queryCache.size >= this.maxCacheSize) {
       this.cleanExpiredCache();

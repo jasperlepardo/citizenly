@@ -5,30 +5,16 @@
 
 import { isProduction, isDevelopment, getEnvironment } from '@/lib/config/environment';
 
-declare global {
-  interface Window {
-    Sentry?: SentryInstance;
-  }
-}
-
-interface SentryInstance {
-  setUser: (user: { id: string; email?: string; barangay_code?: string }) => void;
-  setContext: (key: string, context: Record<string, string | number | boolean>) => void;
-  addBreadcrumb: (breadcrumb: { message: string; category: string; level: string; timestamp: number }) => void;
-  captureException: (error: Error, options?: { contexts?: { custom?: Record<string, string | number | boolean> } }) => void;
-  startTransaction: (options: { name: string; op: string }) => { setTag: (key: string, value: string) => void } | null;
-}
-
 interface SentryConfig {
   dsn: string | undefined;
   environment: string;
   tracesSampleRate: number;
   replaysSessionSampleRate: number;
   replaysOnErrorSampleRate: number;
-  beforeSend?: (event: Record<string, unknown>, hint: Record<string, unknown>) => Record<string, unknown> | null;
+  beforeSend?: (event: any, hint: any) => any | null;
   initialScope?: {
     tags: Record<string, string>;
-    user: Record<string, string | number | boolean>;
+    user: Record<string, any>;
   };
 }
 
@@ -102,8 +88,8 @@ export const getSentryConfig = (): SentryConfig => {
  * Configure Sentry user context
  */
 export const setSentryUser = (userId: string, email?: string, barangayCode?: string) => {
-  if (typeof window !== 'undefined' && window.Sentry) {
-    const Sentry = window.Sentry;
+  if (typeof window !== 'undefined' && (window as any).Sentry) {
+    const Sentry = (window as any).Sentry;
     Sentry.setUser({
       id: userId,
       email,
@@ -115,9 +101,9 @@ export const setSentryUser = (userId: string, email?: string, barangayCode?: str
 /**
  * Set custom Sentry context
  */
-export const setSentryContext = (key: string, context: Record<string, string | number | boolean>) => {
-  if (typeof window !== 'undefined' && window.Sentry) {
-    const Sentry = window.Sentry;
+export const setSentryContext = (key: string, context: Record<string, any>) => {
+  if (typeof window !== 'undefined' && (window as any).Sentry) {
+    const Sentry = (window as any).Sentry;
     Sentry.setContext(key, context);
   }
 };
@@ -130,8 +116,8 @@ export const addSentryBreadcrumb = (
   category?: string,
   level?: 'info' | 'warning' | 'error' | 'debug'
 ) => {
-  if (typeof window !== 'undefined' && window.Sentry) {
-    const Sentry = window.Sentry;
+  if (typeof window !== 'undefined' && (window as any).Sentry) {
+    const Sentry = (window as any).Sentry;
     Sentry.addBreadcrumb({
       message,
       category: category || 'custom',
@@ -144,9 +130,9 @@ export const addSentryBreadcrumb = (
 /**
  * Manually capture exception
  */
-export const captureError = (error: Error, context?: Record<string, string | number | boolean>) => {
-  if (typeof window !== 'undefined' && window.Sentry) {
-    const Sentry = window.Sentry;
+export const captureError = (error: Error, context?: Record<string, any>) => {
+  if (typeof window !== 'undefined' && (window as any).Sentry) {
+    const Sentry = (window as any).Sentry;
     Sentry.captureException(error, {
       contexts: {
         custom: context,
@@ -159,8 +145,8 @@ export const captureError = (error: Error, context?: Record<string, string | num
  * Performance monitoring helpers
  */
 export const startSentryTransaction = (name: string, op?: string) => {
-  if (typeof window !== 'undefined' && window.Sentry) {
-    const Sentry = window.Sentry;
+  if (typeof window !== 'undefined' && (window as any).Sentry) {
+    const Sentry = (window as any).Sentry;
     return Sentry.startTransaction({
       name,
       op: op || 'navigation',
@@ -176,7 +162,7 @@ export const isSentryConfigured = (): boolean => {
   return !!(
     process.env.NEXT_PUBLIC_SENTRY_DSN &&
     typeof window !== 'undefined' &&
-    window.Sentry
+    (window as any).Sentry
   );
 };
 

@@ -1,8 +1,13 @@
 import React from 'react';
+
 import type { FormMode } from '@/types';
-import { PhysicalCharacteristics, PhysicalCharacteristicsData } from './FormField/PhysicalCharacteristics';
-import { VotingInformation, VotingInformationData } from './FormField/VotingInformation';
+
 import { MotherMaidenName, MotherMaidenNameData } from './FormField/MotherMaidenName';
+import {
+  PhysicalCharacteristics,
+  PhysicalCharacteristicsData,
+} from './FormField/PhysicalCharacteristics';
+import { VotingInformation, VotingInformationData } from './FormField/VotingInformation';
 
 export interface PhysicalPersonalDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -31,13 +36,12 @@ export interface PhysicalPersonalDetailsFormProps {
   errors: Record<string, string>;
 }
 
-export function PhysicalPersonalDetailsForm({ 
+export function PhysicalPersonalDetailsForm({
   mode = 'create',
-  formData, 
-  onChange, 
-  errors
+  formData,
+  onChange,
+  errors,
 }: PhysicalPersonalDetailsFormProps) {
-
   // Map form data to PhysicalCharacteristics component props
   const physicalCharacteristicsValue: PhysicalCharacteristicsData = {
     blood_type: formData.blood_type || '',
@@ -90,10 +94,12 @@ export function PhysicalPersonalDetailsForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Physical & Personal Details</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Physical & Personal Details
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Physical characteristics, voting information, and personal details.
           </p>

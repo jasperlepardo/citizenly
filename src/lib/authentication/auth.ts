@@ -3,9 +3,10 @@
  * Secure authentication utilities for the RBI System
  */
 
-import { supabase } from '../supabase';
-import { createLogger } from '../config/environment';
 import type { User, Session, AuthError } from '@supabase/supabase-js';
+
+import { createLogger } from '../config/environment';
+import { supabase } from '../supabase';
 
 const logger = createLogger('Auth');
 

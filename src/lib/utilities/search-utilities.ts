@@ -1,11 +1,12 @@
 /**
  * Common Search Utilities
- * 
+ *
  * @description Shared utilities and patterns for search functionality across hooks.
  * Extracted from multiple search hooks to eliminate duplication.
  */
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
+
 import { useDebounce } from '@/hooks/utilities/useDebounce';
 
 /**
@@ -104,13 +105,16 @@ export function createPaginatedSearchState<T>(
  * Generic search error handler
  */
 export function createSearchErrorHandler(onError?: (error: Error) => void) {
-  return useCallback((error: unknown, fallbackMessage = 'Search failed') => {
-    const searchError = error instanceof Error ? error : new Error(fallbackMessage);
-    if (onError) {
-      onError(searchError);
-    }
-    return searchError;
-  }, [onError]);
+  return useCallback(
+    (error: unknown, fallbackMessage = 'Search failed') => {
+      const searchError = error instanceof Error ? error : new Error(fallbackMessage);
+      if (onError) {
+        onError(searchError);
+      }
+      return searchError;
+    },
+    [onError]
+  );
 }
 
 /**
@@ -123,43 +127,46 @@ export function createSearchExecutor<T>(
 ) {
   const { minQueryLength = 0, onError } = config;
 
-  return useCallback(async (searchQuery: string) => {
-    if (searchQuery.length < minQueryLength) {
-      setState(prev => ({
-        ...prev,
-        results: [],
-        error: null,
-        isLoading: false,
-      }));
-      return;
-    }
-
-    setState(prev => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-    }));
-
-    try {
-      const searchResults = await searchFn(searchQuery);
-      setState(prev => ({
-        ...prev,
-        results: searchResults,
-        isLoading: false,
-      }));
-    } catch (error) {
-      const searchError = error instanceof Error ? error : new Error('Search failed');
-      if (onError) {
-        onError(searchError);
+  return useCallback(
+    async (searchQuery: string) => {
+      if (searchQuery.length < minQueryLength) {
+        setState(prev => ({
+          ...prev,
+          results: [],
+          error: null,
+          isLoading: false,
+        }));
+        return;
       }
+
       setState(prev => ({
         ...prev,
-        results: [],
-        error: searchError,
-        isLoading: false,
+        isLoading: true,
+        error: null,
       }));
-    }
-  }, [searchFn, minQueryLength, setState, onError]);
+
+      try {
+        const searchResults = await searchFn(searchQuery);
+        setState(prev => ({
+          ...prev,
+          results: searchResults,
+          isLoading: false,
+        }));
+      } catch (error) {
+        const searchError = error instanceof Error ? error : new Error('Search failed');
+        if (onError) {
+          onError(searchError);
+        }
+        setState(prev => ({
+          ...prev,
+          results: [],
+          error: searchError,
+          isLoading: false,
+        }));
+      }
+    },
+    [searchFn, minQueryLength, setState, onError]
+  );
 }
 
 /**
@@ -172,66 +179,63 @@ export function createPaginatedSearchExecutor<T, F>(
 ) {
   const { minQueryLength = 0, onError } = config;
 
-  return useCallback(async (
-    searchQuery: string,
-    page = 1,
-    filters?: F,
-    resetResults = true
-  ) => {
-    if (searchQuery.length < minQueryLength && page === 1) {
-      setState(prev => ({
-        ...prev,
-        results: [],
-        pagination: { ...prev.pagination, total: 0, hasMore: false },
-        error: null,
-        isLoading: false,
-      }));
-      return;
-    }
-
-    setState(prev => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-    }));
-
-    try {
-      const response = await searchFn({
-        query: searchQuery,
-        page,
-        pageSize: config.initialPageSize || 20,
-        filters,
-      });
-
-      setState(prev => ({
-        ...prev,
-        results: resetResults || page === 1 
-          ? response.data 
-          : [...prev.results, ...response.data],
-        pagination: {
-          current: page,
-          pageSize: response.pageSize,
-          total: response.total,
-          hasMore: response.hasMore,
-        },
-        isLoading: false,
-      }));
-    } catch (error) {
-      const searchError = error instanceof Error ? error : new Error('Search failed');
-      if (onError) {
-        onError(searchError);
+  return useCallback(
+    async (searchQuery: string, page = 1, filters?: F, resetResults = true) => {
+      if (searchQuery.length < minQueryLength && page === 1) {
+        setState(prev => ({
+          ...prev,
+          results: [],
+          pagination: { ...prev.pagination, total: 0, hasMore: false },
+          error: null,
+          isLoading: false,
+        }));
+        return;
       }
+
       setState(prev => ({
         ...prev,
-        results: resetResults || page === 1 ? [] : prev.results,
-        pagination: resetResults || page === 1 
-          ? { ...prev.pagination, total: 0, hasMore: false }
-          : prev.pagination,
-        error: searchError,
-        isLoading: false,
+        isLoading: true,
+        error: null,
       }));
-    }
-  }, [searchFn, minQueryLength, config.initialPageSize, setState, onError]);
+
+      try {
+        const response = await searchFn({
+          query: searchQuery,
+          page,
+          pageSize: config.initialPageSize || 20,
+          filters,
+        });
+
+        setState(prev => ({
+          ...prev,
+          results: resetResults || page === 1 ? response.data : [...prev.results, ...response.data],
+          pagination: {
+            current: page,
+            pageSize: response.pageSize,
+            total: response.total,
+            hasMore: response.hasMore,
+          },
+          isLoading: false,
+        }));
+      } catch (error) {
+        const searchError = error instanceof Error ? error : new Error('Search failed');
+        if (onError) {
+          onError(searchError);
+        }
+        setState(prev => ({
+          ...prev,
+          results: resetResults || page === 1 ? [] : prev.results,
+          pagination:
+            resetResults || page === 1
+              ? { ...prev.pagination, total: 0, hasMore: false }
+              : prev.pagination,
+          error: searchError,
+          isLoading: false,
+        }));
+      }
+    },
+    [searchFn, minQueryLength, config.initialPageSize, setState, onError]
+  );
 }
 
 /**
@@ -255,9 +259,12 @@ export function createSearchUtilities<T>(
     executeSearch(state.query);
   }, [executeSearch, state.query]);
 
-  const setQuery = useCallback((newQuery: string) => {
-    setState(prev => ({ ...prev, query: newQuery }));
-  }, [setState]);
+  const setQuery = useCallback(
+    (newQuery: string) => {
+      setState(prev => ({ ...prev, query: newQuery }));
+    },
+    [setState]
+  );
 
   return { clearSearch, refresh, setQuery };
 }
@@ -268,7 +275,12 @@ export function createSearchUtilities<T>(
 export function createPaginatedSearchUtilities<T, F>(
   state: PaginatedSearchState<T>,
   setState: React.Dispatch<React.SetStateAction<PaginatedSearchState<T>>>,
-  executeSearch: (query: string, page?: number, filters?: F, resetResults?: boolean) => Promise<void>
+  executeSearch: (
+    query: string,
+    page?: number,
+    filters?: F,
+    resetResults?: boolean
+  ) => Promise<void>
 ) {
   const baseUtils = createSearchUtilities(state, setState as React.Dispatch<React.SetStateAction<SearchState<T>>>, executeSearch);
 
@@ -276,19 +288,31 @@ export function createPaginatedSearchUtilities<T, F>(
     if (!state.isLoading && state.pagination.hasMore) {
       executeSearch(state.query, state.pagination.current + 1, undefined, false);
     }
-  }, [executeSearch, state.query, state.pagination.current, state.pagination.hasMore, state.isLoading]);
+  }, [
+    executeSearch,
+    state.query,
+    state.pagination.current,
+    state.pagination.hasMore,
+    state.isLoading,
+  ]);
 
-  const setPage = useCallback((page: number) => {
-    executeSearch(state.query, page, undefined, true);
-  }, [executeSearch, state.query]);
+  const setPage = useCallback(
+    (page: number) => {
+      executeSearch(state.query, page, undefined, true);
+    },
+    [executeSearch, state.query]
+  );
 
-  const setPageSize = useCallback((pageSize: number) => {
-    setState(prev => ({
-      ...prev,
-      pagination: { ...prev.pagination, pageSize, current: 1 },
-    }));
-    executeSearch(state.query, 1, undefined, true);
-  }, [setState, executeSearch, state.query]);
+  const setPageSize = useCallback(
+    (pageSize: number) => {
+      setState(prev => ({
+        ...prev,
+        pagination: { ...prev.pagination, pageSize, current: 1 },
+      }));
+      executeSearch(state.query, 1, undefined, true);
+    },
+    [setState, executeSearch, state.query]
+  );
 
   return {
     ...baseUtils,
@@ -315,9 +339,13 @@ export function useSearchResultsFilter<T>(
 /**
  * Search highlighting utility
  */
-export function highlightSearchText(text: string, query: string, className = 'bg-yellow-200'): string {
+export function highlightSearchText(
+  text: string,
+  query: string,
+  className = 'bg-yellow-200'
+): string {
   if (!query.trim()) return text;
-  
+
   const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
   return text.replace(regex, `<span class="${className}">$1</span>`);
 }
@@ -373,29 +401,35 @@ export function useSearchCache<T>(key: string, maxSize = 100) {
   const [cache] = useState(() => new Map<string, { data: T[]; timestamp: number }>());
   const maxAge = 5 * 60 * 1000; // 5 minutes
 
-  const getCachedResult = useCallback((query: string): T[] | null => {
-    const cacheKey = `${key}:${query}`;
-    const cached = cache.get(cacheKey);
-    
-    if (cached && Date.now() - cached.timestamp < maxAge) {
-      return cached.data;
-    }
-    
-    return null;
-  }, [cache, key, maxAge]);
+  const getCachedResult = useCallback(
+    (query: string): T[] | null => {
+      const cacheKey = `${key}:${query}`;
+      const cached = cache.get(cacheKey);
 
-  const setCachedResult = useCallback((query: string, data: T[]) => {
-    const cacheKey = `${key}:${query}`;
-    
-    if (cache.size >= maxSize) {
-      const firstKey = cache.keys().next().value;
-      if (firstKey !== undefined) {
-        cache.delete(firstKey);
+      if (cached && Date.now() - cached.timestamp < maxAge) {
+        return cached.data;
       }
-    }
-    
-    cache.set(cacheKey, { data, timestamp: Date.now() });
-  }, [cache, key, maxSize]);
+
+      return null;
+    },
+    [cache, key, maxAge]
+  );
+
+  const setCachedResult = useCallback(
+    (query: string, data: T[]) => {
+      const cacheKey = `${key}:${query}`;
+
+      if (cache.size >= maxSize) {
+        const firstKey = cache.keys().next().value;
+        if (firstKey !== undefined) {
+          cache.delete(firstKey);
+        }
+      }
+
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+    },
+    [cache, key, maxSize]
+  );
 
   return { getCachedResult, setCachedResult };
 }

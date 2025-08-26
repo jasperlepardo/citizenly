@@ -3,12 +3,9 @@
  * Provides offline-first data storage for PWA functionality
  */
 
-import { ResidentRecord, HouseholdRecord, DashboardStats } from '@/types/database';
-import { UserProfile } from '@/contexts/AuthContext';
-
-interface StoredData<T = ResidentRecord | HouseholdRecord | Record<string, unknown>> {
+interface StoredData {
   id: string;
-  data: T;
+  data: any;
   timestamp: number;
   expiry?: number;
 }
@@ -17,7 +14,7 @@ interface PendingSyncItem {
   id?: number;
   action: 'CREATE' | 'UPDATE' | 'DELETE';
   type: 'resident' | 'household' | 'user';
-  data: ResidentRecord | HouseholdRecord | UserProfile;
+  data: any;
   timestamp: number;
   synced: boolean;
   retryCount: number;
@@ -91,7 +88,7 @@ export class OfflineStorage {
   /**
    * Store residents data offline
    */
-  async storeResidents(residents: ResidentRecord[], barangayCode?: string): Promise<void> {
+  async storeResidents(residents: any[], barangayCode?: string): Promise<void> {
     if (typeof window === 'undefined') return;
 
     await this.init();
@@ -119,7 +116,7 @@ export class OfflineStorage {
   /**
    * Get residents from offline storage
    */
-  async getOfflineResidents(barangayCode?: string): Promise<ResidentRecord[]> {
+  async getOfflineResidents(barangayCode?: string): Promise<any[]> {
     await this.init();
 
     const tx = this.db!.transaction(['residents'], 'readonly');
@@ -127,14 +124,14 @@ export class OfflineStorage {
 
     if (barangayCode) {
       const index = store.index('barangay_code');
-      return await new Promise<ResidentRecord[]>((resolve, reject) => {
+      return await new Promise<any[]>((resolve, reject) => {
         const request = index.getAll(barangayCode);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
     }
 
-    return await new Promise<ResidentRecord[]>((resolve, reject) => {
+    return await new Promise<any[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -144,7 +141,7 @@ export class OfflineStorage {
   /**
    * Store households data offline
    */
-  async storeHouseholds(households: HouseholdRecord[], barangayCode?: string): Promise<void> {
+  async storeHouseholds(households: any[], barangayCode?: string): Promise<void> {
     await this.init();
 
     const tx = this.db!.transaction(['households'], 'readwrite');
@@ -170,7 +167,7 @@ export class OfflineStorage {
   /**
    * Get households from offline storage
    */
-  async getOfflineHouseholds(barangayCode?: string): Promise<HouseholdRecord[]> {
+  async getOfflineHouseholds(barangayCode?: string): Promise<any[]> {
     await this.init();
 
     const tx = this.db!.transaction(['households'], 'readonly');
@@ -178,14 +175,14 @@ export class OfflineStorage {
 
     if (barangayCode) {
       const index = store.index('barangay_code');
-      return await new Promise<HouseholdRecord[]>((resolve, reject) => {
+      return await new Promise<any[]>((resolve, reject) => {
         const request = index.getAll(barangayCode);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
     }
 
-    return await new Promise<HouseholdRecord[]>((resolve, reject) => {
+    return await new Promise<any[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -195,7 +192,7 @@ export class OfflineStorage {
   /**
    * Store dashboard statistics
    */
-  async storeDashboardStats(stats: Record<string, number | string>): Promise<void> {
+  async storeDashboardStats(stats: any): Promise<void> {
     await this.init();
 
     const tx = this.db!.transaction(['dashboard_stats'], 'readwrite');
@@ -216,7 +213,7 @@ export class OfflineStorage {
   /**
    * Get dashboard statistics from offline storage
    */
-  async getOfflineDashboardStats(): Promise<DashboardStats | null> {
+  async getOfflineDashboardStats(): Promise<any | null> {
     await this.init();
 
     const tx = this.db!.transaction(['dashboard_stats'], 'readonly');
@@ -339,7 +336,7 @@ export class OfflineStorage {
   /**
    * Store API response in cache
    */
-  async cacheApiResponse<T>(url: string, data: T, ttlMinutes: number = 30): Promise<void> {
+  async cacheApiResponse(url: string, data: any, ttlMinutes: number = 30): Promise<void> {
     await this.init();
 
     const tx = this.db!.transaction(['api_cache'], 'readwrite');
@@ -362,7 +359,7 @@ export class OfflineStorage {
   /**
    * Get cached API response
    */
-  async getCachedApiResponse<T = unknown>(url: string): Promise<T | null> {
+  async getCachedApiResponse(url: string): Promise<any | null> {
     await this.init();
 
     const tx = this.db!.transaction(['api_cache'], 'readonly');
@@ -399,7 +396,7 @@ export class OfflineStorage {
     const index = store.index('expiry');
 
     const now = Date.now();
-    const expiredItems = await new Promise<StoredData[]>((resolve, reject) => {
+    const expiredItems = await new Promise<any[]>((resolve, reject) => {
       const request = index.getAll(IDBKeyRange.upperBound(now));
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);

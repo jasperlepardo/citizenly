@@ -32,7 +32,7 @@ export function EducationInformation({
   mode = 'create',
   className = '',
 }: EducationInformationProps) {
-  const handleChange = (field: keyof EducationInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof EducationInformationData, fieldValue: any) => {
     const updatedValue = {
       ...value,
       [field]: fieldValue,
