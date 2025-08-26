@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase configuration');
-  }
-  
-  return createClient(supabaseUrl, serviceRoleKey);
-}
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -19,7 +8,7 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
 
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createAdminSupabaseClient();
     let query = supabase
       .from('geo_streets')
       .select(`
@@ -39,7 +28,10 @@ export async function GET(request: NextRequest) {
 
     // Filter by subdivision if provided
     if (subdivisionId) {
-      query = query.eq('subdivision_id', subdivisionId);
+      const subdivisionIdNum = Number(subdivisionId);
+      if (!Number.isNaN(subdivisionIdNum)) {
+        query = query.eq('subdivision_id', subdivisionIdNum);
+      }
     }
 
     // Add search filter if provided
@@ -52,13 +44,13 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching streets:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch streets', details: error.message },
+        { error: 'Failed to fetch streets' },
         { status: 500 }
       );
     }
 
     // Transform data to match SelectField format
-    const options = streets?.map((street) => ({
+    const options = streets?.map((street: { id: string; name: string; subdivision_id: number | null; barangay_code: string | null }) => ({
       value: street.id,
       label: street.name,
       subdivision_id: street.subdivision_id,

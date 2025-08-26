@@ -1,20 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase configuration');
-  }
-  
-  return createClient(supabaseUrl, serviceRoleKey);
-}
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const cityCode = searchParams.get('city');
 
@@ -37,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = barangays?.map((barangay) => ({
+    const options = barangays?.map((barangay: { code: string; name: string; city_municipality_code: string }) => ({
       value: barangay.code,
       label: barangay.name,
       city_municipality_code: barangay.city_municipality_code,

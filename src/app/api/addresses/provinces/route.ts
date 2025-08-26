@@ -1,20 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase configuration');
-  }
-  
-  return createClient(supabaseUrl, serviceRoleKey);
-}
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient();
+    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const regionCode = searchParams.get('region');
 
@@ -37,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = provinces?.map((province) => ({
+    const options = provinces?.map((province: { code: string; name: string; region_code: string }) => ({
       value: province.code,
       label: province.name,
       region_code: province.region_code,

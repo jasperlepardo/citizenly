@@ -79,7 +79,13 @@ export async function POST(_request: NextRequest) {
               scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(), // Retry after 1, 2, 3 minutes
             };
 
-        await supabaseAdmin.from('user_notifications').update(updateData).eq('id', notif.id);
+        const { error: updateNotifError } = await supabaseAdmin
+          .from('user_notifications')
+          .update(updateData)
+          .eq('id', notif.id);
+        if (updateNotifError) {
+          console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
+        }
 
         if (success) {
           results.processed++;
@@ -96,7 +102,7 @@ export async function POST(_request: NextRequest) {
         console.error(`❌ Failed to process notification ${notif.id}:`, errorMsg);
 
         // Update retry count
-        await supabaseAdmin
+        const { error: retryUpdateError } = await supabaseAdmin
           .from('user_notifications')
           .update({
             retry_count: notif.retry_count + 1,
@@ -104,6 +110,9 @@ export async function POST(_request: NextRequest) {
             scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
           })
           .eq('id', notif.id);
+        if (retryUpdateError) {
+          console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);
+        }
       }
     }
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { WebhookUserRecord } from '@/types/auth';
 import { createAdminSupabaseClient } from '@/lib';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -21,14 +21,23 @@ export async function POST(request: NextRequest) {
     const body = await request.text();
     const signature = request.headers.get('x-webhook-signature');
 
-    // Verify webhook signature in production
-    if (process.env.NODE_ENV === 'production' && signature) {
-      const expectedSignature = crypto
-        .createHmac('sha256', WEBHOOK_SECRET)
+    // Verify webhook signature in production (fail closed)
+    if (process.env.NODE_ENV === 'production') {
+      if (!signature) {
+        console.error('Missing webhook signature');
+        return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+      }
+      if (!process.env.SUPABASE_WEBHOOK_SECRET || WEBHOOK_SECRET === 'dev-webhook-secret') {
+        console.error('Webhook secret not configured in production');
+        return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+      }
+      const expectedSignature = createHmac('sha256', WEBHOOK_SECRET)
         .update(body)
         .digest('hex');
-
-      if (signature !== expectedSignature) {
+      // timing-safe comparison
+      const sigBuf = Buffer.from(signature, 'hex');
+      const expBuf = Buffer.from(expectedSignature, 'hex');
+      if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
         console.error('Invalid webhook signature');
         return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
       }
@@ -178,8 +187,8 @@ async function completeAddressHierarchy(supabaseAdmin: SupabaseClient, userId: s
       .from('auth_user_profiles')
       .update({
         city_municipality_code: hierarchy.city_municipality_code,
-        province_code: (hierarchy as { psgc_cities_municipalities: { province_code: string; psgc_provinces: { region_code: string } } }).psgc_cities_municipalities.province_code,
-        region_code: (hierarchy as { psgc_cities_municipalities: { province_code: string; psgc_provinces: { region_code: string } } }).psgc_cities_municipalities.psgc_provinces.region_code,
+        province_code: (hierarchy as any).psgc_cities_municipalities.province_code,
+        region_code: (hierarchy as any).psgc_cities_municipalities.psgc_provinces.region_code,
         updated_at: new Date().toISOString(),
       })
       .eq('id', userId);
@@ -224,7 +233,7 @@ async function queueWelcomeNotifications(supabaseAdmin: SupabaseClient, userId: 
       metadata: {
         email: profile.email,
         first_name: profile.first_name,
-        role_name: (profile as { auth_roles: { name: string } }).auth_roles.name,
+        role_name: (profile as any).auth_roles.name,
       },
     });
 

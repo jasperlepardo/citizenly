@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,11 +15,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ data: [], count: 0 });
     }
 
-    // Use service role client to bypass RLS
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Use public client for PSOC data search
+    const supabase = createPublicSupabaseClient();
 
     const searchTerm = `%${query.trim()}%`;
     const allResults: any[] = [];

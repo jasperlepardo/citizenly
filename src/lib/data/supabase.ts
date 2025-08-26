@@ -449,56 +449,121 @@ export type Database = {
           created_at?: string | null;
         };
       };
-      roles: {
+      auth_roles: {
         Row: {
           id: string;
           name: string;
+          description: string | null;
           permissions: any | null; // jsonb
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
           name: string;
+          description?: string | null;
           permissions?: any | null; // jsonb
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
           name?: string;
+          description?: string | null;
           permissions?: any | null; // jsonb
+          created_at?: string | null;
+          updated_at?: string | null;
         };
       };
-      user_profiles: {
+      auth_barangay_accounts: {
         Row: {
           id: string;
-          email: string;
-          first_name: string;
-          last_name: string;
-          role_id: string;
-          barangay_code: string | null;
-          is_active: boolean | null;
+          user_id: string;
+          barangay_code: string;
+          is_primary: boolean | null;
+          created_by: string | null;
+          updated_by: string | null;
           created_at: string | null;
-          mobile_number: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
-          email: string;
-          first_name: string;
-          last_name: string;
-          role_id: string;
-          barangay_code?: string | null;
-          is_active?: boolean | null;
+          user_id: string;
+          barangay_code: string;
+          is_primary?: boolean | null;
+          created_by?: string | null;
+          updated_by?: string | null;
           created_at?: string | null;
-          mobile_number?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
-          email?: string;
+          user_id?: string;
+          barangay_code?: string;
+          is_primary?: boolean | null;
+          created_by?: string | null;
+          updated_by?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+      };
+      auth_user_profiles: {
+        Row: {
+          id: string;
+          first_name: string;
+          middle_name: string | null;
+          last_name: string;
+          email: string;
+          phone: string | null;
+          role_id: string;
+          barangay_code: string | null;
+          city_municipality_code: string | null;
+          province_code: string | null;
+          region_code: string | null;
+          is_active: boolean | null;
+          last_login: string | null;
+          email_verified: boolean | null;
+          email_verified_at: string | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id: string;
+          first_name: string;
+          middle_name?: string | null;
+          last_name: string;
+          email: string;
+          phone?: string | null;
+          role_id: string;
+          barangay_code?: string | null;
+          city_municipality_code?: string | null;
+          province_code?: string | null;
+          region_code?: string | null;
+          is_active?: boolean | null;
+          last_login?: string | null;
+          email_verified?: boolean | null;
+          email_verified_at?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          id?: string;
           first_name?: string;
+          middle_name?: string | null;
           last_name?: string;
+          email?: string;
+          phone?: string | null;
           role_id?: string;
           barangay_code?: string | null;
+          city_municipality_code?: string | null;
+          province_code?: string | null;
+          region_code?: string | null;
           is_active?: boolean | null;
+          last_login?: string | null;
+          email_verified?: boolean | null;
+          email_verified_at?: string | null;
           created_at?: string | null;
-          mobile_number?: string | null;
+          updated_at?: string | null;
         };
       };
     };

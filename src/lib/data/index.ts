@@ -10,6 +10,7 @@ export * from './query-utils';
 
 // Supabase utilities (moved from supabase/)
 export * from './supabase';
+export * from './client-factory';
 
 // Storage utilities (moved from storage/)
 export * from './offline-storage';

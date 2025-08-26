@@ -21,11 +21,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ data: [], count: 0 });
     }
 
-    // Use service role client to bypass RLS for geographic data
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const rawQuery = query.trim().toLowerCase();
     
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
       });
       
       // Add reversed word order
-      const reversed = words.reverse().join(' ');
+      const reversed = [...words].reverse().join(' ');
       variations.push(`%${reversed}%`);
     }
     
@@ -59,7 +60,9 @@ export async function GET(request: NextRequest) {
       'mm': ['metro manila', 'manila'],
       'ncr': ['national capital region', 'metro manila'],
       'mla': ['manila'],
-      'makat': ['makati'],
+      'mkt': ['makati'],
+      'mkti': ['makati'],
+      'makati': ['makati'],
       'pasig': ['pasig city'],
       'taguig': ['taguig city'],
     };
@@ -111,7 +114,7 @@ export async function GET(request: NextRequest) {
       const regionResults = await Promise.all(regionSearchPromises);
       regionResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((region: PSGCRegion) => {
+          result.data.forEach((region: any) => {
             allResults.push({
               code: region.code,
               name: region.name,
@@ -143,8 +146,10 @@ export async function GET(request: NextRequest) {
       const provinceResults = await Promise.all(provinceSearchPromises);
       provinceResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((province: PSGCProvince) => {
-            const region = province.psgc_regions;
+          result.data.forEach((province: any) => {
+            const region = Array.isArray(province.psgc_regions)
+              ? province.psgc_regions[0]
+              : province.psgc_regions;
             allResults.push({
               code: province.code,
               name: province.name,
@@ -210,9 +215,11 @@ export async function GET(request: NextRequest) {
       // Process direct city name matches
       cityResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((city: PSGCCityMunicipality) => {
-            const province = city.psgc_provinces;
-            const region = province?.psgc_regions;
+          result.data.forEach((city: any) => {
+            const province = Array.isArray(city.psgc_provinces)
+              ? city.psgc_provinces[0]
+              : city.psgc_provinces;
+            const region = province && (Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions);
             allResults.push({
               code: city.code,
               name: city.name,
@@ -234,9 +241,11 @@ export async function GET(request: NextRequest) {
       // Process cities found by province name (hierarchical matches)
       provinceMatchResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((city: PSGCCityMunicipality) => {
-            const province = city.psgc_provinces;
-            const region = province?.psgc_regions;
+          result.data.forEach((city: any) => {
+            const province = Array.isArray(city.psgc_provinces)
+              ? city.psgc_provinces[0]
+              : city.psgc_provinces;
+            const region = province && (Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions);
             allResults.push({
               code: city.code,
               name: city.name,
@@ -341,10 +350,12 @@ export async function GET(request: NextRequest) {
       // Process direct barangay name matches
       barangayResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: PSGCBarangay) => {
-            const city = barangay.psgc_cities_municipalities;
-            const province = city?.psgc_provinces;
-            const region = province?.psgc_regions;
+          result.data.forEach((barangay: any) => {
+            const city = Array.isArray(barangay.psgc_cities_municipalities)
+              ? barangay.psgc_cities_municipalities[0]
+              : barangay.psgc_cities_municipalities;
+            const province = city && (Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces);
+            const region = province && (Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions);
             allResults.push({
               code: barangay.code,
               name: barangay.name,
@@ -367,10 +378,12 @@ export async function GET(request: NextRequest) {
       // Process hierarchical matches (barangays within provinces)
       barangayByProvinceResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: PSGCBarangay) => {
-            const city = barangay.psgc_cities_municipalities;
-            const province = city?.psgc_provinces;
-            const region = province?.psgc_regions;
+          result.data.forEach((barangay: any) => {
+            const city = Array.isArray(barangay.psgc_cities_municipalities)
+              ? barangay.psgc_cities_municipalities[0]
+              : barangay.psgc_cities_municipalities;
+            const province = city && (Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces);
+            const region = province && (Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions);
             allResults.push({
               code: barangay.code,
               name: barangay.name,
@@ -393,10 +406,12 @@ export async function GET(request: NextRequest) {
       // Process hierarchical matches (barangays within cities)
       barangayByCityResults.forEach(result => {
         if (result.data) {
-          result.data.forEach((barangay: PSGCBarangay) => {
-            const city = barangay.psgc_cities_municipalities;
-            const province = city?.psgc_provinces;
-            const region = province?.psgc_regions;
+          result.data.forEach((barangay: any) => {
+            const city = Array.isArray(barangay.psgc_cities_municipalities)
+              ? barangay.psgc_cities_municipalities[0]
+              : barangay.psgc_cities_municipalities;
+            const province = city && (Array.isArray(city.psgc_provinces) ? city.psgc_provinces[0] : city.psgc_provinces);
+            const region = province && (Array.isArray(province.psgc_regions) ? province.psgc_regions[0] : province.psgc_regions);
             allResults.push({
               code: barangay.code,
               name: barangay.name,
@@ -417,17 +432,16 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Remove duplicates based on code
-    const uniqueResults = allResults.reduce((acc, current) => {
-      const exists = acc.find((item: PSGCSearchResponse) => item.code === current.code);
-      if (!exists) {
-        acc.push(current);
-      }
-      return acc;
-    }, [] as PSGCSearchResponse[]);
+    // Remove duplicates based on code (using Set for better performance)
+    const seen = new Set<string>();
+    const uniqueResults = allResults.filter(item => {
+      if (seen.has(item.code)) return false;
+      seen.add(item.code);
+      return true;
+    });
 
     // Enhanced sorting by relevance and geographic hierarchy
-    uniqueResults.sort((a: PSGCSearchResponse, b: PSGCSearchResponse) => {
+    uniqueResults.sort((a, b) => {
       // First priority: Direct name matches (exact or starts with query)
       const aDirectMatch = a.name.toLowerCase().startsWith(rawQuery) ? 1 : 0;
       const bDirectMatch = b.name.toLowerCase().startsWith(rawQuery) ? 1 : 0;
