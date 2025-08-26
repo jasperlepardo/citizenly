@@ -45,15 +45,6 @@ interface SectoralClassificationsProps {
   readonly disabled?: boolean;
 }
 
-// Employment statuses that qualify as labor force (aligned with database)
-const LABOR_FORCE_STATUSES = [
-  'employed',
-  'self_employed',
-  'unemployed',
-  'looking_for_work',
-  'underemployed',
-];
-
 const EMPLOYED_STATUSES = ['employed', 'self_employed'];
 
 const UNEMPLOYED_STATUSES = ['unemployed', 'looking_for_work'];
@@ -66,7 +57,6 @@ export default function SectoralClassifications({
   disabled = false,
 }: SectoralClassificationsProps) {
   const [autoCalculated, setAutoCalculated] = useState({
-    is_labor_force: false,
     is_labor_force_employed: false,
     is_unemployed: false,
     is_out_of_school_children: false,
@@ -82,7 +72,6 @@ export default function SectoralClassifications({
     const ethnicity = context.ethnicity || '';
 
     const calculated = {
-      is_labor_force: LABOR_FORCE_STATUSES.includes(employment),
       is_labor_force_employed: EMPLOYED_STATUSES.includes(employment),
       is_unemployed: UNEMPLOYED_STATUSES.includes(employment),
       is_out_of_school_children: isOutOfSchoolChildren(age, context.highest_educational_attainment),
@@ -166,6 +155,7 @@ export default function SectoralClassifications({
     return !isInSchool && !isEmployed;
   }
 
+
   // Handle manual flag changes
   const handleFlagChange =
     (flag: keyof SectoralInformation) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,18 +185,6 @@ export default function SectoralClassifications({
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <ControlField
-              label="Labor Force"
-              helperText="Part of the labor force (employed, unemployed, looking for work)"
-              mode={mode}
-              controlProps={{
-                type: 'checkbox',
-                checked: autoCalculated.is_labor_force,
-                disabled: true,
-                size: 'md',
-                description: autoCalculated.is_labor_force ? "Member of workforce" : "Not in workforce"
-              }}
-            />
             <ControlField
               label="Labor Force Employed"
               helperText="Currently employed (employed, self-employed)"

@@ -114,7 +114,6 @@ export interface ResidentDatabaseRecord {
 export interface ResidentSectoralInfo {
   id?: string;
   resident_id?: string;
-  is_labor_force?: boolean;
   is_labor_force_employed?: boolean;
   is_unemployed?: boolean;
   is_overseas_filipino_worker?: boolean;
@@ -218,7 +217,6 @@ export interface ResidentFormState {
   mother_maiden_last: string;
 
   // Sectoral Information - matching database exactly
-  is_labor_force: boolean;
   is_labor_force_employed: boolean;
   is_unemployed: boolean;
   is_overseas_filipino_worker: boolean;

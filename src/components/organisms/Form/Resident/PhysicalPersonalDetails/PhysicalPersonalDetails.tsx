@@ -9,23 +9,23 @@ export interface PhysicalPersonalDetailsFormProps {
   mode?: FormMode;
   formData: {
     // Physical Characteristics
-    bloodType?: string;
+    blood_type?: string;
     complexion?: string;
     height?: string;
     weight?: string;
     citizenship?: string;
     ethnicity?: string;
-    ethnicityOthersSpecify?: string;
+    ethnicity_others_specify?: string;
     religion?: string;
-    religionOthersSpecify?: string;
+    religion_others_specify?: string;
     // Voting Information
-    isVoter?: boolean | null;
-    isResidentVoter?: boolean | null;
-    lastVotedDate?: string;
+    is_voter?: boolean | null;
+    is_resident_voter?: boolean | null;
+    last_voted_date?: string;
     // Mother's Maiden Name
-    motherMaidenFirstName?: string;
-    motherMaidenMiddleName?: string;
-    motherMaidenLastName?: string;
+    mother_maiden_first?: string;
+    mother_maiden_middle?: string;
+    mother_maiden_last?: string;
   };
   onChange: (field: string | number | symbol, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
@@ -40,28 +40,28 @@ export function PhysicalPersonalDetailsForm({
 
   // Map form data to PhysicalCharacteristics component props
   const physicalCharacteristicsValue: PhysicalCharacteristicsData = {
-    bloodType: formData.bloodType || '',
+    blood_type: formData.blood_type || '',
     complexion: formData.complexion || '',
     height: formData.height || '',
     weight: formData.weight || '',
     citizenship: formData.citizenship || '',
     ethnicity: formData.ethnicity || '',
     religion: formData.religion || '',
-    religionOthersSpecify: formData.religionOthersSpecify || '',
+    religion_others_specify: formData.religion_others_specify || '',
   };
 
   // Map form data to VotingInformation component props
   const votingInfoValue: VotingInformationData = {
-    isVoter: formData.isVoter ? 'yes' : 'no',
-    isResidentVoter: formData.isResidentVoter ? 'yes' : 'no',
-    lastVotedDate: formData.lastVotedDate || '',
+    is_voter: formData.is_voter ? 'yes' : 'no',
+    is_resident_voter: formData.is_resident_voter ? 'yes' : 'no',
+    last_voted_date: formData.last_voted_date || '',
   };
 
   // Map form data to MotherMaidenName component props
   const motherMaidenNameValue: MotherMaidenNameData = {
-    motherMaidenFirstName: formData.motherMaidenFirstName || '',
-    motherMaidenMiddleName: formData.motherMaidenMiddleName || '',
-    motherMaidenLastName: formData.motherMaidenLastName || '',
+    mother_maiden_first: formData.mother_maiden_first || '',
+    mother_maiden_middle: formData.mother_maiden_middle || '',
+    mother_maiden_last: formData.mother_maiden_last || '',
   };
 
   // Handle changes from PhysicalCharacteristics component
@@ -74,7 +74,7 @@ export function PhysicalPersonalDetailsForm({
   // Handle changes from VotingInformation component
   const handleVotingInfoChange = (value: VotingInformationData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      if (field === 'isVoter' || field === 'isResidentVoter') {
+      if (field === 'is_voter' || field === 'is_resident_voter') {
         onChange(field as keyof typeof value, fieldValue === 'yes');
       } else {
         onChange(field as keyof typeof value, fieldValue);

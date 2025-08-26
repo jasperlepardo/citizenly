@@ -79,8 +79,8 @@ export function useHouseholdCreationService(
       const result = await householdService.createHousehold({
         formData,
         userAddress,
-        barangayCode,
-        csrfToken,
+        barangay_code: barangayCode,
+        csrf_token: csrfToken,
       });
 
       if (!result.success) {

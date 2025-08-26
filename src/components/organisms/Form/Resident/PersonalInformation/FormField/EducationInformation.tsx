@@ -11,8 +11,8 @@ const GRADUATE_STATUS_OPTIONS = [
 ];
 
 export interface EducationInformationData {
-  educationAttainment: string;
-  isGraduate: string; // 'yes' | 'no' (defaults to 'yes')
+  education_attainment: string;
+  is_graduate: string; // 'yes' | 'no' (defaults to 'yes')
 }
 
 export interface EducationInformationProps {
@@ -33,10 +33,24 @@ export function EducationInformation({
 }: EducationInformationProps) {
   
   const handleChange = (field: keyof EducationInformationData, fieldValue: any) => {
-    onChange({
+    let updatedValue = {
       ...value,
       [field]: fieldValue,
-    });
+    };
+
+    // Business logic: Auto-set graduate status based on education level
+    if (field === 'education_attainment') {
+      // Post-graduate education implies college graduation
+      if (fieldValue === 'post_graduate') {
+        updatedValue.is_graduate = 'yes';
+      }
+      // For other levels, keep the current graduate status or default to 'no' if empty
+      else if (!value.is_graduate) {
+        updatedValue.is_graduate = 'no';
+      }
+    }
+
+    onChange(updatedValue);
   };
 
   return (
@@ -53,13 +67,13 @@ export function EducationInformation({
           label="Highest Educational Attainment"
           required
           labelSize="sm"
-          errorMessage={errors.educationAttainment}
+          errorMessage={errors.education_attainment}
           mode={mode}
           selectProps={{
             placeholder: "Select education level...",
             options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
-            value: value.educationAttainment,
-            onSelect: (option) => handleChange('educationAttainment', option?.value || '')
+            value: value.education_attainment,
+            onSelect: (option) => handleChange('education_attainment', option?.value || '')
           }}
         />
         
@@ -67,13 +81,18 @@ export function EducationInformation({
           type="radio"
           label="Graduate Status"
           labelSize="sm"
-          radioName="isGraduate"
-          radioValue={value.isGraduate}
-          onRadioChange={(selectedValue: string) => handleChange('isGraduate', selectedValue)}
-          errorMessage={errors.isGraduate}
+          radioName="is_graduate"
+          radioValue={value.is_graduate}
+          onRadioChange={(selectedValue: string) => handleChange('is_graduate', selectedValue)}
+          errorMessage={errors.is_graduate}
           orientation="horizontal"
           spacing="sm"
-          mode={mode}
+          mode={value.education_attainment === 'post_graduate' ? 'view' : mode}
+          // helperText={
+          //   value.education_attainment === 'post_graduate' 
+          //     ? "Automatically set to 'Yes' for post-graduate education"
+          //     : "Whether the current education level has been completed"
+          // }
         >
           {GRADUATE_STATUS_OPTIONS.map((option) => (
             <Radio

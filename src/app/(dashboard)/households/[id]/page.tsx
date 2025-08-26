@@ -7,7 +7,6 @@ import { supabase } from '@/lib';
 import { logger, logError } from '@/lib';
 import { useAuth } from '@/contexts';
 import HouseholdForm, { HouseholdFormData, HouseholdFormMode } from '@/components/templates/HouseholdForm/NewHouseholdForm';
-import { Button } from '@/components';
 import { lookupAddressLabels, lookupHouseholdTypeLabels, lookupHouseholdHeadLabel } from '@/lib/utilities/address-lookup';
 
 interface Household {

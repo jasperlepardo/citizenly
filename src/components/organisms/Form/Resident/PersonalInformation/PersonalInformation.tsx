@@ -11,25 +11,25 @@ export interface PersonalInformationFormProps {
   mode?: FormMode;
   formData: {
     // PhilSys and Personal Info
-    philsysCardNumber?: string;
-    firstName?: string;
-    middleName?: string;
-    lastName?: string;
-    extensionName?: string;
+    philsys_card_number?: string;
+    first_name?: string;
+    middle_name?: string;
+    last_name?: string;
+    extension_name?: string;
     sex?: string;
-    civilStatus?: string;
+    civil_status?: string;
     citizenship?: string;
     // Birth Information
     birthdate?: string;
-    birthPlaceName?: string;
-    birthPlaceCode?: string;
+    birth_place_name?: string;
+    birth_place_code?: string;
     // Education
-    educationAttainment?: string;
-    isGraduate?: boolean;
+    education_attainment?: string;
+    is_graduate?: boolean;
     // Employment
-    employmentStatus?: string;
-    psocCode?: string;
-    occupationTitle?: string;
+    employment_status?: string;
+    occupation_code?: string;
+    occupation_title?: string;
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
@@ -58,12 +58,12 @@ export function PersonalInformationForm({
 
   // Map form data to BasicInformation component props
   const basicInfoValue: BasicInformationData = {
-    firstName: formData.firstName || '',
-    middleName: formData.middleName || '',
-    lastName: formData.lastName || '',
-    extensionName: formData.extensionName || '',
+    first_name: formData.first_name || '',
+    middle_name: formData.middle_name || '',
+    last_name: formData.last_name || '',
+    extension_name: formData.extension_name || '',
     sex: (formData.sex || '') as '' | 'male' | 'female',
-    civilStatus: formData.civilStatus || '',
+    civil_status: formData.civil_status || '',
   };
 
   // Handle changes from BasicInformation component
@@ -83,7 +83,12 @@ export function PersonalInformationForm({
   // Handle changes from EducationInformation component
   const handleEducationInfoChange = (value: EducationInformationData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      // Convert is_graduate string back to boolean for form state
+      if (field === 'is_graduate') {
+        onChange(field, fieldValue === 'yes');
+      } else {
+        onChange(field as keyof typeof value, fieldValue);
+      }
     });
   };
 
@@ -108,9 +113,9 @@ export function PersonalInformationForm({
           {/* PhilSys Card Number */}
           <PhilSysCardField
             mode={mode}
-            value={formData.philsysCardNumber || ''}
-            onChange={(value) => onChange('philsysCardNumber', value)}
-            error={errors.philsysCardNumber}
+            value={formData.philsys_card_number || ''}
+            onChange={(value) => onChange('philsys_card_number', value)}
+            error={errors.philsys_card_number}
           />
 
           {/* Basic Information Component - Names, Sex, Civil Status, Citizenship */}
@@ -126,8 +131,8 @@ export function PersonalInformationForm({
             mode={mode}
             value={{
               birthdate: formData.birthdate || '',
-              birthPlaceName: formData.birthPlaceName || '',
-              birthPlaceCode: formData.birthPlaceCode || '',
+              birth_place_name: formData.birth_place_name || '',
+              birth_place_code: formData.birth_place_code || '',
             }}
             onChange={handleBirthInfoChange}
             errors={errors}
@@ -137,8 +142,8 @@ export function PersonalInformationForm({
           <EducationInformation
             mode={mode}
             value={{
-              educationAttainment: formData.educationAttainment || '',
-              isGraduate: formData.isGraduate ? 'yes' : 'no',
+              education_attainment: formData.education_attainment || '',
+              is_graduate: formData.is_graduate ? 'yes' : 'no',
             }}
             onChange={handleEducationInfoChange}
             errors={errors}
@@ -148,9 +153,9 @@ export function PersonalInformationForm({
           <EmploymentInformation
             mode={mode}
             value={{
-              employmentStatus: formData.employmentStatus || '',
-              psocCode: formData.psocCode || '',
-              occupationTitle: formData.occupationTitle || '',
+              employment_status: formData.employment_status || '',
+              occupation_code: formData.occupation_code || '',
+              occupation_title: formData.occupation_title || '',
             }}
             onChange={handleEmploymentInfoChange}
             errors={errors}

@@ -5,8 +5,8 @@ import type { FormMode } from '@/types';
 
 export interface BirthInformationData {
   birthdate: string;
-  birthPlaceName: string;
-  birthPlaceCode: string;
+  birth_place_name: string;
+  birth_place_code: string;
 }
 
 export interface BirthInformationProps {
@@ -76,11 +76,12 @@ export function BirthInformation({
           label="Birth Place"
           required
           labelSize="sm"
-          errorMessage={errors.birthPlaceName}
+          errorMessage={errors.birth_place_name}
           helperText="Search for the place of birth"
           selectProps={{
             placeholder: "Search for birth place...",
-            options: psgcOptions.map(place => {
+            options: (() => {
+              let allOptions = psgcOptions.map(place => {
               // Format hierarchical display based on level
               let displayLabel = place.name;
               let description = '';
@@ -123,18 +124,43 @@ export function BirthInformation({
                 description: description,
                 badge: badge
               };
-            }),
-            value: value.birthPlaceCode,
+              });
+              
+              // Ensure current selected value is always in options for proper display in view mode
+              if (value.birth_place_code && value.birth_place_name) {
+                const hasCurrentOption = allOptions.some(option => option.value === value.birth_place_code);
+                if (!hasCurrentOption) {
+                  // Try to determine the badge type from the birth_place_name format
+                  let badge = 'municipality'; // Default to municipality
+                  const nameParts = value.birth_place_name.split(', ');
+                  if (nameParts.length === 1) {
+                    badge = 'province'; // Single name likely province
+                  } else if (value.birth_place_name.toLowerCase().includes('city')) {
+                    badge = 'city'; // Contains "city" in name
+                  }
+                  
+                  allOptions.unshift({
+                    value: value.birth_place_code,
+                    label: value.birth_place_name,
+                    description: '',
+                    badge: badge as any
+                  });
+                }
+              }
+              
+              return allOptions;
+            })(),
+            value: value.birth_place_code,
             loading: isLoading,
             searchable: true,
             onSearch: setSearchQuery,
             onSelect: (option) => {
               if (option) {
-                handleChange('birthPlaceName', (option as any).label);
-                handleChange('birthPlaceCode', (option as any).value);
+                handleChange('birth_place_name', (option as any).label);
+                handleChange('birth_place_code', (option as any).value);
               } else {
-                handleChange('birthPlaceName', '');
-                handleChange('birthPlaceCode', '');
+                handleChange('birth_place_name', '');
+                handleChange('birth_place_code', '');
               }
             },
             // Infinite scroll props
@@ -144,20 +170,6 @@ export function BirthInformation({
             loadingMore: isLoadingMore
           }}
         />
-          
-          {/* Display selected birth place info (read-only) */}
-          {value.birthPlaceCode && value.birthPlaceName && (
-            <div className="bg-gray-500 border border-info/20 rounded-md p-3">
-              <h6 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Selected Birth Place</h6>
-              <div className="text-sm">
-                <div>
-                  <span className="form-info-title">Location:</span>
-                  <div className="form-info-content">{value.birthPlaceName}</div>
-                  <div className="text-xs text-zinc-500 dark:text-zinc-400">{value.birthPlaceCode}</div>
-                </div>
-              </div>
-            </div>
-          )}
       </div>
     </div>
   );

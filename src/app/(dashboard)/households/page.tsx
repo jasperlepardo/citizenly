@@ -52,7 +52,7 @@ function HouseholdsContent() {
   };
 
   const formatAddress = (household: Household) => {
-    const parts = [household.house_number, household.street_name, household.subdivision].filter(
+    const parts = [household.house_number, household.address].filter(
       Boolean
     );
     return parts.length > 0 ? parts.join(', ') : 'No address';

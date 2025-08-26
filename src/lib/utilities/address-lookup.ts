@@ -74,7 +74,7 @@ export async function lookupAddressLabels(addressData: {
     // Lookup street
     if (addressData.streetId) {
       const { data: street } = await supabase
-        .from('streets')
+        .from('geo_streets')
         .select('name')
         .eq('id', addressData.streetId)
         .single();
@@ -84,7 +84,7 @@ export async function lookupAddressLabels(addressData: {
     // Lookup subdivision
     if (addressData.subdivisionId) {
       const { data: subdivision } = await supabase
-        .from('subdivisions')
+        .from('geo_subdivisions')
         .select('name')
         .eq('id', addressData.subdivisionId)
         .single();

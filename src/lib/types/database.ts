@@ -10,6 +10,9 @@
  * @version 1.0.0
  */
 
+// Import consolidated form data types
+import type { ResidentFormData, HouseholdFormData } from '@/types/forms';
+
 // =============================================================================
 // AUTHENTICATION AND USER TYPES
 // =============================================================================
@@ -335,59 +338,13 @@ export interface SupabaseAuthResponse {
 }
 
 // =============================================================================
-// FORM DATA TYPES
+// FORM DATA TYPES (imported from @/types/forms for consistency)
 // =============================================================================
 
-export interface ResidentFormData {
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-  extensionName?: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-  civilStatus: string;
-  civilStatusOthersSpecify?: string;
-  citizenship: string;
-  mobileNumber?: string;
-  telephoneNumber?: string;
-  email?: string;
-  motherMaidenFirstName?: string;
-  motherMaidenMiddleName?: string;
-  motherMaidenLastName?: string;
-  birthPlaceCode?: string;
-  householdCode?: string;
-  bloodType?: string;
-  height?: string;
-  weight?: string;
-  complexion?: string;
-  ethnicity?: string;
-  religion?: string;
-  religionOthersSpecify?: string;
-  employmentStatus?: string;
-  educationAttainment?: string;
-  isGraduate?: boolean;
-  occupationCode?: string;
-  philsysCardNumber?: string;
-  isVoter?: boolean;
-  isResidentVoter?: boolean;
-  lastVotedDate?: string;
-}
+// ResidentFormData and HouseholdFormData are imported from @/types/forms
+// to maintain single source of truth and consistent snake_case naming
 
-export interface HouseholdFormData {
-  code: string;
-  streetName?: string;
-  subdivisionName?: string;
-  householdNumber?: string;
-  barangayCode?: string;
-  cityMunicipalityCode?: string;
-  provinceCode?: string;
-  regionCode?: string;
-  headResidentId?: string;
-  householdType?: string;
-  tenureStatus?: string;
-  monthlyIncome?: number;
-  incomeClass?: string;
-}
+// HouseholdFormData imported from @/types/forms
 
 // =============================================================================
 // VALIDATION ERROR TYPES

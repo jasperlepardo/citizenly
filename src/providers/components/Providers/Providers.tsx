@@ -3,7 +3,7 @@
 import { AuthProvider } from '@/contexts';
 import { ThemeProvider } from '@/contexts';
 import QueryProvider from '@/providers/QueryProvider';
-import { ErrorBoundary } from '../../ErrorBoundary';
+import { ErrorBoundary } from '@/providers/ErrorBoundary';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (

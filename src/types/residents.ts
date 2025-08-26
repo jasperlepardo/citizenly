@@ -5,6 +5,7 @@
  */
 
 import { ReactNode } from 'react';
+import { ResidentFormData, HouseholdFormData } from './forms';
 
 // =============================================================================
 // DATABASE ENUMS AND TYPES
@@ -57,57 +58,34 @@ export type BirthPlaceLevelEnum = 'region' | 'province' | 'city_municipality' | 
 // =============================================================================
 
 /**
- * Database record interface matching database schema exactly
+ * Database record interface - extends ResidentFormData with additional database fields
+ * All properties use snake_case to match PostgreSQL database schema
  */
-export interface ResidentDatabaseRecord {
+export interface ResidentDatabaseRecord extends ResidentFormData {
+  // System fields not in form
   id?: string;
   name?: string; // Combined full name
-  philsys_card_number?: string;
   philsys_last4?: string; // Only last 4 digits
-  first_name: string; // Required
-  middle_name?: string;
-  last_name: string; // Required
-  extension_name?: string;
-  birthdate: string; // Required, DATE format
-  birth_place_code?: string;
-  birth_place_level?: BirthPlaceLevelEnum;
-  birth_place_name?: string;
-  sex: SexEnum; // Required
-  civil_status?: CivilStatusEnum;
-  civil_status_others_specify?: string;
-  education_attainment?: EducationLevelEnum;
-  is_graduate?: boolean;
-  employment_status?: EmploymentStatusEnum;
-  employment_code?: string;
-  employment_name?: string;
-  occupation_code?: string;
-  psoc_level?: number;
-  occupation_title?: string;
-  email?: string;
-  mobile_number?: string;
-  telephone_number?: string;
-  household_code?: string;
+  
+  // Additional geographic fields for full address
   street_id?: string;
   subdivision_id?: string;
-  barangay_code: string; // Required
+  barangay_code: string; // Required - from user profile/form
   city_municipality_code: string; // Required
   province_code?: string;
   region_code: string; // Required
   zip_code?: string;
-  blood_type?: BloodTypeEnum;
-  height?: number; // DECIMAL(5,2)
-  weight?: number; // DECIMAL(5,2)
-  complexion?: string;
-  citizenship?: CitizenshipEnum;
-  is_voter?: boolean;
-  is_resident_voter?: boolean;
-  last_voted_date?: string; // DATE format
-  ethnicity?: EthnicityEnum;
-  religion?: ReligionEnum;
-  religion_others_specify?: string;
-  mother_maiden_first?: string;
-  mother_maiden_middle?: string;
-  mother_maiden_last?: string;
+  
+  // Additional employment fields
+  employment_code?: string;
+  employment_name?: string;
+  psoc_level?: number;
+  occupation_title?: string;
+  
+  // Birth place details
+  birth_place_level?: BirthPlaceLevelEnum;
+  
+  // System tracking fields
   is_active?: boolean;
   created_by?: string;
   updated_by?: string;
@@ -116,45 +94,10 @@ export interface ResidentDatabaseRecord {
 }
 
 /**
- * API request/response format (snake_case matching database schema)
+ * API request/response format - alias to ResidentFormData for consistency
+ * All properties use snake_case matching database schema
  */
-export interface ResidentApiData {
-  // Required fields
-  first_name: string;
-  last_name: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-
-  // Optional personal info
-  middle_name?: string;
-  extension_name?: string;
-  email?: string;
-  mobile_number?: string;
-  telephone_number?: string;
-  civil_status?: string;
-  civil_status_others_specify?: string;
-  citizenship?: string;
-  blood_type?: string;
-  ethnicity?: string;
-  religion?: string;
-  religion_others_specify?: string;
-  height?: number;
-  weight?: number;
-  complexion?: string;
-  birth_place_code?: string;
-  philsys_card_number?: string;
-  mother_maiden_first?: string;
-  mother_maiden_middle?: string;
-  mother_maiden_last?: string;
-  education_attainment?: string;
-  is_graduate?: boolean;
-  employment_status?: string;
-  occupation_code?: string;
-  is_voter?: boolean;
-  is_resident_voter?: boolean;
-  last_voted_date?: string;
-  household_code?: string;
-}
+export type ResidentApiData = ResidentFormData;
 
 // =============================================================================
 // SECTORAL AND MIGRATION INFORMATION
@@ -165,7 +108,6 @@ export interface ResidentApiData {
  */
 export interface ResidentSectoralInfo {
   resident_id: string; // Primary key - UUID, NOT NULL
-  is_labor_force?: boolean | null;
   is_labor_force_employed?: boolean | null;
   is_unemployed?: boolean | null;
   is_overseas_filipino_worker?: boolean | null;
@@ -206,56 +148,7 @@ export interface ResidentMigrantInfo {
 // FORM DATA INTERFACES
 // =============================================================================
 
-/**
- * Form data structure (camelCase for React forms)
- */
-export interface ResidentFormData {
-  // Personal Information (matching database fields exactly)
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  extensionName: string;
-  sex: string;
-  civilStatus: string;
-  civilStatusOthersSpecify?: string;
-  citizenship: string;
-  birthdate: string;
-  birthPlaceCode: string; // Database only has birth_place_code, not birth_place_name or birth_place_level
-  philsysCardNumber: string;
-  educationAttainment: string; // This maps to education_attainment education_level_enum in DB
-  isGraduate: boolean;
-  employmentStatus: string;
-  occupationCode?: string; // This maps to occupation_code in DB
-  ethnicity: string;
-
-  // Contact Information (matching database fields exactly)
-  email: string;
-  telephoneNumber: string; // Maps to telephone_number in DB
-  mobileNumber: string; // Maps to mobile_number in DB  
-  householdCode: string; // Maps to household_code in DB
-  
-  // Physical Characteristics
-  bloodType: string;
-  complexion: string;
-  height: string;
-  weight: string;
-  religion: string;
-  religionOthersSpecify: string;
-  
-  // Voting Information (matching database fields exactly)
-  isVoter?: boolean | null;
-  isResidentVoter?: boolean | null;
-  lastVotedDate: string;
-  
-  // Mother's Maiden Name
-  motherMaidenFirstName: string;
-  motherMaidenMiddleName: string;
-  motherMaidenLastName: string;
-  
-  // Note: Sectoral and Migration information are stored in separate tables:
-  // - resident_sectoral_info
-  // - resident_migrant_info
-}
+// ResidentFormData is now imported from ./forms to avoid duplication
 
 /**
  * Form-specific interface with all fields as optional for progressive form filling
@@ -307,7 +200,6 @@ export interface ResidentFormState {
   mother_maiden_last: string;
 
   // Sectoral Information - matching database exactly
-  is_labor_force: boolean;
   is_labor_force_employed: boolean;
   is_unemployed: boolean;
   is_overseas_filipino_worker: boolean;
@@ -391,6 +283,13 @@ export interface AddressInfo {
  * Extended resident interface with related data
  */
 export interface ResidentWithRelations extends ResidentDatabaseRecord {
+  // Birth place information (resolved from birth_place_code)
+  birth_place_info?: {
+    code: string;
+    name: string;
+    level: string;
+  };
+  
   household?: {
     id?: string;
     household_number?: string;
@@ -422,7 +321,6 @@ export interface ResidentWithRelations extends ResidentDatabaseRecord {
   address_info?: AddressInfo;
   
   // Computed fields for classifications
-  is_labor_force?: boolean;
   is_employed?: boolean;
   is_unemployed?: boolean;
   is_senior_citizen?: boolean;

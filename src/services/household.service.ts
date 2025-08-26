@@ -19,33 +19,33 @@ export interface HouseholdFormData {
   address?: string;
   
   // Location details
-  houseNumber: string;
-  streetId: string; // UUID reference to geo_streets
-  subdivisionId?: string; // UUID reference to geo_subdivisions
-  barangayCode: string;
-  cityMunicipalityCode: string;
-  provinceCode?: string;
-  regionCode: string;
-  zipCode?: string;
+  house_number: string;
+  street_id: string; // UUID reference to geo_streets
+  subdivision_id?: string; // UUID reference to geo_subdivisions
+  barangay_code: string;
+  city_municipality_code: string;
+  province_code?: string;
+  region_code: string;
+  zip_code?: string;
   
   // Household metrics
-  noOfFamilies?: number;
-  noOfHouseholdMembers?: number;
-  noOfMigrants?: number;
+  no_of_families?: number;
+  no_of_household_members?: number;
+  no_of_migrants?: number;
   
   // Household classifications (enums)
-  householdType?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
-  tenureStatus?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
-  tenureOthersSpecify?: string;
-  householdUnit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
+  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
+  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  tenure_others_specify?: string;
+  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
   
   // Economic information
-  monthlyIncome?: number;
-  incomeClass?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
+  monthly_income?: number;
+  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
   
   // Head of household
-  householdHeadId?: string; // UUID reference to residents
-  householdHeadPosition?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
+  household_head_id?: string; // UUID reference to residents
+  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
 }
 
 export interface UserAddress {
@@ -63,8 +63,8 @@ export interface UserAddress {
 export interface CreateHouseholdRequest {
   formData: HouseholdFormData;
   userAddress?: UserAddress;
-  barangayCode?: string;
-  csrfToken?: string;
+  barangay_code?: string;
+  csrf_token?: string;
 }
 
 export interface CreateHouseholdResponse {
@@ -99,34 +99,34 @@ export class HouseholdService {
       if (!formData.code?.trim()) {
         errors.code = 'Household code is required';
       }
-      if (!formData.houseNumber?.trim()) {
-        errors.houseNumber = 'House number is required';
+      if (!formData.house_number?.trim()) {
+        errors.house_number = 'House number is required';
       }
-      if (!formData.streetId?.trim()) {
-        errors.streetId = 'Street ID is required';
+      if (!formData.street_id?.trim()) {
+        errors.street_id = 'Street ID is required';
       }
-      if (!formData.barangayCode?.trim()) {
-        errors.barangayCode = 'Barangay code is required';
+      if (!formData.barangay_code?.trim()) {
+        errors.barangay_code = 'Barangay code is required';
       }
-      if (!formData.cityMunicipalityCode?.trim()) {
-        errors.cityMunicipalityCode = 'City/Municipality code is required';
+      if (!formData.city_municipality_code?.trim()) {
+        errors.city_municipality_code = 'City/Municipality code is required';
       }
-      if (!formData.regionCode?.trim()) {
-        errors.regionCode = 'Region code is required';
+      if (!formData.region_code?.trim()) {
+        errors.region_code = 'Region code is required';
       }
 
       // Validate numeric fields if provided
-      if (formData.noOfFamilies !== undefined && formData.noOfFamilies < 0) {
-        errors.noOfFamilies = 'Number of families cannot be negative';
+      if (formData.no_of_families !== undefined && formData.no_of_families < 0) {
+        errors.no_of_families = 'Number of families cannot be negative';
       }
-      if (formData.noOfHouseholdMembers !== undefined && formData.noOfHouseholdMembers < 0) {
-        errors.noOfHouseholdMembers = 'Number of household members cannot be negative';
+      if (formData.no_of_household_members !== undefined && formData.no_of_household_members < 0) {
+        errors.no_of_household_members = 'Number of household members cannot be negative';
       }
-      if (formData.noOfMigrants !== undefined && formData.noOfMigrants < 0) {
-        errors.noOfMigrants = 'Number of migrants cannot be negative';
+      if (formData.no_of_migrants !== undefined && formData.no_of_migrants < 0) {
+        errors.no_of_migrants = 'Number of migrants cannot be negative';
       }
-      if (formData.monthlyIncome !== undefined && formData.monthlyIncome < 0) {
-        errors.monthlyIncome = 'Monthly income cannot be negative';
+      if (formData.monthly_income !== undefined && formData.monthly_income < 0) {
+        errors.monthly_income = 'Monthly income cannot be negative';
       }
 
       return {
@@ -146,11 +146,11 @@ export class HouseholdService {
    * Generate unique household code - should use proper format based on geographic hierarchy
    * For now using simple format, but should ideally use barangay-based format from schema
    */
-  generateHouseholdCode(barangayCode?: string): string {
-    if (barangayCode) {
+  generateHouseholdCode(barangay_code?: string): string {
+    if (barangay_code) {
       // Use geographic hierarchy format as defined in schema function
       const timestamp = Date.now().toString().slice(-6);
-      return `${barangayCode}-HH-${timestamp}`;
+      return `${barangay_code}-HH-${timestamp}`;
     }
     
     // Fallback format
@@ -170,33 +170,33 @@ export class HouseholdService {
       address: formData.address || null,
       
       // Location details
-      house_number: formData.houseNumber,
-      street_id: formData.streetId,
-      subdivision_id: formData.subdivisionId || null,
-      barangay_code: formData.barangayCode || userAddress?.barangay_code,
-      city_municipality_code: formData.cityMunicipalityCode || userAddress?.city_municipality_code,
-      province_code: formData.provinceCode || userAddress?.province_code || null,
-      region_code: formData.regionCode || userAddress?.region_code,
-      zip_code: formData.zipCode || null,
+      house_number: formData.house_number,
+      street_id: formData.street_id,
+      subdivision_id: formData.subdivision_id || null,
+      barangay_code: formData.barangay_code || userAddress?.barangay_code,
+      city_municipality_code: formData.city_municipality_code || userAddress?.city_municipality_code,
+      province_code: formData.province_code || userAddress?.province_code || null,
+      region_code: formData.region_code || userAddress?.region_code,
+      zip_code: formData.zip_code || null,
       
       // Household metrics
-      no_of_families: formData.noOfFamilies || 1,
-      no_of_household_members: formData.noOfHouseholdMembers || 0,
-      no_of_migrants: formData.noOfMigrants || 0,
+      no_of_families: formData.no_of_families || 1,
+      no_of_household_members: formData.no_of_household_members || 0,
+      no_of_migrants: formData.no_of_migrants || 0,
       
       // Household classifications
-      household_type: formData.householdType || null,
-      tenure_status: formData.tenureStatus || null,
-      tenure_others_specify: formData.tenureOthersSpecify || null,
-      household_unit: formData.householdUnit || null,
+      household_type: formData.household_type || null,
+      tenure_status: formData.tenure_status || null,
+      tenure_others_specify: formData.tenure_others_specify || null,
+      household_unit: formData.household_unit || null,
       
       // Economic information
-      monthly_income: formData.monthlyIncome || null,
-      income_class: formData.incomeClass || null,
+      monthly_income: formData.monthly_income || null,
+      income_class: formData.income_class || null,
       
       // Head of household
-      household_head_id: formData.householdHeadId || null,
-      household_head_position: formData.householdHeadPosition || null,
+      household_head_id: formData.household_head_id || null,
+      household_head_position: formData.household_head_position || null,
       
       // Status and audit fields
       is_active: true,
@@ -209,8 +209,8 @@ export class HouseholdService {
   async createHousehold({
     formData,
     userAddress,
-    barangayCode,
-    csrfToken,
+    barangay_code,
+    csrf_token,
   }: CreateHouseholdRequest): Promise<CreateHouseholdResponse> {
     try {
       // Validate form data
@@ -225,15 +225,15 @@ export class HouseholdService {
 
       // Generate household code if not provided
       if (!formData.code) {
-        formData.code = this.generateHouseholdCode(barangayCode || formData.barangayCode);
+        formData.code = this.generateHouseholdCode(barangay_code || formData.barangay_code);
       }
 
       // Transform data to database schema
       const householdData = this.transformToDbSchema(formData, userAddress);
 
       // Set barangay code from parameter if provided
-      if (barangayCode) {
-        householdData.barangay_code = barangayCode;
+      if (barangay_code) {
+        householdData.barangay_code = barangay_code;
       }
 
       logger.info('Creating household', { householdCode: formData.code });
@@ -364,25 +364,25 @@ export class HouseholdService {
       // Only update fields that are provided
       if (updates.name !== undefined) dbUpdates.name = updates.name;
       if (updates.address !== undefined) dbUpdates.address = updates.address;
-      if (updates.houseNumber !== undefined) dbUpdates.house_number = updates.houseNumber;
-      if (updates.streetId !== undefined) dbUpdates.street_id = updates.streetId;
-      if (updates.subdivisionId !== undefined) dbUpdates.subdivision_id = updates.subdivisionId;
-      if (updates.barangayCode !== undefined) dbUpdates.barangay_code = updates.barangayCode;
-      if (updates.cityMunicipalityCode !== undefined) dbUpdates.city_municipality_code = updates.cityMunicipalityCode;
-      if (updates.provinceCode !== undefined) dbUpdates.province_code = updates.provinceCode;
-      if (updates.regionCode !== undefined) dbUpdates.region_code = updates.regionCode;
-      if (updates.zipCode !== undefined) dbUpdates.zip_code = updates.zipCode;
-      if (updates.noOfFamilies !== undefined) dbUpdates.no_of_families = updates.noOfFamilies;
-      if (updates.noOfHouseholdMembers !== undefined) dbUpdates.no_of_household_members = updates.noOfHouseholdMembers;
-      if (updates.noOfMigrants !== undefined) dbUpdates.no_of_migrants = updates.noOfMigrants;
-      if (updates.householdType !== undefined) dbUpdates.household_type = updates.householdType;
-      if (updates.tenureStatus !== undefined) dbUpdates.tenure_status = updates.tenureStatus;
-      if (updates.tenureOthersSpecify !== undefined) dbUpdates.tenure_others_specify = updates.tenureOthersSpecify;
-      if (updates.householdUnit !== undefined) dbUpdates.household_unit = updates.householdUnit;
-      if (updates.monthlyIncome !== undefined) dbUpdates.monthly_income = updates.monthlyIncome;
-      if (updates.incomeClass !== undefined) dbUpdates.income_class = updates.incomeClass;
-      if (updates.householdHeadId !== undefined) dbUpdates.household_head_id = updates.householdHeadId;
-      if (updates.householdHeadPosition !== undefined) dbUpdates.household_head_position = updates.householdHeadPosition;
+      if (updates.house_number !== undefined) dbUpdates.house_number = updates.house_number;
+      if (updates.street_id !== undefined) dbUpdates.street_id = updates.street_id;
+      if (updates.subdivision_id !== undefined) dbUpdates.subdivision_id = updates.subdivision_id;
+      if (updates.barangay_code !== undefined) dbUpdates.barangay_code = updates.barangay_code;
+      if (updates.city_municipality_code !== undefined) dbUpdates.city_municipality_code = updates.city_municipality_code;
+      if (updates.province_code !== undefined) dbUpdates.province_code = updates.province_code;
+      if (updates.region_code !== undefined) dbUpdates.region_code = updates.region_code;
+      if (updates.zip_code !== undefined) dbUpdates.zip_code = updates.zip_code;
+      if (updates.no_of_families !== undefined) dbUpdates.no_of_families = updates.no_of_families;
+      if (updates.no_of_household_members !== undefined) dbUpdates.no_of_household_members = updates.no_of_household_members;
+      if (updates.no_of_migrants !== undefined) dbUpdates.no_of_migrants = updates.no_of_migrants;
+      if (updates.household_type !== undefined) dbUpdates.household_type = updates.household_type;
+      if (updates.tenure_status !== undefined) dbUpdates.tenure_status = updates.tenure_status;
+      if (updates.tenure_others_specify !== undefined) dbUpdates.tenure_others_specify = updates.tenure_others_specify;
+      if (updates.household_unit !== undefined) dbUpdates.household_unit = updates.household_unit;
+      if (updates.monthly_income !== undefined) dbUpdates.monthly_income = updates.monthly_income;
+      if (updates.income_class !== undefined) dbUpdates.income_class = updates.income_class;
+      if (updates.household_head_id !== undefined) dbUpdates.household_head_id = updates.household_head_id;
+      if (updates.household_head_position !== undefined) dbUpdates.household_head_position = updates.household_head_position;
 
       // Always update the timestamp
       dbUpdates.updated_at = new Date().toISOString();

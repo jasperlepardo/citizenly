@@ -6,7 +6,9 @@ import { DataTable } from '@/components';
 import type { TableColumn, TableAction } from '@/components';
 import { SearchBar } from '@/components';
 import { Button } from '@/components';
-import { useResidents, type Resident } from '@/hooks/crud/useResidents';
+import { useResidents, useResidentFilterFields, type Resident, type AdvancedFilters } from '@/hooks/crud/useResidents';
+import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
+import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
 
 
 interface SearchFilter {
@@ -21,23 +23,31 @@ function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [_searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>({});
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 20,
   });
 
-  // Use React Query for data fetching
+  // Get filter field definitions
+  const filterFields = useResidentFilterFields();
+
+  // Use React Query for data fetching with enhanced error handling
   const { 
     residents, 
     total, 
     isLoading, 
     isFetching, 
     error,
-    prefetchNextPage 
+    prefetchNextPage,
+    retryManually,
+    clearError,
+    errorDetails
   } = useResidents({
     page: pagination.current,
     pageSize: pagination.pageSize,
     searchTerm,
+    filters: advancedFilters,
   });
 
   // Note: Advanced filter functionality will be implemented in future version
@@ -51,6 +61,11 @@ function ResidentsContent() {
 
   const handleSearch = useCallback((term: string) => {
     setSearchTerm(term);
+    setPagination(prev => ({ ...prev, current: 1 }));
+  }, []);
+
+  const handleFiltersChange = useCallback((filters: AdvancedFilters) => {
+    setAdvancedFilters(filters);
     setPagination(prev => ({ ...prev, current: 1 }));
   }, []);
 
@@ -138,7 +153,7 @@ function ResidentsContent() {
     {
       key: 'occupation',
       title: 'Occupation',
-      dataIndex: (record: Resident) => record.occupation || record.job_title || 'N/A',
+      dataIndex: (record: Resident) => record.occupation_code || 'N/A',
       sortable: true,
     },
   ];
@@ -154,8 +169,35 @@ function ResidentsContent() {
     {
       key: 'edit',
       label: 'Edit',
-      href: (record: Resident) => `/residents/${record.id}/edit`,
+      href: (record: Resident) => `/residents/${record.id}`,
       variant: 'secondary',
+    },
+    {
+      key: 'delete',
+      label: 'Delete',
+      onClick: async (record: Resident) => {
+        if (window.confirm(`Are you sure you want to delete ${record.first_name} ${record.last_name}?`)) {
+          try {
+            const response = await fetch(`/api/residents/${record.id}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+              },
+            });
+            
+            if (response.ok) {
+              // Refresh the residents list
+              window.location.reload();
+            } else {
+              alert('Failed to delete resident');
+            }
+          } catch (error) {
+            console.error('Delete error:', error);
+            alert('Error deleting resident');
+          }
+        }
+      },
+      variant: 'danger',
     },
   ];
 
@@ -194,6 +236,23 @@ function ResidentsContent() {
     },
   ];
 
+  // Show error recovery component if there's an error
+  if (error && !isLoading) {
+    return (
+      <div className="p-6">
+        <ErrorRecovery
+          error={error}
+          errorDetails={errorDetails}
+          onRetry={retryManually}
+          onClearError={clearError}
+          title="Failed to load residents"
+          showDetails={process.env.NODE_ENV === 'development'}
+          className="max-w-2xl mx-auto mt-8"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
         {/* Page Header */}
@@ -202,25 +261,90 @@ function ResidentsContent() {
             <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600 dark:text-gray-400">Residents</h1>
             <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
               {total} total residents
+              {isFetching && !isLoading && (
+                <span className="ml-2 text-blue-600">
+                  <svg className="inline w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                  </svg>
+                  Updating...
+                </span>
+              )}
             </p>
           </div>
-          <Link href="/residents/create">
-            <Button variant="primary" size="md">
-              Add new resident
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            {error && (
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={retryManually}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Retrying...' : 'Retry'}
+              </Button>
+            )}
+            <Link href="/residents/create">
+              <Button variant="primary" size="md">
+                Add new resident
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-4">
           <SearchBar
             placeholder="Search residents by name, email, or occupation..."
             onSearch={handleSearch}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
+            disabled={isLoading && !residents.length}
           />
         </div>
+
+        {/* Advanced Filters */}
+        <div className="mb-6">
+          <AdvancedFiltersComponent
+            fields={filterFields}
+            values={advancedFilters}
+            onChange={handleFiltersChange}
+            loading={isLoading}
+            compact={true}
+            className="shadow-sm"
+          />
+        </div>
+
+        {/* Error banner for non-blocking errors */}
+        {error && residents.length > 0 && (
+          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-yellow-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span className="text-sm text-yellow-800">
+                  Showing cached data - {errorDetails.isNetworkError ? 'connection' : 'server'} issue detected
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={retryManually}
+                  className="text-sm text-yellow-700 hover:text-yellow-900 underline"
+                  disabled={isLoading}
+                >
+                  Retry
+                </button>
+                <button
+                  onClick={clearError}
+                  className="text-sm text-yellow-700 hover:text-yellow-900 underline"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Data Table */}
         <DataTable<Resident>

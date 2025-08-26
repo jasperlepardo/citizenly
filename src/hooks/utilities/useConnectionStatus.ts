@@ -26,10 +26,13 @@ export interface UseConnectionStatusReturn {
  * Hook for monitoring network connection and sync status
  */
 export function useConnectionStatus(): UseConnectionStatusReturn {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isOnline, setIsOnline] = useState(true); // Default to online for SSR
   const [syncPending, setSyncPending] = useState(false);
 
   useEffect(() => {
+    // Set initial online status on client
+    setIsOnline(navigator.onLine);
+    
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 

@@ -11,16 +11,16 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export interface UserData {
   id?: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   role: string;
-  barangayCode?: string;
-  isActive: boolean;
-  lastLoginAt?: string;
-  emailVerifiedAt?: string;
-  passwordChangedAt?: string;
-  loginAttempts?: number;
-  lockedUntil?: string;
+  barangay_code?: string;
+  is_active: boolean;
+  last_login_at?: string;
+  email_verified_at?: string;
+  password_changed_at?: string;
+  login_attempts?: number;
+  locked_until?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -29,19 +29,19 @@ export interface UserSearchOptions extends QueryOptions {
   email?: string;
   name?: string;
   role?: string;
-  barangayCode?: string;
-  isActive?: boolean;
-  lastLoginBefore?: string;
-  lastLoginAfter?: string;
+  barangay_code?: string;
+  is_active?: boolean;
+  last_login_before?: string;
+  last_login_after?: string;
 }
 
 export interface UserSecurityData {
-  loginAttempts: number;
-  lastLoginAt?: string;
-  lastLoginIp?: string;
-  lockedUntil?: string;
-  passwordChangedAt?: string;
-  emailVerifiedAt?: string;
+  login_attempts: number;
+  last_login_at?: string;
+  last_login_ip?: string;
+  locked_until?: string;
+  password_changed_at?: string;
+  email_verified_at?: string;
 }
 
 export class UserRepository extends BaseRepository<UserData> {
@@ -185,7 +185,7 @@ export class UserRepository extends BaseRepository<UserData> {
         if (options.name) {
           const searchTerm = `%${options.name}%`;
           query = query.or(
-            `firstName.ilike.${searchTerm},lastName.ilike.${searchTerm}`
+`first_name.ilike.${searchTerm},last_name.ilike.${searchTerm}`
           );
         }
 
@@ -193,17 +193,17 @@ export class UserRepository extends BaseRepository<UserData> {
         if (options.role) query = query.eq('role', options.role);
 
         // Barangay filter
-        if (options.barangayCode) query = query.eq('barangayCode', options.barangayCode);
+        if (options.barangay_code) query = query.eq('barangay_code', options.barangay_code);
 
         // Active status filter
-        if (options.isActive !== undefined) query = query.eq('isActive', options.isActive);
+        if (options.is_active !== undefined) query = query.eq('is_active', options.is_active);
 
         // Last login date filters
-        if (options.lastLoginBefore) {
-          query = query.lt('lastLoginAt', options.lastLoginBefore);
+        if (options.last_login_before) {
+          query = query.lt('last_login_at', options.last_login_before);
         }
-        if (options.lastLoginAfter) {
-          query = query.gt('lastLoginAt', options.lastLoginAfter);
+        if (options.last_login_after) {
+          query = query.gt('last_login_at', options.last_login_after);
         }
 
         // Apply other filters
@@ -222,7 +222,7 @@ export class UserRepository extends BaseRepository<UserData> {
           });
         } else {
           // Default order by last name, first name
-          query = query.order('lastName').order('firstName');
+          query = query.order('last_name').order('first_name');
         }
 
         // Apply pagination
@@ -253,7 +253,7 @@ export class UserRepository extends BaseRepository<UserData> {
     try {
       return await this.findAll({
         filters: { role },
-        orderBy: 'lastName',
+        orderBy: 'last_name',
       });
     } catch (error) {
       return {
@@ -266,11 +266,11 @@ export class UserRepository extends BaseRepository<UserData> {
   /**
    * Find users by barangay
    */
-  async findByBarangay(barangayCode: string): Promise<RepositoryResult<UserData[]>> {
+  async findByBarangay(barangay_code: string): Promise<RepositoryResult<UserData[]>> {
     try {
       return await this.findAll({
-        filters: { barangayCode, isActive: true },
-        orderBy: 'lastName',
+        filters: { barangay_code, is_active: true },
+        orderBy: 'last_name',
       });
     } catch (error) {
       return {
@@ -322,19 +322,19 @@ export class UserRepository extends BaseRepository<UserData> {
 
       if (success) {
         // Reset login attempts on successful login
-        updateData.loginAttempts = 0;
-        updateData.lastLoginAt = new Date().toISOString();
-        updateData.lockedUntil = undefined;
+        updateData.login_attempts = 0;
+        updateData.last_login_at = new Date().toISOString();
+        updateData.locked_until = undefined;
       } else {
         // Increment login attempts on failed login
-        const attempts = (user.loginAttempts || 0) + 1;
-        updateData.loginAttempts = attempts;
+        const attempts = (user.login_attempts || 0) + 1;
+        updateData.login_attempts = attempts;
 
         // Lock account after 5 failed attempts
         if (attempts >= 5) {
           const lockUntil = new Date();
           lockUntil.setMinutes(lockUntil.getMinutes() + 30); // Lock for 30 minutes
-          updateData.lockedUntil = lockUntil.toISOString();
+          updateData.locked_until = lockUntil.toISOString();
         }
       }
 
@@ -365,7 +365,7 @@ export class UserRepository extends BaseRepository<UserData> {
 
       const user = userResult.data;
       const now = new Date();
-      const isLocked = user.lockedUntil && new Date(user.lockedUntil) > now;
+      const isLocked = user.locked_until && new Date(user.locked_until) > now;
 
       return {
         success: true,
@@ -392,7 +392,7 @@ export class UserRepository extends BaseRepository<UserData> {
           .from(this.tableName)
           .select('*')
           .or(`lastLoginAt.is.null,lastLoginAt.lt.${cutoffDate.toISOString()}`)
-          .eq('isActive', true)
+          .eq('is_active', true)
           .order('lastLoginAt', { ascending: true, nullsFirst: true });
       };
 
@@ -411,7 +411,7 @@ export class UserRepository extends BaseRepository<UserData> {
   async deactivateUser(userId: string, reason?: string): Promise<RepositoryResult<UserData>> {
     try {
       const updateData: Partial<UserData> = {
-        isActive: false,
+        is_active: false,
         updated_at: new Date().toISOString(),
       };
 
@@ -436,9 +436,9 @@ export class UserRepository extends BaseRepository<UserData> {
   async activateUser(userId: string): Promise<RepositoryResult<UserData>> {
     try {
       const updateData: Partial<UserData> = {
-        isActive: true,
-        loginAttempts: 0,
-        lockedUntil: undefined,
+        is_active: true,
+        login_attempts: 0,
+        locked_until: undefined,
         updated_at: new Date().toISOString(),
       };
 

@@ -8,13 +8,13 @@ import {
 import type { FormMode } from '@/types';
 
 export interface BasicInformationData {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  extensionName: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  extension_name: string;
   sex: 'male' | 'female' | '';
-  civilStatus: string;
-  civilStatusOthersSpecify?: string;
+  civil_status: string;
+  civil_status_others_specify?: string;
 }
 
 interface BasicInformationProps {
@@ -49,10 +49,10 @@ export function BasicInformation({
   // Helper function to format full name
   const formatFullName = () => {
     const parts = [
-      value.firstName?.trim(),
-      value.middleName?.trim(), 
-      value.lastName?.trim(),
-      value.extensionName?.trim()
+      value.first_name?.trim(),
+      value.middle_name?.trim(), 
+      value.last_name?.trim(),
+      value.extension_name?.trim()
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(' ') : '—';
   };
@@ -88,10 +88,10 @@ export function BasicInformation({
               label="First Name"
               required
               labelSize="sm"
-              errorMessage={errors.firstName}
+              errorMessage={errors.first_name}
               inputProps={{
-                value: value.firstName,
-                onChange: e => handleChange('firstName', e.target.value),
+                value: value.first_name,
+                onChange: e => handleChange('first_name', e.target.value),
                 placeholder: "Enter first name",
                 required: true
               }}
@@ -102,8 +102,8 @@ export function BasicInformation({
               label="Middle Name"
               labelSize="sm"
               inputProps={{
-                value: value.middleName,
-                onChange: e => handleChange('middleName', e.target.value),
+                value: value.middle_name,
+                onChange: e => handleChange('middle_name', e.target.value),
                 placeholder: "Enter middle name"
               }}
             />
@@ -113,10 +113,10 @@ export function BasicInformation({
               label="Last Name"
               required
               labelSize="sm"
-              errorMessage={errors.lastName}
+              errorMessage={errors.last_name}
               inputProps={{
-                value: value.lastName,
-                onChange: e => handleChange('lastName', e.target.value),
+                value: value.last_name,
+                onChange: e => handleChange('last_name', e.target.value),
                 placeholder: "Enter last name",
                 required: true
               }}
@@ -127,8 +127,8 @@ export function BasicInformation({
               label="Extension Name"
               labelSize="sm"
               inputProps={{
-                value: value.extensionName,
-                onChange: e => handleChange('extensionName', e.target.value),
+                value: value.extension_name,
+                onChange: e => handleChange('extension_name', e.target.value),
                 placeholder: "Jr., Sr., III, etc."
               }}
             />
@@ -167,26 +167,26 @@ export function BasicInformation({
           mode={mode}
           label="Civil Status"
           labelSize="sm"
-          errorMessage={errors.civilStatus}
+          errorMessage={errors.civil_status}
           selectProps={{
             placeholder: "Select civil status...",
             options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as any,
-            value: value.civilStatus,
-            onSelect: handleSelectChange('civilStatus')
+            value: value.civil_status,
+            onSelect: handleSelectChange('civil_status')
           }}
         />
         
         {/* Show input field when "others" is selected */}
-        {value.civilStatus === 'others' && (
+        {value.civil_status === 'others' && (
           <InputField
             mode={mode}
             label="Specify Civil Status"
             required
             labelSize="sm"
-            errorMessage={errors.civilStatusOthersSpecify}
+            errorMessage={errors.civil_status_others_specify}
             inputProps={{
-              value: value.civilStatusOthersSpecify || '',
-              onChange: e => handleChange('civilStatusOthersSpecify', e.target.value),
+              value: value.civil_status_others_specify || '',
+              onChange: e => handleChange('civil_status_others_specify', e.target.value),
               placeholder: "Please specify civil status",
               required: true
             }}

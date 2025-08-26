@@ -4,14 +4,14 @@ import { InputField, SelectField } from '@/components';
 import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
 
 export interface PhysicalCharacteristicsData {
-  bloodType: string;
+  blood_type: string;
   complexion: string;
   height: string;
   weight: string;
   citizenship: string;
   ethnicity: string;
   religion: string;
-  religionOthersSpecify?: string;
+  religion_others_specify?: string;
 }
 
 export interface PhysicalCharacteristicsProps {
@@ -38,7 +38,7 @@ export function PhysicalCharacteristics({
     });
   };
 
-  // Use pre-defined options - these fields have database defaults so no empty options needed
+  // Use pre-defined options - blood_type and citizenship have database defaults, religion and ethnicity have "Select" options
   const bloodTypeOptions = BLOOD_TYPE_OPTIONS_WITH_DEFAULT as any;
   const ethnicityOptions = ETHNICITY_OPTIONS_WITH_DEFAULT as any;
   const religionOptions = RELIGION_OPTIONS_WITH_DEFAULT as any;
@@ -58,13 +58,13 @@ export function PhysicalCharacteristics({
         <SelectField
           label="Blood Type"
           labelSize="sm"
-          errorMessage={errors.bloodType}
+          errorMessage={errors.blood_type}
           mode={mode}
           selectProps={{
             placeholder: "Select blood type...",
             options: bloodTypeOptions,
-            value: value.bloodType,
-            onSelect: (option) => handleChange('bloodType', option?.value || '')
+            value: value.blood_type,
+            onSelect: (option) => handleChange('blood_type', option?.value || '')
           }}
         />
         
@@ -155,11 +155,11 @@ export function PhysicalCharacteristics({
             label="Specify Religion"
             required
             labelSize="sm"
-            errorMessage={errors.religionOthersSpecify}
+            errorMessage={errors.religion_others_specify}
             mode={mode}
             inputProps={{
-              value: value.religionOthersSpecify || '',
-              onChange: (e) => handleChange('religionOthersSpecify', e.target.value),
+              value: value.religion_others_specify || '',
+              onChange: (e) => handleChange('religion_others_specify', e.target.value),
               placeholder: "Please specify religion",
               required: true
             }}

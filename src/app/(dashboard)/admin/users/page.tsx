@@ -87,7 +87,7 @@ function UserCard({
           <span className="mr-2 font-medium">Role:</span>
           <span>{user.role_name || 'resident'}</span>
         </div>
-        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <span className="mr-2 font-medium">Registered:</span>
           <span>{formatDate(user.created_at)}</span>
         </div>
@@ -376,7 +376,7 @@ function UsersManagementContent() {
               <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
                 User Management
               </h1>
-              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                 Manage user registrations and permissions
               </p>
             </div>
@@ -395,7 +395,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'pending'
                     ? 'border-blue-500 text-gray-600 dark:text-gray-400'
-                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700 dark:text-gray-300'
+                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Pending Approvals ({pendingUsers.length})
@@ -407,7 +407,7 @@ function UsersManagementContent() {
                 className={`rounded-none border-b-2 ${
                   activeTab === 'active'
                     ? 'border-blue-500 text-gray-600 dark:text-gray-400'
-                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700 dark:text-gray-300'
+                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:border-gray-300 hover:text-gray-700'
                 }`}
               >
                 Active Users ({activeUsers.length})

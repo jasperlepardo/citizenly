@@ -23,31 +23,31 @@ interface CrossFieldValidationRule {
  */
 const crossFieldValidationRules: CrossFieldValidationRule[] = [
   {
-    fields: ['employmentStatus', 'occupationTitle'],
+    fields: ['employment_status', 'occupation_title'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (data.employmentStatus === 'employed' && !data.occupationTitle) {
-        errors.occupationTitle = 'Occupation title is required when employed';
+      if (data.employment_status === 'employed' && !(data as any).occupation_title) {
+        (errors as any).occupation_title = 'Occupation title is required when employed';
       }
       return errors;
     }
   },
   {
-    fields: ['religion', 'religionOthersSpecify'],
+    fields: ['religion', 'religion_others_specify'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (data.religion === 'others' && !data.religionOthersSpecify) {
-        errors.religionOthersSpecify = 'Please specify other religion';
+      if (data.religion === 'others' && !data.religion_others_specify) {
+        errors.religion_others_specify = 'Please specify other religion';
       }
       return errors;
     }
   },
   {
-    fields: ['isSeniorCitizen', 'isRegisteredSeniorCitizen'],
+    fields: ['is_senior_citizen', 'is_registered_senior_citizen'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (!data.isSeniorCitizen && data.isRegisteredSeniorCitizen) {
-        errors.isRegisteredSeniorCitizen = 'Cannot be registered senior citizen if not a senior citizen';
+      if (!(data as any).is_senior_citizen && (data as any).is_registered_senior_citizen) {
+        (errors as any).is_registered_senior_citizen = 'Cannot be registered senior citizen if not a senior citizen';
       }
       return errors;
     }
@@ -56,12 +56,12 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
     fields: ['isMigrant', 'previousBarangayCode', 'reasonForTransferring'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (data.isMigrant) {
-        if (!data.previousBarangayCode) {
-          errors.previousBarangayCode = 'Previous barangay is required for migrants';
+      if ((data as any).isMigrant) {
+        if (!(data as any).previous_barangay_code) {
+          (errors as any).previous_barangay_code = 'Previous barangay is required for migrants';
         }
-        if (!data.reasonForTransferring) {
-          errors.reasonForTransferring = 'Reason for transferring is required for migrants';
+        if (!(data as any).reason_for_migration) {
+          (errors as any).reason_for_migration = 'Reason for transferring is required for migrants';
         }
       }
       return errors;

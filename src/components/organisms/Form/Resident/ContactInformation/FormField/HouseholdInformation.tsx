@@ -4,8 +4,8 @@ import { SelectField } from '@/components';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
 
 export interface HouseholdInformationData {
-  householdCode: string;
-  householdName: string;
+  household_code: string;
+  household_name: string;
 }
 
 export interface HouseholdInformationProps {
@@ -66,7 +66,7 @@ export function HouseholdInformation({
           mode={mode}
           label="Current Household"
           labelSize="sm"
-          errorMessage={errors.householdCode}
+          errorMessage={errors.household_code}
           helperText="Search for an existing household or leave blank to create new"
           selectProps={{
             placeholder: "🏠 Search households...",
@@ -76,17 +76,17 @@ export function HouseholdInformation({
               description: `Code: ${household.code}${household.address ? ` • ${household.address}` : ''}`,
               badge: 'household'
             })),
-            value: value.householdCode,
+            value: value.household_code,
             loading: isLoading,
             searchable: true,
             onSearch: setSearchQuery,
             onSelect: (option) => {
               if (option) {
-                handleChange('householdCode', (option as any).value);
-                handleChange('householdName', (option as any).label);
+                handleChange('household_code', (option as any).value);
+                handleChange('household_name', (option as any).label);
               } else {
-                handleChange('householdCode', '');
-                handleChange('householdName', '');
+                handleChange('household_code', '');
+                handleChange('household_name', '');
               }
             },
             // Infinite scroll props
@@ -98,14 +98,14 @@ export function HouseholdInformation({
         />
         
         {/* Display selected household info (read-only) */}
-        {value.householdCode && value.householdName && (
+        {value.household_code && value.household_name && (
           <div className="bg-info/5 border border-info/20 rounded-md p-3 mt-3">
             <h6 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">Selected Household</h6>
             <div className="text-sm">
               <div>
                 <span className="form-info-title">Household:</span>
-                <div className="form-info-content">{value.householdName}</div>
-                <div className="text-xs text-zinc-500 dark:text-zinc-400">{value.householdCode}</div>
+                <div className="form-info-content">{value.household_name}</div>
+                <div className="text-xs text-zinc-500 dark:text-zinc-400">{value.household_code}</div>
               </div>
             </div>
           </div>

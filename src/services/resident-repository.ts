@@ -16,9 +16,9 @@ export interface ResidentSearchOptions extends QueryOptions {
   name?: string;
   age?: number;
   sex?: string;
-  civilStatus?: string;
-  householdCode?: string;
-  isVoter?: boolean;
+  civil_status?: string;
+  household_code?: string;
+  is_voter?: boolean;
 }
 
 export class ResidentRepository extends BaseRepository<ResidentData> {
@@ -121,9 +121,9 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
 
         // Direct field filters
         if (options.sex) query = query.eq('sex', options.sex);
-        if (options.civilStatus) query = query.eq('civil_status', options.civilStatus);
-        if (options.householdCode) query = query.eq('household_code', options.householdCode);
-        if (options.isVoter !== undefined) query = query.eq('is_voter', options.isVoter);
+        if (options.civil_status) query = query.eq('civil_status', options.civil_status);
+        if (options.household_code) query = query.eq('household_code', options.household_code);
+        if (options.is_voter !== undefined) query = query.eq('is_voter', options.is_voter);
 
         // Apply other filters
         if (options.filters) {
@@ -168,10 +168,10 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   /**
    * Find residents by household
    */
-  async findByHousehold(householdCode: string): Promise<RepositoryResult<ResidentData[]>> {
+  async findByHousehold(household_code: string): Promise<RepositoryResult<ResidentData[]>> {
     try {
       return await this.findAll({
-        filters: { household_code: householdCode },
+        filters: { household_code },
         orderBy: 'last_name',
       });
     } catch (error) {
@@ -262,8 +262,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
    * Check for duplicate residents (same name and birthdate)
    */
   async findPotentialDuplicates(
-    firstName: string,
-    lastName: string,
+    first_name: string,
+    last_name: string,
     birthdate: string
   ): Promise<RepositoryResult<ResidentData[]>> {
     try {
@@ -271,8 +271,8 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
         return supabase
           .from(this.tableName)
           .select('*')
-          .eq('first_name', firstName)
-          .eq('last_name', lastName)
+          .eq('first_name', first_name)
+          .eq('last_name', last_name)
           .eq('birthdate', birthdate);
       };
 

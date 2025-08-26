@@ -142,25 +142,69 @@ class ClientLogger {
    * Send logs to monitoring service in production
    */
   private sendToMonitoring(level: string, message: string, context?: LogContext): void {
-    // In a real implementation, this would send to your monitoring service
-    // For now, we'll use a structured console output
     const logEntry = {
       timestamp: new Date().toISOString(),
-      level,
+      level: level.toUpperCase(),
       message,
       context,
-      url: window?.location?.href,
-      userAgent: navigator?.userAgent,
+      url: typeof window !== 'undefined' ? window.location?.href : 'server',
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
+      environment: process.env.NODE_ENV,
     };
 
-    // Could send to services like:
-    // - Sentry
-    // - LogRocket
-    // - DataDog
-    // - Custom logging endpoint
+    // Send to external monitoring services based on configuration
+    if (this.isProduction) {
+      // Sentry integration
+      if (typeof window !== 'undefined' && (window as any).Sentry) {
+        const Sentry = (window as any).Sentry;
+        
+        if (level === 'error') {
+          Sentry.captureException(context?.error || new Error(message), {
+            tags: { component: context?.component },
+            contexts: {
+              custom: {
+                action: context?.action,
+                data: context?.data,
+                url: logEntry.url,
+              }
+            }
+          });
+        } else if (level === 'warn') {
+          Sentry.captureMessage(message, 'warning');
+        }
+      }
 
-    // For now, just structure the console output
-    console.log(`[${level.toUpperCase()}]`, logEntry);
+      // Custom API endpoint for structured logging
+      if (typeof window !== 'undefined') {
+        fetch('/api/logging', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(logEntry),
+        }).catch(() => {
+          // Silent fail - don't create logging loops
+        });
+      }
+    }
+
+    // Development: structured console output
+    if (this.isDevelopment) {
+      const colorMap = {
+        error: '\x1b[31m', // Red
+        warn: '\x1b[33m',  // Yellow
+        info: '\x1b[36m',  // Cyan
+        debug: '\x1b[90m', // Gray
+      };
+      const resetColor = '\x1b[0m';
+      const color = colorMap[level as keyof typeof colorMap] || '';
+      
+      console.log(`${color}[${logEntry.level}] ${logEntry.message}${resetColor}`, {
+        timestamp: logEntry.timestamp,
+        context: logEntry.context,
+        url: logEntry.url
+      });
+    }
   }
 }
 
@@ -198,11 +242,18 @@ export const logWarn = (message: string, context?: LogContext) =>
  * @description log Error utility function
  * @returns {unknown} Function execution result
  */
-export const logError = (messageOrError: string | Error, context?: LogContext) => {
+export const logError = (messageOrError: string | Error, context?: LogContext | string) => {
   const message = messageOrError instanceof Error ? messageOrError.message : messageOrError;
-  const errorContext = messageOrError instanceof Error 
-    ? { ...context, error: messageOrError }
+  
+  // Handle string context by converting to LogContext
+  const normalizedContext: LogContext | undefined = typeof context === 'string' 
+    ? { action: context }
     : context;
+    
+  const errorContext = messageOrError instanceof Error 
+    ? { ...normalizedContext, error: messageOrError }
+    : normalizedContext;
+    
   return clientLogger.error(message, errorContext);
 };
 /**

@@ -11,30 +11,31 @@ export const dynamic = 'force-dynamic';
 interface CreateUserFormData {
   email: string;
   password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
-  mobileNumber: string;
-  barangayCode: string;
-  roleId: string;
+  confirm_password: string;
+  first_name: string;
+  last_name: string;
+  mobile_number: string;
+  barangay_code: string;
+  role_id: string;
 }
 
+// Local Role interface for admin role selection (simpler than full AuthRole)
 interface Role {
   id: string;
   name: string;
-  description?: string;
+  description: string;
 }
 
 function CreateUserContent() {
   const [formData, setFormData] = useState<CreateUserFormData>({
     email: '',
     password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    mobileNumber: '',
-    barangayCode: '',
-    roleId: '',
+    confirm_password: '',
+    first_name: '',
+    last_name: '',
+    mobile_number: '',
+    barangay_code: '',
+    role_id: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,7 +114,7 @@ function CreateUserContent() {
         // Set default role to resident if available
         const residentRole = formattedRoles.find(r => r.name === 'resident');
         if (residentRole) {
-          setFormData(prev => ({ ...prev, roleId: residentRole.id }));
+          setFormData(prev => ({ ...prev, role_id: residentRole.id }));
         }
       }
     } catch (error) {
@@ -165,35 +166,35 @@ function CreateUserContent() {
     }
 
     // Confirm password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm the password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+    if (!formData.confirm_password) {
+      newErrors.confirm_password = 'Please confirm the password';
+    } else if (formData.password !== formData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
     }
 
     // Name validation
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First name is required';
     }
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last name is required';
     }
 
     // Mobile number validation
-    if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = 'Mobile number is required';
-    } else if (!/^(09|\+639)\d{9}$/.test(formData.mobileNumber.replace(/\s+/g, ''))) {
-      newErrors.mobileNumber = 'Please enter a valid Philippine mobile number';
+    if (!formData.mobile_number.trim()) {
+      newErrors.mobile_number = 'Mobile number is required';
+    } else if (!/^(09|\+639)\d{9}$/.test(formData.mobile_number.replace(/\s+/g, ''))) {
+      newErrors.mobile_number = 'Please enter a valid Philippine mobile number';
     }
 
     // Barangay validation
-    if (!formData.barangayCode) {
-      newErrors.barangayCode = 'Please select a barangay';
+    if (!formData.barangay_code) {
+      newErrors.barangay_code = 'Please select a barangay';
     }
 
     // Role validation
-    if (!formData.roleId) {
-      newErrors.roleId = 'Please select a role';
+    if (!formData.role_id) {
+      newErrors.role_id = 'Please select a role';
     }
 
     setErrors(newErrors);
@@ -225,10 +226,10 @@ function CreateUserContent() {
       const adminUserData = {
         email: formData.email,
         password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        barangayCode: formData.barangayCode,
-        roleId: formData.roleId,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        barangay_code: formData.barangay_code,
+        role_id: formData.role_id,
       };
 
       const response = await fetch('/api/admin/users', {
@@ -257,8 +258,8 @@ function CreateUserContent() {
       // Success!
       setCreatedUser({
         email: formData.email,
-        name: `${formData.firstName} ${formData.lastName}`,
-        role: roles.find(r => r.id === formData.roleId)?.name || 'resident',
+        name: `${formData.first_name} ${formData.last_name}`,
+        role: roles.find(r => r.id === formData.role_id)?.name || 'resident',
       });
       setSuccess(true);
     } catch (error) {
@@ -280,12 +281,12 @@ function CreateUserContent() {
     setFormData({
       email: '',
       password: '',
-      confirmPassword: '',
-      firstName: '',
-      lastName: '',
-      mobileNumber: '',
-      barangayCode: '',
-      roleId: roles.find(r => r.name === 'resident')?.id || '',
+      confirm_password: '',
+      first_name: '',
+      last_name: '',
+      mobile_number: '',
+      barangay_code: '',
+      role_id: roles.find(r => r.name === 'resident')?.id || '',
     });
     setErrors({});
     setSuccess(false);
@@ -394,12 +395,12 @@ function CreateUserContent() {
                   <InputField
                     label="First Name"
                     required
-                    errorMessage={errors.firstName}
+                    errorMessage={errors.first_name}
                     inputProps={{
-                      id: "firstName",
+                      id: "first_name",
                       type: "text",
-                      value: formData.firstName,
-                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('firstName', e.target.value),
+                      value: formData.first_name,
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('first_name', e.target.value),
                       placeholder: "Juan",
                       disabled: isSubmitting,
                       autoComplete: "given-name",
@@ -413,12 +414,12 @@ function CreateUserContent() {
                   <InputField
                     label="Last Name"
                     required
-                    errorMessage={errors.lastName}
+                    errorMessage={errors.last_name}
                     inputProps={{
-                      id: "lastName",
+                      id: "last_name",
                       type: "text",
-                      value: formData.lastName,
-                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('lastName', e.target.value),
+                      value: formData.last_name,
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('last_name', e.target.value),
                       placeholder: "Dela Cruz",
                       disabled: isSubmitting,
                       autoComplete: "family-name",
@@ -458,12 +459,12 @@ function CreateUserContent() {
                 <InputField
                   label="Mobile Number"
                   required
-                  errorMessage={errors.mobileNumber}
+                  errorMessage={errors.mobile_number}
                   inputProps={{
-                    id: "mobileNumber",
+                    id: "mobile_number",
                     type: "tel",
-                    value: formData.mobileNumber,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mobileNumber', e.target.value),
+                    value: formData.mobile_number,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mobile_number', e.target.value),
                     placeholder: "09XX XXX XXXX",
                     disabled: isSubmitting,
                     autoComplete: "tel",
@@ -488,15 +489,15 @@ function CreateUserContent() {
                   selectProps={{
                     placeholder: "Search for the user's barangay...",
                     options: barangayOptions,
-                    value: formData.barangayCode,
-                    onSelect: (option) => handleChange('barangayCode', option?.value || ''),
+                    value: formData.barangay_code,
+                    onSelect: (option) => handleChange('barangay_code', option?.value || ''),
                     onSearch: handleBarangaySearch,
                     loading: barangayLoading,
                     disabled: isSubmitting,
-                    error: errors.barangayCode,
+                    error: errors.barangay_code,
                     searchable: true
                   }}
-                  errorMessage={errors.barangayCode}
+                  errorMessage={errors.barangay_code}
                 />
               </div>
 
@@ -520,7 +521,7 @@ function CreateUserContent() {
                   <SelectField
                     label="Role *"
                     required
-                    errorMessage={errors.roleId}
+                    errorMessage={errors.role_id}
                     helperText="Select the role that best describes the user's position"
                     selectProps={{
                       options: [
@@ -530,8 +531,8 @@ function CreateUserContent() {
                           label: `${role.name.charAt(0).toUpperCase() + role.name.slice(1).replace('_', ' ')} - ${role.description}`,
                         })),
                       ],
-                      value: formData.roleId,
-                      onSelect: (option) => handleChange('roleId', option?.value || ''),
+                      value: formData.role_id,
+                      onSelect: (option) => handleChange('role_id', option?.value || ''),
                       disabled: isSubmitting,
                       placeholder: "Select user role..."
                     }}
@@ -569,12 +570,12 @@ function CreateUserContent() {
                 <InputField
                   label="Confirm Password"
                   required
-                  errorMessage={errors.confirmPassword}
+                  errorMessage={errors.confirm_password}
                   inputProps={{
-                    id: "confirmPassword",
+                    id: "confirm_password",
                     type: "password",
-                    value: formData.confirmPassword,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('confirmPassword', e.target.value),
+                    value: formData.confirm_password,
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('confirm_password', e.target.value),
                     placeholder: "Confirm the password",
                     disabled: isSubmitting,
                     autoComplete: "new-password",

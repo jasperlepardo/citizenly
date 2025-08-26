@@ -154,7 +154,7 @@ export interface SignupRequest {
   last_name: string;
   phone?: string;
   barangay_code: string;
-  confirmPassword: string;
+  confirm_password: string;
 }
 
 /**
@@ -168,9 +168,9 @@ export interface PasswordResetRequest {
  * Password update request
  */
 export interface PasswordUpdateRequest {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
 }
 
 /**
@@ -227,9 +227,9 @@ export type AccessLevel = 'read' | 'write' | 'admin' | 'owner';
 export interface PermissionContext {
   resource: string;
   action: string;
-  resourceId?: string;
-  userRole?: string;
-  barangayCode?: string;
+  resource_id?: string;
+  user_role?: string;
+  barangay_code?: string;
 }
 
 /**
@@ -389,22 +389,22 @@ export interface LoginFormData {
 export interface SignupFormData {
   email: string;
   password: string;
-  confirmPassword: string;
-  firstName: string;
-  lastName: string;
+  confirm_password: string;
+  first_name: string;
+  last_name: string;
   phone: string;
-  barangayCode: string;
-  agreeToTerms: boolean;
+  barangay_code: string;
+  agree_to_terms: boolean;
 }
 
 /**
  * Profile form data
  */
 export interface ProfileFormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   phone: string;
-  barangayCode: string;
+  barangay_code: string;
 }
 
 // =============================================================================

@@ -1,22 +1,76 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { logger, createErrorResponseObject, type ErrorCode } from '@/lib';
+import { getEnvironmentConfig, isProduction } from '@/lib/config/environment';
+import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
+import { queryOptimizer } from '@/lib/database/query-optimizer';
+import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
 
-export async function GET(request: NextRequest) {
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 30; // 30 requests per minute
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
+
+// Rate limiting function
+function checkRateLimit(userAgent: string, ip: string): boolean {
+  const key = `${ip}-${userAgent?.substring(0, 50) || 'unknown'}`;
+  const now = Date.now();
+  const current = requestCounts.get(key);
+  
+  if (!current || now > current.resetTime) {
+    requestCounts.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  
+  if (current.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+  
+  current.count++;
+  return true;
+}
+
+// Pagination configuration
+const MAX_RESIDENTS_PER_PAGE = 1000;
+const DEFAULT_PAGE_SIZE = 500;
+
+async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse> {
   try {
+    // Environment validation for production
+    if (isProduction()) {
+      if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        return NextResponse.json(
+          createErrorResponseObject('SERVER_001', 'Service configuration error'),
+          { status: 500 }
+        );
+      }
+    }
+
+    // Rate limiting
+    const userAgent = request.headers.get('user-agent') || '';
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    
+    if (!checkRateLimit(userAgent, ip)) {
+      return NextResponse.json(
+        createErrorResponseObject('RATE_001', 'Rate limit exceeded. Please try again later.'),
+        { status: 429 }
+      );
+    }
+
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
+      return NextResponse.json(
+        createErrorResponseObject('AUTH_001', 'No authentication token provided'),
+        { status: 401 }
+      );
     }
 
     const token = authHeader.split(' ')[1];
 
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // Get optimized connection for user verification
+    const supabase = await getPooledConnection('anon');
 
     // Verify the user token
     const {
@@ -25,14 +79,14 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
+      return NextResponse.json(
+        createErrorResponseObject('AUTH_002', 'Invalid or expired authentication token'),
+        { status: 401 }
+      );
     }
 
-    // Use service role client to bypass RLS for this specific query
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Get optimized service role connection
+    const supabaseAdmin = await getPooledConnection('service');
 
     // Get user profile to get barangay_code
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -42,26 +96,37 @@ export async function GET(request: NextRequest) {
       .single();
 
 
-    if (profileError || !userProfile?.barangay_code) {
+    if (profileError) {
+      logger.error('Profile query error:', profileError);
       return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
+        createErrorResponseObject('USER_001', 'User profile could not be retrieved'),
+        { status: 400 }
+      );
+    }
+    
+    if (!userProfile?.barangay_code) {
+      return NextResponse.json(
+        createErrorResponseObject('USER_002', 'No barangay assignment found for user'),
         { status: 400 }
       );
     }
 
     const barangayCode = userProfile.barangay_code;
 
-    // Get dashboard stats from system table - handle case where no data exists
-    const { data: dashboardStats, error: statsError } = await supabaseAdmin
-      .from('system_dashboard_summaries')
-      .select('*')
-      .eq('barangay_code', barangayCode)
-      .maybeSingle();
+    // Get dashboard stats using query optimizer
+    const { data: dashboardStats, error: statsError, fromCache } = await queryOptimizer.getDashboardStats(
+      supabaseAdmin,
+      barangayCode,
+      { cacheTTL: 2 * 60 * 1000 } // 2 minutes cache
+    );
 
 
     if (statsError) {
-      console.error('Dashboard stats query error:', statsError);
-      return NextResponse.json({ error: 'Failed to fetch dashboard stats' }, { status: 500 });
+      logger.error('Dashboard stats query error:', statsError);
+      return NextResponse.json(
+        createErrorResponseObject('DATA_002', 'Unable to retrieve dashboard statistics'),
+        { status: 500 }
+      );
     }
 
     // If no stats data exists for this barangay, provide defaults
@@ -72,33 +137,57 @@ export async function GET(request: NextRequest) {
       employed: 0,
     };
 
-    // Get individual residents data with sectoral information via household join
-    const { data: residentsData, error: residentsError } = await supabaseAdmin
-      .from('residents')
-      .select(`
-        birthdate, 
-        sex, 
-        civil_status, 
-        employment_status,
-        household_code,
-        households!inner(barangay_code),
-        resident_sectoral_info(
-          is_labor_force,
-          is_labor_force_employed,
-          is_unemployed,
-          is_overseas_filipino_worker,
-          is_person_with_disability,
-          is_out_of_school_children,
-          is_out_of_school_youth,
-          is_senior_citizen,
-          is_registered_senior_citizen,
-          is_solo_parent,
-          is_indigenous_people,
-          is_migrant
-        )
-      `)
-      .eq('households.barangay_code', barangayCode)
-      .eq('is_active', true);
+    // Parse pagination parameters
+    const url = new URL(request.url);
+    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
+    const limit = Math.min(MAX_RESIDENTS_PER_PAGE, parseInt(url.searchParams.get('limit') || DEFAULT_PAGE_SIZE.toString()));
+    const offset = (page - 1) * limit;
+
+    // Get individual residents data using optimized query
+    const { data: residentsData, error: residentsError, fromCache: residentsFromCache } = await queryOptimizer.executeQuery(
+      supabaseAdmin,
+      `residents_sectoral_${barangayCode}_${page}_${limit}`,
+      async () => {
+        return await supabaseAdmin
+          .from('residents')
+          .select(`
+            birthdate, 
+            sex, 
+            civil_status, 
+            employment_status,
+            household_code,
+            households!inner(barangay_code),
+            resident_sectoral_info(
+              is_labor_force_employed,
+              is_unemployed,
+              is_overseas_filipino_worker,
+              is_person_with_disability,
+              is_out_of_school_children,
+              is_out_of_school_youth,
+              is_senior_citizen,
+              is_registered_senior_citizen,
+              is_solo_parent,
+              is_indigenous_people,
+              is_migrant
+            )
+          `)
+          .eq('households.barangay_code', barangayCode)
+          .eq('is_active', true)
+          .range(offset, offset + limit - 1);
+      },
+      { 
+        cacheTTL: 1 * 60 * 1000, // 1 minute cache for residents
+        enableCache: true
+      }
+    );
+      
+    if (residentsError) {
+      logger.error('Residents query error:', residentsError);
+      return NextResponse.json(
+        createErrorResponseObject('DATA_002', 'Unable to retrieve resident data'),
+        { status: 500 }
+      );
+    }
 
 
     // Calculate real sectoral statistics from residents data
@@ -121,7 +210,8 @@ export async function GET(request: NextRequest) {
       residentsData.forEach(resident => {
         const sectoral = resident.resident_sectoral_info?.[0];
         if (sectoral) {
-          if (sectoral.is_labor_force) sectoralStats.laborForce++;
+          // Labor force includes employed and unemployed
+          if (sectoral.is_labor_force_employed || sectoral.is_unemployed) sectoralStats.laborForce++;
           if (sectoral.is_labor_force_employed) sectoralStats.employed++;
           if (sectoral.is_unemployed) sectoralStats.unemployed++;
           if (sectoral.is_overseas_filipino_worker) sectoralStats.ofw++;
@@ -151,30 +241,30 @@ export async function GET(request: NextRequest) {
         households: actualHouseholdCount,
         businesses: 0, // TODO: Add when businesses table exists
         certifications: 0, // TODO: Add when certifications table exists
-        seniorCitizens: sectoralStats.seniorCitizens || statsData.age_65_plus || 0,
-        employedResidents: sectoralStats.employed || statsData.employed_count || 0,
+        seniorCitizens: sectoralStats.seniorCitizens || statsData?.age_65_plus || 0,
+        employedResidents: sectoralStats.employed || statsData?.employed_count || 0,
       },
       // Additional demographic data for charts
       demographics: {
         ageGroups: {
-          youngDependents: statsData.age_0_14 || 0,
-          workingAge: statsData.age_15_64 || 0,
-          oldDependents: statsData.age_65_plus || 0,
+          youngDependents: statsData?.age_0_14 || 0,
+          workingAge: statsData?.age_15_64 || 0,
+          oldDependents: statsData?.age_65_plus || 0,
         },
         sexDistribution: {
-          male: statsData.male_count || 0,
-          female: statsData.female_count || 0,
+          male: statsData?.male_count || 0,
+          female: statsData?.female_count || 0,
         },
         civilStatus: {
-          single: statsData.single_count || 0,
-          married: statsData.married_count || 0,
-          widowed: statsData.widowed_count || 0,
-          divorced: statsData.divorced_separated_count || 0,
+          single: statsData?.single_count || 0,
+          married: statsData?.married_count || 0,
+          widowed: statsData?.widowed_count || 0,
+          divorced: statsData?.divorced_separated_count || 0,
         },
         employment: {
-          laborForce: sectoralStats.laborForce || (statsData.employed_count || 0) + (statsData.unemployed_count || 0),
-          employed: sectoralStats.employed || statsData.employed_count || 0,
-          unemployed: sectoralStats.unemployed || statsData.unemployed_count || 0,
+          laborForce: sectoralStats.laborForce || (statsData?.employed_count || 0) + (statsData?.unemployed_count || 0),
+          employed: sectoralStats.employed || statsData?.employed_count || 0,
+          unemployed: sectoralStats.unemployed || statsData?.unemployed_count || 0,
         },
         specialCategories: {
           pwd: sectoralStats.pwd,
@@ -188,13 +278,39 @@ export async function GET(request: NextRequest) {
         },
       },
       residentsData: residentsData || [],
-      barangayCode: barangayCode,
+      pagination: {
+        page,
+        limit,
+        total: actualResidentCount,
+        hasNextPage: residentsData?.length === limit
+      },
+      // Performance metadata
+      performance: {
+        dashboardStatsFromCache: fromCache,
+        residentsDataFromCache: residentsFromCache,
+        queryOptimizationEnabled: true
+      }
     };
+
+    // Release pooled connections
+    releasePooledConnection(supabase);
+    releasePooledConnection(supabaseAdmin);
 
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Dashboard stats API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    logger.error('Dashboard stats API error:', error);
+    return NextResponse.json(
+      createErrorResponseObject('SERVER_001', 'An unexpected error occurred'),
+      { status: 500 }
+    );
   }
+}
+
+// Wrap the handler with response caching
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  return withResponseCache(CachePresets.dashboard)(
+    request,
+    () => dashboardStatsHandler(request)
+  );
 }

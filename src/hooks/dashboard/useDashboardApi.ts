@@ -6,7 +6,7 @@
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib';
+import { supabase, logger } from '@/lib';
 import { useAuth } from '@/contexts';
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '../utilities/useRetryLogic';
@@ -198,19 +198,26 @@ export function useDashboardApi(): UseDashboardApiReturn {
       return true;
     },
     onSuccess: (result, attempt) => {
-      if (attempt > 0 && process.env.NODE_ENV === 'development') {
-        console.log(`Dashboard API succeeded after ${attempt + 1} attempts`);
+      if (attempt > 0) {
+        logger.info('Dashboard API retry succeeded', {
+          attempts: attempt + 1,
+          operation: 'dashboard-fetch'
+        });
       }
     },
     onError: (error, attempt) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`Dashboard API attempt ${attempt + 1} failed:`, error.message);
-      }
+      logger.warn('Dashboard API retry attempt failed', {
+        attempt: attempt + 1,
+        error: error.message,
+        operation: 'dashboard-fetch'
+      });
     },
     onMaxAttemptsReached: (error) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Dashboard API max retry attempts reached:', error.message);
-      }
+      logger.error('Dashboard API max retry attempts reached', {
+        error: error.message,
+        operation: 'dashboard-fetch',
+        maxAttempts: RetryStrategies.standard.maxAttempts
+      });
     },
   });
 
@@ -218,9 +225,12 @@ export function useDashboardApi(): UseDashboardApiReturn {
   const { wrapAsync, errorState } = useAsyncErrorBoundary({
     onError: (error, errorInfo) => {
       // Log critical dashboard errors for monitoring
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Dashboard API Error:', errorInfo, error);
-      }
+      logger.error('Dashboard API critical error', {
+        error: error.message,
+        errorInfo,
+        operation: 'dashboard-fetch',
+        userId: user?.id
+      });
     },
     enableRecovery: false, // Let our retry logic handle retries
     maxRetries: 0,

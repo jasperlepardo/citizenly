@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib';
+import type { AuthRole } from '@/types/auth';
 import type { User, Session } from '@supabase/supabase-js';
 
 // User profile types - EXACTLY matching auth_user_profiles table (23 fields)
@@ -46,9 +47,8 @@ export interface UserProfile {
   updated_at: string;
 }
 
-export interface Role {
-  id: string;
-  name: string;
+// Use consolidated AuthRole type with permissions extension
+export interface Role extends Pick<AuthRole, 'id' | 'name'> {
   permissions: Record<string, boolean | string>;
 }
 

@@ -40,8 +40,6 @@ export const initializeResidentFields = (residentData: any): ResidentWithRelatio
  */
 export const getComputedFieldTooltip = (field: keyof ResidentWithRelations): string => {
   switch (field) {
-    case 'is_labor_force':
-      return `Automatically calculated from Employment Status. Includes: employed, unemployed, underemployed, self-employed, looking for work`;
     case 'is_employed':
       return `Automatically calculated from Employment Status. Includes: employed, self-employed`;
     case 'is_unemployed':

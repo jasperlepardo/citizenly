@@ -1,6 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
+// Custom hook to handle client-side mounting
+function useIsClient() {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  return isClient;
+}
 import Link from 'next/link';
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase/supabase';
@@ -12,6 +23,7 @@ import SkipNavigation from '@/components/atoms/SkipNavigation';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
+  const isClient = useIsClient();
   const { userProfile, role, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [barangayInfo, setBarangayInfo] = useState<string>('Loading...');
@@ -99,8 +111,10 @@ function UserDropdown() {
     }
   }, [userProfile?.barangay_code]);
 
-  // Handle click outside and Escape key
+  // Handle click outside and Escape key (only on client)
   useEffect(() => {
+    if (!isClient) return;
+    
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -123,12 +137,14 @@ function UserDropdown() {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen]);
+  }, [isOpen, isClient]);
 
   const handleLogout = async () => {
     try {
       await signOut();
-      window.location.href = '/login';
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
     } catch (error) {
       logError(error as Error, 'SIGN_OUT_ERROR');
     }

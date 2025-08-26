@@ -8,6 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { residentService, ResidentFormData } from '@/services/resident.service';
 import { useCSRFToken } from '@/lib/auth';
 import { useAuth } from '@/contexts';
@@ -25,6 +26,7 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const { user, userProfile } = useAuth();
   const { getToken: getCSRFToken } = useCSRFToken();
+  const queryClient = useQueryClient();
 
   // Get user information from auth context
   const barangayCode = userProfile?.barangay_code;
@@ -38,6 +40,11 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
       setValidationErrors({});
 
       try {
+        // Validate required barangay code
+        if (!barangayCode) {
+          throw new Error('User barangay code is required to create residents');
+        }
+
         // Get CSRF token for secure form submission
         const csrfToken = getCSRFToken();
 
@@ -64,6 +71,11 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
           return result;
         }
 
+        // Invalidate residents cache to refresh the list
+        await queryClient.invalidateQueries({
+          queryKey: ['residents'],
+        });
+
         // Success callback
         if (options.onSuccess) {
           options.onSuccess(result.data);
@@ -80,7 +92,7 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
         setIsSubmitting(false);
       }
     },
-    [barangayCode, options]
+    [barangayCode, options, queryClient]
   );
 
   /**

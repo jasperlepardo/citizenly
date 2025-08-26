@@ -72,7 +72,7 @@ function NavigationItemComponent({
   const shouldShowSubmenu = showSubmenu && (isActive || hasActiveChild) && item.children;
 
   return (
-    <li key={item.name} className={className}>
+    <li className={className}>
       <Link
         href={item.href}
         className={`${navigationStyles.base} ${

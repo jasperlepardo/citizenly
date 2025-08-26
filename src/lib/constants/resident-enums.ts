@@ -53,10 +53,18 @@ export const getLabelByValue = (options: readonly { value: string | boolean; lab
 
 // Fields WITH database defaults - no empty option needed since form starts with default value
 export const BLOOD_TYPE_OPTIONS_WITH_DEFAULT = BLOOD_TYPE_OPTIONS;
-export const RELIGION_OPTIONS_WITH_DEFAULT = RELIGION_OPTIONS;
-export const ETHNICITY_OPTIONS_WITH_DEFAULT = ETHNICITY_OPTIONS;
 export const CIVIL_STATUS_OPTIONS_WITH_DEFAULT = CIVIL_STATUS_OPTIONS;
 export const CITIZENSHIP_OPTIONS_WITH_DEFAULT = CITIZENSHIP_OPTIONS;
+
+// Fields WITHOUT database defaults - need select options
+export const RELIGION_OPTIONS_WITH_DEFAULT = [
+  { value: '', label: 'Select religion' },
+  ...RELIGION_OPTIONS,
+];
+export const ETHNICITY_OPTIONS_WITH_DEFAULT = [
+  { value: '', label: 'Select ethnicity' },
+  ...ETHNICITY_OPTIONS,
+];
 
 // Sex field - now has UX default, so no empty option needed
 export const SEX_OPTIONS_WITH_DEFAULT = SEX_OPTIONS;

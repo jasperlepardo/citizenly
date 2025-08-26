@@ -17,28 +17,28 @@ function parseFullName(fullName: string) {
   
   if (nameParts.length === 1) {
     return {
-      firstName: nameParts[0],
+      first_name: nameParts[0],
       middleName: '',
-      lastName: '',
+      last_name: '',
     };
   } else if (nameParts.length === 2) {
     return {
-      firstName: nameParts[0],
+      first_name: nameParts[0],
       middleName: '',
-      lastName: nameParts[1],
+      last_name: nameParts[1],
     };
   } else if (nameParts.length === 3) {
     return {
-      firstName: nameParts[0],
+      first_name: nameParts[0],
       middleName: nameParts[1],
-      lastName: nameParts[2],
+      last_name: nameParts[2],
     };
   } else {
     // For more than 3 parts, first name is first part, last name is last part, middle is everything in between
     return {
-      firstName: nameParts[0],
+      first_name: nameParts[0],
       middleName: nameParts.slice(1, -1).join(' '),
-      lastName: nameParts[nameParts.length - 1],
+      last_name: nameParts[nameParts.length - 1],
     };
   }
 }
@@ -51,81 +51,95 @@ function CreateResidentForm() {
   const { createResident, isSubmitting, validationErrors } = useResidentOperations({
     onSuccess: (data) => {
       toast.success('Resident created successfully!');
-      // Redirect to the resident details page
-      if (data?.resident?.id) {
-        router.push(`/residents/${data.resident.id}`);
-      } else {
-        router.push('/residents');
-      }
+      console.log('Resident created successfully - redirecting to residents list to check visibility');
+      // Always redirect to residents list to check if the new resident is visible
+      router.push('/residents');
     },
     onError: (error) => {
+      console.error('Resident creation error:', error);
       toast.error(error || 'Failed to create resident');
     }
   });
 
   // Handle form submission - transform snake_case to camelCase
-  const handleSubmit = async (formData: any) => {    
+  const handleSubmit = async (formData: any) => {
+    console.log('Raw form data received:', formData);
+    console.log('Form data keys:', Object.keys(formData));
+    console.log('is_voter value:', formData.is_voter);
+    console.log('is_resident_voter value:', formData.is_resident_voter);
+    
+    // Validate required fields before submission
+    const requiredFields = ['first_name', 'last_name', 'birthdate', 'sex', 'household_code'];
+    const missingFields = requiredFields.filter(field => !formData[field]);
+    
+    if (missingFields.length > 0) {
+      const fieldLabels: Record<string, string> = {
+        first_name: 'First Name',
+        last_name: 'Last Name', 
+        birthdate: 'Birthdate',
+        sex: 'Sex',
+        household_code: 'Household Assignment'
+      };
+      const missingLabels = missingFields.map(field => fieldLabels[field] || field);
+      toast.error(`Please fill in required fields: ${missingLabels.join(', ')}`);
+      return;
+    }
+    
     // Transform form data to match ResidentFormData service interface
-    const transformedData: ResidentFormData = {
-      // Personal Information - Step 1
-      firstName: formData.firstName || '',
-      middleName: formData.middleName || '',
-      lastName: formData.lastName || '',
-      extensionName: formData.extensionName || '',
+    // Note: Hidden fields are already filtered out by ResidentForm component
+    const transformedData = {
+      // Personal Information
+      first_name: formData.first_name || '',
+      middle_name: formData.middle_name || '',
+      last_name: formData.last_name || '',
+      extension_name: formData.extension_name || '',
       birthdate: formData.birthdate || '',
-      sex: (formData.sex as 'male' | 'female') || '',
-      civilStatus: formData.civilStatus || 'single',
+      sex: formData.sex as 'male' | 'female',
+      civil_status: formData.civil_status || 'single',
       citizenship: formData.citizenship || 'filipino',
 
-      // Education & Employment - Step 2 (defaults for missing fields)
-      educationLevel: formData.educationAttainment || '',
-      educationStatus: formData.isGraduate ? 'graduate' : 'not_graduate',
-      occupationCode: formData.occupationCode || '',
-      psocLevel: '',
-      positionTitleId: '',
-      occupationDescription: '',
-      employmentStatus: formData.employmentStatus || 'not_in_labor_force',
-      workplace: '',
+      // Education & Employment
+      education_attainment: formData.education_attainment || '',
+      is_graduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
+      occupation_code: formData.occupation_code || '',
+      employment_status: formData.employment_status || 'not_in_labor_force',
 
-      // Contact & Documentation - Step 3
+      // Contact Information
       email: formData.email || '',
-      mobileNumber: formData.mobileNumber || '',
-      telephoneNumber: formData.telephoneNumber || '',
-      philsysCardNumber: formData.philsysCardNumber || '',
+      mobile_number: formData.mobile_number || '',
+      telephone_number: formData.telephone_number || '',
+      philsys_card_number: formData.philsys_card_number || '',
 
-      // Physical & Identity Information - Step 3
-      bloodType: formData.bloodType || '',
-      height: formData.height?.toString() || '',
-      weight: formData.weight?.toString() || '',
-      complexion: formData.complexion || '',
-      ethnicity: formData.ethnicity || '',
-      religion: formData.religion || 'roman_catholic',
+      // Address Information (PSGC Codes)
+      region_code: formData.region_code || '',
+      province_code: formData.province_code || '',
+      city_municipality_code: formData.city_municipality_code || '',
+      barangay_code: formData.barangay_code || '',
 
-      // Voting Information - Step 3 (transform boolean fields)
-      voterRegistrationStatus: formData.is_voter || false,
-      residentVoterStatus: formData.is_resident_voter || false,
-      lastVotedYear: formData.last_voted_date || '',
+      // Household Assignment
+      household_code: formData.household_code || '',
 
-      // Family Information - Step 3
-      motherMaidenFirstName: formData.mother_maiden_first || '',
-      motherMaidenMiddleName: formData.mother_maiden_middle || '',
-      motherMaidenLastName: formData.mother_maiden_last || '',
-
-      // Migration Information - Step 4 (default empty)
-      migrationInfo: {},
-
-      // Address Information (PSGC Codes) - auto-populated with defaults
-      regionCode: formData.region_code || '',
-      provinceCode: formData.province_code || '',
-      cityMunicipalityCode: formData.city_municipality_code || '',
-      barangayCode: formData.barangay_code || '',
-
-      // Household Assignment - Step 5
-      householdCode: formData.household_code || '',
-      householdRole: 'Member', // Default to Member
+      // Include any additional fields that weren't filtered out
+      ...Object.fromEntries(
+        Object.entries(formData).filter(([key]) => 
+          !['first_name', 'middle_name', 'last_name', 'extension_name', 'birthdate', 'sex', 
+            'civil_status', 'citizenship', 'education_attainment', 'is_graduate', 'occupation_code', 
+            'employment_status', 'email', 'mobile_number', 'telephone_number', 'philsys_card_number',
+            'region_code', 'province_code', 'city_municipality_code', 'barangay_code', 'household_code'
+          ].includes(key)
+        )
+      )
     };
     
-    await createResident(transformedData);
+    console.log('Submitting resident data (filtered by form):', transformedData);
+    console.log('Fields included:', Object.keys(transformedData));
+    
+    const result = await createResident(transformedData);
+    
+    // Log validation errors if any
+    if (!result?.success && validationErrors) {
+      console.error('Validation errors:', validationErrors);
+    }
   };
 
   // Parse URL parameters to pre-fill form
@@ -137,12 +151,12 @@ function CreateResidentForm() {
 
     // Auto-fill name if provided
     if (suggestedName) {
-      const { firstName, middleName, lastName } = parseFullName(suggestedName);
+      const { first_name, middleName, last_name } = parseFullName(suggestedName);
       data = {
         ...data,
-        firstName,
-        middleName,
-        lastName,
+        first_name,
+        middle_name: middleName,
+        last_name,
       };
     }
 
@@ -219,11 +233,40 @@ function CreateResidentForm() {
           </div>
         </div>
 
+        {/* Display validation errors if any */}
+        {Object.keys(validationErrors).length > 0 && (
+          <div className="mb-4 rounded-md bg-red-50 dark:bg-red-900/20 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                  There were errors with your submission
+                </h3>
+                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
+                  <ul className="list-disc space-y-1 pl-5">
+                    {Object.entries(validationErrors).map(([field, error]) => (
+                      <li key={field}>
+                        <strong>{field}:</strong> {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Single Page Form */}
         <ResidentForm 
           initialData={initialData} 
           onSubmit={handleSubmit}
           onCancel={() => router.push('/residents')}
+          hidePhysicalDetails={false}
+          hideSectoralInfo={false}
         />
     </div>
   );

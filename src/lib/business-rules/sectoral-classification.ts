@@ -9,6 +9,7 @@ import { SectoralInformation, SectoralContext } from '@/types';
 // Employment statuses for auto-calculation (aligned with database enum)
 export const EMPLOYED_STATUSES = ['employed', 'self_employed'];
 export const UNEMPLOYED_STATUSES = ['unemployed', 'looking_for_work'];
+export const LABOR_FORCE_STATUSES = [...EMPLOYED_STATUSES, ...UNEMPLOYED_STATUSES, 'underemployed'];
 
 // Indigenous ethnicities in the Philippines (based on database ethnicity_enum)
 export const INDIGENOUS_ETHNICITIES = [
@@ -84,6 +85,13 @@ export function isOutOfSchoolYouth(age: number, education?: string, employment?:
  */
 export function isIndigenousPeople(ethnicity: string): boolean {
   return INDIGENOUS_ETHNICITIES.includes(ethnicity);
+}
+
+/**
+ * Check if person is in labor force (employed, unemployed, looking for work, underemployed)
+ */
+export function isInLaborForce(employmentStatus: string): boolean {
+  return LABOR_FORCE_STATUSES.includes(employmentStatus);
 }
 
 /**
