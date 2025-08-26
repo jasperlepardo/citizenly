@@ -389,6 +389,12 @@ function ResidentDetailContent() {
       mobile_number: resident.mobile_number || '',
       household_code: resident.household_code || '',
 
+      // Address Information (PSGC Codes)
+      region_code: resident.region_code || '',
+      province_code: resident.province_code || '',
+      city_municipality_code: resident.city_municipality_code || '',
+      barangay_code: resident.barangay_code || '',
+
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',
       complexion: resident.complexion || '',
