@@ -10,7 +10,8 @@ const meta: Meta<typeof HouseholdDetails> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Household details form section including address, geographic location, and statistics.',
+        component:
+          'Household details form section including address, geographic location, and statistics.',
       },
     },
   },
@@ -37,13 +38,7 @@ const InteractiveHouseholdDetails = (args: any) => {
     }));
   };
 
-  return (
-    <HouseholdDetails
-      {...args}
-      formData={formData}
-      onChange={handleChange}
-    />
-  );
+  return <HouseholdDetails {...args} formData={formData} onChange={handleChange} />;
 };
 
 // Default Story

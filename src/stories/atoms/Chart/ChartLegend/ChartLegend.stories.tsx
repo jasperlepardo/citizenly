@@ -95,9 +95,7 @@ export const WithHoveredItem: Story = {
 
 export const SingleItem: Story = {
   args: {
-    items: [
-      { label: 'Total Population', value: 2379, percentage: 100.0, color: '#3B82F6' },
-    ],
+    items: [{ label: 'Total Population', value: 2379, percentage: 100.0, color: '#3B82F6' }],
   },
 };
 
@@ -123,7 +121,8 @@ export const LongLabels: Story = {
 export const CustomStyling: Story = {
   args: {
     items: sampleData,
-    className: 'bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg border-zinc-200 dark:border-zinc-800 border',
+    className:
+      'bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg border-zinc-200 dark:border-zinc-800 border',
   },
 };
 
@@ -132,7 +131,10 @@ const InteractiveDemoComponent = () => {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleItemHover = (item: { label: string; value: number; color: string } | null, event?: React.MouseEvent) => {
+  const handleItemHover = (
+    item: { label: string; value: number; color: string } | null,
+    event?: React.MouseEvent
+  ) => {
     if (item && event) {
       setHoveredItem(item.label);
       setMousePosition({ x: event.clientX, y: event.clientY });
@@ -146,16 +148,8 @@ const InteractiveDemoComponent = () => {
       <div className="text-sm text-zinc-400 dark:text-zinc-500">
         Hover over legend items to see interactions
       </div>
-      <ChartLegend
-        items={ageData}
-        onItemHover={handleItemHover}
-        hoveredItem={hoveredItem}
-      />
-      {hoveredItem && (
-        <div className="text-sm text-link">
-          Currently hovering: {hoveredItem}
-        </div>
-      )}
+      <ChartLegend items={ageData} onItemHover={handleItemHover} hoveredItem={hoveredItem} />
+      {hoveredItem && <div className="text-link text-sm">Currently hovering: {hoveredItem}</div>}
     </div>
   );
 };
@@ -168,15 +162,15 @@ export const InteractiveDemo: Story = {
 };
 
 export const InChartContainer: Story = {
-  render: (args) => (
-    <div className="bg-white dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800 p-6 w-96">
-      <h3 className="mb-4 font-display text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+  render: args => (
+    <div className="w-96 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-950">
+      <h3 className="font-display mb-4 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
         Population by Age Group
       </h3>
       <div className="grid grid-cols-2 gap-6">
         <div className="flex items-center justify-center">
-          <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center">
-            <span className="text-zinc-500 dark:text-zinc-400 text-xs">Pie Chart</span>
+          <div className="bg-muted flex h-32 w-32 items-center justify-center rounded-full">
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">Pie Chart</span>
           </div>
         </div>
         <ChartLegend {...args} />

@@ -12,7 +12,7 @@ import { getCommandMenuHealth } from '@/lib/command-menu/analytics-utils';
 export const GET = withSecurityHeaders(async () => {
   try {
     const health = getCommandMenuHealth();
-    
+
     return NextResponse.json({
       status: 'success',
       timestamp: new Date().toISOString(),

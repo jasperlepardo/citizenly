@@ -2,7 +2,7 @@
 
 /**
  * Household Form State Management Hook
- * 
+ *
  * @description Focused hook for managing household creation form state and validation.
  * Extracted from useHouseholdCreation to follow single responsibility principle.
  */
@@ -57,7 +57,7 @@ const INITIAL_FORM_DATA: HouseholdFormData = {
 
 /**
  * Custom hook for household form state management
- * 
+ *
  * @description Manages form state, validation, and input handling for household creation.
  * Provides clean separation between form logic and business logic.
  */
@@ -71,7 +71,7 @@ export function useHouseholdForm(): UseHouseholdFormReturn {
   const handleInputChange = useCallback(
     (field: keyof HouseholdFormData, value: string) => {
       setFormDataState(prev => ({ ...prev, [field]: value }));
-      
+
       // Clear error when user starts typing
       if (errors[field]) {
         setErrorsState(prev => ({ ...prev, [field]: undefined }));

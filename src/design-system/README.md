@@ -268,7 +268,7 @@ function ResidentCard({ resident }) {
   const badgeColor = getSectoralBadgeColor(resident.classification, 'subtle');
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-md">
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
       <div className="mb-4 flex items-start justify-between">
         <h3 className="text-lg font-semibold text-gray-800">{resident.name}</h3>
         <span className="rounded px-2 py-1 text-xs font-medium" style={badgeColor}>
@@ -282,7 +282,7 @@ function ResidentCard({ resident }) {
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-gray-50 transition-colors hover:bg-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-gray-50 transition-colors hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden">
           View Details
         </button>
         <button className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200">

@@ -5,7 +5,7 @@ A collection of form field wrapper components that provide consistent labeling, 
 ## Components
 
 - **InputField** - For text inputs, textareas, and form controls
-- **SelectField** - For dropdown selections  
+- **SelectField** - For dropdown selections
 - **ControlField** - For checkboxes, radios, and toggles
 
 ## Error Handling Patterns
@@ -18,7 +18,7 @@ All FieldSet components follow a consistent error handling pattern where the fie
 // InputField
 const inputError = errorMessage || inputProps?.error;
 
-// SelectField  
+// SelectField
 const selectError = errorMessage || selectProps?.error;
 
 // ControlField
@@ -28,38 +28,41 @@ const controlError = errorMessage || controlProps?.errorMessage;
 ### Usage Examples
 
 #### Option 1: Field-level error (Recommended)
+
 ```tsx
 <InputField
   label="Email"
   errorMessage="Please enter a valid email address"
   inputProps={{
-    type: "email",
-    placeholder: "john@example.com"
+    type: 'email',
+    placeholder: 'john@example.com',
   }}
 />
 ```
 
 #### Option 2: Component-level error
+
 ```tsx
 <InputField
   label="Email"
   inputProps={{
-    type: "email",
-    placeholder: "john@example.com",
-    error: "Please enter a valid email address"
+    type: 'email',
+    placeholder: 'john@example.com',
+    error: 'Please enter a valid email address',
   }}
 />
 ```
 
 #### Option 3: Both (field-level takes precedence)
+
 ```tsx
 <InputField
   label="Email"
   errorMessage="Field-level error" // This will be displayed
   inputProps={{
-    type: "email", 
-    placeholder: "john@example.com",
-    error: "Component-level error" // This will be ignored
+    type: 'email',
+    placeholder: 'john@example.com',
+    error: 'Component-level error', // This will be ignored
   }}
 />
 ```
@@ -78,7 +81,7 @@ const controlError = errorMessage || controlProps?.errorMessage;
 All components use secure ID generation with predictable patterns:
 
 - **InputField**: `input-field-{timestamp}-{counter}`
-- **SelectField**: `select-field-{timestamp}-{counter}`  
+- **SelectField**: `select-field-{timestamp}-{counter}`
 - **ControlField**: `control-field-{timestamp}-{counter}`
 
 ### ARIA Relationships
@@ -89,7 +92,7 @@ All components use secure ID generation with predictable patterns:
 <input id="field-123" aria-labelledby="field-123-label" />
 
 // Helper text and errors are described by
-<input 
+<input
   id="field-123"
   aria-describedby="field-123-helper field-123-error"
 />
@@ -100,6 +103,7 @@ All components use secure ID generation with predictable patterns:
 ## Layout Options
 
 ### Vertical Layout (Default)
+
 ```tsx
 <InputField label="Name" orientation="vertical">
   <Input placeholder="Enter name" />
@@ -107,12 +111,9 @@ All components use secure ID generation with predictable patterns:
 ```
 
 ### Horizontal Layout
+
 ```tsx
-<InputField 
-  label="Name" 
-  orientation="horizontal"
-  labelWidth="w-32"
->
+<InputField label="Name" orientation="horizontal" labelWidth="w-32">
   <Input placeholder="Enter name" />
 </InputField>
 ```
@@ -120,6 +121,7 @@ All components use secure ID generation with predictable patterns:
 ## Best Practices
 
 ### 1. Use Field-level Errors for Form Validation
+
 ```tsx
 // ✅ Good
 <InputField
@@ -130,9 +132,9 @@ All components use secure ID generation with predictable patterns:
 
 // ❌ Avoid mixing error sources
 <InputField
-  label="Email" 
+  label="Email"
   errorMessage={formErrors.email}
-  inputProps={{ 
+  inputProps={{
     type: "email",
     error: componentError // Can cause confusion
   }}
@@ -140,15 +142,17 @@ All components use secure ID generation with predictable patterns:
 ```
 
 ### 2. Provide Helper Text for Complex Fields
+
 ```tsx
 <InputField
   label="Password"
   helperText="Must be at least 8 characters with one uppercase letter"
-  inputProps={{ type: "password" }}
+  inputProps={{ type: 'password' }}
 />
 ```
 
 ### 3. Use Consistent Label Sizing
+
 ```tsx
 <FormGroup>
   <InputField label="First Name" labelSize="md" />
@@ -158,11 +162,9 @@ All components use secure ID generation with predictable patterns:
 ```
 
 ### 4. Group Related Fields
+
 ```tsx
-<FormGroup 
-  title="Contact Information"
-  description="How we can reach you"
->
+<FormGroup title="Contact Information" description="How we can reach you">
   <InputField label="Email" />
   <InputField label="Phone" />
 </FormGroup>
@@ -190,11 +192,8 @@ Wraps field components to provide graceful fallback when rendering fails:
 import { FieldErrorBoundary, InputField } from '@/components/molecules/FieldSet';
 
 <FieldErrorBoundary fieldName="Email Address">
-  <InputField 
-    label="Email"
-    inputProps={{ type: "email" }}
-  />
-</FieldErrorBoundary>
+  <InputField label="Email" inputProps={{ type: 'email' }} />
+</FieldErrorBoundary>;
 ```
 
 ### withFieldErrorBoundary HOC
@@ -207,19 +206,15 @@ import { withFieldErrorBoundary, InputField } from '@/components/molecules/Field
 const SafeInputField = withFieldErrorBoundary(InputField, 'Input Field');
 
 // Use SafeInputField anywhere InputField would be used
-<SafeInputField label="Email" />
+<SafeInputField label="Email" />;
 ```
 
 ### Custom Fallback UI
 
 ```tsx
-<FieldErrorBoundary 
+<FieldErrorBoundary
   fieldName="Email"
-  fallback={
-    <div className="text-red-500">
-      Email field is temporarily unavailable
-    </div>
-  }
+  fallback={<div className="text-red-500">Email field is temporarily unavailable</div>}
 >
   <InputField label="Email" />
 </FieldErrorBoundary>
@@ -246,7 +241,10 @@ interface InputFieldProps {
   htmlFor?: string;
   labelSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   inputProps?: React.ComponentProps<typeof Input>;
-  labelProps?: Omit<React.ComponentProps<typeof Label>, 'htmlFor' | 'required' | 'children' | 'size'>;
+  labelProps?: Omit<
+    React.ComponentProps<typeof Label>,
+    'htmlFor' | 'required' | 'children' | 'size'
+  >;
   className?: string;
   children?: React.ReactNode;
 }

@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import { 
-  transformChartData, 
+import {
+  transformChartData,
   getChartTitle,
   type ChartType,
   type DependencyData,
@@ -21,29 +21,22 @@ interface BaseStatisticsChartProps {
   intent?: 'primary' | 'secondary' | 'embedded';
 }
 
-type StatisticsChartProps = 
+type StatisticsChartProps =
   | ({ type: 'dependency'; data: DependencyData } & BaseStatisticsChartProps)
   | ({ type: 'sex'; data: SexData } & BaseStatisticsChartProps)
   | ({ type: 'civilStatus'; data: CivilStatusData } & BaseStatisticsChartProps)
   | ({ type: 'employment'; data: EmploymentStatusData } & BaseStatisticsChartProps);
 
 export default function StatisticsChart(props: StatisticsChartProps) {
-  const { 
-    type, 
-    data, 
-    title, 
-    className = '', 
-    variant = 'default',
-    intent 
-  } = props;
-  
+  const { type, data, title, className = '', variant = 'default', intent } = props;
+
   const chartTitle = getChartTitle(type, title);
   const chartData = transformChartData(type, data);
-  
+
   // Build semantic utility classes based on variant and intent
   const getVariantClasses = () => {
     const baseClasses = 'w-full';
-    
+
     switch (variant) {
       case 'compact':
         return `${baseClasses} max-w-3`;
@@ -53,7 +46,7 @@ export default function StatisticsChart(props: StatisticsChartProps) {
         return baseClasses;
     }
   };
-  
+
   const getIntentClasses = () => {
     switch (intent) {
       case 'primary':
@@ -66,14 +59,10 @@ export default function StatisticsChart(props: StatisticsChartProps) {
         return '';
     }
   };
-  
-  const semanticClasses = [getVariantClasses(), getIntentClasses(), className].filter(Boolean).join(' ');
-  
-  return (
-    <GenericPieChart 
-      data={chartData} 
-      title={chartTitle} 
-      className={semanticClasses} 
-    />
-  );
+
+  const semanticClasses = [getVariantClasses(), getIntentClasses(), className]
+    .filter(Boolean)
+    .join(' ');
+
+  return <GenericPieChart data={chartData} title={chartTitle} className={semanticClasses} />;
 }

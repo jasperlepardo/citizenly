@@ -31,9 +31,7 @@ export const transformBasicInfoToFormData = (
   };
 };
 
-export const extractBasicInfoFromFormData = (
-  formData: ResidentFormData
-): BasicInformationData => {
+export const extractBasicInfoFromFormData = (formData: ResidentFormData): BasicInformationData => {
   return {
     first_name: formData.first_name || '',
     middle_name: formData.middle_name || '',
@@ -62,9 +60,7 @@ export const transformBirthInfoToFormData = (
   };
 };
 
-export const extractBirthInfoFromFormData = (
-  formData: ResidentFormData
-): BirthInformationData => {
+export const extractBirthInfoFromFormData = (formData: ResidentFormData): BirthInformationData => {
   return {
     birthdate: formData.birthdate || '',
     birth_place_name: formData.birth_place_name || '',
@@ -194,15 +190,14 @@ export const extractMigrationInfoFromFormData = (
 };
 
 // Generic field change handler factory
-export const createFieldChangeHandler = <T extends Record<string, unknown>>(
-  currentValue: T,
-  onChange: (value: T) => void
-) => (field: keyof T, value: T[keyof T]) => {
-  onChange({
-    ...currentValue,
-    [field]: value,
-  });
-};
+export const createFieldChangeHandler =
+  <T extends Record<string, unknown>>(currentValue: T, onChange: (value: T) => void) =>
+  (field: keyof T, value: T[keyof T]) => {
+    onChange({
+      ...currentValue,
+      [field]: value,
+    });
+  };
 
 // Bulk field update utility
 export const updateFormFields = (

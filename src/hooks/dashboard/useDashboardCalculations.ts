@@ -2,7 +2,7 @@
 
 /**
  * Dashboard Calculations Hook
- * 
+ *
  * @description Handles data processing and calculations for dashboard statistics.
  * Extracted from useDashboard for better maintainability and testability.
  */
@@ -89,9 +89,27 @@ export const getAgeGroup = (age: number): string => {
  * Standard age groups for population pyramid
  */
 const STANDARD_AGE_GROUPS = [
-  '0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39',
-  '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79',
-  '80-84', '85-89', '90-94', '95-99', '100+'
+  '0-4',
+  '5-9',
+  '10-14',
+  '15-19',
+  '20-24',
+  '25-29',
+  '30-34',
+  '35-39',
+  '40-44',
+  '45-49',
+  '50-54',
+  '55-59',
+  '60-64',
+  '65-69',
+  '70-74',
+  '75-79',
+  '80-84',
+  '85-89',
+  '90-94',
+  '95-99',
+  '100+',
 ] as const;
 
 /**
@@ -99,10 +117,10 @@ const STANDARD_AGE_GROUPS = [
  */
 const safeCalculateAge = (birthdate: string): number | null => {
   if (!birthdate || typeof birthdate !== 'string') return null;
-  
+
   const birth = new Date(birthdate);
   if (isNaN(birth.getTime())) return null;
-  
+
   return calculateAge(birthdate);
 };
 
@@ -111,7 +129,7 @@ const safeCalculateAge = (birthdate: string): number | null => {
  */
 const safeGetGender = (sex: string): 'male' | 'female' | null => {
   if (!sex || typeof sex !== 'string') return null;
-  
+
   const normalized = sex.toLowerCase().trim();
   if (normalized === 'male') return 'male';
   if (normalized === 'female') return 'female';
@@ -123,7 +141,7 @@ const safeGetGender = (sex: string): 'male' | 'female' | null => {
  */
 export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => {
   if (!Array.isArray(residents)) return [];
-  
+
   const counts: Record<string, { male: number; female: number }> = {};
 
   // Initialize age groups
@@ -134,13 +152,13 @@ export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => 
   // Calculate ages and categorize with safe type checking
   residents.forEach(resident => {
     if (!resident || typeof resident !== 'object') return;
-    
+
     const age = safeCalculateAge(resident.birthdate);
     if (age === null || age < 0 || age > 150) return; // Invalid age
-    
+
     const gender = safeGetGender(resident.sex);
     if (!gender) return;
-    
+
     const ageGroup = getAgeGroup(age);
     if (counts[ageGroup]) {
       counts[ageGroup][gender]++;
@@ -158,7 +176,8 @@ export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => 
       male,
       female,
       malePercentage: totalPopulation > 0 ? Number(((male / totalPopulation) * 100).toFixed(2)) : 0,
-      femalePercentage: totalPopulation > 0 ? Number(((female / totalPopulation) * 100).toFixed(2)) : 0,
+      femalePercentage:
+        totalPopulation > 0 ? Number(((female / totalPopulation) * 100).toFixed(2)) : 0,
     };
   });
 };
@@ -174,10 +193,12 @@ export const calculateDependencyRatios = (ageGroups: AgeGroup[]) => {
   ageGroups.forEach(group => {
     const total = group.male + group.female;
     const ageRange = group.ageRange;
-    
+
     if (['0-4', '5-9', '10-14'].includes(ageRange)) {
       youngDependents += total;
-    } else if (['65-69', '70-74', '75-79', '80-84', '85-89', '90-94', '95-99', '100+'].includes(ageRange)) {
+    } else if (
+      ['65-69', '70-74', '75-79', '80-84', '85-89', '90-94', '95-99', '100+'].includes(ageRange)
+    ) {
       oldDependents += total;
     } else {
       workingAge += total;
@@ -267,25 +288,25 @@ export const calculateCivilStatusDistribution = (residents: ResidentData[]): Civ
 
   // Civil status mapping for cleaner logic
   const civilStatusMap: Record<string, keyof CivilStatusCounts> = {
-    'single': 'single',
-    'married': 'married',
-    'widowed': 'widowed',
-    'divorced': 'divorced',
-    'separated': 'separated',
-    'annulled': 'annulled',
+    single: 'single',
+    married: 'married',
+    widowed: 'widowed',
+    divorced: 'divorced',
+    separated: 'separated',
+    annulled: 'annulled',
     'registered partnership': 'registeredPartnership',
-    'registered_partnership': 'registeredPartnership',
+    registered_partnership: 'registeredPartnership',
     'live-in': 'liveIn',
-    'live_in': 'liveIn',
-    'livein': 'liveIn',
+    live_in: 'liveIn',
+    livein: 'liveIn',
   };
 
   residents.forEach(resident => {
     if (!resident || typeof resident !== 'object') return;
-    
+
     const status = safeCivilStatus(resident.civil_status);
     if (!status) return;
-    
+
     const mappedStatus = civilStatusMap[status];
     if (mappedStatus && mappedStatus in counts) {
       counts[mappedStatus]++;
@@ -320,7 +341,9 @@ const safeEmploymentStatus = (status: string): string | null => {
 /**
  * Calculate employment status distribution with improved type safety
  */
-export const calculateEmploymentStatusDistribution = (residents: ResidentData[]): EmploymentStatusCounts => {
+export const calculateEmploymentStatusDistribution = (
+  residents: ResidentData[]
+): EmploymentStatusCounts => {
   const counts: EmploymentStatusCounts = {
     employed: 0,
     unemployed: 0,
@@ -336,27 +359,27 @@ export const calculateEmploymentStatusDistribution = (residents: ResidentData[])
 
   // Employment status mapping for cleaner logic
   const employmentStatusMap: Record<string, keyof EmploymentStatusCounts> = {
-    'employed': 'employed',
-    'unemployed': 'unemployed',
+    employed: 'employed',
+    unemployed: 'unemployed',
     'self-employed': 'selfEmployed',
-    'self_employed': 'selfEmployed',
-    'selfemployed': 'selfEmployed',
-    'student': 'student',
-    'retired': 'retired',
-    'homemaker': 'homemaker',
-    'housewife': 'homemaker',
-    'househusband': 'homemaker',
-    'disabled': 'disabled',
+    self_employed: 'selfEmployed',
+    selfemployed: 'selfEmployed',
+    student: 'student',
+    retired: 'retired',
+    homemaker: 'homemaker',
+    housewife: 'homemaker',
+    househusband: 'homemaker',
+    disabled: 'disabled',
     'person with disability': 'disabled',
-    'pwd': 'disabled',
+    pwd: 'disabled',
   };
 
   residents.forEach(resident => {
     if (!resident || typeof resident !== 'object') return;
-    
+
     const status = safeEmploymentStatus(resident.employment_status);
     if (!status) return;
-    
+
     const mappedStatus = employmentStatusMap[status];
     if (mappedStatus && mappedStatus in counts) {
       counts[mappedStatus]++;
@@ -411,14 +434,13 @@ export interface UseDashboardCalculationsReturn {
 
 /**
  * Hook for dashboard calculations
- * 
+ *
  * @description Processes resident data into dashboard statistics with memoization.
  * Handles population pyramid, dependency ratios, and demographic distributions.
  */
 export function useDashboardCalculations(
   residents: ResidentData[] = []
 ): UseDashboardCalculationsReturn {
-  
   /**
    * Process population data with memoization
    */
@@ -472,9 +494,7 @@ export function useDashboardCalculations(
 }
 
 // Export utility functions for external use
-export {
-  STANDARD_AGE_GROUPS,
-};
+export { STANDARD_AGE_GROUPS };
 
 // Export for backward compatibility
 export default useDashboardCalculations;

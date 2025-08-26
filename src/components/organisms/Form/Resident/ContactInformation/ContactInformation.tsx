@@ -23,16 +23,15 @@ export interface ContactInformationFormProps {
   householdLoading?: boolean;
 }
 
-export function ContactInformationForm({ 
+export function ContactInformationForm({
   mode = 'create',
-  formData, 
-  onChange, 
+  formData,
+  onChange,
   errors,
   onHouseholdSearch,
   householdOptions = [],
-  householdLoading = false
+  householdLoading = false,
 }: ContactInformationFormProps) {
-
   // Map form data to ContactDetails component props
   const contactDetailsValue: ContactDetailsData = {
     email: formData.email || '',
@@ -61,10 +60,12 @@ export function ContactInformationForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Contact Information</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Contact Information
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Contact details and household assignment information.
           </p>

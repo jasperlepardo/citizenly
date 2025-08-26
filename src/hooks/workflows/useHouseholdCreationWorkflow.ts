@@ -2,7 +2,7 @@
 
 /**
  * Household Creation Workflow Hook
- * 
+ *
  * @description Orchestrates the complete household creation workflow by composing
  * smaller, focused hooks. Replaces the monolithic useHouseholdCreation hook.
  */
@@ -26,16 +26,16 @@ export interface UseHouseholdCreationWorkflowReturn {
   errors: ReturnType<typeof useHouseholdForm>['errors'];
   handleInputChange: ReturnType<typeof useHouseholdForm>['handleInputChange'];
   resetForm: ReturnType<typeof useHouseholdForm>['resetForm'];
-  
+
   // Address resolution
   addressDisplayInfo: ReturnType<typeof useAddressResolution>['addressDisplayInfo'];
   addressLoading: ReturnType<typeof useAddressResolution>['isLoading'];
   addressError: ReturnType<typeof useAddressResolution>['error'];
-  
+
   // Creation operation
   isSubmitting: ReturnType<typeof useHouseholdCreationOperation>['isCreating'];
   creationError: ReturnType<typeof useHouseholdCreationOperation>['creationError'];
-  
+
   // Workflow methods
   validateForm: () => boolean;
   createHousehold: () => Promise<string | null>;
@@ -44,11 +44,11 @@ export interface UseHouseholdCreationWorkflowReturn {
 
 /**
  * Custom hook for complete household creation workflow
- * 
+ *
  * @description Orchestrates the entire household creation process by composing
  * focused hooks for form management, code generation, address resolution,
  * and database operations.
- * 
+ *
  * @example
  * ```typescript
  * function CreateHouseholdForm() {
@@ -94,12 +94,12 @@ export function useHouseholdCreationWorkflow(): UseHouseholdCreationWorkflowRetu
 
   /**
    * Creates the household following the complete workflow
-   * 
+   *
    * @description Orchestrates the following steps:
    * 1. Validate form data
    * 2. Generate household code
    * 3. Create household record in database
-   * 
+   *
    * @returns Promise resolving to household code on success, null on failure
    */
   const createHousehold = useCallback(async (): Promise<string | null> => {
@@ -120,18 +120,23 @@ export function useHouseholdCreationWorkflow(): UseHouseholdCreationWorkflowRetu
       }
 
       // Step 3: Create household record
-      const createdCode = await operationHook.createHouseholdRecord(formHook.formData, householdCode);
+      const createdCode = await operationHook.createHouseholdRecord(
+        formHook.formData,
+        householdCode
+      );
       if (!createdCode) {
         // Error is already set by the operation hook
         return null;
       }
 
-      logger.info('Household creation workflow completed successfully', { householdCode: createdCode });
+      logger.info('Household creation workflow completed successfully', {
+        householdCode: createdCode,
+      });
       return createdCode;
     } catch (error) {
       logger.error('Household creation workflow failed', { error });
-      formHook.setErrors({ 
-        street_id: 'An unexpected error occurred. Please try again.' 
+      formHook.setErrors({
+        street_id: 'An unexpected error occurred. Please try again.',
       });
       return null;
     }
@@ -152,16 +157,16 @@ export function useHouseholdCreationWorkflow(): UseHouseholdCreationWorkflowRetu
     errors: formHook.errors,
     handleInputChange: formHook.handleInputChange,
     resetForm: formHook.resetForm,
-    
+
     // Address resolution
     addressDisplayInfo: addressHook.addressDisplayInfo,
     addressLoading: addressHook.isLoading,
     addressError: addressHook.error,
-    
+
     // Creation operation
     isSubmitting: operationHook.isCreating,
     creationError: operationHook.creationError,
-    
+
     // Workflow methods
     validateForm,
     createHousehold,

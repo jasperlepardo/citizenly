@@ -103,7 +103,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
       // Merge with existing data for validation
       const mergedData = { ...existingResult.data, ...data };
       const validationResult = await validateHouseholdData(mergedData, this.context);
-      
+
       if (!validationResult.isValid) {
         return {
           success: false,
@@ -130,11 +130,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
   async findByCode(code: string): Promise<RepositoryResult<HouseholdData>> {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
-        return supabase
-          .from(this.tableName)
-          .select('*')
-          .eq('code', code)
-          .single();
+        return supabase.from(this.tableName).select('*').eq('code', code).single();
       };
 
       return await this.executeQuery(queryBuilder, 'FIND_BY_CODE');
@@ -149,12 +145,12 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
   /**
    * Search households with advanced filtering
    */
-  async searchHouseholds(options: HouseholdSearchOptions = {}): Promise<RepositoryResult<HouseholdData[]>> {
+  async searchHouseholds(
+    options: HouseholdSearchOptions = {}
+  ): Promise<RepositoryResult<HouseholdData[]>> {
     try {
       const queryBuilder = (supabase: SupabaseClient) => {
-        let query = supabase
-          .from(this.tableName)
-          .select('*', { count: 'exact' });
+        let query = supabase.from(this.tableName).select('*', { count: 'exact' });
 
         // Code search (partial match)
         if (options.code) {
@@ -163,7 +159,8 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
 
         // Geographic filters
         if (options.barangay_code) query = query.eq('barangay_code', options.barangay_code);
-        if (options.city_municipality_code) query = query.eq('city_municipality_code', options.city_municipality_code);
+        if (options.city_municipality_code)
+          query = query.eq('city_municipality_code', options.city_municipality_code);
         if (options.province_code) query = query.eq('province_code', options.province_code);
         if (options.region_code) query = query.eq('region_code', options.region_code);
 
@@ -188,8 +185,8 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
 
         // Apply ordering
         if (options.orderBy) {
-          query = query.order(options.orderBy, { 
-            ascending: options.orderDirection !== 'desc' 
+          query = query.order(options.orderBy, {
+            ascending: options.orderDirection !== 'desc',
           });
         } else {
           // Default order by code
@@ -228,7 +225,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
   ): Promise<RepositoryResult<HouseholdData[]>> {
     try {
       const filters: Record<string, string> = {};
-      
+
       if (regionCode) filters.region_code = regionCode;
       if (provinceCode) filters.province_code = provinceCode;
       if (cityCode) filters.city_municipality_code = cityCode;
@@ -249,14 +246,14 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
   /**
    * Get household statistics by area
    */
-  async getHouseholdStatistics(
-    barangayCode?: string
-  ): Promise<RepositoryResult<{
-    totalHouseholds: number;
-    averageHouseholdSize: number;
-    householdsWithCoordinates: number;
-    coordinateCoverage: number;
-  }>> {
+  async getHouseholdStatistics(barangayCode?: string): Promise<
+    RepositoryResult<{
+      totalHouseholds: number;
+      averageHouseholdSize: number;
+      householdsWithCoordinates: number;
+      coordinateCoverage: number;
+    }>
+  > {
     try {
       const filters: Record<string, any> = {};
       if (barangayCode) {
@@ -264,7 +261,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
       }
 
       const householdsResult = await this.findAll({ filters });
-      
+
       if (!householdsResult.success || !householdsResult.data) {
         return {
           success: false,
@@ -277,17 +274,16 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
 
       const households = householdsResult.data;
       const totalHouseholds = households.length;
-      
+
       const totalSize = households.reduce((sum, h) => sum + (h.no_of_household_members || 0), 0);
       const averageHouseholdSize = totalHouseholds > 0 ? totalSize / totalHouseholds : 0;
-      
+
       // Note: HouseholdRecord doesn't include latitude/longitude fields
       // This would require a separate location/coordinates table
       const householdsWithCoordinates = 0;
-      
-      const coordinateCoverage = totalHouseholds > 0 
-        ? (householdsWithCoordinates / totalHouseholds) * 100 
-        : 0;
+
+      const coordinateCoverage =
+        totalHouseholds > 0 ? (householdsWithCoordinates / totalHouseholds) * 100 : 0;
 
       return {
         success: true,
@@ -345,8 +341,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
       const queryBuilder = (supabase: SupabaseClient) => {
         // This is a complex query that would need to be implemented
         // based on the actual database schema and relationships
-        return supabase
-          .rpc('update_household_size', { household_code: householdCode });
+        return supabase.rpc('update_household_size', { household_code: householdCode });
       };
 
       return await this.executeQuery(queryBuilder, 'UPDATE_HOUSEHOLD_SIZE');
@@ -373,14 +368,14 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
       };
 
       const result = await this.executeQuery(queryBuilder, 'GET_LATEST_CODE');
-      
+
       if (!result.success) {
         return result;
       }
 
       // Generate next code based on existing pattern
       let nextCode = `${barangayCode}-001`;
-      
+
       if (result.data && result.data.length > 0) {
         const latestCode = result.data[0].code;
         const match = latestCode.match(/-(\d+)$/);

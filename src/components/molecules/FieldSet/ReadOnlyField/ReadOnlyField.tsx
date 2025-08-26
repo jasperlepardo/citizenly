@@ -3,7 +3,12 @@
 import React from 'react';
 
 import { cn } from '@/lib';
-import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib/utilities/id-generators';
+import {
+  getFieldId,
+  getFieldIds,
+  buildAriaDescribedBy,
+  buildAriaLabelledBy,
+} from '@/lib/utilities/id-generators';
 
 import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
 
@@ -21,7 +26,10 @@ export interface ReadOnlyFieldProps {
   // ReadOnly component props (when used directly with ReadOnly)
   readOnlyProps?: React.ComponentProps<typeof ReadOnly>;
   // Label component props
-  labelProps?: Omit<React.ComponentProps<typeof Label>, 'htmlFor' | 'required' | 'children' | 'size'>;
+  labelProps?: Omit<
+    React.ComponentProps<typeof Label>,
+    'htmlFor' | 'required' | 'children' | 'size'
+  >;
 }
 
 export const ReadOnlyField = ({
@@ -39,13 +47,13 @@ export const ReadOnlyField = ({
   labelProps,
 }: ReadOnlyFieldProps) => {
   const isHorizontal = orientation === 'horizontal';
-  
+
   // Generate secure unique ID if not provided
   const fieldId = getFieldId(htmlFor, readOnlyProps?.id, 'readonly-field');
   const { labelId, helperTextId, errorId } = getFieldIds(fieldId);
-  
+
   const hasHelperText = helperText || errorMessage;
-  
+
   // Build ARIA attributes for accessibility
   const ariaLabelledBy = buildAriaLabelledBy(label ? labelId : undefined);
   const ariaDescribedByString = buildAriaDescribedBy(
@@ -56,7 +64,7 @@ export const ReadOnlyField = ({
   const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
     const widthClasses = {
       sm: 'w-32', // 128px
-      md: 'w-40', // 160px  
+      md: 'w-40', // 160px
       lg: 'w-48', // 192px
     };
     return widthClasses[width];
@@ -66,22 +74,17 @@ export const ReadOnlyField = ({
     <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
-        <div className={cn(
-          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1'
-        )}>
-          <Label
-            htmlFor={fieldId}
-            required={required}
-            size={labelSize}
-            {...labelProps}
-          >
+        <div
+          className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}
+        >
+          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps}>
             {label}
           </Label>
         </div>
       )}
 
       {/* Field Container */}
-      <div className={cn(isHorizontal && 'flex-1 min-w-0')}>
+      <div className={cn(isHorizontal && 'min-w-0 flex-1')}>
         {/* ReadOnly Field */}
         <div>
           {readOnlyProps ? (
@@ -109,12 +112,8 @@ export const ReadOnlyField = ({
         {hasHelperText && (
           <div className="mt-1 space-y-1">
             {/* Helper Text */}
-            {helperText && (
-              <HelperText id={helperTextId}>
-                {helperText}
-              </HelperText>
-            )}
-            
+            {helperText && <HelperText id={helperTextId}>{helperText}</HelperText>}
+
             {/* Error Message */}
             {errorMessage && (
               <HelperText id={errorId} error>

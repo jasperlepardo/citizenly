@@ -57,14 +57,13 @@ const HOUSEHOLD_UNIT_OPTIONS = [
   { value: 'others', label: 'Others' },
 ];
 
-export function HouseholdTypeInformation({ 
+export function HouseholdTypeInformation({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: HouseholdTypeInformationProps) {
-  
   const handleChange = (field: keyof HouseholdTypeInformationData, fieldValue: string) => {
     onChange({
       ...value,
@@ -82,7 +81,9 @@ export function HouseholdTypeInformation({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Household Type Information</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Household Type Information
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Classification and structural details of the household.
         </p>
@@ -100,10 +101,10 @@ export function HouseholdTypeInformation({
             options: HOUSEHOLD_TYPE_OPTIONS,
             value: value.householdType,
             onSelect: handleSelectChange('householdType'),
-            placeholder: "Select household type"
+            placeholder: 'Select household type',
           }}
         />
-        
+
         {/* Tenure Status */}
         <SelectField
           label="Tenure Status"
@@ -115,10 +116,10 @@ export function HouseholdTypeInformation({
             options: TENURE_STATUS_OPTIONS,
             value: value.tenureStatus,
             onSelect: handleSelectChange('tenureStatus'),
-            placeholder: "Select tenure status"
+            placeholder: 'Select tenure status',
           }}
         />
-        
+
         {/* Tenure Others Specify - Only show when 'others' is selected */}
         {showTenureOthersSpecify && (
           <InputField
@@ -129,9 +130,9 @@ export function HouseholdTypeInformation({
             mode={mode}
             inputProps={{
               value: value.tenureOthersSpecify,
-              onChange: (e) => handleChange('tenureOthersSpecify', e.target.value),
-              placeholder: "Please specify tenure status",
-              error: errors.tenureOthersSpecify
+              onChange: e => handleChange('tenureOthersSpecify', e.target.value),
+              placeholder: 'Please specify tenure status',
+              error: errors.tenureOthersSpecify,
             }}
           />
         )}
@@ -147,10 +148,10 @@ export function HouseholdTypeInformation({
             options: HOUSEHOLD_UNIT_OPTIONS,
             value: value.householdUnit,
             onSelect: handleSelectChange('householdUnit'),
-            placeholder: "Select household unit"
+            placeholder: 'Select household unit',
           }}
         />
-        
+
         {/* Household Name */}
         <div className={showTenureOthersSpecify ? 'sm:col-span-2' : 'sm:col-span-1'}>
           <InputField
@@ -161,9 +162,9 @@ export function HouseholdTypeInformation({
             mode={mode}
             inputProps={{
               value: value.householdName,
-              onChange: (e) => handleChange('householdName', e.target.value),
-              placeholder: "Enter household name",
-              error: errors.householdName
+              onChange: e => handleChange('householdName', e.target.value),
+              placeholder: 'Enter household name',
+              error: errors.householdName,
             }}
           />
         </div>

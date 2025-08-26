@@ -39,8 +39,11 @@ export default function CivilStatusPieChart({
   ];
 
   // Calculate total and transform data
-  const total = civilStatusCategories.reduce((sum, category) => sum + (data[category.key as keyof CivilStatusData] || 0), 0);
-  
+  const total = civilStatusCategories.reduce(
+    (sum, category) => sum + (data[category.key as keyof CivilStatusData] || 0),
+    0
+  );
+
   const chartData = civilStatusCategories.map(category => ({
     label: category.label,
     value: data[category.key as keyof CivilStatusData] || 0,

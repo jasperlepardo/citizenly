@@ -43,7 +43,7 @@ export default function HouseholdAddressForm({
           value={formData.house_number}
           onChange={e => onChange('house_number', e.target.value)}
           placeholder="e.g., Blk 1 Lot 5, #123"
-          className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+          className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
           disabled={isSubmitting}
         />
       </div>
@@ -54,7 +54,7 @@ export default function HouseholdAddressForm({
           Subdivision/Zone/Sitio/Purok
         </label>
         {/* TODO: Replace with actual SubdivisionSelector component */}
-        <div className="p-2 border border-gray-300 rounded bg-gray-50 text-gray-500">
+        <div className="rounded border border-gray-300 bg-gray-50 p-2 text-gray-500">
           SubdivisionSelector - Component not implemented yet
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function HouseholdAddressForm({
           Street Name *
         </label>
         {/* TODO: Replace with actual StreetSelector component */}
-        <div className="p-2 border border-gray-300 rounded bg-gray-50 text-gray-500">
+        <div className="rounded border border-gray-300 bg-gray-50 p-2 text-gray-500">
           StreetSelector - Component not implemented yet
         </div>
       </div>

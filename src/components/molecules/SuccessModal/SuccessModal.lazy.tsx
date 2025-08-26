@@ -1,6 +1,6 @@
 /**
  * Lazy-loaded Success Modal
- * 
+ *
  * @description Lazy version of SuccessModal for code splitting
  */
 

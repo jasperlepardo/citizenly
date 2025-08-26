@@ -2,7 +2,7 @@
 
 /**
  * Generic Paginated Search Hook
- * 
+ *
  * @description Refactored paginated search hook using extracted utilities.
  * Provides clean pagination support with filtering capabilities.
  */
@@ -46,7 +46,7 @@ export interface UseGenericPaginatedSearchReturn<T, F = any> {
 
 /**
  * Generic paginated search hook
- * 
+ *
  * @description Provides comprehensive pagination support with filtering,
  * debouncing, and load-more functionality.
  */
@@ -54,11 +54,7 @@ export function useGenericPaginatedSearch<T, F = any>(
   searchFn: PaginatedSearchFunction<T, F>,
   config: PaginatedSearchConfig = {}
 ): UseGenericPaginatedSearchReturn<T, F> {
-  const {
-    debounceMs = 300,
-    initialPageSize = 20,
-    ...restConfig
-  } = config;
+  const { debounceMs = 300, initialPageSize = 20, ...restConfig } = config;
 
   const [state, setState] = useState<PaginatedSearchState<T>>(() =>
     createPaginatedSearchState<T>('', initialPageSize)
@@ -72,14 +68,8 @@ export function useGenericPaginatedSearch<T, F = any>(
   const executeSearch = createPaginatedSearchExecutor(searchFn, setState, config);
 
   // Create search utilities
-  const {
-    clearSearch,
-    refresh,
-    setQuery,
-    loadMore,
-    setPage,
-    setPageSize,
-  } = createPaginatedSearchUtilities(state, setState, executeSearch);
+  const { clearSearch, refresh, setQuery, loadMore, setPage, setPageSize } =
+    createPaginatedSearchUtilities(state, setState, executeSearch);
 
   // Execute search when debounced query or filters change
   useEffect(() => {

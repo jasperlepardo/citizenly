@@ -33,13 +33,13 @@ export interface ControlFieldSetProps {
   className?: string;
   /** Child components (Checkbox or Radio components) */
   children: React.ReactNode;
-  
+
   // Checkbox-specific props
   /** Selected values for checkboxes */
   checkboxValue?: string[];
   /** Change handler for checkboxes */
   onCheckboxChange?: (value: string[]) => void;
-  
+
   // Radio-specific props
   /** Selected value for radio group */
   radioValue?: string;
@@ -66,7 +66,6 @@ export const ControlFieldSet = ({
   onRadioChange,
   radioName,
 }: ControlFieldSetProps) => {
-
   // Helper function to format values for display in view mode
   const formatDisplayValue = (value: string[] | string | undefined) => {
     if (!value) return '—';
@@ -87,7 +86,7 @@ export const ControlFieldSet = ({
         labelSize={labelSize}
         className={className}
         readOnlyProps={{
-          value: formatDisplayValue(displayValue)
+          value: formatDisplayValue(displayValue),
         }}
       />
     );
@@ -126,15 +125,13 @@ export const ControlFieldSet = ({
         {/* Label and Description */}
         {(label || description) && (
           <div className="mb-1">
-            {label && (
-              <Label size={labelSize}>
-                {label}
-              </Label>
+            {label && <Label size={labelSize}>{label}</Label>}
+            {description && (
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
             )}
-            {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
           </div>
         )}
-        
+
         {/* Radio Group */}
         <RadioGroup
           name={radioName}

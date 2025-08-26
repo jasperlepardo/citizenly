@@ -4,8 +4,8 @@
  */
 
 export { useFieldAccessibility, useFieldGroupAccessibility } from './useFieldAccessibility';
-export type { 
-  FieldAccessibilityOptions, 
-  FieldAccessibilityIds, 
-  FieldAccessibilityProps 
+export type {
+  FieldAccessibilityOptions,
+  FieldAccessibilityIds,
+  FieldAccessibilityProps,
 } from './useFieldAccessibility';

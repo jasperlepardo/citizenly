@@ -14,13 +14,15 @@ export async function GET(request: NextRequest) {
   try {
     let query = supabase
       .from('geo_subdivisions')
-      .select(`
+      .select(
+        `
         id,
         name,
         type,
         barangay_code,
         is_active
-      `)
+      `
+      )
       .eq('is_active', true)
       .order('name');
 
@@ -45,24 +47,21 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = subdivisions?.map((subdivision) => ({
-      value: subdivision.id,
-      label: subdivision.name,
-      barangay_code: subdivision.barangay_code,
-      type: subdivision.type,
-    })) || [];
+    const options =
+      subdivisions?.map(subdivision => ({
+        value: subdivision.id,
+        label: subdivision.name,
+        barangay_code: subdivision.barangay_code,
+        type: subdivision.type,
+      })) || [];
 
     return NextResponse.json({
       success: true,
       data: options,
       count: options.length,
     });
-
   } catch (error) {
     console.error('Unexpected error in subdivisions API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

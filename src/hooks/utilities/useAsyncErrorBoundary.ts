@@ -2,7 +2,7 @@
 
 /**
  * Async Error Boundary Hook
- * 
+ *
  * @description Provides error boundary functionality for async operations in hooks.
  * Captures and handles errors from async operations that would otherwise be unhandled.
  */
@@ -43,10 +43,7 @@ export interface UseAsyncErrorBoundaryReturn {
   /** Current error boundary state */
   errorState: ErrorBoundaryState;
   /** Wrap async operation with error boundary */
-  wrapAsync: <T>(
-    asyncFn: () => Promise<T>,
-    context?: string
-  ) => () => Promise<T | null>;
+  wrapAsync: <T>(asyncFn: () => Promise<T>, context?: string) => () => Promise<T | null>;
   /** Clear error state */
   clearError: () => void;
   /** Retry last failed operation */
@@ -63,20 +60,14 @@ export interface UseAsyncErrorBoundaryReturn {
 
 /**
  * Hook for async error boundary functionality
- * 
+ *
  * @description Provides error boundary capabilities for async operations
  * in hooks. Prevents unhandled promise rejections and provides recovery mechanisms.
  */
 export function useAsyncErrorBoundary(
   options: AsyncErrorBoundaryOptions = {}
 ): UseAsyncErrorBoundaryReturn {
-  
-  const {
-    onError,
-    enableRecovery = false,
-    recoveryTimeout = 5000,
-    maxRetries = 3,
-  } = options;
+  const { onError, enableRecovery = false, recoveryTimeout = 5000, maxRetries = 3 } = options;
 
   const [errorState, setErrorState] = useState<ErrorBoundaryState>({
     hasError: false,
@@ -108,92 +99,98 @@ export function useAsyncErrorBoundary(
   /**
    * Handle error with recovery options
    */
-  const handleError = useCallback((error: Error, context: string) => {
-    const errorInfo = `Error in ${context}: ${error.message}`;
-    
-    setErrorState({
-      hasError: true,
-      error,
-      errorInfo,
-    });
+  const handleError = useCallback(
+    (error: Error, context: string) => {
+      const errorInfo = `Error in ${context}: ${error.message}`;
 
-    // Call onError callback if provided
-    if (onError) {
-      try {
-        onError(error, errorInfo);
-      } catch (callbackError) {
-        console.error('Error in onError callback:', callbackError);
+      setErrorState({
+        hasError: true,
+        error,
+        errorInfo,
+      });
+
+      // Call onError callback if provided
+      if (onError) {
+        try {
+          onError(error, errorInfo);
+        } catch (callbackError) {
+          console.error('Error in onError callback:', callbackError);
+        }
       }
-    }
 
-    // Enable automatic recovery if configured
-    if (enableRecovery && retryCount < maxRetries) {
-      setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        setErrorState(prev => ({
-          ...prev,
-          hasError: false,
-        }));
-      }, recoveryTimeout);
-    }
-  }, [onError, enableRecovery, recoveryTimeout, maxRetries, retryCount]);
+      // Enable automatic recovery if configured
+      if (enableRecovery && retryCount < maxRetries) {
+        setTimeout(() => {
+          setRetryCount(prev => prev + 1);
+          setErrorState(prev => ({
+            ...prev,
+            hasError: false,
+          }));
+        }, recoveryTimeout);
+      }
+    },
+    [onError, enableRecovery, recoveryTimeout, maxRetries, retryCount]
+  );
 
   /**
    * Wrap async operation with error boundary
    */
-  const wrapAsync = useCallback(<T>(
-    asyncFn: () => Promise<T>,
-    context: string = 'async operation'
-  ): (() => Promise<T | null>) => {
-    return () => {
-      return new Promise((resolve) => {
-        // Store operation for potential retry
-        setLastFailedOperation({ fn: asyncFn, context });
-        setIsRetrying(true);
+  const wrapAsync = useCallback(
+    <T>(
+      asyncFn: () => Promise<T>,
+      context: string = 'async operation'
+    ): (() => Promise<T | null>) => {
+      return () => {
+        return new Promise(resolve => {
+          // Store operation for potential retry
+          setLastFailedOperation({ fn: asyncFn, context });
+          setIsRetrying(true);
 
-        asyncFn()
-          .then((result) => {
-            // Clear error state on success only if there was an error
-            setErrorState(prev => {
-              if (prev.hasError) {
-                return {
-                  hasError: false,
-                  error: null,
-                  errorInfo: null,
-                };
-              }
-              return prev;
-            });
-            setRetryCount(0);
-            setIsRetrying(false);
-            resolve(result);
-          })
-          .catch((error) => {
-            const errorInfo = `Error in ${context}: ${error.message}`;
-            const processedError = error instanceof Error ? error : new Error(String(error));
-            
-            setErrorState({
-              hasError: true,
-              error: processedError,
-              errorInfo,
-            });
-            setIsRetrying(false);
+          asyncFn()
+            .then(result => {
+              // Clear error state on success only if there was an error
+              setErrorState(prev => {
+                if (prev.hasError) {
+                  return {
+                    hasError: false,
+                    error: null,
+                    errorInfo: null,
+                  };
+                }
+                return prev;
+              });
+              setRetryCount(0);
+              setIsRetrying(false);
+              resolve(result);
+            })
+            .catch(error => {
+              const errorInfo = `Error in ${context}: ${error.message}`;
+              const processedError = error instanceof Error ? error : new Error(String(error));
 
-            // Call onError callback if provided - capture the callback from closure
-            const errorCallback = onError;
-            if (errorCallback) {
-              try {
-                errorCallback(processedError, errorInfo);
-              } catch (callbackError) {
-                console.error('Error in onError callback:', callbackError);
+              setErrorState({
+                hasError: true,
+                error: processedError,
+                errorInfo,
+              });
+              setIsRetrying(false);
+
+              // Call onError callback if provided - capture the callback from closure
+              const errorCallback = onError;
+              if (errorCallback) {
+                try {
+                  errorCallback(processedError, errorInfo);
+                } catch (callbackError) {
+                  console.error('Error in onError callback:', callbackError);
+                }
               }
-            }
-            
-            resolve(null);
-          });
-      });
-    };
-  }, []);
+
+              resolve(null);
+            });
+        });
+      };
+    },
+    []
+  );
 
   /**
    * Retry last failed operation
@@ -204,7 +201,7 @@ export function useAsyncErrorBoundary(
     }
 
     setRetryCount(prev => prev + 1);
-    
+
     try {
       await lastFailedOperation.fn();
       // Clear error state directly instead of calling clearError
@@ -218,7 +215,7 @@ export function useAsyncErrorBoundary(
     } catch (error) {
       const processedError = error instanceof Error ? error : new Error(String(error));
       const errorInfo = `Error in ${lastFailedOperation.context}: ${processedError.message}`;
-      
+
       setErrorState({
         hasError: true,
         error: processedError,

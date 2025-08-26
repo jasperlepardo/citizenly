@@ -40,42 +40,37 @@ export function useStreetsSearch({
 
   const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams();
-    
+
     if (barangayCode) {
       params.append('barangay_code', barangayCode);
     }
-    
+
     if (subdivisionId) {
       params.append('subdivision_id', subdivisionId);
     }
-    
+
     if (debouncedSearch && debouncedSearch.trim() !== '') {
       params.append('search', debouncedSearch.trim());
     }
-    
+
     return params.toString();
   }, [barangayCode, subdivisionId, debouncedSearch]);
 
   const queryKey = ['streets', barangayCode, subdivisionId, debouncedSearch];
-  
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
+
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey,
     queryFn: async (): Promise<StreetsResponse> => {
       const queryString = buildQueryParams();
       const url = `/api/addresses/streets${queryString ? `?${queryString}` : ''}`;
-      
+
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch streets');
       }
-      
+
       return response.json();
     },
     enabled: enabled && !!barangayCode, // Only fetch when barangay is selected

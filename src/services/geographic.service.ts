@@ -3,7 +3,7 @@
  * Handles PSGC (Philippine Standard Geographic Code) data operations
  */
 
-import { supabase , logger, logError } from '@/lib';
+import { supabase, logger, logError } from '@/lib';
 
 export interface Region {
   code: string;
@@ -138,12 +138,14 @@ export class GeographicService {
       // For independent cities like Metro Manila, we need to query differently
       const { data, error } = await supabase
         .from('psgc_cities_municipalities')
-        .select(`
+        .select(
+          `
           code, 
           name, 
           type,
           province_code
-        `)
+        `
+        )
         .eq('is_independent', true)
         .eq('is_active', true)
         .order('name');
@@ -212,7 +214,8 @@ export class GeographicService {
     try {
       const { data, error } = await supabase
         .from('psgc_barangays')
-        .select(`
+        .select(
+          `
           code,
           name,
           city_municipality_code,
@@ -236,7 +239,8 @@ export class GeographicService {
               )
             )
           )
-        `)
+        `
+        )
         .eq('code', barangayCode)
         .single();
 
@@ -264,17 +268,21 @@ export class GeographicService {
           is_independent: city.is_independent,
           is_active: city.is_active,
         },
-        province: province ? {
-          code: province.code,
-          name: province.name,
-          region_code: province.region_code,
-          is_active: province.is_active,
-        } : undefined,
-        region: region ? {
-          code: region.code,
-          name: region.name,
-          is_active: region.is_active,
-        } : undefined,
+        province: province
+          ? {
+              code: province.code,
+              name: province.name,
+              region_code: province.region_code,
+              is_active: province.is_active,
+            }
+          : undefined,
+        region: region
+          ? {
+              code: region.code,
+              name: region.name,
+              is_active: region.is_active,
+            }
+          : undefined,
       };
     } catch (error) {
       logError(error as Error, 'GEOGRAPHIC_SERVICE_GET_HIERARCHY');
@@ -285,7 +293,10 @@ export class GeographicService {
   /**
    * Search locations by name (for autocomplete)
    */
-  async searchLocations(query: string, limit = 10): Promise<{
+  async searchLocations(
+    query: string,
+    limit = 10
+  ): Promise<{
     regions: GeographicOption[];
     provinces: GeographicOption[];
     cities: GeographicOption[];
@@ -305,21 +316,21 @@ export class GeographicService {
           .ilike('name', searchPattern)
           .eq('is_active', true)
           .limit(limit),
-        
+
         supabase
           .from('psgc_provinces')
           .select('code, name')
           .ilike('name', searchPattern)
           .eq('is_active', true)
           .limit(limit),
-        
+
         supabase
           .from('psgc_cities_municipalities')
           .select('code, name, type')
           .ilike('name', searchPattern)
           .eq('is_active', true)
           .limit(limit),
-        
+
         supabase
           .from('psgc_barangays')
           .select('code, name')
@@ -329,22 +340,26 @@ export class GeographicService {
       ]);
 
       return {
-        regions: regionsResult.data?.map(item => ({
-          value: item.code,
-          label: item.name,
-        })) || [],
-        provinces: provincesResult.data?.map(item => ({
-          value: item.code,
-          label: item.name,
-        })) || [],
-        cities: citiesResult.data?.map(item => ({
-          value: item.code,
-          label: `${item.name} (${item.type})`,
-        })) || [],
-        barangays: barangaysResult.data?.map(item => ({
-          value: item.code,
-          label: item.name,
-        })) || [],
+        regions:
+          regionsResult.data?.map(item => ({
+            value: item.code,
+            label: item.name,
+          })) || [],
+        provinces:
+          provincesResult.data?.map(item => ({
+            value: item.code,
+            label: item.name,
+          })) || [],
+        cities:
+          citiesResult.data?.map(item => ({
+            value: item.code,
+            label: `${item.name} (${item.type})`,
+          })) || [],
+        barangays:
+          barangaysResult.data?.map(item => ({
+            value: item.code,
+            label: item.name,
+          })) || [],
       };
     } catch (error) {
       logError(error as Error, 'GEOGRAPHIC_SERVICE_SEARCH');

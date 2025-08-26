@@ -227,7 +227,9 @@ export const LayoutGroup: React.FC<LayoutGroupProps> = ({
   <div className="mb-8">
     <div className="mb-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-      {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
+      {description && (
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+      )}
     </div>
     <div className="space-y-2">
       {Object.entries(layouts).map(([name, value]) => (
@@ -266,7 +268,7 @@ export const ResponsiveDemo: React.FC = () => (
         <div className="w-12 font-mono text-sm text-gray-700 dark:text-gray-300">{name}</div>
         <div className="relative h-8 flex-1 overflow-hidden rounded-sm bg-gray-200">
           <div
-            className="flex h-full items-center justify-center rounded-sm bg-blue-500 text-xs font-medium text-white dark:text-black dark:text-white transition-all"
+            className="flex h-full items-center justify-center rounded-sm bg-blue-500 text-xs font-medium text-white transition-all dark:text-black dark:text-white"
             style={{
               width: `${Math.min((parseInt(width) / 1536) * 100, 100)}%`,
             }}
@@ -287,7 +289,9 @@ const Layout: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Design Tokens: Layout</h1>
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Design Tokens: Layout
+        </h1>
         <p className="max-w-2xl text-gray-600 dark:text-gray-400">
           Layout tokens for the Citizenly design system. These tokens provide consistent structure
           and organization across all government applications.
@@ -296,7 +300,9 @@ const Layout: React.FC = () => {
 
       {/* Container Widths */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Container Widths</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Container Widths
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Predefined container widths that work across different screen sizes and content types.
         </p>
@@ -318,7 +324,9 @@ const Layout: React.FC = () => {
               .slice(0, 4)
               .map(([name, width]) => (
                 <div key={name} className="flex items-center gap-4">
-                  <div className="w-12 font-mono text-xs text-gray-600 dark:text-gray-400">{name}</div>
+                  <div className="w-12 font-mono text-xs text-gray-600 dark:text-gray-400">
+                    {name}
+                  </div>
                   <div
                     className="rounded border border-blue-200 bg-blue-100 p-3 text-center text-gray-800 dark:text-gray-200"
                     style={{ maxWidth: width, width: '100%' }}
@@ -333,7 +341,9 @@ const Layout: React.FC = () => {
 
       {/* Breakpoints */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Responsive Breakpoints</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Responsive Breakpoints
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Breakpoint system for responsive design, matching Tailwind CSS for consistency.
         </p>
@@ -355,7 +365,9 @@ const Layout: React.FC = () => {
 
       {/* Grid System */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Grid System</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Grid System
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           12-column grid system with flexible gaps for consistent layouts.
         </p>
@@ -407,7 +419,9 @@ const Layout: React.FC = () => {
 
       {/* Z-Index Layers */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Z-Index Layers</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Z-Index Layers
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Organized layering system for overlapping elements and proper stacking context.
         </p>
@@ -434,7 +448,7 @@ const Layout: React.FC = () => {
 
             {/* Docked layer */}
             <div
-              className="absolute left-8 right-8 top-8 flex h-16 items-center justify-center rounded-sm bg-green-300 text-sm font-medium text-green-800"
+              className="absolute top-8 right-8 left-8 flex h-16 items-center justify-center rounded-sm bg-green-300 text-sm font-medium text-green-800"
               style={{ zIndex: layoutTokens.zIndex.docked }}
             >
               Docked (z: {layoutTokens.zIndex.docked})
@@ -442,7 +456,7 @@ const Layout: React.FC = () => {
 
             {/* Dropdown layer */}
             <div
-              className="absolute left-12 top-12 flex h-12 w-32 items-center justify-center rounded-sm bg-purple-400 text-xs font-medium text-gray-900 dark:text-gray-100"
+              className="absolute top-12 left-12 flex h-12 w-32 items-center justify-center rounded-sm bg-purple-400 text-xs font-medium text-gray-900 dark:text-gray-100"
               style={{ zIndex: layoutTokens.zIndex.dropdown }}
             >
               Dropdown (z: {layoutTokens.zIndex.dropdown})
@@ -450,7 +464,7 @@ const Layout: React.FC = () => {
 
             {/* Modal layer */}
             <div
-              className="absolute left-16 top-16 flex h-8 w-24 items-center justify-center rounded-sm bg-red-500 text-xs font-medium text-white dark:text-black"
+              className="absolute top-16 left-16 flex h-8 w-24 items-center justify-center rounded-sm bg-red-500 text-xs font-medium text-white dark:text-black"
               style={{ zIndex: layoutTokens.zIndex.modal }}
             >
               Modal (z: {layoutTokens.zIndex.modal})
@@ -461,7 +475,9 @@ const Layout: React.FC = () => {
 
       {/* Layout Patterns */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Common Layout Patterns</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Common Layout Patterns
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Predefined dimensions for common layout elements like sidebars, headers, and footers.
         </p>
@@ -514,7 +530,9 @@ const Layout: React.FC = () => {
 
               {/* Main Content */}
               <div className="flex-1 p-6">
-                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Main Content Area</h3>
+                <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Main Content Area
+                </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   This area uses the remaining space after accounting for the sidebar width. Content
                   flows naturally within the available space.

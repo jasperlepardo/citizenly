@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { PhysicalCharacteristics, PhysicalCharacteristicsData } from '@/components/organisms/PhysicalCharacteristics';
+import {
+  PhysicalCharacteristics,
+  PhysicalCharacteristicsData,
+} from '@/components/organisms/PhysicalCharacteristics';
 
 const meta = {
   title: 'Organisms/Form/Resident/PhysicalPersonalDetails/FormField/PhysicalCharacteristics',
@@ -174,7 +177,7 @@ export const PartiallyFilled: Story = {
 export const DifferentBloodTypes: Story = {
   render: () => {
     const [currentType, setCurrentType] = useState(0);
-    
+
     const bloodTypeExamples = [
       { type: 'a_positive', label: 'A+' },
       { type: 'a_negative', label: 'A-' },
@@ -194,12 +197,8 @@ export const DifferentBloodTypes: Story = {
 
     return (
       <div className="space-y-6">
-        <PhysicalCharacteristics
-          value={currentData}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <PhysicalCharacteristics value={currentData} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {bloodTypeExamples.map((example, index) => (
@@ -216,10 +215,8 @@ export const DifferentBloodTypes: Story = {
               </button>
             ))}
           </div>
-          
-          <div className="text-sm text-gray-600">
-            Current Blood Type: {currentExample.label}
-          </div>
+
+          <div className="text-sm text-gray-600">Current Blood Type: {currentExample.label}</div>
         </div>
       </div>
     );
@@ -237,7 +234,7 @@ export const DifferentBloodTypes: Story = {
 export const DifferentEthnicities: Story = {
   render: () => {
     const [currentEthnicity, setCurrentEthnicity] = useState(0);
-    
+
     const ethnicityExamples = [
       { value: 'tagalog', label: 'Tagalog' },
       { value: 'cebuano', label: 'Cebuano' },
@@ -257,12 +254,8 @@ export const DifferentEthnicities: Story = {
 
     return (
       <div className="space-y-6">
-        <PhysicalCharacteristics
-          value={currentData}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <PhysicalCharacteristics value={currentData} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {ethnicityExamples.map((example, index) => (
@@ -279,10 +272,8 @@ export const DifferentEthnicities: Story = {
               </button>
             ))}
           </div>
-          
-          <div className="text-sm text-gray-600">
-            Current Ethnicity: {currentExample.label}
-          </div>
+
+          <div className="text-sm text-gray-600">Current Ethnicity: {currentExample.label}</div>
         </div>
       </div>
     );
@@ -300,7 +291,7 @@ export const DifferentEthnicities: Story = {
 export const PhysicalMeasurements: Story = {
   render: () => {
     const [currentProfile, setCurrentProfile] = useState(0);
-    
+
     const profiles = [
       {
         name: 'Average Adult Male',
@@ -328,12 +319,8 @@ export const PhysicalMeasurements: Story = {
 
     return (
       <div className="space-y-6">
-        <PhysicalCharacteristics
-          value={currentData.data}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <PhysicalCharacteristics value={currentData.data} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {profiles.map((profile, index) => (
@@ -350,13 +337,19 @@ export const PhysicalMeasurements: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">Current Profile: {currentData.name}</h4>
             <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
-              <div><strong>Height:</strong> {currentData.data.height} cm</div>
-              <div><strong>Weight:</strong> {currentData.data.weight} kg</div>
-              <div><strong>Complexion:</strong> {currentData.data.complexion}</div>
+              <div>
+                <strong>Height:</strong> {currentData.data.height} cm
+              </div>
+              <div>
+                <strong>Weight:</strong> {currentData.data.weight} kg
+              </div>
+              <div>
+                <strong>Complexion:</strong> {currentData.data.complexion}
+              </div>
             </div>
           </div>
         </div>
@@ -380,7 +373,7 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: PhysicalCharacteristicsData) => {
       setValue(newValue);
-      
+
       // Clear errors for fields that now have values
       const newErrors = { ...errors };
       Object.keys(newValue).forEach(key => {
@@ -394,31 +387,31 @@ export const Interactive: Story = {
 
     const validate = () => {
       const newErrors: Record<string, string> = {};
-      
+
       if (!value.bloodType) {
         newErrors.bloodType = 'Please select a blood type';
       }
-      
+
       if (!value.complexion.trim()) {
         newErrors.complexion = 'Complexion is required';
       }
-      
+
       if (value.height && (isNaN(Number(value.height)) || Number(value.height) <= 0)) {
         newErrors.height = 'Please enter a valid height';
       }
-      
+
       if (value.weight && (isNaN(Number(value.weight)) || Number(value.weight) <= 0)) {
         newErrors.weight = 'Please enter a valid weight';
       }
-      
+
       if (!value.citizenship.trim()) {
         newErrors.citizenship = 'Citizenship is required';
       }
-      
+
       if (value.religion === 'others' && !value.religionOthersSpecify.trim()) {
         newErrors.religionOthersSpecify = 'Please specify the religion';
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -440,12 +433,8 @@ export const Interactive: Story = {
 
     return (
       <div className="space-y-6">
-        <PhysicalCharacteristics
-          value={value}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
+        <PhysicalCharacteristics value={value} onChange={handleChange} errors={errors} />
+
         <div className="flex space-x-4">
           <button
             onClick={validate}
@@ -472,12 +461,12 @@ export const Interactive: Story = {
             Reset
           </button>
         </div>
-        
+
         <div className="rounded bg-gray-100 p-4">
           <h4 className="font-medium">Current Values:</h4>
           <pre className="mt-2 text-sm">{JSON.stringify(value, null, 2)}</pre>
         </div>
-        
+
         {Object.keys(errors).length > 0 && (
           <div className="rounded bg-red-100 p-4">
             <h4 className="font-medium text-red-800">Validation Errors:</h4>
@@ -508,7 +497,7 @@ export const BMICalculator: Story = {
     const calculateBMI = () => {
       const height = Number(value.height);
       const weight = Number(value.weight);
-      
+
       if (height > 0 && weight > 0) {
         const bmi = weight / Math.pow(height / 100, 2);
         return bmi.toFixed(1);
@@ -529,24 +518,25 @@ export const BMICalculator: Story = {
 
     return (
       <div className="space-y-6">
-        <PhysicalCharacteristics
-          value={value}
-          onChange={setValue}
-          errors={{}}
-        />
-        
+        <PhysicalCharacteristics value={value} onChange={setValue} errors={{}} />
+
         {bmi && (
           <div className="rounded bg-blue-50 p-4">
             <h4 className="font-medium">BMI Calculator</h4>
             <div className="mt-2 space-y-1">
-              <p><strong>BMI:</strong> {bmi}</p>
+              <p>
+                <strong>BMI:</strong> {bmi}
+              </p>
               {bmiInfo && (
-                <p><strong>Category:</strong> <span className={bmiInfo.color}>{bmiInfo.category}</span></p>
+                <p>
+                  <strong>Category:</strong>{' '}
+                  <span className={bmiInfo.color}>{bmiInfo.category}</span>
+                </p>
               )}
             </div>
           </div>
         )}
-        
+
         <div className="text-sm text-gray-600">
           <p>BMI is calculated as weight (kg) ÷ height (m)²</p>
           <p>Enter height and weight to see BMI calculation</p>
@@ -567,7 +557,7 @@ export const BMICalculator: Story = {
 export const ValidationPatterns: Story = {
   render: () => {
     const [currentPattern, setCurrentPattern] = useState(0);
-    
+
     const patterns = [
       {
         label: 'Valid Data',
@@ -609,7 +599,7 @@ export const ValidationPatterns: Story = {
           onChange={() => {}}
           errors={currentData.errors}
         />
-        
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {patterns.map((pattern, index) => (
@@ -626,10 +616,8 @@ export const ValidationPatterns: Story = {
               </button>
             ))}
           </div>
-          
-          <div className="text-sm text-gray-600">
-            Current Pattern: {currentData.label}
-          </div>
+
+          <div className="text-sm text-gray-600">Current Pattern: {currentData.label}</div>
         </div>
       </div>
     );

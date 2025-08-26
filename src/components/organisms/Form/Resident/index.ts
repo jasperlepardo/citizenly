@@ -1,9 +1,5 @@
 // Types
-export type { 
-  FormMode, 
-  FormSectionProps,
-  FieldConfig 
-} from './types';
+export type { FormMode, FormSectionProps, FieldConfig } from './types';
 
 // Personal Information
 export { PersonalInformationForm } from './PersonalInformation/PersonalInformation';

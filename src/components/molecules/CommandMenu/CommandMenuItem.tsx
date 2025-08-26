@@ -28,7 +28,7 @@ const commandMenuItemVariants = cva(
   }
 );
 
-interface CommandMenuItemProps 
+interface CommandMenuItemProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>,
     VariantProps<typeof commandMenuItemVariants> {
   item: CommandMenuItemType;
@@ -38,16 +38,10 @@ interface CommandMenuItemProps
 }
 
 const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps>(
-  ({ 
-    item, 
-    isSelected = false, 
-    showShortcuts = true, 
-    onClick, 
-    variant,
-    size,
-    className,
-    ...props 
-  }, ref) => {
+  (
+    { item, isSelected = false, showShortcuts = true, onClick, variant, size, className, ...props },
+    ref
+  ) => {
     const handleClick = () => {
       if (!item.disabled && onClick) {
         onClick(item);
@@ -77,7 +71,7 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
                 src={item.avatar.src}
                 alt={item.avatar.alt}
                 className="size-full object-cover"
-                onError={(e) => {
+                onError={e => {
                   // Fallback to initials
                   const target = e.target as HTMLImageElement;
                   const parent = target.parentElement;
@@ -96,9 +90,7 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
 
         {/* Content */}
         <div className="flex min-w-0 flex-1 items-center">
-          <div className="font-medium text-gray-900 dark:text-gray-100 truncate">
-            {item.label}
-          </div>
+          <div className="truncate font-medium text-gray-900 dark:text-gray-100">{item.label}</div>
         </div>
 
         {/* Shortcut */}
@@ -107,7 +99,7 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
             {item.shortcut.map((key, index) => (
               <kbd
                 key={index}
-                className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1 text-xs font-medium text-gray-500 dark:text-gray-400"
+                className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"
               >
                 {key}
               </kbd>

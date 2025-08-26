@@ -27,7 +27,7 @@ const commandMenuVariants = cva(
   }
 );
 
-interface CommandMenuComponentProps 
+interface CommandMenuComponentProps
   extends Omit<CommandMenuProps, 'isOpen' | 'onClose' | 'items'>,
     VariantProps<typeof commandMenuVariants> {
   items?: CommandMenuItem[]; // Made optional since we get items from API
@@ -66,16 +66,16 @@ export function CommandMenu({
   // Group items by category
   const groupedItems = React.useMemo(() => {
     const groups = new Map<string, CommandMenuItem[]>();
-    
+
     // If showing recent section and no search query, separate recent items
     if (showRecentSection && !searchQuery.trim()) {
       const recentItems = filteredItems.filter(item => item.recent);
       const nonRecentItems = filteredItems.filter(item => !item.recent);
-      
+
       if (recentItems.length > 0) {
         groups.set('Recent', recentItems);
       }
-      
+
       // Group non-recent items by their group property
       nonRecentItems.forEach(item => {
         const groupName = item.group || 'Other';
@@ -110,10 +110,10 @@ export function CommandMenu({
       <div className="fixed inset-0 overflow-y-auto p-4 pt-[25vh]">
         <Dialog.Panel className={cn(commandMenuVariants({ size }), className)}>
           {/* Search Input */}
-          <div className="flex items-center border-b border-gray-200 dark:border-gray-700 px-4">
+          <div className="flex items-center border-b border-gray-200 px-4 dark:border-gray-700">
             {isLoading ? (
               <svg
-                className="size-5 shrink-0 text-gray-400 dark:text-gray-500 animate-spin"
+                className="size-5 shrink-0 animate-spin text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -143,13 +143,13 @@ export function CommandMenu({
             <input
               ref={inputRef}
               type="text"
-              className="w-full border-0 bg-transparent py-4 pl-3 pr-4 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-0"
+              className="w-full border-0 bg-transparent py-4 pr-4 pl-3 text-gray-900 placeholder-gray-500 focus:ring-0 focus:outline-none dark:text-gray-100 dark:placeholder-gray-400"
               placeholder={placeholder}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={e => setSearchQuery(e.target.value)}
             />
             <div className="flex shrink-0 items-center gap-1">
-              <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+              <kbd className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
                 ESC
               </kbd>
             </div>
@@ -158,9 +158,7 @@ export function CommandMenu({
           {/* Results */}
           <div className="max-h-96 overflow-y-auto">
             {filteredItems.length === 0 ? (
-              <CommandMenuEmpty query={searchQuery}>
-                {emptyStateText}
-              </CommandMenuEmpty>
+              <CommandMenuEmpty query={searchQuery}>{emptyStateText}</CommandMenuEmpty>
             ) : (
               <div className="py-2">
                 {groupedItems.map((group, groupIndex) => {
@@ -186,24 +184,24 @@ export function CommandMenu({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
+          <div className="border-t border-gray-200 px-4 py-3 dark:border-gray-700">
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                  <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1 text-xs font-medium">
+                  <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium dark:border-gray-600 dark:bg-gray-700">
                     ↵
                   </kbd>
                   <span>to select</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1 text-xs font-medium">
+                  <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium dark:border-gray-600 dark:bg-gray-700">
                     ↑↓
                   </kbd>
                   <span>to navigate</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 px-1 text-xs font-medium">
+                <kbd className="inline-flex h-4 min-w-[16px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium dark:border-gray-600 dark:bg-gray-700">
                   ⌘K
                 </kbd>
                 <span>to open</span>

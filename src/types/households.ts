@@ -17,7 +17,7 @@ export interface HouseholdRecord {
   code: string;
   name?: string | null;
   address?: string | null;
-  
+
   // Location details
   house_number: string;
   street_id: string;
@@ -27,26 +27,76 @@ export interface HouseholdRecord {
   province_code?: string | null;
   region_code: string;
   zip_code?: string | null;
-  
+
   // Household metrics
   no_of_families?: number | null;
   no_of_household_members?: number | null;
   no_of_migrants?: number | null;
-  
+
   // Household classifications (enums)
-  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other' | null;
-  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others' | null;
+  household_type?:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'one_person'
+    | 'non_family'
+    | 'other'
+    | null;
+  tenure_status?:
+    | 'owned'
+    | 'owned_with_mortgage'
+    | 'rented'
+    | 'occupied_for_free'
+    | 'occupied_without_consent'
+    | 'others'
+    | null;
   tenure_others_specify?: string | null;
-  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others' | null;
-  
+  household_unit?:
+    | 'single_house'
+    | 'duplex'
+    | 'apartment'
+    | 'townhouse'
+    | 'condominium'
+    | 'boarding_house'
+    | 'institutional'
+    | 'makeshift'
+    | 'others'
+    | null;
+
   // Economic information
   monthly_income?: number | null;
-  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined' | null;
-  
+  income_class?:
+    | 'rich'
+    | 'high_income'
+    | 'upper_middle_income'
+    | 'middle_class'
+    | 'lower_middle_class'
+    | 'low_income'
+    | 'poor'
+    | 'not_determined'
+    | null;
+
   // Head of household
   household_head_id?: string | null;
-  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other' | null;
-  
+  household_head_position?:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other'
+    | null;
+
   // Status and audit
   is_active: boolean;
   created_by?: string | null;
@@ -97,20 +147,70 @@ export interface HouseholdWithMembersResult {
   address?: string | null;
   house_number: string;
   street_id: string; // UUID reference
-  subdivision_id?: string | null; // UUID reference  
+  subdivision_id?: string | null; // UUID reference
   barangay_code: string;
   city_municipality_code: string;
   province_code?: string | null;
   region_code: string;
   zip_code?: string | null;
   household_head_id?: string | null; // UUID reference to residents
-  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other' | null;
-  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other' | null;
-  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others' | null;
+  household_head_position?:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other'
+    | null;
+  household_type?:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'one_person'
+    | 'non_family'
+    | 'other'
+    | null;
+  tenure_status?:
+    | 'owned'
+    | 'owned_with_mortgage'
+    | 'rented'
+    | 'occupied_for_free'
+    | 'occupied_without_consent'
+    | 'others'
+    | null;
   tenure_others_specify?: string | null;
-  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others' | null;
+  household_unit?:
+    | 'single_house'
+    | 'duplex'
+    | 'apartment'
+    | 'townhouse'
+    | 'condominium'
+    | 'boarding_house'
+    | 'institutional'
+    | 'makeshift'
+    | 'others'
+    | null;
   monthly_income?: number | null;
-  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined' | null;
+  income_class?:
+    | 'rich'
+    | 'high_income'
+    | 'upper_middle_income'
+    | 'middle_class'
+    | 'lower_middle_class'
+    | 'low_income'
+    | 'poor'
+    | 'not_determined'
+    | null;
   no_of_families?: number | null;
   no_of_household_members?: number | null;
   no_of_migrants?: number | null;
@@ -226,7 +326,7 @@ export const HOUSEHOLD_TYPE_OPTIONS: OptionType[] = [
   { value: 'childless', label: 'Childless' },
   { value: 'one_person', label: 'One Person' },
   { value: 'non_family', label: 'Non-Family' },
-  { value: 'other', label: 'Other' }
+  { value: 'other', label: 'Other' },
 ];
 
 export const TENURE_STATUS_OPTIONS: OptionType[] = [
@@ -235,7 +335,7 @@ export const TENURE_STATUS_OPTIONS: OptionType[] = [
   { value: 'rented', label: 'Rented' },
   { value: 'occupied_for_free', label: 'Occupied for Free' },
   { value: 'occupied_without_consent', label: 'Occupied without Consent' },
-  { value: 'others', label: 'Others' }
+  { value: 'others', label: 'Others' },
 ];
 
 export const INCOME_CLASS_OPTIONS: OptionType[] = [
@@ -246,7 +346,7 @@ export const INCOME_CLASS_OPTIONS: OptionType[] = [
   { value: 'upper_middle_income', label: 'Upper Middle Income (₱76,699-₱131,484)' },
   { value: 'high_income', label: 'High Income (₱131,484-₱219,140)' },
   { value: 'rich', label: 'Rich (Above ₱219,140)' },
-  { value: 'not_determined', label: 'Not Determined' }
+  { value: 'not_determined', label: 'Not Determined' },
 ];
 
 export const HOUSEHOLD_UNIT_OPTIONS: OptionType[] = [
@@ -258,7 +358,7 @@ export const HOUSEHOLD_UNIT_OPTIONS: OptionType[] = [
   { value: 'boarding_house', label: 'Boarding House' },
   { value: 'institutional', label: 'Institutional' },
   { value: 'makeshift', label: 'Makeshift' },
-  { value: 'others', label: 'Others' }
+  { value: 'others', label: 'Others' },
 ];
 
 // =============================================================================

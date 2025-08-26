@@ -39,12 +39,16 @@ export default function EmploymentStatusPieChart({
   ];
 
   // Calculate total and transform data
-  const total = employmentCategories.reduce((sum, category) => sum + (data[category.key as keyof EmploymentStatusData] || 0), 0);
-  
+  const total = employmentCategories.reduce(
+    (sum, category) => sum + (data[category.key as keyof EmploymentStatusData] || 0),
+    0
+  );
+
   const chartData = employmentCategories.map(category => ({
     label: category.label,
     value: data[category.key as keyof EmploymentStatusData] || 0,
-    percentage: total > 0 ? ((data[category.key as keyof EmploymentStatusData] || 0) / total) * 100 : 0,
+    percentage:
+      total > 0 ? ((data[category.key as keyof EmploymentStatusData] || 0) / total) * 100 : 0,
     color: '', // Let GenericPieChart auto-generate colors
   }));
 

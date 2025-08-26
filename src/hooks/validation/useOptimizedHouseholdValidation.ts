@@ -2,7 +2,7 @@
 
 /**
  * Optimized Household Validation Hook
- * 
+ *
  * @description Refactored household validation hook using common utilities.
  * Maintains the same API while using shared validation patterns.
  */
@@ -10,16 +10,10 @@
 import { useCallback } from 'react';
 
 import { toTitleCase } from '@/lib/utilities/string-utils';
-import {
-  ValidationResult,
-  FieldValidationResult,
-} from '@/lib/validation/types';
+import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
 import { householdService, HouseholdFormData } from '@/services/household.service';
 
-import {
-  useGenericValidation,
-  UseGenericValidationReturn,
-} from './useGenericValidation';
+import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 
 // Simple validation utilities for backward compatibility
 const validationUtils = {
@@ -43,7 +37,8 @@ export interface HouseholdValidationResult {
 /**
  * Household validation return type (backward compatible)
  */
-export interface UseHouseholdValidationReturn extends Omit<UseGenericValidationReturn<HouseholdFormData>, 'validateForm'> {
+export interface UseHouseholdValidationReturn
+  extends Omit<UseGenericValidationReturn<HouseholdFormData>, 'validateForm'> {
   /** Current validation errors */
   validationErrors: Record<string, string>;
   /** Validate household data */
@@ -61,7 +56,7 @@ function createHouseholdFormValidator() {
   return (formData: HouseholdFormData): ValidationResult => {
     // Use the service validation but normalize the result
     const serviceResult = householdService.validateHousehold(formData);
-    
+
     return {
       isValid: serviceResult.success,
       errors: serviceResult.errors || {},
@@ -110,7 +105,7 @@ function createHouseholdFieldValidator() {
 
 /**
  * Optimized household validation hook
- * 
+ *
  * @description Provides household validation using shared utilities while
  * maintaining backward compatibility with existing household service integration.
  */
@@ -129,21 +124,27 @@ export function useOptimizedHouseholdValidation(): UseHouseholdValidationReturn 
   /**
    * Validate household data (backward compatible interface)
    */
-  const validateHousehold = useCallback((formData: HouseholdFormData): HouseholdValidationResult => {
-    const result = genericValidation.validateForm(formData);
-    
-    return {
-      success: result.isValid,
-      errors: result.errors,
-    };
-  }, [genericValidation.validateForm]);
+  const validateHousehold = useCallback(
+    (formData: HouseholdFormData): HouseholdValidationResult => {
+      const result = genericValidation.validateForm(formData);
+
+      return {
+        success: result.isValid,
+        errors: result.errors,
+      };
+    },
+    [genericValidation.validateForm]
+  );
 
   /**
    * Set validation errors (backward compatible)
    */
-  const setValidationErrors = useCallback((errors: Record<string, string>) => {
-    genericValidation.setErrors(errors);
-  }, [genericValidation.setErrors]);
+  const setValidationErrors = useCallback(
+    (errors: Record<string, string>) => {
+      genericValidation.setErrors(errors);
+    },
+    [genericValidation.setErrors]
+  );
 
   /**
    * Clear validation errors (backward compatible)

@@ -2,7 +2,7 @@
 
 /**
  * Retry Logic Hook
- * 
+ *
  * @description Advanced retry logic for failed async operations with
  * exponential backoff, jitter, and customizable retry strategies.
  */
@@ -87,11 +87,11 @@ const DEFAULT_STRATEGY: RetryStrategy = {
     if (error.name === 'NetworkError') return true;
     if (error.name === 'TimeoutError') return true;
     if (error.message.includes('fetch')) return true;
-    
+
     // Don't retry on authentication errors (4xx)
     if (error.message.includes('401') || error.message.includes('403')) return false;
     if (error.message.includes('400') || error.message.includes('404')) return false;
-    
+
     // Retry on other errors by default
     return true;
   },
@@ -99,13 +99,10 @@ const DEFAULT_STRATEGY: RetryStrategy = {
 
 /**
  * Hook for implementing advanced retry logic
- * 
+ *
  * @param options - Retry configuration options
  */
-export function useRetryLogic(
-  options: UseRetryLogicOptions = {}
-): UseRetryLogicReturn {
-  
+export function useRetryLogic(options: UseRetryLogicOptions = {}): UseRetryLogicReturn {
   const {
     name = 'RetryLogic',
     onSuccess,
@@ -116,7 +113,7 @@ export function useRetryLogic(
 
   const strategy: RetryStrategy = { ...DEFAULT_STRATEGY, ...strategyOptions };
   const { info: log, warn, error: logError } = useLogger(name);
-  
+
   const [state, setState] = useState<RetryState>({
     attempt: 0,
     isRetrying: false,
@@ -131,20 +128,23 @@ export function useRetryLogic(
   /**
    * Calculate next delay with exponential backoff and jitter
    */
-  const calculateDelay = useCallback((attempt: number): number => {
-    let delay = strategy.initialDelay * Math.pow(strategy.backoffMultiplier, attempt);
-    
-    // Apply maximum delay limit
-    delay = Math.min(delay, strategy.maxDelay);
-    
-    // Add jitter to prevent thundering herd effect
-    if (strategy.enableJitter) {
-      const jitter = delay * 0.1 * Math.random(); // ±10% jitter
-      delay = delay + jitter;
-    }
-    
-    return Math.floor(delay);
-  }, [strategy]);
+  const calculateDelay = useCallback(
+    (attempt: number): number => {
+      let delay = strategy.initialDelay * Math.pow(strategy.backoffMultiplier, attempt);
+
+      // Apply maximum delay limit
+      delay = Math.min(delay, strategy.maxDelay);
+
+      // Add jitter to prevent thundering herd effect
+      if (strategy.enableJitter) {
+        const jitter = delay * 0.1 * Math.random(); // ±10% jitter
+        delay = delay + jitter;
+      }
+
+      return Math.floor(delay);
+    },
+    [strategy]
+  );
 
   /**
    * Reset retry state
@@ -154,7 +154,7 @@ export function useRetryLogic(
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    
+
     cancelledRef.current = false;
     setState({
       attempt: 0,
@@ -163,7 +163,7 @@ export function useRetryLogic(
       nextDelay: strategy.initialDelay,
       maxAttemptsReached: false,
     });
-    
+
     log('Retry state reset');
   }, [strategy.initialDelay, log]);
 
@@ -175,124 +175,112 @@ export function useRetryLogic(
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    
+
     cancelledRef.current = true;
     setState(prev => ({
       ...prev,
       isRetrying: false,
     }));
-    
+
     log('Retry cancelled');
   }, [log]);
 
   /**
    * Execute operation with retry logic
    */
-  const execute = useCallback(async <T>(
-    operation: () => Promise<T>
-  ): Promise<T> => {
-    
-    // Reset state at the beginning of new execution
-    reset();
-    
-    const attemptOperation = async (attemptNumber: number): Promise<T> => {
-      
-      if (cancelledRef.current) {
-        throw new Error('Operation cancelled');
-      }
+  const execute = useCallback(
+    async <T>(operation: () => Promise<T>): Promise<T> => {
+      // Reset state at the beginning of new execution
+      reset();
 
-      setState(prev => ({
-        ...prev,
-        attempt: attemptNumber,
-        isRetrying: attemptNumber > 0,
-      }));
-
-      try {
-        log(`Attempting operation (attempt ${attemptNumber + 1}/${strategy.maxAttempts + 1})`);
-        
-        const result = await operation();
-        
-        // Success!
-        setState(prev => ({
-          ...prev,
-          isRetrying: false,
-          lastError: null,
-        }));
-        
-        if (attemptNumber > 0) {
-          log(`Operation succeeded after ${attemptNumber + 1} attempts`);
+      const attemptOperation = async (attemptNumber: number): Promise<T> => {
+        if (cancelledRef.current) {
+          throw new Error('Operation cancelled');
         }
-        
-        onSuccess?.(result, attemptNumber);
-        return result;
-        
-      } catch (error) {
-        const err = error as Error;
-        
+
         setState(prev => ({
           ...prev,
-          lastError: err,
-          nextDelay: calculateDelay(attemptNumber),
+          attempt: attemptNumber,
+          isRetrying: attemptNumber > 0,
         }));
 
-        logError(`Attempt ${attemptNumber + 1} failed:`, err);
-        onError?.(err, attemptNumber);
+        try {
+          log(`Attempting operation (attempt ${attemptNumber + 1}/${strategy.maxAttempts + 1})`);
 
-        // Check if we should retry
-        const shouldRetry = strategy.shouldRetry?.(err, attemptNumber) ?? true;
-        const hasAttemptsLeft = attemptNumber < strategy.maxAttempts;
-        
-        if (!shouldRetry || !hasAttemptsLeft) {
+          const result = await operation();
+
+          // Success!
           setState(prev => ({
             ...prev,
             isRetrying: false,
-            maxAttemptsReached: !hasAttemptsLeft,
+            lastError: null,
           }));
-          
-          if (!hasAttemptsLeft) {
-            warn(`Max attempts (${strategy.maxAttempts + 1}) reached`);
-            onMaxAttemptsReached?.(err);
-          } else {
-            warn('Operation failed and will not be retried', { error: err.message });
+
+          if (attemptNumber > 0) {
+            log(`Operation succeeded after ${attemptNumber + 1} attempts`);
           }
-          
-          throw err;
+
+          onSuccess?.(result, attemptNumber);
+          return result;
+        } catch (error) {
+          const err = error as Error;
+
+          setState(prev => ({
+            ...prev,
+            lastError: err,
+            nextDelay: calculateDelay(attemptNumber),
+          }));
+
+          logError(`Attempt ${attemptNumber + 1} failed:`, err);
+          onError?.(err, attemptNumber);
+
+          // Check if we should retry
+          const shouldRetry = strategy.shouldRetry?.(err, attemptNumber) ?? true;
+          const hasAttemptsLeft = attemptNumber < strategy.maxAttempts;
+
+          if (!shouldRetry || !hasAttemptsLeft) {
+            setState(prev => ({
+              ...prev,
+              isRetrying: false,
+              maxAttemptsReached: !hasAttemptsLeft,
+            }));
+
+            if (!hasAttemptsLeft) {
+              warn(`Max attempts (${strategy.maxAttempts + 1}) reached`);
+              onMaxAttemptsReached?.(err);
+            } else {
+              warn('Operation failed and will not be retried', { error: err.message });
+            }
+
+            throw err;
+          }
+
+          // Schedule retry
+          const delay = calculateDelay(attemptNumber);
+          log(`Retrying in ${delay}ms (attempt ${attemptNumber + 2}/${strategy.maxAttempts + 1})`);
+
+          return new Promise<T>((resolve, reject) => {
+            timeoutRef.current = setTimeout(async () => {
+              if (cancelledRef.current) {
+                reject(new Error('Operation cancelled'));
+                return;
+              }
+
+              try {
+                const result = await attemptOperation(attemptNumber + 1);
+                resolve(result);
+              } catch (retryError) {
+                reject(retryError);
+              }
+            }, delay);
+          });
         }
+      };
 
-        // Schedule retry
-        const delay = calculateDelay(attemptNumber);
-        log(`Retrying in ${delay}ms (attempt ${attemptNumber + 2}/${strategy.maxAttempts + 1})`);
-        
-        return new Promise<T>((resolve, reject) => {
-          timeoutRef.current = setTimeout(async () => {
-            if (cancelledRef.current) {
-              reject(new Error('Operation cancelled'));
-              return;
-            }
-            
-            try {
-              const result = await attemptOperation(attemptNumber + 1);
-              resolve(result);
-            } catch (retryError) {
-              reject(retryError);
-            }
-          }, delay);
-        });
-      }
-    };
-
-    return attemptOperation(0);
-  }, [
-    strategy,
-    calculateDelay,
-    reset,
-    log,
-    logError,
-    warn,
-    onSuccess,
-    onError,
-    onMaxAttemptsReached,
-  ]);
+      return attemptOperation(0);
+    },
+    [strategy, calculateDelay, reset, log, logError, warn, onSuccess, onError, onMaxAttemptsReached]
+  );
 
   return {
     state,
@@ -306,7 +294,6 @@ export function useRetryLogic(
  * Predefined retry strategies for common use cases
  */
 export const RetryStrategies = {
-  
   /** Quick retry for fast operations */
   quick: {
     maxAttempts: 2,
@@ -315,7 +302,7 @@ export const RetryStrategies = {
     backoffMultiplier: 2,
     enableJitter: true,
   } as Partial<RetryStrategy>,
-  
+
   /** Standard retry for API calls */
   standard: {
     maxAttempts: 3,
@@ -324,7 +311,7 @@ export const RetryStrategies = {
     backoffMultiplier: 2,
     enableJitter: true,
   } as Partial<RetryStrategy>,
-  
+
   /** Aggressive retry for critical operations */
   aggressive: {
     maxAttempts: 5,
@@ -333,7 +320,7 @@ export const RetryStrategies = {
     backoffMultiplier: 1.5,
     enableJitter: true,
   } as Partial<RetryStrategy>,
-  
+
   /** Conservative retry for expensive operations */
   conservative: {
     maxAttempts: 2,
@@ -342,7 +329,6 @@ export const RetryStrategies = {
     backoffMultiplier: 3,
     enableJitter: false,
   } as Partial<RetryStrategy>,
-  
 } as const;
 
 /**

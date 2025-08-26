@@ -303,11 +303,11 @@ export async function logFileOperation(
     // Import here to avoid circular dependencies
     const { storeSecurityAuditLog } = await import('./audit-storage');
     const { recordSecurityEvent } = await import('./threat-detection');
-    
+
     const operationName = `FILE_${operation.toUpperCase()}`;
     const isSuccess = result === 'success';
     const severity = result === 'blocked' ? 'high' : 'low';
-    
+
     const auditLog = {
       operation: operationName,
       user_id: userId,
@@ -328,30 +328,37 @@ export async function logFileOperation(
 
     // Store in secure audit database
     await storeSecurityAuditLog(auditLog);
-    
+
     // Record security event for threat detection
     if (result === 'blocked' || result === 'failure') {
-      await recordSecurityEvent('file_security_violation', {
-        userId,
-        ipAddress: ipAddress || 'unknown',
-        userAgent,
-        requestPath: `/file/${operation}`,
-        timestamp: new Date().toISOString(),
-      }, {
-        operation,
-        fileName: sanitizeFileName(fileName),
-        result,
-      });
+      await recordSecurityEvent(
+        'file_security_violation',
+        {
+          userId,
+          ipAddress: ipAddress || 'unknown',
+          userAgent,
+          requestPath: `/file/${operation}`,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          operation,
+          fileName: sanitizeFileName(fileName),
+          result,
+        }
+      );
     }
-    
+
     // Console log for immediate visibility
-    console.info('[FILE_SECURITY_AUDIT]', JSON.stringify({
-      operation: operationName,
-      fileName: sanitizeFileName(fileName),
-      userId,
-      result,
-      timestamp: auditLog.timestamp,
-    }));
+    console.info(
+      '[FILE_SECURITY_AUDIT]',
+      JSON.stringify({
+        operation: operationName,
+        fileName: sanitizeFileName(fileName),
+        userId,
+        result,
+        timestamp: auditLog.timestamp,
+      })
+    );
 
     // Alert on suspicious patterns
     if (result === 'blocked') {
@@ -363,17 +370,19 @@ export async function logFileOperation(
         timestamp: auditLog.timestamp,
       });
     }
-
   } catch (error) {
     // Fallback to console logging if audit storage fails
     console.error('Failed to store file security audit log', error);
-    console.info('[FILE_SECURITY_AUDIT_FALLBACK]', JSON.stringify({
-      operation: `FILE_${operation.toUpperCase()}`,
-      fileName: sanitizeFileName(fileName),
-      userId,
-      result,
-      timestamp: new Date().toISOString(),
-      details,
-    }));
+    console.info(
+      '[FILE_SECURITY_AUDIT_FALLBACK]',
+      JSON.stringify({
+        operation: `FILE_${operation.toUpperCase()}`,
+        fileName: sanitizeFileName(fileName),
+        userId,
+        result,
+        timestamp: new Date().toISOString(),
+        details,
+      })
+    );
   }
 }

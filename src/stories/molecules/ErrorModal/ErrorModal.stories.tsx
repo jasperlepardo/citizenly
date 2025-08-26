@@ -78,7 +78,8 @@ export const NetworkError: Story = {
   args: {
     isOpen: true,
     title: 'Connection Failed',
-    message: 'Unable to connect to the server. Please check your internet connection and try again.',
+    message:
+      'Unable to connect to the server. Please check your internet connection and try again.',
     details: [
       'Network request timed out',
       'Server may be temporarily unavailable',
@@ -165,7 +166,8 @@ export const LongMessage: Story = {
   args: {
     isOpen: true,
     title: 'Data Processing Error',
-    message: 'There was an error processing your data submission. This could be due to various factors including data format issues, server capacity limitations, or temporary system maintenance. Please review the detailed information below and try again.',
+    message:
+      'There was an error processing your data submission. This could be due to various factors including data format issues, server capacity limitations, or temporary system maintenance. Please review the detailed information below and try again.',
     details: [
       'File size exceeds the maximum limit of 10MB',
       'Invalid characters detected in the filename',
@@ -199,7 +201,7 @@ export const Interactive: Story = {
         >
           Show Error Modal
         </button>
-        
+
         <ErrorModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
@@ -252,7 +254,7 @@ export const MultipleErrors: Story = {
       <div className="space-y-4 p-8">
         <h3 className="text-lg font-semibold">Different Error Types</h3>
         <div className="space-y-2">
-          {errors.map((error) => (
+          {errors.map(error => (
             <button
               key={error.id}
               onClick={() => setOpenModal(error.id)}
@@ -263,7 +265,7 @@ export const MultipleErrors: Story = {
           ))}
         </div>
 
-        {errors.map((error) => (
+        {errors.map(error => (
           <ErrorModal
             key={error.id}
             isOpen={openModal === error.id}

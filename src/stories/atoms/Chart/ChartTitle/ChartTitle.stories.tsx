@@ -61,11 +61,11 @@ export const WithSpecialCharacters: Story = {
 };
 
 export const InContainer: Story = {
-  render: (args) => (
-    <div className="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-300 dark:border-zinc-600 p-6 w-80">
+  render: args => (
+    <div className="w-80 rounded-lg border border-zinc-300 bg-white p-6 dark:border-zinc-600 dark:bg-zinc-800">
       <ChartTitle {...args} />
-      <div className="w-full h-32 bg-zinc-100 dark:bg-zinc-700 rounded flex items-center justify-center">
-        <span className="text-zinc-500 text-sm">Chart content would go here</span>
+      <div className="flex h-32 w-full items-center justify-center rounded bg-zinc-100 dark:bg-zinc-700">
+        <span className="text-sm text-zinc-500">Chart content would go here</span>
       </div>
     </div>
   ),

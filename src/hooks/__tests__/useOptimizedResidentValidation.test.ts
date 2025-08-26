@@ -57,9 +57,7 @@ describe('useOptimizedResidentValidation', () => {
         debounceDelay: 500,
       };
 
-      const { result } = renderHook(() => 
-        useOptimizedResidentValidation(options)
-      );
+      const { result } = renderHook(() => useOptimizedResidentValidation(options));
 
       expect(result.current).toBeDefined();
     });
@@ -96,7 +94,7 @@ describe('useOptimizedResidentValidation', () => {
       const { result } = renderHook(() => useOptimizedResidentValidation());
 
       expect(result.current.isAsyncValidating).toBe(false);
-      
+
       await act(async () => {
         await result.current.validateFieldAsync('email', 'test@example.com');
       });
@@ -108,16 +106,14 @@ describe('useOptimizedResidentValidation', () => {
 
   describe('performance optimization', () => {
     it('should memoize validation results', () => {
-      const { result, rerender } = renderHook(() => 
-        useOptimizedResidentValidation()
-      );
+      const { result, rerender } = renderHook(() => useOptimizedResidentValidation());
 
       const firstValidateField = result.current.validateField;
-      
+
       rerender();
-      
+
       const secondValidateField = result.current.validateField;
-      
+
       // Functions should be memoized
       expect(firstValidateField).toBe(secondValidateField);
     });

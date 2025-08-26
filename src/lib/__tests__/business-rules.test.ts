@@ -21,9 +21,9 @@ describe('Business Rules - Sectoral Classification', () => {
       const birthdate = '1990-01-01';
       const today = new Date();
       const expectedAge = today.getFullYear() - 1990;
-      
+
       const age = calculateAge(birthdate);
-      
+
       // Account for whether birthday has passed this year
       expect(age).toBeGreaterThanOrEqual(expectedAge - 1);
       expect(age).toBeLessThanOrEqual(expectedAge);
@@ -33,11 +33,11 @@ describe('Business Rules - Sectoral Classification', () => {
       const today = new Date();
       const futureMonth = today.getMonth() + 1;
       const futureDay = today.getDate() + 1;
-      
+
       // Create a birthdate in the future this year (next month/day)
       const birthYear = today.getFullYear() - 25;
       const birthdate = `${birthYear}-${String(futureMonth).padStart(2, '0')}-${String(futureDay).padStart(2, '0')}`;
-      
+
       const age = calculateAge(birthdate);
       expect(age).toBe(24); // Should be 24, not 25, if birthday hasn't passed
     });
@@ -46,10 +46,10 @@ describe('Business Rules - Sectoral Classification', () => {
       const today = new Date();
       const pastMonth = today.getMonth() - 1 || 12;
       const pastDay = today.getDate();
-      
+
       const birthYear = today.getFullYear() - 25;
       const birthdate = `${birthYear}-${String(pastMonth).padStart(2, '0')}-${String(pastDay).padStart(2, '0')}`;
-      
+
       const age = calculateAge(birthdate);
       expect(age).toBe(25); // Should be 25 if birthday has passed
     });
@@ -58,7 +58,7 @@ describe('Business Rules - Sectoral Classification', () => {
       const today = new Date();
       const birthYear = today.getFullYear() - 25;
       const birthdate = `${birthYear}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      
+
       const age = calculateAge(birthdate);
       expect(age).toBe(25);
     });
@@ -70,7 +70,7 @@ describe('Business Rules - Sectoral Classification', () => {
     it('should handle newborns correctly', () => {
       const today = new Date();
       const birthdate = today.toISOString().split('T')[0]; // Today's date
-      
+
       const age = calculateAge(birthdate);
       expect(age).toBe(0);
     });
@@ -224,7 +224,7 @@ describe('Business Rules - Sectoral Classification', () => {
     it('should have no overlap between employed and unemployed statuses', () => {
       const employedSet = new Set(EMPLOYED_STATUSES);
       const unemployedSet = new Set(UNEMPLOYED_STATUSES);
-      
+
       const intersection = new Set(Array.from(employedSet).filter(x => unemployedSet.has(x)));
       expect(intersection.size).toBe(0);
     });
@@ -235,7 +235,7 @@ describe('Business Rules - Sectoral Classification', () => {
       expect(INDIGENOUS_ETHNICITIES).toContain('maguindanao');
       expect(INDIGENOUS_ETHNICITIES).toContain('tausug');
       expect(INDIGENOUS_ETHNICITIES.length).toBeGreaterThan(10);
-      
+
       // Should contain various indigenous groups
       expect(INDIGENOUS_ETHNICITIES).toContain('aeta');
       expect(INDIGENOUS_ETHNICITIES).toContain('igorot');
@@ -247,7 +247,7 @@ describe('Business Rules - Sectoral Classification', () => {
     it('should correctly classify a typical resident profile', () => {
       const birthdate = '1995-06-15'; // ~28 years old
       const age = calculateAge(birthdate);
-      
+
       expect(isOutOfSchoolChildren(age)).toBe(false); // Too old
       expect(isOutOfSchoolYouth(age, 'college', 'employed')).toBe(false); // In school and employed
       expect(isSeniorCitizen(age)).toBe(false); // Too young
@@ -258,7 +258,7 @@ describe('Business Rules - Sectoral Classification', () => {
     it('should correctly classify a senior citizen profile', () => {
       const birthdate = '1950-01-01'; // ~73 years old
       const age = calculateAge(birthdate);
-      
+
       expect(isSeniorCitizen(age)).toBe(true);
       expect(isOutOfSchoolChildren(age)).toBe(false);
       expect(isOutOfSchoolYouth(age)).toBe(false);
@@ -267,7 +267,7 @@ describe('Business Rules - Sectoral Classification', () => {
     it('should correctly classify an indigenous youth profile', () => {
       const birthdate = '2005-03-15'; // ~18 years old
       const age = calculateAge(birthdate);
-      
+
       expect(isOutOfSchoolChildren(age)).toBe(false); // Too old
       expect(isOutOfSchoolYouth(age, 'high_school', 'unemployed')).toBe(true);
       expect(isIndigenousPeople('maranao')).toBe(true);
@@ -278,7 +278,7 @@ describe('Business Rules - Sectoral Classification', () => {
       // Underemployed person should be classified as unemployed but not employed
       expect(isEmployed('underemployed')).toBe(false);
       expect(isUnemployed('underemployed')).toBe(true);
-      
+
       // Self-employed person should be classified as employed but not unemployed
       expect(isEmployed('self_employed')).toBe(true);
       expect(isUnemployed('self_employed')).toBe(false);

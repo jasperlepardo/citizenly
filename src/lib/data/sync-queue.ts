@@ -28,7 +28,7 @@ export class SyncQueue {
     data: any
   ): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await offlineStorage.addToSyncQueue({
       action,
       type,
@@ -56,7 +56,7 @@ export class SyncQueue {
 
     try {
       const pendingItems = await offlineStorage.getPendingSyncItems();
-      
+
       for (const item of pendingItems) {
         if (item.retryCount >= this.maxRetries) {
           console.warn(`Max retries exceeded for sync item ${item.id}`);
@@ -65,7 +65,7 @@ export class SyncQueue {
 
         try {
           const result = await this.syncItem(item);
-          
+
           if (result.success) {
             await offlineStorage.markSyncItemCompleted(item.id!);
             console.log(`Successfully synced ${item.action} ${item.type}`);
@@ -97,7 +97,9 @@ export class SyncQueue {
     try {
       // Get auth token
       const { supabase } = await import('@/lib/supabase');
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
         return { success: false, error: 'No authentication token' };
@@ -105,7 +107,7 @@ export class SyncQueue {
 
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${session.access_token}`,
       };
 
       let response: Response;
@@ -129,15 +131,15 @@ export class SyncQueue {
         return { success: true, data: responseData };
       } else {
         const errorData = await response.json().catch(() => ({}));
-        return { 
-          success: false, 
-          error: errorData.error || `HTTP ${response.status}: ${response.statusText}` 
+        return {
+          success: false,
+          error: errorData.error || `HTTP ${response.status}: ${response.statusText}`,
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -157,7 +159,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'CREATE' }
+        context: { type, action: 'CREATE' },
       });
     }
 
@@ -183,7 +185,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'UPDATE' }
+        context: { type, action: 'UPDATE' },
       });
     }
 
@@ -209,7 +211,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'DELETE' }
+        context: { type, action: 'DELETE' },
       });
     }
 
@@ -224,11 +226,11 @@ export class SyncQueue {
    */
   async forceSync(): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     if (!navigator.onLine) {
       throw createAppError('Cannot force sync while offline', {
         code: ErrorCode.NETWORK_ERROR,
-        severity: ErrorSeverity.MEDIUM
+        severity: ErrorSeverity.MEDIUM,
       });
     }
 
@@ -244,7 +246,7 @@ export class SyncQueue {
     isOnline: boolean;
   }> {
     const pendingItems = await offlineStorage.getPendingSyncItems();
-    
+
     return {
       isProcessing: this.isProcessing,
       pendingCount: pendingItems.length,
@@ -273,7 +275,7 @@ export class SyncQueue {
    */
   setupEventListeners(): void {
     if (typeof window === 'undefined') return;
-    
+
     window.addEventListener('online', () => {
       console.log('Connection restored, processing sync queue...');
       this.processQueue();

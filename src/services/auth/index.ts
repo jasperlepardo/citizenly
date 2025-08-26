@@ -17,7 +17,7 @@ export {
   // Session management
   getCurrentSession,
   onAuthStateChange,
-  // Role and permission functions  
+  // Role and permission functions
   hasRole,
   isAdmin,
   canAccessBarangay,

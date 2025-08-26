@@ -15,13 +15,15 @@ export async function GET(request: NextRequest) {
   try {
     let query = supabase
       .from('geo_streets')
-      .select(`
+      .select(
+        `
         id,
         name,
         subdivision_id,
         barangay_code,
         is_active
-      `)
+      `
+      )
       .eq('is_active', true)
       .order('name');
 
@@ -51,24 +53,21 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = streets?.map((street) => ({
-      value: street.id,
-      label: street.name,
-      subdivision_id: street.subdivision_id,
-      barangay_code: street.barangay_code,
-    })) || [];
+    const options =
+      streets?.map(street => ({
+        value: street.id,
+        label: street.name,
+        subdivision_id: street.subdivision_id,
+        barangay_code: street.barangay_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,
       data: options,
       count: options.length,
     });
-
   } catch (error) {
     console.error('Unexpected error in streets API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

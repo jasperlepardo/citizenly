@@ -127,7 +127,11 @@ export const SpacingSwatch: React.FC<SpacingSwatchProps> = ({ name, value, showV
             maxWidth: '200px',
           }}
         />
-        {isLarge && <div className="ml-2 text-xs text-gray-400 dark:text-gray-600">(scaled down for display)</div>}
+        {isLarge && (
+          <div className="ml-2 text-xs text-gray-400 dark:text-gray-600">
+            (scaled down for display)
+          </div>
+        )}
       </div>
     </div>
   );
@@ -143,7 +147,9 @@ export const SpacingGroup: React.FC<SpacingGroupProps> = ({ title, spacings, des
   <div className="mb-8">
     <div className="mb-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-      {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
+      {description && (
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+      )}
     </div>
     <div className="space-y-2">
       {Object.entries(spacings).map(([name, value]) => (
@@ -162,7 +168,8 @@ interface SpacingDemoProps {
 export const SpacingDemo: React.FC<SpacingDemoProps> = ({ title, spacing, children }) => (
   <div className="mb-6">
     <h4 className="text-md mb-2 font-medium text-gray-900 dark:text-gray-100">
-      {title} <span className="font-mono text-sm text-gray-500 dark:text-gray-500">({spacing})</span>
+      {title}{' '}
+      <span className="font-mono text-sm text-gray-500 dark:text-gray-500">({spacing})</span>
     </h4>
     <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">{children}</div>
   </div>
@@ -176,7 +183,9 @@ const Spacing: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Design Tokens: Spacing</h1>
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Design Tokens: Spacing
+        </h1>
         <p className="max-w-2xl text-gray-600 dark:text-gray-400">
           Spacing tokens for the Citizenly design system. These tokens ensure consistent rhythm and
           alignment across all government applications using a 4px base grid.
@@ -185,7 +194,9 @@ const Spacing: React.FC = () => {
 
       {/* Base Spacing Scale */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Base Spacing Scale</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Base Spacing Scale
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Built on a 4px base grid system for pixel-perfect alignment across all screen sizes.
         </p>
@@ -193,7 +204,9 @@ const Spacing: React.FC = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Small Values */}
           <div>
-            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Small Values (0-24px)</h3>
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+              Small Values (0-24px)
+            </h3>
             <div className="space-y-2">
               {Object.entries(spacingTokens)
                 .filter(([_, value]) => parseInt(value) <= 24)
@@ -205,7 +218,9 @@ const Spacing: React.FC = () => {
 
           {/* Medium Values */}
           <div>
-            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Medium Values (28-96px)</h3>
+            <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+              Medium Values (28-96px)
+            </h3>
             <div className="space-y-2">
               {Object.entries(spacingTokens)
                 .filter(([_, value]) => {
@@ -221,7 +236,9 @@ const Spacing: React.FC = () => {
 
         {/* Large Values */}
         <div className="mt-8">
-          <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">Large Values (112px+)</h3>
+          <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+            Large Values (112px+)
+          </h3>
           <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
             {Object.entries(spacingTokens)
               .filter(([_, value]) => parseInt(value) > 96)
@@ -234,7 +251,9 @@ const Spacing: React.FC = () => {
 
       {/* Semantic Spacing */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Semantic Spacing</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Semantic Spacing
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           Contextual spacing tokens that provide meaning and consistency across different use cases.
         </p>
@@ -268,7 +287,9 @@ const Spacing: React.FC = () => {
 
       {/* Visual Examples */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Spacing in Action</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Spacing in Action
+        </h2>
 
         {/* Component Spacing Example */}
         <SpacingDemo title="Component Internal Spacing" spacing="12px">
@@ -301,7 +322,9 @@ const Spacing: React.FC = () => {
         <SpacingDemo title="Form Element Spacing" spacing="16px field gap">
           <div className="max-w-md">
             <div style={{ marginBottom: semanticSpacing.form.fieldGap }}>
-              <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-gray-100">First Name</label>
+              <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-gray-100">
+                First Name
+              </label>
               <input
                 type="text"
                 className="w-full rounded-md border border-gray-300 px-3 py-2"
@@ -310,7 +333,9 @@ const Spacing: React.FC = () => {
             </div>
 
             <div style={{ marginBottom: semanticSpacing.form.fieldGap }}>
-              <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-gray-100">Last Name</label>
+              <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-gray-100">
+                Last Name
+              </label>
               <input
                 type="text"
                 className="w-full rounded-md border border-gray-300 px-3 py-2"
@@ -319,7 +344,9 @@ const Spacing: React.FC = () => {
             </div>
 
             <div className="mt-6 flex gap-3">
-              <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black">Submit</button>
+              <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black">
+                Submit
+              </button>
               <button className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-300">
                 Cancel
               </button>
@@ -330,13 +357,17 @@ const Spacing: React.FC = () => {
 
       {/* Grid System */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">4px Grid System</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          4px Grid System
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           All spacing values are multiples of 4px to ensure consistent alignment and rhythm.
         </p>
 
         <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Grid Visualization</h3>
+          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">
+            Grid Visualization
+          </h3>
           <div className="relative">
             {/* Grid Background */}
             <div
@@ -368,10 +399,14 @@ const Spacing: React.FC = () => {
 
       {/* Usage Guidelines */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">📏 Spacing Guidelines</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          📏 Spacing Guidelines
+        </h3>
         <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
           <div>
-            <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Component Spacing</h4>
+            <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+              Component Spacing
+            </h4>
             <ul className="space-y-1 text-gray-800 dark:text-gray-200">
               <li>• Use xs (4px) for tight internal spacing</li>
               <li>• Use sm-md (8-12px) for comfortable internal spacing</li>

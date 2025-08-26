@@ -59,10 +59,10 @@ export const processHouseholdsOptimized = async (
 
   // Process households with their heads (now O(1) lookup)
   return householdsData.map(household => {
-    const headResident = household.household_head_id 
+    const headResident = household.household_head_id
       ? headsMap.get(household.household_head_id)
       : undefined;
-    
+
     return formatHouseholdOption(household, headResident);
   });
 };
@@ -73,7 +73,8 @@ export const processHouseholdsOptimized = async (
 export const buildHouseholdQuery = (barangayCode: string) => {
   return supabase
     .from('households')
-    .select(`
+    .select(
+      `
       code,
       name,
       house_number,
@@ -83,7 +84,8 @@ export const buildHouseholdQuery = (barangayCode: string) => {
       household_head_id,
       geo_streets(id, name),
       geo_subdivisions(id, name, type)
-    `)
+    `
+    )
     .eq('barangay_code', barangayCode);
 };
 
@@ -102,8 +104,7 @@ export const searchHouseholdsOptimized = async (
 
     // Add search filtering if query provided
     if (query && query.trim()) {
-      householdQuery = householdQuery
-        .or(`code.ilike.%${query}%,house_number.ilike.%${query}%`);
+      householdQuery = householdQuery.or(`code.ilike.%${query}%,house_number.ilike.%${query}%`);
     }
 
     const { data: householdsData, error } = await householdQuery;
@@ -162,7 +163,7 @@ export const searchHouseholdsCached = async (
   limit: number = 20
 ): Promise<HouseholdOption[]> => {
   const cacheKey = `${barangayCode}-${query || 'all'}-${limit}`;
-  
+
   // Check cache first
   const cached = householdCache.get(cacheKey);
   if (cached) {
@@ -172,6 +173,6 @@ export const searchHouseholdsCached = async (
   // Fetch and cache
   const results = await searchHouseholdsOptimized(barangayCode, query, limit);
   householdCache.set(cacheKey, results);
-  
+
   return results;
 };

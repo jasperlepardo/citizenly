@@ -64,7 +64,8 @@ export const GET = withSecurityHeaders(
         // Build base query using exact database field names
         let query = supabaseAdmin
           .from('households')
-          .select(`
+          .select(
+            `
             code,
             name,
             address,
@@ -90,7 +91,9 @@ export const GET = withSecurityHeaders(
             is_active,
             created_at,
             updated_at
-          `, { count: 'exact' })
+          `,
+            { count: 'exact' }
+          )
           .eq('is_active', true)
           .order('code', { ascending: true });
 

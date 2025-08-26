@@ -2,7 +2,7 @@
 
 /**
  * Resident Edit Workflow Hook
- * 
+ *
  * @description Orchestrates the complete resident edit workflow by composing
  * smaller, focused hooks. Replaces the monolithic useResidentEditForm hook.
  */
@@ -11,7 +11,10 @@ import { useCallback } from 'react';
 
 import type { ResidentFormData as ResidentEditFormData } from '@/types';
 
-import { useResidentSubmission, UseResidentSubmissionOptions } from '../utilities/useResidentSubmission';
+import {
+  useResidentSubmission,
+  UseResidentSubmissionOptions,
+} from '../utilities/useResidentSubmission';
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 
 import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';
@@ -19,9 +22,9 @@ import { useResidentFormState, UseResidentFormStateOptions } from './useResident
 /**
  * Workflow options combining all sub-hook options
  */
-export interface UseResidentEditWorkflowOptions 
-  extends UseResidentFormStateOptions, 
-          UseResidentSubmissionOptions {}
+export interface UseResidentEditWorkflowOptions
+  extends UseResidentFormStateOptions,
+    UseResidentSubmissionOptions {}
 
 /**
  * Return type for useResidentEditWorkflow hook
@@ -33,7 +36,7 @@ export interface UseResidentEditWorkflowReturn {
   updateField: ReturnType<typeof useResidentFormState>['updateField'];
   updateFields: ReturnType<typeof useResidentFormState>['updateFields'];
   resetForm: ReturnType<typeof useResidentFormState>['resetForm'];
-  
+
   // Validation errors
   errors: ReturnType<typeof useResidentValidationErrors>['errors'];
   isValid: ReturnType<typeof useResidentValidationErrors>['isValid'];
@@ -41,11 +44,11 @@ export interface UseResidentEditWorkflowReturn {
   getFieldError: ReturnType<typeof useResidentValidationErrors>['getFieldError'];
   hasFieldError: ReturnType<typeof useResidentValidationErrors>['hasFieldError'];
   clearFieldError: ReturnType<typeof useResidentValidationErrors>['clearFieldError'];
-  
+
   // Submission
   isSubmitting: ReturnType<typeof useResidentSubmission>['isSubmitting'];
   submissionError: ReturnType<typeof useResidentSubmission>['submissionError'];
-  
+
   // Workflow methods
   validateForm: ReturnType<typeof useResidentValidationErrors>['validateForm'];
   submitForm: () => Promise<void>;
@@ -54,10 +57,10 @@ export interface UseResidentEditWorkflowReturn {
 
 /**
  * Custom hook for complete resident edit workflow
- * 
+ *
  * @description Orchestrates the entire resident edit process by composing
  * focused hooks for state management, validation, and submission.
- * 
+ *
  * @example
  * ```typescript
  * function ResidentEditForm() {
@@ -109,31 +112,34 @@ export function useResidentEditWorkflow(
   /**
    * Enhanced field update with validation
    */
-  const updateField = useCallback(<K extends keyof ResidentEditFormData>(
-    field: K,
-    value: ResidentEditFormData[K]
-  ) => {
-    stateHook.updateField(field, value);
-    
-    // Clear field error when user starts typing
-    if (validationHook.hasFieldError(field)) {
-      validationHook.clearFieldError(field);
-    }
-  }, [stateHook, validationHook]);
+  const updateField = useCallback(
+    <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => {
+      stateHook.updateField(field, value);
+
+      // Clear field error when user starts typing
+      if (validationHook.hasFieldError(field)) {
+        validationHook.clearFieldError(field);
+      }
+    },
+    [stateHook, validationHook]
+  );
 
   /**
    * Enhanced field update with validation for multiple fields
    */
-  const updateFields = useCallback((fields: Partial<ResidentEditFormData>) => {
-    stateHook.updateFields(fields);
-    
-    // Clear errors for updated fields
-    Object.keys(fields).forEach(field => {
-      if (validationHook.hasFieldError(field as keyof ResidentEditFormData)) {
-        validationHook.clearFieldError(field as keyof ResidentEditFormData);
-      }
-    });
-  }, [stateHook, validationHook]);
+  const updateFields = useCallback(
+    (fields: Partial<ResidentEditFormData>) => {
+      stateHook.updateFields(fields);
+
+      // Clear errors for updated fields
+      Object.keys(fields).forEach(field => {
+        if (validationHook.hasFieldError(field as keyof ResidentEditFormData)) {
+          validationHook.clearFieldError(field as keyof ResidentEditFormData);
+        }
+      });
+    },
+    [stateHook, validationHook]
+  );
 
   /**
    * Validate form and return result
@@ -166,7 +172,7 @@ export function useResidentEditWorkflow(
     updateField: stateHook.updateField,
     updateFields: stateHook.updateFields,
     resetForm: stateHook.resetForm,
-    
+
     // Validation errors
     errors: validationHook.errors,
     isValid: validationHook.isValid,
@@ -174,11 +180,11 @@ export function useResidentEditWorkflow(
     getFieldError: validationHook.getFieldError,
     hasFieldError: validationHook.hasFieldError,
     clearFieldError: validationHook.clearFieldError,
-    
+
     // Submission
     isSubmitting: submissionHook.isSubmitting,
     submissionError: submissionHook.submissionError,
-    
+
     // Workflow methods
     validateForm: validationHook.validateForm,
     submitForm,

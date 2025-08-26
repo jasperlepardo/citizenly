@@ -8,7 +8,7 @@ export * from './dev-config';
 export {
   getEnvironment,
   isDevelopment,
-  isStaging, 
+  isStaging,
   isProduction,
   isTest,
   isProductionLike,
@@ -18,7 +18,7 @@ export {
   createLogger,
   validateEnvironment,
   performRuntimeHealthCheck,
-  logEnvironmentStatus
+  logEnvironmentStatus,
 } from './environment';
 
 // Export specific items from env-config that don't conflict
@@ -28,5 +28,5 @@ export {
   getQualityChecks,
   getToolConfig,
   logEnvironmentInfo,
-  shouldEnableFeature
+  shouldEnableFeature,
 } from './env-config';

@@ -3,15 +3,14 @@
  * Tests all critical mapping functions for data consistency
  */
 
-
 import type {
   ResidentFormData,
   ResidentApiData,
   ResidentWithRelations,
-
   HouseholdData,
   HouseholdHead,
-  HouseholdOption} from '@/types';
+  HouseholdOption,
+} from '@/types';
 
 import {
   mapFormToApi,
@@ -220,36 +219,46 @@ describe('Resident Mapper Utilities', () => {
 
   describe('formatFullName', () => {
     it('should format full name correctly', () => {
-      expect(formatFullName({
-        first_name: 'Juan',
-        middle_name: 'Dela',
-        last_name: 'Cruz',
-        extension_name: 'Jr.',
-      })).toBe('Juan Dela Cruz Jr.');
+      expect(
+        formatFullName({
+          first_name: 'Juan',
+          middle_name: 'Dela',
+          last_name: 'Cruz',
+          extension_name: 'Jr.',
+        })
+      ).toBe('Juan Dela Cruz Jr.');
 
-      expect(formatFullName({
-        firstName: 'Maria',
-        lastName: 'Santos',
-      })).toBe('Maria Santos');
+      expect(
+        formatFullName({
+          firstName: 'Maria',
+          lastName: 'Santos',
+        })
+      ).toBe('Maria Santos');
 
-      expect(formatFullName({
-        first_name: 'Pedro',
-        last_name: 'Garcia',
-      })).toBe('Pedro Garcia');
+      expect(
+        formatFullName({
+          first_name: 'Pedro',
+          last_name: 'Garcia',
+        })
+      ).toBe('Pedro Garcia');
     });
 
     it('should handle empty values', () => {
-      expect(formatFullName({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-      })).toBe('');
+      expect(
+        formatFullName({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+        })
+      ).toBe('');
 
-      expect(formatFullName({
-        first_name: 'Juan',
-        middle_name: '',
-        last_name: 'Cruz',
-      })).toBe('Juan Cruz');
+      expect(
+        formatFullName({
+          first_name: 'Juan',
+          middle_name: '',
+          last_name: 'Cruz',
+        })
+      ).toBe('Juan Cruz');
     });
   });
 

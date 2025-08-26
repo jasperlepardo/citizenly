@@ -10,21 +10,14 @@ export type {
   CivilStatusData,
   EmploymentStatusData,
   ChartType,
-  ChartDataPoint
+  ChartDataPoint,
 } from '@/lib/ui/chart-transformers';
 
 // Re-export pie chart types
-export type {
-  PieSliceData,
-  PieSliceWithAngles
-} from '@/lib/ui/pieChartMath';
+export type { PieSliceData, PieSliceWithAngles } from '@/lib/ui/pieChartMath';
 
 // Re-export population pyramid types
-export type {
-  AgeGroupData,
-  PopulationStats,
-  TooltipData
-} from '@/lib/ui/population-pyramid';
+export type { AgeGroupData, PopulationStats, TooltipData } from '@/lib/ui/population-pyramid';
 
 // Import types for local use in interface definitions
 import type { ChartDataPoint } from '@/lib/ui/chart-transformers';
@@ -35,19 +28,19 @@ import type { AgeGroupData } from '@/lib/ui/population-pyramid';
 export interface BaseChartProps {
   /** Chart title */
   title?: string;
-  
+
   /** Additional CSS classes */
   className?: string;
-  
+
   /** Chart size variant */
   variant?: 'default' | 'compact' | 'detailed';
-  
+
   /** Chart intent/purpose */
   intent?: 'primary' | 'secondary' | 'embedded';
-  
+
   /** Loading state */
   loading?: boolean;
-  
+
   /** Error state */
   error?: string;
 }
@@ -56,19 +49,19 @@ export interface BaseChartProps {
 export interface PieChartProps extends BaseChartProps {
   /** Chart data points */
   data: PieSliceData[];
-  
+
   /** Show legend */
   showLegend?: boolean;
-  
+
   /** Show values on slices */
   showValues?: boolean;
-  
+
   /** Show percentages on slices */
   showPercentages?: boolean;
-  
+
   /** Chart radius */
   radius?: number;
-  
+
   /** Inner radius for donut charts */
   innerRadius?: number;
 }
@@ -77,13 +70,13 @@ export interface PieChartProps extends BaseChartProps {
 export interface BarChartProps extends BaseChartProps {
   /** Chart data points */
   data: ChartDataPoint[];
-  
+
   /** Orientation */
   orientation?: 'horizontal' | 'vertical';
-  
+
   /** Show grid lines */
   showGrid?: boolean;
-  
+
   /** Show axis labels */
   showAxisLabels?: boolean;
 }
@@ -92,13 +85,13 @@ export interface BarChartProps extends BaseChartProps {
 export interface PopulationPyramidProps extends BaseChartProps {
   /** Age group data */
   data: AgeGroupData[];
-  
+
   /** Show statistics */
   showStats?: boolean;
-  
+
   /** Show age labels */
   showAgeLabels?: boolean;
-  
+
   /** Color scheme */
   colorScheme?: 'default' | 'blue-purple' | 'custom';
 }

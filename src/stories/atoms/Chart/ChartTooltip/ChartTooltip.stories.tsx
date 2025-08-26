@@ -139,35 +139,30 @@ export const InteractiveDemo: Story = {
     ];
 
     return (
-      <div className="relative w-96 h-64 border border-zinc-200 dark:border-zinc-800 rounded-lg p-4">
-        <h3 className="text-center mb-4 font-semibold">Hover over the items below</h3>
+      <div className="relative h-64 w-96 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+        <h3 className="mb-4 text-center font-semibold">Hover over the items below</h3>
         <div className="space-y-2">
           {chartData.map((item, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-muted"
-              onMouseEnter={(e) => {
+              className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded p-2"
+              onMouseEnter={e => {
                 setPosition({ x: e.clientX, y: e.clientY });
                 setHoveredData(item);
               }}
               onMouseLeave={() => setHoveredData(null)}
-              onMouseMove={(e) => {
+              onMouseMove={e => {
                 setPosition({ x: e.clientX, y: e.clientY });
               }}
             >
-              <div
-                className="w-4 h-4 rounded"
-                style={{ backgroundColor: item.color }}
-              />
-              <span>{item.label}: {item.count} ({item.percentage}%)</span>
+              <div className="h-4 w-4 rounded" style={{ backgroundColor: item.color }} />
+              <span>
+                {item.label}: {item.count} ({item.percentage}%)
+              </span>
             </div>
           ))}
         </div>
-        <ChartTooltip
-          visible={!!hoveredData}
-          position={position}
-          data={hoveredData}
-        />
+        <ChartTooltip visible={!!hoveredData} position={position} data={hoveredData} />
       </div>
     );
   },

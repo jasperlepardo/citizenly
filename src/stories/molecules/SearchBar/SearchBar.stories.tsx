@@ -302,7 +302,9 @@ export const SearchExample: Story = {
         />
 
         {isSearching && (
-          <div className="mt-4 rounded-sm bg-gray-50 p-3 text-sm text-gray-600 dark:text-gray-400">Searching...</div>
+          <div className="mt-4 rounded-sm bg-gray-50 p-3 text-sm text-gray-600 dark:text-gray-400">
+            Searching...
+          </div>
         )}
 
         {results.length > 0 && !isSearching && (
@@ -399,7 +401,9 @@ export const AccessibilityDemo: Story = {
     return (
       <div className="space-y-6">
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Keyboard Shortcuts</h3>
+          <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Keyboard Shortcuts
+          </h3>
           <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
             <li>
               • <kbd className="rounded bg-blue-100 px-1 py-0.5">Enter</kbd> to perform search

@@ -2,7 +2,7 @@
 
 /**
  * Generic Search Hook
- * 
+ *
  * @description Refactored generic search hook using extracted utilities.
  * Replaces the original useSearch hook with cleaner implementation.
  */
@@ -34,7 +34,7 @@ export interface UseGenericSearchReturn<T> {
 
 /**
  * Generic search hook for handling search state and operations
- * 
+ *
  * @description Provides a clean, reusable interface for search functionality
  * with debouncing, error handling, and loading states.
  */
@@ -42,65 +42,56 @@ export function useGenericSearch<T>(
   searchFn: SearchFunction<T>,
   config: BaseSearchConfig = {}
 ): UseGenericSearchReturn<T> {
-  const {
-    debounceMs = 300,
-    initialQuery = '',
-    minQueryLength = 0,
-    onError
-  } = config;
+  const { debounceMs = 300, initialQuery = '', minQueryLength = 0, onError } = config;
 
-  const [state, setState] = useState<SearchState<T>>(() => 
-    createSearchState<T>(initialQuery)
-  );
+  const [state, setState] = useState<SearchState<T>>(() => createSearchState<T>(initialQuery));
 
   const debouncedQuery = useDebounce(state.query, debounceMs);
 
   // Create search executor directly with useCallback to prevent infinite loops
-  const executeSearch = useCallback(async (searchQuery: string) => {
-
-    if (searchQuery.length < minQueryLength) {
-      setState(prev => ({
-        ...prev,
-        results: [],
-        error: null,
-        isLoading: false,
-      }));
-      return;
-    }
-
-    setState(prev => ({
-      ...prev,
-      isLoading: true,
-      error: null,
-    }));
-
-    try {
-      const searchResults = await searchFn(searchQuery);
-      setState(prev => ({
-        ...prev,
-        results: searchResults,
-        isLoading: false,
-      }));
-    } catch (error) {
-      const searchError = error instanceof Error ? error : new Error('Search failed');
-      if (onError) {
-        onError(searchError);
+  const executeSearch = useCallback(
+    async (searchQuery: string) => {
+      if (searchQuery.length < minQueryLength) {
+        setState(prev => ({
+          ...prev,
+          results: [],
+          error: null,
+          isLoading: false,
+        }));
+        return;
       }
+
       setState(prev => ({
         ...prev,
-        results: [],
-        error: searchError,
-        isLoading: false,
+        isLoading: true,
+        error: null,
       }));
-    }
-  }, [searchFn, minQueryLength, onError]);
+
+      try {
+        const searchResults = await searchFn(searchQuery);
+        setState(prev => ({
+          ...prev,
+          results: searchResults,
+          isLoading: false,
+        }));
+      } catch (error) {
+        const searchError = error instanceof Error ? error : new Error('Search failed');
+        if (onError) {
+          onError(searchError);
+        }
+        setState(prev => ({
+          ...prev,
+          results: [],
+          error: searchError,
+          isLoading: false,
+        }));
+      }
+    },
+    [searchFn, minQueryLength, onError]
+  );
 
   // Create search utilities
-  const { clearSearch, refresh, setQuery } = createSearchUtilities(
-    state, 
-    setState, 
-    executeSearch
-  );
+  const { clearSearch, refresh, setQuery } = createSearchUtilities(state, setState, executeSearch);
 
   // Execute search when debounced query changes
   useEffect(() => {

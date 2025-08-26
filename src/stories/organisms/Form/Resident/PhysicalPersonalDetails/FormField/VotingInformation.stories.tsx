@@ -188,7 +188,7 @@ export const OldYearError: Story = {
 export const VotingScenarios: Story = {
   render: () => {
     const [currentScenario, setCurrentScenario] = useState(0);
-    
+
     const scenarios = [
       {
         label: 'Not Registered',
@@ -226,12 +226,8 @@ export const VotingScenarios: Story = {
 
     return (
       <div className="space-y-6">
-        <VotingInformation
-          value={currentData.data}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <VotingInformation value={currentData.data} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {scenarios.map((scenario, index) => (
@@ -248,14 +244,30 @@ export const VotingScenarios: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">{currentData.label}</h4>
             <p className="mt-1 text-sm text-gray-600">{currentData.description}</p>
             <div className="mt-2 space-y-1 text-sm">
-              <p><strong>Registered Voter:</strong> {currentData.data.isVoter === true ? 'Yes' : currentData.data.isVoter === false ? 'No' : 'Not specified'}</p>
-              <p><strong>Resident Voter:</strong> {currentData.data.isResidentVoter === true ? 'Yes' : currentData.data.isResidentVoter === false ? 'No' : 'Not specified'}</p>
-              <p><strong>Last Voted:</strong> {currentData.data.lastVotedDate || 'Not specified'}</p>
+              <p>
+                <strong>Registered Voter:</strong>{' '}
+                {currentData.data.isVoter === true
+                  ? 'Yes'
+                  : currentData.data.isVoter === false
+                    ? 'No'
+                    : 'Not specified'}
+              </p>
+              <p>
+                <strong>Resident Voter:</strong>{' '}
+                {currentData.data.isResidentVoter === true
+                  ? 'Yes'
+                  : currentData.data.isResidentVoter === false
+                    ? 'No'
+                    : 'Not specified'}
+              </p>
+              <p>
+                <strong>Last Voted:</strong> {currentData.data.lastVotedDate || 'Not specified'}
+              </p>
             </div>
           </div>
         </div>
@@ -279,13 +291,13 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: VotingInformationData) => {
       setValue(newValue);
-      
+
       // Clear last voted date if user becomes non-voter
-      if ((newValue.isVoter === false && newValue.isResidentVoter === false) && value.lastVotedDate) {
+      if (newValue.isVoter === false && newValue.isResidentVoter === false && value.lastVotedDate) {
         const updatedValue = { ...newValue, lastVotedDate: '' };
         setValue(updatedValue);
       }
-      
+
       // Clear errors when fields are updated
       const newErrors = { ...errors };
       if (newValue.lastVotedDate && errors.lastVotedDate) {
@@ -297,9 +309,9 @@ export const Interactive: Story = {
     const validate = () => {
       const newErrors: Record<string, string> = {};
       const currentYear = new Date().getFullYear();
-      
+
       // Require last voted year if either voter status is true
-      if ((value.isVoter === true || value.isResidentVoter === true)) {
+      if (value.isVoter === true || value.isResidentVoter === true) {
         if (!value.lastVotedDate) {
           newErrors.lastVotedDate = 'Last voted year is required for registered voters';
         } else {
@@ -309,7 +321,7 @@ export const Interactive: Story = {
           }
         }
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -333,12 +345,8 @@ export const Interactive: Story = {
 
     return (
       <div className="space-y-6">
-        <VotingInformation
-          value={value}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
+        <VotingInformation value={value} onChange={handleChange} errors={errors} />
+
         <div className="flex space-x-4">
           <button
             onClick={validate}
@@ -365,18 +373,32 @@ export const Interactive: Story = {
             Reset
           </button>
         </div>
-        
+
         <div className="space-y-4">
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">Current State:</h4>
             <div className="mt-2 space-y-1 text-sm">
-              <p><strong>Shows Last Voted Field:</strong> {showLastVotedField ? 'Yes' : 'No'}</p>
-              <p><strong>Registered Voter:</strong> {value.isVoter === true ? 'Yes' : value.isVoter === false ? 'No' : 'Not specified'}</p>
-              <p><strong>Resident Voter:</strong> {value.isResidentVoter === true ? 'Yes' : value.isResidentVoter === false ? 'No' : 'Not specified'}</p>
-              <p><strong>Last Voted:</strong> {value.lastVotedDate || 'Not specified'}</p>
+              <p>
+                <strong>Shows Last Voted Field:</strong> {showLastVotedField ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <strong>Registered Voter:</strong>{' '}
+                {value.isVoter === true ? 'Yes' : value.isVoter === false ? 'No' : 'Not specified'}
+              </p>
+              <p>
+                <strong>Resident Voter:</strong>{' '}
+                {value.isResidentVoter === true
+                  ? 'Yes'
+                  : value.isResidentVoter === false
+                    ? 'No'
+                    : 'Not specified'}
+              </p>
+              <p>
+                <strong>Last Voted:</strong> {value.lastVotedDate || 'Not specified'}
+              </p>
             </div>
           </div>
-          
+
           {Object.keys(errors).length > 0 && (
             <div className="rounded bg-red-100 p-4">
               <h4 className="font-medium text-red-800">Validation Errors:</h4>
@@ -400,7 +422,7 @@ export const Interactive: Story = {
 export const ElectionYears: Story = {
   render: () => {
     const [selectedYear, setSelectedYear] = useState('2024');
-    
+
     const recentElections = [
       { year: '2024', type: 'Barangay & SK Elections' },
       { year: '2022', type: 'National & Local Elections' },
@@ -418,16 +440,12 @@ export const ElectionYears: Story = {
 
     return (
       <div className="space-y-6">
-        <VotingInformation
-          value={currentData}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <VotingInformation value={currentData} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <h4 className="font-medium">Recent Philippine Elections:</h4>
           <div className="space-y-2">
-            {recentElections.map((election) => (
+            {recentElections.map(election => (
               <button
                 key={election.year}
                 onClick={() => setSelectedYear(election.year)}
@@ -442,7 +460,7 @@ export const ElectionYears: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="rounded bg-blue-50 p-4">
             <h5 className="font-medium">Selected Election</h5>
             <p className="text-sm text-gray-600">
@@ -466,7 +484,7 @@ export const ElectionYears: Story = {
 export const VotingEligibility: Story = {
   render: () => {
     const [currentAge, setCurrentAge] = useState(25);
-    
+
     const ageGroups = [
       { age: 17, eligible: false, description: 'Too young to vote' },
       { age: 18, eligible: true, description: 'Newly eligible voter' },
@@ -477,28 +495,24 @@ export const VotingEligibility: Story = {
     ];
 
     const currentGroup = ageGroups.find(group => group.age === currentAge);
-    const voterData = currentGroup?.eligible 
+    const voterData = currentGroup?.eligible
       ? { isVoter: true, isResidentVoter: true, lastVotedDate: '2022' }
       : { isVoter: false, isResidentVoter: false, lastVotedDate: '' };
 
     return (
       <div className="space-y-6">
-        <VotingInformation
-          value={voterData}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <VotingInformation value={voterData} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <h4 className="font-medium">Voting Eligibility by Age:</h4>
           <div className="flex flex-wrap gap-2">
-            {ageGroups.map((group) => (
+            {ageGroups.map(group => (
               <button
                 key={group.age}
                 onClick={() => setCurrentAge(group.age)}
                 className={`rounded px-3 py-1 text-sm ${
                   currentAge === group.age
-                    ? group.eligible 
+                    ? group.eligible
                       ? 'bg-green-600 text-white'
                       : 'bg-red-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -508,22 +522,17 @@ export const VotingEligibility: Story = {
               </button>
             ))}
           </div>
-          
+
           {currentGroup && (
-            <div className={`rounded p-4 ${
-              currentGroup.eligible ? 'bg-green-50' : 'bg-red-50'
-            }`}>
+            <div className={`rounded p-4 ${currentGroup.eligible ? 'bg-green-50' : 'bg-red-50'}`}>
               <h5 className="font-medium">Age {currentGroup.age}</h5>
-              <p className={`text-sm ${
-                currentGroup.eligible ? 'text-green-700' : 'text-red-700'
-              }`}>
+              <p className={`text-sm ${currentGroup.eligible ? 'text-green-700' : 'text-red-700'}`}>
                 {currentGroup.description}
               </p>
-              <p className="text-sm text-gray-600 mt-1">
-                {currentGroup.eligible 
+              <p className="mt-1 text-sm text-gray-600">
+                {currentGroup.eligible
                   ? 'Eligible to register and vote in Philippine elections'
-                  : 'Must be at least 18 years old to vote'
-                }
+                  : 'Must be at least 18 years old to vote'}
               </p>
             </div>
           )}

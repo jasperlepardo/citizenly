@@ -1,6 +1,6 @@
 /**
  * useResidents Hook
- * 
+ *
  * Custom hook for fetching and caching residents data with React Query
  */
 
@@ -64,17 +64,19 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
 
   clientLogger.debug('Fetching residents', {
     action: 'fetch_residents_start',
-    data: { page, pageSize, searchTerm, filtersCount: Object.keys(filters).length }
+    data: { page, pageSize, searchTerm, filtersCount: Object.keys(filters).length },
   });
 
   // Get current session to pass auth token
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session?.access_token) {
     const error = new Error('No valid session found - please log in again');
     clientLogger.error('Authentication error in fetchResidents', {
       action: 'fetch_residents_auth_error',
-      error: error
+      error: error,
     });
     throw error;
   }
@@ -92,7 +94,7 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
   // Add filter parameters with enhanced processing
   Object.entries(filters).forEach(([key, value]) => {
     if (value === undefined || value === null || value === '') return;
-    
+
     // Handle array filters
     if (Array.isArray(value)) {
       if (value.length > 0) {
@@ -113,23 +115,24 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
   });
 
   const url = `/api/residents?${queryParams}`;
-  
+
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${session.access_token}`,
       },
     });
 
     if (!response.ok) {
       let errorMessage: string;
       let errorCode: string | undefined;
-      
+
       try {
         const errorData = await response.json();
-        errorMessage = errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
+        errorMessage =
+          errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`;
         errorCode = errorData.code;
       } catch {
         errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -143,8 +146,8 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
           statusText: response.statusText,
           url,
           errorCode,
-          errorMessage
-        }
+          errorMessage,
+        },
       });
 
       // Create a more informative error
@@ -155,15 +158,15 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
     }
 
     const data = await response.json();
-    
+
     clientLogger.info('Residents fetched successfully', {
       action: 'fetch_residents_success',
       data: {
         count: data.data?.length || 0,
         total: data.pagination?.total || 0,
         page,
-        pageSize
-      }
+        pageSize,
+      },
     });
 
     return data;
@@ -172,7 +175,7 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
     if (error instanceof Error && !('status' in error)) {
       clientLogger.error('Network error in fetchResidents', {
         action: 'fetch_residents_network_error',
-        error: error
+        error: error,
       });
     }
     throw error;
@@ -183,12 +186,12 @@ async function fetchResidents(params: ResidentsParams): Promise<ResidentsRespons
 export function useResidents(params: ResidentsParams = {}) {
   const { user, userProfile, loading: authLoading } = useAuth();
   const queryClient = useQueryClient();
-  
+
   const { page = 1, pageSize = 20, searchTerm = '', filters = {} } = params;
 
   // Use a stable cache key that doesn't change during auth loading
   const cacheKey = ['residents', { page, pageSize, searchTerm, filters }];
-  
+
   const isEnabled = !!user && !!userProfile?.barangay_code && !authLoading;
 
   const query = useResilientQuery<ResidentsResponse>({
@@ -221,24 +224,24 @@ export function useResidents(params: ResidentsParams = {}) {
         clientLogger.warn(`Retrying residents query (attempt ${attempt})`, {
           action: 'residents_query_retry',
           error: error,
-          data: { 
+          data: {
             attempt,
-            params: { page, pageSize, searchTerm }
-          }
+            params: { page, pageSize, searchTerm },
+          },
         });
-      }
+      },
     },
     // Performance tracking
     performanceTracking: {
       enabled: true,
-      operationName: 'residents_query'
+      operationName: 'residents_query',
     },
     // Fallback data
     fallbackData: {
       data: [],
       total: 0,
       page: page,
-      pageSize: pageSize
+      pageSize: pageSize,
     },
     // Error notification
     errorNotification: {
@@ -246,11 +249,11 @@ export function useResidents(params: ResidentsParams = {}) {
       title: 'Failed to load residents',
       message: (error: any) => {
         if (error?.status === 401) return 'Please log in again to continue';
-        if (error?.status === 403) return 'You don\'t have permission to view residents';
+        if (error?.status === 403) return "You don't have permission to view residents";
         if (error?.status >= 500) return 'Server error - please try again later';
         return error?.message || 'An unexpected error occurred';
-      }
-    }
+      },
+    },
   });
 
   // Prefetch next page
@@ -287,10 +290,14 @@ export function useResidents(params: ResidentsParams = {}) {
     errorDetails: {
       hasError: !!query.error,
       error: query.error,
-      canRetry: query.error ? (query.error as any).status >= 500 || !(query.error as any).status : false,
-      isAuthError: query.error ? ((query.error as any).status === 401 || (query.error as any).status === 403) : false,
-      isNetworkError: query.error ? !(query.error as any).status : false
-    }
+      canRetry: query.error
+        ? (query.error as any).status >= 500 || !(query.error as any).status
+        : false,
+      isAuthError: query.error
+        ? (query.error as any).status === 401 || (query.error as any).status === 403
+        : false,
+      isNetworkError: query.error ? !(query.error as any).status : false,
+    },
   };
 }
 
@@ -306,8 +313,8 @@ export function useResidentFilterFields() {
       type: 'select' as const,
       options: [
         { value: 'male', label: 'Male' },
-        { value: 'female', label: 'Female' }
-      ]
+        { value: 'female', label: 'Female' },
+      ],
     },
     {
       key: 'civil_status',
@@ -318,15 +325,15 @@ export function useResidentFilterFields() {
         { value: 'married', label: 'Married' },
         { value: 'widowed', label: 'Widowed' },
         { value: 'divorced', label: 'Divorced' },
-        { value: 'separated', label: 'Separated' }
-      ]
+        { value: 'separated', label: 'Separated' },
+      ],
     },
     {
       key: 'ageRange',
       label: 'Age Range',
       type: 'range' as const,
       min: 0,
-      max: 120
+      max: 120,
     },
     {
       key: 'employment_status',
@@ -337,8 +344,8 @@ export function useResidentFilterFields() {
         { value: 'unemployed', label: 'Unemployed' },
         { value: 'student', label: 'Student' },
         { value: 'retired', label: 'Retired' },
-        { value: 'homemaker', label: 'Homemaker' }
-      ]
+        { value: 'homemaker', label: 'Homemaker' },
+      ],
     },
     {
       key: 'education_attainment',
@@ -350,8 +357,8 @@ export function useResidentFilterFields() {
         { value: 'high_school', label: 'High School' },
         { value: 'vocational', label: 'Vocational/Technical' },
         { value: 'college', label: 'College' },
-        { value: 'graduate', label: 'Graduate Studies' }
-      ]
+        { value: 'graduate', label: 'Graduate Studies' },
+      ],
     },
     {
       key: 'sectoralCategories',
@@ -363,30 +370,30 @@ export function useResidentFilterFields() {
         { value: 'solo_parent', label: 'Solo Parent' },
         { value: 'overseas_filipino_worker', label: 'OFW' },
         { value: 'indigenous_people', label: 'Indigenous People' },
-        { value: 'out_of_school_youth', label: 'Out of School Youth' }
-      ]
+        { value: 'out_of_school_youth', label: 'Out of School Youth' },
+      ],
     },
     {
       key: 'occupation',
       label: 'Occupation',
       type: 'text' as const,
-      placeholder: 'Enter occupation...'
+      placeholder: 'Enter occupation...',
     },
     {
       key: 'hasEmail',
       label: 'Has Email',
-      type: 'boolean' as const
+      type: 'boolean' as const,
     },
     {
       key: 'isVoter',
       label: 'Registered Voter',
-      type: 'boolean' as const
+      type: 'boolean' as const,
     },
     {
       key: 'dateRange',
       label: 'Registration Date',
-      type: 'date' as const
-    }
+      type: 'date' as const,
+    },
   ];
 }
 

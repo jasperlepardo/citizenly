@@ -12,7 +12,6 @@ import {
   householdCache,
 } from '../household-fetcher';
 
-
 // Mock supabase
 jest.mock('@/lib/supabase', () => ({
   supabase: {
@@ -203,7 +202,7 @@ describe('Household Fetcher Optimization', () => {
       // Mock the cache with expired timestamp
       (householdCache as any).cache.set(cacheKey, {
         data: testData,
-        timestamp: Date.now() - (6 * 60 * 1000), // 6 minutes ago (expired)
+        timestamp: Date.now() - 6 * 60 * 1000, // 6 minutes ago (expired)
       });
 
       // Should return null for expired data

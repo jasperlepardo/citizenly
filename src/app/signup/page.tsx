@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
-import { InputField, SelectField , Button } from '@/components';
-import { supabase , logger, logError } from '@/lib';
+import { InputField, SelectField, Button } from '@/components';
+import { supabase, logger, logError } from '@/lib';
 // import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {
@@ -30,7 +30,7 @@ export default function SignupPage() {
     mobile_number: '',
     barangay_code: '',
   });
-  const [barangayOptions, setBarangayOptions] = useState<{value: string; label: string}[]>([]);
+  const [barangayOptions, setBarangayOptions] = useState<{ value: string; label: string }[]>([]);
   const [barangayLoading, setBarangayLoading] = useState(false);
   const [barangaySearchTerm, setBarangaySearchTerm] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -48,7 +48,7 @@ export default function SignupPage() {
 
     try {
       setBarangayLoading(true);
-      
+
       const { data, error } = await supabase
         .from('psgc_barangays')
         .select('code, name')
@@ -61,10 +61,11 @@ export default function SignupPage() {
         return;
       }
 
-      const options = data?.map((item: { code: string; name: string }) => ({
-        value: item.code,
-        label: `${item.name} (${item.code})`,
-      })) || [];
+      const options =
+        data?.map((item: { code: string; name: string }) => ({
+          value: item.code,
+          label: `${item.name} (${item.code})`,
+        })) || [];
 
       setBarangayOptions(options);
     } catch (error) {
@@ -202,7 +203,7 @@ export default function SignupPage() {
       // Success
       setSubmitStatus('Account created successfully!');
       setStep('success');
-      setAssignedRole('Barangay Administrator');
+      // Role assignment handled by database trigger
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setErrors({ general: errorMessage });
@@ -223,9 +224,9 @@ export default function SignupPage() {
   // Success step
   if (step === 'success') {
     return (
-      <div className="flex min-h-screen flex-col justify-center bg-gray-50 dark:bg-gray-900 py-12 sm:px-6 lg:px-8">
+      <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8 dark:bg-gray-900">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="rounded-lg bg-white dark:bg-gray-800 p-8 shadow-md border border-gray-200 dark:border-gray-700">
+          <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div className="text-center">
               <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
                 <svg
@@ -246,8 +247,10 @@ export default function SignupPage() {
                 Account Created Successfully!
               </h2>
 
-              <div className="mt-4 rounded-lg border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-4">
-                <h3 className="mb-2 text-sm font-medium text-blue-800 dark:text-blue-300">Pending Role Assignment:</h3>
+              <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">
+                <h3 className="mb-2 text-sm font-medium text-blue-800 dark:text-blue-300">
+                  Pending Role Assignment:
+                </h3>
                 <p className="text-blue-700 dark:text-blue-400">
                   You will be assigned as <strong>Barangay Administrator</strong> once you verify
                   your email address.
@@ -258,8 +261,10 @@ export default function SignupPage() {
                 </p>
               </div>
 
-              <div className="mt-4 rounded-lg border border-yellow-200 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 p-4">
-                <h3 className="mb-2 text-sm font-medium text-yellow-800 dark:text-yellow-300">Next Steps:</h3>
+              <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-700 dark:bg-yellow-900/20">
+                <h3 className="mb-2 text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                  Next Steps:
+                </h3>
                 <ol className="list-inside list-decimal space-y-1 text-left text-sm text-yellow-700 dark:text-yellow-400">
                   <li>
                     <strong>Check your email</strong> for a verification link from Citizenly
@@ -295,24 +300,28 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-center bg-gray-50 dark:bg-gray-900 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8 dark:bg-gray-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Create RBI Account</h1>
+          <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+            Create RBI Account
+          </h1>
           <p className="mb-8 text-sm text-gray-600 dark:text-gray-400">
             Join the Records of Barangay Inhabitant System
           </p>
         </div>
 
-        <div className="rounded-lg bg-white dark:bg-gray-800 p-8 shadow-md border border-gray-200 dark:border-gray-700">
+        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Status Message */}
             {isSubmitting && submitStatus && (
-              <div className="rounded-lg border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-4">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">
                 <div className="flex items-center gap-3">
                   <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
                   <div>
-                    <h4 className="font-medium text-blue-800 dark:text-blue-300">Creating Account</h4>
+                    <h4 className="font-medium text-blue-800 dark:text-blue-300">
+                      Creating Account
+                    </h4>
                     <p className="text-sm text-blue-700 dark:text-blue-400">{submitStatus}</p>
                   </div>
                 </div>
@@ -321,11 +330,13 @@ export default function SignupPage() {
 
             {/* General Error */}
             {errors.general && (
-              <div className="rounded-lg border border-red-200 dark:border-red-700 bg-red-50 dark:bg-red-900/20 p-4">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-700 dark:bg-red-900/20">
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 text-red-600 dark:text-red-400">⚠️</span>
                   <div>
-                    <h4 className="font-medium text-red-800 dark:text-red-300">Registration Failed</h4>
+                    <h4 className="font-medium text-red-800 dark:text-red-300">
+                      Registration Failed
+                    </h4>
                     <p className="text-sm text-red-700 dark:text-red-400">{errors.general}</p>
                   </div>
                 </div>
@@ -334,7 +345,7 @@ export default function SignupPage() {
 
             {/* Personal Information */}
             <div className="space-y-4">
-              <h3 className="border-b border-gray-200 dark:border-gray-600 pb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+              <h3 className="border-b border-gray-200 pb-2 text-lg font-medium text-gray-900 dark:border-gray-600 dark:text-gray-100">
                 Personal Information
               </h3>
 
@@ -344,18 +355,24 @@ export default function SignupPage() {
                   required
                   errorMessage={errors.first_name}
                   inputProps={{
-                    id: "first_name",
-                    type: "text",
+                    id: 'first_name',
+                    type: 'text',
                     value: formData.first_name,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('first_name', e.target.value),
-                    placeholder: "Juan",
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleChange('first_name', e.target.value),
+                    placeholder: 'Juan',
                     disabled: isSubmitting,
-                    autoComplete: "given-name",
+                    autoComplete: 'given-name',
                     leftIcon: (
                       <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
                       </svg>
-                    )
+                    ),
                   }}
                 />
                 <InputField
@@ -363,18 +380,24 @@ export default function SignupPage() {
                   required
                   errorMessage={errors.last_name}
                   inputProps={{
-                    id: "last_name",
-                    type: "text",
+                    id: 'last_name',
+                    type: 'text',
                     value: formData.last_name,
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('last_name', e.target.value),
-                    placeholder: "Dela Cruz",
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleChange('last_name', e.target.value),
+                    placeholder: 'Dela Cruz',
                     disabled: isSubmitting,
-                    autoComplete: "family-name",
+                    autoComplete: 'family-name',
                     leftIcon: (
                       <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
                       </svg>
-                    )
+                    ),
                   }}
                 />
               </div>
@@ -385,19 +408,20 @@ export default function SignupPage() {
                 errorMessage={errors.email}
                 helperText="Use a valid email address for account verification"
                 inputProps={{
-                  id: "email",
-                  type: "email",
+                  id: 'email',
+                  type: 'email',
                   value: formData.email,
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('email', e.target.value),
-                  placeholder: "juan.delacruz@gmail.com",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('email', e.target.value),
+                  placeholder: 'juan.delacruz@gmail.com',
                   disabled: isSubmitting,
-                  autoComplete: "email",
+                  autoComplete: 'email',
                   leftIcon: (
                     <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                       <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
-                  )
+                  ),
                 }}
               />
 
@@ -406,25 +430,31 @@ export default function SignupPage() {
                 required
                 errorMessage={errors.mobile_number}
                 inputProps={{
-                  id: "mobileNumber",
-                  type: "tel",
+                  id: 'mobileNumber',
+                  type: 'tel',
                   value: formData.mobile_number,
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('mobile_number', e.target.value),
-                  placeholder: "09XX XXX XXXX",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('mobile_number', e.target.value),
+                  placeholder: '09XX XXX XXXX',
                   disabled: isSubmitting,
-                  autoComplete: "tel",
+                  autoComplete: 'tel',
                   leftIcon: (
                     <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                      />
                     </svg>
-                  )
+                  ),
                 }}
               />
             </div>
 
             {/* Location Information */}
             <div className="space-y-4">
-              <h3 className="border-b border-gray-200 dark:border-gray-600 pb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+              <h3 className="border-b border-gray-200 pb-2 text-lg font-medium text-gray-900 dark:border-gray-600 dark:text-gray-100">
                 Location Information
               </h3>
 
@@ -433,23 +463,25 @@ export default function SignupPage() {
                 required
                 errorMessage={errors.barangay_code}
                 selectProps={{
-                  placeholder: "Search and select your barangay...",
+                  placeholder: 'Search and select your barangay...',
                   options: barangayOptions,
                   value: formData.barangay_code,
-                  onSelect: (option) => handleChange('barangay_code', option?.value || ''),
-                  onSearch: (query) => setBarangaySearchTerm(query),
+                  onSelect: option => handleChange('barangay_code', option?.value || ''),
+                  onSearch: query => setBarangaySearchTerm(query),
                   loading: barangayLoading,
                   disabled: isSubmitting || barangayLoading,
                   error: errors.barangay_code,
-                  searchable: true
+                  searchable: true,
                 }}
               />
             </div>
 
             {/* Barangay Selection Info */}
             <div className="space-y-4">
-              <h3 className="border-b border-gray-200 dark:border-gray-600 pb-2 text-lg font-medium text-gray-900 dark:text-gray-100">Role Assignment</h3>
-              <div className="rounded-lg border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-4">
+              <h3 className="border-b border-gray-200 pb-2 text-lg font-medium text-gray-900 dark:border-gray-600 dark:text-gray-100">
+                Role Assignment
+              </h3>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">
                 <h4 className="mb-2 text-sm font-medium text-blue-800 dark:text-blue-300">
                   Automatic Role Assignment
                 </h4>
@@ -474,20 +506,23 @@ export default function SignupPage() {
 
             {/* Account Security */}
             <div className="space-y-4">
-              <h3 className="border-b border-gray-200 dark:border-gray-600 pb-2 text-lg font-medium text-gray-900 dark:text-gray-100">Account Security</h3>
+              <h3 className="border-b border-gray-200 pb-2 text-lg font-medium text-gray-900 dark:border-gray-600 dark:text-gray-100">
+                Account Security
+              </h3>
 
               <InputField
                 label="Password"
                 required
                 errorMessage={errors.password}
                 inputProps={{
-                  id: "password",
-                  type: "password",
+                  id: 'password',
+                  type: 'password',
                   value: formData.password,
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('password', e.target.value),
-                  placeholder: "Create a strong password",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('password', e.target.value),
+                  placeholder: 'Create a strong password',
                   disabled: isSubmitting,
-                  autoComplete: "new-password",
+                  autoComplete: 'new-password',
                   showPasswordToggle: true,
                   leftIcon: (
                     <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -495,7 +530,7 @@ export default function SignupPage() {
                       <circle cx="12" cy="16" r="1"></circle>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                  )
+                  ),
                 }}
               />
 
@@ -504,13 +539,14 @@ export default function SignupPage() {
                 required
                 errorMessage={errors.confirm_password}
                 inputProps={{
-                  id: "confirmPassword",
-                  type: "password",
+                  id: 'confirmPassword',
+                  type: 'password',
                   value: formData.confirm_password,
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleChange('confirm_password', e.target.value),
-                  placeholder: "Confirm your password",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('confirm_password', e.target.value),
+                  placeholder: 'Confirm your password',
                   disabled: isSubmitting,
-                  autoComplete: "new-password",
+                  autoComplete: 'new-password',
                   showPasswordToggle: true,
                   leftIcon: (
                     <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -518,7 +554,7 @@ export default function SignupPage() {
                       <circle cx="12" cy="16" r="1"></circle>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                  )
+                  ),
                 }}
               />
             </div>
@@ -540,7 +576,10 @@ export default function SignupPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
-              <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
+              <Link
+                href="/login"
+                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+              >
                 Sign in here
               </Link>
             </p>

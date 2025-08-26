@@ -18,14 +18,13 @@ export interface ContactDetailsProps {
   className?: string;
 }
 
-export function ContactDetails({ 
+export function ContactDetails({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: ContactDetailsProps) {
-  
   const handleChange = (field: keyof ContactDetailsData, fieldValue: string) => {
     onChange({
       ...value,
@@ -49,39 +48,39 @@ export function ContactDetails({
           errorMessage={errors.email}
           mode={mode}
           inputProps={{
-            type: "email",
+            type: 'email',
             value: value.email,
-            onChange: (e) => handleChange('email', e.target.value),
-            placeholder: "Enter email address",
-            error: errors.email
+            onChange: e => handleChange('email', e.target.value),
+            placeholder: 'Enter email address',
+            error: errors.email,
           }}
         />
-        
+
         <InputField
           label="Phone Number"
           labelSize="sm"
           errorMessage={errors.telephone_number}
           mode={mode}
           inputProps={{
-            type: "tel",
+            type: 'tel',
             value: value.telephone_number,
-            onChange: (e) => handleChange('telephone_number', e.target.value),
-            placeholder: "Enter phone number",
-            error: errors.telephone_number
+            onChange: e => handleChange('telephone_number', e.target.value),
+            placeholder: 'Enter phone number',
+            error: errors.telephone_number,
           }}
         />
-        
+
         <InputField
           label="Mobile Number"
           labelSize="sm"
           errorMessage={errors.mobile_number}
           mode={mode}
           inputProps={{
-            type: "tel",
+            type: 'tel',
             value: value.mobile_number,
-            onChange: (e) => handleChange('mobile_number', e.target.value),
-            placeholder: "Enter mobile number",
-            error: errors.mobile_number
+            onChange: e => handleChange('mobile_number', e.target.value),
+            placeholder: 'Enter mobile number',
+            error: errors.mobile_number,
           }}
         />
       </div>

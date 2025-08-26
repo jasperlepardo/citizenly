@@ -20,7 +20,13 @@ const expectNoViolations = (results: { violations: Array<Record<string, unknown>
 };
 
 // Mock components for testing
-const MockButton = ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => {
+const MockButton = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+  [key: string]: unknown;
+}) => {
   return React.createElement('button', props, children);
 };
 

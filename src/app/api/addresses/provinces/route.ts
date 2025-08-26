@@ -12,10 +12,7 @@ export async function GET(request: NextRequest) {
     const regionCode = searchParams.get('region');
 
     // Build query
-    let query = supabase
-      .from('psgc_provinces')
-      .select('code, name, region_code')
-      .order('name');
+    let query = supabase.from('psgc_provinces').select('code, name, region_code').order('name');
 
     // Filter by region if provided
     if (regionCode) {
@@ -30,11 +27,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = provinces?.map((province) => ({
-      value: province.code,
-      label: province.name,
-      region_code: province.region_code,
-    })) || [];
+    const options =
+      provinces?.map(province => ({
+        value: province.code,
+        label: province.name,
+        region_code: province.region_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,

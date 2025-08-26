@@ -14,7 +14,7 @@ import {
   blood_typeSchema,
   religionSchema,
   ethnicitySchema,
-  income_classSchema
+  income_classSchema,
 } from '@/lib/validation/generated-schemas';
 
 // Base schema for common validations

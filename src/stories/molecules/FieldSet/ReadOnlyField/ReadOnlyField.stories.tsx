@@ -53,8 +53,13 @@ export const WithIcons: Story = {
     readOnlyProps: {
       value: 'Active',
       leftIcon: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
       ),
     },
@@ -96,11 +101,9 @@ export const CreateViewEditExample: Story = {
     const isViewMode = true; // This would come from your app state
 
     return (
-      <div className="space-y-6 max-w-md">
-        <h3 className="text-lg font-semibold">
-          {isViewMode ? 'View' : 'Edit'} User Profile
-        </h3>
-        
+      <div className="max-w-md space-y-6">
+        <h3 className="text-lg font-semibold">{isViewMode ? 'View' : 'Edit'} User Profile</h3>
+
         <div className="space-y-4">
           <ReadOnlyField
             label="First Name"
@@ -108,14 +111,14 @@ export const CreateViewEditExample: Story = {
               value: userData.firstName,
             }}
           />
-          
+
           <ReadOnlyField
             label="Last Name"
             readOnlyProps={{
               value: userData.lastName,
             }}
           />
-          
+
           <ReadOnlyField
             label="Email"
             helperText="Email cannot be changed"
@@ -123,21 +126,26 @@ export const CreateViewEditExample: Story = {
               value: userData.email,
             }}
           />
-          
+
           <ReadOnlyField
             label="Department"
             readOnlyProps={{
               value: userData.department,
             }}
           />
-          
+
           <ReadOnlyField
             label="Status"
             readOnlyProps={{
               value: userData.status,
               leftIcon: (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               ),
             }}

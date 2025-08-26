@@ -31,7 +31,7 @@ const meta = {
     },
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="mx-auto max-w-4xl">
           <Story />
@@ -50,25 +50,29 @@ const mockPsocSearch = (query: string) => {
     {
       code: '1112',
       title: 'Senior Government Officials',
-      hierarchy: 'Managers > Chief Executives, Senior Officials and Legislators > Senior Government Officials',
+      hierarchy:
+        'Managers > Chief Executives, Senior Officials and Legislators > Senior Government Officials',
       level: 'unit_group',
     },
     {
       code: '2142',
       title: 'Civil Engineers',
-      hierarchy: 'Professionals > Science and Engineering Professionals > Engineering Professionals > Civil Engineers',
+      hierarchy:
+        'Professionals > Science and Engineering Professionals > Engineering Professionals > Civil Engineers',
       level: 'occupation',
     },
     {
       code: '2221',
       title: 'Nurses and Midwives',
-      hierarchy: 'Professionals > Health Professionals > Nursing and Midwifery Professionals > Nurses and Midwives',
+      hierarchy:
+        'Professionals > Health Professionals > Nursing and Midwifery Professionals > Nurses and Midwives',
       level: 'occupation',
     },
     {
       code: '2341',
       title: 'Primary School Teachers',
-      hierarchy: 'Professionals > Education Professionals > Teaching Professionals > Primary School Teachers',
+      hierarchy:
+        'Professionals > Education Professionals > Teaching Professionals > Primary School Teachers',
       level: 'occupation',
     },
     {
@@ -77,9 +81,8 @@ const mockPsocSearch = (query: string) => {
       hierarchy: 'Service and Sales Workers > Sales Workers > Shop Salespersons',
       level: 'occupation',
     },
-  ].filter(item => 
-    item.title.toLowerCase().includes(query.toLowerCase()) || 
-    item.code.includes(query)
+  ].filter(
+    item => item.title.toLowerCase().includes(query.toLowerCase()) || item.code.includes(query)
   );
 
   return Promise.resolve({
@@ -114,9 +117,8 @@ const mockPsgcSearch = (query: string) => {
       full_address: 'Davao City, Davao del Sur, Davao Region',
       level: 'city',
     },
-  ].filter(item => 
-    item.name.toLowerCase().includes(query.toLowerCase()) || 
-    item.code.includes(query)
+  ].filter(
+    item => item.name.toLowerCase().includes(query.toLowerCase()) || item.code.includes(query)
   );
 
   return Promise.resolve({
@@ -159,7 +161,7 @@ const mockSupabase = {
                     geo_subdivisions: null,
                   },
                 ];
-                
+
                 callback({ data: households, error: null });
                 return Promise.resolve({ data: households, error: null });
               },
@@ -194,9 +196,9 @@ export const Default: Story = {
     onSubmit: mockSuccessfulSubmission,
     onCancel: mockAction('Form cancelled'),
   },
-  render: (args) => {
+  render: args => {
     // Mock API calls
-    global.fetch = (url) => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
         const searchParams = new URLSearchParams(url.split('?')[1]);
         const query = searchParams.get('q') || '';
@@ -247,8 +249,8 @@ export const PreFilledForm: Story = {
       householdCode: 'HH-2024-001',
     },
   },
-  render: (args) => {
-    global.fetch = (url) => {
+  render: args => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
         const searchParams = new URLSearchParams(url.split('?')[1]);
         const query = searchParams.get('q') || '';
@@ -298,8 +300,8 @@ export const FemaleResident: Story = {
       householdCode: 'HH-2024-002',
     },
   },
-  render: (args) => {
-    global.fetch = (url) => {
+  render: args => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
         return mockPsocSearch('nurse');
       }
@@ -346,8 +348,8 @@ export const SeniorCitizen: Story = {
       householdCode: 'HH-2024-003',
     },
   },
-  render: (args) => {
-    global.fetch = (url) => {
+  render: args => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
         return mockPsocSearch('government');
       }
@@ -393,8 +395,8 @@ export const YoungProfessional: Story = {
       householdCode: 'HH-2024-004',
     },
   },
-  render: (args) => {
-    global.fetch = (url) => {
+  render: args => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
         return mockPsocSearch('teacher');
       }
@@ -421,7 +423,7 @@ export const ValidationErrors: Story = {
     onSubmit: mockSuccessfulSubmission,
     onCancel: mockAction('Validation form cancelled'),
   },
-  render: (args) => {
+  render: args => {
     global.fetch = () => Promise.resolve({ ok: false });
 
     return (
@@ -439,7 +441,8 @@ export const ValidationErrors: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Form validation demonstration - submit without required fields to see error messages.',
+        story:
+          'Form validation demonstration - submit without required fields to see error messages.',
       },
     },
   },
@@ -451,18 +454,14 @@ export const SearchLoadingStates: Story = {
     onSubmit: mockSuccessfulSubmission,
     onCancel: mockAction('Search demo cancelled'),
   },
-  render: (args) => {
+  render: args => {
     // Mock slow API responses to show loading states
-    global.fetch = (url) => {
+    global.fetch = url => {
       if (url.includes('/api/psoc/search')) {
-        return new Promise(resolve =>
-          setTimeout(() => resolve(mockPsocSearch('engineer')), 2000)
-        );
+        return new Promise(resolve => setTimeout(() => resolve(mockPsocSearch('engineer')), 2000));
       }
       if (url.includes('/api/psgc/search')) {
-        return new Promise(resolve =>
-          setTimeout(() => resolve(mockPsgcSearch('lipa')), 2000)
-        );
+        return new Promise(resolve => setTimeout(() => resolve(mockPsgcSearch('lipa')), 2000));
       }
       return Promise.resolve({ ok: false });
     };
@@ -494,7 +493,7 @@ export const APIErrors: Story = {
     onSubmit: mockSuccessfulSubmission,
     onCancel: mockAction('API error form cancelled'),
   },
-  render: (args) => {
+  render: args => {
     // Mock API errors
     global.fetch = () =>
       Promise.resolve({
@@ -527,7 +526,7 @@ export const APIErrors: Story = {
 // Submission loading state
 export const SubmissionLoading: Story = {
   args: {
-    onSubmit: async (data) => {
+    onSubmit: async data => {
       mockAction('Form submission started')(data);
       return new Promise(resolve => setTimeout(resolve, 3000));
     },
@@ -539,7 +538,7 @@ export const SubmissionLoading: Story = {
       birthdate: '1990-01-01',
     },
   },
-  render: (args) => {
+  render: args => {
     global.fetch = () => Promise.resolve({ ok: true });
 
     return (
@@ -569,7 +568,7 @@ export const WithoutCancelButton: Story = {
     onSubmit: mockSuccessfulSubmission,
     // No onCancel prop - cancel button won't show
   },
-  render: (args) => {
+  render: args => {
     global.fetch = () => Promise.resolve({ ok: true });
     return <ResidentForm {...args} />;
   },
@@ -594,7 +593,7 @@ export const MobileView: Story = {
       birthdate: '1995-05-15',
     },
   },
-  render: (args) => {
+  render: args => {
     global.fetch = () => Promise.resolve({ ok: true });
     return <ResidentForm {...args} />;
   },
@@ -624,7 +623,7 @@ export const DarkMode: Story = {
       birthdate: '1988-07-20',
     },
   },
-  render: (args) => {
+  render: args => {
     global.fetch = () => Promise.resolve({ ok: true });
 
     return (

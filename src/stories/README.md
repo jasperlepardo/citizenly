@@ -30,6 +30,7 @@ This project follows Brad Frost's Atomic Design methodology:
 ## Story Organization
 
 Each story file follows the naming convention:
+
 - File: `ComponentName.stories.tsx`
 - Title: `Level/ComponentName` (e.g., "Atoms/Button", "Molecules/SearchBar")
 

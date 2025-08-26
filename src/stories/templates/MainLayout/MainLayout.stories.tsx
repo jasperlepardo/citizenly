@@ -11,30 +11,32 @@ const MockHeader = () => (
           <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
             <span className="font-display text-sm font-bold text-white dark:text-black">RBI</span>
           </div>
-          <span className="font-display text-xl font-semibold text-gray-900 dark:text-gray-100">RBI System</span>
+          <span className="font-display text-xl font-semibold text-gray-900 dark:text-gray-100">
+            RBI System
+          </span>
         </div>
         <nav className="hidden space-x-1 md:flex">
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:text-gray-300"
           >
             Dashboard
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:text-gray-300"
           >
             Residents
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:text-gray-300"
           >
             Households
           </a>
           <a
             href="#"
-            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100"
+            className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:text-gray-300"
           >
             Reports
           </a>
@@ -148,7 +150,9 @@ const RichContent = () => (
           className="rounded-xl border border-gray-200 bg-white p-6 shadow-xs transition-shadow hover:shadow-md"
         >
           <div className="mb-3 text-3xl">{feature.icon}</div>
-          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">{feature.title}</h3>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {feature.title}
+          </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">{feature.description}</p>
         </div>
       ))}
@@ -180,7 +184,9 @@ const RichContent = () => (
     </div>
 
     <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Technical Specifications</h3>
+      <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Technical Specifications
+      </h3>
       <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
         <div>
           <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Layout Features</h4>
@@ -222,7 +228,9 @@ const FormContent = () => (
       <form className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              First Name
+            </label>
             <input
               type="text"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -230,7 +238,9 @@ const FormContent = () => (
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Last Name
+            </label>
             <input
               type="text"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -240,7 +250,9 @@ const FormContent = () => (
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Email Address
+          </label>
           <input
             type="email"
             className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -249,7 +261,9 @@ const FormContent = () => (
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Message
+          </label>
           <textarea
             rows={4}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -260,13 +274,13 @@ const FormContent = () => (
         <div className="flex items-center justify-between pt-4">
           <button
             type="button"
-            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-300"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-lg bg-indigo-600 px-6 py-2 text-white dark:text-black transition-colors hover:bg-indigo-700"
+            className="rounded-lg bg-indigo-600 px-6 py-2 text-white transition-colors hover:bg-indigo-700 dark:text-black"
           >
             Submit Form
           </button>
@@ -290,7 +304,9 @@ const FormContent = () => (
           />
         </svg>
         <div>
-          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">Form Layout Benefits</h4>
+          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            Form Layout Benefits
+          </h4>
           <p className="mt-1 text-sm text-gray-800 dark:text-gray-200">
             The MainLayout provides proper spacing and width constraints that make forms more
             readable and user-friendly, especially on larger screens.
@@ -488,7 +504,9 @@ export const LayoutStructure: Story = {
     children: (
       <div className="space-y-6">
         <div className="rounded-xl border-2 border-dashed border-blue-300 bg-blue-100 p-8 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Header Area</h3>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Header Area
+          </h3>
           <p className="text-sm text-gray-800 dark:text-gray-200">
             Contains the RBI System branding and navigation (imported via Header component)
           </p>
@@ -500,7 +518,9 @@ export const LayoutStructure: Story = {
         </div>
 
         <div className="rounded-xl border-2 border-dashed border-purple-300 bg-purple-100 p-12 text-center">
-          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">Main Content Area</h3>
+          <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Main Content Area
+          </h3>
           <p className="mb-4 text-sm text-gray-800 dark:text-gray-200">
             This is where the children prop content is rendered
           </p>
@@ -510,8 +530,10 @@ export const LayoutStructure: Story = {
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
-          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">Layout Specifications</h3>
-          <div className="grid grid-cols-1 gap-4 text-sm text-gray-600 dark:text-gray-400 md:grid-cols-2">
+          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100">
+            Layout Specifications
+          </h3>
+          <div className="grid grid-cols-1 gap-4 text-sm text-gray-600 md:grid-cols-2 dark:text-gray-400">
             <div>
               <span className="font-medium">Container:</span> max-w-7xl mx-auto
             </div>
@@ -544,7 +566,9 @@ export const WithoutTitle: Story = {
   args: {
     children: (
       <div className="py-8 text-center">
-        <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">Custom Content Title</h2>
+        <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+          Custom Content Title
+        </h2>
         <p className="mb-6 text-gray-600 dark:text-gray-400">
           When no title prop is provided, you can include your own custom headings and structure
           within the content area.

@@ -12,7 +12,6 @@ import { useAuth } from '@/contexts';
 
 import ResidentsPage from './page';
 
-
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),

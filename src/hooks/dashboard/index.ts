@@ -1,6 +1,6 @@
 /**
  * Dashboard Hooks Module
- * 
+ *
  * @description Hooks for dashboard functionality including data fetching,
  * calculations, and dashboard state management.
  */
@@ -14,18 +14,15 @@ export { useDashboardApi } from './useDashboardApi';
 export { useDashboardCalculations } from './useDashboardCalculations';
 
 // Types from API module
-export type { 
+export type {
   DashboardStats,
   DependencyData,
   SexData,
   CivilStatusData,
   EmploymentStatusData,
   AgeGroup,
-  DashboardResponse
+  DashboardResponse,
 } from './useDashboardApi';
 
 // Types from calculations module
-export type { 
-  ResidentData,
-  UseDashboardCalculationsReturn
-} from './useDashboardCalculations';
+export type { ResidentData, UseDashboardCalculationsReturn } from './useDashboardCalculations';

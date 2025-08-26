@@ -2,7 +2,7 @@
 
 /**
  * Household Creation Service Hook
- * 
+ *
  * @description Focused hook for household creation operations with service integration.
  * Extracted from useHouseholdOperations to follow single responsibility principle.
  */
@@ -48,7 +48,7 @@ export interface UseHouseholdCreationServiceReturn {
 
 /**
  * Custom hook for household creation service operations
- * 
+ *
  * @description Handles household creation through the household service with
  * proper authentication, CSRF protection, and error handling.
  */
@@ -67,71 +67,72 @@ export function useHouseholdCreationService(
   /**
    * Create household using service
    */
-  const createHousehold = useCallback(async (
-    formData: HouseholdFormData
-  ): Promise<HouseholdCreationResult> => {
-    setIsCreating(true);
+  const createHousehold = useCallback(
+    async (formData: HouseholdFormData): Promise<HouseholdCreationResult> => {
+      setIsCreating(true);
 
-    try {
-      // Get CSRF token for secure form submission
-      const csrfToken = getCSRFToken();
+      try {
+        // Get CSRF token for secure form submission
+        const csrfToken = getCSRFToken();
 
-      // Call service to create household
-      const result = await householdService.createHousehold({
-        formData,
-        userAddress,
-        barangay_code: barangayCode,
-        csrf_token: csrfToken,
-      });
+        // Call service to create household
+        const result = await householdService.createHousehold({
+          formData,
+          userAddress,
+          barangay_code: barangayCode,
+          csrf_token: csrfToken,
+        });
 
-      if (!result.success) {
-        // Handle validation errors
-        if (result.data?.validationErrors) {
-          if (onValidationError) {
-            onValidationError(result.data.validationErrors);
+        if (!result.success) {
+          // Handle validation errors
+          if (result.data?.validationErrors) {
+            if (onValidationError) {
+              onValidationError(result.data.validationErrors);
+            }
+            return {
+              success: false,
+              error: result.error,
+              validationErrors: result.data.validationErrors,
+            };
           }
+
+          // Handle general errors
+          if (onError) {
+            onError(result.error || 'Failed to create household');
+          }
+
           return {
             success: false,
-            error: result.error,
-            validationErrors: result.data.validationErrors,
+            error: result.error || 'Failed to create household',
           };
         }
 
-        // Handle general errors
-        if (onError) {
-          onError(result.error || 'Failed to create household');
+        // Success callback
+        if (onSuccess) {
+          onSuccess(result.data);
         }
-        
+
+        return {
+          success: true,
+          data: result.data,
+        };
+      } catch (error) {
+        const errorMessage = 'An unexpected error occurred. Please try again.';
+
+        if (onError) {
+          onError(errorMessage);
+        }
+
         return {
           success: false,
-          error: result.error || 'Failed to create household',
+          error: errorMessage,
         };
+      } finally {
+        setIsCreating(false);
       }
-
-      // Success callback
-      if (onSuccess) {
-        onSuccess(result.data);
-      }
-
-      return {
-        success: true,
-        data: result.data,
-      };
-    } catch (error) {
-      const errorMessage = 'An unexpected error occurred. Please try again.';
-      
-      if (onError) {
-        onError(errorMessage);
-      }
-      
-      return {
-        success: false,
-        error: errorMessage,
-      };
-    } finally {
-      setIsCreating(false);
-    }
-  }, [userAddress, barangayCode, getCSRFToken, onSuccess, onError, onValidationError]);
+    },
+    [userAddress, barangayCode, getCSRFToken, onSuccess, onError, onValidationError]
+  );
 
   /**
    * Generate household code

@@ -12,7 +12,6 @@ import { useAuth } from '@/contexts';
 
 import CreateResidentPage from './page';
 
-
 // Mock dependencies
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),

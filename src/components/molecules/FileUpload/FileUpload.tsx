@@ -180,12 +180,11 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
       setSelectedFiles(newFiles);
     };
 
-
     return (
       <div className="w-full">
         {/* Label */}
         {label && (
-          <label className="mb-2 block font-body text-sm font-medium text-[#262626]">{label}</label>
+          <label className="font-body mb-2 block text-sm font-medium text-[#262626]">{label}</label>
         )}
 
         {/* Upload Area */}
@@ -259,7 +258,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
             {/* File Type and Size Info */}
             {(acceptedFileTypes || maxFileSize) && (
-              <div className="mt-2 font-body text-xs text-[#737373]">
+              <div className="font-body mt-2 text-xs text-[#737373]">
                 {acceptedFileTypes && <div>Accepted: {acceptedFileTypes}</div>}
                 {maxFileSize && <div>Max size: {maxFileSize}MB</div>}
               </div>
@@ -288,7 +287,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
                     <polyline points="14,2 14,8 20,8"></polyline>
                   </svg>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-body text-sm font-medium text-[#262626]">
+                    <p className="font-body truncate text-sm font-medium text-[#262626]">
                       {file.name}
                     </p>
                     <p className="font-body text-xs text-[#737373]">{formatFileSize(file.size)}</p>

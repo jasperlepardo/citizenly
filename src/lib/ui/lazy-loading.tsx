@@ -1,6 +1,6 @@
 /**
  * Lazy Loading Utilities
- * 
+ *
  * @description Higher-order component for wrapping lazy components with Suspense
  * and loading states. Provides code splitting infrastructure.
  */
@@ -11,11 +11,11 @@ import { LoadingFallback } from '@/components/atoms/Loading';
 
 /**
  * HOC for wrapping lazy components with Suspense and loading states
- * 
+ *
  * @param LazyComponent - The lazy-loaded component
  * @param fallback - Optional custom loading fallback
  * @returns Wrapped component with Suspense boundary
- * 
+ *
  * @example
  * ```tsx
  * const LazyModal = lazy(() => import('./Modal'));
@@ -23,7 +23,7 @@ import { LoadingFallback } from '@/components/atoms/Loading';
  * ```
  */
 export function withLazyLoading<P extends object>(
-  LazyComponent: ComponentType<P>, 
+  LazyComponent: ComponentType<P>,
   fallback?: ReactNode
 ) {
   return function LazyWrapper(props: P) {
@@ -44,7 +44,8 @@ export const preloadComponents = {
   dataTable: () => import('@/components/organisms/DataTable'),
   populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
   userProfile: () => import('@/components/organisms/UserProfile'),
-  personalInformation: () => import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation'),
+  personalInformation: () =>
+    import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation'),
   sectoralInfo: () => import('@/components/organisms/Form/Resident/SectoralInformation'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),

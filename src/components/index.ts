@@ -2,7 +2,7 @@
 // Following Brad Frost's Atomic Design methodology
 
 // Design Tokens - Foundation of the design system
-export * from './tokens';
+export * from './tokens/index';
 
 // Atoms - Basic UI building blocks
 export * from './atoms';
@@ -20,7 +20,7 @@ export * from './templates';
 export * from './utils';
 
 // Providers - React context providers
-export * from './providers';
+export * from './providers/index';
 
 // Types - Shared component interfaces and types
-export * from './types';
+export * from './types/index';

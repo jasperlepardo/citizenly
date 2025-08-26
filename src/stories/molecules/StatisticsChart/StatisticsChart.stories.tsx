@@ -184,7 +184,8 @@ export const CompactPrimary: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Combining compact variant with primary intent for emphasized but space-efficient charts.',
+        story:
+          'Combining compact variant with primary intent for emphasized but space-efficient charts.',
       },
     },
   },
@@ -201,7 +202,8 @@ export const DetailedSecondary: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Combining detailed variant with secondary intent for comprehensive supporting charts.',
+        story:
+          'Combining detailed variant with secondary intent for comprehensive supporting charts.',
       },
     },
   },
@@ -217,12 +219,7 @@ export const AllChartTypes: Story = {
         title="Dependency Ratio"
         variant="compact"
       />
-      <StatisticsChart
-        type="sex"
-        data={sampleSexData}
-        title="Sex Distribution"
-        variant="compact"
-      />
+      <StatisticsChart type="sex" data={sampleSexData} title="Sex Distribution" variant="compact" />
       <StatisticsChart
         type="civilStatus"
         data={sampleCivilStatusData}
@@ -241,7 +238,8 @@ export const AllChartTypes: Story = {
     layout: 'fullscreen',
     docs: {
       description: {
-        story: 'Showcase of all chart types with semantic styling demonstrating consistent design patterns.',
+        story:
+          'Showcase of all chart types with semantic styling demonstrating consistent design patterns.',
       },
     },
   },

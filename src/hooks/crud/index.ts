@@ -1,6 +1,6 @@
 /**
  * CRUD Operations Hooks Module
- * 
+ *
  * @description Hooks for Create, Read, Update, Delete operations
  * on residents, households, and other entities.
  */

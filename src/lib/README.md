@@ -9,6 +9,7 @@ The `src/lib` directory contains the core business logic, utilities, and shared 
 ## Recent Reorganization (August 2023)
 
 This directory has been **significantly reorganized** to follow traditional React/Next.js patterns:
+
 - **Services layer moved to `src/services/`** - All data access, repositories, business services
 - **Utilities remain in `src/lib/`** - Core utilities, configurations, security, validation
 - **Types consolidated in `src/types/`** - Centralized type definitions
@@ -78,15 +79,17 @@ src/lib/
 Contains domain-specific business logic and classification algorithms.
 
 **Key Files:**
+
 - `sectoral-classification.ts` - RBI sectoral group classification logic
 - `resident-form-rules.ts` - Form-specific business rules
 
 **Usage:**
+
 ```typescript
-import { 
-  calculateAge, 
-  isOutOfSchoolChildren, 
-  updateSectoralInformation 
+import {
+  calculateAge,
+  isOutOfSchoolChildren,
+  updateSectoralInformation,
 } from '@/lib/business-rules';
 
 const age = calculateAge('1990-01-01');
@@ -98,9 +101,11 @@ const isOSC = isOutOfSchoolChildren(age, 'elementary');
 Chart data transformation and visualization utilities.
 
 **Key Files:**
+
 - `transformers.ts` - Data transformation for charts
 
 **Usage:**
+
 ```typescript
 import { transformSexData, CHART_COLORS } from '@/lib/charts';
 
@@ -112,10 +117,12 @@ const chartData = transformSexData({ male: 120, female: 135 });
 Application-wide constants, enums, and configuration values.
 
 **Key Files:**
+
 - `resident-enums.ts` - Resident-related enumerations
 - `form-options.ts` - Form option definitions
 
 **Usage:**
+
 ```typescript
 import { CIVIL_STATUS_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '@/lib/constants';
 ```
@@ -125,17 +132,19 @@ import { CIVIL_STATUS_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '@/lib/constants
 Centralized error management and boundary components.
 
 **Key Files:**
+
 - `error-types.ts` - Error type definitions
 - `error-utils.ts` - Error utility functions
 - `error-boundaries.ts` - React error boundaries
 
 **Usage:**
+
 ```typescript
 import { createAppError, ErrorCode, ErrorSeverity } from '@/lib/error-handling';
 
 const error = createAppError('Validation failed', {
   code: ErrorCode.VALIDATION_ERROR,
-  severity: ErrorSeverity.MEDIUM
+  severity: ErrorSeverity.MEDIUM,
 });
 ```
 
@@ -144,10 +153,12 @@ const error = createAppError('Validation failed', {
 Form-specific business logic and field handlers.
 
 **Key Files:**
+
 - `handlers.ts` - Form change handlers
 - `field-logic.ts` - Field-specific logic
 
 **Usage:**
+
 ```typescript
 import { createFieldChangeHandler, isFieldReadOnly } from '@/lib/forms';
 
@@ -159,10 +170,12 @@ const handleChange = createFieldChangeHandler(formData, setFormData);
 Graphics utilities and mathematical functions for visualizations.
 
 **Key Files:**
+
 - `pie-chart-math.ts` - Pie chart calculations
 - `color-generator.ts` - Color generation utilities
 
 **Usage:**
+
 ```typescript
 import { createPieSlicePath, calculateSliceAngles } from '@/lib/graphics';
 
@@ -174,10 +187,12 @@ const path = createPieSlicePath(startAngle, endAngle, radius);
 Data transformation between different formats (API ↔ Form ↔ Database).
 
 **Key Files:**
+
 - `resident-mapper.ts` - Resident data transformations
 - `form-data-transformers.ts` - Form data transformations
 
 **Usage:**
+
 ```typescript
 import { mapApiToForm, mapFormToApi } from '@/lib/mappers';
 
@@ -190,10 +205,12 @@ const apiData = mapFormToApi(formData);
 Performance optimization utilities for data fetching and processing.
 
 **Key Files:**
+
 - `household-fetcher.ts` - Optimized household data fetching
 - `resident-details-fetcher.ts` - Resident details optimization
 
 **Usage:**
+
 ```typescript
 import { batchFetchHouseholdHeads } from '@/lib/optimizers';
 
@@ -205,9 +222,11 @@ const householdHeads = await batchFetchHouseholdHeads(householdIds);
 Statistical calculations and data processing utilities.
 
 **Key Files:**
+
 - `population-pyramid.ts` - Population pyramid calculations
 
 **Usage:**
+
 ```typescript
 import { calculatePopulationStats, processAgeGroups } from '@/lib/statistics';
 
@@ -219,10 +238,12 @@ const stats = calculatePopulationStats(ageGroupData);
 Comprehensive TypeScript type definitions.
 
 **Key Files:**
+
 - `forms.ts` - Form-related types
 - `index.ts` - Main type exports
 
 **Usage:**
+
 ```typescript
 import { ResidentFormData, SectoralInformation } from '@/lib/types';
 ```
@@ -232,11 +253,13 @@ import { ResidentFormData, SectoralInformation } from '@/lib/types';
 General utility functions and helpers.
 
 **Key Files:**
+
 - `resident-helpers.ts` - Resident-specific utilities
 - `search-utilities.ts` - Search and filtering utilities
 - `validation-utilities.ts` - Validation helpers
 
 **Usage:**
+
 ```typescript
 import { formatDisplayName, calculateAge } from '@/lib/utils';
 
@@ -248,10 +271,12 @@ const displayName = formatDisplayName(resident);
 Validation schemas and utilities using Zod.
 
 **Key Files:**
+
 - `resident-schema.ts` - Resident validation schemas
 - `field-level-schemas.ts` - Field-level validation
 
 **Usage:**
+
 ```typescript
 import { residentFormSchema, validateResidentData } from '@/lib/validation';
 
@@ -261,6 +286,7 @@ const result = residentFormSchema.safeParse(formData);
 ## Security Features
 
 ### 🔒 Input Sanitization
+
 All user inputs are sanitized to prevent XSS and injection attacks:
 
 ```typescript
@@ -274,6 +300,7 @@ function sanitizeString(str: string): string {
 ```
 
 ### 🛡️ PII Protection
+
 Sensitive data like PhilSys card numbers are encrypted:
 
 ```typescript
@@ -284,20 +311,22 @@ export async function encryptPII(data: string): Promise<string> {
 ```
 
 ### 🔐 Authentication & Authorization
+
 Comprehensive auth utilities with proper error handling:
 
 ```typescript
 // From auth.ts
 export async function validateUserAccess(
-  userId: string, 
-  resource: string, 
+  userId: string,
+  resource: string,
   action: string
-): Promise<boolean>
+): Promise<boolean>;
 ```
 
 ## Performance Optimizations
 
 ### ⚡ Query Batching
+
 Eliminates N+1 query problems:
 
 ```typescript
@@ -309,6 +338,7 @@ export const batchFetchHouseholdHeads = async (
 ```
 
 ### 🗄️ Caching
+
 Intelligent caching with TTL:
 
 ```typescript
@@ -320,6 +350,7 @@ export class QueryCache {
 ```
 
 ### 🎯 Debouncing
+
 User input optimization:
 
 ```typescript
@@ -327,12 +358,13 @@ User input optimization:
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
-): DebounceFunction<T>
+): DebounceFunction<T>;
 ```
 
 ## Error Handling Strategy
 
 ### 📊 Error Types
+
 Structured error handling with severity levels:
 
 ```typescript
@@ -352,6 +384,7 @@ export interface AppError extends Error {
 ```
 
 ### 🔧 Error Boundaries
+
 React error boundaries for graceful failures:
 
 ```typescript
@@ -364,31 +397,25 @@ export class ErrorBoundary extends React.Component {
 ## Usage Examples
 
 ### Basic Import Pattern
+
 ```typescript
 // Recommended: Use barrel exports
-import { 
-  calculateAge, 
-  formatDisplayName, 
-  createAppError 
-} from '@/lib';
+import { calculateAge, formatDisplayName, createAppError } from '@/lib';
 
 // Alternative: Direct imports for tree shaking
 import { calculateAge } from '@/lib/business-rules/sectoral-classification';
 ```
 
 ### Form Handling
+
 ```typescript
-import { 
-  createFieldChangeHandler, 
-  mapFormToApi, 
-  residentFormSchema 
-} from '@/lib';
+import { createFieldChangeHandler, mapFormToApi, residentFormSchema } from '@/lib';
 
 const FormComponent = () => {
   const [formData, setFormData] = useState<ResidentFormData>({});
-  
+
   const handleFieldChange = createFieldChangeHandler(formData, setFormData);
-  
+
   const handleSubmit = async () => {
     const validation = residentFormSchema.safeParse(formData);
     if (validation.success) {
@@ -400,6 +427,7 @@ const FormComponent = () => {
 ```
 
 ### Error Handling
+
 ```typescript
 import { createAppError, ErrorCode, withErrorBoundary } from '@/lib';
 
@@ -407,7 +435,7 @@ const ComponentWithErrorHandling = withErrorBoundary(() => {
   const handleError = (error: unknown) => {
     const appError = createAppError('Operation failed', {
       code: ErrorCode.VALIDATION_ERROR,
-      context: { operation: 'user_input' }
+      context: { operation: 'user_input' },
     });
     // Handle error appropriately
   };
@@ -417,6 +445,7 @@ const ComponentWithErrorHandling = withErrorBoundary(() => {
 ## Testing Strategy
 
 ### 🧪 Unit Tests
+
 Located in `__tests__/` directories:
 
 ```typescript
@@ -430,11 +459,13 @@ describe('calculateAge', () => {
 ```
 
 ### ⚠️ Current Test Coverage
+
 - **Total Files**: 88
 - **Test Files**: 3
 - **Coverage**: ~3% (Needs improvement)
 
 **Priority for testing:**
+
 1. Business rules validation
 2. Data transformation functions
 3. Security utilities
@@ -445,6 +476,7 @@ describe('calculateAge', () => {
 ### 📝 Adding New Modules
 
 1. **Create module directory** with proper structure:
+
    ```
    src/lib/new-module/
    ├── index.ts          # Barrel exports
@@ -453,6 +485,7 @@ describe('calculateAge', () => {
    ```
 
 2. **Add to main barrel export**:
+
    ```typescript
    // src/lib/index.ts
    export * from './new-module';
@@ -483,18 +516,21 @@ describe('calculateAge', () => {
 ## Known Issues & TODOs
 
 ### 🚨 High Priority
+
 - [ ] Resolve circular dependency risks in barrel exports
 - [ ] Consolidate duplicate utility functions
 - [ ] Improve test coverage to >80%
 - [ ] Complete audit logging implementation
 
 ### 🔧 Medium Priority
+
 - [ ] Implement repository pattern for data access
 - [ ] Add comprehensive error monitoring
 - [ ] Standardize validation patterns
 - [ ] Optimize performance bottlenecks
 
 ### 📈 Low Priority
+
 - [ ] Add migration utilities
 - [ ] Implement backup/restore capabilities
 - [ ] Enhance real-time data synchronization
@@ -531,6 +567,7 @@ When moving business logic from components to lib:
 5. **Update documentation**
 
 ### Example Migration
+
 ```typescript
 // Before: In component file
 const calculateAge = (birthdate: string) => {

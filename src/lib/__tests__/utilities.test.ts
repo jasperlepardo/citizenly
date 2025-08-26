@@ -176,9 +176,9 @@ describe('Utilities - Data Transformers', () => {
         nested: { value: 123 },
         array: [1, 2, { inner: 'value' }],
       };
-      
+
       const cloned = deepClone(original);
-      
+
       expect(cloned).toEqual(original);
       expect(cloned).not.toBe(original);
       expect(cloned.nested).not.toBe(original.nested);
@@ -194,7 +194,7 @@ describe('Utilities - Data Transformers', () => {
     it('should handle dates', () => {
       const date = new Date();
       const cloned = deepClone(date);
-      
+
       expect(cloned).toEqual(date);
       expect(cloned).not.toBe(date);
     });
@@ -207,9 +207,9 @@ describe('Utilities - Data Transformers', () => {
         { category: 'B', value: 2 },
         { category: 'A', value: 3 },
       ];
-      
+
       const grouped = groupBy(items, 'category');
-      
+
       expect(grouped.A).toHaveLength(2);
       expect(grouped.B).toHaveLength(1);
       expect(grouped.A[0].value).toBe(1);
@@ -228,7 +228,7 @@ describe('Utilities - Data Transformers', () => {
         { id: 2, name: 'b' },
         { id: 1, name: 'c' },
       ];
-      
+
       const unique = removeDuplicates(items, 'id');
       expect(unique).toHaveLength(2);
       expect(unique[0].id).toBe(1);
@@ -243,12 +243,12 @@ describe('Utilities - Data Transformers', () => {
         { name: 'alice', age: 25 },
         { name: 'bob', age: 35 },
       ];
-      
+
       const sortedByName = sortBy(items, 'name');
       expect(sortedByName[0].name).toBe('alice');
       expect(sortedByName[1].name).toBe('bob');
       expect(sortedByName[2].name).toBe('charlie');
-      
+
       const sortedByAge = sortBy(items, 'age', 'desc');
       expect(sortedByAge[0].age).toBe(35);
       expect(sortedByAge[1].age).toBe(30);
@@ -268,7 +268,7 @@ describe('Utilities - Data Transformers', () => {
     it('should format dates for Philippine locale', () => {
       const date = new Date('2023-12-25');
       const formatted = formatDate(date);
-      
+
       expect(formatted).toContain('December');
       expect(formatted).toContain('25');
       expect(formatted).toContain('2023');
@@ -298,7 +298,7 @@ describe('Utilities - Data Transformers', () => {
         empty: null,
         undefined: undefined,
       });
-      
+
       expect(query).toContain('name=john');
       expect(query).toContain('age=30');
       expect(query).toContain('active=true');
@@ -313,7 +313,7 @@ describe('Utilities - ID Generators', () => {
     it('should generate unique IDs', () => {
       const id1 = generateId();
       const id2 = generateId();
-      
+
       expect(id1).not.toBe(id2);
       expect(id1).toMatch(/^id-\d+-[a-z0-9]+$/);
     });
@@ -342,7 +342,7 @@ describe('Utilities - ID Generators', () => {
   describe('getFieldIds', () => {
     it('should generate related IDs', () => {
       const ids = getFieldIds('test-field');
-      
+
       expect(ids.labelId).toBe('test-field-label');
       expect(ids.helperTextId).toBe('test-field-helper');
       expect(ids.errorId).toBe('test-field-error');
@@ -411,7 +411,7 @@ describe('Utilities - Async Utils', () => {
       const start = Date.now();
       await sleep(10);
       const end = Date.now();
-      
+
       expect(end - start).toBeGreaterThanOrEqual(9); // Allow for small timing variations
     });
   });
@@ -454,7 +454,9 @@ describe('Utilities - CSS Utils', () => {
     });
 
     it('should handle arrays and objects', () => {
-      expect(cn(['class1', 'class2'], { active: true, disabled: false })).toBe('class1 class2 active');
+      expect(cn(['class1', 'class2'], { active: true, disabled: false })).toBe(
+        'class1 class2 active'
+      );
     });
   });
 });

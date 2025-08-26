@@ -11,7 +11,7 @@ export {
   addSentryBreadcrumb,
   captureError,
   startSentryTransaction,
-  isSentryConfigured
+  isSentryConfigured,
 } from './sentry-config';
 
 // Performance monitoring
@@ -22,7 +22,7 @@ export {
   measureFunction,
   trackComponentRender,
   trackApiCall,
-  trackDataLoad
+  trackDataLoad,
 } from './performance';
 
 // Re-export client logger for convenience

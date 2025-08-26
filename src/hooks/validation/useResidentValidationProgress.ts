@@ -2,7 +2,7 @@
 
 /**
  * Resident Validation Progress Hook
- * 
+ *
  * @description Tracks validation progress and provides validation summaries.
  * Extracted from useOptimizedResidentValidation for better maintainability.
  */
@@ -46,7 +46,10 @@ export interface UseResidentValidationProgressReturn {
   /** Check if form has critical errors */
   hasCriticalErrors: (errors: Record<string, string>) => boolean;
   /** Get section validation status */
-  getSectionValidationStatus: (section: keyof typeof REQUIRED_FIELDS, errors: Record<string, string>) => SectionValidationStatus;
+  getSectionValidationStatus: (
+    section: keyof typeof REQUIRED_FIELDS,
+    errors: Record<string, string>
+  ) => SectionValidationStatus;
   /** Get all section validation statuses */
   getAllSectionStatuses: (errors: Record<string, string>) => SectionValidationStatus[];
   /** Check if field is critical */
@@ -59,27 +62,26 @@ export interface UseResidentValidationProgressReturn {
 
 /**
  * Hook for resident validation progress tracking
- * 
+ *
  * @description Provides comprehensive validation progress tracking and summaries.
  * Optimized with memoization for performance.
  */
 export function useResidentValidationProgress(): UseResidentValidationProgressReturn {
-  
   /**
    * Get all required fields across all sections (memoized)
    */
   const getAllRequiredFields = useMemo((): string[] => {
     const sections = Object.keys(REQUIRED_FIELDS) as Array<keyof typeof REQUIRED_FIELDS>;
     const allFields = new Set<string>();
-    
+
     sections.forEach(section => {
       const sectionFields = getRequiredFieldsForSection(section);
       sectionFields.forEach(field => allFields.add(field));
     });
-    
+
     // Add critical validation fields that might not be in REQUIRED_FIELDS
     CRITICAL_VALIDATION_FIELDS.forEach(field => allFields.add(field));
-    
+
     return Array.from(allFields);
   }, []);
 
@@ -96,7 +98,9 @@ export function useResidentValidationProgress(): UseResidentValidationProgressRe
    */
   const isFieldCritical = useMemo(() => {
     return (fieldName: string): boolean => {
-      return CRITICAL_VALIDATION_FIELDS.includes(fieldName as typeof CRITICAL_VALIDATION_FIELDS[number]);
+      return CRITICAL_VALIDATION_FIELDS.includes(
+        fieldName as (typeof CRITICAL_VALIDATION_FIELDS)[number]
+      );
     };
   }, []);
 
@@ -107,12 +111,12 @@ export function useResidentValidationProgress(): UseResidentValidationProgressRe
     return (errors: Record<string, string>): number => {
       const allRequiredFields = getAllRequiredFields;
       const totalRequired = allRequiredFields.length;
-      
+
       if (totalRequired === 0) return 100;
-      
+
       const errorCount = allRequiredFields.filter(field => errors[field]).length;
       const validCount = totalRequired - errorCount;
-      
+
       return Math.round((validCount / totalRequired) * 100);
     };
   }, [getAllRequiredFields]);
@@ -124,17 +128,17 @@ export function useResidentValidationProgress(): UseResidentValidationProgressRe
     return (errors: Record<string, string>): ValidationSummary => {
       const allRequiredFields = getAllRequiredFields;
       const errorFields = Object.keys(errors);
-      
-      const criticalErrors = errorFields.filter(field => 
-        CRITICAL_VALIDATION_FIELDS.includes(field as typeof CRITICAL_VALIDATION_FIELDS[number])
+
+      const criticalErrors = errorFields.filter(field =>
+        CRITICAL_VALIDATION_FIELDS.includes(field as (typeof CRITICAL_VALIDATION_FIELDS)[number])
       ).length;
-      
+
       const totalErrors = errorFields.length;
       const warnings = 0; // Could be extended to track warnings
       const totalFields = allRequiredFields.length;
       const validFields = totalFields - totalErrors;
       const progressPercentage = getValidationProgress(errors);
-      
+
       return {
         totalErrors,
         criticalErrors,
@@ -151,8 +155,8 @@ export function useResidentValidationProgress(): UseResidentValidationProgressRe
    */
   const hasCriticalErrors = useMemo(() => {
     return (errors: Record<string, string>): boolean => {
-      return Object.keys(errors).some(field => 
-        CRITICAL_VALIDATION_FIELDS.includes(field as typeof CRITICAL_VALIDATION_FIELDS[number])
+      return Object.keys(errors).some(field =>
+        CRITICAL_VALIDATION_FIELDS.includes(field as (typeof CRITICAL_VALIDATION_FIELDS)[number])
       );
     };
   }, []);
@@ -161,16 +165,18 @@ export function useResidentValidationProgress(): UseResidentValidationProgressRe
    * Get section validation status
    */
   const getSectionValidationStatus = useMemo(() => {
-    return (section: keyof typeof REQUIRED_FIELDS, errors: Record<string, string>): SectionValidationStatus => {
+    return (
+      section: keyof typeof REQUIRED_FIELDS,
+      errors: Record<string, string>
+    ): SectionValidationStatus => {
       const sectionFields = getRequiredFieldsForSection(section);
       const sectionErrors = sectionFields.filter(field => errors[field]);
       const errorCount = sectionErrors.length;
       const totalFields = sectionFields.length;
       const isValid = errorCount === 0;
-      const progressPercentage = totalFields > 0 
-        ? Math.round(((totalFields - errorCount) / totalFields) * 100)
-        : 100;
-      
+      const progressPercentage =
+        totalFields > 0 ? Math.round(((totalFields - errorCount) / totalFields) * 100) : 100;
+
       return {
         section,
         isValid,

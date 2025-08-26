@@ -21,7 +21,9 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
     if (!searchQuery.trim()) {
       // Show recent items first when no search query
       const recentItems = items.filter(item => item.recent).slice(0, 5);
-      const otherItems = items.filter(item => !item.recent).slice(0, maxResults - recentItems.length);
+      const otherItems = items
+        .filter(item => !item.recent)
+        .slice(0, maxResults - recentItems.length);
       return [...recentItems, ...otherItems];
     }
 
@@ -32,15 +34,15 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
         const label = item.label.toLowerCase();
         const description = item.description?.toLowerCase() || '';
         const keywords = item.keywords?.join(' ').toLowerCase() || '';
-        
+
         // Exact match gets highest score
         if (label === query) score += 100;
         else if (label.startsWith(query)) score += 50;
         else if (label.includes(query)) score += 25;
-        
+
         // Description matches
         if (description.includes(query)) score += 15;
-        
+
         // Keywords matches
         if (keywords.includes(query)) score += 10;
 
@@ -79,15 +81,11 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
           break;
         case 'ArrowDown':
           event.preventDefault();
-          setSelectedIndex(prev => 
-            prev >= filteredItems.length - 1 ? 0 : prev + 1
-          );
+          setSelectedIndex(prev => (prev >= filteredItems.length - 1 ? 0 : prev + 1));
           break;
         case 'ArrowUp':
           event.preventDefault();
-          setSelectedIndex(prev => 
-            prev <= 0 ? filteredItems.length - 1 : prev - 1
-          );
+          setSelectedIndex(prev => (prev <= 0 ? filteredItems.length - 1 : prev - 1));
           break;
         case 'Enter':
           event.preventDefault();
@@ -122,22 +120,25 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
     }
   }, [isOpen, open, close]);
 
-  const executeCommand = useCallback((item: CommandMenuItem) => {
-    if (item.disabled) return;
+  const executeCommand = useCallback(
+    (item: CommandMenuItem) => {
+      if (item.disabled) return;
 
-    // Close menu first
-    close();
+      // Close menu first
+      close();
 
-    // Execute the command
-    if (item.onClick) {
-      item.onClick();
-    } else if (item.href) {
-      router.push(item.href);
-    }
+      // Execute the command
+      if (item.onClick) {
+        item.onClick();
+      } else if (item.href) {
+        router.push(item.href);
+      }
 
-    // Mark as recent (this would typically be handled by a context or store)
-    // For now, we'll just trigger the action
-  }, [close, router]);
+      // Mark as recent (this would typically be handled by a context or store)
+      // For now, we'll just trigger the action
+    },
+    [close, router]
+  );
 
   return {
     isOpen,

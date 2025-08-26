@@ -70,10 +70,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -115,12 +117,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const validationResult = migrationInfoSchema.safeParse(migrationData);
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
           details: validationResult.error.issues.map(issue => ({
             field: issue.path.join('.'),
             message: issue.message,
-          }))
+          })),
         },
         { status: 400 }
       );
@@ -174,10 +176,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -214,7 +218,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       if (updateError) {
         console.error('Migration update error:', updateError);
-        return NextResponse.json({ error: 'Failed to update migration information' }, { status: 500 });
+        return NextResponse.json(
+          { error: 'Failed to update migration information' },
+          { status: 500 }
+        );
       }
 
       return NextResponse.json({
@@ -237,7 +244,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       if (insertError) {
         console.error('Migration insert error:', insertError);
-        return NextResponse.json({ error: 'Failed to create migration information' }, { status: 500 });
+        return NextResponse.json(
+          { error: 'Failed to create migration information' },
+          { status: 500 }
+        );
       }
 
       return NextResponse.json({
@@ -252,7 +262,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // DELETE /api/residents/[id]/migration - Delete migration information
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const resolvedParams = await params;
     const residentId = resolvedParams.id;
@@ -305,10 +318,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -325,7 +340,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     if (deleteError) {
       console.error('Migration delete error:', deleteError);
-      return NextResponse.json({ error: 'Failed to delete migration information' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to delete migration information' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({

@@ -2,7 +2,7 @@
 
 /**
  * Resident Validation Errors Hook
- * 
+ *
  * @description Focused hook for managing validation errors and field-level validation.
  * Extracted from useResidentEditForm to follow single responsibility principle.
  */
@@ -38,7 +38,7 @@ export interface UseResidentValidationErrorsReturn {
 
 /**
  * Custom hook for resident validation error management
- * 
+ *
  * @description Manages validation errors, provides field-level validation,
  * and maintains form validity state.
  */
@@ -57,7 +57,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
     try {
       // Simple validation for production readiness
       const isValid = value || !['firstName', 'lastName', 'birthdate', 'sex'].includes(field);
-      
+
       if (isValid) {
         // Clear error if validation passes
         setErrorsState(prev => {
@@ -69,7 +69,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
         // Set error if validation fails
         setErrorsState(prev => ({
           ...prev,
-          [field]: `${field} is required`
+          [field]: `${field} is required`,
         }));
       }
     } catch (error) {
@@ -84,34 +84,40 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
     // Simple validation for production readiness
     const errors: Record<string, string> = {};
     const requiredFields = ['firstName', 'lastName', 'birthdate', 'sex'];
-    
+
     requiredFields.forEach(field => {
       if (!formData[field as keyof ResidentEditFormData]) {
         errors[field] = `${field} is required`;
       }
     });
-    
+
     setErrorsState(errors);
-    
+
     return {
       isValid: Object.keys(errors).length === 0,
-      errors
+      errors,
     };
   }, []);
 
   /**
    * Get error for specific field
    */
-  const getFieldError = useCallback((field: keyof ResidentEditFormData): string | undefined => {
-    return errors[field];
-  }, [errors]);
+  const getFieldError = useCallback(
+    (field: keyof ResidentEditFormData): string | undefined => {
+      return errors[field];
+    },
+    [errors]
+  );
 
   /**
    * Check if field has error
    */
-  const hasFieldError = useCallback((field: keyof ResidentEditFormData): boolean => {
-    return Boolean(errors[field]);
-  }, [errors]);
+  const hasFieldError = useCallback(
+    (field: keyof ResidentEditFormData): boolean => {
+      return Boolean(errors[field]);
+    },
+    [errors]
+  );
 
   /**
    * Clear error for specific field

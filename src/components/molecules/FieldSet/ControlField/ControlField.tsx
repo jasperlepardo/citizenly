@@ -3,7 +3,12 @@
 import React from 'react';
 
 import { cn } from '@/lib';
-import { getFieldId, getFieldIds, buildAriaDescribedBy, buildAriaLabelledBy } from '@/lib/utilities/id-generators';
+import {
+  getFieldId,
+  getFieldIds,
+  buildAriaDescribedBy,
+  buildAriaLabelledBy,
+} from '@/lib/utilities/id-generators';
 import type { FormMode } from '@/types';
 
 import { Label, HelperText, ReadOnly } from '../../../atoms/Field';
@@ -25,7 +30,10 @@ export interface ControlFieldProps {
   // Control component props (when used directly with Control)
   controlProps?: React.ComponentProps<typeof Control>;
   // Label component props
-  labelProps?: Omit<React.ComponentProps<typeof Label>, 'htmlFor' | 'required' | 'children' | 'size'>;
+  labelProps?: Omit<
+    React.ComponentProps<typeof Label>,
+    'htmlFor' | 'required' | 'children' | 'size'
+  >;
   // Toggle-specific props
   toggleText?: {
     checked: string;
@@ -50,15 +58,15 @@ export const ControlField = ({
   toggleText,
 }: ControlFieldProps) => {
   const isHorizontal = orientation === 'horizontal';
-  
+
   // Generate unique field ID using utility function
   const fieldId = getFieldId(htmlFor, controlProps?.id, 'control-field');
   const { labelId, helperTextId, errorId } = getFieldIds(fieldId);
-  
+
   // Use errorMessage as the control error if provided (errorMessage takes precedence)
   const controlError = errorMessage || controlProps?.errorMessage;
   const hasHelperText = helperText || errorMessage;
-  
+
   // Build ARIA attributes for accessibility
   const ariaLabelledBy = buildAriaLabelledBy(label ? labelId : undefined);
   const ariaDescribedBy = buildAriaDescribedBy(
@@ -69,7 +77,7 @@ export const ControlField = ({
   const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
     const widthClasses = {
       sm: 'w-32', // 128px
-      md: 'w-40', // 160px  
+      md: 'w-40', // 160px
       lg: 'w-48', // 192px
     };
     return widthClasses[width];
@@ -79,15 +87,10 @@ export const ControlField = ({
     <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
       {/* Label */}
       {label && (
-        <div className={cn(
-          isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1'
-        )}>
-          <Label
-            htmlFor={fieldId}
-            required={required}
-            size={labelSize}
-            {...labelProps}
-          >
+        <div
+          className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}
+        >
+          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps}>
             {label}
           </Label>
         </div>
@@ -103,16 +106,18 @@ export const ControlField = ({
                 id={fieldId}
                 value={
                   controlProps.type === 'toggle' && toggleText
-                    ? (controlProps.checked ? toggleText.checked : toggleText.unchecked)
-                    : controlProps.checked 
-                      ? 'Yes' 
+                    ? controlProps.checked
+                      ? toggleText.checked
+                      : toggleText.unchecked
+                    : controlProps.checked
+                      ? 'Yes'
                       : 'No'
                 }
                 aria-labelledby={ariaLabelledBy}
                 aria-describedby={ariaDescribedBy}
               />
             ) : (
-              React.Children.map(children, (child) => {
+              React.Children.map(children, child => {
                 if (React.isValidElement(child)) {
                   return React.cloneElement(child as React.ReactElement<any>, {
                     id: fieldId,
@@ -124,32 +129,34 @@ export const ControlField = ({
                 return child;
               })
             )
+          ) : controlProps ? (
+            <Control
+              id={fieldId}
+              errorMessage={controlError}
+              aria-labelledby={ariaLabelledBy}
+              aria-describedby={
+                ariaDescribedBy || (toggleText ? `${fieldId}-description` : undefined)
+              }
+              description={
+                controlProps.type === 'toggle' && toggleText
+                  ? controlProps.checked
+                    ? toggleText.checked
+                    : toggleText.unchecked
+                  : controlProps.description || label
+              }
+              {...controlProps}
+            />
           ) : (
-            controlProps ? (
-              <Control
-                id={fieldId}
-                errorMessage={controlError}
-                aria-labelledby={ariaLabelledBy}
-                aria-describedby={ariaDescribedBy || (toggleText ? `${fieldId}-description` : undefined)}
-                description={
-                  controlProps.type === 'toggle' && toggleText
-                    ? (controlProps.checked ? toggleText.checked : toggleText.unchecked)
-                    : controlProps.description || label
-                }
-                {...controlProps}
-              />
-            ) : (
-              React.Children.map(children, (child) => {
-                if (React.isValidElement(child)) {
-                  return React.cloneElement(child as React.ReactElement<any>, {
-                    id: fieldId,
-                    'aria-labelledby': ariaLabelledBy,
-                    'aria-describedby': ariaDescribedBy,
-                  });
-                }
-                return child;
-              })
-            )
+            React.Children.map(children, child => {
+              if (React.isValidElement(child)) {
+                return React.cloneElement(child as React.ReactElement<any>, {
+                  id: fieldId,
+                  'aria-labelledby': ariaLabelledBy,
+                  'aria-describedby': ariaDescribedBy,
+                });
+              }
+              return child;
+            })
           )}
         </div>
 
@@ -157,12 +164,8 @@ export const ControlField = ({
         {hasHelperText && (
           <div className="mt-1 space-y-1">
             {/* Helper Text */}
-            {helperText && (
-              <HelperText id={helperTextId}>
-                {helperText}
-              </HelperText>
-            )}
-            
+            {helperText && <HelperText id={helperTextId}>{helperText}</HelperText>}
+
             {/* Error Message */}
             {errorMessage && (
               <HelperText id={errorId} error>
@@ -197,8 +200,8 @@ export const ControlGroup = ({
   const getSpacingClass = (spacing: 'sm' | 'md' | 'lg') => {
     const spacingMap = {
       sm: '2',
-      md: '4', 
-      lg: '6'
+      md: '4',
+      lg: '6',
     };
     return spacingMap[spacing];
   };
@@ -211,8 +214,12 @@ export const ControlGroup = ({
       {/* Title and Description */}
       {(title || description) && (
         <div className="mb-3">
-          {title && <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200">{title}</h3>}
-          {description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>}
+          {title && (
+            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200">{title}</h3>
+          )}
+          {description && (
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+          )}
         </div>
       )}
 

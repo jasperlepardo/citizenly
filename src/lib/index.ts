@@ -7,7 +7,7 @@
 // Core utilities (≤50 lines)
 export * from './core';
 
-// Validation system (≤30 lines) 
+// Validation system (≤30 lines)
 export * from './validation';
 
 // Forms system (≤40 lines)
@@ -24,7 +24,7 @@ export {
   // Storage utilities
   syncQueue,
   offlineStorage,
-  // Recent items storage  
+  // Recent items storage
   getStoredRecentItems,
   addRecentItem,
   // Repository pattern
@@ -43,7 +43,7 @@ export * from './command-menu';
 
 // Environment configuration and constants
 export * from './config';
-export { 
+export {
   API_ERROR_CODES,
   createErrorResponseObject,
   EDUCATION_LEVEL_OPTIONS,
@@ -55,21 +55,20 @@ export {
   CITIZENSHIP_OPTIONS,
   CIVIL_STATUS_OPTIONS,
   EMPLOYMENT_STATUS_OPTIONS,
-  SEX_OPTIONS
+  SEX_OPTIONS,
 } from './constants';
 
 // Export types separately to comply with isolatedModules
-export type { BloodTypeValue, CitizenshipValue, CivilStatusValue, EmploymentStatusValue, SexValue } from './constants';
+export type {
+  BloodTypeValue,
+  CitizenshipValue,
+  CivilStatusValue,
+  EmploymentStatusValue,
+  SexValue,
+} from './constants';
 
 // Legacy compatibility exports (for gradual migration)
-export * from './data/supabase';  // For @/lib/supabase imports
+export * from './data/supabase'; // For @/lib/supabase imports
 
 // Logging system (for convenience)
-export {
-  logger,
-  dbLogger,
-  apiLogger,
-  authLogger,
-  logError,
-  logSecureError,
-} from './logging';
+export { logger, dbLogger, apiLogger, authLogger, logError, logSecureError } from './logging';

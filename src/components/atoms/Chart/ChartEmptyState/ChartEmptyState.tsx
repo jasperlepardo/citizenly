@@ -7,12 +7,14 @@ interface ChartEmptyStateProps {
   readonly className?: string;
 }
 
-export default function ChartEmptyState({ 
+export default function ChartEmptyState({
   message = 'No data available',
-  className = '' 
+  className = '',
 }: ChartEmptyStateProps) {
   return (
-    <div className={`flex items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-500 text-base text-center ${className}`}>
+    <div
+      className={`flex items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center text-base text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
+    >
       {message}
     </div>
   );

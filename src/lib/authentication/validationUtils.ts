@@ -113,33 +113,87 @@ export const createResidentSchema = z.object({
     .enum(['single', 'married', 'widowed', 'separated', 'divorced', 'others'])
     .default('single'),
   civil_status_others_specify: z.string().max(200).optional().or(z.literal('')),
-  citizenship: z
-    .enum(['filipino', 'dual_citizen', 'foreigner'])
-    .default('filipino'),
+  citizenship: z.enum(['filipino', 'dual_citizen', 'foreigner']).default('filipino'),
   blood_type: z
     .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
     .optional()
     .or(z.literal('')),
   ethnicity: z
-    .enum(['tagalog', 'cebuano', 'ilocano', 'bisaya', 'hiligaynon', 'bikolano', 'waray', 'kapampangan', 'pangasinense', 'maranao', 'maguindanao', 'tausug', 'yakan', 'samal', 'badjao', 'aeta', 'agta', 'ati', 'batak', 'bukidnon', 'gaddang', 'higaonon', 'ibaloi', 'ifugao', 'igorot', 'ilongot', 'isneg', 'ivatan', 'kalinga', 'kankanaey', 'mangyan', 'mansaka', 'palawan', 'subanen', 'tboli', 'teduray', 'tumandok', 'chinese', 'others'])
+    .enum([
+      'tagalog',
+      'cebuano',
+      'ilocano',
+      'bisaya',
+      'hiligaynon',
+      'bikolano',
+      'waray',
+      'kapampangan',
+      'pangasinense',
+      'maranao',
+      'maguindanao',
+      'tausug',
+      'yakan',
+      'samal',
+      'badjao',
+      'aeta',
+      'agta',
+      'ati',
+      'batak',
+      'bukidnon',
+      'gaddang',
+      'higaonon',
+      'ibaloi',
+      'ifugao',
+      'igorot',
+      'ilongot',
+      'isneg',
+      'ivatan',
+      'kalinga',
+      'kankanaey',
+      'mangyan',
+      'mansaka',
+      'palawan',
+      'subanen',
+      'tboli',
+      'teduray',
+      'tumandok',
+      'chinese',
+      'others',
+    ])
     .optional()
     .or(z.literal('')),
   religion: z
-    .enum(['roman_catholic', 'islam', 'iglesia_ni_cristo', 'christian', 'aglipayan_church', 'seventh_day_adventist', 'bible_baptist_church', 'jehovahs_witnesses', 'church_of_jesus_christ_latter_day_saints', 'united_church_of_christ_philippines', 'others'])
+    .enum([
+      'roman_catholic',
+      'islam',
+      'iglesia_ni_cristo',
+      'christian',
+      'aglipayan_church',
+      'seventh_day_adventist',
+      'bible_baptist_church',
+      'jehovahs_witnesses',
+      'church_of_jesus_christ_latter_day_saints',
+      'united_church_of_christ_philippines',
+      'others',
+    ])
     .default('roman_catholic'),
   religion_others_specify: z.string().max(200).optional().or(z.literal('')),
 
   // Physical characteristics
-  height: z.union([
-    z.number().min(30).max(300), // Height in cm, reasonable range
-    z.literal(0),
-    z.null()
-  ]).optional(),
-  weight: z.union([
-    z.number().min(1).max(500), // Weight in kg, reasonable range
-    z.literal(0),
-    z.null()
-  ]).optional(),
+  height: z
+    .union([
+      z.number().min(30).max(300), // Height in cm, reasonable range
+      z.literal(0),
+      z.null(),
+    ])
+    .optional(),
+  weight: z
+    .union([
+      z.number().min(1).max(500), // Weight in kg, reasonable range
+      z.literal(0),
+      z.null(),
+    ])
+    .optional(),
   complexion: z.string().max(50).optional().or(z.literal('')),
 
   // Birth place information (matching database schema)
@@ -156,13 +210,7 @@ export const createResidentSchema = z.object({
   // Education and employment (aligned with database enum)
   education_attainment: z
     .union([
-      z.enum([
-        'elementary',
-        'high_school',
-        'college',
-        'post_graduate',
-        'vocational',
-      ]),
+      z.enum(['elementary', 'high_school', 'college', 'post_graduate', 'vocational']),
       z.literal(''),
     ])
     .optional(),
@@ -243,18 +291,78 @@ export const createHouseholdSchema = z.object({
   no_of_migrants: z.number().optional(),
 
   // Household classifications (matching database schema)
-  household_type: z.enum(['nuclear', 'single_parent', 'extended', 'childless', 'one_person', 'non_family', 'other']).optional(),
-  tenure_status: z.enum(['owned', 'owned_with_mortgage', 'rented', 'occupied_for_free', 'occupied_without_consent', 'others']).optional(),
+  household_type: z
+    .enum([
+      'nuclear',
+      'single_parent',
+      'extended',
+      'childless',
+      'one_person',
+      'non_family',
+      'other',
+    ])
+    .optional(),
+  tenure_status: z
+    .enum([
+      'owned',
+      'owned_with_mortgage',
+      'rented',
+      'occupied_for_free',
+      'occupied_without_consent',
+      'others',
+    ])
+    .optional(),
   tenure_others_specify: z.string().optional(),
-  household_unit: z.enum(['single_house', 'duplex', 'apartment', 'townhouse', 'condominium', 'boarding_house', 'institutional', 'makeshift', 'others']).optional(),
+  household_unit: z
+    .enum([
+      'single_house',
+      'duplex',
+      'apartment',
+      'townhouse',
+      'condominium',
+      'boarding_house',
+      'institutional',
+      'makeshift',
+      'others',
+    ])
+    .optional(),
 
   // Economic information (matching database schema)
   monthly_income: z.number().optional(),
-  income_class: z.enum(['rich', 'high_income', 'upper_middle_income', 'middle_class', 'lower_middle_class', 'low_income', 'poor', 'not_determined']).optional(),
+  income_class: z
+    .enum([
+      'rich',
+      'high_income',
+      'upper_middle_income',
+      'middle_class',
+      'lower_middle_class',
+      'low_income',
+      'poor',
+      'not_determined',
+    ])
+    .optional(),
 
   // Head of household (matching database schema)
   household_head_id: z.string().uuid().optional(),
-  household_head_position: z.enum(['father', 'mother', 'son', 'daughter', 'grandmother', 'grandfather', 'father_in_law', 'mother_in_law', 'brother_in_law', 'sister_in_law', 'spouse', 'sibling', 'guardian', 'ward', 'other']).optional(),
+  household_head_position: z
+    .enum([
+      'father',
+      'mother',
+      'son',
+      'daughter',
+      'grandmother',
+      'grandfather',
+      'father_in_law',
+      'mother_in_law',
+      'brother_in_law',
+      'sister_in_law',
+      'spouse',
+      'sibling',
+      'guardian',
+      'ward',
+      'other',
+    ])
+    .optional(),
 });
 
 export const updateHouseholdSchema = createHouseholdSchema.partial();

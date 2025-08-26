@@ -270,10 +270,15 @@ export const FontFamilyShowcase: React.FC<FontFamilyShowcaseProps> = ({
 }) => (
   <div className="mb-6 rounded-lg border border-gray-200 p-4">
     <h4 className="text-md mb-3 font-semibold text-gray-900 dark:text-gray-100">{title}</h4>
-    <div className="mb-2 text-2xl text-gray-900 dark:text-gray-100" style={{ fontFamily: fontFamily.join(', ') }}>
+    <div
+      className="mb-2 text-2xl text-gray-900 dark:text-gray-100"
+      style={{ fontFamily: fontFamily.join(', ') }}
+    >
       {sampleText}
     </div>
-    <div className="font-mono text-sm text-gray-500 dark:text-gray-500">{fontFamily.join(', ')}</div>
+    <div className="font-mono text-sm text-gray-500 dark:text-gray-500">
+      {fontFamily.join(', ')}
+    </div>
   </div>
 );
 
@@ -285,7 +290,9 @@ const Typography: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">Design Tokens: Typography</h1>
+        <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Design Tokens: Typography
+        </h1>
         <p className="max-w-2xl text-gray-600 dark:text-gray-400">
           Typography tokens for the Citizenly design system. These tokens ensure consistent,
           readable, and accessible text across all government applications.
@@ -294,7 +301,9 @@ const Typography: React.FC = () => {
 
       {/* Font Families */}
       <div className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">Font Families</h2>
+        <h2 className="mb-6 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          Font Families
+        </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {Object.entries(typographyTokens.fontFamily).map(([name, fonts]) => (
             <FontFamilyShowcase
@@ -343,7 +352,9 @@ const Typography: React.FC = () => {
 
       {/* Usage Guidelines */}
       <div className="mt-12 rounded-lg border border-blue-200 bg-blue-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">📝 Typography Guidelines</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          📝 Typography Guidelines
+        </h3>
         <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
           <div>
             <h4 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Hierarchy</h4>
@@ -368,10 +379,14 @@ const Typography: React.FC = () => {
 
       {/* CSS Classes Reference */}
       <div className="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">💻 Usage in Code</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          💻 Usage in Code
+        </h3>
         <div className="space-y-4">
           <div>
-            <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">Tailwind CSS Classes</h4>
+            <h4 className="mb-2 font-medium text-gray-900 dark:text-gray-100">
+              Tailwind CSS Classes
+            </h4>
             <pre className="overflow-x-auto rounded-sm border bg-white p-3 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-700">
               {`<!-- Display Typography -->
 <h1 class="text-4xl font-bold leading-tight tracking-tight">

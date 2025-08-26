@@ -236,16 +236,11 @@ export interface GeographicAddress {
 // CONSTANTS
 // =============================================================================
 
-export const SUBDIVISION_TYPES: SubdivisionType[] = [
-  'Subdivision',
-  'Zone', 
-  'Sitio',
-  'Purok'
-];
+export const SUBDIVISION_TYPES: SubdivisionType[] = ['Subdivision', 'Zone', 'Sitio', 'Purok'];
 
 export const GEOGRAPHIC_LEVELS: GeographicLevel[] = [
   'region',
   'province',
   'city_municipality',
-  'barangay'
+  'barangay',
 ];

@@ -50,7 +50,7 @@ export default function HomePage() {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="inline-block size-12 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
           <h2 className="mt-4 text-lg font-medium text-gray-600 dark:text-gray-400">Loading...</h2>
@@ -65,18 +65,27 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
+    <div className="from-primary-50 to-primary-100 min-h-screen bg-linear-to-br dark:from-neutral-900 dark:to-neutral-800">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-xs" role="banner">
+      <header
+        className="border-b border-gray-200 bg-white shadow-xs dark:border-gray-700 dark:bg-gray-800"
+        role="banner"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <h1 className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">Citizenly</h1>
+              <h1 className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Citizenly
+              </h1>
             </div>
-            <nav className="flex items-center space-x-4" role="navigation" aria-label="Main navigation">
+            <nav
+              className="flex items-center space-x-4"
+              role="navigation"
+              aria-label="Main navigation"
+            >
               <Link
                 href="/login"
-                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors hover:text-gray-900 dark:hover:text-gray-100 dark:text-gray-900"
+                className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-300 dark:text-gray-900 dark:hover:text-gray-100"
               >
                 Sign In
               </Link>
@@ -93,29 +102,32 @@ export default function HomePage() {
       {/* Hero Section */}
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8" role="main">
         <section className="text-center" aria-labelledby="hero-title">
-          <h2 id="hero-title" className="font-montserrat text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl md:text-6xl">
+          <h2
+            id="hero-title"
+            className="font-montserrat text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl dark:text-gray-100"
+          >
             <span className="block">Citizenly</span>
-            <span className="mt-2 block text-2xl text-gray-700 dark:text-gray-300 sm:text-3xl md:text-4xl">
+            <span className="mt-2 block text-2xl text-gray-700 sm:text-3xl md:text-4xl dark:text-gray-300">
               Records of Barangay Inhabitant System
             </span>
           </h2>
-          <p className="mx-auto mt-3 max-w-md font-montserrat text-base text-gray-700 dark:text-gray-300 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
+          <p className="font-montserrat mx-auto mt-3 max-w-md text-base text-gray-700 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl dark:text-gray-300">
             Complete digital solution for Philippine barangay resident management, built for local
             government units to efficiently manage their communities.
           </p>
-          
+
           {/* Icon Test & Click Test */}
-          <div className="mt-6 flex justify-center items-center space-x-4">
+          <div className="mt-6 flex items-center justify-center space-x-4">
             <i className="fas fa-home text-xl text-blue-600" title="Home"></i>
             <i className="fas fa-users text-xl text-green-600" title="Users"></i>
             <i className="fas fa-tachometer-alt text-xl text-yellow-600" title="Dashboard"></i>
             <i className="fas fa-cog text-xl text-purple-600" title="Settings"></i>
           </div>
-          
+
           {/* Click Test Button */}
           <div className="mt-4 text-center">
-            <button 
-              className="debug-click bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer"
+            <button
+              className="debug-click cursor-pointer rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               onClick={() => toast.success('Button clicked! Interactions are working.')}
               onMouseEnter={() => console.log('Button hovered')}
               style={{ position: 'relative', zIndex: 1000 }}
@@ -125,15 +137,13 @@ export default function HomePage() {
           </div>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
             <div className="rounded-md shadow-sm">
-              <Link href="/login"
-                aria-label="Access the Citizenly barangay management system"
-              >
+              <Link href="/login" aria-label="Access the Citizenly barangay management system">
                 <Button variant="primary" size="lg" className="w-full sm:w-auto">
                   Get Started
                 </Button>
               </Link>
             </div>
-            <div className="mt-3 rounded-md shadow-sm sm:ml-3 sm:mt-0">
+            <div className="mt-3 rounded-md shadow-sm sm:mt-0 sm:ml-3">
               <Link href="/dashboard">
                 <Button variant="secondary" size="lg" className="w-full sm:w-auto">
                   View Demo
@@ -146,14 +156,17 @@ export default function HomePage() {
         {/* Features Grid */}
         <section className="mt-20" aria-labelledby="features-title">
           <div className="text-center">
-            <h3 id="features-title" className="mb-12 font-montserrat text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+            <h3
+              id="features-title"
+              className="font-montserrat mb-12 text-3xl font-extrabold text-gray-900 dark:text-gray-100"
+            >
               Everything you need to manage your barangay
             </h3>
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {/* Resident Management */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/20">
                 <svg
                   className="size-6 text-gray-600 dark:text-gray-400"
@@ -169,7 +182,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Resident Management
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -179,7 +192,7 @@ export default function HomePage() {
             </div>
 
             {/* Address System */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/20">
                 <svg
                   className="size-6 text-green-600 dark:text-green-400"
@@ -201,7 +214,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Smart Address System
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -211,7 +224,7 @@ export default function HomePage() {
             </div>
 
             {/* Analytics */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/20">
                 <svg
                   className="size-6 text-gray-600 dark:text-gray-400"
@@ -227,7 +240,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Reports & Analytics
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -237,7 +250,7 @@ export default function HomePage() {
             </div>
 
             {/* Search & Filter */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900/20">
                 <svg
                   className="size-6 text-orange-600 dark:text-orange-400"
@@ -253,7 +266,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Advanced Search
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -263,7 +276,7 @@ export default function HomePage() {
             </div>
 
             {/* Security */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
               <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-red-100 dark:bg-red-900/20">
                 <svg
                   className="size-6 text-red-600 dark:text-red-400"
@@ -279,7 +292,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Secure & Compliant
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -289,10 +302,10 @@ export default function HomePage() {
             </div>
 
             {/* Digital Forms */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 shadow-md transition-shadow hover:shadow-lg">
-              <div className="bg-blue-100 dark:bg-blue-900/20 mb-4 flex size-12 items-center justify-center rounded-lg">
+            <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/20">
                 <svg
-                  className="text-blue-600 dark:text-blue-400 size-6"
+                  className="size-6 text-blue-600 dark:text-blue-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -305,7 +318,7 @@ export default function HomePage() {
                   />
                 </svg>
               </div>
-              <h3 className="mb-2 font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
+              <h3 className="font-montserrat mb-2 text-xl font-semibold text-gray-600 dark:text-gray-400">
                 Digital Forms
               </h3>
               <p className="font-montserrat text-gray-600 dark:text-gray-400">
@@ -317,36 +330,44 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="mt-20"  aria-labelledby="cta-title">
-        <div className="mt-20 rounded-2xl bg-blue-600 shadow-xl dark:bg-blue-700">
-          <div className="px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
-            <div className="text-center">
-              <h2 id="cta-title" className="text-white dark:text-black font-montserrat text-3xl font-extrabold">
-                Ready to modernize your barangay?
-              </h2>
-              <p className="mt-4 font-montserrat text-lg text-gray-100 dark:text-gray-200">
-                Join local government units across the Philippines in digitizing their resident
-                management systems.
-              </p>
-              <div className="mt-8">
-                <Link href="/login">
-                  <Button variant="secondary" size="lg">
-                    Start Your Digital Transformation
-                  </Button>
-                </Link>
+        <section className="mt-20" aria-labelledby="cta-title">
+          <div className="mt-20 rounded-2xl bg-blue-600 shadow-xl dark:bg-blue-700">
+            <div className="px-6 py-12 sm:px-12 sm:py-16 lg:px-16">
+              <div className="text-center">
+                <h2
+                  id="cta-title"
+                  className="font-montserrat text-3xl font-extrabold text-white dark:text-black"
+                >
+                  Ready to modernize your barangay?
+                </h2>
+                <p className="font-montserrat mt-4 text-lg text-gray-100 dark:text-gray-200">
+                  Join local government units across the Philippines in digitizing their resident
+                  management systems.
+                </p>
+                <div className="mt-8">
+                  <Link href="/login">
+                    <Button variant="secondary" size="lg">
+                      Start Your Digital Transformation
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-900 mt-20 border-t border-gray-200 dark:border-gray-700" role="contentinfo">
+      <footer
+        className="mt-20 border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+        role="contentinfo"
+      >
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-4 flex items-center justify-center">
-              <span className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">Citizenly</span>
+              <span className="font-montserrat text-xl font-semibold text-gray-900 dark:text-gray-100">
+                Citizenly
+              </span>
             </div>
             <p className="font-montserrat text-gray-700 dark:text-gray-300">
               © 2024 Citizenly. Built for Philippine Local Government Units.

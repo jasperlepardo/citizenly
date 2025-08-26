@@ -186,9 +186,7 @@ export const CheckboxGroup = ({
   errorMessage,
 }: CheckboxGroupProps) => {
   const handleChange = (checked: boolean, itemValue: string) => {
-    const newValue = checked
-      ? [...value, itemValue]
-      : value.filter(v => v !== itemValue);
+    const newValue = checked ? [...value, itemValue] : value.filter(v => v !== itemValue);
     onChange?.(newValue);
   };
 

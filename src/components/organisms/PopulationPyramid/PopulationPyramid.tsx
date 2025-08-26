@@ -124,9 +124,13 @@ export default function PopulationPyramid({
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 ${className}`}>
+    <div
+      className={`rounded-lg border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800 ${className}`}
+    >
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="font-display text-lg font-semibold text-gray-600 dark:text-gray-400">Population Pyramid</h3>
+        <h3 className="font-display text-lg font-semibold text-gray-600 dark:text-gray-400">
+          Population Pyramid
+        </h3>
         <div className="font-body text-sm text-gray-600 dark:text-gray-400">
           Total: {totalPopulation.toLocaleString()}
         </div>
@@ -134,7 +138,7 @@ export default function PopulationPyramid({
 
       <div className="space-y-1">
         {/* Header */}
-        <div className="mb-3 flex items-center font-body text-xs text-gray-600 dark:text-gray-400 dark:text-gray-600">
+        <div className="font-body mb-3 flex items-center text-xs text-gray-600 dark:text-gray-400 dark:text-gray-600">
           <div className="w-[45%] pr-3 text-right">Male</div>
           <div className="w-[10%] px-3 text-center">Age</div>
           <div className="w-[45%] pl-3 text-left">Female</div>
@@ -152,7 +156,7 @@ export default function PopulationPyramid({
                 isSelected
                   ? 'bg-blue-50 shadow-xs dark:bg-blue-900/20'
                   : isHovered
-                    ? 'bg-gray-50 dark:bg-gray-700 shadow-xs'
+                    ? 'bg-gray-50 shadow-xs dark:bg-gray-700'
                     : hoveredGroup && hoveredGroup !== group.ageRange
                       ? 'opacity-60'
                       : 'hover:bg-gray-50 dark:bg-gray-700'
@@ -165,8 +169,10 @@ export default function PopulationPyramid({
               <div className="flex w-[45%] justify-end pr-3">
                 <div className="relative flex w-full items-center gap-4">
                   <span
-                    className={`min-w-[35px] text-right font-body text-xs transition-all duration-200 ${
-                      isHovered || isSelected ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'
+                    className={`font-body min-w-[35px] text-right text-xs transition-all duration-200 ${
+                      isHovered || isSelected
+                        ? 'font-medium text-gray-600 dark:text-gray-400'
+                        : 'text-gray-600 dark:text-gray-400'
                     }`}
                   >
                     {group.male}
@@ -237,8 +243,10 @@ export default function PopulationPyramid({
                     )}
                   </div>
                   <span
-                    className={`min-w-[35px] font-body text-xs transition-all duration-200 ${
-                      isHovered || isSelected ? 'font-medium text-gray-600 dark:text-gray-400' : 'text-gray-600 dark:text-gray-400'
+                    className={`font-body min-w-[35px] text-xs transition-all duration-200 ${
+                      isHovered || isSelected
+                        ? 'font-medium text-gray-600 dark:text-gray-400'
+                        : 'text-gray-600 dark:text-gray-400'
                     }`}
                   >
                     {group.female}
@@ -250,7 +258,7 @@ export default function PopulationPyramid({
         })}
 
         {/* Legend and Stats */}
-        <div className="mt-6 border-t border-gray-300 dark:border-gray-600 pt-4">
+        <div className="mt-6 border-t border-gray-300 pt-4 dark:border-gray-600">
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-2">
               <div className="size-3 rounded-sm bg-blue-500" />
@@ -273,7 +281,7 @@ export default function PopulationPyramid({
               <p className="font-body text-sm text-gray-600 dark:text-gray-400">
                 Age group <span className="font-semibold">{selectedGroup}</span> selected
               </p>
-              <p className="mt-1 font-body text-xs text-gray-600 dark:text-gray-400">
+              <p className="font-body mt-1 text-xs text-gray-600 dark:text-gray-400">
                 Click another group to compare or click outside to deselect
               </p>
             </div>

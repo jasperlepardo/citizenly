@@ -9,12 +9,14 @@ interface ChartTitleProps {
   readonly className?: string;
 }
 
-export default function ChartTitle({ 
-  children, 
-  className 
-}: ChartTitleProps) {
+export default function ChartTitle({ children, className }: ChartTitleProps) {
   return (
-    <h3 className={cn('text-lg font-semibold text-zinc-900 dark:text-zinc-100 leading-6 mb-4', className)}>
+    <h3
+      className={cn(
+        'mb-4 text-lg leading-6 font-semibold text-zinc-900 dark:text-zinc-100',
+        className
+      )}
+    >
       {children}
     </h3>
   );

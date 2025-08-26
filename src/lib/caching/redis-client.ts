@@ -35,7 +35,7 @@ class InMemoryCache implements CacheClient {
 
   async get<T = any>(key: string): Promise<T | null> {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       return null;
@@ -62,7 +62,7 @@ class InMemoryCache implements CacheClient {
       this.cache.set(key, {
         data: value,
         timestamp: Date.now(),
-        ttl: ttlSeconds
+        ttl: ttlSeconds,
       });
 
       return true;
@@ -90,20 +90,20 @@ class InMemoryCache implements CacheClient {
   async exists(key: string): Promise<boolean> {
     const entry = this.cache.get(key);
     if (!entry) return false;
-    
+
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl * 1000) {
       this.cache.delete(key);
       return false;
     }
-    
+
     return true;
   }
 
   async expire(key: string, ttlSeconds: number): Promise<boolean> {
     const entry = this.cache.get(key);
     if (!entry) return false;
-    
+
     entry.ttl = ttlSeconds;
     entry.timestamp = Date.now();
     return true;
@@ -113,7 +113,7 @@ class InMemoryCache implements CacheClient {
     return {
       ...this.stats,
       keys: this.cache.size,
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
 
@@ -134,9 +134,10 @@ class InMemoryCache implements CacheClient {
 
     // If still at capacity, remove oldest entries
     if (this.cache.size >= this.maxSize) {
-      const entries = Array.from(this.cache.entries())
-        .sort(([, a], [, b]) => a.timestamp - b.timestamp);
-      
+      const entries = Array.from(this.cache.entries()).sort(
+        ([, a], [, b]) => a.timestamp - b.timestamp
+      );
+
       const toRemove = entries.slice(0, Math.floor(this.maxSize * 0.2)); // Remove 20%
       for (const [key] of toRemove) {
         this.cache.delete(key);
@@ -205,7 +206,7 @@ function createCacheClient(): CacheClient {
   // Use in-memory cache for now - Redis support can be enabled later
   logger.info('Initializing in-memory cache client');
   return new InMemoryCache();
-  
+
   // TODO: Enable Redis support when package is installed
   // if (isProduction() && process.env.REDIS_URL) {
   //   try {
@@ -278,7 +279,7 @@ export class CacheManager {
   async invalidatePattern(pattern: string): Promise<number> {
     const prefixedPattern = this.keyPrefix + pattern;
     const keys = await this.client.keys(prefixedPattern);
-    
+
     let deleted = 0;
     for (const key of keys) {
       if (await this.client.del(key)) {

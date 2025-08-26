@@ -3,16 +3,15 @@
  * Eliminates inconsistent mapping patterns across components
  */
 
-import { 
-  ResidentFormData, 
-  ResidentApiData, 
+import {
+  ResidentFormData,
+  ResidentApiData,
   ResidentWithRelations,
   PsocOption,
-  PsgcOption
-, 
+  PsgcOption,
   HouseholdData,
   HouseholdHead,
-  HouseholdOption
+  HouseholdOption,
 } from '@/types';
 
 /**
@@ -40,32 +39,34 @@ export const mapFormToApi = (formData: ResidentFormData): ResidentApiData => {
     ethnicity: formData.ethnicity || undefined,
     religion: formData.religion || undefined,
     religion_others_specify: formData.religion_others_specify || undefined,
-    
+
     // Physical characteristics - convert to numbers for API
-    height: typeof formData.height === 'string' ? parseFloat(formData.height) || 0 : formData.height || 0,
-    weight: typeof formData.weight === 'string' ? parseFloat(formData.weight) || 0 : formData.weight || 0,
+    height:
+      typeof formData.height === 'string' ? parseFloat(formData.height) || 0 : formData.height || 0,
+    weight:
+      typeof formData.weight === 'string' ? parseFloat(formData.weight) || 0 : formData.weight || 0,
     complexion: formData.complexion || undefined,
-    
+
     // Documentation
     birth_place_code: formData.birth_place_code || undefined,
     philsys_card_number: formData.philsys_card_number || undefined,
-    
+
     // Family information
     mother_maiden_first: formData.mother_maiden_first || undefined,
     mother_maiden_middle: formData.mother_maiden_middle || undefined,
     mother_maiden_last: formData.mother_maiden_last || undefined,
-    
+
     // Education and employment
     education_attainment: formData.education_attainment || undefined,
     is_graduate: formData.is_graduate || false,
     employment_status: formData.employment_status || undefined,
     occupation_code: formData.occupation_code || undefined, // Maps to occupation_code in DB
-    
+
     // Voting information
     is_voter: formData.is_voter ?? undefined,
     is_resident_voter: formData.is_resident_voter ?? undefined,
     last_voted_date: formData.last_voted_date || undefined,
-    
+
     // Household
     household_code: formData.household_code || undefined,
   };
@@ -100,7 +101,7 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     telephone_number: resident.telephone_number || '', // Maps from telephone_number in DB
     mobile_number: resident.mobile_number || '',
     household_code: resident.household_code || '',
-    
+
     // Physical Characteristics
     blood_type: resident.blood_type || undefined,
     complexion: resident.complexion || '',
@@ -108,17 +109,17 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     weight: resident.weight || 0,
     religion: resident.religion || '',
     religion_others_specify: resident.religion_others_specify || '',
-    
+
     // Voting Information
     is_voter: resident.is_voter,
     is_resident_voter: resident.is_resident_voter,
     last_voted_date: resident.last_voted_date || '',
-    
+
     // Mother's Maiden Name
     mother_maiden_first: resident.mother_maiden_first || '',
     mother_maiden_middle: resident.mother_maiden_middle || '',
     mother_maiden_last: resident.mother_maiden_last || '',
-    
+
     // Note: Sectoral and migration information are handled separately
     // These should be fetched/stored via separate services and tables
   };
@@ -129,7 +130,7 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
  * Replaces the inconsistent formatting functions
  */
 export const formatHouseholdOption = (
-  household: HouseholdData, 
+  household: HouseholdData,
   headResident?: HouseholdHead
 ): HouseholdOption => {
   const addressParts = [
@@ -137,15 +138,15 @@ export const formatHouseholdOption = (
     household.geo_streets?.[0]?.name,
     household.geo_subdivisions?.[0]?.name,
   ].filter(Boolean);
-  
+
   const address = addressParts.length > 0 ? addressParts.join(', ') : 'No address';
-  
-  const headName = headResident 
+
+  const headName = headResident
     ? [headResident.first_name, headResident.middle_name, headResident.last_name]
         .filter(Boolean)
         .join(' ')
     : 'No head assigned';
-  
+
   return {
     value: household.code,
     label: `Household #${household.code}`,
@@ -231,16 +232,16 @@ export const formatPsgcOption = (psgcData: RawPsgcData): PsgcOption => {
  */
 export const calculateAge = (birthdate: string): number => {
   if (!birthdate) return 0;
-  
+
   const today = new Date();
   const birth = new Date(birthdate);
   let age = today.getFullYear() - birth.getFullYear();
   const monthDiff = today.getMonth() - birth.getMonth();
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
     age--;
   }
-  
+
   return age;
 };
 
@@ -261,10 +262,8 @@ export const formatFullName = (person: {
   const middleName = person.middle_name || person.middleName || '';
   const lastName = person.last_name || person.lastName || '';
   const extensionName = person.extension_name || person.extensionName || '';
-  
-  return [firstName, middleName, lastName, extensionName]
-    .filter(Boolean)
-    .join(' ');
+
+  return [firstName, middleName, lastName, extensionName].filter(Boolean).join(' ');
 };
 
 /**
@@ -281,10 +280,8 @@ export const formatMotherMaidenName = (mother: {
   const firstName = mother.mother_maiden_first || mother.motherMaidenFirstName || '';
   const middleName = mother.mother_maiden_middle || mother.motherMaidenMiddleName || '';
   const lastName = mother.mother_maiden_last || mother.motherMaidenLastName || '';
-  
-  return [firstName, middleName, lastName]
-    .filter(Boolean)
-    .join(' ');
+
+  return [firstName, middleName, lastName].filter(Boolean).join(' ');
 };
 
 /**
@@ -307,13 +304,15 @@ export const formatBoolean = (value: boolean | undefined): string => {
  * Parse full name into components
  * Used for pre-filling forms from suggested names
  */
-export const parseFullName = (fullName: string): {
+export const parseFullName = (
+  fullName: string
+): {
   first_name: string;
   middle_name: string;
   last_name: string;
 } => {
   const nameParts = fullName.trim().split(/\s+/);
-  
+
   if (nameParts.length === 1) {
     return {
       first_name: nameParts[0],
@@ -378,8 +377,11 @@ export const getFormToSchemaFieldMapping = (): Record<string, string> => ({
  */
 export const getSchemaToFormFieldMapping = (): Record<string, string> => {
   const formToSchema = getFormToSchemaFieldMapping();
-  return Object.entries(formToSchema).reduce((acc, [formField, schemaField]) => {
-    acc[schemaField] = formField;
-    return acc;
-  }, {} as Record<string, string>);
+  return Object.entries(formToSchema).reduce(
+    (acc, [formField, schemaField]) => {
+      acc[schemaField] = formField;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 };

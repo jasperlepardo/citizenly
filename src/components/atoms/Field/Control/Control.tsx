@@ -156,7 +156,8 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
       };
 
       const getThumbClasses = () => {
-        const baseClasses = 'inline-block rounded-full bg-white shadow transform transition-transform duration-200 ease-in-out';
+        const baseClasses =
+          'inline-block rounded-full bg-white shadow transform transition-transform duration-200 ease-in-out';
         const sizeClasses = {
           sm: 'w-3 h-3',
           md: 'w-4 h-4',
@@ -170,9 +171,8 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
             }
           : 'translate-x-0';
 
-        const translateClass = typeof translateClasses === 'string' 
-          ? translateClasses 
-          : translateClasses[size!];
+        const translateClass =
+          typeof translateClasses === 'string' ? translateClasses : translateClasses[size!];
         return cn(baseClasses, sizeClasses[size!], translateClass);
       };
 
@@ -228,9 +228,13 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
               inputVariants({ variant: actualVariant, size, type }),
               'shrink-0 appearance-none',
               // Checked styles
-              type === 'checkbox' && 'checked:bg-[#7c3aed] checked:border-[#7c3aed]',
-              type === 'checkbox' && actualVariant === 'primary' && 'checked:bg-[#2563eb] checked:border-[#2563eb]',
-              type === 'checkbox' && actualVariant === 'error' && 'checked:bg-[#dc2626] checked:border-[#dc2626]',
+              type === 'checkbox' && 'checked:border-[#7c3aed] checked:bg-[#7c3aed]',
+              type === 'checkbox' &&
+                actualVariant === 'primary' &&
+                'checked:border-[#2563eb] checked:bg-[#2563eb]',
+              type === 'checkbox' &&
+                actualVariant === 'error' &&
+                'checked:border-[#dc2626] checked:bg-[#dc2626]',
               type === 'checkbox' && actualVariant === 'disabled' && 'checked:bg-[#d4d4d4]',
               type === 'radio' && 'checked:border-[#7c3aed]',
               type === 'radio' && actualVariant === 'primary' && 'checked:border-[#2563eb]',
@@ -315,7 +319,7 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
       <div className="w-full">
         <label className={cn(controlVariants({ size }), className)}>
           {type === 'toggle' ? renderToggle() : renderInput()}
-          
+
           <TitleDescription
             title={label}
             description={description}

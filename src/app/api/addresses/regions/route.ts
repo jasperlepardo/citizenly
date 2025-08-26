@@ -8,7 +8,6 @@ const supabase = createClient(
 
 export async function GET(request: NextRequest) {
   try {
-
     // Get regions data
     const { data: regions, error: regionsError } = await supabase
       .from('psgc_regions')
@@ -21,10 +20,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = regions?.map((region) => ({
-      value: region.code,
-      label: region.name,
-    })) || [];
+    const options =
+      regions?.map(region => ({
+        value: region.code,
+        label: region.name,
+      })) || [];
 
     return NextResponse.json({
       success: true,

@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase , logError } from '@/lib';
+import { supabase, logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
 

@@ -54,7 +54,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Get resident data with household join to check barangay access
     const { data: residentWithHousehold, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         *,
         households!inner(
           code,
@@ -85,7 +86,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           created_at,
           updated_at
         )
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code) // Ensure same barangay through household
       .single();
@@ -93,22 +95,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     if (residentError || !residentWithHousehold) {
       return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
     }
-    
+
     // Get sectoral info separately to avoid join issues
     const { data: sectoralInfoArray, error: sectoralError } = await supabaseAdmin
       .from('resident_sectoral_info')
       .select('*')
       .eq('resident_id', residentId);
-    
+
     // Handle the array result - take first record if exists
-    const sectoralInfo = sectoralInfoArray && sectoralInfoArray.length > 0 ? sectoralInfoArray[0] : null;
+    const sectoralInfo =
+      sectoralInfoArray && sectoralInfoArray.length > 0 ? sectoralInfoArray[0] : null;
 
     // Extract household info and merge with resident data
     const { households, ...residentData } = residentWithHousehold;
-    
+
     const resident = {
       ...residentData,
-      ...(sectoralInfo || {})
+      ...(sectoralInfo || {}),
     };
     const household = households;
 
@@ -176,7 +179,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         // Try barangay first (most specific)
         const { data: barangayData } = await supabaseAdmin
           .from('psgc_barangays')
-          .select(`
+          .select(
+            `
             code,
             name,
             psgc_cities_municipalities!inner(
@@ -184,7 +188,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
               type,
               psgc_provinces!inner(name)
             )
-          `)
+          `
+          )
           .eq('code', resident.birth_place_code)
           .maybeSingle();
 
@@ -196,18 +201,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
               code: barangayData.code,
               name: `${city.name}, ${province.name}`,
               level: 'barangay',
-            }
+            },
           };
         } else {
           // Try city/municipality
           const { data: cityData } = await supabaseAdmin
             .from('psgc_cities_municipalities')
-            .select(`
+            .select(
+              `
               code,
               name,
               type,
               psgc_provinces!inner(name)
-            `)
+            `
+            )
             .eq('code', resident.birth_place_code)
             .maybeSingle();
 
@@ -219,7 +226,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 name: `${cityData.name}, ${province.name}`,
                 level: 'city_municipality',
                 type: cityData.type, // Include the actual type (city or municipality)
-              }
+              },
             };
           } else {
             // Try province
@@ -235,7 +242,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                   code: provinceData.code,
                   name: provinceData.name,
                   level: 'province',
-                }
+                },
               };
             } else {
               // Try region (least specific)
@@ -251,7 +258,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                     code: regionData.code,
                     name: regionData.name,
                     level: 'region',
-                  }
+                  },
                 };
               } else {
                 // All fallbacks failed
@@ -271,27 +278,29 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       try {
         const { data: psocData } = await supabaseAdmin
           .from('psoc_unified_search')
-          .select('psoc_code, occupation_title, display_text, psoc_level, level_name, parent_code, parent_title')
+          .select(
+            'psoc_code, occupation_title, display_text, psoc_level, level_name, parent_code, parent_title'
+          )
           .eq('psoc_code', resident.occupation_code)
           .maybeSingle();
-          
+
         if (psocData) {
           // Build the complete hierarchy from bottom to top
           const hierarchyParts = [];
-          
+
           // Start with the occupation title
           hierarchyParts.push(psocData.occupation_title);
-          
+
           // Add parent if it exists (Level 3)
           if (psocData.parent_title) {
             hierarchyParts.push(psocData.parent_title);
           }
-          
-          // For a complete hierarchy, we could traverse up further, but 
+
+          // For a complete hierarchy, we could traverse up further, but
           // showing occupation + immediate parent is usually sufficient
           // Full format: "Graphic And Multimedia Designers › Architects, Planners, Surveyors And Designers"
           const hierarchy = hierarchyParts.join(' › ');
-          
+
           occupationInfo = {
             occupation_title: hierarchy,
             occupation_code_display: psocData.psoc_code, // Keep the code for reference
@@ -310,7 +319,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         ...birthPlaceInfo,
         ...occupationInfo,
       },
-      household
+      household,
     });
   } catch (error) {
     console.error('Resident detail API error:', error);
@@ -372,11 +381,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // First check if resident exists and user has access through household
     const { data: existingResident, error: checkError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         household_code,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -403,17 +414,24 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     // Only include sectoral fields that are explicitly set (not undefined)
     const sectoralData: Record<string, boolean> = {};
-    
-    if (is_labor_force_employed !== undefined) sectoralData.is_labor_force_employed = is_labor_force_employed;
+
+    if (is_labor_force_employed !== undefined)
+      sectoralData.is_labor_force_employed = is_labor_force_employed;
     if (is_unemployed !== undefined) sectoralData.is_unemployed = is_unemployed;
-    if (is_overseas_filipino_worker !== undefined) sectoralData.is_overseas_filipino_worker = is_overseas_filipino_worker;
-    if (is_person_with_disability !== undefined) sectoralData.is_person_with_disability = is_person_with_disability;
-    if (is_out_of_school_children !== undefined) sectoralData.is_out_of_school_children = is_out_of_school_children;
-    if (is_out_of_school_youth !== undefined) sectoralData.is_out_of_school_youth = is_out_of_school_youth;
+    if (is_overseas_filipino_worker !== undefined)
+      sectoralData.is_overseas_filipino_worker = is_overseas_filipino_worker;
+    if (is_person_with_disability !== undefined)
+      sectoralData.is_person_with_disability = is_person_with_disability;
+    if (is_out_of_school_children !== undefined)
+      sectoralData.is_out_of_school_children = is_out_of_school_children;
+    if (is_out_of_school_youth !== undefined)
+      sectoralData.is_out_of_school_youth = is_out_of_school_youth;
     if (is_senior_citizen !== undefined) sectoralData.is_senior_citizen = is_senior_citizen;
-    if (is_registered_senior_citizen !== undefined) sectoralData.is_registered_senior_citizen = is_registered_senior_citizen;
+    if (is_registered_senior_citizen !== undefined)
+      sectoralData.is_registered_senior_citizen = is_registered_senior_citizen;
     if (is_solo_parent !== undefined) sectoralData.is_solo_parent = is_solo_parent;
-    if (is_indigenous_people !== undefined) sectoralData.is_indigenous_people = is_indigenous_people;
+    if (is_indigenous_people !== undefined)
+      sectoralData.is_indigenous_people = is_indigenous_people;
     if (is_migrant !== undefined) sectoralData.is_migrant = is_migrant;
 
     // Update resident data (access already verified)
@@ -442,10 +460,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         .maybeSingle(); // Use maybeSingle instead of single to avoid error when no record exists
 
       // Log the check result for debugging
-      console.log('Sectoral record check:', { 
-        exists: !!existingSectoral, 
+      console.log('Sectoral record check:', {
+        exists: !!existingSectoral,
         residentId,
-        checkError: checkError?.message 
+        checkError: checkError?.message,
       });
 
       if (existingSectoral) {
@@ -464,13 +482,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             errorMessage: sectoralUpdateError.message,
             errorCode: sectoralUpdateError.code,
             data: sectoralData,
-            residentId
+            residentId,
           });
-          return NextResponse.json({ 
-            error: `Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}` 
-          }, { status: 500 });
+          return NextResponse.json(
+            {
+              error: `Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}`,
+            },
+            { status: 500 }
+          );
         }
-        
+
         console.log('Successfully updated sectoral data:', updatedData);
       } else {
         // Create new sectoral record (table doesn't have created_by/updated_by columns)
@@ -480,9 +501,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         };
-        
-        console.log('Attempting to insert sectoral data:', JSON.stringify(sectoralInsertData, null, 2));
-        
+
+        console.log(
+          'Attempting to insert sectoral data:',
+          JSON.stringify(sectoralInsertData, null, 2)
+        );
+
         const { data: insertedData, error: sectoralInsertError } = await supabaseAdmin
           .from('resident_sectoral_info')
           .insert(sectoralInsertData)
@@ -495,14 +519,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             errorDetails: sectoralInsertError.details,
             errorHint: sectoralInsertError.hint,
             data: sectoralInsertData,
-            residentId
+            residentId,
           });
-          return NextResponse.json({ 
-            error: `Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`,
-            details: sectoralInsertError.details 
-          }, { status: 500 });
+          return NextResponse.json(
+            {
+              error: `Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`,
+              details: sectoralInsertError.details,
+            },
+            { status: 500 }
+          );
         }
-        
+
         console.log('Successfully inserted sectoral data:', insertedData);
       }
     }
@@ -514,7 +541,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Fetch the complete resident record with sectoral information for the response
     const { data: completeResident, error: fetchError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         *,
         resident_sectoral_info (
           is_labor_force_employed,
@@ -540,7 +568,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           duration_of_stay_current_months,
           is_intending_to_return
         )
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('is_active', true)
       .maybeSingle();
@@ -564,7 +593,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const resolvedParams = await params;
     const residentId = resolvedParams.id;
@@ -617,13 +649,15 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     // First check if resident exists and user has access through household
     const { data: existingResident, error: checkError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         household_code,
         first_name,
         last_name,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -637,7 +671,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       residentId,
       name: `${existingResident.first_name} ${existingResident.last_name}`,
       deletedBy: user.id,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Soft delete: Update is_active to false instead of hard delete
@@ -646,7 +680,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       .update({
         is_active: false,
         updated_at: new Date().toISOString(),
-        updated_by: user.id
+        updated_by: user.id,
       })
       .eq('id', residentId);
 
@@ -668,8 +702,8 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       message: 'Resident deleted successfully',
       deletedResident: {
         id: residentId,
-        name: `${existingResident.first_name} ${existingResident.last_name}`
-      }
+        name: `${existingResident.first_name} ${existingResident.last_name}`,
+      },
     });
   } catch (error) {
     console.error('Resident delete API error:', error);

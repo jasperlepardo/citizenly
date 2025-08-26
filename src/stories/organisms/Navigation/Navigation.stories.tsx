@@ -251,7 +251,9 @@ export const BarangayNavigation: Story = {
     return (
       <div className="h-96 w-72 rounded-lg border border-gray-200 bg-white shadow-xs">
         <div className="border-b border-gray-200 p-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Barangay San Lorenzo</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Barangay San Lorenzo
+          </h2>
           <p className="text-sm text-gray-500 dark:text-gray-500">Makati City, Metro Manila</p>
         </div>
         <div className="p-4">

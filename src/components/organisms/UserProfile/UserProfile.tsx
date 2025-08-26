@@ -31,8 +31,10 @@ export default function UserProfile({
   if (loading || profileLoading) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <div className="bg-gray-100 dark:bg-gray-700 size-8 animate-pulse rounded-full"></div>
-        {!compact && <div className="bg-gray-100 dark:bg-gray-700 h-4 w-20 animate-pulse rounded-sm"></div>}
+        <div className="size-8 animate-pulse rounded-full bg-gray-100 dark:bg-gray-700"></div>
+        {!compact && (
+          <div className="h-4 w-20 animate-pulse rounded-sm bg-gray-100 dark:bg-gray-700"></div>
+        )}
       </div>
     );
   }
@@ -58,13 +60,15 @@ export default function UserProfile({
       <div className={`relative ${className}`}>
         <button
           onClick={() => setShowDropdown(!showDropdown)}
-          className="hover:bg-gray-50 dark:bg-gray-700 flex items-center gap-2 rounded-md p-2 transition-colors focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+          className="flex items-center gap-2 rounded-md p-2 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-hidden dark:bg-gray-700"
         >
           <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white dark:text-black">
             {initials}
           </div>
           <div className="text-left">
-            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{displayName}</div>
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              {displayName}
+            </div>
             <div className="text-xs text-gray-600 dark:text-gray-400">{role?.name}</div>
           </div>
           {/* Dropdown chevron icon */}
@@ -81,25 +85,31 @@ export default function UserProfile({
         {showDropdown && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowDropdown(false)}></div>
-            <div className="bg-white dark:bg-gray-800 absolute right-0 z-50 mt-2 w-64 rounded-md border border-gray-300 dark:border-gray-600 shadow-xl">
-              <div className="border-b border-gray-300 dark:border-gray-600 p-4">
+            <div className="absolute right-0 z-50 mt-2 w-64 rounded-md border border-gray-300 bg-white shadow-xl dark:border-gray-600 dark:bg-gray-800">
+              <div className="border-b border-gray-300 p-4 dark:border-gray-600">
                 <div className="font-medium text-gray-600 dark:text-gray-400">{displayName}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">{userProfile.email}</div>
                 <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">{role?.name}</div>
               </div>
 
               {showBarangay && address && (
-                <div className="border-b border-gray-300 dark:border-gray-600 p-4">
-                  <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">Assigned Barangay</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{userProfile?.barangay_code}</div>
-                  <div className="text-gray-500 dark:text-gray-400 text-xs">Barangay Assignment</div>
+                <div className="border-b border-gray-300 p-4 dark:border-gray-600">
+                  <div className="mb-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                    Assigned Barangay
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {userProfile?.barangay_code}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    Barangay Assignment
+                  </div>
                 </div>
               )}
 
               <div className="p-2">
                 <button
                   onClick={handleSignOut}
-                  className="hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md p-2 text-left text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600"
+                  className="w-full rounded-md p-2 text-left text-sm text-gray-600 hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-400 dark:text-gray-600"
                 >
                   Sign Out
                 </button>
@@ -112,7 +122,9 @@ export default function UserProfile({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-xs ${className}`}>
+    <div
+      className={`rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800 ${className}`}
+    >
       <div className="flex items-start gap-4">
         <div className="flex size-16 items-center justify-center rounded-full bg-blue-600 text-xl font-medium text-white dark:text-black">
           {initials}
@@ -134,8 +146,10 @@ export default function UserProfile({
       </div>
 
       {showBarangay && (
-        <div className="mt-6 border-t border-gray-300 dark:border-gray-600 pt-6">
-          <h4 className="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">Barangay Assignment</h4>
+        <div className="mt-6 border-t border-gray-300 pt-6 dark:border-gray-600">
+          <h4 className="mb-3 text-sm font-medium text-gray-600 dark:text-gray-400">
+            Barangay Assignment
+          </h4>
 
           {barangayAccounts.length > 0 ? (
             <div className="space-y-2">
@@ -173,10 +187,10 @@ export default function UserProfile({
         </div>
       )}
 
-      <div className="mt-6 border-t border-gray-300 dark:border-gray-600 pt-6">
+      <div className="mt-6 border-t border-gray-300 pt-6 dark:border-gray-600">
         <button
           onClick={handleSignOut}
-          className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 flex w-full items-center justify-center rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-600 dark:bg-gray-700 dark:bg-gray-800 dark:text-gray-400"
         >
           Sign Out
         </button>

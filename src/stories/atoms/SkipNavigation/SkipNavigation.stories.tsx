@@ -101,17 +101,17 @@ export const CustomSkipTarget: Story = {
         <h2 className="mb-2 font-bold">Sidebar Content</h2>
         <ul className="space-y-1 text-sm">
           <li>
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline dark:text-gray-400">
               Recent Articles
             </a>
           </li>
           <li>
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline dark:text-gray-400">
               Popular Posts
             </a>
           </li>
           <li>
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:underline">
+            <a href="#" className="text-gray-600 hover:underline dark:text-gray-400">
               Categories
             </a>
           </li>
@@ -340,7 +340,9 @@ export const StylingSamples: Story = {
         <h3 className="mb-4 text-lg font-semibold">Default Styling</h3>
         <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <SkipNavigation />
-          <p className="text-sm text-gray-600 dark:text-gray-400">Tab here to see the default skip link styling</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Tab here to see the default skip link styling
+          </p>
         </div>
       </div>
 
@@ -349,11 +351,13 @@ export const StylingSamples: Story = {
         <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <a
             href="#main-content"
-            className="sr-only transition-all duration-200 focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:scale-105 focus:rounded-lg focus:bg-green-600 focus:px-6 focus:py-3 focus:font-semibold focus:text-white dark:text-black focus:shadow-xl focus:outline-hidden focus:ring-4 focus:ring-green-600 focus:ring-opacity-50"
+            className="focus:ring-opacity-50 sr-only transition-all duration-200 focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:scale-105 focus:rounded-lg focus:bg-green-600 focus:px-6 focus:py-3 focus:font-semibold focus:text-white focus:shadow-xl focus:ring-4 focus:ring-green-600 focus:outline-hidden dark:text-black"
           >
             🚀 Jump to Main Content
           </a>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Custom styled skip link with emoji and animations</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Custom styled skip link with emoji and animations
+          </p>
         </div>
       </div>
 
@@ -362,11 +366,13 @@ export const StylingSamples: Story = {
         <div className="relative rounded-sm border-2 border-dashed border-gray-300 p-4">
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white dark:text-black focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-sm focus:bg-purple-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg focus:ring-2 focus:ring-purple-600 focus:ring-offset-2 focus:outline-hidden dark:text-black"
           >
             Skip to Main Content
           </a>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Skip link using brand purple colors</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Skip link using brand purple colors
+          </p>
         </div>
       </div>
 

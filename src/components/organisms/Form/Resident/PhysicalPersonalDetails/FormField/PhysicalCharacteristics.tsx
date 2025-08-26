@@ -1,7 +1,12 @@
 import React from 'react';
 
 import { InputField, SelectField } from '@/components';
-import { BLOOD_TYPE_OPTIONS_WITH_DEFAULT, ETHNICITY_OPTIONS_WITH_DEFAULT, RELIGION_OPTIONS_WITH_DEFAULT, CITIZENSHIP_OPTIONS_WITH_DEFAULT } from '@/lib/constants/resident-enums';
+import {
+  BLOOD_TYPE_OPTIONS_WITH_DEFAULT,
+  ETHNICITY_OPTIONS_WITH_DEFAULT,
+  RELIGION_OPTIONS_WITH_DEFAULT,
+  CITIZENSHIP_OPTIONS_WITH_DEFAULT,
+} from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
 
 export interface PhysicalCharacteristicsData {
@@ -24,14 +29,13 @@ export interface PhysicalCharacteristicsProps {
   className?: string;
 }
 
-export function PhysicalCharacteristics({ 
+export function PhysicalCharacteristics({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: PhysicalCharacteristicsProps) {
-  
   const handleChange = (field: keyof PhysicalCharacteristicsData, fieldValue: string) => {
     onChange({
       ...value,
@@ -48,7 +52,9 @@ export function PhysicalCharacteristics({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Physical Characteristics</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Physical Characteristics
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Physical attributes and personal identifiers.
         </p>
@@ -62,13 +68,13 @@ export function PhysicalCharacteristics({
           errorMessage={errors.blood_type}
           mode={mode}
           selectProps={{
-            placeholder: "Select blood type...",
+            placeholder: 'Select blood type...',
             options: bloodTypeOptions,
             value: value.blood_type,
-            onSelect: (option) => handleChange('blood_type', option?.value || '')
+            onSelect: option => handleChange('blood_type', option?.value || ''),
           }}
         />
-        
+
         <InputField
           label="Complexion"
           labelSize="sm"
@@ -76,9 +82,9 @@ export function PhysicalCharacteristics({
           mode={mode}
           inputProps={{
             value: value.complexion,
-            onChange: (e) => handleChange('complexion', e.target.value),
-            placeholder: "e.g., Fair, Medium, Dark",
-            error: errors.complexion
+            onChange: e => handleChange('complexion', e.target.value),
+            placeholder: 'e.g., Fair, Medium, Dark',
+            error: errors.complexion,
           }}
         />
 
@@ -88,25 +94,25 @@ export function PhysicalCharacteristics({
           errorMessage={errors.height}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             value: value.height,
-            onChange: (e) => handleChange('height', e.target.value),
-            placeholder: "170",
-            error: errors.height
+            onChange: e => handleChange('height', e.target.value),
+            placeholder: '170',
+            error: errors.height,
           }}
         />
-        
+
         <InputField
           label="Weight (kg)"
           labelSize="sm"
           errorMessage={errors.weight}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             value: value.weight,
-            onChange: (e) => handleChange('weight', e.target.value),
-            placeholder: "65",
-            error: errors.weight
+            onChange: e => handleChange('weight', e.target.value),
+            placeholder: '65',
+            error: errors.weight,
           }}
         />
 
@@ -116,37 +122,36 @@ export function PhysicalCharacteristics({
           errorMessage={errors.citizenship}
           mode={mode}
           selectProps={{
-            placeholder: "Select citizenship...",
+            placeholder: 'Select citizenship...',
             options: citizenshipOptions,
             value: value.citizenship || 'filipino',
-            onSelect: (option) => handleChange('citizenship', option?.value || 'filipino')
+            onSelect: option => handleChange('citizenship', option?.value || 'filipino'),
           }}
         />
-        
+
         <SelectField
           label="Ethnicity"
           labelSize="sm"
           errorMessage={errors.ethnicity}
           mode={mode}
           selectProps={{
-            placeholder: "Select ethnicity...",
+            placeholder: 'Select ethnicity...',
             options: ethnicityOptions,
             value: value.ethnicity,
-            onSelect: (option) => handleChange('ethnicity', option?.value || '')
+            onSelect: option => handleChange('ethnicity', option?.value || ''),
           }}
         />
 
-        
         <SelectField
           label="Religion"
           labelSize="sm"
           errorMessage={errors.religion}
           mode={mode}
           selectProps={{
-            placeholder: "Select religion...",
+            placeholder: 'Select religion...',
             options: religionOptions,
             value: value.religion,
-            onSelect: (option) => handleChange('religion', option?.value || '')
+            onSelect: option => handleChange('religion', option?.value || ''),
           }}
         />
 
@@ -160,9 +165,9 @@ export function PhysicalCharacteristics({
             mode={mode}
             inputProps={{
               value: value.religion_others_specify || '',
-              onChange: (e) => handleChange('religion_others_specify', e.target.value),
-              placeholder: "Please specify religion",
-              required: true
+              onChange: e => handleChange('religion_others_specify', e.target.value),
+              placeholder: 'Please specify religion',
+              required: true,
             }}
           />
         )}

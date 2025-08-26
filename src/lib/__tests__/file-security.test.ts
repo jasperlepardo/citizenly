@@ -42,7 +42,7 @@ describe('File Security Utilities', () => {
     it('should generate unique filenames', () => {
       const name1 = generateUniqueFileName('test.txt');
       const name2 = generateUniqueFileName('test.txt');
-      
+
       expect(name1).not.toBe(name2);
       expect(name1).toMatch(/test_\d+_[a-z0-9]+\.txt/);
       expect(name2).toMatch(/test_\d+_[a-z0-9]+\.txt/);
@@ -98,9 +98,7 @@ describe('File Security Utilities', () => {
       const result = await validateUploadedFile(largeFile);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        expect.stringContaining('exceeds maximum allowed size')
-      );
+      expect(result.errors).toContain(expect.stringContaining('exceeds maximum allowed size'));
     });
 
     it('should reject empty files', async () => {
@@ -126,9 +124,7 @@ describe('File Security Utilities', () => {
       const result = await validateUploadedFile(maliciousFile);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        expect.stringContaining('directory traversal')
-      );
+      expect(result.errors).toContain(expect.stringContaining('directory traversal'));
     });
 
     it('should reject files with null bytes in name', async () => {
@@ -144,9 +140,7 @@ describe('File Security Utilities', () => {
       const result = await validateUploadedFile(reservedFile);
 
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        expect.stringContaining('reserved and not allowed')
-      );
+      expect(result.errors).toContain(expect.stringContaining('reserved and not allowed'));
     });
 
     it('should detect malicious file signatures', async () => {
@@ -234,12 +228,7 @@ describe('File Security Utilities', () => {
   });
 
   // Helper function for creating mock files
-  function createMockFile(
-    name: string,
-    type: string,
-    size: number,
-    content?: ArrayBuffer
-  ): File {
+  function createMockFile(name: string, type: string, size: number, content?: ArrayBuffer): File {
     const mockFile = {
       name,
       type,

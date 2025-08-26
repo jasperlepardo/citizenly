@@ -149,7 +149,8 @@ export const Large: Story = {
 export const LongContent: Story = {
   args: {
     title: 'Long Title That Might Wrap to Multiple Lines in Narrow Containers',
-    description: 'This is a much longer description that demonstrates how the component handles extended text content. It should wrap naturally and maintain proper spacing between the title and description elements.',
+    description:
+      'This is a much longer description that demonstrates how the component handles extended text content. It should wrap naturally and maintain proper spacing between the title and description elements.',
   },
   parameters: {
     docs: {
@@ -164,7 +165,8 @@ export const ErrorWithLongMessage: Story = {
   args: {
     title: 'Validation Field',
     description: 'Please enter a valid email address.',
-    errorMessage: 'The email address you entered is not valid. Please check the format and ensure it includes an @ symbol and a valid domain.',
+    errorMessage:
+      'The email address you entered is not valid. Please check the format and ensure it includes an @ symbol and a valid domain.',
   },
   parameters: {
     docs: {

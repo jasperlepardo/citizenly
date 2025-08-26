@@ -7,12 +7,11 @@ interface ChartContainerProps {
   readonly className?: string;
 }
 
-export default function ChartContainer({ 
-  children, 
-  className = '' 
-}: ChartContainerProps) {
+export default function ChartContainer({ children, className = '' }: ChartContainerProps) {
   return (
-    <div className={`bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 shadow-sm ${className}`}>
+    <div
+      className={`rounded-lg border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 ${className}`}
+    >
       {children}
     </div>
   );

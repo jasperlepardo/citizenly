@@ -2,7 +2,7 @@
 
 /**
  * Household Operations Workflow Hook
- * 
+ *
  * @description Orchestrates household operations by composing smaller, focused hooks.
  * Replaces the monolithic useHouseholdOperations hook.
  */
@@ -14,14 +14,17 @@ import { HouseholdFormData } from '@/services/household.service';
 import { useHouseholdCrud, UseHouseholdCrudOptions } from '../crud/useHouseholdCrud';
 import { useHouseholdValidation } from '../validation/useOptimizedHouseholdValidation';
 
-import { useHouseholdCreationService, UseHouseholdCreationServiceOptions } from './useHouseholdCreationService';
+import {
+  useHouseholdCreationService,
+  UseHouseholdCreationServiceOptions,
+} from './useHouseholdCreationService';
 
 /**
  * Workflow options combining all sub-hook options
  */
-export interface UseHouseholdOperationsWorkflowOptions 
-  extends UseHouseholdCrudOptions, 
-          UseHouseholdCreationServiceOptions {}
+export interface UseHouseholdOperationsWorkflowOptions
+  extends UseHouseholdCrudOptions,
+    UseHouseholdCreationServiceOptions {}
 
 /**
  * Return type for useHouseholdOperationsWorkflow hook
@@ -33,11 +36,11 @@ export interface UseHouseholdOperationsWorkflowReturn {
   listHouseholds: ReturnType<typeof useHouseholdCrud>['listHouseholds'];
   updateHousehold: ReturnType<typeof useHouseholdCrud>['updateHousehold'];
   deleteHousehold: ReturnType<typeof useHouseholdCrud>['deleteHousehold'];
-  
+
   // Creation operations
   createHousehold: ReturnType<typeof useHouseholdCreationService>['createHousehold'];
   generateHouseholdCode: ReturnType<typeof useHouseholdCreationService>['generateHouseholdCode'];
-  
+
   // Validation
   validateHousehold: ReturnType<typeof useHouseholdValidation>['validateHousehold'];
   validationErrors: ReturnType<typeof useHouseholdValidation>['validationErrors'];
@@ -45,7 +48,7 @@ export interface UseHouseholdOperationsWorkflowReturn {
   hasFieldError: ReturnType<typeof useHouseholdValidation>['hasFieldError'];
   clearFieldError: ReturnType<typeof useHouseholdValidation>['clearFieldError'];
   clearValidationErrors: ReturnType<typeof useHouseholdValidation>['clearValidationErrors'];
-  
+
   // State
   isSubmitting: boolean;
   isValid: ReturnType<typeof useHouseholdValidation>['isValid'];
@@ -53,10 +56,10 @@ export interface UseHouseholdOperationsWorkflowReturn {
 
 /**
  * Custom hook for complete household operations workflow
- * 
+ *
  * @description Orchestrates household operations by composing focused hooks
  * for CRUD operations, validation, and creation services.
- * 
+ *
  * @example
  * ```typescript
  * function HouseholdManagement() {
@@ -101,46 +104,49 @@ export function useHouseholdOperationsWorkflow(
   /**
    * Enhanced createHousehold with validation integration
    */
-  const createHousehold = useCallback(async (formData: HouseholdFormData) => {
-    // Clear previous validation errors
-    validationHook.clearValidationErrors();
-    
-    // Validate before creation
-    const validationResult = validationHook.validateHousehold(formData);
-    
-    if (!validationResult.success) {
-      return {
-        success: false,
-        error: 'Validation failed',
-        validationErrors: validationResult.errors,
-      };
-    }
+  const createHousehold = useCallback(
+    async (formData: HouseholdFormData) => {
+      // Clear previous validation errors
+      validationHook.clearValidationErrors();
 
-    // Proceed with creation
-    const result = await creationHook.createHousehold(formData);
-    
-    // Set validation errors if any
-    if (result.validationErrors) {
-      validationHook.setValidationErrors(result.validationErrors);
-    }
-    
-    return result;
-  }, [validationHook, creationHook]);
+      // Validate before creation
+      const validationResult = validationHook.validateHousehold(formData);
+
+      if (!validationResult.success) {
+        return {
+          success: false,
+          error: 'Validation failed',
+          validationErrors: validationResult.errors,
+        };
+      }
+
+      // Proceed with creation
+      const result = await creationHook.createHousehold(formData);
+
+      // Set validation errors if any
+      if (result.validationErrors) {
+        validationHook.setValidationErrors(result.validationErrors);
+      }
+
+      return result;
+    },
+    [validationHook, creationHook]
+  );
 
   /**
    * Enhanced updateHousehold with validation
    */
-  const updateHousehold = useCallback(async (
-    id: string, 
-    updates: Partial<HouseholdFormData>
-  ) => {
-    // Clear previous validation errors
-    validationHook.clearValidationErrors();
-    
-    // Note: Partial validation might be needed here depending on requirements
-    
-    return crudHook.updateHousehold(id, updates);
-  }, [validationHook, crudHook]);
+  const updateHousehold = useCallback(
+    async (id: string, updates: Partial<HouseholdFormData>) => {
+      // Clear previous validation errors
+      validationHook.clearValidationErrors();
+
+      // Note: Partial validation might be needed here depending on requirements
+
+      return crudHook.updateHousehold(id, updates);
+    },
+    [validationHook, crudHook]
+  );
 
   // Determine if any operation is submitting
   const isSubmitting = crudHook.isLoading || creationHook.isCreating;
@@ -152,11 +158,11 @@ export function useHouseholdOperationsWorkflow(
     listHouseholds: crudHook.listHouseholds,
     updateHousehold,
     deleteHousehold: crudHook.deleteHousehold,
-    
+
     // Creation operations
     createHousehold,
     generateHouseholdCode: creationHook.generateHouseholdCode,
-    
+
     // Validation
     validateHousehold: validationHook.validateHousehold,
     validationErrors: validationHook.validationErrors,
@@ -164,7 +170,7 @@ export function useHouseholdOperationsWorkflow(
     hasFieldError: validationHook.hasFieldError,
     clearFieldError: validationHook.clearFieldError,
     clearValidationErrors: validationHook.clearValidationErrors,
-    
+
     // State
     isSubmitting,
     isValid: validationHook.isValid,

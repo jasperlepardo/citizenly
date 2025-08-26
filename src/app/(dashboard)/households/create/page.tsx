@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 // Utility function to parse a full name into components
 function parseFullName(fullName: string) {
   const nameParts = fullName.trim().split(/\s+/);
-  
+
   if (nameParts.length === 1) {
     return {
       firstName: nameParts[0],
@@ -70,7 +70,9 @@ export default function CreateHouseholdPage() {
   }, [searchParams]);
 
   // Show a helpful message if the form was pre-filled
-  const isPreFilled = Boolean(searchParams.get('suggested_name') || searchParams.get('suggested_id'));
+  const isPreFilled = Boolean(
+    searchParams.get('suggested_name') || searchParams.get('suggested_id')
+  );
   const suggestedName = searchParams.get('suggested_name');
   const suggestedCode = searchParams.get('suggested_id');
 
@@ -100,10 +102,10 @@ export default function CreateHouseholdPage() {
           <p className="mt-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
             Complete the form to register a new household in the system
           </p>
-          
+
           {/* Pre-filled notification */}
           {isPreFilled && (suggestedName || suggestedCode) && (
-            <div className="mt-4 rounded-md bg-blue-50 dark:bg-blue-900/20 p-3">
+            <div className="mt-4 rounded-md bg-blue-50 p-3 dark:bg-blue-900/20">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <svg
@@ -123,9 +125,10 @@ export default function CreateHouseholdPage() {
                 <div className="ml-3">
                   <p className="text-sm text-blue-700 dark:text-blue-300">
                     <strong>Form pre-filled:</strong>
-                    {suggestedName && ` The household name has been populated with "${suggestedName}".`}
-                    {suggestedCode && ` The household code has been set to "${suggestedCode}".`}
-                    {' '}You can edit these values as needed.
+                    {suggestedName &&
+                      ` The household name has been populated with "${suggestedName}".`}
+                    {suggestedCode && ` The household code has been set to "${suggestedCode}".`} You
+                    can edit these values as needed.
                   </p>
                 </div>
               </div>

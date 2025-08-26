@@ -5,7 +5,7 @@
  * Handles data transformation, validation, and database operations.
  */
 
-import { supabase , logger, logError, dbLogger } from '@/lib';
+import { supabase, logger, logError, dbLogger } from '@/lib';
 
 // Import database types
 import { HouseholdRecord } from '@/types';
@@ -16,7 +16,7 @@ export interface HouseholdFormData {
   code: string;
   name?: string;
   address?: string;
-  
+
   // Location details
   house_number: string;
   street_id: string; // UUID reference to geo_streets
@@ -26,25 +26,70 @@ export interface HouseholdFormData {
   province_code?: string;
   region_code: string;
   zip_code?: string;
-  
+
   // Household metrics
   no_of_families?: number;
   no_of_household_members?: number;
   no_of_migrants?: number;
-  
+
   // Household classifications (enums)
-  household_type?: 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
-  tenure_status?: 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
+  household_type?:
+    | 'nuclear'
+    | 'single_parent'
+    | 'extended'
+    | 'childless'
+    | 'one_person'
+    | 'non_family'
+    | 'other';
+  tenure_status?:
+    | 'owned'
+    | 'owned_with_mortgage'
+    | 'rented'
+    | 'occupied_for_free'
+    | 'occupied_without_consent'
+    | 'others';
   tenure_others_specify?: string;
-  household_unit?: 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
-  
+  household_unit?:
+    | 'single_house'
+    | 'duplex'
+    | 'apartment'
+    | 'townhouse'
+    | 'condominium'
+    | 'boarding_house'
+    | 'institutional'
+    | 'makeshift'
+    | 'others';
+
   // Economic information
   monthly_income?: number;
-  income_class?: 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
-  
+  income_class?:
+    | 'rich'
+    | 'high_income'
+    | 'upper_middle_income'
+    | 'middle_class'
+    | 'lower_middle_class'
+    | 'low_income'
+    | 'poor'
+    | 'not_determined';
+
   // Head of household
   household_head_id?: string; // UUID reference to residents
-  household_head_position?: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
+  household_head_position?:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other';
 }
 
 export interface UserAddress {
@@ -151,7 +196,7 @@ export class HouseholdService {
       const timestamp = Date.now().toString().slice(-6);
       return `${barangay_code}-HH-${timestamp}`;
     }
-    
+
     // Fallback format
     const timestamp = Date.now().toString(36);
     const randomStr = Math.random().toString(36).substring(2, 6);
@@ -161,42 +206,46 @@ export class HouseholdService {
   /**
    * Transform form data to database schema - exact field mapping
    */
-  private transformToDbSchema(formData: HouseholdFormData, userAddress?: UserAddress): Partial<HouseholdRecord> {
+  private transformToDbSchema(
+    formData: HouseholdFormData,
+    userAddress?: UserAddress
+  ): Partial<HouseholdRecord> {
     return {
       // Primary identification
       code: formData.code,
       name: formData.name || null,
       address: formData.address || null,
-      
+
       // Location details
       house_number: formData.house_number,
       street_id: formData.street_id,
       subdivision_id: formData.subdivision_id || null,
       barangay_code: formData.barangay_code || userAddress?.barangay_code,
-      city_municipality_code: formData.city_municipality_code || userAddress?.city_municipality_code,
+      city_municipality_code:
+        formData.city_municipality_code || userAddress?.city_municipality_code,
       province_code: formData.province_code || userAddress?.province_code || null,
       region_code: formData.region_code || userAddress?.region_code,
       zip_code: formData.zip_code || null,
-      
+
       // Household metrics
       no_of_families: formData.no_of_families || 1,
       no_of_household_members: formData.no_of_household_members || 0,
       no_of_migrants: formData.no_of_migrants || 0,
-      
+
       // Household classifications
       household_type: formData.household_type || null,
       tenure_status: formData.tenure_status || null,
       tenure_others_specify: formData.tenure_others_specify || null,
       household_unit: formData.household_unit || null,
-      
+
       // Economic information
       monthly_income: formData.monthly_income || null,
       income_class: formData.income_class || null,
-      
+
       // Head of household
       household_head_id: formData.household_head_id || null,
       household_head_position: formData.household_head_position || null,
-      
+
       // Status and audit fields
       is_active: true,
     };
@@ -367,21 +416,26 @@ export class HouseholdService {
       if (updates.street_id !== undefined) dbUpdates.street_id = updates.street_id;
       if (updates.subdivision_id !== undefined) dbUpdates.subdivision_id = updates.subdivision_id;
       if (updates.barangay_code !== undefined) dbUpdates.barangay_code = updates.barangay_code;
-      if (updates.city_municipality_code !== undefined) dbUpdates.city_municipality_code = updates.city_municipality_code;
+      if (updates.city_municipality_code !== undefined)
+        dbUpdates.city_municipality_code = updates.city_municipality_code;
       if (updates.province_code !== undefined) dbUpdates.province_code = updates.province_code;
       if (updates.region_code !== undefined) dbUpdates.region_code = updates.region_code;
       if (updates.zip_code !== undefined) dbUpdates.zip_code = updates.zip_code;
       if (updates.no_of_families !== undefined) dbUpdates.no_of_families = updates.no_of_families;
-      if (updates.no_of_household_members !== undefined) dbUpdates.no_of_household_members = updates.no_of_household_members;
+      if (updates.no_of_household_members !== undefined)
+        dbUpdates.no_of_household_members = updates.no_of_household_members;
       if (updates.no_of_migrants !== undefined) dbUpdates.no_of_migrants = updates.no_of_migrants;
       if (updates.household_type !== undefined) dbUpdates.household_type = updates.household_type;
       if (updates.tenure_status !== undefined) dbUpdates.tenure_status = updates.tenure_status;
-      if (updates.tenure_others_specify !== undefined) dbUpdates.tenure_others_specify = updates.tenure_others_specify;
+      if (updates.tenure_others_specify !== undefined)
+        dbUpdates.tenure_others_specify = updates.tenure_others_specify;
       if (updates.household_unit !== undefined) dbUpdates.household_unit = updates.household_unit;
       if (updates.monthly_income !== undefined) dbUpdates.monthly_income = updates.monthly_income;
       if (updates.income_class !== undefined) dbUpdates.income_class = updates.income_class;
-      if (updates.household_head_id !== undefined) dbUpdates.household_head_id = updates.household_head_id;
-      if (updates.household_head_position !== undefined) dbUpdates.household_head_position = updates.household_head_position;
+      if (updates.household_head_id !== undefined)
+        dbUpdates.household_head_id = updates.household_head_id;
+      if (updates.household_head_position !== undefined)
+        dbUpdates.household_head_position = updates.household_head_position;
 
       // Always update the timestamp
       dbUpdates.updated_at = new Date().toISOString();
@@ -413,9 +467,9 @@ export class HouseholdService {
       // Soft delete - set is_active to false instead of hard delete
       const { error } = await supabase
         .from('households')
-        .update({ 
+        .update({
           is_active: false,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('code', code); // Use code as primary key
 

@@ -1,17 +1,17 @@
 'use client';
 
-import { useQueryClient , useQuery } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 import { Button } from '@/components';
-import { 
+import {
   LocationAndDemographicsForm,
-  HouseholdDetailsForm
+  HouseholdDetailsForm,
 } from '@/components/organisms/Form/Household';
 import { useAuth } from '@/contexts';
 import { useUserBarangay } from '@/hooks/utilities';
-import { supabase , logger, logError } from '@/lib';
+import { supabase, logger, logError } from '@/lib';
 import { useCSRFToken } from '@/lib/auth/csrf';
 import { geographicService } from '@/services/geographic.service';
 
@@ -31,7 +31,7 @@ export interface HouseholdFormData {
   noOfFamilies: number;
   noOfHouseholdMembers: number;
   noOfMigrants: number;
-  
+
   // Household Details
   householdType: string;
   tenureStatus: string;
@@ -41,7 +41,7 @@ export interface HouseholdFormData {
   monthlyIncome: number;
   householdHeadId: string;
   householdHeadPosition: string;
-  
+
   // Auto-generated/derived fields
   code?: string;
   address?: string;
@@ -87,7 +87,9 @@ export default function HouseholdForm({
 
   // Production-ready auto-fill state management
   const [autoFillAttempted, setAutoFillAttempted] = useState(false);
-  const [autoFillStatus, setAutoFillStatus] = useState<'idle' | 'loading' | 'success' | 'failed'>('idle');
+  const [autoFillStatus, setAutoFillStatus] = useState<'idle' | 'loading' | 'success' | 'failed'>(
+    'idle'
+  );
 
   // Test function to manually trigger auto-fill with sample data
   const testAutoFill = () => {
@@ -96,36 +98,46 @@ export default function HouseholdForm({
       regionCode: formData.regionCode,
       provinceCode: formData.provinceCode,
       cityCode: formData.cityMunicipalityCode,
-      barangayCode: formData.barangayCode
+      barangayCode: formData.barangayCode,
     });
-    console.log('🧪 Available options:', { regions: regionOptions.length, provinces: provinceOptions.length, cities: cityOptions.length, barangays: barangayOptions.length });
+    console.log('🧪 Available options:', {
+      regions: regionOptions.length,
+      provinces: provinceOptions.length,
+      cities: cityOptions.length,
+      barangays: barangayOptions.length,
+    });
     console.log('🧪 Cities loading state:', citiesLoading);
     console.log('🧪 Should load cities:', shouldLoadCities);
-    
+
     if (regionOptions.length === 0) {
-      alert('❌ No regions loaded. Please wait for the page to load completely or check your connection.');
+      alert(
+        '❌ No regions loaded. Please wait for the page to load completely or check your connection.'
+      );
       return;
     }
-    
+
     // Find region 04 (CALABARZON)
     const testRegion = regionOptions.find((r: any) => r.value === '04');
     if (!testRegion) {
-      console.log('❌ Region 04 not found. Available regions:', regionOptions.map((r: any) => `${r.value}:${r.label}`).slice(0, 5));
+      console.log(
+        '❌ Region 04 not found. Available regions:',
+        regionOptions.map((r: any) => `${r.value}:${r.label}`).slice(0, 5)
+      );
       alert('❌ Region 04 (CALABARZON) not found in options');
       return;
     }
-    
+
     console.log('✅ Found region 04:', testRegion);
     console.log('🧪 Setting form data...');
-    
+
     setFormData(prev => ({
       ...prev,
       regionCode: '04', // CALABARZON
       provinceCode: '0421', // Cavite
       cityMunicipalityCode: '042114', // Dasmariñas
-      barangayCode: '042114014' // Sample barangay
+      barangayCode: '042114014', // Sample barangay
     }));
-    
+
     setAutoFillStatus('success');
     console.log('✅ Test auto-fill completed');
     alert('✅ Test auto-fill completed! Check the form fields.');
@@ -143,7 +155,7 @@ export default function HouseholdForm({
     noOfFamilies: 1,
     noOfHouseholdMembers: 0,
     noOfMigrants: 0,
-    
+
     // Household Details
     householdType: '',
     tenureStatus: '',
@@ -153,16 +165,13 @@ export default function HouseholdForm({
     monthlyIncome: 0,
     householdHeadId: '',
     householdHeadPosition: '',
-    
+
     // Merge initial data if provided
     ...initialData,
   });
 
   // User's assigned barangay address (auto-populated)
-  const {
-    address: userAddress,
-    loading: loadingAddress,
-  } = useUserBarangay();
+  const { address: userAddress, loading: loadingAddress } = useUserBarangay();
 
   // Load location options using React Query directly - always load regions
   const { data: regionOptions = [], isLoading: regionsLoading } = useQuery({
@@ -177,7 +186,11 @@ export default function HouseholdForm({
   const shouldLoadProvinces = formData.regionCode || userAddress?.region_code;
 
   const { data: provinceOptions = [], isLoading: provincesLoading } = useQuery({
-    queryKey: ['addresses', 'provinces', shouldLoadProvinces ? (formData.regionCode || userAddress?.region_code) : ''],
+    queryKey: [
+      'addresses',
+      'provinces',
+      shouldLoadProvinces ? formData.regionCode || userAddress?.region_code : '',
+    ],
     queryFn: async () => {
       const regionCode = formData.regionCode || userAddress?.region_code;
       if (!regionCode) return [];
@@ -191,7 +204,11 @@ export default function HouseholdForm({
   const shouldLoadCities = formData.provinceCode || userAddress?.province_code;
 
   const { data: cityOptions = [], isLoading: citiesLoading } = useQuery({
-    queryKey: ['addresses', 'cities', shouldLoadCities ? (formData.provinceCode || userAddress?.province_code) : ''],
+    queryKey: [
+      'addresses',
+      'cities',
+      shouldLoadCities ? formData.provinceCode || userAddress?.province_code : '',
+    ],
     queryFn: async () => {
       const provinceCode = formData.provinceCode || userAddress?.province_code;
       if (!provinceCode) return [];
@@ -207,7 +224,13 @@ export default function HouseholdForm({
   const shouldLoadBarangays = formData.cityMunicipalityCode || userAddress?.city_municipality_code;
 
   const { data: barangayOptions = [], isLoading: barangaysLoading } = useQuery({
-    queryKey: ['addresses', 'barangays', shouldLoadBarangays ? (formData.cityMunicipalityCode || userAddress?.city_municipality_code) : ''],
+    queryKey: [
+      'addresses',
+      'barangays',
+      shouldLoadBarangays
+        ? formData.cityMunicipalityCode || userAddress?.city_municipality_code
+        : '',
+    ],
     queryFn: async () => {
       const cityCode = formData.cityMunicipalityCode || userAddress?.city_municipality_code;
       if (!cityCode) return [];
@@ -221,15 +244,20 @@ export default function HouseholdForm({
   useEffect(() => {
     const performAutoFill = async () => {
       console.log('🔄 Auto-fill check started');
-      
+
       // Only attempt once per form session (unless it was unsuccessful)
-      if (autoFillAttempted && (formData.regionCode && formData.barangayCode)) {
+      if (autoFillAttempted && formData.regionCode && formData.barangayCode) {
         console.log('⏭️ Auto-fill already completed successfully, skipping');
         return;
       }
-      
+
       // Skip if form already has location data
-      if (formData.regionCode || formData.provinceCode || formData.cityMunicipalityCode || formData.barangayCode) {
+      if (
+        formData.regionCode ||
+        formData.provinceCode ||
+        formData.cityMunicipalityCode ||
+        formData.barangayCode
+      ) {
         console.log('⏭️ Form already has location data, skipping auto-fill');
         setAutoFillAttempted(true);
         return;
@@ -237,7 +265,10 @@ export default function HouseholdForm({
 
       // Wait for regions to be available
       if (regionsLoading || regionOptions.length === 0) {
-        console.log('⏳ Waiting for regions to load...', { regionsLoading, regionCount: regionOptions.length });
+        console.log('⏳ Waiting for regions to load...', {
+          regionsLoading,
+          regionCount: regionOptions.length,
+        });
         return;
       }
 
@@ -249,7 +280,7 @@ export default function HouseholdForm({
 
       try {
         let addressData = null;
-        
+
         // Strategy 1: Use userAddress from context (preferred)
         if (userAddress?.region_code) {
           console.log('✅ Using userAddress from context');
@@ -258,9 +289,11 @@ export default function HouseholdForm({
         // Strategy 1B: Fetch from API if authenticated but no userAddress
         else if (user && userProfile?.barangay_code) {
           console.log('🌐 Fetching address data from API for barangay:', userProfile.barangay_code);
-          
+
           try {
-            const result = await geographicService.getGeographicHierarchy(userProfile.barangay_code);
+            const result = await geographicService.getGeographicHierarchy(
+              userProfile.barangay_code
+            );
             addressData = result;
             console.log('✅ Address data retrieved successfully');
           } catch (error) {
@@ -271,37 +304,45 @@ export default function HouseholdForm({
           setAutoFillStatus('failed');
           return;
         }
-        
+
         // Apply auto-fill if we have valid address data
         if (addressData && 'region_code' in addressData && addressData.region_code) {
           console.log('🔍 Validating and applying address data...');
-          
+
           // Validate the region exists in our options
           const regionExists = regionOptions.some((r: any) => r.value === addressData.region_code);
-          
+
           if (regionExists) {
             console.log('✅ Auto-filling location fields...');
-            
+
             // Step 1: Set region and trigger province loading
             handleRegionChange(addressData.region_code);
-            
+
             // Step 2: Wait for provinces to load, then set province and trigger city loading
             setTimeout(() => {
               if ('province_code' in addressData && addressData.province_code) {
                 handleProvinceChange(addressData.province_code);
-                
+
                 // Step 3: Wait for cities to load, then set city and trigger barangay loading
                 setTimeout(() => {
                   let cityCode: string | undefined;
-                  if ('city_municipality_code' in addressData && typeof addressData.city_municipality_code === 'string' && addressData.city_municipality_code) {
+                  if (
+                    'city_municipality_code' in addressData &&
+                    typeof addressData.city_municipality_code === 'string' &&
+                    addressData.city_municipality_code
+                  ) {
                     cityCode = addressData.city_municipality_code;
-                  } else if ('city_code' in addressData && typeof addressData.city_code === 'string' && addressData.city_code) {
+                  } else if (
+                    'city_code' in addressData &&
+                    typeof addressData.city_code === 'string' &&
+                    addressData.city_code
+                  ) {
                     cityCode = addressData.city_code;
                   }
-                  
+
                   if (cityCode) {
                     handleCityChange(cityCode);
-                    
+
                     // Step 4: Wait for barangays to load, then set barangay
                     setTimeout(() => {
                       if ('barangay_code' in addressData && addressData.barangay_code) {
@@ -312,7 +353,7 @@ export default function HouseholdForm({
                 }, 300);
               }
             }, 300);
-            
+
             setAutoFillStatus('success');
             console.log('✅ Auto-fill completed successfully!');
           } else {
@@ -342,9 +383,8 @@ export default function HouseholdForm({
     formData.regionCode,
     formData.provinceCode,
     formData.cityMunicipalityCode,
-    formData.barangayCode
+    formData.barangayCode,
   ]);
-
 
   // Household code will be generated by the database
   // The generate_hierarchical_household_id() function creates codes in format: RRPPMMBBB-SSSS-TTTT-HHHH
@@ -367,44 +407,44 @@ export default function HouseholdForm({
 
   // Location change handlers for cascade and auto-fill
   const handleRegionChange = (regionCode: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData(prev => ({
+      ...prev,
       regionCode,
       provinceCode: '',
       cityMunicipalityCode: '',
       barangayCode: '',
       subdivisionId: '',
-      streetId: ''
+      streetId: '',
     }));
   };
 
   const handleProvinceChange = (provinceCode: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData(prev => ({
+      ...prev,
       provinceCode,
       cityMunicipalityCode: '',
       barangayCode: '',
       subdivisionId: '',
-      streetId: ''
+      streetId: '',
     }));
   };
 
   const handleCityChange = (cityCode: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData(prev => ({
+      ...prev,
       cityMunicipalityCode: cityCode,
       barangayCode: '',
       subdivisionId: '',
-      streetId: ''
+      streetId: '',
     }));
   };
 
   const handleBarangayChange = (barangayCode: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
+    setFormData(prev => ({
+      ...prev,
       barangayCode,
       subdivisionId: '',
-      streetId: ''
+      streetId: '',
     }));
   };
 
@@ -416,11 +456,14 @@ export default function HouseholdForm({
       if (!formData.houseNumber?.trim()) newErrors.houseNumber = 'House number is required';
       if (!formData.streetId?.trim()) newErrors.streetId = 'Street name is required';
       if (!formData.barangayCode) newErrors.barangayCode = 'Barangay is required';
-      if (!formData.cityMunicipalityCode) newErrors.cityMunicipalityCode = 'City/Municipality is required';
+      if (!formData.cityMunicipalityCode)
+        newErrors.cityMunicipalityCode = 'City/Municipality is required';
       if (!formData.provinceCode) newErrors.provinceCode = 'Province is required';
       if (!formData.regionCode) newErrors.regionCode = 'Region is required';
-      if (formData.noOfFamilies < 1) newErrors.noOfFamilies = 'Number of families must be at least 1';
-      if (formData.noOfHouseholdMembers < 0) newErrors.noOfHouseholdMembers = 'Number of household members cannot be negative';
+      if (formData.noOfFamilies < 1)
+        newErrors.noOfFamilies = 'Number of families must be at least 1';
+      if (formData.noOfHouseholdMembers < 0)
+        newErrors.noOfHouseholdMembers = 'Number of household members cannot be negative';
 
       // Household Details validation
       if (!formData.householdType) newErrors.householdType = 'Household type is required';
@@ -430,7 +473,8 @@ export default function HouseholdForm({
       }
       if (!formData.householdUnit) newErrors.householdUnit = 'Household unit is required';
       if (!formData.householdName?.trim()) newErrors.householdName = 'Household name is required';
-      if (!formData.householdHeadPosition) newErrors.householdHeadPosition = 'Head position is required';
+      if (!formData.householdHeadPosition)
+        newErrors.householdHeadPosition = 'Head position is required';
 
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
@@ -454,10 +498,10 @@ export default function HouseholdForm({
 
     try {
       const action = mode === 'create' ? 'Creating' : 'Updating';
-      logger.info(`${action} household`, { 
+      logger.info(`${action} household`, {
         householdName: formData.householdName,
         barangayCode: formData.barangayCode,
-        householdId 
+        householdId,
       });
 
       let household;
@@ -494,7 +538,7 @@ export default function HouseholdForm({
       } else {
         // Update existing household
         if (!householdId) throw new Error('Household ID is required for updates');
-        
+
         const { data, error } = await supabase
           .from('households')
           .update({
@@ -526,9 +570,9 @@ export default function HouseholdForm({
         household = data;
       }
 
-      logger.info(`Household ${mode === 'create' ? 'created' : 'updated'} successfully`, { 
-        id: household.id, 
-        code: household.code 
+      logger.info(`Household ${mode === 'create' ? 'created' : 'updated'} successfully`, {
+        id: household.id,
+        code: household.code,
       });
 
       // Invalidate relevant queries
@@ -580,44 +624,46 @@ export default function HouseholdForm({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-zinc-950 dark:text-white">
-              {mode === 'create' ? 'Create New Household' : 
-               mode === 'edit' ? 'Edit Household' : 'Household Details'}
+              {mode === 'create'
+                ? 'Create New Household'
+                : mode === 'edit'
+                  ? 'Edit Household'
+                  : 'Household Details'}
             </h2>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              {mode === 'create' ? 'Fill in all required information to register a new household in the barangay.' : 
-               mode === 'edit' ? 'Update the household information as needed.' : 
-               'View the household information and details.'}
+              {mode === 'create'
+                ? 'Fill in all required information to register a new household in the barangay.'
+                : mode === 'edit'
+                  ? 'Update the household information as needed.'
+                  : 'View the household information and details.'}
             </p>
           </div>
           {mode !== 'create' && onModeChange && (
             <div className="flex gap-2">
               {mode === 'view' && (
-                <Button 
-                  variant="primary"
-                  onClick={() => onModeChange('edit')}
-                >
+                <Button variant="primary" onClick={() => onModeChange('edit')}>
                   Edit Household
                 </Button>
               )}
               {mode === 'edit' && (
-                <Button 
-                  variant="secondary-outline"
-                  onClick={() => onModeChange('view')}
-                >
+                <Button variant="secondary-outline" onClick={() => onModeChange('view')}>
                   Cancel Edit
                 </Button>
               )}
             </div>
           )}
         </div>
-        
-        
+
         {autoFillStatus === 'failed' && (
           <div className="mt-4 rounded-lg bg-yellow-50 p-4 ring-1 ring-yellow-900/10 dark:bg-yellow-400/10 dark:ring-yellow-400/20">
             <div className="flex">
               <div className="shrink-0">
                 <svg className="size-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
@@ -625,13 +671,17 @@ export default function HouseholdForm({
                   Auto-fill Not Available
                 </h4>
                 <div className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
-                  <p>Please manually select the location information. {!user ? 'Sign in for automatic population.' : 'Location data could not be loaded automatically.'}</p>
+                  <p>
+                    Please manually select the location information.{' '}
+                    {!user
+                      ? 'Sign in for automatic population.'
+                      : 'Location data could not be loaded automatically.'}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         )}
-        
       </div>
 
       {/* Form Sections */}
@@ -642,18 +692,55 @@ export default function HouseholdForm({
           formData={formData}
           onChange={handleInputChange}
           errors={errors}
-          regionOptions={mode === 'view' && viewModeOptions?.addressLabels ? 
-            (formData.regionCode ? [{ value: formData.regionCode, label: viewModeOptions.addressLabels.regionLabel || formData.regionCode }] : []) : 
-            regionOptions}
-          provinceOptions={mode === 'view' && viewModeOptions?.addressLabels ? 
-            (formData.provinceCode ? [{ value: formData.provinceCode, label: viewModeOptions.addressLabels.provinceLabel || formData.provinceCode }] : []) : 
-            provinceOptions}
-          cityOptions={mode === 'view' && viewModeOptions?.addressLabels ? 
-            (formData.cityMunicipalityCode ? [{ value: formData.cityMunicipalityCode, label: viewModeOptions.addressLabels.cityLabel || formData.cityMunicipalityCode }] : []) : 
-            cityOptions}
-          barangayOptions={mode === 'view' && viewModeOptions?.addressLabels ? 
-            (formData.barangayCode ? [{ value: formData.barangayCode, label: viewModeOptions.addressLabels.barangayLabel || formData.barangayCode }] : []) : 
-            barangayOptions}
+          regionOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.regionCode
+                ? [
+                    {
+                      value: formData.regionCode,
+                      label: viewModeOptions.addressLabels.regionLabel || formData.regionCode,
+                    },
+                  ]
+                : []
+              : regionOptions
+          }
+          provinceOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.provinceCode
+                ? [
+                    {
+                      value: formData.provinceCode,
+                      label: viewModeOptions.addressLabels.provinceLabel || formData.provinceCode,
+                    },
+                  ]
+                : []
+              : provinceOptions
+          }
+          cityOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.cityMunicipalityCode
+                ? [
+                    {
+                      value: formData.cityMunicipalityCode,
+                      label:
+                        viewModeOptions.addressLabels.cityLabel || formData.cityMunicipalityCode,
+                    },
+                  ]
+                : []
+              : cityOptions
+          }
+          barangayOptions={
+            mode === 'view' && viewModeOptions?.addressLabels
+              ? formData.barangayCode
+                ? [
+                    {
+                      value: formData.barangayCode,
+                      label: viewModeOptions.addressLabels.barangayLabel || formData.barangayCode,
+                    },
+                  ]
+                : []
+              : barangayOptions
+          }
           regionsLoading={regionsLoading}
           provincesLoading={provincesLoading}
           citiesLoading={citiesLoading}
@@ -671,9 +758,13 @@ export default function HouseholdForm({
           onChange={handleInputChange}
           errors={errors}
           // Head of family options would be populated from residents
-          householdHeadOptions={mode === 'view' && viewModeOptions?.householdHeadLabel ? 
-            (formData.householdHeadId ? [{ value: formData.householdHeadId, label: viewModeOptions.householdHeadLabel }] : []) : 
-            []}
+          householdHeadOptions={
+            mode === 'view' && viewModeOptions?.householdHeadLabel
+              ? formData.householdHeadId
+                ? [{ value: formData.householdHeadId, label: viewModeOptions.householdHeadLabel }]
+                : []
+              : []
+          }
           householdHeadsLoading={false}
         />
 
@@ -683,14 +774,14 @@ export default function HouseholdForm({
             <Button variant="secondary-outline" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button 
-              variant="primary" 
-              onClick={handleSubmit} 
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 
-                (mode === 'create' ? 'Creating Household...' : 'Saving Changes...') : 
-                (mode === 'create' ? 'Create Household' : 'Save Changes')}
+            <Button variant="primary" onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting
+                ? mode === 'create'
+                  ? 'Creating Household...'
+                  : 'Saving Changes...'
+                : mode === 'create'
+                  ? 'Create Household'
+                  : 'Save Changes'}
             </Button>
           </div>
         )}

@@ -3,12 +3,11 @@
 import React, { useState, useEffect } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase , logger, logError } from '@/lib';
+import { supabase, logger, logError } from '@/lib';
 
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';
 import { SelectField } from '../../molecules/FieldSet/SelectField';
-
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;
@@ -140,7 +139,9 @@ export default function CreateHouseholdModal({
       logger.debug('Loading address display info', { barangayCode });
 
       // Check if user is authenticated before making database queries
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
         logger.debug('No active session, skipping address info load');
         setAddressDisplayInfo({
@@ -167,22 +168,22 @@ export default function CreateHouseholdModal({
       // Use our API endpoint to get full address hierarchy (avoids complex nested query issues)
       logger.debug('Querying PSGC lookup API for barangay', { barangayCode });
       const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(barangayCode)}`);
-      
+
       if (!response.ok) {
         throw new Error(`API request failed: ${response.status}`);
       }
-      
+
       const result = await response.json();
       const barangayData = result.data;
       const error = result.error;
 
       if (error) {
-        logger.error('Error loading address display info', { 
-          error: error?.message || 'Unknown error', 
+        logger.error('Error loading address display info', {
+          error: error?.message || 'Unknown error',
           barangayCode,
           errorCode: error?.code || 'Unknown code',
           errorDetails: error?.details || 'No details',
-          fullError: JSON.stringify(error)
+          fullError: JSON.stringify(error),
         });
         setAddressDisplayInfo({
           region: 'Region information not available',
@@ -198,9 +199,9 @@ export default function CreateHouseholdModal({
         setAddressDisplayInfo({
           region: barangayData.region_name || 'Region information not available',
           province: barangayData.province_name || 'Province information not available',
-          cityMunicipality: barangayData.city_type ? 
-            `${barangayData.city_name} (${barangayData.city_type})` : 
-            (barangayData.city_name || 'City/Municipality information not available'),
+          cityMunicipality: barangayData.city_type
+            ? `${barangayData.city_name} (${barangayData.city_type})`
+            : barangayData.city_name || 'City/Municipality information not available',
           barangay: barangayData.name || barangayData.barangay_name || `Barangay ${barangayCode}`,
         });
         logger.debug('Loaded address display info from database');
@@ -210,7 +211,7 @@ export default function CreateHouseholdModal({
         error: error instanceof Error ? error.message : 'Unknown error',
         barangayCode,
         errorType: typeof error,
-        fullError: JSON.stringify(error)
+        fullError: JSON.stringify(error),
       });
       logError(error as Error, 'ADDRESS_INFO_LOAD_ERROR');
       setAddressDisplayInfo({
@@ -233,11 +234,11 @@ export default function CreateHouseholdModal({
     if (userProfile?.barangay_code && userProfile.id) {
       loadAddressDisplayInfo(userProfile.barangay_code);
     } else {
-      logger.debug('No barangay code or user ID in profile', { 
+      logger.debug('No barangay code or user ID in profile', {
         hasBarangayCode: !!userProfile?.barangay_code,
         hasUserId: !!userProfile?.id,
         isModalOpen: isOpen,
-        userProfile 
+        userProfile,
       });
       // Set fallback info when no barangay code is available
       setAddressDisplayInfo({
@@ -295,11 +296,13 @@ export default function CreateHouseholdModal({
         try {
           // Use our API endpoint to get barangay info (avoids complex nested query issues)
           logger.debug('Using PSGC lookup API for fallback query');
-          const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(userProfile.barangay_code)}`);
-          
+          const response = await fetch(
+            `/api/psgc/lookup?code=${encodeURIComponent(userProfile.barangay_code)}`
+          );
+
           let barangayData = null;
           let barangayError = null;
-          
+
           if (!response.ok) {
             barangayError = { message: `API request failed: ${response.status}` };
             logger.error('Error fetching barangay info', { error: barangayError });
@@ -308,7 +311,7 @@ export default function CreateHouseholdModal({
             const result = await response.json();
             barangayData = result.data;
             barangayError = result.error;
-            
+
             if (barangayError) {
               logger.error('Error fetching barangay info', { error: barangayError });
               logger.debug('Fallback query failed, will use minimal data approach');
@@ -554,7 +557,7 @@ export default function CreateHouseholdModal({
             value={formData.house_number}
             onChange={e => handleInputChange('house_number', e.target.value)}
             placeholder="e.g., Blk 1 Lot 5, #123"
-            className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+            className="font-montserrat w-full rounded-sm border border-gray-300 px-3 py-2 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             disabled={isSubmitting}
           />
         </div>
@@ -563,17 +566,17 @@ export default function CreateHouseholdModal({
         <SelectField
           label="Subdivision/Zone/Sitio/Purok"
           selectProps={{
-            placeholder: "🏘️ Select subdivision or create new",
+            placeholder: '🏘️ Select subdivision or create new',
             options: [
               { value: '', label: 'None' },
               { value: 'zone1', label: 'Zone 1' },
               { value: 'zone2', label: 'Zone 2' },
               { value: 'purok1', label: 'Purok 1' },
-              { value: 'purok2', label: 'Purok 2' }
+              { value: 'purok2', label: 'Purok 2' },
             ],
             value: formData.subdivision_id,
-            onSelect: (option) => handleInputChange('subdivision_id', option?.value || ''),
-            error: errors.subdivision_id
+            onSelect: option => handleInputChange('subdivision_id', option?.value || ''),
+            error: errors.subdivision_id,
           }}
           errorMessage={errors.subdivision_id}
         />
@@ -583,16 +586,16 @@ export default function CreateHouseholdModal({
           label="Street Name *"
           required
           selectProps={{
-            placeholder: "🛣️ Select street or create new",
+            placeholder: '🛣️ Select street or create new',
             options: [
               { value: 'main_st', label: 'Main Street' },
               { value: 'market_st', label: 'Market Street' },
               { value: 'rizal_st', label: 'Rizal Street' },
-              { value: 'national_rd', label: 'National Road' }
+              { value: 'national_rd', label: 'National Road' },
             ],
             value: formData.street_id,
-            onSelect: (option) => handleInputChange('street_id', option?.value || ''),
-            error: errors.street_id
+            onSelect: option => handleInputChange('street_id', option?.value || ''),
+            error: errors.street_id,
           }}
           errorMessage={errors.street_id}
         />

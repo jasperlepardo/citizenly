@@ -37,12 +37,7 @@ export {
 } from '../utilities/id-generators';
 
 // Async utilities
-export {
-  debounce,
-  throttle,
-  sleep,
-  retry,
-} from '../utilities/async-utils';
+export { debounce, throttle, sleep, retry } from '../utilities/async-utils';
 
 // CSS utilities
 export {

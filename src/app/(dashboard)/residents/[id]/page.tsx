@@ -7,18 +7,18 @@ import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
 import { ResidentForm } from '@/components/templates/ResidentForm';
-import { supabase , logger, logError } from '@/lib';
+import { supabase, logger, logError } from '@/lib';
 // Remove unused enum imports - using types instead
 import { fetchWithAuth } from '@/lib/utils/sessionUtils';
 import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
-import { 
-  CivilStatusEnum, 
-  CitizenshipEnum, 
-  EducationLevelEnum, 
-  EmploymentStatusEnum, 
-  BloodTypeEnum, 
-  EthnicityEnum, 
-  ReligionEnum 
+import {
+  CivilStatusEnum,
+  CitizenshipEnum,
+  EducationLevelEnum,
+  EmploymentStatusEnum,
+  BloodTypeEnum,
+  EthnicityEnum,
+  ReligionEnum,
 } from '@/types';
 import type { ResidentFormState } from '@/types/resident-form';
 
@@ -62,7 +62,7 @@ function ResidentDetailContent() {
         }
 
         const responseData = await response.json();
-        
+
         const { resident: residentData, household: householdData } = responseData;
 
         if (!residentData) {
@@ -294,7 +294,6 @@ function ResidentDetailContent() {
   //   };
   // };
 
-
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status
     const employmentStatus = updatedResident.employment_status;
@@ -343,7 +342,7 @@ function ResidentDetailContent() {
   const transformToFormState = (resident: Resident): ResidentFormState => {
     // Transform resident data to form state format
     // Processing basic resident fields for form
-    
+
     // Extract sectoral information from the nested object if it exists
     const residentWithNested = resident as Resident & {
       sectoral_info?: SectoralInformation;
@@ -352,10 +351,11 @@ function ResidentDetailContent() {
       resident_migrant_info?: Record<string, unknown>[];
       birth_place_info?: { name?: string; level?: string };
     };
-    const sectoralInfo = residentWithNested.sectoral_info || residentWithNested.resident_sectoral_info?.[0] || null;
-    const migrantInfo = residentWithNested.migrant_info || residentWithNested.resident_migrant_info?.[0] || null;
-    
-    
+    const sectoralInfo =
+      residentWithNested.sectoral_info || residentWithNested.resident_sectoral_info?.[0] || null;
+    const migrantInfo =
+      residentWithNested.migrant_info || residentWithNested.resident_migrant_info?.[0] || null;
+
     const formState = {
       // Personal Information
       first_name: resident.first_name || '',
@@ -367,9 +367,11 @@ function ResidentDetailContent() {
       civil_status_others_specify: '', // Not in current Resident type
       citizenship: (resident.citizenship as CitizenshipEnum) || '',
       birthdate: resident.birthdate || '',
-      birth_place_name: residentWithNested.birth_place_info?.name || (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
+      birth_place_name:
+        residentWithNested.birth_place_info?.name ||
+        (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
       birth_place_code: resident.birth_place_code || '',
-      birth_place_level: residentWithNested.birth_place_info?.level || '',
+      birth_place_level: '' as '' | 'region' | 'province' | 'city_municipality' | 'barangay',
       philsys_card_number: resident.philsys_card_number || '',
       philsys_last4: resident.philsys_last4 || '',
       education_attainment: (resident.education_attainment as EducationLevelEnum) || '',
@@ -380,13 +382,13 @@ function ResidentDetailContent() {
       occupation_code: resident.occupation_code || '',
       psoc_level: resident.psoc_level || 0,
       occupation_title: resident.occupation_title || '',
-      
+
       // Contact Information
       email: resident.email || '',
       telephone_number: resident.telephone_number || '',
       mobile_number: resident.mobile_number || '',
       household_code: resident.household_code || '',
-      
+
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',
       complexion: resident.complexion || '',
@@ -401,7 +403,7 @@ function ResidentDetailContent() {
       mother_maiden_first: resident.mother_maiden_first || '',
       mother_maiden_middle: resident.mother_maiden_middle || '',
       mother_maiden_last: resident.mother_maiden_last || '',
-      
+
       // Sectoral Information (use sectoral_info if available, otherwise defaults)
       is_labor_force_employed: sectoralInfo?.is_labor_force_employed ?? false,
       is_unemployed: sectoralInfo?.is_unemployed ?? false,
@@ -414,18 +416,20 @@ function ResidentDetailContent() {
       is_solo_parent: sectoralInfo?.is_solo_parent ?? false,
       is_indigenous_people: sectoralInfo?.is_indigenous_people ?? false,
       is_migrant: sectoralInfo?.is_migrant ?? false,
-      
+
       // Migration Information (use migrant_info if available, otherwise defaults)
-      previous_barangay_code: migrantInfo?.previous_barangay_code || '',
-      previous_city_municipality_code: migrantInfo?.previous_city_municipality_code || '',
-      previous_province_code: migrantInfo?.previous_province_code || '',
-      previous_region_code: migrantInfo?.previous_region_code || '',
-      length_of_stay_previous_months: migrantInfo?.length_of_stay_previous_months || 0,
-      reason_for_leaving: migrantInfo?.reason_for_leaving || '',
-      date_of_transfer: migrantInfo?.date_of_transfer || '',
-      reason_for_transferring: migrantInfo?.reason_for_transferring || '',
-      duration_of_stay_current_months: migrantInfo?.duration_of_stay_current_months || 0,
-      is_intending_to_return: migrantInfo?.is_intending_to_return ?? false,
+      previous_barangay_code: (migrantInfo?.previous_barangay_code as string) || '',
+      previous_city_municipality_code:
+        (migrantInfo?.previous_city_municipality_code as string) || '',
+      previous_province_code: (migrantInfo?.previous_province_code as string) || '',
+      previous_region_code: (migrantInfo?.previous_region_code as string) || '',
+      length_of_stay_previous_months: (migrantInfo?.length_of_stay_previous_months as number) || 0,
+      reason_for_leaving: (migrantInfo?.reason_for_leaving as string) || '',
+      date_of_transfer: (migrantInfo?.date_of_transfer as string) || '',
+      reason_for_transferring: (migrantInfo?.reason_for_transferring as string) || '',
+      duration_of_stay_current_months:
+        (migrantInfo?.duration_of_stay_current_months as number) || 0,
+      is_intending_to_return: (migrantInfo?.is_intending_to_return as boolean) ?? false,
     };
 
     // Returning transformed form state
@@ -448,12 +452,11 @@ function ResidentDetailContent() {
       }
 
       const result = await response.json();
-      
+
       toast.success(`Resident ${result.deletedResident?.name || ''} deleted successfully`);
-      
+
       // Redirect to residents list after successful deletion
       router.push('/residents');
-      
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_DELETE');
@@ -470,7 +473,7 @@ function ResidentDetailContent() {
     // Handle form submission with form data
     // Form includes migration status and other resident details
     // Processing form submission at current timestamp
-    
+
     try {
       // Use the API endpoint for updating with session fallback
       // Getting session for form submission authentication
@@ -510,7 +513,7 @@ function ResidentDetailContent() {
         mother_maiden_first: formData.mother_maiden_first,
         mother_maiden_middle: formData.mother_maiden_middle,
         mother_maiden_last: formData.mother_maiden_last,
-        
+
         // Sectoral information fields
         is_labor_force_employed: formData.is_labor_force_employed,
         is_unemployed: formData.is_unemployed,
@@ -537,17 +540,17 @@ function ResidentDetailContent() {
 
       const responseData = await response.json();
       // Successfully received API response
-      
+
       const { resident: updatedResident } = responseData;
       // Processing updated resident data from API
-      
+
       // Transform the nested sectoral data from the API response
       let transformedResident = { ...updatedResident };
-      
+
       if (updatedResident?.resident_sectoral_info?.[0]) {
         const sectoralInfo = updatedResident.resident_sectoral_info[0];
         // Flattening sectoral information into main resident object
-        
+
         // Flatten sectoral information into the main resident object
         transformedResident = {
           ...transformedResident,
@@ -563,15 +566,15 @@ function ResidentDetailContent() {
           is_indigenous_people: sectoralInfo.is_indigenous_people,
           is_migrant: sectoralInfo.is_migrant,
         };
-        
+
         // Remove the nested object to avoid duplication
         delete transformedResident.resident_sectoral_info;
       }
-      
+
       if (updatedResident?.resident_migrant_info?.[0]) {
         const migrantInfo = updatedResident.resident_migrant_info[0];
         // Flattening migrant information into main resident object
-        
+
         // Flatten migrant information into the main resident object
         transformedResident = {
           ...transformedResident,
@@ -586,21 +589,20 @@ function ResidentDetailContent() {
           duration_of_stay_current_months: migrantInfo.duration_of_stay_current_months,
           is_intending_to_return: migrantInfo.is_intending_to_return,
         };
-        
+
         // Remove the nested object to avoid duplication
         delete transformedResident.resident_migrant_info;
       }
-      
+
       // Setting transformed resident state with flattened data
       // Migration status preserved in transformation
-      
+
       // Update local state and return to view mode
       // Updating resident state with transformed data
       setResident(transformedResident);
       setFormMode('view');
       setCurrentFormData(null); // Clear current form data after successful save
       toast.success('Resident updated successfully!');
-      
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_FORM_UPDATE');
@@ -675,14 +677,41 @@ function ResidentDetailContent() {
     <div className="min-h-screen" style={{ minHeight: '100vh' }}>
       <div className="p-6" style={{ padding: '24px' }}>
         {/* Page Header */}
-        <div className="mb-6 flex items-center justify-between" style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div
+          className="mb-6 flex items-center justify-between"
+          style={{
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div
+            className="flex items-center gap-4"
+            style={{ display: 'flex', alignItems: 'center', gap: '16px' }}
+          >
             <Link
               href="/residents"
               className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50"
-              style={{ display: 'inline-flex', alignItems: 'center', borderRadius: '6px', border: '1px solid #e5e7eb', backgroundColor: 'white', padding: '8px 12px', fontSize: '14px', fontWeight: '500', color: '#4b5563' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                borderRadius: '6px',
+                border: '1px solid #e5e7eb',
+                backgroundColor: 'white',
+                padding: '8px 12px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#4b5563',
+              }}
             >
-              <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px', width: '16px', height: '16px' }}>
+              <svg
+                className="mr-2 size-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                style={{ marginRight: '8px', width: '16px', height: '16px' }}
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -693,7 +722,15 @@ function ResidentDetailContent() {
               Back to Residents
             </Link>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900" style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '4px' }}>
+              <h1
+                className="text-xl font-semibold text-gray-900"
+                style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: '#111827',
+                  marginBottom: '4px',
+                }}
+              >
                 {resident.first_name} {resident.last_name}
               </h1>
               <p className="text-sm text-gray-600" style={{ fontSize: '14px', color: '#6b7280' }}>
@@ -736,11 +773,11 @@ function ResidentDetailContent() {
                 {/* Edit/Save mode toggle button with FormHeader styling */}
                 <button
                   type="button"
-                  onClick={async (e) => {
+                  onClick={async e => {
                     e.preventDefault();
                     // Save button clicked - processing form action
                     // Checking form mode and data availability
-                    
+
                     if (formMode === 'view') {
                       // Switching to edit mode
                       setFormMode('edit');
@@ -751,7 +788,10 @@ function ResidentDetailContent() {
                       const formElement = document.querySelector('form');
                       if (formElement) {
                         // Found form element, triggering submit event
-                        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                        const submitEvent = new Event('submit', {
+                          bubbles: true,
+                          cancelable: true,
+                        });
                         formElement.dispatchEvent(submitEvent);
                       } else {
                         logger.error('Form element not found for submission');
@@ -760,7 +800,7 @@ function ResidentDetailContent() {
                     }
                     // Form action completed
                   }}
-                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg transition-colors font-medium"
+                  className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 font-medium text-zinc-900 transition-colors hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
                 >
                   {formMode === 'view' ? '✏️ Edit' : '💾 Save'}
                 </button>
@@ -770,12 +810,12 @@ function ResidentDetailContent() {
                 <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
                   Export Data
                 </button>
-                
+
                 {/* Delete Button */}
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   disabled={isDeleting || formMode === 'edit'}
-                  className="w-full rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                  className="w-full rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
                 >
                   {isDeleting ? 'Deleting...' : '🗑️ Delete Resident'}
                 </button>
@@ -786,22 +826,36 @@ function ResidentDetailContent() {
             {showDeleteConfirm && (
               <div className="fixed inset-0 z-50 overflow-y-auto">
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setShowDeleteConfirm(false)} />
+                  <div
+                    className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity"
+                    onClick={() => setShowDeleteConfirm(false)}
+                  />
                   <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-gray-800">
-                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 dark:bg-gray-800">
+                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-800">
                       <div className="sm:flex sm:items-start">
                         <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-900/20">
-                          <svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                          <svg
+                            className="h-6 w-6 text-red-600 dark:text-red-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                            />
                           </svg>
                         </div>
-                        <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                          <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
+                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                          <h3 className="text-base leading-6 font-semibold text-gray-900 dark:text-gray-100">
                             Delete Resident
                           </h3>
                           <div className="mt-2">
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              Are you sure you want to delete {resident?.first_name} {resident?.last_name}? This action cannot be undone.
+                              Are you sure you want to delete {resident?.first_name}{' '}
+                              {resident?.last_name}? This action cannot be undone.
                             </p>
                           </div>
                         </div>
@@ -820,7 +874,7 @@ function ResidentDetailContent() {
                         type="button"
                         onClick={() => setShowDeleteConfirm(false)}
                         disabled={isDeleting}
-                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 sm:mt-0 sm:w-auto dark:bg-gray-600 dark:text-gray-100 dark:ring-gray-500 dark:hover:bg-gray-500"
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:opacity-50 sm:mt-0 sm:w-auto dark:bg-gray-600 dark:text-gray-100 dark:ring-gray-500 dark:hover:bg-gray-500"
                       >
                         Cancel
                       </button>
@@ -829,8 +883,6 @@ function ResidentDetailContent() {
                 </div>
               </div>
             )}
-
-
           </div>
         </div>
       </div>

@@ -8,8 +8,8 @@
 if (process.env.NODE_ENV === 'development') {
   console.warn(
     '⚠️  DEPRECATED IMPORT: @/lib/supabase is deprecated.\n' +
-    '   Please use: @/lib/data/supabase instead.\n' +
-    '   This compatibility layer will be removed in v3.0.0'
+      '   Please use: @/lib/data/supabase instead.\n' +
+      '   This compatibility layer will be removed in v3.0.0'
   );
 }
 

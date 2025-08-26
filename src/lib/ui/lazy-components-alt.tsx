@@ -40,13 +40,15 @@ const LazyErrorFallback = ({ error }: { error: Error }) => (
         />
       </svg>
     </div>
-    <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">Component Failed to Load</h3>
+    <h3 className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-100">
+      Component Failed to Load
+    </h3>
     <p className="mb-4 text-zinc-600 dark:text-zinc-400">
       There was an error loading this component. Please try refreshing the page.
     </p>
     <button
       onClick={() => window.location.reload()}
-      className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
+      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:text-black"
     >
       Refresh Page
     </button>
@@ -143,7 +145,7 @@ export const LazyLoadingPresets = {
    */
   modal: {
     fallback: (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-black">
         <LoadingSpinner message="Loading modal..." />
       </div>
     ),

@@ -21,10 +21,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     // Simple authentication check for admin endpoints
     const authHeader = request.headers.get('Authorization');
-    const isAuthorized = authHeader && (
-      authHeader.includes('Bearer') || 
-      (!isProduction() && authHeader === 'dev-token')
-    );
+    const isAuthorized =
+      authHeader &&
+      (authHeader.includes('Bearer') || (!isProduction() && authHeader === 'dev-token'));
 
     if (!isAuthorized) {
       return NextResponse.json(
@@ -34,17 +33,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
 
     // Gather all cache and performance statistics
-    const [
-      cacheStats,
-      responseCacheStats,
-      queryStats,
-      connectionPoolStats
-    ] = await Promise.allSettled([
-      cacheManager.getStats(),
-      responseCache.getStats(),
-      Promise.resolve(queryOptimizer.getMetrics()),
-      Promise.resolve(getConnectionPoolStats())
-    ]);
+    const [cacheStats, responseCacheStats, queryStats, connectionPoolStats] =
+      await Promise.allSettled([
+        cacheManager.getStats(),
+        responseCache.getStats(),
+        Promise.resolve(queryOptimizer.getMetrics()),
+        Promise.resolve(getConnectionPoolStats()),
+      ]);
 
     // Helper to safely get stats from settled promises
     const getStatsValue = (result: PromiseSettledResult<any>, defaultValue: any = {}) => {
@@ -54,22 +49,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const stats: any = {
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV,
-      
+
       // Cache statistics
       cache: {
         general: getStatsValue(cacheStats, {
           hits: 0,
           misses: 0,
           keys: 0,
-          memoryUsage: 0
+          memoryUsage: 0,
         }),
-        
+
         responseCache: getStatsValue(responseCacheStats, {
           hits: 0,
           misses: 0,
           keys: 0,
-          hitRate: '0%'
-        })
+          hitRate: '0%',
+        }),
       },
 
       // Database performance
@@ -79,29 +74,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           averageExecutionTime: 0,
           cacheHitRate: 0,
           slowQueries: [],
-          recentQueries: []
+          recentQueries: [],
         }),
-        
+
         connectionPool: getStatsValue(connectionPoolStats, {
           activeConnections: 0,
           totalConnections: 0,
           availableConnections: 0,
           maxConnections: 0,
-          utilizationPercentage: 0
-        })
+          utilizationPercentage: 0,
+        }),
       },
 
       // Health indicators
       health: {
         cacheHealthy: cacheStats.status === 'fulfilled',
         databaseHealthy: connectionPoolStats.status === 'fulfilled',
-        overallHealthy: [cacheStats, connectionPoolStats].every(s => s.status === 'fulfilled')
-      }
+        overallHealthy: [cacheStats, connectionPoolStats].every(s => s.status === 'fulfilled'),
+      },
     };
 
     // Add performance warnings
     const warnings: string[] = [];
-    
+
     const dbStats = getStatsValue(connectionPoolStats);
     if (dbStats.utilizationPercentage > 80) {
       warnings.push('Database connection pool utilization is high (>80%)');
@@ -123,11 +118,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(stats, {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
-      }
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
     });
-
   } catch (error) {
     return NextResponse.json(
       createErrorResponseObject('SERVER_001', 'Failed to retrieve cache statistics'),
@@ -143,10 +137,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Simple authentication check for admin endpoints
     const authHeader = request.headers.get('Authorization');
-    const isAuthorized = authHeader && (
-      authHeader.includes('Bearer') || 
-      (!isProduction() && authHeader === 'dev-token')
-    );
+    const isAuthorized =
+      authHeader &&
+      (authHeader.includes('Bearer') || (!isProduction() && authHeader === 'dev-token'));
 
     if (!isAuthorized) {
       return NextResponse.json(
@@ -174,9 +167,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           );
         }
         const count = await responseCache.invalidate(pattern, tags);
-        result = { 
-          success: true, 
-          message: `Invalidated ${count} cache entries matching pattern: ${pattern}` 
+        result = {
+          success: true,
+          message: `Invalidated ${count} cache entries matching pattern: ${pattern}`,
         };
         break;
 
@@ -186,14 +179,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         break;
 
       default:
-        return NextResponse.json(
-          createErrorResponseObject('DATA_001', 'Invalid cache action'),
-          { status: 400 }
-        );
+        return NextResponse.json(createErrorResponseObject('DATA_001', 'Invalid cache action'), {
+          status: 400,
+        });
     }
 
     return NextResponse.json(result);
-
   } catch (error) {
     return NextResponse.json(
       createErrorResponseObject('SERVER_001', 'Cache management operation failed'),

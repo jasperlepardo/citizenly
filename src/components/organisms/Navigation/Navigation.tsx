@@ -19,7 +19,6 @@ interface NavigationItem {
   children?: NavigationItem[];
 }
 
-
 // Default navigation structure with FontAwesome icons
 const defaultNavigation: NavigationItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
@@ -41,11 +40,13 @@ const navigationStyles = {
   active: 'bg-blue-50 dark:bg-slate-800 text-blue-700 dark:text-white',
 
   // Inactive item styles
-  inactive: 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700',
+  inactive:
+    'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700',
 
   // Icon styles
   iconActive: 'text-blue-600 dark:text-white shrink-0',
-  iconInactive: 'text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-white shrink-0',
+  iconInactive:
+    'text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-white shrink-0',
 
   // Submenu styles
   submenu: 'mt-2 ml-4 space-y-1',

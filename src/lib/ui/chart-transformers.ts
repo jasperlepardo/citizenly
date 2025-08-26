@@ -1,6 +1,6 @@
 /**
  * Chart Data Transformers Library
- * 
+ *
  * @description Pure business logic for transforming raw data into chart-ready formats.
  * Contains data transformation utilities separated from UI components.
  */
@@ -73,7 +73,7 @@ export const CHART_COLORS: Record<ChartType, Record<string, string>> = {
 export function transformDependencyData(data: DependencyData): ChartDataPoint[] {
   const { youngDependents, workingAge, oldDependents } = data;
   const total = youngDependents + workingAge + oldDependents;
-  
+
   return [
     {
       label: 'Young (0-14)',
@@ -102,7 +102,7 @@ export function transformDependencyData(data: DependencyData): ChartDataPoint[] 
 export function transformSexData(data: SexData): ChartDataPoint[] {
   const { male, female } = data;
   const total = male + female;
-  
+
   return [
     {
       label: 'Male',
@@ -123,9 +123,11 @@ export function transformSexData(data: SexData): ChartDataPoint[] {
  * Transform civil status data into chart format
  */
 export function transformCivilStatusData(data: CivilStatusData): ChartDataPoint[] {
-  const { single, married, widowed, divorced, separated, annulled, registeredPartnership, liveIn } = data;
-  const total = single + married + widowed + divorced + separated + annulled + registeredPartnership + liveIn;
-  
+  const { single, married, widowed, divorced, separated, annulled, registeredPartnership, liveIn } =
+    data;
+  const total =
+    single + married + widowed + divorced + separated + annulled + registeredPartnership + liveIn;
+
   return [
     {
       label: 'Single',
@@ -183,8 +185,9 @@ export function transformCivilStatusData(data: CivilStatusData): ChartDataPoint[
  */
 export function transformEmploymentData(data: EmploymentStatusData): ChartDataPoint[] {
   const { employed, unemployed, selfEmployed, student, retired, homemaker, disabled, other } = data;
-  const total = employed + unemployed + selfEmployed + student + retired + homemaker + disabled + other;
-  
+  const total =
+    employed + unemployed + selfEmployed + student + retired + homemaker + disabled + other;
+
   return [
     {
       label: 'Employed',
@@ -295,7 +298,7 @@ export const chartUtils = {
    */
   getMaxPoint: (data: ChartDataPoint[]): ChartDataPoint | null => {
     if (data.length === 0) return null;
-    return data.reduce((max, point) => point.value > max.value ? point : max);
+    return data.reduce((max, point) => (point.value > max.value ? point : max));
   },
 
   /**
@@ -303,6 +306,6 @@ export const chartUtils = {
    */
   getMinPoint: (data: ChartDataPoint[]): ChartDataPoint | null => {
     if (data.length === 0) return null;
-    return data.reduce((min, point) => point.value < min.value ? point : min);
+    return data.reduce((min, point) => (point.value < min.value ? point : min));
   },
 };

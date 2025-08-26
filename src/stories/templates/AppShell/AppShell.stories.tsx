@@ -25,7 +25,9 @@ const MockDashboardContent = () => (
   <div className="space-y-8">
     <div>
       <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Dashboard Overview</h1>
-      <p className="mt-2 text-gray-600 dark:text-gray-400">Welcome to the RBI Records Management System</p>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">
+        Welcome to the RBI Records Management System
+      </p>
     </div>
 
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -35,7 +37,10 @@ const MockDashboardContent = () => (
         { title: 'Active Voters', value: '987', change: '+8%' },
         { title: 'Pending Records', value: '23', change: '-3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
+        <div
+          key={index}
+          className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
@@ -50,8 +55,10 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Recent Activity</h3>
+      <div className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+          Recent Activity
+        </h3>
         <div className="space-y-4">
           {[
             'New resident registered: Maria Santos',
@@ -67,14 +74,16 @@ const MockDashboardContent = () => (
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Quick Actions</h3>
+      <div className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+          Quick Actions
+        </h3>
         <div className="space-y-3">
           {['Add New Resident', 'Create Household', 'Generate Report', 'Manage Users'].map(
             (action, index) => (
               <button
                 key={index}
-                className="bg-gray-50 dark:bg-gray-700 w-full rounded-lg px-4 py-3 text-left text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-50 hover:text-gray-600"
+                className="w-full rounded-lg bg-gray-50 px-4 py-3 text-left text-gray-600 transition-colors hover:bg-blue-50 hover:text-gray-600 dark:bg-gray-700 dark:text-gray-400"
               >
                 {action}
               </button>
@@ -90,30 +99,34 @@ const MockResidentsContent = () => (
   <div className="space-y-6">
     <div className="flex items-center justify-between">
       <div>
-        <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Residents Management</h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">Manage resident records and information</p>
+        <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">
+          Residents Management
+        </h1>
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
+          Manage resident records and information
+        </p>
       </div>
       <div className="flex gap-3">
-        <button className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600">
+        <button className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:bg-gray-800 dark:text-gray-400">
           Export
         </button>
-        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white dark:text-black transition-colors hover:bg-blue-600">
+        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-600 dark:text-black">
           Add Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-white dark:bg-gray-800 overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600">
-      <div className="border-b border-gray-300 dark:border-gray-600 p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800">
+      <div className="border-b border-gray-300 p-4 dark:border-gray-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-600 dark:text-gray-400">Resident List</h3>
           <div className="flex gap-2">
             <input
               type="search"
               placeholder="Search residents..."
-              className="bg-white dark:bg-gray-800 placeholder-secondary rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
+              className="placeholder-secondary rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
             />
-            <button className="hover:bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-600">
+            <button className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
               Filter
             </button>
           </div>
@@ -129,7 +142,7 @@ const MockResidentsContent = () => (
           ].map((resident, index) => (
             <div
               key={index}
-              className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 p-3"
+              className="flex items-center justify-between rounded-lg border border-gray-300 p-3 dark:border-gray-600"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
@@ -157,7 +170,7 @@ const MockResidentsContent = () => (
                 >
                   {resident.status}
                 </span>
-                <button className="text-gray-600 dark:text-gray-400 hover:text-gray-600">
+                <button className="text-gray-600 hover:text-gray-600 dark:text-gray-400">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -195,20 +208,22 @@ const MockReportsContent = () => (
       ].map((report, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-gray-800 cursor-pointer rounded-xl border border-gray-300 dark:border-gray-600 p-6 transition-shadow hover:shadow-md"
+          className="cursor-pointer rounded-xl border border-gray-300 bg-white p-6 transition-shadow hover:shadow-md dark:border-gray-600 dark:bg-gray-800"
         >
           <div className="mb-3 text-3xl">{report.icon}</div>
           <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">{report.title}</h3>
           <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">{report.description}</p>
-          <button className="w-full rounded-lg bg-blue-50 px-4 py-2 text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-100">
+          <button className="w-full rounded-lg bg-blue-50 px-4 py-2 text-gray-600 transition-colors hover:bg-blue-100 dark:text-gray-400">
             Generate Report
           </button>
         </div>
       ))}
     </div>
 
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
-      <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Recent Reports</h3>
+    <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
+      <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+        Recent Reports
+      </h3>
       <div className="space-y-3">
         {[
           { name: 'Population Summary Q4 2024', date: '2024-12-01', size: '2.4 MB' },
@@ -217,7 +232,7 @@ const MockReportsContent = () => (
         ].map((report, index) => (
           <div
             key={index}
-            className="flex items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 p-3"
+            className="flex items-center justify-between rounded-lg border border-gray-300 p-3 dark:border-gray-600"
           >
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-blue-100">
@@ -242,7 +257,7 @@ const MockReportsContent = () => (
                 </p>
               </div>
             </div>
-            <button className="rounded bg-blue-50 px-3 py-1 text-sm text-gray-600 dark:text-gray-400 transition-colors hover:bg-blue-100">
+            <button className="rounded bg-blue-50 px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-blue-100 dark:text-gray-400">
               Download
             </button>
           </div>
@@ -361,7 +376,7 @@ export const LayoutFeatures: Story = {
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"
@@ -377,13 +392,15 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Responsive Design</h3>
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">
+              Responsive Design
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Automatically adapts to different screen sizes with mobile-first approach
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
                 className="h-6 w-6 text-gray-600 dark:text-gray-400"
@@ -405,7 +422,7 @@ export const LayoutFeatures: Story = {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"

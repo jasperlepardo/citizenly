@@ -2,7 +2,7 @@
 
 /**
  * Resident Form State Management Hook
- * 
+ *
  * @description Focused hook for managing resident form state and data persistence.
  * Extracted from useResidentEditForm to follow single responsibility principle.
  */
@@ -18,7 +18,7 @@ const DEFAULT_FORM_DATA: Partial<ResidentEditFormData> = {
   first_name: '',
   last_name: '',
   birthdate: '',
-  sex: 'male'
+  sex: 'male',
 };
 /**
  * Form state options
@@ -54,18 +54,14 @@ export interface UseResidentFormStateReturn {
 
 /**
  * Custom hook for resident form state management
- * 
+ *
  * @description Manages form data state, auto-save functionality, and data persistence.
  * Provides clean separation between state management and validation/submission logic.
  */
 export function useResidentFormState(
   options: UseResidentFormStateOptions = {}
 ): UseResidentFormStateReturn {
-  const {
-    initialData = {},
-    autoSave = false,
-    autoSaveKey = 'resident-form-draft',
-  } = options;
+  const { initialData = {}, autoSave = false, autoSaveKey = 'resident-form-draft' } = options;
 
   /**
    * Initialize form data with auto-save recovery
@@ -107,16 +103,16 @@ export function useResidentFormState(
   /**
    * Update a single field
    */
-  const updateField = useCallback(<K extends keyof ResidentEditFormData>(
-    field: K,
-    value: ResidentEditFormData[K]
-  ) => {
-    setFormDataState(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-    setIsDirty(true);
-  }, []);
+  const updateField = useCallback(
+    <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => {
+      setFormDataState(prev => ({
+        ...prev,
+        [field]: value,
+      }));
+      setIsDirty(true);
+    },
+    []
+  );
 
   /**
    * Update multiple fields at once
@@ -136,7 +132,7 @@ export function useResidentFormState(
     const resetData = { ...DEFAULT_FORM_DATA, ...initialData };
     setFormDataState(resetData);
     setIsDirty(false);
-    
+
     // Clear auto-save
     if (autoSave) {
       try {

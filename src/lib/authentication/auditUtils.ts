@@ -411,7 +411,10 @@ export function createAuditQuery(filters: {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  let query = supabaseAdmin.from('system_audit_logs').select('*').order('timestamp', { ascending: false });
+  let query = supabaseAdmin
+    .from('system_audit_logs')
+    .select('*')
+    .order('timestamp', { ascending: false });
 
   if (filters.userId) {
     query = query.eq('user_id', filters.userId);

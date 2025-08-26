@@ -47,7 +47,12 @@ function getWorkflowSuggestions(query?: string): WorkflowSuggestion[] {
         keywords: ['household', 'family', 'add', 'new'],
         icon: (
           <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+            />
           </svg>
         ),
       },
@@ -60,7 +65,12 @@ function getWorkflowSuggestions(query?: string): WorkflowSuggestion[] {
         keywords: ['reports', 'statistics', 'data', 'analytics'],
         icon: (
           <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
           </svg>
         ),
       },
@@ -144,7 +154,12 @@ function getWorkflowSuggestions(query?: string): WorkflowSuggestion[] {
     keywords: ['browse', 'view', 'residents', 'directory'],
     icon: (
       <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+        />
       </svg>
     ),
   });
@@ -158,7 +173,12 @@ function getWorkflowSuggestions(query?: string): WorkflowSuggestion[] {
     keywords: ['browse', 'view', 'households', 'families'],
     icon: (
       <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+        />
       </svg>
     ),
   });
@@ -175,13 +195,11 @@ export function CommandMenuEmpty({
   onSuggestionClick,
 }: CommandMenuEmptyProps) {
   const suggestions = getWorkflowSuggestions(query);
-  const defaultMessage = query 
-    ? `No results found for "${query}"`
-    : 'Start typing to search...';
+  const defaultMessage = query ? `No results found for "${query}"` : 'Start typing to search...';
 
   const handleSuggestionClick = (suggestion: WorkflowSuggestion) => {
     onSuggestionClick?.(suggestion);
-    
+
     // Navigate to the suggestion's href if available
     if (suggestion.href) {
       window.location.href = suggestion.href;
@@ -189,10 +207,9 @@ export function CommandMenuEmpty({
   };
 
   return (
-    <div className={cn(
-      'flex flex-col items-center justify-center py-8 px-4 text-center',
-      className
-    )}>
+    <div
+      className={cn('flex flex-col items-center justify-center px-4 py-8 text-center', className)}
+    >
       {/* Icon */}
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
         {query ? (
@@ -227,13 +244,11 @@ export function CommandMenuEmpty({
       </div>
 
       {/* Message */}
-      <div className="space-y-2 mb-6">
+      <div className="mb-6 space-y-2">
         <h3 className="font-medium text-gray-900 dark:text-gray-100">
           {query ? 'No results found' : 'Search anything'}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {children || defaultMessage}
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{children || defaultMessage}</p>
         {query && (
           <p className="text-xs text-gray-400 dark:text-gray-500">
             Here's what you can do instead:
@@ -244,22 +259,20 @@ export function CommandMenuEmpty({
       {/* Workflow Suggestions */}
       {suggestions.length > 0 && (
         <div className="w-full max-w-sm space-y-2">
-          {suggestions.map((suggestion) => (
+          {suggestions.map(suggestion => (
             <button
               key={suggestion.id}
               onClick={() => handleSuggestionClick(suggestion)}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <div className="flex size-5 shrink-0 items-center justify-center">
-                <div className="size-4 text-gray-500 dark:text-gray-400">
-                  {suggestion.icon}
-                </div>
+                <div className="size-4 text-gray-500 dark:text-gray-400">{suggestion.icon}</div>
               </div>
               <div className="flex min-w-0 flex-1 flex-col">
                 <div className="font-medium text-gray-900 dark:text-gray-100">
                   {suggestion.title}
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <div className="truncate text-xs text-gray-500 dark:text-gray-400">
                   {suggestion.description}
                 </div>
               </div>
@@ -271,17 +284,15 @@ export function CommandMenuEmpty({
       {/* Basic tips for empty state */}
       {!query && suggestions.length === 0 && (
         <div className="mt-6 space-y-2">
-          <p className="text-xs text-gray-400 dark:text-gray-500">
-            Try searching for:
-          </p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Try searching for:</p>
           <div className="flex flex-wrap justify-center gap-2">
-            <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
               residents
             </span>
-            <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
               households
             </span>
-            <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-300">
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
               reports
             </span>
           </div>

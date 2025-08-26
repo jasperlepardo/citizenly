@@ -2,7 +2,7 @@
 
 /**
  * Field Error Handler Hook
- * 
+ *
  * @description Hook for functional error boundary behavior.
  * Extracted from FieldErrorBoundary for better maintainability.
  */
@@ -29,7 +29,7 @@ export function useFieldErrorHandler(): UseFieldErrorHandlerReturn {
     logError(error, {
       component: fieldName ? `FieldError-${fieldName}` : 'FieldError',
     });
-    
+
     // You can add additional error handling logic here
     // such as form validation state updates, user notifications, etc.
   }, []);

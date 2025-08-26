@@ -2,7 +2,7 @@
  * Base Repository Pattern
  * @fileoverview Abstract base class implementing the Repository pattern for data access.
  * Provides standardized CRUD operations, error handling, and audit logging for all data repositories.
- * 
+ *
  * @example
  * ```typescript
  * // Extend BaseRepository for domain-specific operations
@@ -10,13 +10,13 @@
  *   constructor(context?: ValidationContext) {
  *     super('users', context);
  *   }
- * 
+ *
  *   async findByEmail(email: string): Promise<RepositoryResult<UserData>> {
  *     // Implementation
  *   }
  * }
  * ```
- * 
+ *
  * @since 2.0.0
  * @author Citizenly Development Team
  */
@@ -84,7 +84,7 @@ export interface RepositoryResult<T> {
  * @abstract
  * @class BaseRepository
  * @since 2.0.0
- * 
+ *
  * @description
  * Provides standardized data access operations with built-in:
  * - Error handling and mapping
@@ -115,7 +115,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
    * Set request context for auditing
    * @param context - Validation context containing user and request information
    * @since 2.0.0
-   * 
+   *
    * @example
    * ```typescript
    * repository.setContext({
@@ -165,7 +165,9 @@ export abstract class BaseRepository<T extends Record<string, any>> {
     logger.error(`Repository ${operation} error`, { error, table: this.tableName });
 
     // Type guard for error-like objects
-    const isErrorLike = (err: unknown): err is { code?: string; message?: string; details?: unknown } => {
+    const isErrorLike = (
+      err: unknown
+    ): err is { code?: string; message?: string; details?: unknown } => {
       return typeof err === 'object' && err !== null;
     };
 
@@ -222,7 +224,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
    * @param id - The unique identifier of the record
    * @returns Promise resolving to the found record or error
    * @since 2.0.0
-   * 
+   *
    * @example
    * ```typescript
    * const result = await repository.findById('123');
@@ -268,7 +270,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
    * @param options - Query options for filtering, sorting, and pagination
    * @returns Promise resolving to an array of records
    * @since 2.0.0
-   * 
+   *
    * @example
    * ```typescript
    * const result = await repository.findAll({
@@ -295,8 +297,8 @@ export abstract class BaseRepository<T extends Record<string, any>> {
 
       // Apply ordering
       if (options.orderBy) {
-        query = query.order(options.orderBy, { 
-          ascending: options.orderDirection !== 'desc' 
+        query = query.order(options.orderBy, {
+          ascending: options.orderDirection !== 'desc',
         });
       }
 
@@ -370,7 +372,10 @@ export abstract class BaseRepository<T extends Record<string, any>> {
   /**
    * Update a record by ID
    */
-  async update(id: string, data: Partial<Omit<T, 'id' | 'created_at'>>): Promise<RepositoryResult<T>> {
+  async update(
+    id: string,
+    data: Partial<Omit<T, 'id' | 'created_at'>>
+  ): Promise<RepositoryResult<T>> {
     try {
       const updateData = {
         ...data,
@@ -411,10 +416,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
    */
   async delete(id: string): Promise<RepositoryResult<boolean>> {
     try {
-      const { error } = await this.supabase
-        .from(this.tableName)
-        .delete()
-        .eq('id', id);
+      const { error } = await this.supabase.from(this.tableName).delete().eq('id', id);
 
       if (error) {
         await this.auditOperation('DELETE', id, false, { error: error.message });
@@ -443,9 +445,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
    */
   async count(filters?: Record<string, any>): Promise<RepositoryResult<number>> {
     try {
-      let query = this.supabase
-        .from(this.tableName)
-        .select('*', { count: 'exact', head: true });
+      let query = this.supabase.from(this.tableName).select('*', { count: 'exact', head: true });
 
       // Apply filters
       if (filters) {
@@ -523,7 +523,7 @@ export abstract class BaseRepository<T extends Record<string, any>> {
   ): Promise<RepositoryResult<R>> {
     try {
       const result = await queryBuilder(this.supabase);
-      
+
       if (result.error) {
         await this.auditOperation(operation, undefined, false, { error: result.error.message });
         return {

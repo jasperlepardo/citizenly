@@ -19,14 +19,13 @@ export interface VotingInformationProps {
   className?: string;
 }
 
-export function VotingInformation({ 
+export function VotingInformation({
   mode = 'create',
-  value, 
-  onChange, 
+  value,
+  onChange,
   errors,
-  className = '' 
+  className = '',
 }: VotingInformationProps) {
-  
   const handleChange = (field: keyof VotingInformationData, fieldValue: any) => {
     onChange({
       ...value,
@@ -37,7 +36,7 @@ export function VotingInformation({
   // Yes/No options for voter status
   const VOTER_STATUS_OPTIONS = [
     { value: 'yes', label: 'Yes' },
-    { value: 'no', label: 'No' }
+    { value: 'no', label: 'No' },
   ];
 
   return (
@@ -63,7 +62,7 @@ export function VotingInformation({
           spacing="sm"
           mode={mode}
         >
-          {VOTER_STATUS_OPTIONS.map((option) => (
+          {VOTER_STATUS_OPTIONS.map(option => (
             <Radio
               key={option.value}
               value={option.value}
@@ -71,25 +70,27 @@ export function VotingInformation({
               style="button"
               buttonProps={{
                 variant: 'neutral-outline',
-                size: 'lg'
+                size: 'lg',
               }}
             />
           ))}
         </ControlFieldSet>
-        
+
         <ControlFieldSet
           type="radio"
           label="Resident Voter?"
           labelSize="sm"
           radioName="is_resident_voter"
           radioValue={value.is_resident_voter || 'no'}
-          onRadioChange={(selectedValue: string) => handleChange('is_resident_voter', selectedValue)}
+          onRadioChange={(selectedValue: string) =>
+            handleChange('is_resident_voter', selectedValue)
+          }
           errorMessage={errors.is_resident_voter}
           orientation="horizontal"
           spacing="sm"
           mode={mode}
         >
-          {VOTER_STATUS_OPTIONS.map((option) => (
+          {VOTER_STATUS_OPTIONS.map(option => (
             <Radio
               key={option.value}
               value={option.value}
@@ -97,7 +98,7 @@ export function VotingInformation({
               style="button"
               buttonProps={{
                 variant: 'neutral-outline',
-                size: 'lg'
+                size: 'lg',
               }}
             />
           ))}
@@ -109,14 +110,14 @@ export function VotingInformation({
           errorMessage={errors.last_voted_date}
           mode={mode}
           inputProps={{
-            type: "number",
+            type: 'number',
             value: value.last_voted_date,
-            onChange: (e) => handleChange('last_voted_date', e.target.value),
-            placeholder: "2024",
-            min: "1900",
+            onChange: e => handleChange('last_voted_date', e.target.value),
+            placeholder: '2024',
+            min: '1900',
             max: new Date().getFullYear().toString(),
             disabled: value.is_voter !== 'yes' && value.is_resident_voter !== 'yes',
-            error: errors.last_voted_date
+            error: errors.last_voted_date,
           }}
         />
       </div>

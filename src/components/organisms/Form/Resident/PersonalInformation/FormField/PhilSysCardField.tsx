@@ -13,13 +13,13 @@ export interface PhilSysCardFieldProps {
   className?: string;
 }
 
-export function PhilSysCardField({ 
+export function PhilSysCardField({
   mode = 'create',
-  value, 
-  onChange, 
-  error, 
+  value,
+  onChange,
+  error,
   required = false,
-  className = '' 
+  className = '',
 }: PhilSysCardFieldProps) {
   return (
     <div className={className}>
@@ -31,9 +31,9 @@ export function PhilSysCardField({
         errorMessage={error}
         inputProps={{
           value: value,
-          onChange: (e) => onChange(e.target.value),
-          placeholder: "XXXX-XXXX-XXXX",
-          error: error
+          onChange: e => onChange(e.target.value),
+          placeholder: 'XXXX-XXXX-XXXX',
+          error: error,
         }}
       />
     </div>

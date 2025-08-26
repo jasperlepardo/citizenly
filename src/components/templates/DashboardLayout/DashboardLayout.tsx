@@ -5,11 +5,11 @@ import React, { useState, useEffect } from 'react';
 // Custom hook to handle client-side mounting
 function useIsClient() {
   const [isClient, setIsClient] = useState(false);
-  
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   return isClient;
 }
 import Link from 'next/link';
@@ -21,8 +21,6 @@ import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineComm
 import { useAuth } from '@/contexts';
 import { logger, logError } from '@/lib';
 import { supabase } from '@/lib/supabase/supabase';
-
-
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {
@@ -50,10 +48,10 @@ function UserDropdown() {
 
       // Use API endpoint to get full address hierarchy (avoids complex nested query issues)
       const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(barangayCode)}`);
-      
+
       let barangayData = null;
       let error = null;
-      
+
       if (!response.ok) {
         error = { message: `API request failed: ${response.status}` };
       } else {
@@ -117,7 +115,7 @@ function UserDropdown() {
   // Handle click outside and Escape key (only on client)
   useEffect(() => {
     if (!isClient) return;
-    
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -193,13 +191,13 @@ function UserDropdown() {
         <>
           {/* Dropdown content - no backdrop needed with proper event handling */}
           <div
-            className="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-xl"
+            className="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu-button"
           >
             {/* User info header */}
-            <div className="border-b border-gray-100 dark:border-gray-700 p-4">
+            <div className="border-b border-gray-100 p-4 dark:border-gray-700">
               <div className="flex items-center gap-3">
                 <div
                   className="size-12 rounded-full bg-cover bg-center bg-no-repeat"
@@ -223,13 +221,15 @@ function UserDropdown() {
             </div>
 
             {/* Barangay info */}
-            <div className="border-b border-gray-100 dark:border-gray-700 p-4">
+            <div className="border-b border-gray-100 p-4 dark:border-gray-700">
               <div className="font-montserrat mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                 BARANGAY ASSIGNMENT
               </div>
               <div className="flex items-center gap-2">
                 <div className="size-2 rounded-full bg-green-500 dark:bg-green-400"></div>
-                <div className="font-montserrat text-sm text-gray-800 dark:text-gray-200">{barangayInfo}</div>
+                <div className="font-montserrat text-sm text-gray-800 dark:text-gray-200">
+                  {barangayInfo}
+                </div>
               </div>
               <div className="font-montserrat mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Code: {userProfile.barangay_code}
@@ -243,19 +243,19 @@ function UserDropdown() {
                   // Add profile editing functionality later
                   alert('Profile editing coming soon!');
                 }}
-                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
               >
                 Edit Profile
               </button>
               <Link href="/settings">
-                <button className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
+                <button className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                   Settings
                 </button>
               </Link>
               <hr className="my-2 border-gray-200 dark:border-gray-700" />
               <button
                 onClick={handleLogout}
-                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
+                className="font-montserrat w-full rounded-sm px-3 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
               >
                 Sign Out
               </button>
@@ -273,25 +273,27 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 min-h-screen dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-800 dark:bg-gray-900">
       {/* Skip Navigation */}
       <SkipNavigation skipTo="#main-content" />
 
       {/* Sidebar */}
       <aside
         id="navigation"
-        className="fixed left-0 top-0 h-full w-56 border-r border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+        className="fixed top-0 left-0 h-full w-56 border-r border-gray-200 border-gray-300 bg-gray-50 dark:border-gray-600 dark:border-gray-700 dark:bg-gray-800"
         aria-label="Main navigation"
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-300 dark:border-gray-600 border-gray-200 dark:border-gray-700 px-4 py-3">
-            <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-300">Citizenly</h1>
+          <div className="flex items-center justify-between border-b border-gray-200 border-gray-300 px-4 py-3 dark:border-gray-600 dark:border-gray-700">
+            <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-300">
+              Citizenly
+            </h1>
             <div className="flex gap-1">
-              <div className="rounded bg-gray-200 dark:bg-gray-600 p-0.5">
+              <div className="rounded bg-gray-200 p-0.5 dark:bg-gray-600">
                 <div className="size-5 rounded-sm bg-gray-400 dark:bg-gray-500"></div>
               </div>
-              <div className="rounded bg-gray-200 dark:bg-gray-600 p-0.5">
+              <div className="rounded bg-gray-200 p-0.5 dark:bg-gray-600">
                 <div className="size-5 rounded-sm bg-gray-400 dark:bg-gray-500"></div>
               </div>
             </div>
@@ -307,11 +309,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <main className="ml-56">
         {/* Top Header */}
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-600 dark:bg-gray-900 border-gray-200 dark:border-gray-700 px-6 py-2">
+        <header className="border-b border-gray-200 border-gray-300 bg-white px-6 py-2 dark:border-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:bg-gray-900">
           <div className="flex items-center justify-between">
             {/* Inline Command Menu */}
             <div className="w-[497px]">
-              <InlineCommandMenu 
+              <InlineCommandMenu
                 placeholder="Search for anything..."
                 maxResults={10}
                 showShortcuts={true}
@@ -323,7 +325,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
             {/* User Section */}
             <div className="flex items-center gap-2">
-              <div className="rounded-full bg-gray-200 dark:bg-gray-700 p-2">
+              <div className="rounded-full bg-gray-200 p-2 dark:bg-gray-700">
                 <div className="size-5 text-gray-600 dark:text-gray-400">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -335,7 +337,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   </svg>
                 </div>
               </div>
-              <div className="rounded-full bg-gray-200 dark:bg-gray-700 p-2">
+              <div className="rounded-full bg-gray-200 p-2 dark:bg-gray-700">
                 <div className="size-5 text-gray-600 dark:text-gray-400">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
@@ -360,7 +362,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </main>
 
       {/* Note: Command menu is now inline in the header */}
-      
+
       {/* Toast Notifications */}
       <Toaster
         position="top-right"

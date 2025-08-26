@@ -3,8 +3,11 @@
  * Provides real API functionality for command menu actions
  */
 
-import { supabase , logger } from '@/lib';
-import { startCommandMenuSearchTimer, endCommandMenuSearchTimer } from '@/lib/command-menu/analytics-utils';
+import { supabase, logger } from '@/lib';
+import {
+  startCommandMenuSearchTimer,
+  endCommandMenuSearchTimer,
+} from '@/lib/command-menu/analytics-utils';
 
 // Types for API responses
 interface SearchResult {
@@ -22,25 +25,25 @@ interface ExportOptions {
 }
 
 // Rate limiting for search to prevent abuse
-const searchCache = new Map<string, { results: SearchResult[], timestamp: number }>();
+const searchCache = new Map<string, { results: SearchResult[]; timestamp: number }>();
 const SEARCH_CACHE_TTL = 30000; // 30 seconds
 const MAX_SEARCH_LENGTH = 100;
 
 // Search residents and households
 export async function searchData(query: string, limit = 10): Promise<SearchResult[]> {
   if (!query.trim()) return [];
-  
+
   // Input validation and sanitization
   const sanitizedQuery = query.trim().slice(0, MAX_SEARCH_LENGTH);
   if (sanitizedQuery.length < 1) return [];
-  
+
   // Start performance tracking
   const searchId = startCommandMenuSearchTimer(sanitizedQuery);
-  
+
   // Check cache first
   const cacheKey = `${sanitizedQuery}-${limit}`;
   const cached = searchCache.get(cacheKey);
-  if (cached && (Date.now() - cached.timestamp) < SEARCH_CACHE_TTL) {
+  if (cached && Date.now() - cached.timestamp < SEARCH_CACHE_TTL) {
     endCommandMenuSearchTimer(searchId, sanitizedQuery, cached.results.length, true);
     return cached.results;
   }
@@ -72,7 +75,7 @@ export async function searchData(query: string, limit = 10): Promise<SearchResul
     // causing household queries to fail silently
     logger.info('Household search temporarily disabled due to RLS policy issues', {
       query: sanitizedQuery,
-      reason: 'Missing RLS functions: user_access_level(), user_barangay_code(), etc.'
+      reason: 'Missing RLS functions: user_access_level(), user_barangay_code(), etc.',
     });
 
     // Cache the results
@@ -99,21 +102,21 @@ export async function searchData(query: string, limit = 10): Promise<SearchResul
 function cleanupCache(): void {
   const now = Date.now();
   const entriesToDelete: string[] = [];
-  
+
   searchCache.forEach((value, key) => {
-    if ((now - value.timestamp) > SEARCH_CACHE_TTL) {
+    if (now - value.timestamp > SEARCH_CACHE_TTL) {
       entriesToDelete.push(key);
     }
   });
-  
+
   entriesToDelete.forEach(key => searchCache.delete(key));
-  
+
   // Limit cache size to prevent excessive memory usage
   if (searchCache.size > 100) {
     const oldestEntries = Array.from(searchCache.entries())
       .sort(([, a], [, b]) => a.timestamp - b.timestamp)
       .slice(0, searchCache.size - 50); // Keep newest 50 entries
-    
+
     oldestEntries.forEach(([key]) => searchCache.delete(key));
   }
 }
@@ -157,7 +160,7 @@ export async function getRecentItems(): Promise<SearchResult[]> {
   try {
     const { getStoredRecentItems } = await import('../storage');
     const recentItems = getStoredRecentItems();
-    
+
     return recentItems.map(item => ({
       id: item.id,
       title: item.title,
@@ -231,7 +234,9 @@ export async function backupData(): Promise<boolean> {
 }
 
 // Certificate generation
-export async function generateCertificate(type: 'clearance' | 'residency' | 'indigency'): Promise<string> {
+export async function generateCertificate(
+  type: 'clearance' | 'residency' | 'indigency'
+): Promise<string> {
   return `/certification?type=${type}`;
 }
 

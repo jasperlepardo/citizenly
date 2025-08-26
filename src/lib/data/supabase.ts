@@ -202,9 +202,26 @@ export type Database = {
           sex: 'male' | 'female';
           civil_status: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
           civil_status_others_specify: string | null;
-          education_attainment: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational' | null;
+          education_attainment:
+            | 'elementary'
+            | 'high_school'
+            | 'college'
+            | 'post_graduate'
+            | 'vocational'
+            | null;
           is_graduate: boolean;
-          employment_status: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force' | null;
+          employment_status:
+            | 'employed'
+            | 'unemployed'
+            | 'underemployed'
+            | 'self_employed'
+            | 'student'
+            | 'retired'
+            | 'homemaker'
+            | 'unable_to_work'
+            | 'looking_for_work'
+            | 'not_in_labor_force'
+            | null;
           occupation_code: string | null;
           email: string | null;
           mobile_number: string | null;
@@ -225,10 +242,61 @@ export type Database = {
           updated_by: string | null;
           created_at: string;
           updated_at: string;
-          religion: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others';
+          religion:
+            | 'roman_catholic'
+            | 'islam'
+            | 'iglesia_ni_cristo'
+            | 'christian'
+            | 'aglipayan_church'
+            | 'seventh_day_adventist'
+            | 'bible_baptist_church'
+            | 'jehovahs_witnesses'
+            | 'church_of_jesus_christ_latter_day_saints'
+            | 'united_church_of_christ_philippines'
+            | 'others';
           citizenship: 'filipino' | 'dual_citizen' | 'foreigner';
           blood_type: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
-          ethnicity: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others' | null;
+          ethnicity:
+            | 'tagalog'
+            | 'cebuano'
+            | 'ilocano'
+            | 'bisaya'
+            | 'hiligaynon'
+            | 'bikolano'
+            | 'waray'
+            | 'kapampangan'
+            | 'pangasinense'
+            | 'maranao'
+            | 'maguindanao'
+            | 'tausug'
+            | 'yakan'
+            | 'samal'
+            | 'badjao'
+            | 'aeta'
+            | 'agta'
+            | 'ati'
+            | 'batak'
+            | 'bukidnon'
+            | 'gaddang'
+            | 'higaonon'
+            | 'ibaloi'
+            | 'ifugao'
+            | 'igorot'
+            | 'ilongot'
+            | 'isneg'
+            | 'ivatan'
+            | 'kalinga'
+            | 'kankanaey'
+            | 'mangyan'
+            | 'mansaka'
+            | 'palawan'
+            | 'subanen'
+            | 'tboli'
+            | 'teduray'
+            | 'tumandok'
+            | 'chinese'
+            | 'others'
+            | null;
         };
         Insert: {
           id?: string;
@@ -242,9 +310,26 @@ export type Database = {
           sex: 'male' | 'female';
           civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
           civil_status_others_specify?: string | null;
-          education_attainment?: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational' | null;
+          education_attainment?:
+            | 'elementary'
+            | 'high_school'
+            | 'college'
+            | 'post_graduate'
+            | 'vocational'
+            | null;
           is_graduate?: boolean;
-          employment_status?: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force' | null;
+          employment_status?:
+            | 'employed'
+            | 'unemployed'
+            | 'underemployed'
+            | 'self_employed'
+            | 'student'
+            | 'retired'
+            | 'homemaker'
+            | 'unable_to_work'
+            | 'looking_for_work'
+            | 'not_in_labor_force'
+            | null;
           occupation_code?: string | null;
           email?: string | null;
           mobile_number?: string | null;
@@ -265,10 +350,61 @@ export type Database = {
           updated_by?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
-          religion?: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others';
+          religion?:
+            | 'roman_catholic'
+            | 'islam'
+            | 'iglesia_ni_cristo'
+            | 'christian'
+            | 'aglipayan_church'
+            | 'seventh_day_adventist'
+            | 'bible_baptist_church'
+            | 'jehovahs_witnesses'
+            | 'church_of_jesus_christ_latter_day_saints'
+            | 'united_church_of_christ_philippines'
+            | 'others';
           citizenship?: 'filipino' | 'dual_citizen' | 'foreigner';
           blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
-          ethnicity?: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others' | null;
+          ethnicity?:
+            | 'tagalog'
+            | 'cebuano'
+            | 'ilocano'
+            | 'bisaya'
+            | 'hiligaynon'
+            | 'bikolano'
+            | 'waray'
+            | 'kapampangan'
+            | 'pangasinense'
+            | 'maranao'
+            | 'maguindanao'
+            | 'tausug'
+            | 'yakan'
+            | 'samal'
+            | 'badjao'
+            | 'aeta'
+            | 'agta'
+            | 'ati'
+            | 'batak'
+            | 'bukidnon'
+            | 'gaddang'
+            | 'higaonon'
+            | 'ibaloi'
+            | 'ifugao'
+            | 'igorot'
+            | 'ilongot'
+            | 'isneg'
+            | 'ivatan'
+            | 'kalinga'
+            | 'kankanaey'
+            | 'mangyan'
+            | 'mansaka'
+            | 'palawan'
+            | 'subanen'
+            | 'tboli'
+            | 'teduray'
+            | 'tumandok'
+            | 'chinese'
+            | 'others'
+            | null;
         };
         Update: {
           id?: string;
@@ -282,9 +418,26 @@ export type Database = {
           sex?: 'male' | 'female';
           civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
           civil_status_others_specify?: string | null;
-          education_attainment?: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational' | null;
+          education_attainment?:
+            | 'elementary'
+            | 'high_school'
+            | 'college'
+            | 'post_graduate'
+            | 'vocational'
+            | null;
           is_graduate?: boolean;
-          employment_status?: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force' | null;
+          employment_status?:
+            | 'employed'
+            | 'unemployed'
+            | 'underemployed'
+            | 'self_employed'
+            | 'student'
+            | 'retired'
+            | 'homemaker'
+            | 'unable_to_work'
+            | 'looking_for_work'
+            | 'not_in_labor_force'
+            | null;
           occupation_code?: string | null;
           email?: string | null;
           mobile_number?: string | null;
@@ -305,10 +458,61 @@ export type Database = {
           updated_by?: string | null;
           created_at?: string | null;
           updated_at?: string | null;
-          religion?: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others';
+          religion?:
+            | 'roman_catholic'
+            | 'islam'
+            | 'iglesia_ni_cristo'
+            | 'christian'
+            | 'aglipayan_church'
+            | 'seventh_day_adventist'
+            | 'bible_baptist_church'
+            | 'jehovahs_witnesses'
+            | 'church_of_jesus_christ_latter_day_saints'
+            | 'united_church_of_christ_philippines'
+            | 'others';
           citizenship?: 'filipino' | 'dual_citizen' | 'foreigner';
           blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
-          ethnicity?: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others' | null;
+          ethnicity?:
+            | 'tagalog'
+            | 'cebuano'
+            | 'ilocano'
+            | 'bisaya'
+            | 'hiligaynon'
+            | 'bikolano'
+            | 'waray'
+            | 'kapampangan'
+            | 'pangasinense'
+            | 'maranao'
+            | 'maguindanao'
+            | 'tausug'
+            | 'yakan'
+            | 'samal'
+            | 'badjao'
+            | 'aeta'
+            | 'agta'
+            | 'ati'
+            | 'batak'
+            | 'bukidnon'
+            | 'gaddang'
+            | 'higaonon'
+            | 'ibaloi'
+            | 'ifugao'
+            | 'igorot'
+            | 'ilongot'
+            | 'isneg'
+            | 'ivatan'
+            | 'kalinga'
+            | 'kankanaey'
+            | 'mangyan'
+            | 'mansaka'
+            | 'palawan'
+            | 'subanen'
+            | 'tboli'
+            | 'teduray'
+            | 'tumandok'
+            | 'chinese'
+            | 'others'
+            | null;
         };
       };
       psoc_major_groups: {
