@@ -1,0 +1,156 @@
+# CodeRabbit Configuration for Citizenly
+# AI-powered code review focused on TypeScript, Next.js, and Supabase patterns
+
+# ==============================================================================
+# REVIEW SETTINGS
+# ==============================================================================
+reviews:
+  # High-level focus areas for this barangay management system
+  focus:
+    - "type-safety"
+    - "security"
+    - "performance" 
+    - "maintainability"
+    - "accessibility"
+
+  # Request more detailed analysis for complex files
+  profile: "assertive"
+  
+  # Auto-approve simple changes (documentation, formatting)
+  auto_approve:
+    - "docs/**"
+    - "*.md"
+    - ".gitignore"
+
+# ==============================================================================
+# LANGUAGE-SPECIFIC CONFIGURATION
+# ==============================================================================
+language: "en"
+
+# TypeScript-specific rules applied via custom rules below
+
+# ==============================================================================
+# PROJECT-SPECIFIC CUSTOM RULES
+# ==============================================================================
+custom_rules:
+  # Supabase integration patterns
+  - name: "supabase-error-handling"
+    pattern: "supabase\\.(.*)\\.select\\(|supabase\\.(.*)\\.insert\\(|supabase\\.(.*)\\.update\\(|supabase\\.(.*)\\.delete\\("
+    message: "Ensure proper error handling for Supabase operations. Consider using try-catch blocks and proper error logging."
+    severity: "medium"
+
+  # API route security
+  - name: "api-route-auth"
+    pattern: "export\\s+(async\\s+)?function\\s+(GET|POST|PUT|DELETE|PATCH)"
+    message: "Verify that API routes have proper authentication and authorization checks using withAuth middleware."
+    severity: "high"
+    paths: ["src/app/api/**/*.ts"]
+
+  # Database query optimization
+  - name: "supabase-select-optimization"
+    pattern: "\\.select\\('\\*'\\)"
+    message: "Consider selecting only required fields instead of using '*' for better performance."
+    severity: "low"
+
+  # React Hook dependencies
+  - name: "react-hook-deps"
+    pattern: "useEffect\\(|useCallback\\(|useMemo\\("
+    message: "Verify that all dependencies are properly included in the dependency array."
+    severity: "medium"
+
+# ==============================================================================
+# PATH FILTERS
+# ==============================================================================
+path_filters:
+  # Skip these paths entirely
+  exclude:
+    - "node_modules/**"
+    - ".next/**"
+    - "dist/**"
+    - "build/**"
+    - "coverage/**"
+    - "*.log"
+    - ".env*"
+    - "public/**/*.js"      # Generated files
+    - "**/*.test.ts"        # Test files (different review criteria)
+    - "**/*.test.tsx"
+    - "**/__tests__/**"
+
+  # High-priority paths that need thorough review
+  priority:
+    - "src/app/api/**/*.ts"           # API routes (security critical)
+    - "src/types/**/*.ts"             # Type definitions (affects everything)
+    - "src/lib/**/*.ts"               # Utility libraries
+    - "src/hooks/**/*.ts"             # Custom hooks
+    - "database/**/*.sql"             # Database schemas
+    - "src/components/**/*.tsx"       # UI components
+
+# ==============================================================================
+# REVIEW DEPTH CONFIGURATION  
+# ==============================================================================
+review_depth:
+  # Comprehensive review for critical paths
+  high:
+    - "src/app/api/**"
+    - "src/lib/security/**"
+    - "src/lib/authentication/**" 
+    - "database/schema.sql"
+
+  # Standard review for regular code
+  medium:
+    - "src/components/**"
+    - "src/hooks/**"
+    - "src/services/**"
+
+  # Light review for low-risk areas
+  low:
+    - "docs/**"
+    - "src/app/(dashboard)/**/page.tsx"  # Page components
+
+# ==============================================================================
+# INTEGRATION SETTINGS
+# ==============================================================================
+github:
+  # Post review comments on PRs
+  pr_comments: true
+  
+  # Summarize findings in PR description
+  pr_summary: true
+  
+  # Request changes for high-severity issues
+  request_changes: "high"
+  
+  # Auto-merge safe changes after review
+  auto_merge:
+    enabled: false  # Keep disabled for now, enable later if needed
+
+# ==============================================================================
+# NOTIFICATION SETTINGS
+# ==============================================================================
+notifications:
+  # Notify on different severity levels
+  on_review_complete: true
+  on_high_severity: true
+  on_security_issue: true
+
+# ==============================================================================
+# BARANGAY SYSTEM SPECIFIC PATTERNS
+# ==============================================================================
+domain_rules:
+  # Resident data handling
+  - name: "pii-handling"
+    pattern: "(birthdate|mobile_number|email|address|income)"
+    message: "Ensure PII fields are properly validated, sanitized, and have appropriate access controls."
+    severity: "high"
+
+  # Geographic code validation
+  - name: "geographic-codes"
+    pattern: "(barangay_code|city_code|province_code|region_code)"
+    message: "Verify geographic codes follow PSGC standards and have proper validation."
+    severity: "medium"
+
+  # Role-based access patterns
+  - name: "permission-checks"
+    pattern: "(role|permission|auth)"
+    message: "Ensure role-based access controls are properly implemented and tested."
+    severity: "high"
