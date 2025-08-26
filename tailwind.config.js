@@ -1,9 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
-  plugins: [],
-};
+/**
+ * Tailwind CSS Configuration - Main Entry Point
+ * Delegates to organized config structure
+ */
+
+module.exports = require('./config/build/tailwind.config.js');

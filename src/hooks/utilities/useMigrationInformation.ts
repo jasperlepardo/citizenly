@@ -9,11 +9,14 @@ export interface MigrationInformationData {
   previous_province_code?: string;
   previous_region_code?: string;
   length_of_stay_previous_months?: number;
-  reason_for_leaving?: string;
+  reason_for_migration?: string;
   date_of_transfer?: string;
+  migration_type?: string;
+  // Legacy fields for backward compatibility (will be mapped to above)
+  reason_for_leaving?: string;
   reason_for_transferring?: string;
   duration_of_stay_current_months?: number;
-  is_intending_to_return?: boolean | null;
+  is_intending_to_return?: boolean;
 }
 
 interface SelectedBarangayInfo {

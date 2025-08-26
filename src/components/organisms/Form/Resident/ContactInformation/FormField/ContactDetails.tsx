@@ -1,11 +1,11 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField } from '@/components';
 
 export interface ContactDetailsData {
   email: string;
-  phoneNumber: string;
-  mobileNumber: string;
+  telephone_number: string;
+  mobile_number: string;
 }
 
 export interface ContactDetailsProps {
@@ -59,28 +59,28 @@ export function ContactDetails({
         <InputField
           label="Phone Number"
           labelSize="sm"
-          errorMessage={errors.phoneNumber}
+          errorMessage={errors.telephone_number}
           mode={mode}
           inputProps={{
             type: "tel",
-            value: value.phoneNumber,
-            onChange: (e) => handleChange('phoneNumber', e.target.value),
+            value: value.telephone_number,
+            onChange: (e) => handleChange('telephone_number', e.target.value),
             placeholder: "Enter phone number",
-            error: errors.phoneNumber
+            error: errors.telephone_number
           }}
         />
         
         <InputField
           label="Mobile Number"
           labelSize="sm"
-          errorMessage={errors.mobileNumber}
+          errorMessage={errors.mobile_number}
           mode={mode}
           inputProps={{
             type: "tel",
-            value: value.mobileNumber,
-            onChange: (e) => handleChange('mobileNumber', e.target.value),
+            value: value.mobile_number,
+            onChange: (e) => handleChange('mobile_number', e.target.value),
             placeholder: "Enter mobile number",
-            error: errors.mobileNumber
+            error: errors.mobile_number
           }}
         />
       </div>

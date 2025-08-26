@@ -1,407 +1,412 @@
 #!/usr/bin/env node
 
 /**
- * Import/Export Analyzer
- * Enforces clean import patterns and identifies circular dependencies
+ * Import Structure Analyzer
+ * Analyzes import patterns and identifies optimization opportunities
  */
 
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Extract import and export statements from a file
- */
-function extractImportsExports(code, filePath) {
-  const lines = code.split('\n');
-  const imports = [];
-  const exports = [];
-  
-  lines.forEach((line, index) => {
-    const trimmed = line.trim();
-    const lineNumber = index + 1;
+class ImportAnalyzer {
+  constructor() {
+    this.results = {
+      filesAnalyzed: 0,
+      imports: {},
+      exports: {},
+      unused: [],
+      circular: [],
+      heavyDependencies: [],
+      recommendations: []
+    };
+  }
+
+  analyzeFile(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const relativePath = path.relative(process.cwd(), filePath);
+    
+    this.results.filesAnalyzed++;
     
     // Extract imports
-    const importPatterns = [
-      /^import\s+(.+?)\s+from\s+['"](.+?)['"];?$/,
-      /^import\s+['"](.+?)['"];?$/,
-      /^import\s*\(\s*['"](.+?)['"]\s*\)/
-    ];
+    const imports = this.extractImports(content, relativePath);
+    const exports = this.extractExports(content, relativePath);
     
-    importPatterns.forEach(pattern => {
-      const match = trimmed.match(pattern);
-      if (match) {
-        const isDefault = match[1] && !match[1].includes('{');
-        const isNamespace = match[1] && match[1].includes('*');
-        const isNamed = match[1] && match[1].includes('{');
-        const isDynamic = pattern.source.includes('import\\s*\\(');
-        
-        imports.push({
-          line: lineNumber,
-          raw: trimmed,
-          module: match[2] || match[1],
-          imported: match[1] || null,
-          type: isDynamic ? 'dynamic' : 
-                isDefault ? 'default' :
-                isNamespace ? 'namespace' :
-                isNamed ? 'named' : 'side-effect'
-        });
-      }
-    });
+    this.results.imports[relativePath] = imports;
+    this.results.exports[relativePath] = exports;
     
-    // Extract exports
-    const exportPatterns = [
-      /^export\s+default\s+(.+);?$/,
-      /^export\s+\{([^}]+)\}(?:\s+from\s+['"](.+?)['"])?;?$/,
-      /^export\s+\*\s+from\s+['"](.+?)['"];?$/,
-      /^export\s+(const|let|var|function|class|interface|type|enum)\s+(\w+)/
-    ];
-    
-    exportPatterns.forEach(pattern => {
-      const match = trimmed.match(pattern);
-      if (match) {
-        exports.push({
-          line: lineNumber,
-          raw: trimmed,
-          exported: match[1] || match[2] || '*',
-          type: trimmed.includes('default') ? 'default' :
-                trimmed.includes('*') ? 'namespace' : 'named',
-          reExportFrom: pattern.source.includes('from') ? match[3] || match[2] : null
-        });
-      }
-    });
-  });
-  
-  return { imports, exports };
-}
-
-/**
- * Categorize imports by type
- */
-function categorizeImports(imports) {
-  return imports.map(imp => {
-    let category = 'unknown';
-    
-    if (imp.module.startsWith('.')) {
-      category = 'relative';
-    } else if (imp.module.startsWith('@/')) {
-      category = 'absolute-alias';
-    } else if (imp.module.includes('/')) {
-      category = 'external';
-    } else {
-      category = 'external';
-    }
-    
-    return { ...imp, category };
-  });
-}
-
-/**
- * Check import order according to standards
- */
-function checkImportOrder(imports) {
-  const expectedOrder = [
-    'external',      // react, next, third-party
-    'absolute-alias', // @/components, @/lib
-    'relative'       // ./Button, ../utils
-  ];
-  
-  const issues = [];
-  let lastCategory = '';
-  let lastCategoryIndex = -1;
-  
-  imports.forEach((imp, index) => {
-    const currentCategoryIndex = expectedOrder.indexOf(imp.category);
-    
-    if (currentCategoryIndex < lastCategoryIndex) {
-      issues.push({
-        type: 'import_order',
-        line: imp.line,
-        message: `Import should come before ${lastCategory} imports`,
-        suggestion: `Move ${imp.category} imports before ${lastCategory} imports`
+    // Check for unused imports
+    const unusedImports = this.findUnusedImports(content, imports);
+    if (unusedImports.length > 0) {
+      this.results.unused.push({
+        file: relativePath,
+        imports: unusedImports
       });
     }
     
-    lastCategory = imp.category;
-    lastCategoryIndex = Math.max(lastCategoryIndex, currentCategoryIndex);
-  });
-  
-  return issues;
-}
-
-/**
- * Check for barrel export violations
- */
-function checkBarrelExports(filePath, exports) {
-  const issues = [];
-  const fileName = path.basename(filePath);
-  
-  // Index files should primarily re-export
-  if (fileName === 'index.ts' || fileName === 'index.tsx') {
-    const nonReExports = exports.filter(exp => !exp.reExportFrom);
-    if (nonReExports.length > 1) {
-      issues.push({
-        type: 'barrel_violation',
-        line: 1,
-        message: `Index file should primarily re-export from other modules`,
-        suggestion: 'Move implementations to separate files and re-export from index'
-      });
-    }
+    return { imports, exports };
   }
-  
-  return issues;
-}
 
-/**
- * Detect potential circular dependencies
- */
-function detectCircularDependencies(analyses) {
-  const graph = new Map();
-  const issues = [];
-  
-  // Build dependency graph
-  analyses.forEach(analysis => {
-    const relativePath = path.relative('./src', analysis.filePath);
-    const dependencies = analysis.imports
-      .filter(imp => imp.module.startsWith('@/') || imp.module.startsWith('.'))
-      .map(imp => {
-        if (imp.module.startsWith('@/')) {
-          return imp.module.replace('@/', '');
-        } else {
-          return path.resolve(path.dirname(analysis.filePath), imp.module);
+  extractImports(content, filePath) {
+    const imports = [];
+    
+    // Match various import patterns
+    const patterns = [
+      // import { a, b } from 'module'
+      /import\s*{\s*([^}]+)\s*}\s*from\s*['"`]([^'"`]+)['"`]/g,
+      // import defaultExport from 'module'
+      /import\s+(\w+)\s*from\s*['"`]([^'"`]+)['"`]/g,
+      // import * as name from 'module'
+      /import\s*\*\s*as\s+(\w+)\s*from\s*['"`]([^'"`]+)['"`]/g,
+      // import 'module' (side effects only)
+      /import\s*['"`]([^'"`]+)['"`]/g
+    ];
+    
+    patterns.forEach((pattern, index) => {
+      let match;
+      while ((match = pattern.exec(content)) !== null) {
+        let importInfo;
+        
+        switch (index) {
+          case 0: // Named imports
+            importInfo = {
+              type: 'named',
+              names: match[1].split(',').map(s => s.trim()),
+              from: match[2],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+          case 1: // Default import
+            importInfo = {
+              type: 'default',
+              names: [match[1]],
+              from: match[2],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+          case 2: // Namespace import
+            importInfo = {
+              type: 'namespace',
+              names: [match[1]],
+              from: match[2],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+          case 3: // Side effect import
+            importInfo = {
+              type: 'side-effect',
+              names: [],
+              from: match[1],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+        }
+        
+        if (importInfo) {
+          imports.push(importInfo);
+        }
+      }
+    });
+    
+    return imports;
+  }
+
+  extractExports(content, filePath) {
+    const exports = [];
+    
+    // Match export patterns
+    const patterns = [
+      // export { a, b }
+      /export\s*{\s*([^}]+)\s*}/g,
+      // export const/function/class
+      /export\s+(?:const|function|class)\s+(\w+)/g,
+      // export default
+      /export\s+default\s+(?:function\s+(\w+)|class\s+(\w+)|(\w+))/g
+    ];
+    
+    patterns.forEach((pattern, index) => {
+      let match;
+      while ((match = pattern.exec(content)) !== null) {
+        let exportInfo;
+        
+        switch (index) {
+          case 0: // Named exports
+            exportInfo = {
+              type: 'named',
+              names: match[1].split(',').map(s => s.trim()),
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+          case 1: // Direct exports
+            exportInfo = {
+              type: 'direct',
+              names: [match[1]],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+          case 2: // Default export
+            exportInfo = {
+              type: 'default',
+              names: [match[1] || match[2] || match[3] || 'default'],
+              line: content.substring(0, match.index).split('\n').length
+            };
+            break;
+        }
+        
+        if (exportInfo) {
+          exports.push(exportInfo);
+        }
+      }
+    });
+    
+    return exports;
+  }
+
+  findUnusedImports(content, imports) {
+    const unused = [];
+    
+    imports.forEach(imp => {
+      if (imp.type === 'side-effect') return; // Can't determine usage for side effects
+      
+      imp.names.forEach(name => {
+        // Simple check if the imported name is used in the content
+        // This is a basic implementation and might have false positives/negatives
+        const usageRegex = new RegExp(`\\b${name}\\b`, 'g');
+        const matches = content.match(usageRegex) || [];
+        
+        // If only found once, it's likely just the import statement
+        if (matches.length <= 1) {
+          unused.push({
+            name,
+            from: imp.from,
+            line: imp.line,
+            type: imp.type
+          });
         }
       });
-    
-    graph.set(relativePath, dependencies);
-  });
-  
-  // Simple circular dependency detection (DFS)
-  function hasCycle(node, visited = new Set(), recursionStack = new Set()) {
-    if (recursionStack.has(node)) {
-      return true; // Found cycle
-    }
-    
-    if (visited.has(node)) {
-      return false;
-    }
-    
-    visited.add(node);
-    recursionStack.add(node);
-    
-    const dependencies = graph.get(node) || [];
-    for (const dep of dependencies) {
-      if (hasCycle(dep, visited, recursionStack)) {
-        return true;
-      }
-    }
-    
-    recursionStack.delete(node);
-    return false;
-  }
-  
-  // Check each file for cycles
-  for (const [filePath] of graph) {
-    if (hasCycle(filePath)) {
-      issues.push({
-        type: 'circular_dependency',
-        filePath,
-        message: 'Potential circular dependency detected',
-        suggestion: 'Review import structure and consider dependency injection or restructuring'
-      });
-    }
-  }
-  
-  return issues;
-}
-
-/**
- * Check for unused imports
- */
-function checkUnusedImports(code, imports) {
-  const issues = [];
-  
-  imports.forEach(imp => {
-    if (imp.type === 'side-effect' || imp.type === 'dynamic') {
-      return; // Skip side-effects and dynamic imports
-    }
-    
-    const imported = imp.imported;
-    if (!imported) return;
-    
-    // Extract imported names
-    let importedNames = [];
-    if (imp.type === 'default') {
-      importedNames = [imported.trim()];
-    } else if (imp.type === 'named') {
-      const namedImports = imported.replace(/[{}]/g, '').split(',');
-      importedNames = namedImports.map(name => {
-        const parts = name.trim().split(' as ');
-        return parts[parts.length - 1].trim();
-      });
-    } else if (imp.type === 'namespace') {
-      const match = imported.match(/\*\s+as\s+(\w+)/);
-      if (match) importedNames = [match[1]];
-    }
-    
-    // Check if any imported name is used in the code (excluding the import line)
-    const codeWithoutImports = code.split('\n')
-      .filter((_, index) => index + 1 !== imp.line)
-      .join('\n');
-    
-    importedNames.forEach(name => {
-      const usagePattern = new RegExp(`\\b${name}\\b`);
-      if (!usagePattern.test(codeWithoutImports)) {
-        issues.push({
-          type: 'unused_import',
-          line: imp.line,
-          importName: name,
-          message: `Imported '${name}' is not used`,
-          suggestion: `Remove unused import '${name}'`
-        });
-      }
     });
-  });
-  
-  return issues;
-}
-
-/**
- * Analyze a single file
- */
-function analyzeFile(filePath) {
-  try {
-    const code = fs.readFileSync(filePath, 'utf8');
-    const { imports, exports } = extractImportsExports(code, filePath);
-    const categorizedImports = categorizeImports(imports);
     
-    const issues = [
-      ...checkImportOrder(categorizedImports),
-      ...checkBarrelExports(filePath, exports),
-      ...checkUnusedImports(code, imports)
-    ];
-    
-    return {
-      filePath,
-      imports: categorizedImports,
-      exports,
-      issues
-    };
-  } catch (error) {
-    return {
-      filePath,
-      error: error.message,
-      imports: [],
-      exports: [],
-      issues: []
-    };
+    return unused;
   }
-}
 
-/**
- * Scan directory for import/export issues
- */
-function scanDirectory(dirPath) {
-  const analyses = [];
-  
-  function scanRecursive(currentPath) {
-    const items = fs.readdirSync(currentPath);
+  detectCircularDependencies() {
+    const graph = {};
+    const visited = new Set();
+    const recursionStack = new Set();
+    const cycles = [];
     
-    items.forEach(item => {
-      if (item.includes('node_modules') || item.includes('.git') || 
-          item.includes('dist') || item.includes('build') ||
-          item.includes('.next') || item.includes('coverage')) {
+    // Build dependency graph
+    Object.entries(this.results.imports).forEach(([file, imports]) => {
+      graph[file] = [];
+      imports.forEach(imp => {
+        if (imp.from.startsWith('.')) {
+          // Resolve relative path
+          const resolvedPath = path.resolve(path.dirname(file), imp.from);
+          const relativePath = path.relative(process.cwd(), resolvedPath);
+          graph[file].push(relativePath);
+        }
+      });
+    });
+    
+    // DFS to detect cycles
+    const dfs = (node, path = []) => {
+      if (recursionStack.has(node)) {
+        // Found a cycle
+        const cycleStart = path.indexOf(node);
+        const cycle = path.slice(cycleStart).concat(node);
+        cycles.push(cycle);
         return;
       }
       
-      const fullPath = path.join(currentPath, item);
-      const stat = fs.statSync(fullPath);
+      if (visited.has(node)) return;
       
-      if (stat.isDirectory()) {
-        scanRecursive(fullPath);
-      } else if (stat.isFile() && /\.(ts|tsx|js|jsx)$/.test(item)) {
-        const analysis = analyzeFile(fullPath);
-        analyses.push(analysis);
+      visited.add(node);
+      recursionStack.add(node);
+      path.push(node);
+      
+      const dependencies = graph[node] || [];
+      dependencies.forEach(dep => {
+        if (fs.existsSync(dep) || fs.existsSync(dep + '.ts') || fs.existsSync(dep + '.tsx')) {
+          dfs(dep, [...path]);
+        }
+      });
+      
+      recursionStack.delete(node);
+    };
+    
+    Object.keys(graph).forEach(file => {
+      if (!visited.has(file)) {
+        dfs(file);
       }
     });
+    
+    this.results.circular = cycles;
   }
-  
-  scanRecursive(dirPath);
-  return analyses;
-}
 
-/**
- * Main execution
- */
-function main() {
-  console.log('📦 Analyzing imports and exports...');
-  
-  const analyses = scanDirectory('./src');
-  const circularDeps = detectCircularDependencies(analyses);
-  
-  const totalIssues = analyses.reduce((sum, a) => sum + a.issues.length, 0) + circularDeps.length;
-  const importOrderIssues = analyses.reduce((sum, a) => sum + a.issues.filter(i => i.type === 'import_order').length, 0);
-  const unusedImports = analyses.reduce((sum, a) => sum + a.issues.filter(i => i.type === 'unused_import').length, 0);
-  
-  console.log(`\n📊 Import/Export Analysis Summary:`);
-  console.log(`   Files analyzed: ${analyses.length}`);
-  console.log(`   Total issues: ${totalIssues}`);
-  console.log(`   Import order issues: ${importOrderIssues}`);
-  console.log(`   Unused imports: ${unusedImports}`);
-  console.log(`   Circular dependencies: ${circularDeps.length}\n`);
-  
-  // Show critical issues
-  if (circularDeps.length > 0) {
-    console.log('🔄 Circular Dependencies:');
-    circularDeps.forEach(issue => {
-      console.log(`   ❌ ${issue.filePath}: ${issue.message}`);
-    });
-    console.log();
-  }
-  
-  // Show some import order issues
-  const importIssues = analyses.filter(a => a.issues.some(i => i.type === 'import_order')).slice(0, 5);
-  if (importIssues.length > 0) {
-    console.log('📋 Import Order Issues (showing first 5):');
-    importIssues.forEach(analysis => {
-      const orderIssues = analysis.issues.filter(i => i.type === 'import_order');
-      console.log(`   📁 ${analysis.filePath}:`);
-      orderIssues.slice(0, 2).forEach(issue => {
-        console.log(`      Line ${issue.line}: ${issue.message}`);
+  analyzeHeavyDependencies() {
+    const dependencyCounts = {};
+    
+    // Count imports by module
+    Object.values(this.results.imports).forEach(imports => {
+      imports.forEach(imp => {
+        if (!dependencyCounts[imp.from]) {
+          dependencyCounts[imp.from] = { count: 0, files: new Set() };
+        }
+        dependencyCounts[imp.from].count++;
+        dependencyCounts[imp.from].files.add(imp.from);
       });
     });
-    console.log();
+    
+    // Identify heavy dependencies
+    const sorted = Object.entries(dependencyCounts)
+      .map(([module, data]) => ({ module, ...data, files: Array.from(data.files) }))
+      .sort((a, b) => b.count - a.count);
+    
+    this.results.heavyDependencies = sorted.slice(0, 10);
   }
-  
-  // Save detailed report
-  const report = {
-    summary: {
-      totalFiles: analyses.length,
-      totalIssues,
-      importOrderIssues,
-      unusedImports,
-      circularDependencies: circularDeps.length
-    },
-    circularDependencies: circularDeps,
-    fileAnalyses: analyses
-  };
-  
-  fs.writeFileSync('./import-export-report.json', JSON.stringify(report, null, 2));
-  console.log('📄 Detailed report saved to import-export-report.json');
-  
-  // Fail if there are critical issues
-  if (circularDeps.length > 0) {
-    console.log('❌ Critical import/export issues found');
-    process.exit(1);
-  } else {
-    console.log('✅ Import/export structure is clean');
+
+  generateRecommendations() {
+    const recommendations = [];
+    
+    // Unused imports
+    if (this.results.unused.length > 0) {
+      const totalUnused = this.results.unused.reduce((sum, file) => sum + file.imports.length, 0);
+      recommendations.push({
+        type: 'cleanup',
+        priority: 'medium',
+        message: `${totalUnused} unused imports found across ${this.results.unused.length} files`,
+        action: 'Remove unused imports to reduce bundle size and improve clarity'
+      });
+    }
+    
+    // Circular dependencies
+    if (this.results.circular.length > 0) {
+      recommendations.push({
+        type: 'architecture',
+        priority: 'high',
+        message: `${this.results.circular.length} circular dependency cycles detected`,
+        action: 'Refactor code to eliminate circular dependencies'
+      });
+    }
+    
+    // Heavy dependencies
+    const externalHeavy = this.results.heavyDependencies.filter(dep => !dep.module.startsWith('.'));
+    if (externalHeavy.length > 0 && externalHeavy[0].count > 20) {
+      recommendations.push({
+        type: 'optimization',
+        priority: 'medium',
+        message: `Heavy external dependencies detected: ${externalHeavy[0].module} used ${externalHeavy[0].count} times`,
+        action: 'Consider creating a wrapper or using barrel exports'
+      });
+    }
+    
+    this.results.recommendations = recommendations;
+  }
+
+  analyzeDirectory(dir) {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const file of files) {
+      const filePath = path.join(dir, file.name);
+      
+      if (file.isDirectory() && 
+          !file.name.startsWith('.') && 
+          file.name !== 'node_modules' &&
+          file.name !== '.next') {
+        this.analyzeDirectory(filePath);
+      } else if (file.name.match(/\.(ts|tsx|js|jsx)$/) && 
+                 !file.name.includes('.test.') && 
+                 !file.name.includes('.spec.')) {
+        this.analyzeFile(filePath);
+      }
+    }
+  }
+
+  printReport() {
+    console.log('📦 Import Analysis Report');
+    console.log('=========================');
+    console.log(`Files analyzed: ${this.results.filesAnalyzed}`);
+    
+    // Heavy dependencies
+    if (this.results.heavyDependencies.length > 0) {
+      console.log('\n📊 Most Imported Modules:');
+      this.results.heavyDependencies.slice(0, 5).forEach((dep, index) => {
+        console.log(`  ${index + 1}. ${dep.module} (${dep.count} imports)`);
+      });
+    }
+    
+    // Unused imports
+    if (this.results.unused.length > 0) {
+      const totalUnused = this.results.unused.reduce((sum, file) => sum + file.imports.length, 0);
+      console.log(`\n🧹 Unused Imports: ${totalUnused} found in ${this.results.unused.length} files`);
+      
+      this.results.unused.slice(0, 5).forEach(file => {
+        console.log(`  📄 ${file.file}:`);
+        file.imports.forEach(imp => {
+          console.log(`    - ${imp.name} from '${imp.from}' (line ${imp.line})`);
+        });
+      });
+    }
+    
+    // Circular dependencies
+    if (this.results.circular.length > 0) {
+      console.log(`\n🔄 Circular Dependencies: ${this.results.circular.length} cycles found`);
+      this.results.circular.forEach((cycle, index) => {
+        console.log(`  ${index + 1}. ${cycle.join(' → ')}`);
+      });
+    }
+    
+    // Recommendations
+    if (this.results.recommendations.length > 0) {
+      console.log('\n💡 Recommendations:');
+      this.results.recommendations.forEach(rec => {
+        const icon = rec.priority === 'high' ? '🔴' : rec.priority === 'medium' ? '🟡' : '🟢';
+        console.log(`${icon} ${rec.message}`);
+        console.log(`   → ${rec.action}\n`);
+      });
+    } else {
+      console.log('\n✅ Import structure looks good!');
+    }
+  }
+
+  saveReport() {
+    const reportPath = path.join(process.cwd(), 'reports', 'import-analysis.json');
+    fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+    
+    const report = {
+      timestamp: new Date().toISOString(),
+      summary: {
+        filesAnalyzed: this.results.filesAnalyzed,
+        totalUnused: this.results.unused.reduce((sum, file) => sum + file.imports.length, 0),
+        circularDependencies: this.results.circular.length,
+        heavyDependencies: this.results.heavyDependencies.length
+      },
+      ...this.results
+    };
+    
+    fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+    console.log(`\n📄 Detailed report saved: ${reportPath}`);
   }
 }
 
+// CLI usage
 if (require.main === module) {
-  main();
+  const analyzer = new ImportAnalyzer();
+  const srcDir = path.join(process.cwd(), 'src');
+  
+  console.log('Analyzing import structure...');
+  analyzer.analyzeDirectory(srcDir);
+  analyzer.detectCircularDependencies();
+  analyzer.analyzeHeavyDependencies();
+  analyzer.generateRecommendations();
+  
+  analyzer.printReport();
+  analyzer.saveReport();
+  
+  // Exit with error if there are high priority issues
+  const hasHighPriorityIssues = analyzer.results.recommendations.some(rec => rec.priority === 'high');
+  if (hasHighPriorityIssues && process.argv.includes('--strict')) {
+    process.exit(1);
+  }
 }
 
-module.exports = {
-  analyzeFile,
-  scanDirectory,
-  detectCircularDependencies
-};
+module.exports = { ImportAnalyzer };

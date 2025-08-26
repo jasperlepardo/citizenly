@@ -1,12 +1,12 @@
 import React from 'react';
-import { SelectField } from '@/components/molecules';
+import { SelectField } from '@/components';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 export interface EmploymentInformationData {
-  employmentStatus: string;
-  psocCode: string;
-  occupationTitle: string;
+  employment_status: string;
+  occupation_code: string;
+  occupation_title: string;
 }
 
 export interface EmploymentInformationProps {
@@ -32,7 +32,6 @@ export function EmploymentInformation({
   mode = 'create',
   className = '' 
 }: EmploymentInformationProps) {
-  
   const handleChange = (field: keyof EmploymentInformationData, fieldValue: any) => {
     onChange({
       ...value,
@@ -53,41 +52,60 @@ export function EmploymentInformation({
         <SelectField
           label="Employment Status"
           labelSize="sm"
-          errorMessage={errors.employmentStatus}
+          errorMessage={errors.employment_status}
           mode={mode}
           selectProps={{
             placeholder: "Select employment status...",
             options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
-            value: value.employmentStatus,
-            onSelect: (option) => handleChange('employmentStatus', option?.value || '')
+            value: value.employment_status,
+            onSelect: (option) => handleChange('employment_status', option?.value || '')
           }}
         />
         
         <SelectField
           label="Occupation Name"
           labelSize="sm"
-          errorMessage={errors.occupationTitle || errors.psocCode}
+          errorMessage={errors.occupation_title || errors.occupation_code}
           mode={mode}
           selectProps={{
             placeholder: "Search occupation from level 1-5...",
-            options: psocOptions,
-            value: value.psocCode,
+            options: (() => {
+              // Ensure the current selected value is in options
+              const currentOptions = [...psocOptions];
+              if (value.occupation_code && value.occupation_title) {
+                // Check if current selection is already in options
+                const hasCurrentOption = currentOptions.some(
+                  opt => opt.value === value.occupation_code
+                );
+                if (!hasCurrentOption) {
+                  // Add the current value as an option so it displays correctly
+                  currentOptions.unshift({
+                    value: value.occupation_code,
+                    label: value.occupation_title, // Use full hierarchy as label
+                    description: `PSOC Code: ${value.occupation_code}`,
+                    badge: 'occupation', // Add badge to indicate it's selected occupation
+                  });
+                }
+              }
+              return currentOptions;
+            })(),
+            value: value.occupation_code,
             loading: psocLoading,
             onSearch: onPsocSearch,
             onSelect: (option) => {
               if (option) {
                 // Only allow specific occupation (level 5) as final result
                 if ((option as any).level_type === 'occupation') {
-                  handleChange('psocCode', (option as any).occupation_code);
-                  handleChange('occupationTitle', (option as any).occupation_title);
+                  handleChange('occupation_code', (option as any).occupation_code);
+                  handleChange('occupation_title', (option as any).occupation_title);
                 } else {
                   // If higher level is selected, clear the fields
-                  handleChange('psocCode', '');
-                  handleChange('occupationTitle', '');
+                  handleChange('occupation_code', '');
+                  handleChange('occupation_title', '');
                 }
               } else {
-                handleChange('psocCode', '');
-                handleChange('occupationTitle', '');
+                handleChange('occupation_code', '');
+                handleChange('occupation_title', '');
               }
             }
           }}

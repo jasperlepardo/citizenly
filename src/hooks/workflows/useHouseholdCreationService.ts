@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 import { householdService, HouseholdFormData } from '@/services/household.service';
 import { useCSRFToken } from '@/lib/auth';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 
 /**
  * Creation operation result
@@ -79,8 +79,8 @@ export function useHouseholdCreationService(
       const result = await householdService.createHousehold({
         formData,
         userAddress,
-        barangayCode,
-        csrfToken,
+        barangay_code: barangayCode,
+        csrf_token: csrfToken,
       });
 
       if (!result.success) {

@@ -1,16 +1,17 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
 import {
   StatsCard,
   DependencyRatioPieChart,
   SexDistributionPieChart,
   CivilStatusPieChart,
   EmploymentStatusPieChart,
-} from '@/components/molecules';
-import { PopulationPyramid } from '@/components/organisms';
-import { logger } from '@/lib/logging/secure-logger';
+  StatsSkeleton,
+} from '@/components';
+import { PopulationPyramid } from '@/components';
+import { logger } from '@/lib';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
 
 function DashboardContent() {
@@ -31,8 +32,32 @@ function DashboardContent() {
     populationData
   } = calculations;
 
-  if (profileLoading) {
-    return <div className="flex h-screen items-center justify-center text-gray-600 dark:text-gray-400">Loading...</div>;
+  if (profileLoading || isLoading) {
+    return <StatsSkeleton />;
+  }
+  
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                Unable to load dashboard data
+              </h3>
+              <p className="mt-1 text-sm text-red-700 dark:text-red-300">
+                {error.message || 'An unexpected error occurred while loading the dashboard.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -48,7 +73,7 @@ function DashboardContent() {
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total Residents"
-            value={isLoading ? '...' : stats?.residents?.toLocaleString() || '0'}
+            value={stats?.residents?.toLocaleString() || '0'}
             icon={
               <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
@@ -59,7 +84,7 @@ function DashboardContent() {
 
           <StatsCard
             title="Households"
-            value={isLoading ? '...' : stats?.households?.toLocaleString() || '0'}
+            value={stats?.households?.toLocaleString() || '0'}
             icon={
               <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -70,7 +95,7 @@ function DashboardContent() {
 
           <StatsCard
             title="Senior Citizens"
-            value={isLoading ? '...' : stats?.seniorCitizens?.toLocaleString() || '0'}
+            value={stats?.seniorCitizens?.toLocaleString() || '0'}
             icon={
               <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -85,7 +110,7 @@ function DashboardContent() {
 
           <StatsCard
             title="Employed"
-            value={isLoading ? '...' : stats?.employedResidents?.toLocaleString() || '0'}
+            value={stats?.employedResidents?.toLocaleString() || '0'}
             icon={
               <svg className="size-6" fill="currentColor" viewBox="0 0 20 20">
                 <path

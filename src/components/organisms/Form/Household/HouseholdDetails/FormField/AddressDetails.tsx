@@ -41,34 +41,34 @@ export function AddressDetails({
     onChange(field, value);
     
     // Handle cascading selections
-    if (field === 'subdivisionId') {
+    if (field === 'subdivision_id') {
       // Clear street selection when subdivision changes
-      onChange('streetId', '');
+      onChange('street_id', '');
       
-      if (value && formData.barangayCode) {
+      if (value && formData.barangay_code) {
         // Load streets filtered by subdivision
-        loadStreets(formData.barangayCode, value as string);
-      } else if (formData.barangayCode) {
+        loadStreets(formData.barangay_code, value as string);
+      } else if (formData.barangay_code) {
         // Load all streets in barangay if no subdivision selected
-        loadStreets(formData.barangayCode);
+        loadStreets(formData.barangay_code);
       }
     }
   };
 
   // Load initial data based on form values
   useEffect(() => {
-    if (formData.barangayCode) {
+    if (formData.barangay_code) {
       // Load subdivisions for the barangay
-      loadSubdivisions(formData.barangayCode);
+      loadSubdivisions(formData.barangay_code);
       
       // Load streets (filtered by subdivision if selected)
-      if (formData.subdivisionId) {
-        loadStreets(formData.barangayCode, formData.subdivisionId);
+      if (formData.subdivision_id) {
+        loadStreets(formData.barangay_code, formData.subdivision_id);
       } else {
-        loadStreets(formData.barangayCode);
+        loadStreets(formData.barangay_code);
       }
     }
-  }, [formData.barangayCode, formData.subdivisionId, loadSubdivisions, loadStreets]);
+  }, [formData.barangay_code, formData.subdivision_id, loadSubdivisions, loadStreets]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -78,12 +78,12 @@ export function AddressDetails({
           label="House Number"
           required
           helperText="Enter the house number or unit identifier"
-          errorMessage={errors?.houseNumber}
+          errorMessage={errors?.house_number}
           inputProps={{
-            name: "houseNumber",
+            name: "house_number",
             type: "text",
-            value: formData.houseNumber || '',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('houseNumber')(e.target.value),
+            value: formData.house_number || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('house_number')(e.target.value),
             readOnly: isReadOnly,
             placeholder: "e.g., 123, 45-A, Blk 2 Lot 3"
           }}
@@ -93,12 +93,12 @@ export function AddressDetails({
         <InputField
           label="ZIP Code"
           helperText="4-digit postal code"
-          errorMessage={errors?.zipCode}
+          errorMessage={errors?.zip_code}
           inputProps={{
-            name: "zipCode",
+            name: "zip_code",
             type: "text",
-            value: formData.zipCode || '',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('zipCode')(e.target.value),
+            value: formData.zip_code || '',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange('zip_code')(e.target.value),
             readOnly: isReadOnly,
             placeholder: "e.g., 1234",
             maxLength: 4
@@ -110,13 +110,13 @@ export function AddressDetails({
       <SelectField
         label="Subdivision (Optional)"
         helperText="Choose subdivision if the household is located within one"
-        errorMessage={errors?.subdivisionId}
+        errorMessage={errors?.subdivision_id}
         selectProps={{
-          name: "subdivisionId",
-          value: formData.subdivisionId || '',
-          onSelect: (option) => handleFieldChange('subdivisionId')(option?.value || ''),
+          name: "subdivision_id",
+          value: formData.subdivision_id || '',
+          onSelect: (option) => handleFieldChange('subdivision_id')(option?.value || ''),
           placeholder: "Select subdivision if applicable...",
-          disabled: isReadOnly || !formData.barangayCode,
+          disabled: isReadOnly || !formData.barangay_code,
           loading: loading.subdivisions,
           options: [
             { value: '', label: 'No subdivision' },
@@ -130,13 +130,13 @@ export function AddressDetails({
         label="Street"
         required
         helperText="Choose the street where the household is located"
-        errorMessage={errors?.streetId}
+        errorMessage={errors?.street_id}
         selectProps={{
-          name: "streetId",
-          value: formData.streetId || '',
-          onSelect: (option) => handleFieldChange('streetId')(option?.value || ''),
+          name: "street_id",
+          value: formData.street_id || '',
+          onSelect: (option) => handleFieldChange('street_id')(option?.value || ''),
           placeholder: "Select street...",
-          disabled: isReadOnly || !formData.barangayCode,
+          disabled: isReadOnly || !formData.barangay_code,
           loading: loading.streets,
           options: [
             { value: '', label: 'Select street...' },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { HouseholdTypeInformation, HouseholdTypeInformationData } from './FormField/HouseholdTypeInformation';
 import { IncomeAndHeadInformation, IncomeAndHeadInformationData } from './FormField/IncomeAndHeadInformation';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 export interface HouseholdDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */

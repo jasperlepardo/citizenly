@@ -1,12 +1,12 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField, ControlFieldSet } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 
 export interface VotingInformationData {
-  isVoter: string; // 'yes' | 'no' (defaults to 'no')
-  isResidentVoter: string; // 'yes' | 'no' (defaults to 'no')
-  lastVotedDate: string;
+  is_voter: string; // 'yes' | 'no' (defaults to 'no')
+  is_resident_voter: string; // 'yes' | 'no' (defaults to 'no')
+  last_voted_date: string;
 }
 
 export interface VotingInformationProps {
@@ -54,10 +54,10 @@ export function VotingInformation({
           type="radio"
           label="Registered Voter?"
           labelSize="sm"
-          radioName="isVoter"
-          radioValue={value.isVoter || 'no'}
-          onRadioChange={(selectedValue: string) => handleChange('isVoter', selectedValue)}
-          errorMessage={errors.isVoter}
+          radioName="is_voter"
+          radioValue={value.is_voter || 'no'}
+          onRadioChange={(selectedValue: string) => handleChange('is_voter', selectedValue)}
+          errorMessage={errors.is_voter}
           orientation="horizontal"
           spacing="sm"
           mode={mode}
@@ -80,10 +80,10 @@ export function VotingInformation({
           type="radio"
           label="Resident Voter?"
           labelSize="sm"
-          radioName="isResidentVoter"
-          radioValue={value.isResidentVoter || 'no'}
-          onRadioChange={(selectedValue: string) => handleChange('isResidentVoter', selectedValue)}
-          errorMessage={errors.isResidentVoter}
+          radioName="is_resident_voter"
+          radioValue={value.is_resident_voter || 'no'}
+          onRadioChange={(selectedValue: string) => handleChange('is_resident_voter', selectedValue)}
+          errorMessage={errors.is_resident_voter}
           orientation="horizontal"
           spacing="sm"
           mode={mode}
@@ -105,17 +105,17 @@ export function VotingInformation({
         <InputField
           label="Last Voted Year"
           labelSize="sm"
-          errorMessage={errors.lastVotedDate}
+          errorMessage={errors.last_voted_date}
           mode={mode}
           inputProps={{
             type: "number",
-            value: value.lastVotedDate,
-            onChange: (e) => handleChange('lastVotedDate', e.target.value),
+            value: value.last_voted_date,
+            onChange: (e) => handleChange('last_voted_date', e.target.value),
             placeholder: "2024",
             min: "1900",
             max: new Date().getFullYear().toString(),
-            disabled: value.isVoter !== 'yes' && value.isResidentVoter !== 'yes',
-            error: errors.lastVotedDate
+            disabled: value.is_voter !== 'yes' && value.is_resident_voter !== 'yes',
+            error: errors.last_voted_date
           }}
         />
       </div>

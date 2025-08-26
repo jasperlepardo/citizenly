@@ -1,51 +1,51 @@
-import type { ResidentFormData } from '@/types/residents';
+import type { ResidentFormData } from '@/types';
 
 export const DEFAULT_FORM_VALUES: ResidentFormData = {
-  firstName: '',
-  middleName: '',
-  lastName: '',
-  extensionName: '',
-  sex: '',
-  civilStatus: '',
-  civilStatusOthersSpecify: '',
-  citizenship: '',
+  first_name: '',
+  middle_name: '',
+  last_name: '',
+  extension_name: '',
+  sex: '' as any,
+  civil_status: '' as any,
+  civil_status_others_specify: '',
+  citizenship: '' as any,
   birthdate: '',
-  birthPlaceCode: '',
-  philsysCardNumber: '',
-  educationAttainment: '',
-  isGraduate: false,
-  employmentStatus: '',
-  occupationCode: '',
+  birth_place_code: '',
+  philsys_card_number: '',
+  education_attainment: '',
+  is_graduate: false,
+  employment_status: '',
+  occupation_code: '',
   ethnicity: '',
   email: '',
-  telephoneNumber: '',
-  mobileNumber: '',
-  householdCode: '',
+  telephone_number: '',
+  mobile_number: '',
+  household_code: '',
   // Physical Characteristics
-  bloodType: '',
+  blood_type: '' as any,
   complexion: '',
-  height: '',
-  weight: '',
+  height: 0,
+  weight: 0,
   religion: '',
-  religionOthersSpecify: '',
+  religion_others_specify: '',
   // Voting Information
-  lastVotedDate: '',
+  last_voted_date: '',
   // Mother's Maiden Name
-  motherMaidenFirstName: '',
-  motherMaidenMiddleName: '',
-  motherMaidenLastName: '',
+  mother_maiden_first: '',
+  mother_maiden_middle: '',
+  mother_maiden_last: '',
   // Note: Sectoral and migration information are handled separately
   // These properties are stored in separate tables (resident_sectoral_info, resident_migrant_info)
   // and should not be part of the core ResidentFormData interface
 };
 
 export const CRITICAL_VALIDATION_FIELDS = [
-  'firstName', 
-  'lastName', 
+  'first_name', 
+  'last_name', 
   'sex', 
   'birthdate', 
-  'civilStatus', 
-  'mobileNumber', 
+  'civil_status', 
+  'mobile_number', 
   'email'
 ] as const;
 

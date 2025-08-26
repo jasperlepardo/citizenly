@@ -27,23 +27,23 @@ import type { FormValidator, ValidationResult, ValidationContext } from './types
  */
 export const residentSchema = createFormValidator({
   // Required fields
-  firstName: composeValidators(validateRequired, validateName),
-  lastName: composeValidators(validateRequired, validateName),
+  first_name: composeValidators(validateRequired, validateName),
+  last_name: composeValidators(validateRequired, validateName),
   birthdate: composeValidators(validateRequired, validateDate),
   sex: validateRequired,
   
   // Optional personal information
-  middleName: validateName,
-  extensionName: validateName,
+  middle_name: validateName,
+  extension_name: validateName,
   email: validateEmail,
-  mobileNumber: validatePhilippineMobile,
-  telephoneNumber: validateLength(0, 20),
-  civilStatus: validateLength(0, 50),
+  mobile_number: validatePhilippineMobile,
+  telephone_number: validateLength(0, 20),
+  civil_status: validateLength(0, 50),
   citizenship: validateLength(0, 50),
-  bloodType: validateLength(0, 10),
+  blood_type: validateLength(0, 10),
   ethnicity: validateLength(0, 50),
   religion: validateLength(0, 50),
-  religionOthersSpecify: validateLength(0, 100),
+  religion_others_specify: validateLength(0, 100),
   
   // Physical characteristics
   height: validateRange(50, 300), // cm
@@ -51,31 +51,31 @@ export const residentSchema = createFormValidator({
   complexion: validateLength(0, 50),
   
   // Documentation
-  birthPlaceCode: validateLength(0, 20),
-  philsysCardNumber: validatePhilSysNumber,
+  birth_place_code: validateLength(0, 20),
+  philsys_card_number: validatePhilSysNumber,
   
   // Family information
-  motherMaidenFirst: validateName,
-  motherMaidenMiddle: validateName,
-  motherMaidenLast: validateName,
+  mother_maiden_first: validateName,
+  mother_maiden_middle: validateName,
+  mother_maiden_last: validateName,
   
   // Education and employment
-  educationAttainment: validateLength(0, 50),
-  isGraduate: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
-  employmentStatus: validateLength(0, 50),
-  occupationCode: validateLength(0, 20),
+  education_attainment: validateLength(0, 50),
+  is_graduate: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  employment_status: validateLength(0, 50),
+  occupation_code: validateLength(0, 20),
   
   // Voting information
-  isVoter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
-  isResidentVoter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
-  lastVotedDate: validateDate,
+  is_voter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  is_resident_voter: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  last_voted_date: validateDate,
   
   // Household
-  householdCode: validateLength(0, 50),
+  household_code: validateLength(0, 50),
 }, [
   // Cross-field validations
-  crossFieldValidators.conditionalRequired('philsysCardNumber', 'birthPlaceCode'),
-  crossFieldValidators.conditionalRequired('isVoter', 'lastVotedDate'),
+  crossFieldValidators.conditionalRequired('philsys_card_number', 'birth_place_code'),
+  crossFieldValidators.conditionalRequired('is_voter', 'last_voted_date'),
 ]);
 
 /**
@@ -83,14 +83,14 @@ export const residentSchema = createFormValidator({
  */
 export const householdSchema = createFormValidator({
   code: composeValidators(validateRequired, validateLength(1, 50)),
-  houseNumber: validateLength(0, 20),
-  streetName: validateLength(0, 100),
-  subdivisionName: validateLength(0, 100),
-  barangayCode: composeValidators(validateRequired, validateLength(1, 20)),
-  cityCode: composeValidators(validateRequired, validateLength(1, 20)),
-  provinceCode: composeValidators(validateRequired, validateLength(1, 20)),
-  regionCode: composeValidators(validateRequired, validateLength(1, 20)),
-  zipCode: validateLength(0, 10),
+  house_number: validateLength(0, 20),
+  street_name: validateLength(0, 100),
+  subdivision_name: validateLength(0, 100),
+  barangay_code: composeValidators(validateRequired, validateLength(1, 20)),
+  city_code: composeValidators(validateRequired, validateLength(1, 20)),
+  province_code: composeValidators(validateRequired, validateLength(1, 20)),
+  region_code: composeValidators(validateRequired, validateLength(1, 20)),
+  zip_code: validateLength(0, 10),
 });
 
 /**
@@ -98,11 +98,11 @@ export const householdSchema = createFormValidator({
  */
 export const userSchema = createFormValidator({
   email: composeValidators(validateRequired, validateEmail),
-  firstName: composeValidators(validateRequired, validateName),
-  lastName: composeValidators(validateRequired, validateName),
+  first_name: composeValidators(validateRequired, validateName),
+  last_name: composeValidators(validateRequired, validateName),
   role: validateRequired,
-  barangayCode: validateLength(0, 20),
-  isActive: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
+  barangay_code: validateLength(0, 20),
+  is_active: (value: unknown) => ({ isValid: typeof value === 'boolean', error: 'Must be true or false' }),
 });
 
 /**
@@ -117,8 +117,8 @@ export const loginSchema = createFormValidator({
  * Password change validation schema
  */
 export const passwordChangeSchema = createFormValidator({
-  currentPassword: composeValidators(validateRequired, validateLength(1, 100)),
-  newPassword: composeValidators(
+  current_password: composeValidators(validateRequired, validateLength(1, 100)),
+  new_password: composeValidators(
     validateRequired,
     validateLength(8, 100),
     createFieldValidator({
@@ -126,9 +126,9 @@ export const passwordChangeSchema = createFormValidator({
       customMessage: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
     })
   ),
-  confirmPassword: composeValidators(validateRequired, validateLength(1, 100)),
+  confirm_password: composeValidators(validateRequired, validateLength(1, 100)),
 }, [
-  crossFieldValidators.fieldsMatch('newPassword', 'confirmPassword', 'Passwords must match'),
+  crossFieldValidators.fieldsMatch('new_password', 'confirm_password', 'Passwords must match'),
 ]);
 
 /**

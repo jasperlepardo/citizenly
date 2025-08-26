@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { PersonalInformationForm, ContactInformationForm, PhysicalPersonalDetailsForm, SectoralInformationForm, MigrationInformation } from '@/components/organisms/Form';
 import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
 import { FormHeader } from './components/FormHeader';
 import { FormActions } from './components/FormActions';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts';
+import { supabase } from '@/lib';
 import { ResidentFormState } from '@/types/resident-form';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 
 // Use the database-aligned ResidentFormState interface
@@ -19,6 +20,9 @@ interface ResidentFormProps {
   onCancel?: () => void;
   initialData?: Partial<ResidentFormData>;
   onModeChange?: (mode: FormMode) => void;
+  hidePhysicalDetails?: boolean;
+  hideSectoralInfo?: boolean;
+  onChange?: (data: ResidentFormData) => void;
 }
 
 // Helper function to get sectoral classifications based on ethnicity
@@ -39,7 +43,6 @@ const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<Resid
   // - is_solo_parent: Cannot be determined by ethnicity
   // - is_senior_citizen: Cannot be determined by ethnicity
   // - is_out_of_school_children/youth: Cannot be determined by ethnicity
-  // - is_labor_force: Cannot be determined by ethnicity
   // - is_overseas_filipino_worker: Cannot be determined by ethnicity
   
   // For now, we only auto-set is_indigenous_people as it's directly determinable from ethnicity
@@ -49,15 +52,16 @@ const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<Resid
 };
 
 // Database default values matching schema.sql + UX defaults for required fields
+// ONLY for truly empty/new forms - should NOT override existing data
 const DEFAULT_FORM_VALUES: Partial<ResidentFormData> = {
-  // Database defaults
-  civil_status: 'single', // Database default
+  // Database defaults - ONLY for create mode, not for existing data
   citizenship: 'filipino', // Database default
   is_graduate: false, // Database default
   
-  // UX defaults for required fields without database defaults
+  // UX defaults for required fields without database defaults - ONLY for create mode
   sex: 'male', // No database default but required - provide UX default
   
+  // DO NOT set civil_status default here - let real data take precedence
   // Note: ethnicity, blood_type, religion are nullable - no defaults
 };
 
@@ -66,7 +70,10 @@ export function ResidentForm({
   onSubmit, 
   onCancel, 
   initialData,
-  onModeChange 
+  onModeChange,
+  hidePhysicalDetails = false,
+  hideSectoralInfo = false,
+  onChange 
 }: ResidentFormProps) {
   // Auth context
   const { userProfile } = useAuth();
@@ -120,32 +127,31 @@ export function ResidentForm({
       // Physical Personal Details - database field names
       blood_type: '', // Nullable field - no default
       complexion: '',
-      height: 0,
-      weight: 0,
+      height: 0, // Will be excluded from submission if section is hidden
+      weight: 0, // Will be excluded from submission if section is hidden
       ethnicity: '', // Nullable field - no default
       religion: '', // Nullable field - no default
       religion_others_specify: '',
-    is_voter: null,
-    is_resident_voter: null,
-    last_voted_date: '',
-    mother_maiden_first: '',
-    mother_maiden_middle: '',
-    mother_maiden_last: '',
-    
-    // Sectoral Information - database field names
-    is_labor_force: false,
-    is_labor_force_employed: false,
-    is_unemployed: false,
-    is_overseas_filipino_worker: false,
-    is_person_with_disability: false,
-    is_out_of_school_children: false,
-    is_out_of_school_youth: false,
-    is_senior_citizen: false,
-    is_registered_senior_citizen: false,
-    is_solo_parent: false,
-    is_indigenous_people: false,
-    is_migrant: false,
-    
+      is_voter: null, // Will be excluded from submission if section is hidden
+      is_resident_voter: null, // Will be excluded from submission if section is hidden
+      last_voted_date: '',
+      mother_maiden_first: '',
+      mother_maiden_middle: '',
+      mother_maiden_last: '',
+      
+      // Sectoral Information - database field names
+      is_labor_force_employed: false,
+      is_unemployed: false,
+      is_overseas_filipino_worker: false,
+      is_person_with_disability: false,
+      is_out_of_school_children: false,
+      is_out_of_school_youth: false,
+      is_senior_citizen: false,
+      is_registered_senior_citizen: false,
+      is_solo_parent: false,
+      is_indigenous_people: false,
+      is_migrant: false,
+      
       // Migration Information - database field names
       previous_barangay_code: '',
       previous_city_municipality_code: '',
@@ -159,14 +165,33 @@ export function ResidentForm({
       is_intending_to_return: false,
     };
 
-    // Apply database defaults
-    const formWithDefaults = {
-      ...baseFormData,
-      ...DEFAULT_FORM_VALUES,
-    };
+    // Smart merge strategy: only apply defaults for missing/empty values
+    const formWithDefaults = { ...baseFormData };
+    
+    // Apply defaults ONLY for create mode or when values are truly missing
+    if (mode === 'create' || !initialData) {
+      Object.assign(formWithDefaults, DEFAULT_FORM_VALUES);
+    } else {
+      // For existing data, only apply defaults for undefined/null values
+      Object.entries(DEFAULT_FORM_VALUES).forEach(([key, defaultValue]) => {
+        if (formWithDefaults[key as keyof ResidentFormData] === undefined || 
+            formWithDefaults[key as keyof ResidentFormData] === null) {
+          (formWithDefaults as any)[key] = defaultValue;
+        }
+      });
+    }
 
-    // Merge with initialData if provided
-    return initialData ? { ...formWithDefaults, ...initialData } : formWithDefaults;
+    // Merge with initialData - initialData takes precedence over defaults
+    const finalFormData = initialData ? { ...formWithDefaults, ...initialData } : formWithDefaults;
+    
+    // Notify parent of initial data (use setTimeout to avoid state update during render)
+    if (onChange) {
+      setTimeout(() => {
+        onChange(finalFormData);
+      }, 0);
+    }
+    
+    return finalFormData;
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -260,25 +285,55 @@ export function ResidentForm({
 
     setSearchLoading(prev => ({ ...prev, household: true }));
     try {
-      // Simple mock household data for production
-      // Replace with actual API call when ready
-      const mockHouseholds = [
-        { value: 'HH001', label: 'Household #HH001', description: 'Sample household' },
-        { value: 'HH002', label: 'Household #HH002', description: 'Sample household 2' },
-      ];
+      // Get current session to pass auth token
+      const { data: { session } } = await supabase.auth.getSession();
       
-      const filtered = mockHouseholds.filter(h => 
-        !query || h.label.toLowerCase().includes(query.toLowerCase())
-      );
+      if (!session?.access_token) {
+        console.warn('No valid session found for household search');
+        setSearchOptions(prev => ({ ...prev, household: [] }));
+        return;
+      }
+
+      // Call the actual households API
+      const url = `/api/households?${query ? `search=${encodeURIComponent(query)}&` : ''}limit=50`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const households = data.data || [];
       
-      setSearchOptions(prev => ({ ...prev, household: filtered }));
+      // Transform household data for the dropdown
+      const householdOptions = households.map((household: any) => ({
+        value: household.code,
+        label: `${household.code}${household.name ? ` - ${household.name}` : ''}`,
+        description: household.address || `House ${household.house_number || 'N/A'}`
+      }));
+      
+      setSearchOptions(prev => ({ ...prev, household: householdOptions }));
     } catch (error) {
       console.error('Household search error:', error);
+      // Fallback to empty array if API fails
       setSearchOptions(prev => ({ ...prev, household: [] }));
     } finally {
       setSearchLoading(prev => ({ ...prev, household: false }));
     }
   }, [userProfile?.barangay_code]);
+
+  // Load initial household options when component mounts
+  useEffect(() => {
+    if (userProfile?.barangay_code) {
+      handleHouseholdSearch(''); // Load initial household data
+    }
+  }, [userProfile?.barangay_code, handleHouseholdSearch]);
 
   // Handle form field changes
   const handleFieldChange = (field: string | number | symbol, value: string | number | boolean | null) => {
@@ -295,10 +350,17 @@ export function ResidentForm({
       updatedData = { ...updatedData, ...sectoralUpdates };
     }
     
-    setFormData(prev => ({
-      ...prev,
+    const newFormData = {
+      ...formData,
       ...updatedData,
-    }));
+    };
+    
+    setFormData(newFormData);
+
+    // Notify parent component of changes
+    if (onChange) {
+      onChange(newFormData);
+    }
 
     // Clear error when user starts typing
     if (errors[fieldKey]) {
@@ -312,6 +374,13 @@ export function ResidentForm({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔥 RESIDENTFORM: handleSubmit called');
+    console.log('🔥 RESIDENTFORM: is_migrant value:', formData.is_migrant);
+    console.log('🔥 RESIDENTFORM: all sectoral fields:', {
+      is_migrant: formData.is_migrant,
+      is_solo_parent: formData.is_solo_parent,
+      is_person_with_disability: formData.is_person_with_disability,
+    });
     setIsSubmitting(true);
 
     try {
@@ -333,7 +402,46 @@ export function ResidentForm({
 
       // Call onSubmit callback
       if (onSubmit) {
-        await onSubmit(formData);
+        // Create a filtered version of form data that excludes hidden fields
+        let filteredFormData = { ...formData };
+        
+        // Remove Physical & Personal Details fields if section is hidden
+        if (hidePhysicalDetails) {
+          const physicalFields = [
+            'height', 'weight', 'blood_type', 'complexion', 'ethnicity', 'religion', 'religion_others_specify',
+            'is_voter', 'is_resident_voter', 'last_voted_date',
+            'mother_maiden_first', 'mother_maiden_middle', 'mother_maiden_last'
+          ];
+          physicalFields.forEach(field => {
+            if (filteredFormData.hasOwnProperty(field)) {
+              delete filteredFormData[field as keyof typeof filteredFormData];
+            }
+          });
+        }
+        
+        // Remove Sectoral Information fields if section is hidden
+        if (hideSectoralInfo) {
+          const sectoralFields = [
+            'is_labor_force_employed', 'is_unemployed', 'is_overseas_filipino_worker',
+            'is_person_with_disability', 'is_out_of_school_children', 'is_out_of_school_youth',
+            'is_senior_citizen', 'is_registered_senior_citizen', 'is_solo_parent', 
+            'is_indigenous_people', 'is_migrant'
+          ];
+          sectoralFields.forEach(field => {
+            if (filteredFormData.hasOwnProperty(field)) {
+              delete filteredFormData[field as keyof typeof filteredFormData];
+            }
+          });
+        }
+        
+        console.log('🚀 RESIDENTFORM: Calling onSubmit with data:');
+        console.log('🚀 RESIDENTFORM: is_migrant value:', filteredFormData.is_migrant);
+        console.log('🚀 RESIDENTFORM: sectoral fields in filtered data:', {
+          is_migrant: filteredFormData.is_migrant,
+          is_solo_parent: filteredFormData.is_solo_parent,
+          is_person_with_disability: filteredFormData.is_person_with_disability,
+        });
+        await onSubmit(filteredFormData);
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -352,47 +460,28 @@ export function ResidentForm({
       <PersonalInformationForm
         mode={mode}
         formData={{
-          // Map database field names to component expected names
-          philsysCardNumber: formData.philsys_card_number,
-          firstName: formData.first_name,
-          middleName: formData.middle_name,
-          lastName: formData.last_name,
-          extensionName: formData.extension_name,
+          // Direct snake_case properties (matching database schema)
+          philsys_card_number: formData.philsys_card_number,
+          first_name: formData.first_name,
+          middle_name: formData.middle_name,
+          last_name: formData.last_name,
+          extension_name: formData.extension_name,
           sex: formData.sex,
-          civilStatus: formData.civil_status,
+          civil_status: formData.civil_status,
           citizenship: formData.citizenship,
           birthdate: formData.birthdate,
-          birthPlaceName: formData.birth_place_name,
-          birthPlaceCode: formData.birth_place_code,
-          educationAttainment: formData.education_attainment,
-          isGraduate: formData.is_graduate,
-          employmentStatus: formData.employment_status,
-          psocCode: formData.occupation_code,
-          occupationTitle: formData.occupation_title,
+          birth_place_name: formData.birth_place_name,
+          birth_place_code: formData.birth_place_code,
+          education_attainment: formData.education_attainment,
+          is_graduate: formData.is_graduate,
+          employment_status: formData.employment_status,
+          occupation_code: formData.occupation_code,
+          occupation_title: formData.occupation_title,
         }}
         onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
-          // Map component field names back to database field names
+          // Direct field mapping (no conversion needed as both use snake_case)
           const fieldName = String(field);
-          const fieldMap: Record<string, string> = {
-            'philsysCardNumber': 'philsys_card_number',
-            'firstName': 'first_name',
-            'middleName': 'middle_name',
-            'lastName': 'last_name',
-            'extensionName': 'extension_name',
-            'sex': 'sex',
-            'civilStatus': 'civil_status',
-            'citizenship': 'citizenship',
-            'birthdate': 'birthdate',
-            'birthPlaceName': 'birth_place_name',
-            'birthPlaceCode': 'birth_place_code',
-            'educationAttainment': 'education_attainment',
-            'isGraduate': 'is_graduate',
-            'employmentStatus': 'employment_status',
-            'psocCode': 'occupation_code',
-            'occupationTitle': 'occupation_title',
-          };
-          const dbFieldName = fieldMap[fieldName] || fieldName;
-          handleFieldChange(dbFieldName, value);
+          handleFieldChange(fieldName, value);
         }}
         errors={errors}
         onPsgcSearch={handlePsgcSearch}
@@ -407,23 +496,16 @@ export function ResidentForm({
       <ContactInformationForm
         mode={mode}
         formData={{
-          // Map database field names to component expected names
+          // Direct snake_case properties (matching database schema)
           email: formData.email,
-          phoneNumber: formData.telephone_number,
-          mobileNumber: formData.mobile_number,
-          householdCode: formData.household_code,
+          telephone_number: formData.telephone_number,
+          mobile_number: formData.mobile_number,
+          household_code: formData.household_code,
         }}
         onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
-          // Map component field names back to database field names
+          // Direct field mapping (no conversion needed as both use snake_case)
           const fieldName = String(field);
-          const fieldMap: Record<string, string> = {
-            'email': 'email',
-            'phoneNumber': 'telephone_number',
-            'mobileNumber': 'mobile_number',
-            'householdCode': 'household_code',
-          };
-          const dbFieldName = fieldMap[fieldName] || fieldName;
-          handleFieldChange(dbFieldName, value);
+          handleFieldChange(fieldName, value);
         }}
         errors={errors}
         onHouseholdSearch={handleHouseholdSearch}
@@ -431,94 +513,64 @@ export function ResidentForm({
         householdLoading={searchLoading.household}
       />
 
-      {/* Physical Personal Details Section */}
-      <PhysicalPersonalDetailsForm
-        mode={mode}
-        formData={{
-          // Map database field names to component expected names
-          bloodType: formData.blood_type,
-          complexion: formData.complexion,
-          height: formData.height.toString(),
-          weight: formData.weight.toString(),
-          ethnicity: formData.ethnicity,
-          religion: formData.religion,
-          religionOthersSpecify: formData.religion_others_specify,
-          isVoter: formData.is_voter,
-          isResidentVoter: formData.is_resident_voter,
-          lastVotedDate: formData.last_voted_date,
-          motherMaidenFirstName: formData.mother_maiden_first,
-          motherMaidenMiddleName: formData.mother_maiden_middle,
-          motherMaidenLastName: formData.mother_maiden_last,
-        }}
-        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
-          // Map component field names back to database field names
-          const fieldName = String(field);
-          const fieldMap: Record<string, string> = {
-            'bloodType': 'blood_type',
-            'complexion': 'complexion',
-            'height': 'height',
-            'weight': 'weight',
-            'ethnicity': 'ethnicity',
-            'religion': 'religion',
-            'religionOthersSpecify': 'religion_others_specify',
-            'isVoter': 'is_voter',
-            'isResidentVoter': 'is_resident_voter',
-            'lastVotedDate': 'last_voted_date',
-            'motherMaidenFirstName': 'mother_maiden_first',
-            'motherMaidenMiddleName': 'mother_maiden_middle',
-            'motherMaidenLastName': 'mother_maiden_last',
-          };
-          const dbFieldName = fieldMap[fieldName] || fieldName;
-          // Convert height/weight strings back to numbers for database
-          let convertedValue = value;
-          if ((dbFieldName === 'height' || dbFieldName === 'weight') && typeof value === 'string') {
-            convertedValue = parseFloat(value) || 0;
-          }
-          handleFieldChange(dbFieldName, convertedValue);
-        }}
-        errors={errors}
-      />
+      {/* Physical Personal Details Section - Hidden in basic create mode */}
+      {!hidePhysicalDetails && (
+        <PhysicalPersonalDetailsForm
+          mode={mode}
+          formData={{
+            // Direct snake_case properties (matching database schema)
+            blood_type: formData.blood_type,
+            complexion: formData.complexion,
+            height: formData.height.toString(),
+            weight: formData.weight.toString(),
+            ethnicity: formData.ethnicity,
+            religion: formData.religion,
+            religion_others_specify: formData.religion_others_specify,
+            is_voter: formData.is_voter,
+            is_resident_voter: formData.is_resident_voter,
+            last_voted_date: formData.last_voted_date,
+            mother_maiden_first: formData.mother_maiden_first,
+            mother_maiden_middle: formData.mother_maiden_middle,
+            mother_maiden_last: formData.mother_maiden_last,
+          }}
+          onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
+            // Direct field mapping with type conversion for height/weight
+            const fieldName = String(field);
+            // Convert height/weight strings back to numbers for database
+            let convertedValue = value;
+            if ((fieldName === 'height' || fieldName === 'weight') && typeof value === 'string') {
+              convertedValue = parseFloat(value) || 0;
+            }
+            handleFieldChange(fieldName, convertedValue);
+          }}
+          errors={errors}
+        />
+      )}
 
-      {/* Sectoral Information Section */}
-      <SectoralInformationForm
-        mode={mode}
-        formData={{
-          // Map database field names to component expected names
-          isLaborForce: formData.is_labor_force,
-          isLaborForceEmployed: formData.is_labor_force_employed,
-          isUnemployed: formData.is_unemployed,
-          isOverseasFilipino: formData.is_overseas_filipino_worker,
-          isPersonWithDisability: formData.is_person_with_disability,
-          isOutOfSchoolChildren: formData.is_out_of_school_children,
-          isOutOfSchoolYouth: formData.is_out_of_school_youth,
-          isSeniorCitizen: formData.is_senior_citizen,
-          isRegisteredSeniorCitizen: formData.is_registered_senior_citizen,
-          isSoloParent: formData.is_solo_parent,
-          isIndigenousPeople: formData.is_indigenous_people,
-          isMigrant: formData.is_migrant,
-        }}
-        onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
-          // Map component field names back to database field names
-          const fieldName = String(field);
-          const fieldMap: Record<string, string> = {
-            'isLaborForce': 'is_labor_force',
-            'isLaborForceEmployed': 'is_labor_force_employed',
-            'isUnemployed': 'is_unemployed',
-            'isOverseasFilipino': 'is_overseas_filipino_worker',
-            'isPersonWithDisability': 'is_person_with_disability',
-            'isOutOfSchoolChildren': 'is_out_of_school_children',
-            'isOutOfSchoolYouth': 'is_out_of_school_youth',
-            'isSeniorCitizen': 'is_senior_citizen',
-            'isRegisteredSeniorCitizen': 'is_registered_senior_citizen',
-            'isSoloParent': 'is_solo_parent',
-            'isIndigenousPeople': 'is_indigenous_people',
-            'isMigrant': 'is_migrant',
-          };
-          const dbFieldName = fieldMap[fieldName] || fieldName;
-          handleFieldChange(dbFieldName, value);
-        }}
-        errors={errors}
-      />
+      {/* Sectoral Information Section - Hidden in basic create mode */}
+      {!hideSectoralInfo && (
+        <SectoralInformationForm
+          mode={mode}
+          formData={{
+            // Component expects is_overseas_filipino, it handles mapping internally
+            is_labor_force_employed: formData.is_labor_force_employed,
+            is_unemployed: formData.is_unemployed,
+            is_overseas_filipino: formData.is_overseas_filipino_worker,
+            is_person_with_disability: formData.is_person_with_disability,
+            is_out_of_school_children: formData.is_out_of_school_children,
+            is_out_of_school_youth: formData.is_out_of_school_youth,
+            is_senior_citizen: formData.is_senior_citizen,
+            is_registered_senior_citizen: formData.is_registered_senior_citizen,
+            is_solo_parent: formData.is_solo_parent,
+            is_indigenous_people: formData.is_indigenous_people,
+            is_migrant: formData.is_migrant,
+          }}
+          // Debug log for migrant status being passed
+          {...(() => { console.log('🔥 RESIDENT_FORM: Passing is_migrant value:', formData.is_migrant); return {}; })()}
+          onChange={handleFieldChange}
+          errors={errors}
+        />
+      )}
 
       {/* Migration Information Section - Only show if migrant is checked */}
       {formData.is_migrant && (
@@ -551,26 +603,6 @@ export function ResidentForm({
           errors={errors}
         />
       )}
-
-      {/* Form Actions */}
-      <div className="flex justify-end space-x-4">
-        {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Cancel
-          </button>
-        )}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Saving...' : 'Save Resident'}
-        </button>
-      </div>
     </form>
     </div>
   );

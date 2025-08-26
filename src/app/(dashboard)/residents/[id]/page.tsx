@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/data/supabase';
-import { PersonalInformationForm } from '@/components/organisms';
+import { useParams, useRouter } from 'next/navigation';
+import { supabase } from '@/lib';
+import { PersonalInformationForm, SectoralBadges } from '@/components';
 import { ResidentForm } from '@/components/templates/ResidentForm';
+import { SectoralInformationForm } from '@/components/organisms/Form';
+import { toast } from 'react-hot-toast';
 
-import { InputField } from '@/components/molecules';
-import { logger, logError } from '@/lib/logging/secure-logger';
+import { InputField } from '@/components';
+import { logger, logError } from '@/lib';
+import { fetchWithAuth, getSessionWithFallback } from '@/lib/utils/sessionUtils';
 import type { ResidentFormState } from '@/types/resident-form';
-import type { FormMode } from '@/types/forms';
+import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
 import { 
   CivilStatusEnum, 
   CitizenshipEnum, 
@@ -19,7 +22,7 @@ import {
   BloodTypeEnum, 
   EthnicityEnum, 
   ReligionEnum 
-} from '@/types/residents';
+} from '@/types';
 import {
   SEX_OPTIONS,
   CIVIL_STATUS_OPTIONS,
@@ -57,111 +60,22 @@ const Tooltip = ({ children, content }: { children: React.ReactNode; content: st
 
 export const dynamic = 'force-dynamic';
 
-interface Resident {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  extension_name?: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-  civil_status: string;
-  citizenship?: string;
-  mobile_number?: string;
-  email?: string;
-  telephone_number?: string;
-  philsys_card_number?: string;
-  education_level?: string;
-  education_status?: string;
-  employment_status?: string;
-  occupation_code?: string;
-  psoc_level?: string;
-  occupation_title?: string;
-  occupation_details?: string;
-  workplace?: string;
-  blood_type?: string;
-  height_cm?: number;
-  weight_kg?: number;
-  complexion?: string;
-  ethnicity?: string;
-  religion?: string;
-  mother_first_name?: string;
-  mother_middle_name?: string;
-  mother_maiden_last_name?: string;
-  migration_info?: any;
-  is_voter?: boolean;
-  is_resident_voter?: boolean;
-  voter_id_number?: string;
-  philsys_last4?: string;
-  philsys_card_number_hash?: string;
-  is_labor_force?: boolean;
-  is_employed?: boolean;
-  is_unemployed?: boolean;
-  is_ofw?: boolean;
-  is_pwd?: boolean;
-  is_out_of_school_children?: boolean;
-  is_out_of_school_youth?: boolean;
-  is_senior_citizen?: boolean;
-  is_registered_senior_citizen?: boolean;
-  is_solo_parent?: boolean;
-  is_indigenous_people?: boolean;
-  is_migrant?: boolean;
-  household_id?: string;
-  household_code?: string;
-  barangay_code: string;
-  is_active?: boolean;
-  created_at: string;
-  updated_at?: string;
-  created_by?: string;
-  search_text?: string;
-  // Related data
-  household?: {
-    id?: string;
-    household_number?: string;
-    code: string;
-    street_name?: string;
-    house_number?: string;
-    subdivision?: string;
-    zip_code?: string;
-    barangay_code: string;
-    region_code?: string;
-    province_code?: string;
-    city_municipality_code?: string;
-    total_members?: number;
-    created_at?: string;
-    updated_at?: string;
-    head_resident?: {
-      id: string;
-      first_name: string;
-      middle_name?: string;
-      last_name: string;
-    };
-  };
-  psoc_info?: {
-    code: string;
-    title: string;
-    level: string;
-  };
-  address_info?: {
-    barangay_name: string;
-    city_municipality_name: string;
-    province_name?: string;
-    region_name: string;
-    full_address: string;
-  };
-}
+// Use consolidated ResidentWithRelations type instead of duplicate interface
+type Resident = ResidentWithRelations;
 
 function ResidentDetailContent() {
   const params = useParams();
+  const router = useRouter();
   const residentId = params.id as string;
   const [resident, setResident] = useState<Resident | null>(null);
   const [editedResident, setEditedResident] = useState<Resident | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<FormMode>('view');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [currentFormData, setCurrentFormData] = useState<ResidentFormState | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const loadResidentDetails = async () => {
@@ -171,30 +85,20 @@ function ResidentDetailContent() {
         setLoading(true);
 
         logger.debug('Loading resident details', { residentId });
+        console.log('Loading resident details for ID:', residentId);
 
-        // Use API endpoint instead of direct queries
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        if (!session?.access_token) {
-          throw new Error('No valid session found');
-        }
-
-        // Load resident details via API
-        const response = await fetch(`/api/residents/${residentId}`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        // Use API endpoint with session fallback
+        const response = await fetchWithAuth(`/api/residents/${residentId}`);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
+          console.error('❌ [ResidentPage] API Error:', errorData);
           throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const { resident: residentData, household: householdData } = await response.json();
+        const responseData = await response.json();
+        
+        const { resident: residentData, household: householdData } = responseData;
 
         if (!residentData) {
           setError('No data returned for resident');
@@ -202,6 +106,8 @@ function ResidentDetailContent() {
         }
 
         logger.debug('Resident data loaded successfully via API', { residentId: residentData.id });
+        console.log('Resident loaded successfully:', !!residentData);
+        console.log('Resident has is_migrant:', residentData?.is_migrant);
 
         // Household data is already included in the API response
         if (householdData) {
@@ -346,6 +252,7 @@ function ResidentDetailContent() {
           },
         };
 
+        console.log('✅ [ResidentPage] Setting resident state with initialized data');
         setResident(initializedResident);
         setEditedResident(updateComputedFields({ ...initializedResident }));
       } catch (err) {
@@ -355,6 +262,7 @@ function ResidentDetailContent() {
         );
         setError('Failed to load resident details');
       } finally {
+        console.log('✅ [ResidentPage] Setting loading to false');
         setLoading(false);
       }
     };
@@ -403,82 +311,23 @@ function ResidentDetailContent() {
     return value ? 'Yes' : 'No';
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    setSaveError(null);
+  // Extract sectoral information from resident data for badges
+  const extractSectoralInfo = (resident: Resident): SectoralInformation => {
+    return {
+      is_labor_force_employed: resident.is_employed || false,
+      is_unemployed: resident.is_unemployed || false,
+      is_overseas_filipino_worker: resident.is_ofw || false,
+      is_person_with_disability: resident.is_pwd || false,
+      is_out_of_school_children: resident.is_out_of_school_children || false,
+      is_out_of_school_youth: resident.is_out_of_school_youth || false,
+      is_senior_citizen: resident.is_senior_citizen || false,
+      is_registered_senior_citizen: resident.is_registered_senior_citizen || false,
+      is_solo_parent: resident.is_solo_parent || false,
+      is_indigenous_people: resident.is_indigenous_people || false,
+      is_migrant: resident.is_migrant || false,
+    };
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedResident(resident); // Reset to original data
-    setSaveError(null);
-  };
-
-  const handleSave = async () => {
-    if (!editedResident) return;
-
-    try {
-      setIsSaving(true);
-      setSaveError(null);
-
-      const { error: updateError } = await supabase
-        .from('residents')
-        .update({
-          first_name: editedResident.first_name,
-          middle_name: editedResident.middle_name,
-          last_name: editedResident.last_name,
-          extension_name: editedResident.extension_name,
-          birthdate: editedResident.birthdate,
-          sex: editedResident.sex,
-          civil_status: editedResident.civil_status,
-          citizenship: editedResident.citizenship,
-          mobile_number: editedResident.mobile_number,
-          email: editedResident.email,
-          telephone_number: editedResident.telephone_number,
-          education_level: editedResident.education_level,
-          education_status: editedResident.education_status,
-          employment_status: editedResident.employment_status,
-          occupation_title: editedResident.occupation_title,
-          occupation_details: editedResident.occupation_details,
-          workplace: editedResident.workplace,
-          blood_type: editedResident.blood_type,
-          height_cm: editedResident.height_cm,
-          weight_kg: editedResident.weight_kg,
-          complexion: editedResident.complexion,
-          ethnicity: editedResident.ethnicity,
-          religion: editedResident.religion,
-          mother_first_name: editedResident.mother_first_name,
-          mother_middle_name: editedResident.mother_middle_name,
-          mother_maiden_last_name: editedResident.mother_maiden_last_name,
-          is_voter: editedResident.is_voter,
-          is_resident_voter: editedResident.is_resident_voter,
-          voter_id_number: editedResident.voter_id_number,
-          is_ofw: editedResident.is_ofw,
-          is_pwd: editedResident.is_pwd,
-          is_solo_parent: editedResident.is_solo_parent,
-          is_indigenous_people: editedResident.is_indigenous_people,
-          is_migrant: editedResident.is_migrant,
-          migration_info: editedResident.migration_info,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', residentId);
-
-      if (updateError) {
-        throw updateError;
-      }
-
-      setResident(editedResident);
-      setIsEditing(false);
-    } catch (err) {
-      logError(
-        err instanceof Error ? err : new Error('Unknown error saving resident'),
-        'RESIDENT_SAVE'
-      );
-      setSaveError('Failed to save changes. Please try again.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status
@@ -486,13 +335,6 @@ function ResidentDetailContent() {
 
     updatedResident.is_employed = ['employed', 'self_employed'].includes(employmentStatus || '');
     updatedResident.is_unemployed = employmentStatus === 'unemployed';
-    updatedResident.is_labor_force = [
-      'employed',
-      'unemployed',
-      'underemployed',
-      'self_employed',
-      'looking_for_work',
-    ].includes(employmentStatus || '');
 
     // Update senior citizen flag based on birthdate
     if (updatedResident.birthdate) {
@@ -521,8 +363,6 @@ function ResidentDetailContent() {
 
   const getComputedFieldTooltip = (field: keyof Resident) => {
     switch (field) {
-      case 'is_labor_force':
-        return `Automatically calculated from Employment Status. Includes: employed, unemployed, underemployed, self-employed, looking for work`;
       case 'is_employed':
         return `Automatically calculated from Employment Status. Includes: employed, self-employed`;
       case 'is_unemployed':
@@ -534,31 +374,43 @@ function ResidentDetailContent() {
     }
   };
 
-  // Transform resident data to ResidentFormState format
   const transformToFormState = (resident: Resident): ResidentFormState => {
-    return {
+    console.log('🔄 TRANSFORM: transformToFormState called');
+    console.log('🔄 TRANSFORM: resident.first_name:', resident.first_name);
+    console.log('🔄 TRANSFORM: resident.email:', resident.email);
+    console.log('🔄 TRANSFORM: resident.mobile_number:', resident.mobile_number);
+    console.log('🔄 TRANSFORM: resident.birthdate:', resident.birthdate);
+    console.log('🔄 TRANSFORM: resident.civil_status:', resident.civil_status);
+    console.log('🔄 TRANSFORM: resident.civil_status type:', typeof resident.civil_status);
+    
+    // Extract sectoral information from the nested object if it exists
+    const sectoralInfo = (resident as any).sectoral_info || (resident as any).resident_sectoral_info?.[0] || null;
+    const migrantInfo = (resident as any).migrant_info || (resident as any).resident_migrant_info?.[0] || null;
+    
+    
+    const formState = {
       // Personal Information
       first_name: resident.first_name || '',
       middle_name: resident.middle_name || '',
       last_name: resident.last_name || '',
       extension_name: resident.extension_name || '',
       sex: resident.sex || '',
-      civil_status: (resident.civil_status as CivilStatusEnum) || '',
+      civil_status: resident.civil_status as CivilStatusEnum,
       civil_status_others_specify: '', // Not in current Resident type
       citizenship: (resident.citizenship as CitizenshipEnum) || '',
       birthdate: resident.birthdate || '',
-      birth_place_name: '', // Not in current Resident type
-      birth_place_code: '', // Not in current Resident type
-      birth_place_level: '', // Not in current Resident type
+      birth_place_name: (resident as any).birth_place_info?.name || (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
+      birth_place_code: resident.birth_place_code || '',
+      birth_place_level: (resident as any).birth_place_info?.level || '',
       philsys_card_number: resident.philsys_card_number || '',
       philsys_last4: resident.philsys_last4 || '',
-      education_attainment: (resident.education_level as EducationLevelEnum) || '',
-      is_graduate: resident.education_status === 'graduate',
+      education_attainment: (resident.education_attainment as EducationLevelEnum) || '',
+      is_graduate: resident.is_graduate || false,
       employment_status: (resident.employment_status as EmploymentStatusEnum) || '',
       employment_code: '', // Not in current Resident type
       employment_name: '', // Not in current Resident type
       occupation_code: resident.occupation_code || '',
-      psoc_level: parseInt(resident.psoc_level || '0'),
+      psoc_level: resident.psoc_level || 0,
       occupation_title: resident.occupation_title || '',
       
       // Contact Information
@@ -570,68 +422,145 @@ function ResidentDetailContent() {
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',
       complexion: resident.complexion || '',
-      height: resident.height_cm || 0,
-      weight: resident.weight_kg || 0,
+      height: resident.height || 0,
+      weight: resident.weight || 0,
       ethnicity: (resident.ethnicity as EthnicityEnum) || '',
       religion: (resident.religion as ReligionEnum) || '',
       religion_others_specify: '', // Not in current Resident type
       is_voter: resident.is_voter ?? null,
       is_resident_voter: resident.is_resident_voter ?? null,
       last_voted_date: '', // Not in current Resident type
-      mother_maiden_first: resident.mother_first_name || '',
-      mother_maiden_middle: resident.mother_middle_name || '',
-      mother_maiden_last: resident.mother_maiden_last_name || '',
+      mother_maiden_first: resident.mother_maiden_first || '',
+      mother_maiden_middle: resident.mother_maiden_middle || '',
+      mother_maiden_last: resident.mother_maiden_last || '',
       
-      // Sectoral Information
-      is_labor_force: resident.is_labor_force || false,
-      is_labor_force_employed: resident.is_employed || false,
-      is_unemployed: resident.is_unemployed || false,
-      is_overseas_filipino_worker: resident.is_ofw || false,
-      is_person_with_disability: resident.is_pwd || false,
-      is_out_of_school_children: resident.is_out_of_school_children || false,
-      is_out_of_school_youth: resident.is_out_of_school_youth || false,
-      is_senior_citizen: resident.is_senior_citizen || false,
-      is_registered_senior_citizen: resident.is_registered_senior_citizen || false,
-      is_solo_parent: resident.is_solo_parent || false,
-      is_indigenous_people: resident.is_indigenous_people || false,
-      is_migrant: resident.is_migrant || false,
+      // Sectoral Information (use sectoral_info if available, otherwise defaults)
+      is_labor_force_employed: sectoralInfo?.is_labor_force_employed ?? false,
+      is_unemployed: sectoralInfo?.is_unemployed ?? false,
+      is_overseas_filipino_worker: sectoralInfo?.is_overseas_filipino_worker ?? false,
+      is_person_with_disability: sectoralInfo?.is_person_with_disability ?? false,
+      is_out_of_school_children: sectoralInfo?.is_out_of_school_children ?? false,
+      is_out_of_school_youth: sectoralInfo?.is_out_of_school_youth ?? false,
+      is_senior_citizen: sectoralInfo?.is_senior_citizen ?? false,
+      is_registered_senior_citizen: sectoralInfo?.is_registered_senior_citizen ?? false,
+      is_solo_parent: sectoralInfo?.is_solo_parent ?? false,
+      is_indigenous_people: sectoralInfo?.is_indigenous_people ?? false,
+      is_migrant: sectoralInfo?.is_migrant ?? false,
       
-      // Migration Information (from migration_info object)
-      previous_barangay_code: resident.migration_info?.previous_address || '',
-      previous_city_municipality_code: '', // Not in current migration_info
-      previous_province_code: '', // Not in current migration_info
-      previous_region_code: '', // Not in current migration_info
-      length_of_stay_previous_months: 0, // Not in current migration_info
-      reason_for_leaving: resident.migration_info?.migration_reason || '',
-      date_of_transfer: resident.migration_info?.migration_date || '',
-      reason_for_transferring: '', // Not in current migration_info
-      duration_of_stay_current_months: 0, // Not in current migration_info
-      is_intending_to_return: resident.migration_info?.is_returning_resident || false,
+      // Migration Information (use migrant_info if available, otherwise defaults)
+      previous_barangay_code: migrantInfo?.previous_barangay_code || '',
+      previous_city_municipality_code: migrantInfo?.previous_city_municipality_code || '',
+      previous_province_code: migrantInfo?.previous_province_code || '',
+      previous_region_code: migrantInfo?.previous_region_code || '',
+      length_of_stay_previous_months: migrantInfo?.length_of_stay_previous_months || 0,
+      reason_for_leaving: migrantInfo?.reason_for_leaving || '',
+      date_of_transfer: migrantInfo?.date_of_transfer || '',
+      reason_for_transferring: migrantInfo?.reason_for_transferring || '',
+      duration_of_stay_current_months: migrantInfo?.duration_of_stay_current_months || 0,
+      is_intending_to_return: migrantInfo?.is_intending_to_return ?? false,
     };
+
+    console.log('✅ [TRANSFORM] Returning formState with first_name:', formState.first_name);
+    console.log('🔥 TRANSFORM: Final is_migrant value:', formState.is_migrant);
+    return formState;
+  };
+
+  // Handle resident deletion
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+
+      const response = await fetchWithAuth(`/api/residents/${residentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete resident');
+      }
+
+      const result = await response.json();
+      
+      toast.success(`Resident ${result.deletedResident?.name || ''} deleted successfully`);
+      
+      // Redirect to residents list after successful deletion
+      router.push('/residents');
+      
+    } catch (err) {
+      const error = err as Error;
+      logError(error, 'RESIDENT_DELETE');
+      console.error('Failed to delete resident:', error.message);
+      toast.error(error.message || 'Failed to delete resident');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   // Handle form submission
   const handleFormSubmit = async (formData: ResidentFormState) => {
+    console.log('🚀 HANDLEFORMSUBMIT CALLED');
+    console.log('📊 Form data is_migrant:', formData.is_migrant);
+    console.log('⏰ Called at:', new Date().toISOString());
+    console.log('📋 Full form data keys:', Object.keys(formData));
+    
     try {
-      setIsSaving(true);
-      setSaveError(null);
+      // Use the API endpoint for updating with session fallback
+      console.log('🔐 Getting session for form submission...');
 
-      // Use the API endpoint for updating
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      // Include both resident fields and sectoral information
+      // Convert empty strings to null for enum fields to avoid validation errors
+      const updatePayload = {
+        // Main resident fields
+        first_name: formData.first_name,
+        middle_name: formData.middle_name,
+        last_name: formData.last_name,
+        extension_name: formData.extension_name,
+        birthdate: formData.birthdate,
+        birth_place_code: formData.birth_place_code,
+        sex: formData.sex,
+        civil_status: formData.civil_status || null,
+        civil_status_others_specify: formData.civil_status_others_specify,
+        citizenship: formData.citizenship || null,
+        education_attainment: formData.education_attainment || null,
+        is_graduate: formData.is_graduate,
+        employment_status: formData.employment_status || null,
+        occupation_code: formData.occupation_code,
+        email: formData.email,
+        mobile_number: formData.mobile_number,
+        telephone_number: formData.telephone_number,
+        household_code: formData.household_code,
+        height: formData.height,
+        weight: formData.weight,
+        complexion: formData.complexion,
+        blood_type: formData.blood_type || null, // Convert empty string to null for enum
+        ethnicity: formData.ethnicity || null,
+        religion: formData.religion || null,
+        religion_others_specify: formData.religion_others_specify,
+        is_voter: formData.is_voter,
+        is_resident_voter: formData.is_resident_voter,
+        last_voted_date: formData.last_voted_date || null,
+        mother_maiden_first: formData.mother_maiden_first,
+        mother_maiden_middle: formData.mother_maiden_middle,
+        mother_maiden_last: formData.mother_maiden_last,
+        
+        // Sectoral information fields
+        is_labor_force_employed: formData.is_labor_force_employed,
+        is_unemployed: formData.is_unemployed,
+        is_overseas_filipino_worker: formData.is_overseas_filipino_worker,
+        is_person_with_disability: formData.is_person_with_disability,
+        is_out_of_school_children: formData.is_out_of_school_children,
+        is_out_of_school_youth: formData.is_out_of_school_youth,
+        is_senior_citizen: formData.is_senior_citizen,
+        is_registered_senior_citizen: formData.is_registered_senior_citizen,
+        is_solo_parent: formData.is_solo_parent,
+        is_indigenous_people: formData.is_indigenous_people,
+        is_migrant: formData.is_migrant,
+      };
 
-      if (!session?.access_token) {
-        throw new Error('No valid session found');
-      }
-
-      const response = await fetch(`/api/residents/${residentId}`, {
+      const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatePayload),
       });
 
       if (!response.ok) {
@@ -639,21 +568,77 @@ function ResidentDetailContent() {
         throw new Error(errorData.error || 'Failed to update resident');
       }
 
-      const { resident: updatedResident } = await response.json();
+      const responseData = await response.json();
+      console.log('🎉 SUCCESS: Received API response:', responseData);
       
-      // Update local state
-      setResident({...resident, ...updatedResident});
+      const { resident: updatedResident } = responseData;
+      console.log('📦 Updated resident data:', updatedResident);
       
-      // Show success message briefly
-      const tempSuccessState = { ...resident, ...updatedResident };
-      setResident(tempSuccessState);
+      // Transform the nested sectoral data from the API response
+      let transformedResident = { ...updatedResident };
+      
+      if (updatedResident?.resident_sectoral_info?.[0]) {
+        const sectoralInfo = updatedResident.resident_sectoral_info[0];
+        console.log('Flattening sectoral info:', sectoralInfo);
+        
+        // Flatten sectoral information into the main resident object
+        transformedResident = {
+          ...transformedResident,
+          is_labor_force_employed: sectoralInfo.is_labor_force_employed,
+          is_unemployed: sectoralInfo.is_unemployed,
+          is_overseas_filipino_worker: sectoralInfo.is_overseas_filipino_worker,
+          is_person_with_disability: sectoralInfo.is_person_with_disability,
+          is_out_of_school_children: sectoralInfo.is_out_of_school_children,
+          is_out_of_school_youth: sectoralInfo.is_out_of_school_youth,
+          is_senior_citizen: sectoralInfo.is_senior_citizen,
+          is_registered_senior_citizen: sectoralInfo.is_registered_senior_citizen,
+          is_solo_parent: sectoralInfo.is_solo_parent,
+          is_indigenous_people: sectoralInfo.is_indigenous_people,
+          is_migrant: sectoralInfo.is_migrant,
+        };
+        
+        // Remove the nested object to avoid duplication
+        delete transformedResident.resident_sectoral_info;
+      }
+      
+      if (updatedResident?.resident_migrant_info?.[0]) {
+        const migrantInfo = updatedResident.resident_migrant_info[0];
+        console.log('Flattening migrant info:', migrantInfo);
+        
+        // Flatten migrant information into the main resident object
+        transformedResident = {
+          ...transformedResident,
+          previous_barangay_code: migrantInfo.previous_barangay_code,
+          previous_city_municipality_code: migrantInfo.previous_city_municipality_code,
+          previous_province_code: migrantInfo.previous_province_code,
+          previous_region_code: migrantInfo.previous_region_code,
+          length_of_stay_previous_months: migrantInfo.length_of_stay_previous_months,
+          reason_for_leaving: migrantInfo.reason_for_leaving,
+          date_of_transfer: migrantInfo.date_of_transfer,
+          reason_for_transferring: migrantInfo.reason_for_transferring,
+          duration_of_stay_current_months: migrantInfo.duration_of_stay_current_months,
+          is_intending_to_return: migrantInfo.is_intending_to_return,
+        };
+        
+        // Remove the nested object to avoid duplication
+        delete transformedResident.resident_migrant_info;
+      }
+      
+      console.log('✨ FINAL: Setting transformed resident state:', transformedResident);
+      console.log('✨ FINAL: is_migrant value being set:', transformedResident.is_migrant);
+      
+      // Update local state and return to view mode
+      console.log('📝 UPDATING STATE: setResident called');
+      setResident(transformedResident);
+      setFormMode('view');
+      setCurrentFormData(null); // Clear current form data after successful save
+      toast.success('Resident updated successfully!');
       
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_FORM_UPDATE');
-      setSaveError(error.message || 'Failed to update resident');
-    } finally {
-      setIsSaving(false);
+      console.error('Failed to update resident:', error.message);
+      toast.error(`Failed to update resident: ${error.message}`);
     }
   };
 
@@ -664,12 +649,12 @@ function ResidentDetailContent() {
     options?: string[],
     isComputed = false
   ) => {
-    const currentResident = isEditing ? editedResident : resident;
+    const currentResident = (formMode === 'edit') ? editedResident : resident;
     if (!currentResident) return null;
 
     const value = currentResident[field] as string | boolean | undefined;
 
-    if (isEditing && !isComputed) {
+    if ((formMode === 'edit') && !isComputed) {
       if (type === 'checkbox') {
         return (
           <div>
@@ -804,6 +789,7 @@ function ResidentDetailContent() {
   }
 
   if (error || !resident) {
+    console.log('❌ [ResidentPage] Rendering error state - error:', error, 'resident exists:', !!resident);
     return (
       <div>
         <div className="p-6">
@@ -843,17 +829,20 @@ function ResidentDetailContent() {
     );
   }
 
+  console.log('✅ [ResidentPage] Rendering main content - resident ID:', resident?.id);
+
   return (
-    <div>
-      <div className="p-6">
+    <div className="min-h-screen" style={{ minHeight: '100vh' }}>
+      <div className="p-6" style={{ padding: '24px' }}>
         {/* Page Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="mb-6 flex items-center justify-between" style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Link
               href="/residents"
-              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50"
+              style={{ display: 'inline-flex', alignItems: 'center', borderRadius: '6px', border: '1px solid #e5e7eb', backgroundColor: 'white', padding: '8px 12px', fontSize: '14px', fontWeight: '500', color: '#4b5563' }}
             >
-              <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginRight: '8px', width: '16px', height: '16px' }}>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -864,10 +853,10 @@ function ResidentDetailContent() {
               Back to Residents
             </Link>
             <div>
-              <h1 className="font-montserrat text-xl font-semibold text-gray-600 dark:text-gray-400">
-                {formatFullName(resident)}
+              <h1 className="text-xl font-semibold text-gray-900" style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '4px' }}>
+                {resident.first_name} {resident.last_name}
               </h1>
-              <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-600" style={{ fontSize: '14px', color: '#6b7280' }}>
                 Resident Details
               </p>
             </div>
@@ -878,12 +867,24 @@ function ResidentDetailContent() {
           {/* Left Column - ResidentForm Template */}
           <div className="lg:col-span-2">
             {/* ResidentForm Template */}
-            <ResidentForm
-              mode={formMode}
-              initialData={resident ? transformToFormState(resident) : undefined}
-              onSubmit={handleFormSubmit}
-              onModeChange={setFormMode}
-            />
+            {(() => {
+              const formData = editedResident ? transformToFormState(editedResident) : undefined;
+              console.log('  - first_name:', formData?.first_name);
+              console.log('  - civil_status:', formData?.civil_status);
+              console.log('  - email:', formData?.email);
+              console.log('  - mobile_number:', formData?.mobile_number);
+              console.log('  - mode:', formMode);
+              return (
+                <ResidentForm
+                  mode={formMode}
+                  initialData={formData}
+                  onSubmit={handleFormSubmit}
+                  onModeChange={undefined} // Hide FormHeader edit button
+                  onChange={setCurrentFormData} // Track current form data changes
+                  key={`resident-form-${editedResident?.id}-${editedResident?.updated_at || Date.now()}`} // Force re-render when resident updates
+                />
+              );
+            })()}
           </div>
 
           {/* Right Column - Side Information */}
@@ -896,189 +897,108 @@ function ResidentDetailContent() {
                 </h3>
               </div>
               <div className="space-y-3 px-6 py-4">
-                {isEditing ? (
-                  <>
-                    <button
-                      onClick={handleSave}
-                      disabled={isSaving}
-                      className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-black"
-                    >
-                      {isSaving ? 'Saving...' : 'Save Changes'}
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      disabled={isSaving}
-                      className="w-full rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-black"
-                    >
-                      Cancel
-                    </button>
-                    {saveError && (
-                      <div className="mt-2 text-center text-sm text-red-600">{saveError}</div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
-                      Generate Certificate
-                    </button>
-                    <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
-                      Export Data
-                    </button>
-                  </>
-                )}
+                {/* Edit/Save mode toggle button with FormHeader styling */}
+                <button
+                  type="button"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    console.log('===== SAVE BUTTON ONCLICK FIRED =====');
+                    console.log('Time:', new Date().toISOString());
+                    console.log('formMode:', formMode);
+                    console.log('hasCurrentFormData:', !!currentFormData);
+                    console.log('hasResident:', !!resident);
+                    
+                    if (formMode === 'view') {
+                      console.log('ACTION: Switching to edit mode');
+                      setFormMode('edit');
+                    } else {
+                      console.log('ACTION: Attempting to save data');
+                      // The form component handles its own validation and submission
+                      // We need to trigger the form's submit event
+                      console.log('🔥 TRIGGERING FORM SUBMISSION');
+                      const formElement = document.querySelector('form');
+                      if (formElement) {
+                        console.log('✅ Found form element, triggering submit event');
+                        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                        formElement.dispatchEvent(submitEvent);
+                      } else {
+                        console.error('❌ ERROR: Could not find form element!');
+                        toast.error('Unable to submit form');
+                      }
+                    }
+                    console.log('===== END SAVE BUTTON ONCLICK =====');
+                  }}
+                  className="w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800 rounded-lg transition-colors font-medium"
+                >
+                  {formMode === 'view' ? '✏️ Edit' : '💾 Save'}
+                </button>
+                <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+                  Generate Certificate
+                </button>
+                <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700">
+                  Export Data
+                </button>
+                
+                {/* Delete Button */}
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={isDeleting || formMode === 'edit'}
+                  className="w-full rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-100 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                >
+                  {isDeleting ? 'Deleting...' : '🗑️ Delete Resident'}
+                </button>
               </div>
             </div>
 
-            {/* Classifications Card */}
-            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
-                  Classifications
-                </h3>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
-                  Fields marked with{' '}
-                  <span className="text-gray-500 underline dark:text-gray-500">(auto)</span> are
-                  calculated automatically. Hover for details.
-                </p>
-              </div>
-              <div className="px-6 py-4">
-                <dl className="space-y-4">
-                  {renderEditableField('Registered Voter', 'is_voter', 'checkbox')}
-                  {renderEditableField('Resident Voter', 'is_resident_voter', 'checkbox')}
-                  {renderEditableField(
-                    'Labor Force',
-                    'is_labor_force',
-                    'checkbox',
-                    undefined,
-                    true
-                  )}
-                  {renderEditableField('Employed', 'is_employed', 'checkbox', undefined, true)}
-                  {renderEditableField('Unemployed', 'is_unemployed', 'checkbox', undefined, true)}
-                  {renderEditableField(
-                    'Senior Citizen',
-                    'is_senior_citizen',
-                    'checkbox',
-                    undefined,
-                    true
-                  )}
-                  {renderEditableField(
-                    'Registered Senior Citizen',
-                    'is_registered_senior_citizen',
-                    'checkbox'
-                  )}
-                  {renderEditableField('PWD', 'is_pwd', 'checkbox')}
-                  {renderEditableField('Solo Parent', 'is_solo_parent', 'checkbox')}
-                  {renderEditableField('OFW', 'is_ofw', 'checkbox')}
-                  {renderEditableField('Indigenous People', 'is_indigenous_people', 'checkbox')}
-                  {renderEditableField('Migrant', 'is_migrant', 'checkbox')}
-                  {renderEditableField(
-                    'Out of School Children',
-                    'is_out_of_school_children',
-                    'checkbox'
-                  )}
-                  {renderEditableField('Out of School Youth', 'is_out_of_school_youth', 'checkbox')}
-                </dl>
-              </div>
-            </div>
-
-            {/* Additional Information Card */}
-            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
-                  Additional Information
-                </h3>
-              </div>
-              <div className="px-6 py-4">
-                <dl className="space-y-4">
-                  {renderEditableField(
-                    'Religion',
-                    'religion',
-                    'select',
-                    extractValues(RELIGION_OPTIONS)
-                  )}
-                  {renderEditableField(
-                    'Ethnicity',
-                    'ethnicity',
-                    'select',
-                    extractValues(ETHNICITY_OPTIONS)
-                  )}
-                  {renderEditableField('Voter ID Number', 'voter_id_number', 'text')}
-                </dl>
-              </div>
-            </div>
-
-            {/* System Information Card */}
-            <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-              <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400">
-                  System Information
-                </h3>
-              </div>
-              <div className="px-6 py-4">
-                <dl className="space-y-4">
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      Record ID
-                    </dt>
-                    <dd className="mt-1 font-mono text-xs text-gray-600 dark:text-gray-400">
-                      {resident.id}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      Created Date
-                    </dt>
-                    <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      {new Date(resident.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </dd>
-                  </div>
-                  {resident.updated_at && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                        Last Updated
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(resident.updated_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </dd>
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+              <div className="fixed inset-0 z-50 overflow-y-auto">
+                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setShowDeleteConfirm(false)} />
+                  <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-gray-800">
+                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 dark:bg-gray-800">
+                      <div className="sm:flex sm:items-start">
+                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-900/20">
+                          <svg className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                          </svg>
+                        </div>
+                        <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                          <h3 className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">
+                            Delete Resident
+                          </h3>
+                          <div className="mt-2">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              Are you sure you want to delete {resident?.first_name} {resident?.last_name}? This action cannot be undone.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  {resident.household_id && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                        Household ID
-                      </dt>
-                      <dd className="mt-1 font-mono text-xs text-gray-600 dark:text-gray-400">
-                        {resident.household_id}
-                      </dd>
+                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-700">
+                      <button
+                        type="button"
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50 sm:ml-3 sm:w-auto"
+                      >
+                        {isDeleting ? 'Deleting...' : 'Delete'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowDeleteConfirm(false)}
+                        disabled={isDeleting}
+                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 sm:mt-0 sm:w-auto dark:bg-gray-600 dark:text-gray-100 dark:ring-gray-500 dark:hover:bg-gray-500"
+                      >
+                        Cancel
+                      </button>
                     </div>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <dt className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                      Active Status
-                    </dt>
-                    <dd
-                      className={`text-sm font-medium ${
-                        resident.is_active ? 'text-green-600' : 'text-red-600'
-                      }`}
-                    >
-                      {formatBoolean(resident.is_active)}
-                    </dd>
                   </div>
-                </dl>
+                </div>
               </div>
-            </div>
+            )}
+
+
           </div>
         </div>
       </div>

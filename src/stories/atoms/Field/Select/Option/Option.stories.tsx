@@ -20,7 +20,7 @@ Option component for dropdown lists and select interfaces.
 
 ## Usage
 \`\`\`tsx
-import { Option } from '@/components/atoms';
+import { Option } from '@/components';
 
 <Option
   label="Option Label"

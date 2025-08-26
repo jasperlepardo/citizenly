@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/atoms';
+import { useAuth } from '@/contexts';
+import { Button } from '@/components';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

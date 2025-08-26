@@ -22,7 +22,7 @@ vi.mock('@/lib/ui/lazy-loading', () => ({
 }));
 
 // Import after mocking to ensure mock is applied
-import { preloadComponents } from '@/lib/ui/lazy-loading';
+import { preloadComponents } from '@/lib';
 
 describe('usePreloadOnHover', () => {
   beforeEach(() => {

@@ -4,26 +4,47 @@ import React, { useState, useEffect } from 'react';
 import { syncQueue } from '@/lib/data';
 import { useConnectionStatus } from '@/hooks/utilities/useConnectionStatus';
 
+// Custom hook to handle client-side mounting
+function useIsClient() {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  return isClient;
+}
+
 interface ConnectionStatusProps {
   className?: string;
 }
 
 export default function ConnectionStatus({ className = '' }: ConnectionStatusProps) {
-  const { isOnline, syncPending } = useConnectionStatus();
+  const isClient = useIsClient();
+  const [isOnline, setIsOnline] = useState(true);
+  const [syncPending, setSyncPending] = useState(false);
   const [syncStatus, setSyncStatus] = useState({
     isProcessing: false,
     pendingCount: 0,
   });
   const [showBanner, setShowBanner] = useState(false);
-
+  
   useEffect(() => {
+    // Only run on client side
+    if (!isClient) return;
+    
+    // Set initial connection status
+    setIsOnline(navigator.onLine);
+    
     // Setup enhanced sync status monitoring
     const handleOnline = async () => {
+      setIsOnline(true);
       setShowBanner(true);
       
       // Check for pending sync items
       const status = await syncQueue.getStatus();
       setSyncStatus(status);
+      setSyncPending(status.pendingCount > 0);
       
       // Auto-hide banner after sync completes
       setTimeout(() => {
@@ -34,6 +55,7 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
     };
 
     const handleOffline = () => {
+      setIsOnline(false);
       setShowBanner(true);
     };
 
@@ -44,6 +66,7 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
     const checkSyncStatus = async () => {
       const status = await syncQueue.getStatus();
       setSyncStatus(status);
+      setSyncPending(status.pendingCount > 0);
       
       // Show banner if there are pending items
       if (status.pendingCount > 0) {
@@ -61,7 +84,7 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
       window.removeEventListener('offline', handleOffline);
       clearInterval(statusInterval);
     };
-  }, []);
+  }, [isClient]);
 
   const handleDismiss = () => {
     setShowBanner(false);
@@ -73,16 +96,12 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
         await syncQueue.forceSync();
         const status = await syncQueue.getStatus();
         setSyncStatus(status);
+        setSyncPending(status.pendingCount > 0);
       } catch (error) {
         console.error('Force sync failed:', error);
       }
     }
   };
-
-  // Don't show if online and no pending sync
-  if (!showBanner && (isOnline && syncStatus.pendingCount === 0)) {
-    return null;
-  }
 
   const getStatusInfo = () => {
     if (!isOnline) {
@@ -139,6 +158,16 @@ export default function ConnectionStatus({ className = '' }: ConnectionStatusPro
       ),
     };
   };
+
+  // Don't render on server to prevent hydration mismatch  
+  if (!isClient) {
+    return null;
+  }
+
+  // Don't show if online and no pending sync
+  if (!showBanner && (isOnline && syncStatus.pendingCount === 0)) {
+    return null;
+  }
 
   const statusInfo = getStatusInfo();
 

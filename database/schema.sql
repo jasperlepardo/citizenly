@@ -436,7 +436,7 @@ CREATE TABLE residents (
     updated_by UUID REFERENCES auth_user_profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    religion religion_enum DEFAULT 'roman_catholic',
+    religion religion_enum,
     citizenship citizenship_enum DEFAULT 'filipino',
     blood_type blood_type_enum,
     ethnicity ethnicity_enum
@@ -481,7 +481,6 @@ CREATE TABLE resident_relationships (
 -- 8.3 RESIDENT SECTORAL INFORMATION TABLE
 CREATE TABLE resident_sectoral_info (
     resident_id UUID PRIMARY KEY REFERENCES residents(id) ON DELETE CASCADE,
-    is_labor_force BOOLEAN,
     is_labor_force_employed BOOLEAN,
     is_unemployed BOOLEAN,
     is_overseas_filipino_worker BOOLEAN,
@@ -937,7 +936,6 @@ BEGIN
 
     INSERT INTO resident_sectoral_info (
         resident_id,
-        is_labor_force,
         is_labor_force_employed,
         is_unemployed,
         is_senior_citizen,
@@ -945,8 +943,6 @@ BEGIN
         is_out_of_school_youth
     ) VALUES (
         NEW.id,
-        CASE WHEN NEW.employment_status IN ('employed', 'self_employed', 'unemployed', 'looking_for_work', 'underemployed') 
-             THEN true ELSE false END,
         
         -- Employment Status: Currently working in any capacity
         is_working,
@@ -970,8 +966,6 @@ BEGIN
     ON CONFLICT (resident_id)
     DO UPDATE SET
         -- Update all sectoral classifications when resident data changes
-        is_labor_force = CASE WHEN NEW.employment_status IN ('employed', 'self_employed', 'unemployed', 'looking_for_work', 'underemployed') 
-                              THEN true ELSE false END,
         is_labor_force_employed = is_working,
         is_unemployed = NEW.employment_status IN ('unemployed', 'looking_for_work'),
         is_senior_citizen = resident_age >= 60,

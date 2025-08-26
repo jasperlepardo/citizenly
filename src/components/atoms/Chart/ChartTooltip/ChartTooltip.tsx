@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 
 interface TooltipData {
   label: string;

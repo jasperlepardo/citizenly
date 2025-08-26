@@ -1,4 +1,4 @@
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 import { ErrorCode } from '../api/types';
 
 /**

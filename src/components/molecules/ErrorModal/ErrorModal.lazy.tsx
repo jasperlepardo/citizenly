@@ -5,7 +5,7 @@
  */
 
 import { lazy } from 'react';
-import { withLazyLoading } from '@/lib/ui/lazy-loading';
+import { withLazyLoading } from '@/lib';
 
 const ErrorModalLazy = lazy(() =>
   import('./ErrorModal').then(module => ({

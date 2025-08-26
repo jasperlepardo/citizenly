@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Accessibility Utilities
  * Helper functions and hooks for improving accessibility

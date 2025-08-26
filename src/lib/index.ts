@@ -41,8 +41,25 @@ export * from './ui';
 // Command menu system
 export * from './command-menu';
 
-// Environment configuration
-export * from './config/environment';
+// Environment configuration and constants
+export * from './config';
+export { 
+  API_ERROR_CODES,
+  createErrorResponseObject,
+  EDUCATION_LEVEL_OPTIONS,
+  ETHNICITY_OPTIONS,
+  RELIGION_OPTIONS,
+  extractValues,
+  getLabelByValue,
+  BLOOD_TYPE_OPTIONS,
+  CITIZENSHIP_OPTIONS,
+  CIVIL_STATUS_OPTIONS,
+  EMPLOYMENT_STATUS_OPTIONS,
+  SEX_OPTIONS
+} from './constants';
+
+// Export types separately to comply with isolatedModules
+export type { BloodTypeValue, CitizenshipValue, CivilStatusValue, EmploymentStatusValue, SexValue } from './constants';
 
 // Legacy compatibility exports (for gradual migration)
 export * from './data/supabase';  // For @/lib/supabase imports
@@ -53,4 +70,6 @@ export {
   dbLogger,
   apiLogger,
   authLogger,
-} from '@/lib/logging';
+  logError,
+  logSecureError,
+} from './logging';

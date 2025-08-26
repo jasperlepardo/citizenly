@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 import { CommandMenuItem } from './CommandMenuItem';
 import type { CommandMenuItem as CommandMenuItemType } from '@/types/components/command-menu';
 

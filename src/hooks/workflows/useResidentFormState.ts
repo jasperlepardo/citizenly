@@ -8,14 +8,14 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import type { ResidentFormData as ResidentEditFormData } from '@/types/residents';
+import type { ResidentFormData as ResidentEditFormData } from '@/types';
 
 /**
  * Default form data with proper typing
  */
 const DEFAULT_FORM_DATA: Partial<ResidentEditFormData> = {
-  firstName: '',
-  lastName: '',
+  first_name: '',
+  last_name: '',
   birthdate: '',
   sex: 'male'
 };

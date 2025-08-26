@@ -1,4 +1,4 @@
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 
 /**
  * Performance monitoring utilities

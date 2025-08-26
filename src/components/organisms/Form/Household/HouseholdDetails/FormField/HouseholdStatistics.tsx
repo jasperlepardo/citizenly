@@ -44,12 +44,12 @@ export function HouseholdStatistics({
         <InputField
           label="Number of Families"
           helperText="Total families in this household"
-          errorMessage={errors?.noOfFamilies}
+          errorMessage={errors?.no_of_families}
           inputProps={{
-            name: "noOfFamilies",
+            name: "no_of_families",
             type: "number",
-            value: formData.noOfFamilies?.toString() || '1',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('noOfFamilies')(e.target.value),
+            value: formData.no_of_families?.toString() || '1',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_families')(e.target.value),
             readOnly: isReadOnly,
             placeholder: "1",
             min: 1,
@@ -61,12 +61,12 @@ export function HouseholdStatistics({
         <InputField
           label="Household Members"
           helperText="Total people living in household"
-          errorMessage={errors?.noOfHouseholdMembers}
+          errorMessage={errors?.no_of_household_members}
           inputProps={{
-            name: "noOfHouseholdMembers",
+            name: "no_of_household_members",
             type: "number",
-            value: formData.noOfHouseholdMembers?.toString() || '0',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('noOfHouseholdMembers')(e.target.value),
+            value: formData.no_of_household_members?.toString() || '0',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_household_members')(e.target.value),
             readOnly: isReadOnly,
             placeholder: "0",
             min: 0,
@@ -78,12 +78,12 @@ export function HouseholdStatistics({
         <InputField
           label="Number of Migrants"
           helperText="Household members who are migrants"
-          errorMessage={errors?.noOfMigrants}
+          errorMessage={errors?.no_of_migrants}
           inputProps={{
-            name: "noOfMigrants",
+            name: "no_of_migrants",
             type: "number",
-            value: formData.noOfMigrants?.toString() || '0',
-            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('noOfMigrants')(e.target.value),
+            value: formData.no_of_migrants?.toString() || '0',
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => handleNumberChange('no_of_migrants')(e.target.value),
             readOnly: isReadOnly,
             placeholder: "0",
             min: 0,
@@ -114,12 +114,12 @@ export function HouseholdStatistics({
       </div>
 
       {/* Validation Summary */}
-      {(formData.noOfMigrants || 0) > (formData.noOfHouseholdMembers || 0) && (
+      {(formData.no_of_migrants || 0) > (formData.no_of_household_members || 0) && (
         <div className="bg-warning/5 border border-warning/20 rounded-md p-3">
           <div>
             <p className="font-medium text-yellow-600 dark:text-yellow-400">⚠️ Data Validation Warning</p>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1.5">
-              Number of migrants ({formData.noOfMigrants}) cannot exceed the total household members ({formData.noOfHouseholdMembers}).
+              Number of migrants ({formData.no_of_migrants}) cannot exceed the total household members ({formData.no_of_household_members}).
             </p>
           </div>
         </div>

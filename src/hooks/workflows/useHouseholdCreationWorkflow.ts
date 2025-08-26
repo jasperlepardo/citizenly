@@ -8,7 +8,7 @@
  */
 
 import { useCallback } from 'react';
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 import { useHouseholdForm } from '../utilities/useHouseholdForm';
 import { useHouseholdCodeGeneration } from '../utilities/useHouseholdCodeGeneration';
 import { useAddressResolution } from '../utilities/useAddressResolution';

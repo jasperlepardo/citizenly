@@ -1,0 +1,24 @@
+{
+  "moderate": true,
+  "high": true,
+  "critical": true,
+  "allowlist": [
+    "GHSA-8hc4-vh64-cxmj",
+    "GHSA-jr5f-v2jv-69x6"
+  ],
+  "report-type": "important",
+  "output-format": "json",
+  "pass-enoaudit": false,
+  "skip-dev": false,
+  "advisories": [],
+  "whitelist": [],
+  "summary-format": "detailed",
+  "registry": "https://registry.npmjs.org/",
+  "extra-args": ["--fund"],
+  "_meta": {
+    "description": "Enhanced security scanning configuration",
+    "updated": "2025-08-24",
+    "strictMode": true,
+    "productionReady": true
+  }
+}

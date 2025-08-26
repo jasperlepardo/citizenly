@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib/api/authUtils';
+import { createAdminSupabaseClient } from '@/lib';
 
 interface TestResults {
   timestamp: string;

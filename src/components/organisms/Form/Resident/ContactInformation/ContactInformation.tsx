@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import { ContactDetails, ContactDetailsData } from './FormField/ContactDetails';
 import { HouseholdInformation, HouseholdInformationData } from './FormField/HouseholdInformation';
 
@@ -8,10 +8,10 @@ export interface ContactInformationFormProps {
   mode?: FormMode;
   formData: {
     email?: string;
-    phoneNumber?: string;
-    mobileNumber?: string;
-    householdCode?: string;
-    householdName?: string;
+    telephone_number?: string;
+    mobile_number?: string;
+    household_code?: string;
+    household_name?: string;
   };
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
@@ -34,14 +34,14 @@ export function ContactInformationForm({
   // Map form data to ContactDetails component props
   const contactDetailsValue: ContactDetailsData = {
     email: formData.email || '',
-    phoneNumber: formData.phoneNumber || '',
-    mobileNumber: formData.mobileNumber || '',
+    telephone_number: formData.telephone_number || '',
+    mobile_number: formData.mobile_number || '',
   };
 
   // Map form data to HouseholdInformation component props
   const householdInfoValue: HouseholdInformationData = {
-    householdCode: formData.householdCode || '',
-    householdName: formData.householdName || '',
+    household_code: formData.household_code || '',
+    household_name: formData.household_name || '',
   };
 
   // Handle changes from ContactDetails component

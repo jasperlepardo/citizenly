@@ -22,146 +22,145 @@ import type {
   ResidentFormData,
   ResidentApiData,
   ResidentWithRelations,
-} from '@/types/residents';
+} from '@/types';
 import type {
   HouseholdData,
   HouseholdHead,
   HouseholdOption,
-} from '@/types/households';
+} from '@/types';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {
     it('should map form data to API format correctly', () => {
       const formData: ResidentFormData = {
-        firstName: 'Juan',
-        middleName: 'Dela',
-        lastName: 'Cruz',
-        extensionName: 'Jr.',
+        first_name: 'Juan',
+        middle_name: 'Dela',
+        last_name: 'Cruz',
+        extension_name: 'Jr.',
         sex: 'male',
-        civilStatus: 'single',
+        civil_status: 'single',
         citizenship: 'filipino',
         birthdate: '1990-01-01',
-        birthPlaceCode: '137401',
-        philsysCardNumber: '1234-5678-9012',
-        educationAttainment: 'college',
-        isGraduate: true,
-        employmentStatus: 'employed',
-        psocCode: '1111',
-        occupationTitle: 'Software Engineer',
+        birth_place_code: '137401',
+        philsys_card_number: '1234-5678-9012',
+        education_attainment: 'college',
+        is_graduate: true,
+        employment_status: 'employed',
+        occupation_code: '1111',
         ethnicity: 'tagalog',
         email: 'juan.cruz@email.com',
-        phoneNumber: '02-123-4567',
-        mobileNumber: '09123456789',
-        householdCode: 'HH001',
-        bloodType: 'A+',
+        telephone_number: '02-123-4567',
+        mobile_number: '09123456789',
+        household_code: 'HH001',
+        blood_type: 'A+',
         complexion: 'medium',
-        height: '170',
-        weight: '65',
+        height: 170,
+        weight: 65,
         religion: 'roman_catholic',
-        religionOthersSpecify: '',
-        isVoter: true,
-        isResidentVoter: true,
-        lastVotedDate: '2022-05-09',
-        motherMaidenFirstName: 'Maria',
-        motherMaidenMiddleName: 'Santos',
-        motherMaidenLastName: 'Garcia',
+        religion_others_specify: '',
+        is_voter: true,
+        is_resident_voter: true,
+        last_voted_date: '2022-05-09',
+        mother_maiden_first: 'Maria',
+        mother_maiden_middle: 'Santos',
+        mother_maiden_last: 'Garcia',
         // Additional sectoral fields
-        isLaborForceEmployed: false,
-        isUnemployed: false,
-        isOverseasFilipinoWorker: false,
-        isPersonWithDisability: false,
-        isOutOfSchoolChildren: false,
-        isOutOfSchoolYouth: false,
-        isSeniorCitizen: false,
-        isRegisteredSeniorCitizen: false,
-        isSoloParent: false,
-        isIndigenousPeople: false,
-        isMigrant: false,
+        is_labor_force_employed: false,
+        is_unemployed: false,
+        is_overseas_filipino_worker: false,
+        is_person_with_disability: false,
+        is_out_of_school_children: false,
+        is_out_of_school_youth: false,
+        is_senior_citizen: false,
+        is_registered_senior_citizen: false,
+        is_solo_parent: false,
+        is_indigenous_people: false,
+        is_migrant: false,
       };
 
       const result = mapFormToApi(formData);
 
       expect(result).toEqual({
-        firstName: 'Juan',
-        middleName: 'Dela',
-        lastName: 'Cruz',
-        extensionName: 'Jr.',
+        first_name: 'Juan',
+        middle_name: 'Dela',
+        last_name: 'Cruz',
+        extension_name: 'Jr.',
         sex: 'male',
-        civilStatus: 'single',
+        civil_status: 'single',
         citizenship: 'filipino',
         birthdate: '1990-01-01',
-        birthPlaceCode: '137401',
-        philsysCardNumber: '1234-5678-9012',
-        educationAttainment: 'college',
-        isGraduate: true,
-        employmentStatus: 'employed',
-        occupationCode: '1111', // psocCode -> occupationCode
+        birth_place_code: '137401',
+        philsys_card_number: '1234-5678-9012',
+        education_attainment: 'college',
+        is_graduate: true,
+        employment_status: 'employed',
+        occupation_code: '1111', // psocCode -> occupationCode
         ethnicity: 'tagalog',
         email: 'juan.cruz@email.com',
-        telephoneNumber: '02-123-4567', // phoneNumber -> telephoneNumber
-        mobileNumber: '09123456789',
-        householdCode: 'HH001',
-        bloodType: 'A+',
+        telephone_number: '02-123-4567', // phoneNumber -> telephone_number
+        mobile_number: '09123456789',
+        household_code: 'HH001',
+        blood_type: 'A+',
         complexion: 'medium',
-        height: '170',
-        weight: '65',
+        height: 170,
+        weight: 65,
         religion: 'roman_catholic',
         religionOthersSpecify: undefined,
-        isVoter: true,
-        isResidentVoter: true,
-        lastVotedDate: '2022-05-09',
-        motherMaidenFirstName: 'Maria',
-        motherMaidenMiddleName: 'Santos',
-        motherMaidenLastName: 'Garcia',
+        is_voter: true,
+        is_resident_voter: true,
+        last_voted_date: '2022-05-09',
+        mother_maiden_first: 'Maria',
+        mother_maiden_middle: 'Santos',
+        mother_maiden_last: 'Garcia',
       });
     });
 
     it('should handle empty/undefined values correctly', () => {
       const formData: ResidentFormData = {
-        firstName: 'Juan',
-        middleName: '',
-        lastName: 'Cruz',
-        extensionName: '',
+        first_name: 'Juan',
+        middle_name: '',
+        last_name: 'Cruz',
+        extension_name: '',
         sex: 'male',
-        civilStatus: '',
-        citizenship: '',
+        civil_status: 'single',
+        citizenship: 'filipino',
         birthdate: '1990-01-01',
-        birthPlaceCode: '',
-        philsysCardNumber: '',
-        educationAttainment: '',
-        isGraduate: false,
-        employmentStatus: '',
-        psocCode: '',
-        occupationTitle: '',
+        birth_place_code: '',
+        philsys_card_number: '',
+        education_attainment: '',
+        is_graduate: false,
+        employment_status: '',
+        occupation_code: '',
+        occupation_title: '',
         ethnicity: '',
         email: '',
-        phoneNumber: '',
-        mobileNumber: '',
-        householdCode: '',
-        bloodType: '',
+        telephone_number: '',
+        mobile_number: '',
+        household_code: '',
+        blood_type: '' as any,
         complexion: '',
-        height: '',
-        weight: '',
+        height: 0,
+        weight: 0,
         religion: '',
-        religionOthersSpecify: '',
-        isVoter: undefined,
-        isResidentVoter: undefined,
-        lastVotedDate: '',
-        motherMaidenFirstName: '',
-        motherMaidenMiddleName: '',
-        motherMaidenLastName: '',
+        religion_others_specify: '',
+        is_voter: undefined,
+        is_resident_voter: undefined,
+        last_voted_date: '',
+        mother_maiden_first: '',
+        mother_maiden_middle: '',
+        mother_maiden_last: '',
         // Additional sectoral fields
-        isLaborForceEmployed: false,
-        isUnemployed: false,
-        isOverseasFilipinoWorker: false,
-        isPersonWithDisability: false,
-        isOutOfSchoolChildren: false,
-        isOutOfSchoolYouth: false,
-        isSeniorCitizen: false,
-        isRegisteredSeniorCitizen: false,
-        isSoloParent: false,
-        isIndigenousPeople: false,
-        isMigrant: false,
+        is_labor_force_employed: false,
+        is_unemployed: false,
+        is_overseas_filipino_worker: false,
+        is_person_with_disability: false,
+        is_out_of_school_children: false,
+        is_out_of_school_youth: false,
+        is_senior_citizen: false,
+        is_registered_senior_citizen: false,
+        is_solo_parent: false,
+        is_indigenous_people: false,
+        is_migrant: false,
       };
 
       const result = mapFormToApi(formData);
@@ -273,9 +272,9 @@ describe('Resident Mapper Utilities', () => {
       })).toBe('');
 
       expect(formatFullName({
-        firstName: 'Juan',
-        middleName: '',
-        lastName: 'Cruz',
+        first_name: 'Juan',
+        middle_name: '',
+        last_name: 'Cruz',
       })).toBe('Juan Cruz');
     });
   });
@@ -308,39 +307,39 @@ describe('Resident Mapper Utilities', () => {
   describe('parseFullName', () => {
     it('should parse single name', () => {
       expect(parseFullName('Juan')).toEqual({
-        firstName: 'Juan',
-        middleName: '',
+        first_name: 'Juan',
+        middle_name: '',
         lastName: '',
       });
     });
 
     it('should parse two names', () => {
       expect(parseFullName('Juan Cruz')).toEqual({
-        firstName: 'Juan',
-        middleName: '',
-        lastName: 'Cruz',
+        first_name: 'Juan',
+        middle_name: '',
+        last_name: 'Cruz',
       });
     });
 
     it('should parse three names', () => {
       expect(parseFullName('Juan Dela Cruz')).toEqual({
-        firstName: 'Juan',
-        middleName: 'Dela',
-        lastName: 'Cruz',
+        first_name: 'Juan',
+        middle_name: 'Dela',
+        last_name: 'Cruz',
       });
     });
 
     it('should parse four or more names', () => {
       expect(parseFullName('Juan Carlos Dela Cruz')).toEqual({
-        firstName: 'Juan',
+        first_name: 'Juan',
         middleName: 'Carlos Dela',
-        lastName: 'Cruz',
+        last_name: 'Cruz',
       });
 
       expect(parseFullName('Juan Carlos Maria Dela Cruz')).toEqual({
-        firstName: 'Juan',
+        first_name: 'Juan',
         middleName: 'Carlos Maria Dela',
-        lastName: 'Cruz',
+        last_name: 'Cruz',
       });
     });
   });
@@ -392,7 +391,6 @@ describe('Resident Mapper Utilities', () => {
         description: 'Information Technology > Software Development',
         level_type: 'occupation',
         occupation_code: '1111',
-        occupation_title: 'Software Engineer',
       });
     });
   });

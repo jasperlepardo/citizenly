@@ -1,34 +1,50 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 import SectoralClassifications, { SectoralInformation, SectoralContext } from './FormField/SectoralClassifications';
 
 export interface SectoralInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
   formData: {
-    // Sectoral Information
-    isLaborForce?: boolean;
-    isLaborForceEmployed?: boolean;
-    isUnemployed?: boolean;
-    isOverseasFilipino?: boolean;
-    isPersonWithDisability?: boolean;
-    isOutOfSchoolChildren?: boolean;
-    isOutOfSchoolYouth?: boolean;
-    isSeniorCitizen?: boolean;
-    isRegisteredSeniorCitizen?: boolean;
-    isSoloParent?: boolean;
-    isIndigenousPeople?: boolean;
-    isMigrant?: boolean;
+    // Sectoral Information (snake_case matching database)
+    is_labor_force?: boolean;
+    is_labor_force_employed?: boolean;
+    is_unemployed?: boolean;
+    is_overseas_filipino?: boolean;
+    is_person_with_disability?: boolean;
+    is_out_of_school_children?: boolean;
+    is_out_of_school_youth?: boolean;
+    is_senior_citizen?: boolean;
+    is_registered_senior_citizen?: boolean;
+    is_solo_parent?: boolean;
+    is_indigenous_people?: boolean;
+    is_migrant?: boolean;
     // Context data for auto-calculation
     birthdate?: string;
-    employmentStatus?: string;
-    educationAttainment?: string;
-    civilStatus?: string;
+    employment_status?: string;
+    education_attainment?: string;
+    civil_status?: string;
     ethnicity?: string;
   };
   onChange: (field: string | number | symbol, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
 }
+
+// Field mapping configuration (now both sides use snake_case)
+const SECTORAL_FIELD_MAPPING = [
+  { formKey: 'is_labor_force', dbKey: 'is_labor_force' },
+  { formKey: 'is_labor_force_employed', dbKey: 'is_labor_force_employed' },
+  { formKey: 'is_unemployed', dbKey: 'is_unemployed' },
+  { formKey: 'is_overseas_filipino', dbKey: 'is_overseas_filipino_worker' },
+  { formKey: 'is_person_with_disability', dbKey: 'is_person_with_disability' },
+  { formKey: 'is_out_of_school_children', dbKey: 'is_out_of_school_children' },
+  { formKey: 'is_out_of_school_youth', dbKey: 'is_out_of_school_youth' },
+  { formKey: 'is_senior_citizen', dbKey: 'is_senior_citizen' },
+  { formKey: 'is_registered_senior_citizen', dbKey: 'is_registered_senior_citizen' },
+  { formKey: 'is_solo_parent', dbKey: 'is_solo_parent' },
+  { formKey: 'is_indigenous_people', dbKey: 'is_indigenous_people' },
+  { formKey: 'is_migrant', dbKey: 'is_migrant' },
+];
 
 export function SectoralInformationForm({ 
   mode = 'create',
@@ -37,45 +53,26 @@ export function SectoralInformationForm({
   errors
 }: SectoralInformationFormProps) {
 
-  // Map form data to SectoralInfo component props
-  const sectoralValue: SectoralInformation = {
-    is_labor_force: formData.isLaborForce || false,
-    is_labor_force_employed: formData.isLaborForceEmployed || false,
-    is_unemployed: formData.isUnemployed || false,
-    is_overseas_filipino_worker: formData.isOverseasFilipino || false,
-    is_person_with_disability: formData.isPersonWithDisability || false,
-    is_out_of_school_children: formData.isOutOfSchoolChildren || false,
-    is_out_of_school_youth: formData.isOutOfSchoolYouth || false,
-    is_senior_citizen: formData.isSeniorCitizen || false,
-    is_registered_senior_citizen: formData.isRegisteredSeniorCitizen || false,
-    is_solo_parent: formData.isSoloParent || false,
-    is_indigenous_people: formData.isIndigenousPeople || false,
-    is_migrant: formData.isMigrant || false,
-  };
+  // Map form data to SectoralInfo component props using configuration
+  const sectoralValue: SectoralInformation = SECTORAL_FIELD_MAPPING.reduce((acc, field) => ({
+    ...acc,
+    [field.dbKey]: (formData as any)[field.formKey] || false,
+  }), {} as SectoralInformation);
 
   // Context for auto-calculation
   const sectoralContext: SectoralContext = {
     birthdate: formData.birthdate,
-    employment_status: formData.employmentStatus,
-    highest_educational_attainment: formData.educationAttainment,
-    marital_status: formData.civilStatus,
+    employment_status: formData.employment_status,
+    highest_educational_attainment: formData.education_attainment,
+    marital_status: formData.civil_status,
     ethnicity: formData.ethnicity,
   };
 
-  // Handle changes from SectoralInfo component
+  // Handle changes from SectoralInfo component using configuration
   const handleSectoralChange = (value: SectoralInformation) => {
-    onChange('isLaborForce', value.is_labor_force);
-    onChange('isLaborForceEmployed', value.is_labor_force_employed);
-    onChange('isUnemployed', value.is_unemployed);
-    onChange('isOverseasFilipinoWorker', value.is_overseas_filipino_worker);
-    onChange('isPersonWithDisability', value.is_person_with_disability);
-    onChange('isOutOfSchoolChildren', value.is_out_of_school_children);
-    onChange('isOutOfSchoolYouth', value.is_out_of_school_youth);
-    onChange('isSeniorCitizen', value.is_senior_citizen);
-    onChange('isRegisteredSeniorCitizen', value.is_registered_senior_citizen);
-    onChange('isSoloParent', value.is_solo_parent);
-    onChange('isIndigenousPeople', value.is_indigenous_people);
-    onChange('isMigrant', value.is_migrant);
+    SECTORAL_FIELD_MAPPING.forEach(field => {
+      onChange(field.formKey, (value as any)[field.dbKey]);
+    });
   };
 
   return (

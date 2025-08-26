@@ -6,4 +6,4 @@ export type {
   FormSectionPropsGeneric as FormSectionProps,
   FieldConfig,
   HouseholdFormProps
-} from '@/types/forms';
+} from '@/types';

@@ -4,8 +4,8 @@ import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn, formatFileSize } from '@/lib/utilities';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
-import { Button } from '@/components/atoms';
-import { logger } from '@/lib/logging/secure-logger';
+import { Button } from '@/components';
+import { logger } from '@/lib';
 
 const fileUploadVariants = cva(
   'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2',

@@ -46,11 +46,11 @@ export function GeographicLocation({
     onChange(field, value);
     
     // Handle cascading selections
-    if (field === 'regionCode') {
+    if (field === 'region_code') {
       // Clear dependent fields
-      onChange('provinceCode', '');
-      onChange('cityMunicipalityCode', '');
-      onChange('barangayCode', '');
+      onChange('province_code', '');
+      onChange('city_municipality_code', '');
+      onChange('barangay_code', '');
       
       if (value) {
         // Load provinces or independent cities based on region
@@ -61,17 +61,17 @@ export function GeographicLocation({
           loadProvinces(value as string);
         }
       }
-    } else if (field === 'provinceCode') {
+    } else if (field === 'province_code') {
       // Clear dependent fields
-      onChange('cityMunicipalityCode', '');
-      onChange('barangayCode', '');
+      onChange('city_municipality_code', '');
+      onChange('barangay_code', '');
       
       if (value) {
         loadCities(value as string);
       }
-    } else if (field === 'cityMunicipalityCode') {
+    } else if (field === 'city_municipality_code') {
       // Clear dependent fields
-      onChange('barangayCode', '');
+      onChange('barangay_code', '');
       
       if (value) {
         loadBarangays(value as string);
@@ -81,25 +81,25 @@ export function GeographicLocation({
 
   // Load initial data based on existing form values
   useEffect(() => {
-    if (formData.regionCode) {
-      if (formData.regionCode === '13') {
-        loadIndependentCities(formData.regionCode);
+    if (formData.region_code) {
+      if (formData.region_code === '13') {
+        loadIndependentCities(formData.region_code);
       } else {
-        loadProvinces(formData.regionCode);
+        loadProvinces(formData.region_code);
       }
       
-      if (formData.provinceCode) {
-        loadCities(formData.provinceCode);
+      if (formData.province_code) {
+        loadCities(formData.province_code);
         
-        if (formData.cityMunicipalityCode) {
-          loadBarangays(formData.cityMunicipalityCode);
+        if (formData.city_municipality_code) {
+          loadBarangays(formData.city_municipality_code);
         }
-      } else if (formData.cityMunicipalityCode && formData.regionCode === '13') {
+      } else if (formData.city_municipality_code && formData.region_code === '13') {
         // For NCR, load barangays directly from city
-        loadBarangays(formData.cityMunicipalityCode);
+        loadBarangays(formData.city_municipality_code);
       }
     }
-  }, [formData.regionCode, formData.provinceCode, formData.cityMunicipalityCode, loadProvinces, loadCities, loadBarangays, loadIndependentCities]);
+  }, [formData.region_code, formData.province_code, formData.city_municipality_code, loadProvinces, loadCities, loadBarangays, loadIndependentCities]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -109,11 +109,11 @@ export function GeographicLocation({
           label="Region"
           required
           helperText="Choose the administrative region"
-          errorMessage={errors?.regionCode}
+          errorMessage={errors?.region_code}
           selectProps={{
-            name: "regionCode",
-            value: formData.regionCode || '',
-            onSelect: (option) => handleFieldChange('regionCode')(option?.value || ''),
+            name: "region_code",
+            value: formData.region_code || '',
+            onSelect: (option) => handleFieldChange('region_code')(option?.value || ''),
             placeholder: "Select region...",
             disabled: isReadOnly,
             loading: loading.regions,
@@ -128,16 +128,16 @@ export function GeographicLocation({
         <SelectField
           label="Province"
           helperText="Choose the province (if applicable)"
-          errorMessage={errors?.provinceCode}
+          errorMessage={errors?.province_code}
           selectProps={{
-            name: "provinceCode",
-            value: formData.provinceCode || '',
-            onSelect: (option) => handleFieldChange('provinceCode')(option?.value || ''),
+            name: "province_code",
+            value: formData.province_code || '',
+            onSelect: (option) => handleFieldChange('province_code')(option?.value || ''),
             placeholder: "Select province...",
-            disabled: isReadOnly || !formData.regionCode || formData.regionCode === '13',
+            disabled: isReadOnly || !formData.region_code || formData.region_code === '13',
             loading: loading.provinces,
             options: [
-              { value: '', label: formData.regionCode === '13' ? 'N/A (Independent Cities)' : 'Select province...' },
+              { value: '', label: formData.region_code === '13' ? 'N/A (Independent Cities)' : 'Select province...' },
               ...provinces
             ]
           }}
@@ -150,13 +150,13 @@ export function GeographicLocation({
           label="City/Municipality"
           required
           helperText="Choose the city or municipality"
-          errorMessage={errors?.cityMunicipalityCode}
+          errorMessage={errors?.city_municipality_code}
           selectProps={{
-            name: "cityMunicipalityCode",
-            value: formData.cityMunicipalityCode || '',
-            onSelect: (option) => handleFieldChange('cityMunicipalityCode')(option?.value || ''),
+            name: "city_municipality_code",
+            value: formData.city_municipality_code || '',
+            onSelect: (option) => handleFieldChange('city_municipality_code')(option?.value || ''),
             placeholder: "Select city/municipality...",
-            disabled: isReadOnly || !formData.regionCode || (!formData.provinceCode && formData.regionCode !== '13'),
+            disabled: isReadOnly || !formData.region_code || (!formData.province_code && formData.region_code !== '13'),
             loading: loading.cities,
             options: [
               { value: '', label: 'Select city/municipality...' },
@@ -170,13 +170,13 @@ export function GeographicLocation({
           label="Barangay"
           required
           helperText="Choose the barangay"
-          errorMessage={errors?.barangayCode}
+          errorMessage={errors?.barangay_code}
           selectProps={{
-            name: "barangayCode",
-            value: formData.barangayCode || '',
-            onSelect: (option) => handleFieldChange('barangayCode')(option?.value || ''),
+            name: "barangay_code",
+            value: formData.barangay_code || '',
+            onSelect: (option) => handleFieldChange('barangay_code')(option?.value || ''),
             placeholder: "Select barangay...",
-            disabled: isReadOnly || !formData.cityMunicipalityCode,
+            disabled: isReadOnly || !formData.city_municipality_code,
             loading: loading.barangays,
             options: [
               { value: '', label: 'Select barangay...' },

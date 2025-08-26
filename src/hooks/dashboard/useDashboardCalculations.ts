@@ -11,14 +11,34 @@ import { useMemo } from 'react';
 import type { AgeGroup } from './useDashboardApi';
 
 /**
- * Resident data for calculations
+ * Sectoral information interface
+ */
+export interface SectoralInfo {
+  is_labor_force: boolean;
+  is_labor_force_employed: boolean;
+  is_unemployed: boolean;
+  is_overseas_filipino_worker: boolean;
+  is_person_with_disability: boolean;
+  is_out_of_school_children: boolean;
+  is_out_of_school_youth: boolean;
+  is_senior_citizen: boolean;
+  is_registered_senior_citizen: boolean;
+  is_solo_parent: boolean;
+  is_indigenous_people: boolean;
+  is_migrant: boolean;
+}
+
+/**
+ * Resident data for calculations with improved type safety
  */
 export interface ResidentData {
   birthdate: string;
-  sex: string;
-  civil_status: string;
+  sex: 'male' | 'female' | string;
+  civil_status: 'single' | 'married' | 'widowed' | 'divorced' | 'separated' | 'annulled' | string;
   employment_status: string;
   is_labor_force_employed?: boolean;
+  household_code?: string;
+  resident_sectoral_info?: SectoralInfo[];
 }
 
 /**
@@ -74,9 +94,35 @@ const STANDARD_AGE_GROUPS = [
 ] as const;
 
 /**
- * Process population data for population pyramid
+ * Safely calculate age with input validation
+ */
+const safeCalculateAge = (birthdate: string): number | null => {
+  if (!birthdate || typeof birthdate !== 'string') return null;
+  
+  const birth = new Date(birthdate);
+  if (isNaN(birth.getTime())) return null;
+  
+  return calculateAge(birthdate);
+};
+
+/**
+ * Safely determine gender with type checking
+ */
+const safeGetGender = (sex: string): 'male' | 'female' | null => {
+  if (!sex || typeof sex !== 'string') return null;
+  
+  const normalized = sex.toLowerCase().trim();
+  if (normalized === 'male') return 'male';
+  if (normalized === 'female') return 'female';
+  return null;
+};
+
+/**
+ * Process population data for population pyramid with improved type safety
  */
 export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => {
+  if (!Array.isArray(residents)) return [];
+  
   const counts: Record<string, { male: number; female: number }> = {};
 
   // Initialize age groups
@@ -84,16 +130,17 @@ export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => 
     counts[group] = { male: 0, female: 0 };
   });
 
-  // Calculate ages and categorize
+  // Calculate ages and categorize with safe type checking
   residents.forEach(resident => {
-    if (!resident.birthdate || !resident.sex) {
-      return;
-    }
+    if (!resident || typeof resident !== 'object') return;
     
-    const age = calculateAge(resident.birthdate);
+    const age = safeCalculateAge(resident.birthdate);
+    if (age === null || age < 0 || age > 150) return; // Invalid age
+    
+    const gender = safeGetGender(resident.sex);
+    if (!gender) return;
+    
     const ageGroup = getAgeGroup(age);
-    const gender = resident.sex?.toLowerCase() === 'male' ? 'male' : 'female';
-
     if (counts[ageGroup]) {
       counts[ageGroup][gender]++;
     }
@@ -102,15 +149,15 @@ export const processPopulationData = (residents: ResidentData[]): AgeGroup[] => 
   const totalPopulation = residents.length;
 
   return STANDARD_AGE_GROUPS.map(ageRange => {
-    const male = counts[ageRange].male;
-    const female = counts[ageRange].female;
+    const male = counts[ageRange]?.male ?? 0;
+    const female = counts[ageRange]?.female ?? 0;
 
     return {
       ageRange,
       male,
       female,
-      malePercentage: totalPopulation > 0 ? (male / totalPopulation) * 100 : 0,
-      femalePercentage: totalPopulation > 0 ? (female / totalPopulation) * 100 : 0,
+      malePercentage: totalPopulation > 0 ? Number(((male / totalPopulation) * 100).toFixed(2)) : 0,
+      femalePercentage: totalPopulation > 0 ? Number(((female / totalPopulation) * 100).toFixed(2)) : 0,
     };
   });
 };
@@ -152,27 +199,59 @@ export const calculateDependencyRatios = (ageGroups: AgeGroup[]) => {
 };
 
 /**
- * Calculate sex distribution
+ * Calculate sex distribution with improved type safety
  */
 export const calculateSexDistribution = (residents: ResidentData[]) => {
-  const male = residents.filter(r => r.sex?.toLowerCase() === 'male').length;
-  const female = residents.filter(r => r.sex?.toLowerCase() === 'female').length;
+  if (!Array.isArray(residents)) {
+    return {
+      male: 0,
+      female: 0,
+      total: 0,
+      malePercentage: 0,
+      femalePercentage: 0,
+    };
+  }
+
+  const male = residents.filter(r => r && safeGetGender(r.sex) === 'male').length;
+  const female = residents.filter(r => r && safeGetGender(r.sex) === 'female').length;
   const total = male + female;
 
   return {
     male,
     female,
     total,
-    malePercentage: total > 0 ? (male / total) * 100 : 0,
-    femalePercentage: total > 0 ? (female / total) * 100 : 0,
+    malePercentage: total > 0 ? Number(((male / total) * 100).toFixed(2)) : 0,
+    femalePercentage: total > 0 ? Number(((female / total) * 100).toFixed(2)) : 0,
   };
 };
 
 /**
- * Calculate civil status distribution
+ * Civil status counts type
  */
-export const calculateCivilStatusDistribution = (residents: ResidentData[]) => {
-  const counts = {
+export type CivilStatusCounts = {
+  single: number;
+  married: number;
+  widowed: number;
+  divorced: number;
+  separated: number;
+  annulled: number;
+  registeredPartnership: number;
+  liveIn: number;
+};
+
+/**
+ * Safely normalize civil status string
+ */
+const safeCivilStatus = (status: string): string | null => {
+  if (!status || typeof status !== 'string') return null;
+  return status.toLowerCase().trim();
+};
+
+/**
+ * Calculate civil status distribution with improved type safety
+ */
+export const calculateCivilStatusDistribution = (residents: ResidentData[]): CivilStatusCounts => {
+  const counts: CivilStatusCounts = {
     single: 0,
     married: 0,
     widowed: 0,
@@ -183,36 +262,32 @@ export const calculateCivilStatusDistribution = (residents: ResidentData[]) => {
     liveIn: 0,
   };
 
+  if (!Array.isArray(residents)) return counts;
+
+  // Civil status mapping for cleaner logic
+  const civilStatusMap: Record<string, keyof CivilStatusCounts> = {
+    'single': 'single',
+    'married': 'married',
+    'widowed': 'widowed',
+    'divorced': 'divorced',
+    'separated': 'separated',
+    'annulled': 'annulled',
+    'registered partnership': 'registeredPartnership',
+    'registered_partnership': 'registeredPartnership',
+    'live-in': 'liveIn',
+    'live_in': 'liveIn',
+    'livein': 'liveIn',
+  };
+
   residents.forEach(resident => {
-    const status = resident.civil_status?.toLowerCase();
-    switch (status) {
-      case 'single':
-        counts.single++;
-        break;
-      case 'married':
-        counts.married++;
-        break;
-      case 'widowed':
-        counts.widowed++;
-        break;
-      case 'divorced':
-        counts.divorced++;
-        break;
-      case 'separated':
-        counts.separated++;
-        break;
-      case 'annulled':
-        counts.annulled++;
-        break;
-      case 'registered partnership':
-      case 'registered_partnership':
-        counts.registeredPartnership++;
-        break;
-      case 'live-in':
-      case 'live_in':
-      case 'livein':
-        counts.liveIn++;
-        break;
+    if (!resident || typeof resident !== 'object') return;
+    
+    const status = safeCivilStatus(resident.civil_status);
+    if (!status) return;
+    
+    const mappedStatus = civilStatusMap[status];
+    if (mappedStatus && mappedStatus in counts) {
+      counts[mappedStatus]++;
     }
   });
 
@@ -220,10 +295,32 @@ export const calculateCivilStatusDistribution = (residents: ResidentData[]) => {
 };
 
 /**
- * Calculate employment status distribution
+ * Employment status counts type
  */
-export const calculateEmploymentStatusDistribution = (residents: ResidentData[]) => {
-  const counts = {
+export type EmploymentStatusCounts = {
+  employed: number;
+  unemployed: number;
+  selfEmployed: number;
+  student: number;
+  retired: number;
+  homemaker: number;
+  disabled: number;
+  other: number;
+};
+
+/**
+ * Safely normalize employment status string
+ */
+const safeEmploymentStatus = (status: string): string | null => {
+  if (!status || typeof status !== 'string') return null;
+  return status.toLowerCase().trim();
+};
+
+/**
+ * Calculate employment status distribution with improved type safety
+ */
+export const calculateEmploymentStatusDistribution = (residents: ResidentData[]): EmploymentStatusCounts => {
+  const counts: EmploymentStatusCounts = {
     employed: 0,
     unemployed: 0,
     selfEmployed: 0,
@@ -234,41 +331,36 @@ export const calculateEmploymentStatusDistribution = (residents: ResidentData[])
     other: 0,
   };
 
+  if (!Array.isArray(residents)) return counts;
+
+  // Employment status mapping for cleaner logic
+  const employmentStatusMap: Record<string, keyof EmploymentStatusCounts> = {
+    'employed': 'employed',
+    'unemployed': 'unemployed',
+    'self-employed': 'selfEmployed',
+    'self_employed': 'selfEmployed',
+    'selfemployed': 'selfEmployed',
+    'student': 'student',
+    'retired': 'retired',
+    'homemaker': 'homemaker',
+    'housewife': 'homemaker',
+    'househusband': 'homemaker',
+    'disabled': 'disabled',
+    'person with disability': 'disabled',
+    'pwd': 'disabled',
+  };
+
   residents.forEach(resident => {
-    const status = resident.employment_status?.toLowerCase();
-    switch (status) {
-      case 'employed':
-        counts.employed++;
-        break;
-      case 'unemployed':
-        counts.unemployed++;
-        break;
-      case 'self-employed':
-      case 'self_employed':
-      case 'selfemployed':
-        counts.selfEmployed++;
-        break;
-      case 'student':
-        counts.student++;
-        break;
-      case 'retired':
-        counts.retired++;
-        break;
-      case 'homemaker':
-      case 'housewife':
-      case 'househusband':
-        counts.homemaker++;
-        break;
-      case 'disabled':
-      case 'person with disability':
-      case 'pwd':
-        counts.disabled++;
-        break;
-      default:
-        if (status && status.trim() !== '') {
-          counts.other++;
-        }
-        break;
+    if (!resident || typeof resident !== 'object') return;
+    
+    const status = safeEmploymentStatus(resident.employment_status);
+    if (!status) return;
+    
+    const mappedStatus = employmentStatusMap[status];
+    if (mappedStatus && mappedStatus in counts) {
+      counts[mappedStatus]++;
+    } else if (status.length > 0) {
+      counts.other++;
     }
   });
 
@@ -278,17 +370,40 @@ export const calculateEmploymentStatusDistribution = (residents: ResidentData[])
 /**
  * Return type for dashboard calculations hook
  */
+/**
+ * Dependency ratio calculation results
+ */
+export interface DependencyRatioData {
+  youngDependents: number;
+  workingAge: number;
+  oldDependents: number;
+  dependencyRatio: number;
+  youngDependencyRatio: number;
+  oldDependencyRatio: number;
+}
+
+/**
+ * Sex distribution calculation results
+ */
+export interface SexDistributionData {
+  male: number;
+  female: number;
+  total: number;
+  malePercentage: number;
+  femalePercentage: number;
+}
+
 export interface UseDashboardCalculationsReturn {
   /** Processed population data for pyramid chart */
   populationData: AgeGroup[];
   /** Dependency ratio calculations */
-  dependencyData: ReturnType<typeof calculateDependencyRatios>;
+  dependencyData: DependencyRatioData;
   /** Sex distribution calculations */
-  sexDistribution: ReturnType<typeof calculateSexDistribution>;
+  sexDistribution: SexDistributionData;
   /** Civil status distribution calculations */
-  civilStatusData: ReturnType<typeof calculateCivilStatusDistribution>;
+  civilStatusData: CivilStatusCounts;
   /** Employment status distribution calculations */
-  employmentData: ReturnType<typeof calculateEmploymentStatusDistribution>;
+  employmentData: EmploymentStatusCounts;
   /** Total population count */
   totalPopulation: number;
 }

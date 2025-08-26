@@ -1,11 +1,11 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField } from '@/components';
 
 export interface MotherMaidenNameData {
-  motherMaidenFirstName: string;
-  motherMaidenMiddleName: string;
-  motherMaidenLastName: string;
+  mother_maiden_first: string;
+  mother_maiden_middle: string;
+  mother_maiden_last: string;
 }
 
 export interface MotherMaidenNameProps {
@@ -35,9 +35,9 @@ export function MotherMaidenName({
   // Helper function to format full maiden name
   const formatFullMaidenName = () => {
     const parts = [
-      value.motherMaidenFirstName?.trim(),
-      value.motherMaidenMiddleName?.trim(), 
-      value.motherMaidenLastName?.trim()
+      value.mother_maiden_first?.trim(),
+      value.mother_maiden_middle?.trim(), 
+      value.mother_maiden_last?.trim()
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(' ') : '—';
   };
@@ -69,39 +69,39 @@ export function MotherMaidenName({
             <InputField
               label="First Name"
               labelSize="sm"
-              errorMessage={errors.motherMaidenFirstName}
+              errorMessage={errors.mother_maiden_first}
               mode={mode}
               inputProps={{
-                value: value.motherMaidenFirstName,
-                onChange: (e) => handleChange('motherMaidenFirstName', e.target.value),
+                value: value.mother_maiden_first,
+                onChange: (e) => handleChange('mother_maiden_first', e.target.value),
                 placeholder: "Mother's maiden first name",
-                error: errors.motherMaidenFirstName
+                error: errors.mother_maiden_first
               }}
             />
             
             <InputField
               label="Middle Name"
               labelSize="sm"
-              errorMessage={errors.motherMaidenMiddleName}
+              errorMessage={errors.mother_maiden_middle}
               mode={mode}
               inputProps={{
-                value: value.motherMaidenMiddleName,
-                onChange: (e) => handleChange('motherMaidenMiddleName', e.target.value),
+                value: value.mother_maiden_middle,
+                onChange: (e) => handleChange('mother_maiden_middle', e.target.value),
                 placeholder: "Mother's maiden middle name",
-                error: errors.motherMaidenMiddleName
+                error: errors.mother_maiden_middle
               }}
             />
             
             <InputField
               label="Last Name"
               labelSize="sm"
-              errorMessage={errors.motherMaidenLastName}
+              errorMessage={errors.mother_maiden_last}
               mode={mode}
               inputProps={{
-                value: value.motherMaidenLastName,
-                onChange: (e) => handleChange('motherMaidenLastName', e.target.value),
+                value: value.mother_maiden_last,
+                onChange: (e) => handleChange('mother_maiden_last', e.target.value),
                 placeholder: "Mother's maiden last name",
-                error: errors.motherMaidenLastName
+                error: errors.mother_maiden_last
               }}
             />
           </>

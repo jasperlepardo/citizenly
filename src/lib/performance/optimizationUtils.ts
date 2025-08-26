@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Performance Optimization Utilities
  * Enhanced performance helpers for React components and data operations

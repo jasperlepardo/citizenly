@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 import Link from 'next/link';
 
 export interface TableColumn<T = any> {

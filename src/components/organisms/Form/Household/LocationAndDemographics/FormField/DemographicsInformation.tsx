@@ -1,6 +1,6 @@
 import React from 'react';
-import type { FormMode } from '@/types/forms';
-import { InputField } from '@/components/molecules';
+import type { FormMode } from '@/types';
+import { InputField } from '@/components';
 
 export interface DemographicsInformationData {
   noOfFamilies: number;

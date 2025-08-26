@@ -2,18 +2,18 @@
  * Data transformation utilities for form data mapping
  */
 
-import type { ResidentFormData } from '@/types/residents';
+import type { ResidentFormData } from '@/types';
 import { MigrationInformationData } from '@/hooks/utilities/useMigrationInformation';
 
 // Data transformer for BasicInformation
 export interface BasicInformationData {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  extensionName: string;
+  first_name: string;
+  middle_name: string;
+  last_name: string;
+  extension_name: string;
   sex: 'male' | 'female' | '';
-  civilStatus: string;
-  civilStatusOthersSpecify: string;
+  civil_status: string;
+  civil_status_others_specify: string;
   citizenship: string;
 }
 
@@ -21,13 +21,13 @@ export const transformBasicInfoToFormData = (
   basicInfo: BasicInformationData
 ): Partial<ResidentFormData> => {
   return {
-    firstName: basicInfo.firstName,
-    middleName: basicInfo.middleName,
-    lastName: basicInfo.lastName,
-    extensionName: basicInfo.extensionName,
-    sex: basicInfo.sex,
-    civilStatus: basicInfo.civilStatus,
-    citizenship: basicInfo.citizenship,
+    first_name: basicInfo.first_name,
+    middle_name: basicInfo.middle_name,
+    last_name: basicInfo.last_name,
+    extension_name: basicInfo.extension_name,
+    sex: basicInfo.sex === '' ? undefined : (basicInfo.sex as 'male' | 'female'),
+    civil_status: basicInfo.civil_status as any,
+    citizenship: basicInfo.citizenship as any,
   };
 };
 
@@ -35,13 +35,13 @@ export const extractBasicInfoFromFormData = (
   formData: ResidentFormData
 ): BasicInformationData => {
   return {
-    firstName: formData.firstName || '',
-    middleName: formData.middleName || '',
-    lastName: formData.lastName || '',
-    extensionName: formData.extensionName || '',
+    first_name: formData.first_name || '',
+    middle_name: formData.middle_name || '',
+    last_name: formData.last_name || '',
+    extension_name: formData.extension_name || '',
     sex: (formData.sex || '') as '' | 'male' | 'female',
-    civilStatus: formData.civilStatus || '',
-    civilStatusOthersSpecify: (formData as any).civilStatusOthersSpecify || '',
+    civil_status: formData.civil_status || '',
+    civil_status_others_specify: (formData as any).civil_status_others_specify || '',
     citizenship: formData.citizenship || '',
   };
 };
@@ -49,8 +49,8 @@ export const extractBasicInfoFromFormData = (
 // Data transformer for BirthInformation
 export interface BirthInformationData {
   birthdate: string;
-  birthPlaceName: string;
-  birthPlaceCode: string;
+  birth_place_name: string;
+  birth_place_code: string;
 }
 
 export const transformBirthInfoToFormData = (
@@ -58,7 +58,7 @@ export const transformBirthInfoToFormData = (
 ): Partial<ResidentFormData> => {
   return {
     birthdate: birthInfo.birthdate,
-    birthPlaceCode: birthInfo.birthPlaceCode,
+    birth_place_code: birthInfo.birth_place_code,
   };
 };
 
@@ -67,22 +67,23 @@ export const extractBirthInfoFromFormData = (
 ): BirthInformationData => {
   return {
     birthdate: formData.birthdate || '',
-    birthPlaceCode: formData.birthPlaceCode || '',
+    birth_place_name: formData.birth_place_name || '',
+    birth_place_code: formData.birth_place_code || '',
   };
 };
 
 // Data transformer for EducationInformation
 export interface EducationInformationData {
-  educationAttainment: string;
-  isGraduate: boolean;
+  education_attainment: string;
+  is_graduate: boolean;
 }
 
 export const transformEducationInfoToFormData = (
   educationInfo: EducationInformationData
 ): Partial<ResidentFormData> => {
   return {
-    educationAttainment: educationInfo.educationAttainment,
-    isGraduate: educationInfo.isGraduate,
+    education_attainment: educationInfo.education_attainment,
+    is_graduate: educationInfo.is_graduate,
   };
 };
 
@@ -90,23 +91,23 @@ export const extractEducationInfoFromFormData = (
   formData: ResidentFormData
 ): EducationInformationData => {
   return {
-    educationAttainment: formData.educationAttainment || '',
-    isGraduate: formData.isGraduate || false,
+    education_attainment: formData.education_attainment || '',
+    is_graduate: formData.is_graduate || false,
   };
 };
 
 // Data transformer for EmploymentInformation
 export interface EmploymentInformationData {
-  employmentStatus: string;
-  occupationCode: string;
+  employment_status: string;
+  occupation_code: string;
 }
 
 export const transformEmploymentInfoToFormData = (
   employmentInfo: EmploymentInformationData
 ): Partial<ResidentFormData> => {
   return {
-    employmentStatus: employmentInfo.employmentStatus,
-    occupationCode: employmentInfo.occupationCode,
+    employment_status: employmentInfo.employment_status,
+    occupation_code: employmentInfo.occupation_code,
   };
 };
 
@@ -114,35 +115,35 @@ export const extractEmploymentInfoFromFormData = (
   formData: ResidentFormData
 ): EmploymentInformationData => {
   return {
-    employmentStatus: formData.employmentStatus || '',
-    occupationCode: formData.occupationCode || '',
+    employment_status: formData.employment_status || '',
+    occupation_code: formData.occupation_code || '',
   };
 };
 
 // Data transformer for PhysicalCharacteristics
 export interface PhysicalCharacteristicsData {
-  bloodType: string;
+  blood_type: string;
   complexion: string;
   height: string;
   weight: string;
   citizenship: string;
   ethnicity: string;
   religion: string;
-  religionOthersSpecify: string;
+  religion_others_specify: string;
 }
 
 export const transformPhysicalCharacteristicsToFormData = (
   physicalInfo: PhysicalCharacteristicsData
 ): Partial<ResidentFormData> => {
   return {
-    bloodType: physicalInfo.bloodType,
+    blood_type: physicalInfo.blood_type as any,
     complexion: physicalInfo.complexion,
-    height: physicalInfo.height,
-    weight: physicalInfo.weight,
-    citizenship: physicalInfo.citizenship,
+    height: parseFloat(physicalInfo.height) || 0,
+    weight: parseFloat(physicalInfo.weight) || 0,
+    citizenship: physicalInfo.citizenship as any,
     ethnicity: physicalInfo.ethnicity,
     religion: physicalInfo.religion,
-    religionOthersSpecify: physicalInfo.religionOthersSpecify,
+    religion_others_specify: physicalInfo.religion_others_specify,
   };
 };
 
@@ -150,14 +151,14 @@ export const extractPhysicalCharacteristicsFromFormData = (
   formData: ResidentFormData
 ): PhysicalCharacteristicsData => {
   return {
-    bloodType: formData.bloodType || '',
+    blood_type: formData.blood_type || '',
     complexion: formData.complexion || '',
-    height: formData.height || '',
-    weight: formData.weight || '',
+    height: String(formData.height || ''),
+    weight: String(formData.weight || ''),
     citizenship: formData.citizenship || '',
     ethnicity: formData.ethnicity || '',
     religion: formData.religion || '',
-    religionOthersSpecify: formData.religionOthersSpecify || '',
+    religion_others_specify: formData.religion_others_specify || '',
   };
 };
 
@@ -166,16 +167,14 @@ export const transformMigrationInfoToFormData = (
   migrationInfo: MigrationInformationData
 ): Partial<ResidentFormData> => {
   return {
-    previousBarangayCode: migrationInfo.previous_barangay_code || '',
-    previousCityMunicipalityCode: migrationInfo.previous_city_municipality_code || '',
-    previousProvinceCode: migrationInfo.previous_province_code || '',
-    previousRegionCode: migrationInfo.previous_region_code || '',
-    lengthOfStayPreviousMonths: migrationInfo.length_of_stay_previous_months || 0,
-    reasonForLeaving: migrationInfo.reason_for_leaving || '',
-    dateOfTransfer: migrationInfo.date_of_transfer || '',
-    reasonForTransferring: migrationInfo.reason_for_transferring || '',
-    durationOfStayCurrentMonths: migrationInfo.duration_of_stay_current_months || 0,
-    isIntendingToReturn: migrationInfo.is_intending_to_return || false,
+    previous_barangay_code: migrationInfo.previous_barangay_code || '',
+    previous_city_municipality_code: migrationInfo.previous_city_municipality_code || '',
+    previous_province_code: migrationInfo.previous_province_code || '',
+    previous_region_code: migrationInfo.previous_region_code || '',
+    length_of_stay_previous_months: migrationInfo.length_of_stay_previous_months || 0,
+    reason_for_migration: migrationInfo.reason_for_migration || '',
+    date_of_transfer: migrationInfo.date_of_transfer || '',
+    migration_type: migrationInfo.migration_type || '',
   };
 };
 
@@ -183,16 +182,14 @@ export const extractMigrationInfoFromFormData = (
   formData: ResidentFormData
 ): MigrationInformationData => {
   return {
-    previous_barangay_code: formData.previousBarangayCode || '',
-    previous_city_municipality_code: formData.previousCityMunicipalityCode || '',
-    previous_province_code: formData.previousProvinceCode || '',
-    previous_region_code: formData.previousRegionCode || '',
-    length_of_stay_previous_months: formData.lengthOfStayPreviousMonths || 0,
-    reason_for_leaving: formData.reasonForLeaving || '',
-    date_of_transfer: formData.dateOfTransfer || '',
-    reason_for_transferring: formData.reasonForTransferring || '',
-    duration_of_stay_current_months: formData.durationOfStayCurrentMonths || 0,
-    is_intending_to_return: formData.isIntendingToReturn || false,
+    previous_barangay_code: formData.previous_barangay_code || '',
+    previous_city_municipality_code: formData.previous_city_municipality_code || '',
+    previous_province_code: formData.previous_province_code || '',
+    previous_region_code: formData.previous_region_code || '',
+    length_of_stay_previous_months: formData.length_of_stay_previous_months || 0,
+    reason_for_migration: formData.reason_for_migration || '',
+    date_of_transfer: formData.date_of_transfer || '',
+    migration_type: formData.migration_type || '',
   };
 };
 

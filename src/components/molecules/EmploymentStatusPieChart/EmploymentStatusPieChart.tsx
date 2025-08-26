@@ -25,74 +25,27 @@ export default function EmploymentStatusPieChart({
   title = 'Employment Status',
   className = '',
 }: EmploymentStatusPieChartProps) {
-  const { employed, unemployed, selfEmployed, student, retired, homemaker, disabled, other } = data;
+  // Define employment status categories and their labels
+  const employmentCategories = [
+    { key: 'employed', label: 'Employed' },
+    { key: 'unemployed', label: 'Unemployed' },
+    { key: 'selfEmployed', label: 'Self-employed' },
+    { key: 'student', label: 'Student' },
+    { key: 'retired', label: 'Retired' },
+    { key: 'homemaker', label: 'Homemaker' },
+    { key: 'disabled', label: 'Disabled' },
+    { key: 'other', label: 'Other' },
+  ];
 
-  const total =
-    employed + unemployed + selfEmployed + student + retired + homemaker + disabled + other;
-
-  // Let GenericPieChart generate beautiful colors automatically
-  const colors = {
-    employed: '',
-    unemployed: '',
-    selfEmployed: '',
-    student: '',
-    retired: '',
-    homemaker: '',
-    disabled: '',
-    other: '',
-  };
-
-  // Prepare chart data with semantic colors
-  const chartData = [
-    {
-      label: 'Employed',
-      value: employed,
-      percentage: total > 0 ? (employed / total) * 100 : 0,
-      color: colors.employed,
-    },
-    {
-      label: 'Unemployed',
-      value: unemployed,
-      percentage: total > 0 ? (unemployed / total) * 100 : 0,
-      color: colors.unemployed,
-    },
-    {
-      label: 'Self-employed',
-      value: selfEmployed,
-      percentage: total > 0 ? (selfEmployed / total) * 100 : 0,
-      color: colors.selfEmployed,
-    },
-    {
-      label: 'Student',
-      value: student,
-      percentage: total > 0 ? (student / total) * 100 : 0,
-      color: colors.student,
-    },
-    {
-      label: 'Retired',
-      value: retired,
-      percentage: total > 0 ? (retired / total) * 100 : 0,
-      color: colors.retired,
-    },
-    {
-      label: 'Homemaker',
-      value: homemaker,
-      percentage: total > 0 ? (homemaker / total) * 100 : 0,
-      color: colors.homemaker,
-    },
-    {
-      label: 'Disabled',
-      value: disabled,
-      percentage: total > 0 ? (disabled / total) * 100 : 0,
-      color: colors.disabled,
-    },
-    {
-      label: 'Other',
-      value: other,
-      percentage: total > 0 ? (other / total) * 100 : 0,
-      color: colors.other,
-    },
-  ]; // Show all categories including zero values
+  // Calculate total and transform data
+  const total = employmentCategories.reduce((sum, category) => sum + (data[category.key as keyof EmploymentStatusData] || 0), 0);
+  
+  const chartData = employmentCategories.map(category => ({
+    label: category.label,
+    value: data[category.key as keyof EmploymentStatusData] || 0,
+    percentage: total > 0 ? ((data[category.key as keyof EmploymentStatusData] || 0) / total) * 100 : 0,
+    color: '', // Let GenericPieChart auto-generate colors
+  }));
 
   return <GenericPieChart data={chartData} title={title} className={className} />;
 }

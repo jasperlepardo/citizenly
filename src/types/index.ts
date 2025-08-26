@@ -74,7 +74,6 @@ export type {
   ResidentApiData,
   ResidentSectoralInfo,
   ResidentMigrantInfo,
-  ResidentFormData,
   ResidentFormState,
   ResidentWithRelations,
   CombinedResidentFormData,
@@ -149,7 +148,13 @@ export type {
   FieldValidator,
   ValidatableFieldSetProps,
   FormMode,
-  FormSubmissionState
+  FormSubmissionState,
+  ResidentFormData,
+  ExtendedHouseholdFormData,
+  HouseholdDetailsData,
+  FormSectionPropsGeneric,
+  FieldConfig,
+  HouseholdFormProps
 } from './forms';
 
 // =============================================================================

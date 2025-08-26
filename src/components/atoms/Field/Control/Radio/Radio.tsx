@@ -2,7 +2,7 @@
 
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 import { TitleDescription } from '../TitleDescription';
 import { Button, type ButtonProps } from '@/components/atoms/Button/Button';
 

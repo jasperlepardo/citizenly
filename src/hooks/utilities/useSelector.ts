@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 
 export interface UseSelectorOptions<T> {
   value: string;

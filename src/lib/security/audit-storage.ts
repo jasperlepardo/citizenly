@@ -4,7 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '@/lib/logging/secure-logger';
+import { logger } from '@/lib';
 import { ErrorCode as ApiErrorCode } from '../api/types';
 
 export interface SecurityAuditLog {
@@ -40,6 +40,19 @@ export interface ThreatDetectionEvent {
  */
 export async function storeSecurityAuditLog(auditLog: SecurityAuditLog): Promise<void> {
   try {
+    // Check if we have the required environment variables
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      // Just log to console instead - don't create an error
+      console.info('[SECURITY AUDIT - Console Only]', JSON.stringify({
+        operation: auditLog.operation,
+        user_id: auditLog.user_id,
+        severity: auditLog.severity,
+        timestamp: auditLog.timestamp,
+        details: auditLog.details
+      }));
+      return;
+    }
+
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -63,8 +76,18 @@ export async function storeSecurityAuditLog(auditLog: SecurityAuditLog): Promise
       });
 
     if (error) {
-      logger.error('Failed to store security audit log', { error, auditLog });
-      // Don't throw error to avoid disrupting main application flow
+      // If table doesn't exist or other database errors, fall back to console logging
+      if (error.code === 'PGRST116' || error.message?.includes('relation "security_audit_logs" does not exist')) {
+        console.info('[SECURITY AUDIT - Table Missing]', JSON.stringify({
+          operation: auditLog.operation,
+          user_id: auditLog.user_id,
+          severity: auditLog.severity,
+          timestamp: auditLog.timestamp,
+          details: auditLog.details
+        }));
+      } else {
+        logger.error('Failed to store security audit log', { error, auditLog });
+      }
     } else {
       logger.debug('Security audit log stored successfully', { operation: auditLog.operation });
     }

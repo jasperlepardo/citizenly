@@ -1,7 +1,7 @@
 'use client';
 
-import { DashboardLayout } from '@/components/templates';
-import { ProtectedRoute } from '@/components/organisms';
+import { DashboardLayout } from '@/components';
+import { ProtectedRoute } from '@/components';
 
 export default function DashboardGroupLayout({ children }: { children: React.ReactNode }) {
   return (

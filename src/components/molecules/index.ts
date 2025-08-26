@@ -24,3 +24,4 @@ export * from './AccessibleModal';
 export * from './VersionTag';
 export * from './PWAInstallPrompt';
 export * from './PWAStatus';
+export * from './SectoralBadges';

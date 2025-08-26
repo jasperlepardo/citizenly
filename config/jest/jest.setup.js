@@ -143,7 +143,7 @@ const mockDesignSystem = {
 
 // Set up module mocks that will be used across tests
 jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
-jest.mock('@/lib/crypto', () => mockCrypto);
+jest.mock('@/lib/security/crypto', () => mockCrypto);
 jest.mock('@/lib/database', () => mockDatabase);
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: () => mockAuthContext,

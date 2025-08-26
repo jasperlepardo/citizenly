@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
-import type { ResidentFormData } from '@/types/residents';
+import type { ResidentFormData } from '@/types';
 import { ResidentFormSchema } from '@/lib/validation';
 import { 
   getFormToSchemaFieldMapping,
@@ -276,7 +276,7 @@ function createResidentFormValidator(customErrorMessages: Record<string, string>
       // TODO: Implement proper validation when the schema system is refactored
       
       // Basic required field validation
-      const requiredFields = ['firstName', 'lastName', 'birthdate', 'sex'];
+      const requiredFields = ['first_name', 'last_name', 'birthdate', 'sex'];
       requiredFields.forEach(field => {
         if (!formData[field as keyof ResidentFormData]) {
           errors[field] = customErrorMessages[field] || `${field} is required`;

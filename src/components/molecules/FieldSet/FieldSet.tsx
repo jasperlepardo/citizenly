@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utilities/css-utils';
+import { cn } from '@/lib';
 import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '../../atoms/Field/Control/Radio/Radio';
 import { ControlGroup } from './ControlField/ControlField';
 import { Label } from '../../atoms/Field/Label/Label';
 import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';
-import type { FormMode } from '@/types/forms';
+import type { FormMode } from '@/types';
 
 export interface ControlFieldSetProps {
   /** Type of fieldset - checkbox for multiple selections, radio for single selection */

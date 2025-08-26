@@ -5,7 +5,7 @@
  * All utility functions are consolidated here to eliminate duplication.
  */
 
-// String utilities
+// String utilities - consolidated to lib/utilities
 export {
   capitalize,
   toTitleCase,
@@ -14,7 +14,7 @@ export {
   // isValidEmail, - REMOVED: Use @/lib/validation/utilities instead
   // isValidPhilippineMobile, - REMOVED: Use @/lib/validation/utilities instead
   formatPhoneNumber,
-} from './string-utils';
+} from '../lib/utilities/string-utils';
 
 // Data transformation utilities
 export {
@@ -29,7 +29,7 @@ export {
   buildQueryString,
 } from '../lib/utilities/data-transformers';
 
-// ID generation utilities
+// ID generation utilities - consolidated to lib/utilities
 export {
   generateId,
   generateFieldId,
@@ -37,29 +37,29 @@ export {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from './id-generators';
+} from '../lib/utilities/id-generators';
 
-// Async utilities
+// Async utilities - consolidated to lib/utilities
 export {
   debounce,
   throttle,
   sleep,
   retry,
-} from './async-utils';
+} from '../lib/utilities/async-utils';
 
-// CSS utilities
+// CSS utilities - consolidated to lib/utilities
 export {
   cn,
   // mergeClassNames - REMOVED: Use `cn` instead
-} from './css-utils';
+} from '../lib/utilities/css-utils';
 
 // Resident utilities - now in lib/utilities
 // export * from './resident-detail-helpers';  // REMOVED - duplicate
 // export * from './resident-helpers';        // REMOVED - duplicate  
 // export * from './resident-listing-helpers'; // REMOVED - duplicate
 
-// Search utilities
-export * from './search-utilities';
+// Search utilities - consolidated to lib/utilities
+export * from '../lib/utilities/search-utilities';
 
 // Validation utilities
 export * from './validation-utilities';

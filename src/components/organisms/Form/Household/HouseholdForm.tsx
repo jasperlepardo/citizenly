@@ -39,11 +39,17 @@ export function HouseholdForm({
 }: HouseholdFormProps) {
   // Initialize form data with defaults
   const [formData, setFormData] = useState<ExtendedHouseholdFormData>({
+    // Default values for required fields
+    code: '',
+    house_number: '',
+    street_id: '',
+    barangay_code: '',
+    city_municipality_code: '',
+    region_code: '',
     // Default values for new households
-    noOfFamilies: 1,
-    noOfHouseholdMembers: 0,
-    noOfMigrants: 0,
-    code: '', // Provide default empty string for code
+    no_of_families: 1,
+    no_of_household_members: 0,
+    no_of_migrants: 0,
     // Merge with initial data
     ...initialData,
   });
@@ -94,14 +100,14 @@ export function HouseholdForm({
       <div className="space-y-4">
         <HouseholdDetailsForm
           formData={{
-            householdType: formData.householdType || '',
-            tenureStatus: formData.tenureStatus || '',
-            tenureOthersSpecify: formData.tenureOthersSpecify || '',
-            householdUnit: formData.householdUnit || '',
+            householdType: formData.household_type || '',
+            tenureStatus: formData.tenure_status || '',
+            tenureOthersSpecify: formData.tenure_others_specify || '',
+            householdUnit: formData.household_unit || '',
             householdName: formData.householdName || '',
-            monthlyIncome: formData.monthlyIncome || 0,
-            householdHeadId: formData.householdHeadId || '',
-            householdHeadPosition: formData.householdHeadPosition || '',
+            monthlyIncome: formData.monthly_income || 0,
+            householdHeadId: formData.household_head_id || '',
+            householdHeadPosition: formData.household_head_position || '',
           }}
           onChange={handleFieldChange}
           errors={errors}

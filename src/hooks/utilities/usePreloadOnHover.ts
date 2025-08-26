@@ -21,7 +21,7 @@
  * @since 1.0.0
  */
 
-import { preloadComponents } from '@/lib/ui/lazy-loading';
+import { preloadComponents } from '@/lib';
 
 /**
  * Return type for the usePreloadOnHover hook

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/atoms';
+import { Button } from '@/components';
 import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
 import { 
   loadUserMetrics, 

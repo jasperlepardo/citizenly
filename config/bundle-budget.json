@@ -1,16 +1,62 @@
 {
-  "budgets": [
+  "files": [
     {
-      "path": "**/*.js",
-      "maxSize": "2MB"
+      "path": ".next/static/chunks/pages/*.js",
+      "maxSize": "300kb",
+      "compression": "gzip",
+      "description": "Page-specific JavaScript bundles"
     },
     {
-      "path": "**/*.css",
-      "maxSize": "200KB"
+      "path": ".next/static/chunks/main-*.js",
+      "maxSize": "80kb",
+      "compression": "gzip",
+      "description": "Main application runtime"
+    },
+    {
+      "path": ".next/static/chunks/framework-*.js",
+      "maxSize": "150kb",
+      "compression": "gzip",
+      "description": "React and framework code"
+    },
+    {
+      "path": ".next/static/css/*.css",
+      "maxSize": "100kb",
+      "compression": "gzip",
+      "description": "Tailwind CSS and custom styles"
+    },
+    {
+      "path": ".next/static/chunks/webpack-*.js",
+      "maxSize": "30kb",
+      "compression": "gzip",
+      "description": "Webpack runtime"
+    },
+    {
+      "path": ".next/static/chunks/_app-*.js",
+      "maxSize": "120kb",
+      "compression": "gzip",
+      "description": "App shell and providers"
     }
   ],
-  "thresholds": {
-    "warning": 80,
-    "error": 95
+  "performance": {
+    "firstContentfulPaint": "1.5s",
+    "largestContentfulPaint": "2.5s",
+    "firstInputDelay": "100ms",
+    "cumulativeLayoutShift": "0.1",
+    "totalBlockingTime": "200ms",
+    "timeToInteractive": "3.5s"
+  },
+  "lighthouse": {
+    "performance": 90,
+    "accessibility": 95,
+    "bestPractices": 90,
+    "seo": 95,
+    "pwa": 85
+  },
+  "meta": {
+    "description": "Performance budgets for RBI System production deployment",
+    "updated": "2025-08-24",
+    "environment": "production",
+    "strictMode": true,
+    "enforced": true
   }
 }

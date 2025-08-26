@@ -29,7 +29,7 @@ export {
 } from '@/services/base-repository';
 
 // Data types
-export type { ResidentDatabaseRecord as ResidentData } from '@/types/residents';
+export type { ResidentDatabaseRecord as ResidentData } from '@/types';
 export type { ResidentSearchOptions } from '@/services/resident-repository';
 export type { HouseholdData, HouseholdSearchOptions } from '@/services/household-repository';
 export type { UserData } from '@/services/user-repository';
