@@ -171,7 +171,7 @@ export function BasicInformation({
           errorMessage={errors.civil_status}
           selectProps={{
             placeholder: "Select civil status...",
-            options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as any,
+            options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as SelectOption[],
             value: value.civil_status,
             onSelect: handleSelectChange('civil_status')
           }}

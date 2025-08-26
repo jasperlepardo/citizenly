@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 import { InputField, SelectField } from '@/components';
 import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
@@ -84,7 +85,7 @@ export function AddressInformation({
     });
   };
 
-  const handleRegionSelect = (option: any) => {
+  const handleRegionSelect = (option: SelectOption | null) => {
     const regionCode = option?.value || '';
     handleChange('regionCode', regionCode);
     if (onRegionChange) {
@@ -92,7 +93,7 @@ export function AddressInformation({
     }
   };
 
-  const handleProvinceSelect = (option: any) => {
+  const handleProvinceSelect = (option: SelectOption | null) => {
     const provinceCode = option?.value || '';
     handleChange('provinceCode', provinceCode);
     if (onProvinceChange) {
@@ -100,7 +101,7 @@ export function AddressInformation({
     }
   };
 
-  const handleCitySelect = (option: any) => {
+  const handleCitySelect = (option: SelectOption | null) => {
     const cityCode = option?.value || '';
     handleChange('cityMunicipalityCode', cityCode);
     if (onCityChange) {
@@ -108,7 +109,7 @@ export function AddressInformation({
     }
   };
 
-  const handleBarangaySelect = (option: any) => {
+  const handleBarangaySelect = (option: SelectOption | null) => {
     const barangayCode = option?.value || '';
     handleChange('barangayCode', barangayCode);
     // Clear dependent fields when barangay changes
@@ -156,7 +157,7 @@ export function AddressInformation({
           selectProps={{
             options: streetOptions,
             value: value.streetId,
-            onSelect: (option: any) => {
+            onSelect: (option: SelectOption | null) => {
               handleChange('streetId', option?.value || '');
             },
             placeholder: streetsLoading ? "Loading streets..." : "Select street",
@@ -173,7 +174,7 @@ export function AddressInformation({
           selectProps={{
             options: subdivisionOptions,
             value: value.subdivisionId,
-            onSelect: (option: any) => {
+            onSelect: (option: SelectOption | null) => {
               const newSubdivisionId = option?.value || '';
               handleChange('subdivisionId', newSubdivisionId);
               // Clear street when subdivision changes

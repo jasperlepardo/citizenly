@@ -162,7 +162,7 @@ export default function DataTable<T extends Record<string, any>>({
 
   // Get cell value
   const getCellValue = (record: T, column: TableColumn<T>, index: number) => {
-    let value: any;
+    let value: unknown;
 
     if (column.dataIndex) {
       if (typeof column.dataIndex === 'function') {

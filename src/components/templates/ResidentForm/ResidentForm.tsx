@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
 import { ResidentFormState } from '@/types/resident-form';
 import type { FormMode } from '@/types';
+import { PSGCSearchResponse } from '@/types/database';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 
 // Use the database-aligned ResidentFormState interface
@@ -220,7 +221,7 @@ export function ResidentForm({
       if (response.ok) {
         const data = await response.json();
         if (data.data && Array.isArray(data.data)) {
-          setSearchOptions(prev => ({ ...prev, psgc: data.data.map((item: any) => ({
+          setSearchOptions(prev => ({ ...prev, psgc: data.data.map((item: PSGCSearchResponse) => ({
             value: item.code || item.city_code || item.province_code,
             label: item.name || item.city_name || item.province_name,
             description: item.full_address || item.full_hierarchy,
@@ -259,7 +260,7 @@ export function ResidentForm({
       if (response.ok) {
         const data = await response.json();
         if (data.data && Array.isArray(data.data)) {
-          setSearchOptions(prev => ({ ...prev, psoc: data.data.map((item: any) => ({
+          setSearchOptions(prev => ({ ...prev, psoc: data.data.map((item: PSGCSearchResponse) => ({
             value: item.code,
             label: item.title,
             description: item.hierarchy,
@@ -312,7 +313,7 @@ export function ResidentForm({
       const households = data.data || [];
       
       // Transform household data for the dropdown
-      const householdOptions = households.map((household: any) => ({
+      const householdOptions = households.map((household: { id: string; household_code: string; household_name?: string; }) => ({
         value: household.code,
         label: `${household.code}${household.name ? ` - ${household.name}` : ''}`,
         description: household.address || `House ${household.house_number || 'N/A'}`

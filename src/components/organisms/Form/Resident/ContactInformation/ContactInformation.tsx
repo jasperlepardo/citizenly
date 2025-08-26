@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormMode } from '@/types';
+import { HouseholdRecord } from '@/types/households';
 import { ContactDetails, ContactDetailsData } from './FormField/ContactDetails';
 import { HouseholdInformation, HouseholdInformationData } from './FormField/HouseholdInformation';
 
@@ -16,8 +17,8 @@ export interface ContactInformationFormProps {
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
   // Household search functionality
-  onHouseholdSearch?: (query: string) => Promise<any>;
-  householdOptions?: any[];
+  onHouseholdSearch?: (query: string) => Promise<HouseholdRecord[]>;
+  householdOptions?: HouseholdRecord[];
   householdLoading?: boolean;
 }
 

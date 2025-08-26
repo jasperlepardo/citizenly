@@ -26,7 +26,7 @@ export function VotingInformation({
   className = '' 
 }: VotingInformationProps) {
   
-  const handleChange = (field: keyof VotingInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof VotingInformationData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
