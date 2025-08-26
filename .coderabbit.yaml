@@ -16,11 +16,19 @@ reviews:
   # Request more detailed analysis for complex files
   profile: "assertive"
   
+  # Large codebase optimization - enable incremental review
+  incremental: true
+  
+  # Review only changed files and their direct dependencies
+  changed_files_only: true
+  
   # Auto-approve simple changes (documentation, formatting)
   auto_approve:
     - "docs/**"
     - "*.md"
     - ".gitignore"
+    - "package.json"
+    - "*.config.js"
 
 # ==============================================================================
 # LANGUAGE-SPECIFIC CONFIGURATION
@@ -123,6 +131,17 @@ github:
   # Auto-merge safe changes after review
   auto_merge:
     enabled: false  # Keep disabled for now, enable later if needed
+  
+  # Large codebase specific settings
+  large_codebase:
+    # Focus review on most impactful files first
+    prioritize_changes: true
+    
+    # Skip detailed review if too many files (fallback to summary)
+    max_files_detailed_review: 50
+    
+    # Always provide summary even if skipping detailed review
+    always_summarize: true
 
 # ==============================================================================
 # NOTIFICATION SETTINGS
