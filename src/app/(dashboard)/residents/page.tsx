@@ -2,26 +2,17 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { DataTable } from '@/components';
+import { DataTable, SearchBar, Button } from '@/components';
 import type { TableColumn, TableAction } from '@/components';
-import { SearchBar } from '@/components';
-import { Button } from '@/components';
 import { useResidents, useResidentFilterFields, type Resident, type AdvancedFilters } from '@/hooks/crud/useResidents';
 import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
 import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
 
 
-interface SearchFilter {
-  field: string;
-  label: string;
-  type: 'select' | 'input' | 'date';
-  options?: { value: string; label: string }[];
-}
 
 
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [_searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>({});
   const [pagination, setPagination] = useState({
@@ -204,40 +195,40 @@ function ResidentsContent() {
     },
   ];
 
-  // Define filter options for search
-  const filterOptions = [
-    {
-      field: 'sex',
-      label: 'Sex',
-      type: 'select' as const,
-      options: [
-        { value: 'male', label: 'Male' },
-        { value: 'female', label: 'Female' },
-      ],
-    },
-    {
-      field: 'civil_status',
-      label: 'Civil Status',
-      type: 'select' as const,
-      options: [
-        { value: 'single', label: 'Single' },
-        { value: 'married', label: 'Married' },
-        { value: 'widowed', label: 'Widowed' },
-        { value: 'divorced', label: 'Divorced' },
-        { value: 'separated', label: 'Separated' },
-      ],
-    },
-    {
-      field: 'occupation',
-      label: 'Occupation',
-      type: 'text' as const,
-    },
-    {
-      field: 'email',
-      label: 'Email',
-      type: 'text' as const,
-    },
-  ];
+  // TODO: Implement filter options for advanced search functionality
+  // const filterOptions = [
+  //   {
+  //     field: 'sex',
+  //     label: 'Sex',
+  //     type: 'select' as const,
+  //     options: [
+  //       { value: 'male', label: 'Male' },
+  //       { value: 'female', label: 'Female' },
+  //     ],
+  //   },
+  //   {
+  //     field: 'civil_status',
+  //     label: 'Civil Status',
+  //     type: 'select' as const,
+  //     options: [
+  //       { value: 'single', label: 'Single' },
+  //       { value: 'married', label: 'Married' },
+  //       { value: 'widowed', label: 'Widowed' },
+  //       { value: 'divorced', label: 'Divorced' },
+  //       { value: 'separated', label: 'Separated' },
+  //     ],
+  //   },
+  //   {
+  //     field: 'occupation',
+  //     label: 'Occupation',
+  //     type: 'text' as const,
+  //   },
+  //   {
+  //     field: 'email',
+  //     label: 'Email',
+  //     type: 'text' as const,
+  //   },
+  // ];
 
   // Show error recovery component if there's an error
   if (error && !isLoading) {
@@ -262,7 +253,7 @@ function ResidentsContent() {
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600 dark:text-gray-400">Residents</h1>
-            <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+            <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
               {total} total residents
               {isFetching && !isLoading && (
                 <span className="ml-2 text-blue-600">

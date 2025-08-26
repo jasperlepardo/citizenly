@@ -582,8 +582,8 @@ export interface APIResponse<T = unknown> {
   count?: number;
 }
 
-// Supabase Query Response Type
-export interface SupabaseQueryResponse<T> {
+// Legacy Supabase Query Response Type - keeping for compatibility
+export interface LegacySupabaseQueryResponse<T> {
   data: T | null;
   error: {
     message: string;

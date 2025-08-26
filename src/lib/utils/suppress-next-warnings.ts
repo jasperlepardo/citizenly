@@ -38,7 +38,7 @@ export function suppressNextJSWarnings() {
 
   // Also patch potential warning channels
   const originalConsoleWarn = console.warn;
-  console.warn = (...args: any[]) => {
+  console.warn = (...args: unknown[]) => {
     const message = args[0];
     
     if (typeof message === 'string') {
