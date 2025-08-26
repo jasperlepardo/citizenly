@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 import { InputField, SelectField } from '@/components';
 
 export interface HouseholdTypeInformationData {
@@ -71,7 +72,7 @@ export function HouseholdTypeInformation({
     });
   };
 
-  const handleSelectChange = (field: keyof HouseholdTypeInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof HouseholdTypeInformationData) => (option: SelectOption | null) => {
     handleChange(field, option?.value || '');
   };
 

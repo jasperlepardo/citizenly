@@ -1,6 +1,40 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-import { PSGCRegion, PSGCProvince, PSGCCityMunicipality, PSGCBarangay, PSGCSearchResponse } from '@/types/database';
+// Proper interfaces for database results
+interface PSGCRegion {
+  code: string;
+  name: string;
+}
+
+interface PSGCProvince {
+  code: string;
+  name: string;
+  region_code: string;
+  psgc_regions: PSGCRegion;
+}
+
+interface PSGCCityMunicipality {
+  code: string;
+  name: string;
+  type: string;
+  province_code: string;
+  psgc_provinces: PSGCProvince;
+}
+
+interface PSGCBarangay {
+  code: string;
+  name: string;
+  city_municipality_code: string;
+  psgc_cities_municipalities: PSGCCityMunicipality;
+}
+
+// Search result interface
+interface PSGCSearchResult {
+  code: string;
+  name: string;
+  level: string;
+  [key: string]: any;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -96,7 +130,7 @@ export async function GET(request: NextRequest) {
     // Remove duplicates and empty variations
     const uniqueVariations = Array.from(new Set(variations)).filter(v => v.length > 2);
 
-    const allResults: PSGCSearchResponse[] = [];
+    const allResults: PSGCSearchResult[] = [];
 
     // Search regions if requested
     if (levels.includes('region')) {

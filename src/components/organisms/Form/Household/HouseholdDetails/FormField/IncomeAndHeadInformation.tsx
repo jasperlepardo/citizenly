@@ -1,5 +1,6 @@
 import React from 'react';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 import { InputField, SelectField } from '@/components';
 
 export interface IncomeAndHeadInformationData {
@@ -57,7 +58,7 @@ export function IncomeAndHeadInformation({
     });
   };
 
-  const handleSelectChange = (field: keyof IncomeAndHeadInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof IncomeAndHeadInformationData) => (option: SelectOption | null) => {
     handleChange(field, option?.value || '');
   };
 
