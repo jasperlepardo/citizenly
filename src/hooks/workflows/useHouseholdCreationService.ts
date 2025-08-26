@@ -9,6 +9,7 @@
 
 import { useState, useCallback } from 'react';
 import { householdService, HouseholdFormData } from '@/services/household.service';
+import { HouseholdRecord } from '@/types/households';
 import { useCSRFToken } from '@/lib/auth';
 import { useAuth } from '@/contexts';
 
@@ -17,7 +18,7 @@ import { useAuth } from '@/contexts';
  */
 export interface HouseholdCreationResult {
   success: boolean;
-  data?: any;
+  data?: HouseholdRecord;
   error?: string;
   validationErrors?: Record<string, string>;
 }
@@ -26,7 +27,7 @@ export interface HouseholdCreationResult {
  * Options for household creation
  */
 export interface UseHouseholdCreationServiceOptions {
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: HouseholdRecord) => void;
   onError?: (error: string) => void;
   onValidationError?: (errors: Record<string, string>) => void;
 }
