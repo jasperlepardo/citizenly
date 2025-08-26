@@ -3,7 +3,7 @@
  * Tests the complete lifecycle: CREATE -> READ -> UPDATE -> DELETE
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/test-utils';
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 
 const API_BASE = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 

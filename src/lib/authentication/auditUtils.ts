@@ -237,8 +237,8 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       region_code: auditEvent.context.regionCode,
     };
 
-    // Insert into audit_logs table
-    const { error } = await supabaseAdmin.from('audit_logs').insert(logEntry);
+    // Insert into system_audit_logs table
+    const { error } = await supabaseAdmin.from('system_audit_logs').insert(logEntry);
 
     if (error) {
       logger.error('Failed to insert audit log', { error, auditEvent });
@@ -409,7 +409,7 @@ export function createAuditQuery(filters: {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  let query = supabaseAdmin.from('audit_logs').select('*').order('timestamp', { ascending: false });
+  let query = supabaseAdmin.from('system_audit_logs').select('*').order('timestamp', { ascending: false });
 
   if (filters.userId) {
     query = query.eq('user_id', filters.userId);

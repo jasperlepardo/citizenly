@@ -3,7 +3,7 @@
  * Handles session retrieval with fallback mechanisms
  */
 
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 
 /**
  * Get session with fallback to localStorage

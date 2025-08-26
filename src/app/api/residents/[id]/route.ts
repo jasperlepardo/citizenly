@@ -535,9 +535,8 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
           previous_province_code,
           previous_region_code,
           length_of_stay_previous_months,
-          reason_for_leaving,
+          reason_for_migration,
           date_of_transfer,
-          reason_for_transferring,
           duration_of_stay_current_months,
           is_intending_to_return
         )

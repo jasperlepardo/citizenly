@@ -42,7 +42,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   const originalAddEventListener = window.addEventListener;
   window.addEventListener = function(type: string, listener: any, options?: any) {
     if (type === 'error') {
-      const wrappedListener = function(event: ErrorEvent) {
+      const wrappedListener = function(this: Window, event: ErrorEvent) {
         if (event.message && 
             event.message.includes('Each child in a list should have a unique "key" prop') &&
             event.message.includes('OuterLayoutRouter')) {
@@ -50,7 +50,7 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
           event.stopPropagation();
           return false;
         }
-        return (listener as any).call(this as any, event);
+        return (listener as EventListener).call(this, event);
       };
       return originalAddEventListener.call(window, type, wrappedListener as any, options);
     }
