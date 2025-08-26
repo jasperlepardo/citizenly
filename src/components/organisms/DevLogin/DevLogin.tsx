@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { supabase } from '@/lib';
 import {
   isDevFeatureEnabled,
@@ -202,10 +203,14 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 mx-auto max-w-md rounded-lg border border-gray-300 dark:border-gray-600 p-6 shadow-md">
+    <div className="mx-auto max-w-md rounded-lg border border-gray-300 bg-white p-6 shadow-md dark:border-gray-600 dark:bg-gray-800">
       <div className="mb-6 text-center">
-        <h2 className="mb-2 text-xl font-bold text-gray-600 dark:text-gray-400">Development Setup</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Create demo users for testing the RBI System</p>
+        <h2 className="mb-2 text-xl font-bold text-gray-600 dark:text-gray-400">
+          Development Setup
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Create demo users for testing the RBI System
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -218,7 +223,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
           {isCreating ? (
             <>
               <svg
-                className="text-inverse -ml-1 mr-3 size-5 animate-spin"
+                className="text-inverse mr-3 -ml-1 size-5 animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -245,7 +250,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
         </button>
 
         {/* Quick Login Buttons */}
-        <div className="border-t border-gray-300 dark:border-gray-600 pt-4">
+        <div className="border-t border-gray-300 pt-4 dark:border-gray-600">
           <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">If users already exist:</p>
           <div className="space-y-2">
             <button
@@ -256,13 +261,13 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
                 }
               }}
               disabled={!devModeAvailable}
-              className="hover:bg-gray-50 dark:bg-gray-700 disabled:bg-gray-100 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 disabled:cursor-not-allowed"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"
             >
               Login as Barangay Admin
             </button>
             <button
               onClick={() => directLogin('clerk@gmail.com')}
-              className="hover:bg-gray-50 dark:bg-gray-700 w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"
             >
               Login as Clerk
             </button>
@@ -271,7 +276,7 @@ export default function DevLogin({ onSuccess }: DevLoginProps) {
 
         {/* Status Message */}
         {message && (
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600 p-3">
+          <div className="rounded-md border border-gray-300 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
             <p className="font-mono text-sm text-gray-600 dark:text-gray-400">{message}</p>
           </div>
         )}

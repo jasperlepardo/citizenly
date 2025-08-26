@@ -93,7 +93,9 @@ export const BaseSpacingScale: Story = {
   name: '📐 Base Spacing Scale',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Base Spacing Scale</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Base Spacing Scale
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Built on a 4px base grid system. All values are multiples of 4px for consistent alignment.
       </p>
@@ -101,7 +103,9 @@ export const BaseSpacingScale: Story = {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {/* Extra Small (0-12px) */}
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Extra Small (0-12px)</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Extra Small (0-12px)
+          </h3>
           <div className="space-y-2">
             {Object.entries(spacingTokens)
               .filter(([_, value]) => parseInt(value) <= 12)
@@ -113,7 +117,9 @@ export const BaseSpacingScale: Story = {
 
         {/* Small (14-32px) */}
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Small (14-32px)</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Small (14-32px)
+          </h3>
           <div className="space-y-2">
             {Object.entries(spacingTokens)
               .filter(([_, value]) => {
@@ -128,7 +134,9 @@ export const BaseSpacingScale: Story = {
 
         {/* Medium (36-96px) */}
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Medium (36-96px)</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Medium (36-96px)
+          </h3>
           <div className="space-y-2">
             {Object.entries(spacingTokens)
               .filter(([_, value]) => {
@@ -157,7 +165,9 @@ export const SemanticSpacing: Story = {
   name: '💭 Semantic Spacing',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Semantic Spacing Tokens</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Semantic Spacing Tokens
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Contextual spacing tokens that provide meaning and consistency across different use cases.
       </p>
@@ -213,7 +223,9 @@ export const ComponentSpacing: Story = {
   name: '🧩 Component Spacing',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Component Internal Spacing</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Component Internal Spacing
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Examples of how spacing tokens are used within components for consistent internal rhythm.
       </p>
@@ -232,7 +244,7 @@ export const ComponentSpacing: Story = {
         {/* Small Spacing */}
         <SpacingDemo title="Small (sm)" spacing="8px">
           <button
-            className="rounded bg-blue-500 text-white dark:text-black transition-colors hover:bg-blue-600"
+            className="rounded bg-blue-500 text-white transition-colors hover:bg-blue-600 dark:text-black"
             style={{ padding: semanticSpacing.component.sm }}
           >
             Small Button
@@ -286,7 +298,9 @@ export const LayoutSpacing: Story = {
   name: '🏗️ Layout Spacing',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Layout Element Spacing</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Layout Element Spacing
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Spacing between major layout elements to create visual hierarchy and organization.
       </p>
@@ -295,12 +309,20 @@ export const LayoutSpacing: Story = {
       <SpacingDemo title="Small Layout (sm)" spacing="24px">
         <div className="space-y-6">
           <div className="rounded-lg border border-purple-200 bg-purple-100 p-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100">Related Content Block 1</h4>
-            <p className="text-sm text-gray-800 dark:text-gray-200">Content that is closely related</p>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+              Related Content Block 1
+            </h4>
+            <p className="text-sm text-gray-800 dark:text-gray-200">
+              Content that is closely related
+            </p>
           </div>
           <div className="rounded-lg border border-purple-200 bg-purple-100 p-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100">Related Content Block 2</h4>
-            <p className="text-sm text-gray-800 dark:text-gray-200">Uses small layout spacing for grouping</p>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+              Related Content Block 2
+            </h4>
+            <p className="text-sm text-gray-800 dark:text-gray-200">
+              Uses small layout spacing for grouping
+            </p>
           </div>
         </div>
       </SpacingDemo>
@@ -344,7 +366,9 @@ export const FormSpacing: Story = {
   name: '📋 Form Spacing',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Form Element Spacing</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Form Element Spacing
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Specialized spacing tokens for form layouts, ensuring optimal usability and visual flow.
       </p>
@@ -353,7 +377,9 @@ export const FormSpacing: Story = {
         <div className="max-w-md">
           {/* Form Group 1 */}
           <div style={{ marginBottom: semanticSpacing.form.groupGap }}>
-            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Personal Information</h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Personal Information
+            </h3>
 
             <div style={{ marginBottom: semanticSpacing.form.fieldGap }}>
               <label
@@ -392,7 +418,9 @@ export const FormSpacing: Story = {
 
           {/* Form Group 2 */}
           <div style={{ marginBottom: semanticSpacing.form.groupGap }}>
-            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">Contact Information</h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Contact Information
+            </h3>
 
             <div style={{ marginBottom: semanticSpacing.form.fieldGap }}>
               <label
@@ -411,10 +439,10 @@ export const FormSpacing: Story = {
 
           {/* Buttons */}
           <div style={{ display: 'flex', gap: semanticSpacing.form.buttonGap }}>
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700">
+            <button className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:text-black">
               Submit
             </button>
-            <button className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-50">
+            <button className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:text-gray-300">
               Cancel
             </button>
           </div>
@@ -449,7 +477,9 @@ export const GridSystem: Story = {
   name: '🏃 4px Grid System',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">4px Base Grid System</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        4px Base Grid System
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         All spacing values are built on a 4px base grid, ensuring consistent alignment and
         pixel-perfect layouts across all screen densities.
@@ -458,7 +488,9 @@ export const GridSystem: Story = {
       <div className="space-y-8">
         {/* Grid Visualization */}
         <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">Grid Visualization</h3>
+          <h3 className="mb-4 font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-900">
+            Grid Visualization
+          </h3>
           <div className="relative h-48 rounded-sm border border-gray-300">
             {/* 4px Grid Background */}
             <div

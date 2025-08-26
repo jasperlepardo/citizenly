@@ -144,7 +144,7 @@ export const SizeVariations: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Size Variations - Checkbox</h3>
+        <h3 className="mb-4 text-lg font-semibold">Size Variations - Checkbox</h3>
         <div className="space-y-4">
           <ControlField
             controlProps={{
@@ -193,12 +193,14 @@ export const InteractiveCheckboxField: Story = {
             label: 'Interactive checkbox',
             description: 'Click to toggle the state',
             checked,
-            onChange: (e) => {
+            onChange: e => {
               setChecked(e.target.checked);
               setHasError(false);
             },
           }}
-          helperText={!hasError ? 'Checkbox is currently ' + (checked ? 'checked' : 'unchecked') : undefined}
+          helperText={
+            !hasError ? 'Checkbox is currently ' + (checked ? 'checked' : 'unchecked') : undefined
+          }
           errorMessage={hasError ? 'This field is required' : undefined}
         />
         <div className="flex gap-2">
@@ -231,7 +233,7 @@ export const InteractiveToggleField: Story = {
     return (
       <div className="space-y-6">
         <h3 className="text-lg font-semibold">Interactive Toggle Fields</h3>
-        
+
         <ControlField
           controlProps={{
             type: 'toggle',
@@ -242,7 +244,7 @@ export const InteractiveToggleField: Story = {
           }}
           helperText={`Feature is currently ${enabled ? 'enabled' : 'disabled'}`}
         />
-        
+
         <ControlField
           controlProps={{
             type: 'toggle',
@@ -329,9 +331,17 @@ export const RadioGroup: Story = {
     const [paymentMethod, setPaymentMethod] = useState('credit-card');
 
     const options = [
-      { value: 'credit-card', label: 'Credit Card', description: 'Pay with Visa, MasterCard, or Amex' },
+      {
+        value: 'credit-card',
+        label: 'Credit Card',
+        description: 'Pay with Visa, MasterCard, or Amex',
+      },
       { value: 'paypal', label: 'PayPal', description: 'Pay with your PayPal account' },
-      { value: 'bank-transfer', label: 'Bank Transfer', description: 'Direct bank account transfer' },
+      {
+        value: 'bank-transfer',
+        label: 'Bank Transfer',
+        description: 'Direct bank account transfer',
+      },
     ];
 
     return (
@@ -340,7 +350,7 @@ export const RadioGroup: Story = {
         description="Select your preferred payment method"
         spacing="md"
       >
-        {options.map((option) => (
+        {options.map(option => (
           <ControlField
             key={option.value}
             controlProps={{
@@ -350,7 +360,7 @@ export const RadioGroup: Story = {
               label: option.label,
               description: option.description,
               checked: paymentMethod === option.value,
-              onChange: (e) => setPaymentMethod(e.target.value),
+              onChange: e => setPaymentMethod(e.target.value),
             }}
             helperText={paymentMethod === option.value ? 'Selected payment method' : undefined}
           />
@@ -371,26 +381,22 @@ export const ComplexForm: Story = {
       frequency: 'weekly',
     });
 
-    const updateField = (field: string, value: any) => {
+    const updateField = (field: string, value: string | number | boolean) => {
       setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     return (
       <div className="max-w-2xl space-y-8">
         <h2 className="text-xl font-bold">Account Settings</h2>
-        
-        <ControlGroup
-          title="Terms & Privacy"
-          description="Required agreements"
-          spacing="md"
-        >
+
+        <ControlGroup title="Terms & Privacy" description="Required agreements" spacing="md">
           <ControlField
             controlProps={{
               type: 'checkbox',
               label: 'Accept Terms of Service',
               description: 'I agree to the terms and conditions',
               checked: formData.terms,
-              onChange: (e) => updateField('terms', e.target.checked),
+              onChange: e => updateField('terms', e.target.checked),
             }}
             errorMessage={!formData.terms ? 'You must accept the terms to continue' : undefined}
           />
@@ -400,24 +406,20 @@ export const ComplexForm: Story = {
               label: 'Marketing Communications',
               description: 'Receive promotional emails and offers',
               checked: formData.marketing,
-              onChange: (e) => updateField('marketing', e.target.checked),
+              onChange: e => updateField('marketing', e.target.checked),
             }}
             helperText="Optional - you can unsubscribe anytime"
           />
         </ControlGroup>
 
-        <ControlGroup
-          title="Preferences"
-          description="Customize your experience"
-          spacing="md"
-        >
+        <ControlGroup title="Preferences" description="Customize your experience" spacing="md">
           <ControlField
             controlProps={{
               type: 'toggle',
               label: 'Push Notifications',
               description: 'Receive real-time updates',
               checked: formData.notifications,
-              onToggle: (checked) => updateField('notifications', checked),
+              onToggle: checked => updateField('notifications', checked),
             }}
             helperText="Recommended for staying up to date"
           />
@@ -436,7 +438,7 @@ export const ComplexForm: Story = {
               label: 'Light Theme',
               description: 'Clean and bright interface',
               checked: formData.theme === 'light',
-              onChange: (e) => updateField('theme', e.target.value),
+              onChange: e => updateField('theme', e.target.value),
             }}
           />
           <ControlField
@@ -447,7 +449,7 @@ export const ComplexForm: Story = {
               label: 'Dark Theme',
               description: 'Easy on the eyes in low light',
               checked: formData.theme === 'dark',
-              onChange: (e) => updateField('theme', e.target.value),
+              onChange: e => updateField('theme', e.target.value),
             }}
           />
           <ControlField
@@ -458,16 +460,14 @@ export const ComplexForm: Story = {
               label: 'Auto Theme',
               description: 'Matches your system preference',
               checked: formData.theme === 'auto',
-              onChange: (e) => updateField('theme', e.target.value),
+              onChange: e => updateField('theme', e.target.value),
             }}
           />
         </ControlGroup>
 
-        <div className="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-          <h4 className="font-medium mb-2">Current Settings:</h4>
-          <pre className="text-sm">
-{JSON.stringify(formData, null, 2)}
-          </pre>
+        <div className="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-800">
+          <h4 className="mb-2 font-medium">Current Settings:</h4>
+          <pre className="text-sm">{JSON.stringify(formData, null, 2)}</pre>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 /**
  * Search Hooks Module
- * 
+ *
  * @description Collection of search and filtering hooks for data discovery,
  * pagination, and optimized search operations.
  */

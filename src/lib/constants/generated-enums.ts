@@ -1,9 +1,9 @@
 /**
  * Generated Enums - Single Source of Truth
- * 
+ *
  * This file is auto-generated. Do not edit manually.
  * Generated at: 2025-08-22T16:48:38.722Z
- * 
+ *
  * To update enums, modify scripts/generate-enums.ts and run:
  * npm run generate:enums
  */
@@ -67,7 +67,10 @@ export const RELIGION_OPTIONS = [
   { value: 'seventh_day_adventist', label: 'Seventh Day Adventist' },
   { value: 'bible_baptist_church', label: 'Bible Baptist Church' },
   { value: 'jehovahs_witnesses', label: 'Jehovahs Witnesses' },
-  { value: 'church_of_jesus_christ_latter_day_saints', label: 'Church of Jesus Christ of Latter-day Saints' },
+  {
+    value: 'church_of_jesus_christ_latter_day_saints',
+    label: 'Church of Jesus Christ of Latter-day Saints',
+  },
   { value: 'united_church_of_christ_philippines', label: 'United Church of Christ Philippines' },
   { value: 'others', label: 'Others (specify)' },
 ] as const;

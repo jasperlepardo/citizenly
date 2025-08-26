@@ -1,13 +1,32 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import type { CommandMenuItem } from '@/types/components/command-menu';
+
+import {
+  trackCommandMenuSearch,
+  trackCommandMenuNavigation,
+  trackCommandMenuAction,
+  trackCommandMenuError,
+} from '@/lib/command-menu/analytics-utils';
+import {
+  searchData,
+  exportData,
+  backupData,
+  getRecentItems,
+  clearRecentItems,
+  createResident,
+  createHousehold,
+  findSeniorCitizens,
+  findPWDs,
+  findSoloParents,
+  generateCertificate,
+  generateReport,
+} from '@/lib/command-menu/api-utils';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
-import { searchData, exportData, backupData, getRecentItems, clearRecentItems, createResident, createHousehold, findSeniorCitizens, findPWDs, findSoloParents, generateCertificate, generateReport } from '@/lib/command-menu/api-utils';
 import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
-import { trackCommandMenuSearch, trackCommandMenuNavigation, trackCommandMenuAction, trackCommandMenuError } from '@/lib/command-menu/analytics-utils';
+import type { CommandMenuItem } from '@/types/components/command-menu';
 
 interface UseCommandMenuWithApiProps {
   maxResults?: number;
@@ -20,7 +39,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   const [isLoading, setIsLoading] = useState(false);
   const [dynamicResults, setDynamicResults] = useState<CommandMenuItem[]>([]);
   const [recentItems, setRecentItems] = useState<CommandMenuItem[]>([]);
-  
+
   const router = useRouter();
 
   // Load recent items when menu opens
@@ -66,7 +85,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   // Get static menu items with API-powered actions
   const staticMenuItems = useMemo(() => {
     const baseItems = getCommandMenuItems();
-    
+
     // Enhance static items with real API functionality
     return baseItems.map(item => {
       const enhancedItem = { ...item };
@@ -130,9 +149,9 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
       try {
         // Track the search query in recent items
         trackSearch(searchQuery);
-        
+
         const apiResults = await searchData(searchQuery, 5);
-        
+
         // Track search analytics
         trackCommandMenuSearch(searchQuery, apiResults.length);
         const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
@@ -142,9 +161,12 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           group: 'Search Results',
           href: result.href,
           keywords: [result.title.toLowerCase(), result.type],
-          icon: result.type === 'resident' ? staticMenuItems.find(i => i.id === 'nav-residents')?.icon : staticMenuItems.find(i => i.id === 'nav-households')?.icon,
+          icon:
+            result.type === 'resident'
+              ? staticMenuItems.find(i => i.id === 'nav-residents')?.icon
+              : staticMenuItems.find(i => i.id === 'nav-households')?.icon,
         }));
-        
+
         setDynamicResults(dynamicMenuItems);
       } catch (error) {
         console.error('Search error:', error);
@@ -169,15 +191,16 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
     if (searchQuery.trim()) {
       // Show dynamic search results first, then filtered static items
       items = [...dynamicResults];
-      
+
       // Add matching static items
       const query = searchQuery.toLowerCase();
-      const matchingStaticItems = staticMenuItems.filter(item => 
-        item.label.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.keywords?.some(keyword => keyword.includes(query))
+      const matchingStaticItems = staticMenuItems.filter(
+        item =>
+          item.label.toLowerCase().includes(query) ||
+          item.description?.toLowerCase().includes(query) ||
+          item.keywords?.some(keyword => keyword.includes(query))
       );
-      
+
       items.push(...matchingStaticItems);
     } else {
       // Show recent items first, then all static items
@@ -222,15 +245,11 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           break;
         case 'ArrowDown':
           event.preventDefault();
-          setSelectedIndex(prev => 
-            prev >= filteredItems.length - 1 ? 0 : prev + 1
-          );
+          setSelectedIndex(prev => (prev >= filteredItems.length - 1 ? 0 : prev + 1));
           break;
         case 'ArrowUp':
           event.preventDefault();
-          setSelectedIndex(prev => 
-            prev <= 0 ? filteredItems.length - 1 : prev - 1
-          );
+          setSelectedIndex(prev => (prev <= 0 ? filteredItems.length - 1 : prev - 1));
           break;
         case 'Enter':
           event.preventDefault();
@@ -248,7 +267,9 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   // Helper to check if an input is currently focused
   const isInputFocused = () => {
     const activeElement = document.activeElement;
-    return activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+    return (
+      activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
+    );
   };
 
   const open = useCallback(() => {
@@ -276,7 +297,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   const handleExportData = async (type: 'residents' | 'households', format: 'csv' | 'xlsx') => {
     toast.loading('Preparing export...', { id: 'export' });
     const success = await exportData({ type, format });
-    
+
     if (success) {
       toast.success('Export completed successfully', { id: 'export' });
     } else {
@@ -287,7 +308,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   const handleBackupData = async () => {
     toast.loading('Creating backup...', { id: 'backup' });
     const success = await backupData();
-    
+
     if (success) {
       toast.success('Backup created successfully', { id: 'backup' });
     } else {
@@ -305,36 +326,45 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
     }
   };
 
-  const executeCommand = useCallback((item: CommandMenuItem) => {
-    if (item.disabled) return;
+  const executeCommand = useCallback(
+    (item: CommandMenuItem) => {
+      if (item.disabled) return;
 
-    close();
+      close();
 
-    // Track the interaction based on item type
-    if (item.id.startsWith('search-')) {
-      // Track navigation to search result
-      const originalId = item.id.replace('search-', '');
-      const type = item.description?.includes('Resident') ? 'resident' : 'household';
-      if (item.href) {
-        trackNavigation(originalId, item.label, item.description || '', type as 'resident' | 'household', item.href);
-        trackCommandMenuNavigation(originalId, type, item.href);
+      // Track the interaction based on item type
+      if (item.id.startsWith('search-')) {
+        // Track navigation to search result
+        const originalId = item.id.replace('search-', '');
+        const type = item.description?.includes('Resident') ? 'resident' : 'household';
+        if (item.href) {
+          trackNavigation(
+            originalId,
+            item.label,
+            item.description || '',
+            type as 'resident' | 'household',
+            item.href
+          );
+          trackCommandMenuNavigation(originalId, type, item.href);
+        }
+      } else if (item.onClick) {
+        // Track action execution
+        trackAction(item.id, item.label, item.description || '');
+        trackCommandMenuAction(item.id, 'click_action');
+      } else if (item.href) {
+        // Track navigation
+        trackAction(item.id, item.label, `Navigated to ${item.label}`);
+        trackCommandMenuNavigation(item.id, 'navigation', item.href);
       }
-    } else if (item.onClick) {
-      // Track action execution
-      trackAction(item.id, item.label, item.description || '');
-      trackCommandMenuAction(item.id, 'click_action');
-    } else if (item.href) {
-      // Track navigation
-      trackAction(item.id, item.label, `Navigated to ${item.label}`);
-      trackCommandMenuNavigation(item.id, 'navigation', item.href);
-    }
 
-    if (item.onClick) {
-      item.onClick();
-    } else if (item.href) {
-      router.push(item.href);
-    }
-  }, [close, router]);
+      if (item.onClick) {
+        item.onClick();
+      } else if (item.href) {
+        router.push(item.href);
+      }
+    },
+    [close, router]
+  );
 
   return {
     isOpen,

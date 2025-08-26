@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
-import { useTheme } from '@/contexts';
 import { cva, type VariantProps } from 'class-variance-authority';
+import React from 'react';
+
+import { useTheme } from '@/contexts';
 import { cn } from '@/lib';
 
 const themeToggleVariants = cva(
@@ -10,9 +11,11 @@ const themeToggleVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400',
+        default:
+          'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400',
         ghost: 'hover:bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
-        outline: 'border border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
+        outline:
+          'border border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
       },
       size: {
         sm: 'h-8 w-8 p-1',

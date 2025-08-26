@@ -2,6 +2,16 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 import ProtectedRoute from '@/components/organisms/ProtectedRoute';
 
+interface MockAuthValue {
+  user: unknown;
+  userProfile: unknown;
+  role: unknown;
+  loading: boolean;
+  profileLoading: boolean;
+  hasPermission: () => boolean;
+  isInRole: () => boolean;
+}
+
 // Mock Next.js router
 const mockRouter = {
   push: () => {},
@@ -32,7 +42,7 @@ const MockAuthProvider = ({
   authValue,
 }: {
   children: React.ReactNode;
-  authValue: any;
+  authValue: MockAuthValue;
 }) => {
   // Note: AuthContext mocking would be handled by Storybook
   console.log('AuthContext mock would be configured here');
@@ -378,7 +388,7 @@ export const CustomFallback: Story = {
         <p className="mb-4 text-yellow-700">
           This area requires administrator privileges to access barangay management features.
         </p>
-        <button className="rounded bg-yellow-600 px-4 py-2 text-white dark:text-black hover:bg-yellow-700">
+        <button className="rounded bg-yellow-600 px-4 py-2 text-white hover:bg-yellow-700 dark:text-black">
           Request Access
         </button>
       </div>
@@ -400,8 +410,12 @@ export const CustomLoadingComponent: Story = {
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-          <p className="font-medium text-gray-600 dark:text-gray-400">Verifying your credentials...</p>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">Please wait while we check your access level</p>
+          <p className="font-medium text-gray-600 dark:text-gray-400">
+            Verifying your credentials...
+          </p>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">
+            Please wait while we check your access level
+          </p>
         </div>
       </div>
     ),

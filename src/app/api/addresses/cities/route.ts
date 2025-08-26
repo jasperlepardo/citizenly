@@ -30,12 +30,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = cities?.map((city) => ({
-      value: city.code,
-      label: city.name,
-      province_code: city.province_code,
-      type: city.type,
-    })) || [];
+    const options =
+      cities?.map(city => ({
+        value: city.code,
+        label: city.name,
+        province_code: city.province_code,
+        type: city.type,
+      })) || [];
 
     return NextResponse.json({
       success: true,

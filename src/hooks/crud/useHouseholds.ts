@@ -1,12 +1,13 @@
 /**
  * useHouseholds Hook
- * 
+ *
  * Custom hook for fetching and caching households data with React Query
  */
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase } from '@/lib';
 
 // Import the properly typed interface
 import { HouseholdRecord } from '@/types';
@@ -54,7 +55,9 @@ async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResp
   const { searchTerm = '' } = params;
 
   // Get current session to pass auth token
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session?.access_token) {
     throw new Error('No valid session found');
@@ -70,7 +73,7 @@ async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResp
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${session.access_token}`,
     },
   });
 
@@ -86,7 +89,7 @@ async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResp
 export function useHouseholds(params: HouseholdsParams = {}) {
   const { user, userProfile } = useAuth();
   const queryClient = useQueryClient();
-  
+
   const { searchTerm = '' } = params;
 
   const query = useQuery({
@@ -100,7 +103,7 @@ export function useHouseholds(params: HouseholdsParams = {}) {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     // Use cached data immediately while fetching fresh data
-    placeholderData: (previousData) => previousData,
+    placeholderData: previousData => previousData,
     // Network mode optimistic - use cache first
     networkMode: 'always',
   });

@@ -29,7 +29,7 @@ export const HelperText: React.FC<HelperTextProps> = ({
   id,
 }) => {
   const baseClasses = `block mt-1 ${sizeClasses[size]} font-system`;
-  
+
   const variantClasses = error
     ? 'text-red-600 dark:text-red-400'
     : 'text-gray-500 dark:text-gray-400';

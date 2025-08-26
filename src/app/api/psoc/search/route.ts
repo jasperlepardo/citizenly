@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient } from '@/lib/data/client-factory';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,11 +15,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ data: [], count: 0 });
     }
 
-    // Use service role client to bypass RLS
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Use public client for PSOC data search
+    const supabase = createPublicSupabaseClient();
 
     const searchTerm = `%${query.trim()}%`;
     const allResults: any[] = [];
@@ -31,7 +28,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .ilike('title', searchTerm)
         .limit(Math.min(limit, 5));
-      
+
       if (majorGroups) {
         majorGroups.forEach(item => {
           allResults.push({
@@ -39,7 +36,7 @@ export async function GET(request: NextRequest) {
             title: item.title,
             level: 'major_group',
             hierarchy: `Major Group: ${item.title}`,
-            match_score: 1
+            match_score: 1,
           });
         });
       }
@@ -52,7 +49,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .ilike('title', searchTerm)
         .limit(Math.min(limit, 10));
-      
+
       if (subMajorGroups) {
         subMajorGroups.forEach(item => {
           allResults.push({
@@ -60,7 +57,7 @@ export async function GET(request: NextRequest) {
             title: item.title,
             level: 'sub_major_group',
             hierarchy: `Sub Major Group: ${item.title}`,
-            match_score: 2
+            match_score: 2,
           });
         });
       }
@@ -73,7 +70,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .ilike('title', searchTerm)
         .limit(Math.min(limit, 10));
-      
+
       if (unitGroups) {
         unitGroups.forEach(item => {
           allResults.push({
@@ -81,7 +78,7 @@ export async function GET(request: NextRequest) {
             title: item.title,
             level: 'unit_group',
             hierarchy: `Unit Group: ${item.title}`,
-            match_score: 3
+            match_score: 3,
           });
         });
       }
@@ -94,7 +91,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .ilike('title', searchTerm)
         .limit(Math.min(limit, 10));
-      
+
       if (unitSubGroups) {
         unitSubGroups.forEach(item => {
           allResults.push({
@@ -102,7 +99,7 @@ export async function GET(request: NextRequest) {
             title: item.title,
             level: 'unit_sub_group',
             hierarchy: `Unit Sub Group: ${item.title}`,
-            match_score: 4
+            match_score: 4,
           });
         });
       }
@@ -115,7 +112,7 @@ export async function GET(request: NextRequest) {
         .select('*')
         .ilike('occupation_title', searchTerm)
         .limit(Math.min(limit, 15));
-      
+
       if (occupations) {
         occupations.forEach(item => {
           allResults.push({
@@ -123,7 +120,7 @@ export async function GET(request: NextRequest) {
             title: item.occupation_title,
             level: 'occupation',
             hierarchy: item.full_hierarchy || item.occupation_title,
-            match_score: 5 // Highest priority for specific occupations
+            match_score: 5, // Highest priority for specific occupations
           });
         });
       }
@@ -139,18 +136,26 @@ export async function GET(request: NextRequest) {
     }, [] as any[]);
 
     // Sort by level hierarchy (major_group -> occupation) and then by match score
-    const levelOrder = { major_group: 1, sub_major_group: 2, unit_group: 3, unit_sub_group: 4, occupation: 5 };
+    const levelOrder = {
+      major_group: 1,
+      sub_major_group: 2,
+      unit_group: 3,
+      unit_sub_group: 4,
+      occupation: 5,
+    };
     uniqueResults.sort((a: any, b: any) => {
-      const levelDiff = levelOrder[a.level as keyof typeof levelOrder] - levelOrder[b.level as keyof typeof levelOrder];
+      const levelDiff =
+        levelOrder[a.level as keyof typeof levelOrder] -
+        levelOrder[b.level as keyof typeof levelOrder];
       if (levelDiff !== 0) return levelDiff;
       return b.match_score - a.match_score;
     });
 
     const finalResults = uniqueResults.slice(0, Math.min(limit, 50));
-    
+
     return NextResponse.json({
       data: finalResults,
-      count: finalResults.length
+      count: finalResults.length,
     });
   } catch (error) {
     console.error('PSOC search API error:', error);

@@ -1,6 +1,6 @@
 /**
  * Charts Library Module
- * 
+ *
  * @description Centralized chart data transformation and utilities.
  * Provides reusable chart transformers and configuration separated from UI components.
  */

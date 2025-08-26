@@ -3,8 +3,7 @@
  * Replaces sequential queries with optimized batch operations
  */
 
-import { supabase } from '@/lib';
-import { logger } from '@/lib';
+import { supabase, logger } from '@/lib';
 
 export interface AddressInfo {
   barangay_name?: string;
@@ -19,6 +18,19 @@ export interface PsocInfo {
   title: string;
   hierarchy?: string;
   level?: string;
+}
+
+interface BarangayWithRelations {
+  psgc_cities_municipalities: {
+    name: string;
+    type: string;
+    psgc_provinces: {
+      name: string;
+      psgc_regions: {
+        name: string;
+      };
+    };
+  };
 }
 
 /**
@@ -58,14 +70,17 @@ export const fetchAddressInfo = async (barangayCode: string): Promise<AddressInf
 /**
  * Optimized address fallback - single join query instead of sequential queries
  */
-const fetchAddressFromJoinedTables = async (barangayCode: string): Promise<AddressInfo | undefined> => {
+const fetchAddressFromJoinedTables = async (
+  barangayCode: string
+): Promise<AddressInfo | undefined> => {
   try {
     logger.debug('Using optimized join query for address data');
 
     // Single optimized query with joins instead of sequential queries
     const { data, error } = await supabase
       .from('psgc_barangays')
-      .select(`
+      .select(
+        `
         name,
         psgc_cities_municipalities(
           name,
@@ -75,7 +90,8 @@ const fetchAddressFromJoinedTables = async (barangayCode: string): Promise<Addre
             psgc_regions(name)
           )
         )
-      `)
+      `
+      )
       .eq('code', barangayCode)
       .single();
 
@@ -84,7 +100,8 @@ const fetchAddressFromJoinedTables = async (barangayCode: string): Promise<Addre
       return undefined;
     }
 
-    const city = data.psgc_cities_municipalities as any;
+    const typedData = data as BarangayWithRelations;
+    const city = typedData.psgc_cities_municipalities;
     const province = city?.psgc_provinces;
     const region = province?.psgc_regions;
 
@@ -133,14 +150,14 @@ export const fetchPsocInfo = async (occupationCode: string): Promise<PsocInfo | 
         code: psocData.occupation_code,
         title: psocData.occupation_title,
         hierarchy: psocData.full_hierarchy || psocData.occupation_title,
-        level: 'occupation'
+        level: 'occupation',
       };
-      
+
       // Cache the result
       psocCache.set(occupationCode, psocInfo);
       return psocInfo;
     }
-    
+
     return null;
   } catch (psocError) {
     logger.warn('PSOC data lookup failed', {

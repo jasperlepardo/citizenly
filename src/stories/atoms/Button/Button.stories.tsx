@@ -226,7 +226,9 @@ export const FigmaDesignSystem: Story = {
     <div className="space-y-6 p-4">
       <div className="space-y-3">
         <h2 className="text-xl font-bold">JSPR Design System - Button Component</h2>
-        <p className="text-gray-600 dark:text-gray-400">Complete button variants matching Figma specifications</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          Complete button variants matching Figma specifications
+        </p>
       </div>
 
       {/* Primary Color Family */}
@@ -270,7 +272,9 @@ export const FigmaDesignSystem: Story = {
 
       {/* Secondary Color Family */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Secondary Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          Secondary Variants
+        </h3>
         <div className="grid grid-cols-4 gap-3">
           <div className="space-y-2">
             <Button variant="secondary" size="regular">
@@ -426,7 +430,9 @@ export const FigmaDesignSystem: Story = {
 
       {/* Neutral & Ghost */}
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Neutral & Ghost Variants</h3>
+        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          Neutral & Ghost Variants
+        </h3>
         <div className="grid grid-cols-5 gap-3">
           <div className="space-y-2">
             <Button variant="neutral" size="regular">

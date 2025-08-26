@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { MigrationInformation, MigrationInformationData } from '@/components/organisms/MigrationInformation';
+import {
+  MigrationInformation,
+  MigrationInformationData,
+} from '@/components/organisms/MigrationInformation';
 
 const meta = {
   title: 'Organisms/Form/Resident/MigrationInformation',

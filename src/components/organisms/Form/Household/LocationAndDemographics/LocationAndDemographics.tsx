@@ -1,7 +1,12 @@
 import React from 'react';
-import { AddressInformation, AddressInformationData } from './FormField/AddressInformation';
-import { DemographicsInformation, DemographicsInformationData } from './FormField/DemographicsInformation';
+
 import type { FormMode } from '@/types';
+
+import { AddressInformation, AddressInformationData } from './FormField/AddressInformation';
+import {
+  DemographicsInformation,
+  DemographicsInformationData,
+} from './FormField/DemographicsInformation';
 
 export interface LocationAndDemographicsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -9,8 +14,8 @@ export interface LocationAndDemographicsFormProps {
   formData: {
     // Address Information
     houseNumber: string;
-    streetId: string;  // Changed from streetName to streetId
-    subdivisionId: string;  // Changed from subdivisionName to subdivisionId
+    streetId: string; // Changed from streetName to streetId
+    subdivisionId: string; // Changed from subdivisionName to subdivisionId
     barangayCode: string;
     cityMunicipalityCode: string;
     provinceCode: string;
@@ -39,10 +44,10 @@ export interface LocationAndDemographicsFormProps {
   onBarangayChange?: (barangayCode: string) => void;
 }
 
-export function LocationAndDemographicsForm({ 
+export function LocationAndDemographicsForm({
   mode = 'create',
-  formData, 
-  onChange, 
+  formData,
+  onChange,
   errors,
   regionOptions,
   provinceOptions,
@@ -55,14 +60,13 @@ export function LocationAndDemographicsForm({
   onRegionChange,
   onProvinceChange,
   onCityChange,
-  onBarangayChange
+  onBarangayChange,
 }: LocationAndDemographicsFormProps) {
-
   // Map form data to AddressInformation component props
   const addressInfoValue: AddressInformationData = {
     houseNumber: formData.houseNumber || '',
-    streetId: formData.streetId || '',  // Updated field name
-    subdivisionId: formData.subdivisionId || '',  // Updated field name
+    streetId: formData.streetId || '', // Updated field name
+    subdivisionId: formData.subdivisionId || '', // Updated field name
     barangayCode: formData.barangayCode || '',
     cityMunicipalityCode: formData.cityMunicipalityCode || '',
     provinceCode: formData.provinceCode || '',
@@ -91,10 +95,12 @@ export function LocationAndDemographicsForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Location & Demographics</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Location & Demographics
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Household address information and demographic composition.
           </p>

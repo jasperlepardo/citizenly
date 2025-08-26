@@ -1,6 +1,6 @@
 /**
  * Command Menu Recent Items Hook
- * 
+ *
  * @description Handles recent items management for command menu.
  * Extracted from useCommandMenuWithApi for better maintainability.
  */
@@ -9,8 +9,13 @@
 
 import { useState, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
+
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { getRecentApiItems as getRecentItems, clearRecentApiItems as clearRecentItems } from '@/lib/command-menu';
+import {
+  getRecentApiItems as getRecentItems,
+  clearRecentApiItems as clearRecentItems,
+} from '@/lib/command-menu';
+
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 /**
@@ -41,12 +46,11 @@ export interface UseCommandMenuRecentsReturn {
 
 /**
  * Hook for command menu recent items management
- * 
+ *
  * @description Provides recent items functionality with error handling
  * and toast notifications.
  */
 export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
-  
   const [recentItems, setRecentItems] = useState<CommandMenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,10 +70,10 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
    */
   const loadRecentItems = useCallback(async () => {
     setIsLoading(true);
-    
+
     try {
       const recent = await wrapAsync(getRecentItems, 'load recent items')();
-      
+
       if (recent) {
         const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
           id: `recent-${item.id}`,
@@ -80,7 +84,7 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
           keywords: item.title.toLowerCase().split(' '),
           recent: true,
         }));
-        
+
         setRecentItems(recentMenuItems);
       } else {
         setRecentItems([]);

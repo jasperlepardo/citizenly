@@ -126,7 +126,8 @@ export const RequiredHiddenIndicator: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Required field without visual indicator - screen readers will still announce "required".',
+        story:
+          'Required field without visual indicator - screen readers will still announce "required".',
       },
     },
   },
@@ -188,11 +189,21 @@ export const SecondaryTextCustomSize: Story = {
 export const Sizes: Story = {
   render: () => (
     <div className="space-y-4">
-      <Label size="xs" htmlFor="extra-small">Extra Small Label</Label>
-      <Label size="sm" htmlFor="small">Small Label</Label>
-      <Label size="md" htmlFor="medium">Medium Label (Default)</Label>
-      <Label size="lg" htmlFor="large">Large Label</Label>
-      <Label size="xl" htmlFor="extra-large">Extra Large Label</Label>
+      <Label size="xs" htmlFor="extra-small">
+        Extra Small Label
+      </Label>
+      <Label size="sm" htmlFor="small">
+        Small Label
+      </Label>
+      <Label size="md" htmlFor="medium">
+        Medium Label (Default)
+      </Label>
+      <Label size="lg" htmlFor="large">
+        Large Label
+      </Label>
+      <Label size="xl" htmlFor="extra-large">
+        Extra Large Label
+      </Label>
     </div>
   ),
   parameters: {
@@ -207,36 +218,20 @@ export const Sizes: Story = {
 export const SizesWithSecondaryText: Story = {
   render: () => (
     <div className="space-y-6">
-      <Label 
-        size="xs" 
-        htmlFor="xs-secondary"
-        secondaryText="Extra small with auto-sized secondary"
-      >
+      <Label size="xs" htmlFor="xs-secondary" secondaryText="Extra small with auto-sized secondary">
         Extra Small Label
       </Label>
-      <Label 
-        size="sm" 
-        htmlFor="sm-secondary"
-        secondaryText="Small with auto-sized secondary text"
-      >
+      <Label size="sm" htmlFor="sm-secondary" secondaryText="Small with auto-sized secondary text">
         Small Label
       </Label>
-      <Label 
-        size="md" 
-        htmlFor="md-secondary"
-        secondaryText="Medium with auto-sized secondary text"
-      >
+      <Label size="md" htmlFor="md-secondary" secondaryText="Medium with auto-sized secondary text">
         Medium Label
       </Label>
-      <Label 
-        size="lg" 
-        htmlFor="lg-secondary"
-        secondaryText="Large with auto-sized secondary text"
-      >
+      <Label size="lg" htmlFor="lg-secondary" secondaryText="Large with auto-sized secondary text">
         Large Label
       </Label>
-      <Label 
-        size="xl" 
+      <Label
+        size="xl"
         htmlFor="xl-secondary"
         secondaryText="Extra large with auto-sized secondary text"
       >
@@ -247,7 +242,8 @@ export const SizesWithSecondaryText: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'All sizes with secondary text showing automatic size scaling (secondary text is one size smaller).',
+        story:
+          'All sizes with secondary text showing automatic size scaling (secondary text is one size smaller).',
       },
     },
   },
@@ -256,10 +252,18 @@ export const SizesWithSecondaryText: Story = {
 export const Variants: Story = {
   render: () => (
     <div className="space-y-4">
-      <Label variant="default" htmlFor="default">Default Label</Label>
-      <Label variant="muted" htmlFor="muted">Muted Label</Label>
-      <Label variant="error" htmlFor="error" required>Error Label</Label>
-      <Label variant="success" htmlFor="success">Success Label</Label>
+      <Label variant="default" htmlFor="default">
+        Default Label
+      </Label>
+      <Label variant="muted" htmlFor="muted">
+        Muted Label
+      </Label>
+      <Label variant="error" htmlFor="error" required>
+        Error Label
+      </Label>
+      <Label variant="success" htmlFor="success">
+        Success Label
+      </Label>
     </div>
   ),
   parameters: {
@@ -274,8 +278,12 @@ export const Variants: Story = {
 export const DisabledState: Story = {
   render: () => (
     <div className="space-y-4">
-      <Label disabled htmlFor="disabled1">Disabled Label</Label>
-      <Label disabled required htmlFor="disabled2">Disabled Required Label</Label>
+      <Label disabled htmlFor="disabled1">
+        Disabled Label
+      </Label>
+      <Label disabled required htmlFor="disabled2">
+        Disabled Required Label
+      </Label>
     </div>
   ),
   parameters: {
@@ -306,7 +314,7 @@ export const CompleteFormExample: Story = {
   render: () => (
     <div className="max-w-md space-y-6">
       <div>
-        <Label 
+        <Label
           htmlFor="example-name"
           required
           size="md"
@@ -318,13 +326,13 @@ export const CompleteFormExample: Story = {
         <input
           id="example-name"
           type="text"
-          className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
           placeholder="John Doe"
         />
       </div>
 
       <div>
-        <Label 
+        <Label
           htmlFor="example-email"
           required
           variant="default"
@@ -336,40 +344,32 @@ export const CompleteFormExample: Story = {
         <input
           id="example-email"
           type="email"
-          className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
           placeholder="john@example.com"
         />
       </div>
 
       <div>
-        <Label 
-          htmlFor="example-phone"
-          variant="muted"
-          size="sm"
-        >
+        <Label htmlFor="example-phone" variant="muted" size="sm">
           Phone Number (Optional)
         </Label>
         <input
           id="example-phone"
           type="tel"
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
           placeholder="+1 (555) 123-4567"
         />
       </div>
 
       <div>
-        <Label 
-          htmlFor="example-disabled"
-          disabled
-          required
-        >
+        <Label htmlFor="example-disabled" disabled required>
           Disabled Field
         </Label>
         <input
           id="example-disabled"
           type="text"
           disabled
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 cursor-not-allowed"
+          className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm"
           placeholder="This field is disabled"
         />
       </div>
@@ -378,7 +378,8 @@ export const CompleteFormExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Complete form example showing various FormLabel configurations with actual form inputs.',
+        story:
+          'Complete form example showing various FormLabel configurations with actual form inputs.',
       },
     },
   },

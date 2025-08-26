@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createAdminSupabaseClient } from '@/lib';
 
 interface NotificationRecord {
   id: string;
   user_id: string;
   notification_type: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
   retry_count: number;
 }
 
 export async function POST(_request: NextRequest) {
   try {
-    console.log('🔄 Processing pending notifications...');
+    console.warn('🔄 Processing pending notifications...');
 
     const supabaseAdmin = createAdminSupabaseClient();
 
@@ -43,7 +44,7 @@ export async function POST(_request: NextRequest) {
       });
     }
 
-    console.log(`📧 Processing ${notifications.length} notifications...`);
+    console.warn(`📧 Processing ${notifications.length} notifications...`);
 
     // Process each notification
     for (const notification of notifications) {
@@ -79,14 +80,20 @@ export async function POST(_request: NextRequest) {
               scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(), // Retry after 1, 2, 3 minutes
             };
 
-        await supabaseAdmin.from('user_notifications').update(updateData).eq('id', notif.id);
+        const { error: updateNotifError } = await supabaseAdmin
+          .from('user_notifications')
+          .update(updateData)
+          .eq('id', notif.id);
+        if (updateNotifError) {
+          console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
+        }
 
         if (success) {
           results.processed++;
-          console.log(`✅ ${notif.notification_type} sent to user ${notif.user_id}`);
+          console.warn(`✅ ${notif.notification_type} sent to user ${notif.user_id}`);
         } else {
           results.failed++;
-          console.log(
+          console.error(
             `❌ ${notif.notification_type} failed for user ${notif.user_id}: ${errorMessage}`
           );
         }
@@ -96,7 +103,7 @@ export async function POST(_request: NextRequest) {
         console.error(`❌ Failed to process notification ${notif.id}:`, errorMsg);
 
         // Update retry count
-        await supabaseAdmin
+        const { error: retryUpdateError } = await supabaseAdmin
           .from('user_notifications')
           .update({
             retry_count: notif.retry_count + 1,
@@ -104,10 +111,13 @@ export async function POST(_request: NextRequest) {
             scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
           })
           .eq('id', notif.id);
+        if (retryUpdateError) {
+          console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);
+        }
       }
     }
 
-    console.log(`📊 Notification processing complete:`, results);
+    console.warn(`📊 Notification processing complete:`, results);
 
     return NextResponse.json({
       message: 'Notifications processed',
@@ -123,7 +133,7 @@ async function sendWelcomeEmail(notification: NotificationRecord): Promise<boole
   try {
     const { email, first_name, role_name } = notification.metadata;
 
-    console.log(`📧 Sending welcome email to ${email} (${first_name}, ${role_name})`);
+    console.warn(`📧 Sending welcome email to ${email} (${first_name}, ${role_name})`);
 
     // In a real implementation, you would integrate with:
     // - SendGrid, Mailgun, AWS SES, or similar email service
@@ -143,7 +153,7 @@ async function sendWelcomeEmail(notification: NotificationRecord): Promise<boole
       },
     };
 
-    console.log('📧 Email content:', emailContent);
+    console.warn('📧 Email content:', emailContent);
 
     // TODO: Implement actual email sending
     // const result = await emailService.send(emailContent);
@@ -161,7 +171,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
   try {
     const { phone, first_name } = notification.metadata;
 
-    console.log(`📱 Sending welcome SMS to ${phone} (${first_name})`);
+    console.warn(`📱 Sending welcome SMS to ${phone} (${first_name})`);
 
     // In a real implementation, you would integrate with:
     // - Twilio, AWS SNS, or similar SMS service
@@ -173,7 +183,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
       message: `Welcome to RBI System, ${first_name}! Your account is now active. Visit ${process.env.NEXT_PUBLIC_APP_URL}/login to get started.`,
     };
 
-    console.log('📱 SMS content:', smsContent);
+    console.warn('📱 SMS content:', smsContent);
 
     // TODO: Implement actual SMS sending
     // const result = await smsService.send(smsContent);
@@ -202,7 +212,7 @@ export async function GET() {
     }
 
     const summary =
-      stats?.reduce((acc: any, notif: any) => {
+      stats?.reduce((acc: Record<string, number>, notif: { notification_type: string; status: string }) => {
         const key = `${notif.notification_type}_${notif.status}`;
         acc[key] = (acc[key] || 0) + 1;
         return acc;

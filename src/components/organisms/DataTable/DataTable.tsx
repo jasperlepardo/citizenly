@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components';
 import Link from 'next/link';
+import React, { useState, useMemo } from 'react';
+
+import { Button } from '@/components';
 
 export interface TableColumn<T = any> {
   key: string;
@@ -193,11 +194,15 @@ export default function DataTable<T extends Record<string, any>>({
 
   if (loading) {
     return (
-      <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 ${className}`}>
+      <div
+        className={`rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800 ${className}`}
+      >
         <div className="flex items-center justify-center py-12">
           <div className="flex items-center space-x-2">
             <div className="size-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">Loading...</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+              Loading...
+            </span>
           </div>
         </div>
       </div>
@@ -205,10 +210,12 @@ export default function DataTable<T extends Record<string, any>>({
   }
 
   return (
-    <div className={`bg-white dark:bg-gray-800 overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 ${className}`}>
+    <div
+      className={`overflow-hidden rounded-lg border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800 ${className}`}
+    >
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="border-gray-300 dark:border-gray-600 min-w-full divide-y">
+        <table className="min-w-full divide-y border-gray-300 dark:border-gray-600">
           {/* Header */}
           <thead className="bg-gray-100 dark:bg-gray-700">
             <tr>
@@ -217,7 +224,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th className={`${paddingClasses[size]} w-12`}>
                   <input
                     type="checkbox"
-                    className="bg-white dark:bg-gray-800 size-4 rounded-sm border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-600 focus:ring-blue-500"
+                    className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-600"
                     checked={
                       selection.selectedRowKeys.length === sortedData.length &&
                       sortedData.length > 0
@@ -232,7 +239,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th
                   key={column.key}
                   className={`${paddingClasses[size]} text-left ${sizeClasses[size]} font-medium text-gray-600 dark:text-gray-400 ${
-                    column.sortable ? 'hover:bg-gray-50 dark:bg-gray-700 cursor-pointer' : ''
+                    column.sortable ? 'cursor-pointer hover:bg-gray-50 dark:bg-gray-700' : ''
                   }`}
                   style={{ width: column.width }}
                   onClick={column.sortable ? () => handleSort(column.key) : undefined}
@@ -245,7 +252,7 @@ export default function DataTable<T extends Record<string, any>>({
                           className={`size-3 ${
                             sortField === column.key && sortOrder === 'asc'
                               ? 'text-gray-600 dark:text-gray-400'
-                              : 'text-gray-500 dark:text-gray-400 dark:text-gray-600 dark:text-gray-400'
+                              : 'text-gray-500 dark:text-gray-400 dark:text-gray-600'
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -270,7 +277,7 @@ export default function DataTable<T extends Record<string, any>>({
           </thead>
 
           {/* Body */}
-          <tbody className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 divide-y">
+          <tbody className="divide-y border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800">
             {sortedData.length === 0 ? (
               <tr>
                 <td
@@ -298,7 +305,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td className={paddingClasses[size]}>
                         <input
                           type="checkbox"
-                          className="bg-white dark:bg-gray-800 size-4 rounded-sm border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-600 focus:ring-blue-500"
+                          className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-600"
                           checked={isSelected}
                           onChange={e => handleRowSelect(record, index, e.target.checked)}
                           disabled={selection.getCheckboxProps?.(record)?.disabled}
@@ -331,7 +338,7 @@ export default function DataTable<T extends Record<string, any>>({
                                   <Link
                                     key={action.key}
                                     href={action.href(record)}
-                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200"
+                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-200 dark:text-gray-400"
                                   >
                                     {action.icon && <span className="mr-1">{action.icon}</span>}
                                     {action.label}
@@ -369,7 +376,7 @@ export default function DataTable<T extends Record<string, any>>({
 
       {/* Pagination */}
       {pagination && (
-        <div className="bg-white dark:bg-gray-800 flex items-center justify-between border-t border-gray-300 dark:border-gray-600 px-4 py-3">
+        <div className="flex items-center justify-between border-t border-gray-300 bg-white px-4 py-3 dark:border-gray-600 dark:bg-gray-800">
           <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
             <span>
               Showing{' '}

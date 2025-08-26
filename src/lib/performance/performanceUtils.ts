@@ -81,9 +81,10 @@ class PerformanceMonitor {
         // Observe largest contentful paint
         const lcpObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
+            const lcpEntry = entry as PerformanceEntry & { element?: { tagName: string }; url?: string };
             this.recordMetric('lcp', entry.startTime, {
-              element: (entry as any).element?.tagName,
-              url: (entry as any).url,
+              element: lcpEntry.element?.tagName,
+              url: lcpEntry.url,
             });
           }
         });

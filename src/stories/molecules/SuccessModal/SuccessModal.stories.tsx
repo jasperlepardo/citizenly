@@ -52,7 +52,8 @@ export const FormSubmitted: Story = {
   args: {
     isOpen: true,
     title: 'Form Submitted',
-    message: 'Your form has been submitted successfully. You will receive a confirmation email shortly.',
+    message:
+      'Your form has been submitted successfully. You will receive a confirmation email shortly.',
     onClose: () => {},
   },
   parameters: {
@@ -101,7 +102,8 @@ export const FileUploaded: Story = {
   args: {
     isOpen: true,
     title: 'File Uploaded',
-    message: 'Your file has been uploaded and is being processed. You will be notified when it\'s ready.',
+    message:
+      "Your file has been uploaded and is being processed. You will be notified when it's ready.",
     onClose: () => {},
   },
   parameters: {
@@ -133,7 +135,8 @@ export const PaymentCompleted: Story = {
   args: {
     isOpen: true,
     title: 'Payment Successful',
-    message: 'Your payment has been processed successfully. A receipt has been sent to your email address.',
+    message:
+      'Your payment has been processed successfully. A receipt has been sent to your email address.',
     onClose: () => {},
   },
   parameters: {
@@ -166,7 +169,8 @@ export const LongMessage: Story = {
   args: {
     isOpen: true,
     title: 'Registration Complete',
-    message: 'Congratulations! Your registration has been completed successfully. You now have access to all premium features including advanced analytics, priority support, and exclusive content. Please check your email for important account setup information and next steps to get the most out of your new account.',
+    message:
+      'Congratulations! Your registration has been completed successfully. You now have access to all premium features including advanced analytics, priority support, and exclusive content. Please check your email for important account setup information and next steps to get the most out of your new account.',
     onClose: () => {},
   },
   parameters: {
@@ -191,7 +195,7 @@ export const Interactive: Story = {
         >
           Show Success Modal
         </button>
-        
+
         <SuccessModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
@@ -241,7 +245,7 @@ export const MultipleSuccessTypes: Story = {
       <div className="space-y-4 p-8">
         <h3 className="text-lg font-semibold">Different Success Types</h3>
         <div className="space-y-2">
-          {successTypes.map((success) => (
+          {successTypes.map(success => (
             <button
               key={success.id}
               onClick={() => setOpenModal(success.id)}
@@ -252,7 +256,7 @@ export const MultipleSuccessTypes: Story = {
           ))}
         </div>
 
-        {successTypes.map((success) => (
+        {successTypes.map(success => (
           <SuccessModal
             key={success.id}
             isOpen={openModal === success.id}
@@ -294,7 +298,7 @@ export const AutoClose: Story = {
         >
           Show Auto-Close Modal (3s)
         </button>
-        
+
         <SuccessModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}

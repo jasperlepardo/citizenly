@@ -242,7 +242,7 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: ContactDetailsData) => {
       setValue(newValue);
-      
+
       // Clear errors for fields that now have values
       const newErrors = { ...errors };
       Object.keys(newValue).forEach(key => {
@@ -266,19 +266,19 @@ export const Interactive: Story = {
 
     const validate = () => {
       const newErrors: Record<string, string> = {};
-      
+
       if (value.email && !validateEmail(value.email)) {
         newErrors.email = 'Please enter a valid email address';
       }
-      
+
       if (value.phoneNumber && !validatePhoneNumber(value.phoneNumber)) {
         newErrors.phoneNumber = 'Please enter a valid phone number';
       }
-      
+
       if (value.mobileNumber && !validatePhoneNumber(value.mobileNumber)) {
         newErrors.mobileNumber = 'Please enter a valid mobile number';
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -295,12 +295,8 @@ export const Interactive: Story = {
 
     return (
       <div className="space-y-6">
-        <ContactDetails
-          value={value}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
+        <ContactDetails value={value} onChange={handleChange} errors={errors} />
+
         <div className="flex space-x-4">
           <button
             onClick={validate}
@@ -321,12 +317,12 @@ export const Interactive: Story = {
             Reset
           </button>
         </div>
-        
+
         <div className="rounded bg-gray-100 p-4">
           <h4 className="font-medium">Current Values:</h4>
           <pre className="mt-2 text-sm">{JSON.stringify(value, null, 2)}</pre>
         </div>
-        
+
         {Object.keys(errors).length > 0 && (
           <div className="rounded bg-red-100 p-4">
             <h4 className="font-medium text-red-800">Validation Errors:</h4>
@@ -349,29 +345,25 @@ export const Interactive: Story = {
 export const ProgressiveFilling: Story = {
   render: () => {
     const [step, setStep] = useState(0);
-    
+
     const steps = [
       { ...emptyData },
       { ...emptyData, email: 'user@example.com' },
       { ...emptyData, email: 'user@example.com', phoneNumber: '(02) 123-4567' },
-      { ...emptyData, email: 'user@example.com', phoneNumber: '(02) 123-4567', mobileNumber: '+63 912 345 6789' },
+      {
+        ...emptyData,
+        email: 'user@example.com',
+        phoneNumber: '(02) 123-4567',
+        mobileNumber: '+63 912 345 6789',
+      },
     ];
 
-    const stepLabels = [
-      'Empty Form',
-      'Add Email',
-      'Add Phone',
-      'Add Mobile',
-    ];
+    const stepLabels = ['Empty Form', 'Add Email', 'Add Phone', 'Add Mobile'];
 
     return (
       <div className="space-y-6">
-        <ContactDetails
-          value={steps[step]}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <ContactDetails value={steps[step]} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {stepLabels.map((label, index) => (
@@ -388,7 +380,7 @@ export const ProgressiveFilling: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="text-sm text-gray-600">
             Step {step + 1} of {steps.length}: {stepLabels[step]}
           </div>
@@ -409,7 +401,7 @@ export const ProgressiveFilling: Story = {
 export const ValidationPatterns: Story = {
   render: () => {
     const [currentExample, setCurrentExample] = useState(0);
-    
+
     const examples = [
       {
         label: 'Valid Formats',
@@ -459,12 +451,8 @@ export const ValidationPatterns: Story = {
 
     return (
       <div className="space-y-6">
-        <ContactDetails
-          value={currentData.data}
-          onChange={() => {}}
-          errors={currentData.errors}
-        />
-        
+        <ContactDetails value={currentData.data} onChange={() => {}} errors={currentData.errors} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {examples.map((example, index) => (
@@ -481,10 +469,8 @@ export const ValidationPatterns: Story = {
               </button>
             ))}
           </div>
-          
-          <div className="text-sm text-gray-600">
-            Current: {currentData.label}
-          </div>
+
+          <div className="text-sm text-gray-600">Current: {currentData.label}</div>
         </div>
       </div>
     );

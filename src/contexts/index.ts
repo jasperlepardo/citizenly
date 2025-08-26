@@ -15,7 +15,4 @@ export {
 } from './AuthContext';
 
 // Theme context with hooks
-export {
-  ThemeProvider,
-  useTheme,
-} from './ThemeContext';
+export { ThemeProvider, useTheme } from './ThemeContext';

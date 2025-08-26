@@ -7,21 +7,21 @@ export * from './chart-sizes';
 export * from './resident-form-defaults';
 
 // Export specific non-conflicting items from generated-enums
-export { 
-  EDUCATION_LEVEL_OPTIONS, 
-  ETHNICITY_OPTIONS, 
+export {
+  EDUCATION_LEVEL_OPTIONS,
+  ETHNICITY_OPTIONS,
   RELIGION_OPTIONS,
   extractValues,
-  getLabelByValue
+  getLabelByValue,
 } from './generated-enums';
 
-// Export specific non-conflicting items from form-options  
+// Export specific non-conflicting items from form-options
 export {
   BLOOD_TYPE_OPTIONS,
   CITIZENSHIP_OPTIONS,
   CIVIL_STATUS_OPTIONS,
   EMPLOYMENT_STATUS_OPTIONS,
-  SEX_OPTIONS
+  SEX_OPTIONS,
 } from './form-options';
 
 export type {
@@ -29,7 +29,7 @@ export type {
   CitizenshipValue,
   CivilStatusValue,
   EmploymentStatusValue,
-  SexValue
+  SexValue,
 } from './form-options';
 
 // Export resident-enums
@@ -39,25 +39,25 @@ export * from './resident-enums';
 export const API_ERROR_CODES = {
   // Authentication
   AUTH_001: 'UNAUTHORIZED',
-  AUTH_002: 'INVALID_TOKEN', 
+  AUTH_002: 'INVALID_TOKEN',
   AUTH_003: 'TOKEN_EXPIRED',
   AUTH_004: 'INSUFFICIENT_PERMISSIONS',
-  
+
   // Profile/User
   USER_001: 'PROFILE_NOT_FOUND',
   USER_002: 'BARANGAY_NOT_ASSIGNED',
-  
+
   // Data Access
   DATA_001: 'RESOURCE_NOT_FOUND',
   DATA_002: 'QUERY_FAILED',
   DATA_003: 'DATABASE_ERROR',
-  
+
   // Rate Limiting
   RATE_001: 'RATE_LIMIT_EXCEEDED',
-  
+
   // Server
   SERVER_001: 'INTERNAL_ERROR',
-  SERVER_002: 'SERVICE_UNAVAILABLE'
+  SERVER_002: 'SERVICE_UNAVAILABLE',
 } as const;
 
 // Standardized error response interface
@@ -77,7 +77,7 @@ export function createErrorResponseObject(
     error: API_ERROR_CODES[code],
     message,
     code,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 

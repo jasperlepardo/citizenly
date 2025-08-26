@@ -8,10 +8,7 @@ import type { SanitizationOptions } from './types';
 /**
  * Sanitize general input with configurable options
  */
-export function sanitizeInput(
-  input: string,
-  options: SanitizationOptions = {}
-): string {
+export function sanitizeInput(input: string, options: SanitizationOptions = {}): string {
   if (!input || typeof input !== 'string') {
     return '';
   }
@@ -113,17 +110,19 @@ export function sanitizeName(name: string): string {
     return '';
   }
 
-  return sanitizeInput(name, {
-    allowedChars: /a-zA-Z\s\-'\.]/,
-    maxLength: 100,
-    trimWhitespace: true,
-  })
-    // Remove multiple spaces
-    .replace(/\s+/g, ' ')
-    // Remove leading/trailing hyphens, apostrophes, periods
-    .replace(/^[\-'\.]+|[\-'\.]+$/g, '')
-    // Capitalize first letter of each word
-    .replace(/\b\w/g, char => char.toUpperCase());
+  return (
+    sanitizeInput(name, {
+      allowedChars: /a-zA-Z\s\-'\.]/,
+      maxLength: 100,
+      trimWhitespace: true,
+    })
+      // Remove multiple spaces
+      .replace(/\s+/g, ' ')
+      // Remove leading/trailing hyphens, apostrophes, periods
+      .replace(/^[\-'\.]+|[\-'\.]+$/g, '')
+      // Capitalize first letter of each word
+      .replace(/\b\w/g, char => char.toUpperCase())
+  );
 }
 
 /**
@@ -165,7 +164,7 @@ export function sanitizeUrl(url: string): string {
   }
 
   // Basic URL sanitization
-  let sanitized = sanitizeInput(url, {
+  const sanitized = sanitizeInput(url, {
     trimWhitespace: true,
     maxLength: 2048,
   });
@@ -193,16 +192,18 @@ export function sanitizeText(text: string, maxLength?: number): string {
     return '';
   }
 
-  return sanitizeInput(text, {
-    trimWhitespace: true,
-    stripHtml: true,
-    maxLength,
-    normalizeUnicode: true,
-  })
-    // Remove control characters except newlines and tabs
-    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
-    // Normalize whitespace
-    .replace(/\s+/g, ' ');
+  return (
+    sanitizeInput(text, {
+      trimWhitespace: true,
+      stripHtml: true,
+      maxLength,
+      normalizeUnicode: true,
+    })
+      // Remove control characters except newlines and tabs
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+      // Normalize whitespace
+      .replace(/\s+/g, ' ')
+  );
 }
 
 /**
@@ -213,17 +214,19 @@ export function sanitizeSearchQuery(query: string): string {
     return '';
   }
 
-  return sanitizeInput(query, {
-    trimWhitespace: true,
-    maxLength: 100,
-    stripHtml: true,
-  })
-    // Remove SQL injection patterns
-    .replace(/['";\\]/g, '')
-    // Remove script injection patterns
-    .replace(/<script|javascript:|data:/gi, '')
-    // Remove excessive wildcards
-    .replace(/[*%]{3,}/g, '**');
+  return (
+    sanitizeInput(query, {
+      trimWhitespace: true,
+      maxLength: 100,
+      stripHtml: true,
+    })
+      // Remove SQL injection patterns
+      .replace(/['";\\]/g, '')
+      // Remove script injection patterns
+      .replace(/<script|javascript:|data:/gi, '')
+      // Remove excessive wildcards
+      .replace(/[*%]{3,}/g, '**')
+  );
 }
 
 /**
@@ -234,21 +237,23 @@ export function sanitizeFileName(fileName: string): string {
     return '';
   }
 
-  return sanitizeInput(fileName, {
-    allowedChars: /a-zA-Z0-9\.\-_\s]/,
-    maxLength: 255,
-    trimWhitespace: true,
-  })
-    // Remove dangerous file extensions
-    .replace(/\.(exe|bat|cmd|scr|pif|com|jar|sh|ps1|vbs)$/i, '.txt')
-    // Remove directory traversal
-    .replace(/\.\./g, '')
-    // Remove leading dots (hidden files)
-    .replace(/^\.+/, '')
-    // Replace spaces with underscores
-    .replace(/\s+/g, '_')
-    // Remove multiple dots
-    .replace(/\.{2,}/g, '.');
+  return (
+    sanitizeInput(fileName, {
+      allowedChars: /a-zA-Z0-9\.\-_\s]/,
+      maxLength: 255,
+      trimWhitespace: true,
+    })
+      // Remove dangerous file extensions
+      .replace(/\.(exe|bat|cmd|scr|pif|com|jar|sh|ps1|vbs)$/i, '.txt')
+      // Remove directory traversal
+      .replace(/\.\./g, '')
+      // Remove leading dots (hidden files)
+      .replace(/^\.+/, '')
+      // Replace spaces with underscores
+      .replace(/\s+/g, '_')
+      // Remove multiple dots
+      .replace(/\.{2,}/g, '.')
+  );
 }
 
 /**
@@ -259,16 +264,18 @@ export function sanitizeDatabaseInput(input: string): string {
     return '';
   }
 
-  return sanitizeInput(input, {
-    trimWhitespace: true,
-    escapeHtml: false, // Don't escape HTML for database
-  })
-    // Remove SQL injection patterns
-    .replace(/['"\\;]/g, '')
-    // Remove SQL keywords in dangerous contexts
-    .replace(/\b(DROP|DELETE|INSERT|UPDATE|SELECT|UNION|EXEC|EXECUTE)\b/gi, '')
-    // Remove comment patterns
-    .replace(/--|\*\/|\*|\/\*/g, '');
+  return (
+    sanitizeInput(input, {
+      trimWhitespace: true,
+      escapeHtml: false, // Don't escape HTML for database
+    })
+      // Remove SQL injection patterns
+      .replace(/['"\\;]/g, '')
+      // Remove SQL keywords in dangerous contexts
+      .replace(/\b(DROP|DELETE|INSERT|UPDATE|SELECT|UNION|EXEC|EXECUTE)\b/gi, '')
+      // Remove comment patterns
+      .replace(/--|\*\/|\*|\/\*/g, '')
+  );
 }
 
 /**
@@ -279,14 +286,16 @@ export function sanitizeJsonInput(input: string): string {
     return '';
   }
 
-  return sanitizeInput(input, {
-    trimWhitespace: true,
-    stripHtml: true,
-  })
-    // Remove dangerous JSON patterns
-    .replace(/\\"|\\'|\\x|\\u/g, '')
-    // Remove function calls
-    .replace(/\(\s*\)/g, '');
+  return (
+    sanitizeInput(input, {
+      trimWhitespace: true,
+      stripHtml: true,
+    })
+      // Remove dangerous JSON patterns
+      .replace(/\\"|\\'|\\x|\\u/g, '')
+      // Remove function calls
+      .replace(/\(\s*\)/g, '')
+  );
 }
 
 /**
@@ -306,7 +315,7 @@ export function sanitizeObject<T extends Record<string, any>>(
     if (typeof value === 'string') {
       (sanitized as any)[key] = sanitizeInput(value, options);
     } else if (Array.isArray(value)) {
-      (sanitized as any)[key] = value.map(item => 
+      (sanitized as any)[key] = value.map(item =>
         typeof item === 'string' ? sanitizeInput(item, options) : item
       );
     } else if (value && typeof value === 'object') {

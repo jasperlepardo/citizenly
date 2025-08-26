@@ -1,9 +1,31 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
+
+// Input validation schema
+interface CreateUserData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  mobileNumber?: string;
+  barangayCode?: string;
+  roleId: string;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const userData = await request.json();
+    const rawData = await request.json();
+    
+    // Type the userData properly
+    const userData: CreateUserData = {
+      email: rawData.email,
+      password: rawData.password,
+      firstName: rawData.firstName,
+      lastName: rawData.lastName,
+      mobileNumber: rawData.mobileNumber,
+      barangayCode: rawData.barangayCode,
+      roleId: rawData.roleId,
+    };
 
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
@@ -15,10 +37,14 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+    
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token and check admin permissions
     const {
@@ -31,10 +57,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!serviceRoleKey) {
+      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+    }
+    
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -49,9 +78,9 @@ export async function POST(request: NextRequest) {
 
     // Get the role name separately
     const { data: userRole, error: roleError } = await supabaseAdmin
-      .from('auth_roles')
+      .from('roles')
       .select('name')
-      .eq('id', userProfile.role_id)
+      .eq('id', (userProfile as any).role_id)
       .single();
 
     if (roleError || !userRole) {
@@ -59,7 +88,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has admin role (assuming 'admin' or 'super_admin' role names)
-    const roleName = userRole.name;
+    const roleName = (userRole as { name: string }).name;
     if (!roleName || !['admin', 'super_admin'].includes(roleName)) {
       return NextResponse.json(
         { error: 'Insufficient permissions - Admin role required' },
@@ -92,34 +121,40 @@ export async function POST(request: NextRequest) {
       email: userData.email,
       first_name: userData.firstName,
       last_name: userData.lastName,
-      phone: userData.mobileNumber,
-      barangay_code: userData.barangayCode,
+      phone: userData.mobileNumber || null,
+      barangay_code: userData.barangayCode || null,
       role_id: userData.roleId,
       is_active: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    } as const;
 
     const { error: profileInsertError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .insert(profileData);
+      .insert(profileData as any);
 
     if (profileInsertError) {
       console.error('Profile creation error:', profileInsertError);
-      // Try to clean up the created user account
-      await supabaseAdmin.auth.admin.deleteUser(newUser.user.id);
+      // Try to clean up the created user account (best-effort)
+      try {
+        await supabaseAdmin.auth.admin.deleteUser(newUser.user.id);
+      } catch (cleanupErr) {
+        console.warn('Cleanup failed (deleteUser):', cleanupErr);
+      }
       return NextResponse.json({ error: 'Failed to create user profile' }, { status: 500 });
     }
 
     // Create barangay account if specified
-    if (userData.barangayCode && userData.roleId) {
-      const { error: barangayAccountError } = await supabaseAdmin.from('barangay_accounts').insert({
+    if (userData.barangayCode) {
+      const barangayAccountData = {
         user_id: newUser.user.id,
         barangay_code: userData.barangayCode,
-        role_id: userData.roleId,
-        is_active: true,
+        is_primary: true,
         created_at: new Date().toISOString(),
-      });
+      } as const;
+      
+      const { error: barangayAccountError } = await supabaseAdmin
+        .from('auth_barangay_accounts')
+        .insert(barangayAccountData as any);
 
       if (barangayAccountError) {
         console.warn('Barangay account creation failed:', barangayAccountError);
@@ -147,8 +182,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const pageSize = parseInt(searchParams.get('pageSize') || '20');
+    const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
+    const pageSize = Math.min(100, Math.max(1, Number.parseInt(searchParams.get('pageSize') || '20', 10) || 20));
 
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
@@ -160,10 +195,14 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+    
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -176,10 +215,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!serviceRoleKey) {
+      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+    }
+    
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -194,9 +236,9 @@ export async function GET(request: NextRequest) {
 
     // Get the role name separately
     const { data: userRole, error: roleError } = await supabaseAdmin
-      .from('auth_roles')
+      .from('roles')
       .select('name')
-      .eq('id', userProfile.role_id)
+      .eq('id', (userProfile as any).role_id)
       .single();
 
     if (roleError || !userRole) {
@@ -204,7 +246,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user has admin role
-    const roleName = userRole.name;
+    const roleName = (userRole as { name: string }).name;
     if (!roleName || !['admin', 'super_admin'].includes(roleName)) {
       return NextResponse.json(
         { error: 'Insufficient permissions - Admin role required' },
@@ -231,7 +273,7 @@ export async function GET(request: NextRequest) {
 
     // If we got users, fetch their role names separately
     if (users && users.length > 0) {
-      const roleIds = Array.from(new Set(users.map(u => u.role_id).filter(Boolean)));
+      const roleIds = Array.from(new Set((users as any[]).map(u => u.role_id).filter(Boolean)));
       if (roleIds.length > 0) {
         const { data: rolesData } = await supabaseAdmin
           .from('auth_roles')
@@ -239,8 +281,8 @@ export async function GET(request: NextRequest) {
           .in('id', roleIds);
 
         if (rolesData) {
-          const roleMap = Object.fromEntries(rolesData.map(r => [r.id, r.name]));
-          users.forEach(user => {
+          const roleMap = Object.fromEntries((rolesData as any[]).map(r => [r.id, r.name]));
+          (users as any[]).forEach(user => {
             user.role_name = user.role_id ? roleMap[user.role_id] : null;
           });
         }

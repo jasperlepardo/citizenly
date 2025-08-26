@@ -14,7 +14,22 @@ export interface HouseholdMember {
   id: string; // UUID PRIMARY KEY DEFAULT uuid_generate_v4()
   household_code: string; // VARCHAR(50) NOT NULL REFERENCES households(code)
   resident_id: string; // UUID NOT NULL REFERENCES residents(id)
-  family_position: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other'; // family_position_enum NOT NULL DEFAULT 'other'
+  family_position:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other'; // family_position_enum NOT NULL DEFAULT 'other'
   is_active?: boolean | null; // BOOLEAN DEFAULT true (nullable in database)
   created_at?: string | null; // TIMESTAMPTZ DEFAULT NOW() (nullable in database)
   updated_at?: string | null; // TIMESTAMPTZ DEFAULT NOW() (nullable in database)
@@ -90,7 +105,22 @@ export interface ResidentRelationshipWithParticipants extends ResidentRelationsh
 export interface HouseholdMemberFormData {
   household_code: string; // Maps to household_code
   resident_id: string; // Maps to resident_id
-  family_position: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other'; // Maps to family_position (required)
+  family_position:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other'; // Maps to family_position (required)
 }
 
 /**

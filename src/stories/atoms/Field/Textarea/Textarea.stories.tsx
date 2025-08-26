@@ -107,12 +107,10 @@ export const WithCharacterCount: Story = {
           placeholder="Type your message..."
           showCharCount={true}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={e => setValue(e.target.value)}
           rows={4}
         />
-        <p className="text-sm text-gray-500">
-          Character count is shown below the textarea
-        </p>
+        <p className="text-sm text-gray-500">Character count is shown below the textarea</p>
       </div>
     );
   },
@@ -136,7 +134,7 @@ export const WithMaxLength: Story = {
           maxLength={280}
           showCharCount={true}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={e => setValue(e.target.value)}
           rows={4}
         />
         <p className="text-sm text-gray-500">
@@ -160,29 +158,17 @@ export const DifferentSizes: Story = {
     <div className="space-y-6">
       <div className="space-y-2">
         <label className="block text-sm font-medium">Small (2 rows)</label>
-        <Textarea
-          placeholder="Small textarea..."
-          rows={2}
-          showCharCount={true}
-        />
+        <Textarea placeholder="Small textarea..." rows={2} showCharCount={true} />
       </div>
-      
+
       <div className="space-y-2">
         <label className="block text-sm font-medium">Medium (3 rows)</label>
-        <Textarea
-          placeholder="Medium textarea..."
-          rows={3}
-          showCharCount={true}
-        />
+        <Textarea placeholder="Medium textarea..." rows={3} showCharCount={true} />
       </div>
-      
+
       <div className="space-y-2">
         <label className="block text-sm font-medium">Large (5 rows)</label>
-        <Textarea
-          placeholder="Large textarea..."
-          rows={5}
-          showCharCount={true}
-        />
+        <Textarea placeholder="Large textarea..." rows={5} showCharCount={true} />
       </div>
     </div>
   ),
@@ -198,7 +184,9 @@ export const DifferentSizes: Story = {
 // Resizable Example
 export const Resizable: Story = {
   render: () => {
-    const [value, setValue] = useState('This textarea can be resized vertically. Try dragging the bottom-right corner.');
+    const [value, setValue] = useState(
+      'This textarea can be resized vertically. Try dragging the bottom-right corner.'
+    );
 
     return (
       <div className="space-y-2">
@@ -206,7 +194,7 @@ export const Resizable: Story = {
           placeholder="Resizable textarea..."
           resizable={true}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={e => setValue(e.target.value)}
           rows={4}
           showCharCount={true}
         />
@@ -234,7 +222,7 @@ export const AsFieldSet: Story = {
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = e.target.value;
       setValue(newValue);
-      
+
       // Simple validation
       if (newValue.length > 0 && newValue.length < 10) {
         setError('Message must be at least 10 characters');
@@ -246,9 +234,9 @@ export const AsFieldSet: Story = {
     };
 
     return (
-      <div className="space-y-4 max-w-md">
+      <div className="max-w-md space-y-4">
         <div>
-          <label htmlFor="message-textarea" className="block text-sm font-medium mb-2">
+          <label htmlFor="message-textarea" className="mb-2 block text-sm font-medium">
             Your Message <span className="text-red-500">*</span>
           </label>
           <Textarea
@@ -286,17 +274,17 @@ export const DesignConsistency: Story = {
     const [inputValue, setInputValue] = useState('');
 
     return (
-      <div className="space-y-6 max-w-md">
+      <div className="max-w-md space-y-6">
         <h3 className="text-lg font-semibold">Design Consistency Demo</h3>
-        
+
         <div className="space-y-2">
           <label className="block text-sm font-medium">Single-line Input</label>
           <input
             type="text"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={e => setInputValue(e.target.value)}
             placeholder="Type here..."
-            className="font-montserrat placeholder:text-gray-500 dark:placeholder:text-gray-400 w-full border-0 bg-white dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600 focus:border-blue-600 focus:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)] min-h-10 p-2 text-base text-gray-600 dark:text-gray-300 shadow-none outline-0 ring-0 focus:border-0 focus:shadow-none focus:outline-0 focus:ring-0"
+            className="font-montserrat min-h-10 w-full rounded-sm border border-0 border-gray-300 bg-white p-2 text-base text-gray-600 shadow-none ring-0 outline-0 placeholder:text-gray-500 focus:border-0 focus:border-blue-600 focus:shadow-[0px_0px_0px_4px_rgba(59,130,246,0.32)] focus:shadow-none focus:ring-0 focus:outline-0 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:placeholder:text-gray-400"
             style={{
               border: '1px solid rgb(209 213 219)',
               outline: 'none',
@@ -305,18 +293,18 @@ export const DesignConsistency: Story = {
             }}
           />
         </div>
-        
+
         <div className="space-y-2">
           <label className="block text-sm font-medium">Multi-line Textarea</label>
           <Textarea
             value={textareaValue}
-            onChange={(e) => setTextareaValue(e.target.value)}
+            onChange={e => setTextareaValue(e.target.value)}
             placeholder="Type here..."
             rows={3}
             showCharCount={true}
           />
         </div>
-        
+
         <div className="text-sm text-gray-500">
           Both components share consistent styling, focus states, and behavior
         </div>
@@ -348,38 +336,40 @@ export const Interactive: Story = {
     };
 
     const handleFillSample = () => {
-      setValue('This is a sample text to demonstrate the textarea functionality. You can edit, resize, and see character counting in action.');
+      setValue(
+        'This is a sample text to demonstrate the textarea functionality. You can edit, resize, and see character counting in action.'
+      );
       setError('');
     };
 
     return (
-      <div className="space-y-6 max-w-2xl">
+      <div className="max-w-2xl space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-4">
             <h4 className="font-medium">Controls</h4>
-            
+
             <div className="space-y-2">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={showCharCount}
-                  onChange={(e) => setShowCharCount(e.target.checked)}
+                  onChange={e => setShowCharCount(e.target.checked)}
                 />
                 <span className="text-sm">Show character count</span>
               </label>
             </div>
-            
+
             <div className="space-y-2">
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   checked={resizable}
-                  onChange={(e) => setResizable(e.target.checked)}
+                  onChange={e => setResizable(e.target.checked)}
                 />
                 <span className="text-sm">Resizable</span>
               </label>
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm">Rows: {rows}</label>
               <input
@@ -387,17 +377,17 @@ export const Interactive: Story = {
                 min="2"
                 max="8"
                 value={rows}
-                onChange={(e) => setRows(parseInt(e.target.value))}
+                onChange={e => setRows(parseInt(e.target.value))}
                 className="w-full"
               />
             </div>
-            
+
             <div className="space-y-2">
               <label className="block text-sm">Max length</label>
               <select
                 value={maxLength || ''}
-                onChange={(e) => setMaxLength(e.target.value ? parseInt(e.target.value) : undefined)}
-                className="w-full p-2 border border-gray-300 rounded"
+                onChange={e => setMaxLength(e.target.value ? parseInt(e.target.value) : undefined)}
+                className="w-full rounded border border-gray-300 p-2"
               >
                 <option value="">No limit</option>
                 <option value="50">50</option>
@@ -406,28 +396,28 @@ export const Interactive: Story = {
                 <option value="500">500</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <button
                 onClick={handleClear}
-                className="px-3 py-1 bg-gray-500 text-white text-sm rounded mr-2"
+                className="mr-2 rounded bg-gray-500 px-3 py-1 text-sm text-white"
               >
                 Clear
               </button>
               <button
                 onClick={handleFillSample}
-                className="px-3 py-1 bg-blue-500 text-white text-sm rounded"
+                className="rounded bg-blue-500 px-3 py-1 text-sm text-white"
               >
                 Fill Sample
               </button>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <label className="block text-sm font-medium">Interactive Textarea</label>
             <Textarea
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={e => setValue(e.target.value)}
               placeholder="Try different settings..."
               error={error}
               showCharCount={showCharCount}

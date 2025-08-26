@@ -5,10 +5,10 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   middle_name: '',
   last_name: '',
   extension_name: '',
-  sex: '' as any,
-  civil_status: '' as any,
+  sex: 'male' as const,
+  civil_status: 'single' as const,
   civil_status_others_specify: '',
-  citizenship: '' as any,
+  citizenship: 'filipino' as const,
   birthdate: '',
   birth_place_code: '',
   philsys_card_number: '',
@@ -22,7 +22,7 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   mobile_number: '',
   household_code: '',
   // Physical Characteristics
-  blood_type: '' as any,
+  blood_type: null,
   complexion: '',
   height: 0,
   weight: 0,
@@ -40,13 +40,13 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
 };
 
 export const CRITICAL_VALIDATION_FIELDS = [
-  'first_name', 
-  'last_name', 
-  'sex', 
-  'birthdate', 
-  'civil_status', 
-  'mobile_number', 
-  'email'
+  'first_name',
+  'last_name',
+  'sex',
+  'birthdate',
+  'civil_status',
+  'mobile_number',
+  'email',
 ] as const;
 
 export const VALIDATION_DEBOUNCE_MS = 800;

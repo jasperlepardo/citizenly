@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createAdminSupabaseClient } from '@/lib';
 // Note: These imports are available for future error handling enhancements
 // import { getErrorMessage, getStatusCodeForError, DatabaseResponse } from '@/lib/auth-errors';

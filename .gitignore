@@ -225,6 +225,7 @@ corrected-*.sql
 dist/
 build/
 !scripts/build/
+!config/build/
 *.tsbuildinfo
 
 # Package manager lockfiles (keep package-lock.json but ignore others)

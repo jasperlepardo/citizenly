@@ -1,6 +1,6 @@
 /**
  * Pie Chart Mathematics Library
- * 
+ *
  * @description Pure mathematical functions for pie chart calculations.
  * Contains geometry calculations for pie slices, angles, and SVG path generation.
  */
@@ -32,12 +32,7 @@ export function createPieSlicePath(startAngle: number, endAngle: number, radius:
 
   const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
 
-  return [
-    'M', 50, 50, 
-    'L', x1, y1, 
-    'A', radius, radius, 0, largeArcFlag, 1, x2, y2, 
-    'Z'
-  ].join(' ');
+  return ['M', 50, 50, 'L', x1, y1, 'A', radius, radius, 0, largeArcFlag, 1, x2, y2, 'Z'].join(' ');
 }
 
 /**
@@ -45,7 +40,7 @@ export function createPieSlicePath(startAngle: number, endAngle: number, radius:
  */
 export function calculatePieSliceAngles(data: PieSliceData[]): PieSliceWithAngles[] {
   let currentAngle = 0;
-  
+
   return data.map(item => {
     const angle = (item.percentage / 100) * 360;
     const slice: PieSliceWithAngles = {
@@ -127,17 +122,17 @@ export const pieChartMath = {
    * Calculate if an arc is a large arc (> 180 degrees)
    */
   isLargeArc: (startAngle: number, endAngle: number): boolean => {
-    return (endAngle - startAngle) > 180;
+    return endAngle - startAngle > 180;
   },
 
   /**
    * Calculate label positioning for pie slices
    */
   getLabelPosition: (
-    centerX: number, 
-    centerY: number, 
-    radius: number, 
-    startAngle: number, 
+    centerX: number,
+    centerY: number,
+    radius: number,
+    startAngle: number,
     endAngle: number,
     offset: number = 10
   ) => {
@@ -158,9 +153,9 @@ export const pieChartMath = {
    */
   normalizePercentages: (data: PieSliceData[]): PieSliceData[] => {
     const total = data.reduce((sum, item) => sum + item.percentage, 0);
-    
+
     if (total === 0) return data;
-    
+
     return data.map(item => ({
       ...item,
       percentage: (item.percentage / total) * 100,

@@ -1,21 +1,26 @@
 import React from 'react';
-import { InputField, SelectField, ControlField } from '@/components/molecules/FieldSet';
-import { ReadOnlyField } from '@/components/molecules/FieldSet';
-import { 
-  FormMode, 
-  isFieldReadOnly, 
-  formatDateForDisplay, 
-  formatBooleanForDisplay, 
-  getSelectDisplayValue 
+
+import {
+  InputField,
+  SelectField,
+  ControlField,
+  ReadOnlyField,
+} from '@/components/molecules/FieldSet';
+import {
+  FormMode,
+  isFieldReadOnly,
+  formatDateForDisplay,
+  formatBooleanForDisplay,
+  getSelectDisplayValue,
 } from '@/lib/forms';
 
 // Re-export the FormMode type and utility functions for backward compatibility
 export type { FormMode } from '@/lib/forms';
-export { 
-  isFieldReadOnly, 
-  formatDateForDisplay, 
-  formatBooleanForDisplay, 
-  getSelectDisplayValue 
+export {
+  isFieldReadOnly,
+  formatDateForDisplay,
+  formatBooleanForDisplay,
+  getSelectDisplayValue,
 } from '@/lib/forms';
 
 /**
@@ -25,7 +30,7 @@ export const renderInputField = (
   fieldName: string,
   label: string,
   value: string | number | undefined,
-  onChange: (value: any) => void,
+  onChange: (value: string | number | boolean | null) => void,
   options: {
     mode?: FormMode;
     readOnlyFields?: string[];
@@ -84,7 +89,7 @@ export const renderInputField = (
       inputProps={{
         type,
         value: value || '',
-        onChange: (e) => onChange(e.target.value),
+        onChange: e => onChange(e.target.value),
         placeholder,
         required,
         leftIcon,
@@ -157,7 +162,7 @@ export const renderSelectField = (
         options: selectOptions,
         value: value || '',
         searchable,
-        onSelect: (option: any) => onChange(option?.value || ''),
+        onSelect: (option: { value: string | number; label: string } | null) => onChange(option?.value || ''),
       }}
     />
   );
@@ -179,13 +184,7 @@ export const renderCheckboxField = (
     labelSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   } = {}
 ) => {
-  const {
-    mode = 'edit',
-    readOnlyFields = [],
-    error,
-    helperText,
-    labelSize = 'sm',
-  } = options;
+  const { mode = 'edit', readOnlyFields = [], error, helperText, labelSize = 'sm' } = options;
 
   if (isFieldReadOnly(fieldName, mode, readOnlyFields)) {
     return (
@@ -246,7 +245,7 @@ export const renderToggleField = (
     labelSize = 'sm',
     toggleText = {
       checked: 'Yes',
-      unchecked: 'No'
+      unchecked: 'No',
     },
   } = options;
 
@@ -340,7 +339,7 @@ export const renderDateField = (
       inputProps={{
         type: 'date',
         value: value || '',
-        onChange: (e) => onChange(e.target.value),
+        onChange: e => onChange(e.target.value),
         required,
         min,
         max,
@@ -410,7 +409,7 @@ export const renderNumberField = (
       inputProps={{
         type: 'number',
         value: value || '',
-        onChange: (e) => onChange(Number(e.target.value)),
+        onChange: e => onChange(Number(e.target.value)),
         placeholder,
         required,
         min,

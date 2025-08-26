@@ -171,19 +171,30 @@ export async function searchAddresses(
 ): Promise<AddressHierarchy[]> {
   try {
     // Use API endpoint to avoid complex nested queries
-    const response = await fetch(`/api/psgc/search?q=${encodeURIComponent(searchTerm)}&levels=barangay&limit=${limit}`);
-    
+    const response = await fetch(
+      `/api/psgc/search?q=${encodeURIComponent(searchTerm)}&levels=barangay&limit=${limit}`
+    );
+
     if (!response.ok) {
       console.error('Error searching addresses:', response.status);
       return [];
     }
-    
+
     const result = await response.json();
     const data = result.data || [];
     const error = result.error;
 
     // Transform the flattened API response to match AddressHierarchy interface
-    const results: AddressHierarchy[] = (data || []).map((barangay: any) => {
+    const results: AddressHierarchy[] = (data || []).map((barangay: {
+      region_code?: string;
+      region_name?: string;
+      province_code?: string;
+      province_name?: string;
+      city_code?: string;
+      city_name?: string;
+      barangay_code: string;
+      barangay_name: string;
+    }) => {
       return {
         region_code: barangay.region_code || null,
         region_name: barangay.region_name || '',
@@ -195,12 +206,16 @@ export async function searchAddresses(
         is_independent: false, // Default value
         barangay_code: barangay.code || barangay.barangay_code,
         barangay_name: barangay.name || barangay.barangay_name,
-        full_address: barangay.full_address || [
-          barangay.name || barangay.barangay_name, 
-          barangay.city_name, 
-          barangay.province_name, 
-          barangay.region_name
-        ].filter(Boolean).join(', '),
+        full_address:
+          barangay.full_address ||
+          [
+            barangay.name || barangay.barangay_name,
+            barangay.city_name,
+            barangay.province_name,
+            barangay.region_name,
+          ]
+            .filter(Boolean)
+            .join(', '),
       };
     });
 

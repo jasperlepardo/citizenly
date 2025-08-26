@@ -15,7 +15,7 @@ export function usePersistedState<T>(
     if (typeof window === 'undefined') {
       return defaultValue;
     }
-    
+
     try {
       const saved = localStorage.getItem(key);
       if (saved !== null) {
@@ -24,7 +24,7 @@ export function usePersistedState<T>(
     } catch (error) {
       // Silently handle localStorage errors
     }
-    
+
     return defaultValue;
   });
 
@@ -55,7 +55,7 @@ export function usePersistedFormState<T extends Record<string, any>>(
   const updateField = (field: keyof T, value: any) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -75,6 +75,6 @@ export function usePersistedFormState<T extends Record<string, any>>(
     setFormData,
     updateField,
     resetForm,
-    clearPersistedData
+    clearPersistedData,
   };
 }

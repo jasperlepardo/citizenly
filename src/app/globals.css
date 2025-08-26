@@ -31,12 +31,12 @@
     .pwa-title-bar-safe {
       padding-top: env(titlebar-area-height, 0);
     }
-    
+
     .pwa-header {
       padding-left: env(titlebar-area-x, 0);
       padding-right: calc(100vw - env(titlebar-area-x) - env(titlebar-area-width));
     }
-    
+
     /* Ensure content doesn't go behind window controls */
     .pwa-content {
       margin-top: env(titlebar-area-height, 0);
@@ -67,7 +67,7 @@
     z-index: auto !important;
     pointer-events: auto !important;
   }
-  
+
   .debug-overlay {
     position: fixed !important;
     top: 0 !important;

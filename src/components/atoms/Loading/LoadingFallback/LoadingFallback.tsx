@@ -1,6 +1,6 @@
 /**
  * Loading Fallback Component
- * 
+ *
  * @description Generic loading spinner with customizable height for lazy-loaded components
  */
 
@@ -11,10 +11,7 @@ interface LoadingFallbackProps {
   className?: string;
 }
 
-export function LoadingFallback({ 
-  height = '200px', 
-  className = '' 
-}: LoadingFallbackProps) {
+export function LoadingFallback({ height = '200px', className = '' }: LoadingFallbackProps) {
   return (
     <div
       className={`flex items-center justify-center rounded-lg border border-gray-200 bg-gray-50 ${className}`}

@@ -19,14 +19,14 @@ const mockLogFileOperation = (
   filename: string,
   user: string,
   status: string,
-  metadata: any
+  metadata: Record<string, unknown>
 ) => {
   console.log('File operation:', { operation, filename, user, status, metadata });
 };
 
 // Mock logger
 const mockLogger = {
-  error: (message: string, data: any) => console.error(message, data),
+  error: (message: string, data: unknown) => console.error(message, data),
 };
 
 // Note: This story mocks security dependencies that may not exist in the actual implementation
@@ -342,7 +342,7 @@ export const FormExample: Story = {
         <div className="flex gap-4">
           <button
             type="submit"
-            className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:text-black"
           >
             Submit Application
           </button>
@@ -352,7 +352,7 @@ export const FormExample: Story = {
               setFormData({ documents: null, avatar: null, resume: null });
               setErrors({});
             }}
-            className="rounded bg-gray-500 px-4 py-2 text-white dark:text-black hover:bg-gray-600"
+            className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600 dark:text-black"
           >
             Reset
           </button>
@@ -396,7 +396,9 @@ export const AccessibilityDemo: Story = {
   render: () => (
     <div className="space-y-6">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Accessibility Features</h3>
+        <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">
+          Accessibility Features
+        </h3>
         <ul className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
           <li>
             • <strong>Keyboard accessible</strong>: Tab to focus, Enter/Space to open file dialog

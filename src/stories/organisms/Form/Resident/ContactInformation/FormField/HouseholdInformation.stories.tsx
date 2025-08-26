@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { HouseholdInformation, HouseholdInformationData } from '@/components/organisms/HouseholdInformation';
+import {
+  HouseholdInformation,
+  HouseholdInformationData,
+} from '@/components/organisms/HouseholdInformation';
 
 const meta = {
   title: 'Organisms/Form/Resident/ContactInformation/FormField/HouseholdInformation',
@@ -273,7 +276,7 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: HouseholdInformationData) => {
       setValue(newValue);
-      
+
       // Clear errors when a household is selected
       if (newValue.householdCode && errors.householdCode) {
         setErrors(prev => ({ ...prev, householdCode: '' }));
@@ -283,7 +286,7 @@ export const Interactive: Story = {
     const handleSearch = (query: string) => {
       setSearchTerm(query);
       setIsLoading(true);
-      
+
       // Simulate API call delay
       setTimeout(() => {
         setIsLoading(false);
@@ -292,11 +295,11 @@ export const Interactive: Story = {
 
     const validate = () => {
       const newErrors: Record<string, string> = {};
-      
+
       if (!value.householdCode) {
         newErrors.householdCode = 'Please select a household';
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -317,7 +320,7 @@ export const Interactive: Story = {
           householdOptions={filteredHouseholds}
           householdLoading={isLoading}
         />
-        
+
         <div className="flex space-x-4">
           <button
             onClick={validate}
@@ -332,18 +335,26 @@ export const Interactive: Story = {
             Reset
           </button>
         </div>
-        
+
         <div className="space-y-4">
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">Current State:</h4>
             <div className="mt-2 space-y-1 text-sm">
-              <p><strong>Selected:</strong> {value.householdCode || 'None'}</p>
-              <p><strong>Search Term:</strong> "{searchTerm}"</p>
-              <p><strong>Available Options:</strong> {filteredHouseholds.length}</p>
-              <p><strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}</p>
+              <p>
+                <strong>Selected:</strong> {value.householdCode || 'None'}
+              </p>
+              <p>
+                <strong>Search Term:</strong> "{searchTerm}"
+              </p>
+              <p>
+                <strong>Available Options:</strong> {filteredHouseholds.length}
+              </p>
+              <p>
+                <strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}
+              </p>
             </div>
           </div>
-          
+
           {Object.keys(errors).length > 0 && (
             <div className="rounded bg-red-100 p-4">
               <h4 className="font-medium text-red-800">Validation Errors:</h4>
@@ -367,7 +378,7 @@ export const Interactive: Story = {
 export const SearchScenarios: Story = {
   render: () => {
     const [currentScenario, setCurrentScenario] = useState(0);
-    
+
     const scenarios = [
       {
         label: 'All Households',
@@ -419,7 +430,7 @@ export const SearchScenarios: Story = {
           householdOptions={currentData.options}
           householdLoading={currentData.loading}
         />
-        
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {scenarios.map((scenario, index) => (
@@ -436,14 +447,22 @@ export const SearchScenarios: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">Current Scenario:</h4>
             <div className="mt-2 space-y-1 text-sm">
-              <p><strong>Label:</strong> {currentData.label}</p>
-              <p><strong>Search Term:</strong> "{currentData.searchTerm}"</p>
-              <p><strong>Results:</strong> {currentData.options.length} households</p>
-              <p><strong>Loading:</strong> {currentData.loading ? 'Yes' : 'No'}</p>
+              <p>
+                <strong>Label:</strong> {currentData.label}
+              </p>
+              <p>
+                <strong>Search Term:</strong> "{currentData.searchTerm}"
+              </p>
+              <p>
+                <strong>Results:</strong> {currentData.options.length} households
+              </p>
+              <p>
+                <strong>Loading:</strong> {currentData.loading ? 'Yes' : 'No'}
+              </p>
             </div>
           </div>
         </div>
@@ -501,11 +520,11 @@ export const QuickSelectionExamples: Story = {
           householdOptions={sampleHouseholdOptions}
           householdLoading={false}
         />
-        
+
         <div className="space-y-4">
           <h4 className="font-medium">Quick Selection:</h4>
           <div className="flex flex-wrap gap-2">
-            {quickOptions.map((option) => (
+            {quickOptions.map(option => (
               <button
                 key={option.code}
                 onClick={() => setValue({ householdCode: option.code })}
@@ -521,7 +540,7 @@ export const QuickSelectionExamples: Story = {
               Clear
             </button>
           </div>
-          
+
           <div className="rounded bg-gray-100 p-4">
             <h4 className="font-medium">Selected Household:</h4>
             <p className="mt-2 text-sm">{value.householdCode || 'None selected'}</p>

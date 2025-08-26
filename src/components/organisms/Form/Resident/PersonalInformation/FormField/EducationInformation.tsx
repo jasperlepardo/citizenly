@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
@@ -7,7 +8,7 @@ import type { FormMode } from '@/types';
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [
   { value: 'yes', label: 'Yes, graduated' },
-  { value: 'no', label: 'No, not graduated' }
+  { value: 'no', label: 'No, not graduated' },
 ];
 
 export interface EducationInformationData {
@@ -24,16 +25,15 @@ export interface EducationInformationProps {
   className?: string;
 }
 
-export function EducationInformation({ 
-  value, 
-  onChange, 
+export function EducationInformation({
+  value,
+  onChange,
   errors,
   mode = 'create',
-  className = '' 
+  className = '',
 }: EducationInformationProps) {
-  
   const handleChange = (field: keyof EducationInformationData, fieldValue: any) => {
-    let updatedValue = {
+    const updatedValue = {
       ...value,
       [field]: fieldValue,
     };
@@ -56,7 +56,9 @@ export function EducationInformation({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Education Information</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Education Information
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Educational attainment and graduation status.
         </p>
@@ -70,13 +72,13 @@ export function EducationInformation({
           errorMessage={errors.education_attainment}
           mode={mode}
           selectProps={{
-            placeholder: "Select education level...",
+            placeholder: 'Select education level...',
             options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
             value: value.education_attainment,
-            onSelect: (option) => handleChange('education_attainment', option?.value || '')
+            onSelect: option => handleChange('education_attainment', option?.value || ''),
           }}
         />
-        
+
         <ControlFieldSet
           type="radio"
           label="Graduate Status"
@@ -89,12 +91,12 @@ export function EducationInformation({
           spacing="sm"
           mode={value.education_attainment === 'post_graduate' ? 'view' : mode}
           // helperText={
-          //   value.education_attainment === 'post_graduate' 
+          //   value.education_attainment === 'post_graduate'
           //     ? "Automatically set to 'Yes' for post-graduate education"
           //     : "Whether the current education level has been completed"
           // }
         >
-          {GRADUATE_STATUS_OPTIONS.map((option) => (
+          {GRADUATE_STATUS_OPTIONS.map(option => (
             <Radio
               key={option.value}
               value={option.value}
@@ -102,7 +104,7 @@ export function EducationInformation({
               style="button"
               buttonProps={{
                 variant: 'neutral-outline',
-                size: 'lg'
+                size: 'lg',
               }}
             />
           ))}

@@ -120,7 +120,9 @@ export const ContainerWidths: Story = {
   name: '📐 Container Widths',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Container Width System</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Container Width System
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Predefined container widths that provide consistent content boundaries across different
         screen sizes.
@@ -185,7 +187,9 @@ export const ResponsiveBreakpoints: Story = {
   name: '📱 Responsive Breakpoints',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Responsive Breakpoint System</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Responsive Breakpoint System
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Screen width breakpoints for responsive design, ensuring consistent behavior across all
         government applications.
@@ -231,7 +235,9 @@ export const ResponsiveBreakpoints: Story = {
         </div>
 
         <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">🎯 Usage Guidelines</h3>
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+            🎯 Usage Guidelines
+          </h3>
           <ul className="space-y-1 text-sm text-gray-800 dark:text-gray-200">
             <li>• Design mobile-first, enhance for larger screens</li>
             <li>• Test critical features at all breakpoints</li>
@@ -249,7 +255,9 @@ export const GridSystem: Story = {
   name: '⚏ Grid System',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">12-Column Grid System</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        12-Column Grid System
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Flexible grid system for consistent layouts and responsive design across government
         applications.
@@ -278,10 +286,15 @@ export const GridSystem: Story = {
         <div className="space-y-6">
           {/* 12 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">12 Columns (1 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              12 Columns (1 each)
+            </div>
             <div className="grid grid-cols-12 gap-1">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="rounded bg-blue-200 p-2 text-center text-xs text-gray-800 dark:text-gray-200">
+                <div
+                  key={i}
+                  className="rounded bg-blue-200 p-2 text-center text-xs text-gray-800 dark:text-gray-200"
+                >
                   1
                 </div>
               ))}
@@ -290,7 +303,9 @@ export const GridSystem: Story = {
 
           {/* 6 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">6 Columns (2 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              6 Columns (2 each)
+            </div>
             <div className="grid grid-cols-6 gap-2">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
@@ -305,7 +320,9 @@ export const GridSystem: Story = {
 
           {/* 4 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">4 Columns (3 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              4 Columns (3 each)
+            </div>
             <div className="grid grid-cols-4 gap-3">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
@@ -320,7 +337,9 @@ export const GridSystem: Story = {
 
           {/* 3 columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">3 Columns (4 each)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              3 Columns (4 each)
+            </div>
             <div className="grid grid-cols-3 gap-4">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div
@@ -335,7 +354,9 @@ export const GridSystem: Story = {
 
           {/* Mixed columns */}
           <div>
-            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Mixed Layout (8 + 4)</div>
+            <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Mixed Layout (8 + 4)
+            </div>
             <div className="grid grid-cols-12 gap-4">
               <div className="col-span-8 rounded-sm bg-red-200 p-6 text-center text-sm text-red-800">
                 Main Content (8 columns)
@@ -366,7 +387,9 @@ export const ZIndexLayers: Story = {
   name: '📚 Z-Index Layers',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Z-Index Layering System</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Z-Index Layering System
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Organized layering system for managing stacking context and overlapping elements.
       </p>
@@ -393,7 +416,7 @@ export const ZIndexLayers: Story = {
 
           {/* Docked layer */}
           <div
-            className="absolute left-10 right-10 top-10 flex h-20 items-center justify-center rounded-sm border-2 border-green-400 bg-green-300 font-medium text-green-800"
+            className="absolute top-10 right-10 left-10 flex h-20 items-center justify-center rounded-sm border-2 border-green-400 bg-green-300 font-medium text-green-800"
             style={{ zIndex: parseInt(layoutTokens.zIndex.docked) }}
           >
             Docked Element (z: {layoutTokens.zIndex.docked})
@@ -401,7 +424,7 @@ export const ZIndexLayers: Story = {
 
           {/* Dropdown layer */}
           <div
-            className="absolute left-16 top-16 flex h-16 w-40 items-center justify-center rounded-sm border-2 border-purple-500 bg-purple-400 text-sm font-medium text-gray-900 dark:text-gray-100"
+            className="absolute top-16 left-16 flex h-16 w-40 items-center justify-center rounded-sm border-2 border-purple-500 bg-purple-400 text-sm font-medium text-gray-900 dark:text-gray-100"
             style={{ zIndex: parseInt(layoutTokens.zIndex.dropdown) }}
           >
             Dropdown (z: {layoutTokens.zIndex.dropdown})
@@ -409,7 +432,7 @@ export const ZIndexLayers: Story = {
 
           {/* Overlay layer */}
           <div
-            className="absolute left-20 top-20 flex h-12 w-32 items-center justify-center rounded-sm border-2 border-yellow-500 bg-yellow-400 text-sm font-medium text-yellow-900"
+            className="absolute top-20 left-20 flex h-12 w-32 items-center justify-center rounded-sm border-2 border-yellow-500 bg-yellow-400 text-sm font-medium text-yellow-900"
             style={{ zIndex: parseInt(layoutTokens.zIndex.overlay) }}
           >
             Overlay (z: {layoutTokens.zIndex.overlay})
@@ -417,7 +440,7 @@ export const ZIndexLayers: Story = {
 
           {/* Modal layer */}
           <div
-            className="absolute left-24 top-24 flex h-10 w-24 items-center justify-center rounded-sm border-2 border-red-600 bg-red-500 text-xs font-medium text-white dark:text-black"
+            className="absolute top-24 left-24 flex h-10 w-24 items-center justify-center rounded-sm border-2 border-red-600 bg-red-500 text-xs font-medium text-white dark:text-black"
             style={{ zIndex: parseInt(layoutTokens.zIndex.modal) }}
           >
             Modal (z: {layoutTokens.zIndex.modal})
@@ -425,7 +448,7 @@ export const ZIndexLayers: Story = {
 
           {/* Tooltip layer */}
           <div
-            className="absolute left-28 top-28 flex h-8 w-20 items-center justify-center rounded-sm bg-gray-800 text-xs font-medium text-white dark:text-black"
+            className="absolute top-28 left-28 flex h-8 w-20 items-center justify-center rounded-sm bg-gray-800 text-xs font-medium text-white dark:text-black"
             style={{ zIndex: parseInt(layoutTokens.zIndex.tooltip) }}
           >
             Tooltip (z: {layoutTokens.zIndex.tooltip})
@@ -471,7 +494,9 @@ export const LayoutPatterns: Story = {
   name: '🏛️ Layout Patterns',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Common Layout Patterns</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Common Layout Patterns
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Predefined dimensions for common government website layout elements and patterns.
       </p>
@@ -510,7 +535,7 @@ export const LayoutPatterns: Story = {
             style={{ height: layoutTokens.patterns.headerHeights.default }}
           >
             <div className="flex items-center gap-4">
-              <div className="h-8 w-8 rounded-sm bg-white bg-opacity-20"></div>
+              <div className="bg-opacity-20 h-8 w-8 rounded-sm bg-white"></div>
               <span>Philippine Government Portal</span>
             </div>
             <div className="text-xs">Header: {layoutTokens.patterns.headerHeights.default}</div>
@@ -525,9 +550,13 @@ export const LayoutPatterns: Story = {
                 minHeight: '240px',
               }}
             >
-              <div className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Navigation</div>
+              <div className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Navigation
+              </div>
               <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <div className="rounded bg-blue-100 p-2 text-gray-700 dark:text-gray-300">Services</div>
+                <div className="rounded bg-blue-100 p-2 text-gray-700 dark:text-gray-300">
+                  Services
+                </div>
                 <div className="rounded p-2 hover:bg-gray-100">About</div>
                 <div className="rounded p-2 hover:bg-gray-100">Contact</div>
                 <div className="rounded p-2 hover:bg-gray-100">Resources</div>
@@ -549,8 +578,12 @@ export const LayoutPatterns: Story = {
                 </p>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="rounded border border-blue-200 bg-blue-50 p-4">
-                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Online Services</h3>
-                    <p className="text-sm text-gray-800 dark:text-gray-200">Access government services online</p>
+                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+                      Online Services
+                    </h3>
+                    <p className="text-sm text-gray-800 dark:text-gray-200">
+                      Access government services online
+                    </p>
                   </div>
                   <div className="rounded border border-green-200 bg-green-50 p-4">
                     <h3 className="mb-2 font-semibold text-green-900">Document Request</h3>
@@ -658,7 +691,9 @@ export const SemanticLayout: Story = {
   name: '🎯 Semantic Layout',
   render: () => (
     <div className="p-6">
-      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">Semantic Layout Tokens</h1>
+      <h1 className="mb-6 text-3xl font-bold text-gray-900 dark:text-gray-100">
+        Semantic Layout Tokens
+      </h1>
       <p className="mb-8 text-gray-600 dark:text-gray-400">
         Contextual layout tokens that provide meaning and consistency for specific use cases.
       </p>
@@ -666,13 +701,15 @@ export const SemanticLayout: Story = {
       <div className="space-y-8">
         {Object.entries(semanticLayout).map(([category, tokens]) => (
           <div key={category} className="rounded-lg border border-gray-200 p-6">
-            <h3 className="mb-4 text-lg font-semibold capitalize text-gray-900 dark:text-gray-100">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 capitalize dark:text-gray-100">
               {category} Layout
             </h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {Object.entries(tokens as Record<string, string>).map(([name, value]) => (
                 <div key={name} className="flex items-center gap-3 rounded-sm bg-gray-50 p-3">
-                  <div className="w-20 font-mono text-sm text-gray-700 dark:text-gray-300">{name}</div>
+                  <div className="w-20 font-mono text-sm text-gray-700 dark:text-gray-300">
+                    {name}
+                  </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">{value}</div>
                 </div>
               ))}

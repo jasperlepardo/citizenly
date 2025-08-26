@@ -1,31 +1,30 @@
 /**
  * Common Validation Utilities
- * 
+ *
  * @description Shared utilities and patterns for validation functionality across hooks.
  * Extracted from multiple validation hooks to eliminate duplication.
  */
 
 import { useState, useCallback } from 'react';
-import { 
-  ValidationResult, 
-  FieldValidationResult, 
+
+import {
+  ValidationResult,
+  FieldValidationResult,
   BaseValidationConfig,
   ValidateFormFunction,
-  ValidateFieldFunction 
+  ValidateFieldFunction,
 } from '@/lib/validation/types';
 
 // Re-export types for easier access
-export type { 
-  ValidationResult, 
-  FieldValidationResult, 
+export type {
+  ValidationResult,
+  FieldValidationResult,
   BaseValidationConfig,
   ValidateFormFunction,
-  ValidateFieldFunction 
+  ValidateFieldFunction,
 };
-import { 
-  isValidEmail, 
-  isValidPhilippineMobile 
-} from '@/lib/validation/utilities';
+import { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
+
 import { toTitleCase } from '../lib/utilities/string-utils';
 
 // All types are now imported from the centralized validation types
@@ -60,22 +59,25 @@ export function useValidationState(config: BaseValidationConfig = {}) {
   /**
    * Set validation errors
    */
-  const setErrors = useCallback((errors: Record<string, string>) => {
-    const isValid = Object.keys(errors).length === 0;
-    
-    setState({
-      errors,
-      isValid,
-      hasValidated: true,
-    });
+  const setErrors = useCallback(
+    (errors: Record<string, string>) => {
+      const isValid = Object.keys(errors).length === 0;
 
-    // Trigger callbacks
-    if (isValid && config.onValidationSuccess) {
-      config.onValidationSuccess();
-    } else if (!isValid && config.onValidationError) {
-      config.onValidationError(errors);
-    }
-  }, [config]);
+      setState({
+        errors,
+        isValid,
+        hasValidated: true,
+      });
+
+      // Trigger callbacks
+      if (isValid && config.onValidationSuccess) {
+        config.onValidationSuccess();
+      } else if (!isValid && config.onValidationError) {
+        config.onValidationError(errors);
+      }
+    },
+    [config]
+  );
 
   /**
    * Clear all errors
@@ -104,7 +106,7 @@ export function useValidationState(config: BaseValidationConfig = {}) {
       const newErrors = { ...prev.errors };
       delete newErrors[field];
       const isValid = Object.keys(newErrors).length === 0;
-      
+
       return {
         errors: newErrors,
         isValid,
@@ -116,16 +118,22 @@ export function useValidationState(config: BaseValidationConfig = {}) {
   /**
    * Get error for specific field
    */
-  const getFieldError = useCallback((field: string): string | undefined => {
-    return state.errors[field];
-  }, [state.errors]);
+  const getFieldError = useCallback(
+    (field: string): string | undefined => {
+      return state.errors[field];
+    },
+    [state.errors]
+  );
 
   /**
    * Check if field has error
    */
-  const hasFieldError = useCallback((field: string): boolean => {
-    return Boolean(state.errors[field]);
-  }, [state.errors]);
+  const hasFieldError = useCallback(
+    (field: string): boolean => {
+      return Boolean(state.errors[field]);
+    },
+    [state.errors]
+  );
 
   return {
     ...state,
@@ -145,9 +153,9 @@ export function createFormValidationExecutor<T>(
   validateFn: ValidateFormFunction<T>,
   setErrors: (errors: Record<string, string>) => void
 ) {
-  return useCallback((formData: T): ValidationResult => {
+  return (formData: T): ValidationResult => {
     const result = validateFn(formData);
-    
+
     // Normalize result format
     const normalizedResult: ValidationResult = {
       isValid: result.isValid || result.success === true,
@@ -155,9 +163,9 @@ export function createFormValidationExecutor<T>(
     };
 
     setErrors(normalizedResult.errors);
-    
+
     return normalizedResult;
-  }, [validateFn, setErrors]);
+  };
 }
 
 /**
@@ -168,17 +176,17 @@ export function createFieldValidationExecutor(
   setFieldError: (field: string, error: string) => void,
   clearFieldError: (field: string) => void
 ) {
-  return useCallback((fieldName: string, value: any): FieldValidationResult => {
+  return (fieldName: string, value: any): FieldValidationResult => {
     const result = validateFn(fieldName, value);
-    
+
     if (result.isValid) {
       clearFieldError(fieldName);
     } else if (result.error) {
       setFieldError(fieldName, result.error);
     }
-    
+
     return result;
-  }, [validateFn, setFieldError, clearFieldError]);
+  };
 }
 
 /**
@@ -220,17 +228,17 @@ export const validationUtils = {
    * Validate required fields
    */
   validateRequiredFields: (
-    data: Record<string, any>, 
+    data: Record<string, any>,
     requiredFields: string[]
   ): Record<string, string> => {
     const errors: Record<string, string> = {};
-    
+
     requiredFields.forEach(field => {
       if (validationUtils.isEmpty(data[field])) {
         errors[field] = `${field.replace(/([A-Z])/g, ' $1').toLowerCase()} is required`;
       }
     });
-    
+
     return errors;
   },
 
@@ -272,10 +280,10 @@ export const validationUtils = {
     return (fieldName: string, value: any): FieldValidationResult => {
       const isValid = !validationUtils.isEmpty(value);
       const fieldDisplayName = validationUtils.formatFieldName(fieldName);
-      
+
       return {
         isValid,
-        error: isValid ? undefined : (customMessage || `${fieldDisplayName} is required`),
+        error: isValid ? undefined : customMessage || `${fieldDisplayName} is required`,
       };
     };
   },
@@ -284,17 +292,17 @@ export const validationUtils = {
    * Create length validator
    */
   createLengthValidator: (
-    minLength?: number, 
+    minLength?: number,
     maxLength?: number,
     customMessage?: string
   ): ValidateFieldFunction => {
     return (fieldName: string, value: any): FieldValidationResult => {
       const stringValue = String(value || '');
       const length = stringValue.length;
-      
+
       let isValid = true;
       let error: string | undefined;
-      
+
       if (minLength !== undefined && length < minLength) {
         isValid = false;
         error = customMessage || `Minimum length is ${minLength} characters`;
@@ -302,7 +310,7 @@ export const validationUtils = {
         isValid = false;
         error = customMessage || `Maximum length is ${maxLength} characters`;
       }
-      
+
       return { isValid, error };
     };
   },
@@ -310,14 +318,11 @@ export const validationUtils = {
   /**
    * Create regex validator
    */
-  createRegexValidator: (
-    pattern: RegExp,
-    errorMessage: string
-  ): ValidateFieldFunction => {
+  createRegexValidator: (pattern: RegExp, errorMessage: string): ValidateFieldFunction => {
     return (fieldName: string, value: any): FieldValidationResult => {
       const stringValue = String(value || '');
       const isValid = pattern.test(stringValue);
-      
+
       return {
         isValid,
         error: isValid ? undefined : errorMessage,
@@ -351,20 +356,17 @@ export function createValidationHook<T>(
 ) {
   return function useValidation() {
     const validationState = useValidationState(config);
-    
-    const validateForm = createFormValidationExecutor(
-      validateFormFn,
-      validationState.setErrors
-    );
-    
-    const validateField = validateFieldFn 
+
+    const validateForm = createFormValidationExecutor(validateFormFn, validationState.setErrors);
+
+    const validateField = validateFieldFn
       ? createFieldValidationExecutor(
           validateFieldFn,
           validationState.setFieldError,
           validationState.clearFieldError
         )
       : undefined;
-    
+
     return {
       ...validationState,
       validateForm,
@@ -385,14 +387,10 @@ export const asyncValidationUtils = {
     delay = 500
   ) => {
     let timeoutId: NodeJS.Timeout;
-    
-    return (
-      fieldName: string,
-      value: any,
-      onResult: (result: FieldValidationResult) => void
-    ) => {
+
+    return (fieldName: string, value: any, onResult: (result: FieldValidationResult) => void) => {
       clearTimeout(timeoutId);
-      
+
       timeoutId = setTimeout(async () => {
         try {
           const result = await asyncValidator(value);
@@ -414,26 +412,24 @@ export const asyncValidationUtils = {
     asyncValidators: Record<string, (value: any) => Promise<FieldValidationResult>>
   ) => {
     return async (data: Record<string, any>): Promise<Record<string, string>> => {
-      const validationPromises = Object.entries(asyncValidators).map(
-        async ([field, validator]) => {
-          try {
-            const result = await validator(data[field]);
-            return [field, result.error] as const;
-          } catch (error) {
-            return [field, 'Validation failed'] as const;
-          }
+      const validationPromises = Object.entries(asyncValidators).map(async ([field, validator]) => {
+        try {
+          const result = await validator(data[field]);
+          return [field, result.error] as const;
+        } catch (error) {
+          return [field, 'Validation failed'] as const;
         }
-      );
-      
+      });
+
       const results = await Promise.all(validationPromises);
       const errors: Record<string, string> = {};
-      
+
       results.forEach(([field, error]) => {
         if (error) {
           errors[field] = error;
         }
       });
-      
+
       return errors;
     };
   },

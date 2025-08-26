@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { z } from 'zod';
 
 // Migration information validation schema
@@ -32,10 +32,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -48,10 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -70,10 +64,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -115,12 +111,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const validationResult = migrationInfoSchema.safeParse(migrationData);
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
           details: validationResult.error.issues.map(issue => ({
             field: issue.path.join('.'),
             message: issue.message,
-          }))
+          })),
         },
         { status: 400 }
       );
@@ -136,10 +132,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -152,10 +145,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -174,10 +164,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -214,7 +206,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       if (updateError) {
         console.error('Migration update error:', updateError);
-        return NextResponse.json({ error: 'Failed to update migration information' }, { status: 500 });
+        return NextResponse.json(
+          { error: 'Failed to update migration information' },
+          { status: 500 }
+        );
       }
 
       return NextResponse.json({
@@ -237,7 +232,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       if (insertError) {
         console.error('Migration insert error:', insertError);
-        return NextResponse.json({ error: 'Failed to create migration information' }, { status: 500 });
+        return NextResponse.json(
+          { error: 'Failed to create migration information' },
+          { status: 500 }
+        );
       }
 
       return NextResponse.json({
@@ -252,7 +250,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 // DELETE /api/residents/[id]/migration - Delete migration information
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const resolvedParams = await params;
     const residentId = resolvedParams.id;
@@ -267,10 +268,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -283,10 +281,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -305,10 +300,12 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     // Verify resident access through household
     const { data: resident, error: residentError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
@@ -325,7 +322,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
     if (deleteError) {
       console.error('Migration delete error:', deleteError);
-      return NextResponse.json({ error: 'Failed to delete migration information' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to delete migration information' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({

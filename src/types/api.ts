@@ -10,7 +10,7 @@
 /**
  * Standard API success response structure
  */
-export interface ApiSuccessResponse<T = any> {
+export interface ApiSuccessResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;
@@ -181,40 +181,40 @@ export interface CreateResidentRequest {
   sex: 'male' | 'female';
   civil_status?: string;
   citizenship?: string;
-  
+
   // Contact Information
   email?: string;
   mobile_number?: string;
   telephone_number?: string;
-  
+
   // Location Information
   barangay_code: string;
   city_municipality_code: string;
   region_code: string;
   household_code?: string;
-  
+
   // Additional Information
   philsys_card_number?: string;
   education_attainment?: string;
   employment_status?: string;
   occupation_code?: string;
-  
+
   // Physical Information
   blood_type?: string;
   height?: number;
   weight?: number;
   complexion?: string;
-  
+
   // Cultural Information
   ethnicity?: string;
   religion?: string;
   religion_others_specify?: string;
-  
+
   // Family Information
   mother_maiden_first?: string;
   mother_maiden_middle?: string;
   mother_maiden_last?: string;
-  
+
   // Voting Information
   is_voter?: boolean;
   is_resident_voter?: boolean;

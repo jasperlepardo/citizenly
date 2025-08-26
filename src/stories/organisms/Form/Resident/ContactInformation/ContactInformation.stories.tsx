@@ -50,7 +50,7 @@ const sampleErrors = {};
 export const Default: Story = {
   args: {
     formData: sampleFormData,
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: sampleErrors,
@@ -64,7 +64,7 @@ export const WithData: Story = {
       telephoneNumber: '(02) 1234-5678',
       email: 'juan.delacruz@example.com',
     },
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: sampleErrors,
@@ -74,7 +74,7 @@ export const WithData: Story = {
 export const WithErrors: Story = {
   args: {
     formData: sampleFormData,
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: {

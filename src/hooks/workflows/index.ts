@@ -1,6 +1,6 @@
 /**
  * Workflow Hooks Module
- * 
+ *
  * @description Complex workflow orchestration hooks that coordinate
  * multiple operations and manage multi-step processes.
  */

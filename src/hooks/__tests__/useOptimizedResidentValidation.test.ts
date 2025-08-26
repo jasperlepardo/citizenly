@@ -3,6 +3,7 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
+
 import { useOptimizedResidentValidation } from '../validation/useOptimizedResidentValidation';
 
 // Mock dependencies
@@ -23,7 +24,7 @@ jest.mock('../useResidentCrossFieldValidation', () => ({
 
 jest.mock('../useResidentAsyncValidation', () => ({
   useResidentAsyncValidation: jest.fn(() => ({
-    validateAsync: jest.fn(),
+    validateFieldAsync: jest.fn(),
     isAsyncValidating: false,
     asyncErrors: {},
   })),
@@ -47,18 +48,16 @@ describe('useOptimizedResidentValidation', () => {
 
       expect(result.current.isValidating).toBe(false);
       expect(result.current.errors).toEqual({});
-      expect(result.current.hasErrors).toBe(false);
+      expect(result.current.isValid).toBe(true);
     });
 
     it('should accept custom options', () => {
-      const options = {
-        validateOnChange: true,
-        debounceMs: 500,
+      const options: any = {
+        mode: 'onChange',
+        debounceDelay: 500,
       };
 
-      const { result } = renderHook(() => 
-        useOptimizedResidentValidation(options)
-      );
+      const { result } = renderHook(() => useOptimizedResidentValidation(options));
 
       expect(result.current).toBeDefined();
     });
@@ -74,8 +73,8 @@ describe('useOptimizedResidentValidation', () => {
 
       // Should call all validation components
       expect(result.current.validateField).toBeDefined();
-      expect(result.current.validateAsync).toBeDefined();
-      expect(result.current.clearErrors).toBeDefined();
+      expect(result.current.validateFieldAsync).toBeDefined();
+      expect(result.current.clearFieldError).toBeDefined();
     });
 
     it('should handle validation errors correctly', () => {
@@ -85,7 +84,7 @@ describe('useOptimizedResidentValidation', () => {
         result.current.setFieldError('firstName', 'Required field');
       });
 
-      expect(result.current.hasErrors).toBe(true);
+      expect(result.current.isValid).toBe(false);
       expect(result.current.getFieldError('firstName')).toBe('Required field');
     });
   });
@@ -95,28 +94,26 @@ describe('useOptimizedResidentValidation', () => {
       const { result } = renderHook(() => useOptimizedResidentValidation());
 
       expect(result.current.isAsyncValidating).toBe(false);
-      
+
       await act(async () => {
-        await result.current.validateAsync('email', 'test@example.com');
+        await result.current.validateFieldAsync('email', 'test@example.com');
       });
 
       // Async validation should be handled
-      expect(result.current.validateAsync).toBeDefined();
+      expect(result.current.validateFieldAsync).toBeDefined();
     });
   });
 
   describe('performance optimization', () => {
     it('should memoize validation results', () => {
-      const { result, rerender } = renderHook(() => 
-        useOptimizedResidentValidation()
-      );
+      const { result, rerender } = renderHook(() => useOptimizedResidentValidation());
 
       const firstValidateField = result.current.validateField;
-      
+
       rerender();
-      
+
       const secondValidateField = result.current.validateField;
-      
+
       // Functions should be memoized
       expect(firstValidateField).toBe(secondValidateField);
     });
@@ -131,7 +128,7 @@ describe('useOptimizedResidentValidation', () => {
         result.current.setFieldError('lastName', 'Error 2');
       });
 
-      expect(result.current.hasErrors).toBe(true);
+      expect(result.current.isValid).toBe(false);
 
       act(() => {
         result.current.clearFieldError('firstName');
@@ -149,13 +146,13 @@ describe('useOptimizedResidentValidation', () => {
         result.current.setFieldError('lastName', 'Error 2');
       });
 
-      expect(result.current.hasErrors).toBe(true);
+      expect(result.current.isValid).toBe(false);
 
       act(() => {
-        result.current.clearErrors();
+        result.current.clearFieldError('firstName');
       });
 
-      expect(result.current.hasErrors).toBe(false);
+      expect(result.current.isValid).toBe(true);
       expect(result.current.errors).toEqual({});
     });
   });
@@ -173,14 +170,14 @@ describe('useOptimizedResidentValidation', () => {
       const { result } = renderHook(() => useOptimizedResidentValidation());
 
       // Should have access to cross-field validation
-      expect(result.current.validateCrossFields).toBeDefined();
+      expect(result.current.validateField).toBeDefined();
     });
 
     it('should integrate with async validation', () => {
       const { result } = renderHook(() => useOptimizedResidentValidation());
 
       // Should have access to async validation
-      expect(result.current.validateAsync).toBeDefined();
+      expect(result.current.validateFieldAsync).toBeDefined();
       expect(result.current.isAsyncValidating).toBeDefined();
     });
 
@@ -188,7 +185,7 @@ describe('useOptimizedResidentValidation', () => {
       const { result } = renderHook(() => useOptimizedResidentValidation());
 
       // Should have access to progress tracking
-      expect(result.current.progress).toBeDefined();
+      expect(result.current.getValidationProgress).toBeDefined();
     });
   });
 });

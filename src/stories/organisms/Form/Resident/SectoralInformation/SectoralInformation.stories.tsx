@@ -8,14 +8,16 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A form for managing sectoral classifications and group memberships for residents. Includes auto-calculation based on age, employment status, and education level.',
+        component:
+          'A form for managing sectoral classifications and group memberships for residents. Includes auto-calculation based on age, employment status, and education level.',
       },
     },
   },
   tags: ['autodocs'],
   argTypes: {
     formData: {
-      description: 'Form data object containing sectoral flags and context data for auto-calculation',
+      description:
+        'Form data object containing sectoral flags and context data for auto-calculation',
       control: { type: 'object' },
     },
     onChange: {

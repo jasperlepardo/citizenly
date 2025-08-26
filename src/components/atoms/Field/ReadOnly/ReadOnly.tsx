@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 import { cn } from '@/lib';
 
 export interface ReadOnlyProps {
@@ -20,52 +21,49 @@ export interface ReadOnlyProps {
   multiline?: boolean;
 }
 
-export const ReadOnly: React.FC<ReadOnlyProps> = ({ 
-  className = '', 
-  value, 
+export const ReadOnly: React.FC<ReadOnlyProps> = ({
+  className = '',
+  value,
   leftIcon,
   rightIcon,
   name,
   id,
-  multiline = false
+  multiline = false,
 }) => {
   return (
-    <div className={cn(
-      'relative flex items-center bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-md px-3 py-1.5',
-      className
-    )}>
+    <div
+      className={cn(
+        'relative flex items-center rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-800 dark:bg-zinc-900',
+        className
+      )}
+    >
       {/* Left Icon */}
       {leftIcon && (
-        <div className="flex items-center justify-center w-5 h-5 text-zinc-500 dark:text-zinc-400 mr-1.5 shrink-0">
+        <div className="mr-1.5 flex h-5 w-5 shrink-0 items-center justify-center text-zinc-500 dark:text-zinc-400">
           {leftIcon}
         </div>
       )}
 
-      <div className="flex-1 min-w-0">
-        <span className={cn(
-          'text-zinc-900 dark:text-zinc-100',
-          multiline ? 'whitespace-pre-wrap break-words' : 'truncate'
-        )}>
+      <div className="min-w-0 flex-1">
+        <span
+          className={cn(
+            'text-zinc-900 dark:text-zinc-100',
+            multiline ? 'break-words whitespace-pre-wrap' : 'truncate'
+          )}
+        >
           {value || '—'}
         </span>
       </div>
 
       {/* Right Icon */}
       {rightIcon && (
-        <div className="flex items-center justify-center w-5 h-5 text-zinc-500 dark:text-zinc-400 ml-1.5 shrink-0">
+        <div className="ml-1.5 flex h-5 w-5 shrink-0 items-center justify-center text-zinc-500 dark:text-zinc-400">
           {rightIcon}
         </div>
       )}
 
       {/* Hidden input for form submission */}
-      {name && (
-        <input
-          type="hidden"
-          name={name}
-          id={id}
-          value={value || ''}
-        />
-      )}
+      {name && <input type="hidden" name={name} id={id} value={value || ''} />}
     </div>
   );
 };

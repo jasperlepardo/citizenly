@@ -78,7 +78,7 @@ export function getDefaultMetrics(): UserBehaviorMetrics {
 export function updatePageViewMetrics(): UserBehaviorMetrics {
   const metrics = loadUserMetrics();
   const now = Date.now();
-  const isRevisit = metrics.lastVisit > 0 && (now - metrics.lastVisit > 24 * 60 * 60 * 1000); // 24 hours
+  const isRevisit = metrics.lastVisit > 0 && now - metrics.lastVisit > 24 * 60 * 60 * 1000; // 24 hours
 
   const updatedMetrics = {
     pageViews: metrics.pageViews + 1,
@@ -163,28 +163,31 @@ export function getPWAInstallCriteria(metrics: UserBehaviorMetrics): PWAInstallC
 export function getPersonalizedInstallMessage(metrics: UserBehaviorMetrics): PersonalizedMessage {
   if (metrics.revisits >= 2) {
     return {
-      title: "Welcome back! Install Citizenly",
-      description: "You've been using Citizenly regularly. Install it for faster access and offline use."
+      title: 'Welcome back! Install Citizenly',
+      description:
+        "You've been using Citizenly regularly. Install it for faster access and offline use.",
     };
   }
-  
+
   if (metrics.pageViews >= 5) {
     return {
-      title: "Enjoying Citizenly? Install it!",
-      description: "You've explored multiple features. Get the full experience with our app."
+      title: 'Enjoying Citizenly? Install it!',
+      description: "You've explored multiple features. Get the full experience with our app.",
     };
   }
-  
-  if (metrics.timeSpent >= 120000) { // 2 minutes
+
+  if (metrics.timeSpent >= 120000) {
+    // 2 minutes
     return {
-      title: "Install Citizenly for convenience",
-      description: "You've spent quality time here. Install for quicker access and offline capabilities."
+      title: 'Install Citizenly for convenience',
+      description:
+        "You've spent quality time here. Install for quicker access and offline capabilities.",
     };
   }
 
   return {
-    title: "Install Citizenly",
-    description: "Add to your home screen for quick access and offline use"
+    title: 'Install Citizenly',
+    description: 'Add to your home screen for quick access and offline use',
   };
 }
 
@@ -198,7 +201,7 @@ export function isPWAInstalled(): boolean {
   if (window.matchMedia('(display-mode: standalone)').matches) {
     return true;
   }
-  
+
   // Check for iOS Safari standalone
   if ((window.navigator as any).standalone === true) {
     return true;
@@ -215,7 +218,7 @@ export function recordInstallDismissal(): void {
 
   // Store dismissal date for smart timing (7 days cooldown)
   localStorage.setItem(DISMISSAL_KEY, Date.now().toString());
-  
+
   // Also set session storage for immediate dismissal
   sessionStorage.setItem(SESSION_DISMISSAL_KEY, 'true');
 }
@@ -231,9 +234,7 @@ export function getInstallPromptDelay(metrics: UserBehaviorMetrics): number {
 /**
  * Setup user interaction tracking listeners
  */
-export function setupUserInteractionTracking(
-  onInteraction: () => void
-): () => void {
+export function setupUserInteractionTracking(onInteraction: () => void): () => void {
   if (typeof window === 'undefined') return () => {};
 
   // Track user interactions
@@ -254,9 +255,7 @@ export function setupUserInteractionTracking(
 /**
  * Setup time tracking for a session
  */
-export function setupTimeTracking(
-  onTimeUpdate: (sessionTime: number) => void
-): () => void {
+export function setupTimeTracking(onTimeUpdate: (sessionTime: number) => void): () => void {
   if (typeof window === 'undefined') return () => {};
 
   const sessionStart = Date.now();

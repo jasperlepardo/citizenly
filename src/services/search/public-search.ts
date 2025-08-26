@@ -3,10 +3,26 @@
  * Search functions that don't require authentication (for registration, etc.)
  */
 
-import { supabase } from '@/lib/supabase/supabase';
 import { createLogger } from '@/lib/config/environment';
+import { supabase } from '@/lib/supabase/supabase';
 
 const logger = createLogger('PublicSearch');
+
+interface BarangayWithRelations {
+  code: string;
+  name: string;
+  city_municipality_code: string;
+  psgc_cities_municipalities: {
+    name: string;
+    type: string;
+    psgc_provinces: {
+      name: string;
+      psgc_regions: {
+        name: string;
+      };
+    };
+  };
+}
 
 /**
  * Search barangays by name without authentication requirement
@@ -55,13 +71,13 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
 
     // Transform data to match expected format
     const transformedData =
-      data?.map(item => ({
+      (data as BarangayWithRelations[])?.map(item => ({
         code: item.code,
-        name: (item as any).name,
-        city_name: `${(item as any).psgc_cities_municipalities.name} (${(item as any).psgc_cities_municipalities.type})`,
-        province_name: (item as any).psgc_cities_municipalities.psgc_provinces.name,
-        region_name: (item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
-        full_address: `${(item as any).name}, ${(item as any).psgc_cities_municipalities.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.name}, ${(item as any).psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
+        name: item.name,
+        city_name: `${item.psgc_cities_municipalities.name} (${item.psgc_cities_municipalities.type})`,
+        province_name: item.psgc_cities_municipalities.psgc_provinces.name,
+        region_name: item.psgc_cities_municipalities.psgc_provinces.psgc_regions.name,
+        full_address: `${item.name}, ${item.psgc_cities_municipalities.name}, ${item.psgc_cities_municipalities.psgc_provinces.name}, ${item.psgc_cities_municipalities.psgc_provinces.psgc_regions.name}`,
       })) || [];
 
     logger.debug(`Found ${transformedData.length} barangays`);

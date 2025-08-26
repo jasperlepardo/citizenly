@@ -1,6 +1,7 @@
-import { NextRequest } from 'next/server';
-import { createAdminSupabaseClient } from '@/lib';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
+
+import { createAdminSupabaseClient } from '@/lib';
 import {
   createSuccessResponse,
   createUnauthorizedResponse,
@@ -89,6 +90,6 @@ export async function GET(request: NextRequest) {
       'Profile retrieved successfully'
     );
   } catch (error) {
-    return await handleUnexpectedError(error);
+    return await handleUnexpectedError(error instanceof Error ? error : new Error(String(error)));
   }
 }

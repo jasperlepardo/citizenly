@@ -17,30 +17,30 @@ export function suppressNextJSWarnings() {
   const originalConsoleError = console.error;
 
   // Override console.error to filter specific Next.js warnings
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     const message = args[0];
-    
+
     if (typeof message === 'string') {
       // Suppress the specific OuterLayoutRouter key warning
       if (
         message.includes('Each child in a list should have a unique "key" prop') &&
-        (message.includes('OuterLayoutRouter') || 
-         message.includes('Check the render method of `OuterLayoutRouter`'))
+        (message.includes('OuterLayoutRouter') ||
+          message.includes('Check the render method of `OuterLayoutRouter`'))
       ) {
         // This is the Next.js 15.5.0 internal warning - suppress it
         return;
       }
     }
-    
+
     // Allow all other errors through
     originalConsoleError(...args);
   };
 
   // Also patch potential warning channels
   const originalConsoleWarn = console.warn;
-  console.warn = (...args: any[]) => {
+  console.warn = (...args: unknown[]) => {
     const message = args[0];
-    
+
     if (typeof message === 'string') {
       if (
         message.includes('Each child in a list should have a unique "key" prop') &&
@@ -49,7 +49,7 @@ export function suppressNextJSWarnings() {
         return; // Suppress
       }
     }
-    
+
     originalConsoleWarn(...args);
   };
 

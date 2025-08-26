@@ -2,25 +2,25 @@
  * Chart Data Transformers Library
  * @fileoverview Pure business logic for transforming raw demographic data into chart-ready formats.
  * Provides type-safe transformations for various chart types used in the Citizenly dashboard.
- * 
- * @description 
+ *
+ * @description
  * This module contains data transformation utilities that are completely separated from UI components,
  * making them highly testable and reusable across different visualization contexts.
- * 
+ *
  * Supported chart types:
  * - Dependency ratio charts (age demographics)
- * - Sex distribution charts 
+ * - Sex distribution charts
  * - Civil status breakdown charts
  * - Employment status analysis charts
- * 
+ *
  * @author Citizenly Development Team
  * @since 2.0.0
  * @version 2.1.0
- * 
+ *
  * @example
  * ```typescript
  * import { transformSexData, ChartDataPoint } from './chart-transformers';
- * 
+ *
  * const rawData = { male: 150, female: 175 };
  * const chartPoints: ChartDataPoint[] = transformSexData(rawData);
  * // Result: [
@@ -34,7 +34,7 @@
  * Raw demographic data for dependency ratio analysis
  * @typedef {Object} DependencyData
  * @property {number} youngDependents - Population under 15 years old
- * @property {number} workingAge - Population 15-64 years old  
+ * @property {number} workingAge - Population 15-64 years old
  * @property {number} oldDependents - Population 65+ years old
  * @since 2.0.0
  */
@@ -94,7 +94,7 @@ export type ChartType = 'dependency' | 'sex' | 'civilStatus' | 'employment';
  * Standard chart data point interface used across all chart types
  * @interface ChartDataPoint
  * @since 2.0.0
- * 
+ *
  * @example
  * ```typescript
  * const dataPoint: ChartDataPoint = {
@@ -140,7 +140,7 @@ export const CHART_COLORS: Record<ChartType, Record<string, string>> = {
 export function transformDependencyData(data: DependencyData): ChartDataPoint[] {
   const { youngDependents, workingAge, oldDependents } = data;
   const total = youngDependents + workingAge + oldDependents;
-  
+
   return [
     {
       label: 'Young (0-14)',
@@ -169,7 +169,7 @@ export function transformDependencyData(data: DependencyData): ChartDataPoint[] 
 export function transformSexData(data: SexData): ChartDataPoint[] {
   const { male, female } = data;
   const total = male + female;
-  
+
   return [
     {
       label: 'Male',
@@ -190,9 +190,11 @@ export function transformSexData(data: SexData): ChartDataPoint[] {
  * Transform civil status data into chart format
  */
 export function transformCivilStatusData(data: CivilStatusData): ChartDataPoint[] {
-  const { single, married, widowed, divorced, separated, annulled, registeredPartnership, liveIn } = data;
-  const total = single + married + widowed + divorced + separated + annulled + registeredPartnership + liveIn;
-  
+  const { single, married, widowed, divorced, separated, annulled, registeredPartnership, liveIn } =
+    data;
+  const total =
+    single + married + widowed + divorced + separated + annulled + registeredPartnership + liveIn;
+
   return [
     {
       label: 'Single',
@@ -250,8 +252,9 @@ export function transformCivilStatusData(data: CivilStatusData): ChartDataPoint[
  */
 export function transformEmploymentData(data: EmploymentStatusData): ChartDataPoint[] {
   const { employed, unemployed, selfEmployed, student, retired, homemaker, disabled, other } = data;
-  const total = employed + unemployed + selfEmployed + student + retired + homemaker + disabled + other;
-  
+  const total =
+    employed + unemployed + selfEmployed + student + retired + homemaker + disabled + other;
+
   return [
     {
       label: 'Employed',
@@ -383,7 +386,7 @@ export const chartUtils = {
    */
   getMaxPoint: (data: ChartDataPoint[]): ChartDataPoint | null => {
     if (data.length === 0) return null;
-    return data.reduce((max, point) => point.value > max.value ? point : max);
+    return data.reduce((max, point) => (point.value > max.value ? point : max));
   },
 
   /**
@@ -391,6 +394,6 @@ export const chartUtils = {
    */
   getMinPoint: (data: ChartDataPoint[]): ChartDataPoint | null => {
     if (data.length === 0) return null;
-    return data.reduce((min, point) => point.value < min.value ? point : min);
+    return data.reduce((min, point) => (point.value < min.value ? point : min));
   },
 };

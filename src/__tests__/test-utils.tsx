@@ -3,10 +3,10 @@
  * Custom render functions and test helpers
  */
 
-import React, { ReactElement } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { ReactElement } from 'react';
 
 // =============================================================================
 // CUSTOM RENDER FUNCTIONS

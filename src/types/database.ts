@@ -64,7 +64,7 @@ export interface ResidentRecord {
   // Primary identification
   id: string;
   philsys_card_number?: string | null;
-  
+
   // Personal details
   first_name: string;
   middle_name?: string | null;
@@ -73,47 +73,116 @@ export interface ResidentRecord {
   birthdate: string;
   birth_place_code?: string | null;
   sex: 'male' | 'female';
-  
+
   // Civil status
   civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others' | null; // Default: 'single'
   civil_status_others_specify?: string | null;
-  
+
   // Education and employment
-  education_attainment?: 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational' | null;
+  education_attainment?:
+    | 'elementary'
+    | 'high_school'
+    | 'college'
+    | 'post_graduate'
+    | 'vocational'
+    | null;
   is_graduate?: boolean | null; // Default: false
-  employment_status?: 'employed' | 'unemployed' | 'underemployed' | 'self_employed' | 'student' | 'retired' | 'homemaker' | 'unable_to_work' | 'looking_for_work' | 'not_in_labor_force' | null;
+  employment_status?:
+    | 'employed'
+    | 'unemployed'
+    | 'underemployed'
+    | 'self_employed'
+    | 'student'
+    | 'retired'
+    | 'homemaker'
+    | 'unable_to_work'
+    | 'looking_for_work'
+    | 'not_in_labor_force'
+    | null;
   occupation_code?: string | null;
-  
+
   // Contact information
   email?: string | null;
   mobile_number?: string | null;
   telephone_number?: string | null;
-  
+
   // Household membership
   household_code?: string | null;
-  
+
   // Physical characteristics
   height?: number | null;
   weight?: number | null;
   complexion?: string | null;
-  
+
   // Voting information
   is_voter?: boolean | null;
   is_resident_voter?: boolean | null;
   last_voted_date?: string | null;
-  
+
   // Cultural/religious identity
-  religion?: 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' | 'united_church_of_christ_philippines' | 'others' | null;
+  religion?:
+    | 'roman_catholic'
+    | 'islam'
+    | 'iglesia_ni_cristo'
+    | 'christian'
+    | 'aglipayan_church'
+    | 'seventh_day_adventist'
+    | 'bible_baptist_church'
+    | 'jehovahs_witnesses'
+    | 'church_of_jesus_christ_latter_day_saints'
+    | 'united_church_of_christ_philippines'
+    | 'others'
+    | null;
   religion_others_specify?: string | null;
-  ethnicity?: 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' | 'tumandok' | 'chinese' | 'others' | null;
+  ethnicity?:
+    | 'tagalog'
+    | 'cebuano'
+    | 'ilocano'
+    | 'bisaya'
+    | 'hiligaynon'
+    | 'bikolano'
+    | 'waray'
+    | 'kapampangan'
+    | 'pangasinense'
+    | 'maranao'
+    | 'maguindanao'
+    | 'tausug'
+    | 'yakan'
+    | 'samal'
+    | 'badjao'
+    | 'aeta'
+    | 'agta'
+    | 'ati'
+    | 'batak'
+    | 'bukidnon'
+    | 'gaddang'
+    | 'higaonon'
+    | 'ibaloi'
+    | 'ifugao'
+    | 'igorot'
+    | 'ilongot'
+    | 'isneg'
+    | 'ivatan'
+    | 'kalinga'
+    | 'kankanaey'
+    | 'mangyan'
+    | 'mansaka'
+    | 'palawan'
+    | 'subanen'
+    | 'tboli'
+    | 'teduray'
+    | 'tumandok'
+    | 'chinese'
+    | 'others'
+    | null;
   citizenship?: 'filipino' | 'dual_citizen' | 'foreigner' | null; // Default: 'filipino'
   blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
-  
+
   // Family information
   mother_maiden_first?: string | null;
   mother_maiden_middle?: string | null;
   mother_maiden_last?: string | null;
-  
+
   // Status and audit
   is_active?: boolean | null; // Default: true
   created_by?: string | null;
@@ -270,7 +339,7 @@ export interface EmploymentStatistics {
  */
 export interface PSOCMajorGroup {
   code: string; // VARCHAR(10) PRIMARY KEY
-  title: string; // VARCHAR(200) NOT NULL  
+  title: string; // VARCHAR(200) NOT NULL
   created_at: string; // TIMESTAMPTZ DEFAULT NOW()
 }
 
@@ -285,7 +354,7 @@ export interface PSOCSubMajorGroup {
 }
 
 /**
- * PSOC Minor Groups (Level 3) - 124 minor categories  
+ * PSOC Minor Groups (Level 3) - 124 minor categories
  */
 export interface PSOCMinorGroup {
   code: string; // VARCHAR(10) PRIMARY KEY

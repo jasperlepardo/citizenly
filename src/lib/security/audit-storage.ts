@@ -4,7 +4,9 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+
 import { logger } from '@/lib';
+
 import { ErrorCode as ApiErrorCode } from '../api/types';
 
 export interface SecurityAuditLog {
@@ -43,13 +45,16 @@ export async function storeSecurityAuditLog(auditLog: SecurityAuditLog): Promise
     // Check if we have the required environment variables
     if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       // Just log to console instead - don't create an error
-      console.info('[SECURITY AUDIT - Console Only]', JSON.stringify({
-        operation: auditLog.operation,
-        user_id: auditLog.user_id,
-        severity: auditLog.severity,
-        timestamp: auditLog.timestamp,
-        details: auditLog.details
-      }));
+      console.info(
+        '[SECURITY AUDIT - Console Only]',
+        JSON.stringify({
+          operation: auditLog.operation,
+          user_id: auditLog.user_id,
+          severity: auditLog.severity,
+          timestamp: auditLog.timestamp,
+          details: auditLog.details,
+        })
+      );
       return;
     }
 
@@ -58,33 +63,37 @@ export async function storeSecurityAuditLog(auditLog: SecurityAuditLog): Promise
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const { error } = await supabaseAdmin
-      .from('security_audit_logs')
-      .insert({
-        operation: auditLog.operation,
-        user_id: auditLog.user_id,
-        resource_type: auditLog.resource_type,
-        resource_id: auditLog.resource_id,
-        severity: auditLog.severity,
-        details: auditLog.details,
-        ip_address: auditLog.ip_address,
-        user_agent: auditLog.user_agent,
-        session_id: auditLog.session_id,
-        timestamp: auditLog.timestamp,
-        success: auditLog.success,
-        error_message: auditLog.error_message,
-      });
+    const { error } = await supabaseAdmin.from('security_audit_logs').insert({
+      operation: auditLog.operation,
+      user_id: auditLog.user_id,
+      resource_type: auditLog.resource_type,
+      resource_id: auditLog.resource_id,
+      severity: auditLog.severity,
+      details: auditLog.details,
+      ip_address: auditLog.ip_address,
+      user_agent: auditLog.user_agent,
+      session_id: auditLog.session_id,
+      timestamp: auditLog.timestamp,
+      success: auditLog.success,
+      error_message: auditLog.error_message,
+    });
 
     if (error) {
       // If table doesn't exist or other database errors, fall back to console logging
-      if (error.code === 'PGRST116' || error.message?.includes('relation "security_audit_logs" does not exist')) {
-        console.info('[SECURITY AUDIT - Table Missing]', JSON.stringify({
-          operation: auditLog.operation,
-          user_id: auditLog.user_id,
-          severity: auditLog.severity,
-          timestamp: auditLog.timestamp,
-          details: auditLog.details
-        }));
+      if (
+        error.code === 'PGRST116' ||
+        error.message?.includes('relation "security_audit_logs" does not exist')
+      ) {
+        console.info(
+          '[SECURITY AUDIT - Table Missing]',
+          JSON.stringify({
+            operation: auditLog.operation,
+            user_id: auditLog.user_id,
+            severity: auditLog.severity,
+            timestamp: auditLog.timestamp,
+            details: auditLog.details,
+          })
+        );
       } else {
         logger.error('Failed to store security audit log', { error, auditLog });
       }
@@ -112,26 +121,24 @@ export async function storeThreatDetectionEvent(event: ThreatDetectionEvent): Pr
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    const { error } = await supabaseAdmin
-      .from('threat_detection_events')
-      .insert({
-        event_type: event.event_type,
-        severity: event.severity,
-        source_ip: event.source_ip,
-        user_id: event.user_id,
-        details: event.details,
-        timestamp: event.timestamp,
-        mitigated: event.mitigated,
-        mitigation_action: event.mitigation_action,
-      });
+    const { error } = await supabaseAdmin.from('threat_detection_events').insert({
+      event_type: event.event_type,
+      severity: event.severity,
+      source_ip: event.source_ip,
+      user_id: event.user_id,
+      details: event.details,
+      timestamp: event.timestamp,
+      mitigated: event.mitigated,
+      mitigation_action: event.mitigation_action,
+    });
 
     if (error) {
       logger.error('Failed to store threat detection event', { error, event });
     } else {
-      logger.info('Threat detection event stored', { 
+      logger.info('Threat detection event stored', {
         eventType: event.event_type,
         severity: event.severity,
-        sourceIp: event.source_ip 
+        sourceIp: event.source_ip,
       });
     }
 
@@ -273,7 +280,7 @@ export enum AuditEventType {
   UNAUTHORIZED_ACCESS = 'unauthorized_access',
   RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded',
   MALICIOUS_FILE_UPLOAD = 'malicious_file_upload',
-  SUSPICIOUS_ACTIVITY = 'suspicious_activity'
+  SUSPICIOUS_ACTIVITY = 'suspicious_activity',
 }
 
 // Error codes for audit logging
@@ -281,15 +288,15 @@ export enum ErrorCode {
   DATABASE_ERROR = 'database_error',
   INTERNAL_ERROR = 'internal_error',
   VALIDATION_ERROR = 'validation_error',
-  AUTHENTICATION_ERROR = 'authentication_error'
+  AUTHENTICATION_ERROR = 'authentication_error',
 }
 
 /**
  * Audit error occurrences for security tracking
  */
 export async function auditError(
-  error: Error, 
-  context: any, 
+  error: Error,
+  context: any,
   errorCode: ApiErrorCode
 ): Promise<void> {
   try {
@@ -303,14 +310,14 @@ export async function auditError(
         error_code: errorCode,
         error_message: error.message,
         stack_trace: error.stack?.substring(0, 1000), // Limit stack trace
-        context
+        context,
       },
       ip_address: context?.ipAddress,
       user_agent: context?.userAgent,
       session_id: context?.sessionId,
       timestamp: new Date().toISOString(),
       success: false,
-      error_message: error.message
+      error_message: error.message,
     };
 
     await storeSecurityAuditLog(auditLog);
@@ -335,11 +342,11 @@ export async function auditSecurityViolation(
       user_id: context?.userId,
       details: {
         ...context,
-        ...details
+        ...details,
       },
       timestamp: new Date().toISOString(),
       mitigated: true,
-      mitigation_action: 'Request blocked'
+      mitigation_action: 'Request blocked',
     };
 
     await storeThreatDetectionEvent(threatEvent);
@@ -394,10 +401,8 @@ export async function getSecurityStatistics(timeframe: '24h' | '7d' | '30d' = '2
       totalEvents: auditLogs.length,
       criticalEvents: auditLogs.filter(log => log.severity === 'critical').length,
       threatEvents: threatEvents.length,
-      failedLogins: auditLogs.filter(log => 
-        log.operation.includes('login') && !log.success
-      ).length,
-      suspiciousActivities: threatEvents.filter(event => 
+      failedLogins: auditLogs.filter(log => log.operation.includes('login') && !log.success).length,
+      suspiciousActivities: threatEvents.filter(event =>
         ['suspicious_activity', 'brute_force', 'sql_injection'].includes(event.event_type)
       ).length,
     };

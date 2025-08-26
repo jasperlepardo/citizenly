@@ -7,15 +7,15 @@ import { createLogger, isProduction, isDevelopment } from '@/lib/config/environm
 
 const logger = createLogger('RedisClient');
 
-interface CacheEntry {
-  data: any;
+interface CacheEntry<T = unknown> {
+  data: T;
   timestamp: number;
   ttl: number;
 }
 
 interface CacheClient {
-  get<T = any>(key: string): Promise<T | null>;
-  set(key: string, value: any, ttlSeconds?: number): Promise<boolean>;
+  get<T = unknown>(key: string): Promise<T | null>;
+  set<T>(key: string, value: T, ttlSeconds?: number): Promise<boolean>;
   del(key: string): Promise<boolean>;
   flush(): Promise<boolean>;
   keys(pattern: string): Promise<string[]>;
@@ -35,7 +35,7 @@ class InMemoryCache implements CacheClient {
 
   async get<T = any>(key: string): Promise<T | null> {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       return null;
@@ -52,7 +52,7 @@ class InMemoryCache implements CacheClient {
     return entry.data as T;
   }
 
-  async set(key: string, value: any, ttlSeconds = this.defaultTTL): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
     try {
       // Clean cache if at capacity
       if (this.cache.size >= this.maxSize) {
@@ -62,7 +62,7 @@ class InMemoryCache implements CacheClient {
       this.cache.set(key, {
         data: value,
         timestamp: Date.now(),
-        ttl: ttlSeconds
+        ttl: ttlSeconds,
       });
 
       return true;
@@ -90,20 +90,20 @@ class InMemoryCache implements CacheClient {
   async exists(key: string): Promise<boolean> {
     const entry = this.cache.get(key);
     if (!entry) return false;
-    
+
     // Check if expired
     if (Date.now() - entry.timestamp > entry.ttl * 1000) {
       this.cache.delete(key);
       return false;
     }
-    
+
     return true;
   }
 
   async expire(key: string, ttlSeconds: number): Promise<boolean> {
     const entry = this.cache.get(key);
     if (!entry) return false;
-    
+
     entry.ttl = ttlSeconds;
     entry.timestamp = Date.now();
     return true;
@@ -113,7 +113,7 @@ class InMemoryCache implements CacheClient {
     return {
       ...this.stats,
       keys: this.cache.size,
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
 
@@ -134,9 +134,10 @@ class InMemoryCache implements CacheClient {
 
     // If still at capacity, remove oldest entries
     if (this.cache.size >= this.maxSize) {
-      const entries = Array.from(this.cache.entries())
-        .sort(([, a], [, b]) => a.timestamp - b.timestamp);
-      
+      const entries = Array.from(this.cache.entries()).sort(
+        ([, a], [, b]) => a.timestamp - b.timestamp
+      );
+
       const toRemove = entries.slice(0, Math.floor(this.maxSize * 0.2)); // Remove 20%
       for (const [key] of toRemove) {
         this.cache.delete(key);
@@ -168,7 +169,7 @@ class RedisCache implements CacheClient {
     return null;
   }
 
-  async set(key: string, value: any, ttlSeconds = 300): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = 300): Promise<boolean> {
     // Disabled - fallback to false
     return false;
   }
@@ -205,7 +206,7 @@ function createCacheClient(): CacheClient {
   // Use in-memory cache for now - Redis support can be enabled later
   logger.info('Initializing in-memory cache client');
   return new InMemoryCache();
-  
+
   // TODO: Enable Redis support when package is installed
   // if (isProduction() && process.env.REDIS_URL) {
   //   try {
@@ -241,7 +242,7 @@ export class CacheManager {
   /**
    * Set cached value with automatic JSON serialization
    */
-  async set(key: string, value: any, ttlSeconds = this.defaultTTL): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
     const prefixedKey = this.keyPrefix + key;
     return await this.client.set(prefixedKey, value, ttlSeconds);
   }
@@ -278,7 +279,7 @@ export class CacheManager {
   async invalidatePattern(pattern: string): Promise<number> {
     const prefixedPattern = this.keyPrefix + pattern;
     const keys = await this.client.keys(prefixedPattern);
-    
+
     let deleted = 0;
     for (const key of keys) {
       if (await this.client.del(key)) {

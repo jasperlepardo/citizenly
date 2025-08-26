@@ -1,6 +1,6 @@
 /**
  * Form Field Logic Library
- * 
+ *
  * @description Pure business logic for form fields, separated from UI components.
  * Contains field state logic, validation rules, and data transformation utilities.
  */
@@ -23,7 +23,7 @@ export const isFieldReadOnly = (
  */
 export const formatDateForDisplay = (dateValue: string | undefined): string => {
   if (!dateValue) return '';
-  
+
   try {
     return new Date(dateValue).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -50,7 +50,7 @@ export const getSelectDisplayValue = (
   options: Array<{ value: string; label: string }>
 ): string => {
   if (!value) return '';
-  
+
   const selectedOption = options.find(opt => opt.value === value);
   return selectedOption?.label || value;
 };
@@ -79,15 +79,15 @@ export const fieldLogic = {
     fieldName: string = 'Field'
   ): string | null => {
     if (value === undefined || value === null) return null;
-    
+
     if (min !== undefined && value < min) {
       return `${fieldName} must be at least ${min}`;
     }
-    
+
     if (max !== undefined && value > max) {
       return `${fieldName} must be no more than ${max}`;
     }
-    
+
     return null;
   },
 
@@ -101,17 +101,17 @@ export const fieldLogic = {
     fieldName: string = 'Date'
   ): string | null => {
     if (!value) return null;
-    
+
     const dateValue = new Date(value);
-    
+
     if (min && dateValue < new Date(min)) {
       return `${fieldName} must be after ${formatDateForDisplay(min)}`;
     }
-    
+
     if (max && dateValue > new Date(max)) {
       return `${fieldName} must be before ${formatDateForDisplay(max)}`;
     }
-    
+
     return null;
   },
 };
@@ -123,11 +123,7 @@ export const fieldState = {
   /**
    * Get common field props based on mode and configuration
    */
-  getFieldProps: (
-    fieldName: string,
-    mode: FormMode,
-    readOnlyFields: string[] = []
-  ) => ({
+  getFieldProps: (fieldName: string, mode: FormMode, readOnlyFields: string[] = []) => ({
     isReadOnly: isFieldReadOnly(fieldName, mode, readOnlyFields),
     isDisabled: mode === 'view',
     isRequired: mode !== 'view', // Usually required in edit/create modes
@@ -136,10 +132,7 @@ export const fieldState = {
   /**
    * Get field validation state
    */
-  getValidationState: (
-    value: any,
-    validators: Array<(value: any) => string | null>
-  ) => {
+  getValidationState: (value: any, validators: Array<(value: any) => string | null>) => {
     for (const validator of validators) {
       const error = validator(value);
       if (error) {

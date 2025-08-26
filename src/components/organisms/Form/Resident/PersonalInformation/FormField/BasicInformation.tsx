@@ -1,9 +1,10 @@
 import React from 'react';
+
 import { InputField, SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import { 
-  SEX_OPTIONS_WITH_DEFAULT, 
-  CIVIL_STATUS_OPTIONS_WITH_DEFAULT
+import {
+  SEX_OPTIONS_WITH_DEFAULT,
+  CIVIL_STATUS_OPTIONS_WITH_DEFAULT,
 } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
 
@@ -50,9 +51,9 @@ export function BasicInformation({
   const formatFullName = () => {
     const parts = [
       value.first_name?.trim(),
-      value.middle_name?.trim(), 
+      value.middle_name?.trim(),
       value.last_name?.trim(),
-      value.extension_name?.trim()
+      value.extension_name?.trim(),
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(' ') : '—';
   };
@@ -77,7 +78,7 @@ export function BasicInformation({
               labelSize="sm"
               inputProps={{
                 value: formatFullName(),
-                readOnly: true
+                readOnly: true,
               }}
             />
           </div>
@@ -92,8 +93,8 @@ export function BasicInformation({
               inputProps={{
                 value: value.first_name,
                 onChange: e => handleChange('first_name', e.target.value),
-                placeholder: "Enter first name",
-                required: true
+                placeholder: 'Enter first name',
+                required: true,
               }}
             />
 
@@ -104,7 +105,7 @@ export function BasicInformation({
               inputProps={{
                 value: value.middle_name,
                 onChange: e => handleChange('middle_name', e.target.value),
-                placeholder: "Enter middle name"
+                placeholder: 'Enter middle name',
               }}
             />
 
@@ -117,8 +118,8 @@ export function BasicInformation({
               inputProps={{
                 value: value.last_name,
                 onChange: e => handleChange('last_name', e.target.value),
-                placeholder: "Enter last name",
-                required: true
+                placeholder: 'Enter last name',
+                required: true,
               }}
             />
 
@@ -129,7 +130,7 @@ export function BasicInformation({
               inputProps={{
                 value: value.extension_name,
                 onChange: e => handleChange('extension_name', e.target.value),
-                placeholder: "Jr., Sr., III, etc."
+                placeholder: 'Jr., Sr., III, etc.',
               }}
             />
           </>
@@ -148,7 +149,7 @@ export function BasicInformation({
           orientation="horizontal"
           spacing="sm"
         >
-          {SEX_OPTIONS_WITH_DEFAULT.map((option) => (
+          {SEX_OPTIONS_WITH_DEFAULT.map(option => (
             <Radio
               key={option.value}
               value={option.value}
@@ -157,7 +158,7 @@ export function BasicInformation({
               style="button"
               buttonProps={{
                 variant: 'neutral-outline',
-                size: 'lg'
+                size: 'lg',
               }}
             />
           ))}
@@ -169,13 +170,13 @@ export function BasicInformation({
           labelSize="sm"
           errorMessage={errors.civil_status}
           selectProps={{
-            placeholder: "Select civil status...",
+            placeholder: 'Select civil status...',
             options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as any,
             value: value.civil_status,
-            onSelect: handleSelectChange('civil_status')
+            onSelect: handleSelectChange('civil_status'),
           }}
         />
-        
+
         {/* Show input field when "others" is selected */}
         {value.civil_status === 'others' && (
           <InputField
@@ -187,12 +188,11 @@ export function BasicInformation({
             inputProps={{
               value: value.civil_status_others_specify || '',
               onChange: e => handleChange('civil_status_others_specify', e.target.value),
-              placeholder: "Please specify civil status",
-              required: true
+              placeholder: 'Please specify civil status',
+              required: true,
             }}
           />
         )}
-
       </div>
     </div>
   );

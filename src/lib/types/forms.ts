@@ -1,6 +1,6 @@
 /**
  * Form Types Library
- * 
+ *
  * @description Standardized form field types and interfaces for consistent
  * form behavior across the application. These types are domain-agnostic
  * and can be reused in any form context.

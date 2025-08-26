@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { logger, createErrorResponseObject } from '@/lib';
 import { isProduction, getEnvironment } from '@/lib/config/environment';
 
@@ -34,16 +35,16 @@ const logCounts = new Map<string, { count: number; resetTime: number }>();
 function checkLogRateLimit(ip: string): boolean {
   const now = Date.now();
   const current = logCounts.get(ip);
-  
+
   if (!current || now > current.resetTime) {
     logCounts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return true;
   }
-  
+
   if (current.count >= RATE_LIMIT_MAX_LOGS) {
     return false;
   }
-  
+
   current.count++;
   return true;
 }
@@ -54,8 +55,9 @@ function checkLogRateLimit(ip: string): boolean {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     // Rate limiting
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    
+    const ip =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+
     if (!checkLogRateLimit(ip)) {
       return NextResponse.json(
         createErrorResponseObject('RATE_001', 'Logging rate limit exceeded'),
@@ -65,13 +67,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Parse log entry
     const logEntry: LogEntry = await request.json();
-    
+
     // Validate log entry structure
     if (!logEntry.timestamp || !logEntry.level || !logEntry.message) {
-      return NextResponse.json(
-        createErrorResponseObject('DATA_001', 'Invalid log entry format'),
-        { status: 400 }
-      );
+      return NextResponse.json(createErrorResponseObject('DATA_001', 'Invalid log entry format'), {
+        status: 400,
+      });
     }
 
     // Sanitize and enhance log entry
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       serverTimestamp: new Date().toISOString(),
       environment: getEnvironment(),
       ip,
-      source: 'client'
+      source: 'client',
     };
 
     // Log based on level
@@ -90,8 +91,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       clientData: {
         url: logEntry.url,
         userAgent: logEntry.userAgent,
-        timestamp: logEntry.timestamp
-      }
+        timestamp: logEntry.timestamp,
+      },
     };
 
     switch (logEntry.level.toLowerCase()) {
@@ -120,20 +121,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (isProduction() && logEntry.level.toLowerCase() === 'error') {
       // TODO: Integrate with external monitoring services
       // - Send to Sentry
-      // - Store in error tracking database  
+      // - Store in error tracking database
       // - Send Slack/email notifications for critical errors
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: 'Log entry recorded',
-      timestamp: enhancedLogEntry.serverTimestamp 
+      timestamp: enhancedLogEntry.serverTimestamp,
     });
-
   } catch (error) {
     // Don't use logger here to avoid potential recursion
     console.error('Logging endpoint error:', error);
-    
+
     return NextResponse.json(
       createErrorResponseObject('SERVER_001', 'Failed to process log entry'),
       { status: 500 }
@@ -149,6 +149,6 @@ export async function GET(): Promise<NextResponse> {
     status: 'operational',
     service: 'logging',
     environment: getEnvironment(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }

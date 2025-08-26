@@ -138,7 +138,7 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: string) => {
       setValue(newValue);
-      
+
       // Simple validation
       if (newValue && !/^\d{4}-\d{4}-\d{4}$/.test(newValue)) {
         setError('PhilSys card number must be in the format XXXX-XXXX-XXXX');
@@ -151,12 +151,7 @@ export const Interactive: Story = {
 
     return (
       <div className="space-y-4">
-        <PhilSysCardField
-          value={value}
-          onChange={handleChange}
-          error={error}
-          required={true}
-        />
+        <PhilSysCardField value={value} onChange={handleChange} error={error} required={true} />
         <div className="text-sm text-gray-600">
           <p>Current value: "{value}"</p>
           <p>Valid format: XXXX-XXXX-XXXX (e.g., 1234-5678-9012)</p>
@@ -177,7 +172,7 @@ export const Interactive: Story = {
 export const ProgressiveFilling: Story = {
   render: () => {
     const [value, setValue] = useState('');
-    
+
     const examples = [
       { label: 'Clear', value: '' },
       { label: 'Partial (4 digits)', value: '1234' },
@@ -187,15 +182,11 @@ export const ProgressiveFilling: Story = {
 
     return (
       <div className="space-y-4">
-        <PhilSysCardField
-          value={value}
-          onChange={setValue}
-          required={true}
-        />
-        
+        <PhilSysCardField value={value} onChange={setValue} required={true} />
+
         <div className="space-x-2">
           <span className="text-sm font-medium">Quick fill:</span>
-          {examples.map((example) => (
+          {examples.map(example => (
             <button
               key={example.label}
               onClick={() => setValue(example.value)}
@@ -225,12 +216,12 @@ export const InFormContext: Story = {
       firstName: '',
       lastName: '',
     });
-    
+
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const handlePhilSysChange = (value: string) => {
       setFormData(prev => ({ ...prev, philsysCard: value }));
-      
+
       // Clear error when user starts typing
       if (errors.philsysCard) {
         setErrors(prev => ({ ...prev, philsysCard: '' }));
@@ -239,21 +230,21 @@ export const InFormContext: Story = {
 
     const validateForm = () => {
       const newErrors: Record<string, string> = {};
-      
+
       if (!formData.philsysCard) {
         newErrors.philsysCard = 'PhilSys card number is required';
       } else if (!/^\d{4}-\d{4}-\d{4}$/.test(formData.philsysCard)) {
         newErrors.philsysCard = 'Invalid PhilSys card format';
       }
-      
+
       if (!formData.firstName) {
         newErrors.firstName = 'First name is required';
       }
-      
+
       if (!formData.lastName) {
         newErrors.lastName = 'Last name is required';
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -267,47 +258,41 @@ export const InFormContext: Story = {
             error={errors.philsysCard}
             required={true}
           />
-          
+
           <div className="space-y-2">
             <label className="block text-sm font-medium">First Name *</label>
             <input
               type="text"
               value={formData.firstName}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
               className="w-full rounded border px-3 py-2"
               placeholder="Enter first name"
             />
-            {errors.firstName && (
-              <p className="text-sm text-red-600">{errors.firstName}</p>
-            )}
+            {errors.firstName && <p className="text-sm text-red-600">{errors.firstName}</p>}
           </div>
-          
+
           <div className="space-y-2">
             <label className="block text-sm font-medium">Last Name *</label>
             <input
               type="text"
               value={formData.lastName}
-              onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+              onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
               className="w-full rounded border px-3 py-2"
               placeholder="Enter last name"
             />
-            {errors.lastName && (
-              <p className="text-sm text-red-600">{errors.lastName}</p>
-            )}
+            {errors.lastName && <p className="text-sm text-red-600">{errors.lastName}</p>}
           </div>
         </div>
-        
+
         <button
           onClick={validateForm}
           className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
         >
           Validate Form
         </button>
-        
+
         {Object.keys(errors).length === 0 && formData.philsysCard && (
-          <div className="rounded bg-green-100 p-3 text-green-800">
-            ✓ All fields are valid!
-          </div>
+          <div className="rounded bg-green-100 p-3 text-green-800">✓ All fields are valid!</div>
         )}
       </div>
     );

@@ -1,7 +1,7 @@
 /**
  * Consolidated Type Exports
  * Central barrel export for all application types
- * 
+ *
  * Clean, direct imports with no legacy aliases or duplicates.
  * Use specific type names from their respective modules.
  */
@@ -25,7 +25,7 @@ export type {
   AuditLogEntry,
   DashboardStats,
   PopulationByAgeGroup,
-  EmploymentStatistics
+  EmploymentStatistics,
 } from './database';
 
 // Authentication types
@@ -50,7 +50,7 @@ export type {
   AuthError,
   LoginFormData,
   SignupFormData,
-  ProfileFormData
+  ProfileFormData,
 } from './auth';
 
 // Export auth constants
@@ -68,7 +68,7 @@ export type {
   ReligionEnum,
   EthnicityEnum,
   BirthPlaceLevelEnum,
-  
+
   // Core interfaces
   ResidentDatabaseRecord,
   ResidentApiData,
@@ -77,7 +77,7 @@ export type {
   ResidentFormState,
   ResidentWithRelations,
   CombinedResidentFormData,
-  
+
   // Search and API
   PsocData,
   PsocOption,
@@ -89,11 +89,11 @@ export type {
   ResidentSearchParams,
   ResidentTableAction,
   ResidentTableColumn,
-  
+
   // Validation
   FormValidationError,
   SectoralInformation,
-  SectoralContext
+  SectoralContext,
 } from './residents';
 
 // Export resident option constants
@@ -106,7 +106,7 @@ export {
   BLOOD_TYPE_OPTIONS,
   RELIGION_OPTIONS,
   ETHNICITY_OPTIONS,
-  BIRTH_PLACE_LEVEL_OPTIONS
+  BIRTH_PLACE_LEVEL_OPTIONS,
 } from './residents';
 
 // Household types
@@ -123,15 +123,11 @@ export type {
   HouseholdTableColumn,
   HouseholdTableAction,
   HouseholdValidationError,
-  HouseholdFormSubmissionState
+  HouseholdFormSubmissionState,
 } from './households';
 
 // Export household option constants
-export {
-  HOUSEHOLD_TYPE_OPTIONS,
-  TENURE_STATUS_OPTIONS,
-  INCOME_CLASS_OPTIONS
-} from './households';
+export { HOUSEHOLD_TYPE_OPTIONS, TENURE_STATUS_OPTIONS, INCOME_CLASS_OPTIONS } from './households';
 
 // Form types
 export type {
@@ -154,7 +150,7 @@ export type {
   HouseholdDetailsData,
   FormSectionPropsGeneric,
   FieldConfig,
-  HouseholdFormProps
+  HouseholdFormProps,
 } from './forms';
 
 // =============================================================================
@@ -183,17 +179,11 @@ export type {
   RateLimitErrorResponse,
   AuthErrorResponse,
   HealthCheckResponse,
-  CommandMenuSearchResponse
+  CommandMenuSearchResponse,
 } from './api';
 
 // Export API type guards
-export { 
-  isApiSuccess, 
-  isApiError, 
-  isValidationError, 
-  isRateLimitError, 
-  isAuthError 
-} from './api';
+export { isApiSuccess, isApiError, isValidationError, isRateLimitError, isAuthError } from './api';
 
 // =============================================================================
 // UTILITY TYPES

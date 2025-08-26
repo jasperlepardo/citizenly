@@ -2,6 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 import LoginForm from '@/components/organisms/LoginForm';
 
+interface MockAuthValue {
+  signIn: () => Promise<unknown>;
+  loading: boolean;
+  user: unknown;
+  userProfile: unknown;
+  role: unknown;
+}
+
 // Mock the AuthContext
 const createMockAuthContext = (overrides = {}) => ({
   signIn: () => Promise.resolve(),
@@ -18,7 +26,7 @@ const MockAuthProvider = ({
   authValue,
 }: {
   children: React.ReactNode;
-  authValue: any;
+  authValue: MockAuthValue;
 }) => {
   const mockUseAuth = () => authValue;
 
@@ -133,9 +141,10 @@ export const InvalidCredentials: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Invalid login credentials' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Invalid login credentials' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>
@@ -154,9 +163,10 @@ export const EmailNotConfirmed: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Email not confirmed' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Email not confirmed' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>
@@ -175,9 +185,10 @@ export const NetworkError: Story = {
   decorators: [
     Story => {
       const mockAuth = createMockAuthContext({
-        signIn: () => Promise.resolve({
-          error: { message: 'Network request failed' },
-        }),
+        signIn: () =>
+          Promise.resolve({
+            error: { message: 'Network request failed' },
+          }),
       });
       return (
         <MockAuthProvider authValue={mockAuth}>

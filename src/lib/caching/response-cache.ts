@@ -4,9 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { cacheManager } from './redis-client';
+
 import { createLogger, isProduction } from '@/lib/config/environment';
 import { performanceMonitor } from '@/lib/monitoring/performance';
+
+import { cacheManager } from './redis-client';
 
 const logger = createLogger('ResponseCache');
 
@@ -21,10 +23,10 @@ export interface CacheConfig {
   };
 }
 
-interface CachedResponse {
+interface CachedResponse<T = unknown> {
   status: number;
   headers: Record<string, string>;
-  body: any;
+  body: T;
   timestamp: number;
   etag?: string;
 }
@@ -39,20 +41,12 @@ export class ResponseCache {
   /**
    * Generate cache key from request
    */
-  private generateCacheKey(
-    request: NextRequest, 
-    config?: CacheConfig
-  ): string {
+  private generateCacheKey(request: NextRequest, config?: CacheConfig): string {
     const url = new URL(request.url);
     const method = request.method;
-    
+
     // Base key components
-    const keyParts = [
-      'response',
-      method.toLowerCase(),
-      url.pathname,
-      url.search
-    ];
+    const keyParts = ['response', method.toLowerCase(), url.pathname, url.search];
 
     // Add vary-by headers if specified
     if (config?.varyBy) {
@@ -78,7 +72,7 @@ export class ResponseCache {
   /**
    * Generate ETag for response
    */
-  private generateETag(body: any): string {
+  private generateETag(body: unknown): string {
     const content = typeof body === 'string' ? body : JSON.stringify(body);
     return `"${this.hashString(content).substring(0, 16)}"`;
   }
@@ -90,7 +84,7 @@ export class ResponseCache {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash).toString(36);
@@ -100,7 +94,7 @@ export class ResponseCache {
    * Check if request should be cached
    */
   private shouldCache(
-    request: NextRequest, 
+    request: NextRequest,
     response?: NextResponse,
     config?: CacheConfig
   ): boolean {
@@ -117,7 +111,9 @@ export class ResponseCache {
 
     // Check status codes if response is provided
     if (response) {
-      const allowedStatus = config?.conditions?.statusCodes || [200, 201, 203, 300, 301, 302, 304, 307, 308, 410];
+      const allowedStatus = config?.conditions?.statusCodes || [
+        200, 201, 203, 300, 301, 302, 304, 307, 308, 410,
+      ];
       if (!allowedStatus.includes(response.status)) {
         return false;
       }
@@ -160,7 +156,7 @@ export class ResponseCache {
       // Check if cached response is still valid
       const age = Date.now() - cached.timestamp;
       const maxAge = (config?.ttl || this.defaultTTL) * 1000;
-      
+
       if (age > maxAge) {
         logger.debug('Cache expired', { cacheKey, age, maxAge });
         await cacheManager.del(cacheKey);
@@ -174,21 +170,21 @@ export class ResponseCache {
         return new NextResponse(null, {
           status: 304,
           headers: {
-            'ETag': cached.etag,
+            ETag: cached.etag,
             'Cache-Control': `public, max-age=${Math.floor((maxAge - age) / 1000)}`,
-            'X-Cache': 'HIT'
-          }
+            'X-Cache': 'HIT',
+          },
         });
       }
 
       // Return cached response
       logger.debug('Cache hit', { cacheKey, age: Math.round(age / 1000) });
-      
+
       const headers = new Headers(cached.headers);
       headers.set('X-Cache', 'HIT');
       headers.set('X-Cache-Age', Math.round(age / 1000).toString());
       headers.set('Cache-Control', `public, max-age=${Math.floor((maxAge - age) / 1000)}`);
-      
+
       if (cached.etag) {
         headers.set('ETag', cached.etag);
       }
@@ -197,15 +193,14 @@ export class ResponseCache {
         typeof cached.body === 'string' ? cached.body : JSON.stringify(cached.body),
         {
           status: cached.status,
-          headers
+          headers,
         }
       );
-
     } catch (error) {
       endMetric?.();
       logger.error('Cache lookup error', {
         cacheKey,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return null;
     }
@@ -235,7 +230,7 @@ export class ResponseCache {
       // Prepare headers for caching (exclude some headers)
       const headers: Record<string, string> = {};
       const excludedHeaders = ['set-cookie', 'authorization', 'x-cache'];
-      
+
       responseClone.headers.forEach((value, key) => {
         if (!excludedHeaders.includes(key.toLowerCase())) {
           headers[key] = value;
@@ -247,7 +242,7 @@ export class ResponseCache {
         headers,
         body: this.isJSON(body) ? JSON.parse(body) : body,
         timestamp: Date.now(),
-        etag
+        etag,
       };
 
       const ttl = config?.ttl || this.defaultTTL;
@@ -258,17 +253,16 @@ export class ResponseCache {
       response.headers.set('ETag', etag);
       response.headers.set('Cache-Control', `public, max-age=${ttl}`);
 
-      logger.debug('Response cached', { 
-        cacheKey, 
-        ttl, 
+      logger.debug('Response cached', {
+        cacheKey,
+        ttl,
         status: response.status,
-        bodySize: body.length 
+        bodySize: body.length,
       });
-
     } catch (error) {
       logger.error('Cache storage error', {
         cacheKey,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
       endMetric?.();
@@ -280,9 +274,9 @@ export class ResponseCache {
    */
   async invalidate(pattern: string, tags?: string[]): Promise<number> {
     logger.info('Invalidating cache', { pattern, tags });
-    
+
     const count = await cacheManager.invalidatePattern(`response_*${pattern}*`);
-    
+
     // TODO: Implement tag-based invalidation when tags are used
     if (tags && tags.length > 0) {
       logger.debug('Tag-based invalidation not yet implemented', { tags });
@@ -298,7 +292,8 @@ export class ResponseCache {
     const stats = await cacheManager.getStats();
     return {
       ...stats,
-      hitRate: stats.hits > 0 ? ((stats.hits / (stats.hits + stats.misses)) * 100).toFixed(2) + '%' : '0%'
+      hitRate:
+        stats.hits > 0 ? ((stats.hits / (stats.hits + stats.misses)) * 100).toFixed(2) + '%' : '0%',
     };
   }
 
@@ -328,8 +323,8 @@ export const CachePresets = {
     tags: ['dashboard', 'stats'],
     conditions: {
       methods: ['GET'],
-      statusCodes: [200]
-    }
+      statusCodes: [200],
+    },
   } as CacheConfig,
 
   // Resident data - cache for 1 minute
@@ -339,8 +334,8 @@ export const CachePresets = {
     varyBy: ['authorization'],
     conditions: {
       methods: ['GET'],
-      statusCodes: [200]
-    }
+      statusCodes: [200],
+    },
   } as CacheConfig,
 
   // Static data - cache for 10 minutes
@@ -349,8 +344,8 @@ export const CachePresets = {
     tags: ['static'],
     conditions: {
       methods: ['GET'],
-      statusCodes: [200, 304]
-    }
+      statusCodes: [200, 304],
+    },
   } as CacheConfig,
 
   // Search results - cache for 30 seconds
@@ -360,16 +355,19 @@ export const CachePresets = {
     varyBy: ['authorization'],
     conditions: {
       methods: ['GET'],
-      statusCodes: [200]
-    }
-  } as CacheConfig
+      statusCodes: [200],
+    },
+  } as CacheConfig,
 };
 
 /**
  * Middleware function for automatic response caching
  */
 export function withResponseCache(config?: CacheConfig) {
-  return async (request: NextRequest, handler: () => Promise<NextResponse>): Promise<NextResponse> => {
+  return async (
+    request: NextRequest,
+    handler: () => Promise<NextResponse>
+  ): Promise<NextResponse> => {
     // Try to get cached response first
     const cachedResponse = await responseCache.getCachedResponse(request, config);
     if (cachedResponse) {

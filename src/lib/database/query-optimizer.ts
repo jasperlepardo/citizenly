@@ -4,6 +4,7 @@
  */
 
 import { SupabaseClient } from '@supabase/supabase-js';
+
 import { createLogger } from '@/lib/config/environment';
 import { performanceMonitor } from '@/lib/monitoring/performance';
 
@@ -53,7 +54,7 @@ class DatabaseQueryOptimizer {
       enableCache = true,
       enableMetrics = true,
       timeout = 10000,
-      retryAttempts = 2
+      retryAttempts = 2,
     } = options;
 
     const cacheKey = this.generateCacheKey(queryName, queryFn.toString());
@@ -69,7 +70,7 @@ class DatabaseQueryOptimizer {
             executionTime: performance.now() - startTime,
             resultCount: Array.isArray(cachedResult.data) ? cachedResult.data.length : 1,
             cacheHit: true,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         }
 
@@ -80,7 +81,7 @@ class DatabaseQueryOptimizer {
 
     // Execute query with retry logic and timeout
     let lastError: any = null;
-    
+
     for (let attempt = 1; attempt <= retryAttempts + 1; attempt++) {
       try {
         const result = await this.executeWithTimeout(queryFn, timeout);
@@ -98,7 +99,7 @@ class DatabaseQueryOptimizer {
             executionTime,
             resultCount: Array.isArray(result.data) ? result.data.length : result.data ? 1 : 0,
             cacheHit: false,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         }
 
@@ -107,22 +108,21 @@ class DatabaseQueryOptimizer {
           logger.warn(`Slow query detected: ${queryName}`, {
             executionTime: Math.round(executionTime),
             attempt,
-            cacheKey
+            cacheKey,
           });
         } else {
           logger.debug(`Query executed: ${queryName}`, {
             executionTime: Math.round(executionTime),
-            resultCount: Array.isArray(result.data) ? result.data.length : 1
+            resultCount: Array.isArray(result.data) ? result.data.length : 1,
           });
         }
 
         return { ...result, fromCache: false };
-
       } catch (error) {
         lastError = error;
         logger.warn(`Query attempt ${attempt} failed for ${queryName}`, {
           error: error instanceof Error ? error.message : 'Unknown error',
-          attempt
+          attempt,
         });
 
         // Wait before retry (exponential backoff)
@@ -134,20 +134,20 @@ class DatabaseQueryOptimizer {
 
     // All attempts failed
     const executionTime = performance.now() - startTime;
-    
+
     if (enableMetrics) {
       this.recordMetrics({
         queryName,
         executionTime,
         resultCount: 0,
         cacheHit: false,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
     logger.error(`Query failed after ${retryAttempts + 1} attempts: ${queryName}`, {
       error: lastError instanceof Error ? lastError.message : 'Unknown error',
-      executionTime: Math.round(executionTime)
+      executionTime: Math.round(executionTime),
     });
 
     return { data: null as T, error: lastError };
@@ -166,14 +166,14 @@ class DatabaseQueryOptimizer {
     options: { concurrency?: number; failFast?: boolean } = {}
   ): Promise<Array<{ data: T; error: any; fromCache?: boolean }>> {
     const { concurrency = 5, failFast = false } = options;
-    
+
     logger.info(`Executing batch queries`, {
       count: queries.length,
       concurrency,
-      failFast
+      failFast,
     });
 
-    const batches: typeof queries[] = [];
+    const batches: (typeof queries)[] = [];
     for (let i = 0; i < queries.length; i += concurrency) {
       batches.push(queries.slice(i, i + concurrency));
     }
@@ -187,16 +187,16 @@ class DatabaseQueryOptimizer {
         );
 
         const batchResults = await Promise.allSettled(batchPromises);
-        
+
         for (const result of batchResults) {
           if (result.status === 'fulfilled') {
             results.push(result.value);
           } else {
             results.push({ data: null as T, error: result.reason });
-            
+
             if (failFast) {
               logger.error('Batch query failed (fail-fast enabled)', {
-                error: result.reason
+                error: result.reason,
               });
               throw new Error(`Batch query failed: ${result.reason}`);
             }
@@ -207,7 +207,7 @@ class DatabaseQueryOptimizer {
           throw error;
         }
         logger.warn('Batch execution error (continuing)', {
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }
@@ -224,7 +224,7 @@ class DatabaseQueryOptimizer {
     options: OptimizedQueryOptions = {}
   ) {
     const queryName = `dashboard_stats_${barangayCode}`;
-    
+
     return this.executeQuery(
       client,
       queryName,
@@ -240,18 +240,23 @@ class DatabaseQueryOptimizer {
         if (summaryData && !summaryError) {
           const calculationDate = new Date(summaryData.calculation_date);
           const daysSinceCalc = (Date.now() - calculationDate.getTime()) / (1000 * 60 * 60 * 24);
-          
+
           if (daysSinceCalc < 1) {
             return { data: summaryData, error: null };
           }
         }
 
         // Fallback to real-time calculation if no summary data or data is stale
-        logger.info(`No recent summary data found for barangay ${barangayCode}, calculating real-time stats`);
-        
-        const { data: realTimeData, error: realTimeError } = await client.rpc('calculate_dashboard_stats', {
-          p_barangay_code: barangayCode
-        });
+        logger.info(
+          `No recent summary data found for barangay ${barangayCode}, calculating real-time stats`
+        );
+
+        const { data: realTimeData, error: realTimeError } = await client.rpc(
+          'calculate_dashboard_stats',
+          {
+            p_barangay_code: barangayCode,
+          }
+        );
 
         // If RPC function doesn't exist, use direct queries
         if (realTimeError && realTimeError.message?.includes('function')) {
@@ -264,7 +269,7 @@ class DatabaseQueryOptimizer {
       {
         cacheTTL: 2 * 60 * 1000, // 2 minutes cache for dashboard
         enableCache: true,
-        ...options
+        ...options,
       }
     );
   }
@@ -301,13 +306,15 @@ class DatabaseQueryOptimizer {
       // Calculate basic demographics
       const { data: demographics, error: demoError } = await client
         .from('residents')
-        .select(`
+        .select(
+          `
           sex,
           birthdate,
           civil_status,
           employment_status,
           households!inner(barangay_code)
-        `)
+        `
+        )
         .eq('households.barangay_code', barangayCode)
         .eq('is_active', true);
 
@@ -353,22 +360,38 @@ class DatabaseQueryOptimizer {
 
           // Civil status
           switch (resident.civil_status) {
-            case 'single': stats.single_count++; break;
-            case 'married': stats.married_count++; break;
-            case 'widowed': stats.widowed_count++; break;
+            case 'single':
+              stats.single_count++;
+              break;
+            case 'married':
+              stats.married_count++;
+              break;
+            case 'widowed':
+              stats.widowed_count++;
+              break;
             case 'divorced':
-            case 'separated': stats.divorced_separated_count++; break;
+            case 'separated':
+              stats.divorced_separated_count++;
+              break;
           }
 
           // Employment status
           switch (resident.employment_status) {
-            case 'employed': 
-            case 'self_employed': stats.employed_count++; break;
-            case 'unemployed': 
+            case 'employed':
+            case 'self_employed':
+              stats.employed_count++;
+              break;
+            case 'unemployed':
             case 'underemployed':
-            case 'looking_for_work': stats.unemployed_count++; break;
-            case 'student': stats.student_count++; break;
-            case 'retired': stats.retired_count++; break;
+            case 'looking_for_work':
+              stats.unemployed_count++;
+              break;
+            case 'student':
+              stats.student_count++;
+              break;
+            case 'retired':
+              stats.retired_count++;
+              break;
           }
         });
       }
@@ -400,7 +423,8 @@ class DatabaseQueryOptimizer {
         // Optimized query with specific columns and joins
         const { data, error } = await client
           .from('residents')
-          .select(`
+          .select(
+            `
             id,
             first_name,
             last_name,
@@ -411,7 +435,8 @@ class DatabaseQueryOptimizer {
             employment_status,
             household_code,
             households!inner(barangay_code)
-          `)
+          `
+          )
           .eq('households.barangay_code', barangayCode)
           .eq('is_active', true)
           .order('last_name', { ascending: true })
@@ -422,7 +447,7 @@ class DatabaseQueryOptimizer {
       {
         cacheTTL: 1 * 60 * 1000, // 1 minute cache for resident lists
         enableCache: true,
-        ...options
+        ...options,
       }
     );
   }
@@ -440,7 +465,7 @@ class DatabaseQueryOptimizer {
    */
   private getCachedResult<T>(cacheKey: string): { data: T; error: any } | null {
     const cached = this.queryCache.get(cacheKey);
-    
+
     if (cached && Date.now() - cached.timestamp < cached.ttl) {
       return { data: cached.data, error: null };
     }
@@ -466,7 +491,7 @@ class DatabaseQueryOptimizer {
       data: result.data,
       timestamp: Date.now(),
       ttl,
-      key: cacheKey
+      key: cacheKey,
     });
   }
 
@@ -495,7 +520,7 @@ class DatabaseQueryOptimizer {
    */
   private recordMetrics(metrics: QueryMetrics): void {
     this.queryMetrics.push(metrics);
-    
+
     // Keep only last 1000 metrics
     if (this.queryMetrics.length > 1000) {
       this.queryMetrics = this.queryMetrics.slice(-1000);
@@ -505,17 +530,14 @@ class DatabaseQueryOptimizer {
     performanceMonitor.endMetric(`db_query_${metrics.queryName}`, {
       executionTime: metrics.executionTime,
       resultCount: metrics.resultCount,
-      cacheHit: metrics.cacheHit
+      cacheHit: metrics.cacheHit,
     });
   }
 
   /**
    * Execute query with timeout
    */
-  private executeWithTimeout<T>(
-    queryFn: () => Promise<T>,
-    timeout: number
-  ): Promise<T> {
+  private executeWithTimeout<T>(queryFn: () => Promise<T>, timeout: number): Promise<T> {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error(`Query timeout after ${timeout}ms`));
@@ -540,7 +562,7 @@ class DatabaseQueryOptimizer {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(36);
@@ -574,7 +596,7 @@ class DatabaseQueryOptimizer {
       averageExecutionTime: totalQueries > 0 ? totalExecutionTime / totalQueries : 0,
       cacheHitRate: totalQueries > 0 ? (cacheHits / totalQueries) * 100 : 0,
       slowQueries,
-      recentQueries
+      recentQueries,
     };
   }
 

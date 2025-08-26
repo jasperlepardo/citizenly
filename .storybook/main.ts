@@ -34,7 +34,7 @@ const config: StorybookConfig = {
         '@': join(__dirname, '../src'),
       },
     };
-    
+
     return config;
   },
 };

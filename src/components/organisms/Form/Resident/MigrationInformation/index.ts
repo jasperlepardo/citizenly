@@ -1,1 +1,5 @@
-export { MigrationInformation, type MigrationInformationProps, type MigrationInformationData } from './MigrationInformation';
+export {
+  MigrationInformation,
+  type MigrationInformationProps,
+  type MigrationInformationData,
+} from './MigrationInformation';

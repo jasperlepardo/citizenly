@@ -19,13 +19,13 @@ const testResident = {
   email: 'juan.delacruz@test.com',
   mobile_number: '09123456789',
   household_code: 'TEST-HOUSEHOLD-001',
-  
+
   // Sectoral information
   is_labor_force_employed: true,
   is_migrant: false,
   is_senior_citizen: false,
   is_person_with_disability: false,
-  
+
   // Migration information
   previous_barangay_code: '',
   reason_for_leaving: '',
@@ -38,7 +38,7 @@ describe('Residents CRUD Integration Tests', () => {
   beforeAll(async () => {
     // Mock authentication - in real tests, this would authenticate with valid credentials
     authToken = 'mock-token-for-testing';
-    
+
     // Ensure test household exists
     // In real tests, this would create a test household or use existing test data
   });
@@ -50,7 +50,7 @@ describe('Residents CRUD Integration Tests', () => {
         await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${authToken}`,
+            Authorization: `Bearer ${authToken}`,
             'Content-Type': 'application/json',
           },
         });
@@ -65,18 +65,18 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(testResident),
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(201);
       expect(data.resident_id).toBeDefined();
       expect(data.message).toContain('created successfully');
-      
+
       createdResidentId = data.resident_id;
     });
 
@@ -91,7 +91,7 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(invalidResident),
@@ -108,12 +108,12 @@ describe('Residents CRUD Integration Tests', () => {
     it('should retrieve resident list', async () => {
       const response = await fetch(`${API_BASE}/api/residents`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(Array.isArray(data.data)).toBe(true);
       expect(data.pagination).toBeDefined();
@@ -127,35 +127,38 @@ describe('Residents CRUD Integration Tests', () => {
 
       const response = await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(data.resident).toBeDefined();
       expect(data.resident.id).toBe(createdResidentId);
       expect(data.resident.first_name).toBe(testResident.first_name);
       expect(data.resident.last_name).toBe(testResident.last_name);
-      
+
       // Check sectoral information is included
       expect(data.resident.is_labor_force_employed).toBe(testResident.is_labor_force_employed);
       expect(data.resident.is_migrant).toBe(testResident.is_migrant);
     });
 
     it('should support search functionality', async () => {
-      const response = await fetch(`${API_BASE}/api/residents?search=${encodeURIComponent(testResident.first_name)}`, {
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-        },
-      });
+      const response = await fetch(
+        `${API_BASE}/api/residents?search=${encodeURIComponent(testResident.first_name)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(Array.isArray(data.data)).toBe(true);
-      
+
       // Should find our test resident
       const foundResident = data.data.find((r: any) => r.id === createdResidentId);
       expect(foundResident).toBeDefined();
@@ -164,12 +167,12 @@ describe('Residents CRUD Integration Tests', () => {
     it('should support pagination', async () => {
       const response = await fetch(`${API_BASE}/api/residents?page=1&limit=5`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(data.pagination.page).toBe(1);
       expect(data.pagination.limit).toBe(5);
@@ -194,14 +197,14 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updateData),
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(data.message).toContain('updated successfully');
       expect(data.resident.first_name).toBe(updateData.first_name);
@@ -223,7 +226,7 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(invalidUpdateData),
@@ -249,21 +252,24 @@ describe('Residents CRUD Integration Tests', () => {
       };
 
       // Create migration info
-      const createResponse = await fetch(`${API_BASE}/api/residents/${createdResidentId}/migration`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(migrationData),
-      });
+      const createResponse = await fetch(
+        `${API_BASE}/api/residents/${createdResidentId}/migration`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(migrationData),
+        }
+      );
 
       expect(createResponse.status).toBe(200);
 
       // Retrieve migration info
       const getResponse = await fetch(`${API_BASE}/api/residents/${createdResidentId}/migration`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -292,7 +298,7 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents/bulk`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(bulkData),
@@ -312,7 +318,7 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents/bulk`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(invalidBulkData),
@@ -331,12 +337,12 @@ describe('Residents CRUD Integration Tests', () => {
       const response = await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
       expect(data.message).toContain('deleted successfully');
       expect(data.deletedResident.id).toBe(createdResidentId);
@@ -346,14 +352,14 @@ describe('Residents CRUD Integration Tests', () => {
       // After soft delete, the resident should not appear in the general list
       const response = await fetch(`${API_BASE}/api/residents`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
       const data = await response.json();
-      
+
       expect(response.status).toBe(200);
-      
+
       // Should not find our deleted resident
       const foundResident = data.data.find((r: any) => r.id === createdResidentId);
       expect(foundResident).toBeUndefined();
@@ -363,7 +369,7 @@ describe('Residents CRUD Integration Tests', () => {
       // Trying to access a soft-deleted resident should return 404
       const response = await fetch(`${API_BASE}/api/residents/${createdResidentId}`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -382,10 +388,10 @@ describe('Residents CRUD Integration Tests', () => {
 
     it('should handle non-existent resident', async () => {
       const fakeId = '00000000-0000-0000-0000-000000000000';
-      
+
       const response = await fetch(`${API_BASE}/api/residents/${fakeId}`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -395,7 +401,7 @@ describe('Residents CRUD Integration Tests', () => {
     it('should handle invalid UUID format', async () => {
       const response = await fetch(`${API_BASE}/api/residents/invalid-uuid`, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
 
@@ -406,7 +412,7 @@ describe('Residents CRUD Integration Tests', () => {
 
 /**
  * Test Summary Validation
- * 
+ *
  * This test suite validates:
  * ✅ CREATE - Full resident creation with sectoral and migration data
  * ✅ READ - List, detail, search, and pagination
@@ -418,6 +424,6 @@ describe('Residents CRUD Integration Tests', () => {
  * ✅ ERROR HANDLING - Proper error responses
  * ✅ AUTHORIZATION - Auth token validation
  * ✅ SOFT DELETE - Proper hiding of inactive records
- * 
+ *
  * All major CRUD operations are now 100% implemented and tested.
  */

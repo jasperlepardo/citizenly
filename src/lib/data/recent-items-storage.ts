@@ -22,15 +22,15 @@ const MAX_RECENT_ITEMS = 10;
  */
 export function getStoredRecentItems(): RecentItem[] {
   if (typeof window === 'undefined') return [];
-  
+
   try {
     const stored = localStorage.getItem(RECENT_ITEMS_KEY);
     if (!stored) return [];
-    
+
     const items: RecentItem[] = JSON.parse(stored);
-    
+
     // Filter out items older than 7 days
-    const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const cutoffTime = Date.now() - 7 * 24 * 60 * 60 * 1000;
     return items
       .filter(item => item.timestamp > cutoffTime)
       .sort((a, b) => b.timestamp - a.timestamp) // Most recent first
@@ -46,14 +46,14 @@ export function getStoredRecentItems(): RecentItem[] {
  */
 export function addRecentItem(item: Omit<RecentItem, 'timestamp'>): void {
   if (typeof window === 'undefined') return;
-  
+
   try {
     // Input validation
     if (!item.id || !item.title || !item.type) {
       console.warn('Invalid recent item data:', item);
       return;
     }
-    
+
     // Sanitize input to prevent XSS
     const sanitizedItem = {
       ...item,
@@ -63,26 +63,27 @@ export function addRecentItem(item: Omit<RecentItem, 'timestamp'>): void {
       href: item.href ? String(item.href).slice(0, 500) : item.href,
       searchQuery: item.searchQuery ? String(item.searchQuery).slice(0, 100) : item.searchQuery,
     };
-    
+
     const existingItems = getStoredRecentItems();
-    
+
     // Remove duplicate if it exists (based on id and type)
     const filteredItems = existingItems.filter(
       existing => !(existing.id === sanitizedItem.id && existing.type === sanitizedItem.type)
     );
-    
+
     // Add new item with timestamp
     const newItem: RecentItem = {
       ...sanitizedItem,
       timestamp: Date.now(),
     };
-    
+
     // Keep only the most recent items
     const updatedItems = [newItem, ...filteredItems].slice(0, MAX_RECENT_ITEMS);
-    
+
     // Check localStorage quota before saving
     const dataString = JSON.stringify(updatedItems);
-    if (dataString.length > 50000) { // 50KB limit for recent items
+    if (dataString.length > 50000) {
+      // 50KB limit for recent items
       console.warn('Recent items data too large, trimming...');
       const trimmedItems = updatedItems.slice(0, 5); // Keep only 5 items
       localStorage.setItem(RECENT_ITEMS_KEY, JSON.stringify(trimmedItems));
@@ -105,7 +106,7 @@ export function addRecentItem(item: Omit<RecentItem, 'timestamp'>): void {
  */
 export function trackSearch(query: string): void {
   if (!query.trim()) return;
-  
+
   addRecentItem({
     id: `search-${query}`,
     title: `Search: "${query}"`,
@@ -118,7 +119,13 @@ export function trackSearch(query: string): void {
 /**
  * Track navigation to a page/item
  */
-export function trackNavigation(id: string, title: string, description: string, type: 'resident' | 'household', href: string): void {
+export function trackNavigation(
+  id: string,
+  title: string,
+  description: string,
+  type: 'resident' | 'household',
+  href: string
+): void {
   addRecentItem({
     id,
     title,

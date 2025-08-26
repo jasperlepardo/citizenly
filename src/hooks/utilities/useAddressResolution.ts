@@ -2,15 +2,15 @@
 
 /**
  * Address Resolution Hook
- * 
+ *
  * @description Focused hook for resolving and displaying address hierarchy information.
  * Extracted from useHouseholdCreation to follow single responsibility principle.
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { supabase } from '@/lib';
-import { logger } from '@/lib';
+
 import { useAuth } from '@/contexts';
+import { supabase, logger } from '@/lib';
 
 /**
  * Address hierarchy information for display purposes
@@ -64,38 +64,42 @@ const ERROR_ADDRESS_INFO: AddressDisplayInfo = {
 
 /**
  * Custom hook for address resolution
- * 
- * @description Handles loading and resolving complete address hierarchy 
+ *
+ * @description Handles loading and resolving complete address hierarchy
  * from barangay code to region level for display purposes.
  */
 export function useAddressResolution(): UseAddressResolutionReturn {
   const { userProfile } = useAuth();
-  const [addressDisplayInfo, setAddressDisplayInfo] = useState<AddressDisplayInfo>(LOADING_ADDRESS_INFO);
+  const [addressDisplayInfo, setAddressDisplayInfo] =
+    useState<AddressDisplayInfo>(LOADING_ADDRESS_INFO);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   /**
    * Resolves barangay information
    */
-  const resolveBarangayInfo = useCallback(async (barangayCode: string, addressInfo: AddressDisplayInfo) => {
-    const { data: barangayData, error: barangayError } = await supabase
-      .from('psgc_barangays')
-      .select('name, city_municipality_code')
-      .eq('code', barangayCode)
-      .single();
+  const resolveBarangayInfo = useCallback(
+    async (barangayCode: string, addressInfo: AddressDisplayInfo) => {
+      const { data: barangayData, error: barangayError } = await supabase
+        .from('psgc_barangays')
+        .select('name, city_municipality_code')
+        .eq('code', barangayCode)
+        .single();
 
-    if (barangayError) {
-      logger.warn('Barangay not found', { barangayCode, error: barangayError.message });
+      if (barangayError) {
+        logger.warn('Barangay not found', { barangayCode, error: barangayError.message });
+        return null;
+      }
+
+      if (barangayData) {
+        addressInfo.barangay = barangayData.name;
+        return barangayData.city_municipality_code;
+      }
+
       return null;
-    }
-
-    if (barangayData) {
-      addressInfo.barangay = barangayData.name;
-      return barangayData.city_municipality_code;
-    }
-
-    return null;
-  }, []);
+    },
+    []
+  );
 
   /**
    * Resolves city/municipality information
@@ -123,88 +127,97 @@ export function useAddressResolution(): UseAddressResolutionReturn {
   /**
    * Resolves province information
    */
-  const resolveProvinceInfo = useCallback(async (provinceCode: string, addressInfo: AddressDisplayInfo) => {
-    const { data: provinceData, error: provinceError } = await supabase
-      .from('psgc_provinces')
-      .select('name, region_code')
-      .eq('code', provinceCode)
-      .single();
+  const resolveProvinceInfo = useCallback(
+    async (provinceCode: string, addressInfo: AddressDisplayInfo) => {
+      const { data: provinceData, error: provinceError } = await supabase
+        .from('psgc_provinces')
+        .select('name, region_code')
+        .eq('code', provinceCode)
+        .single();
 
-    if (provinceError) {
-      logger.warn('Province not found', { provinceCode, error: provinceError.message });
+      if (provinceError) {
+        logger.warn('Province not found', { provinceCode, error: provinceError.message });
+        return null;
+      }
+
+      if (provinceData) {
+        addressInfo.province = provinceData.name;
+        return provinceData.region_code;
+      }
+
       return null;
-    }
-
-    if (provinceData) {
-      addressInfo.province = provinceData.name;
-      return provinceData.region_code;
-    }
-
-    return null;
-  }, []);
+    },
+    []
+  );
 
   /**
    * Resolves region information
    */
-  const resolveRegionInfo = useCallback(async (regionCode: string, addressInfo: AddressDisplayInfo) => {
-    const { data: regionData, error: regionError } = await supabase
-      .from('psgc_regions')
-      .select('name')
-      .eq('code', regionCode)
-      .single();
+  const resolveRegionInfo = useCallback(
+    async (regionCode: string, addressInfo: AddressDisplayInfo) => {
+      const { data: regionData, error: regionError } = await supabase
+        .from('psgc_regions')
+        .select('name')
+        .eq('code', regionCode)
+        .single();
 
-    if (regionError) {
-      logger.warn('Region not found', { regionCode, error: regionError.message });
-      return;
-    }
+      if (regionError) {
+        logger.warn('Region not found', { regionCode, error: regionError.message });
+        return;
+      }
 
-    if (regionData) {
-      addressInfo.region = regionData.name;
-    }
-  }, []);
+      if (regionData) {
+        addressInfo.region = regionData.name;
+      }
+    },
+    []
+  );
 
   /**
    * Loads and resolves complete address hierarchy for display
    */
-  const loadAddressDisplayInfo = useCallback(async (barangayCode: string) => {
-    if (!barangayCode) {
-      logger.warn('No barangay code provided for address resolution');
-      setAddressDisplayInfo(ERROR_ADDRESS_INFO);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      logger.debug('Loading address display info', { barangayCode });
-
-      const addressInfo: AddressDisplayInfo = { ...ERROR_ADDRESS_INFO };
-      addressInfo.barangay = `Barangay ${barangayCode}`;
-
-      // Sequential resolution with early exit on errors
-      const cityCode = await resolveBarangayInfo(barangayCode, addressInfo);
-      if (cityCode) {
-        const provinceCode = await resolveCityInfo(cityCode, addressInfo);
-        if (provinceCode) {
-          const regionCode = await resolveProvinceInfo(provinceCode, addressInfo);
-          if (regionCode) {
-            await resolveRegionInfo(regionCode, addressInfo);
-          }
-        }
+  const loadAddressDisplayInfo = useCallback(
+    async (barangayCode: string) => {
+      if (!barangayCode) {
+        logger.warn('No barangay code provided for address resolution');
+        setAddressDisplayInfo(ERROR_ADDRESS_INFO);
+        return;
       }
 
-      setAddressDisplayInfo(addressInfo);
-      logger.debug('Address resolution completed', { addressInfo });
-    } catch (error) {
-      const errorMessage = 'Failed to resolve address information';
-      logger.error(errorMessage, { error, barangayCode });
-      setError(errorMessage);
-      setAddressDisplayInfo(ERROR_ADDRESS_INFO);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [resolveBarangayInfo, resolveCityInfo, resolveProvinceInfo, resolveRegionInfo]);
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        logger.debug('Loading address display info', { barangayCode });
+
+        const addressInfo: AddressDisplayInfo = { ...ERROR_ADDRESS_INFO };
+        addressInfo.barangay = `Barangay ${barangayCode}`;
+
+        // Sequential resolution with early exit on errors
+        const cityCode = await resolveBarangayInfo(barangayCode, addressInfo);
+        if (cityCode) {
+          const provinceCode = await resolveCityInfo(cityCode, addressInfo);
+          if (provinceCode) {
+            const regionCode = await resolveProvinceInfo(provinceCode, addressInfo);
+            if (regionCode) {
+              await resolveRegionInfo(regionCode, addressInfo);
+            }
+          }
+        }
+
+        setAddressDisplayInfo(addressInfo);
+        logger.debug('Address resolution completed', { addressInfo });
+      } catch (error) {
+        const errorMessage = 'Failed to resolve address information';
+        logger.error(errorMessage, { error, barangayCode });
+        setError(errorMessage);
+        setAddressDisplayInfo(ERROR_ADDRESS_INFO);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [resolveBarangayInfo, resolveCityInfo, resolveProvinceInfo, resolveRegionInfo]
+  );
 
   /**
    * Reset address display info to initial state

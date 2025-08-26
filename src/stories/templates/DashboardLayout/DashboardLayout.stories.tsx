@@ -111,11 +111,16 @@ const MockDashboardContent = () => (
         { title: 'Registered Voters', value: '1,876', trend: '+3.1%' },
         { title: 'Pending Applications', value: '47', trend: '-15.3%' },
       ].map((stat, index) => (
-        <div key={index} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
+        <div
+          key={index}
+          className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
-              <p className="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">{stat.value}</p>
+              <p className="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">
+                {stat.value}
+              </p>
             </div>
             <span
               className={`rounded-full px-2 py-1 text-xs font-medium ${
@@ -132,8 +137,10 @@ const MockDashboardContent = () => (
     </div>
 
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">Recent Registrations</h3>
+      <div className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+          Recent Registrations
+        </h3>
         <div className="space-y-4">
           {[
             { name: 'Maria Elena Santos', type: 'New Resident', time: '2 hours ago' },
@@ -146,7 +153,9 @@ const MockDashboardContent = () => (
                 <div className="h-3 w-3 rounded-full bg-blue-600"></div>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{activity.name}</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {activity.name}
+                </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   {activity.type} • {activity.time}
                 </p>
@@ -156,8 +165,10 @@ const MockDashboardContent = () => (
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6 shadow-xs">
-        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">System Health</h3>
+      <div className="rounded-xl border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-400">
+          System Health
+        </h3>
         <div className="space-y-4">
           {[
             { metric: 'Database Status', status: 'Online', color: 'green' },
@@ -166,10 +177,14 @@ const MockDashboardContent = () => (
             { metric: 'Last Backup', status: '2 hours ago', color: 'green' },
           ].map((health, index) => (
             <div key={index} className="flex items-center justify-between">
-              <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">{health.metric}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                {health.metric}
+              </span>
               <div className="flex items-center gap-2">
                 <div className={`h-2 w-2 rounded-full bg-${health.color}-500`}></div>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{health.status}</span>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {health.status}
+                </span>
               </div>
             </div>
           ))}
@@ -212,29 +227,31 @@ const MockResidentsContent = () => (
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Residents Directory</h1>
-        <p className="mt-1 text-gray-600 dark:text-gray-400">Manage resident records and profiles</p>
+        <p className="mt-1 text-gray-600 dark:text-gray-400">
+          Manage resident records and profiles
+        </p>
       </div>
       <div className="flex gap-3">
-        <button className="hover:bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-600 dark:text-gray-400 transition-colors">
+        <button className="rounded-lg border border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
           Export Data
         </button>
-        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white dark:text-black transition-colors hover:bg-blue-600">
+        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-600 dark:text-black">
           Add New Resident
         </button>
       </div>
     </div>
 
-    <div className="bg-white dark:bg-gray-800 overflow-hidden rounded-xl border border-gray-300 dark:border-gray-600">
-      <div className="bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600 p-4">
+    <div className="overflow-hidden rounded-xl border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800">
+      <div className="border-b border-gray-300 bg-gray-100 p-4 dark:border-gray-600 dark:bg-gray-700">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-600 dark:text-gray-400">Active Residents</h3>
           <div className="flex items-center gap-3">
-            <select className="bg-white dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
+            <select className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">
               <option>All Status</option>
               <option>Active</option>
               <option>Inactive</option>
             </select>
-            <select className="bg-white dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
+            <select className="rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">
               <option>All Ages</option>
               <option>Minors (0-17)</option>
               <option>Adults (18-59)</option>
@@ -244,7 +261,7 @@ const MockResidentsContent = () => (
         </div>
       </div>
 
-      <div className="divide-y divide-default">
+      <div className="divide-default divide-y">
         {[
           {
             name: 'Juan Antonio Dela Cruz',
@@ -282,7 +299,7 @@ const MockResidentsContent = () => (
             voters: true,
           },
         ].map((resident, index) => (
-          <div key={index} className="hover:bg-gray-50 dark:bg-gray-700 p-4 transition-colors">
+          <div key={index} className="p-4 transition-colors hover:bg-gray-50 dark:bg-gray-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
@@ -318,7 +335,7 @@ const MockResidentsContent = () => (
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="hover:bg-gray-50 dark:bg-gray-700 rounded-lg p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600">
+                <button className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -328,7 +345,7 @@ const MockResidentsContent = () => (
                     />
                   </svg>
                 </button>
-                <button className="hover:bg-gray-50 dark:bg-gray-700 rounded-lg p-2 text-gray-600 dark:text-gray-400 transition-colors hover:text-gray-600">
+                <button className="rounded-lg p-2 text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -363,7 +380,9 @@ export const WithSearch: Story = {
       <div className="space-y-6 p-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Search Results</h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">Search through residents, households, and records</p>
+          <p className="mt-1 text-gray-600 dark:text-gray-400">
+            Search through residents, households, and records
+          </p>
         </div>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -407,13 +426,16 @@ export const WithSearch: Story = {
               items: ['Add resident', 'Create household', 'Generate report'],
             },
           ].map((section, index) => (
-            <div key={index} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 p-4">
+            <div
+              key={index}
+              className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-600 dark:bg-gray-800"
+            >
               <h3 className="mb-3 font-medium text-gray-600 dark:text-gray-400">{section.title}</h3>
               <ul className="space-y-2">
                 {section.items.map((item, itemIndex) => (
                   <li
                     key={itemIndex}
-                    className="cursor-pointer text-sm text-gray-600 dark:text-gray-400 hover:text-gray-600"
+                    className="cursor-pointer text-sm text-gray-600 hover:text-gray-600 dark:text-gray-400"
                   >
                     {item}
                   </li>
@@ -498,7 +520,9 @@ export const UserDropdownShowcase: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">User Profile & Barangay Information</h1>
+          <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">
+            User Profile & Barangay Information
+          </h1>
           <p className="mt-1 text-gray-600 dark:text-gray-400">
             The user dropdown shows detailed profile and barangay assignment information
           </p>
@@ -578,7 +602,9 @@ export const EnvironmentIndicator: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-6 p-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">Environment Indicators</h1>
+          <h1 className="text-3xl font-bold text-gray-600 dark:text-gray-400">
+            Environment Indicators
+          </h1>
           <p className="mt-1 text-gray-600 dark:text-gray-400">
             Visual indicators show the current environment (Development/Staging/Production)
           </p>
@@ -635,7 +661,9 @@ export const EnvironmentIndicator: Story = {
               />
             </svg>
             <div>
-              <h4 className="font-medium text-gray-900 dark:text-gray-100">Environment Detection</h4>
+              <h4 className="font-medium text-gray-900 dark:text-gray-100">
+                Environment Detection
+              </h4>
               <p className="mt-1 text-sm text-gray-800 dark:text-gray-200">
                 The system automatically detects the environment and displays appropriate indicators
                 in the sidebar footer. This helps developers and testers quickly identify which
@@ -663,7 +691,9 @@ export const LayoutFeatures: Story = {
     <DashboardLayoutWrapper>
       <div className="space-y-8 p-6">
         <div className="text-center">
-          <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">DashboardLayout Features</h1>
+          <h1 className="mb-4 text-3xl font-bold text-gray-600 dark:text-gray-400">
+            DashboardLayout Features
+          </h1>
           <p className="mx-auto max-w-2xl text-gray-600 dark:text-gray-400">
             A comprehensive dashboard layout with authentication integration, search functionality,
             and responsive design optimized for barangay management systems.
@@ -671,7 +701,7 @@ export const LayoutFeatures: Story = {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
               <svg
                 className="h-6 w-6 text-gray-600 dark:text-gray-400"
@@ -687,14 +717,16 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Authentication Integration</h3>
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">
+              Authentication Integration
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Seamless integration with authentication context, displaying user profile, role
               information, and barangay assignments.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
               <svg
                 className="h-6 w-6 text-green-600"
@@ -717,7 +749,7 @@ export const LayoutFeatures: Story = {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100">
               <svg
                 className="h-6 w-6 text-gray-600 dark:text-gray-400"
@@ -733,14 +765,16 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Responsive Design</h3>
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">
+              Responsive Design
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Fixed sidebar layout that maintains navigation accessibility across all device sizes
               and orientations.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
               <svg
                 className="h-6 w-6 text-orange-600"
@@ -762,14 +796,16 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Location Context</h3>
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">
+              Location Context
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Automatic barangay information loading with full PSGC hierarchy display for
               administrative context.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-100">
               <svg
                 className="h-6 w-6 text-red-600"
@@ -785,14 +821,16 @@ export const LayoutFeatures: Story = {
                 />
               </svg>
             </div>
-            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">Environment Indicators</h3>
+            <h3 className="mb-2 font-semibold text-gray-600 dark:text-gray-400">
+              Environment Indicators
+            </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Visual environment indicators help distinguish between development, staging, and
               production environments.
             </p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-300 dark:border-gray-600 p-6">
+          <div className="rounded-xl border border-gray-300 bg-white p-6 dark:border-gray-600 dark:bg-gray-800">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100">
               <svg
                 className="h-6 w-6 text-indigo-600"

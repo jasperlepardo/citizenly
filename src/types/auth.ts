@@ -350,7 +350,7 @@ export interface AuthMiddlewareContext {
 /**
  * Authentication error types
  */
-export type AuthErrorType = 
+export type AuthErrorType =
   | 'INVALID_CREDENTIALS'
   | 'USER_NOT_FOUND'
   | 'EMAIL_NOT_CONFIRMED'
@@ -419,7 +419,7 @@ export const DEFAULT_ROLES = {
   ADMIN: 'admin',
   STAFF: 'staff',
   USER: 'user',
-  VIEWER: 'viewer'
+  VIEWER: 'viewer',
 } as const;
 
 /**
@@ -432,7 +432,7 @@ export const PERMISSION_ACTIONS = {
   DELETE: 'delete',
   LIST: 'list',
   EXPORT: 'export',
-  IMPORT: 'import'
+  IMPORT: 'import',
 } as const;
 
 /**
@@ -445,5 +445,5 @@ export const RESOURCE_TYPES = {
   ROLES: 'roles',
   PERMISSIONS: 'permissions',
   REPORTS: 'reports',
-  SETTINGS: 'settings'
+  SETTINGS: 'settings',
 } as const;

@@ -12,6 +12,7 @@
  */
 
 import React, { lazy, Suspense, ComponentType, ReactNode } from 'react';
+
 import { ErrorBoundary } from '@/providers/ErrorBoundary';
 
 /**
@@ -39,13 +40,15 @@ const LazyErrorFallback = ({ error }: { error: Error }) => (
         />
       </svg>
     </div>
-    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">Component Failed to Load</h3>
+    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+      Component Failed to Load
+    </h3>
     <p className="mb-4 text-gray-600 dark:text-gray-400">
       There was an error loading this component. Please try refreshing the page.
     </p>
     <button
       onClick={() => window.location.reload()}
-      className="rounded bg-blue-600 px-4 py-2 text-white dark:text-black hover:bg-blue-700"
+      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:text-black"
     >
       Refresh Page
     </button>
@@ -55,7 +58,7 @@ const LazyErrorFallback = ({ error }: { error: Error }) => (
 /**
  * Create a lazy-loaded component with standardized loading and error handling
  */
-export function createLazyComponent<T extends ComponentType<any>>(
+export function createLazyComponent<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
   options: {
     fallback?: ReactNode;
@@ -87,7 +90,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
 /**
  * Preload a lazy component for better user experience
  */
-export function preloadLazyComponent(importFn: () => Promise<any>) {
+export function preloadLazyComponent(importFn: () => Promise<{ default: ComponentType }>) {
   // Preload the component when function is called
   const modulePromise = importFn();
 
@@ -142,7 +145,7 @@ export const LazyLoadingPresets = {
    */
   modal: {
     fallback: (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-opacity-50 fixed inset-0 flex items-center justify-center bg-black">
         <LoadingSpinner message="Loading modal..." />
       </div>
     ),
@@ -169,7 +172,7 @@ export const LazyLoadingPresets = {
  */
 export function useLazyLoadOnIntersection(
   ref: React.RefObject<Element>,
-  importFn: () => Promise<any>,
+  importFn: () => Promise<{ default: ComponentType }>,
   options: IntersectionObserverInit = {}
 ) {
   const [isIntersecting, setIsIntersecting] = React.useState(false);

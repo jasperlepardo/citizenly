@@ -284,7 +284,7 @@ export const Interactive: Story = {
 
     const handleChange = (newValue: BasicInformationData) => {
       setValue(newValue);
-      
+
       // Clear errors for fields that now have values
       const newErrors = { ...errors };
       Object.keys(newValue).forEach(key => {
@@ -298,19 +298,19 @@ export const Interactive: Story = {
 
     const validate = () => {
       const newErrors: Partial<Record<keyof BasicInformationData, string>> = {};
-      
+
       if (!value.firstName.trim()) {
         newErrors.firstName = 'First name is required';
       }
-      
+
       if (!value.lastName.trim()) {
         newErrors.lastName = 'Last name is required';
       }
-      
+
       if (!value.sex) {
         newErrors.sex = 'Please select a sex';
       }
-      
+
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     };
@@ -322,12 +322,8 @@ export const Interactive: Story = {
 
     return (
       <div className="space-y-6">
-        <BasicInformation
-          value={value}
-          onChange={handleChange}
-          errors={errors}
-        />
-        
+        <BasicInformation value={value} onChange={handleChange} errors={errors} />
+
         <div className="flex space-x-4">
           <button
             onClick={validate}
@@ -342,12 +338,12 @@ export const Interactive: Story = {
             Reset
           </button>
         </div>
-        
+
         <div className="rounded bg-gray-100 p-4">
           <h4 className="font-medium">Current Values:</h4>
           <pre className="mt-2 text-sm">{JSON.stringify(value, null, 2)}</pre>
         </div>
-        
+
         {Object.keys(errors).length > 0 && (
           <div className="rounded bg-red-100 p-4">
             <h4 className="font-medium text-red-800">Validation Errors:</h4>
@@ -370,15 +366,30 @@ export const Interactive: Story = {
 export const ProgressiveFilling: Story = {
   render: () => {
     const [step, setStep] = useState(0);
-    
+
     const steps = [
       { ...emptyData },
       { ...emptyData, firstName: 'Maria' },
       { ...emptyData, firstName: 'Maria', lastName: 'Santos' },
       { ...emptyData, firstName: 'Maria', lastName: 'Santos', sex: 'female' },
       { ...emptyData, firstName: 'Maria', middleName: 'Isabel', lastName: 'Santos', sex: 'female' },
-      { ...emptyData, firstName: 'Maria', middleName: 'Isabel', lastName: 'Santos', sex: 'female', civilStatus: 'single' },
-      { ...emptyData, firstName: 'Maria', middleName: 'Isabel', lastName: 'Santos', sex: 'female', civilStatus: 'single', citizenship: 'filipino' },
+      {
+        ...emptyData,
+        firstName: 'Maria',
+        middleName: 'Isabel',
+        lastName: 'Santos',
+        sex: 'female',
+        civilStatus: 'single',
+      },
+      {
+        ...emptyData,
+        firstName: 'Maria',
+        middleName: 'Isabel',
+        lastName: 'Santos',
+        sex: 'female',
+        civilStatus: 'single',
+        citizenship: 'filipino',
+      },
     ];
 
     const stepLabels = [
@@ -393,12 +404,8 @@ export const ProgressiveFilling: Story = {
 
     return (
       <div className="space-y-6">
-        <BasicInformation
-          value={steps[step]}
-          onChange={() => {}}
-          errors={{}}
-        />
-        
+        <BasicInformation value={steps[step]} onChange={() => {}} errors={{}} />
+
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {stepLabels.map((label, index) => (
@@ -415,7 +422,7 @@ export const ProgressiveFilling: Story = {
               </button>
             ))}
           </div>
-          
+
           <div className="text-sm text-gray-600">
             Step {step + 1} of {steps.length}: {stepLabels[step]}
           </div>

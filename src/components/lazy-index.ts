@@ -1,22 +1,18 @@
 /**
  * Lazy Components Index - Atomic Design Organization
- * 
+ *
  * @description Centralized exports for all lazy-loaded components following atomic design.
  * Components are organized by their atomic level and lazy-loaded for performance.
- * 
+ *
  * @performance Reduces initial bundle size:
  * - DataTable: ~45KB
- * - Chart components: ~120KB  
+ * - Chart components: ~120KB
  * - Forms with complex validation: ~35KB
  * - Modal dialogs: ~25KB
  */
 
 // Atoms - Loading components
-export { 
-  LoadingFallback, 
-  FormSkeleton, 
-  TableSkeleton 
-} from './atoms/Loading';
+export { LoadingFallback, FormSkeleton, TableSkeleton } from './atoms/Loading';
 
 // Molecules - Lazy modals
 export { LazyErrorModal as ErrorModal } from './molecules/ErrorModal/ErrorModal.lazy';
@@ -36,13 +32,13 @@ export type { PreloadComponentKey } from '@/lib';
 
 /**
  * Atomic Design Organization Benefits:
- * 
+ *
  * 1. **Clear Separation**: Components are organized by complexity level
  * 2. **Predictable Imports**: Easy to find lazy components at their atomic level
  * 3. **Proper Architecture**: Loading atoms, lazy molecules/organisms
  * 4. **Maintainable**: Each component has its own lazy file
  * 5. **Consistent**: Follows the same pattern across all lazy components
- * 
+ *
  * Usage:
  * ```tsx
  * import { DataTable } from '@/components/lazy-index';

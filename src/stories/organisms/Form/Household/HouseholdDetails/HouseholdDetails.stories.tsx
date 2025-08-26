@@ -10,7 +10,8 @@ const meta: Meta<typeof HouseholdDetails> = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'Household details form section including address, geographic location, and statistics.',
+        component:
+          'Household details form section including address, geographic location, and statistics.',
       },
     },
   },
@@ -27,7 +28,7 @@ export default meta;
 type Story = StoryObj<typeof HouseholdDetails>;
 
 // Interactive wrapper component for Storybook
-const InteractiveHouseholdDetails = (args: any) => {
+const InteractiveHouseholdDetails = (args: Story['args']) => {
   const [formData, setFormData] = useState<HouseholdDetailsData>(args.formData);
 
   const handleChange = (field: string, value: string | number | boolean | null) => {
@@ -37,13 +38,7 @@ const InteractiveHouseholdDetails = (args: any) => {
     }));
   };
 
-  return (
-    <HouseholdDetails
-      {...args}
-      formData={formData}
-      onChange={handleChange}
-    />
-  );
+  return <HouseholdDetails {...args} formData={formData} onChange={handleChange} />;
 };
 
 // Default Story

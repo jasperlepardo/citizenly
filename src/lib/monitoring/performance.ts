@@ -4,6 +4,7 @@
  */
 
 import { clientLogger } from '@/lib/logging/client-logger';
+
 import { startSentryTransaction } from './sentry-config';
 
 interface PerformanceMetrics {
@@ -21,13 +22,13 @@ class PerformanceMonitor {
   /**
    * Start tracking a performance metric
    */
-  startMetric(name: string, metadata?: Record<string, any>): (() => void) {
+  startMetric(name: string, metadata?: Record<string, any>): () => void {
     const startTime = performance.now();
-    
+
     this.metrics.set(name, {
       name,
       startTime,
-      metadata
+      metadata,
     });
 
     // Start Sentry transaction for critical operations
@@ -43,7 +44,7 @@ class PerformanceMonitor {
 
     clientLogger.debug(`Performance tracking started: ${name}`, {
       action: 'performance_start',
-      data: { name, startTime, metadata }
+      data: { name, startTime, metadata },
     });
 
     // Return a function to end the metric
@@ -64,11 +65,11 @@ class PerformanceMonitor {
 
     const endTime = performance.now();
     const duration = endTime - metric.startTime;
-    
+
     const completedMetric: PerformanceMetrics = {
       ...metric,
       endTime,
-      duration
+      duration,
     };
 
     this.metrics.set(name, completedMetric);
@@ -78,27 +79,27 @@ class PerformanceMonitor {
       name,
       duration: Math.round(duration * 100) / 100, // Round to 2 decimal places
       metadata: metric.metadata,
-      ...additionalData
+      ...additionalData,
     };
 
     // Determine if this is a performance concern
     const thresholds = this.getPerformanceThresholds();
     const threshold = thresholds[name] || thresholds.default;
-    
+
     if (duration > threshold.error) {
       clientLogger.error(`Performance issue detected: ${name} took ${duration.toFixed(2)}ms`, {
         action: 'performance_issue',
-        data: logData
+        data: logData,
       });
     } else if (duration > threshold.warn) {
       clientLogger.warn(`Performance warning: ${name} took ${duration.toFixed(2)}ms`, {
         action: 'performance_warning',
-        data: logData
+        data: logData,
       });
     } else {
       clientLogger.info(`Performance metric: ${name} completed in ${duration.toFixed(2)}ms`, {
         action: 'performance_complete',
-        data: logData
+        data: logData,
       });
     }
 
@@ -123,20 +124,20 @@ class PerformanceMonitor {
    * Measure a function execution time
    */
   async measureFunction<T>(
-    name: string, 
-    fn: () => T | Promise<T>, 
+    name: string,
+    fn: () => T | Promise<T>,
     metadata?: Record<string, any>
   ): Promise<T> {
     this.startMetric(name, metadata);
-    
+
     try {
       const result = await fn();
       this.endMetric(name, { success: true });
       return result;
     } catch (error) {
-      this.endMetric(name, { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      this.endMetric(name, {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -147,11 +148,11 @@ class PerformanceMonitor {
    */
   trackComponentRender(componentName: string, props?: any): () => void {
     const metricName = `component_render_${componentName}`;
-    this.startMetric(metricName, { 
-      component: componentName, 
-      propsCount: props ? Object.keys(props).length : 0 
+    this.startMetric(metricName, {
+      component: componentName,
+      propsCount: props ? Object.keys(props).length : 0,
     });
-    
+
     return () => this.endMetric(metricName);
   }
 
@@ -163,9 +164,9 @@ class PerformanceMonitor {
     this.startMetric(metricName, {
       method,
       endpoint,
-      ...metadata
+      ...metadata,
     });
-    
+
     return () => this.endMetric(metricName);
   }
 
@@ -176,9 +177,9 @@ class PerformanceMonitor {
     const metricName = `data_load_${resource}`;
     this.startMetric(metricName, {
       resource,
-      ...metadata
+      ...metadata,
     });
-    
+
     return () => this.endMetric(metricName);
   }
 
@@ -186,19 +187,21 @@ class PerformanceMonitor {
    * Get Web Vitals if available
    */
   getWebVitals(): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (typeof window !== 'undefined' && 'web-vitals' in window) {
         // If web-vitals library is loaded
         resolve((window as any)['web-vitals']);
       } else {
         // Fallback to basic performance API
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        const navigation = performance.getEntriesByType(
+          'navigation'
+        )[0] as PerformanceNavigationTiming;
         resolve({
           fcp: navigation.responseStart - navigation.fetchStart,
           lcp: navigation.loadEventEnd - navigation.fetchStart,
           cls: 0, // Would need proper measurement
           fid: 0, // Would need proper measurement
-          ttfb: navigation.responseStart - navigation.requestStart
+          ttfb: navigation.responseStart - navigation.requestStart,
         });
       }
     });
@@ -214,16 +217,16 @@ class PerformanceMonitor {
       api_post: { warn: 2000, error: 5000 },
       api_put: { warn: 2000, error: 5000 },
       api_delete: { warn: 1000, error: 3000 },
-      
+
       // Component renders
       component_render: { warn: 100, error: 500 },
-      
+
       // Data operations
       data_load: { warn: 500, error: 2000 },
       data_transform: { warn: 200, error: 1000 },
-      
+
       // Default thresholds
-      default: { warn: 1000, error: 3000 }
+      default: { warn: 1000, error: 3000 },
     };
   }
 
@@ -231,14 +234,8 @@ class PerformanceMonitor {
    * Check if operation is critical for Sentry tracking
    */
   private isCriticalOperation(name: string): boolean {
-    const criticalOperations = [
-      'api_',
-      'data_load_',
-      'auth_',
-      'payment_',
-      'search_'
-    ];
-    
+    const criticalOperations = ['api_', 'data_load_', 'auth_', 'payment_', 'search_'];
+
     return criticalOperations.some(op => name.startsWith(op));
   }
 }
@@ -254,8 +251,8 @@ export const endPerformanceMetric = (name: string, additionalData?: Record<strin
   performanceMonitor.endMetric(name, additionalData);
 
 export const measureFunction = <T>(
-  name: string, 
-  fn: () => T | Promise<T>, 
+  name: string,
+  fn: () => T | Promise<T>,
   metadata?: Record<string, any>
 ) => performanceMonitor.measureFunction(name, fn, metadata);
 

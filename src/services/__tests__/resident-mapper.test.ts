@@ -3,6 +3,15 @@
  * Tests all critical mapping functions for data consistency
  */
 
+import type {
+  ResidentFormData,
+  ResidentApiData,
+  ResidentWithRelations,
+  HouseholdData,
+  HouseholdHead,
+  HouseholdOption,
+} from '@/types';
+
 import {
   mapFormToApi,
   mapDatabaseToForm,
@@ -17,17 +26,6 @@ import {
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
 } from '../residentMapper';
-
-import type {
-  ResidentFormData,
-  ResidentApiData,
-  ResidentWithRelations,
-} from '@/types';
-import type {
-  HouseholdData,
-  HouseholdHead,
-  HouseholdOption,
-} from '@/types';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {
@@ -64,18 +62,6 @@ describe('Resident Mapper Utilities', () => {
         mother_maiden_first: 'Maria',
         mother_maiden_middle: 'Santos',
         mother_maiden_last: 'Garcia',
-        // Additional sectoral fields
-        is_labor_force_employed: false,
-        is_unemployed: false,
-        is_overseas_filipino_worker: false,
-        is_person_with_disability: false,
-        is_out_of_school_children: false,
-        is_out_of_school_youth: false,
-        is_senior_citizen: false,
-        is_registered_senior_citizen: false,
-        is_solo_parent: false,
-        is_indigenous_people: false,
-        is_migrant: false,
       };
 
       const result = mapFormToApi(formData);
@@ -131,7 +117,6 @@ describe('Resident Mapper Utilities', () => {
         is_graduate: false,
         employment_status: '',
         occupation_code: '',
-        occupation_title: '',
         ethnicity: '',
         email: '',
         telephone_number: '',
@@ -149,18 +134,6 @@ describe('Resident Mapper Utilities', () => {
         mother_maiden_first: '',
         mother_maiden_middle: '',
         mother_maiden_last: '',
-        // Additional sectoral fields
-        is_labor_force_employed: false,
-        is_unemployed: false,
-        is_overseas_filipino_worker: false,
-        is_person_with_disability: false,
-        is_out_of_school_children: false,
-        is_out_of_school_youth: false,
-        is_senior_citizen: false,
-        is_registered_senior_citizen: false,
-        is_solo_parent: false,
-        is_indigenous_people: false,
-        is_migrant: false,
       };
 
       const result = mapFormToApi(formData);
@@ -246,36 +219,46 @@ describe('Resident Mapper Utilities', () => {
 
   describe('formatFullName', () => {
     it('should format full name correctly', () => {
-      expect(formatFullName({
-        first_name: 'Juan',
-        middle_name: 'Dela',
-        last_name: 'Cruz',
-        extension_name: 'Jr.',
-      })).toBe('Juan Dela Cruz Jr.');
+      expect(
+        formatFullName({
+          first_name: 'Juan',
+          middle_name: 'Dela',
+          last_name: 'Cruz',
+          extension_name: 'Jr.',
+        })
+      ).toBe('Juan Dela Cruz Jr.');
 
-      expect(formatFullName({
-        firstName: 'Maria',
-        lastName: 'Santos',
-      })).toBe('Maria Santos');
+      expect(
+        formatFullName({
+          firstName: 'Maria',
+          lastName: 'Santos',
+        })
+      ).toBe('Maria Santos');
 
-      expect(formatFullName({
-        first_name: 'Pedro',
-        last_name: 'Garcia',
-      })).toBe('Pedro Garcia');
+      expect(
+        formatFullName({
+          first_name: 'Pedro',
+          last_name: 'Garcia',
+        })
+      ).toBe('Pedro Garcia');
     });
 
     it('should handle empty values', () => {
-      expect(formatFullName({
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-      })).toBe('');
+      expect(
+        formatFullName({
+          first_name: '',
+          middle_name: '',
+          last_name: '',
+        })
+      ).toBe('');
 
-      expect(formatFullName({
-        first_name: 'Juan',
-        middle_name: '',
-        last_name: 'Cruz',
-      })).toBe('Juan Cruz');
+      expect(
+        formatFullName({
+          first_name: 'Juan',
+          middle_name: '',
+          last_name: 'Cruz',
+        })
+      ).toBe('Juan Cruz');
     });
   });
 

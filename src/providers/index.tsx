@@ -1,12 +1,20 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+
 import { AppProvider } from './AppProvider';
 import { ErrorBoundary } from './ErrorBoundary';
 
+interface User {
+  id: string;
+  email: string;
+  role: string;
+  barangay_code?: string;
+}
+
 interface RootProviderProps {
   children: ReactNode;
-  initialUser?: any;
+  initialUser?: User | null;
 }
 
 /**

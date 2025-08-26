@@ -1,6 +1,6 @@
 /**
  * Types Library Module
- * 
+ *
  * @description Centralized type definitions for the application.
  * Provides reusable interfaces and types that can be shared across modules.
  */

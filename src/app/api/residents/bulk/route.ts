@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 
 // Bulk operations validation schema
 const bulkOperationSchema = z.object({
@@ -18,12 +18,12 @@ export async function POST(request: NextRequest) {
     const validationResult = bulkOperationSchema.safeParse(requestData);
     if (!validationResult.success) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
           details: validationResult.error.issues.map(issue => ({
             field: issue.path.join('.'),
             message: issue.message,
-          }))
+          })),
         },
         { status: 400 }
       );
@@ -41,10 +41,7 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabase = createPublicSupabaseClient();
 
     // Verify the user token
     const {
@@ -56,11 +53,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
     }
 
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // Use admin client for bulk operations
+    const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -79,12 +73,14 @@ export async function POST(request: NextRequest) {
     // Verify all residents belong to user's barangay
     const { data: accessibleResidents, error: accessError } = await supabaseAdmin
       .from('residents')
-      .select(`
+      .select(
+        `
         id,
         first_name,
         last_name,
         households!inner(barangay_code)
-      `)
+      `
+      )
       .in('id', resident_ids)
       .eq('households.barangay_code', userProfile.barangay_code);
 
@@ -94,11 +90,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (!accessibleResidents || accessibleResidents.length !== resident_ids.length) {
-      return NextResponse.json({ 
-        error: 'Some residents not found or access denied',
-        accessible_count: accessibleResidents?.length || 0,
-        requested_count: resident_ids.length
-      }, { status: 403 });
+      return NextResponse.json(
+        {
+          error: 'Some residents not found or access denied',
+          accessible_count: accessibleResidents?.length || 0,
+          requested_count: resident_ids.length,
+        },
+        { status: 403 }
+      );
     }
 
     // Perform bulk operation
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
           .update({
             is_active: false,
             updated_at: new Date().toISOString(),
-            updated_by: user.id
+            updated_by: user.id,
           })
           .in('id', resident_ids);
 
@@ -132,7 +131,7 @@ export async function POST(request: NextRequest) {
           .update({
             is_active: true,
             updated_at: new Date().toISOString(),
-            updated_by: user.id
+            updated_by: user.id,
           })
           .in('id', resident_ids);
 
@@ -151,7 +150,7 @@ export async function POST(request: NextRequest) {
           .update({
             is_active: false,
             updated_at: new Date().toISOString(),
-            updated_by: user.id
+            updated_by: user.id,
           })
           .in('id', resident_ids);
 
@@ -166,26 +165,32 @@ export async function POST(request: NextRequest) {
 
       case 'update_sectoral':
         if (!data) {
-          return NextResponse.json({ error: 'Sectoral data required for update_sectoral operation' }, { status: 400 });
+          return NextResponse.json(
+            { error: 'Sectoral data required for update_sectoral operation' },
+            { status: 400 }
+          );
         }
 
         // Update or create sectoral information for multiple residents
         const sectoralUpdates = resident_ids.map(residentId => ({
           resident_id: residentId,
           ...data,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         }));
 
         const { error: sectoralError } = await supabaseAdmin
           .from('resident_sectoral_info')
           .upsert(sectoralUpdates, {
             onConflict: 'resident_id',
-            ignoreDuplicates: false
+            ignoreDuplicates: false,
           });
 
         if (sectoralError) {
           console.error('Bulk sectoral update error:', sectoralError);
-          return NextResponse.json({ error: 'Failed to update sectoral information' }, { status: 500 });
+          return NextResponse.json(
+            { error: 'Failed to update sectoral information' },
+            { status: 500 }
+          );
         }
 
         results = { operation: 'update_sectoral', affected_residents: resident_ids.length };
@@ -197,12 +202,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the bulk operation
-    console.log('Bulk operation completed:', {
+    console.info('Bulk operation completed:', {
       operation,
       userId: user.id,
       residentCount: resident_ids.length,
       affectedCount,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     return NextResponse.json({
@@ -212,8 +217,8 @@ export async function POST(request: NextRequest) {
         requested_residents: resident_ids.length,
         affected_residents: affectedCount,
         operation: operation,
-        processed_at: new Date().toISOString()
-      }
+        processed_at: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error('Bulk operation API error:', error);
@@ -227,6 +232,6 @@ export async function GET(request: NextRequest) {
     message: 'Bulk operations status endpoint',
     supported_operations: ['delete', 'activate', 'deactivate', 'update_sectoral'],
     max_residents_per_operation: 100,
-    note: 'Use POST to /api/residents/bulk to perform bulk operations'
+    note: 'Use POST to /api/residents/bulk to perform bulk operations',
   });
 }

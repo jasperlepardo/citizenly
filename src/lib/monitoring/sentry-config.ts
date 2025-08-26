@@ -25,14 +25,14 @@ export const getSentryConfig = (): SentryConfig => {
   return {
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
     environment: getEnvironment(),
-    
+
     // Performance Monitoring
     tracesSampleRate: isProduction() ? 0.1 : 1.0, // Capture 10% of the transactions in production
-    
+
     // Session Replay
     replaysSessionSampleRate: isProduction() ? 0.01 : 0.1, // 1% in production, 10% in development
     replaysOnErrorSampleRate: 1.0, // Always capture replays for errors
-    
+
     // Filter and enhance events before sending
     beforeSend: (event, hint) => {
       // Don't send events in development unless explicitly enabled
@@ -45,15 +45,16 @@ export const getSentryConfig = (): SentryConfig => {
         const error = hint.originalException;
         if (error instanceof Error) {
           // Filter out common browser extension errors
-          if (error.message.includes('chrome-extension://') || 
-              error.message.includes('moz-extension://') ||
-              error.message.includes('safari-extension://')) {
+          if (
+            error.message.includes('chrome-extension://') ||
+            error.message.includes('moz-extension://') ||
+            error.message.includes('safari-extension://')
+          ) {
             return null;
           }
-          
+
           // Filter out network errors that are expected
-          if (error.message.includes('Failed to fetch') && 
-              error.message.includes('/api/')) {
+          if (error.message.includes('Failed to fetch') && error.message.includes('/api/')) {
             // Still log API errors but with lower severity
             event.level = 'warning';
           }
@@ -69,7 +70,7 @@ export const getSentryConfig = (): SentryConfig => {
 
       return event;
     },
-    
+
     // Initial scope configuration
     initialScope: {
       tags: {
@@ -78,8 +79,8 @@ export const getSentryConfig = (): SentryConfig => {
       },
       user: {
         // Will be set dynamically when user is authenticated
-      }
-    }
+      },
+    },
   };
 };
 
@@ -110,7 +111,11 @@ export const setSentryContext = (key: string, context: Record<string, any>) => {
 /**
  * Add breadcrumb for debugging
  */
-export const addSentryBreadcrumb = (message: string, category?: string, level?: 'info' | 'warning' | 'error' | 'debug') => {
+export const addSentryBreadcrumb = (
+  message: string,
+  category?: string,
+  level?: 'info' | 'warning' | 'error' | 'debug'
+) => {
   if (typeof window !== 'undefined' && (window as any).Sentry) {
     const Sentry = (window as any).Sentry;
     Sentry.addBreadcrumb({
@@ -130,8 +135,8 @@ export const captureError = (error: Error, context?: Record<string, any>) => {
     const Sentry = (window as any).Sentry;
     Sentry.captureException(error, {
       contexts: {
-        custom: context
-      }
+        custom: context,
+      },
     });
   }
 };
@@ -144,7 +149,7 @@ export const startSentryTransaction = (name: string, op?: string) => {
     const Sentry = (window as any).Sentry;
     return Sentry.startTransaction({
       name,
-      op: op || 'navigation'
+      op: op || 'navigation',
     });
   }
   return null;
@@ -154,9 +159,11 @@ export const startSentryTransaction = (name: string, op?: string) => {
  * Check if Sentry is properly configured
  */
 export const isSentryConfigured = (): boolean => {
-  return !!(process.env.NEXT_PUBLIC_SENTRY_DSN && 
-           typeof window !== 'undefined' && 
-           (window as any).Sentry);
+  return !!(
+    process.env.NEXT_PUBLIC_SENTRY_DSN &&
+    typeof window !== 'undefined' &&
+    (window as any).Sentry
+  );
 };
 
 export default getSentryConfig;

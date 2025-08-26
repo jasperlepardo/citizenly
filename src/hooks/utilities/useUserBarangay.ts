@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { useAuth } from '@/contexts';
 import { getCompleteAddress, type AddressHierarchy } from '@/lib/database';
 

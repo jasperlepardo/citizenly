@@ -3,12 +3,12 @@
  * Comprehensive form-level validation functions
  */
 
-import type { 
-  FormValidator, 
-  ValidationResult, 
+import type {
+  FormValidator,
+  ValidationResult,
   ValidationContext,
   FieldValidator,
-  FieldValidationResult 
+  FieldValidationResult,
 } from './types';
 
 /**
@@ -48,16 +48,16 @@ export function createFormValidator<T extends Record<string, any>>(
       for (const validator of validatorArray) {
         try {
           const result: FieldValidationResult = await validator(fieldValue, context);
-          
+
           if (!result.isValid && result.error) {
             errors[fieldName] = result.error;
             break; // Stop at first error for this field
           }
-          
+
           if (result.warning) {
             warnings[fieldName] = result.warning;
           }
-          
+
           if (result.sanitizedValue !== undefined) {
             sanitizedData[fieldName] = result.sanitizedValue;
           }
@@ -73,11 +73,11 @@ export function createFormValidator<T extends Record<string, any>>(
       for (const crossValidator of crossFieldValidators) {
         try {
           const crossResult = crossValidator(data, context);
-          
+
           if (!crossResult.isValid) {
             Object.assign(errors, crossResult.errors);
           }
-          
+
           if (crossResult.warnings) {
             Object.assign(warnings, crossResult.warnings);
           }
@@ -89,7 +89,7 @@ export function createFormValidator<T extends Record<string, any>>(
     }
 
     const isValid = Object.keys(errors).length === 0;
-    
+
     return createValidationResult(
       isValid,
       errors,
@@ -102,19 +102,17 @@ export function createFormValidator<T extends Record<string, any>>(
 /**
  * Create a field validator with common patterns
  */
-export function createFieldValidator(
-  rules: {
-    required?: boolean;
-    type?: 'string' | 'number' | 'email' | 'phone' | 'date' | 'url';
-    minLength?: number;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-    pattern?: RegExp;
-    custom?: FieldValidator;
-    customMessage?: string;
-  }
-): FieldValidator {
+export function createFieldValidator(rules: {
+  required?: boolean;
+  type?: 'string' | 'number' | 'email' | 'phone' | 'date' | 'url';
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  pattern?: RegExp;
+  custom?: FieldValidator;
+  customMessage?: string;
+}): FieldValidator {
   return async (value, context) => {
     // Required validation
     if (rules.required) {
@@ -138,7 +136,7 @@ export function createFieldValidator(
           return { isValid: false, error: 'Must be a string' };
         }
         break;
-      
+
       case 'number':
         const numValue = Number(value);
         if (isNaN(numValue)) {
@@ -146,14 +144,14 @@ export function createFieldValidator(
         }
         value = numValue;
         break;
-      
+
       case 'email':
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(String(value))) {
           return { isValid: false, error: 'Must be a valid email address' };
         }
         break;
-      
+
       case 'phone':
         const phonePattern = /^(\+63|63|09)\d{9}$/;
         const cleanedPhone = String(value).replace(/\D/g, '');
@@ -161,14 +159,14 @@ export function createFieldValidator(
           return { isValid: false, error: 'Must be a valid Philippine phone number' };
         }
         break;
-      
+
       case 'date':
         const dateValue = new Date(String(value));
         if (isNaN(dateValue.getTime())) {
           return { isValid: false, error: 'Must be a valid date' };
         }
         break;
-      
+
       case 'url':
         try {
           new URL(String(value));
@@ -186,7 +184,7 @@ export function createFieldValidator(
           error: `Must be at least ${rules.minLength} characters long`,
         };
       }
-      
+
       if (rules.maxLength !== undefined && value.length > rules.maxLength) {
         return {
           isValid: false,
@@ -203,7 +201,7 @@ export function createFieldValidator(
           error: `Must be at least ${rules.min}`,
         };
       }
-      
+
       if (rules.max !== undefined && value > rules.max) {
         return {
           isValid: false,
@@ -284,10 +282,10 @@ export const crossFieldValidators = {
    */
   atLeastOneRequired: (fields: string[], message?: string) => {
     return (data: Record<string, any>) => {
-      const hasValue = fields.some(field => 
-        data[field] !== null && data[field] !== undefined && data[field] !== ''
+      const hasValue = fields.some(
+        field => data[field] !== null && data[field] !== undefined && data[field] !== ''
       );
-      
+
       if (!hasValue) {
         const errors: Record<string, string> = {};
         fields.forEach(field => {
@@ -295,7 +293,7 @@ export const crossFieldValidators = {
         });
         return createValidationResult(false, errors);
       }
-      
+
       return createValidationResult(true);
     };
   },
@@ -307,18 +305,18 @@ export const crossFieldValidators = {
     return (data: Record<string, any>) => {
       const startDate = data[startField];
       const endDate = data[endField];
-      
+
       if (startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
-        
+
         if (start > end) {
           return createValidationResult(false, {
             [endField]: message || 'End date must be after start date',
           });
         }
       }
-      
+
       return createValidationResult(true);
     };
   },
@@ -330,13 +328,14 @@ export const crossFieldValidators = {
     return (data: Record<string, any>) => {
       const triggerValue = data[triggerField];
       const requiredValue = data[requiredField];
-      
+
       if (triggerValue && (!requiredValue || requiredValue === '')) {
         return createValidationResult(false, {
-          [requiredField]: message || `${requiredField} is required when ${triggerField} is provided`,
+          [requiredField]:
+            message || `${requiredField} is required when ${triggerField} is provided`,
         });
       }
-      
+
       return createValidationResult(true);
     };
   },

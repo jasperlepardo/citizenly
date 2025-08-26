@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { SelectField } from '@/components';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 
 export interface EmploymentInformationData {
   employment_status: string;
@@ -15,24 +17,24 @@ export interface EmploymentInformationProps {
   errors: Record<string, string>;
   // PSOC search functionality
   onPsocSearch?: (query: string) => void;
-  psocOptions?: any[];
+  psocOptions?: SelectOption[];
   psocLoading?: boolean;
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
   className?: string;
 }
 
-export function EmploymentInformation({ 
-  value, 
-  onChange, 
+export function EmploymentInformation({
+  value,
+  onChange,
   errors,
   onPsocSearch,
   psocOptions = [],
   psocLoading = false,
   mode = 'create',
-  className = '' 
+  className = '',
 }: EmploymentInformationProps) {
-  const handleChange = (field: keyof EmploymentInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof EmploymentInformationData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
@@ -42,7 +44,9 @@ export function EmploymentInformation({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">Employment Information</h4>
+        <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+          Employment Information
+        </h4>
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Employment status and occupation details.
         </p>
@@ -55,20 +59,20 @@ export function EmploymentInformation({
           errorMessage={errors.employment_status}
           mode={mode}
           selectProps={{
-            placeholder: "Select employment status...",
+            placeholder: 'Select employment status...',
             options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
             value: value.employment_status,
-            onSelect: (option) => handleChange('employment_status', option?.value || '')
+            onSelect: option => handleChange('employment_status', option?.value || ''),
           }}
         />
-        
+
         <SelectField
           label="Occupation Name"
           labelSize="sm"
           errorMessage={errors.occupation_title || errors.occupation_code}
           mode={mode}
           selectProps={{
-            placeholder: "Search occupation from level 1-5...",
+            placeholder: 'Search occupation from level 1-5...',
             options: (() => {
               // Ensure the current selected value is in options
               const currentOptions = [...psocOptions];
@@ -92,7 +96,7 @@ export function EmploymentInformation({
             value: value.occupation_code,
             loading: psocLoading,
             onSearch: onPsocSearch,
-            onSelect: (option) => {
+            onSelect: option => {
               if (option) {
                 // Only allow specific occupation (level 5) as final result
                 if ((option as any).level_type === 'occupation') {
@@ -107,7 +111,7 @@ export function EmploymentInformation({
                 handleChange('occupation_code', '');
                 handleChange('occupation_title', '');
               }
-            }
+            },
           }}
         />
       </div>

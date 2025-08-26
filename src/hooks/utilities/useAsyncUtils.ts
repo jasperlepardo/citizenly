@@ -2,18 +2,19 @@
 
 /**
  * React Hook for Async Utilities
- * 
+ *
  * @description React hook wrapper for async utility functions.
  * Provides React-friendly interface to debounce, throttle, and retry utilities.
  */
 
 import { useCallback, useRef, useEffect } from 'react';
+
 import { debounce, throttle, retry } from '@/lib/utilities/async-utils';
 
 /**
  * Hook for using debounced functions
  */
-export function useDebouncedCallback<T extends (...args: any[]) => any>(
+export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   delay: number
 ): T {
@@ -38,7 +39,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
 /**
  * Hook for using throttled functions
  */
-export function useThrottledCallback<T extends (...args: any[]) => any>(
+export function useThrottledCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   limit: number
 ): T {

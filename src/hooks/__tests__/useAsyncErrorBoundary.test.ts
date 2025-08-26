@@ -3,6 +3,7 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
+
 import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
 
 // Mock console methods to avoid noise in tests
@@ -56,9 +57,7 @@ describe('useAsyncErrorBoundary', () => {
 
     it('should call onError callback when error occurs', async () => {
       const onError = jest.fn();
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ onError })
-      );
+      const { result } = renderHook(() => useAsyncErrorBoundary({ onError }));
 
       const failingFunction = jest.fn().mockRejectedValue(new Error('Test error'));
 
@@ -79,14 +78,15 @@ describe('useAsyncErrorBoundary', () => {
 
   describe('retry mechanism', () => {
     it('should retry failed operations when enableRecovery is true', async () => {
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ 
-          maxRetries: 2, 
-          enableRecovery: true 
+      const { result } = renderHook(() =>
+        useAsyncErrorBoundary({
+          maxRetries: 2,
+          enableRecovery: true,
         })
       );
 
-      const failingFunction = jest.fn()
+      const failingFunction = jest
+        .fn()
         .mockRejectedValueOnce(new Error('First failure'))
         .mockRejectedValueOnce(new Error('Second failure'))
         .mockResolvedValueOnce('Success');
@@ -102,10 +102,10 @@ describe('useAsyncErrorBoundary', () => {
     });
 
     it('should not retry when enableRecovery is false', async () => {
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ 
-          maxRetries: 2, 
-          enableRecovery: false 
+      const { result } = renderHook(() =>
+        useAsyncErrorBoundary({
+          maxRetries: 2,
+          enableRecovery: false,
         })
       );
 
@@ -121,10 +121,10 @@ describe('useAsyncErrorBoundary', () => {
     });
 
     it('should stop retrying after maxRetries', async () => {
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ 
-          maxRetries: 2, 
-          enableRecovery: true 
+      const { result } = renderHook(() =>
+        useAsyncErrorBoundary({
+          maxRetries: 2,
+          enableRecovery: true,
         })
       );
 
@@ -143,11 +143,10 @@ describe('useAsyncErrorBoundary', () => {
 
   describe('manual retry', () => {
     it('should allow manual retry of last failed operation', async () => {
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ enableRecovery: true })
-      );
+      const { result } = renderHook(() => useAsyncErrorBoundary({ enableRecovery: true }));
 
-      const failingFunction = jest.fn()
+      const failingFunction = jest
+        .fn()
         .mockRejectedValueOnce(new Error('First failure'))
         .mockResolvedValueOnce('Success on retry');
 
@@ -221,11 +220,11 @@ describe('useAsyncErrorBoundary', () => {
 
   describe('retry state management', () => {
     it('should track retry state correctly', async () => {
-      const { result } = renderHook(() => 
-        useAsyncErrorBoundary({ 
-          maxRetries: 1, 
+      const { result } = renderHook(() =>
+        useAsyncErrorBoundary({
+          maxRetries: 1,
           enableRecovery: true,
-          retryDelay: 10 // Short delay for testing
+          retryDelay: 10, // Short delay for testing
         })
       );
 
@@ -233,13 +232,13 @@ describe('useAsyncErrorBoundary', () => {
 
       await act(async () => {
         const wrappedFunction = result.current.wrapAsync(failingFunction, 'test operation');
-        
+
         // Start the operation
         const promise = wrappedFunction();
-        
+
         // Should be retrying during the operation
         expect(result.current.isRetrying).toBe(true);
-        
+
         await promise;
       });
 

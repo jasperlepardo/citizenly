@@ -5,10 +5,12 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest } from 'next/server';
-import { Role, ROLE_PERMISSIONS, ErrorCode, RequestContext } from './types';
 import { v4 as uuidv4 } from 'uuid';
+
 import { logger } from '@/lib';
 import { AuthUserProfile } from '@/types/auth';
+
+import { Role, ROLE_PERMISSIONS, ErrorCode, RequestContext } from './types';
 
 export interface AuthResult {
   success: boolean;
@@ -351,7 +353,7 @@ export function createAdminSupabaseClient() {
 /**
  * Apply geographic filtering based on user's access level
  */
-export function applyGeographicFilter(query: any, user: NonNullable<AuthResult['user']>): any {
+export function applyGeographicFilter<T>(query: T & { eq: (column: string, value: string) => T }, user: NonNullable<AuthResult['user']>): T {
   const accessLevel = getAccessLevel(user.role);
 
   switch (accessLevel) {

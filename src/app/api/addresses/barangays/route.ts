@@ -30,11 +30,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform data to match SelectField format
-    const options = barangays?.map((barangay) => ({
-      value: barangay.code,
-      label: barangay.name,
-      city_municipality_code: barangay.city_municipality_code,
-    })) || [];
+    const options =
+      barangays?.map(barangay => ({
+        value: barangay.code,
+        label: barangay.name,
+        city_municipality_code: barangay.city_municipality_code,
+      })) || [];
 
     return NextResponse.json({
       success: true,

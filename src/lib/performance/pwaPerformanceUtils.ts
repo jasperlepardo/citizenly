@@ -52,7 +52,7 @@ class PWAPerformanceMonitor {
    */
   private loadStoredMetrics(): void {
     if (typeof window === 'undefined') return;
-    
+
     try {
       const stored = localStorage.getItem('pwa-metrics');
       if (stored) {
@@ -68,7 +68,7 @@ class PWAPerformanceMonitor {
    */
   private saveMetrics(): void {
     if (typeof window === 'undefined') return;
-    
+
     try {
       localStorage.setItem('pwa-metrics', JSON.stringify(this.metrics));
     } catch (error) {
@@ -81,10 +81,10 @@ class PWAPerformanceMonitor {
    */
   private setupEventListeners(): void {
     if (typeof window === 'undefined') return;
-    
+
     // Service Worker messages
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
+      navigator.serviceWorker.addEventListener('message', event => {
         this.handleServiceWorkerMessage(event);
       });
     }
@@ -101,7 +101,7 @@ class PWAPerformanceMonitor {
     // Performance observer for navigation timing
     if ('PerformanceObserver' in window) {
       try {
-        const observer = new PerformanceObserver((list) => {
+        const observer = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
             if (entry.entryType === 'navigation') {
               this.trackNavigationPerformance(entry as PerformanceNavigationTiming);
@@ -276,7 +276,7 @@ class PWAPerformanceMonitor {
   private trackNavigationPerformance(entry: PerformanceNavigationTiming): void {
     const loadTime = entry.loadEventEnd - entry.startTime;
     const domContentLoaded = entry.domContentLoadedEventEnd - entry.startTime;
-    
+
     this.addEntry({
       name: 'navigation_timing',
       type: 'navigation',
@@ -298,7 +298,7 @@ class PWAPerformanceMonitor {
    */
   private addEntry(entry: PerformanceEntry): void {
     this.entries.unshift(entry);
-    
+
     // Keep only the most recent entries
     if (this.entries.length > this.maxEntries) {
       this.entries = this.entries.slice(0, this.maxEntries);
@@ -317,15 +317,15 @@ class PWAPerformanceMonitor {
    */
   getEntries(type?: string, limit?: number): PerformanceEntry[] {
     let filtered = this.entries;
-    
+
     if (type) {
       filtered = this.entries.filter(entry => entry.type === type);
     }
-    
+
     if (limit) {
       filtered = filtered.slice(0, limit);
     }
-    
+
     return filtered;
   }
 
@@ -349,8 +349,8 @@ class PWAPerformanceMonitor {
    * Get install conversion rate
    */
   getInstallConversionRate(): number {
-    return this.metrics.installPromptShown > 0 
-      ? this.metrics.installAccepted / this.metrics.installPromptShown 
+    return this.metrics.installPromptShown > 0
+      ? this.metrics.installAccepted / this.metrics.installPromptShown
       : 0;
   }
 
@@ -399,11 +399,15 @@ class PWAPerformanceMonitor {
    * Export metrics data
    */
   exportData(): string {
-    return JSON.stringify({
-      metrics: this.metrics,
-      entries: this.entries,
-      timestamp: Date.now(),
-    }, null, 2);
+    return JSON.stringify(
+      {
+        metrics: this.metrics,
+        entries: this.entries,
+        timestamp: Date.now(),
+      },
+      null,
+      2
+    );
   }
 }
 
@@ -417,7 +421,7 @@ export const pwaPerformance = {
       _pwaPerformance = new PWAPerformanceMonitor();
     }
     return _pwaPerformance;
-  }
+  },
 };
 
 // Utility functions for external use

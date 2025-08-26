@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
 /**
  * Validation Utilities
  * Helper functions for validation operations
  */
 
-import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 import { debounce } from '../utilities/async-utils';
+
+import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 
 /**
  * Check if email is valid
@@ -15,7 +16,7 @@ export function isValidEmail(email: string): boolean {
   if (!email || typeof email !== 'string') {
     return false;
   }
-  
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
@@ -27,7 +28,7 @@ export function isValidPhilippineMobile(mobile: string): boolean {
   if (!mobile || typeof mobile !== 'string') {
     return false;
   }
-  
+
   const cleaned = mobile.replace(/\D/g, '');
   return /^09\d{9}$/.test(cleaned) || /^639\d{9}$/.test(cleaned);
 }
@@ -39,7 +40,7 @@ export function isValidPhilSysFormat(philsys: string): boolean {
   if (!philsys || typeof philsys !== 'string') {
     return false;
   }
-  
+
   return /^\d{4}-\d{4}-\d{4}-\d{4}$/.test(philsys);
 }
 
@@ -50,7 +51,7 @@ export function isValidName(name: string): boolean {
   if (!name || typeof name !== 'string') {
     return false;
   }
-  
+
   return /^[a-zA-Z\s\-'\.]*$/.test(name) && name.trim().length > 0;
 }
 
@@ -146,7 +147,10 @@ export function hasFieldError(validationResult: ValidationResult, fieldName: str
 /**
  * Get error message for specific field
  */
-export function getFieldError(validationResult: ValidationResult, fieldName: string): string | undefined {
+export function getFieldError(
+  validationResult: ValidationResult,
+  fieldName: string
+): string | undefined {
   return validationResult.errors[fieldName];
 }
 
@@ -173,13 +177,13 @@ export function validationResultToErrors(validationResult: ValidationResult): Va
  */
 export function filterEmptyErrors(errors: Record<string, string>): Record<string, string> {
   const filtered: Record<string, string> = {};
-  
+
   for (const [field, message] of Object.entries(errors)) {
     if (message && message.trim()) {
       filtered[field] = message;
     }
   }
-  
+
   return filtered;
 }
 
@@ -203,20 +207,23 @@ export function createValidationSummary(validationResult: ValidationResult): {
   summary: string;
 } {
   const errorCount = Object.keys(validationResult.errors).length;
-  const warningCount = validationResult.warnings ? Object.keys(validationResult.warnings).length : 0;
-  
+  const warningCount = validationResult.warnings
+    ? Object.keys(validationResult.warnings).length
+    : 0;
+
   let summary: string;
   if (validationResult.isValid) {
-    summary = warningCount > 0 
-      ? `Valid with ${warningCount} warning${warningCount === 1 ? '' : 's'}`
-      : 'Valid';
+    summary =
+      warningCount > 0
+        ? `Valid with ${warningCount} warning${warningCount === 1 ? '' : 's'}`
+        : 'Valid';
   } else {
     summary = `${errorCount} error${errorCount === 1 ? '' : 's'}`;
     if (warningCount > 0) {
       summary += ` and ${warningCount} warning${warningCount === 1 ? '' : 's'}`;
     }
   }
-  
+
   return {
     isValid: validationResult.isValid,
     errorCount,
@@ -243,24 +250,26 @@ export function createValidationPipeline<T>(
 ): (data: T) => Promise<ValidationResult> {
   return async (data: T) => {
     const results: ValidationResult[] = [];
-    
+
     for (const validator of validators) {
       try {
         const result = await validator(data);
         results.push(result);
-        
+
         // Stop on first validation failure if desired
         if (!result.isValid) {
           break;
         }
       } catch (error) {
-        results.push(createValidationResult(false, {
-          _pipeline: 'Validation pipeline error',
-        }));
+        results.push(
+          createValidationResult(false, {
+            _pipeline: 'Validation pipeline error',
+          })
+        );
         break;
       }
     }
-    
+
     return mergeValidationResults(...results);
   };
 }
@@ -312,7 +321,7 @@ export function useValidationState(config: any = {}) {
 
   const setErrors = useCallback((errors: Record<string, string>) => {
     const isValid = Object.keys(errors).length === 0;
-    
+
     setState({
       errors,
       isValid,
@@ -338,7 +347,7 @@ export function useValidationState(config: any = {}) {
       const newErrors = { ...prev.errors };
       delete newErrors[field];
       const isValid = Object.keys(newErrors).length === 0;
-      
+
       return {
         errors: newErrors,
         isValid,
@@ -347,13 +356,19 @@ export function useValidationState(config: any = {}) {
     });
   }, []);
 
-  const getFieldError = useCallback((field: string): string | undefined => {
-    return state.errors[field];
-  }, [state.errors]);
+  const getFieldError = useCallback(
+    (field: string): string | undefined => {
+      return state.errors[field];
+    },
+    [state.errors]
+  );
 
-  const hasFieldError = useCallback((field: string): boolean => {
-    return Boolean(state.errors[field]);
-  }, [state.errors]);
+  const hasFieldError = useCallback(
+    (field: string): boolean => {
+      return Boolean(state.errors[field]);
+    },
+    [state.errors]
+  );
 
   return {
     ...state,
@@ -373,18 +388,21 @@ export function createFormValidationExecutor<T>(
   validateFn: any,
   setErrors: (errors: Record<string, string>) => void
 ) {
-  return useCallback((formData: T): ValidationResult => {
-    const result = validateFn(formData);
-    
-    const normalizedResult: ValidationResult = {
-      isValid: result.isValid || result.success === true,
-      errors: result.errors || {},
-    };
+  return useCallback(
+    (formData: T): ValidationResult => {
+      const result = validateFn(formData);
 
-    setErrors(normalizedResult.errors);
-    
-    return normalizedResult;
-  }, [validateFn, setErrors]);
+      const normalizedResult: ValidationResult = {
+        isValid: result.isValid || result.success === true,
+        errors: result.errors || {},
+      };
+
+      setErrors(normalizedResult.errors);
+
+      return normalizedResult;
+    },
+    [validateFn, setErrors]
+  );
 }
 
 /**
@@ -395,17 +413,20 @@ export function createFieldValidationExecutor(
   setFieldError: (field: string, error: string) => void,
   clearFieldError: (field: string) => void
 ) {
-  return useCallback((fieldName: string, value: any): FieldValidationResult => {
-    const result = validateFn(fieldName, value);
-    
-    if (result.isValid) {
-      clearFieldError(fieldName);
-    } else if (result.error) {
-      setFieldError(fieldName, result.error);
-    }
-    
-    return result;
-  }, [validateFn, setFieldError, clearFieldError]);
+  return useCallback(
+    (fieldName: string, value: any): FieldValidationResult => {
+      const result = validateFn(fieldName, value);
+
+      if (result.isValid) {
+        clearFieldError(fieldName);
+      } else if (result.error) {
+        setFieldError(fieldName, result.error);
+      }
+
+      return result;
+    },
+    [validateFn, setFieldError, clearFieldError]
+  );
 }
 
 /**
@@ -420,14 +441,10 @@ export const asyncValidationUtils = {
     delay = 500
   ) => {
     let timeoutId: NodeJS.Timeout;
-    
-    return (
-      fieldName: string,
-      value: any,
-      onResult: (result: FieldValidationResult) => void
-    ) => {
+
+    return (fieldName: string, value: any, onResult: (result: FieldValidationResult) => void) => {
       clearTimeout(timeoutId);
-      
+
       timeoutId = setTimeout(async () => {
         try {
           const result = await asyncValidator(value);
@@ -449,26 +466,24 @@ export const asyncValidationUtils = {
     asyncValidators: Record<string, (value: any) => Promise<FieldValidationResult>>
   ) => {
     return async (data: Record<string, any>): Promise<Record<string, string>> => {
-      const validationPromises = Object.entries(asyncValidators).map(
-        async ([field, validator]) => {
-          try {
-            const result = await validator(data[field]);
-            return [field, result.error] as const;
-          } catch (error) {
-            return [field, 'Validation failed'] as const;
-          }
+      const validationPromises = Object.entries(asyncValidators).map(async ([field, validator]) => {
+        try {
+          const result = await validator(data[field]);
+          return [field, result.error] as const;
+        } catch (error) {
+          return [field, 'Validation failed'] as const;
         }
-      );
-      
+      });
+
       const results = await Promise.all(validationPromises);
       const errors: Record<string, string> = {};
-      
+
       results.forEach(([field, error]) => {
         if (error) {
           errors[field] = error;
         }
       });
-      
+
       return errors;
     };
   },

@@ -43,7 +43,12 @@ class CommandMenuAnalytics {
     return searchId;
   }
 
-  trackSearchComplete(searchId: string, query: string, resultCount: number, fromCache = false): void {
+  trackSearchComplete(
+    searchId: string,
+    query: string,
+    resultCount: number,
+    fromCache = false
+  ): void {
     const startTime = this.searchTimes.get(searchId);
     if (startTime) {
       const latency = performance.now() - startTime;
@@ -58,7 +63,8 @@ class CommandMenuAnalytics {
 
       // Update metrics
       this.metrics.searchLatency = (this.metrics.searchLatency + latency) / 2; // Running average
-      this.metrics.cacheHitRate = this.cacheStats.hits / (this.cacheStats.hits + this.cacheStats.misses);
+      this.metrics.cacheHitRate =
+        this.cacheStats.hits / (this.cacheStats.hits + this.cacheStats.misses);
 
       // Track event
       this.trackEvent({
@@ -171,7 +177,7 @@ class CommandMenuAnalytics {
   // Internal event tracking
   private trackEvent(event: Omit<CommandMenuAnalyticsEvent, 'userId' | 'sessionId'>): void {
     this.totalEvents++;
-    
+
     // Add session context if available
     const fullEvent: CommandMenuAnalyticsEvent = {
       ...event,
@@ -196,7 +202,7 @@ class CommandMenuAnalytics {
   }
 
   private updateUsageFrequency(): void {
-    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+    const oneHourAgo = Date.now() - 60 * 60 * 1000;
     const recentEvents = this.events.filter(e => e.timestamp > oneHourAgo);
     this.metrics.usageFrequency = recentEvents.length;
   }
@@ -250,7 +256,11 @@ class CommandMenuAnalytics {
     // Determine health based on metrics
     if (metrics.errorRate > 0.2 || metrics.searchLatency > 2000) {
       status = 'critical';
-    } else if (metrics.errorRate > 0.1 || metrics.searchLatency > 1000 || metrics.cacheHitRate < 0.3) {
+    } else if (
+      metrics.errorRate > 0.1 ||
+      metrics.searchLatency > 1000 ||
+      metrics.cacheHitRate < 0.3
+    ) {
       status = 'warning';
     }
 
@@ -262,26 +272,33 @@ class CommandMenuAnalytics {
 export const commandMenuAnalytics = new CommandMenuAnalytics();
 
 // Convenience functions
-export const trackCommandMenuSearch = (query: string, resultCount: number) => 
+export const trackCommandMenuSearch = (query: string, resultCount: number) =>
   commandMenuAnalytics.trackSearch(query, resultCount);
 
-export const trackCommandMenuNavigation = (itemId: string, itemType: string, href: string) => 
+export const trackCommandMenuNavigation = (itemId: string, itemType: string, href: string) =>
   commandMenuAnalytics.trackNavigation(itemId, itemType, href);
 
-export const trackCommandMenuAction = (actionId: string, actionType: string, success = true) => 
+export const trackCommandMenuAction = (actionId: string, actionType: string, success = true) =>
   commandMenuAnalytics.trackAction(actionId, actionType, success);
 
-export const trackWorkflowSuggestion = (suggestionId: string, query: string, suggestionTitle: string) =>
-  commandMenuAnalytics.trackWorkflowSuggestion(suggestionId, query, suggestionTitle);
+export const trackWorkflowSuggestion = (
+  suggestionId: string,
+  query: string,
+  suggestionTitle: string
+) => commandMenuAnalytics.trackWorkflowSuggestion(suggestionId, query, suggestionTitle);
 
-export const trackCommandMenuError = (error: Error, context: Record<string, any> = {}) => 
+export const trackCommandMenuError = (error: Error, context: Record<string, any> = {}) =>
   commandMenuAnalytics.trackError(error, context);
 
-export const startCommandMenuSearchTimer = (query: string) => 
+export const startCommandMenuSearchTimer = (query: string) =>
   commandMenuAnalytics.trackSearchStart(query);
 
-export const endCommandMenuSearchTimer = (searchId: string, query: string, resultCount: number, fromCache = false) => 
-  commandMenuAnalytics.trackSearchComplete(searchId, query, resultCount, fromCache);
+export const endCommandMenuSearchTimer = (
+  searchId: string,
+  query: string,
+  resultCount: number,
+  fromCache = false
+) => commandMenuAnalytics.trackSearchComplete(searchId, query, resultCount, fromCache);
 
 // Health monitoring export
 export const getCommandMenuHealth = () => commandMenuAnalytics.getHealthStatus();

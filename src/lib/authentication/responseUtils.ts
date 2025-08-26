@@ -4,16 +4,13 @@
  */
 
 import { NextResponse, NextRequest } from 'next/server';
-import {
-  ApiResponse,
-  PaginatedResponse,
-  ErrorResponse,
-  ErrorCode,
-  RequestContext,
-} from './types';
+
+import { logger } from '@/lib';
+
 import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
 import { sanitizeSearchQuery } from '../validation/sanitizers';
-import { logger } from '@/lib';
+
+import { ApiResponse, PaginatedResponse, ErrorResponse, ErrorCode, RequestContext } from './types';
 
 /**
  * Create a successful API response
@@ -79,7 +76,7 @@ export function createErrorResponse(
   code: ErrorCode,
   message: string,
   status: number = 500,
-  details?: any,
+  details?: Record<string, unknown>,
   field?: string,
   context?: RequestContext
 ): Response {
@@ -179,7 +176,7 @@ export function createRateLimitResponse(retryAfter: number, context?: RequestCon
 /**
  * Handle database errors consistently
  */
-export async function handleDatabaseError(error: any, context?: RequestContext): Promise<Response> {
+export async function handleDatabaseError(error: { code?: string; message: string; details?: string }, context?: RequestContext): Promise<Response> {
   logger.error('Database error', { error, context });
 
   if (context) {
@@ -236,7 +233,7 @@ export async function handleDatabaseError(error: any, context?: RequestContext):
  * Handle unexpected errors
  */
 export async function handleUnexpectedError(
-  error: any,
+  error: Error,
   context?: RequestContext
 ): Promise<Response> {
   logger.error('Unexpected API error', { error, context });
@@ -279,11 +276,9 @@ export async function detectSQLInjection(
   const isSQLInjection = sqlPatterns.some(pattern => pattern.test(input));
 
   if (isSQLInjection && context) {
-    await auditSecurityViolation(
-      AuditEventType.SQL_INJECTION_ATTEMPT,
-      context,
-      { suspiciousInput: input }
-    );
+    await auditSecurityViolation(AuditEventType.SQL_INJECTION_ATTEMPT, context, {
+      suspiciousInput: input,
+    });
   }
 
   return isSQLInjection;
@@ -325,7 +320,7 @@ export async function processSearchParams(
 /**
  * Apply search filters safely to Supabase query
  */
-export function applySearchFilter(query: any, searchTerm: string, searchFields: string[]): any {
+export function applySearchFilter(query: Record<string, unknown>, searchTerm: string, searchFields: string[]): Record<string, unknown> {
   if (!searchTerm || !searchFields.length) {
     return query;
   }
@@ -339,13 +334,13 @@ export function applySearchFilter(query: any, searchTerm: string, searchFields: 
 /**
  * Wrapper for API route handlers with error handling
  */
-export function withErrorHandling<T extends any[]>(
+export function withErrorHandling<T extends readonly unknown[]>(
   handler: (request: Request | NextRequest, ...args: T) => Promise<Response>
 ) {
   return async (request: Request | NextRequest, ...args: T): Promise<Response> => {
     try {
       return await handler(request, ...args);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as
         | RequestContext
         | undefined;
@@ -353,7 +348,7 @@ export function withErrorHandling<T extends any[]>(
       // Check for validation errors
       if (error.name === 'ZodError') {
         return createValidationErrorResponse(
-          error.errors.map((err: any) => ({
+          (error as { errors: Array<{ path: string[]; message: string }> }).errors.map(err => ({
             field: err.path.join('.'),
             message: err.message,
           })),
@@ -375,13 +370,13 @@ export function withErrorHandling<T extends any[]>(
 /**
  * Specialized error handling for NextRequest (used with withAuth)
  */
-export function withNextRequestErrorHandling<T extends any[]>(
+export function withNextRequestErrorHandling<T extends readonly unknown[]>(
   handler: (request: NextRequest, ...args: T) => Promise<Response>
 ) {
   return async (request: NextRequest, ...args: T): Promise<Response> => {
     try {
       return await handler(request, ...args);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const context = args.find(arg => arg && typeof arg === 'object' && 'requestId' in arg) as
         | RequestContext
         | undefined;
@@ -389,7 +384,7 @@ export function withNextRequestErrorHandling<T extends any[]>(
       // Check for validation errors
       if (error.name === 'ZodError') {
         return createValidationErrorResponse(
-          error.errors.map((err: any) => ({
+          (error as { errors: Array<{ path: string[]; message: string }> }).errors.map(err => ({
             field: err.path.join('.'),
             message: err.message,
           })),

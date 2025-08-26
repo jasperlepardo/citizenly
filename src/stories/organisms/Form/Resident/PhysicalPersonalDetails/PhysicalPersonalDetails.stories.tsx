@@ -8,7 +8,8 @@ const meta = {
     layout: 'padded',
     docs: {
       description: {
-        component: 'A comprehensive form for collecting physical characteristics, voting information, and mother\'s maiden name details for resident registration.',
+        component:
+          "A comprehensive form for collecting physical characteristics, voting information, and mother's maiden name details for resident registration.",
       },
     },
   },
@@ -93,8 +94,8 @@ export const WithErrors: Story = {
       religion: 'Please select religion',
       isVoter: 'Please specify voter status',
       lastVotedDate: 'Please enter the year you last voted',
-      motherMaidenFirstName: 'Mother\'s maiden first name is required',
-      motherMaidenLastName: 'Mother\'s maiden last name is required',
+      motherMaidenFirstName: "Mother's maiden first name is required",
+      motherMaidenLastName: "Mother's maiden last name is required",
     },
   },
 };

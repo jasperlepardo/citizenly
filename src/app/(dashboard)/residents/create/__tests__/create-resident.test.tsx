@@ -3,13 +3,15 @@
  * Tests the complete flow of creating a new resident
  */
 
-import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { toast } from 'react-hot-toast';
-import CreateResidentPage from '../page';
-import { useAuth } from '@/contexts';
 import { useRouter, useSearchParams } from 'next/navigation';
+import React from 'react';
+import { toast } from 'react-hot-toast';
+
+import { useAuth } from '@/contexts';
+
+import CreateResidentPage from '../page';
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -24,12 +26,16 @@ jest.mock('@/contexts/AuthContext', () => ({
 jest.mock('@/components', () => ({
   ResidentForm: jest.fn(({ onSubmit, onCancel, initialData }) => (
     <div data-testid="resident-form">
-      <button onClick={() => onSubmit({
-        first_name: 'John',
-        last_name: 'Doe', 
-        birthdate: '1990-01-01',
-        sex: 'male'
-      })}>
+      <button
+        onClick={() =>
+          onSubmit({
+            first_name: 'John',
+            last_name: 'Doe',
+            birthdate: '1990-01-01',
+            sex: 'male',
+          })
+        }
+      >
         Submit
       </button>
       <button onClick={onCancel}>Cancel</button>
@@ -51,7 +57,7 @@ jest.mock('react-hot-toast', () => ({
 
 // Mock the service and hooks
 const mockCreateResident = jest.fn();
-const mockUseResidentOperations = require('@/hooks/crud/useResidentOperations').useResidentOperations;
+const mockUseResidentOperations = jest.fn();
 
 describe('Create New Resident - Complete Flow', () => {
   const mockRouter = {
@@ -72,12 +78,12 @@ describe('Create New Resident - Complete Flow', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-    (useAuth as jest.Mock).mockReturnValue({ 
+    (useAuth as jest.Mock).mockReturnValue({
       userProfile: mockUserProfile,
-      session: mockSession 
+      session: mockSession,
     });
 
     mockUseResidentOperations.mockReturnValue({
@@ -92,7 +98,9 @@ describe('Create New Resident - Complete Flow', () => {
       render(<CreateResidentPage />);
 
       expect(screen.getByText('Add New Resident')).toBeInTheDocument();
-      expect(screen.getByText('Complete the form to register a new resident in the system')).toBeInTheDocument();
+      expect(
+        screen.getByText('Complete the form to register a new resident in the system')
+      ).toBeInTheDocument();
       expect(screen.getByTestId('resident-form')).toBeInTheDocument();
       expect(screen.getByText('Back')).toBeInTheDocument();
     });
@@ -114,7 +122,7 @@ describe('Create New Resident - Complete Flow', () => {
       const user = userEvent.setup();
       mockCreateResident.mockResolvedValue({
         success: true,
-        data: { resident: { id: 'new-resident-123' } }
+        data: { resident: { id: 'new-resident-123' } },
       });
 
       render(<CreateResidentPage />);
@@ -164,7 +172,7 @@ describe('Create New Resident - Complete Flow', () => {
       const user = userEvent.setup();
       mockCreateResident.mockResolvedValue({
         success: true,
-        data: {}
+        data: {},
       });
 
       render(<CreateResidentPage />);
@@ -181,7 +189,7 @@ describe('Create New Resident - Complete Flow', () => {
       const user = userEvent.setup();
       mockCreateResident.mockResolvedValue({
         success: true,
-        data: { resident: { id: 'new-resident-123' } }
+        data: { resident: { id: 'new-resident-123' } },
       });
 
       render(<CreateResidentPage />);
@@ -232,17 +240,21 @@ describe('Create New Resident - Complete Flow', () => {
 
     test('should prevent submission when required fields are missing', async () => {
       const user = userEvent.setup();
-      
+
       // Mock ResidentForm to return empty data
-      const MockResidentForm = require('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel }) => (
+      const MockResidentForm = jest.requireMock('@/components').ResidentForm;
+      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: any) => (
         <div data-testid="resident-form">
-          <button onClick={() => onSubmit({
-            first_name: '',  // Empty required field
-            last_name: '',   // Empty required field
-            birthdate: '',   // Empty required field
-            sex: ''          // Empty required field
-          })}>
+          <button
+            onClick={() =>
+              onSubmit({
+                first_name: '', // Empty required field
+                last_name: '', // Empty required field
+                birthdate: '', // Empty required field
+                sex: '', // Empty required field
+              })
+            }
+          >
             Submit
           </button>
         </div>
@@ -253,7 +265,9 @@ describe('Create New Resident - Complete Flow', () => {
       const submitButton = screen.getByText('Submit');
       await user.click(submitButton);
 
-      expect(toast.error).toHaveBeenCalledWith('Please fill in required fields: first_name, last_name, birthdate, sex');
+      expect(toast.error).toHaveBeenCalledWith(
+        'Please fill in required fields: first_name, last_name, birthdate, sex'
+      );
       expect(mockCreateResident).not.toHaveBeenCalled();
     });
 
@@ -290,14 +304,18 @@ describe('Create New Resident - Complete Flow', () => {
         get: jest.fn((key: string) => {
           if (key === 'suggested_name') return 'Maria Santos';
           return null;
-        })
+        }),
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
 
       render(<CreateResidentPage />);
 
       expect(screen.getByText('Pre-filled: Maria')).toBeInTheDocument();
-      expect(screen.getByText('Form pre-filled: The name fields have been populated with "Maria Santos". You can edit these values as needed.')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Form pre-filled: The name fields have been populated with "Maria Santos". You can edit these values as needed.'
+        )
+      ).toBeInTheDocument();
     });
 
     test('should handle complex names with multiple parts', () => {
@@ -305,7 +323,7 @@ describe('Create New Resident - Complete Flow', () => {
         get: jest.fn((key: string) => {
           if (key === 'suggested_name') return 'Juan Carlos Santos Dela Cruz';
           return null;
-        })
+        }),
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
 
@@ -320,7 +338,7 @@ describe('Create New Resident - Complete Flow', () => {
         get: jest.fn((key: string) => {
           if (key === 'suggested_name') return 'Madonna';
           return null;
-        })
+        }),
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
 
@@ -339,7 +357,7 @@ describe('Create New Resident - Complete Flow', () => {
   describe('Loading States', () => {
     test('should show loading state during form submission', async () => {
       const user = userEvent.setup();
-      
+
       mockUseResidentOperations.mockReturnValue({
         createResident: mockCreateResident,
         isSubmitting: true,
@@ -347,7 +365,9 @@ describe('Create New Resident - Complete Flow', () => {
       });
 
       // Mock a slow response
-      mockCreateResident.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
+      mockCreateResident.mockImplementation(
+        () => new Promise(resolve => setTimeout(resolve, 1000))
+      );
 
       render(<CreateResidentPage />);
 
@@ -361,9 +381,9 @@ describe('Create New Resident - Complete Flow', () => {
 
   describe('Authentication Requirements', () => {
     test('should require authentication for form submission', () => {
-      (useAuth as jest.Mock).mockReturnValue({ 
+      (useAuth as jest.Mock).mockReturnValue({
         userProfile: null,
-        session: null 
+        session: null,
       });
 
       render(<CreateResidentPage />);
@@ -373,9 +393,9 @@ describe('Create New Resident - Complete Flow', () => {
     });
 
     test('should require barangay code for resident creation', () => {
-      (useAuth as jest.Mock).mockReturnValue({ 
+      (useAuth as jest.Mock).mockReturnValue({
         userProfile: { id: 'user123' }, // No barangay_code
-        session: mockSession 
+        session: mockSession,
       });
 
       render(<CreateResidentPage />);
@@ -396,7 +416,9 @@ describe('Create New Resident - Complete Flow', () => {
     test('should have descriptive text for screen readers', () => {
       render(<CreateResidentPage />);
 
-      expect(screen.getByText('Complete the form to register a new resident in the system')).toBeInTheDocument();
+      expect(
+        screen.getByText('Complete the form to register a new resident in the system')
+      ).toBeInTheDocument();
     });
 
     test('should have accessible back button', () => {
@@ -412,7 +434,7 @@ describe('Create New Resident - Complete Flow', () => {
       const user = userEvent.setup();
       mockCreateResident.mockResolvedValue({
         success: true,
-        data: { resident: { id: 'integration-test-123' } }
+        data: { resident: { id: 'integration-test-123' } },
       });
 
       render(<CreateResidentPage />);

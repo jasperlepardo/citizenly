@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PersonalInformationForm } from '@/components/organisms/PersonalInformation';
+import { PersonalInformationForm, type PersonalInformationFormProps } from '@/components/organisms/PersonalInformation';
 
 const meta: Meta<typeof PersonalInformationForm> = {
   title: 'Organisms/Form/Resident/PersonalInformation',
@@ -65,7 +65,7 @@ const sampleErrors = {};
 export const Default: Story = {
   args: {
     formData: sampleFormData,
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: sampleErrors,
@@ -91,7 +91,7 @@ export const WithData: Story = {
       employmentStatus: 'employed',
       occupationTitle: 'Software Developer',
     },
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: sampleErrors,
@@ -101,7 +101,7 @@ export const WithData: Story = {
 export const WithErrors: Story = {
   args: {
     formData: sampleFormData,
-    onChange: (field: string, value: any) => {
+    onChange: (field: string, value: string | number | boolean | null) => {
       console.log('Field changed:', field, value);
     },
     errors: {

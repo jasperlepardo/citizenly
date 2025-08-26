@@ -2,12 +2,13 @@
 
 /**
  * Performance Monitor Hook
- * 
+ *
  * @description Hook for monitoring React hook performance and render patterns.
  * Helps identify performance bottlenecks and excessive re-renders.
  */
 
 import { useRef, useEffect, useCallback } from 'react';
+
 import { useLogger } from './useLogger';
 
 /**
@@ -50,7 +51,7 @@ export interface UsePerformanceMonitorReturn {
 
 /**
  * Hook for monitoring React hook performance
- * 
+ *
  * @param hookName - Name of the hook being monitored
  * @param options - Performance monitoring options
  */
@@ -58,15 +59,10 @@ export function usePerformanceMonitor(
   hookName: string,
   options: UsePerformanceMonitorOptions = {}
 ): UsePerformanceMonitorReturn {
-  
-  const {
-    excessiveRenderThreshold = 10,
-    enableWarnings = true,
-    trackTiming = true
-  } = options;
+  const { excessiveRenderThreshold = 10, enableWarnings = true, trackTiming = true } = options;
 
   const { warn, debug } = useLogger(`PerformanceMonitor:${hookName}`);
-  
+
   const renderCount = useRef(0);
   const renderTimes = useRef<number[]>([]);
   const lastRenderStart = useRef<number>(0);
@@ -80,16 +76,16 @@ export function usePerformanceMonitor(
   // Increment render count and calculate timing
   useEffect(() => {
     renderCount.current += 1;
-    
+
     if (trackTiming) {
       const renderTime = performance.now() - lastRenderStart.current;
       renderTimes.current.push(renderTime);
-      
+
       // Keep only last 50 render times for memory efficiency
       if (renderTimes.current.length > 50) {
         renderTimes.current = renderTimes.current.slice(-50);
       }
-      
+
       // Debug log for development
       if (process.env.NODE_ENV === 'development' && renderTime > 10) {
         debug(`Slow render detected: ${renderTime.toFixed(2)}ms`);
@@ -97,11 +93,11 @@ export function usePerformanceMonitor(
     }
 
     // Warn about excessive renders
-    if (enableWarnings && 
-        renderCount.current >= excessiveRenderThreshold && 
-        !hasWarned.current) {
+    if (enableWarnings && renderCount.current >= excessiveRenderThreshold && !hasWarned.current) {
       hasWarned.current = true;
-      warn(`Excessive re-renders detected (${renderCount.current} renders). Consider optimization.`);
+      warn(
+        `Excessive re-renders detected (${renderCount.current} renders). Consider optimization.`
+      );
     }
   });
 
@@ -110,9 +106,8 @@ export function usePerformanceMonitor(
    */
   const getMetrics = useCallback((): PerformanceMetrics => {
     const times = renderTimes.current;
-    const averageRenderTime = times.length > 0 
-      ? times.reduce((sum, time) => sum + time, 0) / times.length 
-      : 0;
+    const averageRenderTime =
+      times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0;
     const lastRenderTime = times.length > 0 ? times[times.length - 1] : 0;
 
     return {
@@ -156,7 +151,7 @@ Performance Report for ${hookName}:
 
 /**
  * Higher-order hook for automatically monitoring hook performance
- * 
+ *
  * @param hookName - Name of the hook being monitored
  * @param hookFn - The hook function to monitor
  * @param options - Performance monitoring options
@@ -168,7 +163,7 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
 ): T {
   return ((...args: Parameters<T>) => {
     const monitor = usePerformanceMonitor(hookName, options);
-    
+
     // Log performance report in development when component unmounts
     useEffect(() => {
       return () => {

@@ -11,11 +11,8 @@ export {
   type RepositoryResult,
 } from './base-repository';
 
-// Repository exports  
-export {
-  ResidentRepository,
-  type ResidentSearchOptions,
-} from './resident-repository';
+// Repository exports
+export { ResidentRepository, type ResidentSearchOptions } from './resident-repository';
 
 // Import database types directly from types layer
 export type { ResidentDatabaseRecord as ResidentData } from '@/types';
@@ -47,10 +44,11 @@ export * from './household-fetcher';
 export * from './resident-details-fetcher';
 
 // Repository class imports for factory
-import { ResidentRepository } from './resident-repository';
-import { HouseholdRepository } from './household-repository';
-import { UserRepository } from './user-repository';
 import type { ValidationContext } from '@/lib/validation/types';
+
+import { HouseholdRepository } from './household-repository';
+import { ResidentRepository } from './resident-repository';
+import { UserRepository } from './user-repository';
 
 // Repository factory for dependency injection
 export class RepositoryFactory {
