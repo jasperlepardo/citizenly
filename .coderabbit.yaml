@@ -1,0 +1,99 @@
+# CodeRabbit Configuration for Citizenly
+# Optimized for TypeScript/Next.js/Supabase project
+
+# Review settings
+reviews:
+  # Enable high-confidence suggestions only to reduce noise
+  high_level_summary: true
+  poem: false # Disable poems to keep reviews professional
+  review_status: true
+  
+  # Auto-approve settings (be conservative)
+  auto_review:
+    enabled: false # Manual review for now, can enable later
+    
+  # Path-based review rules
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/.next/**" 
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/*.min.js"
+    - "!**/coverage/**"
+
+# Language-specific settings
+language:
+  typescript:
+    # Focus on type safety - our main concern
+    rules:
+      - "no-explicit-any"
+      - "prefer-const"
+      - "no-unused-vars" 
+      - "strict-boolean-expressions"
+    
+  javascript:
+    rules:
+      - "no-console" # Flag console.log statements
+      - "prefer-const"
+      - "no-unused-vars"
+
+# Project-specific focus areas
+focus_areas:
+  - "security" # Important for production
+  - "performance" # Database queries and React optimization
+  - "maintainability" # Code quality
+  - "typescript" # Our current focus
+  - "react" # Framework-specific best practices
+
+# Severity levels
+severity:
+  # Only show important issues
+  minimum_level: "medium"
+  
+# File patterns to prioritize
+priority_files:
+  - "src/app/api/**/*.ts" # API routes - critical
+  - "src/types/**/*.ts" # Type definitions
+  - "src/hooks/**/*.ts" # Custom hooks
+  - "src/components/**/*.tsx" # React components
+  
+# Skip reviews for certain file types
+skip_files:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.stories.ts"
+  - "**/migrations/**" # Database migrations
+  - "docs/**/*.md" # Documentation
+
+# Custom rules for your project
+custom_rules:
+  - name: "supabase-error-handling"
+    pattern: "supabase\\.(.*)\\.select\\("
+    message: "Consider adding proper error handling for Supabase queries"
+    severity: "medium"
+    
+  - name: "console-logs-in-production"
+    pattern: "console\\.log\\("
+    message: "Remove console.log statements before production"
+    severity: "low"
+    exclude_paths:
+      - "**/*.test.*"
+      - "src/lib/logging/**"
+
+# Integration settings
+integrations:
+  github:
+    # Review settings
+    request_changes_workflow: false # Don't block PRs initially
+    dismiss_stale_reviews: true
+    
+    # Comment settings
+    line_comments: true
+    summary_comment: true
+    
+# Notification preferences  
+notifications:
+  # Reduce noise during initial setup
+  review_completed: true
+  auto_review_completed: false
