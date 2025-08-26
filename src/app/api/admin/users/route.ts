@@ -15,10 +15,14 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     // Verify the user token and check admin permissions
     const {
@@ -31,10 +35,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!serviceRoleKey) {
+      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+    }
+    
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin
@@ -160,10 +167,14 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     // Verify the user token
     const {
@@ -176,10 +187,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!serviceRoleKey) {
+      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+    }
+    
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
     // Check if current user has admin permissions
     const { data: userProfile, error: profileError } = await supabaseAdmin

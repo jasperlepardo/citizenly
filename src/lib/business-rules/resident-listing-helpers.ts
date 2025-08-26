@@ -88,7 +88,7 @@ export const fetchResidents = async (
   session: { access_token: string } | null,
   search?: string,
   pageNum = 1
-): Promise<any> => {
+): Promise<{ residents: ResidentListItem[]; total: number; page: number; limit: number } | null> => {
   if (!session) return null;
 
   const params = new URLSearchParams({

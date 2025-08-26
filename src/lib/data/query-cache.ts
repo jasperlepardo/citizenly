@@ -13,7 +13,7 @@
 
 import { logger } from '@/lib';
 
-interface CacheEntry<T = any> {
+interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   ttl: number;
@@ -188,22 +188,22 @@ export const queryCache = new QueryCache();
 /**
  * Cache decorator for database queries
  */
-export function cached<T extends (...args: any[]) => Promise<any>>(
-  fn: T,
+export function cached<TArgs extends readonly unknown[], TResult>(
+  fn: (...args: TArgs) => Promise<TResult>,
   options: {
     ttl?: number;
-    keyGenerator?: (...args: Parameters<T>) => string;
-    tags?: string[] | ((...args: Parameters<T>) => string[]);
+    keyGenerator?: (...args: TArgs) => string;
+    tags?: string[] | ((...args: TArgs) => string[]);
   } = {}
-): T {
-  return (async (...args: Parameters<T>) => {
+): (...args: TArgs) => Promise<TResult> {
+  return async (...args: TArgs): Promise<TResult> => {
     // Generate cache key
     const key = options.keyGenerator
       ? options.keyGenerator(...args)
       : `${fn.name}:${JSON.stringify(args)}`;
 
     // Try to get from cache
-    const cached = queryCache.get(key);
+    const cached = queryCache.get<TResult>(key);
     if (cached !== null) {
       return cached;
     }
@@ -224,7 +224,7 @@ export function cached<T extends (...args: any[]) => Promise<any>>(
       // Don't cache errors
       throw error;
     }
-  }) as T;
+  };
 }
 
 /**
@@ -236,9 +236,9 @@ export const CacheKeys = {
   cities: (provinceCode?: string) => `cities:${provinceCode || 'all'}`,
   barangays: (cityCode?: string) => `barangays:${cityCode || 'all'}`,
   resident: (id: string) => `resident:${id}`,
-  residents: (filters: Record<string, any>) => `residents:${JSON.stringify(filters)}`,
+  residents: (filters: Record<string, string | number | boolean>) => `residents:${JSON.stringify(filters)}`,
   household: (id: string) => `household:${id}`,
-  households: (filters: Record<string, any>) => `households:${JSON.stringify(filters)}`,
+  households: (filters: Record<string, string | number | boolean>) => `households:${JSON.stringify(filters)}`,
   dashboardStats: (barangayCode: string) => `dashboard:stats:${barangayCode}`,
   userProfile: (userId: string) => `user:profile:${userId}`,
 };

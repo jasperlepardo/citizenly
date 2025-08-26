@@ -19,7 +19,7 @@ interface SearchResult {
 interface ExportOptions {
   type: 'residents' | 'households';
   format: 'csv' | 'xlsx';
-  filters?: Record<string, any>;
+  filters?: Record<string, string | number | boolean>;
 }
 
 // Rate limiting for search to prevent abuse

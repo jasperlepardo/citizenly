@@ -71,7 +71,7 @@ export interface AuditEvent {
   resourceId?: string;
   action: string;
   outcome: 'success' | 'failure';
-  details?: Record<string, any>;
+  details?: Record<string, string | number | boolean>;
   context: RequestContext;
   errorCode?: ErrorCode;
   errorMessage?: string;
@@ -87,7 +87,7 @@ interface AuditLogEntry {
   resource_id?: string;
   action: string;
   outcome: string;
-  details?: Record<string, any>;
+  details?: Record<string, string | number | boolean>;
   error_code?: string;
   error_message?: string;
   request_id: string;
@@ -105,7 +105,7 @@ interface AuditLogEntry {
 /**
  * Mask sensitive data in audit logs
  */
-function maskSensitiveData(data: any): any {
+function maskSensitiveData(data: unknown): unknown {
   if (!data || typeof data !== 'object') {
     return data;
   }
@@ -268,7 +268,7 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
 export async function auditAuth(
   eventType: AuditEventType.LOGIN_SUCCESS | AuditEventType.LOGIN_FAILED | AuditEventType.LOGOUT,
   context: RequestContext,
-  details?: Record<string, any>
+  details?: Record<string, string | number | boolean>
 ): Promise<void> {
   await auditLog({
     eventType,
@@ -289,7 +289,7 @@ export async function auditResourceAccess(
   action: string,
   outcome: 'success' | 'failure',
   context: RequestContext,
-  details?: Record<string, any>
+  details?: Record<string, string | number | boolean>
 ): Promise<void> {
   const eventType =
     outcome === 'success' ? AuditEventType.ACCESS_GRANTED : AuditEventType.ACCESS_DENIED;
@@ -315,7 +315,7 @@ export async function auditDataOperation(
   resourceType: string,
   resourceId: string,
   context: RequestContext,
-  details?: Record<string, any>
+  details?: Record<string, string | number | boolean>
 ): Promise<void> {
   const eventTypeMap: Record<string, AuditEventType> = {
     create_resident: AuditEventType.RESIDENT_CREATE,
@@ -354,7 +354,7 @@ export async function auditDataOperation(
 export async function auditSecurityViolation(
   eventType: AuditEventType,
   context: RequestContext,
-  details?: Record<string, any>,
+  details?: Record<string, string | number | boolean>,
   errorCode?: ErrorCode
 ): Promise<void> {
   await auditLog({

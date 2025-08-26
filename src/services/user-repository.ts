@@ -288,7 +288,7 @@ export class UserRepository extends BaseRepository<UserData> {
     securityData: Partial<UserSecurityData>
   ): Promise<RepositoryResult<UserData>> {
     try {
-      return await this.update(userId, securityData as any);
+      return await this.update(userId, securityData);
     } catch (error) {
       return {
         success: false,

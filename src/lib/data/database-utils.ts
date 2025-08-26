@@ -183,7 +183,16 @@ export async function searchAddresses(
     const error = result.error;
 
     // Transform the flattened API response to match AddressHierarchy interface
-    const results: AddressHierarchy[] = (data || []).map((barangay: any) => {
+    const results: AddressHierarchy[] = (data || []).map((barangay: {
+      region_code?: string;
+      region_name?: string;
+      province_code?: string;
+      province_name?: string;
+      city_code?: string;
+      city_name?: string;
+      barangay_code: string;
+      barangay_name: string;
+    }) => {
       return {
         region_code: barangay.region_code || null,
         region_name: barangay.region_name || '',

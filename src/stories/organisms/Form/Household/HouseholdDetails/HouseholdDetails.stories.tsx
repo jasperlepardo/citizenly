@@ -27,7 +27,7 @@ export default meta;
 type Story = StoryObj<typeof HouseholdDetails>;
 
 // Interactive wrapper component for Storybook
-const InteractiveHouseholdDetails = (args: any) => {
+const InteractiveHouseholdDetails = (args: Story['args']) => {
   const [formData, setFormData] = useState<HouseholdDetailsData>(args.formData);
 
   const handleChange = (field: string, value: string | number | boolean | null) => {

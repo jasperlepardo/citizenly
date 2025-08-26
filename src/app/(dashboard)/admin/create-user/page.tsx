@@ -44,7 +44,7 @@ function CreateUserContent() {
   const [success, setSuccess] = useState(false);
   
   // Barangay search state
-  const [barangayOptions, setBarangayOptions] = useState<any[]>([]);
+  const [barangayOptions, setBarangayOptions] = useState<{ value: string; label: string; description: string }[]>([]);
   const [barangayLoading, setBarangayLoading] = useState(false);
   
   interface CreatedUser {
@@ -66,7 +66,7 @@ function CreateUserContent() {
       const response = await fetch(`/api/psgc/search?q=${encodeURIComponent(query)}&levels=barangay&limit=20`);
       if (response.ok) {
         const data = await response.json();
-        const formattedOptions = (data.data || []).map((item: any) => ({
+        const formattedOptions = (data.data || []).map((item: { barangay_code?: string; code?: string; barangay_name?: string; name?: string; full_address?: string; city_name?: string; province_name?: string }) => ({
           value: item.barangay_code || item.code,
           label: item.barangay_name || item.name,
           description: item.full_address || `${item.name} - ${item.city_name}, ${item.province_name}`

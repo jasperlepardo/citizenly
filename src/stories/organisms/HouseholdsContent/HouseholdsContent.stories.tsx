@@ -138,7 +138,7 @@ const mockSession = {
 };
 
 // Mock fetch implementation
-const mockFetch = (households: any[], delay = 500) => {
+const mockFetch = (households: typeof mockHouseholds, delay = 500) => {
   return (url: string) => {
     const urlObj = new URL(url, 'http://localhost');
     const searchParams = urlObj.searchParams;

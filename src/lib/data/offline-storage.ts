@@ -3,9 +3,12 @@
  * Provides offline-first data storage for PWA functionality
  */
 
-interface StoredData {
+import { ResidentRecord, HouseholdRecord, DashboardStats } from '@/types/database';
+import { UserProfile } from '@/contexts/AuthContext';
+
+interface StoredData<T = ResidentRecord | HouseholdRecord | Record<string, unknown>> {
   id: string;
-  data: any;
+  data: T;
   timestamp: number;
   expiry?: number;
 }
@@ -14,7 +17,7 @@ interface PendingSyncItem {
   id?: number;
   action: 'CREATE' | 'UPDATE' | 'DELETE';
   type: 'resident' | 'household' | 'user';
-  data: any;
+  data: ResidentRecord | HouseholdRecord | UserProfile;
   timestamp: number;
   synced: boolean;
   retryCount: number;
@@ -32,13 +35,13 @@ export class OfflineStorage {
     if (typeof window === 'undefined') {
       throw new Error('IndexedDB not available in server environment');
     }
-    
+
     if (this.db) return this.db;
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         this.db = (event.target as IDBOpenDBRequest).result;
 
         // Create object stores
@@ -59,9 +62,9 @@ export class OfflineStorage {
         }
 
         if (!this.db.objectStoreNames.contains('pending_sync')) {
-          const syncStore = this.db.createObjectStore('pending_sync', { 
-            keyPath: 'id', 
-            autoIncrement: true 
+          const syncStore = this.db.createObjectStore('pending_sync', {
+            keyPath: 'id',
+            autoIncrement: true,
           });
           syncStore.createIndex('type', 'type', { unique: false });
           syncStore.createIndex('synced', 'synced', { unique: false });
@@ -88,16 +91,16 @@ export class OfflineStorage {
   /**
    * Store residents data offline
    */
-  async storeResidents(residents: any[], barangayCode?: string): Promise<void> {
+  async storeResidents(residents: ResidentRecord[], barangayCode?: string): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await this.init();
-    
+
     const tx = this.db!.transaction(['residents'], 'readwrite');
     const store = tx.objectStore('residents');
-    
+
     const timestamp = Date.now();
-    
+
     for (const resident of residents) {
       const storedResident = {
         ...resident,
@@ -106,7 +109,7 @@ export class OfflineStorage {
       };
       await store.put(storedResident);
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -116,22 +119,22 @@ export class OfflineStorage {
   /**
    * Get residents from offline storage
    */
-  async getOfflineResidents(barangayCode?: string): Promise<any[]> {
+  async getOfflineResidents(barangayCode?: string): Promise<ResidentRecord[]> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['residents'], 'readonly');
     const store = tx.objectStore('residents');
-    
+
     if (barangayCode) {
       const index = store.index('barangay_code');
-      return await new Promise<any[]>((resolve, reject) => {
-      const request = index.getAll(barangayCode);
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+      return await new Promise<ResidentRecord[]>((resolve, reject) => {
+        const request = index.getAll(barangayCode);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
     }
-    
-    return await new Promise<any[]>((resolve, reject) => {
+
+    return await new Promise<ResidentRecord[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -141,14 +144,14 @@ export class OfflineStorage {
   /**
    * Store households data offline
    */
-  async storeHouseholds(households: any[], barangayCode?: string): Promise<void> {
+  async storeHouseholds(households: HouseholdRecord[], barangayCode?: string): Promise<void> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['households'], 'readwrite');
     const store = tx.objectStore('households');
-    
+
     const timestamp = Date.now();
-    
+
     for (const household of households) {
       const storedHousehold = {
         ...household,
@@ -157,7 +160,7 @@ export class OfflineStorage {
       };
       await store.put(storedHousehold);
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -167,22 +170,22 @@ export class OfflineStorage {
   /**
    * Get households from offline storage
    */
-  async getOfflineHouseholds(barangayCode?: string): Promise<any[]> {
+  async getOfflineHouseholds(barangayCode?: string): Promise<HouseholdRecord[]> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['households'], 'readonly');
     const store = tx.objectStore('households');
-    
+
     if (barangayCode) {
       const index = store.index('barangay_code');
-      return await new Promise<any[]>((resolve, reject) => {
-      const request = index.getAll(barangayCode);
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+      return await new Promise<HouseholdRecord[]>((resolve, reject) => {
+        const request = index.getAll(barangayCode);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
     }
-    
-    return await new Promise<any[]>((resolve, reject) => {
+
+    return await new Promise<HouseholdRecord[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -192,18 +195,18 @@ export class OfflineStorage {
   /**
    * Store dashboard statistics
    */
-  async storeDashboardStats(stats: any): Promise<void> {
+  async storeDashboardStats(stats: Record<string, number | string>): Promise<void> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['dashboard_stats'], 'readwrite');
     const store = tx.objectStore('dashboard_stats');
-    
+
     await store.put({
       id: 'current',
       data: stats,
       timestamp: Date.now(),
     });
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -213,12 +216,12 @@ export class OfflineStorage {
   /**
    * Get dashboard statistics from offline storage
    */
-  async getOfflineDashboardStats(): Promise<any | null> {
+  async getOfflineDashboardStats(): Promise<DashboardStats | null> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['dashboard_stats'], 'readonly');
     const store = tx.objectStore('dashboard_stats');
-    
+
     const result = await new Promise<StoredData | undefined>((resolve, reject) => {
       const request = store.get('current');
       request.onsuccess = () => resolve(request.result);
@@ -230,21 +233,23 @@ export class OfflineStorage {
   /**
    * Add item to sync queue for when online
    */
-  async addToSyncQueue(item: Omit<PendingSyncItem, 'id' | 'timestamp' | 'synced' | 'retryCount'>): Promise<void> {
+  async addToSyncQueue(
+    item: Omit<PendingSyncItem, 'id' | 'timestamp' | 'synced' | 'retryCount'>
+  ): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await this.init();
-    
+
     const tx = this.db!.transaction(['pending_sync'], 'readwrite');
     const store = tx.objectStore('pending_sync');
-    
+
     const syncItem: Omit<PendingSyncItem, 'id'> = {
       ...item,
       timestamp: Date.now(),
       synced: false,
       retryCount: 0,
     };
-    
+
     await store.add(syncItem);
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
@@ -257,13 +262,13 @@ export class OfflineStorage {
    */
   async getPendingSyncItems(): Promise<PendingSyncItem[]> {
     if (typeof window === 'undefined') return [];
-    
+
     try {
       await this.init();
-      
+
       const tx = this.db!.transaction(['pending_sync'], 'readonly');
       const store = tx.objectStore('pending_sync');
-      
+
       // Get all items and filter for non-synced ones
       const allItems = await new Promise<PendingSyncItem[]>((resolve, reject) => {
         const request = store.getAll();
@@ -282,12 +287,12 @@ export class OfflineStorage {
    */
   async markSyncItemCompleted(id: number): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await this.init();
-    
+
     const tx = this.db!.transaction(['pending_sync'], 'readwrite');
     const store = tx.objectStore('pending_sync');
-    
+
     const item = await new Promise<PendingSyncItem | undefined>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
@@ -297,7 +302,7 @@ export class OfflineStorage {
       item.synced = true;
       await store.put(item);
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -309,12 +314,12 @@ export class OfflineStorage {
    */
   async incrementSyncRetry(id: number): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await this.init();
-    
+
     const tx = this.db!.transaction(['pending_sync'], 'readwrite');
     const store = tx.objectStore('pending_sync');
-    
+
     const item = await new Promise<PendingSyncItem | undefined>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
@@ -324,7 +329,7 @@ export class OfflineStorage {
       item.retryCount = (item.retryCount || 0) + 1;
       await store.put(item);
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -334,19 +339,19 @@ export class OfflineStorage {
   /**
    * Store API response in cache
    */
-  async cacheApiResponse(url: string, data: any, ttlMinutes: number = 30): Promise<void> {
+  async cacheApiResponse<T>(url: string, data: T, ttlMinutes: number = 30): Promise<void> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['api_cache'], 'readwrite');
     const store = tx.objectStore('api_cache');
-    
+
     const cacheItem = {
       url,
       data,
       timestamp: Date.now(),
-      expiry: Date.now() + (ttlMinutes * 60 * 1000),
+      expiry: Date.now() + ttlMinutes * 60 * 1000,
     };
-    
+
     await store.put(cacheItem);
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
@@ -357,29 +362,29 @@ export class OfflineStorage {
   /**
    * Get cached API response
    */
-  async getCachedApiResponse(url: string): Promise<any | null> {
+  async getCachedApiResponse<T = unknown>(url: string): Promise<T | null> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['api_cache'], 'readonly');
     const store = tx.objectStore('api_cache');
-    
+
     const result = await new Promise<StoredData | undefined>((resolve, reject) => {
       const request = store.get(url);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
-    
+
     if (result && result.expiry && result.expiry > Date.now()) {
       return result.data;
     }
-    
+
     // Remove expired cache
     if (result) {
       const deleteTx = this.db!.transaction(['api_cache'], 'readwrite');
       const deleteStore = deleteTx.objectStore('api_cache');
       await deleteStore.delete(url);
     }
-    
+
     return null;
   }
 
@@ -388,22 +393,22 @@ export class OfflineStorage {
    */
   async cleanupExpiredCache(): Promise<void> {
     await this.init();
-    
+
     const tx = this.db!.transaction(['api_cache'], 'readwrite');
     const store = tx.objectStore('api_cache');
     const index = store.index('expiry');
-    
+
     const now = Date.now();
-    const expiredItems = await new Promise<any[]>((resolve, reject) => {
+    const expiredItems = await new Promise<StoredData[]>((resolve, reject) => {
       const request = index.getAll(IDBKeyRange.upperBound(now));
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
-    
+
     for (const item of expiredItems) {
       await store.delete(item.url);
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -415,15 +420,15 @@ export class OfflineStorage {
    */
   async clearAllData(): Promise<void> {
     await this.init();
-    
+
     const storeNames = ['residents', 'households', 'dashboard_stats', 'pending_sync', 'api_cache'];
     const tx = this.db!.transaction(storeNames, 'readwrite');
-    
+
     for (const storeName of storeNames) {
       const store = tx.objectStore(storeName);
       await store.clear();
     }
-    
+
     await new Promise<void>((resolve, reject) => {
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
@@ -440,9 +445,12 @@ export class OfflineStorage {
     cacheSize: number;
   }> {
     await this.init();
-    
-    const tx = this.db!.transaction(['residents', 'households', 'pending_sync', 'api_cache'], 'readonly');
-    
+
+    const tx = this.db!.transaction(
+      ['residents', 'households', 'pending_sync', 'api_cache'],
+      'readonly'
+    );
+
     const [residentsCount, householdsCount, pendingSyncCount, cacheCount] = await Promise.all([
       new Promise<number>((resolve, reject) => {
         const request = tx.objectStore('residents').count();
@@ -465,7 +473,7 @@ export class OfflineStorage {
         request.onerror = () => reject(request.error);
       }),
     ]);
-    
+
     return {
       residents: residentsCount,
       households: householdsCount,

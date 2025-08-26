@@ -55,7 +55,7 @@ const LazyErrorFallback = ({ error }: { error: Error }) => (
 /**
  * Create a lazy-loaded component with standardized loading and error handling
  */
-export function createLazyComponent<T extends ComponentType<any>>(
+export function createLazyComponent<T extends ComponentType<Record<string, unknown>>>(
   importFn: () => Promise<{ default: T }>,
   options: {
     fallback?: ReactNode;
@@ -87,7 +87,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
 /**
  * Preload a lazy component for better user experience
  */
-export function preloadLazyComponent(importFn: () => Promise<any>) {
+export function preloadLazyComponent(importFn: () => Promise<{ default: ComponentType }>) {
   // Preload the component when function is called
   const modulePromise = importFn();
 
@@ -169,7 +169,7 @@ export const LazyLoadingPresets = {
  */
 export function useLazyLoadOnIntersection(
   ref: React.RefObject<Element>,
-  importFn: () => Promise<any>,
+  importFn: () => Promise<{ default: ComponentType }>,
   options: IntersectionObserverInit = {}
 ) {
   const [isIntersecting, setIsIntersecting] = React.useState(false);

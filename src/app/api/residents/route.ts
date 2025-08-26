@@ -4,9 +4,19 @@
  */
 
 import { NextRequest } from 'next/server';
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient, getAccessLevel } from '@/lib';
-import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { createResidentSchema } from '@/lib/api/validationUtils';
+import { z } from 'zod';
+import { ResidentRecord, ResidentMigrantInfo } from '@/types/database';
+import { ResidentSectoralInfo } from '@/types/residents';
+
+import {
+  withAuth,
+  applyGeographicFilter,
+  createAdminSupabaseClient,
+  getAccessLevel,
+  logger,
+  logError,
+} from '@/lib';
+import { auditDataOperation } from '@/lib/api/auditUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -16,11 +26,10 @@ import {
   withNextRequestErrorHandling,
   withSecurityHeaders,
 } from '@/lib/api/responseUtils';
-import { auditDataOperation } from '@/lib/api/auditUtils';
 import { RequestContext, Role } from '@/lib/api/types';
+import { createResidentSchema } from '@/lib/api/validationUtils';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { ResidentFormData } from '@/types';
-import { z } from 'zod';
-import { logger, logError } from '@/lib';
 
 // Type the auth result properly
 interface AuthenticatedUser {
@@ -123,10 +132,10 @@ export const GET = withSecurityHeaders(
         // Apply geographic filtering based on user's access level through households
         // All residents must have households, and filtering is done based on household location
         const accessLevel = getAccessLevel(user.role);
-        
+
         // Ensure we only show residents with households and active residents (soft delete support)
         query = query.not('household_code', 'is', null).eq('is_active', true);
-        
+
         // Apply geographic filter based on the joined household data
         switch (accessLevel) {
           case 'barangay':
@@ -167,7 +176,7 @@ export const GET = withSecurityHeaders(
 
         // Apply pagination
         query = query.range(offset, offset + limit - 1);
-        
+
         // Execute query with count
         const { data: residents, error, count } = await query;
 
@@ -221,7 +230,7 @@ export const POST = withSecurityHeaders(
 
         // Parse and validate request body
         const body = await request.json();
-        logger.debug('Received create resident request', { 
+        logger.debug('Received create resident request', {
           hasBody: !!body,
           bodyKeys: Object.keys(body),
         });
@@ -232,13 +241,15 @@ export const POST = withSecurityHeaders(
           logger.error('Resident validation failed', {
             issueCount: validationResult.error.issues.length,
             hasIssues: !!validationResult.error.issues,
-            employment_status_issues: validationResult.error.issues.filter(i => i.path.includes('employment_status')),
-            allIssues: validationResult.error.issues.map(i => ({ 
-              path: i.path, 
-              message: i.message, 
+            employment_status_issues: validationResult.error.issues.filter(i =>
+              i.path.includes('employment_status')
+            ),
+            allIssues: validationResult.error.issues.map(i => ({
+              path: i.path,
+              message: i.message,
               received: (i as any).received,
               expected: (i as any).expected,
-              code: (i as any).code 
+              code: (i as any).code,
             })),
             detailedErrors: validationResult.error.format(),
           });
@@ -293,7 +304,10 @@ export const POST = withSecurityHeaders(
           philsys_card_number: residentData.philsys_card_number || null,
           is_voter: residentData.is_voter || null,
           is_resident_voter: residentData.is_resident_voter || null,
-          last_voted_date: residentData.last_voted_date && residentData.last_voted_date !== '' ? residentData.last_voted_date : null,
+          last_voted_date:
+            residentData.last_voted_date && residentData.last_voted_date !== ''
+              ? residentData.last_voted_date
+              : null,
           is_active: true,
           created_by: user.id,
           updated_by: user.id,
@@ -322,7 +336,7 @@ export const POST = withSecurityHeaders(
           // Handle sectoral information if provided
           const sectoralFields = [
             'is_labor_force_employed',
-            'is_unemployed', 
+            'is_unemployed',
             'is_overseas_filipino_worker',
             'is_person_with_disability',
             'is_out_of_school_children',
@@ -331,22 +345,22 @@ export const POST = withSecurityHeaders(
             'is_registered_senior_citizen',
             'is_solo_parent',
             'is_indigenous_people',
-            'is_migrant'
+            'is_migrant',
           ];
 
           const hasSectoralData = sectoralFields.some(field => field in residentData);
-          
+
           if (hasSectoralData && newResident?.id) {
-            const sectoralData: any = {
+            const sectoralData: Partial<ResidentSectoralInfo> = {
               resident_id: newResident.id,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             };
 
             // Add sectoral fields that are present
             sectoralFields.forEach(field => {
               if (field in residentData) {
-                sectoralData[field] = (residentData as any)[field] || false;
+                sectoralData[field as keyof ResidentSectoralInfo] = (residentData as Record<string, unknown>)[field] || false;
               }
             });
 
@@ -358,14 +372,14 @@ export const POST = withSecurityHeaders(
               console.error('Failed to create sectoral information:', sectoralError);
               throw new Error('Failed to create sectoral information');
             }
-            
+
             sectoralRecordCreated = true;
           }
 
           // Handle migration information if provided
           const migrationFields = [
             'previous_barangay_code',
-            'previous_city_municipality_code', 
+            'previous_city_municipality_code',
             'previous_province_code',
             'previous_region_code',
             'date_of_transfer',
@@ -373,22 +387,24 @@ export const POST = withSecurityHeaders(
             'reason_for_transferring',
             'length_of_stay_previous_months',
             'duration_of_stay_current_months',
-            'is_intending_to_return'
+            'is_intending_to_return',
           ];
 
-          const hasMigrationData = migrationFields.some(field => field in residentData && (residentData as any)[field]);
-          
+          const hasMigrationData = migrationFields.some(
+            field => field in residentData && (residentData as Record<string, unknown>)[field]
+          );
+
           if (hasMigrationData && newResident?.id) {
-            const migrationData: any = {
+            const migrationData: Partial<ResidentMigrantInfo> = {
               resident_id: newResident.id,
               created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             };
 
             // Add migration fields that are present and not empty
             migrationFields.forEach(field => {
-              if (field in residentData && (residentData as any)[field]) {
-                migrationData[field] = (residentData as any)[field];
+              if (field in residentData && (residentData as Record<string, unknown>)[field]) {
+                migrationData[field as keyof ResidentMigrantInfo] = (residentData as Record<string, unknown>)[field];
               }
             });
 
@@ -400,10 +416,9 @@ export const POST = withSecurityHeaders(
               console.error('Failed to create migration information:', migrationError);
               throw new Error('Failed to create migration information');
             }
-            
+
             migrationRecordCreated = true;
           }
-
         } catch (transactionError) {
           // Rollback operations in reverse order
           console.error('Transaction error, rolling back:', transactionError);
@@ -426,10 +441,7 @@ export const POST = withSecurityHeaders(
 
           // Rollback resident if created
           if (newResident?.id) {
-            await supabaseAdmin
-              .from('residents')
-              .delete()
-              .eq('id', newResident.id);
+            await supabaseAdmin.from('residents').delete().eq('id', newResident.id);
           }
 
           throw transactionError;

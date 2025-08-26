@@ -7,7 +7,7 @@
  * Primary validation result interface
  * This is the single source of truth for validation results across the application
  */
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
   /** Whether the data is valid */
   isValid: boolean;
   /** Validation errors by field name */
@@ -27,7 +27,7 @@ export interface FieldValidationResult {
   isValid: boolean;
   error?: string;
   warning?: string;
-  sanitizedValue?: any;
+  sanitizedValue?: unknown;
 }
 
 /**
@@ -37,7 +37,7 @@ export interface ValidationError {
   field: string;
   message: string;
   code: string;
-  value?: any;
+  value?: unknown;
   context?: Record<string, unknown>;
 }
 
@@ -56,7 +56,7 @@ export interface ValidationContext {
 /**
  * Field validator function type
  */
-export type FieldValidator<T = any> = (
+export type FieldValidator<T = unknown> = (
   value: T,
   context?: ValidationContext
 ) => FieldValidationResult | Promise<FieldValidationResult>;
@@ -64,7 +64,7 @@ export type FieldValidator<T = any> = (
 /**
  * Form validator function type
  */
-export type FormValidator<T = any> = (
+export type FormValidator<T = unknown> = (
   data: T,
   context?: ValidationContext
 ) => ValidationResult | Promise<ValidationResult>;
@@ -89,7 +89,7 @@ export interface ValidationRule {
   validator: FieldValidator;
   message: string;
   severity: 'error' | 'warning';
-  condition?: (value: any, context?: ValidationContext) => boolean;
+  condition?: (value: unknown, context?: ValidationContext) => boolean;
 }
 
 /**
@@ -106,7 +106,7 @@ export interface SchemaValidationConfig {
 /**
  * Async validation function type
  */
-export type AsyncValidator<T = any> = (
+export type AsyncValidator<T = unknown> = (
   value: T,
   context?: ValidationContext
 ) => Promise<FieldValidationResult>;
@@ -124,7 +124,7 @@ export interface ValidationStage {
 /**
  * Composite validation result
  */
-export interface CompositeValidationResult<T = any> extends ValidationResult<T> {
+export interface CompositeValidationResult<T = unknown> extends ValidationResult<T> {
   fieldResults: Record<string, FieldValidationResult>;
   stageResults: Record<string, ValidationResult>;
   performance: {
@@ -136,7 +136,7 @@ export interface CompositeValidationResult<T = any> extends ValidationResult<T> 
 /**
  * Zod-based validation result (for createValidationHook compatibility)
  */
-export interface ZodValidationResult<T = any> {
+export interface ZodValidationResult<T = unknown> {
   /** Whether the data is valid */
   isValid: boolean;
   /** Validation errors as string arrays (Zod format) */
@@ -148,7 +148,7 @@ export interface ZodValidationResult<T = any> {
   /** Backward compatibility */
   success?: boolean;
   /** Raw Zod validation error */
-  rawError?: any; // ZodError type to avoid Zod dependency here
+  rawError?: { issues: Array<{ path: string[]; message: string; code: string }> }; // ZodError-like structure
 }
 
 /**
@@ -163,5 +163,5 @@ export interface BaseValidationConfig {
 /**
  * Validation function types for hooks compatibility
  */
-export type ValidateFormFunction<T = any> = (data: T) => ValidationResult<T>;
-export type ValidateFieldFunction = (fieldName: string, value: any) => FieldValidationResult;
+export type ValidateFormFunction<T = unknown> = (data: T) => ValidationResult<T>;
+export type ValidateFieldFunction = (fieldName: string, value: unknown) => FieldValidationResult;

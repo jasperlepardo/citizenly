@@ -2,6 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 import UserProfile from '@/components/organisms/UserProfile';
 
+interface MockAuthValue {
+  user: unknown;
+  userProfile: unknown;
+  role: unknown;
+  loading: boolean;
+  profileLoading: boolean;
+  signOut: () => Promise<void>;
+}
+
 // Mock AuthContext
 const createMockAuthContext = (overrides = {}) => ({
   user: null,
@@ -18,7 +27,7 @@ const MockAuthProvider = ({
   authValue,
 }: {
   children: React.ReactNode;
-  authValue: any;
+  authValue: MockAuthValue;
 }) => {
   // Note: AuthContext mocking would be handled by Storybook
   console.log('AuthContext mock would be configured here');

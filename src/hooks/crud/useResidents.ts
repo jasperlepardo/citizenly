@@ -26,13 +26,14 @@ interface Resident extends Omit<ResidentRecord, 'sex'> {
     street_id?: string;
     subdivision_id?: string;
   };
+  [key: string]: unknown; // Index signature for TableRecord compatibility
 }
 
 interface ResidentsParams {
   page?: number;
   pageSize?: number;
   searchTerm?: string;
-  filters?: Record<string, any>;
+  filters?: AdvancedFilters;
 }
 
 interface AdvancedFilters {

@@ -21,10 +21,10 @@ export interface CacheConfig {
   };
 }
 
-interface CachedResponse {
+interface CachedResponse<T = unknown> {
   status: number;
   headers: Record<string, string>;
-  body: any;
+  body: T;
   timestamp: number;
   etag?: string;
 }
@@ -78,7 +78,7 @@ export class ResponseCache {
   /**
    * Generate ETag for response
    */
-  private generateETag(body: any): string {
+  private generateETag(body: unknown): string {
     const content = typeof body === 'string' ? body : JSON.stringify(body);
     return `"${this.hashString(content).substring(0, 16)}"`;
   }

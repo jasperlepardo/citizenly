@@ -4,7 +4,9 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 import { getSupabaseConfig, isProduction, createLogger } from '@/lib/config/environment';
+import type { Database } from '@/lib/data/supabase';
 
 const logger = createLogger('ConnectionPool');
 
@@ -17,7 +19,7 @@ interface ConnectionPoolConfig {
 }
 
 interface PooledConnection {
-  client: SupabaseClient;
+  client: SupabaseClient<Database>;
   createdAt: number;
   lastUsed: number;
   isActive: boolean;
@@ -48,7 +50,7 @@ class DatabaseConnectionPool {
 
     logger.info('Initializing database connection pool', {
       maxConnections: this.config.maxConnections,
-      environment: process.env.NODE_ENV
+      environment: process.env.NODE_ENV,
     });
 
     // Start health check timer
@@ -67,7 +69,7 @@ class DatabaseConnectionPool {
     }
 
     const poolKey = `${type}_${Math.floor(this.pool.size / this.config.maxConnections)}`;
-    
+
     // Try to reuse existing connection
     const existingConnection = this.findAvailableConnection(type);
     if (existingConnection) {
@@ -93,31 +95,27 @@ class DatabaseConnectionPool {
     const supabaseConfig = getSupabaseConfig();
     const now = Date.now();
 
-    let client: SupabaseClient<any, 'public', any>;
+    let client: SupabaseClient<Database>;
 
     if (type === 'service') {
       if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
         throw new Error('Service role key not configured');
       }
-      
-      client = createClient(
-        supabaseConfig.url,
-        process.env.SUPABASE_SERVICE_ROLE_KEY,
-        {
-          ...supabaseConfig.options,
-          auth: {
-            ...supabaseConfig.options.auth,
-            autoRefreshToken: false,
-            persistSession: false
-          }
-        }
-      ) as SupabaseClient<any, 'public', any>;
+
+      client = createClient(supabaseConfig.url, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+        ...supabaseConfig.options,
+        auth: {
+          ...supabaseConfig.options.auth,
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }) as SupabaseClient<Database>;
     } else {
       client = createClient(
         supabaseConfig.url,
         supabaseConfig.anonKey,
         supabaseConfig.options
-      ) as SupabaseClient<any, 'public', any>;
+      ) as SupabaseClient<Database>;
     }
 
     const pooledConnection: PooledConnection = {
@@ -125,7 +123,7 @@ class DatabaseConnectionPool {
       createdAt: now,
       lastUsed: now,
       isActive: true,
-      connectionId
+      connectionId,
     };
 
     this.pool.set(connectionId, pooledConnection);
@@ -133,7 +131,7 @@ class DatabaseConnectionPool {
     logger.debug(`Created new ${type} connection`, {
       connectionId,
       poolSize: this.pool.size,
-      type
+      type,
     });
 
     return client;
@@ -143,7 +141,7 @@ class DatabaseConnectionPool {
    * Create connection with retry logic
    */
   private async createConnectionWithRetry(
-    connectionId: string, 
+    connectionId: string,
     type: 'anon' | 'service'
   ): Promise<SupabaseClient> {
     let lastError: Error | null = null;
@@ -152,7 +150,7 @@ class DatabaseConnectionPool {
       try {
         // Clean up idle connections first
         await this.cleanupIdleConnections();
-        
+
         // Try to create connection again
         if (this.pool.size < this.config.maxConnections) {
           return this.createConnection(connectionId, type);
@@ -167,12 +165,14 @@ class DatabaseConnectionPool {
         logger.warn(`Connection creation attempt ${attempt} failed`, {
           error: lastError.message,
           attempt,
-          connectionId
+          connectionId,
         });
       }
     }
 
-    throw new Error(`Failed to create database connection after ${this.config.retryAttempts} attempts: ${lastError?.message}`);
+    throw new Error(
+      `Failed to create database connection after ${this.config.retryAttempts} attempts: ${lastError?.message}`
+    );
   }
 
   /**
@@ -180,19 +180,18 @@ class DatabaseConnectionPool {
    */
   private findAvailableConnection(type: 'anon' | 'service'): PooledConnection | null {
     let result: PooledConnection | null = null;
-    
+
     this.pool.forEach((connection, connectionId) => {
       if (result) return; // Already found one
-      
-      const isCorrectType = (type === 'service') ? 
-        connectionId.startsWith('service_') : 
-        connectionId.startsWith('anon_');
+
+      const isCorrectType =
+        type === 'service' ? connectionId.startsWith('service_') : connectionId.startsWith('anon_');
 
       if (isCorrectType && !connection.isActive) {
         result = connection;
       }
     });
-    
+
     return result;
   }
 
@@ -204,10 +203,10 @@ class DatabaseConnectionPool {
       if (connection.client === client) {
         connection.isActive = false;
         connection.lastUsed = Date.now();
-        
+
         logger.debug(`Released connection back to pool`, {
           connectionId,
-          poolSize: this.pool.size
+          poolSize: this.pool.size,
         });
       }
     });
@@ -222,7 +221,7 @@ class DatabaseConnectionPool {
 
     this.pool.forEach((connection, connectionId) => {
       const idleTime = now - connection.lastUsed;
-      
+
       if (!connection.isActive && idleTime > this.config.idleTimeout) {
         connectionsToRemove.push(connectionId);
       }
@@ -235,7 +234,7 @@ class DatabaseConnectionPool {
 
     if (connectionsToRemove.length > 0) {
       logger.info(`Cleaned up ${connectionsToRemove.length} idle connections`, {
-        remainingConnections: this.pool.size
+        remainingConnections: this.pool.size,
       });
     }
   }
@@ -259,14 +258,14 @@ class DatabaseConnectionPool {
           if (error) {
             logger.warn(`Connection health check failed`, {
               connectionId,
-              error: error.message
+              error: error.message,
             });
             unhealthyConnections.push(connectionId);
           }
         } catch (error) {
           logger.warn(`Connection health check error`, {
             connectionId,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
           unhealthyConnections.push(connectionId);
         }
@@ -293,7 +292,7 @@ class DatabaseConnectionPool {
         await this.performHealthCheck();
       } catch (error) {
         logger.error('Health check failed', {
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
     }, this.config.healthCheckInterval);
@@ -311,7 +310,7 @@ class DatabaseConnectionPool {
       totalConnections,
       availableConnections: totalConnections - activeConnections,
       maxConnections: this.config.maxConnections,
-      utilizationPercentage: Math.round((totalConnections / this.config.maxConnections) * 100)
+      utilizationPercentage: Math.round((totalConnections / this.config.maxConnections) * 100),
     };
   }
 
@@ -343,13 +342,12 @@ class DatabaseConnectionPool {
 export const connectionPool = new DatabaseConnectionPool();
 
 // Export convenience functions
-export const getPooledConnection = (type?: 'anon' | 'service') => 
+export const getPooledConnection = (type?: 'anon' | 'service') =>
   connectionPool.getConnection(type);
 
-export const releasePooledConnection = (client: SupabaseClient) => 
+export const releasePooledConnection = (client: SupabaseClient) =>
   connectionPool.releaseConnection(client);
 
-export const getConnectionPoolStats = () => 
-  connectionPool.getStats();
+export const getConnectionPoolStats = () => connectionPool.getStats();
 
 export default connectionPool;

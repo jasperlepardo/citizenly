@@ -56,7 +56,7 @@ const mockAuthContext = {
 };
 
 // Decorator to provide mock auth context
-const withMockAuth = (Story: any) => {
+const withMockAuth = (Story: React.ComponentType) => {
   return (
     <div>
       {/* Mock auth context would be provided here in real implementation */}

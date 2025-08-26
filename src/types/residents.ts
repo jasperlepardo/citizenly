@@ -435,8 +435,8 @@ export interface ResidentTableAction {
 export interface ResidentTableColumn {
   key: string;
   title: string;
-  dataIndex: string | ((record: ResidentDatabaseRecord) => any);
-  render?: (value: any, record: ResidentDatabaseRecord) => ReactNode;
+  dataIndex: string | ((record: ResidentDatabaseRecord) => string | number | boolean);
+  render?: (value: string | number | boolean, record: ResidentDatabaseRecord) => ReactNode;
   sortable?: boolean;
 }
 

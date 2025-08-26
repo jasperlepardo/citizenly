@@ -63,7 +63,7 @@ export interface PaginatedSearchState<T> extends SearchState<T> {
  */
 export type SearchFunction<T> = (query: string) => Promise<T[]>;
 
-export type PaginatedSearchFunction<T, F = any> = (params: {
+export type PaginatedSearchFunction<T, F = Record<string, unknown>> = (params: {
   query: string;
   page: number;
   pageSize: number;
@@ -270,7 +270,7 @@ export function createPaginatedSearchUtilities<T, F>(
   setState: React.Dispatch<React.SetStateAction<PaginatedSearchState<T>>>,
   executeSearch: (query: string, page?: number, filters?: F, resetResults?: boolean) => Promise<void>
 ) {
-  const baseUtils = createSearchUtilities(state, setState as any, executeSearch);
+  const baseUtils = createSearchUtilities(state, setState as React.Dispatch<React.SetStateAction<SearchState<T>>>, executeSearch);
 
   const loadMore = useCallback(() => {
     if (!state.isLoading && state.pagination.hasMore) {

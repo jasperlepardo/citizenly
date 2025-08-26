@@ -18,7 +18,7 @@ import type { ValidationResult as BaseValidationResult } from '@/lib/validation/
 
 // Import database types
 import { ResidentRecord } from '@/types/database';
-import { ResidentFormData as BaseResidentFormData } from '@/types/forms';
+import { ResidentFormData as BaseResidentFormData, EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/forms';
 
 // Service-specific form data extends base form data with optional id for updates
 export interface ResidentFormData extends BaseResidentFormData {
@@ -46,7 +46,7 @@ export interface CreateResidentRequest {
 
 export interface CreateResidentResponse {
   success: boolean;
-  data?: any;
+  data?: ResidentRecord;
   error?: string;
 }
 
@@ -195,9 +195,9 @@ export class ResidentService {
       civil_status_others_specify: formData.civil_status_others_specify || null,
       
       // Education and employment
-      education_attainment: (formData.education_attainment as any) || null,
+      education_attainment: (formData.education_attainment as EducationLevelEnum) || null,
       is_graduate: formData.is_graduate || false,
-      employment_status: (formData.employment_status as any) || null,
+      employment_status: (formData.employment_status as EmploymentStatusEnum) || null,
       occupation_code: formData.occupation_code || null,
       
       // Contact information
@@ -219,9 +219,9 @@ export class ResidentService {
       last_voted_date: formData.last_voted_date || null,
       
       // Cultural/religious identity
-      religion: (formData.religion as any) || 'roman_catholic',
+      religion: (formData.religion as ReligionEnum) || 'roman_catholic',
       religion_others_specify: formData.religion_others_specify || null,
-      ethnicity: (formData.ethnicity as any) || null,
+      ethnicity: (formData.ethnicity as EthnicityEnum) || null,
       citizenship: formData.citizenship || 'filipino',
       blood_type: formData.blood_type || null,
       

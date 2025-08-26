@@ -114,12 +114,12 @@ function ResidentsContent() {
       key: 'name',
       title: 'Name',
       dataIndex: (record: Resident) => formatFullName(record),
-      render: (value: string, record: Resident) => (
+      render: (value: unknown, record: Resident) => (
         <Link
           href={`/residents/${record.id}`}
           className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:text-gray-200 dark:text-gray-800 hover:underline"
         >
-          {value}
+          {String(value)}
         </Link>
       ),
       sortable: true,
@@ -128,7 +128,7 @@ function ResidentsContent() {
       key: 'email',
       title: 'Email',
       dataIndex: 'email',
-      render: (value: string) => value || 'No email',
+      render: (value: unknown) => String(value || 'No email'),
       sortable: true,
     },
     {
@@ -147,7 +147,10 @@ function ResidentsContent() {
       key: 'sex',
       title: 'Sex',
       dataIndex: 'sex',
-      render: (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'),
+      render: (value: unknown) => {
+        const str = String(value || '');
+        return str ? str.charAt(0).toUpperCase() + str.slice(1) : 'N/A';
+      },
       sortable: true,
     },
     {

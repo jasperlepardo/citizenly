@@ -295,7 +295,7 @@ export async function logFileOperation(
   fileName: string,
   userId: string,
   result: 'success' | 'failure' | 'blocked',
-  details?: Record<string, any>,
+  details?: Record<string, string | number | boolean>,
   ipAddress?: string,
   userAgent?: string
 ): Promise<void> {

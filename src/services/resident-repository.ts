@@ -293,7 +293,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
       return await this.update(id, {
         is_active: false,
         updated_at: new Date().toISOString(),
-      } as any);
+      });
     } catch (error) {
       return {
         success: false,

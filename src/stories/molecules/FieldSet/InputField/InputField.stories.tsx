@@ -183,7 +183,7 @@ export const CompleteForm: Story = {
       }
     };
 
-    const updateField = (field: string, value: any) => {
+    const updateField = (field: string, value: string | number | boolean) => {
       setFormData(prev => ({ ...prev, [field]: value }));
       // Clear error when user starts typing
       if (errors[field]) {

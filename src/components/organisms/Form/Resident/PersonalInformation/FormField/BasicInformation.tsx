@@ -6,6 +6,7 @@ import {
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT
 } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 
 export interface BasicInformationData {
   first_name: string;
@@ -42,7 +43,7 @@ export function BasicInformation({
     });
   };
 
-  const handleSelectChange = (field: keyof BasicInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof BasicInformationData) => (option: SelectOption | null) => {
     handleChange(field, option?.value || '');
   };
 

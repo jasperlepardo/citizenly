@@ -25,7 +25,7 @@ export const renderInputField = (
   fieldName: string,
   label: string,
   value: string | number | undefined,
-  onChange: (value: any) => void,
+  onChange: (value: string | number | boolean | null) => void,
   options: {
     mode?: FormMode;
     readOnlyFields?: string[];
@@ -157,7 +157,7 @@ export const renderSelectField = (
         options: selectOptions,
         value: value || '',
         searchable,
-        onSelect: (option: any) => onChange(option?.value || ''),
+        onSelect: (option: { value: string | number; label: string } | null) => onChange(option?.value || ''),
       }}
     />
   );

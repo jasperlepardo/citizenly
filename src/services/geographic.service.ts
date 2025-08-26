@@ -40,6 +40,22 @@ export interface GeographicOption {
   label: string;
 }
 
+interface BarangayWithJoins {
+  psgc_cities_municipalities: {
+    code: string;
+    name: string;
+    type: string;
+    psgc_provinces: {
+      code: string;
+      name: string;
+      psgc_regions: {
+        code: string;
+        name: string;
+      };
+    };
+  };
+}
+
 /**
  * Geographic Data Service Class
  */
@@ -246,9 +262,10 @@ export class GeographicService {
         return {};
       }
 
-      const city = data.psgc_cities_municipalities as any;
-      const province = city.psgc_provinces as any;
-      const region = province?.psgc_regions as any;
+      const typedData = data as BarangayWithJoins;
+      const city = typedData.psgc_cities_municipalities;
+      const province = city.psgc_provinces;
+      const region = province?.psgc_regions;
 
       return {
         barangay: {

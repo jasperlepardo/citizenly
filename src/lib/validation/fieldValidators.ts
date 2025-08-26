@@ -12,7 +12,7 @@ function createResult(
   isValid: boolean,
   error?: string,
   warning?: string,
-  sanitizedValue?: any
+  sanitizedValue?: string | number | boolean | null
 ): FieldValidationResult {
   return {
     isValid,

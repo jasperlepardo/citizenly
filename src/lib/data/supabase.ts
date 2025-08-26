@@ -57,6 +57,19 @@ export const refreshSchema = async () => {
   }
 };
 
+// JSONB type definitions for specific database fields
+interface PositionTitles {
+  primary_titles: string[];
+  alternative_titles?: string[];
+  excluded_titles?: string[];
+}
+
+interface UserPermissions {
+  modules: string[];
+  actions: string[];
+  restrictions?: Record<string, string | boolean | number>;
+}
+
 // Database types for better TypeScript support - Generated from actual database structure
 export type Database = {
   public: {
@@ -410,19 +423,19 @@ export type Database = {
         Row: {
           id: string;
           unit_group_code: string;
-          titles: any; // jsonb
+          titles: PositionTitles;
           created_at: string | null;
         };
         Insert: {
           id?: string;
           unit_group_code: string;
-          titles: any; // jsonb
+          titles: PositionTitles;
           created_at?: string | null;
         };
         Update: {
           id?: string;
           unit_group_code?: string;
-          titles?: any; // jsonb
+          titles?: PositionTitles;
           created_at?: string | null;
         };
       };
@@ -453,17 +466,17 @@ export type Database = {
         Row: {
           id: string;
           name: string;
-          permissions: any | null; // jsonb
+          permissions: UserPermissions | null;
         };
         Insert: {
           id?: string;
           name: string;
-          permissions?: any | null; // jsonb
+          permissions?: UserPermissions | null;
         };
         Update: {
           id?: string;
           name?: string;
-          permissions?: any | null; // jsonb
+          permissions?: UserPermissions | null;
         };
       };
       user_profiles: {

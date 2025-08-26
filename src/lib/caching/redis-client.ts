@@ -7,15 +7,15 @@ import { createLogger, isProduction, isDevelopment } from '@/lib/config/environm
 
 const logger = createLogger('RedisClient');
 
-interface CacheEntry {
-  data: any;
+interface CacheEntry<T = unknown> {
+  data: T;
   timestamp: number;
   ttl: number;
 }
 
 interface CacheClient {
-  get<T = any>(key: string): Promise<T | null>;
-  set(key: string, value: any, ttlSeconds?: number): Promise<boolean>;
+  get<T = unknown>(key: string): Promise<T | null>;
+  set<T>(key: string, value: T, ttlSeconds?: number): Promise<boolean>;
   del(key: string): Promise<boolean>;
   flush(): Promise<boolean>;
   keys(pattern: string): Promise<string[]>;
@@ -52,7 +52,7 @@ class InMemoryCache implements CacheClient {
     return entry.data as T;
   }
 
-  async set(key: string, value: any, ttlSeconds = this.defaultTTL): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
     try {
       // Clean cache if at capacity
       if (this.cache.size >= this.maxSize) {
@@ -168,7 +168,7 @@ class RedisCache implements CacheClient {
     return null;
   }
 
-  async set(key: string, value: any, ttlSeconds = 300): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = 300): Promise<boolean> {
     // Disabled - fallback to false
     return false;
   }
@@ -241,7 +241,7 @@ export class CacheManager {
   /**
    * Set cached value with automatic JSON serialization
    */
-  async set(key: string, value: any, ttlSeconds = this.defaultTTL): Promise<boolean> {
+  async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
     const prefixedKey = this.keyPrefix + key;
     return await this.client.set(prefixedKey, value, ttlSeconds);
   }

@@ -3,14 +3,17 @@
  * Handles offline data synchronization when connection is restored
  */
 
-import { offlineStorage } from './offline-storage';
-import { createAppError } from '../error-handling/error-utils';
 import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
+import { createAppError } from '../error-handling/error-utils';
+import { ResidentRecord, HouseholdRecord } from '@/types/database';
+import { UserProfile } from '@/contexts/AuthContext';
+
+import { offlineStorage } from './offline-storage';
 
 interface SyncResult {
   success: boolean;
   error?: string;
-  data?: any;
+  data?: ResidentRecord | HouseholdRecord | UserProfile;
 }
 
 export class SyncQueue {
@@ -24,10 +27,10 @@ export class SyncQueue {
   async addToQueue(
     action: 'CREATE' | 'UPDATE' | 'DELETE',
     type: 'resident' | 'household' | 'user',
-    data: any
+    data: ResidentRecord | HouseholdRecord | UserProfile
   ): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     await offlineStorage.addToSyncQueue({
       action,
       type,
@@ -55,7 +58,7 @@ export class SyncQueue {
 
     try {
       const pendingItems = await offlineStorage.getPendingSyncItems();
-      
+
       for (const item of pendingItems) {
         if (item.retryCount >= this.maxRetries) {
           console.warn(`Max retries exceeded for sync item ${item.id}`);
@@ -64,7 +67,7 @@ export class SyncQueue {
 
         try {
           const result = await this.syncItem(item);
-          
+
           if (result.success) {
             await offlineStorage.markSyncItemCompleted(item.id!);
             console.log(`Successfully synced ${item.action} ${item.type}`);
@@ -90,13 +93,15 @@ export class SyncQueue {
   /**
    * Sync individual item
    */
-  private async syncItem(item: any): Promise<SyncResult> {
+  private async syncItem(item: { action: string; type: string; data: ResidentRecord | HouseholdRecord | UserProfile }): Promise<SyncResult> {
     const { action, type, data } = item;
 
     try {
       // Get auth token
       const { supabase } = await import('@/lib/supabase');
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
         return { success: false, error: 'No authentication token' };
@@ -104,7 +109,7 @@ export class SyncQueue {
 
       const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
+        Authorization: `Bearer ${session.access_token}`,
       };
 
       let response: Response;
@@ -128,15 +133,15 @@ export class SyncQueue {
         return { success: true, data: responseData };
       } else {
         const errorData = await response.json().catch(() => ({}));
-        return { 
-          success: false, 
-          error: errorData.error || `HTTP ${response.status}: ${response.statusText}` 
+        return {
+          success: false,
+          error: errorData.error || `HTTP ${response.status}: ${response.statusText}`,
         };
       }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -144,7 +149,7 @@ export class SyncQueue {
   /**
    * Handle CREATE operations
    */
-  private async handleCreate(type: string, data: any, headers: HeadersInit): Promise<Response> {
+  private async handleCreate(type: string, data: ResidentRecord | HouseholdRecord | UserProfile, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: '/api/residents',
       household: '/api/households',
@@ -156,7 +161,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'CREATE' }
+        context: { type, action: 'CREATE' },
       });
     }
 
@@ -170,7 +175,7 @@ export class SyncQueue {
   /**
    * Handle UPDATE operations
    */
-  private async handleUpdate(type: string, data: any, headers: HeadersInit): Promise<Response> {
+  private async handleUpdate(type: string, data: ResidentRecord | HouseholdRecord | UserProfile, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: `/api/residents/${data.id}`,
       household: `/api/households/${data.code || data.id}`,
@@ -182,7 +187,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'UPDATE' }
+        context: { type, action: 'UPDATE' },
       });
     }
 
@@ -196,7 +201,7 @@ export class SyncQueue {
   /**
    * Handle DELETE operations
    */
-  private async handleDelete(type: string, data: any, headers: HeadersInit): Promise<Response> {
+  private async handleDelete(type: string, data: { id: string }, headers: HeadersInit): Promise<Response> {
     const endpoints = {
       resident: `/api/residents/${data.id}`,
       household: `/api/households/${data.code || data.id}`,
@@ -208,7 +213,7 @@ export class SyncQueue {
       throw createAppError(`No endpoint defined for type: ${type}`, {
         code: ErrorCode.INVALID_OPERATION,
         severity: ErrorSeverity.HIGH,
-        context: { type, action: 'DELETE' }
+        context: { type, action: 'DELETE' },
       });
     }
 
@@ -223,11 +228,11 @@ export class SyncQueue {
    */
   async forceSync(): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     if (!navigator.onLine) {
       throw createAppError('Cannot force sync while offline', {
         code: ErrorCode.NETWORK_ERROR,
-        severity: ErrorSeverity.MEDIUM
+        severity: ErrorSeverity.MEDIUM,
       });
     }
 
@@ -243,7 +248,7 @@ export class SyncQueue {
     isOnline: boolean;
   }> {
     const pendingItems = await offlineStorage.getPendingSyncItems();
-    
+
     return {
       isProcessing: this.isProcessing,
       pendingCount: pendingItems.length,
@@ -272,7 +277,7 @@ export class SyncQueue {
    */
   setupEventListeners(): void {
     if (typeof window === 'undefined') return;
-    
+
     window.addEventListener('online', () => {
       console.log('Connection restored, processing sync queue...');
       this.processQueue();

@@ -157,11 +157,11 @@ export function buildSelectQuery<T extends Record<string, string>>(
 }
 
 // Helper function to map form data to database fields
-export function mapToDbFields<T extends Record<string, any>>(
-  data: Record<string, any>,
+export function mapToDbFields<T extends Record<string, unknown>>(
+  data: Record<string, unknown>,
   fieldMap: Record<string, string>
 ): T {
-  const result: any = {};
+  const result = {} as T;
   for (const [formKey, dbKey] of Object.entries(fieldMap)) {
     if (data[formKey] !== undefined) {
       result[dbKey] = data[formKey];

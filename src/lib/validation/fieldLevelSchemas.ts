@@ -3,10 +3,13 @@
  */
 
 import { z } from 'zod';
-import { 
-  isValidPhilSysCardNumber, 
-  isValidMobileNumber, 
-  isValidBirthdate 
+
+import type { ResidentFormData } from '@/types/resident-form';
+
+import {
+  isValidPhilSysCardNumber,
+  isValidMobileNumber,
+  isValidBirthdate,
 } from '@/lib/business-rules';
 
 // Basic field validators
@@ -27,27 +30,35 @@ export const emailValidator = z.string().email({
 });
 
 // Name validators
-export const nameValidator = z.string()
+export const nameValidator = z
+  .string()
   .min(1, 'This field is required')
   .max(100, 'Name cannot exceed 100 characters')
-  .regex(/^[a-zA-Z\s\-'\.]*$/, 'Name can only contain letters, spaces, hyphens, apostrophes, and periods');
+  .regex(
+    /^[a-zA-Z\s\-'\.]*$/,
+    'Name can only contain letters, spaces, hyphens, apostrophes, and periods'
+  );
 
 export const requiredNameValidator = nameValidator.min(1, 'This field is required');
 
 // Numeric validators
-export const positiveNumberValidator = z.number()
+export const positiveNumberValidator = z
+  .number()
   .positive('Must be a positive number')
   .max(999999, 'Value is too large');
 
-export const heightValidator = z.number()
+export const heightValidator = z
+  .number()
   .min(50, 'Height must be at least 50 cm')
   .max(300, 'Height cannot exceed 300 cm');
 
-export const weightValidator = z.number()
+export const weightValidator = z
+  .number()
   .min(1, 'Weight must be at least 1 kg')
   .max(500, 'Weight cannot exceed 500 kg');
 
-export const ageValidator = z.number()
+export const ageValidator = z
+  .number()
   .min(0, 'Age cannot be negative')
   .max(150, 'Age cannot exceed 150 years');
 
@@ -56,58 +67,60 @@ export const sexValidator = z.enum(['male', 'female'], {
   message: 'Please select a valid sex',
 });
 
-export const requiredSelectValidator = z.string()
-  .min(1, 'Please make a selection');
+export const requiredSelectValidator = z.string().min(1, 'Please make a selection');
 
 // Field-specific validation functions
-export const validateField = (fieldName: string, value: any): { isValid: boolean; error?: string } => {
+export const validateField = (
+  fieldName: string,
+  value: unknown
+): { isValid: boolean; error?: string } => {
   try {
     switch (fieldName) {
       case 'firstName':
       case 'lastName':
         requiredNameValidator.parse(value);
         break;
-      
+
       case 'middleName':
       case 'extensionName':
         if (value) nameValidator.parse(value);
         break;
-      
+
       case 'sex':
         sexValidator.parse(value);
         break;
-      
+
       case 'birthdate':
         birthdateValidator.parse(value);
         break;
-      
+
       case 'email':
         if (value) emailValidator.parse(value);
         break;
-      
+
       case 'mobileNumber':
         if (value) phoneNumberValidator.parse(value);
         break;
-      
+
       case 'philsysCardNumber':
         if (value) philsysCardValidator.parse(value);
         break;
-      
+
       case 'height':
         if (value) heightValidator.parse(Number(value));
         break;
-      
+
       case 'weight':
         if (value) weightValidator.parse(Number(value));
         break;
-      
+
       case 'civilStatus':
       case 'citizenship':
       case 'educationAttainment':
       case 'employmentStatus':
         requiredSelectValidator.parse(value);
         break;
-      
+
       default:
         // For fields without specific validation, just check if required
         if (value === null || value === undefined || value === '') {
@@ -115,7 +128,7 @@ export const validateField = (fieldName: string, value: any): { isValid: boolean
         }
         break;
     }
-    
+
     return { isValid: true };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -127,20 +140,20 @@ export const validateField = (fieldName: string, value: any): { isValid: boolean
 
 // Batch validation for multiple fields
 export const validateFields = (
-  data: Record<string, any>, 
+  data: Partial<ResidentFormData>,
   fieldNames: string[]
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
-  
+
   fieldNames.forEach(fieldName => {
     const value = data[fieldName];
     const result = validateField(fieldName, value);
-    
+
     if (!result.isValid && result.error) {
       errors[fieldName] = result.error;
     }
   });
-  
+
   return errors;
 };
 
@@ -161,12 +174,12 @@ export const getRequiredFieldsForSection = (section: keyof typeof REQUIRED_FIELD
 
 // Validate a complete form section
 export const validateFormSection = (
-  data: Record<string, any>,
+  data: Partial<ResidentFormData>,
   section: keyof typeof REQUIRED_FIELDS
 ): { isValid: boolean; errors: Record<string, string> } => {
   const requiredFields = getRequiredFieldsForSection(section);
   const errors = validateFields(data, requiredFields);
-  
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
@@ -180,10 +193,10 @@ export const createDebouncedValidator = (
   delay = 500
 ) => {
   let timeoutId: NodeJS.Timeout;
-  
-  return (value: any) => {
+
+  return (value: string | number | boolean | null | undefined) => {
     clearTimeout(timeoutId);
-    
+
     timeoutId = setTimeout(() => {
       const result = validateField(fieldName, value);
       onValidation(result.isValid, result.error);

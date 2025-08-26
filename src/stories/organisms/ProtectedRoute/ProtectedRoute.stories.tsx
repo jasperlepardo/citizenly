@@ -2,6 +2,16 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 import ProtectedRoute from '@/components/organisms/ProtectedRoute';
 
+interface MockAuthValue {
+  user: unknown;
+  userProfile: unknown;
+  role: unknown;
+  loading: boolean;
+  profileLoading: boolean;
+  hasPermission: () => boolean;
+  isInRole: () => boolean;
+}
+
 // Mock Next.js router
 const mockRouter = {
   push: () => {},
@@ -32,7 +42,7 @@ const MockAuthProvider = ({
   authValue,
 }: {
   children: React.ReactNode;
-  authValue: any;
+  authValue: MockAuthValue;
 }) => {
   // Note: AuthContext mocking would be handled by Storybook
   console.log('AuthContext mock would be configured here');

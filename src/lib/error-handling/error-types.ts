@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
  */
 export interface AppError extends Error {
   code?: string;
-  context?: Record<string, any>;
+  context?: Record<string, string | number | boolean>;
   timestamp?: Date;
   severity?: ErrorSeverity;
   cause?: Error;
@@ -94,7 +94,7 @@ export interface ErrorRecoveryStrategy {
   type: 'retry' | 'fallback' | 'redirect' | 'ignore';
   maxAttempts?: number;
   delay?: number;
-  fallbackComponent?: React.ComponentType<any>;
+  fallbackComponent?: React.ComponentType<Record<string, never>>;
   redirectUrl?: string;
 }
 
@@ -105,7 +105,7 @@ export interface FieldError {
   field: string;
   message: string;
   code?: string;
-  value?: any;
+  value?: string | number | boolean | null;
 }
 
 /**
@@ -113,7 +113,7 @@ export interface FieldError {
  */
 export interface ValidationError extends AppError {
   fields?: FieldError[];
-  invalidValues?: Record<string, any>;
+  invalidValues?: Record<string, string | number | boolean>;
 }
 
 /**
@@ -124,7 +124,7 @@ export interface NetworkError extends AppError {
   statusText?: string;
   url?: string;
   method?: string;
-  response?: any;
+  response?: { data?: unknown; headers?: Record<string, string>; };
 }
 
 /**

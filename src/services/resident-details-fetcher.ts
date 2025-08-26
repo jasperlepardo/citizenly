@@ -21,6 +21,19 @@ export interface PsocInfo {
   level?: string;
 }
 
+interface BarangayWithRelations {
+  psgc_cities_municipalities: {
+    name: string;
+    type: string;
+    psgc_provinces: {
+      name: string;
+      psgc_regions: {
+        name: string;
+      };
+    };
+  };
+}
+
 /**
  * Optimized address fetcher - tries efficient view first, falls back gracefully
  */
@@ -84,7 +97,8 @@ const fetchAddressFromJoinedTables = async (barangayCode: string): Promise<Addre
       return undefined;
     }
 
-    const city = data.psgc_cities_municipalities as any;
+    const typedData = data as BarangayWithRelations;
+    const city = typedData.psgc_cities_municipalities;
     const province = city?.psgc_provinces;
     const region = province?.psgc_regions;
 

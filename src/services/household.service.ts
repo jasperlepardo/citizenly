@@ -69,7 +69,7 @@ export interface CreateHouseholdRequest {
 
 export interface CreateHouseholdResponse {
   success: boolean;
-  data?: any;
+  data?: HouseholdRecord;
   error?: string;
 }
 

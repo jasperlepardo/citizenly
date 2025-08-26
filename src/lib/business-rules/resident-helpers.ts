@@ -3,13 +3,14 @@
  * Extracted from components for reusability and maintainability
  */
 
+import type { Session } from '@supabase/supabase-js';
 import { ResidentWithRelations } from '@/types';
 
 /**
  * Initialize missing fields in resident data with default values
  * Ensures all expected fields are present for form consumption
  */
-export const initializeResidentFields = (residentData: any): ResidentWithRelations => {
+export const initializeResidentFields = (residentData: Partial<ResidentWithRelations>): ResidentWithRelations => {
   return {
     ...residentData,
     telephone_number: residentData.telephone_number || '',
@@ -67,7 +68,7 @@ export const getAuthSession = async () => {
  * Fetch resident data from API with proper error handling
  * Centralized API call with consistent error handling
  */
-export const fetchResidentData = async (residentId: string, session: any) => {
+export const fetchResidentData = async (residentId: string, session: Session) => {
   const response = await fetch(`/api/residents/${residentId}`, {
     headers: {
       Authorization: `Bearer ${session.access_token}`,

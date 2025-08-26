@@ -174,7 +174,7 @@ class PerformanceMonitor {
         break;
 
       case 'layout-shift':
-        const clsEntry = entry as any; // LayoutShift interface may not be available
+        const clsEntry = entry as PerformanceEntry & { value: number; hadRecentInput: boolean };
         if (!clsEntry.hadRecentInput) {
           metric = this.createMetric('CLS', clsEntry.value);
         }

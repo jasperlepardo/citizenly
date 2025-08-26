@@ -371,7 +371,7 @@ export const ComplexForm: Story = {
       frequency: 'weekly',
     });
 
-    const updateField = (field: string, value: any) => {
+    const updateField = (field: string, value: string | number | boolean) => {
       setFormData(prev => ({ ...prev, [field]: value }));
     };
 

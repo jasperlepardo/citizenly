@@ -195,8 +195,8 @@ export interface HouseholdsListResponse {
 export interface HouseholdTableColumn {
   key: string;
   title: string;
-  dataIndex: string | ((record: HouseholdWithMembersResult) => any);
-  render?: (value: any, record: HouseholdWithMembersResult) => ReactNode;
+  dataIndex: string | ((record: HouseholdWithMembersResult) => string | number | boolean);
+  render?: (value: string | number | boolean, record: HouseholdWithMembersResult) => ReactNode;
   sortable?: boolean;
 }
 

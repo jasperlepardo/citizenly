@@ -2,6 +2,7 @@ import React from 'react';
 import { SelectField } from '@/components';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
 
 export interface EmploymentInformationData {
   employment_status: string;
@@ -15,7 +16,7 @@ export interface EmploymentInformationProps {
   errors: Record<string, string>;
   // PSOC search functionality
   onPsocSearch?: (query: string) => void;
-  psocOptions?: any[];
+  psocOptions?: SelectOption[];
   psocLoading?: boolean;
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
@@ -32,7 +33,7 @@ export function EmploymentInformation({
   mode = 'create',
   className = '' 
 }: EmploymentInformationProps) {
-  const handleChange = (field: keyof EmploymentInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof EmploymentInformationData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,

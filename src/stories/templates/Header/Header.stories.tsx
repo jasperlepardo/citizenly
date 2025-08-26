@@ -9,7 +9,7 @@ const MockAuthProvider = ({
   loading = false,
 }: {
   children: React.ReactNode;
-  user?: any;
+  user?: { user_metadata?: { first_name?: string; last_name?: string; email?: string } } | null;
   loading?: boolean;
 }) => {
   const mockAuthValue = {

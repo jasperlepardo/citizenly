@@ -21,6 +21,27 @@ import {
   composeValidators,
 } from './fieldValidators';
 import type { FormValidator, ValidationResult, ValidationContext } from './types';
+import type { ResidentFormData } from '@/types/resident-form';
+import type { HouseholdFormData } from '@/types/households';
+
+interface UserRegistrationData {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  role_id?: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface PasswordChangeData {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}
 
 /**
  * Resident data validation schema
@@ -177,7 +198,7 @@ export const fileUploadSchema = createFormValidator({
  * Validate resident data
  */
 export async function validateResidentData(
-  data: any,
+  data: Partial<ResidentFormData>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await residentSchema(data, context);
@@ -187,7 +208,7 @@ export async function validateResidentData(
  * Validate household data
  */
 export async function validateHouseholdData(
-  data: any,
+  data: Partial<HouseholdFormData>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await householdSchema(data, context);
@@ -197,7 +218,7 @@ export async function validateHouseholdData(
  * Validate user data
  */
 export async function validateUserData(
-  data: any,
+  data: Partial<UserRegistrationData>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await userSchema(data, context);
@@ -207,7 +228,7 @@ export async function validateUserData(
  * Validate login data
  */
 export async function validateLoginData(
-  data: any,
+  data: Partial<LoginData>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await loginSchema(data, context);
@@ -217,7 +238,7 @@ export async function validateLoginData(
  * Validate password change data
  */
 export async function validatePasswordChangeData(
-  data: any,
+  data: Partial<PasswordChangeData>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await passwordChangeSchema(data, context);
@@ -227,7 +248,7 @@ export async function validatePasswordChangeData(
  * Validate search query data
  */
 export async function validateSearchQueryData(
-  data: any,
+  data: { query?: string; filters?: Record<string, unknown>; page?: number; limit?: number },
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await searchQuerySchema(data, context);
@@ -237,7 +258,7 @@ export async function validateSearchQueryData(
  * Validate file upload data
  */
 export async function validateFileUploadData(
-  data: any,
+  data: { fileName?: string; fileSize?: number; fileType?: string },
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await fileUploadSchema(data, context);

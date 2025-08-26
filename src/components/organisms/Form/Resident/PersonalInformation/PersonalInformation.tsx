@@ -1,10 +1,16 @@
 import React from 'react';
-import { PhilSysCardField } from './FormField/PhilSysCardField';
+
+import type { FormMode } from '@/types';
+import { SelectOption } from '@/types/database';
+
 import { BasicInformation, BasicInformationData } from './FormField/BasicInformation';
 import { BirthInformation, BirthInformationData } from './FormField/BirthInformation';
 import { EducationInformation, EducationInformationData } from './FormField/EducationInformation';
-import { EmploymentInformation, EmploymentInformationData } from './FormField/EmploymentInformation';
-import type { FormMode } from '@/types';
+import {
+  EmploymentInformation,
+  EmploymentInformationData,
+} from './FormField/EmploymentInformation';
+import { PhilSysCardField } from './FormField/PhilSysCardField';
 
 export interface PersonalInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -36,26 +42,24 @@ export interface PersonalInformationFormProps {
   // API handlers for search functionality
   onPsgcSearch?: (query: string) => void;
   onPsocSearch?: (query: string) => void;
-  psgcOptions?: any[];
-  psocOptions?: any[];
+  psgcOptions?: SelectOption[];
+  psocOptions?: SelectOption[];
   psgcLoading?: boolean;
   psocLoading?: boolean;
 }
 
-export function PersonalInformationForm({ 
+export function PersonalInformationForm({
   mode = 'create',
-  formData, 
-  onChange, 
+  formData,
+  onChange,
   errors,
   onPsgcSearch,
   onPsocSearch,
   psgcOptions = [],
   psocOptions = [],
   psgcLoading = false,
-  psocLoading = false
+  psocLoading = false,
 }: PersonalInformationFormProps) {
-
-
   // Map form data to BasicInformation component props
   const basicInfoValue: BasicInformationData = {
     first_name: formData.first_name || '',
@@ -100,10 +104,12 @@ export function PersonalInformationForm({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-600 shadow-xs p-6">
+    <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Personal Information</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Personal Information
+          </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             Basic personal details, birth information, and educational/employment background.
           </p>
@@ -114,7 +120,7 @@ export function PersonalInformationForm({
           <PhilSysCardField
             mode={mode}
             value={formData.philsys_card_number || ''}
-            onChange={(value) => onChange('philsys_card_number', value)}
+            onChange={value => onChange('philsys_card_number', value)}
             error={errors.philsys_card_number}
           />
 

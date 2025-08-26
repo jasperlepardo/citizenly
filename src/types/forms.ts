@@ -419,7 +419,7 @@ export interface FieldConfig {
   placeholder?: string;
   helperText?: string;
   options?: Array<{ value: string; label: string }>;
-  validation?: (value: any) => string | undefined;
+  validation?: (value: unknown) => string | undefined;
 }
 
 /**

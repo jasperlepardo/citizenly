@@ -129,11 +129,11 @@ const mockPsgcSearch = (query: string) => {
 const mockSupabase = {
   from: (table: string) => ({
     select: (columns: string) => ({
-      eq: (column: string, value: any) => ({
+      eq: (column: string, value: unknown) => ({
         or: (condition: string) => ({
-          order: (column: string, options: any) => ({
+          order: (column: string, options: { ascending?: boolean }) => ({
             limit: (count: number) => ({
-              then: (callback: any) => {
+              then: (callback: (result: { data: unknown[]; error: null }) => void) => {
                 // Mock household data
                 const households = [
                   {

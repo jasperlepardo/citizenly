@@ -19,14 +19,14 @@ const mockLogFileOperation = (
   filename: string,
   user: string,
   status: string,
-  metadata: any
+  metadata: Record<string, unknown>
 ) => {
   console.log('File operation:', { operation, filename, user, status, metadata });
 };
 
 // Mock logger
 const mockLogger = {
-  error: (message: string, data: any) => console.error(message, data),
+  error: (message: string, data: unknown) => console.error(message, data),
 };
 
 // Note: This story mocks security dependencies that may not exist in the actual implementation

@@ -2,6 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from 'storybook/test';
 import LoginForm from '@/components/organisms/LoginForm';
 
+interface MockAuthValue {
+  signIn: () => Promise<unknown>;
+  loading: boolean;
+  user: unknown;
+  userProfile: unknown;
+  role: unknown;
+}
+
 // Mock the AuthContext
 const createMockAuthContext = (overrides = {}) => ({
   signIn: () => Promise.resolve(),
@@ -18,7 +26,7 @@ const MockAuthProvider = ({
   authValue,
 }: {
   children: React.ReactNode;
-  authValue: any;
+  authValue: MockAuthValue;
 }) => {
   const mockUseAuth = () => authValue;
 
