@@ -26,8 +26,8 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
     fields: ['employment_status', 'occupation_title'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (data.employment_status === 'employed' && !(data as any).occupation_title) {
-        (errors as any).occupation_title = 'Occupation title is required when employed';
+      if (data.employment_status === 'employed' && !data.occupation_title) {
+        errors.occupation_title = 'Occupation title is required when employed';
       }
       return errors;
     }
