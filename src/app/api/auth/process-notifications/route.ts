@@ -16,19 +16,35 @@ export async function POST(_request: NextRequest) {
 
     const supabaseAdmin = createAdminSupabaseClient();
 
-    // Get pending notifications
+    // Atomically claim pending notifications to prevent race conditions
+    // First, update status to 'processing' and return the claimed rows
     const { data: notifications, error } = await supabaseAdmin
-      .from('user_notifications')
-      .select('*')
-      .eq('status', 'pending')
-      .lt('retry_count', 3)
-      .lte('scheduled_for', new Date().toISOString())
-      .order('created_at', { ascending: true })
-      .limit(10);
-
-    if (error) {
-      console.error('Failed to fetch notifications:', error);
-      return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
+      .rpc('claim_pending_notifications', {
+        batch_size: 10,
+        max_retries: 3,
+        current_time: new Date().toISOString()
+      });
+    
+    // Fallback to regular select if RPC doesn't exist
+    if (error?.code === 'PGRST202') {
+      const { data: fallbackNotifications, error: fallbackError } = await supabaseAdmin
+        .from('user_notifications')
+        .select('*')
+        .eq('status', 'pending')
+        .lt('retry_count', 3)
+        .lte('scheduled_for', new Date().toISOString())
+        .order('created_at', { ascending: true })
+        .limit(10);
+      
+      if (fallbackError) {
+        console.error('Failed to fetch notifications:', fallbackError);
+        return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
+      }
+      
+      Object.assign(notifications || [], fallbackNotifications || []);
+    } else if (error) {
+      console.error('Failed to claim notifications:', error);
+      return NextResponse.json({ error: 'Failed to claim notifications' }, { status: 500 });
     }
 
     const results = {
