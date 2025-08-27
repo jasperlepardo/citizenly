@@ -6,7 +6,7 @@
  * Integrates with age, employment status, and education data
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { ControlField } from '@/components';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
@@ -14,7 +14,6 @@ import type { FormMode } from '@/types';
 
 // Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {
-  is_labor_force: boolean; // Auto from employment_status (in labor force)
   is_labor_force_employed: boolean; // Auto from employment_status
   is_unemployed: boolean; // Auto from employment_status
   is_overseas_filipino_worker: boolean; // Manual - Overseas Filipino Worker
@@ -57,14 +56,6 @@ export default function SectoralClassifications({
   mode = 'create',
   disabled = false,
 }: SectoralClassificationsProps) {
-  const [autoCalculated, setAutoCalculated] = useState({
-    is_labor_force_employed: false,
-    is_unemployed: false,
-    is_out_of_school_children: false,
-    is_out_of_school_youth: false,
-    is_senior_citizen: false,
-    is_indigenous_people: false,
-  });
 
   // Auto-calculate sectoral flags based on context
   useEffect(() => {
@@ -84,8 +75,6 @@ export default function SectoralClassifications({
       is_senior_citizen: age >= 60,
       is_indigenous_people: isIndigenousPeople(ethnicity),
     };
-
-    setAutoCalculated(calculated);
 
     // Update the sectoral information with auto-calculated values
     const updatedSectoral = {
@@ -108,7 +97,13 @@ export default function SectoralClassifications({
     context.highest_educational_attainment,
     context.ethnicity,
     onChange,
-    value,
+    value.is_labor_force_employed,
+    value.is_unemployed,
+    value.is_out_of_school_children,
+    value.is_out_of_school_youth,
+    value.is_senior_citizen,
+    value.is_indigenous_people,
+    value.is_registered_senior_citizen,
   ]);
 
   // Calculate age from birthdate
@@ -193,10 +188,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_labor_force_employed,
+              checked: value.is_labor_force_employed,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_labor_force_employed
+              description: value.is_labor_force_employed
                 ? 'Currently employed'
                 : 'Not employed',
             }}
@@ -207,10 +202,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_unemployed,
+              checked: value.is_unemployed,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_unemployed ? 'Seeking employment' : 'Not job hunting',
+              description: value.is_unemployed ? 'Seeking employment' : 'Not job hunting',
             }}
           />
           <ControlField
@@ -219,10 +214,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_out_of_school_children,
+              checked: value.is_out_of_school_children,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_out_of_school_children
+              description: value.is_out_of_school_children
                 ? 'Not enrolled in school'
                 : 'Attending school',
             }}
@@ -233,10 +228,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_out_of_school_youth,
+              checked: value.is_out_of_school_youth,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_out_of_school_youth
+              description: value.is_out_of_school_youth
                 ? 'Neither studying nor working'
                 : 'In school or employed',
             }}
@@ -247,10 +242,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_senior_citizen,
+              checked: value.is_senior_citizen,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_senior_citizen
+              description: value.is_senior_citizen
                 ? '60+ years old'
                 : 'Below 60 years old',
             }}
@@ -261,10 +256,10 @@ export default function SectoralClassifications({
             mode={mode}
             controlProps={{
               type: 'checkbox',
-              checked: autoCalculated.is_indigenous_people,
+              checked: value.is_indigenous_people,
               disabled: true,
               size: 'md',
-              description: autoCalculated.is_indigenous_people
+              description: value.is_indigenous_people
                 ? 'Indigenous community member'
                 : 'Non-indigenous',
             }}
@@ -364,9 +359,8 @@ export default function SectoralClassifications({
         <div className="text-xs text-gray-700 dark:text-gray-300">
           <span className="font-medium">Active Classifications:</span>{' '}
           {(() => {
-            const allClassifications = { ...autoCalculated, ...value };
             return (
-              Object.entries(allClassifications)
+              Object.entries(value)
                 .filter(([, val]) => val === true)
                 .map(([key]) => key.replace('is_', '').replace(/_/g, ' '))
                 .join(', ') || 'None'

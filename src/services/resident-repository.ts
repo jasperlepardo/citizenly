@@ -36,7 +36,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
   ): Promise<RepositoryResult<ResidentData>> {
     try {
       // Validate resident data before creation
-      const validationResult = await validateResidentData(data, this.context);
+      const validationResult = await validateResidentData(data as any, this.context);
       if (!validationResult.isValid) {
         return {
           success: false,
@@ -73,7 +73,7 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
 
       // Merge with existing data for validation
       const mergedData = { ...existingResult.data, ...data };
-      const validationResult = await validateResidentData(mergedData, this.context);
+      const validationResult = await validateResidentData(mergedData as any, this.context);
 
       if (!validationResult.isValid) {
         return {

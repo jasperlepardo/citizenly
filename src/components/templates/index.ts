@@ -5,5 +5,4 @@ export { AppShell } from './AppShell';
 export { Header } from './Header';
 
 // Forms
-export { ResidentForm } from './ResidentForm/ResidentForm';
-export { NewHouseholdForm } from './HouseholdForm';
+export { ResidentForm, NewHouseholdForm } from './Form';

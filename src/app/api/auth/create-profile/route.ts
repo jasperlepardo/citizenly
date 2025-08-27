@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = createAdminSupabaseClient();
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .upsert(requestData, {
+      .upsert(requestData as any, {
         onConflict: 'id',
       })
       .select()

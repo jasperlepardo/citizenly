@@ -8,7 +8,7 @@ import { Button } from '@/components';
 import {
   LocationAndDemographicsForm,
   HouseholdDetailsForm,
-} from '@/components/organisms/Form/Household';
+} from '@/components/organisms/FormSection/Household';
 import { useAuth } from '@/contexts';
 import { useUserBarangay } from '@/hooks/utilities';
 import { supabase, logger, logError } from '@/lib';

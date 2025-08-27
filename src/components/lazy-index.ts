@@ -23,8 +23,8 @@ export { LazyCreateHouseholdModal as CreateHouseholdModal } from './organisms/Cr
 export { LazyDataTable as DataTable } from './organisms/DataTable/DataTable.lazy';
 export { LazyPopulationPyramid as PopulationPyramid } from './organisms/PopulationPyramid/PopulationPyramid.lazy';
 export { LazyUserProfile as UserProfile } from './organisms/UserProfile/UserProfile.lazy';
-export { LazyPersonalInformation as PersonalInformation } from './organisms/Form/Resident/PersonalInformation/PersonalInformation.lazy';
-export { LazySectoralInfo as SectoralInfo } from './organisms/Form/Resident/SectoralInformation/SectoralInformation.lazy';
+export { LazyPersonalInformation as PersonalInformation } from './organisms/FormSection/Resident/PersonalInformation/PersonalInformation.lazy';
+export { LazySectoralInfo as SectoralInfo } from './organisms/FormSection/Resident/SectoralInformation/SectoralInformation.lazy';
 
 // Utilities - Re-export from lib
 export { withLazyLoading, preloadComponents } from '@/lib';

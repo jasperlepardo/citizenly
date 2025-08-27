@@ -102,7 +102,7 @@ export const GET = withSecurityHeaders(
 
         // Apply search filter if provided
         if (search) {
-          query = applySearchFilter(query, search, ['code', 'house_number']);
+          query = applySearchFilter(query as any, search, ['code', 'house_number']) as any;
         }
 
         // Apply pagination
@@ -118,7 +118,7 @@ export const GET = withSecurityHeaders(
 
         // Audit the data access
         await auditDataOperation('view', 'household', 'list', context, {
-          searchTerm: search,
+          searchTerm: search || '',
           resultCount: households?.length || 0,
           totalCount: count || 0,
         });
@@ -210,7 +210,7 @@ export const POST = withSecurityHeaders(
         // Insert household
         const { data: newHousehold, error: insertError } = await supabaseAdmin
           .from('households')
-          .insert([insertData])
+          .insert([insertData as any])
           .select('*')
           .single();
 

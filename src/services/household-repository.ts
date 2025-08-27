@@ -102,7 +102,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
 
       // Merge with existing data for validation
       const mergedData = { ...existingResult.data, ...data };
-      const validationResult = await validateHouseholdData(mergedData, this.context);
+      const validationResult = await validateHouseholdData(mergedData as any, this.context);
 
       if (!validationResult.isValid) {
         return {

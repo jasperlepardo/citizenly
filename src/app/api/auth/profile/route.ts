@@ -72,11 +72,11 @@ export async function GET(request: NextRequest) {
 
     // Fetch role separately if needed
     let roleData = null;
-    if (profileData.role_id) {
+    if ((profileData as any).role_id) {
       const { data: role } = await supabaseAdmin
         .from('auth_roles')
         .select('*')
-        .eq('id', profileData.role_id)
+        .eq('id', (profileData as any).role_id)
         .single();
 
       roleData = role;

@@ -9,7 +9,7 @@ import {
   PhysicalPersonalDetailsForm,
   SectoralInformationForm,
   MigrationInformation,
-} from '@/components/organisms/Form';
+} from '@/components/organisms/FormSection';
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
@@ -596,7 +596,7 @@ export function ResidentForm({
           <SectoralInformationForm
             mode={mode}
             formData={{
-              // Component expects is_overseas_filipino, it handles mapping internally
+              // Sectoral classifications (matching database schema)
               is_labor_force_employed: formData.is_labor_force_employed,
               is_unemployed: formData.is_unemployed,
               is_overseas_filipino: formData.is_overseas_filipino_worker,
@@ -608,12 +608,13 @@ export function ResidentForm({
               is_solo_parent: formData.is_solo_parent,
               is_indigenous_people: formData.is_indigenous_people,
               is_migrant: formData.is_migrant,
+              // Context data for auto-calculation
+              birthdate: formData.birthdate,
+              employment_status: formData.employment_status,
+              education_attainment: formData.education_attainment,
+              civil_status: formData.civil_status,
+              ethnicity: formData.ethnicity,
             }}
-            // Debug log for migrant status being passed
-            {...(() => {
-              console.log('🔥 RESIDENT_FORM: Passing is_migrant value:', formData.is_migrant);
-              return {};
-            })()}
             onChange={handleFieldChange}
             errors={errors}
           />
@@ -671,6 +672,15 @@ export function ResidentForm({
             errors={errors}
           />
         )}
+
+        {/* Form Actions - Submit/Cancel buttons */}
+        <FormActions
+          mode={mode}
+          isSubmitting={isSubmitting}
+          isOptimisticallyUpdated={false}
+          onCancel={onCancel}
+          errorCount={Object.keys(errors).length}
+        />
       </form>
     </div>
   );

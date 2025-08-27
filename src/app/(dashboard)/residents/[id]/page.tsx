@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
-import { ResidentForm } from '@/components/templates/ResidentForm';
+import { ResidentForm } from '@/components/templates/Form/Resident';
 import { supabase, logger, logError } from '@/lib';
 // Remove unused enum imports - using types instead
 import { fetchWithAuth } from '@/lib/utils/sessionUtils';
@@ -388,6 +388,12 @@ function ResidentDetailContent() {
       telephone_number: resident.telephone_number || '',
       mobile_number: resident.mobile_number || '',
       household_code: resident.household_code || '',
+
+      // Address hierarchy codes
+      region_code: resident.region_code || '',
+      province_code: resident.province_code || '',
+      city_municipality_code: resident.city_municipality_code || '',
+      barangay_code: resident.barangay_code || '',
 
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',

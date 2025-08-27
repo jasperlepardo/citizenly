@@ -16,35 +16,19 @@ export async function POST(_request: NextRequest) {
 
     const supabaseAdmin = createAdminSupabaseClient();
 
-    // Atomically claim pending notifications to prevent race conditions
-    // First, update status to 'processing' and return the claimed rows
+    // Get pending notifications with proper typing
     const { data: notifications, error } = await supabaseAdmin
-      .rpc('claim_pending_notifications', {
-        batch_size: 10,
-        max_retries: 3,
-        current_time: new Date().toISOString()
-      });
-    
-    // Fallback to regular select if RPC doesn't exist
-    if (error?.code === 'PGRST202') {
-      const { data: fallbackNotifications, error: fallbackError } = await supabaseAdmin
-        .from('user_notifications')
-        .select('*')
-        .eq('status', 'pending')
-        .lt('retry_count', 3)
-        .lte('scheduled_for', new Date().toISOString())
-        .order('created_at', { ascending: true })
-        .limit(10);
-      
-      if (fallbackError) {
-        console.error('Failed to fetch notifications:', fallbackError);
-        return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
-      }
-      
-      Object.assign(notifications || [], fallbackNotifications || []);
-    } else if (error) {
-      console.error('Failed to claim notifications:', error);
-      return NextResponse.json({ error: 'Failed to claim notifications' }, { status: 500 });
+      .from('user_notifications')
+      .select('*')
+      .eq('status', 'pending')
+      .lt('retry_count', 3)
+      .lte('scheduled_for', new Date().toISOString())
+      .order('created_at', { ascending: true })
+      .limit(10);
+
+    if (error) {
+      console.error('Failed to fetch notifications:', error);
+      return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
     }
 
     const results = {
@@ -98,7 +82,7 @@ export async function POST(_request: NextRequest) {
 
         const { error: updateNotifError } = await supabaseAdmin
           .from('user_notifications')
-          .update(updateData)
+          .update(updateData as any)
           .eq('id', notif.id);
         if (updateNotifError) {
           console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
@@ -125,7 +109,7 @@ export async function POST(_request: NextRequest) {
             retry_count: notif.retry_count + 1,
             error_message: errorMsg,
             scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
-          })
+          } as any)
           .eq('id', notif.id);
         if (retryUpdateError) {
           console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);

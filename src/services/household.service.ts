@@ -267,7 +267,7 @@ export class HouseholdService {
         return {
           success: false,
           error: 'Please fill in all required fields correctly',
-          data: { validationErrors: validationResult.errors },
+          data: { validationErrors: validationResult.errors } as any,
         };
       }
 

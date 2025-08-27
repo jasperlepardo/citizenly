@@ -72,7 +72,7 @@ export class ResidentService {
   async validateResident(formData: ResidentFormData): Promise<ResidentValidationResult> {
     try {
       console.log('Validating resident data:', formData);
-      const result = await validateResidentData(formData);
+      const result = await validateResidentData(formData as any);
       console.log('Validation result:', result);
       if (result.errors) {
         console.log('Validation errors detail:', JSON.stringify(result.errors, null, 2));
@@ -259,7 +259,7 @@ export class ResidentService {
         return {
           success: false,
           error: 'Validation failed',
-          data: { validationErrors: validationResult.errors },
+          data: { validationErrors: validationResult.errors } as any,
         };
       }
 
