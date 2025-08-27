@@ -38,7 +38,8 @@ import type { ResidentRecord } from './database';
 // =============================================================================
 
 // Import enums from database.ts
-import type {
+// Re-export database enums for backward compatibility
+export type {
   SexEnum,
   CivilStatusEnum,
   CitizenshipEnum,
@@ -236,6 +237,9 @@ export interface MigrationInfoFormState {
   duration_of_stay_current_months: number;
   migration_type: string;
   is_whole_family_migrated: boolean;
+  
+  // Additional fields for backward compatibility
+  reason_for_transferring?: string; // Legacy field name
 }
 
 /**
