@@ -9,7 +9,7 @@ import { ResidentForm } from '@/components';
 import { useAuth } from '@/contexts';
 import { useCSRFToken } from '@/lib/auth';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
-import { ResidentFormData } from '@/services/resident.service';
+import { ResidentFormData } from '@/types/forms';
 import { 
   philippineCompliantLogger, 
   auditLogger,
@@ -23,10 +23,12 @@ import {
   parseFullName,
   validateFormData,
   prepareFormSubmission,
-  generateFormSummary 
+ 
 } from '@/utils/resident-form-utils';
 import { 
-  checkRateLimit 
+  checkRateLimit,
+  clearRateLimit,
+  getRateLimitStatus
 } from '@/utils/input-sanitizer';
 import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
 import { RATE_LIMITS } from '@/constants/resident-form';
@@ -34,6 +36,12 @@ import { RATE_LIMITS } from '@/constants/resident-form';
 export const dynamic = 'force-dynamic';
 
 const sessionId = generateSecureSessionId();
+
+// Expose rate limit utilities in development mode
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  (window as any).clearRateLimit = clearRateLimit;
+  (window as any).getRateLimitStatus = getRateLimitStatus;
+}
 
 function CreateResidentForm() {
   const router = useRouter();
@@ -74,7 +82,6 @@ function CreateResidentForm() {
         action: 'RESIDENT_CREATE_ERROR',
         timestamp: new Date().toISOString(),
         sessionId,
-        errorType: 'VALIDATION_OR_SUBMISSION_ERROR',
         complianceFramework: 'RA_10173_BSP_808',
         retentionPeriod: '7_YEARS'
       });
@@ -86,8 +93,34 @@ function CreateResidentForm() {
   const handleSubmit = useCallback(async (formData: any) => {
     try {
       const userIdentifier = user?.id || 'anonymous';
+      
+      // Check rate limit and provide helpful feedback
       if (!checkRateLimit(userIdentifier, RATE_LIMITS.FORM_SUBMISSION.MAX_ATTEMPTS, RATE_LIMITS.FORM_SUBMISSION.WINDOW_MS)) {
-        toast.error('Too many submission attempts. Please wait before trying again.');
+        const status = getRateLimitStatus(userIdentifier);
+        const waitTime = status.remainingTime ? Math.ceil(status.remainingTime / 1000 / 60) : 5;
+        
+        toast.error(
+          `Too many submission attempts (${status.count}/5). Please wait ${waitTime} minutes before trying again.` +
+          (process.env.NODE_ENV === 'development' ? ' Check console for reset option.' : '')
+        );
+        
+        // In development, provide a way to reset the rate limit
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            `Rate limit exceeded for user: ${userIdentifier}\n` +
+            `Attempts: ${status.count}/5\n` +
+            `Wait time: ${waitTime} minutes\n` +
+            `To reset rate limit, run: clearRateLimit("${userIdentifier}")`
+          );
+          
+          // Auto-clear rate limit after 30 seconds in development to help with testing
+          setTimeout(() => {
+            console.log('Development mode: Auto-clearing rate limit after 30 seconds');
+            clearRateLimit(userIdentifier);
+            toast.success('Rate limit cleared. You can now try submitting again.');
+          }, 30000);
+        }
+        
         return;
       }
 
@@ -110,7 +143,6 @@ function CreateResidentForm() {
           action: 'FORM_VALIDATION',
           timestamp: new Date().toISOString(),
           sessionId,
-          errorCount: Object.keys(validation.errors).length,
           complianceFramework: 'RA_10173_BSP_808',
           retentionPeriod: '7_YEARS'
         });
@@ -148,21 +180,17 @@ function CreateResidentForm() {
         npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER
       });
 
-      const result = await createResident({
-        ...transformedData,
-        csrfToken: getCSRFToken()
-      });
+      // Get CSRF token separately 
+      const csrfToken = getCSRFToken();
+      const result = await createResident(transformedData);
 
       if (!result?.success) {
-        const formSummary = generateFormSummary(formData);
         auditLogger.info('Form submission processing completed', {
           eventType: 'FORM_PROCESSING_STATUS',
           userId: user?.id || 'anonymous',
           action: 'PROCESSING_RESULT',
           timestamp: new Date().toISOString(),
           sessionId,
-          success: false,
-          summary: formSummary,
           complianceFramework: 'RA_10173_BSP_808',
           retentionPeriod: '7_YEARS'
         });
@@ -175,7 +203,6 @@ function CreateResidentForm() {
         action: 'SUBMISSION_EXCEPTION',
         timestamp: new Date().toISOString(),
         sessionId,
-        errorType: error instanceof Error ? error.constructor.name : 'UNKNOWN_ERROR',
         complianceFramework: 'RA_10173_BSP_808',
         retentionPeriod: '7_YEARS'
       });
@@ -201,8 +228,6 @@ function CreateResidentForm() {
           action: 'NAME_PREFILL',
           timestamp: new Date().toISOString(),
           sessionId,
-          parameterUsed: 'suggested_name',
-          namePartsFound: [first_name, middleName, last_name].filter(Boolean).length,
           complianceFramework: 'RA_10173_BSP_808',
           retentionPeriod: '7_YEARS'
         });
@@ -220,7 +245,6 @@ function CreateResidentForm() {
           action: 'SECURITY_VALIDATION',
           timestamp: new Date().toISOString(),
           sessionId,
-          parameterType: 'suggested_name',
           complianceFramework: 'RA_10173_BSP_808',
           retentionPeriod: '7_YEARS'
         });
@@ -236,7 +260,6 @@ function CreateResidentForm() {
         action: 'ID_PREFILL',
         timestamp: new Date().toISOString(),
         sessionId,
-        parameterUsed: 'suggested_id',
         complianceFramework: 'RA_10173_BSP_808',
         retentionPeriod: '7_YEARS'
       });

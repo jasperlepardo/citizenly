@@ -20,17 +20,9 @@ import {
 import { RequestContext, Role } from '@/lib/api/types';
 import { createHouseholdSchema } from '@/lib/api/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
+import type { AuthenticatedUser } from '@/types/auth';
 
-// Type the auth result properly
-interface AuthenticatedUser {
-  id: string;
-  email: string;
-  role: Role;
-  barangayCode?: string;
-  cityCode?: string;
-  provinceCode?: string;
-  regionCode?: string;
-}
+// AuthenticatedUser type consolidated to src/types/auth.ts
 
 // GET /api/households - List households with pagination and search
 export const GET = withSecurityHeaders(

@@ -1,4 +1,5 @@
 import { logger } from '@/lib';
+import type { PerformanceMetric, ComponentPerformanceData, LayoutShiftEntry } from '@/types/utilities';
 
 /**
  * Performance monitoring utilities
@@ -6,34 +7,11 @@ import { logger } from '@/lib';
  */
 
 // Performance entry interfaces
-interface LayoutShiftEntry extends PerformanceEntry {
-  value: number;
-  hadRecentInput: boolean;
-  sources?: Array<{
-    node?: {
-      tagName: string;
-    };
-  }>;
-}
 
-interface ComponentProps {
-  [key: string]: unknown;
-}
+// ComponentProps is a generic type for component properties
+type ComponentProps = Record<string, unknown>;
 
-interface PerformanceMetric {
-  name: string;
-  value: number;
-  timestamp: number;
-  metadata?: Record<string, unknown>;
-}
 
-interface ComponentPerformanceData {
-  componentName: string;
-  renderTime: number;
-  propsSize?: number;
-  rerenderCount: number;
-  timestamp: number;
-}
 
 class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];

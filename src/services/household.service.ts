@@ -1,131 +1,34 @@
 /**
  * Household Service
- *
- * Business logic and API operations for household management.
- * Handles data transformation, validation, and database operations.
+ * Business logic and API operations for household management
+ * Handles data transformation, validation, and database operations
+ * Follows standardized service pattern
  */
 
-import { supabase, logger, logError, dbLogger } from '@/lib';
+import { supabase, logError, dbLogger } from '@/lib';
+import { createLogger } from '@/lib/config/environment';
 
-// Import database types
+const logger = createLogger('HouseholdService');
+
+// Import database and consolidated types
 import { HouseholdRecord } from '@/types';
+import type { ValidationError } from '@/types/validation';
+import type {
+  HouseholdFormData,
+  UserAddressDetailed as UserAddress,
+  CreateHouseholdRequest,
+  CreateHouseholdResponse,
+  HouseholdValidationResult
+} from '@/types/services';
 
-// Types - aligned with exact database structure (27 fields)
-export interface HouseholdFormData {
-  // Primary identification
-  code: string;
-  name?: string;
-  address?: string;
-
-  // Location details
-  house_number: string;
-  street_id: string; // UUID reference to geo_streets
-  subdivision_id?: string; // UUID reference to geo_subdivisions
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string;
-  region_code: string;
-  zip_code?: string;
-
-  // Household metrics
-  no_of_families?: number;
-  no_of_household_members?: number;
-  no_of_migrants?: number;
-
-  // Household classifications (enums)
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other';
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others';
-  tenure_others_specify?: string;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others';
-
-  // Economic information
-  monthly_income?: number;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined';
-
-  // Head of household
-  household_head_id?: string; // UUID reference to residents
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other';
-}
-
-export interface UserAddress {
-  region_code: string;
-  province_code?: string;
-  city_municipality_code: string;
-  barangay_code: string;
-  region_name: string;
-  province_name?: string;
-  city_municipality_name: string;
-  city_municipality_type: string;
-  barangay_name: string;
-}
-
-export interface CreateHouseholdRequest {
-  formData: HouseholdFormData;
-  userAddress?: UserAddress;
-  barangay_code?: string;
-  csrf_token?: string;
-}
-
-export interface CreateHouseholdResponse {
-  success: boolean;
-  data?: HouseholdRecord;
-  error?: string;
-}
-
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface HouseholdValidationResult {
-  success: boolean;
-  errors?: Record<string, string>;
-}
+// Re-export types for backward compatibility
+export type {
+  HouseholdFormData,
+  UserAddress,
+  CreateHouseholdRequest,
+  CreateHouseholdResponse,
+  HouseholdValidationResult
+};
 
 /**
  * Household Service Class

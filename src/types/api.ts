@@ -1,6 +1,25 @@
 /**
- * API Types
- * Comprehensive TypeScript interfaces for API requests, responses, and error handling
+ * API Types - RESTful API Interface Collection
+ * 
+ * @fileoverview Comprehensive TypeScript interfaces for standardized API communication
+ * in the Citizenly RBI system. Provides consistent request/response patterns for all
+ * REST endpoints with proper error handling and Supabase integration.
+ * 
+ * @version 3.0.0
+ * @since 2025-01-01
+ * @author Citizenly Development Team
+ * 
+ * @example Standard API Response Usage
+ * ```typescript
+ * import { ApiResponse, ApiSuccessResponse } from '@/types/api';
+ * 
+ * const response: ApiResponse<ResidentRecord[]> = {
+ *   success: true,
+ *   data: residents,
+ *   message: 'Residents retrieved successfully',
+ *   pagination: { page: 1, limit: 10, total: 100, totalPages: 10 }
+ * };
+ * ```
  */
 
 // =============================================================================
@@ -114,15 +133,14 @@ export interface PsgcSearchParams extends SearchParams {
 }
 
 /**
- * PSGC search result item
+ * PSGC search result item (from hook)
  */
 export interface PsgcSearchResult {
   code: string;
   name: string;
-  level: string;
+  level: 'region' | 'province' | 'city' | 'municipality' | 'barangay';
   parent_code?: string;
-  full_hierarchy?: string;
-  is_active: boolean;
+  full_address?: string;
 }
 
 /**

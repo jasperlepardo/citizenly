@@ -1,65 +1,37 @@
 /**
  * Resident Service
- *
- * Business logic and API operations for resident management.
- * Handles data transformation, validation, and database operations.
+ * Business logic and API operations for resident management
+ * Handles data transformation, validation, and database operations
+ * Follows standardized service pattern
  */
 
-import { supabase, logger, logError, dbLogger } from '@/lib';
+import { supabase, logError, dbLogger } from '@/lib';
+import { createLogger } from '@/lib/config/environment';
+
+const logger = createLogger('ResidentService');
 import {
   hashPhilSysNumber,
   extractPhilSysLast4,
-  validatePhilSysFormat,
   logSecurityOperation,
 } from '@/lib/security/crypto';
+import { validatePhilSysFormat } from '@/utils/sanitization-utils';
 import { validateResidentData } from '@/lib/validation';
 import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
+import type { ValidationError } from '@/types/validation';
 
 // Import database types
 import { ResidentRecord } from '@/types/database';
 import { ResidentFormData as BaseResidentFormData } from '@/types/forms';
-import { EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/resident-form';
+import { EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/residents';
 
-// Service-specific form data extends base form data with optional id for updates
-export interface ResidentFormData extends BaseResidentFormData {
-  id?: string; // Optional for create operations, required for updates
-}
-
-export interface UserAddress {
-  region_code: string;
-  province_code?: string;
-  city_municipality_code: string;
-  barangay_code: string;
-  region_name: string;
-  province_name?: string;
-  city_municipality_name: string;
-  city_municipality_type: string;
-  barangay_name: string;
-}
-
-export interface CreateResidentRequest {
-  formData: ResidentFormData;
-  userAddress?: UserAddress;
-  barangayCode?: string;
-  csrfToken?: string;
-}
-
-export interface CreateResidentResponse {
-  success: boolean;
-  data?: ResidentRecord;
-  error?: string;
-}
-
-export interface ValidationError {
-  field: string;
-  message: string;
-}
-
-export interface ResidentValidationResult {
-  isValid: boolean;
-  success?: boolean; // Backward compatibility
-  errors?: ValidationError[];
-}
+// Types moved to src/types/services.ts for consolidation
+import type {
+  ServiceResidentFormData as ResidentFormData,
+  ServiceUserAddress as UserAddress,
+  ServiceCreateResidentRequest as CreateResidentRequest,
+  ServiceCreateResidentResponse as CreateResidentResponse,
+  ResidentValidationResult,
+} from '@/types/services';
 
 /**
  * Resident Service Class

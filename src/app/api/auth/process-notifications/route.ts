@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createAdminSupabaseClient } from '@/lib';
+import type { NotificationRecord } from '@/types/api-requests';
 
-interface NotificationRecord {
-  id: string;
-  user_id: string;
-  notification_type: string;
-  metadata: Record<string, unknown>;
-  retry_count: number;
-}
+// NotificationRecord moved to src/types/api-requests.ts for consolidation
 
 export async function POST(_request: NextRequest) {
   try {

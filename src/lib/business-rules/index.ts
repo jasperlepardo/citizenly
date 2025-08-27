@@ -5,7 +5,6 @@
 
 // Explicit exports to prevent circular dependencies
 export {
-  calculateAge,
   isOutOfSchoolChildren,
   isOutOfSchoolYouth,
   isSeniorCitizen,
@@ -21,6 +20,7 @@ export {
 
 // Resident form validation rules
 export {
+  calculateAge,
   isValidMobileNumber,
   isValidPhilSysCardNumber,
   isValidBirthdate,

@@ -5,7 +5,7 @@
  * Helper functions for validation operations
  */
 
-import { debounce } from '../utilities/async-utils';
+import { debounce } from '@/utils/async-utils';
 
 import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 

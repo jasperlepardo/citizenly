@@ -9,7 +9,7 @@
 
 import { useCallback } from 'react';
 
-import { toTitleCase } from '@/lib/utilities/string-utils';
+import { toTitleCase } from '@/utils/string-utils';
 import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
 import { householdService, HouseholdFormData } from '@/services/household.service';
 

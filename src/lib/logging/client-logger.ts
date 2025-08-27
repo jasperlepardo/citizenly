@@ -3,21 +3,8 @@
  * Replaces console.log with structured logging for development and production
  */
 
-interface LogContext {
-  component?: string;
-  action?: string;
-  data?: Record<string, unknown>;
-  error?: Error;
-  userId?: string;
-  sessionId?: string;
-}
+import type { LogContext, LogLevel } from '@/types/errors';
 
-interface LogLevel {
-  DEBUG: 'debug';
-  INFO: 'info';
-  WARN: 'warn';
-  ERROR: 'error';
-}
 
 const LOG_LEVELS: LogLevel = {
   DEBUG: 'debug',

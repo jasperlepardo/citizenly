@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPublicSupabaseClient } from '@/lib/data/client-factory';
+import { databaseService } from '@/services/database-service';
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Use public client for PSOC data search
-    const supabase = createPublicSupabaseClient();
+    const supabase = databaseService.getPublicClient();
 
     const searchTerm = `%${query.trim()}%`;
     const allResults: any[] = [];

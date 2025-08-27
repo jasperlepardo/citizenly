@@ -1,109 +1,120 @@
 /**
- * Household Types
- * Comprehensive TypeScript interfaces for household-related functionality
+ * Household Types - Database-Aligned TypeScript Interfaces
+ * 
+ * @fileoverview Comprehensive household-related TypeScript interfaces that exactly match
+ * the database schema defined in database/schema.sql. All interfaces are 100% compliant
+ * with PostgreSQL constraints and DILG RBI household management requirements.
+ * 
+ * @version 3.0.0
+ * @since 2025-01-01
+ * @author Citizenly Development Team
+ * 
+ * Database Tables Covered:
+ * - households (main household data with geographic references - 27 fields)
+ * - household_members (resident-to-household relationships - 7 fields)
+ * - geo_streets (street-level address components - 13 fields)
+ * - geo_subdivisions (subdivision-level address components - 14 fields)
+ * 
+ * Key Features:
+ * - 100% PostgreSQL schema compliance
+ * - Full DILG RBI household classification support
+ * - Geographic hierarchy integration (Region > Province > City > Barangay > Street)
+ * - Income classification per Philippine Statistical Office standards
+ * - Tenure status tracking for housing security analysis
+ * - Household type classification for demographic studies
+ * 
+ * @example Basic Household Creation
+ * ```typescript
+ * import { HouseholdRecord, HouseholdFormData } from '@/types/households';
+ * import { HOUSEHOLD_TYPE_OPTIONS } from '@/constants/household-form-options';
+ * 
+ * const household: HouseholdRecord = {
+ *   code: 'BRG001-HH-2025-001',
+ *   house_number: '123',
+ *   street_id: 'uuid-street-id',
+ *   barangay_code: '1234567890',
+ *   city_municipality_code: '1234567890',
+ *   region_code: '12',
+ *   household_type: 'nuclear',
+ *   tenure_status: 'owned',
+ *   monthly_income: 25000,
+ *   income_class: 'lower_middle_class',
+ *   no_of_families: 1,
+ *   no_of_household_members: 4,
+ *   is_active: true
+ * };
+ * ```
+ * 
+ * @example Household with Geographic Details
+ * ```typescript
+ * import { HouseholdWithMembersResult } from '@/types/households';
+ * 
+ * const householdWithDetails: HouseholdWithMembersResult = {
+ *   code: 'BRG001-HH-2025-001',
+ *   house_number: '123',
+ *   street_id: 'uuid-street-id',
+ *   barangay_code: '1234567890',
+ *   city_municipality_code: '1234567890', 
+ *   region_code: '12',
+ *   member_count: 4,
+ *   head_name: 'Juan Dela Cruz',
+ *   household_head_position: 'father',
+ *   // ... full address hierarchy
+ * };
+ * ```
+ * 
+ * @example Form Data Processing
+ * ```typescript
+ * import { HouseholdFormData, HouseholdValidationError } from '@/types/households';
+ * 
+ * const validateHouseholdForm = (data: HouseholdFormData): HouseholdValidationError[] => {
+ *   const errors: HouseholdValidationError[] = [];
+ *   
+ *   if (!data.house_number) {
+ *     errors.push({ field: 'house_number', message: 'House number is required' });
+ *   }
+ *   
+ *   return errors;
+ * };
+ * ```
  */
 
 import { ReactNode } from 'react';
 
 // =============================================================================
+// HOUSEHOLD ENUM TYPES (Re-exported from database.ts)
+// =============================================================================
+
+// Re-export enums from database.ts for backwards compatibility
+export type {
+  HouseholdTypeEnum,
+  TenureStatusEnum,
+  HouseholdUnitEnum,
+  FamilyPositionEnum,
+  IncomeClassEnum,
+} from './database';
+
+// Import enums for internal usage
+import type {
+  HouseholdTypeEnum,
+  TenureStatusEnum,
+  HouseholdUnitEnum,
+  FamilyPositionEnum,
+  IncomeClassEnum,
+} from './database';
+
+// =============================================================================
 // CORE HOUSEHOLD INTERFACES
 // =============================================================================
 
+// Import the canonical database record type
+import type { HouseholdRecord as DatabaseHouseholdRecord } from './database';
+
 /**
- * Database record interface for households - EXACTLY matching households table (27 fields)
+ * Canonical household record interface - re-exported from database.ts
+ * @description Matches the households table exactly (27 fields)
  */
-export interface HouseholdRecord {
-  // Primary identification
-  code: string;
-  name?: string | null;
-  address?: string | null;
-
-  // Location details
-  house_number: string;
-  street_id: string;
-  subdivision_id?: string | null;
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string | null;
-  region_code: string;
-  zip_code?: string | null;
-
-  // Household metrics
-  no_of_families?: number | null;
-  no_of_household_members?: number | null;
-  no_of_migrants?: number | null;
-
-  // Household classifications (enums)
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other'
-    | null;
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others'
-    | null;
-  tenure_others_specify?: string | null;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others'
-    | null;
-
-  // Economic information
-  monthly_income?: number | null;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined'
-    | null;
-
-  // Head of household
-  household_head_id?: string | null;
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other'
-    | null;
-
-  // Status and audit
-  is_active: boolean;
-  created_by?: string | null;
-  updated_by?: string | null;
-  created_at: string;
-  updated_at: string;
-}
+export type HouseholdRecord = DatabaseHouseholdRecord;
 
 /**
  * Extended household data with related information
@@ -139,87 +150,55 @@ export interface HouseholdHead {
 
 /**
  * Household with member count and head information - aligned with database structure
+ * @description Extended household data with computed fields for display purposes
  */
 export interface HouseholdWithMembersResult {
-  // Note: households table uses 'code' as primary key, not 'id'
-  code: string;
-  name?: string | null;
-  address?: string | null;
-  house_number: string;
-  street_id: string; // UUID reference
-  subdivision_id?: string | null; // UUID reference
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string | null;
-  region_code: string;
-  zip_code?: string | null;
-  household_head_id?: string | null; // UUID reference to residents
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other'
-    | null;
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other'
-    | null;
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others'
-    | null;
-  tenure_others_specify?: string | null;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others'
-    | null;
-  monthly_income?: number | null;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined'
-    | null;
-  no_of_families?: number | null;
-  no_of_household_members?: number | null;
-  no_of_migrants?: number | null;
-  // Computed/joined fields
+  // PRIMARY KEY - households table uses 'code' as primary key, not 'id'
+  code: string; // VARCHAR(50) NOT NULL PRIMARY KEY
+  
+  // Basic household information
+  name?: string | null; // VARCHAR(200)
+  address?: string | null; // TEXT
+  
+  // REQUIRED location fields (NOT NULL in database)
+  house_number: string; // VARCHAR(50) NOT NULL
+  street_id: string; // UUID NOT NULL REFERENCES geo_streets(id)
+  barangay_code: string; // VARCHAR(10) NOT NULL REFERENCES psgc_barangays(code)
+  city_municipality_code: string; // VARCHAR(10) NOT NULL REFERENCES psgc_cities_municipalities(code)
+  region_code: string; // VARCHAR(10) NOT NULL REFERENCES psgc_regions(code)
+  
+  // Optional location fields
+  subdivision_id?: string | null; // UUID REFERENCES geo_subdivisions(id)
+  province_code?: string | null; // VARCHAR(10) REFERENCES psgc_provinces(code)
+  zip_code?: string | null; // VARCHAR(10)
+  
+  // Household head information
+  household_head_id?: string | null; // UUID REFERENCES residents(id)
+  household_head_position?: FamilyPositionEnum | null; // Use database enum
+  
+  // Household classifications (use database enums)
+  household_type?: HouseholdTypeEnum | null;
+  tenure_status?: TenureStatusEnum | null;
+  tenure_others_specify?: string | null; // TEXT
+  household_unit?: HouseholdUnitEnum | null;
+  
+  // Economic information
+  monthly_income?: number | null; // NUMERIC
+  income_class?: IncomeClassEnum | null;
+  
+  // Household metrics
+  no_of_families?: number | null; // INTEGER DEFAULT 1
+  no_of_household_members?: number | null; // INTEGER DEFAULT 0
+  no_of_migrants?: number | null; // INTEGER DEFAULT 0
+  
+  // Computed/joined fields for display
   member_count?: number;
   head_name?: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  
+  // System fields (REQUIRED in database)
+  is_active: boolean; // BOOLEAN NOT NULL DEFAULT true
+  created_at: string; // TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at: string; // TIMESTAMPTZ NOT NULL DEFAULT NOW()
 }
 
 // =============================================================================
@@ -315,51 +294,16 @@ export interface HouseholdTableAction {
 // ENUM OPTIONS AND CONSTANTS
 // =============================================================================
 
-// Note: EnumOption moved to forms.ts to avoid conflicts
-
-type OptionType = { value: string; label: string };
-
-export const HOUSEHOLD_TYPE_OPTIONS: OptionType[] = [
-  { value: 'nuclear', label: 'Nuclear Family' },
-  { value: 'single_parent', label: 'Single Parent' },
-  { value: 'extended', label: 'Extended Family' },
-  { value: 'childless', label: 'Childless' },
-  { value: 'one_person', label: 'One Person' },
-  { value: 'non_family', label: 'Non-Family' },
-  { value: 'other', label: 'Other' },
-];
-
-export const TENURE_STATUS_OPTIONS: OptionType[] = [
-  { value: 'owned', label: 'Owned' },
-  { value: 'owned_with_mortgage', label: 'Owned with Mortgage' },
-  { value: 'rented', label: 'Rented' },
-  { value: 'occupied_for_free', label: 'Occupied for Free' },
-  { value: 'occupied_without_consent', label: 'Occupied without Consent' },
-  { value: 'others', label: 'Others' },
-];
-
-export const INCOME_CLASS_OPTIONS: OptionType[] = [
-  { value: 'poor', label: 'Poor (Below ₱12,030/month)' },
-  { value: 'low_income', label: 'Low Income (₱12,030-₱24,120)' },
-  { value: 'lower_middle_class', label: 'Lower Middle Class (₱24,120-₱43,828)' },
-  { value: 'middle_class', label: 'Middle Class (₱43,828-₱76,699)' },
-  { value: 'upper_middle_income', label: 'Upper Middle Income (₱76,699-₱131,484)' },
-  { value: 'high_income', label: 'High Income (₱131,484-₱219,140)' },
-  { value: 'rich', label: 'Rich (Above ₱219,140)' },
-  { value: 'not_determined', label: 'Not Determined' },
-];
-
-export const HOUSEHOLD_UNIT_OPTIONS: OptionType[] = [
-  { value: 'single_house', label: 'Single House' },
-  { value: 'duplex', label: 'Duplex' },
-  { value: 'apartment', label: 'Apartment' },
-  { value: 'townhouse', label: 'Townhouse' },
-  { value: 'condominium', label: 'Condominium' },
-  { value: 'boarding_house', label: 'Boarding House' },
-  { value: 'institutional', label: 'Institutional' },
-  { value: 'makeshift', label: 'Makeshift' },
-  { value: 'others', label: 'Others' },
-];
+// Form option constants moved to dedicated constants file for better organization
+// Import from: @/constants/household-form-options
+export type { OptionType } from '@/constants/household-form-options';
+export {
+  HOUSEHOLD_TYPE_OPTIONS,
+  TENURE_STATUS_OPTIONS,
+  HOUSEHOLD_UNIT_OPTIONS,
+  INCOME_CLASS_OPTIONS,
+  HOUSEHOLD_FORM_OPTIONS,
+} from '@/constants/household-form-options';
 
 // =============================================================================
 // VALIDATION AND ERROR INTERFACES

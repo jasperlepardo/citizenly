@@ -8,23 +8,9 @@ import { useEffect, useRef, useCallback } from 'react';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 import { performanceMonitor } from '../performance';
+import type { UsePerformanceTrackingOptions, PerformanceTrackingReturn } from '@/types/hooks';
 
-interface UsePerformanceTrackingOptions {
-  componentName: string;
-  trackRenders?: boolean;
-  trackMounts?: boolean;
-  trackUpdates?: boolean;
-  metadata?: Record<string, any>;
-}
 
-interface PerformanceTrackingReturn {
-  trackOperation: (name: string, metadata?: Record<string, any>) => () => void;
-  trackAsyncOperation: <T>(
-    name: string,
-    operation: () => Promise<T>,
-    metadata?: Record<string, any>
-  ) => Promise<T>;
-}
 
 /**
  * Hook for tracking component performance metrics

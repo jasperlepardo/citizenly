@@ -3,16 +3,12 @@
  * Handles offline data synchronization when connection is restored
  */
 
-import { ErrorCode, ErrorSeverity } from '../error-handling/error-types';
-import { createAppError } from '../error-handling/error-utils';
+import { ErrorCode, ErrorSeverity } from '@/types/errors';
+import { createAppError } from '@/utils/error-utils';
 
 import { offlineStorage } from './offline-storage';
+import type { SyncResult } from '@/types/utilities';
 
-interface SyncResult {
-  success: boolean;
-  error?: string;
-  data?: any;
-}
 
 export class SyncQueue {
   private isProcessing = false;

@@ -3,11 +3,8 @@
 import React from 'react';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import type { SexData } from '@/types/charts';
 
-interface SexData {
-  male: number;
-  female: number;
-}
 
 interface SexDistributionPieChartProps {
   data: SexData;

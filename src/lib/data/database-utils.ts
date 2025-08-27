@@ -5,45 +5,18 @@
 
 import { supabase } from '../supabase';
 
-// Geographic data types
-export interface Region {
-  code: string;
-  name: string;
-}
+// Import geographic types from centralized location
+import type { 
+  Region,
+  Province,
+  City,
+  Barangay,
+  FlatAddressHierarchy as AddressHierarchy
+} from '@/types/addresses';
 
-export interface Province {
-  code: string;
-  name: string;
-  region_code: string;
-}
-
-export interface City {
-  code: string;
-  name: string;
-  type: string;
-  province_code: string | null;
-  is_independent: boolean;
-}
-
-export interface Barangay {
-  code: string;
-  name: string;
-  city_municipality_code: string;
-}
-
-export interface AddressHierarchy {
-  region_code: string | null;
-  region_name: string;
-  province_code: string | null;
-  province_name: string | null;
-  city_municipality_code: string | null;
-  city_municipality_name: string;
-  city_municipality_type: string;
-  is_independent: boolean;
-  barangay_code: string;
-  barangay_name: string;
-  full_address: string;
-}
+// Re-export for backwards compatibility
+export type { Region, Province, City, Barangay };
+export type { FlatAddressHierarchy as AddressHierarchy } from '@/types/addresses';
 
 /**
  * Test database connection and get basic stats

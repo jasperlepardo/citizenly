@@ -4,14 +4,7 @@
  */
 
 import { supabase, logger } from '@/lib';
-
-export interface AddressInfo {
-  barangay_name?: string;
-  city_municipality_name?: string;
-  province_name?: string;
-  region_name?: string;
-  full_address?: string;
-}
+import type { AddressInfo } from '@/types/addresses';
 
 export interface PsocInfo {
   code: string;
@@ -20,18 +13,7 @@ export interface PsocInfo {
   level?: string;
 }
 
-interface BarangayWithRelations {
-  psgc_cities_municipalities: {
-    name: string;
-    type: string;
-    psgc_provinces: {
-      name: string;
-      psgc_regions: {
-        name: string;
-      };
-    };
-  };
-}
+// Consolidated type moved to src/types/addresses.ts
 
 /**
  * Optimized address fetcher - tries efficient view first, falls back gracefully

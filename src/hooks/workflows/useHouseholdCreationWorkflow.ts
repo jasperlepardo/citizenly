@@ -11,9 +11,9 @@ import { useCallback } from 'react';
 
 import { logger } from '@/lib';
 
-import { useAddressResolution } from '../utilities/useAddressResolution';
-import { useHouseholdCodeGeneration } from '../utilities/useHouseholdCodeGeneration';
-import { useHouseholdForm } from '../utilities/useHouseholdForm';
+import { useAddressResolution } from '@/hooks/utilities/useAddressResolution';
+import { useHouseholdCodeGeneration } from '@/hooks/utilities/useHouseholdCodeGeneration';
+import { useHouseholdForm } from '@/hooks/utilities/useHouseholdForm';
 
 import { useHouseholdCreationOperation } from './useHouseholdCreationOperation';
 

@@ -6,10 +6,11 @@
  * Integrates with age, employment status, and education data
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 import { ControlField } from '@/components';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
+import { calculateAge } from '@/utils/date-utils';
 import type { FormMode } from '@/types';
 
 // Sectoral Information Interface (matches database schema exactly)
@@ -57,13 +58,13 @@ export default function SectoralClassifications({
   disabled = false,
 }: SectoralClassificationsProps) {
 
-  // Auto-calculate sectoral flags based on context
-  useEffect(() => {
+  // Calculate the expected sectoral flags based on context
+  const calculatedFlags = useMemo(() => {
     const age = context.age || (context.birthdate ? calculateAge(context.birthdate) : 0);
     const employment = context.employment_status || '';
     const ethnicity = context.ethnicity || '';
 
-    const calculated = {
+    return {
       is_labor_force_employed: EMPLOYED_STATUSES.includes(employment),
       is_unemployed: UNEMPLOYED_STATUSES.includes(employment),
       is_out_of_school_children: isOutOfSchoolChildren(age, context.highest_educational_attainment),
@@ -75,50 +76,52 @@ export default function SectoralClassifications({
       is_senior_citizen: age >= 60,
       is_indigenous_people: isIndigenousPeople(ethnicity),
     };
-
-    // Update the sectoral information with auto-calculated values
-    const updatedSectoral = {
-      ...value,
-      ...calculated,
-      // Reset registered senior citizen if no longer senior
-      is_registered_senior_citizen: calculated.is_senior_citizen
-        ? value.is_registered_senior_citizen
-        : false,
-    };
-
-    // Only trigger onChange if values actually changed
-    if (JSON.stringify(updatedSectoral) !== JSON.stringify(value)) {
-      onChange(updatedSectoral);
-    }
   }, [
     context.age,
     context.birthdate,
     context.employment_status,
     context.highest_educational_attainment,
     context.ethnicity,
-    onChange,
-    value.is_labor_force_employed,
-    value.is_unemployed,
-    value.is_out_of_school_children,
-    value.is_out_of_school_youth,
-    value.is_senior_citizen,
-    value.is_indigenous_people,
-    value.is_registered_senior_citizen,
   ]);
 
-  // Calculate age from birthdate
-  function calculateAge(birthdate: string): number {
-    const today = new Date();
-    const birth = new Date(birthdate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
+  // Use a ref to track if we've already updated for these calculated flags
+  const lastUpdateRef = useRef<string>('');
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
+  // Auto-update sectoral flags when calculated values change
+  useEffect(() => {
+    // Create a unique key for the current calculated flags
+    const updateKey = JSON.stringify(calculatedFlags);
+    
+    // Only update if this is a new set of calculated flags
+    if (lastUpdateRef.current !== updateKey) {
+      lastUpdateRef.current = updateKey;
+      
+      // Check if any calculated value differs from current value
+      const needsUpdate = 
+        value.is_labor_force_employed !== calculatedFlags.is_labor_force_employed ||
+        value.is_unemployed !== calculatedFlags.is_unemployed ||
+        value.is_out_of_school_children !== calculatedFlags.is_out_of_school_children ||
+        value.is_out_of_school_youth !== calculatedFlags.is_out_of_school_youth ||
+        value.is_senior_citizen !== calculatedFlags.is_senior_citizen ||
+        value.is_indigenous_people !== calculatedFlags.is_indigenous_people;
+      
+      if (needsUpdate) {
+        const updatedSectoral = {
+          ...value,
+          ...calculatedFlags,
+          // Reset registered senior citizen if no longer senior
+          is_registered_senior_citizen: calculatedFlags.is_senior_citizen
+            ? value.is_registered_senior_citizen
+            : false,
+        };
+        onChange(updatedSectoral);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calculatedFlags]); // Only depend on calculatedFlags
 
-    return age;
-  }
+  // Calculate age from birthdate
+  // calculateAge imported from @/utils/date-utils above - removed duplicate function
 
   // Check if person qualifies as out-of-school children (5-17 years old, not in school)
   function isOutOfSchoolChildren(age: number, education?: string): boolean {

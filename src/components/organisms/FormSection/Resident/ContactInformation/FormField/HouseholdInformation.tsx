@@ -45,6 +45,11 @@ export function HouseholdInformation({
     debounceMs: 300,
   });
 
+  // Load initial households on mount
+  React.useEffect(() => {
+    setSearchQuery(''); // Trigger initial load with empty search
+  }, [setSearchQuery]);
+
   const handleChange = (field: keyof HouseholdInformationData, fieldValue: any) => {
     onChange({
       ...value,
@@ -66,12 +71,12 @@ export function HouseholdInformation({
       <div>
         <SelectField
           mode={mode}
-          label="Current Household"
+          label="Current Household *"
           labelSize="sm"
           errorMessage={errors.household_code}
-          helperText="Search for an existing household or leave blank to create new"
+          helperText="Search and select an existing household"
           selectProps={{
-            placeholder: '🏠 Search households...',
+            placeholder: '🏠 Select household...',
             options: (householdSearchOptions || []).map((household: any) => ({
               value: household.code,
               label: household.head_name || `Household ${household.code}`,
@@ -84,11 +89,20 @@ export function HouseholdInformation({
             onSearch: setSearchQuery,
             onSelect: option => {
               if (option) {
-                handleChange('household_code', (option as any).value);
-                handleChange('household_name', (option as any).label);
+                // Update both values in a single call to avoid race condition
+                const newValue = {
+                  ...value,
+                  household_code: (option as any).value,
+                  household_name: (option as any).label,
+                };
+                onChange(newValue);
               } else {
-                handleChange('household_code', '');
-                handleChange('household_name', '');
+                const newValue = {
+                  ...value,
+                  household_code: '',
+                  household_name: '',
+                };
+                onChange(newValue);
               }
             },
             // Infinite scroll props

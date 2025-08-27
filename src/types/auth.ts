@@ -1,17 +1,64 @@
 /**
- * Authentication and Authorization Types
- * Comprehensive TypeScript interfaces for user authentication, roles, and permissions
+ * Authentication and Authorization Types - Database-Aligned Auth System
+ * 
+ * @fileoverview Comprehensive authentication and authorization TypeScript interfaces
+ * that provide 100% database schema alignment for the Citizenly RBI authentication system.
+ * Built on Supabase Auth with multi-level geographic access control for Philippine LGUs.
+ * 
+ * @version 3.0.0
+ * @since 2025-01-01
+ * @author Citizenly Development Team
+ * 
+ * Database Tables Covered:
+ * - auth.users (Supabase managed authentication users)
+ * - auth_user_profiles (Extended user profile with geographic access - 21 fields)
+ * - auth_roles (Role definitions with JSONB permissions - 6 fields)
+ * - auth_barangay_accounts (Multi-barangay access control - 8 fields)
+ * 
+ * Key Features:
+ * - 100% Supabase Auth integration with custom profile extensions
+ * - Multi-level geographic access control (Region → Province → City → Barangay)
+ * - Role-based permission system with JSONB flexibility
+ * - Complete authentication flow management (login, signup, session)
+ * - Professional error handling and validation
+ * 
+ * @example Basic Authentication Flow
+ * ```typescript
+ * import { AuthState, LoginRequest, AuthUserProfile } from '@/types/auth';
+ * 
+ * const authState: AuthState = {
+ *   user: supabaseUser,
+ *   profile: userProfile, // Extended with barangay access
+ *   session: supabaseSession,
+ *   isAuthenticated: true,
+ *   isLoading: false,
+ *   error: null
+ * };
+ * ```
+ * 
+ * @example Role-Based Access Control
+ * ```typescript
+ * import { UserRole, ROLE_PERMISSIONS } from '@/types/auth';
+ * 
+ * const checkPermission = (userRole: UserRole, permission: string): boolean => {
+ *   return ROLE_PERMISSIONS[userRole]?.includes(permission) || false;
+ * };
+ * ```
  */
 
 // =============================================================================
-// USER AND SESSION TYPES
+// USER AND SESSION TYPES (Database-Aligned)
 // =============================================================================
+
+// Import canonical database records
+import type { AuthUserProfileRecord, AuthRoleRecord } from './database';
 
 /**
- * Authenticated user interface
+ * Authenticated user interface - matches Supabase auth.users structure
+ * @description Core Supabase user object with authentication metadata
  */
 export interface AuthUser {
-  id: string;
+  id: string; // UUID - matches auth.users(id)
   email: string;
   email_confirmed_at: string | null;
   phone: string | null;
@@ -25,32 +72,34 @@ export interface AuthUser {
 }
 
 /**
- * User profile with extended information
+ * User profile with extended information - extends canonical database record
+ * @description Composition of AuthUserProfileRecord + computed fields for UI/auth operations
+ * 
+ * @example Complete User Profile
+ * ```typescript
+ * const userProfile: AuthUserProfile = {
+ *   // All AuthUserProfileRecord fields inherited from database.ts
+ *   id: '550e8400-e29b-41d4-a716-446655440000',
+ *   first_name: 'Maria',
+ *   last_name: 'Santos',
+ *   email: 'maria.santos@email.com',
+ *   role_id: '123e4567-e89b-12d3-a456-426614174000',
+ *   barangay_code: '1374000001',
+ *   // ... all other database fields
+ *   
+ *   // Computed/joined fields for UI
+ *   role: roleRecord,
+ *   full_name: 'Maria Santos',
+ *   display_location: 'Poblacion, Makati City'
+ * };
+ * ```
  */
-export interface AuthUserProfile {
-  id: string;
-  email: string;
-  first_name: string;
-  middle_name?: string | null;
-  last_name: string;
-  phone?: string | null;
-  barangay_code: string;
-  city_municipality_code?: string | null;
-  province_code?: string | null;
-  region_code?: string | null;
-  role_id: string;
-  email_verified: boolean;
-  email_verified_at?: string | null;
-  onboarding_completed: boolean;
-  onboarding_completed_at?: string | null;
-  welcome_email_sent: boolean;
-  welcome_email_sent_at?: string | null;
-  last_login?: string | null;
-  is_active: boolean;
-  created_by?: string | null;
-  updated_by?: string | null;
-  created_at: string;
-  updated_at: string;
+export interface AuthUserProfile extends AuthUserProfileRecord {
+  // Computed/joined fields for UI and auth operations
+  role?: AuthRoleRecord;           // Resolved from role_id
+  full_name?: string;              // Computed: first_name + middle_name + last_name
+  display_location?: string;       // Formatted geographic location
+  lastActivity?: string;           // Last user activity timestamp
 }
 
 /**
@@ -82,17 +131,14 @@ export interface AuthState {
 // =============================================================================
 
 /**
- * User role definition
+ * User role definition - extends canonical database record
+ * @description Role information with computed display fields
  */
-export interface AuthRole {
-  id: string;
-  name: string;
-  display_name: string;
-  description?: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  permissions?: AuthPermission[];
+export interface AuthRole extends AuthRoleRecord {
+  // Computed fields for UI display
+  display_name?: string;          // Formatted role name for UI
+  permission_count?: number;      // Count of permissions in JSONB
+  user_count?: number;           // Number of users with this role
 }
 
 /**
@@ -123,7 +169,7 @@ export interface RolePermission {
 /**
  * User role assignment
  */
-export interface UserRole {
+export interface UserRoleAssignment {
   user_id: string;
   role_id: string;
   assigned_at: string;
@@ -408,8 +454,90 @@ export interface ProfileFormData {
 }
 
 // =============================================================================
-// CONSTANTS AND ENUMS
+// ROLE ENUMS AND PERMISSIONS
 // =============================================================================
+
+/**
+ * User role enumeration
+ */
+export enum Role {
+  SUPER_ADMIN = 'super_admin',
+  REGION_ADMIN = 'region_admin',
+  PROVINCE_ADMIN = 'province_admin',
+  CITY_ADMIN = 'city_admin',
+  BARANGAY_ADMIN = 'barangay_admin',
+  BARANGAY_STAFF = 'barangay_staff',
+  RESIDENT = 'resident',
+}
+
+/**
+ * User role types
+ */
+export type UserRole = 
+  | 'super_admin'
+  | 'region_admin'
+  | 'province_admin'
+  | 'city_admin'
+  | 'barangay_admin'
+  | 'barangay_user'
+  | 'read_only';
+
+/**
+ * User profile interface for auth service compatibility
+ * @deprecated Use AuthUserProfile instead - extends AuthUserProfileRecord from database.ts
+ */
+export type UserProfile = AuthUserProfile;
+
+/**
+ * Registration data interface for auth service compatibility
+ * @deprecated Use SignupRequest instead for consistent registration handling
+ */
+export type RegistrationData = SignupRequest;
+
+/**
+ * Role-based permission mapping
+ */
+export const ROLE_PERMISSIONS = {
+  [Role.SUPER_ADMIN]: [
+    'system.manage',
+    'users.manage',
+    'barangays.manage',
+    'residents.manage.all',
+    'reports.view.all',
+    'admin.access',
+  ],
+  [Role.REGION_ADMIN]: [
+    'residents.manage.region',
+    'households.manage.region',
+    'reports.view.region',
+    'exports.create.region',
+  ],
+  [Role.PROVINCE_ADMIN]: [
+    'residents.manage.province',
+    'households.manage.province',
+    'reports.view.province',
+    'exports.create.province',
+  ],
+  [Role.CITY_ADMIN]: [
+    'residents.manage.city',
+    'households.manage.city',
+    'reports.view.city',
+    'exports.create.city',
+  ],
+  [Role.BARANGAY_ADMIN]: [
+    'residents.manage.barangay',
+    'households.manage.barangay',
+    'reports.view.barangay',
+    'exports.create.barangay',
+    'admin.access',
+  ],
+  [Role.BARANGAY_STAFF]: [
+    'residents.manage.barangay',
+    'households.manage.barangay',
+    'reports.view.barangay',
+  ],
+  [Role.RESIDENT]: ['profile.view.own', 'profile.update.own', 'household.view.own'],
+} as const;
 
 /**
  * Default role names
@@ -447,3 +575,88 @@ export const RESOURCE_TYPES = {
   REPORTS: 'reports',
   SETTINGS: 'settings',
 } as const;
+
+// =============================================================================
+// REQUEST CONTEXT AND PARAMETERS
+// =============================================================================
+
+/**
+ * Pagination parameters
+ */
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  cursor?: string;
+}
+
+/**
+ * Sort parameters
+ */
+export interface SortParams {
+  sort?: string;
+  order?: 'asc' | 'desc';
+}
+
+/**
+ * Filter parameters
+ */
+export interface FilterParams {
+  search?: string;
+  status?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
+/**
+ * Authenticated user information for API routes
+ * Consolidates AuthenticatedUser from households/route.ts and residents/route.ts
+ */
+export interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: Role;
+  barangayCode?: string;
+  cityCode?: string;
+  provinceCode?: string;
+  regionCode?: string;
+}
+
+/**
+ * Request context for authentication
+ */
+export interface RequestContext {
+  userId: string;
+  userRole: Role;
+  barangayCode?: string;
+  cityCode?: string;
+  provinceCode?: string;
+  regionCode?: string;
+  requestId: string;
+  timestamp: string;
+  path: string;
+  method: string;
+  ip?: string;
+  userAgent?: string;
+}
+
+// =============================================================================
+// VALIDATION DATA TYPES
+// =============================================================================
+
+/**
+ * User registration validation data
+ * @deprecated Use RegistrationData instead (which points to SignupRequest)
+ * @deprecated This is a duplicate alias - will be removed in future cleanup
+ */
+export type UserRegistrationData = RegistrationData;
+
+/**
+ * Login validation data
+ * @deprecated Use LoginRequest instead for consistent login handling
+ */
+export type LoginData = LoginRequest;
+
+/**
+ * Password change validation data
+ * @deprecated Use PasswordUpdateRequest instead for consistent password handling
+ */
+export type PasswordChangeData = PasswordUpdateRequest;

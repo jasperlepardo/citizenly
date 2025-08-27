@@ -11,34 +11,11 @@ import {
   validateEnvironment,
   getEnvironmentConfig,
 } from '@/lib/config/environment';
+import type { HealthCheckResult } from '@/types/api-requests';
 
 export const dynamic = 'force-dynamic';
 
-interface HealthCheckResult {
-  status: 'healthy' | 'unhealthy' | 'degraded';
-  timestamp: string;
-  version: string;
-  environment: string;
-  uptime: number;
-  checks: {
-    [key: string]: {
-      status: 'pass' | 'fail' | 'warn';
-      message: string;
-      responseTime?: number;
-    };
-  };
-  system?: {
-    memory?: {
-      used: number;
-      total: number;
-      percentage: number;
-    };
-    node?: {
-      version: string;
-      platform: string;
-    };
-  };
-}
+// HealthCheckResult moved to src/types/api-requests.ts
 
 /**
  * Basic health check endpoint

@@ -3,51 +3,33 @@
  *
  * @description Pure business logic for transforming raw data into chart-ready formats.
  * Contains data transformation utilities separated from UI components.
+ * 
+ * @deprecated Chart types have been moved to @/types/charts.
+ * This file now re-exports types for backwards compatibility.
+ * Please update imports to use the new location directly.
+ * 
+ * @see {@link @/types/charts} - New location for chart types
  */
 
-// Chart data types
-export type DependencyData = {
-  youngDependents: number;
-  workingAge: number;
-  oldDependents: number;
-};
+// Import types for internal use and re-export for backwards compatibility
+import type {
+  DependencyData,
+  SexData,
+  CivilStatusData,
+  EmploymentStatusData,
+  ChartType,
+  ChartDataPoint,
+} from '@/types/charts';
 
-export type SexData = {
-  male: number;
-  female: number;
-};
-
-export type CivilStatusData = {
-  single: number;
-  married: number;
-  widowed: number;
-  divorced: number;
-  separated: number;
-  annulled: number;
-  registeredPartnership: number;
-  liveIn: number;
-};
-
-export type EmploymentStatusData = {
-  employed: number;
-  unemployed: number;
-  selfEmployed: number;
-  student: number;
-  retired: number;
-  homemaker: number;
-  disabled: number;
-  other: number;
-};
-
-export type ChartType = 'dependency' | 'sex' | 'civilStatus' | 'employment';
-
-// Standard chart data point interface
-export interface ChartDataPoint {
-  label: string;
-  value: number;
-  percentage: number;
-  color: string;
-}
+// Re-export for backwards compatibility
+export type {
+  DependencyData,
+  SexData,
+  CivilStatusData,
+  EmploymentStatusData,
+  ChartType,
+  ChartDataPoint,
+} from '@/types/charts';
 
 // Chart configuration constants
 export const DEFAULT_CHART_TITLES: Record<ChartType, string> = {

@@ -14,8 +14,8 @@ import {
   searchData,
   exportData,
   backupData,
-  getRecentItems,
-  clearRecentItems,
+  getRecentItems as getRecentApiItems,
+  clearRecentItems as clearRecentApiItems,
   createResident,
   createHousehold,
   findSeniorCitizens,
@@ -51,7 +51,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
 
   const loadRecentItems = async () => {
     try {
-      const recent = await getRecentItems();
+      const recent = await getRecentApiItems();
       const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
         id: `recent-${item.id}`,
         label: item.title,
@@ -69,7 +69,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
 
   const handleClearRecentItems = async () => {
     try {
-      const success = await clearRecentItems();
+      const success = await clearRecentApiItems();
       if (success) {
         setRecentItems([]); // Clear the UI immediately
         toast.success('Recent items cleared');

@@ -27,7 +27,7 @@ import {
 } from '@/lib/command-menu';
 import { trackNavigation, trackAction } from '@/lib/data';
 
-import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 /**
  * Return type for command menu actions hook

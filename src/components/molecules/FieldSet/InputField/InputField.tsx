@@ -8,7 +8,7 @@ import {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from '@/lib/utilities/id-generators';
+} from '@/utils/id-generators';
 import type { FormMode } from '@/types';
 
 import { Label, Input, HelperText, ReadOnly } from '../../../atoms/Field';

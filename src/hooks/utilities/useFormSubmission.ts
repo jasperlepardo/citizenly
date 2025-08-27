@@ -2,31 +2,21 @@
 
 import { useState, useCallback } from 'react';
 
-import type { ResidentFormData } from '@/types';
-
-// FormMode type definition
-type FormMode = 'create' | 'edit' | 'view';
+import type { ResidentFormData, FormMode } from '@/types';
+import type { 
+  HookFormSubmissionProps as UseFormSubmissionProps,
+  HookFormSubmissionReturn as UseFormSubmissionReturn 
+} from '@/types/hooks';
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';
 
 import { createFormSubmitHandler } from '@/lib/forms';
 
-interface UseFormSubmissionProps {
-  onSubmit?: (data: ResidentFormData) => void | Promise<void>;
-  mode: FormMode;
-}
 
-interface UseFormSubmissionReturn {
-  isSubmitting: boolean;
-  isOptimisticallyUpdated: boolean;
-  handleSubmit: (
-    formData: ResidentFormData
-  ) => Promise<{ success: boolean; errors?: Record<string, string> }>;
-}
 
-export function useFormSubmission({
+export function useFormSubmission<T = ResidentFormData>({
   onSubmit,
   mode,
-}: UseFormSubmissionProps): UseFormSubmissionReturn {
+}: UseFormSubmissionProps<T>): UseFormSubmissionReturn<T> {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOptimisticallyUpdated, setIsOptimisticallyUpdated] = useState(false);
   const { validateForm } = useResidentFormValidation();

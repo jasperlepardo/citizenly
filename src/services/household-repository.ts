@@ -9,20 +9,12 @@ import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { HouseholdRecord } from '@/types';
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
-
-// Use database record directly for consistent typing
-export type HouseholdData = HouseholdRecord;
-
-export interface HouseholdSearchOptions extends QueryOptions {
-  code?: string;
-  barangay_code?: string;
-  city_municipality_code?: string;
-  province_code?: string;
-  region_code?: string;
-  street_id?: string;
-  household_head_id?: string;
-}
+import { BaseRepository } from './base-repository';
+import type {
+  HouseholdData,
+  HouseholdSearchOptions,
+  HouseholdRepositoryResult
+} from '@/types/repositories';
 
 export class HouseholdRepository extends BaseRepository<HouseholdData> {
   constructor(context?: ValidationContext) {

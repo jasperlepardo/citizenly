@@ -12,51 +12,16 @@ import { useCallback } from 'react';
 import {
   ValidationResult,
   FieldValidationResult,
-  BaseValidationConfig,
-  ValidateFormFunction,
-  ValidateFieldFunction,
 } from '@/lib/validation/types';
 import {
   useValidationState,
   createFormValidationExecutor,
   createFieldValidationExecutor,
 } from '@/lib/validation/utilities';
-
-/**
- * Generic validation options
- */
-export interface UseGenericValidationOptions<T> extends BaseValidationConfig {
-  validateForm: ValidateFormFunction<T>;
-  validateField?: ValidateFieldFunction;
-}
-
-/**
- * Return type for useGenericValidation hook
- */
-export interface UseGenericValidationReturn<T> {
-  /** Current validation errors */
-  errors: Record<string, string>;
-  /** Whether form is currently valid */
-  isValid: boolean;
-  /** Whether validation has been attempted */
-  hasValidated: boolean;
-  /** Validate entire form */
-  validateForm: (formData: T) => ValidationResult;
-  /** Validate single field (if validator provided) */
-  validateField?: (fieldName: string, value: any) => FieldValidationResult;
-  /** Get error for specific field */
-  getFieldError: (field: string) => string | undefined;
-  /** Check if field has error */
-  hasFieldError: (field: string) => boolean;
-  /** Clear error for specific field */
-  clearFieldError: (field: string) => void;
-  /** Clear all errors */
-  clearAllErrors: () => void;
-  /** Set errors programmatically */
-  setErrors: (errors: Record<string, string>) => void;
-  /** Set error for specific field */
-  setFieldError: (field: string, error: string) => void;
-}
+import type {
+  UseGenericValidationOptions,
+  UseGenericValidationReturn,
+} from '@/types/hooks';
 
 /**
  * Generic validation hook

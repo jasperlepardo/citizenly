@@ -6,6 +6,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 import { logger } from '@/lib';
+import type { SecurityAuditLogEntry as AuditLogEntry } from '@/types/errors';
 
 import { RequestContext, ErrorCode } from './types';
 
@@ -79,30 +80,6 @@ export interface AuditEvent {
   errorMessage?: string;
 }
 
-interface AuditLogEntry {
-  id?: string;
-  event_type: string;
-  severity: string;
-  user_id?: string;
-  user_role?: string;
-  resource_type?: string;
-  resource_id?: string;
-  action: string;
-  outcome: string;
-  details?: Record<string, string | number | boolean>;
-  error_code?: string;
-  error_message?: string;
-  request_id: string;
-  ip_address?: string;
-  user_agent?: string;
-  path: string;
-  method: string;
-  timestamp: string;
-  barangay_code?: string;
-  city_code?: string;
-  province_code?: string;
-  region_code?: string;
-}
 
 /**
  * Mask sensitive data in audit logs

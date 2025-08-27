@@ -11,7 +11,7 @@ import { useCallback, useState } from 'react';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
-import { useSearchCache, searchFormatters } from '@/lib/utilities/search-utilities';
+import { useSearchCache, searchFormatters } from '@/utils/search-utilities';
 
 import { useGenericSearch } from './useGenericSearch';
 
@@ -117,7 +117,12 @@ export function useOptimizedHouseholdSearch({
       currentOffset: number = 0,
       append: boolean = false
     ): Promise<HouseholdSearchResult[]> => {
-      if (!userProfile?.barangay_code || !session?.access_token) {
+      // Check for essential user profile but allow API to handle authentication
+      if (!userProfile?.barangay_code) {
+        console.warn('Household search: Missing user profile barangay_code', {
+          hasUserProfile: !!userProfile,
+          hasBarangayCode: !!userProfile?.barangay_code,
+        });
         setAllResults([]);
         setHasMore(false);
         setTotalCount(0);
@@ -146,11 +151,12 @@ export function useOptimizedHouseholdSearch({
           searchParams.set('search', query.trim());
         }
 
+        // Let the API handle authentication through its middleware
+        // The withAuth middleware handles session validation server-side
         const response = await fetch(`/api/households?${searchParams}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${session.access_token}`,
           },
         });
 
@@ -190,15 +196,25 @@ export function useOptimizedHouseholdSearch({
         }
       } catch (error) {
         console.error('Household search API error:', error);
+        
+        // Handle authentication errors specifically
+        if (error instanceof Error && error.message.includes('401')) {
+          // Clear any cached authentication state that might be stale
+          setAllResults([]);
+          setHasMore(false);
+          setTotalCount(0);
+          throw new Error('Authentication required. Please sign in to search households.');
+        }
+        
         throw new Error('Unable to search households. Please try again.');
       }
     },
     [
       userProfile?.barangay_code,
-      session?.access_token,
       enableCache,
       getCachedResult,
       setCachedResult,
+      limit,
     ]
   );
 

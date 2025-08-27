@@ -25,7 +25,7 @@ import {
   parseFullName,
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
-} from '../residentMapper';
+} from '../resident-mapper';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {

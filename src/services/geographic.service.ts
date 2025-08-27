@@ -1,59 +1,30 @@
 /**
- * Geographic Data Service
+ * Geographic Service
  * Handles PSGC (Philippine Standard Geographic Code) data operations
+ * Follows standardized service pattern
  */
 
-import { supabase, logger, logError } from '@/lib';
+import { supabase, logError } from '@/lib';
+import { createLogger } from '@/lib/config/environment';
 
-export interface Region {
-  code: string;
-  name: string;
-  is_active: boolean;
-}
+const logger = createLogger('GeographicService');
+import type {
+  Region,
+  Province,
+  CityMunicipality,
+  Barangay,
+  GeographicOption,
+  BarangayWithJoins
+} from '@/types/addresses';
 
-export interface Province {
-  code: string;
-  name: string;
-  region_code: string;
-  is_active: boolean;
-}
-
-export interface CityMunicipality {
-  code: string;
-  name: string;
-  province_code: string | null;
-  type: string;
-  is_independent: boolean;
-  is_active: boolean;
-}
-
-export interface Barangay {
-  code: string;
-  name: string;
-  city_municipality_code: string;
-  is_active: boolean;
-}
-
-export interface GeographicOption {
-  value: string;
-  label: string;
-}
-
-interface BarangayWithJoins {
-  psgc_cities_municipalities: {
-    code: string;
-    name: string;
-    type: string;
-    psgc_provinces: {
-      code: string;
-      name: string;
-      psgc_regions: {
-        code: string;
-        name: string;
-      };
-    };
-  };
-}
+// Re-export types for backward compatibility
+export type {
+  Region,
+  Province,
+  CityMunicipality,
+  Barangay,
+  GeographicOption
+};
 
 /**
  * Geographic Data Service Class

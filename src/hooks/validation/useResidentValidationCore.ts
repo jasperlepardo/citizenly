@@ -24,11 +24,11 @@ import {
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
   mapFormToApi,
-} from '@/services/residentMapper';
+} from '@/services/resident-mapper';
 import type { ResidentFormData } from '@/types';
 
-import { useResidentAsyncValidation } from '../utilities/useResidentAsyncValidation';
-import { useResidentCrossFieldValidation } from '../utilities/useResidentCrossFieldValidation';
+import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
+import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
 
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';

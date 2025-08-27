@@ -6,6 +6,7 @@
  */
 
 import crypto from 'crypto';
+import type { PhilippineLogContext, AuditLogContext, NPCLogContext } from '@/types/errors';
 
 // Philippine regulatory compliance constants
 const RA_10173_SENSITIVE_FIELDS = new Set([
@@ -21,38 +22,8 @@ const NPC_CLASSIFICATION = {
   PRIVILEGED: 'PRIVILEGED_INFORMATION'
 } as const;
 
-interface PhilippineLogContext {
-  userId?: string;
-  sessionId?: string;
-  barangayCode?: string;
-  timestamp: string;
-  complianceNote: string;
-  [key: string]: any;
-}
 
-interface AuditLogContext {
-  eventType: string;
-  userId: string;
-  action: string;
-  timestamp: string;
-  ipAddress?: string;
-  userAgent?: string;
-  sessionId?: string;
-  barangayOfficial?: boolean;
-  complianceFramework: string;
-  retentionPeriod: string;
-}
 
-interface NPCLogContext {
-  dataCategory: string;
-  processingPurpose: string;
-  legalBasis: string;
-  dataSubjectCount: number;
-  sensitiveDataProcessed: boolean;
-  consentStatus: string;
-  timestamp: string;
-  npcRegistrationRef?: string;
-}
 
 /**
  * Hash PII data per BSP Circular 808 requirements

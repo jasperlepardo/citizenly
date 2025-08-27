@@ -4,6 +4,7 @@
  */
 
 import { logger } from '@/lib';
+import type { CommandMenuAnalyticsEvent, CommandMenuPerformanceMetrics } from '@/types/services';
 
 // Analytics event types
 export interface CommandMenuAnalyticsEvent {
@@ -14,18 +15,11 @@ export interface CommandMenuAnalyticsEvent {
   data: Record<string, any>;
 }
 
-// Performance metrics
-interface PerformanceMetrics {
-  searchLatency: number;
-  cacheHitRate: number;
-  errorRate: number;
-  usageFrequency: number;
-}
 
 // In-memory analytics store (would be replaced with proper analytics service in production)
 class CommandMenuAnalytics {
   private events: CommandMenuAnalyticsEvent[] = [];
-  private metrics: PerformanceMetrics = {
+  private metrics: CommandMenuPerformanceMetrics = {
     searchLatency: 0,
     cacheHitRate: 0,
     errorRate: 0,
@@ -239,7 +233,7 @@ class CommandMenuAnalytics {
   }
 
   // Get current metrics for monitoring dashboards
-  getMetrics(): PerformanceMetrics {
+  getMetrics(): CommandMenuPerformanceMetrics {
     return { ...this.metrics };
   }
 
@@ -249,7 +243,7 @@ class CommandMenuAnalytics {
   }
 
   // Health check for monitoring
-  getHealthStatus(): { status: 'healthy' | 'warning' | 'critical'; metrics: PerformanceMetrics } {
+  getHealthStatus(): { status: 'healthy' | 'warning' | 'critical'; metrics: CommandMenuPerformanceMetrics } {
     const metrics = this.getMetrics();
     let status: 'healthy' | 'warning' | 'critical' = 'healthy';
 

@@ -2,23 +2,10 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import { usePsgcSearch, PsgcSearchResult } from '../search/useOptimizedPsgcSearch';
+import { MigrationInformationData } from '@/types/services';
+import { usePsgcSearch, PsgcSearchResult } from '../search/usePsgcSearch';
 
-export interface MigrationInformationData {
-  previous_barangay_code?: string;
-  previous_city_municipality_code?: string;
-  previous_province_code?: string;
-  previous_region_code?: string;
-  length_of_stay_previous_months?: number;
-  reason_for_migration?: string;
-  date_of_transfer?: string;
-  migration_type?: string;
-  // Legacy fields for backward compatibility (will be mapped to above)
-  reason_for_leaving?: string;
-  reason_for_transferring?: string;
-  duration_of_stay_current_months?: number;
-  is_intending_to_return?: boolean;
-}
+export { type MigrationInformationData };
 
 interface SelectedBarangayInfo {
   barangay: string;

@@ -65,7 +65,7 @@ export const birthdateSchema = z
 
 export const philsysSchema = z
   .string()
-  .regex(/^\d{4}-\d{4}-\d{4}-\d{4}$/, 'PhilSys number must be in format XXXX-XXXX-XXXX-XXXX')
+  .regex(/^\d{4}-\d{4}-\d{4}$/, 'PhilSys number must be in format XXXX-XXXX-XXXX')
   .optional()
   .or(z.literal(''));
 

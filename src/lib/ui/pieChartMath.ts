@@ -5,6 +5,9 @@
  * Contains geometry calculations for pie slices, angles, and SVG path generation.
  */
 
+// Import similar types from centralized location
+// Note: These have different fields from @/types/components versions
+// (percentage field vs value field, etc) so we keep separate definitions
 export interface PieSliceData {
   label: string;
   value: number;

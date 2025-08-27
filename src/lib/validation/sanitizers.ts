@@ -94,9 +94,10 @@ export function sanitizePhilSysNumber(philsys: string): string {
   // Remove all non-digit characters
   const digitsOnly = philsys.replace(/\D/g, '');
 
-  // Format as XXXX-XXXX-XXXX-XXXX if 16 digits
-  if (digitsOnly.length === 16) {
-    return `${digitsOnly.slice(0, 4)}-${digitsOnly.slice(4, 8)}-${digitsOnly.slice(8, 12)}-${digitsOnly.slice(12, 16)}`;
+  // CORRECTED: PhilSys is 12 digits, not 16 - aligned with database schema VARCHAR(20)
+  // Format as XXXX-XXXX-XXXX if 12 digits
+  if (digitsOnly.length === 12) {
+    return `${digitsOnly.slice(0, 4)}-${digitsOnly.slice(4, 8)}-${digitsOnly.slice(8, 12)}`;
   }
 
   return digitsOnly;

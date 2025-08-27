@@ -13,7 +13,7 @@ import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { searchData, trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
 import { trackSearch } from '@/lib/data';
 
-import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 /**
  * Search options

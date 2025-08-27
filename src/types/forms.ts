@@ -1,10 +1,48 @@
 /**
- * Form Types Library
- * Consolidated form field types and interfaces for consistent form behavior
- * Combines form-specific types from lib/types/forms.ts and components/types/form-field.ts
+ * Form Types - Database-Aligned Form Interface Collection
+ * 
+ * @fileoverview Comprehensive form-related TypeScript interfaces that provide
+ * type-safe form handling with 100% database schema alignment. All form data
+ * interfaces extend canonical database records to ensure data integrity.
+ * 
+ * @version 3.0.0
+ * @since 2025-01-01
+ * @author Citizenly Development Team
+ * 
+ * Key Features:
+ * - 100% database schema compliance through canonical record extension
+ * - Generic form component interfaces for reusable form building blocks
+ * - Type-safe validation framework with field-level error handling
+ * - Composition pattern: FormData extends DatabaseRecord + UI-specific fields
+ * - Professional form state management interfaces
+ * 
+ * @example Basic Form Data Extension Pattern
+ * ```typescript
+ * import { ResidentRecord } from '@/types/database';
+ * import { ResidentFormData } from '@/types/forms';
+ * 
+ * // Form data extends database record with UI-specific additions
+ * const formData: ResidentFormData = {
+ *   ...residentRecord, // All database fields included
+ *   isEditing: true,   // UI-specific field
+ *   isDirty: false     // UI-specific field
+ * };
+ * ```
+ * 
+ * @example Generic Form Component Usage
+ * ```typescript
+ * import { ValidatedFieldSetProps, FormSubmissionState } from '@/types/forms';
+ * 
+ * const MyFormField: React.FC<ValidatedFieldSetProps<string>> = ({
+ *   value, onChange, errorMessage, required, ...props
+ * }) => {
+ *   // Type-safe form field implementation
+ * };
+ * ```
  */
 
 import { ReactNode } from 'react';
+export type { ValidationError } from './validation';
 
 // =============================================================================
 // BASE FORM FIELD INTERFACES
@@ -233,159 +271,80 @@ export interface FormSubmissionState {
 }
 
 // =============================================================================
-// FORM DATA INTERFACES FROM DATABASE
+// FORM DATA INTERFACES (Database-Aligned Extensions)
 // =============================================================================
 
+// Import canonical database records
+import type { ResidentRecord, HouseholdRecord } from './database';
+
 /**
- * Resident form data (matching database schema exactly)
+ * Resident form data - extends canonical database record with UI-specific fields
+ * @description Composition of ResidentRecord + form-specific metadata for complete form handling
+ * 
+ * @example Resident Form Usage
+ * ```typescript
+ * const formData: ResidentFormData = {
+ *   // All ResidentRecord fields inherited from database.ts
+ *   id: '550e8400-e29b-41d4-a716-446655440000',
+ *   first_name: 'Maria',
+ *   last_name: 'Santos',
+ *   sex: 'female', // Uses SexEnum from database
+ *   // ... all other database fields
+ *   
+ *   // Form-specific UI fields
+ *   isEditing: true,
+ *   isDirty: false,
+ *   lastModified: '2025-01-27T10:00:00Z'
+ * };
+ * ```
  */
-export interface ResidentFormData {
-  // Personal Information - matching database schema
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  extension_name?: string;
-  birthdate: string;
-  birth_place_code?: string;
-  birth_place_name?: string; // For UI display purposes
-  sex: 'male' | 'female';
-
-  // Civil status
-  civil_status?: 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
-  civil_status_others_specify?: string;
-
-  // Citizenship and identity
-  citizenship?: 'filipino' | 'dual_citizen' | 'foreigner';
-  philsys_card_number?: string;
-
-  // Contact information
-  mobile_number?: string;
-  telephone_number?: string;
-  email?: string;
-
-  // Physical characteristics
-  height?: number;
-  weight?: number;
-  complexion?: string;
-  blood_type?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-
-  // Family information
-  mother_maiden_first?: string;
-  mother_maiden_middle?: string;
-  mother_maiden_last?: string;
-
-  // Location and affiliation
-  household_code?: string;
-
-  // Cultural and religious
-  ethnicity?: string;
-  religion?: string;
-  religion_others_specify?: string;
-
-  // Education and employment
-  employment_status?: string;
-  education_attainment?: string;
-  is_graduate?: boolean;
-  occupation_code?: string;
-
-  // Voting information (matching database schema)
-  is_voter?: boolean;
-  is_resident_voter?: boolean;
-  last_voted_date?: string;
-
-  // Migration information (matching database schema)
-  previous_barangay_code?: string;
-  previous_city_municipality_code?: string;
-  previous_province_code?: string;
-  previous_region_code?: string;
-  date_of_transfer?: string;
-  reason_for_migration?: string;
-  length_of_stay_previous_months?: number;
-  migration_type?: string;
+export interface ResidentFormData extends ResidentRecord {
+  // UI-specific form metadata (not in database)
+  isEditing?: boolean;        // Whether form is in edit mode
+  isDirty?: boolean;          // Whether form has unsaved changes  
+  lastModified?: string;      // Last modification timestamp
+  validationErrors?: Record<string, string>; // Field-level validation errors
+  
+  // Form display helpers (computed from database fields)
+  birth_place_name?: string;  // Resolved from birth_place_code for display
+  full_name?: string;         // Computed: first + middle + last + extension
+  age?: number;               // Computed from birthdate
 }
 
 /**
- * Household form data - aligned with database structure (27 fields)
+ * Household form data - extends canonical database record with UI-specific fields
+ * @description Composition of HouseholdRecord + form-specific metadata for complete form handling
+ * 
+ * @example Household Form Usage  
+ * ```typescript
+ * const formData: HouseholdFormData = {
+ *   // All HouseholdRecord fields inherited from database.ts
+ *   code: 'BRG001-HH-2025-001',
+ *   house_number: '123',
+ *   street_id: '550e8400-e29b-41d4-a716-446655440000',
+ *   barangay_code: '1374000001',
+ *   household_type: 'nuclear', // Uses HouseholdTypeEnum from database
+ *   tenure_status: 'owned',     // Uses TenureStatusEnum from database
+ *   // ... all other database fields
+ *   
+ *   // Form-specific UI fields
+ *   isEditing: false,
+ *   isDirty: true,
+ *   lastModified: '2025-01-27T10:00:00Z'
+ * };
+ * ```
  */
-export interface HouseholdFormData {
-  // Primary identification
-  code: string;
-  name?: string;
-  address?: string;
-
-  // Location details (matching database schema)
-  house_number: string;
-  street_id: string; // UUID reference to geo_streets
-  subdivision_id?: string; // UUID reference to geo_subdivisions
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string;
-  region_code: string;
-  zip_code?: string;
-
-  // Household metrics (matching database schema)
-  no_of_families?: number;
-  no_of_household_members?: number;
-  no_of_migrants?: number;
-
-  // Household classifications (enums, matching database schema)
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other';
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others';
-  tenure_others_specify?: string;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others';
-
-  // Economic information (matching database schema)
-  monthly_income?: number;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined';
-
-  // Head of household (matching database schema)
-  household_head_id?: string; // UUID reference to residents
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other';
+export interface HouseholdFormData extends HouseholdRecord {
+  // UI-specific form metadata (not in database)
+  isEditing?: boolean;        // Whether form is in edit mode
+  isDirty?: boolean;          // Whether form has unsaved changes
+  lastModified?: string;      // Last modification timestamp
+  validationErrors?: Record<string, string>; // Field-level validation errors
+  
+  // Form display helpers (computed from database fields)
+  householdName?: string;     // Display name for UI (computed from name || code)
+  full_address?: string;      // Complete formatted address string
+  member_count?: number;      // Current member count (may differ from no_of_household_members)
 }
 
 // =============================================================================
@@ -393,97 +352,19 @@ export interface HouseholdFormData {
 // =============================================================================
 
 /**
- * Extended Household Form Data with additional UI fields
- * Now that HouseholdFormData includes all database fields, this mainly adds UI-specific fields
+ * Extended household form data type alias
+ * @description For backward compatibility - ExtendedHouseholdFormData is now just HouseholdFormData
+ * @deprecated Use HouseholdFormData directly
  */
-export interface ExtendedHouseholdFormData extends HouseholdFormData {
-  // Additional UI-specific fields (not in database)
-  householdName?: string; // Display name for UI
-
-  // Form-specific metadata
-  isEditing?: boolean;
-  isDirty?: boolean;
-  lastModified?: string;
-}
+export type ExtendedHouseholdFormData = HouseholdFormData;
 
 /**
- * Household Details Form Data - subset of full household data for form sections
+ * Household details form data type alias  
+ * @description For backward compatibility - HouseholdDetailsData now points through ExtendedHouseholdFormData
+ * @deprecated Use ExtendedHouseholdFormData instead (which points to HouseholdFormData)
+ * @deprecated This is a duplicate alias - will be removed in future cleanup
  */
-export interface HouseholdDetailsData {
-  // Location details (matching database schema)
-  house_number: string;
-  street_id: string;
-  subdivision_id?: string;
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string;
-  region_code: string;
-  zip_code?: string;
-
-  // Household metrics (matching database schema)
-  no_of_families?: number;
-  no_of_household_members?: number;
-  no_of_migrants?: number;
-
-  // Household classifications (matching database schema)
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other';
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others';
-  tenure_others_specify?: string;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others';
-
-  // Economic information (matching database schema)
-  monthly_income?: number;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined';
-
-  // Head of household (matching database schema)
-  household_head_id?: string;
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other';
-}
+export type HouseholdDetailsData = ExtendedHouseholdFormData;
 
 /**
  * Generic Form Section Props Interface
@@ -514,13 +395,16 @@ export interface FieldConfig {
 
 /**
  * Household Form Component Props
+ * @description Props for household form components with type-safe change handling
  */
 export interface HouseholdFormProps {
-  formData: ExtendedHouseholdFormData;
-  onChange: (field: string, value: string | number | boolean | null) => void;
+  formData: HouseholdFormData;
+  onChange: (field: keyof HouseholdFormData, value: string | number | boolean | null) => void;
   errors?: Record<string, string>;
   mode?: FormMode;
   className?: string;
+  onSubmit?: (data: HouseholdFormData) => Promise<void>;
+  loading?: boolean;
 }
 
 // =============================================================================
@@ -530,8 +414,3 @@ export interface HouseholdFormProps {
 /**
  * Validation error interface
  */
-export interface ValidationError {
-  field: string;
-  message: string;
-  code?: string;
-}

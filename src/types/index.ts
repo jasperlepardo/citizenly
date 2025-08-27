@@ -7,15 +7,193 @@
  */
 
 // =============================================================================
+// NEW CONSOLIDATED TYPE EXPORTS
+// =============================================================================
+
+// Validation types
+export * from './validation';
+
+// Address types  
+export * from './addresses';
+
+// Service types
+export * from './services';
+
+// Export specific service types for clarity
+export type {
+  ServiceResidentFormData,
+  ServiceUserAddress,
+  ServiceCreateResidentRequest,
+  ServiceCreateResidentResponse,
+  UserRepositoryData,
+  UserRepositorySearchOptions,
+  UserSecurityData,
+  CSRFToken,
+  CommandMenuExportOptions,
+  CommandMenuPerformanceMetrics,
+  CommandMenuAnalyticsEvent,
+  ServiceRawPsocData,
+  ServiceRawPsgcData,
+  ServiceChartDataPoint,
+  ServiceDatabaseResponse,
+} from './services';
+
+// Repository types
+export * from './repositories';
+
+// API request types  
+export * from './api-requests';
+
+// Export specific API request types for clarity
+export type {
+  HealthCheckResult,
+  LogEntry,
+  ClientLogRequest,
+  WebhookPayload,
+  WebhookVerification,
+  CreateProfileRequest,
+  CreateProfileResponse,
+  TestResults,
+  TestSuiteResults,
+  ProfileTestResults,
+  NotificationRecord,
+  CreateUserData,
+  UserManagementRequest,
+  BulkUserOperationResponse,
+  DataExportRequest,
+  DataImportRequest,
+  ImportExportJobStatus,
+} from './api-requests';
+
+// Page component props
+export * from './page-props';
+
+// Hook types
+export type {
+  UseGenericValidationOptions,
+  UseGenericValidationReturn,
+  ValidationProgressState,
+  UseValidationProgressReturn,
+  UseCrudOptions,
+  UseCrudReturn,
+  UseAsyncReturn,
+  FormFieldState,
+  UseFormOptions,
+  UseFormReturn,
+  SearchOptions,
+  SearchResults,
+  UseSearchReturn,
+  UseLocalStorageOptions,
+  UseLocalStorageReturn,
+  UseDebounceOptions,
+  UseApiConfig,
+  PermissionCheckResult,
+  UserBarangayData,
+  FormHookResult,
+  URLParameterConfig,
+  URLParametersResult,
+  ResidentFormURLParametersResult,
+  WorkflowState,
+  WorkflowHookResult,
+  CommandMenuSearchResult,
+  CommandMenuHookResult,
+} from './hooks';
+
+// Component types  
+export type {
+  BaseComponentProps,
+  ComponentWithChildren,
+  ComponentSize,
+  ComponentVariant,
+  ButtonProps,
+  FormFieldProps,
+  InputProps,
+  SelectProps,
+  CheckboxProps,
+  RadioProps,
+  CardProps,
+  ModalProps,
+  DrawerProps,
+  TableColumn,
+  TableProps,
+  PaginationProps,
+  AlertSeverity,
+  AlertProps,
+  LoadingProps,
+  ProgressProps,
+  NavItem,
+  BreadcrumbItem,
+  TabItem,
+  TabsProps,
+  FileUploadProps,
+  FilePreview,
+  SearchBarProps,
+  SearchResultItem,
+  ButtonGroupOption,
+  ButtonGroupProps,
+  DialogAction,
+  ConfirmationDialogProps,
+} from './components';
+
+// API types
+export * from './api-consolidated';
+
+// Utility types
+export * from './utilities';
+
+// Export specific utility types for clarity
+export type {
+  NameParts,
+  UnknownFormData,
+  FormProcessingStage,
+  FormProcessingOptions,
+  ProcessedFormResult,
+  UtilityValidationState,
+  SanitizationType,
+  SanitizationOptions,
+} from './utilities';
+
+// Error handling types
+export * from './errors';
+
+// Chart and visualization types  
+export * from './charts';
+
+// Application constants
+export * from './constants';
+
+// =============================================================================
 // CORE DOMAIN TYPES
 // =============================================================================
 
 // Database types
 export type {
+  // Geographic Types
   PSGCRegion,
   PSGCProvince,
   PSGCCityMunicipality,
   PSGCBarangay,
+  GeoSubdivision,
+  GeoStreet,
+  
+  // PSOC Types  
+  PsocMajorGroup,
+  PsocSubMajorGroup,
+  PsocMinorGroup,
+  PsocUnitGroup,
+  PsocUnitSubGroup,
+  PsocPositionTitle,
+  PsocOccupationCrossReference,
+  
+  // Relationship Types
+  HouseholdMember,
+  ResidentRelationship,
+  
+  // System Types
+  SystemDashboardSummary,
+  SystemSchemaVersion,
+  
+  // Query Result Types
   AddressHierarchyQueryResult,
   GeographicHierarchyResult,
   GeographicHierarchySingleResult,
@@ -32,11 +210,13 @@ export type {
 export type {
   AuthUser,
   AuthUserProfile,
+  AuthenticatedUser,
   AuthSession,
   AuthState,
   AuthRole,
   AuthPermission,
   RolePermission,
+  UserRoleAssignment,
   UserRole,
   WebhookUserRecord,
   LoginRequest,
@@ -56,9 +236,8 @@ export type {
 // Export auth constants
 export { DEFAULT_ROLES, PERMISSION_ACTIONS, RESOURCE_TYPES } from './auth';
 
-// Resident types
+// Database enums (from database.ts)
 export type {
-  // Enums
   SexEnum,
   CivilStatusEnum,
   CitizenshipEnum,
@@ -67,11 +246,13 @@ export type {
   BloodTypeEnum,
   ReligionEnum,
   EthnicityEnum,
-  BirthPlaceLevelEnum,
+} from './database';
 
-  // Core interfaces
-  ResidentDatabaseRecord,
-  ResidentApiData,
+// Resident types
+export type {
+  // Core interfaces  
+  PersonalInfoFormState,
+  ContactInfoFormState,
   ResidentSectoralInfo,
   ResidentMigrantInfo,
   ResidentFormState,
@@ -83,7 +264,6 @@ export type {
   PsocOption,
   PsgcData,
   PsgcOption,
-  AddressInfo,
   ResidentApiResponse,
   ResidentsListResponse,
   ResidentSearchParams,
@@ -96,21 +276,24 @@ export type {
   SectoralContext,
 } from './residents';
 
-// Export resident option constants
-export {
-  SEX_OPTIONS,
-  CIVIL_STATUS_OPTIONS,
-  CITIZENSHIP_OPTIONS,
-  EDUCATION_LEVEL_OPTIONS,
-  EMPLOYMENT_STATUS_OPTIONS,
-  BLOOD_TYPE_OPTIONS,
-  RELIGION_OPTIONS,
-  ETHNICITY_OPTIONS,
-  BIRTH_PLACE_LEVEL_OPTIONS,
-} from './residents';
+// Address types are in addresses.ts  
+export type {
+  AddressInfo,
+} from './addresses';
+
+// Note: Resident option constants are available from @/constants/resident-form-options
+// They are not re-exported here to maintain clean type separation
 
 // Household types
 export type {
+  // Household Enums
+  HouseholdTypeEnum,
+  TenureStatusEnum,
+  HouseholdUnitEnum,
+  FamilyPositionEnum,
+  IncomeClassEnum,
+  
+  // Household Interfaces
   HouseholdRecord,
   HouseholdData,
   HouseholdHead,
@@ -126,8 +309,8 @@ export type {
   HouseholdFormSubmissionState,
 } from './households';
 
-// Export household option constants
-export { HOUSEHOLD_TYPE_OPTIONS, TENURE_STATUS_OPTIONS, INCOME_CLASS_OPTIONS } from './households';
+// Note: Household option constants are available from @/constants/household-form-options
+// They are not re-exported here to maintain clean type separation
 
 // Form types
 export type {
@@ -266,46 +449,7 @@ export interface AsyncState<T = any> extends LoadingState<T> {
   refetch: () => Promise<void>;
 }
 
-// =============================================================================
-// COMPONENT PROP TYPES
-// =============================================================================
-
-/**
- * Base component props that most components should have
- */
-export interface BaseComponentProps {
-  className?: string;
-  id?: string;
-  'data-testid'?: string;
-}
-
-/**
- * Props for components that can be disabled
- */
-export interface DisableableProps {
-  disabled?: boolean;
-}
-
-/**
- * Props for components with loading states
- */
-export interface LoadableProps {
-  loading?: boolean;
-}
-
-/**
- * Props for components with size variants
- */
-export interface SizableProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-}
-
-/**
- * Props for components with color variants
- */
-export interface ColoredProps {
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
-}
+// Component prop types consolidated into components.ts - imported via barrel export
 
 // =============================================================================
 // EVENT HANDLER TYPES

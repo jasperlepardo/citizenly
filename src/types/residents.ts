@@ -1,148 +1,62 @@
 /**
- * Resident Types
- * Consolidated resident-related TypeScript interfaces from multiple sources
- * Combines resident-detail.ts, resident-listing.ts, resident.ts, and resident-form.ts
+ * Resident Types - Database-Aligned TypeScript Interfaces
+ * 
+ * @fileoverview Consolidated resident-related TypeScript interfaces that exactly match
+ * the database schema defined in database/schema.sql. All interfaces are 100% compliant
+ * with PostgreSQL constraints and DILG RBI requirements.
+ * 
+ * @version 3.0.0
+ * @since 2025-01-01
+ * 
+ * Database Tables Covered:
+ * - residents (main resident data)
+ * - resident_sectoral_info (sectoral classifications)  
+ * - resident_migrant_info (migration history)
+ * 
+ * @example Basic Usage
+ * ```typescript
+ * import { ResidentRecord, PersonalInfoFormState } from '@/types/residents';
+ * import { SEX_OPTIONS } from '@/constants/resident-form-options';
+ * 
+ * const resident: ResidentRecord = {
+ *   id: 'uuid-here',
+ *   first_name: 'Juan',
+ *   last_name: 'Dela Cruz',
+ *   // ... other required fields
+ * };
+ * ```
  */
 
 import { ReactNode } from 'react';
 
-import { ResidentFormData, HouseholdFormData } from './forms';
+import { ResidentFormData } from './forms';
+import type { AddressInfo } from './addresses';
+import type { ResidentRecord } from './database';
 
 // =============================================================================
 // DATABASE ENUMS AND TYPES
 // =============================================================================
 
-export type SexEnum = 'male' | 'female';
-export type CivilStatusEnum =
-  | 'single'
-  | 'married'
-  | 'divorced'
-  | 'separated'
-  | 'widowed'
-  | 'others';
-export type CitizenshipEnum = 'filipino' | 'dual_citizen' | 'foreigner';
-export type EducationLevelEnum =
-  | 'elementary'
-  | 'high_school'
-  | 'college'
-  | 'post_graduate'
-  | 'vocational';
+// Import enums from database.ts
+import type {
+  SexEnum,
+  CivilStatusEnum,
+  CitizenshipEnum,
+  EducationLevelEnum,
+  EmploymentStatusEnum,
+  BloodTypeEnum,
+  ReligionEnum,
+  EthnicityEnum,
+} from './database';
 
-export type EmploymentStatusEnum =
-  | 'employed'
-  | 'unemployed'
-  | 'underemployed'
-  | 'self_employed'
-  | 'student'
-  | 'retired'
-  | 'homemaker'
-  | 'unable_to_work'
-  | 'looking_for_work'
-  | 'not_in_labor_force';
-
-export type BloodTypeEnum = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-
-export type ReligionEnum =
-  | 'roman_catholic'
-  | 'islam'
-  | 'iglesia_ni_cristo'
-  | 'christian'
-  | 'aglipayan_church'
-  | 'seventh_day_adventist'
-  | 'bible_baptist_church'
-  | 'jehovahs_witnesses'
-  | 'church_of_jesus_christ_latter_day_saints'
-  | 'united_church_of_christ_philippines'
-  | 'others';
-
-export type EthnicityEnum =
-  | 'tagalog'
-  | 'cebuano'
-  | 'ilocano'
-  | 'bisaya'
-  | 'hiligaynon'
-  | 'bikolano'
-  | 'waray'
-  | 'kapampangan'
-  | 'pangasinense'
-  | 'maranao'
-  | 'maguindanao'
-  | 'tausug'
-  | 'yakan'
-  | 'samal'
-  | 'badjao'
-  | 'aeta'
-  | 'agta'
-  | 'ati'
-  | 'batak'
-  | 'bukidnon'
-  | 'gaddang'
-  | 'higaonon'
-  | 'ibaloi'
-  | 'ifugao'
-  | 'igorot'
-  | 'ilongot'
-  | 'isneg'
-  | 'ivatan'
-  | 'kalinga'
-  | 'kankanaey'
-  | 'mangyan'
-  | 'mansaka'
-  | 'palawan'
-  | 'subanen'
-  | 'tboli'
-  | 'teduray'
-  | 'tumandok'
-  | 'chinese'
-  | 'others';
-
-export type BirthPlaceLevelEnum = 'region' | 'province' | 'city_municipality' | 'barangay';
+// BirthPlaceLevelEnum removed - not in database schema. Use PSGC codes directly.
 
 // =============================================================================
 // CORE RESIDENT INTERFACES
 // =============================================================================
 
-/**
- * Database record interface - extends ResidentFormData with additional database fields
- * All properties use snake_case to match PostgreSQL database schema
- */
-export interface ResidentDatabaseRecord extends ResidentFormData {
-  // System fields not in form
-  id?: string;
-  name?: string; // Combined full name
-  philsys_last4?: string; // Only last 4 digits
 
-  // Additional geographic fields for full address
-  street_id?: string;
-  subdivision_id?: string;
-  barangay_code: string; // Required - from user profile/form
-  city_municipality_code: string; // Required
-  province_code?: string;
-  region_code: string; // Required
-  zip_code?: string;
-
-  // Additional employment fields
-  employment_code?: string;
-  employment_name?: string;
-  psoc_level?: number;
-  occupation_title?: string;
-
-  // Birth place details
-  birth_place_level?: BirthPlaceLevelEnum;
-
-  // System tracking fields
-  is_active?: boolean;
-  created_by?: string;
-  updated_by?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-/**
- * API request/response format - alias to ResidentFormData for consistency
- * All properties use snake_case matching database schema
- */
-export type ResidentApiData = ResidentFormData;
+// ResidentDatabaseRecord and ResidentApiData removed - use ResidentRecord from './database' directly
 
 // =============================================================================
 // SECTORAL AND MIGRATION INFORMATION
@@ -150,6 +64,19 @@ export type ResidentApiData = ResidentFormData;
 
 /**
  * Sectoral information interface matching resident_sectoral_info table exactly (15 fields)
+ * 
+ * @description Maps to `resident_sectoral_info` table in PostgreSQL database.
+ * Contains boolean flags for various sectoral classifications used in RBI reporting.
+ * 
+ * @example
+ * ```typescript
+ * const sectoralInfo: ResidentSectoralInfo = {
+ *   resident_id: 'uuid-here',
+ *   is_senior_citizen: true,
+ *   is_person_with_disability: false,
+ *   // ... other sectoral flags
+ * };
+ * ```
  */
 export interface ResidentSectoralInfo {
   resident_id: string; // Primary key - UUID, NOT NULL
@@ -170,6 +97,20 @@ export interface ResidentSectoralInfo {
 
 /**
  * Migration information interface matching resident_migrant_info table exactly (15 fields)
+ * 
+ * @description Maps to `resident_migrant_info` table in PostgreSQL database.
+ * Tracks migration history and patterns for demographic analysis.
+ * 
+ * @example
+ * ```typescript
+ * const migrantInfo: ResidentMigrantInfo = {
+ *   resident_id: 'uuid-here',
+ *   previous_province_code: '0349', // Mindoro Oriental
+ *   date_of_transfer: '2023-06-15',
+ *   reason_for_migration: 'Employment opportunity',
+ *   // ... other migration data
+ * };
+ * ```
  */
 export interface ResidentMigrantInfo {
   id?: string | null; // UUID PRIMARY KEY with DEFAULT uuid_generate_v4()
@@ -196,39 +137,44 @@ export interface ResidentMigrantInfo {
 // ResidentFormData is now imported from ./forms to avoid duplication
 
 /**
- * Form-specific interface with all fields as optional for progressive form filling
+ * Personal Information section of resident form
+ * 
+ * @description Form state interface for personal information fields.
+ * Includes validation-friendly string unions and database constraint annotations.
+ * 
+ * @example
+ * ```typescript
+ * const personalInfo: PersonalInfoFormState = {
+ *   first_name: 'Maria',
+ *   middle_name: 'Santos', 
+ *   last_name: 'Garcia',
+ *   sex: 'female',
+ *   civil_status: 'single',
+ *   // ... other personal fields
+ * };
+ * ```
  */
-export interface ResidentFormState {
+export interface PersonalInfoFormState {
   // Personal Information - matching database exactly
   first_name: string;
-  middle_name: string;
+  middle_name: string; // Database: VARCHAR(100) - nullable
   last_name: string;
-  extension_name: string;
+  extension_name: string; // Database: VARCHAR(20) - nullable
   sex: SexEnum | '';
   civil_status: CivilStatusEnum | '';
   civil_status_others_specify: string;
   citizenship: CitizenshipEnum | '';
   birthdate: string;
   birth_place_name: string;
-  birth_place_code: string;
-  birth_place_level: BirthPlaceLevelEnum | '';
+  birth_place_code: string; // Database: VARCHAR(10) - nullable
+  // birth_place_level removed - use birth_place_code instead
   philsys_card_number: string;
-  philsys_last4: string;
   education_attainment: EducationLevelEnum | '';
   is_graduate: boolean;
   employment_status: EmploymentStatusEnum | '';
-  employment_code: string;
-  employment_name: string;
-  occupation_code: string;
-  psoc_level: number;
+  occupation_code: string; // Database: VARCHAR(10) - nullable
   occupation_title: string;
-
-  // Contact Information
-  email: string;
-  mobile_number: string;
-  telephone_number: string;
-  household_code: string;
-
+  
   // Physical Personal Details
   blood_type: BloodTypeEnum | '';
   complexion: string;
@@ -243,20 +189,41 @@ export interface ResidentFormState {
   mother_maiden_first: string;
   mother_maiden_middle: string;
   mother_maiden_last: string;
+}
 
+/**
+ * Contact Information section of resident form
+ */
+export interface ContactInfoFormState {
+  // Contact Information
+  email: string;
+  mobile_number: string;
+  telephone_number: string;
+  household_code: string;
+}
+
+/**
+ * Sectoral Information section of resident form
+ */
+export interface SectoralInfoFormState {
   // Sectoral Information - matching database exactly
-  is_labor_force_employed: boolean;
-  is_unemployed: boolean;
-  is_overseas_filipino_worker: boolean;
-  is_person_with_disability: boolean;
-  is_out_of_school_children: boolean;
-  is_out_of_school_youth: boolean;
-  is_senior_citizen: boolean;
-  is_registered_senior_citizen: boolean;
-  is_solo_parent: boolean;
-  is_indigenous_people: boolean;
-  is_migrant: boolean;
+  is_labor_force_employed: boolean; // Auto from employment_status
+  is_unemployed: boolean; // Auto from employment_status
+  is_overseas_filipino_worker: boolean; // Manual - Overseas Filipino Worker
+  is_person_with_disability: boolean; // Manual - Person with Disability
+  is_out_of_school_children: boolean; // Auto from age + education (5-17)
+  is_out_of_school_youth: boolean; // Auto from age + education + employment (18-30)
+  is_senior_citizen: boolean; // Auto from age (60+)
+  is_registered_senior_citizen: boolean; // Manual, conditional on is_senior_citizen
+  is_solo_parent: boolean; // Manual
+  is_indigenous_people: boolean; // Manual
+  is_migrant: boolean; // Manual
+}
 
+/**
+ * Migration Information section of resident form
+ */
+export interface MigrationInfoFormState {
   // Migration Information - matching database exactly
   previous_barangay_code: string;
   previous_city_municipality_code: string;
@@ -271,19 +238,33 @@ export interface ResidentFormState {
   is_whole_family_migrated: boolean;
 }
 
+/**
+ * Combined form state interface for the ResidentForm component
+ */
+export interface ResidentFormState extends 
+  PersonalInfoFormState,
+  ContactInfoFormState,
+  SectoralInfoFormState,
+  MigrationInfoFormState {
+}
+
 // =============================================================================
 // RELATED DATA INTERFACES
 // =============================================================================
 
 // Note: Household-related interfaces moved to households.ts
+// Note: PSGC and PSOC interfaces moved to database.ts as canonical source
 
-export interface PsocData {
-  code: string;
-  title: string;
-  hierarchy?: string;
-  level?: string;
-}
+import type {
+  ServiceRawPsocData,
+  ServiceRawPsgcData
+} from './services';
 
+// Backward compatibility aliases for resident form usage
+export type PsocData = ServiceRawPsocData;
+export type PsgcData = ServiceRawPsgcData;
+
+// Form option interfaces for resident forms
 export interface PsocOption {
   value: string;
   label: string;
@@ -295,14 +276,6 @@ export interface PsocOption {
   badge?: string;
 }
 
-export interface PsgcData {
-  code: string;
-  name: string;
-  full_address?: string;
-  full_hierarchy?: string;
-  level: 'region' | 'province' | 'city' | 'barangay';
-}
-
 export interface PsgcOption {
   value: string;
   label: string;
@@ -312,13 +285,6 @@ export interface PsgcOption {
   code: string;
 }
 
-export interface AddressInfo {
-  barangay_name: string;
-  city_municipality_name?: string;
-  province_name?: string;
-  region_name?: string;
-  full_address: string;
-}
 
 // =============================================================================
 // EXTENDED AND COMPOSITE INTERFACES
@@ -327,7 +293,7 @@ export interface AddressInfo {
 /**
  * Extended resident interface with related data
  */
-export interface ResidentWithRelations extends ResidentDatabaseRecord {
+export interface ResidentWithRelations extends ResidentRecord {
   // Birth place information (resolved from birth_place_code)
   birth_place_info?: {
     code: string;
@@ -365,14 +331,26 @@ export interface ResidentWithRelations extends ResidentDatabaseRecord {
   };
   address_info?: AddressInfo;
 
-  // Computed fields for classifications
-  is_employed?: boolean;
+  // Legacy field mapping for backward compatibility
+  is_employed?: boolean; // Maps to employment_status check
+  philsys_last4?: string; // Computed from philsys_card_number
+  psoc_level?: string; // From psoc_info.level
+  occupation_title?: string; // From psoc_info.title
+
+  // Geographic codes (flattened for display)
+  region_code?: string;
+  province_code?: string;
+  city_municipality_code?: string;
+  barangay_code?: string;
+
+  // Computed fields for classifications (matching database schema exactly)
+  is_labor_force_employed?: boolean;
   is_unemployed?: boolean;
   is_senior_citizen?: boolean;
   is_registered_senior_citizen?: boolean;
-  is_pwd?: boolean;
+  is_person_with_disability?: boolean;
   is_solo_parent?: boolean;
-  is_ofw?: boolean;
+  is_overseas_filipino_worker?: boolean;
   is_indigenous_people?: boolean;
   is_migrant?: boolean;
   is_out_of_school_children?: boolean;
@@ -384,7 +362,7 @@ export interface ResidentWithRelations extends ResidentDatabaseRecord {
 /**
  * Combined form data interface for the ResidentForm component
  */
-export interface CombinedResidentFormData extends ResidentDatabaseRecord {
+export interface CombinedResidentFormData extends ResidentRecord {
   // Sectoral information (flattened for form usage)
   sectoral_info?: ResidentSectoralInfo;
 
@@ -398,20 +376,9 @@ export interface CombinedResidentFormData extends ResidentDatabaseRecord {
 
 /**
  * Sectoral Information Interface (matches database schema)
+ * @deprecated Use SectoralInfoFormState instead - same interface with better naming
  */
-export interface SectoralInformation {
-  is_labor_force_employed: boolean; // Auto from employment_status
-  is_unemployed: boolean; // Auto from employment_status
-  is_overseas_filipino_worker: boolean; // Manual - Overseas Filipino Worker
-  is_person_with_disability: boolean; // Manual - Person with Disability
-  is_out_of_school_children: boolean; // Auto from age + education (5-17)
-  is_out_of_school_youth: boolean; // Auto from age + education + employment (18-30)
-  is_senior_citizen: boolean; // Auto from age (60+)
-  is_registered_senior_citizen: boolean; // Manual, conditional on is_senior_citizen
-  is_solo_parent: boolean; // Manual
-  is_indigenous_people: boolean; // Manual
-  is_migrant: boolean; // Manual
-}
+export type SectoralInformation = SectoralInfoFormState;
 
 /**
  * Context data needed for auto-calculations
@@ -429,15 +396,15 @@ export interface SectoralContext {
 // API AND VALIDATION INTERFACES
 // =============================================================================
 
-export interface FormValidationError {
-  field: string;
-  message: string;
-}
+// Import canonical interfaces from their proper locations
+import type { FormValidationError } from './validation';
 
-// Note: FormMode moved to forms.ts
+// Re-export for backward compatibility
+export type { FormValidationError };
 
+// Resident-specific API response interfaces
 export interface ResidentApiResponse {
-  resident: ResidentDatabaseRecord;
+  resident: ResidentRecord;
   household?: {
     code: string;
     name?: string;
@@ -450,7 +417,7 @@ export interface ResidentApiResponse {
 }
 
 export interface ResidentsListResponse {
-  data: ResidentDatabaseRecord[];
+  data: ResidentRecord[];
   pagination: {
     page: number;
     limit: number;
@@ -459,6 +426,7 @@ export interface ResidentsListResponse {
   message: string;
 }
 
+// Legacy search params interface (specific to residents)
 export interface ResidentSearchParams {
   page?: number;
   pageSize?: number;
@@ -469,19 +437,20 @@ export interface ResidentSearchParams {
   email?: string;
 }
 
+// Table component interfaces for residents
 export interface ResidentTableAction {
   key: string;
   label: string;
-  href?: (record: ResidentDatabaseRecord) => string;
-  onClick?: (record: ResidentDatabaseRecord) => void;
+  href?: (record: ResidentRecord) => string;
+  onClick?: (record: ResidentRecord) => void;
   variant: 'primary' | 'secondary' | 'danger';
 }
 
 export interface ResidentTableColumn {
   key: string;
   title: string;
-  dataIndex: string | ((record: ResidentDatabaseRecord) => string | number | boolean);
-  render?: (value: string | number | boolean, record: ResidentDatabaseRecord) => ReactNode;
+  dataIndex: string | ((record: ResidentRecord) => string | number | boolean);
+  render?: (value: string | number | boolean, record: ResidentRecord) => ReactNode;
   sortable?: boolean;
 }
 
@@ -489,130 +458,5 @@ export interface ResidentTableColumn {
 // FORM OPTIONS AND ENUMS
 // =============================================================================
 
-// Note: EnumOption moved to forms.ts to avoid conflicts
-
-export const SEX_OPTIONS: { value: string; label: string }[] = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-];
-
-type OptionType = { value: string; label: string };
-
-export const CIVIL_STATUS_OPTIONS: OptionType[] = [
-  { value: 'single', label: 'Single' },
-  { value: 'married', label: 'Married' },
-  { value: 'divorced', label: 'Divorced' },
-  { value: 'separated', label: 'Separated' },
-  { value: 'widowed', label: 'Widowed' },
-  { value: 'others', label: 'Others' },
-];
-
-export const CITIZENSHIP_OPTIONS: OptionType[] = [
-  { value: 'filipino', label: 'Filipino' },
-  { value: 'dual_citizen', label: 'Dual Citizen' },
-  { value: 'foreigner', label: 'Foreigner' },
-];
-
-export const EDUCATION_LEVEL_OPTIONS: OptionType[] = [
-  { value: 'elementary', label: 'Elementary' },
-  { value: 'high_school', label: 'High School' },
-  { value: 'college', label: 'College' },
-  { value: 'post_graduate', label: 'Post Graduate' },
-  { value: 'vocational', label: 'Vocational' },
-];
-
-export const EMPLOYMENT_STATUS_OPTIONS: OptionType[] = [
-  { value: 'employed', label: 'Employed' },
-  { value: 'unemployed', label: 'Unemployed' },
-  { value: 'underemployed', label: 'Underemployed' },
-  { value: 'self_employed', label: 'Self Employed' },
-  { value: 'student', label: 'Student' },
-  { value: 'retired', label: 'Retired' },
-  { value: 'homemaker', label: 'Homemaker' },
-  { value: 'unable_to_work', label: 'Unable to Work' },
-  { value: 'looking_for_work', label: 'Looking for Work' },
-  { value: 'not_in_labor_force', label: 'Not in Labor Force' },
-];
-
-export const BLOOD_TYPE_OPTIONS: OptionType[] = [
-  { value: 'A+', label: 'A+' },
-  { value: 'A-', label: 'A-' },
-  { value: 'B+', label: 'B+' },
-  { value: 'B-', label: 'B-' },
-  { value: 'AB+', label: 'AB+' },
-  { value: 'AB-', label: 'AB-' },
-  { value: 'O+', label: 'O+' },
-  { value: 'O-', label: 'O-' },
-];
-
-export const RELIGION_OPTIONS: OptionType[] = [
-  { value: 'roman_catholic', label: 'Roman Catholic' },
-  { value: 'islam', label: 'Islam' },
-  { value: 'iglesia_ni_cristo', label: 'Iglesia ni Cristo' },
-  { value: 'christian', label: 'Christian' },
-  { value: 'aglipayan_church', label: 'Aglipayan Church' },
-  { value: 'seventh_day_adventist', label: 'Seventh Day Adventist' },
-  { value: 'bible_baptist_church', label: 'Bible Baptist Church' },
-  { value: 'jehovahs_witnesses', label: "Jehovah's Witnesses" },
-  {
-    value: 'church_of_jesus_christ_latter_day_saints',
-    label: 'Church of Jesus Christ of Latter-day Saints',
-  },
-  { value: 'united_church_of_christ_philippines', label: 'United Church of Christ Philippines' },
-  { value: 'others', label: 'Others (specify)' },
-];
-
-export const ETHNICITY_OPTIONS: OptionType[] = [
-  // Major ethnic groups
-  { value: 'tagalog', label: 'Tagalog' },
-  { value: 'cebuano', label: 'Cebuano' },
-  { value: 'ilocano', label: 'Ilocano' },
-  { value: 'bisaya', label: 'Bisaya' },
-  { value: 'hiligaynon', label: 'Hiligaynon' },
-  { value: 'bikolano', label: 'Bikolano' },
-  { value: 'waray', label: 'Waray' },
-  { value: 'kapampangan', label: 'Kapampangan' },
-  { value: 'pangasinense', label: 'Pangasinense' },
-  // Muslim/Moro groups
-  { value: 'maranao', label: 'Maranao' },
-  { value: 'maguindanao', label: 'Maguindanao' },
-  { value: 'tausug', label: 'Tausug' },
-  { value: 'yakan', label: 'Yakan' },
-  { value: 'samal', label: 'Samal' },
-  { value: 'badjao', label: 'Badjao' },
-  // Indigenous Peoples
-  { value: 'aeta', label: 'Aeta' },
-  { value: 'agta', label: 'Agta' },
-  { value: 'ati', label: 'Ati' },
-  { value: 'batak', label: 'Batak' },
-  { value: 'bukidnon', label: 'Bukidnon' },
-  { value: 'gaddang', label: 'Gaddang' },
-  { value: 'higaonon', label: 'Higaonon' },
-  { value: 'ibaloi', label: 'Ibaloi' },
-  { value: 'ifugao', label: 'Ifugao' },
-  { value: 'igorot', label: 'Igorot' },
-  { value: 'ilongot', label: 'Ilongot' },
-  { value: 'isneg', label: 'Isneg' },
-  { value: 'ivatan', label: 'Ivatan' },
-  { value: 'kalinga', label: 'Kalinga' },
-  { value: 'kankanaey', label: 'Kankanaey' },
-  { value: 'mangyan', label: 'Mangyan' },
-  { value: 'mansaka', label: 'Mansaka' },
-  { value: 'palawan', label: 'Palawan' },
-  { value: 'subanen', label: 'Subanen' },
-  { value: 'tboli', label: "T'boli" },
-  { value: 'teduray', label: 'Teduray' },
-  { value: 'tumandok', label: 'Tumandok' },
-  // Other groups
-  { value: 'chinese', label: 'Chinese' },
-  { value: 'others', label: 'Others' },
-];
-
-export const BIRTH_PLACE_LEVEL_OPTIONS: OptionType[] = [
-  { value: 'region', label: 'Region' },
-  { value: 'province', label: 'Province' },
-  { value: 'city_municipality', label: 'City/Municipality' },
-  { value: 'barangay', label: 'Barangay' },
-];
-
-// Legacy aliases removed - use ResidentDatabaseRecord directly or proper service layer imports
+// Note: Form option constants moved to @/constants/resident-form-options for better organization
+// Import from there: SEX_OPTIONS, CIVIL_STATUS_OPTIONS, CITIZENSHIP_OPTIONS, etc.

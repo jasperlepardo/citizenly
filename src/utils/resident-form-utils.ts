@@ -5,21 +5,19 @@
 
 import { REQUIRED_FIELDS, FIELD_LABELS, DEFAULT_VALUES, VALIDATION_RULES } from '@/constants/resident-form';
 import { sanitizeFormData, sanitizeNameInput, validateNameInput } from '@/utils/input-sanitizer';
-import { ResidentFormData } from '@/services/resident.service';
+import { ResidentFormData } from '@/types/forms';
 import { philippineCompliantLogger } from '@/lib/security/philippine-logging';
+import { calculateAge } from '@/utils/date-utils';
+import type { SimpleValidationResult as ValidationResult } from '@/types/validation';
 
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Record<string, string>;
-}
-
-export interface NameParts {
-  first_name: string;
-  middleName: string;
-  last_name: string;
-}
-
-export type UnknownFormData = Record<string, unknown>;
+// Types moved to src/types/utilities.ts for consolidation
+import type { 
+  NameParts, 
+  UnknownFormData,
+  FormProcessingStage,
+  FormProcessingOptions,
+  ProcessedFormResult 
+} from '@/types/utilities';
 
 function isValidFormStructure(data: unknown): data is UnknownFormData {
   return data !== null && typeof data === 'object' && !Array.isArray(data);
@@ -79,7 +77,6 @@ export function transformFormData(formData: UnknownFormData): ResidentFormData {
     mobile_number: sanitizedData.mobile_number || '',
     telephone_number: sanitizedData.telephone_number || '',
     philsys_card_number: sanitizedData.philsys_card_number || '',
-    region_code: sanitizedData.region_code || '',
     province_code: sanitizedData.province_code || '',
     city_municipality_code: sanitizedData.city_municipality_code || '',
     barangay_code: sanitizedData.barangay_code || '',
@@ -237,43 +234,13 @@ export function validateFormData(formData: any): ValidationResult {
 /**
  * Calculate age from birthdate
  */
-export function calculateAge(birthdate: string): number {
-  const today = new Date();
-  const birth = new Date(birthdate);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  
-  return age;
-}
+// calculateAge moved to date-utils.ts - use that version instead
+// export function calculateAge... // REMOVED DUPLICATE
 
 /**
  * Generate secure form submission data with audit trail
  */
-export type FormProcessingStage = 'transform' | 'security' | 'audit' | 'full';
-
-export interface FormProcessingOptions {
-  stage?: FormProcessingStage;
-  userId?: string;
-  sessionId?: string;
-  barangayCode?: string;
-}
-
-export interface ProcessedFormResult {
-  transformedData: ResidentFormData;
-  auditInfo?: {
-    userId: string;
-    sessionId: string;
-    barangayCode: string;
-    timestamp: string;
-    fieldCount: number;
-    hasPhilSys: boolean;
-    hasVoterData: boolean;
-  };
-}
+// Import statements moved to top of file
 
 /**
  * Unified form processing function with configurable stages
@@ -352,7 +319,10 @@ export function prepareFormSubmission(
   
   return {
     transformedData: result.transformedData,
-    auditInfo: result.auditInfo!
+    auditInfo: {
+      ...result.auditInfo!,
+      hasVoterData: !!(formData.is_voter || formData.is_resident_voter)
+    }
   };
 }
 

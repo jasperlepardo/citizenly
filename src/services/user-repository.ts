@@ -8,43 +8,15 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
+import { BaseRepository } from './base-repository';
+import type { QueryOptions, RepositoryResult } from '@/types/services';
 
-export interface UserData {
-  id?: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-  barangay_code?: string;
-  is_active: boolean;
-  last_login_at?: string;
-  email_verified_at?: string;
-  password_changed_at?: string;
-  login_attempts?: number;
-  locked_until?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface UserSearchOptions extends QueryOptions {
-  email?: string;
-  name?: string;
-  role?: string;
-  barangay_code?: string;
-  is_active?: boolean;
-  last_login_before?: string;
-  last_login_after?: string;
-}
-
-export interface UserSecurityData {
-  login_attempts: number;
-  last_login_at?: string;
-  last_login_ip?: string;
-  locked_until?: string;
-  password_changed_at?: string;
-  email_verified_at?: string;
-}
+// Types moved to src/types/services.ts for consolidation
+import type {
+  UserRepositoryData as UserData,
+  UserRepositorySearchOptions as UserSearchOptions,
+  UserSecurityData,
+} from '@/types/services';
 
 export class UserRepository extends BaseRepository<UserData> {
   constructor(context?: ValidationContext) {

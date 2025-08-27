@@ -3,17 +3,8 @@
 import React from 'react';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import type { CivilStatusData } from '@/types/charts';
 
-interface CivilStatusData {
-  single: number;
-  married: number;
-  widowed: number;
-  divorced: number;
-  separated: number;
-  annulled: number;
-  registeredPartnership: number;
-  liveIn: number;
-}
 
 interface CivilStatusPieChartProps {
   data: CivilStatusData;

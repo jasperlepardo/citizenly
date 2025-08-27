@@ -4,7 +4,7 @@
  */
 import { useMemo } from 'react';
 
-import { generateId } from '@/lib/utilities/id-generators';
+import { generateId } from '@/utils/id-generators';
 
 export interface FieldAccessibilityOptions {
   /** Base identifier for the field */

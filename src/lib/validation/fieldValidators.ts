@@ -80,12 +80,13 @@ export const validatePhilSysNumber: FieldValidator<string> = (philsys, context) 
     return createResult(true); // Allow empty for optional fields
   }
 
-  const pattern = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
+  // CORRECTED: PhilSys is 12 digits, not 16 - aligned with database schema VARCHAR(20)
+  const pattern = /^\d{4}-\d{4}-\d{4}$/;
   const isValid = pattern.test(philsys);
 
   return createResult(
     isValid,
-    isValid ? undefined : 'PhilSys number must be in format XXXX-XXXX-XXXX-XXXX'
+    isValid ? undefined : 'PhilSys number must be in format XXXX-XXXX-XXXX'
   );
 };
 
