@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
-import { ResidentForm } from '@/components/templates/ResidentForm';
+import { ResidentForm } from '@/components/templates/Form/Resident';
 import { supabase, logger, logError } from '@/lib';
 // Remove unused enum imports - using types instead
 import { fetchWithAuth } from '@/lib/utils/sessionUtils';

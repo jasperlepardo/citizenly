@@ -37,10 +37,11 @@ export function BasicInformation({
   className = '',
 }: BasicInformationProps) {
   const handleChange = (field: keyof BasicInformationData, newValue: string) => {
-    onChange({
+    const updatedValue = {
       ...value,
       [field]: newValue,
-    });
+    };
+    onChange(updatedValue);
   };
 
   const handleSelectChange = (field: keyof BasicInformationData) => (option: any) => {

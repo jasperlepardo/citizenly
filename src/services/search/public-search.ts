@@ -71,7 +71,7 @@ export const searchBarangaysPublic = async (searchTerm: string, limit = 20) => {
 
     // Transform data to match expected format
     const transformedData =
-      (data as BarangayWithRelations[])?.map(item => ({
+      (data as any[])?.map((item: any) => ({
         code: item.code,
         name: item.name,
         city_name: `${item.psgc_cities_municipalities.name} (${item.psgc_cities_municipalities.type})`,

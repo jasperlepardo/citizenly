@@ -100,7 +100,7 @@ const fetchAddressFromJoinedTables = async (
       return undefined;
     }
 
-    const typedData = data as BarangayWithRelations;
+    const typedData = data as any;
     const city = typedData.psgc_cities_municipalities;
     const province = city?.psgc_provinces;
     const region = province?.psgc_regions;
@@ -108,14 +108,14 @@ const fetchAddressFromJoinedTables = async (
     const addressParts = [
       data.name,
       city?.name,
-      !city?.is_independent ? province?.name : null,
+      !(city as any)?.is_independent ? province?.name : null,
       region?.name,
     ].filter(Boolean);
 
     return {
       barangay_name: data.name,
       city_municipality_name: city?.name,
-      province_name: !city?.is_independent ? province?.name : undefined,
+      province_name: !(city as any)?.is_independent ? province?.name : undefined,
       region_name: region?.name,
       full_address: addressParts.join(', '),
     };

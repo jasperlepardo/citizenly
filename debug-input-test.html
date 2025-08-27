@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Input Debug Test</title>
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .test-input { 
+            padding: 10px; 
+            border: 2px solid #ccc; 
+            margin: 10px 0; 
+            width: 300px; 
+            font-size: 16px; 
+        }
+        .test-input:focus { border-color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Input Debug Test</h1>
+    <p>This is a simple test to check if basic HTML inputs work in your browser.</p>
+    
+    <div>
+        <label>Test Input 1:</label><br>
+        <input type="text" class="test-input" placeholder="Try typing here..." onclick="console.log('Input clicked')" oninput="console.log('Input changed:', this.value)">
+    </div>
+    
+    <div>
+        <label>Test Input 2:</label><br>
+        <input type="text" class="test-input" placeholder="Try typing here too..." value="">
+    </div>
+    
+    <div>
+        <label>Test Textarea:</label><br>
+        <textarea class="test-input" placeholder="Try typing in textarea..."></textarea>
+    </div>
+    
+    <script>
+        console.log('Debug test loaded');
+        
+        // Add event listeners to check if events are firing
+        document.querySelectorAll('.test-input').forEach(input => {
+            input.addEventListener('focus', () => console.log('Focus event on:', input));
+            input.addEventListener('blur', () => console.log('Blur event on:', input));
+            input.addEventListener('keydown', (e) => console.log('Keydown:', e.key));
+            input.addEventListener('input', (e) => console.log('Input event:', e.target.value));
+        });
+    </script>
+</body>
+</html>

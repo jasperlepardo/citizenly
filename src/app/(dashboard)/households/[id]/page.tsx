@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import HouseholdForm, {
   HouseholdFormData,
   HouseholdFormMode,
-} from '@/components/templates/HouseholdForm/NewHouseholdForm';
+} from '@/components/templates/Form/Household/NewHouseholdForm';
 import { useAuth } from '@/contexts';
 import { supabase, logger, logError } from '@/lib';
 import {

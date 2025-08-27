@@ -443,8 +443,14 @@ export default function Select({
 
   // Handle external option updates (for API-driven data)
   useEffect(() => {
-    if (onSearch) {
-      setFilteredOptions(options);
+    if (onSearch && options.length > 0) {
+      // Only update if options have actually changed
+      setFilteredOptions(prev => {
+        if (JSON.stringify(prev) !== JSON.stringify(options)) {
+          return options;
+        }
+        return prev;
+      });
     }
   }, [options, onSearch]);
 

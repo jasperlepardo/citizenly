@@ -1,210 +1,253 @@
 'use client';
 
 import Link from 'next/link';
-import { useSearchParams, useRouter } from 'next/navigation';
-import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { ResidentForm } from '@/components';
+import { useAuth } from '@/contexts';
+import { useCSRFToken } from '@/lib/auth';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { ResidentFormData } from '@/services/resident.service';
-import { EducationLevelEnum } from '@/types';
+import { 
+  philippineCompliantLogger, 
+  auditLogger,
+  npcComplianceLogger,
+  getClientIP,
+  generateSecureSessionId 
+} from '@/lib/security/philippine-logging';
+import { 
+  validateRequiredFields, 
+  transformFormData, 
+  parseFullName,
+  validateFormData,
+  prepareFormSubmission,
+  generateFormSummary 
+} from '@/utils/resident-form-utils';
+import { 
+  checkRateLimit 
+} from '@/utils/input-sanitizer';
+import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
+import { RATE_LIMITS } from '@/constants/resident-form';
 
 export const dynamic = 'force-dynamic';
 
-// Utility function to parse a full name into components
-function parseFullName(fullName: string) {
-  const nameParts = fullName.trim().split(/\s+/);
-
-  if (nameParts.length === 1) {
-    return {
-      first_name: nameParts[0],
-      middleName: '',
-      last_name: '',
-    };
-  } else if (nameParts.length === 2) {
-    return {
-      first_name: nameParts[0],
-      middleName: '',
-      last_name: nameParts[1],
-    };
-  } else if (nameParts.length === 3) {
-    return {
-      first_name: nameParts[0],
-      middleName: nameParts[1],
-      last_name: nameParts[2],
-    };
-  } else {
-    // For more than 3 parts, first name is first part, last name is last part, middle is everything in between
-    return {
-      first_name: nameParts[0],
-      middleName: nameParts.slice(1, -1).join(' '),
-      last_name: nameParts[nameParts.length - 1],
-    };
-  }
-}
+const sessionId = generateSecureSessionId();
 
 function CreateResidentForm() {
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const { user, userProfile } = useAuth();
+  const { getToken: getCSRFToken } = useCSRFToken();
 
-  // Setup resident operations hook with success/error handlers
   const { createResident, isSubmitting, validationErrors } = useResidentOperations({
     onSuccess: data => {
+      auditLogger.info('Resident creation successful', {
+        eventType: 'RESIDENT_CREATE_SUCCESS',
+        userId: user?.id || 'anonymous',
+        action: 'RESIDENT_CREATED',
+        timestamp: new Date().toISOString(),
+        sessionId,
+        barangayOfficial: user?.role === 'barangay_official',
+        complianceFramework: 'RA_10173_BSP_808',
+        retentionPeriod: '7_YEARS'
+      });
+      
+      npcComplianceLogger.info('Data processing completed', {
+        dataCategory: 'PERSONAL_INFORMATION',
+        processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
+        legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
+        dataSubjectCount: 1,
+        sensitiveDataProcessed: false, // Never log if sensitive data was processed
+        consentStatus: 'OBTAINED',
+        timestamp: new Date().toISOString(),
+        npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER
+      });
+      
       toast.success('Resident created successfully!');
-      console.log(
-        'Resident created successfully - redirecting to residents list to check visibility'
-      );
-      // Always redirect to residents list to check if the new resident is visible
       router.push('/residents');
     },
     onError: error => {
-      console.error('Resident creation error:', error);
+      auditLogger.info('Resident creation failed', {
+        eventType: 'RESIDENT_CREATE_FAILED',
+        userId: user?.id || 'anonymous',
+        action: 'RESIDENT_CREATE_ERROR',
+        timestamp: new Date().toISOString(),
+        sessionId,
+        errorType: 'VALIDATION_OR_SUBMISSION_ERROR',
+        complianceFramework: 'RA_10173_BSP_808',
+        retentionPeriod: '7_YEARS'
+      });
+      
       toast.error(error || 'Failed to create resident');
     },
   });
 
-  // Handle form submission - transform snake_case to camelCase
-  const handleSubmit = async (formData: any) => {
-    console.log('Raw form data received:', formData);
-    console.log('Form data keys:', Object.keys(formData));
-    console.log('is_voter value:', formData.is_voter);
-    console.log('is_resident_voter value:', formData.is_resident_voter);
+  const handleSubmit = useCallback(async (formData: any) => {
+    try {
+      const userIdentifier = user?.id || 'anonymous';
+      if (!checkRateLimit(userIdentifier, RATE_LIMITS.FORM_SUBMISSION.MAX_ATTEMPTS, RATE_LIMITS.FORM_SUBMISSION.WINDOW_MS)) {
+        toast.error('Too many submission attempts. Please wait before trying again.');
+        return;
+      }
 
-    // Validate required fields before submission
-    const requiredFields = ['first_name', 'last_name', 'birthdate', 'sex', 'household_code'];
-    const missingFields = requiredFields.filter(field => !formData[field]);
+      philippineCompliantLogger.debug('Form processing initiated', {
+        userId: user?.id || 'anonymous',
+        timestamp: new Date().toISOString(),
+        formFieldCount: Object.keys(formData).length,
+        barangayCode: userProfile?.barangay_code?.substring(0, 3) + '***',
+        hasPhilSysData: !!formData.philsys_card_number,
+        hasVoterData: !!(formData.is_voter || formData.is_resident_voter),
+        sessionId,
+        complianceNote: 'RA_10173_COMPLIANT_DEV_LOG'
+      });
 
-    if (missingFields.length > 0) {
-      const fieldLabels: Record<string, string> = {
-        first_name: 'First Name',
-        last_name: 'Last Name',
-        birthdate: 'Birthdate',
-        sex: 'Sex',
-        household_code: 'Household Assignment',
-      };
-      const missingLabels = missingFields.map(field => fieldLabels[field] || field);
-      toast.error(`Please fill in required fields: ${missingLabels.join(', ')}`);
-      return;
+      const validation = validateFormData(formData);
+      if (!validation.isValid) {
+        auditLogger.info('Form validation failed', {
+          eventType: 'VALIDATION_FAILED',
+          userId: user?.id || 'anonymous',
+          action: 'FORM_VALIDATION',
+          timestamp: new Date().toISOString(),
+          sessionId,
+          errorCount: Object.keys(validation.errors).length,
+          complianceFramework: 'RA_10173_BSP_808',
+          retentionPeriod: '7_YEARS'
+        });
+        
+        toast.error(validation.errors._form || 'Please correct the form errors');
+        return;
+      }
+
+      const { transformedData, auditInfo } = prepareFormSubmission(
+        formData,
+        user?.id || 'anonymous',
+        sessionId,
+        userProfile?.barangay_code || ''
+      );
+
+      auditLogger.info('Resident registration attempt', {
+        eventType: 'RESIDENT_FORM_PROCESSING',
+        userId: auditInfo.userId,
+        action: 'CREATE_RESIDENT_ATTEMPT',
+        timestamp: auditInfo.timestamp,
+        sessionId: auditInfo.sessionId,
+        barangayOfficial: user?.role === 'barangay_official',
+        complianceFramework: 'RA_10173_BSP_808',
+        retentionPeriod: '7_YEARS'
+      });
+
+      npcComplianceLogger.info('Data processing event', {
+        dataCategory: 'PERSONAL_INFORMATION',
+        processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
+        legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
+        dataSubjectCount: 1,
+        sensitiveDataProcessed: auditInfo.hasPhilSys,
+        consentStatus: 'OBTAINED',
+        timestamp: auditInfo.timestamp,
+        npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER
+      });
+
+      const result = await createResident({
+        ...transformedData,
+        csrfToken: getCSRFToken()
+      });
+
+      if (!result?.success) {
+        const formSummary = generateFormSummary(formData);
+        auditLogger.info('Form submission processing completed', {
+          eventType: 'FORM_PROCESSING_STATUS',
+          userId: user?.id || 'anonymous',
+          action: 'PROCESSING_RESULT',
+          timestamp: new Date().toISOString(),
+          sessionId,
+          success: false,
+          summary: formSummary,
+          complianceFramework: 'RA_10173_BSP_808',
+          retentionPeriod: '7_YEARS'
+        });
+      }
+      
+    } catch (error) {
+      auditLogger.info('Form submission error', {
+        eventType: 'FORM_SUBMISSION_ERROR',
+        userId: user?.id || 'anonymous',
+        action: 'SUBMISSION_EXCEPTION',
+        timestamp: new Date().toISOString(),
+        sessionId,
+        errorType: error instanceof Error ? error.constructor.name : 'UNKNOWN_ERROR',
+        complianceFramework: 'RA_10173_BSP_808',
+        retentionPeriod: '7_YEARS'
+      });
+      
+      toast.error('An unexpected error occurred. Please try again.');
     }
+  }, [user, userProfile, sessionId, createResident, getCSRFToken]);
 
-    // Transform form data to match ResidentFormData service interface
-    // Note: Hidden fields are already filtered out by ResidentForm component
-    const transformedData = {
-      // Personal Information
-      first_name: formData.first_name || '',
-      middle_name: formData.middle_name || '',
-      last_name: formData.last_name || '',
-      extension_name: formData.extension_name || '',
-      birthdate: formData.birthdate || '',
-      sex: formData.sex as 'male' | 'female',
-      civil_status: formData.civil_status || 'single',
-      citizenship: formData.citizenship || 'filipino',
+  const { suggestedName, suggestedId, isPreFilled } = useResidentFormURLParameters();
 
-      // Education & Employment
-      education_attainment: formData.education_attainment || '',
-      is_graduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
-      occupation_code: formData.occupation_code || '',
-      employment_status: formData.employment_status || 'not_in_labor_force',
-
-      // Contact Information
-      email: formData.email || '',
-      mobile_number: formData.mobile_number || '',
-      telephone_number: formData.telephone_number || '',
-      philsys_card_number: formData.philsys_card_number || '',
-
-      // Address Information (PSGC Codes)
-      region_code: formData.region_code || '',
-      province_code: formData.province_code || '',
-      city_municipality_code: formData.city_municipality_code || '',
-      barangay_code: formData.barangay_code || '',
-
-      // Household Assignment
-      household_code: formData.household_code || '',
-
-      // Include any additional fields that weren't filtered out
-      ...Object.fromEntries(
-        Object.entries(formData).filter(
-          ([key]) =>
-            ![
-              'first_name',
-              'middle_name',
-              'last_name',
-              'extension_name',
-              'birthdate',
-              'sex',
-              'civil_status',
-              'citizenship',
-              'education_attainment',
-              'is_graduate',
-              'occupation_code',
-              'employment_status',
-              'email',
-              'mobile_number',
-              'telephone_number',
-              'philsys_card_number',
-              'region_code',
-              'province_code',
-              'city_municipality_code',
-              'barangay_code',
-              'household_code',
-            ].includes(key)
-        )
-      ),
-    };
-
-    console.log('Submitting resident data (filtered by form):', transformedData);
-    console.log('Fields included:', Object.keys(transformedData));
-
-    const result = await createResident(transformedData);
-
-    // Log validation errors if any
-    if (!result?.success && validationErrors) {
-      console.error('Validation errors:', validationErrors);
-    }
-  };
-
-  // Parse URL parameters to pre-fill form
   const initialData = useMemo(() => {
-    const suggestedName = searchParams.get('suggested_name');
-    const suggestedId = searchParams.get('suggested_id');
-
     let data: any = {};
 
-    // Auto-fill name if provided
-    if (suggestedName) {
-      const { first_name, middleName, last_name } = parseFullName(suggestedName);
-      data = {
-        ...data,
-        first_name,
-        middle_name: middleName,
-        last_name,
-      };
+    // Auto-fill name if provided and valid
+    if (suggestedName && suggestedName.length > 0) {
+      try {
+        const { first_name, middleName, last_name } = parseFullName(suggestedName);
+        
+        // Log URL parameter usage (non-PII)
+        auditLogger.info('URL parameter processing', {
+          eventType: 'URL_PARAM_PROCESSING',
+          userId: user?.id || 'anonymous',
+          action: 'NAME_PREFILL',
+          timestamp: new Date().toISOString(),
+          sessionId,
+          parameterUsed: 'suggested_name',
+          namePartsFound: [first_name, middleName, last_name].filter(Boolean).length,
+          complianceFramework: 'RA_10173_BSP_808',
+          retentionPeriod: '7_YEARS'
+        });
+        
+        data = {
+          first_name,
+          middle_name: middleName,
+          last_name,
+        };
+      } catch (error) {
+        // Log security validation failure
+        auditLogger.info('URL parameter validation failed', {
+          eventType: 'URL_PARAM_VALIDATION_FAILED',
+          userId: user?.id || 'anonymous',
+          action: 'SECURITY_VALIDATION',
+          timestamp: new Date().toISOString(),
+          sessionId,
+          parameterType: 'suggested_name',
+          complianceFramework: 'RA_10173_BSP_808',
+          retentionPeriod: '7_YEARS'
+        });
+      }
     }
 
-    // Auto-fill ID if provided (though residents typically get auto-generated IDs)
-    if (suggestedId) {
-      // You could pre-fill other fields based on the suggested ID if needed
-      // For now, we'll just note it in the form data
-      data = {
-        ...data,
-        // Note: Most resident forms don't allow manual ID input as they're auto-generated
-        // But you could use this for other purposes like pre-filling reference numbers
-      };
+    // Handle suggested ID with validation
+    if (suggestedId && suggestedId.length > 0) {
+      // Log ID parameter usage (for audit purposes)
+      auditLogger.info('URL parameter processing', {
+        eventType: 'URL_PARAM_PROCESSING',
+        userId: user?.id || 'anonymous',
+        action: 'ID_PREFILL',
+        timestamp: new Date().toISOString(),
+        sessionId,
+        parameterUsed: 'suggested_id',
+        complianceFramework: 'RA_10173_BSP_808',
+        retentionPeriod: '7_YEARS'
+      });
     }
 
     return Object.keys(data).length > 0 ? data : undefined;
-  }, [searchParams]);
+  }, [suggestedName, suggestedId, user?.id, sessionId]);
 
-  // Show a helpful message if the form was pre-filled
-  const isPreFilled = Boolean(
-    searchParams.get('suggested_name') || searchParams.get('suggested_id')
-  );
-  const suggestedName = searchParams.get('suggested_name');
 
   return (
     <div className="p-6">
-      {/* Header */}
       <div className="mb-8 flex items-center gap-4">
         <Link
           href="/residents"
@@ -229,7 +272,6 @@ function CreateResidentForm() {
             Complete the form to register a new resident in the system
           </p>
 
-          {/* Pre-filled notification */}
           {isPreFilled && suggestedName && (
             <div className="mt-4 rounded-md bg-blue-50 p-3 dark:bg-blue-900/20">
               <div className="flex">
@@ -260,7 +302,6 @@ function CreateResidentForm() {
         </div>
       </div>
 
-      {/* Display validation errors if any */}
       {Object.keys(validationErrors).length > 0 && (
         <div className="mb-4 rounded-md bg-red-50 p-4 dark:bg-red-900/20">
           <div className="flex">
@@ -291,7 +332,6 @@ function CreateResidentForm() {
         </div>
       )}
 
-      {/* Single Page Form */}
       <ResidentForm
         initialData={initialData}
         onSubmit={handleSubmit}

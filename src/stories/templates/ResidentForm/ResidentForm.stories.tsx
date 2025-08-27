@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ResidentForm } from '@/components/templates/ResidentForm';
+import { ResidentForm } from '@/components/templates/Form/Resident';
 
 const mockAction = (name: string) => (data: unknown) => {
   console.log(`${name}:`, data);

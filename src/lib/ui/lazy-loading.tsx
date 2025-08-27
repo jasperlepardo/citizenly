@@ -45,8 +45,8 @@ export const preloadComponents = {
   populationPyramid: () => import('@/components/organisms/PopulationPyramid'),
   userProfile: () => import('@/components/organisms/UserProfile'),
   personalInformation: () =>
-    import('@/components/organisms/Form/Resident/PersonalInformation/PersonalInformation'),
-  sectoralInfo: () => import('@/components/organisms/Form/Resident/SectoralInformation'),
+    import('@/components/organisms/FormSection/Resident/PersonalInformation/PersonalInformation'),
+  sectoralInfo: () => import('@/components/organisms/FormSection/Resident/SectoralInformation'),
   errorModal: () => import('@/components/molecules/ErrorModal'),
   successModal: () => import('@/components/molecules/SuccessModal'),
 } as const;

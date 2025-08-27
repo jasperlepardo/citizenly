@@ -17,4 +17,4 @@ export { ProtectedRoute } from './ProtectedRoute';
 export { UserProfile } from './UserProfile';
 
 // Form Components - Specific imports to avoid conflicts
-export { PersonalInformationForm } from './Form/Resident/PersonalInformation';
+export { PersonalInformationForm } from './FormSection/Resident/PersonalInformation';

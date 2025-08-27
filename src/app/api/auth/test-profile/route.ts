@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
 
       const { data: createdProfile, error: createError } = await supabaseAdmin
         .from('auth_user_profiles')
-        .upsert(minimalProfile)
+        .upsert(minimalProfile as any)
         .select()
         .single();
 

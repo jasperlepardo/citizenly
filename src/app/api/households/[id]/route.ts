@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
+    if (profileError || !(userProfile as any)?.barangay_code) {
       return NextResponse.json(
         { error: 'User profile not found or no barangay assigned' },
         { status: 400 }
@@ -112,14 +112,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         .single();
 
       if (barangayData) {
-        const cityMunData = barangayData.psgc_cities_municipalities as any;
+        const cityMunData = (barangayData as any).psgc_cities_municipalities;
         const province = cityMunData.psgc_provinces;
         const region = province.psgc_regions;
 
         geoInfo = {
           barangay_info: {
-            code: barangayData.code,
-            name: barangayData.name,
+            code: (barangayData as any).code,
+            name: (barangayData as any).name,
           },
           city_municipality_info: {
             code: cityMunData.code,
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       household: {
-        ...household,
+        ...(household as any),
         ...geoInfo,
         member_count: members?.length || 0,
       },
@@ -192,7 +192,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    if (profileError || !userProfile?.barangay_code) {
+    if (profileError || !(userProfile as any)?.barangay_code) {
       return NextResponse.json(
         { error: 'User profile not found or no barangay assigned' },
         { status: 400 }
