@@ -25,19 +25,13 @@ export type {
 };
 import { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
 
-import { toTitleCase } from '../lib/utilities/string-utils';
+import { toTitleCase } from './string-utils';
 
 // All types are now imported from the centralized validation types
 // This eliminates duplication and ensures consistency
 
-/**
- * Validation state interface
- */
-export interface ValidationState {
-  errors: Record<string, string>;
-  isValid: boolean;
-  hasValidated: boolean;
-}
+// ValidationState moved to src/types/utilities.ts as UtilityValidationState
+import type { UtilityValidationState as ValidationState } from '@/types/utilities';
 
 /**
  * Create initial validation state

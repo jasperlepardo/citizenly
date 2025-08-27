@@ -9,19 +9,13 @@ import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { ResidentRecord } from '@/types/database';
 
-import { BaseRepository, type QueryOptions, type RepositoryResult } from './base-repository';
-
-// Use database record directly for consistent typing
-export type ResidentData = ResidentRecord;
-
-export interface ResidentSearchOptions extends QueryOptions {
-  name?: string;
-  age?: number;
-  sex?: string;
-  civil_status?: string;
-  household_code?: string;
-  is_voter?: boolean;
-}
+import { BaseRepository } from './base-repository';
+import type { RepositoryResult } from '@/types/services';
+import type {
+  ResidentData,
+  ResidentSearchOptions,
+  ResidentRepositoryResult
+} from '@/types/repositories';
 
 export class ResidentRepository extends BaseRepository<ResidentData> {
   constructor(context?: ValidationContext) {

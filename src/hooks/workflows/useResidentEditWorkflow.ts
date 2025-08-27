@@ -14,7 +14,7 @@ import type { ResidentFormData as ResidentEditFormData } from '@/types';
 import {
   useResidentSubmission,
   UseResidentSubmissionOptions,
-} from '../utilities/useResidentSubmission';
+} from '@/hooks/utilities/useResidentSubmission';
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 
 import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';

@@ -5,22 +5,8 @@
 
 import DOMPurify from 'isomorphic-dompurify';
 
-export type SanitizationType = 
-  | 'text'
-  | 'name'
-  | 'email'
-  | 'mobile'
-  | 'philsys'
-  | 'psgc'
-  | 'numeric'
-  | 'none';
-
-export interface SanitizationOptions {
-  maxLength?: number;
-  allowEmpty?: boolean;
-  customPattern?: RegExp;
-  replacement?: string;
-}
+// Types moved to src/types/utilities.ts for consolidation
+import type { SanitizationType, SanitizationOptions } from '@/types/utilities';
 
 const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
   first_name: 'name',
@@ -109,10 +95,7 @@ export function sanitizePhilSysNumber(input: string | null): string {
 /**
  * Validate PhilSys card number format
  */
-export function validatePhilSysFormat(philsysNumber: string): boolean {
-  const philsysRegex = /^\d{4}-\d{4}-\d{4}$/;
-  return philsysRegex.test(philsysNumber);
-}
+// validatePhilSysFormat moved to sanitization-utils.ts - removed duplicate
 
 /**
  * Sanitize mobile number for Philippine format
@@ -392,4 +375,37 @@ export function checkRateLimit(identifier: string, maxAttempts = 5, windowMs = 3
   submissionAttempts.set(identifier, attempts);
   
   return true;
+}
+
+/**
+ * Clear rate limit for a specific identifier (development/admin use)
+ */
+export function clearRateLimit(identifier: string): void {
+  submissionAttempts.delete(identifier);
+}
+
+/**
+ * Get current rate limit status for debugging
+ */
+export function getRateLimitStatus(identifier: string): {
+  hasAttempts: boolean;
+  count?: number;
+  lastAttempt?: Date;
+  remainingTime?: number;
+} {
+  const attempts = submissionAttempts.get(identifier);
+  
+  if (!attempts) {
+    return { hasAttempts: false };
+  }
+  
+  const now = Date.now();
+  const remainingTime = Math.max(0, 300000 - (now - attempts.lastAttempt));
+  
+  return {
+    hasAttempts: true,
+    count: attempts.count,
+    lastAttempt: new Date(attempts.lastAttempt),
+    remainingTime,
+  };
 }

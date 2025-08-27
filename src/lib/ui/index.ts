@@ -22,7 +22,7 @@ export { withLazyLoading, preloadComponents } from './lazy-loading';
 export * from './chart-transformers';
 
 // Graphics (moved from graphics/)
-export * from './colorGenerator';
+export * from '@/utils/color-utils';
 export * from './pieChartMath';
 
 // Statistics (moved from statistics/)
@@ -33,6 +33,6 @@ export {
   calculateMaxPercentage,
   generateTooltipData,
   populationPyramidStats,
-} from './population-pyramid';
+} from '@/utils/chart-utils';
 
-export type { AgeGroupData, PopulationStats, TooltipData } from './population-pyramid';
+export type { AgeGroupData, PopulationStats, TooltipData } from '@/types/charts';

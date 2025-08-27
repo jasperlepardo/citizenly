@@ -5,6 +5,7 @@
  */
 
 import { SectoralInformation, SectoralContext } from '@/types';
+import { calculateAge } from '@/utils/date-utils';
 
 // Employment statuses for auto-calculation (aligned with database enum)
 export const EMPLOYED_STATUSES = ['employed', 'self_employed'];
@@ -52,18 +53,7 @@ export const INDIGENOUS_ETHNICITIES = [
 /**
  * Calculate age from birthdate
  */
-export function calculateAge(birthdate: string): number {
-  const today = new Date();
-  const birth = new Date(birthdate);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-
-  return age;
-}
+// calculateAge imported from @/utils/date-utils above - removed duplicate
 
 /**
  * Check if person qualifies as out-of-school children (5-17 years old, not in school)

@@ -62,7 +62,7 @@ const optionalDateSchema = z
 // PhilSys card number validation
 const philsysSchema = z
   .string()
-  .regex(/^\d{4}-\d{4}-\d{4}-\d{4}$/, 'Invalid PhilSys format (XXXX-XXXX-XXXX-XXXX)')
+  .regex(/^\d{4}-\d{4}-\d{4}$/, 'Invalid PhilSys format (XXXX-XXXX-XXXX)')
   .optional()
   .or(z.literal(''));
 

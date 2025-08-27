@@ -95,15 +95,7 @@ export function maskPhilSysNumber(philsysNumber: string): string {
  * @param philsysNumber - The PhilSys card number to validate
  * @returns boolean - Whether the format is valid
  */
-export function validatePhilSysFormat(philsysNumber: string): boolean {
-  if (!philsysNumber) {
-    return false;
-  }
-
-  // PhilSys format: 1234-5678-9012-3456 (16 digits with dashes)
-  const philsysPattern = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
-  return philsysPattern.test(philsysNumber);
-}
+// validatePhilSysFormat moved to @/utils/sanitization-utils - removed duplicate
 
 /**
  * Security audit log for sensitive operations

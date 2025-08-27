@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { logError } from '../error-handling/error-utils';
+import { logError } from '@/utils/error-utils';
 
 /**
  * Generic field change handler factory

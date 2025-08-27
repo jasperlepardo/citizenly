@@ -20,7 +20,7 @@ import {
   EthnicityEnum,
   ReligionEnum,
 } from '@/types';
-import type { ResidentFormState } from '@/types/resident-form';
+import type { ResidentFormState } from '@/types/residents';
 
 // Tooltip component removed - not used in current implementation
 

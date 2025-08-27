@@ -1,0 +1,359 @@
+-- =============================================================================
+-- DEVELOPMENT ENVIRONMENT DEPLOYMENT SCRIPT  
+-- Includes development utilities, test data, and debugging features
+-- Version: 3.0.0 - Development Edition
+-- =============================================================================
+
+-- Set development-friendly settings
+\set ON_ERROR_STOP on
+\set VERBOSITY verbose
+\timing on
+
+-- Start transaction
+BEGIN;
+
+\echo ''
+\echo '=== STARTING DEVELOPMENT ENVIRONMENT DEPLOYMENT ==='
+\echo ''
+
+-- =============================================================================
+-- CORE SCHEMA DEPLOYMENT (Same as Production)
+-- =============================================================================
+
+-- Deploy full schema (reuse production deployment)
+\i scripts/deploy-full-schema.sql.template
+
+-- =============================================================================
+-- DEVELOPMENT-SPECIFIC ADDITIONS
+-- =============================================================================
+
+\echo ''
+\echo '=== ADDING DEVELOPMENT UTILITIES ==='
+\echo ''
+
+-- Development-only views for debugging
+CREATE OR REPLACE VIEW dev_table_sizes AS
+SELECT 
+    schemaname,
+    tablename,
+    attname,
+    n_distinct,
+    correlation,
+    avg_width,
+    null_frac
+FROM pg_stats 
+WHERE schemaname = 'public'
+ORDER BY schemaname, tablename;
+
+-- Development performance monitoring
+CREATE OR REPLACE VIEW dev_query_performance AS
+SELECT 
+    query,
+    calls,
+    total_time,
+    mean_time,
+    stddev_time,
+    min_time,
+    max_time
+FROM pg_stat_statements
+WHERE query LIKE '%residents%' OR query LIKE '%households%'
+ORDER BY total_time DESC
+LIMIT 20;
+
+-- Development audit trail (more verbose than production)
+CREATE OR REPLACE FUNCTION dev_audit_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO system_audit_logs (
+        table_name,
+        operation,
+        old_values,
+        new_values,
+        user_id,
+        timestamp
+    ) VALUES (
+        TG_TABLE_NAME,
+        TG_OP,
+        CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE NULL END,
+        CASE WHEN TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN to_jsonb(NEW) ELSE NULL END,
+        current_setting('app.current_user_id', true),
+        NOW()
+    );
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply development audit to key tables
+CREATE TRIGGER dev_residents_audit 
+    AFTER INSERT OR UPDATE OR DELETE ON residents
+    FOR EACH ROW EXECUTE FUNCTION dev_audit_trigger();
+
+CREATE TRIGGER dev_households_audit 
+    AFTER INSERT OR UPDATE OR DELETE ON households  
+    FOR EACH ROW EXECUTE FUNCTION dev_audit_trigger();
+
+-- =============================================================================
+-- DEVELOPMENT TEST DATA
+-- =============================================================================
+
+\echo ''
+\echo '=== LOADING DEVELOPMENT TEST DATA ==='
+\echo ''
+
+-- Test regions (Metro Manila and nearby)
+INSERT INTO psgc_regions (code, name) VALUES
+('130000000', 'National Capital Region (NCR)'),
+('040000000', 'CALABARZON')
+ON CONFLICT (code) DO NOTHING;
+
+-- Test provinces
+INSERT INTO psgc_provinces (code, name, region_code) VALUES
+('133900000', 'Metro Manila', '130000000'),
+('041400000', 'Laguna', '040000000')
+ON CONFLICT (code) DO NOTHING;
+
+-- Test cities
+INSERT INTO psgc_cities_municipalities (code, name, province_code, type) VALUES
+('133902000', 'Quezon City', '133900000', 'City'),
+('133901000', 'Manila', '133900000', 'City'),
+('041403000', 'Los Baños', '041400000', 'Municipality')
+ON CONFLICT (code) DO NOTHING;
+
+-- Test barangays
+INSERT INTO psgc_barangays (code, name, city_municipality_code) VALUES
+('13390200001', 'Barangay Commonwealth', '133902000'),
+('13390200002', 'Barangay Diliman', '133902000'),
+('04140300001', 'Barangay Poblacion', '041403000')
+ON CONFLICT (code) DO NOTHING;
+
+-- Test auth roles
+INSERT INTO auth_roles (name, description, permissions) VALUES
+('dev_admin', 'Development Administrator', '{"all": true}'),
+('dev_user', 'Development User', '{"read": true, "write": true}'),
+('dev_readonly', 'Development Read-Only', '{"read": true}')
+ON CONFLICT (name) DO NOTHING;
+
+-- Test households
+INSERT INTO households (
+    id,
+    household_code,
+    barangay_code,
+    head_first_name,
+    head_last_name,
+    household_type,
+    created_at
+) VALUES
+(
+    gen_random_uuid(),
+    'DEV-HH-001',
+    '13390200001',
+    'Juan',
+    'Dela Cruz',
+    'nuclear',
+    NOW()
+),
+(
+    gen_random_uuid(),
+    'DEV-HH-002', 
+    '13390200001',
+    'Maria',
+    'Santos',
+    'single_parent',
+    NOW()
+),
+(
+    gen_random_uuid(),
+    'DEV-HH-003',
+    '04140300001', 
+    'Jose',
+    'Rizal',
+    'extended',
+    NOW()
+)
+ON CONFLICT (household_code) DO NOTHING;
+
+-- Test residents
+WITH test_household AS (
+    SELECT id as household_id FROM households WHERE household_code = 'DEV-HH-001' LIMIT 1
+)
+INSERT INTO residents (
+    id,
+    first_name,
+    last_name,
+    birthdate,
+    sex,
+    civil_status,
+    citizenship,
+    barangay_code,
+    household_id,
+    created_at
+) 
+SELECT 
+    gen_random_uuid(),
+    'Juan',
+    'Dela Cruz',
+    '1980-01-01',
+    'male',
+    'married',
+    'filipino',
+    '13390200001',
+    household_id,
+    NOW()
+FROM test_household
+ON CONFLICT DO NOTHING;
+
+-- =============================================================================
+-- DEVELOPMENT HELPER FUNCTIONS
+-- =============================================================================
+
+\echo ''
+\echo '=== CREATING DEVELOPMENT HELPER FUNCTIONS ==='
+\echo ''
+
+-- Quick data reset function for development
+CREATE OR REPLACE FUNCTION dev_reset_test_data()
+RETURNS void AS $$
+BEGIN
+    -- Delete test data in proper order
+    DELETE FROM residents WHERE first_name LIKE 'Test%' OR barangay_code IN ('13390200001', '04140300001');
+    DELETE FROM households WHERE household_code LIKE 'DEV-%';
+    
+    -- Reset sequences if needed
+    -- This can be expanded based on actual sequence usage
+    
+    RAISE NOTICE 'Development test data reset completed';
+END;
+$$ LANGUAGE plpgsql;
+
+-- Development data generator
+CREATE OR REPLACE FUNCTION dev_generate_sample_residents(count_to_create integer DEFAULT 10)
+RETURNS void AS $$
+DECLARE
+    i integer;
+    test_household_id uuid;
+BEGIN
+    -- Get a test household
+    SELECT id INTO test_household_id 
+    FROM households 
+    WHERE household_code = 'DEV-HH-001' 
+    LIMIT 1;
+    
+    IF test_household_id IS NULL THEN
+        RAISE EXCEPTION 'No test household found. Run full deployment first.';
+    END IF;
+    
+    -- Generate sample residents
+    FOR i IN 1..count_to_create LOOP
+        INSERT INTO residents (
+            id,
+            first_name,
+            last_name,
+            birthdate,
+            sex,
+            civil_status,
+            citizenship,
+            barangay_code,
+            household_id,
+            created_at
+        ) VALUES (
+            gen_random_uuid(),
+            'Test_' || i,
+            'Resident_' || i,
+            '1990-01-01'::date + (i || ' years')::interval,
+            CASE WHEN i % 2 = 0 THEN 'female' ELSE 'male' END,
+            'single',
+            'filipino',
+            '13390200001',
+            test_household_id,
+            NOW()
+        );
+    END LOOP;
+    
+    RAISE NOTICE 'Generated % sample residents', count_to_create;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Development query shortcuts
+CREATE OR REPLACE FUNCTION dev_stats()
+RETURNS TABLE(
+    table_name text,
+    row_count bigint,
+    size_pretty text
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        t.table_name::text,
+        (xpath('/row/c/text()', query_to_xml(format('SELECT COUNT(*) AS c FROM %I', t.table_name), false, true, '')))[1]::text::bigint as row_count,
+        pg_size_pretty(pg_total_relation_size(t.table_name::regclass)) as size_pretty
+    FROM information_schema.tables t
+    WHERE t.table_schema = 'public' 
+    AND t.table_type = 'BASE TABLE'
+    AND t.table_name NOT LIKE 'pg_%'
+    ORDER BY t.table_name;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =============================================================================
+-- DEVELOPMENT PERMISSIONS (More Permissive)
+-- =============================================================================
+
+\echo ''
+\echo '=== SETTING DEVELOPMENT PERMISSIONS ==='
+\echo ''
+
+-- Grant broader permissions for development
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO postgres;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO postgres;
+
+-- Create development user if not exists
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'dev_user') THEN
+        CREATE ROLE dev_user LOGIN PASSWORD 'dev_password_change_in_production';
+        GRANT CONNECT ON DATABASE current_database() TO dev_user;
+        GRANT USAGE ON SCHEMA public TO dev_user;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO dev_user;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO dev_user;
+        GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO dev_user;
+    END IF;
+END
+$$;
+
+-- =============================================================================
+-- FINAL DEVELOPMENT VERIFICATION
+-- =============================================================================
+
+\echo ''
+\echo '=== DEVELOPMENT DEPLOYMENT VERIFICATION ==='
+\echo ''
+
+-- Show development-specific information
+SELECT 'Development Environment Ready' as status;
+
+-- Display test data counts
+SELECT 
+    'Test Data Loaded' as category,
+    (SELECT COUNT(*) FROM households WHERE household_code LIKE 'DEV-%') as test_households,
+    (SELECT COUNT(*) FROM residents WHERE barangay_code IN ('13390200001', '04140300001')) as test_residents,
+    (SELECT COUNT(*) FROM auth_roles WHERE name LIKE 'dev_%') as dev_roles;
+
+-- Display development utilities
+SELECT 
+    'Development Utilities Available' as category,
+    (SELECT COUNT(*) FROM information_schema.routines WHERE routine_name LIKE 'dev_%') as dev_functions,
+    (SELECT COUNT(*) FROM information_schema.views WHERE table_name LIKE 'dev_%') as dev_views;
+
+COMMIT;
+
+\echo ''
+\echo '=== DEVELOPMENT ENVIRONMENT DEPLOYMENT COMPLETED ==='
+\echo ''
+\echo 'Available development utilities:'
+\echo '  - dev_reset_test_data(): Reset test data'
+\echo '  - dev_generate_sample_residents(count): Generate sample data'  
+\echo '  - dev_stats(): Show table statistics'
+\echo '  - SELECT * FROM dev_table_sizes: View table size info'
+\echo '  - SELECT * FROM dev_query_performance: View query performance'
+\echo ''

@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { Button } from '@/components';
 import { logger } from '@/lib';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
-import { cn, formatFileSize } from '@/lib/utilities';
+import { cn, formatFileSize } from '@/utils';
 
 const fileUploadVariants = cva(
   'relative rounded-lg border-2 border-dashed transition-colors font-system focus-within:outline-hidden focus-within:ring-2 focus-within:ring-offset-2',

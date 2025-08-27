@@ -12,8 +12,8 @@ import { z, ZodSchema, ZodError } from 'zod';
 
 import { ZodValidationResult } from '@/lib/validation/types';
 
-import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
-import { useLogger } from '../utilities/useLogger';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
+import { useLogger } from '@/hooks/utilities/useLogger';
 
 /**
  * Use the centralized ZodValidationResult type

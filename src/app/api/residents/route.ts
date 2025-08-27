@@ -28,17 +28,9 @@ import { RequestContext, Role } from '@/lib/api/types';
 import { createResidentSchema } from '@/lib/api/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { ResidentFormData } from '@/types';
+import type { AuthenticatedUser } from '@/types/auth';
 
-// Type the auth result properly
-interface AuthenticatedUser {
-  id: string;
-  email: string;
-  role: Role;
-  barangay_code?: string;
-  city_code?: string;
-  province_code?: string;
-  region_code?: string;
-}
+// AuthenticatedUser type consolidated to src/types/auth.ts
 
 // GET /api/residents - List residents with pagination and search
 export const GET = withSecurityHeaders(
@@ -137,24 +129,24 @@ export const GET = withSecurityHeaders(
         // Apply geographic filter based on the joined household data
         switch (accessLevel) {
           case 'barangay':
-            if (user.barangay_code) {
+            if (user.barangayCode) {
               // Filter residents whose households are in the user's barangay
-              query = query.eq('households.barangay_code', user.barangay_code);
+              query = query.eq('households.barangay_code', user.barangayCode);
             }
             break;
           case 'city':
-            if (user.city_code) {
-              query = query.eq('households.city_municipality_code', user.city_code);
+            if (user.cityCode) {
+              query = query.eq('households.city_municipality_code', user.cityCode);
             }
             break;
           case 'province':
-            if (user.province_code) {
-              query = query.eq('households.province_code', user.province_code);
+            if (user.provinceCode) {
+              query = query.eq('households.province_code', user.provinceCode);
             }
             break;
           case 'region':
-            if (user.region_code) {
-              query = query.eq('households.region_code', user.region_code);
+            if (user.regionCode) {
+              query = query.eq('households.region_code', user.regionCode);
             }
             break;
           case 'national':

@@ -7,25 +7,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { logger, createErrorResponseObject } from '@/lib';
 import { isProduction, getEnvironment } from '@/lib/config/environment';
+import type { LogEntry } from '@/types/api-requests';
 
 export const dynamic = 'force-dynamic';
 
-interface LogEntry {
-  timestamp: string;
-  level: string;
-  message: string;
-  context?: {
-    component?: string;
-    action?: string;
-    data?: Record<string, unknown>;
-    error?: Error;
-    userId?: string;
-    sessionId?: string;
-  };
-  url?: string;
-  userAgent?: string;
-  environment?: string;
-}
+// LogEntry moved to src/types/api-requests.ts for consolidation
 
 // Rate limiting for logging endpoint
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute

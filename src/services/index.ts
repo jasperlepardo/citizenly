@@ -1,6 +1,7 @@
 /**
  * Services Layer Exports
- * Centralized exports for all services, repositories, and business logic
+ * CONSOLIDATED - Centralized exports for all services, repositories, and business logic
+ * Following coding standards with proper service consolidation
  */
 
 // Base repository exports
@@ -36,8 +37,8 @@ export { householdService as HouseholdService } from './household.service';
 export * from './geographic.service';
 
 // Data transformers and mappers
-export * from './residentMapper';
-export * from './formDataTransformers';
+export * from './resident-mapper';
+export * from './form-data-transformers';
 
 // Optimized data fetchers
 export * from './household-fetcher';
@@ -81,3 +82,13 @@ export const createRepositories = (context?: ValidationContext) => ({
   households: new HouseholdRepository(context),
   users: new UserRepository(context),
 });
+
+// CONSOLIDATED SERVICES - Clean centralized service layer
+// All duplicate directories removed, legacy code cleaned up
+export { authService, AuthService, type UserProfile, type UserRole, type RegistrationData } from './auth-service';
+export { cacheService, CacheService, cached, CacheKeys, CacheTags, setupCacheCleanup } from './cache-service';
+export { commandMenuService, CommandMenuService } from './command-menu-service';
+export { databaseService, DatabaseService } from './database-service';
+export { addressService, AddressService, type AddressLabels, type HouseholdTypeLabels, type CompleteAddress } from './address-service';
+export { securityAuditService, SecurityAuditService, type SecurityAuditLog, type ThreatDetectionEvent, AuditEventType } from './security-audit-service';
+export { syncService, SyncService, type SyncQueueItem, type SyncStatus } from './sync-service';

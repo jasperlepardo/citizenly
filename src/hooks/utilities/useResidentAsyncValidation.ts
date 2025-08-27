@@ -23,13 +23,7 @@ export interface AsyncValidationOptions {
   enabled?: boolean;
 }
 
-/**
- * Async validation result
- */
-interface AsyncValidationResult {
-  isValid: boolean;
-  error?: string;
-}
+import type { HookAsyncValidationResult as AsyncValidationResult } from '@/types/hooks';
 
 /**
  * Return type for async validation hook

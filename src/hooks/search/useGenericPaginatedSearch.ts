@@ -16,9 +16,9 @@ import {
   createPaginatedSearchState,
   createPaginatedSearchExecutor,
   createPaginatedSearchUtilities,
-} from '@/lib/utilities/search-utilities';
+} from '@/utils/search-utilities';
 
-import { useDebounce } from '../utilities/useDebounce';
+import { useDebounce } from '@/hooks/utilities/useDebounce';
 
 /**
  * Return type for useGenericPaginatedSearch hook

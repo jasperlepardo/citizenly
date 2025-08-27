@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/lib';
-import { formatHouseholdOption } from '@/services/residentMapper';
+import { formatHouseholdOption } from '@/services/resident-mapper';
 import { HouseholdData, HouseholdHead, HouseholdOption } from '@/types';
 
 /**

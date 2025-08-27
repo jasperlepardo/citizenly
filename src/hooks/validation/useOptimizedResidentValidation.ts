@@ -21,11 +21,11 @@ import type { ResidentFormData } from '@/types';
 import {
   useResidentAsyncValidation,
   type UseResidentAsyncValidationReturn,
-} from '../utilities/useResidentAsyncValidation';
+} from '@/hooks/utilities/useResidentAsyncValidation';
 import {
   useResidentCrossFieldValidation,
   type UseResidentCrossFieldValidationReturn,
-} from '../utilities/useResidentCrossFieldValidation';
+} from '@/hooks/utilities/useResidentCrossFieldValidation';
 
 import {
   useResidentValidationCore,

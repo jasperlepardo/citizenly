@@ -3,12 +3,8 @@
 import React from 'react';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import type { DependencyData } from '@/types/charts';
 
-interface DependencyData {
-  youngDependents: number; // 0-14
-  workingAge: number; // 15-64
-  oldDependents: number; // 65+
-}
 
 interface DependencyRatioPieChartProps {
   data: DependencyData;

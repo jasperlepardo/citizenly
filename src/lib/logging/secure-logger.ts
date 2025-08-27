@@ -3,15 +3,9 @@
  * Prevents sensitive data from being logged while maintaining debugging capability
  */
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+import type { LogLevel, SecureLogEntry as LogEntry } from '@/types/errors';
 
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
-  message: string;
-  context?: string;
-  sanitizedData?: Record<string, unknown>;
-}
+
 
 // Sensitive field patterns to redact
 const SENSITIVE_PATTERNS = [

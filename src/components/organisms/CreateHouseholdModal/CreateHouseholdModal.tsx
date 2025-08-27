@@ -8,6 +8,7 @@ import { supabase, logger, logError } from '@/lib';
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';
 import { SelectField } from '../../molecules/FieldSet/SelectField';
+import type { HouseholdModalFormData as HouseholdFormData } from '@/types/components';
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;
@@ -51,11 +52,6 @@ interface AddressHierarchy {
   region_name?: string;
 }
 
-interface HouseholdFormData {
-  house_number: string;
-  street_id: string;
-  subdivision_id: string;
-}
 
 export default function CreateHouseholdModal({
   isOpen,

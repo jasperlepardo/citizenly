@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { InputField, SelectField } from '@/components';
-import { useOptimizedPsgcSearch } from '@/hooks/search/useOptimizedPsgcSearch';
+import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
 import type { FormMode } from '@/types';
 
 export interface BirthInformationData {
@@ -30,12 +30,9 @@ export function BirthInformation({
   const {
     options: psgcOptions,
     isLoading: psgcLoading,
-    searchTerm: psgcSearchTerm,
-    handleSearch: handlePsgcSearch,
-  } = useOptimizedPsgcSearch({
-    initialValue: value.birth_place_name,
-    minChars: 2,
-    levels: ['province', 'city', 'barangay'], // Allow province, city, and barangay selection
+    setQuery: handlePsgcSearch,
+  } = usePsgcSearch({
+    levels: 'all', // Allow province, city, and barangay selection
     limit: 20, // Smaller initial load for better performance
     debounceMs: 300,
   });
@@ -102,7 +99,7 @@ export function BirthInformation({
           value: value.birth_place_code,
           label: value.birth_place_name,
           description: 'Current selection',
-          badge: 'selected',
+          badge: 'barangay',
         });
       }
     }
@@ -151,7 +148,6 @@ export function BirthInformation({
             },
             onSearch: handlePsgcSearch,
             loading: psgcLoading,
-            clearable: true,
           }}
         />
       </div>

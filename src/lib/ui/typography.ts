@@ -47,13 +47,11 @@ export const typography = {
 // Helper function to combine typography classes - moved to utils.ts
 // This is imported from @/lib/utils in components
 
-// Typography component props helper
-export type TypographyVariant = keyof typeof typography;
+// Import types from centralized location
+import type { TypographyVariant, TypographyProps } from '@/types/components';
 
-export interface TypographyProps {
-  variant?: TypographyVariant;
-  className?: string;
-}
+// Re-export for backwards compatibility
+export type { TypographyVariant, TypographyProps } from '@/types/components';
 
 // Common typography combinations
 export const typographyPresets = {

@@ -1,0 +1,405 @@
+-- =============================================================================
+-- PRODUCTION DEPLOYMENT SCRIPT
+-- Production-optimized deployment with enhanced security and monitoring
+-- Version: 3.0.0 - Production Edition
+-- =============================================================================
+
+-- Set production deployment settings  
+\set ON_ERROR_STOP on
+\set VERBOSITY terse
+\timing off
+
+-- Start transaction for atomic deployment
+BEGIN;
+
+\echo ''
+\echo '=== STARTING PRODUCTION DEPLOYMENT ==='
+\echo ''
+
+-- Log deployment start
+INSERT INTO system_audit_logs (
+    event_type,
+    description, 
+    metadata,
+    created_at
+) VALUES (
+    'SCHEMA_DEPLOYMENT',
+    'Production schema deployment started',
+    jsonb_build_object(
+        'version', '3.0.0',
+        'environment', 'production',
+        'deployment_type', 'full_schema'
+    ),
+    NOW()
+);
+
+-- =============================================================================
+-- CORE SCHEMA DEPLOYMENT (Same Foundation as Development)
+-- =============================================================================
+
+-- Deploy full schema (reuse core deployment)
+\i scripts/deploy-full-schema.sql.template
+
+-- =============================================================================
+-- PRODUCTION-SPECIFIC SECURITY ENHANCEMENTS  
+-- =============================================================================
+
+\echo ''
+\echo '=== APPLYING PRODUCTION SECURITY ENHANCEMENTS ==='
+\echo ''
+
+-- Enhanced audit logging for production
+CREATE OR REPLACE FUNCTION prod_security_audit_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+    user_id_val text;
+    session_id_val text;
+    ip_address_val text;
+BEGIN
+    -- Get security context
+    user_id_val := current_setting('app.current_user_id', true);
+    session_id_val := current_setting('app.current_session_id', true);
+    ip_address_val := current_setting('app.client_ip_address', true);
+    
+    -- Log security-sensitive operations
+    IF TG_TABLE_NAME IN ('residents', 'households', 'auth_user_profiles') THEN
+        INSERT INTO system_audit_logs (
+            event_type,
+            table_name,
+            operation,
+            user_id,
+            session_id,
+            ip_address,
+            metadata,
+            created_at
+        ) VALUES (
+            'DATA_ACCESS',
+            TG_TABLE_NAME,
+            TG_OP,
+            user_id_val,
+            session_id_val,
+            ip_address_val,
+            jsonb_build_object(
+                'record_id', COALESCE(NEW.id, OLD.id),
+                'environment', 'production',
+                'compliance_note', 'RA_10173_BSP_808'
+            ),
+            NOW()
+        );
+    END IF;
+    
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply production audit to all sensitive tables
+CREATE TRIGGER prod_residents_audit 
+    AFTER INSERT OR UPDATE OR DELETE ON residents
+    FOR EACH ROW EXECUTE FUNCTION prod_security_audit_trigger();
+
+CREATE TRIGGER prod_households_audit 
+    AFTER INSERT OR UPDATE OR DELETE ON households  
+    FOR EACH ROW EXECUTE FUNCTION prod_security_audit_trigger();
+
+CREATE TRIGGER prod_auth_profiles_audit 
+    AFTER INSERT OR UPDATE OR DELETE ON auth_user_profiles
+    FOR EACH ROW EXECUTE FUNCTION prod_security_audit_trigger();
+
+-- =============================================================================
+-- PRODUCTION PERFORMANCE OPTIMIZATIONS
+-- =============================================================================
+
+\echo ''
+\echo '=== APPLYING PRODUCTION PERFORMANCE OPTIMIZATIONS ==='
+\echo ''
+
+-- Critical production indexes for large datasets
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_residents_search_optimized 
+ON residents USING gin(to_tsvector('english', first_name || ' ' || last_name || ' ' || COALESCE(middle_name, '')));
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_households_barangay_performance
+ON households (barangay_code, created_at DESC) 
+WHERE is_active = true;
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_audit_logs_production
+ON system_audit_logs (created_at DESC, event_type, user_id)
+WHERE created_at >= CURRENT_DATE - INTERVAL '90 days';
+
+-- Partitioning for audit logs (if large volume expected)
+-- Note: This requires careful planning and may need manual intervention
+-- CREATE TABLE system_audit_logs_current PARTITION OF system_audit_logs 
+-- FOR VALUES FROM (CURRENT_DATE) TO (CURRENT_DATE + INTERVAL '1 month');
+
+-- =============================================================================
+-- PRODUCTION MONITORING SETUP
+-- =============================================================================
+
+\echo ''
+\echo '=== SETTING UP PRODUCTION MONITORING ==='
+\echo ''
+
+-- Production health check function
+CREATE OR REPLACE FUNCTION prod_health_check()
+RETURNS TABLE(
+    component text,
+    status text,
+    details jsonb,
+    check_time timestamptz
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        'database_connection'::text,
+        'healthy'::text,
+        jsonb_build_object(
+            'active_connections', (SELECT count(*) FROM pg_stat_activity),
+            'max_connections', (SELECT setting FROM pg_settings WHERE name = 'max_connections')
+        ),
+        NOW();
+    
+    RETURN QUERY
+    SELECT 
+        'core_tables'::text,
+        CASE WHEN EXISTS (SELECT 1 FROM residents LIMIT 1) AND 
+                  EXISTS (SELECT 1 FROM households LIMIT 1)
+             THEN 'healthy'::text 
+             ELSE 'warning'::text 
+        END,
+        jsonb_build_object(
+            'residents_count', (SELECT count(*) FROM residents),
+            'households_count', (SELECT count(*) FROM households),
+            'last_resident_created', (SELECT max(created_at) FROM residents)
+        ),
+        NOW();
+        
+    RETURN QUERY
+    SELECT 
+        'security_policies'::text,
+        CASE WHEN (SELECT count(*) FROM pg_policies WHERE schemaname = 'public') > 0
+             THEN 'healthy'::text
+             ELSE 'critical'::text
+        END,
+        jsonb_build_object(
+            'active_policies', (SELECT count(*) FROM pg_policies WHERE schemaname = 'public'),
+            'rls_enabled_tables', (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'public' AND c.relrowsecurity = true)
+        ),
+        NOW();
+END;
+$$ LANGUAGE plpgsql;
+
+-- Production performance monitoring
+CREATE OR REPLACE VIEW prod_performance_metrics AS
+SELECT 
+    'query_performance' as metric_type,
+    jsonb_build_object(
+        'slow_queries', (
+            SELECT count(*) 
+            FROM pg_stat_statements 
+            WHERE mean_time > 1000 -- queries taking more than 1 second on average
+        ),
+        'total_queries', (SELECT sum(calls) FROM pg_stat_statements),
+        'cache_hit_ratio', (
+            SELECT round(
+                sum(blks_hit) * 100.0 / nullif(sum(blks_hit + blks_read), 0), 2
+            ) 
+            FROM pg_stat_database
+        )
+    ) as metrics,
+    NOW() as measured_at;
+
+-- =============================================================================
+-- PRODUCTION DATA VALIDATION
+-- =============================================================================
+
+\echo ''
+\echo '=== RUNNING PRODUCTION DATA VALIDATION ==='
+\echo ''
+
+-- Validate critical constraints
+DO $$
+DECLARE
+    constraint_failures integer;
+BEGIN
+    -- Check for orphaned records
+    SELECT COUNT(*) INTO constraint_failures
+    FROM residents r
+    LEFT JOIN households h ON h.id = r.household_id
+    WHERE h.id IS NULL AND r.household_id IS NOT NULL;
+    
+    IF constraint_failures > 0 THEN
+        RAISE EXCEPTION 'Production validation failed: % orphaned resident records found', constraint_failures;
+    END IF;
+    
+    -- Check for invalid geographic codes
+    SELECT COUNT(*) INTO constraint_failures
+    FROM residents r
+    LEFT JOIN psgc_barangays b ON b.code = r.barangay_code
+    WHERE b.code IS NULL;
+    
+    IF constraint_failures > 0 THEN
+        RAISE EXCEPTION 'Production validation failed: % residents with invalid barangay codes', constraint_failures;
+    END IF;
+    
+    RAISE NOTICE 'Production data validation passed successfully';
+END;
+$$;
+
+-- =============================================================================
+-- PRODUCTION SECURITY LOCKDOWN
+-- =============================================================================
+
+\echo ''
+\echo '=== APPLYING PRODUCTION SECURITY LOCKDOWN ==='
+\echo ''
+
+-- Revoke dangerous permissions
+REVOKE ALL ON SCHEMA public FROM public;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM public;
+
+-- Create production application role
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rbi_app_user') THEN
+        CREATE ROLE rbi_app_user;
+    END IF;
+END
+$$;
+
+-- Grant only necessary permissions to application role
+GRANT USAGE ON SCHEMA public TO rbi_app_user;
+
+-- Grant selective table permissions
+GRANT SELECT, INSERT, UPDATE ON residents TO rbi_app_user;
+GRANT SELECT, INSERT, UPDATE ON households TO rbi_app_user;
+GRANT SELECT, INSERT, UPDATE ON household_members TO rbi_app_user;
+GRANT SELECT ON psgc_regions, psgc_provinces, psgc_cities_municipalities, psgc_barangays TO rbi_app_user;
+GRANT SELECT ON psoc_major_groups, psoc_sub_major_groups, psoc_minor_groups TO rbi_app_user;
+GRANT SELECT, INSERT ON system_audit_logs TO rbi_app_user;
+
+-- Grant sequence permissions
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO rbi_app_user;
+
+-- Grant view permissions  
+GRANT SELECT ON ALL VIEWS IN SCHEMA public TO rbi_app_user;
+
+-- Create read-only reporting role
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'rbi_readonly') THEN
+        CREATE ROLE rbi_readonly;
+    END IF;
+END
+$$;
+
+GRANT USAGE ON SCHEMA public TO rbi_readonly;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO rbi_readonly;
+GRANT SELECT ON ALL VIEWS IN SCHEMA public TO rbi_readonly;
+
+-- =============================================================================
+-- PRODUCTION BACKUP CONFIGURATION
+-- =============================================================================
+
+\echo ''
+\echo '=== CONFIGURING PRODUCTION BACKUP SETTINGS ==='
+\echo ''
+
+-- Set up backup verification table
+CREATE TABLE IF NOT EXISTS system_backup_log (
+    id SERIAL PRIMARY KEY,
+    backup_type VARCHAR(50) NOT NULL,
+    backup_size BIGINT,
+    backup_duration INTERVAL,
+    backup_status VARCHAR(20) NOT NULL,
+    backup_location TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    verified_at TIMESTAMPTZ,
+    verification_status VARCHAR(20)
+);
+
+-- Function to log backup operations
+CREATE OR REPLACE FUNCTION prod_log_backup(
+    backup_type_param VARCHAR(50),
+    backup_size_param BIGINT DEFAULT NULL,
+    backup_duration_param INTERVAL DEFAULT NULL,
+    backup_status_param VARCHAR(20) DEFAULT 'completed',
+    backup_location_param TEXT DEFAULT NULL
+)
+RETURNS void AS $$
+BEGIN
+    INSERT INTO system_backup_log (
+        backup_type,
+        backup_size, 
+        backup_duration,
+        backup_status,
+        backup_location,
+        created_at
+    ) VALUES (
+        backup_type_param,
+        backup_size_param,
+        backup_duration_param,
+        backup_status_param,
+        backup_location_param,
+        NOW()
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- =============================================================================
+-- PRODUCTION DEPLOYMENT COMPLETION
+-- =============================================================================
+
+-- Log deployment completion
+INSERT INTO system_audit_logs (
+    event_type,
+    description,
+    metadata,
+    created_at
+) VALUES (
+    'SCHEMA_DEPLOYMENT',
+    'Production schema deployment completed successfully',
+    jsonb_build_object(
+        'version', '3.0.0',
+        'environment', 'production',
+        'deployment_type', 'full_schema',
+        'tables_created', (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'),
+        'views_created', (SELECT COUNT(*) FROM information_schema.views WHERE table_schema = 'public'),
+        'functions_created', (SELECT COUNT(*) FROM information_schema.routines WHERE routine_schema = 'public'),
+        'security_policies', (SELECT COUNT(*) FROM pg_policies WHERE schemaname = 'public')
+    ),
+    NOW()
+);
+
+-- Final production verification
+\echo ''
+\echo '=== PRODUCTION DEPLOYMENT VERIFICATION ==='
+\echo ''
+
+-- Run health check
+SELECT * FROM prod_health_check();
+
+-- Display deployment summary
+SELECT 
+    'Production Deployment Completed' as status,
+    NOW() as completed_at,
+    (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public') as total_tables,
+    (SELECT COUNT(*) FROM information_schema.views WHERE table_schema = 'public') as total_views,
+    (SELECT COUNT(*) FROM pg_policies WHERE schemaname = 'public') as security_policies_active,
+    (SELECT COUNT(*) FROM pg_catalog.pg_roles WHERE rolname LIKE 'rbi_%') as app_roles_created;
+
+COMMIT;
+
+\echo ''
+\echo '=== PRODUCTION DEPLOYMENT COMPLETED SUCCESSFULLY ==='
+\echo ''
+\echo 'Production Security Notes:'
+\echo '  - All security policies are active'
+\echo '  - Audit logging is enabled for all sensitive operations'
+\echo '  - Application roles have minimal required permissions'
+\echo '  - Health monitoring functions are available'
+\echo ''
+\echo 'Next Steps:'
+\echo '  1. Configure automated backups'
+\echo '  2. Set up monitoring alerts'
+\echo '  3. Test application connectivity with rbi_app_user role'
+\echo '  4. Review and customize RLS policies for your specific requirements'
+\echo ''

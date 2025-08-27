@@ -17,27 +17,12 @@ import {
 } from './fieldValidators';
 import { createFormValidator, createFieldValidator, crossFieldValidators } from './formValidators';
 import type { FormValidator, ValidationResult, ValidationContext } from './types';
-import type { ResidentFormData } from '@/types/resident-form';
+import type { ResidentFormData } from '@/types/residents';
 import type { HouseholdFormData } from '@/types/households';
+import type { UserRegistrationData, LoginData, PasswordChangeData } from '@/types/auth';
 
-interface UserRegistrationData {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  role_id?: string;
-}
 
-interface LoginData {
-  email: string;
-  password: string;
-}
 
-interface PasswordChangeData {
-  current_password: string;
-  new_password: string;
-  confirm_password: string;
-}
 
 /**
  * Resident data validation schema

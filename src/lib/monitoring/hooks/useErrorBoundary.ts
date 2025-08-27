@@ -8,27 +8,15 @@ import { useCallback, useState } from 'react';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 import { captureError, addSentryBreadcrumb } from '../sentry-config';
+import type { ErrorBoundaryState } from '@/types/errors';
+import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/hooks';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-  errorInfo: any;
+// Extended error boundary state for hook usage
+interface HookErrorBoundaryState extends ErrorBoundaryState {
+  errorInfo?: any;
 }
 
-interface UseErrorBoundaryOptions {
-  componentName: string;
-  fallbackComponent?: React.ComponentType<{ error: Error; reset: () => void }>;
-  onError?: (error: Error, errorInfo: any) => void;
-  enableReporting?: boolean;
-}
 
-interface ErrorBoundaryReturn {
-  error: Error | null;
-  hasError: boolean;
-  resetError: () => void;
-  captureError: (error: Error, context?: Record<string, any>) => void;
-  wrapAsync: <T>(operation: () => Promise<T>, operationName?: string) => Promise<T>;
-}
 
 /**
  * Hook for enhanced error handling and reporting
@@ -36,7 +24,7 @@ interface ErrorBoundaryReturn {
 export const useErrorBoundary = (options: UseErrorBoundaryOptions): ErrorBoundaryReturn => {
   const { componentName, onError, enableReporting = true } = options;
 
-  const [errorState, setErrorState] = useState<ErrorBoundaryState>({
+  const [errorState, setErrorState] = useState<HookErrorBoundaryState>({
     hasError: false,
     error: null,
     errorInfo: null,

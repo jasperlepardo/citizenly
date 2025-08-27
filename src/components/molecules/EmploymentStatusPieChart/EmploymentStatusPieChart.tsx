@@ -3,17 +3,8 @@
 import React from 'react';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import type { EmploymentStatusData } from '@/types/charts';
 
-interface EmploymentStatusData {
-  employed: number;
-  unemployed: number;
-  selfEmployed: number;
-  student: number;
-  retired: number;
-  homemaker: number;
-  disabled: number;
-  other: number;
-}
 
 interface EmploymentStatusPieChartProps {
   data: EmploymentStatusData;

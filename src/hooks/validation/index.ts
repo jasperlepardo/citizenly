@@ -20,8 +20,8 @@ export {
 
 // Specialized resident validation hooks
 export { useResidentValidationCore } from './useResidentValidationCore';
-export { useResidentCrossFieldValidation } from '../utilities/useResidentCrossFieldValidation';
-export { useResidentAsyncValidation } from '../utilities/useResidentAsyncValidation';
+export { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
+export { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 export { useResidentValidationProgress } from './useResidentValidationProgress';
 export { useResidentValidationErrors } from './useResidentValidationErrors';
 
@@ -32,7 +32,7 @@ export {
   usePhoneValidation,
   useRequiredValidation,
   CommonSchemas,
-} from '../utilities/createValidationHook';
+} from '@/hooks/utilities/createValidationHook';
 
 // Advanced validation hooks using validation factory
 export {
@@ -47,4 +47,4 @@ export type {
   ValidationResult,
   ValidationHookOptions,
   UseValidationReturn,
-} from '../utilities/createValidationHook';
+} from '@/hooks/utilities/createValidationHook';

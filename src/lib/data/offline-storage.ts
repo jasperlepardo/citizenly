@@ -3,22 +3,9 @@
  * Provides offline-first data storage for PWA functionality
  */
 
-interface StoredData {
-  id: string;
-  data: any;
-  timestamp: number;
-  expiry?: number;
-}
+import type { OfflineStoredData as StoredData, PendingSyncItem } from '@/types/utilities';
 
-interface PendingSyncItem {
-  id?: number;
-  action: 'CREATE' | 'UPDATE' | 'DELETE';
-  type: 'resident' | 'household' | 'user';
-  data: any;
-  timestamp: number;
-  synced: boolean;
-  retryCount: number;
-}
+
 
 export class OfflineStorage {
   private db: IDBDatabase | null = null;

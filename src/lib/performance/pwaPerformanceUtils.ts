@@ -3,29 +3,13 @@
  * Tracks PWA-specific metrics and user interactions
  */
 
-interface PWAMetrics {
-  installPromptShown: number;
-  installAccepted: number;
-  installDismissed: number;
-  offlineUsage: number;
-  cacheHits: number;
-  cacheMisses: number;
-  syncOperations: number;
-  syncFailures: number;
-}
+import type { PWAMetrics, PWAPerformanceEntry } from '@/types/utilities';
 
-interface PerformanceEntry {
-  name: string;
-  type: 'cache' | 'sync' | 'install' | 'offline' | 'navigation';
-  timestamp: number;
-  duration?: number;
-  success?: boolean;
-  details?: any;
-}
+
 
 class PWAPerformanceMonitor {
   private metrics: PWAMetrics;
-  private entries: PerformanceEntry[] = [];
+  private entries: PWAPerformanceEntry[] = [];
   private maxEntries = 1000;
 
   constructor() {
@@ -296,7 +280,7 @@ class PWAPerformanceMonitor {
   /**
    * Add performance entry
    */
-  private addEntry(entry: PerformanceEntry): void {
+  private addEntry(entry: PWAPerformanceEntry): void {
     this.entries.unshift(entry);
 
     // Keep only the most recent entries
@@ -315,7 +299,7 @@ class PWAPerformanceMonitor {
   /**
    * Get performance entries
    */
-  getEntries(type?: string, limit?: number): PerformanceEntry[] {
+  getEntries(type?: string, limit?: number): PWAPerformanceEntry[] {
     let filtered = this.entries;
 
     if (type) {
@@ -364,7 +348,7 @@ class PWAPerformanceMonitor {
       syncSuccessRate: number;
       installConversionRate: number;
     };
-    recentEntries: PerformanceEntry[];
+    recentEntries: PWAPerformanceEntry[];
   } {
     return {
       metrics: this.getMetrics(),

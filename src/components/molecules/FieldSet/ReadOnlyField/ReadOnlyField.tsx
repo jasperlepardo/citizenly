@@ -8,7 +8,7 @@ import {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from '@/lib/utilities/id-generators';
+} from '@/utils/id-generators';
 
 import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
 

@@ -14,7 +14,7 @@ import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 import type { FormMode } from '@/types';
-import { ResidentFormState } from '@/types/resident-form';
+import { ResidentFormState } from '@/types/residents';
 
 import { FormActions } from './components/FormActions';
 import { FormHeader } from './components/FormHeader';
@@ -398,13 +398,6 @@ export function ResidentForm({
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('🔥 RESIDENTFORM: handleSubmit called');
-    console.log('🔥 RESIDENTFORM: is_migrant value:', formData.is_migrant);
-    console.log('🔥 RESIDENTFORM: all sectoral fields:', {
-      is_migrant: formData.is_migrant,
-      is_solo_parent: formData.is_solo_parent,
-      is_person_with_disability: formData.is_person_with_disability,
-    });
     setIsSubmitting(true);
 
     try {
@@ -562,8 +555,8 @@ export function ResidentForm({
               // Direct snake_case properties (matching database schema)
               blood_type: formData.blood_type,
               complexion: formData.complexion,
-              height: formData.height.toString(),
-              weight: formData.weight.toString(),
+              height: formData.height ? formData.height.toString() : '',
+              weight: formData.weight ? formData.weight.toString() : '',
               ethnicity: formData.ethnicity,
               religion: formData.religion,
               religion_others_specify: formData.religion_others_specify,

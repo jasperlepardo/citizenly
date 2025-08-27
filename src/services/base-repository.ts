@@ -26,57 +26,10 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { logger } from '@/lib';
 import { storeSecurityAuditLog } from '@/lib/security/audit-storage';
 import type { ValidationContext } from '@/lib/validation/types';
+import type { QueryOptions, RepositoryError, RepositoryResult } from '@/types/services';
 
-/**
- * Query options for database operations
- * @interface QueryOptions
- * @since 2.0.0
- */
-export interface QueryOptions {
-  /** Maximum number of records to return */
-  limit?: number;
-  /** Number of records to skip for pagination */
-  offset?: number;
-  /** Field name to sort by */
-  orderBy?: string;
-  /** Sort direction */
-  orderDirection?: 'asc' | 'desc';
-  /** Additional filters to apply */
-  filters?: Record<string, any>;
-}
-
-/**
- * Standardized error structure for repository operations
- * @interface RepositoryError
- * @since 2.0.0
- */
-export interface RepositoryError {
-  /** Error code for programmatic handling */
-  code: string;
-  /** Human-readable error message */
-  message: string;
-  /** Additional error details */
-  details?: Record<string, unknown> | string;
-  /** Field name if error is field-specific */
-  field?: string;
-}
-
-/**
- * Standard result wrapper for repository operations
- * @template T The type of data returned on success
- * @interface RepositoryResult
- * @since 2.0.0
- */
-export interface RepositoryResult<T> {
-  /** Whether the operation was successful */
-  success: boolean;
-  /** Data returned on success */
-  data?: T;
-  /** Error details if operation failed */
-  error?: RepositoryError;
-  /** Total count for paginated results */
-  count?: number;
-}
+// Using consolidated types from @/types/services
+// QueryOptions, RepositoryError, and RepositoryResult are now imported
 
 /**
  * Base Repository class implementing the Repository pattern

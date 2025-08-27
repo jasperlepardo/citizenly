@@ -3,25 +3,15 @@
  * Tracks user engagement patterns for PWA install prompts and general app usage
  */
 
-export interface UserBehaviorMetrics {
-  pageViews: number;
-  timeSpent: number;
-  interactions: number;
-  revisits: number;
-  lastVisit: number;
-}
+// Import types from centralized location
+import type {
+  UserBehaviorMetrics,
+  PWAInstallCriteria,
+  PersonalizedMessage,
+} from '@/types/components';
 
-export interface PWAInstallCriteria {
-  isReturningUser: boolean;
-  hasInteracted: boolean;
-  hasSpentTime: boolean;
-  hasExplored: boolean;
-}
-
-export interface PersonalizedMessage {
-  title: string;
-  description: string;
-}
+// Re-export for backwards compatibility
+export type { UserBehaviorMetrics, PWAInstallCriteria, PersonalizedMessage };
 
 const STORAGE_KEY = 'pwa-user-metrics';
 const DISMISSAL_KEY = 'pwa-prompt-dismissed-date';

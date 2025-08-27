@@ -14,7 +14,7 @@ import {
   lookupAddressLabels,
   lookupHouseholdTypeLabels,
   lookupHouseholdHeadLabel,
-} from '@/lib/utilities/address-lookup';
+} from '@/utils/address-lookup';
 
 interface Household {
   id: string;

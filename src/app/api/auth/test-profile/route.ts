@@ -1,37 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createAdminSupabaseClient } from '@/lib';
-
-interface TestResults {
-  timestamp: string;
-  userId: string;
-  tests: {
-    adminUserLookup?: {
-      success: boolean;
-      hasData?: boolean;
-      hasUser?: boolean;
-      error: string | null;
-      confirmed?: boolean;
-    };
-    userInList?: {
-      success: boolean;
-      totalUsers?: number;
-      userFound?: boolean;
-      error: string | null;
-    };
-    existingProfile?: {
-      success: boolean;
-      profileExists?: boolean;
-      error: string | null;
-    };
-    profileCreation?: {
-      success: boolean;
-      profileCreated?: boolean;
-      error: string | null;
-      errorCode?: string | null;
-    };
-  };
-}
+import type { ProfileTestResults as TestResults } from '@/types/api-requests';
 
 /**
  * Test endpoint to diagnose profile creation issues

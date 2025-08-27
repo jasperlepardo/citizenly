@@ -10,25 +10,11 @@ import React, { Component, ReactNode } from 'react';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 import { captureError, addSentryBreadcrumb } from '../sentry-config';
+import type { ErrorBoundaryState } from '@/types/errors';
+import type { ErrorBoundaryProviderProps, ErrorFallbackProps } from '@/types/components';
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-  errorId: string | null;
-}
 
-interface ErrorBoundaryProviderProps {
-  children: ReactNode;
-  fallback?: React.ComponentType<ErrorFallbackProps>;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
-  enableReporting?: boolean;
-}
 
-interface ErrorFallbackProps {
-  error: Error;
-  errorId: string;
-  resetError: () => void;
-}
 
 /**
  * Default error fallback component

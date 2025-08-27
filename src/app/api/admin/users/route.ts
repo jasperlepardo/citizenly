@@ -1,16 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 
-// Input validation schema
-interface CreateUserData {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  mobileNumber?: string;
-  barangayCode?: string;
-  roleId: string;
-}
+// CreateUserData moved to src/types/api-requests.ts for consolidation
+import type { CreateUserData } from '@/types/api-requests';
 
 export async function POST(request: NextRequest) {
   try {

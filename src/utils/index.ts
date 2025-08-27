@@ -5,16 +5,17 @@
  * All utility functions are consolidated here to eliminate duplication.
  */
 
-// String utilities - consolidated to lib/utilities
+// String utilities
 export {
   capitalize,
   toTitleCase,
   truncateText,
   sanitizeString,
-  // isValidEmail, - REMOVED: Use @/lib/validation/utilities instead
-  // isValidPhilippineMobile, - REMOVED: Use @/lib/validation/utilities instead
   formatPhoneNumber,
-} from '../lib/utilities/string-utils';
+} from './string-utils';
+
+// Re-export validation functions from validation library (backward compatibility)
+export { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
 
 // Data transformation utilities
 export {
@@ -27,9 +28,9 @@ export {
   formatDate,
   parseQueryString,
   buildQueryString,
-} from '../lib/utilities/data-transformers';
+} from './data-transformers';
 
-// ID generation utilities - consolidated to lib/utilities
+// ID generation utilities
 export {
   generateId,
   generateFieldId,
@@ -37,24 +38,27 @@ export {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from '../lib/utilities/id-generators';
+} from './id-generators';
 
-// Async utilities - consolidated to lib/utilities
-export { debounce, throttle, sleep, retry } from '../lib/utilities/async-utils';
+// Async utilities
+export { debounce, throttle, sleep, retry } from './async-utils';
 
-// CSS utilities - consolidated to lib/utilities
+// CSS utilities
 export {
   cn,
   // mergeClassNames - REMOVED: Use `cn` instead
-} from '../lib/utilities/css-utils';
+} from './css-utils';
 
-// Resident utilities - now in lib/utilities
-// export * from './resident-detail-helpers';  // REMOVED - duplicate
-// export * from './resident-helpers';        // REMOVED - duplicate
-// export * from './resident-listing-helpers'; // REMOVED - duplicate
+// Resident utilities (moved to @/lib/business-rules)
+// export * from './resident-detail-helpers';  // MOVED to business-rules/
+// export * from './resident-helpers';         // MOVED to business-rules/
+// export * from './resident-listing-helpers'; // MOVED to business-rules/
 
-// Search utilities - consolidated to lib/utilities
-export * from '../lib/utilities/search-utilities';
+// Search utilities
+export * from './search-utilities';
 
-// Validation utilities
-export * from './validation-utilities';
+// File utilities
+export { formatFileSize, getFileExtension, isImageFile, exceedsMaxSize } from './file-utils';
+
+// Validation utilities (moved to @/lib/validation)
+// Use: import from '@/lib/validation/utilities' instead

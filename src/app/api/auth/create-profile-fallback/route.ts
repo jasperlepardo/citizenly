@@ -1,21 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createAdminSupabaseClient } from '@/lib';
+import type { CreateProfileRequest } from '@/types/api-requests';
 
-interface CreateProfileRequest {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone?: string;
-  barangay_code: string;
-  city_municipality_code?: string;
-  province_code?: string;
-  region_code?: string;
-  role_id: string;
-  is_active?: boolean;
-  updated_at?: string;
-}
+// CreateProfileRequest moved to src/types/api-requests.ts for consolidation
 
 /**
  * Fallback profile creation endpoint that bypasses strict user verification

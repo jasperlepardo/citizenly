@@ -4,7 +4,7 @@
 
 import { renderHook, act } from '@testing-library/react';
 
-import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 // Mock console methods to avoid noise in tests
 const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();

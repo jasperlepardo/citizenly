@@ -12,7 +12,8 @@ import { useState, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
 import { useCSRFToken } from '@/lib/auth';
-import { residentService, ResidentFormData } from '@/services/resident.service';
+import { residentService } from '@/services/resident.service';
+import { ResidentFormData } from '@/types/forms';
 
 export interface UseResidentOperationsOptions {
   onSuccess?: (data: any) => void;

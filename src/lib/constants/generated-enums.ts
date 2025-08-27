@@ -139,6 +139,59 @@ export const INCOME_CLASS_OPTIONS = [
   { value: 'not_determined', label: 'Not Determined' },
 ] as const;
 
+// Household type options - EXACTLY matching household_type_enum in database
+export const HOUSEHOLD_TYPE_OPTIONS = [
+  { value: 'nuclear', label: 'Nuclear' },
+  { value: 'single_parent', label: 'Single Parent' },
+  { value: 'extended', label: 'Extended' },
+  { value: 'childless', label: 'Childless' },
+  { value: 'one_person', label: 'One Person' },
+  { value: 'non_family', label: 'Non-Family' },
+  { value: 'other', label: 'Other' },
+] as const;
+
+// Tenure status options - EXACTLY matching tenure_status_enum in database
+export const TENURE_STATUS_OPTIONS = [
+  { value: 'owned', label: 'Owned' },
+  { value: 'owned_with_mortgage', label: 'Owned with Mortgage' },
+  { value: 'rented', label: 'Rented' },
+  { value: 'occupied_for_free', label: 'Occupied for Free' },
+  { value: 'occupied_without_consent', label: 'Occupied without Consent' },
+  { value: 'others', label: 'Others' },
+] as const;
+
+// Household unit options - EXACTLY matching household_unit_enum in database
+export const HOUSEHOLD_UNIT_OPTIONS = [
+  { value: 'single_house', label: 'Single House' },
+  { value: 'duplex', label: 'Duplex' },
+  { value: 'apartment', label: 'Apartment' },
+  { value: 'townhouse', label: 'Townhouse' },
+  { value: 'condominium', label: 'Condominium' },
+  { value: 'boarding_house', label: 'Boarding House' },
+  { value: 'institutional', label: 'Institutional' },
+  { value: 'makeshift', label: 'Makeshift' },
+  { value: 'others', label: 'Others' },
+] as const;
+
+// Family position options - EXACTLY matching family_position_enum in database
+export const FAMILY_POSITION_OPTIONS = [
+  { value: 'father', label: 'Father' },
+  { value: 'mother', label: 'Mother' },
+  { value: 'son', label: 'Son' },
+  { value: 'daughter', label: 'Daughter' },
+  { value: 'grandmother', label: 'Grandmother' },
+  { value: 'grandfather', label: 'Grandfather' },
+  { value: 'father_in_law', label: 'Father-in-Law' },
+  { value: 'mother_in_law', label: 'Mother-in-Law' },
+  { value: 'brother_in_law', label: 'Brother-in-Law' },
+  { value: 'sister_in_law', label: 'Sister-in-Law' },
+  { value: 'spouse', label: 'Spouse' },
+  { value: 'sibling', label: 'Sibling' },
+  { value: 'guardian', label: 'Guardian' },
+  { value: 'ward', label: 'Ward' },
+  { value: 'other', label: 'Other' },
+] as const;
+
 // Type helpers for strict typing
 export type SexValue = (typeof SEX_OPTIONS)[number]['value'];
 export type CivilStatusValue = (typeof CIVIL_STATUS_OPTIONS)[number]['value'];
@@ -149,6 +202,10 @@ export type ReligionValue = (typeof RELIGION_OPTIONS)[number]['value'];
 export type EthnicityValue = (typeof ETHNICITY_OPTIONS)[number]['value'];
 export type EducationLevelValue = (typeof EDUCATION_LEVEL_OPTIONS)[number]['value'];
 export type IncomeClassValue = (typeof INCOME_CLASS_OPTIONS)[number]['value'];
+export type HouseholdTypeValue = (typeof HOUSEHOLD_TYPE_OPTIONS)[number]['value'];
+export type TenureStatusValue = (typeof TENURE_STATUS_OPTIONS)[number]['value'];
+export type HouseholdUnitValue = (typeof HOUSEHOLD_UNIT_OPTIONS)[number]['value'];
+export type FamilyPositionValue = (typeof FAMILY_POSITION_OPTIONS)[number]['value'];
 
 // Helper function to extract just the values
 export const extractValues = (options: { value: string; label: string }[]) =>

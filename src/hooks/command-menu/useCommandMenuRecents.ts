@@ -16,7 +16,7 @@ import {
   clearRecentApiItems as clearRecentItems,
 } from '@/lib/command-menu';
 
-import { useAsyncErrorBoundary } from '../utilities/useAsyncErrorBoundary';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 /**
  * Recent item from storage

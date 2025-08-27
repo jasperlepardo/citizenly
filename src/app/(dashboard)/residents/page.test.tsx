@@ -30,7 +30,7 @@ jest.mock('@/lib/supabase', () => ({
   },
 }));
 
-jest.mock('@/lib/utilities/resident-listing-helpers', () => ({
+jest.mock('@/utils/resident-listing-helpers', () => ({
   fetchResidents: jest.fn(),
   formatFullName: jest.fn(resident => `${resident.first_name} ${resident.last_name}`),
   formatDate: jest.fn(date => new Date(date).toLocaleDateString()),
