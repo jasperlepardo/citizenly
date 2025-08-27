@@ -65,7 +65,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         `
       )
       .eq('code', householdCode)
-      .eq('barangay_code', userProfile.barangay_code) // Ensure same barangay
+      .eq('barangay_code', userProfile.barangay_code!) // Ensure same barangay
       .single();
 
     if (householdError || !household) {
@@ -207,7 +207,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         updated_at: new Date().toISOString(),
       })
       .eq('code', householdCode)
-      .eq('barangay_code', userProfile.barangay_code) // Ensure same barangay
+      .eq('barangay_code', userProfile.barangay_code!) // Ensure same barangay
       .select()
       .single();
 

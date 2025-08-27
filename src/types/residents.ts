@@ -225,21 +225,18 @@ export interface SectoralInfoFormState {
  * Migration Information section of resident form
  */
 export interface MigrationInfoFormState {
-  // Migration Information - matching database exactly
-  previous_barangay_code: string;
-  previous_city_municipality_code: string;
-  previous_province_code: string;
-  previous_region_code: string;
-  date_of_transfer: string;
-  reason_for_migration: string;
-  is_intending_to_return: boolean;
-  length_of_stay_previous_months: number;
-  duration_of_stay_current_months: number;
-  migration_type: string;
-  is_whole_family_migrated: boolean;
-  
-  // Additional fields for backward compatibility
-  reason_for_transferring?: string; // Legacy field name
+  // Migration Information - matching database schema exactly
+  previous_barangay_code?: string | null; // VARCHAR(10), nullable in database
+  previous_city_municipality_code?: string | null; // VARCHAR(10), nullable in database
+  previous_province_code?: string | null; // VARCHAR(10), nullable in database  
+  previous_region_code?: string | null; // VARCHAR(10), nullable in database
+  date_of_transfer?: string | null; // DATE, nullable in database
+  reason_for_migration?: string | null; // TEXT, nullable in database
+  is_intending_to_return?: boolean | null; // BOOLEAN, nullable in database
+  length_of_stay_previous_months?: number | null; // INTEGER, nullable in database
+  duration_of_stay_current_months?: number | null; // INTEGER, nullable in database
+  migration_type?: string | null; // VARCHAR(50), nullable in database
+  is_whole_family_migrated?: boolean | null; // BOOLEAN, nullable in database
 }
 
 /**

@@ -56,15 +56,15 @@ export async function POST(request: NextRequest) {
         if (payload.table === 'users' && payload.schema === 'auth') {
           await handleUserUpdate(
             supabaseAdmin,
-            payload.record,
-            payload.old_record || payload.record
+            payload.record as WebhookUserRecord,
+            (payload.old_record || payload.record) as WebhookUserRecord
           );
         }
         break;
 
       case 'INSERT':
         if (payload.table === 'users' && payload.schema === 'auth') {
-          await handleUserInsert(supabaseAdmin, payload.record);
+          await handleUserInsert(supabaseAdmin, payload.record as WebhookUserRecord);
         }
         break;
 
