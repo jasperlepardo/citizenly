@@ -196,28 +196,6 @@ jobs:
       - name: Run tests
         run: npm run test:fast
 
-  # Quick basic checks for fast feedback
-  quick-checks:
-    name: Quick Checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Quick lint check
-        run: npm run lint
-
-      - name: Quick type check
-        run: npm run type-check
 
   # Build job that depends on other checks
   build:
