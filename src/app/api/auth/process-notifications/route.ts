@@ -95,16 +95,19 @@ async function sendNotification(
   notif: NotificationRecord
 ): Promise<{ success: boolean; errorMessage: string }> {
   switch (notif.notification_type) {
-    case 'welcome_email':
+    case 'welcome_email': {
       const emailSuccess = await sendWelcomeEmail(notif);
       return { success: emailSuccess, errorMessage: '' };
-    case 'sms_welcome':
+    }
+    case 'sms_welcome': {
       const smsSuccess = await sendWelcomeSMS(notif);
       return { success: smsSuccess, errorMessage: '' };
-    default:
+    }
+    default: {
       const errorMessage = `Unknown notification type: ${notif.notification_type}`;
       console.warn(errorMessage);
       return { success: false, errorMessage };
+    }
   }
 }
 
