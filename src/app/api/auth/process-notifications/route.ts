@@ -10,29 +10,19 @@ export async function POST(_request: NextRequest) {
     console.warn('🔄 Processing pending notifications...');
 
     const supabaseAdmin = createAdminSupabaseClient() as any;
+    const notifications = await fetchPendingNotifications(supabaseAdmin);
 
-    // Get pending notifications with proper typing
-    const { data: notifications, error } = await supabaseAdmin
-      .from('user_notifications')
-      .select('*')
-      .eq('status', 'pending')
-      .lt('retry_count', 3)
-      .lte('scheduled_for', new Date().toISOString())
-      .order('created_at', { ascending: true })
-      .limit(10);
-
-    if (error) {
-      console.error('Failed to fetch notifications:', error);
+    if (!notifications) {
       return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
     }
 
     const results = {
       processed: 0,
       failed: 0,
-      total: notifications?.length || 0,
+      total: notifications.length,
     };
 
-    if (!notifications || notifications.length === 0) {
+    if (notifications.length === 0) {
       return NextResponse.json({
         message: 'No pending notifications',
         results,
@@ -41,75 +31,8 @@ export async function POST(_request: NextRequest) {
 
     console.warn(`📧 Processing ${notifications.length} notifications...`);
 
-    // Process each notification
     for (const notification of notifications) {
-      const notif = notification as NotificationRecord;
-
-      try {
-        let success = false;
-        let errorMessage = '';
-
-        switch (notif.notification_type) {
-          case 'welcome_email':
-            success = await sendWelcomeEmail(notif);
-            break;
-          case 'sms_welcome':
-            success = await sendWelcomeSMS(notif);
-            break;
-          default:
-            errorMessage = `Unknown notification type: ${notif.notification_type}`;
-            console.warn(errorMessage);
-        }
-
-        // Update notification status
-        const updateData = success
-          ? {
-              status: 'sent',
-              sent_at: new Date().toISOString(),
-              error_message: null,
-            }
-          : {
-              status: 'failed',
-              retry_count: notif.retry_count + 1,
-              error_message: errorMessage || 'Processing failed',
-              scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(), // Retry after 1, 2, 3 minutes
-            };
-
-        const { error: updateNotifError } = await supabaseAdmin
-          .from('user_notifications')
-          .update(updateData)
-          .eq('id', notif.id);
-        if (updateNotifError) {
-          console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
-        }
-
-        if (success) {
-          results.processed++;
-          console.warn(`✅ ${notif.notification_type} sent to user ${notif.user_id}`);
-        } else {
-          results.failed++;
-          console.error(
-            `❌ ${notif.notification_type} failed for user ${notif.user_id}: ${errorMessage}`
-          );
-        }
-      } catch (error) {
-        results.failed++;
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-        console.error(`❌ Failed to process notification ${notif.id}:`, errorMsg);
-
-        // Update retry count
-        const { error: retryUpdateError } = await supabaseAdmin
-          .from('user_notifications')
-          .update({
-            retry_count: notif.retry_count + 1,
-            error_message: errorMsg,
-            scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
-          })
-          .eq('id', notif.id);
-        if (retryUpdateError) {
-          console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);
-        }
-      }
+      await processNotification(notification as NotificationRecord, supabaseAdmin, results);
     }
 
     console.warn(`📊 Notification processing complete:`, results);
@@ -121,6 +44,115 @@ export async function POST(_request: NextRequest) {
   } catch (error) {
     console.error('Notification processing error:', error);
     return NextResponse.json({ error: 'Failed to process notifications' }, { status: 500 });
+  }
+}
+
+async function fetchPendingNotifications(supabaseAdmin: any) {
+  const { data: notifications, error } = await supabaseAdmin
+    .from('user_notifications')
+    .select('*')
+    .eq('status', 'pending')
+    .lt('retry_count', 3)
+    .lte('scheduled_for', new Date().toISOString())
+    .order('created_at', { ascending: true })
+    .limit(10);
+
+  if (error) {
+    console.error('Failed to fetch notifications:', error);
+    return null;
+  }
+
+  return notifications || [];
+}
+
+async function processNotification(
+  notif: NotificationRecord,
+  supabaseAdmin: any,
+  results: { processed: number; failed: number; total: number }
+) {
+  try {
+    const { success, errorMessage } = await sendNotification(notif);
+    await updateNotificationStatus(notif, supabaseAdmin, success, errorMessage);
+
+    if (success) {
+      results.processed++;
+      console.warn(`✅ ${notif.notification_type} sent to user ${notif.user_id}`);
+    } else {
+      results.failed++;
+      console.error(
+        `❌ ${notif.notification_type} failed for user ${notif.user_id}: ${errorMessage}`
+      );
+    }
+  } catch (error) {
+    results.failed++;
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`❌ Failed to process notification ${notif.id}:`, errorMsg);
+    await updateNotificationRetry(notif, supabaseAdmin, errorMsg);
+  }
+}
+
+async function sendNotification(
+  notif: NotificationRecord
+): Promise<{ success: boolean; errorMessage: string }> {
+  switch (notif.notification_type) {
+    case 'welcome_email':
+      const emailSuccess = await sendWelcomeEmail(notif);
+      return { success: emailSuccess, errorMessage: '' };
+    case 'sms_welcome':
+      const smsSuccess = await sendWelcomeSMS(notif);
+      return { success: smsSuccess, errorMessage: '' };
+    default:
+      const errorMessage = `Unknown notification type: ${notif.notification_type}`;
+      console.warn(errorMessage);
+      return { success: false, errorMessage };
+  }
+}
+
+async function updateNotificationStatus(
+  notif: NotificationRecord,
+  supabaseAdmin: any,
+  success: boolean,
+  errorMessage: string
+) {
+  const updateData = success
+    ? {
+        status: 'sent',
+        sent_at: new Date().toISOString(),
+        error_message: null,
+      }
+    : {
+        status: 'failed',
+        retry_count: notif.retry_count + 1,
+        error_message: errorMessage || 'Processing failed',
+        scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
+      };
+
+  const { error: updateNotifError } = await supabaseAdmin
+    .from('user_notifications')
+    .update(updateData)
+    .eq('id', notif.id);
+
+  if (updateNotifError) {
+    console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
+  }
+}
+
+async function updateNotificationRetry(
+  notif: NotificationRecord,
+  supabaseAdmin: any,
+  errorMsg: string
+) {
+  const { error: retryUpdateError } = await supabaseAdmin
+    .from('user_notifications')
+    .update({
+      retry_count: notif.retry_count + 1,
+      error_message: errorMsg,
+      scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
+    })
+    .eq('id', notif.id);
+
+  if (retryUpdateError) {
+    console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);
   }
 }
 
@@ -150,11 +182,7 @@ async function sendWelcomeEmail(notification: NotificationRecord): Promise<boole
 
     console.warn('📧 Email content:', emailContent);
 
-    // TODO: Implement actual email sending
-    // const result = await emailService.send(emailContent);
-    // return result.success;
-
-    // For now, simulate success
+    // Email service integration pending - currently returns success
     return true;
   } catch (error) {
     console.error('Welcome email error:', error);
@@ -180,11 +208,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
 
     console.warn('📱 SMS content:', smsContent);
 
-    // TODO: Implement actual SMS sending
-    // const result = await smsService.send(smsContent);
-    // return result.success;
-
-    // For now, simulate success
+    // SMS service integration pending - currently returns success
     return true;
   } catch (error) {
     console.error('Welcome SMS error:', error);
@@ -207,11 +231,14 @@ export async function GET() {
     }
 
     const summary =
-      stats?.reduce((acc: Record<string, number>, notif: { notification_type: string; status: string }) => {
-        const key = `${notif.notification_type}_${notif.status}`;
-        acc[key] = (acc[key] || 0) + 1;
-        return acc;
-      }, {}) || {};
+      stats?.reduce(
+        (acc: Record<string, number>, notif: { notification_type: string; status: string }) => {
+          const key = `${notif.notification_type}_${notif.status}`;
+          acc[key] = (acc[key] || 0) + 1;
+          return acc;
+        },
+        {}
+      ) || {};
 
     return NextResponse.json({
       message: 'Notification stats',

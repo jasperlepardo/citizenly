@@ -5,7 +5,7 @@
  * Extracted from multiple search hooks to eliminate duplication.
  */
 
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
 
@@ -105,16 +105,13 @@ export function createPaginatedSearchState<T>(
  * Generic search error handler
  */
 export function createSearchErrorHandler(onError?: (error: Error) => void) {
-  return useCallback(
-    (error: unknown, fallbackMessage = 'Search failed') => {
-      const searchError = error instanceof Error ? error : new Error(fallbackMessage);
-      if (onError) {
-        onError(searchError);
-      }
-      return searchError;
-    },
-    [onError]
-  );
+  return (error: unknown, fallbackMessage = 'Search failed') => {
+    const searchError = error instanceof Error ? error : new Error(fallbackMessage);
+    if (onError) {
+      onError(searchError);
+    }
+    return searchError;
+  };
 }
 
 /**
@@ -127,46 +124,43 @@ export function createSearchExecutor<T>(
 ) {
   const { minQueryLength = 0, onError } = config;
 
-  return useCallback(
-    async (searchQuery: string) => {
-      if (searchQuery.length < minQueryLength) {
-        setState(prev => ({
-          ...prev,
-          results: [],
-          error: null,
-          isLoading: false,
-        }));
-        return;
-      }
-
+  return async (searchQuery: string) => {
+    if (searchQuery.length < minQueryLength) {
       setState(prev => ({
         ...prev,
-        isLoading: true,
+        results: [],
         error: null,
+        isLoading: false,
       }));
+      return;
+    }
 
-      try {
-        const searchResults = await searchFn(searchQuery);
-        setState(prev => ({
-          ...prev,
-          results: searchResults,
-          isLoading: false,
-        }));
-      } catch (error) {
-        const searchError = error instanceof Error ? error : new Error('Search failed');
-        if (onError) {
-          onError(searchError);
-        }
-        setState(prev => ({
-          ...prev,
-          results: [],
-          error: searchError,
-          isLoading: false,
-        }));
+    setState(prev => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+    }));
+
+    try {
+      const searchResults = await searchFn(searchQuery);
+      setState(prev => ({
+        ...prev,
+        results: searchResults,
+        isLoading: false,
+      }));
+    } catch (error) {
+      const searchError = error instanceof Error ? error : new Error('Search failed');
+      if (onError) {
+        onError(searchError);
       }
-    },
-    [searchFn, minQueryLength, setState, onError]
-  );
+      setState(prev => ({
+        ...prev,
+        results: [],
+        error: searchError,
+        isLoading: false,
+      }));
+    }
+  };
 }
 
 /**
@@ -179,63 +173,60 @@ export function createPaginatedSearchExecutor<T, F>(
 ) {
   const { minQueryLength = 0, onError } = config;
 
-  return useCallback(
-    async (searchQuery: string, page = 1, filters?: F, resetResults = true) => {
-      if (searchQuery.length < minQueryLength && page === 1) {
-        setState(prev => ({
-          ...prev,
-          results: [],
-          pagination: { ...prev.pagination, total: 0, hasMore: false },
-          error: null,
-          isLoading: false,
-        }));
-        return;
-      }
+  return async (searchQuery: string, page = 1, filters?: F, resetResults = true) => {
+    if (searchQuery.length < minQueryLength && page === 1) {
+      setState(prev => ({
+        ...prev,
+        results: [],
+        pagination: { ...prev.pagination, total: 0, hasMore: false },
+        error: null,
+        isLoading: false,
+      }));
+      return;
+    }
+
+    setState(prev => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+    }));
+
+    try {
+      const response = await searchFn({
+        query: searchQuery,
+        page,
+        pageSize: config.initialPageSize || 20,
+        filters,
+      });
 
       setState(prev => ({
         ...prev,
-        isLoading: true,
-        error: null,
+        results: resetResults || page === 1 ? response.data : [...prev.results, ...response.data],
+        pagination: {
+          current: page,
+          pageSize: response.pageSize,
+          total: response.total,
+          hasMore: response.hasMore,
+        },
+        isLoading: false,
       }));
-
-      try {
-        const response = await searchFn({
-          query: searchQuery,
-          page,
-          pageSize: config.initialPageSize || 20,
-          filters,
-        });
-
-        setState(prev => ({
-          ...prev,
-          results: resetResults || page === 1 ? response.data : [...prev.results, ...response.data],
-          pagination: {
-            current: page,
-            pageSize: response.pageSize,
-            total: response.total,
-            hasMore: response.hasMore,
-          },
-          isLoading: false,
-        }));
-      } catch (error) {
-        const searchError = error instanceof Error ? error : new Error('Search failed');
-        if (onError) {
-          onError(searchError);
-        }
-        setState(prev => ({
-          ...prev,
-          results: resetResults || page === 1 ? [] : prev.results,
-          pagination:
-            resetResults || page === 1
-              ? { ...prev.pagination, total: 0, hasMore: false }
-              : prev.pagination,
-          error: searchError,
-          isLoading: false,
-        }));
+    } catch (error) {
+      const searchError = error instanceof Error ? error : new Error('Search failed');
+      if (onError) {
+        onError(searchError);
       }
-    },
-    [searchFn, minQueryLength, config.initialPageSize, setState, onError]
-  );
+      setState(prev => ({
+        ...prev,
+        results: resetResults || page === 1 ? [] : prev.results,
+        pagination:
+          resetResults || page === 1
+            ? { ...prev.pagination, total: 0, hasMore: false }
+            : prev.pagination,
+        error: searchError,
+        isLoading: false,
+      }));
+    }
+  };
 }
 
 /**
@@ -246,25 +237,22 @@ export function createSearchUtilities<T>(
   setState: React.Dispatch<React.SetStateAction<SearchState<T>>>,
   executeSearch: (query: string) => Promise<void>
 ) {
-  const clearSearch = useCallback(() => {
+  const clearSearch = () => {
     setState(prev => ({
       ...prev,
       query: '',
       results: [],
       error: null,
     }));
-  }, [setState]);
+  };
 
-  const refresh = useCallback(() => {
+  const refresh = () => {
     executeSearch(state.query);
-  }, [executeSearch, state.query]);
+  };
 
-  const setQuery = useCallback(
-    (newQuery: string) => {
-      setState(prev => ({ ...prev, query: newQuery }));
-    },
-    [setState]
-  );
+  const setQuery = (newQuery: string) => {
+    setState(prev => ({ ...prev, query: newQuery }));
+  };
 
   return { clearSearch, refresh, setQuery };
 }
@@ -282,37 +270,29 @@ export function createPaginatedSearchUtilities<T, F>(
     resetResults?: boolean
   ) => Promise<void>
 ) {
-  const baseUtils = createSearchUtilities(state, setState as React.Dispatch<React.SetStateAction<SearchState<T>>>, executeSearch);
+  const baseUtils = createSearchUtilities(
+    state,
+    setState as React.Dispatch<React.SetStateAction<SearchState<T>>>,
+    executeSearch
+  );
 
-  const loadMore = useCallback(() => {
+  const loadMore = () => {
     if (!state.isLoading && state.pagination.hasMore) {
       executeSearch(state.query, state.pagination.current + 1, undefined, false);
     }
-  }, [
-    executeSearch,
-    state.query,
-    state.pagination.current,
-    state.pagination.hasMore,
-    state.isLoading,
-  ]);
+  };
 
-  const setPage = useCallback(
-    (page: number) => {
-      executeSearch(state.query, page, undefined, true);
-    },
-    [executeSearch, state.query]
-  );
+  const setPage = (page: number) => {
+    executeSearch(state.query, page, undefined, true);
+  };
 
-  const setPageSize = useCallback(
-    (pageSize: number) => {
-      setState(prev => ({
-        ...prev,
-        pagination: { ...prev.pagination, pageSize, current: 1 },
-      }));
-      executeSearch(state.query, 1, undefined, true);
-    },
-    [setState, executeSearch, state.query]
-  );
+  const setPageSize = (pageSize: number) => {
+    setState(prev => ({
+      ...prev,
+      pagination: { ...prev.pagination, pageSize, current: 1 },
+    }));
+    executeSearch(state.query, 1, undefined, true);
+  };
 
   return {
     ...baseUtils,
@@ -401,35 +381,29 @@ export function useSearchCache<T>(key: string, maxSize = 100) {
   const [cache] = useState(() => new Map<string, { data: T[]; timestamp: number }>());
   const maxAge = 5 * 60 * 1000; // 5 minutes
 
-  const getCachedResult = useCallback(
-    (query: string): T[] | null => {
-      const cacheKey = `${key}:${query}`;
-      const cached = cache.get(cacheKey);
+  const getCachedResult = (query: string): T[] | null => {
+    const cacheKey = `${key}:${query}`;
+    const cached = cache.get(cacheKey);
 
-      if (cached && Date.now() - cached.timestamp < maxAge) {
-        return cached.data;
+    if (cached && Date.now() - cached.timestamp < maxAge) {
+      return cached.data;
+    }
+
+    return null;
+  };
+
+  const setCachedResult = (query: string, data: T[]) => {
+    const cacheKey = `${key}:${query}`;
+
+    if (cache.size >= maxSize) {
+      const firstKey = cache.keys().next().value;
+      if (firstKey !== undefined) {
+        cache.delete(firstKey);
       }
+    }
 
-      return null;
-    },
-    [cache, key, maxAge]
-  );
-
-  const setCachedResult = useCallback(
-    (query: string, data: T[]) => {
-      const cacheKey = `${key}:${query}`;
-
-      if (cache.size >= maxSize) {
-        const firstKey = cache.keys().next().value;
-        if (firstKey !== undefined) {
-          cache.delete(firstKey);
-        }
-      }
-
-      cache.set(cacheKey, { data, timestamp: Date.now() });
-    },
-    [cache, key, maxSize]
-  );
+    cache.set(cacheKey, { data, timestamp: Date.now() });
+  };
 
   return { getCachedResult, setCachedResult };
 }
