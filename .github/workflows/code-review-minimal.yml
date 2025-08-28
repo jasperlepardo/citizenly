@@ -1,0 +1,32 @@
+name: Code Review Test
+
+on:
+  push:
+    branches: [fix/vercel-build-errors]
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Quality Gate
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Comment SonarCloud Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sonarUrl = `https://sonarcloud.io/project/overview?id=jasperlepardo_citizenly`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📊 SonarCloud Analysis Complete
+              
+              View detailed code quality analysis: [SonarCloud Dashboard](${sonarUrl})
+              
+              - **Quality Gate**: Check the dashboard for pass/fail status
+              - **Coverage**: Test coverage metrics and trends  
+              - **Issues**: Code smells, bugs, and security hotspots
+              - **Maintainability**: Technical debt and complexity analysis`
+            });
+        continue-on-error: true
