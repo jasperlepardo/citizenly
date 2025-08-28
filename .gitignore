@@ -209,6 +209,10 @@ frontend/.env.production.local
 storybook-static/
 public/storybook-static/
 
+# PWA auto-generated files
+public/sw.js
+public/workbox-*.js
+
 # Test artifacts
 coverage/
 .nyc_output/
