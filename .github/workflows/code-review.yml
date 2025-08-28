@@ -86,7 +86,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
         continue-on-error: true
-        if: env.CODECOV_TOKEN != ''
+        if: secrets.CODECOV_TOKEN != ''
         env:
           # IDE warning expected: Optional integration secret
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -197,7 +197,7 @@ jobs:
           # IDE warning expected: Optional integration secret
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         continue-on-error: true
-        if: ${{ secrets.SEMGREP_APP_TOKEN != '' }}
+        if: secrets.SEMGREP_APP_TOKEN != ''
 
       - name: Run our custom security checks
         run: |
@@ -319,7 +319,7 @@ jobs:
           # IDE warning expected: Optional integration secret
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: secrets.SONAR_TOKEN != ''
         with:
           args: >
             -Dsonar.javascript.eslint.reportPaths=eslint-report.json
