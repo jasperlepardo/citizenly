@@ -257,7 +257,7 @@ function HouseholdDetailContent() {
           <div className="flex items-center space-x-4">
             <Link
               href="/households"
-              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-700 dark:bg-gray-800 dark:text-gray-400"
+              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
             >
               <svg className="mr-2 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -434,7 +434,7 @@ function HouseholdDetailContent() {
               >
                 Generate RBI Form
               </Link>
-              <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-600">
+              <button className="w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
                 Export Household Data
               </button>
               <Link

@@ -114,8 +114,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       warnings.push('Average query execution time is high (>1000ms)');
     }
 
-    if ((queryMetrics.slowQueries?.length ?? 0) > 5) {
-      warnings.push(`${queryMetrics.slowQueries?.length} slow queries detected`);
+    const slowCount = queryMetrics.slowQueries?.length ?? 0;
+    if (slowCount > 5) {
+      warnings.push(`${slowCount} slow queries detected`);
     }
 
     if (warnings.length > 0) {

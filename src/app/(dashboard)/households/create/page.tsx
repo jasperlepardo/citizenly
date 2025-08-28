@@ -8,37 +8,6 @@ import { NewHouseholdForm } from '@/components';
 
 export const dynamic = 'force-dynamic';
 
-// Utility function to parse a full name into components
-function parseFullName(fullName: string) {
-  const nameParts = fullName.trim().split(/\s+/);
-
-  if (nameParts.length === 1) {
-    return {
-      firstName: nameParts[0],
-      middleName: '',
-      lastName: '',
-    };
-  } else if (nameParts.length === 2) {
-    return {
-      firstName: nameParts[0],
-      middleName: '',
-      lastName: nameParts[1],
-    };
-  } else if (nameParts.length === 3) {
-    return {
-      firstName: nameParts[0],
-      middleName: nameParts[1],
-      lastName: nameParts[2],
-    };
-  } else {
-    // For more than 3 parts, first name is first part, last name is last part, middle is everything in between
-    return {
-      firstName: nameParts[0],
-      middleName: nameParts.slice(1, -1).join(' '),
-      lastName: nameParts[nameParts.length - 1],
-    };
-  }
-}
 
 export default function CreateHouseholdPage() {
   const searchParams = useSearchParams();
@@ -48,7 +17,7 @@ export default function CreateHouseholdPage() {
     const suggestedName = searchParams.get('suggested_name');
     const suggestedCode = searchParams.get('suggested_id');
 
-    let data: any = {};
+    let data: Record<string, unknown> = {};
 
     // Auto-fill household name if provided (since we now have household name instead of head name)
     if (suggestedName) {

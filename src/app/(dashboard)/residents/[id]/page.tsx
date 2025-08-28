@@ -40,7 +40,116 @@ function ResidentDetailContent() {
   const [formMode, setFormMode] = useState<FormMode>('view');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [currentFormData, setCurrentFormData] = useState<ResidentFormState | null>(null);
+  const [, setCurrentFormData] = useState<ResidentFormState | null>(null);
+
+  const loadAddressInfo = async (residentData: Resident) => {
+    try {
+      logger.debug('Loading address information', { barangayCode: residentData.barangay_code });
+
+      const { data: addressViewData, error: viewError } = await supabase
+        .from('psgc_address_hierarchy')
+        .select('barangay_name, city_municipality_name, province_name, region_name, full_address')
+        .eq('barangay_code', residentData.barangay_code)
+        .single();
+
+      if (addressViewData && !viewError) {
+        residentData.address_info = {
+          barangay_name: addressViewData.barangay_name,
+          city_municipality_name: addressViewData.city_municipality_name,
+          province_name: addressViewData.province_name,
+          region_name: addressViewData.region_name,
+          full_address: addressViewData.full_address,
+          barangay_code: residentData.barangay_code || '',
+          city_municipality_code: '',
+          region_code: '',
+        };
+        return;
+      }
+
+      await loadAddressFromIndividualTables(residentData);
+    } catch (addressError) {
+      logger.warn('Address data lookup failed', {
+        error: addressError instanceof Error ? addressError.message : 'Unknown error',
+      });
+    }
+  };
+
+  const loadAddressFromIndividualTables = async (residentData: Resident) => {
+    logger.debug('Address view not available, trying individual table queries');
+
+    const { data: barangayData, error: barangayError } = await supabase
+      .from('psgc_barangays')
+      .select('name, city_municipality_code')
+      .eq('code', residentData.barangay_code)
+      .single();
+
+    if (!barangayData || barangayError) return;
+
+    residentData.address_info = {
+      barangay_name: barangayData.name,
+      city_municipality_name: '',
+      province_name: '',
+      region_name: '',
+      full_address: barangayData.name,
+      barangay_code: residentData.barangay_code || '',
+      city_municipality_code: barangayData.city_municipality_code,
+      region_code: '',
+    };
+
+    const { data: cityData } = await supabase
+      .from('psgc_cities_municipalities')
+      .select('name, province_code, is_independent')
+      .eq('code', barangayData.city_municipality_code)
+      .single();
+
+    if (!cityData || !residentData.address_info) return;
+
+    residentData.address_info.city_municipality_name = cityData.name;
+    residentData.address_info.full_address = `${barangayData.name}, ${cityData.name}`;
+
+    if (cityData.is_independent || !cityData.province_code) return;
+
+    const { data: provinceData } = await supabase
+      .from('psgc_provinces')
+      .select('name, region_code')
+      .eq('code', cityData.province_code)
+      .single();
+
+    if (!provinceData || !residentData.address_info) return;
+
+    residentData.address_info.province_name = provinceData.name;
+    residentData.address_info.region_code = provinceData.region_code;
+
+    const { data: regionData } = await supabase
+      .from('psgc_regions')
+      .select('name')
+      .eq('code', provinceData.region_code)
+      .single();
+
+    if (regionData && residentData.address_info) {
+      residentData.address_info.region_name = regionData.name;
+    }
+  };
+
+  const loadOccupationInfo = async (residentData: Resident) => {
+    if (!residentData.occupation_code) return;
+
+    try {
+      const { data: psocData } = await supabase
+        .from('occupation_codes')
+        .select('code, title, level')
+        .eq('code', residentData.occupation_code)
+        .single();
+
+      if (psocData) {
+        residentData.psoc_info = psocData;
+      }
+    } catch (psocError) {
+      logger.warn('PSOC data lookup failed', {
+        error: psocError instanceof Error ? psocError.message : 'Unknown error',
+      });
+    }
+  };
 
   useEffect(() => {
     const loadResidentDetails = async () => {
@@ -50,9 +159,7 @@ function ResidentDetailContent() {
         setLoading(true);
 
         logger.debug('Loading resident details', { residentId });
-        // Loading resident details for the specified ID
 
-        // Use API endpoint with session fallback
         const response = await fetchWithAuth(`/api/residents/${residentId}`);
 
         if (!response.ok) {
@@ -62,7 +169,6 @@ function ResidentDetailContent() {
         }
 
         const responseData = await response.json();
-
         const { resident: residentData, household: householdData } = responseData.data;
 
         if (!residentData) {
@@ -71,127 +177,14 @@ function ResidentDetailContent() {
         }
 
         logger.debug('Resident data loaded successfully via API', { residentId: residentData.id });
-        // Resident data loaded successfully
-        // Checking resident migration status
 
-        // Household data is already included in the API response
         if (householdData) {
           residentData.household = householdData;
         }
 
-        // Load address information for the resident's barangay
-        try {
-          logger.debug('Loading address information', { barangayCode: residentData.barangay_code });
+        await loadAddressInfo(residentData);
+        await loadOccupationInfo(residentData);
 
-          // Try to use the address hierarchy view first (if it exists)
-          const { data: addressViewData, error: viewError } = await supabase
-            .from('psgc_address_hierarchy')
-            .select(
-              'barangay_name, city_municipality_name, province_name, region_name, full_address'
-            )
-            .eq('barangay_code', residentData.barangay_code)
-            .single();
-
-          if (addressViewData && !viewError) {
-            residentData.address_info = {
-              barangay_name: addressViewData.barangay_name,
-              city_municipality_name: addressViewData.city_municipality_name,
-              province_name: addressViewData.province_name,
-              region_name: addressViewData.region_name,
-              full_address: addressViewData.full_address,
-            };
-          } else {
-            // Fallback: Try individual table queries
-            logger.debug('Address view not available, trying individual table queries');
-
-            const { data: barangayData, error: barangayError } = await supabase
-              .from('psgc_barangays')
-              .select('name, city_municipality_code')
-              .eq('code', residentData.barangay_code)
-              .single();
-
-            logger.debug('Barangay query completed', {
-              found: !!barangayData,
-              hasError: !!barangayError,
-            });
-
-            if (barangayData && !barangayError) {
-              // Initialize with barangay data only - no fallback values
-              residentData.address_info = {
-                barangay_name: barangayData.name,
-                city_municipality_name: undefined,
-                province_name: undefined,
-                region_name: undefined,
-                full_address: barangayData.name,
-              };
-
-              // Try to get city info and trace back to region
-              const { data: cityData } = await supabase
-                .from('psgc_cities_municipalities')
-                .select('name, province_code, is_independent')
-                .eq('code', barangayData.city_municipality_code)
-                .single();
-
-              if (cityData) {
-                residentData.address_info.city_municipality_name = cityData.name;
-                residentData.address_info.full_address = `${barangayData.name}, ${cityData.name}`;
-
-                // Try to get province and region info
-                if (!cityData.is_independent && cityData.province_code) {
-                  const { data: provinceData } = await supabase
-                    .from('psgc_provinces')
-                    .select('name, region_code')
-                    .eq('code', cityData.province_code)
-                    .single();
-
-                  if (provinceData) {
-                    residentData.address_info.province_name = provinceData.name;
-
-                    // Get region name
-                    const { data: regionData } = await supabase
-                      .from('psgc_regions')
-                      .select('name')
-                      .eq('code', provinceData.region_code)
-                      .single();
-
-                    if (regionData) {
-                      residentData.address_info.region_name = regionData.name;
-                    }
-                    // No fallback mapping - only use actual database data
-                  }
-                }
-                // No assumptions for independent cities - only use database data
-              }
-            }
-            // No fallback creation - if no barangay data, leave address_info undefined
-          }
-        } catch (addressError) {
-          logger.warn('Address data lookup failed', {
-            error: addressError instanceof Error ? addressError.message : 'Unknown error',
-          });
-          // No fallback data - leave address_info undefined if query fails
-        }
-
-        // Household information is now included in the main API response
-
-        // Try to load PSOC information if available
-        if (residentData.occupation_code) {
-          try {
-            const { data: psocData } = await supabase
-              .from('occupation_codes')
-              .select('code, title, level')
-              .eq('code', residentData.occupation_code)
-              .single();
-
-            if (psocData) {
-              residentData.psoc_info = psocData;
-            }
-          } catch (psocError) {
-            logger.warn('PSOC data lookup failed', {
-              error: psocError instanceof Error ? psocError.message : 'Unknown error',
-            });
-          }
-        }
 
         // Initialize missing fields for comprehensive form
         const initializedResident = {
@@ -235,64 +228,6 @@ function ResidentDetailContent() {
     loadResidentDetails();
   }, [residentId]);
 
-  // Utility functions (kept for potential future use)
-  // const formatFullName = (person: {
-  //   first_name: string;
-  //   middle_name?: string;
-  //   last_name: string;
-  //   extension_name?: string;
-  // }) => {
-  //   return [person.first_name, person.middle_name, person.last_name, person.extension_name]
-  //     .filter(Boolean)
-  //     .join(' ');
-  // };
-
-  const _calculateAge = (birthdate: string) => {
-    if (!birthdate) return 'N/A';
-    const today = new Date();
-    const birth = new Date(birthdate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age.toString();
-  };
-
-  // const formatAddress = (household?: Resident['household']) => {
-  //   if (!household) return 'No household assigned';
-  //   const parts = [household.house_number, household.street_name, household.subdivision].filter(
-  //     Boolean
-  //   );
-  //   return parts.length > 0 ? parts.join(', ') : 'No address';
-  // };
-
-  const _formatEnumValue = (value: string | undefined) => {
-    if (!value) return 'N/A';
-    return value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  };
-
-  const _formatBoolean = (value: boolean | undefined) => {
-    if (value === undefined || value === null) return 'N/A';
-    return value ? 'Yes' : 'No';
-  };
-
-  // Extract sectoral information from resident data for badges (kept for future use)
-  // const extractSectoralInfo = (resident: Resident): SectoralInformation => {
-  //   return {
-  //     is_labor_force_employed: resident.is_employed || false,
-  //     is_unemployed: resident.is_unemployed || false,
-  //     is_overseas_filipino_worker: resident.is_ofw || false,
-  //     is_person_with_disability: resident.is_pwd || false,
-  //     is_out_of_school_children: resident.is_out_of_school_children || false,
-  //     is_out_of_school_youth: resident.is_out_of_school_youth || false,
-  //     is_senior_citizen: resident.is_senior_citizen || false,
-  //     is_registered_senior_citizen: resident.is_registered_senior_citizen || false,
-  //     is_solo_parent: resident.is_solo_parent || false,
-  //     is_indigenous_people: resident.is_indigenous_people || false,
-  //     is_migrant: resident.is_migrant || false,
-  //   };
-  // };
 
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status
@@ -308,35 +243,6 @@ function ResidentDetailContent() {
     }
 
     return updatedResident;
-  };
-
-  const _handleFieldChange = (field: keyof Resident, value: unknown) => {
-    if (!editedResident) return;
-
-    let updatedResident = {
-      ...editedResident,
-      [field]: value,
-    };
-
-    // Update computed fields when employment status or birthdate changes
-    if (field === 'employment_status' || field === 'birthdate') {
-      updatedResident = updateComputedFields(updatedResident);
-    }
-
-    setEditedResident(updatedResident);
-  };
-
-  const _getComputedFieldTooltip = (field: keyof Resident) => {
-    switch (field) {
-      case 'is_employed':
-        return `Automatically calculated from Employment Status. Includes: employed, self-employed`;
-      case 'is_unemployed':
-        return `Automatically calculated from Employment Status. Only when status is 'unemployed'`;
-      case 'is_senior_citizen':
-        return `Automatically calculated from Date of Birth. Senior citizen when age is 60 or above`;
-      default:
-        return 'This field is automatically calculated';
-    }
   };
 
   const transformToFormState = (resident: Resident): ResidentFormState => {
@@ -534,9 +440,11 @@ function ResidentDetailContent() {
         is_migrant: formData.is_migrant,
       };
 
-      console.log('🔧 Frontend - Making PUT request to:', `/api/residents/${residentId}`);
-      console.log('🔧 Frontend - Method: PUT');
-      console.log('🔧 Frontend - Update payload keys:', Object.keys(updatePayload));
+      logger.debug('Making PUT request', { 
+        url: `/api/residents/${residentId}`,
+        method: 'PUT',
+        payloadKeys: Object.keys(updatePayload)
+      });
       
       const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
@@ -838,7 +746,15 @@ function ResidentDetailContent() {
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                   <div
                     className="bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setShowDeleteConfirm(false)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape' || e.key === 'Enter') {
+                        setShowDeleteConfirm(false);
+                      }
+                    }}
+                    aria-label="Close delete confirmation dialog"
                   />
                   <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg dark:bg-gray-800">
                     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 dark:bg-gray-800">

@@ -200,9 +200,9 @@ export const POST = withSecurityHeaders(
         };
 
         // Insert household
-        const { data: newHousehold, error: insertError } = await supabaseAdmin
-          .from('households')
-          .insert([insertData] as any)
+        const { data: newHousehold, error: insertError } = await (supabaseAdmin
+          .from('households') as any)
+          .insert([insertData])
           .select('*')
           .single();
 
@@ -212,10 +212,16 @@ export const POST = withSecurityHeaders(
         }
 
         // Audit the creation
-        await auditDataOperation('create', 'household', (newHousehold as any)?.id, context, {
-          barangay_code: effectiveBarangayCode,
-          householdCode: householdData.code,
-        });
+        await auditDataOperation(
+          'create',
+          'household',
+          String((newHousehold as { id?: string })?.id ?? householdData.code),
+          context,
+          {
+            barangay_code: effectiveBarangayCode,
+            householdCode: householdData.code,
+          }
+        );
 
         return createCreatedResponse(
           {

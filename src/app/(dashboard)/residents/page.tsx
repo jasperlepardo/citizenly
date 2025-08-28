@@ -14,17 +14,11 @@ import {
   type Resident,
   type AdvancedFilters,
 } from '@/hooks/crud/useResidents';
+import { logger } from '@/lib';
 
-interface SearchFilter {
-  field: string;
-  label: string;
-  type: 'select' | 'input' | 'date';
-  options?: { value: string; label: string }[];
-}
 
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [_searchFilters, setSearchFilters] = useState<SearchFilter[]>([]);
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>({});
   const [pagination, setPagination] = useState({
@@ -60,7 +54,7 @@ function ResidentsContent() {
     if (!isLoading && !isFetching) {
       prefetchNextPage();
     }
-  }, [pagination.current, prefetchNextPage, isLoading, isFetching]);
+  }, [prefetchNextPage, isLoading, isFetching]);
 
   const handleSearch = useCallback((term: string) => {
     setSearchTerm(term);
@@ -117,7 +111,7 @@ function ResidentsContent() {
       render: (value: string, record: Resident) => (
         <Link
           href={`/residents/${record.id}`}
-          className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-200 dark:text-gray-400 dark:text-gray-800"
+          className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-200"
         >
           {value}
         </Link>
@@ -196,7 +190,7 @@ function ResidentsContent() {
               toast.error('Failed to delete resident');
             }
           } catch (error) {
-            console.error('Delete error:', error);
+            logger.error('Delete error:', error);
             toast.error('Error deleting resident');
           }
         }
@@ -205,40 +199,6 @@ function ResidentsContent() {
     },
   ];
 
-  // Define filter options for search
-  const filterOptions = [
-    {
-      field: 'sex',
-      label: 'Sex',
-      type: 'select' as const,
-      options: [
-        { value: 'male', label: 'Male' },
-        { value: 'female', label: 'Female' },
-      ],
-    },
-    {
-      field: 'civil_status',
-      label: 'Civil Status',
-      type: 'select' as const,
-      options: [
-        { value: 'single', label: 'Single' },
-        { value: 'married', label: 'Married' },
-        { value: 'widowed', label: 'Widowed' },
-        { value: 'divorced', label: 'Divorced' },
-        { value: 'separated', label: 'Separated' },
-      ],
-    },
-    {
-      field: 'occupation',
-      label: 'Occupation',
-      type: 'text' as const,
-    },
-    {
-      field: 'email',
-      label: 'Email',
-      type: 'text' as const,
-    },
-  ];
 
   // Show error recovery component if there's an error
   if (error && !isLoading) {
@@ -265,7 +225,7 @@ function ResidentsContent() {
           <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600 dark:text-gray-400">
             Residents
           </h1>
-          <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+          <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
             {total} total residents
             {isFetching && !isLoading && (
               <span className="ml-2 text-blue-600">
@@ -353,15 +313,21 @@ function ResidentsContent() {
             </div>
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={retryManually}
-                className="text-sm text-yellow-700 underline hover:text-yellow-900"
+                onKeyDown={(e) => e.key === 'Enter' && retryManually()}
+                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 disabled={isLoading}
+                aria-label="Retry loading residents"
               >
                 Retry
               </button>
               <button
+                type="button"
                 onClick={clearError}
-                className="text-sm text-yellow-700 underline hover:text-yellow-900"
+                onKeyDown={(e) => e.key === 'Enter' && clearError()}
+                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                aria-label="Dismiss error message"
               >
                 Dismiss
               </button>
