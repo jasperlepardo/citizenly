@@ -341,11 +341,11 @@ jobs:
               repo: context.repo.repo,
               body: `## 📊 SonarCloud Analysis Complete
               
-            View detailed code quality analysis: [SonarCloud Dashboard](${sonarUrl})
-            
-            - **Quality Gate**: Check the dashboard for pass/fail status
-            - **Coverage**: Test coverage metrics and trends  
-            - **Issues**: Code smells, bugs, and security hotspots
-            - **Maintainability**: Technical debt and complexity analysis`
+              View detailed code quality analysis: [SonarCloud Dashboard](${sonarUrl})
+              
+              - **Quality Gate**: Check the dashboard for pass/fail status
+              - **Coverage**: Test coverage metrics and trends  
+              - **Issues**: Code smells, bugs, and security hotspots
+              - **Maintainability**: Technical debt and complexity analysis`
             });
         continue-on-error: true
