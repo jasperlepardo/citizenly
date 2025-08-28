@@ -5,10 +5,11 @@ name: Automated Code Review
 # The workflows will work correctly with or without these secrets configured.
 
 on:
-  pull_request:
-    branches: [main, develop]
-  push:
-    branches: [develop, 'feature/**', 'release/**', 'hotfix/**']
+  workflow_dispatch: # Temporarily disable automatic triggers
+  # pull_request:
+  #   branches: [main, develop]
+  # push:
+  #   branches: [develop, 'feature/**', 'release/**', 'hotfix/**']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
