@@ -131,13 +131,13 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
     
-    require('@/contexts/AuthContext').useAuth.mockReturnValue({
+    (require('@/contexts/AuthContext') as any).useAuth.mockReturnValue({
       user: mockUser,
       userProfile: mockUserProfile,
       session: { access_token: 'token' }
     });
 
-    require('@/hooks/crud/useResidentOperations').useResidentOperations.mockReturnValue({
+    (require('@/hooks/crud/useResidentOperations') as any).useResidentOperations.mockReturnValue({
       createResident: mockCreateResident,
       isSubmitting: false,
       validationErrors: {}
@@ -231,7 +231,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       };
 
       // Mock parseFullName to throw error for invalid input
-      require('@/utils/resident-form-utils').parseFullName.mockImplementation(() => {
+      (require('@/utils/resident-form-utils') as any).parseFullName.mockImplementation(() => {
         throw new Error('Invalid name format');
       });
 
@@ -323,7 +323,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Should show rate limiting error
       await waitFor(() => {
-        expect(require('react-hot-toast').toast.error).toHaveBeenCalledWith(
+        expect((require('react-hot-toast') as any).toast.error).toHaveBeenCalledWith(
           'Too many submission attempts. Please wait before trying again.'
         );
       });
@@ -513,7 +513,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Should show generic error, not expose internal details
       await waitFor(() => {
-        expect(require('react-hot-toast').toast.error).toHaveBeenCalledWith(
+        expect((require('react-hot-toast') as any).toast.error).toHaveBeenCalledWith(
           expect.not.stringMatching(/192\.168\.1\.100|server|database/i)
         );
       });

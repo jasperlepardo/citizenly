@@ -123,7 +123,7 @@ jest.mock('react-hot-toast', () => ({
 
 // Mock the service and hooks
 const mockCreateResident = jest.fn();
-const mockUseResidentOperations = require('@/hooks/crud/useResidentOperations').useResidentOperations as jest.Mock;
+const mockUseResidentOperations = (require('@/hooks/crud/useResidentOperations') as any).useResidentOperations as jest.Mock;
 
 describe('Create New Resident - Complete Flow', () => {
   const mockRouter = {
