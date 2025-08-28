@@ -1,0 +1,13 @@
+name: Test Workflow Syntax
+
+on:
+  push:
+    branches: [fix/vercel-build-errors]
+
+jobs:
+  test:
+    name: Syntax Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo test
+        run: echo "Workflow syntax is valid"
