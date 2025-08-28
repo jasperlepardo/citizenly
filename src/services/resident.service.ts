@@ -58,7 +58,10 @@ export class ResidentService {
         const errors = result.errors
           ? Array.isArray(result.errors)
             ? result.errors
-            : Object.entries(result.errors).map(([field, message]) => ({ field, message }))
+            : Object.entries(result.errors).map(([field, message]) => ({ 
+                field, 
+                message: String(message) 
+              }))
           : [{ field: 'general', message: 'Validation failed' }];
 
         // Filter out validation errors for fields that weren't submitted

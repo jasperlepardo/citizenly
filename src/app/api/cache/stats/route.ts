@@ -97,18 +97,25 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Add performance warnings
     const warnings: string[] = [];
 
-    const dbStats = getStatsValue(connectionPoolStats);
-    if (dbStats.utilizationPercentage > 80) {
+    const dbStats = getStatsValue(connectionPoolStats) as {
+      utilizationPercentage?: number;
+      [key: string]: unknown;
+    };
+    if ((dbStats.utilizationPercentage ?? 0) > 80) {
       warnings.push('Database connection pool utilization is high (>80%)');
     }
 
-    const queryMetrics = getStatsValue(queryStats);
-    if (queryMetrics.averageExecutionTime > 1000) {
+    const queryMetrics = getStatsValue(queryStats) as {
+      averageExecutionTime?: number;
+      slowQueries?: unknown[];
+      [key: string]: unknown;
+    };
+    if ((queryMetrics.averageExecutionTime ?? 0) > 1000) {
       warnings.push('Average query execution time is high (>1000ms)');
     }
 
-    if (queryMetrics.slowQueries?.length > 5) {
-      warnings.push(`${queryMetrics.slowQueries.length} slow queries detected`);
+    if ((queryMetrics.slowQueries?.length ?? 0) > 5) {
+      warnings.push(`${queryMetrics.slowQueries?.length} slow queries detected`);
     }
 
     if (warnings.length > 0) {

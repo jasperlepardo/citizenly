@@ -385,10 +385,10 @@ export class SecurityAuditService {
 
       return {
         totalEvents: auditLogs.length,
-        criticalEvents: auditLogs.filter(log => log.severity === 'critical').length,
+        criticalEvents: auditLogs.filter((log: any) => log.severity === 'critical').length,
         threatEvents: threatEvents.length,
-        failedLogins: auditLogs.filter(log => log.operation.includes('login') && !log.success).length,
-        suspiciousActivities: threatEvents.filter(event =>
+        failedLogins: auditLogs.filter((log: any) => log.operation.includes('login') && !log.success).length,
+        suspiciousActivities: threatEvents.filter((event: any) =>
           ['suspicious_activity', 'brute_force', 'sql_injection'].includes(event.event_type)
         ).length,
       };

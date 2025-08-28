@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { z } from 'zod';
+import { UserProfile, ResidentWithHousehold } from '@/types/api';
 
 // Migration information validation schema
 const migrationInfoSchema = z.object({
@@ -48,11 +49,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
+
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
@@ -62,7 +66,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Verify resident access through household
-    const { data: resident, error: residentError } = await supabaseAdmin
+    const residentResult = await supabaseAdmin
       .from('residents')
       .select(
         `
@@ -73,6 +77,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
+
+    const resident = residentResult.data as ResidentWithHousehold | null;
+    const residentError = residentResult.error;
 
     if (residentError || !resident) {
       return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
@@ -148,11 +155,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
+
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
@@ -162,7 +172,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Verify resident access through household
-    const { data: resident, error: residentError } = await supabaseAdmin
+    const residentResult = await supabaseAdmin
       .from('residents')
       .select(
         `
@@ -173,6 +183,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
+
+    const resident = residentResult.data as ResidentWithHousehold | null;
+    const residentError = residentResult.error;
 
     if (residentError || !resident) {
       return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
@@ -199,7 +212,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       // Update existing record
       const { data: updatedMigration, error: updateError } = await supabaseAdmin
         .from('resident_migrant_info')
-        .update(updateData)
+        .update(updateData as Record<string, any>)
         .eq('resident_id', residentId)
         .select()
         .single();
@@ -226,7 +239,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       const { data: newMigration, error: insertError } = await supabaseAdmin
         .from('resident_migrant_info')
-        .insert(insertData)
+        .insert(insertData as Record<string, any>)
         .select()
         .single();
 
@@ -284,11 +297,14 @@ export async function DELETE(
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
+
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
@@ -298,7 +314,7 @@ export async function DELETE(
     }
 
     // Verify resident access through household
-    const { data: resident, error: residentError } = await supabaseAdmin
+    const residentResult = await supabaseAdmin
       .from('residents')
       .select(
         `
@@ -309,6 +325,9 @@ export async function DELETE(
       .eq('id', residentId)
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
+
+    const resident = residentResult.data as ResidentWithHousehold | null;
+    const residentError = residentResult.error;
 
     if (residentError || !resident) {
       return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });

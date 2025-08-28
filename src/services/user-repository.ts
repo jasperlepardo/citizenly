@@ -38,7 +38,10 @@ export class UserRepository extends BaseRepository<UserData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'User data validation failed',
-            details: validationResult.errors,
+            details: validationResult.errors.reduce((acc, error, index) => ({
+              ...acc,
+              [`error_${index}`]: error.message
+            }), {} as Record<string, any>),
           },
         };
       }
@@ -104,7 +107,10 @@ export class UserRepository extends BaseRepository<UserData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'User data validation failed',
-            details: validationResult.errors,
+            details: validationResult.errors.reduce((acc, error, index) => ({
+              ...acc,
+              [`error_${index}`]: error.message
+            }), {} as Record<string, any>),
           },
         };
       }

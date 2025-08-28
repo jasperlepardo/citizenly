@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
+import { UserProfile, HouseholdRecord } from '@/types/api';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -32,13 +33,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
 
-    if (profileError || !(userProfile as any)?.barangay_code) {
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
+
+    if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
         { error: 'User profile not found or no barangay assigned' },
         { status: 400 }
@@ -46,7 +50,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Get household data with head resident info using correct foreign key reference
-    const { data: household, error: householdError } = await supabaseAdmin
+    const householdResult = await supabaseAdmin
       .from('households')
       .select(
         `
@@ -65,8 +69,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         `
       )
       .eq('code', householdCode)
-      .eq('barangay_code', userProfile.barangay_code!) // Ensure same barangay
+      .eq('barangay_code', userProfile.barangay_code)
       .single();
+
+    const household = householdResult.data as HouseholdRecord | null;
+    const householdError = householdResult.error;
 
     if (householdError || !household) {
       return NextResponse.json({ error: 'Household not found or access denied' }, { status: 404 });
@@ -113,8 +120,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
       if (barangayData) {
         const cityMunData = (barangayData as any).psgc_cities_municipalities;
-        const province = cityMunData.psgc_provinces;
-        const region = province.psgc_regions;
+        const province = (cityMunData as any).psgc_provinces;
+        const region = (province as any).psgc_regions;
 
         geoInfo = {
           barangay_info: {
@@ -122,17 +129,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             name: (barangayData as any).name,
           },
           city_municipality_info: {
-            code: cityMunData.code,
-            name: cityMunData.name,
-            type: cityMunData.type,
+            code: (cityMunData as any).code,
+            name: (cityMunData as any).name,
+            type: (cityMunData as any).type,
           },
           province_info: {
-            code: province.code,
-            name: province.name,
+            code: (province as any).code,
+            name: (province as any).name,
           },
           region_info: {
-            code: region.code,
-            name: region.name,
+            code: (region as any).code,
+            name: (region as any).name,
           },
         };
       }
@@ -142,7 +149,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({
       household: {
-        ...(household as any),
+        ...household,
         ...geoInfo,
         member_count: members?.length || 0,
       },
@@ -186,13 +193,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
 
-    if (profileError || !(userProfile as any)?.barangay_code) {
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
+
+    if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
         { error: 'User profile not found or no barangay assigned' },
         { status: 400 }
@@ -200,16 +210,19 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Update household data (only allow updates within same barangay)
-    const { data: updatedHousehold, error: updateError } = await supabaseAdmin
+    const updateResult = await supabaseAdmin
       .from('households')
       .update({
-        ...updateData,
+        ...(updateData as Record<string, any>),
         updated_at: new Date().toISOString(),
       })
       .eq('code', householdCode)
-      .eq('barangay_code', userProfile.barangay_code!) // Ensure same barangay
+      .eq('barangay_code', userProfile.barangay_code)
       .select()
       .single();
+
+    const updatedHousehold = updateResult.data;
+    const updateError = updateResult.error;
 
     if (updateError) {
       console.error('Household update error:', updateError);

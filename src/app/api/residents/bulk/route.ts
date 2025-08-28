@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
+import { UserProfile } from '@/types/api';
 
 // Bulk operations validation schema
 const bulkOperationSchema = z.object({
@@ -57,11 +58,14 @@ export async function POST(request: NextRequest) {
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
+    const profileResult = await supabaseAdmin
       .from('auth_user_profiles')
       .select('barangay_code')
       .eq('id', user.id)
       .single();
+
+    const userProfile = profileResult.data as UserProfile | null;
+    const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
       return NextResponse.json(
@@ -71,7 +75,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify all residents belong to user's barangay
-    const { data: accessibleResidents, error: accessError } = await supabaseAdmin
+    const accessResult = await supabaseAdmin
       .from('residents')
       .select(
         `
@@ -83,6 +87,9 @@ export async function POST(request: NextRequest) {
       )
       .in('id', resident_ids)
       .eq('households.barangay_code', userProfile.barangay_code);
+
+    const accessibleResidents = accessResult.data;
+    const accessError = accessResult.error;
 
     if (accessError) {
       console.error('Access check error:', accessError);
@@ -113,7 +120,7 @@ export async function POST(request: NextRequest) {
             is_active: false,
             updated_at: new Date().toISOString(),
             updated_by: user.id,
-          })
+          } as Record<string, any>)
           .in('id', resident_ids);
 
         if (deleteError) {
@@ -151,7 +158,7 @@ export async function POST(request: NextRequest) {
             is_active: false,
             updated_at: new Date().toISOString(),
             updated_by: user.id,
-          })
+          } as Record<string, any>)
           .in('id', resident_ids);
 
         if (deactivateError) {

@@ -77,7 +77,7 @@ export async function POST(_request: NextRequest) {
 
         const { error: updateNotifError } = await supabaseAdmin
           .from('user_notifications')
-          .update(updateData as any)
+          .update(updateData as Record<string, any>)
           .eq('id', notif.id);
         if (updateNotifError) {
           console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
@@ -104,7 +104,7 @@ export async function POST(_request: NextRequest) {
             retry_count: notif.retry_count + 1,
             error_message: errorMsg,
             scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
-          } as any)
+          } as Record<string, any>)
           .eq('id', notif.id);
         if (retryUpdateError) {
           console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);

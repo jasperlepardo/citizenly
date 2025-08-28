@@ -37,7 +37,10 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: validationResult.errors,
+            details: validationResult.errors.reduce((acc, error, index) => ({
+              ...acc,
+              [`error_${index}`]: error.message
+            }), {} as Record<string, any>),
           },
         };
       }
@@ -75,7 +78,10 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: validationResult.errors,
+            details: validationResult.errors.reduce((acc, error, index) => ({
+              ...acc,
+              [`error_${index}`]: error.message
+            }), {} as Record<string, any>),
           },
         };
       }

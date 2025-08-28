@@ -106,7 +106,10 @@ export class SyncService {
         }
 
         try {
-          const result = await this.syncItem(item);
+          const result = await this.syncItem({
+            ...item,
+            id: String(item.id)
+          });
 
           if (result.success) {
             await offlineStorage.markSyncItemCompleted(item.id!);
