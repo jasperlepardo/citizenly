@@ -162,7 +162,8 @@ export const renderSelectField = (
         options: selectOptions,
         value: value || '',
         searchable,
-        onSelect: (option: { value: string | number; label: string } | null) => onChange(String(option?.value || '')),
+        onSelect: (option: { value: string | number; label: string } | null) =>
+          onChange(String(option?.value || '')),
       }}
     />
   );

@@ -16,7 +16,11 @@ export const searchData = async (query: string, limit = 10) => {
 /**
  * Export data functionality
  */
-export const exportData = async (options: { type: string; format: string; filters?: Record<string, any> }) => {
+export const exportData = async (options: {
+  type: string;
+  format: string;
+  filters?: Record<string, any>;
+}) => {
   const exportOptions = {
     type: options.type as 'residents' | 'households',
     format: options.format as 'csv' | 'xlsx',

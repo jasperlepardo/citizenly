@@ -61,93 +61,116 @@ export function PersonalInformationForm({
   psocLoading = false,
 }: PersonalInformationFormProps) {
   // Map form data to BasicInformation component props
-  const basicInfoValue: BasicInformationData = React.useMemo(() => ({
-    first_name: formData.first_name || '',
-    middle_name: formData.middle_name || '',
-    last_name: formData.last_name || '',
-    extension_name: formData.extension_name || '',
-    sex: (formData.sex || '') as '' | 'male' | 'female',
-    civil_status: formData.civil_status || '',
-  }), [
-    formData.first_name,
-    formData.middle_name,
-    formData.last_name,
-    formData.extension_name,
-    formData.sex,
-    formData.civil_status,
-  ]);
-
-  // Handle changes from BasicInformation component
-  const handleBasicInfoChange = React.useCallback((value: BasicInformationData) => {
-    // Only update fields that have actually changed from current form data
-    const currentBasicInfo: BasicInformationData = {
+  const basicInfoValue: BasicInformationData = React.useMemo(
+    () => ({
       first_name: formData.first_name || '',
       middle_name: formData.middle_name || '',
       last_name: formData.last_name || '',
       extension_name: formData.extension_name || '',
       sex: (formData.sex || '') as '' | 'male' | 'female',
       civil_status: formData.civil_status || '',
-      civil_status_others_specify: formData.civil_status_others_specify || '',
-    };
-    
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      if (currentBasicInfo[field as keyof BasicInformationData] !== fieldValue) {
-        onChange(field, fieldValue);
-      }
-    });
-  }, [onChange, formData.first_name, formData.middle_name, formData.last_name, formData.extension_name, formData.sex, formData.civil_status]);
+    }),
+    [
+      formData.first_name,
+      formData.middle_name,
+      formData.last_name,
+      formData.extension_name,
+      formData.sex,
+      formData.civil_status,
+    ]
+  );
 
-  // Handle changes from BirthInformation component
-  const handleBirthInfoChange = React.useCallback((value: BirthInformationData) => {
-    // Only update fields that have actually changed from current form data
-    const currentBirthInfo: BirthInformationData = {
-      birthdate: formData.birthdate || '',
-      birth_place_name: formData.birth_place_name || '',
-      birth_place_code: formData.birth_place_code || '',
-    };
-    
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      if (currentBirthInfo[field as keyof BirthInformationData] !== fieldValue) {
-        onChange(field, fieldValue);
-      }
-    });
-  }, [onChange, formData.birthdate, formData.birth_place_name, formData.birth_place_code]);
+  // Handle changes from BasicInformation component
+  const handleBasicInfoChange = React.useCallback(
+    (value: BasicInformationData) => {
+      // Only update fields that have actually changed from current form data
+      const currentBasicInfo: BasicInformationData = {
+        first_name: formData.first_name || '',
+        middle_name: formData.middle_name || '',
+        last_name: formData.last_name || '',
+        extension_name: formData.extension_name || '',
+        sex: (formData.sex || '') as '' | 'male' | 'female',
+        civil_status: formData.civil_status || '',
+        civil_status_others_specify: formData.civil_status_others_specify || '',
+      };
 
-  // Handle changes from EducationInformation component
-  const handleEducationInfoChange = React.useCallback((value: EducationInformationData) => {
-    // Only update fields that have actually changed from current form data
-    const currentEducationInfo = {
-      education_attainment: formData.education_attainment || '',
-      is_graduate: formData.is_graduate ? 'yes' : 'no',
-    };
-    
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      if (currentEducationInfo[field as keyof typeof currentEducationInfo] !== fieldValue) {
-        // Convert is_graduate string back to boolean for form state
-        if (field === 'is_graduate') {
-          onChange(field, fieldValue === 'yes');
-        } else {
+      Object.entries(value).forEach(([field, fieldValue]) => {
+        if (currentBasicInfo[field as keyof BasicInformationData] !== fieldValue) {
           onChange(field, fieldValue);
         }
-      }
-    });
-  }, [onChange, formData.education_attainment, formData.is_graduate]);
+      });
+    },
+    [
+      onChange,
+      formData.first_name,
+      formData.middle_name,
+      formData.last_name,
+      formData.extension_name,
+      formData.sex,
+      formData.civil_status,
+    ]
+  );
+
+  // Handle changes from BirthInformation component
+  const handleBirthInfoChange = React.useCallback(
+    (value: BirthInformationData) => {
+      // Only update fields that have actually changed from current form data
+      const currentBirthInfo: BirthInformationData = {
+        birthdate: formData.birthdate || '',
+        birth_place_name: formData.birth_place_name || '',
+        birth_place_code: formData.birth_place_code || '',
+      };
+
+      Object.entries(value).forEach(([field, fieldValue]) => {
+        if (currentBirthInfo[field as keyof BirthInformationData] !== fieldValue) {
+          onChange(field, fieldValue);
+        }
+      });
+    },
+    [onChange, formData.birthdate, formData.birth_place_name, formData.birth_place_code]
+  );
+
+  // Handle changes from EducationInformation component
+  const handleEducationInfoChange = React.useCallback(
+    (value: EducationInformationData) => {
+      // Only update fields that have actually changed from current form data
+      const currentEducationInfo = {
+        education_attainment: formData.education_attainment || '',
+        is_graduate: formData.is_graduate ? 'yes' : 'no',
+      };
+
+      Object.entries(value).forEach(([field, fieldValue]) => {
+        if (currentEducationInfo[field as keyof typeof currentEducationInfo] !== fieldValue) {
+          // Convert is_graduate string back to boolean for form state
+          if (field === 'is_graduate') {
+            onChange(field, fieldValue === 'yes');
+          } else {
+            onChange(field, fieldValue);
+          }
+        }
+      });
+    },
+    [onChange, formData.education_attainment, formData.is_graduate]
+  );
 
   // Handle changes from EmploymentInformation component
-  const handleEmploymentInfoChange = React.useCallback((value: EmploymentInformationData) => {
-    // Only update fields that have actually changed from current form data
-    const currentEmploymentInfo: EmploymentInformationData = {
-      employment_status: formData.employment_status || '',
-      occupation_code: formData.occupation_code || '',
-      occupation_title: formData.occupation_title || '',
-    };
-    
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      if (currentEmploymentInfo[field as keyof EmploymentInformationData] !== fieldValue) {
-        onChange(field, fieldValue);
-      }
-    });
-  }, [onChange, formData.employment_status, formData.occupation_code, formData.occupation_title]);
+  const handleEmploymentInfoChange = React.useCallback(
+    (value: EmploymentInformationData) => {
+      // Only update fields that have actually changed from current form data
+      const currentEmploymentInfo: EmploymentInformationData = {
+        employment_status: formData.employment_status || '',
+        occupation_code: formData.occupation_code || '',
+        occupation_title: formData.occupation_title || '',
+      };
+
+      Object.entries(value).forEach(([field, fieldValue]) => {
+        if (currentEmploymentInfo[field as keyof EmploymentInformationData] !== fieldValue) {
+          onChange(field, fieldValue);
+        }
+      });
+    },
+    [onChange, formData.employment_status, formData.occupation_code, formData.occupation_title]
+  );
 
   return (
     <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
@@ -181,15 +204,14 @@ export function PersonalInformationForm({
           {/* Birth Information */}
           <BirthInformation
             mode={mode}
-            value={React.useMemo(() => ({
-              birthdate: formData.birthdate || '',
-              birth_place_name: formData.birth_place_name || '',
-              birth_place_code: formData.birth_place_code || '',
-            }), [
-              formData.birthdate,
-              formData.birth_place_name,
-              formData.birth_place_code,
-            ])}
+            value={React.useMemo(
+              () => ({
+                birthdate: formData.birthdate || '',
+                birth_place_name: formData.birth_place_name || '',
+                birth_place_code: formData.birth_place_code || '',
+              }),
+              [formData.birthdate, formData.birth_place_name, formData.birth_place_code]
+            )}
             onChange={handleBirthInfoChange}
             errors={errors}
           />
@@ -197,13 +219,13 @@ export function PersonalInformationForm({
           {/* Education Information */}
           <EducationInformation
             mode={mode}
-            value={React.useMemo(() => ({
-              education_attainment: formData.education_attainment || '',
-              is_graduate: formData.is_graduate ? 'yes' : 'no',
-            }), [
-              formData.education_attainment,
-              formData.is_graduate,
-            ])}
+            value={React.useMemo(
+              () => ({
+                education_attainment: formData.education_attainment || '',
+                is_graduate: formData.is_graduate ? 'yes' : 'no',
+              }),
+              [formData.education_attainment, formData.is_graduate]
+            )}
             onChange={handleEducationInfoChange}
             errors={errors}
           />
@@ -211,15 +233,14 @@ export function PersonalInformationForm({
           {/* Employment Information */}
           <EmploymentInformation
             mode={mode}
-            value={React.useMemo(() => ({
-              employment_status: formData.employment_status || '',
-              occupation_code: formData.occupation_code || '',
-              occupation_title: formData.occupation_title || '',
-            }), [
-              formData.employment_status,
-              formData.occupation_code,
-              formData.occupation_title,
-            ])}
+            value={React.useMemo(
+              () => ({
+                employment_status: formData.employment_status || '',
+                occupation_code: formData.occupation_code || '',
+                occupation_title: formData.occupation_title || '',
+              }),
+              [formData.employment_status, formData.occupation_code, formData.occupation_title]
+            )}
             onChange={handleEmploymentInfoChange}
             errors={errors}
             onPsocSearch={onPsocSearch}

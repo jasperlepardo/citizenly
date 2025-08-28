@@ -14,17 +14,11 @@ import type {
   CityMunicipality,
   Barangay,
   GeographicOption,
-  BarangayWithJoins
+  BarangayWithJoins,
 } from '@/types/addresses';
 
 // Re-export types for backward compatibility
-export type {
-  Region,
-  Province,
-  CityMunicipality,
-  Barangay,
-  GeographicOption
-};
+export type { Region, Province, CityMunicipality, Barangay, GeographicOption };
 
 /**
  * Geographic Data Service Class

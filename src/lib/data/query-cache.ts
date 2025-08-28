@@ -236,9 +236,11 @@ export const CacheKeys = {
   cities: (provinceCode?: string) => `cities:${provinceCode || 'all'}`,
   barangays: (cityCode?: string) => `barangays:${cityCode || 'all'}`,
   resident: (id: string) => `resident:${id}`,
-  residents: (filters: Record<string, string | number | boolean>) => `residents:${JSON.stringify(filters)}`,
+  residents: (filters: Record<string, string | number | boolean>) =>
+    `residents:${JSON.stringify(filters)}`,
   household: (id: string) => `household:${id}`,
-  households: (filters: Record<string, string | number | boolean>) => `households:${JSON.stringify(filters)}`,
+  households: (filters: Record<string, string | number | boolean>) =>
+    `households:${JSON.stringify(filters)}`,
   dashboardStats: (barangayCode: string) => `dashboard:stats:${barangayCode}`,
   userProfile: (userId: string) => `user:profile:${userId}`,
 };

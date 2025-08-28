@@ -10,7 +10,7 @@ import type {
   ReligionEnum,
   EthnicityEnum,
   EducationLevelEnum,
-  EmploymentStatusEnum
+  EmploymentStatusEnum,
 } from '../types/database';
 import type { ResidentFormData } from '../types/forms';
 import type {
@@ -20,7 +20,7 @@ import type {
   EducationInformationData,
   EmploymentInformationData,
   ContactInformationData,
-  PhysicalInformationData
+  PhysicalInformationData,
 } from '../types/services';
 
 export const transformBasicInfoToFormData = (
@@ -32,7 +32,8 @@ export const transformBasicInfoToFormData = (
     last_name: basicInfo.last_name,
     extension_name: basicInfo.extension_name,
     sex: basicInfo.sex === '' ? undefined : (basicInfo.sex as SexEnum),
-    civil_status: basicInfo.civil_status === '' ? undefined : (basicInfo.civil_status as CivilStatusEnum),
+    civil_status:
+      basicInfo.civil_status === '' ? undefined : (basicInfo.civil_status as CivilStatusEnum),
   };
 };
 
@@ -74,7 +75,10 @@ export const transformEducationInfoToFormData = (
   educationInfo: EducationInformationData
 ): Partial<ResidentFormData> => {
   return {
-    education_attainment: educationInfo.education_attainment === '' ? undefined : (educationInfo.education_attainment as EducationLevelEnum),
+    education_attainment:
+      educationInfo.education_attainment === ''
+        ? undefined
+        : (educationInfo.education_attainment as EducationLevelEnum),
     is_graduate: educationInfo.is_graduate,
   };
 };
@@ -94,7 +98,10 @@ export const transformEmploymentInfoToFormData = (
   employmentInfo: EmploymentInformationData
 ): Partial<ResidentFormData> => {
   return {
-    employment_status: employmentInfo.employment_status === '' ? undefined : (employmentInfo.employment_status as EmploymentStatusEnum),
+    employment_status:
+      employmentInfo.employment_status === ''
+        ? undefined
+        : (employmentInfo.employment_status as EmploymentStatusEnum),
     occupation_code: employmentInfo.occupation_code,
   };
 };
@@ -118,12 +125,17 @@ export const transformPhysicalCharacteristicsToFormData = (
   physicalInfo: PhysicalInformationData
 ): Partial<ResidentFormData> => {
   return {
-    blood_type: physicalInfo.blood_type === '' ? undefined : (physicalInfo.blood_type as BloodTypeEnum),
+    blood_type:
+      physicalInfo.blood_type === '' ? undefined : (physicalInfo.blood_type as BloodTypeEnum),
     complexion: physicalInfo.complexion,
     height: parseFloat(physicalInfo.height.toString()) || undefined,
     weight: parseFloat(physicalInfo.weight.toString()) || undefined,
-    citizenship: physicalInfo.citizenship === '' || !physicalInfo.citizenship ? undefined : (physicalInfo.citizenship as CitizenshipEnum),
-    ethnicity: physicalInfo.ethnicity === '' ? undefined : (physicalInfo.ethnicity as EthnicityEnum),
+    citizenship:
+      physicalInfo.citizenship === '' || !physicalInfo.citizenship
+        ? undefined
+        : (physicalInfo.citizenship as CitizenshipEnum),
+    ethnicity:
+      physicalInfo.ethnicity === '' ? undefined : (physicalInfo.ethnicity as EthnicityEnum),
     religion: physicalInfo.religion === '' ? undefined : (physicalInfo.religion as ReligionEnum),
     religion_others_specify: physicalInfo.religion_others_specify,
   };
@@ -163,9 +175,7 @@ export const createMigrationInfoFromData = (
   };
 };
 
-export const extractMigrationInfoFromRawData = (
-  migrationData: any
-): MigrationInformationData => {
+export const extractMigrationInfoFromRawData = (migrationData: any): MigrationInformationData => {
   return {
     previous_barangay_code: migrationData.previous_barangay_code || '',
     previous_city_municipality_code: migrationData.previous_city_municipality_code || '',

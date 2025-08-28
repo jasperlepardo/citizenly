@@ -6,7 +6,10 @@ import React, { useEffect, useRef } from 'react';
 
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/lib';
-import type { CommandMenuSearchResult as CommandMenuItem, CommandMenuHookResult as CommandMenuProps } from '@/types';
+import type {
+  CommandMenuSearchResult as CommandMenuItem,
+  CommandMenuHookResult as CommandMenuProps,
+} from '@/types';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuGroup } from './CommandMenuGroup';
@@ -28,7 +31,7 @@ const commandMenuVariants = cva(
 );
 
 interface CommandMenuComponentProps extends VariantProps<typeof commandMenuVariants> {
-  items?: CommandMenuItem[]; // Made optional since we get items from API  
+  items?: CommandMenuItem[]; // Made optional since we get items from API
   placeholder?: string;
   emptyStateText?: string;
   maxResults?: number;

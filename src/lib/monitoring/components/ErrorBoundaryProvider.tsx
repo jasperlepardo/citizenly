@@ -13,10 +13,6 @@ import type { ErrorBoundaryState } from '@/types/errors';
 
 import { captureError, addSentryBreadcrumb } from '../sentry-config';
 
-
-
-
-
 /**
  * Default error fallback component
  */

@@ -24,12 +24,12 @@ const MAX_STORED_METRICS = 1000;
  */
 function recordMetrics(metrics: PerformanceMetrics): void {
   performanceStore.push(metrics);
-  
+
   // Keep only recent metrics
   if (performanceStore.length > MAX_STORED_METRICS) {
     performanceStore.shift();
   }
-  
+
   // Log slow requests
   if (metrics.duration > 1000) {
     console.warn('🐌 Slow API request detected:', {
@@ -52,13 +52,12 @@ export function getPerformanceStats(): {
 } {
   const now = Date.now();
   const recentMetrics = performanceStore.filter(m => now - m.timestamp < 60 * 60 * 1000); // Last hour
-  
+
   const totalRequests = recentMetrics.length;
-  const averageResponseTime = totalRequests > 0 
-    ? recentMetrics.reduce((sum, m) => sum + m.duration, 0) / totalRequests 
-    : 0;
+  const averageResponseTime =
+    totalRequests > 0 ? recentMetrics.reduce((sum, m) => sum + m.duration, 0) / totalRequests : 0;
   const slowRequests = recentMetrics.filter(m => m.duration > 1000).length;
-  
+
   return {
     totalRequests,
     averageResponseTime: Math.round(averageResponseTime),
@@ -73,7 +72,7 @@ export function getPerformanceStats(): {
 function addPerformanceHeaders(response: NextResponse, duration: number): NextResponse {
   // Server timing API
   response.headers.set('Server-Timing', `total;dur=${duration}`);
-  
+
   // Cache control for different response types
   const status = response.status;
   if (status === 200) {
@@ -86,7 +85,7 @@ function addPerformanceHeaders(response: NextResponse, duration: number): NextRe
     // Don't cache server errors
     response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   }
-  
+
   return response;
 }
 
@@ -99,22 +98,19 @@ export function withPerformanceMonitoring(
   return async (request: NextRequest, context: any): Promise<NextResponse> => {
     const startTime = Date.now();
     const path = new URL(request.url).pathname;
-    
+
     let response: NextResponse;
     let error: Error | null = null;
-    
+
     try {
       response = await handler(request, context);
     } catch (err) {
       error = err instanceof Error ? err : new Error('Unknown error');
-      response = NextResponse.json(
-        { error: 'Internal server error' },
-        { status: 500 }
-      );
+      response = NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
-    
+
     const duration = Date.now() - startTime;
-    
+
     // Record metrics
     const metrics: PerformanceMetrics = {
       path,
@@ -123,19 +119,21 @@ export function withPerformanceMonitoring(
       timestamp: startTime,
       statusCode: response.status,
       userAgent: request.headers.get('user-agent') || undefined,
-      ip: request.headers.get('x-forwarded-for')?.split(',')[0] || 
-          request.headers.get('x-real-ip') || undefined,
+      ip:
+        request.headers.get('x-forwarded-for')?.split(',')[0] ||
+        request.headers.get('x-real-ip') ||
+        undefined,
     };
-    
+
     recordMetrics(metrics);
-    
+
     // Add performance headers
     response = addPerformanceHeaders(response, duration);
-    
+
     // Add request ID for debugging
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
     response.headers.set('X-Request-ID', requestId);
-    
+
     // Log if there was an error
     if (error) {
       console.error('❌ API route error:', {
@@ -146,7 +144,7 @@ export function withPerformanceMonitoring(
         error: error.message,
       });
     }
-    
+
     return response;
   };
 }
@@ -160,10 +158,10 @@ export class QueryPerformanceTracker {
     duration: number;
     timestamp: number;
   }> = [];
-  
+
   static startTracking(query: string): () => void {
     const startTime = Date.now();
-    
+
     return () => {
       const duration = Date.now() - startTime;
       this.queries.push({
@@ -171,12 +169,12 @@ export class QueryPerformanceTracker {
         duration,
         timestamp: startTime,
       });
-      
+
       // Keep only recent queries
       if (this.queries.length > 500) {
         this.queries.shift();
       }
-      
+
       // Log slow queries
       if (duration > 500) {
         console.warn('🐌 Slow database query:', {
@@ -186,16 +184,17 @@ export class QueryPerformanceTracker {
       }
     };
   }
-  
+
   static getStats() {
     const now = Date.now();
     const recentQueries = this.queries.filter(q => now - q.timestamp < 60 * 60 * 1000);
-    
+
     return {
       totalQueries: recentQueries.length,
-      averageQueryTime: recentQueries.length > 0 
-        ? Math.round(recentQueries.reduce((sum, q) => sum + q.duration, 0) / recentQueries.length)
-        : 0,
+      averageQueryTime:
+        recentQueries.length > 0
+          ? Math.round(recentQueries.reduce((sum, q) => sum + q.duration, 0) / recentQueries.length)
+          : 0,
       slowQueries: recentQueries.filter(q => q.duration > 500).length,
     };
   }
@@ -212,7 +211,7 @@ export function getMemoryUsage(): {
   const memUsage = process.memoryUsage();
   const used = Math.round(memUsage.heapUsed / 1024 / 1024); // MB
   const total = Math.round(memUsage.heapTotal / 1024 / 1024); // MB
-  
+
   return {
     used,
     total,

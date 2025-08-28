@@ -9,21 +9,21 @@
  */
 export function calculateAge(birthdate: string | Date): number {
   if (!birthdate) return 0;
-  
+
   try {
     const birth = typeof birthdate === 'string' ? new Date(birthdate) : birthdate;
     const today = new Date();
-    
+
     // Validate date
     if (isNaN(birth.getTime())) return 0;
-    
+
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
-    
+
     return Math.max(0, age); // Ensure non-negative age
   } catch {
     return 0;
@@ -36,7 +36,7 @@ export function calculateAge(birthdate: string | Date): number {
  */
 export function calculateAgeForDisplay(birthdate: string | Date): string | number {
   if (!birthdate) return '-';
-  
+
   const age = calculateAge(birthdate);
   return age === 0 && birthdate ? '-' : age;
 }
@@ -46,7 +46,7 @@ export function calculateAgeForDisplay(birthdate: string | Date): string | numbe
  */
 export function determineLifeStage(birthdate: string | Date): string {
   const age = calculateAge(birthdate);
-  
+
   if (age < 1) return 'infant';
   if (age < 5) return 'toddler';
   if (age < 13) return 'child';
@@ -88,10 +88,10 @@ export function formatDate(
   }
 ): string {
   if (!date) return '-';
-  
+
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    
+
     if (isNaN(dateObj.getTime())) {
       return '-';
     }
@@ -107,12 +107,12 @@ export function formatDate(
  */
 export function formatBirthdateWithAge(birthdate: string | Date): string {
   if (!birthdate) return '-';
-  
+
   const formattedDate = formatDate(birthdate);
   const age = calculateAge(birthdate);
-  
+
   if (formattedDate === '-') return '-';
-  
+
   return `${formattedDate} (${age} years old)`;
 }
 
@@ -121,7 +121,7 @@ export function formatBirthdateWithAge(birthdate: string | Date): string {
  */
 export function isValidDate(date: string | Date): boolean {
   if (!date) return false;
-  
+
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     return !isNaN(dateObj.getTime());
@@ -135,7 +135,7 @@ export function isValidDate(date: string | Date): boolean {
  */
 export function getAgeGroup(birthdate: string | Date): string {
   const age = calculateAge(birthdate);
-  
+
   if (age < 5) return '0-4';
   if (age < 10) return '5-9';
   if (age < 15) return '10-14';
@@ -160,16 +160,16 @@ export function getAgeGroup(birthdate: string | Date): string {
  */
 export function yearsBetween(startDate: string | Date, endDate: string | Date): number {
   if (!startDate || !endDate) return 0;
-  
+
   try {
     const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
     const end = typeof endDate === 'string' ? new Date(endDate) : endDate;
-    
+
     if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
-    
+
     const diffTime = Math.abs(end.getTime() - start.getTime());
     const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365.25));
-    
+
     return diffYears;
   } catch {
     return 0;

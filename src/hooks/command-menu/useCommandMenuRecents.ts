@@ -17,7 +17,6 @@ import {
 } from '@/lib/command-menu';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
-
 /**
  * Recent item from storage
  */

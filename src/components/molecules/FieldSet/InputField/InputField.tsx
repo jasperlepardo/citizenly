@@ -119,7 +119,6 @@ export const InputField = ({
               aria-describedby={ariaDescribedByString}
               {...inputProps}
             />
-            
           ) : React.isValidElement(children) ? (
             React.cloneElement(children as React.ReactElement<any>, {
               id: fieldId,

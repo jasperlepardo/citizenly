@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PersonalInformationForm, type PersonalInformationFormProps } from '@/components/organisms/PersonalInformation';
+import {
+  PersonalInformationForm,
+  type PersonalInformationFormProps,
+} from '@/components/organisms/PersonalInformation';
 
 const meta: Meta<typeof PersonalInformationForm> = {
   title: 'Organisms/Form/Resident/PersonalInformation',

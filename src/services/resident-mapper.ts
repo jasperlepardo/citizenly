@@ -14,7 +14,10 @@ import {
   HouseholdHead,
   HouseholdOption,
 } from '@/types';
-import type { ServiceRawPsocData as RawPsocData, ServiceRawPsgcData as RawPsgcData } from '@/types/services';
+import type {
+  ServiceRawPsocData as RawPsocData,
+  ServiceRawPsgcData as RawPsgcData,
+} from '@/types/services';
 import { calculateAge } from '@/utils/date-utils';
 import { formatFullName, parseFullName } from '@/utils/string-utils';
 
@@ -22,7 +25,9 @@ import { formatFullName, parseFullName } from '@/utils/string-utils';
  * Map form data (camelCase) to API format (snake_case for database)
  * This is the definitive mapping - no more inconsistencies!
  */
-export const mapFormToApi = (formData: ResidentFormData): Omit<ResidentRecord, 'id' | 'created_at' | 'updated_at'> => {
+export const mapFormToApi = (
+  formData: ResidentFormData
+): Omit<ResidentRecord, 'id' | 'created_at' | 'updated_at'> => {
   return {
     // Required fields
     first_name: formData.first_name,
@@ -166,7 +171,6 @@ export const formatHouseholdOption = (
   };
 };
 
-
 /**
  * Format PSOC data for select options
  */
@@ -195,7 +199,6 @@ export const formatPsocOption = (psocData: RawPsocData): PsocOption => {
   };
 };
 
-
 /**
  * Format PSGC data for select options
  */
@@ -209,8 +212,6 @@ export const formatPsgcOption = (psgcData: RawPsgcData): PsgcOption => {
     code: psgcData.code || psgcData.city_code || psgcData.province_code || '',
   };
 };
-
-
 
 /**
  * Format mother's maiden name consistently
@@ -245,7 +246,6 @@ export const formatBoolean = (value: boolean | undefined): string => {
   if (value === undefined || value === null) return 'N/A';
   return value ? 'Yes' : 'No';
 };
-
 
 /**
  * Field mapping for validation errors

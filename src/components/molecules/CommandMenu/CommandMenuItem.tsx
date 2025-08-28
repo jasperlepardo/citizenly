@@ -77,7 +77,8 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
                   const parent = target.parentElement;
                   if (parent) {
                     parent.innerHTML = `<div class="flex size-full items-center justify-center bg-gray-200 dark:bg-gray-600 text-xs font-medium text-gray-600 dark:text-gray-300">${
-                      (typeof item.avatar === 'object' ? item.avatar?.fallback : undefined) || (item.label || item.title).charAt(0).toUpperCase()
+                      (typeof item.avatar === 'object' ? item.avatar?.fallback : undefined) ||
+                      (item.label || item.title).charAt(0).toUpperCase()
                     }</div>`;
                   }
                 }}

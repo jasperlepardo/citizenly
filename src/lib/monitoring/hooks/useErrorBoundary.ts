@@ -16,8 +16,6 @@ interface HookErrorBoundaryState extends ErrorBoundaryState {
   errorInfo?: any;
 }
 
-
-
 /**
  * Hook for enhanced error handling and reporting
  */

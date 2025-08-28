@@ -9,19 +9,13 @@
 
 import { useCallback } from 'react';
 
-import {
-  ValidationResult,
-  FieldValidationResult,
-} from '@/lib/validation/types';
+import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
 import {
   useValidationState,
   createFormValidationExecutor,
   createFieldValidationExecutor,
 } from '@/lib/validation/utilities';
-import type {
-  UseGenericValidationOptions,
-  UseGenericValidationReturn,
-} from '@/types/hooks';
+import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/hooks';
 
 // Re-export for backward compatibility
 export type { UseGenericValidationReturn };
@@ -50,29 +44,29 @@ export function useGenericValidation<T>(
   const validateField = validateFieldFn
     ? async (fieldName: string, value: any, formData?: any): Promise<ValidationResult<any>> => {
         const result = await Promise.resolve(validateFieldFn(fieldName, value, formData));
-        
+
         // Handle different return types from validateField function
         if (typeof result === 'string') {
           // Field validator returns string error or null
           return {
             isValid: result === null,
             errors: result ? [{ field: fieldName, message: result }] : [],
-            data: value
+            data: value,
           };
         } else if (result && typeof result === 'object' && 'isValid' in result) {
           // Field validator returns FieldValidationResult
           return {
             isValid: result.isValid,
             errors: result.error ? [{ field: fieldName, message: result.error }] : [],
-            data: result.sanitizedValue || value
+            data: result.sanitizedValue || value,
           };
         }
-        
+
         // Fallback - assume valid
         return {
           isValid: true,
           errors: [],
-          data: value
+          data: value,
         };
       }
     : undefined;

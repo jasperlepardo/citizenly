@@ -28,7 +28,6 @@ import {
 } from '@/lib/command-menu';
 import { trackNavigation, trackAction } from '@/lib/data';
 
-
 /**
  * Return type for command menu actions hook
  */
@@ -142,7 +141,11 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
         trackCommandMenuAction(item.id, 'click_action');
       } else if (item.href) {
         // Track navigation
-        trackAction(item.id, item.label || item.title || 'Unknown', `Navigated to ${item.label || item.title || 'Unknown'}`);
+        trackAction(
+          item.id,
+          item.label || item.title || 'Unknown',
+          `Navigated to ${item.label || item.title || 'Unknown'}`
+        );
         trackCommandMenuNavigation(item.id, 'navigation', item.href);
       }
 
@@ -191,19 +194,24 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
             enhancedItem.onClick = () => handleQuickAction(async () => findSoloParents());
             break;
           case 'cert-barangay-clearance':
-            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('clearance'));
+            enhancedItem.onClick = () =>
+              handleQuickAction(async () => generateCertificate('clearance'));
             break;
           case 'cert-residency':
-            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('residency'));
+            enhancedItem.onClick = () =>
+              handleQuickAction(async () => generateCertificate('residency'));
             break;
           case 'cert-indigency':
-            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('indigency'));
+            enhancedItem.onClick = () =>
+              handleQuickAction(async () => generateCertificate('indigency'));
             break;
           case 'report-population':
-            enhancedItem.onClick = () => handleQuickAction(async () => generateReport('population'));
+            enhancedItem.onClick = () =>
+              handleQuickAction(async () => generateReport('population'));
             break;
           case 'report-households-summary':
-            enhancedItem.onClick = () => handleQuickAction(async () => generateReport('households'));
+            enhancedItem.onClick = () =>
+              handleQuickAction(async () => generateReport('households'));
             break;
         }
 

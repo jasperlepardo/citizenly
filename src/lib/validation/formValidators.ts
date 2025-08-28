@@ -25,10 +25,10 @@ function createValidationResult(
     field,
     message,
   }));
-  
+
   // Convert warnings from Record<string, string> to string[]
   const warningList = Object.values(warnings);
-  
+
   return {
     isValid,
     errors: validationErrors,
@@ -77,10 +77,13 @@ export function createFormValidator<T extends Record<string, any>>(
 
           if (!crossResult.isValid) {
             // Convert ValidationError[] back to Record<string, string> for internal processing
-            const errorRecord = crossResult.errors.reduce((acc, err) => {
-              acc[err.field] = err.message;
-              return acc;
-            }, {} as Record<string, string>);
+            const errorRecord = crossResult.errors.reduce(
+              (acc, err) => {
+                acc[err.field] = err.message;
+                return acc;
+              },
+              {} as Record<string, string>
+            );
             Object.assign(errors, errorRecord);
           }
 
@@ -97,12 +100,7 @@ export function createFormValidator<T extends Record<string, any>>(
 
     const isValid = Object.keys(errors).length === 0;
 
-    return createValidationResult(
-      isValid,
-      errors,
-      warnings,
-      isValid ? sanitizedData : undefined
-    );
+    return createValidationResult(isValid, errors, warnings, isValid ? sanitizedData : undefined);
   };
 }
 

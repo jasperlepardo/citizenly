@@ -7,10 +7,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import type {
-  ResidentData,
-  ResidentSearchOptions
-} from '@/types/repositories';
+import type { ResidentData, ResidentSearchOptions } from '@/types/repositories';
 import type { RepositoryResult } from '@/types/services';
 import type { ValidationError } from '@/types/validation';
 
@@ -39,11 +36,14 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: Array.isArray(validationResult.errors) 
-              ? validationResult.errors.reduce((acc: Record<string, string>, error: ValidationError, index: number) => ({
-                  ...acc,
-                  [`error_${index}`]: error.message
-                }), {} as Record<string, string>)
+            details: Array.isArray(validationResult.errors)
+              ? validationResult.errors.reduce(
+                  (acc: Record<string, string>, error: ValidationError, index: number) => ({
+                    ...acc,
+                    [`error_${index}`]: error.message,
+                  }),
+                  {} as Record<string, string>
+                )
               : validationResult.errors,
           },
         };
@@ -82,11 +82,14 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: Array.isArray(validationResult.errors) 
-              ? validationResult.errors.reduce((acc: Record<string, string>, error: ValidationError, index: number) => ({
-                  ...acc,
-                  [`error_${index}`]: error.message
-                }), {} as Record<string, string>)
+            details: Array.isArray(validationResult.errors)
+              ? validationResult.errors.reduce(
+                  (acc: Record<string, string>, error: ValidationError, index: number) => ({
+                    ...acc,
+                    [`error_${index}`]: error.message,
+                  }),
+                  {} as Record<string, string>
+                )
               : validationResult.errors,
           },
         };

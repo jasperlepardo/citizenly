@@ -254,9 +254,7 @@ function HouseholdsContent() {
               return (
                 <div className="p-8 text-center">
                   <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400">
-                    Loading households...
-                  </p>
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">Loading households...</p>
                 </div>
               );
             }
@@ -320,7 +318,8 @@ function HouseholdsContent() {
                   </div>
                   <div className="p-2">
                     <div className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400">
-                      {household.created_at && !Number.isNaN(new Date(household.created_at as any).getTime())
+                      {household.created_at &&
+                      !Number.isNaN(new Date(household.created_at as any).getTime())
                         ? new Date(household.created_at as any).toLocaleDateString()
                         : 'N/A'}
                     </div>

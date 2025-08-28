@@ -175,7 +175,10 @@ export function createRateLimitResponse(retryAfter: number, context?: RequestCon
 /**
  * Handle database errors consistently
  */
-export async function handleDatabaseError(error: { code?: string; message: string; details?: string }, context?: RequestContext): Promise<Response> {
+export async function handleDatabaseError(
+  error: { code?: string; message: string; details?: string },
+  context?: RequestContext
+): Promise<Response> {
   logger.error('Database error', { error, context });
 
   if (context) {
@@ -358,8 +361,17 @@ export function withErrorHandling<T extends readonly unknown[]>(
       }
 
       // Check for database errors
-      if (error && typeof error === 'object' && 'code' in error && typeof (error as any).code === 'string' && 'message' in error) {
-        return handleDatabaseError(error as { code?: string; message: string; details?: string }, context);
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        typeof (error as any).code === 'string' &&
+        'message' in error
+      ) {
+        return handleDatabaseError(
+          error as { code?: string; message: string; details?: string },
+          context
+        );
       }
 
       // Handle unexpected errors
@@ -400,8 +412,17 @@ export function withNextRequestErrorHandling<T extends readonly unknown[]>(
       }
 
       // Check for database errors
-      if (error && typeof error === 'object' && 'code' in error && typeof (error as any).code === 'string' && 'message' in error) {
-        return handleDatabaseError(error as { code?: string; message: string; details?: string }, context);
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        typeof (error as any).code === 'string' &&
+        'message' in error
+      ) {
+        return handleDatabaseError(
+          error as { code?: string; message: string; details?: string },
+          context
+        );
       }
 
       // Handle unexpected errors

@@ -26,7 +26,6 @@ import {
 import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
 import type { ResidentFormData } from '@/types';
 
-
 import {
   useResidentValidationCore,
   type ResidentValidationOptions,

@@ -5,8 +5,6 @@
 
 import type { OfflineStoredData as StoredData, PendingSyncItem } from '@/types/utilities';
 
-
-
 export class OfflineStorage {
   private db: IDBDatabase | null = null;
   private readonly DB_NAME = 'CitizenlyOffline';

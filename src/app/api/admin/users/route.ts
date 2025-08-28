@@ -8,7 +8,7 @@ import type { CreateUserData } from '@/types/api-requests';
 export async function POST(request: NextRequest) {
   try {
     const rawData = await request.json();
-    
+
     // Type the userData properly
     const userData: CreateUserData = {
       email: rawData.email,
@@ -32,11 +32,11 @@ export async function POST(request: NextRequest) {
     // Create regular client to verify user
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
+
     if (!supabaseUrl || !supabaseAnonKey) {
       return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
     }
-    
+
     const supabase = createPublicSupabaseClient();
 
     // Verify the user token and check admin permissions
@@ -51,11 +51,14 @@ export async function POST(request: NextRequest) {
 
     // Use service role client to bypass RLS
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
+
     if (!serviceRoleKey) {
-      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Missing service role key configuration' },
+        { status: 500 }
+      );
     }
-    
+
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Check if current user has admin permissions
@@ -144,7 +147,7 @@ export async function POST(request: NextRequest) {
         is_primary: true,
         created_at: new Date().toISOString(),
       } as const;
-      
+
       const { error: barangayAccountError } = await supabaseAdmin
         .from('auth_barangay_accounts')
         .insert(barangayAccountData as any);
@@ -176,7 +179,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
-    const pageSize = Math.min(100, Math.max(1, Number.parseInt(searchParams.get('pageSize') || '20', 10) || 20));
+    const pageSize = Math.min(
+      100,
+      Math.max(1, Number.parseInt(searchParams.get('pageSize') || '20', 10) || 20)
+    );
 
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
@@ -190,11 +196,11 @@ export async function GET(request: NextRequest) {
     // Create regular client to verify user
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
+
     if (!supabaseUrl || !supabaseAnonKey) {
       return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
     }
-    
+
     const supabase = createPublicSupabaseClient();
 
     // Verify the user token
@@ -209,11 +215,14 @@ export async function GET(request: NextRequest) {
 
     // Use service role client to bypass RLS
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
+
     if (!serviceRoleKey) {
-      return NextResponse.json({ error: 'Missing service role key configuration' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Missing service role key configuration' },
+        { status: 500 }
+      );
     }
-    
+
     const supabaseAdmin = createAdminSupabaseClient();
 
     // Check if current user has admin permissions

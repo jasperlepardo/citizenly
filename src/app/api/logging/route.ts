@@ -73,7 +73,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Log based on level
     const logMessage = `[CLIENT] ${logEntry.message}`;
     const logContext = {
-      ...(typeof logEntry.context === 'object' && logEntry.context !== null ? logEntry.context : {}),
+      ...(typeof logEntry.context === 'object' && logEntry.context !== null
+        ? logEntry.context
+        : {}),
       clientData: {
         url: logEntry.url,
         userAgent: logEntry.userAgent,

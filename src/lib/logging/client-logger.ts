@@ -5,7 +5,6 @@
 
 import type { LogContext, LogLevel } from '@/types/errors';
 
-
 const LOG_LEVELS = {
   DEBUG: 'debug' as const,
   INFO: 'info' as const,
@@ -71,7 +70,11 @@ class ClientLogger {
   /**
    * Log component lifecycle events
    */
-  component(component: string, action: string, data?: Record<string, string | number | boolean>): void {
+  component(
+    component: string,
+    action: string,
+    data?: Record<string, string | number | boolean>
+  ): void {
     this.debug(`Component ${component}: ${action}`, {
       component,
       action,
@@ -96,7 +99,11 @@ class ClientLogger {
   /**
    * Log user interactions
    */
-  userAction(action: string, component?: string, data?: Record<string, string | number | boolean>): void {
+  userAction(
+    action: string,
+    component?: string,
+    data?: Record<string, string | number | boolean>
+  ): void {
     this.info(`User action: ${action}`, {
       component,
       action: 'user_interaction',
@@ -249,8 +256,11 @@ export const logError = (messageOrError: string | Error, context?: LogContext | 
  * @description log Component utility function
  * @returns {unknown} Function execution result
  */
-export const logComponent = (component: string, action: string, data?: Record<string, string | number | boolean>) =>
-  clientLogger.component(component, action, data);
+export const logComponent = (
+  component: string,
+  action: string,
+  data?: Record<string, string | number | boolean>
+) => clientLogger.component(component, action, data);
 /**
  * log Api
  *
@@ -265,8 +275,11 @@ export const logApi = (method: string, url: string, status?: number, duration?: 
  * @description log User Action utility function
  * @returns {unknown} Function execution result
  */
-export const logUserAction = (action: string, component?: string, data?: Record<string, string | number | boolean>) =>
-  clientLogger.userAction(action, component, data);
+export const logUserAction = (
+  action: string,
+  component?: string,
+  data?: Record<string, string | number | boolean>
+) => clientLogger.userAction(action, component, data);
 /**
  * log Search
  *

@@ -65,27 +65,32 @@ export function SectoralInformationForm({
   );
 
   // Context for auto-calculation
-  const sectoralContext: SectoralContext = React.useMemo(() => ({
-    birthdate: formData.birthdate,
-    employment_status: formData.employment_status,
-    highest_educational_attainment: formData.education_attainment,
-    marital_status: formData.civil_status,
-    ethnicity: formData.ethnicity,
-  }), [
-    formData.birthdate,
-    formData.employment_status,
-    formData.education_attainment,
-    formData.civil_status,
-    formData.ethnicity,
-  ]);
-
+  const sectoralContext: SectoralContext = React.useMemo(
+    () => ({
+      birthdate: formData.birthdate,
+      employment_status: formData.employment_status,
+      highest_educational_attainment: formData.education_attainment,
+      marital_status: formData.civil_status,
+      ethnicity: formData.ethnicity,
+    }),
+    [
+      formData.birthdate,
+      formData.employment_status,
+      formData.education_attainment,
+      formData.civil_status,
+      formData.ethnicity,
+    ]
+  );
 
   // Handle changes from SectoralInfo component using configuration
-  const handleSectoralChange = React.useCallback((value: SectoralInformation) => {
-    SECTORAL_FIELD_MAPPING.forEach(field => {
-      onChange(field.formKey, (value as any)[field.dbKey]);
-    });
-  }, [onChange]);
+  const handleSectoralChange = React.useCallback(
+    (value: SectoralInformation) => {
+      SECTORAL_FIELD_MAPPING.forEach(field => {
+        onChange(field.formKey, (value as any)[field.dbKey]);
+      });
+    },
+    [onChange]
+  );
 
   return (
     <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">

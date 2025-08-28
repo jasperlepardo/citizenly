@@ -55,7 +55,7 @@ export function generateCSRFToken(): CSRFToken {
 export function verifyCSRFToken(token: string, timestamp: number, signature: string): boolean {
   try {
     validateCSRFSecret();
-    
+
     if (Date.now() - timestamp > TOKEN_EXPIRY) {
       console.warn('[CSRF] Token expired');
       return false;

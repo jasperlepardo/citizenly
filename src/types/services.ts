@@ -603,7 +603,7 @@ export interface UserRepositoryData {
 
 /**
  * User search options for repository layer
- * Consolidates from src/services/user-repository.ts  
+ * Consolidates from src/services/user-repository.ts
  */
 export interface UserRepositorySearchOptions extends QueryOptions {
   email?: string;
@@ -699,7 +699,7 @@ export interface ServiceRawPsocData {
 }
 
 /**
- * Raw PSGC data for mapping  
+ * Raw PSGC data for mapping
  * Consolidates from src/services/residentMapper.ts
  */
 export interface ServiceRawPsgcData {

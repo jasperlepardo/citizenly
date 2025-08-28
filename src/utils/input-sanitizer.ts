@@ -25,7 +25,7 @@ const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
   city_municipality_code: 'psgc',
   barangay_code: 'psgc',
   height: 'numeric',
-  weight: 'numeric'
+  weight: 'numeric',
 } as const;
 
 /**
@@ -33,7 +33,7 @@ const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
  */
 export function sanitizeInput(input: string | null): string {
   if (!input) return '';
-  
+
   // Remove potentially dangerous characters and scripts
   const cleaned = input
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -43,11 +43,11 @@ export function sanitizeInput(input: string | null): string {
     .replace(/data:/gi, '')
     .replace(/vbscript:/gi, '')
     .replace(/expression\s*\(/gi, '');
-  
+
   // Use DOMPurify for additional sanitization
-  return DOMPurify.sanitize(cleaned, { 
-    ALLOWED_TAGS: [], 
-    ALLOWED_ATTR: [] 
+  return DOMPurify.sanitize(cleaned, {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
   }).trim();
 }
 
@@ -56,7 +56,7 @@ export function sanitizeInput(input: string | null): string {
  */
 export function sanitizeNameInput(input: string | null): string {
   if (!input) return '';
-  
+
   // Allow letters, spaces, hyphens, apostrophes, and periods for Filipino names
   // Includes support for Spanish-influenced names and indigenous names
   return input
@@ -81,13 +81,13 @@ export function validateNameInput(name: string): boolean {
  */
 export function sanitizePhilSysNumber(input: string | null): string {
   if (!input) return '';
-  
+
   // Remove all non-digits and format properly
   const digitsOnly = input.replace(/\D/g, '');
-  
+
   // Validate length (PhilSys is 12 digits)
   if (digitsOnly.length !== 12) return '';
-  
+
   // Format as XXXX-XXXX-XXXX
   return `${digitsOnly.substring(0, 4)}-${digitsOnly.substring(4, 8)}-${digitsOnly.substring(8, 12)}`;
 }
@@ -102,10 +102,10 @@ export function sanitizePhilSysNumber(input: string | null): string {
  */
 export function sanitizeMobileNumber(input: string | null): string {
   if (!input) return '';
-  
+
   // Remove all non-digits
   const digitsOnly = input.replace(/\D/g, '');
-  
+
   // Handle different Philippine mobile number formats
   if (digitsOnly.startsWith('63')) {
     // +63 format
@@ -117,7 +117,7 @@ export function sanitizeMobileNumber(input: string | null): string {
     // xxx format - add +63
     return `+63${digitsOnly}`;
   }
-  
+
   return input.trim();
 }
 
@@ -135,7 +135,7 @@ export function validatePhilippineMobile(mobile: string): boolean {
  */
 export function sanitizeEmail(input: string | null): string {
   if (!input) return '';
-  
+
   return input
     .toLowerCase()
     .replace(/[<>"'&]/g, '') // Remove dangerous characters
@@ -156,7 +156,7 @@ export function validateEmailFormat(email: string): boolean {
  */
 export function sanitizeBarangayCode(input: string | null): string {
   if (!input) return '';
-  
+
   // Barangay codes are typically 9-10 digit numbers
   const digitsOnly = input.replace(/\D/g, '');
   return digitsOnly.substring(0, 10);
@@ -170,28 +170,27 @@ export function validatePSGC(code: string): boolean {
   return psgcRegex.test(code);
 }
 
-
 /**
  * Generic sanitization function with configurable type-specific processing
  * Consolidates all sanitization logic into a single, flexible function
- * 
+ *
  * @param input - Raw input string that may contain unsafe content
  * @param type - Sanitization type determining processing rules
  * @param options - Additional configuration for sanitization behavior
  * @returns Sanitized string safe for storage and display
- * 
+ *
  * @example
  * ```typescript
  * // Basic text sanitization with XSS protection
  * const clean = sanitizeByType('<script>alert("xss")</script>', 'text');
- * 
+ *
  * // Name sanitization with Filipino character support
  * const name = sanitizeByType('José María', 'name');
- * 
+ *
  * // Custom options for length limiting
  * const limited = sanitizeByType('Very long text...', 'text', { maxLength: 50 });
  * ```
- * 
+ *
  * @since 2025.1.0
  * @security Philippine BSP Circular 808 compliant
  * @performance Early exit patterns for optimal performance
@@ -223,31 +222,31 @@ export function sanitizeByType(
     case 'text':
       result = sanitizeInput(input);
       break;
-    
+
     case 'name':
       result = sanitizeNameInput(input);
       break;
-    
+
     case 'email':
       result = sanitizeEmail(input);
       break;
-    
+
     case 'mobile':
       result = sanitizeMobileNumber(input);
       break;
-    
+
     case 'philsys':
       result = sanitizePhilSysNumber(input);
       break;
-    
+
     case 'psgc':
       result = sanitizeBarangayCode(input);
       break;
-    
+
     case 'numeric':
       result = input.replace(/[^\d]/g, '');
       break;
-    
+
     default:
       result = sanitizeInput(input);
   }
@@ -280,7 +279,7 @@ export function sanitizeObjectByFieldTypes(
   const sanitized: Record<string, any> = {};
 
   // Use cached field types for performance
-  const fieldTypes = fieldTypeMap 
+  const fieldTypes = fieldTypeMap
     ? { ...DEFAULT_FIELD_TYPE_MAPPING, ...fieldTypeMap }
     : DEFAULT_FIELD_TYPE_MAPPING;
 
@@ -306,7 +305,7 @@ export function sanitizeObjectByFieldTypes(
  */
 export function sanitizeFormData(formData: Record<string, any>): Record<string, any> {
   const sanitized: Record<string, any> = {};
-  
+
   Object.entries(formData).forEach(([key, value]) => {
     if (typeof value === 'string') {
       switch (key) {
@@ -319,32 +318,32 @@ export function sanitizeFormData(formData: Record<string, any>): Record<string, 
         case 'mother_maiden_last':
           sanitized[key] = sanitizeNameInput(value);
           break;
-          
+
         case 'philsys_card_number':
           sanitized[key] = sanitizePhilSysNumber(value);
           break;
-          
+
         case 'mobile_number':
         case 'telephone_number':
           sanitized[key] = sanitizeMobileNumber(value);
           break;
-          
+
         case 'email':
           sanitized[key] = sanitizeEmail(value);
           break;
-          
+
         case 'region_code':
         case 'province_code':
         case 'city_municipality_code':
         case 'barangay_code':
           sanitized[key] = sanitizeBarangayCode(value);
           break;
-          
+
         case 'household_code':
           // Household codes have format like 042114014-0000-0001-0001, preserve dashes
           sanitized[key] = sanitizeInput(value);
           break;
-          
+
         default:
           sanitized[key] = sanitizeInput(value);
       }
@@ -352,7 +351,7 @@ export function sanitizeFormData(formData: Record<string, any>): Record<string, 
       sanitized[key] = value;
     }
   });
-  
+
   return sanitized;
 }
 
@@ -364,20 +363,20 @@ const submissionAttempts = new Map<string, { count: number; lastAttempt: number 
 export function checkRateLimit(identifier: string, maxAttempts = 5, windowMs = 300000): boolean {
   const now = Date.now();
   const attempts = submissionAttempts.get(identifier);
-  
+
   if (!attempts || now - attempts.lastAttempt > windowMs) {
     submissionAttempts.set(identifier, { count: 1, lastAttempt: now });
     return true;
   }
-  
+
   if (attempts.count >= maxAttempts) {
     return false;
   }
-  
+
   attempts.count++;
   attempts.lastAttempt = now;
   submissionAttempts.set(identifier, attempts);
-  
+
   return true;
 }
 
@@ -398,14 +397,14 @@ export function getRateLimitStatus(identifier: string): {
   remainingTime?: number;
 } {
   const attempts = submissionAttempts.get(identifier);
-  
+
   if (!attempts) {
     return { hasAttempts: false };
   }
-  
+
   const now = Date.now();
   const remainingTime = Math.max(0, 300000 - (now - attempts.lastAttempt));
-  
+
   return {
     hasAttempts: true,
     count: attempts.count,

@@ -388,7 +388,9 @@ export class SecurityAuditService {
         totalEvents: auditLogs.length,
         criticalEvents: auditLogs.filter((log: any) => log.severity === 'critical').length,
         threatEvents: threatEvents.length,
-        failedLogins: auditLogs.filter((log: any) => log.operation.includes('login') && !log.success).length,
+        failedLogins: auditLogs.filter(
+          (log: any) => log.operation.includes('login') && !log.success
+        ).length,
         suspiciousActivities: threatEvents.filter((event: any) =>
           ['suspicious_activity', 'brute_force', 'sql_injection'].includes(event.event_type)
         ).length,
@@ -455,7 +457,9 @@ export class SecurityAuditService {
   /**
    * Get severity level for different event types
    */
-  private getSeverityForEventType(eventType: AuditEventType): 'low' | 'medium' | 'high' | 'critical' {
+  private getSeverityForEventType(
+    eventType: AuditEventType
+  ): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap: Record<AuditEventType, 'low' | 'medium' | 'high' | 'critical'> = {
       [AuditEventType.SQL_INJECTION_ATTEMPT]: 'critical',
       [AuditEventType.XSS_ATTEMPT]: 'high',

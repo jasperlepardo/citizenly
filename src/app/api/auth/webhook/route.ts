@@ -13,11 +13,13 @@ const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secre
 // WebhookPayload moved to src/types/api-requests.ts for consolidation
 
 function isWebhookUserRecord(v: any): v is WebhookUserRecord {
-  return !!v
-    && typeof v.id === 'string'
-    && typeof v.email === 'string'
-    && (v.email_confirmed_at === null || typeof v.email_confirmed_at === 'string')
-    && typeof v.created_at === 'string';
+  return (
+    !!v &&
+    typeof v.id === 'string' &&
+    typeof v.email === 'string' &&
+    (v.email_confirmed_at === null || typeof v.email_confirmed_at === 'string') &&
+    typeof v.created_at === 'string'
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -40,7 +42,7 @@ export async function POST(request: NextRequest) {
         .createHmac('sha256', WEBHOOK_SECRET)
         .update(body)
         .digest('hex');
-      
+
       // Timing-safe comparison
       const sigBuf = Buffer.from(signature, 'hex');
       const expBuf = Buffer.from(expectedSignature, 'hex');
@@ -66,10 +68,7 @@ export async function POST(request: NextRequest) {
             !isWebhookUserRecord(payload.record) ||
             !isWebhookUserRecord(payload.old_record ?? payload.record)
           ) {
-            return NextResponse.json(
-              { error: 'Invalid user record payload' },
-              { status: 400 }
-            );
+            return NextResponse.json({ error: 'Invalid user record payload' }, { status: 400 });
           }
           await handleUserUpdate(
             supabaseAdmin,

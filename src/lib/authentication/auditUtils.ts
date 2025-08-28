@@ -80,7 +80,6 @@ export interface AuditEvent {
   errorMessage?: string;
 }
 
-
 /**
  * Mask sensitive data in audit logs
  */
@@ -202,7 +201,9 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       resourceId: event.resourceId,
       action: event.action!,
       outcome: event.outcome || 'success',
-      details: event.details ? maskSensitiveData(event.details) as Record<string, string | number | boolean> : undefined,
+      details: event.details
+        ? (maskSensitiveData(event.details) as Record<string, string | number | boolean>)
+        : undefined,
       context: event.context!,
       errorCode: event.errorCode,
       errorMessage: event.errorMessage,
@@ -213,7 +214,8 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
     let recordId = '00000000-0000-0000-0000-000000000000';
     if (auditEvent.resourceId) {
       // Check if it's a valid UUID format
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (uuidRegex.test(auditEvent.resourceId)) {
         recordId = auditEvent.resourceId;
       } else {

@@ -90,7 +90,7 @@ export function formatFullName(person: {
   const middleName = person.middle_name || person.middleName || '';
   const lastName = person.last_name || person.lastName || '';
   const extensionName = person.extension_name || person.extensionName || '';
-  
+
   const parts = [firstName, middleName, lastName, extensionName].filter(Boolean);
   return parts.join(' ').trim() || '';
 }
@@ -107,9 +107,9 @@ export function parseFullName(fullName: string): {
   if (!fullName?.trim()) {
     return { first_name: '', middle_name: '', last_name: '' };
   }
-  
+
   const nameParts = fullName.trim().split(/\s+/).filter(Boolean);
-  
+
   switch (nameParts.length) {
     case 0:
       return { first_name: '', middle_name: '', last_name: '' };
@@ -122,8 +122,9 @@ export function parseFullName(fullName: string): {
     default:
       // 4 or more parts - assume last part might be extension if it's short
       const lastPart = nameParts[nameParts.length - 1];
-      const isExtension = lastPart.length <= 3 || ['Jr', 'Jr.', 'Sr', 'Sr.', 'III', 'II', 'IV'].includes(lastPart);
-      
+      const isExtension =
+        lastPart.length <= 3 || ['Jr', 'Jr.', 'Sr', 'Sr.', 'III', 'II', 'IV'].includes(lastPart);
+
       if (isExtension) {
         return {
           first_name: nameParts[0],

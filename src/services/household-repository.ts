@@ -11,12 +11,11 @@ import { HouseholdRecord } from '@/types';
 import type {
   HouseholdData,
   HouseholdSearchOptions,
-  HouseholdRepositoryResult
+  HouseholdRepositoryResult,
 } from '@/types/repositories';
 import type { RepositoryResult } from '@/types/services';
 
 import { BaseRepository } from './base-repository';
-
 
 // Export types for re-export in services/index.ts
 export type { HouseholdData, HouseholdSearchOptions };
@@ -41,7 +40,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Household data validation failed',
-            details: Array.isArray(validationResult.errors) 
+            details: Array.isArray(validationResult.errors)
               ? validationResult.errors.reduce((acc: Record<string, string>, err: any) => {
                   acc[err.field || 'general'] = err.message || String(err);
                   return acc;
@@ -112,7 +111,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Household data validation failed',
-            details: Array.isArray(validationResult.errors) 
+            details: Array.isArray(validationResult.errors)
               ? validationResult.errors.reduce((acc: Record<string, string>, err: any) => {
                   acc[err.field || 'general'] = err.message || String(err);
                   return acc;

@@ -29,7 +29,6 @@ import {
 } from '@/services/resident-mapper';
 import type { ResidentFormData } from '@/types';
 
-
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
 
@@ -175,7 +174,7 @@ export function useResidentValidationCore(
   const validateSectionFields = useCallback(
     (formData: ResidentFormData, section: keyof typeof REQUIRED_FIELDS): ValidationResult => {
       const sectionValidation = validateFormSection(formData, section);
-      
+
       // Convert Record<string, string> errors to ValidationError[] format
       const errorArray = Object.entries(sectionValidation.errors).map(([field, message]) => ({
         field,

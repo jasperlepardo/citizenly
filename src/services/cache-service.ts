@@ -61,7 +61,7 @@ export class CacheService {
    */
   set<T>(key: string, data: T, options: { ttl?: number; tags?: string[] } = {}): void {
     const prefixedKey = this.keyPrefix + key;
-    
+
     // Check if we need to evict old entries
     if (this.cache.size >= this.maxSize) {
       this.evictOldest();
@@ -132,7 +132,7 @@ export class CacheService {
   invalidatePattern(pattern: string): number {
     const prefixedPattern = this.keyPrefix + pattern;
     const regex = new RegExp(prefixedPattern.replace('*', '.*'));
-    
+
     let deleted = 0;
     for (const key of Array.from(this.cache.keys())) {
       if (regex.test(key)) {
@@ -272,9 +272,11 @@ export const CacheKeys = {
   cities: (provinceCode?: string) => `cities:${provinceCode || 'all'}`,
   barangays: (cityCode?: string) => `barangays:${cityCode || 'all'}`,
   resident: (id: string) => `resident:${id}`,
-  residents: (filters: Record<string, string | number | boolean>) => `residents:${JSON.stringify(filters)}`,
+  residents: (filters: Record<string, string | number | boolean>) =>
+    `residents:${JSON.stringify(filters)}`,
   household: (id: string) => `household:${id}`,
-  households: (filters: Record<string, string | number | boolean>) => `households:${JSON.stringify(filters)}`,
+  households: (filters: Record<string, string | number | boolean>) =>
+    `households:${JSON.stringify(filters)}`,
   dashboardStats: (barangayCode: string) => `dashboard:stats:${barangayCode}`,
   userProfile: (userId: string) => `user:profile:${userId}`,
 };

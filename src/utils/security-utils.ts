@@ -128,7 +128,7 @@ export function logSecurityOperation(
     timestamp: new Date().toISOString(),
     context,
   };
-  
+
   // In production, this would go to a secure audit log
   console.log('[SECURITY AUDIT]', logEntry);
 }

@@ -118,13 +118,16 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           enhancedItem.onClick = () => handleQuickAction(async () => findSoloParents());
           break;
         case 'cert-barangay-clearance':
-          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('clearance'));
+          enhancedItem.onClick = () =>
+            handleQuickAction(async () => generateCertificate('clearance'));
           break;
         case 'cert-residency':
-          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('residency'));
+          enhancedItem.onClick = () =>
+            handleQuickAction(async () => generateCertificate('residency'));
           break;
         case 'cert-indigency':
-          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('indigency'));
+          enhancedItem.onClick = () =>
+            handleQuickAction(async () => generateCertificate('indigency'));
           break;
         case 'report-population':
           enhancedItem.onClick = () => handleQuickAction(async () => generateReport('population'));
@@ -359,7 +362,11 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
         trackCommandMenuAction(item.id, 'click_action');
       } else if (item.href) {
         // Track navigation
-        trackAction(item.id, item.label || item.title || 'Unknown', `Navigated to ${item.label || item.title || 'Unknown'}`);
+        trackAction(
+          item.id,
+          item.label || item.title || 'Unknown',
+          `Navigated to ${item.label || item.title || 'Unknown'}`
+        );
         trackCommandMenuNavigation(item.id, 'navigation', item.href);
       }
 

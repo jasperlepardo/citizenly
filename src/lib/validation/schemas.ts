@@ -6,7 +6,10 @@
 import type { LoginFormData, PasswordUpdateRequest } from '../../types/auth';
 import type { HouseholdData } from '../../types/households';
 import type { ResidentFormState } from '../../types/residents';
-import type { SimpleValidationResult as ValidationResult, ValidationContext } from '../../types/validation';
+import type {
+  SimpleValidationResult as ValidationResult,
+  ValidationContext,
+} from '../../types/validation';
 
 import {
   validateRequired,
@@ -30,12 +33,9 @@ function createValidationResult(
 ): ValidationResult {
   return {
     isValid,
-    errors
+    errors,
   };
 }
-
-
-
 
 /**
  * Resident data validation schema
@@ -45,7 +45,7 @@ export async function residentSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -95,7 +95,9 @@ export async function residentSchema(
     await validateField('religion', data.religion, [validateLength(0, 50)]);
   }
   if (data.religion_others_specify !== undefined) {
-    await validateField('religion_others_specify', data.religion_others_specify, [validateLength(0, 100)]);
+    await validateField('religion_others_specify', data.religion_others_specify, [
+      validateLength(0, 100),
+    ]);
   }
   if (data.height !== undefined) {
     await validateField('height', data.height, [validateRange(50, 300)]);
@@ -171,7 +173,7 @@ export async function householdSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -185,7 +187,10 @@ export async function householdSchema(
 
   // Validate required fields
   await validateField('code', data.code, [validateRequired, validateLength(1, 50)]);
-  await validateField('barangay_code', data.barangay_code, [validateRequired, validateLength(1, 20)]);
+  await validateField('barangay_code', data.barangay_code, [
+    validateRequired,
+    validateLength(1, 20),
+  ]);
 
   // Validate optional fields
   if (data.name !== undefined) {
@@ -215,7 +220,7 @@ export async function userSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -254,7 +259,7 @@ export async function loginSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -281,7 +286,7 @@ export async function passwordChangeSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -294,15 +299,25 @@ export async function passwordChangeSchema(
   };
 
   // Validate required fields
-  await validateField('current_password', data.current_password, [validateRequired, validateLength(1, 100)]);
-  await validateField('new_password', data.new_password, [validateRequired, validateLength(8, 100)]);
-  await validateField('confirm_password', data.confirm_password, [validateRequired, validateLength(1, 100)]);
+  await validateField('current_password', data.current_password, [
+    validateRequired,
+    validateLength(1, 100),
+  ]);
+  await validateField('new_password', data.new_password, [
+    validateRequired,
+    validateLength(8, 100),
+  ]);
+  await validateField('confirm_password', data.confirm_password, [
+    validateRequired,
+    validateLength(1, 100),
+  ]);
 
   // Password complexity validation
   if (data.new_password) {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
     if (!passwordRegex.test(data.new_password)) {
-      errors['new_password'] = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+      errors['new_password'] =
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     }
   }
 
@@ -322,7 +337,7 @@ export async function searchQuerySchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -369,7 +384,7 @@ export async function fileUploadSchema(
   context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
-  
+
   // Helper function to validate a field
   const validateField = async (fieldName: string, value: any, validators: any[]) => {
     for (const validator of validators) {
@@ -383,7 +398,10 @@ export async function fileUploadSchema(
 
   // Validate required fields
   await validateField('fileName', data.fileName, [validateRequired, validateLength(1, 255)]);
-  await validateField('fileSize', data.fileSize, [validateRequired, validateRange(1, 5 * 1024 * 1024)]);
+  await validateField('fileSize', data.fileSize, [
+    validateRequired,
+    validateRange(1, 5 * 1024 * 1024),
+  ]);
   await validateField('fileType', data.fileType, [validateRequired]);
 
   // File name pattern validation

@@ -1,10 +1,10 @@
 /**
  * Error Types Library
- * 
+ *
  * @deprecated This file is maintained for backwards compatibility only.
  * All error types have been moved to @/types/errors.
  * Please update imports to use the new location directly.
- * 
+ *
  * @see {@link @/types/errors} - New location for all error types
  */
 

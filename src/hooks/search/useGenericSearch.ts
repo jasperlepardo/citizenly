@@ -18,7 +18,6 @@ import {
   createSearchUtilities,
 } from '@/utils/search-utilities';
 
-
 /**
  * Return type for useGenericSearch hook
  */

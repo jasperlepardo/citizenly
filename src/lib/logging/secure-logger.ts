@@ -5,8 +5,6 @@
 
 import type { LogLevel, SecureLogEntry as LogEntry } from '@/types/errors';
 
-
-
 // Sensitive field patterns to redact
 const SENSITIVE_PATTERNS = [
   /password/i,

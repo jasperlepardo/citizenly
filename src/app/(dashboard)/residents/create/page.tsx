@@ -11,21 +11,14 @@ import { useAuth } from '@/contexts';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
 import { useCSRFToken } from '@/lib/auth';
-import { 
-  philippineCompliantLogger, 
+import {
+  philippineCompliantLogger,
   auditLogger,
   npcComplianceLogger,
-  generateSecureSessionId 
+  generateSecureSessionId,
 } from '@/lib/security/philippine-logging';
-import { 
-  checkRateLimit,
-  clearRateLimit,
-  getRateLimitStatus
-} from '@/utils/input-sanitizer';
-import { 
-  validateFormData,
-  prepareFormSubmission,
-} from '@/utils/resident-form-utils';
+import { checkRateLimit, clearRateLimit, getRateLimitStatus } from '@/utils/input-sanitizer';
+import { validateFormData, prepareFormSubmission } from '@/utils/resident-form-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,9 +45,9 @@ function CreateResidentForm() {
         sessionId,
         barangayOfficial: user?.role === 'barangay_official',
         complianceFramework: 'RA_10173_BSP_808',
-        retentionPeriod: '7_YEARS'
+        retentionPeriod: '7_YEARS',
       });
-      
+
       npcComplianceLogger.info('Data processing completed', {
         dataCategory: 'PERSONAL_INFORMATION',
         processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
@@ -63,9 +56,9 @@ function CreateResidentForm() {
         sensitiveDataProcessed: false, // Never log if sensitive data was processed
         consentStatus: 'OBTAINED',
         timestamp: new Date().toISOString(),
-        npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER
+        npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER,
       });
-      
+
       toast.success('Resident created successfully!');
       router.push('/residents');
     },
@@ -77,140 +70,149 @@ function CreateResidentForm() {
         timestamp: new Date().toISOString(),
         sessionId,
         complianceFramework: 'RA_10173_BSP_808',
-        retentionPeriod: '7_YEARS'
+        retentionPeriod: '7_YEARS',
       });
-      
+
       toast.error(error || 'Failed to create resident');
     },
   });
 
-  const handleSubmit = useCallback(async (formData: any) => {
-    try {
-      const userIdentifier = user?.id || 'anonymous';
-      
-      // Check rate limit and provide helpful feedback
-      if (!checkRateLimit(userIdentifier, RATE_LIMITS.FORM_SUBMISSION.MAX_ATTEMPTS, RATE_LIMITS.FORM_SUBMISSION.WINDOW_MS)) {
-        const status = getRateLimitStatus(userIdentifier);
-        const waitTime = status.remainingTime ? Math.ceil(status.remainingTime / 1000 / 60) : 5;
-        
-        toast.error(
-          `Too many submission attempts (${status.count}/5). Please wait ${waitTime} minutes before trying again.` +
-          (process.env.NODE_ENV === 'development' ? ' Check console for reset option.' : '')
-        );
-        
-        // In development, provide a way to reset the rate limit
-        if (process.env.NODE_ENV === 'development') {
-          philippineCompliantLogger.warn('Rate limit exceeded in development', {
+  const handleSubmit = useCallback(
+    async (formData: any) => {
+      try {
+        const userIdentifier = user?.id || 'anonymous';
+
+        // Check rate limit and provide helpful feedback
+        if (
+          !checkRateLimit(
             userIdentifier,
-            attempts: status.count,
-            waitTimeMinutes: waitTime,
-            timestamp: new Date().toISOString(),
-            complianceNote: 'DEV_RATE_LIMIT_WARNING'
-          });
-          
-          // Auto-clear rate limit after 30 seconds in development to help with testing
-          setTimeout(() => {
-            philippineCompliantLogger.info('Development mode: Auto-clearing rate limit after 30 seconds');
-            clearRateLimit(userIdentifier);
-            toast.success('Rate limit cleared. You can now try submitting again.');
-          }, 30000);
+            RATE_LIMITS.FORM_SUBMISSION.MAX_ATTEMPTS,
+            RATE_LIMITS.FORM_SUBMISSION.WINDOW_MS
+          )
+        ) {
+          const status = getRateLimitStatus(userIdentifier);
+          const waitTime = status.remainingTime ? Math.ceil(status.remainingTime / 1000 / 60) : 5;
+
+          toast.error(
+            `Too many submission attempts (${status.count}/5). Please wait ${waitTime} minutes before trying again.` +
+              (process.env.NODE_ENV === 'development' ? ' Check console for reset option.' : '')
+          );
+
+          // In development, provide a way to reset the rate limit
+          if (process.env.NODE_ENV === 'development') {
+            philippineCompliantLogger.warn('Rate limit exceeded in development', {
+              userIdentifier,
+              attempts: status.count,
+              waitTimeMinutes: waitTime,
+              timestamp: new Date().toISOString(),
+              complianceNote: 'DEV_RATE_LIMIT_WARNING',
+            });
+
+            // Auto-clear rate limit after 30 seconds in development to help with testing
+            setTimeout(() => {
+              philippineCompliantLogger.info(
+                'Development mode: Auto-clearing rate limit after 30 seconds'
+              );
+              clearRateLimit(userIdentifier);
+              toast.success('Rate limit cleared. You can now try submitting again.');
+            }, 30000);
+          }
+
+          return;
         }
-        
-        return;
-      }
 
-      philippineCompliantLogger.debug('Form processing initiated', {
-        userId: user?.id || 'anonymous',
-        timestamp: new Date().toISOString(),
-        formFieldCount: Object.keys(formData).length,
-        barangayCode: userProfile?.barangay_code?.substring(0, 3) + '***',
-        hasPhilSysData: !!formData.philsys_card_number,
-        hasVoterData: !!(formData.is_voter || formData.is_resident_voter),
-        sessionId,
-        complianceNote: 'RA_10173_COMPLIANT_DEV_LOG'
-      });
-
-      const validation = validateFormData(formData);
-      if (!validation.isValid) {
-        auditLogger.info('Form validation failed', {
-          eventType: 'VALIDATION_FAILED',
+        philippineCompliantLogger.debug('Form processing initiated', {
           userId: user?.id || 'anonymous',
-          action: 'FORM_VALIDATION',
+          timestamp: new Date().toISOString(),
+          formFieldCount: Object.keys(formData).length,
+          barangayCode: userProfile?.barangay_code?.substring(0, 3) + '***',
+          hasPhilSysData: !!formData.philsys_card_number,
+          hasVoterData: !!(formData.is_voter || formData.is_resident_voter),
+          sessionId,
+          complianceNote: 'RA_10173_COMPLIANT_DEV_LOG',
+        });
+
+        const validation = validateFormData(formData);
+        if (!validation.isValid) {
+          auditLogger.info('Form validation failed', {
+            eventType: 'VALIDATION_FAILED',
+            userId: user?.id || 'anonymous',
+            action: 'FORM_VALIDATION',
+            timestamp: new Date().toISOString(),
+            sessionId,
+            complianceFramework: 'RA_10173_BSP_808',
+            retentionPeriod: '7_YEARS',
+          });
+
+          toast.error(validation.errors._form || 'Please correct the form errors');
+          return;
+        }
+
+        const { transformedData, auditInfo } = prepareFormSubmission(
+          formData,
+          user?.id || 'anonymous',
+          sessionId,
+          userProfile?.barangay_code || ''
+        );
+
+        auditLogger.info('Resident registration attempt', {
+          eventType: 'RESIDENT_FORM_PROCESSING',
+          userId: auditInfo.userId,
+          action: 'CREATE_RESIDENT_ATTEMPT',
+          timestamp: auditInfo.timestamp,
+          sessionId: auditInfo.sessionId,
+          barangayOfficial: user?.role === 'barangay_official',
+          complianceFramework: 'RA_10173_BSP_808',
+          retentionPeriod: '7_YEARS',
+        });
+
+        npcComplianceLogger.info('Data processing event', {
+          dataCategory: 'PERSONAL_INFORMATION',
+          processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
+          legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
+          dataSubjectCount: 1,
+          sensitiveDataProcessed: auditInfo.hasPhilSys,
+          consentStatus: 'OBTAINED',
+          timestamp: auditInfo.timestamp,
+          npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER,
+        });
+
+        // Get CSRF token separately
+        getCSRFToken();
+        const result = await createResident(transformedData);
+
+        if (!result?.success) {
+          auditLogger.info('Form submission processing completed', {
+            eventType: 'FORM_PROCESSING_STATUS',
+            userId: user?.id || 'anonymous',
+            action: 'PROCESSING_RESULT',
+            timestamp: new Date().toISOString(),
+            sessionId,
+            complianceFramework: 'RA_10173_BSP_808',
+            retentionPeriod: '7_YEARS',
+          });
+        }
+      } catch {
+        auditLogger.info('Form submission error', {
+          eventType: 'FORM_SUBMISSION_ERROR',
+          userId: user?.id || 'anonymous',
+          action: 'SUBMISSION_EXCEPTION',
           timestamp: new Date().toISOString(),
           sessionId,
           complianceFramework: 'RA_10173_BSP_808',
-          retentionPeriod: '7_YEARS'
+          retentionPeriod: '7_YEARS',
         });
-        
-        toast.error(validation.errors._form || 'Please correct the form errors');
-        return;
+
+        toast.error('An unexpected error occurred. Please try again.');
       }
-
-      const { transformedData, auditInfo } = prepareFormSubmission(
-        formData,
-        user?.id || 'anonymous',
-        sessionId,
-        userProfile?.barangay_code || ''
-      );
-
-      auditLogger.info('Resident registration attempt', {
-        eventType: 'RESIDENT_FORM_PROCESSING',
-        userId: auditInfo.userId,
-        action: 'CREATE_RESIDENT_ATTEMPT',
-        timestamp: auditInfo.timestamp,
-        sessionId: auditInfo.sessionId,
-        barangayOfficial: user?.role === 'barangay_official',
-        complianceFramework: 'RA_10173_BSP_808',
-        retentionPeriod: '7_YEARS'
-      });
-
-      npcComplianceLogger.info('Data processing event', {
-        dataCategory: 'PERSONAL_INFORMATION',
-        processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
-        legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
-        dataSubjectCount: 1,
-        sensitiveDataProcessed: auditInfo.hasPhilSys,
-        consentStatus: 'OBTAINED',
-        timestamp: auditInfo.timestamp,
-        npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER
-      });
-
-      // Get CSRF token separately 
-      getCSRFToken();
-      const result = await createResident(transformedData);
-
-      if (!result?.success) {
-        auditLogger.info('Form submission processing completed', {
-          eventType: 'FORM_PROCESSING_STATUS',
-          userId: user?.id || 'anonymous',
-          action: 'PROCESSING_RESULT',
-          timestamp: new Date().toISOString(),
-          sessionId,
-          complianceFramework: 'RA_10173_BSP_808',
-          retentionPeriod: '7_YEARS'
-        });
-      }
-      
-    } catch {
-      auditLogger.info('Form submission error', {
-        eventType: 'FORM_SUBMISSION_ERROR',
-        userId: user?.id || 'anonymous',
-        action: 'SUBMISSION_EXCEPTION',
-        timestamp: new Date().toISOString(),
-        sessionId,
-        complianceFramework: 'RA_10173_BSP_808',
-        retentionPeriod: '7_YEARS'
-      });
-      
-      toast.error('An unexpected error occurred. Please try again.');
-    }
-  }, [user, userProfile, sessionId, createResident, getCSRFToken]);
+    },
+    [user, userProfile, sessionId, createResident, getCSRFToken]
+  );
 
   const { suggestedName, suggestedId, isPreFilled } = useResidentFormURLParameters();
 
   const initialData = useMemo(() => {
     const data: any = {};
-
 
     // Handle suggested ID with validation
     if (suggestedId && suggestedId.length > 0) {
@@ -222,13 +224,12 @@ function CreateResidentForm() {
         timestamp: new Date().toISOString(),
         sessionId,
         complianceFramework: 'RA_10173_BSP_808',
-        retentionPeriod: '7_YEARS'
+        retentionPeriod: '7_YEARS',
       });
     }
 
     return Object.keys(data).length > 0 ? data : undefined;
   }, [suggestedName, suggestedId, user?.id, sessionId]);
-
 
   return (
     <div className="p-6">

@@ -1,18 +1,18 @@
 /**
  * Chart Types - Data Visualization Interface Collection
- * 
+ *
  * @fileoverview Comprehensive chart and data visualization TypeScript interfaces
  * for the Citizenly RBI system. Provides type-safe chart configurations and data
  * structures for demographic analysis and statistical reporting.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * @example Demographic Chart Data Usage
  * ```typescript
  * import { SexData, ChartConfiguration } from '@/types/charts';
- * 
+ *
  * const sexDistribution: SexData = {
  *   male: 1250,
  *   female: 1180
@@ -303,14 +303,14 @@ export interface ChartFilterOptions {
 /**
  * Dashboard widget chart type
  */
-export type DashboardChartType = 
-  | 'pie' 
-  | 'bar' 
-  | 'line' 
-  | 'area' 
-  | 'donut' 
-  | 'populationPyramid' 
-  | 'gauge' 
+export type DashboardChartType =
+  | 'pie'
+  | 'bar'
+  | 'line'
+  | 'area'
+  | 'donut'
+  | 'populationPyramid'
+  | 'gauge'
   | 'metric';
 
 /**

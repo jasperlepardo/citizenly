@@ -1,5 +1,9 @@
 import { logger } from '@/lib';
-import type { PerformanceMetric, ComponentPerformanceData, LayoutShiftEntry } from '@/types/utilities';
+import type {
+  PerformanceMetric,
+  ComponentPerformanceData,
+  LayoutShiftEntry,
+} from '@/types/utilities';
 
 /**
  * Performance monitoring utilities
@@ -10,8 +14,6 @@ import type { PerformanceMetric, ComponentPerformanceData, LayoutShiftEntry } fr
 
 // ComponentProps is a generic type for component properties
 type ComponentProps = Record<string, unknown>;
-
-
 
 class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];
@@ -59,7 +61,10 @@ class PerformanceMonitor {
         // Observe largest contentful paint
         const lcpObserver = new PerformanceObserver(list => {
           for (const entry of list.getEntries()) {
-            const lcpEntry = entry as PerformanceEntry & { element?: { tagName: string }; url?: string };
+            const lcpEntry = entry as PerformanceEntry & {
+              element?: { tagName: string };
+              url?: string;
+            };
             this.recordMetric('lcp', entry.startTime, {
               element: lcpEntry.element?.tagName,
               url: lcpEntry.url,

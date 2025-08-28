@@ -6,7 +6,6 @@ import type { DependencyData } from '@/types/charts';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
 
-
 interface DependencyRatioPieChartProps {
   data: DependencyData;
   title: string;

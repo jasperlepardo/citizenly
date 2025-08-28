@@ -30,7 +30,10 @@ const mockSupabase = {
 };
 
 // Setup decorators with mocked dependencies
-const mockDecorator = (Story: React.ComponentType, context: { parameters: { devModeEnabled?: boolean; hasConfigErrors?: boolean } }) => {
+const mockDecorator = (
+  Story: React.ComponentType,
+  context: { parameters: { devModeEnabled?: boolean; hasConfigErrors?: boolean } }
+) => {
   // Mock the imports based on story parameters
   const { devModeEnabled = true, hasConfigErrors = false } = context.parameters;
 

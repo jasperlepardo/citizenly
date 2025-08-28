@@ -5,14 +5,13 @@
  * Helper functions for validation operations
  */
 
-import type { 
-  ValidationResult, 
-  FieldValidationResult, 
+import type {
+  ValidationResult,
+  FieldValidationResult,
   ValidationError,
-  SimpleValidationResult 
+  SimpleValidationResult,
 } from '@/types/validation';
 import { debounce } from '@/utils/async-utils';
-
 
 /**
  * Check if email is valid
@@ -110,7 +109,9 @@ export function createFieldValidationResult(
 /**
  * Merge multiple validation results
  */
-export function mergeValidationResults(...results: SimpleValidationResult[]): SimpleValidationResult {
+export function mergeValidationResults(
+  ...results: SimpleValidationResult[]
+): SimpleValidationResult {
   const mergedErrors: Record<string, string> = {};
   let mergedData: any = {};
 
@@ -139,7 +140,10 @@ export function getErrorFields(validationResult: SimpleValidationResult): string
 /**
  * Check if validation result has specific field error
  */
-export function hasFieldError(validationResult: SimpleValidationResult, fieldName: string): boolean {
+export function hasFieldError(
+  validationResult: SimpleValidationResult,
+  fieldName: string
+): boolean {
   return fieldName in validationResult.errors;
 }
 
@@ -163,7 +167,9 @@ export function hasWarnings(validationResult: SimpleValidationResult): boolean {
 /**
  * Convert validation result to error array
  */
-export function validationResultToErrors(validationResult: SimpleValidationResult): ValidationError[] {
+export function validationResultToErrors(
+  validationResult: SimpleValidationResult
+): ValidationError[] {
   return Object.entries(validationResult.errors).map(([field, message]) => ({
     field,
     message: message,

@@ -4,15 +4,12 @@ import { useState, useCallback } from 'react';
 
 import { createFormSubmitHandler } from '@/lib/forms';
 import type { ResidentFormData, FormMode } from '@/types';
-import type { 
+import type {
   HookFormSubmissionProps as UseFormSubmissionProps,
-  HookFormSubmissionReturn as UseFormSubmissionReturn 
+  HookFormSubmissionReturn as UseFormSubmissionReturn,
 } from '@/types/hooks';
 
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';
-
-
-
 
 export function useFormSubmission<T extends ResidentFormData = ResidentFormData>({
   onSubmit,

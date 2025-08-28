@@ -9,7 +9,6 @@ import { createAppError } from '@/utils/error-utils';
 
 import { offlineStorage } from './offline-storage';
 
-
 export class SyncQueue {
   private isProcessing = false;
   private maxRetries = 3;

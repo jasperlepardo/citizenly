@@ -22,7 +22,7 @@ export function sanitizeSearchQuery(query: string): string {
   if (!query || typeof query !== 'string') {
     return '';
   }
-  
+
   return query.trim().slice(0, COMMAND_MENU_CONFIG.MAX_SEARCH_LENGTH);
 }
 
@@ -33,7 +33,7 @@ export function isValidSearchQuery(query: string): boolean {
   if (!query || typeof query !== 'string') {
     return false;
   }
-  
+
   const sanitized = sanitizeSearchQuery(query);
   return sanitized.length >= COMMAND_MENU_CONFIG.MIN_QUERY_LENGTH;
 }
@@ -56,17 +56,18 @@ export function isCacheValid(timestamp: number): boolean {
 /**
  * Format search result for display
  */
-export function formatSearchResult(item: any, type: 'resident' | 'household'): {
+export function formatSearchResult(
+  item: any,
+  type: 'resident' | 'household'
+): {
   id: string;
   title: string;
   subtitle: string;
   type: string;
 } {
   if (type === 'resident') {
-    const name = [item.first_name, item.middle_name, item.last_name]
-      .filter(Boolean)
-      .join(' ');
-    
+    const name = [item.first_name, item.middle_name, item.last_name].filter(Boolean).join(' ');
+
     return {
       id: item.id,
       title: name,
@@ -74,12 +75,12 @@ export function formatSearchResult(item: any, type: 'resident' | 'household'): {
       type: 'resident',
     };
   }
-  
+
   if (type === 'household') {
     const address = [item.house_number, item.street_name, item.barangay_name]
       .filter(Boolean)
       .join(', ');
-    
+
     return {
       id: item.id,
       title: `Household ${item.code}`,
@@ -87,7 +88,7 @@ export function formatSearchResult(item: any, type: 'resident' | 'household'): {
       type: 'household',
     };
   }
-  
+
   return {
     id: item.id,
     title: 'Unknown',
@@ -108,14 +109,17 @@ export function limitResults<T>(results: T[], limit: number): T[] {
  * Group search results by type
  */
 export function groupResultsByType<T extends { type: string }>(results: T[]): Record<string, T[]> {
-  return results.reduce((groups, result) => {
-    const type = result.type;
-    if (!groups[type]) {
-      groups[type] = [];
-    }
-    groups[type].push(result);
-    return groups;
-  }, {} as Record<string, T[]>);
+  return results.reduce(
+    (groups, result) => {
+      const type = result.type;
+      if (!groups[type]) {
+        groups[type] = [];
+      }
+      groups[type].push(result);
+      return groups;
+    },
+    {} as Record<string, T[]>
+  );
 }
 
 /**
@@ -126,25 +130,25 @@ export function sortResultsByRelevance<T extends { title: string }>(
   query: string
 ): T[] {
   const lowerQuery = query.toLowerCase();
-  
+
   return results.sort((a, b) => {
     const aTitle = a.title.toLowerCase();
     const bTitle = b.title.toLowerCase();
-    
+
     // Exact matches first
     if (aTitle === lowerQuery && bTitle !== lowerQuery) return -1;
     if (bTitle === lowerQuery && aTitle !== lowerQuery) return 1;
-    
+
     // Starts with query
     if (aTitle.startsWith(lowerQuery) && !bTitle.startsWith(lowerQuery)) return -1;
     if (bTitle.startsWith(lowerQuery) && !aTitle.startsWith(lowerQuery)) return 1;
-    
+
     // Contains query
     const aContains = aTitle.includes(lowerQuery);
     const bContains = bTitle.includes(lowerQuery);
     if (aContains && !bContains) return -1;
     if (bContains && !aContains) return 1;
-    
+
     // Alphabetical order
     return aTitle.localeCompare(bTitle);
   });

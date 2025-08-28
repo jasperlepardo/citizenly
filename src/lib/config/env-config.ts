@@ -147,7 +147,10 @@ export function shouldEnableFeature(feature: string): boolean {
 export function getToolConfig(tool: string): Record<string, string | number | boolean> {
   const { environment } = getEnvironmentConfig();
 
-  const toolConfigs: Record<string, Record<Environment, Record<string, string | number | boolean>>> = {
+  const toolConfigs: Record<
+    string,
+    Record<Environment, Record<string, string | number | boolean>>
+  > = {
     eslint: {
       development: { maxWarnings: -1, cache: true, format: 'compact' },
       ci: { maxWarnings: 0, cache: false, format: 'json' },

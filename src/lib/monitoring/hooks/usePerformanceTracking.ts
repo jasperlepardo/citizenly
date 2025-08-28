@@ -10,8 +10,6 @@ import type { UsePerformanceTrackingOptions, PerformanceTrackingReturn } from '@
 
 import { performanceMonitor } from '../performance';
 
-
-
 /**
  * Hook for tracking component performance metrics
  */

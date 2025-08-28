@@ -1,31 +1,31 @@
 /**
  * Authentication and Authorization Types - Database-Aligned Auth System
- * 
+ *
  * @fileoverview Comprehensive authentication and authorization TypeScript interfaces
  * that provide 100% database schema alignment for the Citizenly RBI authentication system.
  * Built on Supabase Auth with multi-level geographic access control for Philippine LGUs.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * Database Tables Covered:
  * - auth.users (Supabase managed authentication users)
  * - auth_user_profiles (Extended user profile with geographic access - 21 fields)
  * - auth_roles (Role definitions with JSONB permissions - 6 fields)
  * - auth_barangay_accounts (Multi-barangay access control - 8 fields)
- * 
+ *
  * Key Features:
  * - 100% Supabase Auth integration with custom profile extensions
  * - Multi-level geographic access control (Region → Province → City → Barangay)
  * - Role-based permission system with JSONB flexibility
  * - Complete authentication flow management (login, signup, session)
  * - Professional error handling and validation
- * 
+ *
  * @example Basic Authentication Flow
  * ```typescript
  * import { AuthState, LoginRequest, AuthUserProfile } from '@/types/auth';
- * 
+ *
  * const authState: AuthState = {
  *   user: supabaseUser,
  *   profile: userProfile, // Extended with barangay access
@@ -35,11 +35,11 @@
  *   error: null
  * };
  * ```
- * 
+ *
  * @example Role-Based Access Control
  * ```typescript
  * import { UserRole, ROLE_PERMISSIONS } from '@/types/auth';
- * 
+ *
  * const checkPermission = (userRole: UserRole, permission: string): boolean => {
  *   return ROLE_PERMISSIONS[userRole]?.includes(permission) || false;
  * };
@@ -74,7 +74,7 @@ export interface AuthUser {
 /**
  * User profile with extended information - extends canonical database record
  * @description Composition of AuthUserProfileRecord + computed fields for UI/auth operations
- * 
+ *
  * @example Complete User Profile
  * ```typescript
  * const userProfile: AuthUserProfile = {
@@ -86,7 +86,7 @@ export interface AuthUser {
  *   role_id: '123e4567-e89b-12d3-a456-426614174000',
  *   barangay_code: '1374000001',
  *   // ... all other database fields
- *   
+ *
  *   // Computed/joined fields for UI
  *   role: roleRecord,
  *   full_name: 'Maria Santos',
@@ -96,10 +96,10 @@ export interface AuthUser {
  */
 export interface AuthUserProfile extends AuthUserProfileRecord {
   // Computed/joined fields for UI and auth operations
-  role?: AuthRoleRecord;           // Resolved from role_id
-  full_name?: string;              // Computed: first_name + middle_name + last_name
-  display_location?: string;       // Formatted geographic location
-  lastActivity?: string;           // Last user activity timestamp
+  role?: AuthRoleRecord; // Resolved from role_id
+  full_name?: string; // Computed: first_name + middle_name + last_name
+  display_location?: string; // Formatted geographic location
+  lastActivity?: string; // Last user activity timestamp
 }
 
 /**
@@ -136,9 +136,9 @@ export interface AuthState {
  */
 export interface AuthRole extends AuthRoleRecord {
   // Computed fields for UI display
-  display_name?: string;          // Formatted role name for UI
-  permission_count?: number;      // Count of permissions in JSONB
-  user_count?: number;           // Number of users with this role
+  display_name?: string; // Formatted role name for UI
+  permission_count?: number; // Count of permissions in JSONB
+  user_count?: number; // Number of users with this role
 }
 
 /**
@@ -473,7 +473,7 @@ export enum Role {
 /**
  * User role types
  */
-export type UserRole = 
+export type UserRole =
   | 'super_admin'
   | 'region_admin'
   | 'province_admin'

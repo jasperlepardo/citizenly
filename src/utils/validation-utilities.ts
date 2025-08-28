@@ -157,7 +157,7 @@ export function createFormValidationExecutor<T>(
     };
 
     // Convert ValidationError[] to Record<string, string> if needed
-    const errorsForState = Array.isArray(normalizedResult.errors) 
+    const errorsForState = Array.isArray(normalizedResult.errors)
       ? normalizedResult.errors.reduce((acc: Record<string, string>, err: any) => {
           acc[err.field || err.path || 'general'] = err.message || err.error || String(err);
           return acc;

@@ -1,6 +1,6 @@
 /**
  * Security Test Suite for Residents Create Module
- * 
+ *
  * Tests Philippine regulatory compliance (RA 10173) and
  * security measures per BSP Circular 808 requirements.
  */
@@ -25,28 +25,25 @@ jest.mock('@/components', () => ({
   ResidentForm: jest.fn(({ onSubmit, onCancel, initialData }) => (
     <div data-testid="resident-form">
       <form>
-        <input 
-          data-testid="first-name-input" 
-          defaultValue={initialData?.first_name || ''} 
-        />
-        <button 
+        <input data-testid="first-name-input" defaultValue={initialData?.first_name || ''} />
+        <button
           type="button"
           data-testid="submit-button"
-          onClick={() => onSubmit({
-            first_name: 'Test',
-            last_name: 'User',
-            birthdate: '1990-01-01',
-            sex: 'male',
-            household_code: 'HH001'
-          })}
+          onClick={() =>
+            onSubmit({
+              first_name: 'Test',
+              last_name: 'User',
+              birthdate: '1990-01-01',
+              sex: 'male',
+              household_code: 'HH001',
+            })
+          }
         >
           Submit
         </button>
       </form>
       {initialData?.first_name && (
-        <div data-testid="prefilled-name">
-          Pre-filled: {initialData.first_name}
-        </div>
+        <div data-testid="prefilled-name">Pre-filled: {initialData.first_name}</div>
       )}
     </div>
   )),
@@ -54,18 +51,18 @@ jest.mock('@/components', () => ({
 
 // Security-focused mocks
 const mockAuditLogger = {
-  info: jest.fn()
+  info: jest.fn(),
 };
 
 const mockPhilippineCompliantLogger = {
   debug: jest.fn(),
   info: jest.fn(),
   warn: jest.fn(),
-  error: jest.fn()
+  error: jest.fn(),
 };
 
 const mockNPCComplianceLogger = {
-  info: jest.fn()
+  info: jest.fn(),
 };
 
 jest.mock('@/lib/security/philippine-logging', () => ({
@@ -73,7 +70,7 @@ jest.mock('@/lib/security/philippine-logging', () => ({
   auditLogger: mockAuditLogger,
   npcComplianceLogger: mockNPCComplianceLogger,
   getClientIP: jest.fn(() => '127.0.0.1'),
-  generateSecureSessionId: jest.fn(() => 'secure-session-123')
+  generateSecureSessionId: jest.fn(() => 'secure-session-123'),
 }));
 
 const mockValidateFormData = jest.fn();
@@ -82,12 +79,12 @@ const mockPrepareFormSubmission = jest.fn();
 jest.mock('@/utils/resident-form-utils', () => ({
   validateFormData: mockValidateFormData,
   prepareFormSubmission: mockPrepareFormSubmission,
-  parseFullName: jest.fn((name) => ({
+  parseFullName: jest.fn(name => ({
     first_name: name?.split(' ')[0] || '',
     middleName: name?.split(' ')[1] || '',
-    last_name: name?.split(' ')[2] || name?.split(' ')[1] || ''
+    last_name: name?.split(' ')[2] || name?.split(' ')[1] || '',
   })),
-  generateFormSummary: jest.fn(() => ({}))
+  generateFormSummary: jest.fn(() => ({})),
 }));
 
 const mockSanitizeInput = jest.fn();
@@ -97,26 +94,26 @@ const mockCheckRateLimit = jest.fn();
 jest.mock('@/utils/input-sanitizer', () => ({
   sanitizeInput: mockSanitizeInput,
   sanitizeNameInput: mockSanitizeNameInput,
-  checkRateLimit: mockCheckRateLimit
+  checkRateLimit: mockCheckRateLimit,
 }));
 
 jest.mock('@/hooks/crud/useResidentOperations', () => ({
-  useResidentOperations: jest.fn()
+  useResidentOperations: jest.fn(),
 }));
 
 jest.mock('@/lib/auth', () => ({
   useCSRFToken: jest.fn(() => ({
-    getToken: jest.fn(() => 'csrf-token-123')
-  }))
+    getToken: jest.fn(() => 'csrf-token-123'),
+  })),
 }));
 
 jest.mock('@/constants/resident-form', () => ({
   RATE_LIMITS: {
     FORM_SUBMISSION: {
       MAX_ATTEMPTS: 5,
-      WINDOW_MS: 300000
-    }
-  }
+      WINDOW_MS: 300000,
+    },
+  },
 }));
 
 const mockCreateResident = jest.fn();
@@ -128,19 +125,19 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    
+
     (require('@/contexts/AuthContext') as any).useAuth.mockReturnValue({
       user: mockUser,
       userProfile: mockUserProfile,
-      session: { access_token: 'token' }
+      session: { access_token: 'token' },
     });
 
     (require('@/hooks/crud/useResidentOperations') as any).useResidentOperations.mockReturnValue({
       createResident: mockCreateResident,
       isSubmitting: false,
-      validationErrors: {}
+      validationErrors: {},
     });
 
     mockValidateFormData.mockReturnValue({ isValid: true, errors: {} });
@@ -149,8 +146,8 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       auditInfo: {
         userId: 'user123',
         sessionId: 'session123',
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     });
     mockCheckRateLimit.mockReturnValue(true);
   });
@@ -159,10 +156,10 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should sanitize XSS attempts in suggested_name parameter', () => {
       const xssPayload = '<script>alert("XSS")</script>';
       const mockSearchParams = {
-        get: jest.fn((key) => {
+        get: jest.fn(key => {
           if (key === 'suggested_name') return xssPayload;
           return null;
-        })
+        }),
       };
 
       mockSanitizeNameInput.mockReturnValue(''); // Sanitized to empty string
@@ -172,17 +169,17 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Verify sanitization was called
       expect(mockSanitizeNameInput).toHaveBeenCalledWith(xssPayload);
-      
+
       // Should not display script content
       expect(screen.queryByText('script')).not.toBeInTheDocument();
       expect(screen.queryByText('alert')).not.toBeInTheDocument();
-      
+
       // Should log security event
       expect(mockAuditLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('URL parameter processing'),
         expect.objectContaining({
           eventType: 'URL_PARAM_PROCESSING',
-          userId: 'user123'
+          userId: 'user123',
         })
       );
     });
@@ -190,10 +187,10 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should handle javascript: protocol injection attempts', () => {
       const jsPayload = 'javascript:void(0)';
       const mockSearchParams = {
-        get: jest.fn((key) => {
+        get: jest.fn(key => {
           if (key === 'suggested_name') return jsPayload;
           return null;
-        })
+        }),
       };
 
       mockSanitizeNameInput.mockReturnValue('void'); // Sanitized
@@ -206,10 +203,10 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should limit name length to prevent buffer overflow attacks', () => {
       const longName = 'A'.repeat(1000);
       const mockSearchParams = {
-        get: jest.fn((key) => {
+        get: jest.fn(key => {
           if (key === 'suggested_name') return longName;
           return null;
-        })
+        }),
       };
 
       mockSanitizeNameInput.mockReturnValue('A'.repeat(100)); // Truncated
@@ -224,10 +221,10 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should log security validation failures', () => {
       const maliciousName = '<img src=x onerror=alert(1)>';
       const mockSearchParams = {
-        get: jest.fn((key) => {
+        get: jest.fn(key => {
           if (key === 'suggested_name') return maliciousName;
           return null;
-        })
+        }),
       };
 
       // Mock parseFullName to throw error for invalid input
@@ -244,7 +241,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
         expect.stringContaining('URL parameter validation failed'),
         expect.objectContaining({
           eventType: 'URL_PARAM_VALIDATION_FAILED',
-          parameterType: 'suggested_name'
+          parameterType: 'suggested_name',
         })
       );
     });
@@ -270,12 +267,12 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Check that console.log was never called with sensitive data patterns
       const logCalls = consoleSpy.mock.calls.flat();
-      
+
       expect(logCalls).not.toEqual(
         expect.arrayContaining([
           expect.stringMatching(/Raw form data/i),
           expect.stringMatching(/philsys.*number/i),
-          expect.stringMatching(/voter.*value/i)
+          expect.stringMatching(/voter.*value/i),
         ])
       );
     });
@@ -291,21 +288,21 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       expect(mockPhilippineCompliantLogger.debug).toHaveBeenCalledWith(
         expect.stringContaining('Form processing initiated'),
         expect.objectContaining({
-          complianceNote: 'RA_10173_COMPLIANT_DEV_LOG'
+          complianceNote: 'RA_10173_COMPLIANT_DEV_LOG',
         })
       );
 
       expect(mockAuditLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('Resident registration attempt'),
         expect.objectContaining({
-          complianceFramework: 'RA_10173_BSP_808'
+          complianceFramework: 'RA_10173_BSP_808',
         })
       );
 
       expect(mockNPCComplianceLogger.info).toHaveBeenCalledWith(
         expect.stringContaining('Data processing event'),
         expect.objectContaining({
-          legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST'
+          legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
         })
       );
     });
@@ -314,7 +311,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
   describe('Rate Limiting Security', () => {
     test('should prevent form spam through rate limiting', async () => {
       mockCheckRateLimit.mockReturnValue(false); // Rate limit exceeded
-      
+
       const user = userEvent.setup();
       render(<CreateResidentPage />);
 
@@ -335,7 +332,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should allow submission when rate limit not exceeded', async () => {
       mockCheckRateLimit.mockReturnValue(true); // Rate limit OK
       mockCreateResident.mockResolvedValue({ success: true });
-      
+
       const user = userEvent.setup();
       render(<CreateResidentPage />);
 
@@ -358,7 +355,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should validate form data server-side even if client validation passes', async () => {
       mockValidateFormData.mockReturnValue({
         isValid: false,
-        errors: { _form: 'Server validation failed' }
+        errors: { _form: 'Server validation failed' },
       });
 
       const user = userEvent.setup();
@@ -372,7 +369,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
         'Form validation failed',
         expect.objectContaining({
           eventType: 'VALIDATION_FAILED',
-          errorCount: 1
+          errorCount: 1,
         })
       );
 
@@ -382,7 +379,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
     test('should sanitize all form inputs before processing', async () => {
       mockSanitizeInput.mockReturnValue('sanitized');
-      
+
       const user = userEvent.setup();
       render(<CreateResidentPage />);
 
@@ -397,7 +394,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
   describe('CSRF Protection', () => {
     test('should include CSRF token in form submissions', async () => {
       mockCreateResident.mockResolvedValue({ success: true });
-      
+
       const user = userEvent.setup();
       render(<CreateResidentPage />);
 
@@ -407,7 +404,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       await waitFor(() => {
         expect(mockCreateResident).toHaveBeenCalledWith(
           expect.objectContaining({
-            csrfToken: 'csrf-token-123'
+            csrfToken: 'csrf-token-123',
           })
         );
       });
@@ -427,16 +424,19 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       const auditEventTypes = auditCalls.map(call => call[1]?.eventType);
 
       expect(auditEventTypes).toContain('RESIDENT_FORM_PROCESSING');
-      expect(auditCalls.some(call => 
-        call[1]?.complianceFramework === 'RA_10173_BSP_808' &&
-        call[1]?.retentionPeriod === '7_YEARS'
-      )).toBe(true);
+      expect(
+        auditCalls.some(
+          call =>
+            call[1]?.complianceFramework === 'RA_10173_BSP_808' &&
+            call[1]?.retentionPeriod === '7_YEARS'
+        )
+      ).toBe(true);
     });
 
     test('should log security events with proper classification', async () => {
       const maliciousInput = '<script>alert("test")</script>';
       const mockSearchParams = {
-        get: jest.fn(() => maliciousInput)
+        get: jest.fn(() => maliciousInput),
       };
 
       mockSanitizeNameInput.mockReturnValue('');
@@ -448,7 +448,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
         expect.any(String),
         expect.objectContaining({
           complianceFramework: 'RA_10173_BSP_808',
-          retentionPeriod: '7_YEARS'
+          retentionPeriod: '7_YEARS',
         })
       );
     });
@@ -468,7 +468,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
           dataCategory: 'PERSONAL_INFORMATION',
           processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
           legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
-          consentStatus: 'OBTAINED'
+          consentStatus: 'OBTAINED',
         })
       );
     });
@@ -484,12 +484,12 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       const allLogCalls = [
         ...mockPhilippineCompliantLogger.debug.mock.calls,
         ...mockAuditLogger.info.mock.calls,
-        ...mockNPCComplianceLogger.info.mock.calls
+        ...mockNPCComplianceLogger.info.mock.calls,
       ];
 
       allLogCalls.forEach(call => {
         const logContent = JSON.stringify(call);
-        
+
         // Should not contain actual personal data
         expect(logContent).not.toMatch(/John|Doe|1990-01-01/);
         expect(logContent).not.toMatch(/\d{4}-\d{4}-\d{4}/); // PhilSys pattern
@@ -502,7 +502,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
     test('should not expose sensitive information in error messages', async () => {
       mockValidateFormData.mockReturnValue({
         isValid: false,
-        errors: { database: 'Connection failed to server 192.168.1.100' }
+        errors: { database: 'Connection failed to server 192.168.1.100' },
       });
 
       const user = userEvent.setup();
@@ -535,7 +535,7 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
         'Form submission error',
         expect.objectContaining({
           eventType: 'FORM_SUBMISSION_ERROR',
-          errorType: 'Error'
+          errorType: 'Error',
         })
       );
     });

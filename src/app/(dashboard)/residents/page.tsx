@@ -16,7 +16,6 @@ import {
 } from '@/hooks/crud/useResidents';
 import { logger } from '@/lib';
 
-
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedResidents, setSelectedResidents] = useState<string[]>([]);
@@ -199,7 +198,6 @@ function ResidentsContent() {
     },
   ];
 
-
   // Show error recovery component if there's an error
   if (error && !isLoading) {
     return (
@@ -315,8 +313,8 @@ function ResidentsContent() {
               <button
                 type="button"
                 onClick={retryManually}
-                onKeyDown={(e) => e.key === 'Enter' && retryManually()}
-                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                onKeyDown={e => e.key === 'Enter' && retryManually()}
+                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
                 disabled={isLoading}
                 aria-label="Retry loading residents"
               >
@@ -325,8 +323,8 @@ function ResidentsContent() {
               <button
                 type="button"
                 onClick={clearError}
-                onKeyDown={(e) => e.key === 'Enter' && clearError()}
-                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                onKeyDown={e => e.key === 'Enter' && clearError()}
+                className="text-sm text-yellow-700 underline hover:text-yellow-900 focus:ring-2 focus:ring-yellow-500 focus:outline-none"
                 aria-label="Dismiss error message"
               >
                 Dismiss

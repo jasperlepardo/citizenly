@@ -21,15 +21,15 @@ export interface URLParameterConfig {
  */
 export function useURLParameters(parameterKeys: string[]): Record<string, string | null> {
   const searchParams = useSearchParams();
-  
+
   return useMemo(() => {
     const result: Record<string, string | null> = {};
-    
+
     parameterKeys.forEach(key => {
       const rawValue = searchParams.get(key);
       result[key] = rawValue ? sanitizeInput(rawValue) : null;
     });
-    
+
     return result;
   }, [searchParams, parameterKeys]);
 }
@@ -43,18 +43,18 @@ export function useURLParametersWithConfig(
   configurations: URLParameterConfig[]
 ): Record<string, string | null> {
   const searchParams = useSearchParams();
-  
+
   return useMemo(() => {
     const result: Record<string, string | null> = {};
-    
+
     configurations.forEach(config => {
       const rawValue = searchParams.get(config.key);
-      
+
       if (!rawValue) {
         result[config.key] = config.defaultValue || null;
         return;
       }
-      
+
       switch (config.sanitizationType) {
         case 'name':
           result[config.key] = sanitizeNameInput(rawValue);
@@ -69,7 +69,7 @@ export function useURLParametersWithConfig(
           result[config.key] = sanitizeInput(rawValue);
       }
     });
-    
+
     return result;
   }, [searchParams, configurations]);
 }
@@ -84,15 +84,15 @@ export function useResidentFormURLParameters(): {
   isPreFilled: boolean;
 } {
   const searchParams = useSearchParams();
-  
+
   return useMemo(() => {
     const suggestedName = searchParams.get('suggested_name');
     const suggestedId = searchParams.get('suggested_id');
-    
+
     return {
       suggestedName: suggestedName ? sanitizeNameInput(suggestedName) : null,
       suggestedId: suggestedId ? sanitizeInput(suggestedId) : null,
-      isPreFilled: Boolean(suggestedName || suggestedId)
+      isPreFilled: Boolean(suggestedName || suggestedId),
     };
   }, [searchParams]);
 }

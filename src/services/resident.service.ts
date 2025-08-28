@@ -20,7 +20,12 @@ import type { ValidationResult as BaseValidationResult } from '@/lib/validation/
 // Import database types
 import { ResidentRecord } from '@/types/database';
 import { ResidentFormData as BaseResidentFormData } from '@/types/forms';
-import { EducationLevelEnum, EmploymentStatusEnum, ReligionEnum, EthnicityEnum } from '@/types/residents';
+import {
+  EducationLevelEnum,
+  EmploymentStatusEnum,
+  ReligionEnum,
+  EthnicityEnum,
+} from '@/types/residents';
 
 // Types moved to src/types/services.ts for consolidation
 import type {
@@ -55,9 +60,9 @@ export class ResidentService {
         const errors = result.errors
           ? Array.isArray(result.errors)
             ? result.errors
-            : Object.entries(result.errors).map(([field, message]) => ({ 
-                field, 
-                message: String(message) 
+            : Object.entries(result.errors).map(([field, message]) => ({
+                field,
+                message: String(message),
               }))
           : [{ field: 'general', message: 'Validation failed' }];
 
@@ -265,7 +270,6 @@ export class ResidentService {
       logger.info('Creating resident with household assignment', {
         householdCode: formData.household_code,
       });
-
 
       // Insert resident into database
       const { data, error } = await supabase.from('residents').insert([residentData]).select();

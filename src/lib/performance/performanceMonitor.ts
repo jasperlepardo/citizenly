@@ -15,7 +15,10 @@
 import React from 'react';
 
 import { logger } from '@/lib';
-import type { WebVitalsPerformanceMetric as PerformanceMetric, ResourceTiming } from '@/types/utilities';
+import type {
+  WebVitalsPerformanceMetric as PerformanceMetric,
+  ResourceTiming,
+} from '@/types/utilities';
 
 // Performance thresholds based on Core Web Vitals
 export const PERFORMANCE_THRESHOLDS = {
@@ -25,8 +28,6 @@ export const PERFORMANCE_THRESHOLDS = {
   FCP: { good: 1800, needsImprovement: 3000 }, // milliseconds
   TTFB: { good: 800, needsImprovement: 1800 }, // milliseconds
 };
-
-
 
 class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];

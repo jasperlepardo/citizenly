@@ -52,7 +52,6 @@ interface AddressHierarchy {
   region_name?: string;
 }
 
-
 export default function CreateHouseholdModal({
   isOpen,
   onClose,

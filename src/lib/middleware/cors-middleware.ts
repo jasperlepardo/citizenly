@@ -30,7 +30,7 @@ const ALLOWED_HEADERS = [
 export function addCorsHeaders(response: NextResponse, origin?: string | null): NextResponse {
   // Check if origin is allowed
   const isAllowedOrigin = !origin || ALLOWED_ORIGINS.includes(origin);
-  
+
   if (isAllowedOrigin && origin) {
     response.headers.set('Access-Control-Allow-Origin', origin);
   } else if (!origin) {
@@ -51,16 +51,14 @@ export function addCorsHeaders(response: NextResponse, origin?: string | null): 
 export function handleCorsPreflightOptions(request: NextRequest): NextResponse {
   const origin = request.headers.get('origin');
   const response = new NextResponse(null, { status: 200 });
-  
+
   return addCorsHeaders(response, origin);
 }
 
 /**
  * Higher-order function to add CORS to API routes
  */
-export function withCors(
-  handler: (request: NextRequest, context: any) => Promise<NextResponse>
-) {
+export function withCors(handler: (request: NextRequest, context: any) => Promise<NextResponse>) {
   return async (request: NextRequest, context: any): Promise<NextResponse> => {
     // Handle preflight OPTIONS requests
     if (request.method === 'OPTIONS') {
@@ -69,7 +67,7 @@ export function withCors(
 
     // Process the actual request
     const response = await handler(request, context);
-    
+
     // Add CORS headers to the response
     const origin = request.headers.get('origin');
     return addCorsHeaders(response, origin);
@@ -81,15 +79,15 @@ export function withCors(
  */
 export function validateCorsOrigin(request: NextRequest): { valid: boolean; origin?: string } {
   const origin = request.headers.get('origin');
-  
+
   // Allow same-origin requests (no origin header)
   if (!origin) {
     return { valid: true };
   }
-  
+
   // Check against allowed origins
   const isAllowed = ALLOWED_ORIGINS.includes(origin);
-  
+
   return {
     valid: isAllowed,
     origin,

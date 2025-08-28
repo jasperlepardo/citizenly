@@ -5,8 +5,6 @@
 
 import type { PWAMetrics, PWAPerformanceEntry } from '@/types/utilities';
 
-
-
 class PWAPerformanceMonitor {
   private metrics: PWAMetrics;
   private entries: PWAPerformanceEntry[] = [];

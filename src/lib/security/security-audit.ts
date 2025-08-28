@@ -5,7 +5,13 @@
 
 export interface SecurityIssue {
   severity: 'critical' | 'high' | 'medium' | 'low';
-  category: 'authentication' | 'authorization' | 'input_validation' | 'information_disclosure' | 'crypto' | 'configuration';
+  category:
+    | 'authentication'
+    | 'authorization'
+    | 'input_validation'
+    | 'information_disclosure'
+    | 'crypto'
+    | 'configuration';
   description: string;
   file?: string;
   recommendation: string;
@@ -25,18 +31,22 @@ export async function runSecurityAudit(): Promise<SecurityAuditResult> {
 
   // Check environment configuration
   issues.push(...auditEnvironmentConfig());
-  
+
   // Check authentication setup
   issues.push(...auditAuthenticationSetup());
-  
+
   // Check for information disclosure
   issues.push(...auditInformationDisclosure());
 
   // Calculate security score (100 - (critical * 25 + high * 15 + medium * 5 + low * 1))
-  const score = Math.max(0, 100 - issues.reduce((acc, issue) => {
-    const weights = { critical: 25, high: 15, medium: 5, low: 1 };
-    return acc + weights[issue.severity];
-  }, 0));
+  const score = Math.max(
+    0,
+    100 -
+      issues.reduce((acc, issue) => {
+        const weights = { critical: 25, high: 15, medium: 5, low: 1 };
+        return acc + weights[issue.severity];
+      }, 0)
+  );
 
   return {
     passed: issues.filter(i => i.severity === 'critical' || i.severity === 'high').length === 0,
@@ -50,7 +60,10 @@ function auditEnvironmentConfig(): SecurityIssue[] {
 
   // Check production environment setup
   if (process.env.NODE_ENV === 'production') {
-    if (!process.env.SUPABASE_WEBHOOK_SECRET || process.env.SUPABASE_WEBHOOK_SECRET === 'dev-webhook-secret') {
+    if (
+      !process.env.SUPABASE_WEBHOOK_SECRET ||
+      process.env.SUPABASE_WEBHOOK_SECRET === 'dev-webhook-secret'
+    ) {
       issues.push({
         severity: 'critical',
         category: 'configuration',
@@ -117,7 +130,7 @@ function auditInformationDisclosure(): SecurityIssue[] {
 export function generateSecurityReport(audit: SecurityAuditResult): string {
   const severityEmojis = {
     critical: '🔴',
-    high: '🟠', 
+    high: '🟠',
     medium: '🟡',
     low: '🟢',
   };
@@ -133,11 +146,14 @@ export function generateSecurityReport(audit: SecurityAuditResult): string {
 
   report += `## Issues Found (${audit.issues.length})\n\n`;
 
-  const groupedIssues = audit.issues.reduce((acc, issue) => {
-    if (!acc[issue.severity]) acc[issue.severity] = [];
-    acc[issue.severity].push(issue);
-    return acc;
-  }, {} as Record<string, SecurityIssue[]>);
+  const groupedIssues = audit.issues.reduce(
+    (acc, issue) => {
+      if (!acc[issue.severity]) acc[issue.severity] = [];
+      acc[issue.severity].push(issue);
+      return acc;
+    },
+    {} as Record<string, SecurityIssue[]>
+  );
 
   (['critical', 'high', 'medium', 'low'] as const).forEach(severity => {
     const issues = groupedIssues[severity];
@@ -168,9 +184,10 @@ export const securityHeaders = {
   // Control referrer information
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   // Content Security Policy
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';",
+  'Content-Security-Policy':
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';",
   // Prevent caching of sensitive responses
   'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-  'Pragma': 'no-cache',
-  'Expires': '0',
+  Pragma: 'no-cache',
+  Expires: '0',
 } as const;
