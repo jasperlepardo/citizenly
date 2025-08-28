@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { UserProfile, HouseholdRecord } from '@/types/api';
+import type { Database } from '@/lib/data/supabase';
+
+type DbHouseholdUpdate = Database['public']['Tables']['households']['Update'];
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -120,9 +123,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         .single();
 
       if (barangayData) {
-        const cityMunData = (barangayData as any).psgc_cities_municipalities;
-        const province = (cityMunData as any).psgc_provinces;
-        const region = (province as any).psgc_regions;
+        const cityMunData = (barangayData as any)?.psgc_cities_municipalities ?? null;
+        const province = (cityMunData as any)?.psgc_provinces ?? null;
+        const region = (province as any)?.psgc_regions ?? null;
 
         geoInfo = {
           barangay_info: {
@@ -130,17 +133,17 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             name: (barangayData as any).name,
           },
           city_municipality_info: {
-            code: (cityMunData as any).code,
-            name: (cityMunData as any).name,
-            type: (cityMunData as any).type,
+            code: (cityMunData as any)?.code ?? null,
+            name: (cityMunData as any)?.name ?? null,
+            type: (cityMunData as any)?.type ?? null,
           },
           province_info: {
-            code: (province as any).code,
-            name: (province as any).name,
+            code: (province as any)?.code ?? null,
+            name: (province as any)?.name ?? null,
           },
           region_info: {
-            code: (region as any).code,
-            name: (region as any).name,
+            code: (region as any)?.code ?? null,
+            name: (region as any)?.name ?? null,
           },
         };
       }
@@ -210,13 +213,15 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       );
     }
 
-    // Update household data (only allow updates within same barangay)
+    // Prepare a typed, sanitized payload (block immutable fields)
+    const { code: _code, barangay_code: _brgy, created_at: _created, updated_at: _prevUpdated, ...rest } =
+      (updateData as Record<string, any>) ?? {};
     const updateResult = await supabaseAdmin
       .from('households')
       .update({
-        ...(updateData as Record<string, any>),
+        ...(rest as DbHouseholdUpdate),
         updated_at: new Date().toISOString(),
-      } as any)
+      })
       .eq('code', householdCode)
       .eq('barangay_code', userProfile.barangay_code)
       .select()

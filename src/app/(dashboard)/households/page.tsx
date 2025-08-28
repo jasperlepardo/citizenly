@@ -11,8 +11,7 @@ function HouseholdsContent() {
   const [selectedAll, setSelectedAll] = useState(false);
   const [selectedHouseholds, setSelectedHouseholds] = useState<Set<string>>(new Set());
 
-  // Use React Query for data fetching
-  const { households, total, isLoading, error } = useHouseholds({
+  const { households, total, isLoading } = useHouseholds({
     searchTerm: localSearchTerm,
   });
 
@@ -85,7 +84,6 @@ function HouseholdsContent() {
 
   return (
     <div className="p-6">
-      {/* Page Header */}
       <div className="mb-6 flex items-start justify-between">
         <div>
           <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600 dark:text-gray-400">
@@ -111,11 +109,8 @@ function HouseholdsContent() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-hidden bg-white dark:bg-gray-800">
-        {/* Table Header */}
         <div className="flex items-center border-b border-gray-200 bg-white p-0 dark:border-gray-700 dark:bg-gray-800">
-          {/* Select All */}
           <div className="flex items-center p-2">
             <div className="flex items-center gap-2">
               <Button
@@ -132,7 +127,6 @@ function HouseholdsContent() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="ml-4 flex items-center gap-1">
             <Button
               variant="neutral-outline"
@@ -197,7 +191,6 @@ function HouseholdsContent() {
             </Button>
           </div>
 
-          {/* Search Households */}
           <div className="mr-0 ml-auto">
             <div className="flex w-60 items-center gap-2 rounded-sm border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-800">
               <div className="size-5 text-gray-600 dark:text-gray-400">
@@ -221,12 +214,9 @@ function HouseholdsContent() {
           </div>
         </div>
 
-        {/* Table Column Headers */}
         <div className="flex items-center border-b border-gray-200 bg-gray-100 p-0 dark:border-gray-700 dark:bg-gray-700">
-          {/* Checkbox Column */}
           <div className="w-12 p-2"></div>
 
-          {/* Column Headers */}
           <div className="grid flex-1 grid-cols-5 gap-4 p-2">
             <div className="p-2">
               <span className="font-montserrat text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -255,18 +245,16 @@ function HouseholdsContent() {
             </div>
           </div>
 
-          {/* Actions Column */}
           <div className="w-12 p-1"></div>
         </div>
 
-        {/* Table Rows */}
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {(() => {
             if (isLoading) {
               return (
                 <div className="p-8 text-center">
                   <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-                  <p className="mt-2 text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                  <p className="mt-2 text-gray-600 dark:text-gray-400">
                     Loading households...
                   </p>
                 </div>
@@ -291,9 +279,8 @@ function HouseholdsContent() {
             return households.map(household => (
               <div
                 key={household.code}
-                className="flex items-center bg-white p-0 transition-colors hover:bg-gray-50 dark:bg-gray-700 dark:bg-gray-800"
+                className="flex items-center bg-white p-0 transition-colors hover:bg-gray-50 dark:bg-gray-800"
               >
-                {/* Checkbox */}
                 <div className="p-2">
                   <Button
                     onClick={() => handleSelectHousehold(household.code)}
@@ -307,12 +294,11 @@ function HouseholdsContent() {
                   </Button>
                 </div>
 
-                {/* Content Columns */}
                 <div className="grid flex-1 grid-cols-5 gap-4 p-2">
                   <div className="p-2">
                     <Link
                       href={`/households/${household.code}`}
-                      className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-200 dark:text-gray-400"
+                      className="font-montserrat text-base font-normal text-gray-600 hover:text-gray-800 hover:underline dark:text-gray-200"
                     >
                       #{household.code}
                     </Link>
@@ -334,12 +320,13 @@ function HouseholdsContent() {
                   </div>
                   <div className="p-2">
                     <div className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400">
-                      {household.created_at ? new Date(household.created_at).toLocaleDateString() : 'N/A'}
+                      {household.created_at && !Number.isNaN(new Date(household.created_at as any).getTime())
+                        ? new Date(household.created_at as any).toLocaleDateString()
+                        : 'N/A'}
                     </div>
                   </div>
                 </div>
 
-                {/* Action Menu */}
                 <div className="p-1">
                   <Button variant="neutral-outline" size="sm" iconOnly>
                     <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

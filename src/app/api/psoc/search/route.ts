@@ -9,8 +9,6 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q');
     const limit = parseInt(searchParams.get('limit') || '20', 10);
     const levels = searchParams.get('levels')?.split(',') || ['occupation']; // Default to occupations only
-    const maxLevel = searchParams.get('maxLevel') || 'occupation';
-    const minLevel = searchParams.get('minLevel') || 'major_group';
 
     if (!query || query.trim().length < 2) {
       // Return empty results instead of error for graceful handling
@@ -150,7 +148,7 @@ export async function GET(request: NextRequest) {
       .sort((a: any, b: any) => {
         const levelDiff = (levelOrder[a.level] || 0) - (levelOrder[b.level] || 0);
         if (levelDiff !== 0) return levelDiff;
-        return (a.match_score || 0) - (b.match_score || 0);
+        return (b.match_score || 0) - (a.match_score || 0);
       })
       .slice(0, limit);
 

@@ -12,6 +12,14 @@ const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secre
 
 // WebhookPayload moved to src/types/api-requests.ts for consolidation
 
+function isWebhookUserRecord(v: any): v is WebhookUserRecord {
+  return !!v
+    && typeof v.id === 'string'
+    && typeof v.email === 'string'
+    && (v.email_confirmed_at === null || typeof v.email_confirmed_at === 'string')
+    && typeof v.created_at === 'string';
+}
+
 export async function POST(request: NextRequest) {
   try {
     const supabaseAdmin = createAdminSupabaseClient();
@@ -54,17 +62,29 @@ export async function POST(request: NextRequest) {
     switch (payload.type) {
       case 'UPDATE':
         if (payload.table === 'users' && payload.schema === 'auth') {
+          if (
+            !isWebhookUserRecord(payload.record) ||
+            !isWebhookUserRecord(payload.old_record ?? payload.record)
+          ) {
+            return NextResponse.json(
+              { error: 'Invalid user record payload' },
+              { status: 400 }
+            );
+          }
           await handleUserUpdate(
             supabaseAdmin,
-            payload.record as unknown as WebhookUserRecord,
-            (payload.old_record || payload.record) as unknown as WebhookUserRecord
+            payload.record as WebhookUserRecord,
+            (payload.old_record ?? payload.record) as unknown as WebhookUserRecord
           );
         }
         break;
 
       case 'INSERT':
         if (payload.table === 'users' && payload.schema === 'auth') {
-          await handleUserInsert(supabaseAdmin, payload.record as unknown as WebhookUserRecord);
+          if (!isWebhookUserRecord(payload.record)) {
+            return NextResponse.json({ error: 'Invalid user record payload' }, { status: 400 });
+          }
+          await handleUserInsert(supabaseAdmin, payload.record);
         }
         break;
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState, useMemo, useCallback, memo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { ResidentForm } from '@/components';
@@ -15,22 +15,16 @@ import {
   philippineCompliantLogger, 
   auditLogger,
   npcComplianceLogger,
-  getClientIP,
   generateSecureSessionId 
 } from '@/lib/security/philippine-logging';
-import { ResidentFormData } from '@/types/forms';
 import { 
   checkRateLimit,
   clearRateLimit,
   getRateLimitStatus
 } from '@/utils/input-sanitizer';
 import { 
-  validateRequiredFields, 
-  transformFormData, 
-  parseFullName,
   validateFormData,
   prepareFormSubmission,
- 
 } from '@/utils/resident-form-utils';
 
 export const dynamic = 'force-dynamic';
@@ -48,8 +42,8 @@ function CreateResidentForm() {
   const { user, userProfile } = useAuth();
   const { getToken: getCSRFToken } = useCSRFToken();
 
-  const { createResident, isSubmitting, validationErrors } = useResidentOperations({
-    onSuccess: data => {
+  const { createResident, validationErrors } = useResidentOperations({
+    onSuccess: () => {
       auditLogger.info('Resident creation successful', {
         eventType: 'RESIDENT_CREATE_SUCCESS',
         userId: user?.id || 'anonymous',
@@ -106,16 +100,17 @@ function CreateResidentForm() {
         
         // In development, provide a way to reset the rate limit
         if (process.env.NODE_ENV === 'development') {
-          console.log(
-            `Rate limit exceeded for user: ${userIdentifier}\n` +
-            `Attempts: ${status.count}/5\n` +
-            `Wait time: ${waitTime} minutes\n` +
-            `To reset rate limit, run: clearRateLimit("${userIdentifier}")`
-          );
+          philippineCompliantLogger.warn('Rate limit exceeded in development', {
+            userIdentifier,
+            attempts: status.count,
+            waitTimeMinutes: waitTime,
+            timestamp: new Date().toISOString(),
+            complianceNote: 'DEV_RATE_LIMIT_WARNING'
+          });
           
           // Auto-clear rate limit after 30 seconds in development to help with testing
           setTimeout(() => {
-            console.log('Development mode: Auto-clearing rate limit after 30 seconds');
+            philippineCompliantLogger.info('Development mode: Auto-clearing rate limit after 30 seconds');
             clearRateLimit(userIdentifier);
             toast.success('Rate limit cleared. You can now try submitting again.');
           }, 30000);
@@ -181,7 +176,7 @@ function CreateResidentForm() {
       });
 
       // Get CSRF token separately 
-      const csrfToken = getCSRFToken();
+      getCSRFToken();
       const result = await createResident(transformedData);
 
       if (!result?.success) {
@@ -196,7 +191,7 @@ function CreateResidentForm() {
         });
       }
       
-    } catch (error) {
+    } catch {
       auditLogger.info('Form submission error', {
         eventType: 'FORM_SUBMISSION_ERROR',
         userId: user?.id || 'anonymous',
@@ -214,42 +209,8 @@ function CreateResidentForm() {
   const { suggestedName, suggestedId, isPreFilled } = useResidentFormURLParameters();
 
   const initialData = useMemo(() => {
-    let data: any = {};
+    const data: any = {};
 
-    // Auto-fill name if provided and valid
-    if (suggestedName && suggestedName.length > 0) {
-      try {
-        const { first_name, middleName, last_name } = parseFullName(suggestedName);
-        
-        // Log URL parameter usage (non-PII)
-        auditLogger.info('URL parameter processing', {
-          eventType: 'URL_PARAM_PROCESSING',
-          userId: user?.id || 'anonymous',
-          action: 'NAME_PREFILL',
-          timestamp: new Date().toISOString(),
-          sessionId,
-          complianceFramework: 'RA_10173_BSP_808',
-          retentionPeriod: '7_YEARS'
-        });
-        
-        data = {
-          first_name,
-          middle_name: middleName,
-          last_name,
-        };
-      } catch (error) {
-        // Log security validation failure
-        auditLogger.info('URL parameter validation failed', {
-          eventType: 'URL_PARAM_VALIDATION_FAILED',
-          userId: user?.id || 'anonymous',
-          action: 'SECURITY_VALIDATION',
-          timestamp: new Date().toISOString(),
-          sessionId,
-          complianceFramework: 'RA_10173_BSP_808',
-          retentionPeriod: '7_YEARS'
-        });
-      }
-    }
 
     // Handle suggested ID with validation
     if (suggestedId && suggestedId.length > 0) {

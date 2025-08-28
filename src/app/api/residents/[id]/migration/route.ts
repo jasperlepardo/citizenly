@@ -213,7 +213,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       // Update existing record
       const { data: updatedMigration, error: updateError } = await supabaseAdmin
         .from('resident_migrant_info')
-        .update(updateData as any)
+        .update(updateData)
         .eq('resident_id', residentId)
         .select()
         .single();
