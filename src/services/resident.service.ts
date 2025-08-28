@@ -269,6 +269,7 @@ export class ResidentService {
         householdCode: formData.household_code,
       });
 
+
       // Insert resident into database
       const { data, error } = await supabase.from('residents').insert([residentData]).select();
 

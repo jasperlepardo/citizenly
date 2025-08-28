@@ -211,6 +211,7 @@ export interface ContactInfoFormState {
   mobile_number: string;
   telephone_number: string;
   household_code: string;
+  household_name?: string; // Optional - display name of selected household
 }
 
 /**

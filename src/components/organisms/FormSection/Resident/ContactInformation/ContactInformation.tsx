@@ -54,9 +54,8 @@ export function ContactInformationForm({
 
   // Handle changes from HouseholdInformation component
   const handleHouseholdInfoChange = (value: HouseholdInformationData) => {
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
-    });
+    // Call onChange with a special marker to indicate this is a household batch update
+    onChange('__household_batch__', value as any);
   };
 
   return (

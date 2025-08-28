@@ -140,8 +140,8 @@ export function ResidentForm({
       ethnicity: '', // Nullable field - no default
       religion: '', // Nullable field - no default
       religion_others_specify: '',
-      is_voter: null, // Will be excluded from submission if section is hidden
-      is_resident_voter: null, // Will be excluded from submission if section is hidden
+      is_voter: false, // Default to false for boolean validation
+      is_resident_voter: false, // Default to false for boolean validation
       last_voted_date: '',
       mother_maiden_first: '',
       mother_maiden_middle: '',
@@ -363,6 +363,39 @@ export function ResidentForm({
   ) => {
     const fieldKey = String(field);
 
+    // Handle household batch update to avoid race condition
+    if (fieldKey === '__household_batch__' && value && typeof value === 'object') {
+      const householdData = value as any;
+      
+      const updatedData: Partial<ResidentFormData> = {
+        household_code: householdData.household_code || '',
+        household_name: householdData.household_name || '',
+      };
+      
+      const newFormData = {
+        ...formData,
+        ...updatedData,
+      };
+
+      setFormData(newFormData);
+
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+
+      // Clear errors for both household fields
+      if (errors.household_code || errors.household_name) {
+        setErrors(prev => ({
+          ...prev,
+          household_code: '',
+          household_name: '',
+        }));
+      }
+      
+      return; // Exit early for batch update
+    }
+
     // Start with the basic field update
     let updatedData: Partial<ResidentFormData> = {
       [fieldKey]: value,
@@ -378,6 +411,7 @@ export function ResidentForm({
       ...formData,
       ...updatedData,
     };
+
 
     setFormData(newFormData);
 
@@ -401,6 +435,7 @@ export function ResidentForm({
     setIsSubmitting(true);
 
     try {
+
       // Basic validation using database field names
       const newErrors: Record<string, string> = {};
 
@@ -408,12 +443,13 @@ export function ResidentForm({
       if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
       if (!formData.sex) newErrors.sex = 'Sex is required';
       if (!formData.birthdate) newErrors.birthdate = 'Birth date is required';
+      if (!formData.household_code || !formData.household_code.trim()) {
+        newErrors.household_code = 'Household assignment is required';
+      }
 
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         setIsSubmitting(false);
-        // Show validation error message
-        console.error('Validation errors:', newErrors);
         return;
       }
 
@@ -475,6 +511,7 @@ export function ResidentForm({
           is_solo_parent: filteredFormData.is_solo_parent,
           is_person_with_disability: filteredFormData.is_person_with_disability,
         });
+        
         await onSubmit(filteredFormData);
       }
     } catch (error) {
@@ -535,6 +572,7 @@ export function ResidentForm({
             telephone_number: formData.telephone_number,
             mobile_number: formData.mobile_number,
             household_code: formData.household_code,
+            household_name: formData.household_name,
           }}
           onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
             // Direct field mapping (no conversion needed as both use snake_case)

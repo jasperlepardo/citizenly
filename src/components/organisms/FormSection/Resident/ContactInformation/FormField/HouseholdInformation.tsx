@@ -79,7 +79,7 @@ export function HouseholdInformation({
             placeholder: '🏠 Select household...',
             options: (householdSearchOptions || []).map((household: any) => ({
               value: household.code,
-              label: household.head_name || `Household ${household.code}`,
+              label: household.name || `Household ${household.code}`,
               description: `Code: ${household.code}${household.address ? ` • ${household.address}` : ''}`,
               badge: 'household',
             })),
