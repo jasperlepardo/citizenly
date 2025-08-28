@@ -3,8 +3,8 @@
  * Functions for command menu API interactions
  */
 
-import { commandMenuService } from '@/services/command-menu-service';
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import { commandMenuService } from '@/services/command-menu-service';
 
 /**
  * Search data through the command menu service
@@ -17,7 +17,12 @@ export const searchData = async (query: string, limit = 10) => {
  * Export data functionality
  */
 export const exportData = async (options: { type: string; format: string; filters?: Record<string, any> }) => {
-  return commandMenuService.exportData(options);
+  const exportOptions = {
+    type: options.type as 'residents' | 'households',
+    format: options.format as 'csv' | 'xlsx',
+    filters: options.filters,
+  };
+  return commandMenuService.exportData(exportOptions);
 };
 
 /**
@@ -28,12 +33,15 @@ export const getRecentItems = async (): Promise<CommandMenuItem[]> => {
   // Convert search results to command menu items
   return results.map(item => ({
     id: item.id,
-    label: item.title,
-    description: item.description,
-    href: item.href,
+    title: item.title,
+    subtitle: item.description,
+    data: item,
+    score: 1,
+    type: item.type,
     group: 'Recent',
     recent: true,
     keywords: [item.title.toLowerCase()],
+    href: item.href,
   }));
 };
 

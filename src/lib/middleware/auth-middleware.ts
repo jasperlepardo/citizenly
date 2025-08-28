@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { createSecureErrorResponse } from '@/lib/security/api-security';
 
@@ -110,7 +111,7 @@ export async function authenticateUser(request: NextRequest): Promise<AuthResult
         city_municipality_code: typedProfile.city_municipality_code,
         province_code: typedProfile.province_code,
         region_code: typedProfile.region_code,
-        role_id: typedProfile.role_id,
+        // role_id: typedProfile.role_id, // Not part of AuthenticatedUser interface
       },
     };
   } catch (error) {

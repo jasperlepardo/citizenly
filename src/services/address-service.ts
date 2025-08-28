@@ -4,8 +4,9 @@
  * Consolidates lib/utilities/address-lookup.ts functionality
  */
 
-import { supabase } from '../lib/supabase';
 import { createLogger } from '../lib/config/environment';
+import { supabase } from '../lib/supabase';
+
 import { cacheService, CacheKeys, CacheTags } from './cache-service';
 
 const logger = createLogger('AddressService');

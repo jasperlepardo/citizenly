@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { UserProfile, HouseholdRecord } from '@/types/api';
 
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin
@@ -190,7 +191,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin
@@ -215,7 +216,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .update({
         ...(updateData as Record<string, any>),
         updated_at: new Date().toISOString(),
-      })
+      } as any)
       .eq('code', householdCode)
       .eq('barangay_code', userProfile.barangay_code)
       .select()

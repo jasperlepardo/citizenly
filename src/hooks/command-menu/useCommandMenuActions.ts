@@ -12,6 +12,7 @@ import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import {
   exportData,
   backupData,
@@ -27,7 +28,6 @@ import {
 } from '@/lib/command-menu';
 import { trackNavigation, trackAction } from '@/lib/data';
 
-import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 /**
  * Return type for command menu actions hook
@@ -129,7 +129,7 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
         if (item.href) {
           trackNavigation(
             originalId,
-            item.label,
+            item.label || item.title || 'Unknown',
             item.description || '',
             type as 'resident' | 'household',
             item.href
@@ -138,11 +138,11 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
         }
       } else if (item.onClick) {
         // Track action execution
-        trackAction(item.id, item.label, item.description || '');
+        trackAction(item.id, item.label || item.title || 'Unknown', item.description || '');
         trackCommandMenuAction(item.id, 'click_action');
       } else if (item.href) {
         // Track navigation
-        trackAction(item.id, item.label, `Navigated to ${item.label}`);
+        trackAction(item.id, item.label || item.title || 'Unknown', `Navigated to ${item.label || item.title || 'Unknown'}`);
         trackCommandMenuNavigation(item.id, 'navigation', item.href);
       }
 
@@ -176,34 +176,34 @@ export function useCommandMenuActions(): UseCommandMenuActionsReturn {
             enhancedItem.onClick = () => handleBackupData();
             break;
           case 'action-add-resident':
-            enhancedItem.onClick = () => handleQuickAction(createResident);
+            enhancedItem.onClick = () => handleQuickAction(async () => createResident());
             break;
           case 'action-create-household':
-            enhancedItem.onClick = () => handleQuickAction(createHousehold);
+            enhancedItem.onClick = () => handleQuickAction(async () => createHousehold());
             break;
           case 'search-seniors':
-            enhancedItem.onClick = () => handleQuickAction(findSeniorCitizens);
+            enhancedItem.onClick = () => handleQuickAction(async () => findSeniorCitizens());
             break;
           case 'search-pwd':
-            enhancedItem.onClick = () => handleQuickAction(findPWDs);
+            enhancedItem.onClick = () => handleQuickAction(async () => findPWDs());
             break;
           case 'search-solo-parents':
-            enhancedItem.onClick = () => handleQuickAction(findSoloParents);
+            enhancedItem.onClick = () => handleQuickAction(async () => findSoloParents());
             break;
           case 'cert-barangay-clearance':
-            enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('clearance'));
+            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('clearance'));
             break;
           case 'cert-residency':
-            enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('residency'));
+            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('residency'));
             break;
           case 'cert-indigency':
-            enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('indigency'));
+            enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('indigency'));
             break;
           case 'report-population':
-            enhancedItem.onClick = () => handleQuickAction(() => generateReport('population'));
+            enhancedItem.onClick = () => handleQuickAction(async () => generateReport('population'));
             break;
           case 'report-households-summary':
-            enhancedItem.onClick = () => handleQuickAction(() => generateReport('households'));
+            enhancedItem.onClick = () => handleQuickAction(async () => generateReport('households'));
             break;
         }
 

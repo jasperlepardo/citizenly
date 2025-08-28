@@ -1,6 +1,7 @@
 import type { ResidentFormData } from '@/types';
 
 export const DEFAULT_FORM_VALUES: ResidentFormData = {
+  id: '',
   first_name: '',
   middle_name: '',
   last_name: '',
@@ -12,11 +13,11 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   birthdate: '',
   birth_place_code: '',
   philsys_card_number: '',
-  education_attainment: '',
+  education_attainment: null,
   is_graduate: false,
-  employment_status: '',
+  employment_status: null,
   occupation_code: '',
-  ethnicity: '',
+  ethnicity: null,
   email: '',
   telephone_number: '',
   mobile_number: '',
@@ -26,7 +27,7 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   complexion: '',
   height: 0,
   weight: 0,
-  religion: '',
+  religion: null,
   religion_others_specify: '',
   // Voting Information
   last_voted_date: '',
@@ -34,6 +35,15 @@ export const DEFAULT_FORM_VALUES: ResidentFormData = {
   mother_maiden_first: '',
   mother_maiden_middle: '',
   mother_maiden_last: '',
+  // Voting Information
+  is_voter: null,
+  is_resident_voter: null,
+  // System fields
+  is_active: true,
+  created_by: null,
+  updated_by: null,
+  created_at: null,
+  updated_at: null,
   // Note: Sectoral and migration information are handled separately
   // These properties are stored in separate tables (resident_sectoral_info, resident_migrant_info)
   // and should not be part of the core ResidentFormData interface

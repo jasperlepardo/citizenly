@@ -3,7 +3,7 @@ import React from 'react';
 import { SelectField } from '@/components';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
 import type { FormMode } from '@/types';
-import { SelectOption } from '@/types/database';
+import { SelectOption } from '@/types';
 
 export interface EmploymentInformationData {
   employment_status: string;
@@ -87,7 +87,6 @@ export function EmploymentInformation({
                     value: value.occupation_code,
                     label: value.occupation_title, // Use full hierarchy as label
                     description: `PSOC Code: ${value.occupation_code}`,
-                    badge: 'occupation', // Add badge to indicate it's selected occupation
                   });
                 }
               }

@@ -5,6 +5,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
+
 import { sanitizeInput, sanitizeNameInput } from '@/utils/input-sanitizer';
 
 export interface URLParameterConfig {

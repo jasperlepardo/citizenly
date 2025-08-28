@@ -78,6 +78,8 @@ export interface FieldErrorBoundaryProps {
  * Error logging context
  */
 export interface ErrorLogContext {
+  id?: string;
+  operation?: string;
   userId?: string;
   sessionId?: string;
   userAgent?: string;

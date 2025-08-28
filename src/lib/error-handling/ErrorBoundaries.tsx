@@ -7,8 +7,9 @@
 
 import React from 'react';
 
+import { logError, getErrorMessage } from '@/utils/error-utils';
+
 import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from './error-types';
-import { logError, errorUtils, getErrorMessage } from './error-utils';
 
 /**
  * Create error boundary state from error
@@ -17,7 +18,7 @@ export function createErrorBoundaryState(error: Error): ErrorBoundaryState {
   return {
     hasError: true,
     error,
-    errorId: errorUtils.generateErrorId(),
+    errorId: `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     retryCount: 0,
   };
 }
@@ -44,7 +45,7 @@ export function handleErrorBoundaryError(
  * Check if error boundary should retry
  */
 export function shouldRetryError(error: Error, retryCount: number, maxRetries: number): boolean {
-  return retryCount < maxRetries && errorUtils.isRetryableError(error);
+  return retryCount < maxRetries && (error.name === 'NetworkError' || error.name === 'TimeoutError');
 }
 
 /**
@@ -58,7 +59,7 @@ export function createDefaultErrorFallback() {
     maxRetries = 3,
   }: ErrorFallbackProps) {
     const canRetry = shouldRetryError(error, retryCount, maxRetries);
-    const userMessage = errorUtils.getUserFriendlyMessage(error);
+    const userMessage = error.message || 'An unexpected error occurred';
 
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-zinc-800">

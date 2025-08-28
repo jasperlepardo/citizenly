@@ -6,10 +6,10 @@
 import { useCallback, useState } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-
-import { captureError, addSentryBreadcrumb } from '../sentry-config';
 import type { ErrorBoundaryState } from '@/types/errors';
 import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/hooks';
+
+import { captureError, addSentryBreadcrumb } from '../sentry-config';
 
 // Extended error boundary state for hook usage
 interface HookErrorBoundaryState extends ErrorBoundaryState {
@@ -26,15 +26,15 @@ export const useErrorBoundary = (options: UseErrorBoundaryOptions): ErrorBoundar
 
   const [errorState, setErrorState] = useState<HookErrorBoundaryState>({
     hasError: false,
-    error: null,
-    errorInfo: null,
+    error: undefined,
+    errorInfo: undefined,
   });
 
   const resetError = useCallback(() => {
     setErrorState({
       hasError: false,
-      error: null,
-      errorInfo: null,
+      error: undefined,
+      errorInfo: undefined,
     });
 
     clientLogger.info(`Error boundary reset in ${componentName}`, {
@@ -135,7 +135,7 @@ export const useErrorBoundary = (options: UseErrorBoundaryOptions): ErrorBoundar
   );
 
   return {
-    error: errorState.error,
+    error: errorState.error || null,
     hasError: errorState.hasError,
     resetError,
     captureError: handleError,

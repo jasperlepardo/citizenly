@@ -10,13 +10,13 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import {
   getRecentApiItems as getRecentItems,
   clearRecentApiItems as clearRecentItems,
 } from '@/lib/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
-import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 
 /**
  * Recent item from storage
@@ -77,11 +77,12 @@ export function useCommandMenuRecents(): UseCommandMenuRecentsReturn {
       if (recent) {
         const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
           id: `recent-${item.id}`,
-          label: item.title,
-          description: item.description,
+          title: item.title,
+          subtitle: item.description,
           group: 'Recent',
-          href: item.href,
-          keywords: item.title.toLowerCase().split(' '),
+          data: item.href,
+          score: 0,
+          type: 'navigation' as const,
           recent: true,
         }));
 

@@ -5,9 +5,14 @@
  * Helper functions for validation operations
  */
 
+import type { 
+  ValidationResult, 
+  FieldValidationResult, 
+  ValidationError,
+  SimpleValidationResult 
+} from '@/types/validation';
 import { debounce } from '@/utils/async-utils';
 
-import type { ValidationResult, FieldValidationResult, ValidationError } from './types';
 
 /**
  * Check if email is valid
@@ -78,12 +83,10 @@ export function createValidationResult(
   errors: Record<string, string> = {},
   warnings: Record<string, string> = {},
   data?: any
-): ValidationResult {
+): SimpleValidationResult {
   return {
     isValid,
     errors,
-    warnings,
-    data,
   };
 }
 
@@ -107,17 +110,13 @@ export function createFieldValidationResult(
 /**
  * Merge multiple validation results
  */
-export function mergeValidationResults(...results: ValidationResult[]): ValidationResult {
+export function mergeValidationResults(...results: SimpleValidationResult[]): SimpleValidationResult {
   const mergedErrors: Record<string, string> = {};
-  const mergedWarnings: Record<string, string> = {};
   let mergedData: any = {};
 
   for (const result of results) {
     Object.assign(mergedErrors, result.errors);
-    if (result.warnings) {
-      Object.assign(mergedWarnings, result.warnings);
-    }
-    if (result.data) {
+    if ('data' in result && result.data) {
       mergedData = { ...mergedData, ...result.data };
     }
   }
@@ -125,7 +124,7 @@ export function mergeValidationResults(...results: ValidationResult[]): Validati
   return createValidationResult(
     Object.keys(mergedErrors).length === 0,
     mergedErrors,
-    Object.keys(mergedWarnings).length > 0 ? mergedWarnings : undefined,
+    {},
     mergedData
   );
 }
@@ -133,14 +132,14 @@ export function mergeValidationResults(...results: ValidationResult[]): Validati
 /**
  * Extract field names from validation errors
  */
-export function getErrorFields(validationResult: ValidationResult): string[] {
+export function getErrorFields(validationResult: SimpleValidationResult): string[] {
   return Object.keys(validationResult.errors);
 }
 
 /**
  * Check if validation result has specific field error
  */
-export function hasFieldError(validationResult: ValidationResult, fieldName: string): boolean {
+export function hasFieldError(validationResult: SimpleValidationResult, fieldName: string): boolean {
   return fieldName in validationResult.errors;
 }
 
@@ -148,7 +147,7 @@ export function hasFieldError(validationResult: ValidationResult, fieldName: str
  * Get error message for specific field
  */
 export function getFieldError(
-  validationResult: ValidationResult,
+  validationResult: SimpleValidationResult,
   fieldName: string
 ): string | undefined {
   return validationResult.errors[fieldName];
@@ -157,17 +156,17 @@ export function getFieldError(
 /**
  * Check if validation result has warnings
  */
-export function hasWarnings(validationResult: ValidationResult): boolean {
-  return Boolean(validationResult.warnings && Object.keys(validationResult.warnings).length > 0);
+export function hasWarnings(validationResult: SimpleValidationResult): boolean {
+  return false; // SimpleValidationResult doesn't support warnings
 }
 
 /**
  * Convert validation result to error array
  */
-export function validationResultToErrors(validationResult: ValidationResult): ValidationError[] {
+export function validationResultToErrors(validationResult: SimpleValidationResult): ValidationError[] {
   return Object.entries(validationResult.errors).map(([field, message]) => ({
     field,
-    message,
+    message: message,
     code: 'VALIDATION_ERROR',
   }));
 }
@@ -200,28 +199,20 @@ export function normalizeFieldName(fieldName: string): string {
 /**
  * Create validation summary
  */
-export function createValidationSummary(validationResult: ValidationResult): {
+export function createValidationSummary(validationResult: SimpleValidationResult): {
   isValid: boolean;
   errorCount: number;
   warningCount: number;
   summary: string;
 } {
   const errorCount = Object.keys(validationResult.errors).length;
-  const warningCount = validationResult.warnings
-    ? Object.keys(validationResult.warnings).length
-    : 0;
+  const warningCount = 0; // SimpleValidationResult doesn't support warnings
 
   let summary: string;
   if (validationResult.isValid) {
-    summary =
-      warningCount > 0
-        ? `Valid with ${warningCount} warning${warningCount === 1 ? '' : 's'}`
-        : 'Valid';
+    summary = 'Valid';
   } else {
     summary = `${errorCount} error${errorCount === 1 ? '' : 's'}`;
-    if (warningCount > 0) {
-      summary += ` and ${warningCount} warning${warningCount === 1 ? '' : 's'}`;
-    }
   }
 
   return {
@@ -246,10 +237,10 @@ export function debounceValidation<T extends (...args: any[]) => any>(
  * Create validation pipeline
  */
 export function createValidationPipeline<T>(
-  ...validators: ((data: T) => ValidationResult | Promise<ValidationResult>)[]
-): (data: T) => Promise<ValidationResult> {
+  ...validators: ((data: T) => SimpleValidationResult | Promise<SimpleValidationResult>)[]
+): (data: T) => Promise<SimpleValidationResult> {
   return async (data: T) => {
-    const results: ValidationResult[] = [];
+    const results: SimpleValidationResult[] = [];
 
     for (const validator of validators) {
       try {
@@ -389,10 +380,10 @@ export function createFormValidationExecutor<T>(
   setErrors: (errors: Record<string, string>) => void
 ) {
   return useCallback(
-    (formData: T): ValidationResult => {
+    (formData: T): SimpleValidationResult => {
       const result = validateFn(formData);
 
-      const normalizedResult: ValidationResult = {
+      const normalizedResult: SimpleValidationResult = {
         isValid: result.isValid || result.success === true,
         errors: result.errors || {},
       };

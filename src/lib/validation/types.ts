@@ -21,4 +21,4 @@ export type {
   BaseValidationConfig,
   ValidateFormFunction,
   ValidateFieldFunction
-} from '@/types/validation';
+} from '../../types/validation';

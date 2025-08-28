@@ -4,6 +4,7 @@
  */
 
 import { randomBytes, createHash, timingSafeEqual } from 'crypto';
+
 import type { CSRFToken } from '@/types/services';
 
 const CSRF_SECRET = process.env.CSRF_SECRET;

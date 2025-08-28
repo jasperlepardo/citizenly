@@ -114,7 +114,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
           if (!validation.isValid) {
             errors.push(`${file.name}: ${validation.errors.join(', ')}`);
             logFileOperation('upload', file.name, 'current-user', 'blocked', {
-              errors: validation.errors,
+              errors: validation.errors.join(', '),
               fileSize: file.size,
               fileType: file.type,
             });
@@ -126,7 +126,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
           if (!virusScan.clean) {
             errors.push(`${file.name}: Security threat detected - ${virusScan.threats.join(', ')}`);
             logFileOperation('upload', file.name, 'current-user', 'blocked', {
-              threats: virusScan.threats,
+              threats: virusScan.threats.join(', '),
             });
             continue;
           }
@@ -141,7 +141,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
           logFileOperation('upload', file.name, 'current-user', 'success', {
             fileSize: file.size,
             fileType: file.type,
-            fileHash: validation.fileInfo?.hash,
+            fileHash: validation.fileInfo?.hash || '',
           });
         } catch (error) {
           errors.push(`${file.name}: Validation error occurred`);

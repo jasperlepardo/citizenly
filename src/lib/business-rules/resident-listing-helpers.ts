@@ -6,8 +6,7 @@
  * @version 1.0.0
  */
 
-import { ResidentDatabaseRecord as ResidentListItem } from '@/types';
-
+import { ResidentRecord as ResidentListItem } from '@/types';
 import { formatDate as libFormatDate } from '@/utils/data-transformers';
 
 /**

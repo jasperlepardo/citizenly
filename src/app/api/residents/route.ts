@@ -59,63 +59,32 @@ export const GET = withSecurityHeaders(
           context
         );
 
-        const supabaseAdmin = createAdminSupabaseClient();
+        const supabaseAdmin = createAdminSupabaseClient() as any;
 
-        // Build base query with proper field selection including sectoral info and household
+        // Build optimized query for listing - only essential fields to improve performance
         let query = supabaseAdmin
           .from('residents')
           .select(
             `id, 
-           first_name, 
-           middle_name, 
-           last_name, 
-           birthdate, 
-           sex, 
-           birth_place_code, 
-           household_code,
-           email,
-           mobile_number,
-           civil_status,
-           occupation_code,
-           created_at,
-           households!inner(
-             code,
-             name,
-             barangay_code,
-             city_municipality_code,
-             province_code,
-             region_code,
-             house_number,
-             street_id,
-             subdivision_id
-           ),
-           resident_sectoral_info(
-             is_labor_force_employed,
-             is_unemployed,
-             is_overseas_filipino_worker,
-             is_person_with_disability,
-             is_out_of_school_children,
-             is_out_of_school_youth,
-             is_senior_citizen,
-             is_registered_senior_citizen,
-             is_solo_parent,
-             is_indigenous_people,
-             is_migrant
-           ),
-           resident_migrant_info(
-             previous_barangay_code,
-             previous_city_municipality_code,
-             previous_province_code,
-             previous_region_code,
-             date_of_transfer,
-             reason_for_migration,
-             is_intending_to_return,
-             length_of_stay_previous_months,
-             duration_of_stay_current_months,
-             migration_type,
-             is_whole_family_migrated
-           )`,
-            { count: 'exact' }
+             first_name, 
+             middle_name, 
+             last_name, 
+             birthdate, 
+             sex, 
+             household_code,
+             email,
+             mobile_number,
+             civil_status,
+             created_at,
+             households!inner(
+               code,
+               name,
+               barangay_code,
+               city_municipality_code,
+               province_code,
+               region_code
+             )`,
+            { count: 'planned' } // Use 'planned' instead of 'exact' for better performance
           )
           .order('created_at', { ascending: false });
 
@@ -184,7 +153,7 @@ export const GET = withSecurityHeaders(
 
         // Audit the data access
         await auditDataOperation('view', 'resident', 'list', context, {
-          searchTerm: search,
+          searchTerm: search || '',
           resultCount: residents?.length || 0,
           totalCount: actualCount,
         });
@@ -220,6 +189,7 @@ export const POST = withSecurityHeaders(
 
         // Parse and validate request body
         const body = await request.json();
+        console.log('🔧 POST /api/residents - Received CREATE request');
         logger.debug('Received create resident request', {
           hasBody: !!body,
           bodyKeys: Object.keys(body),
@@ -254,7 +224,7 @@ export const POST = withSecurityHeaders(
 
         const residentData = validationResult.data as ResidentFormData;
 
-        const supabaseAdmin = createAdminSupabaseClient();
+        const supabaseAdmin = createAdminSupabaseClient() as any;
 
         // Prepare data for insertion (using exact database field names)
         const insertData = {
@@ -312,7 +282,7 @@ export const POST = withSecurityHeaders(
           // Insert resident
           const { data: resident, error: insertError } = await supabaseAdmin
             .from('residents')
-            .insert([insertData])
+            .insert([insertData] as any)
             .select('id, first_name, last_name, birthdate, sex, birth_place_code, created_at')
             .single();
 
@@ -356,7 +326,7 @@ export const POST = withSecurityHeaders(
 
             const { error: sectoralError } = await supabaseAdmin
               .from('resident_sectoral_info')
-              .insert(sectoralData);
+              .insert(sectoralData as any);
 
             if (sectoralError) {
               console.error('Failed to create sectoral information:', sectoralError);
@@ -400,7 +370,7 @@ export const POST = withSecurityHeaders(
 
             const { error: migrationError } = await supabaseAdmin
               .from('resident_migrant_info')
-              .insert(migrationData);
+              .insert(migrationData as any);
 
             if (migrationError) {
               console.error('Failed to create migration information:', migrationError);

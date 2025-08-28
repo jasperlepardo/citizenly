@@ -4,7 +4,9 @@
  */
 
 import crypto from 'crypto';
+
 import bcrypt from 'bcryptjs';
+
 import { validatePhilSysFormat } from './sanitization-utils';
 
 const SALT_ROUNDS = 12;

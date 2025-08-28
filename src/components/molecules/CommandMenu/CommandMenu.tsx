@@ -6,7 +6,7 @@ import React, { useEffect, useRef } from 'react';
 
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/lib';
-import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItem, CommandMenuHookResult as CommandMenuProps } from '@/types';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuGroup } from './CommandMenuGroup';
@@ -27,10 +27,14 @@ const commandMenuVariants = cva(
   }
 );
 
-interface CommandMenuComponentProps
-  extends Omit<CommandMenuProps, 'isOpen' | 'onClose' | 'items'>,
-    VariantProps<typeof commandMenuVariants> {
-  items?: CommandMenuItem[]; // Made optional since we get items from API
+interface CommandMenuComponentProps extends VariantProps<typeof commandMenuVariants> {
+  items?: CommandMenuItem[]; // Made optional since we get items from API  
+  placeholder?: string;
+  emptyStateText?: string;
+  maxResults?: number;
+  showShortcuts?: boolean;
+  showRecentSection?: boolean;
+  className?: string;
 }
 
 export function CommandMenu({

@@ -4,6 +4,7 @@
  */
 
 import { ErrorCode, ErrorSeverity } from '@/types/errors';
+
 import { createAppError } from './error-utils';
 
 /**

@@ -10,12 +10,15 @@
  * @author Citizenly Development Team
  */
 
+import type { ComponentType } from 'react';
+
+import type { FormMode } from './forms';
 import type { 
   ValidationResult, 
   FieldValidationConfig,
-  ValidationFunction
+  ValidationFunction,
+  FieldValidationResult
 } from './validation';
-import type { FormMode } from './forms';
 
 // =============================================================================
 // VALIDATION HOOK TYPES
@@ -25,8 +28,8 @@ import type { FormMode } from './forms';
  * Generic validation hook options
  */
 export interface UseGenericValidationOptions<T> extends FieldValidationConfig {
-  validateForm: ValidationFunction<T>;
-  validateField?: ValidationFunction;
+  validateForm: (data: T) => ValidationResult<T> | Promise<ValidationResult<T>>;
+  validateField?: (fieldName: string, value: any, formData?: T) => string | null | FieldValidationResult;
 }
 
 /**
@@ -37,6 +40,8 @@ export interface UseGenericValidationReturn<T> {
   errors: Record<string, string>;
   /** Whether form is currently valid */
   isValid: boolean;
+  /** Whether validation has been attempted */
+  hasValidated: boolean;
   /** Validate entire form */
   validateForm: (data: T) => Promise<ValidationResult<T>>;
   /** Validate single field */
@@ -47,6 +52,14 @@ export interface UseGenericValidationReturn<T> {
   clearFieldError: (fieldName: string) => void;
   /** Set manual validation error */
   setError: (fieldName: string, error: string) => void;
+  /** Set field-specific validation error (alias for setError) */
+  setFieldError: (fieldName: string, error: string) => void;
+  /** Get field-specific validation error */
+  getFieldError: (fieldName: string) => string | undefined;
+  /** Check if field has error */
+  hasFieldError: (fieldName: string) => boolean;
+  /** Set multiple errors */
+  setErrors: (errors: Record<string, string>) => void;
 }
 
 /**
@@ -391,10 +404,20 @@ export interface CommandMenuSearchResult<T = any> {
   id: string;
   title: string;
   subtitle?: string;
-  icon?: string;
+  icon?: string | React.ComponentType<{ className?: string }>;
   data: T;
   score: number;
   type: 'resident' | 'household' | 'action' | 'navigation';
+  disabled?: boolean;
+  shortcut?: string[];
+  avatar?: string | { src: string; alt: string; fallback?: string };
+  label?: string;
+  recent?: boolean;
+  group?: string;
+  description?: string;
+  keywords?: string[];
+  href?: string;
+  onClick?: () => void;
 }
 
 /**

@@ -5,6 +5,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+
 import { createLogger } from '../lib/config/environment';
 
 const logger = createLogger('SecurityAuditService');

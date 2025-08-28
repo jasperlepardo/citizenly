@@ -1,100 +1,127 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const resolvedParams = await params;
-    const residentId = resolvedParams.id;
+import {
+  withAuth,
+  createAdminSupabaseClient,
+  getAccessLevel,
+  logger,
+  logError,
+  auditDataOperation,
+  createSuccessResponse,
+  createValidationErrorResponse,
+  withNextRequestErrorHandling,
+  withSecurityHeaders,
+  createResidentSchema,
+} from '@/lib';
+import { RequestContext, Role } from '@/lib/authentication/types';
+import { createRateLimitHandler } from '@/lib/security/rate-limit';
+import { ResidentFormData } from '@/types';
+import type { AuthenticatedUser } from '@/types/auth';
 
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+export const GET = withSecurityHeaders(
+  withAuth(
+    {
+      requiredPermissions: [
+        'residents.manage.barangay',
+        'residents.manage.city',
+        'residents.manage.province',
+        'residents.manage.region',
+        'residents.manage.all',
+      ],
+    },
+    withNextRequestErrorHandling(
+      async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+        // Extract params from the URL path since this is a dynamic route
+        const url = new URL(request.url);
+        const pathSegments = url.pathname.split('/');
+        const residentId = pathSegments[pathSegments.length - 1];
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
+        // Apply rate limiting
+        const rateLimitResponse = await createRateLimitHandler('SEARCH_RESIDENTS')(
+          request,
+          user.id
+        );
+        if (rateLimitResponse) return rateLimitResponse;
 
-    const token = authHeader.split(' ')[1];
+        const supabaseAdmin = createAdminSupabaseClient() as any;
 
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+        // Get access level for geographic filtering
+        const accessLevel = getAccessLevel(user.role);
 
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
+        // Build query with geographic filtering
+        let query = supabaseAdmin
+          .from('residents')
+          .select(
+            `
+            *,
+            households!inner(
+              code,
+              barangay_code,
+              name,
+              address,
+              house_number,
+              street_id,
+              subdivision_id,
+              city_municipality_code,
+              province_code,
+              region_code,
+              zip_code,
+              no_of_families,
+              no_of_household_members,
+              no_of_migrants,
+              household_type,
+              tenure_status,
+              tenure_others_specify,
+              household_unit,
+              monthly_income,
+              income_class,
+              household_head_id,
+              household_head_position,
+              is_active,
+              created_by,
+              updated_by,
+              created_at,
+              updated_at
+            )
+          `
+          )
+          .eq('id', residentId)
+          .eq('is_active', true);
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
+        // Apply geographic filtering based on user's access level
+        switch (accessLevel) {
+          case 'barangay':
+            if (user.barangayCode) {
+              query = query.eq('households.barangay_code', user.barangayCode);
+            }
+            break;
+          case 'city':
+            if (user.cityCode) {
+              query = query.eq('households.city_municipality_code', user.cityCode);
+            }
+            break;
+          case 'province':
+            if (user.provinceCode) {
+              query = query.eq('households.province_code', user.provinceCode);
+            }
+            break;
+          case 'region':
+            if (user.regionCode) {
+              query = query.eq('households.region_code', user.regionCode);
+            }
+            break;
+          case 'national':
+            // No filtering for national access
+            break;
+        }
 
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+        const { data: residentWithHousehold, error: residentError } = await query.single();
 
-    // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('auth_user_profiles')
-      .select('barangay_code, first_name, last_name')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
-    }
-
-    // Get resident data with household join to check barangay access
-    const { data: residentWithHousehold, error: residentError } = await supabaseAdmin
-      .from('residents')
-      .select(
-        `
-        *,
-        households!inner(
-          code,
-          barangay_code,
-          name,
-          address,
-          house_number,
-          street_id,
-          subdivision_id,
-          city_municipality_code,
-          province_code,
-          region_code,
-          zip_code,
-          no_of_families,
-          no_of_household_members,
-          no_of_migrants,
-          household_type,
-          tenure_status,
-          tenure_others_specify,
-          household_unit,
-          monthly_income,
-          income_class,
-          household_head_id,
-          household_head_position,
-          is_active,
-          created_by,
-          updated_by,
-          created_at,
-          updated_at
-        )
-      `
-      )
-      .eq('id', residentId)
-      .eq('households.barangay_code', userProfile.barangay_code) // Ensure same barangay through household
-      .single();
-
-    if (residentError || !residentWithHousehold) {
-      return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
-    }
+        if (residentError || !residentWithHousehold) {
+          logError(new Error('Resident not found'), `ID: ${residentId}`);
+          throw new Error('Resident not found or access denied');
+        }
 
     // Get sectoral info separately to avoid join issues
     const { data: sectoralInfoArray, error: sectoralError } = await supabaseAdmin
@@ -312,143 +339,237 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       }
     }
 
-    return NextResponse.json({
-      resident: {
-        ...resident,
-        ...geoInfo,
-        ...birthPlaceInfo,
-        ...occupationInfo,
-      },
-      household,
-    });
-  } catch (error) {
-    console.error('Resident detail API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+        // Audit the data access
+        await auditDataOperation('view', 'resident', residentId, context, {
+          fullName: `${resident.first_name || ''} ${resident.last_name || ''}`,
+        });
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const resolvedParams = await params;
-    const residentId = resolvedParams.id;
-    const updateData = await request.json();
+        return createSuccessResponse(
+          {
+            resident: {
+              ...resident,
+              ...geoInfo,
+              ...birthPlaceInfo,
+              ...occupationInfo,
+            },
+            household,
+          },
+          'Resident retrieved successfully',
+          context
+        );
+      }
+    )
+  )
+);
 
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+export const PUT = withSecurityHeaders(
+  withAuth(
+    {
+      requiredPermissions: [
+        'residents.manage.barangay',
+        'residents.manage.city',
+        'residents.manage.province',
+        'residents.manage.region',
+        'residents.manage.all',
+      ],
+    },
+    withNextRequestErrorHandling(
+      async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+        // Extract params from the URL path since this is a dynamic route
+        const url = new URL(request.url);
+        const pathSegments = url.pathname.split('/');
+        const residentId = pathSegments[pathSegments.length - 1];
+        console.log('🔧 PUT /api/residents/[id] - Received request for resident ID:', residentId);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
+        // Apply rate limiting
+        const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
+        if (rateLimitResponse) return rateLimitResponse;
 
-    const token = authHeader.split(' ')[1];
+        // Parse and validate request body
+        const body = await request.json();
+        console.log('🔧 PUT /api/residents/[id] - Update data keys:', Object.keys(body));
 
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+        const validationResult = createResidentSchema.safeParse(body);
 
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
+        if (!validationResult.success) {
+          logger.error('Resident update validation failed', {
+            issueCount: validationResult.error.issues.length,
+            allIssues: validationResult.error.issues.map(i => ({
+              path: i.path,
+              message: i.message,
+              code: (i as any).code,
+            })),
+          });
+          return createValidationErrorResponse(
+            validationResult.error.issues.map((err: z.ZodIssue) => ({
+              field: err.path.join('.'),
+              message: err.message,
+            })),
+            context
+          );
+        }
 
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
+        const updateData = validationResult.data as ResidentFormData;
+        const supabaseAdmin = createAdminSupabaseClient() as any;
 
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+        // Get access level for geographic filtering
+        const accessLevel = getAccessLevel(user.role);
 
-    // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('auth_user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
-      .single();
+        // Check if resident exists and user has access through household
+        let checkQuery = supabaseAdmin
+          .from('residents')
+          .select(
+            `
+            id,
+            household_code,
+            households!inner(barangay_code, city_municipality_code, province_code, region_code)
+          `
+          )
+          .eq('id', residentId)
+          .eq('is_active', true);
 
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
-    }
+        // Apply geographic filtering based on user's access level
+        switch (accessLevel) {
+          case 'barangay':
+            if (user.barangayCode) {
+              checkQuery = checkQuery.eq('households.barangay_code', user.barangayCode);
+            }
+            break;
+          case 'city':
+            if (user.cityCode) {
+              checkQuery = checkQuery.eq('households.city_municipality_code', user.cityCode);
+            }
+            break;
+          case 'province':
+            if (user.provinceCode) {
+              checkQuery = checkQuery.eq('households.province_code', user.provinceCode);
+            }
+            break;
+          case 'region':
+            if (user.regionCode) {
+              checkQuery = checkQuery.eq('households.region_code', user.regionCode);
+            }
+            break;
+          case 'national':
+            // No filtering for national access
+            break;
+        }
 
-    // First check if resident exists and user has access through household
-    const { data: existingResident, error: checkError } = await supabaseAdmin
-      .from('residents')
-      .select(
-        `
-        id,
-        household_code,
-        households!inner(barangay_code)
-      `
-      )
-      .eq('id', residentId)
-      .eq('households.barangay_code', userProfile.barangay_code)
-      .single();
+        const { data: existingResident, error: checkError } = await checkQuery.single();
 
-    if (checkError || !existingResident) {
-      return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
-    }
+        if (checkError || !existingResident) {
+          logError(new Error('Resident not found for update'), `ID: ${residentId}`);
+          throw new Error('Resident not found or access denied');
+        }
 
-    // Separate sectoral data from main resident data
-    const {
-      is_labor_force_employed,
-      is_unemployed,
-      is_overseas_filipino_worker,
-      is_person_with_disability,
-      is_out_of_school_children,
-      is_out_of_school_youth,
-      is_senior_citizen,
-      is_registered_senior_citizen,
-      is_solo_parent,
-      is_indigenous_people,
-      is_migrant,
-      ...mainResidentData
-    } = updateData;
+        // Separate sectoral data from main resident data
+        const {
+          is_labor_force_employed,
+          is_unemployed,
+          is_overseas_filipino_worker,
+          is_person_with_disability,
+          is_out_of_school_children,
+          is_out_of_school_youth,
+          is_senior_citizen,
+          is_registered_senior_citizen,
+          is_solo_parent,
+          is_indigenous_people,
+          is_migrant,
+          ...mainResidentData
+        } = updateData as ResidentFormData & {
+          is_labor_force_employed?: boolean;
+          is_unemployed?: boolean;
+          is_overseas_filipino_worker?: boolean;
+          is_person_with_disability?: boolean;
+          is_out_of_school_children?: boolean;
+          is_out_of_school_youth?: boolean;
+          is_senior_citizen?: boolean;
+          is_registered_senior_citizen?: boolean;
+          is_solo_parent?: boolean;
+          is_indigenous_people?: boolean;
+          is_migrant?: boolean;
+        };
 
-    // Only include sectoral fields that are explicitly set (not undefined)
-    const sectoralData: Record<string, boolean> = {};
+        // Only include sectoral fields that are explicitly set (not undefined)
+        const sectoralData: Record<string, boolean> = {};
 
-    if (is_labor_force_employed !== undefined)
-      sectoralData.is_labor_force_employed = is_labor_force_employed;
-    if (is_unemployed !== undefined) sectoralData.is_unemployed = is_unemployed;
-    if (is_overseas_filipino_worker !== undefined)
-      sectoralData.is_overseas_filipino_worker = is_overseas_filipino_worker;
-    if (is_person_with_disability !== undefined)
-      sectoralData.is_person_with_disability = is_person_with_disability;
-    if (is_out_of_school_children !== undefined)
-      sectoralData.is_out_of_school_children = is_out_of_school_children;
-    if (is_out_of_school_youth !== undefined)
-      sectoralData.is_out_of_school_youth = is_out_of_school_youth;
-    if (is_senior_citizen !== undefined) sectoralData.is_senior_citizen = is_senior_citizen;
-    if (is_registered_senior_citizen !== undefined)
-      sectoralData.is_registered_senior_citizen = is_registered_senior_citizen;
-    if (is_solo_parent !== undefined) sectoralData.is_solo_parent = is_solo_parent;
-    if (is_indigenous_people !== undefined)
-      sectoralData.is_indigenous_people = is_indigenous_people;
-    if (is_migrant !== undefined) sectoralData.is_migrant = is_migrant;
+        if (is_labor_force_employed !== undefined)
+          sectoralData.is_labor_force_employed = is_labor_force_employed;
+        if (is_unemployed !== undefined) sectoralData.is_unemployed = is_unemployed;
+        if (is_overseas_filipino_worker !== undefined)
+          sectoralData.is_overseas_filipino_worker = is_overseas_filipino_worker;
+        if (is_person_with_disability !== undefined)
+          sectoralData.is_person_with_disability = is_person_with_disability;
+        if (is_out_of_school_children !== undefined)
+          sectoralData.is_out_of_school_children = is_out_of_school_children;
+        if (is_out_of_school_youth !== undefined)
+          sectoralData.is_out_of_school_youth = is_out_of_school_youth;
+        if (is_senior_citizen !== undefined) sectoralData.is_senior_citizen = is_senior_citizen;
+        if (is_registered_senior_citizen !== undefined)
+          sectoralData.is_registered_senior_citizen = is_registered_senior_citizen;
+        if (is_solo_parent !== undefined) sectoralData.is_solo_parent = is_solo_parent;
+        if (is_indigenous_people !== undefined)
+          sectoralData.is_indigenous_people = is_indigenous_people;
+        if (is_migrant !== undefined) sectoralData.is_migrant = is_migrant;
 
-    // Update resident data (access already verified)
-    const { data: updatedResident, error: updateError } = await supabaseAdmin
-      .from('residents')
-      .update({
-        ...mainResidentData,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', residentId)
-      .select()
-      .single();
+        // Prepare data for update with exact database field names
+        const insertData = {
+          // Required fields
+          first_name: mainResidentData.first_name,
+          last_name: mainResidentData.last_name,
+          birthdate: mainResidentData.birthdate,
+          sex: mainResidentData.sex,
 
-    if (updateError) {
-      console.error('Resident update error:', updateError);
-      return NextResponse.json({ error: 'Failed to update resident' }, { status: 500 });
-    }
+          // Optional fields (using exact database field names)
+          middle_name: mainResidentData.middle_name || null,
+          extension_name: mainResidentData.extension_name || null,
+          mobile_number: mainResidentData.mobile_number || null,
+          telephone_number: mainResidentData.telephone_number || null,
+          email: mainResidentData.email || null,
+          mother_maiden_first: mainResidentData.mother_maiden_first || null,
+          mother_maiden_middle: mainResidentData.mother_maiden_middle || null,
+          mother_maiden_last: mainResidentData.mother_maiden_last || null,
+          birth_place_code: mainResidentData.birth_place_code || null,
+          household_code: mainResidentData.household_code,
+
+          // Additional fields with defaults
+          civil_status: mainResidentData.civil_status || 'single',
+          civil_status_others_specify: mainResidentData.civil_status_others_specify || null,
+          citizenship: mainResidentData.citizenship || 'filipino',
+          blood_type: mainResidentData.blood_type || null,
+          ethnicity: mainResidentData.ethnicity || null,
+          religion: mainResidentData.religion || 'roman_catholic',
+          religion_others_specify: mainResidentData.religion_others_specify || null,
+          employment_status: mainResidentData.employment_status || null,
+          education_attainment: mainResidentData.education_attainment || null,
+          is_graduate: mainResidentData.is_graduate || false,
+          occupation_code: mainResidentData.occupation_code || null,
+          height: mainResidentData.height || null,
+          weight: mainResidentData.weight || null,
+          complexion: mainResidentData.complexion || null,
+          philsys_card_number: mainResidentData.philsys_card_number || null,
+          is_voter: mainResidentData.is_voter || null,
+          is_resident_voter: mainResidentData.is_resident_voter || null,
+          last_voted_date:
+            mainResidentData.last_voted_date && mainResidentData.last_voted_date !== ''
+              ? mainResidentData.last_voted_date
+              : null,
+          updated_by: user.id,
+          updated_at: new Date().toISOString(),
+        };
+
+        // Update resident data (access already verified)
+        const { data: updatedResident, error: updateError } = await supabaseAdmin
+          .from('residents')
+          .update(insertData)
+          .eq('id', residentId)
+          .select()
+          .single();
+
+        if (updateError) {
+          logError(new Error('Resident update error'), JSON.stringify(updateError));
+          throw updateError;
+        }
 
     // Update sectoral information if any sectoral fields were provided
     if (Object.keys(sectoralData).length > 0) {
@@ -484,12 +605,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             data: sectoralData,
             residentId,
           });
-          return NextResponse.json(
-            {
-              error: `Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}`,
-            },
-            { status: 500 }
-          );
+          throw new Error(`Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}`);
         }
 
         console.log('Successfully updated sectoral data:', updatedData);
@@ -521,192 +637,190 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
             data: sectoralInsertData,
             residentId,
           });
-          return NextResponse.json(
-            {
-              error: `Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`,
-              details: sectoralInsertError.details,
-            },
-            { status: 500 }
-          );
+          throw new Error(`Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`);
         }
 
         console.log('Successfully inserted sectoral data:', insertedData);
       }
     }
 
-    if (!updatedResident) {
-      return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
-    }
+        if (!updatedResident) {
+          throw new Error('Resident not found or access denied');
+        }
 
-    // Fetch the complete resident record with sectoral information for the response
-    const { data: completeResident, error: fetchError } = await supabaseAdmin
-      .from('residents')
-      .select(
-        `
-        *,
-        resident_sectoral_info (
-          is_labor_force_employed,
-          is_unemployed,
-          is_overseas_filipino_worker,
-          is_person_with_disability,
-          is_out_of_school_children,
-          is_out_of_school_youth,
-          is_senior_citizen,
-          is_registered_senior_citizen,
-          is_solo_parent,
-          is_indigenous_people,
-          is_migrant
-        ),
-        resident_migrant_info (
-          previous_barangay_code,
-          previous_city_municipality_code,
-          previous_province_code,
-          previous_region_code,
-          length_of_stay_previous_months,
-          reason_for_migration,
-          date_of_transfer,
-          duration_of_stay_current_months,
-          is_intending_to_return
-        )
-      `
-      )
-      .eq('id', residentId)
-      .eq('is_active', true)
-      .maybeSingle();
+        // Audit the update
+        await auditDataOperation('update', 'resident', residentId, context, {
+          fullName: `${mainResidentData.first_name || ''} ${mainResidentData.last_name || ''}`,
+        });
 
-    if (fetchError) {
-      console.error('Error fetching complete resident record:', fetchError);
-      // Still return the basic record if fetch fails
-      return NextResponse.json({
-        resident: updatedResident,
-        message: 'Resident updated successfully',
-      });
-    }
+        // Fetch the complete resident record with sectoral information for the response
+        const { data: completeResident, error: fetchError } = await supabaseAdmin
+          .from('residents')
+          .select(
+            `
+            *,
+            resident_sectoral_info (
+              is_labor_force_employed,
+              is_unemployed,
+              is_overseas_filipino_worker,
+              is_person_with_disability,
+              is_out_of_school_children,
+              is_out_of_school_youth,
+              is_senior_citizen,
+              is_registered_senior_citizen,
+              is_solo_parent,
+              is_indigenous_people,
+              is_migrant
+            ),
+            resident_migrant_info (
+              previous_barangay_code,
+              previous_city_municipality_code,
+              previous_province_code,
+              previous_region_code,
+              length_of_stay_previous_months,
+              reason_for_migration,
+              date_of_transfer,
+              duration_of_stay_current_months,
+              is_intending_to_return
+            )
+          `
+          )
+          .eq('id', residentId)
+          .eq('is_active', true)
+          .maybeSingle();
 
-    return NextResponse.json({
-      resident: completeResident || updatedResident,
-      message: 'Resident updated successfully',
-    });
-  } catch (error) {
-    console.error('Resident update API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+        if (fetchError) {
+          logger.warn('Error fetching complete resident record', fetchError);
+          // Still return the basic record if fetch fails
+          return createSuccessResponse(
+            { resident: updatedResident },
+            'Resident updated successfully',
+            context
+          );
+        }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const resolvedParams = await params;
-    const residentId = resolvedParams.id;
-
-    // Get auth header from the request
-    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-
-    // Verify the user token
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
-    }
-
-    // Use service role client to bypass RLS
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    // Get user profile to verify barangay access
-    const { data: userProfile, error: profileError } = await supabaseAdmin
-      .from('auth_user_profiles')
-      .select('barangay_code')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError || !userProfile?.barangay_code) {
-      return NextResponse.json(
-        { error: 'User profile not found or no barangay assigned' },
-        { status: 400 }
-      );
-    }
-
-    // First check if resident exists and user has access through household
-    const { data: existingResident, error: checkError } = await supabaseAdmin
-      .from('residents')
-      .select(
-        `
-        id,
-        household_code,
-        first_name,
-        last_name,
-        households!inner(barangay_code)
-      `
-      )
-      .eq('id', residentId)
-      .eq('households.barangay_code', userProfile.barangay_code)
-      .single();
-
-    if (checkError || !existingResident) {
-      return NextResponse.json({ error: 'Resident not found or access denied' }, { status: 404 });
-    }
-
-    // Log the deletion for audit purposes
-    console.log('Deleting resident:', {
-      residentId,
-      name: `${existingResident.first_name} ${existingResident.last_name}`,
-      deletedBy: user.id,
-      timestamp: new Date().toISOString(),
-    });
-
-    // Soft delete: Update is_active to false instead of hard delete
-    const { error: softDeleteError } = await supabaseAdmin
-      .from('residents')
-      .update({
-        is_active: false,
-        updated_at: new Date().toISOString(),
-        updated_by: user.id,
-      })
-      .eq('id', residentId);
-
-    if (softDeleteError) {
-      console.error('Resident soft delete error:', softDeleteError);
-      // If soft delete fails, try hard delete (CASCADE will handle related records)
-      const { error: hardDeleteError } = await supabaseAdmin
-        .from('residents')
-        .delete()
-        .eq('id', residentId);
-
-      if (hardDeleteError) {
-        console.error('Resident hard delete error:', hardDeleteError);
-        return NextResponse.json({ error: 'Failed to delete resident' }, { status: 500 });
+        return createSuccessResponse(
+          { resident: completeResident || updatedResident },
+          'Resident updated successfully',
+          context
+        );
       }
-    }
+    )
+  )
+);
 
-    return NextResponse.json({
-      message: 'Resident deleted successfully',
-      deletedResident: {
-        id: residentId,
-        name: `${existingResident.first_name} ${existingResident.last_name}`,
-      },
-    });
-  } catch (error) {
-    console.error('Resident delete API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+export const DELETE = withSecurityHeaders(
+  withAuth(
+    {
+      requiredPermissions: [
+        'residents.manage.barangay',
+        'residents.manage.city',
+        'residents.manage.province',
+        'residents.manage.region',
+        'residents.manage.all',
+      ],
+    },
+    withNextRequestErrorHandling(
+      async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
+        // Extract params from the URL path since this is a dynamic route
+        const url = new URL(request.url);
+        const pathSegments = url.pathname.split('/');
+        const residentId = pathSegments[pathSegments.length - 1];
+
+        // Apply rate limiting
+        const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
+        if (rateLimitResponse) return rateLimitResponse;
+
+        const supabaseAdmin = createAdminSupabaseClient() as any;
+        const accessLevel = getAccessLevel(user.role);
+
+        // Check if resident exists and user has access through household
+        let checkQuery = supabaseAdmin
+          .from('residents')
+          .select(
+            `
+            id,
+            household_code,
+            first_name,
+            last_name,
+            households!inner(barangay_code, city_municipality_code, province_code, region_code)
+          `
+          )
+          .eq('id', residentId)
+          .eq('is_active', true);
+
+        // Apply geographic filtering based on user's access level
+        switch (accessLevel) {
+          case 'barangay':
+            if (user.barangayCode) {
+              checkQuery = checkQuery.eq('households.barangay_code', user.barangayCode);
+            }
+            break;
+          case 'city':
+            if (user.cityCode) {
+              checkQuery = checkQuery.eq('households.city_municipality_code', user.cityCode);
+            }
+            break;
+          case 'province':
+            if (user.provinceCode) {
+              checkQuery = checkQuery.eq('households.province_code', user.provinceCode);
+            }
+            break;
+          case 'region':
+            if (user.regionCode) {
+              checkQuery = checkQuery.eq('households.region_code', user.regionCode);
+            }
+            break;
+          case 'national':
+            // No filtering for national access
+            break;
+        }
+
+        const { data: existingResident, error: checkError } = await checkQuery.single();
+
+        if (checkError || !existingResident) {
+          logError(new Error('Resident not found for deletion'), `ID: ${residentId}`);
+          throw new Error('Resident not found or access denied');
+        }
+
+        // Audit the deletion before performing it
+        await auditDataOperation('delete', 'resident', residentId, context, {
+          fullName: `${existingResident.first_name} ${existingResident.last_name}`,
+        });
+
+        // Soft delete: Update is_active to false instead of hard delete
+        const { error: softDeleteError } = await supabaseAdmin
+          .from('residents')
+          .update({
+            is_active: false,
+            updated_at: new Date().toISOString(),
+            updated_by: user.id,
+          })
+          .eq('id', residentId);
+
+        if (softDeleteError) {
+          logError(new Error('Resident soft delete error'), JSON.stringify(softDeleteError));
+          // If soft delete fails, try hard delete (CASCADE will handle related records)
+          const { error: hardDeleteError } = await supabaseAdmin
+            .from('residents')
+            .delete()
+            .eq('id', residentId);
+
+          if (hardDeleteError) {
+            logError(new Error('Resident hard delete error'), JSON.stringify(hardDeleteError));
+            throw new Error('Failed to delete resident');
+          }
+        }
+
+        return createSuccessResponse(
+          {
+            id: residentId,
+            name: `${existingResident.first_name} ${existingResident.last_name}`,
+          },
+          'Resident deleted successfully',
+          context
+        );
+      }
+    )
+  )
+);

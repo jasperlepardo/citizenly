@@ -10,10 +10,10 @@
 import { useState, useCallback, useMemo } from 'react';
 import { z, ZodSchema, ZodError } from 'zod';
 
-import { ZodValidationResult } from '@/lib/validation/types';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { useLogger } from '@/hooks/utilities/useLogger';
+import { ZodValidationResult } from '@/lib/validation/types';
 
 /**
  * Use the centralized ZodValidationResult type

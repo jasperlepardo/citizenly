@@ -3,10 +3,11 @@
  * Merged from utils/error-utils.ts and lib/error-handling/error-utils.ts
  */
 
-import { generateId } from './id-generators';
 import type { AppError, ErrorLogContext, NetworkError, FieldError } from '@/types/errors';
 import { ErrorSeverity, ErrorCode } from '@/types/errors';
 import type { ValidationError } from '@/types/validation';
+
+import { generateId } from './id-generators';
 
 /**
  * Create a standardized application error
@@ -83,11 +84,11 @@ export function getErrorMessage(error: unknown): string {
  */
 export function getErrorSeverity(error: unknown): ErrorSeverity {
   if (isAppError(error)) {
-    return error.severity;
+    return error.severity || ErrorSeverity.LOW;
   }
 
   if (isNetworkError(error)) {
-    const status = 'status' in error ? error.status : 0;
+    const status = ('status' in error ? error.status : 0) as number;
     if (status >= 500) return ErrorSeverity.HIGH;
     if (status >= 400) return ErrorSeverity.MEDIUM;
     return ErrorSeverity.LOW;
@@ -146,8 +147,9 @@ export function createErrorLogContext(
     userId,
     timestamp: new Date(),
     userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
+    environment: process.env.NODE_ENV === 'production' ? 'production' as const : process.env.VERCEL_ENV === 'staging' ? 'staging' as const : 'development' as const,
     ...additionalContext,
-  };
+  } as ErrorLogContext;
 }
 
 /**
@@ -164,6 +166,7 @@ export function logError(error: unknown, context: Partial<ErrorLogContext> = {})
     userId: context.userId,
     timestamp: new Date(),
     userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
+    environment: process.env.NODE_ENV === 'production' ? 'production' as const : process.env.VERCEL_ENV === 'staging' ? 'staging' as const : 'development' as const,
     ...context,
   };
 
@@ -250,10 +253,10 @@ export function createValidationError(
 /**
  * Create a network error
  */
-export function createNetworkError(response: Response, message?: string): NetworkError {
+export async function createNetworkError(response: Response, message?: string): Promise<NetworkError> {
   const error = new Error(message || `Network error: ${response.status}`) as NetworkError;
   error.status = response.status;
-  error.response = response;
+  error.response = { data: await response.text(), headers: Object.fromEntries(response.headers.entries()) };
   return error;
 }
 

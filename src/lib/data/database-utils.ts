@@ -3,20 +3,25 @@
  * High-level functions to interact with the complete PSGC geographic data
  */
 
+import type { 
+  PSGCRegion,
+  PSGCProvince,
+  PSGCCityMunicipality,
+  PSGCBarangay,
+  AddressHierarchyQueryResult as AddressHierarchy
+} from '../../types/database';
 import { supabase } from '../supabase';
 
 // Import geographic types from centralized location
-import type { 
-  Region,
-  Province,
-  City,
-  Barangay,
-  FlatAddressHierarchy as AddressHierarchy
-} from '@/types/addresses';
 
-// Re-export for backwards compatibility
-export type { Region, Province, City, Barangay };
-export type { FlatAddressHierarchy as AddressHierarchy } from '@/types/addresses';
+// Create simplified types for database query results
+export type Region = Pick<PSGCRegion, 'code' | 'name'>;
+export type Province = Pick<PSGCProvince, 'code' | 'name' | 'region_code'>;
+export type City = Pick<PSGCCityMunicipality, 'code' | 'name' | 'type' | 'province_code' | 'is_independent'>;
+export type Barangay = Pick<PSGCBarangay, 'code' | 'name' | 'city_municipality_code'>;
+
+// Re-export address hierarchy type
+export type { AddressHierarchyQueryResult as AddressHierarchy } from '../../types/database';
 
 /**
  * Test database connection and get basic stats
@@ -158,34 +163,38 @@ export async function searchAddresses(
     const error = result.error;
 
     // Transform the flattened API response to match AddressHierarchy interface
-    const results: AddressHierarchy[] = (data || []).map((barangay: {
+    const results: AddressHierarchy[] = (data || []).map((item: {
       region_code?: string;
       region_name?: string;
       province_code?: string;
       province_name?: string;
       city_code?: string;
       city_name?: string;
-      barangay_code: string;
-      barangay_name: string;
+      city_type?: string;
+      barangay_code?: string;
+      barangay_name?: string;
+      code?: string;
+      name?: string;
+      full_address?: string;
     }) => {
       return {
-        region_code: barangay.region_code || null,
-        region_name: barangay.region_name || '',
-        province_code: barangay.province_code || null,
-        province_name: barangay.province_name || null,
-        city_municipality_code: barangay.city_code || null,
-        city_municipality_name: barangay.city_name || '',
-        city_municipality_type: barangay.city_type || '',
-        is_independent: false, // Default value
-        barangay_code: barangay.code || barangay.barangay_code,
-        barangay_name: barangay.name || barangay.barangay_name,
+        region_code: item.region_code || '',
+        region_name: item.region_name || '',
+        province_code: item.province_code || null,
+        province_name: item.province_name || null,
+        city_code: item.city_code || '',
+        city_municipality_code: item.city_code || '',
+        city_name: item.city_name || '',
+        city_type: item.city_type || '',
+        barangay_code: item.code || item.barangay_code || '',
+        barangay_name: item.name || item.barangay_name || '',
         full_address:
-          barangay.full_address ||
+          item.full_address ||
           [
-            barangay.name || barangay.barangay_name,
-            barangay.city_name,
-            barangay.province_name,
-            barangay.region_name,
+            item.name || item.barangay_name,
+            item.city_name,
+            item.province_name,
+            item.region_name,
           ]
             .filter(Boolean)
             .join(', '),
@@ -227,14 +236,14 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
       });
       // Return null values for unknown barangays to avoid FK constraint violations
       return {
-        region_code: null,
+        region_code: '',
         region_name: 'Unknown Region',
         province_code: null,
-        province_name: 'Unknown Province',
-        city_municipality_code: null,
-        city_municipality_name: 'Unknown City',
-        city_municipality_type: 'unknown',
-        is_independent: false,
+        province_name: null,
+        city_code: '',
+        city_municipality_code: '',
+        city_name: 'Unknown City',
+        city_type: 'unknown',
         barangay_code: barangayCode,
         barangay_name: 'Unknown Barangay',
         full_address: `Barangay ${barangayCode}`,
@@ -247,10 +256,10 @@ export async function getCompleteAddress(barangayCode: string): Promise<AddressH
       region_name: addressData.region_name,
       province_code: addressData.province_code,
       province_name: addressData.province_name,
+      city_code: addressData.city_code,
       city_municipality_code: addressData.city_code,
-      city_municipality_name: addressData.city_name,
-      city_municipality_type: addressData.city_type,
-      is_independent: false, // Default value, view doesn't include this
+      city_name: addressData.city_name,
+      city_type: addressData.city_type,
       barangay_code: addressData.barangay_code,
       barangay_name: addressData.barangay_name,
       full_address: addressData.full_address,

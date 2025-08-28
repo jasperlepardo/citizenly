@@ -2,8 +2,9 @@
 
 import React from 'react';
 
-import GenericPieChart from '../GenericPieChart/GenericPieChart';
 import type { DependencyData } from '@/types/charts';
+
+import GenericPieChart from '../GenericPieChart/GenericPieChart';
 
 
 interface DependencyRatioPieChartProps {

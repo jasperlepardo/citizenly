@@ -18,8 +18,7 @@ export {
   sanitizeError,
   createValidationError,
   createNetworkError,
-  errorUtils,
-} from './error-utils';
+} from '@/utils/error-utils';
 
 export {
   createErrorBoundaryState,
@@ -41,7 +40,6 @@ export type {
   ErrorLogContext,
   ErrorRecoveryStrategy,
   FieldError,
-  ValidationError,
   NetworkError,
 } from './error-types';
 

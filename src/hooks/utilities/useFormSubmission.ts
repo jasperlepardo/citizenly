@@ -2,18 +2,19 @@
 
 import { useState, useCallback } from 'react';
 
+import { createFormSubmitHandler } from '@/lib/forms';
 import type { ResidentFormData, FormMode } from '@/types';
 import type { 
   HookFormSubmissionProps as UseFormSubmissionProps,
   HookFormSubmissionReturn as UseFormSubmissionReturn 
 } from '@/types/hooks';
+
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';
 
-import { createFormSubmitHandler } from '@/lib/forms';
 
 
 
-export function useFormSubmission<T = ResidentFormData>({
+export function useFormSubmission<T extends ResidentFormData = ResidentFormData>({
   onSubmit,
   mode,
 }: UseFormSubmissionProps<T>): UseFormSubmissionReturn<T> {
@@ -31,7 +32,7 @@ export function useFormSubmission<T = ResidentFormData>({
   }, [mode]);
 
   const handleSubmit = useCallback(
-    async (formData: ResidentFormData) => {
+    async (formData: T) => {
       console.log('useFormSubmission handleSubmit called with:', { mode, hasOnSubmit: !!onSubmit });
       setIsSubmitting(true);
 
@@ -43,7 +44,7 @@ export function useFormSubmission<T = ResidentFormData>({
       try {
         // Validate form data
         console.log('Validating form data...');
-        const validation = validateForm(formData);
+        const validation = await validateForm(formData as ResidentFormData);
         console.log('Validation result:', validation);
 
         if (!validation.isValid) {

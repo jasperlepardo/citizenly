@@ -16,6 +16,7 @@ export interface RepositoryResult<T = any> {
   data?: T;
   error?: RepositoryError;
   metadata?: Record<string, unknown>;
+  count?: number;
 }
 
 /**
@@ -571,17 +572,31 @@ export interface ServiceCreateResidentResponse {
  */
 export interface UserRepositoryData {
   id?: string;
-  email: string;
   first_name: string;
+  middle_name?: string;
   last_name: string;
-  role: string;
+  email: string;
+  phone?: string;
+  role_id: string; // UUID reference to auth_roles
+  role?: string; // For backward compatibility - computed field
   barangay_code?: string;
+  city_municipality_code?: string;
+  province_code?: string;
+  region_code?: string;
   is_active: boolean;
-  last_login_at?: string;
+  last_login?: string; // Database field name
+  last_login_at?: string; // Alias for backward compatibility
+  email_verified?: boolean;
   email_verified_at?: string;
-  password_changed_at?: string;
+  onboarding_completed?: boolean;
+  onboarding_completed_at?: string;
+  welcome_email_sent?: boolean;
+  welcome_email_sent_at?: string;
   login_attempts?: number;
   locked_until?: string;
+  password_changed_at?: string;
+  created_by?: string;
+  updated_by?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -605,11 +620,13 @@ export interface UserRepositorySearchOptions extends QueryOptions {
  * Consolidates from src/services/user-repository.ts
  */
 export interface UserSecurityData {
-  login_attempts: number;
-  last_login_at?: string;
+  login_attempts?: number;
+  last_login?: string; // Database field name
+  last_login_at?: string; // Alias for backward compatibility
   last_login_ip?: string;
   locked_until?: string;
   password_changed_at?: string;
+  email_verified?: boolean;
   email_verified_at?: string;
 }
 

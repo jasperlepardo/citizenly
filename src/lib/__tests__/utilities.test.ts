@@ -36,7 +36,7 @@ import {
   // CSS utilities
   cn,
   // mergeClassNames - REMOVED: Use `cn` instead
-} from '../utilities';
+} from '@/utils';
 
 describe('Utilities - String Utils', () => {
   describe('capitalize', () => {

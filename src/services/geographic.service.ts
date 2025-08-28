@@ -207,6 +207,8 @@ export class GeographicService {
           name,
           city_municipality_code,
           is_active,
+          created_at,
+          updated_at,
           psgc_cities_municipalities!inner(
             code,
             name,
@@ -214,15 +216,21 @@ export class GeographicService {
             province_code,
             is_independent,
             is_active,
+            created_at,
+            updated_at,
             psgc_provinces(
               code,
               name,
               region_code,
               is_active,
+              created_at,
+              updated_at,
               psgc_regions!inner(
                 code,
                 name,
-                is_active
+                is_active,
+                created_at,
+                updated_at
               )
             )
           )
@@ -236,7 +244,8 @@ export class GeographicService {
         return {};
       }
 
-      const typedData = data as BarangayWithJoins;
+      // Handle the Supabase query result structure
+      const typedData = data as any; // Use any since Supabase returns nested structure
       const city = typedData.psgc_cities_municipalities;
       const province = city.psgc_provinces;
       const region = province?.psgc_regions;
@@ -247,6 +256,8 @@ export class GeographicService {
           name: data.name,
           city_municipality_code: data.city_municipality_code,
           is_active: data.is_active,
+          created_at: data.created_at || new Date().toISOString(),
+          updated_at: data.updated_at || new Date().toISOString(),
         },
         city: {
           code: city.code,
@@ -255,6 +266,8 @@ export class GeographicService {
           type: city.type,
           is_independent: city.is_independent,
           is_active: city.is_active,
+          created_at: city.created_at || new Date().toISOString(),
+          updated_at: city.updated_at || new Date().toISOString(),
         },
         province: province
           ? {
@@ -262,6 +275,8 @@ export class GeographicService {
               name: province.name,
               region_code: province.region_code,
               is_active: province.is_active,
+              created_at: province.created_at || new Date().toISOString(),
+              updated_at: province.updated_at || new Date().toISOString(),
             }
           : undefined,
         region: region
@@ -269,6 +284,8 @@ export class GeographicService {
               code: region.code,
               name: region.name,
               is_active: region.is_active,
+              created_at: region.created_at || new Date().toISOString(),
+              updated_at: region.updated_at || new Date().toISOString(),
             }
           : undefined,
       };

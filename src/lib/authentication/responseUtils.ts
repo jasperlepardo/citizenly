@@ -5,11 +5,10 @@
 
 import { NextResponse, NextRequest } from 'next/server';
 
-import { logger } from '@/lib';
-
-import { auditError, auditSecurityViolation, AuditEventType } from '../security/audit-storage';
+import { logger } from '../logging';
 import { sanitizeSearchQuery } from '../validation/sanitizers';
 
+import { auditError, auditSecurityViolation, AuditEventType } from './auditUtils';
 import { ApiResponse, PaginatedResponse, ErrorResponse, ErrorCode, RequestContext } from './types';
 
 /**
@@ -106,7 +105,7 @@ export function createValidationErrorResponse(
     ErrorCode.VALIDATION_ERROR,
     'Invalid input data',
     422,
-    details,
+    { validationErrors: details },
     undefined,
     context
   );
@@ -180,7 +179,9 @@ export async function handleDatabaseError(error: { code?: string; message: strin
   logger.error('Database error', { error, context });
 
   if (context) {
-    await auditError(error, context, ErrorCode.DATABASE_ERROR);
+    const errorObj = new Error(error.message);
+    errorObj.name = 'DatabaseError';
+    await auditError(errorObj, context, ErrorCode.DATABASE_ERROR);
   }
 
   // Check for specific database error codes
@@ -320,7 +321,7 @@ export async function processSearchParams(
 /**
  * Apply search filters safely to Supabase query
  */
-export function applySearchFilter(query: Record<string, unknown>, searchTerm: string, searchFields: string[]): Record<string, unknown> {
+export function applySearchFilter(query: any, searchTerm: string, searchFields: string[]): any {
   if (!searchTerm || !searchFields.length) {
     return query;
   }
@@ -346,9 +347,9 @@ export function withErrorHandling<T extends readonly unknown[]>(
         | undefined;
 
       // Check for validation errors
-      if (error.name === 'ZodError') {
+      if (error instanceof Error && error.name === 'ZodError') {
         return createValidationErrorResponse(
-          (error as { errors: Array<{ path: string[]; message: string }> }).errors.map(err => ({
+          (error as any).errors.map((err: any) => ({
             field: err.path.join('.'),
             message: err.message,
           })),
@@ -357,12 +358,18 @@ export function withErrorHandling<T extends readonly unknown[]>(
       }
 
       // Check for database errors
-      if (error?.code && typeof error.code === 'string') {
-        return handleDatabaseError(error, context);
+      if (error && typeof error === 'object' && 'code' in error && typeof (error as any).code === 'string' && 'message' in error) {
+        return handleDatabaseError(error as { code?: string; message: string; details?: string }, context);
       }
 
       // Handle unexpected errors
-      return handleUnexpectedError(error, context);
+      if (error instanceof Error) {
+        return handleUnexpectedError(error, context);
+      }
+
+      // Handle unknown errors
+      const unknownError = new Error('An unknown error occurred');
+      return handleUnexpectedError(unknownError, context);
     }
   };
 }
@@ -382,9 +389,9 @@ export function withNextRequestErrorHandling<T extends readonly unknown[]>(
         | undefined;
 
       // Check for validation errors
-      if (error.name === 'ZodError') {
+      if (error instanceof Error && error.name === 'ZodError') {
         return createValidationErrorResponse(
-          (error as { errors: Array<{ path: string[]; message: string }> }).errors.map(err => ({
+          (error as any).errors.map((err: any) => ({
             field: err.path.join('.'),
             message: err.message,
           })),
@@ -393,12 +400,18 @@ export function withNextRequestErrorHandling<T extends readonly unknown[]>(
       }
 
       // Check for database errors
-      if (error?.code && typeof error.code === 'string') {
-        return handleDatabaseError(error, context);
+      if (error && typeof error === 'object' && 'code' in error && typeof (error as any).code === 'string' && 'message' in error) {
+        return handleDatabaseError(error as { code?: string; message: string; details?: string }, context);
       }
 
       // Handle unexpected errors
-      return handleUnexpectedError(error, context);
+      if (error instanceof Error) {
+        return handleUnexpectedError(error, context);
+      }
+
+      // Handle unknown errors
+      const unknownError = new Error('An unknown error occurred');
+      return handleUnexpectedError(unknownError, context);
     }
   };
 }

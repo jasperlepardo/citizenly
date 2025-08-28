@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 
 import { cn } from '@/lib';
-import type { CommandMenuItem as CommandMenuItemType } from '@/types/components/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types';
 
 const commandMenuItemVariants = cva(
   'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',
@@ -68,8 +68,8 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
           {item.avatar ? (
             <div className="size-5 overflow-hidden rounded-full">
               <img
-                src={item.avatar.src}
-                alt={item.avatar.alt}
+                src={typeof item.avatar === 'string' ? item.avatar : item.avatar.src}
+                alt={typeof item.avatar === 'string' ? item.title : item.avatar.alt}
                 className="size-full object-cover"
                 onError={e => {
                   // Fallback to initials
@@ -77,7 +77,7 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
                   const parent = target.parentElement;
                   if (parent) {
                     parent.innerHTML = `<div class="flex size-full items-center justify-center bg-gray-200 dark:bg-gray-600 text-xs font-medium text-gray-600 dark:text-gray-300">${
-                      item.avatar?.fallback || item.label.charAt(0).toUpperCase()
+                      (typeof item.avatar === 'object' ? item.avatar?.fallback : undefined) || (item.label || item.title).charAt(0).toUpperCase()
                     }</div>`;
                   }
                 }}
@@ -96,7 +96,7 @@ const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps
         {/* Shortcut */}
         {showShortcuts && item.shortcut && item.shortcut.length > 0 && (
           <div className="flex shrink-0 items-center gap-1">
-            {item.shortcut.map((key, index) => (
+            {item.shortcut.map((key: string, index: number) => (
               <kbd
                 key={index}
                 className="inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-gray-200 bg-gray-50 px-1 text-xs font-medium text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400"

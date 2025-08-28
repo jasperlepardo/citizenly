@@ -161,7 +161,7 @@ export function validateResidentForm(data: unknown): ValidationResult {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const errors: Record<string, string> = {};
-      error.issues.forEach((err: { path: (string | number)[]; message: string }) => {
+      error.issues.forEach((err, index, array) => {
         const path = err.path.join('.');
         errors[path] = err.message;
       });

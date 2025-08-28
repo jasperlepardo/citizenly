@@ -5,12 +5,10 @@
  */
 
 // Base repository exports
-export {
-  BaseRepository,
-  type QueryOptions,
-  type RepositoryError,
-  type RepositoryResult,
-} from './base-repository';
+export { BaseRepository } from './base-repository';
+
+// Import types from their proper location
+export type { QueryOptions, RepositoryError, RepositoryResult } from '@/types/services';
 
 // Repository exports
 export { ResidentRepository, type ResidentSearchOptions } from './resident-repository';

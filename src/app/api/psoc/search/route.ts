@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { databaseService } from '@/services/database-service';
 import { PSocRecord } from '@/types/api';
 

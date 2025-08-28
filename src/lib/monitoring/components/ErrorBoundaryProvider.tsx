@@ -8,10 +8,11 @@
 import React, { Component, ReactNode } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
+import type { ErrorBoundaryProviderProps, ErrorFallbackProps } from '@/types/components';
+import type { ErrorBoundaryState } from '@/types/errors';
 
 import { captureError, addSentryBreadcrumb } from '../sentry-config';
-import type { ErrorBoundaryState } from '@/types/errors';
-import type { ErrorBoundaryProviderProps, ErrorFallbackProps } from '@/types/components';
+
 
 
 
@@ -83,8 +84,8 @@ export class ErrorBoundaryProvider extends Component<
     super(props);
     this.state = {
       hasError: false,
-      error: null,
-      errorId: null,
+      error: undefined,
+      errorId: undefined,
     };
   }
 
@@ -146,8 +147,8 @@ export class ErrorBoundaryProvider extends Component<
   resetError = () => {
     this.setState({
       hasError: false,
-      error: null,
-      errorId: null,
+      error: undefined,
+      errorId: undefined,
     });
 
     clientLogger.info('Error boundary reset', {

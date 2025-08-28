@@ -102,18 +102,35 @@ function maskSensitiveData(data: unknown): unknown {
     'access_token',
   ];
 
-  const masked = { ...data };
+  const masked = { ...data } as Record<string, any>;
 
   Object.keys(masked).forEach(key => {
     const lowerKey = key.toLowerCase();
     if (sensitiveFields.some(field => lowerKey.includes(field))) {
-      masked[key] = '***REDACTED***';
-    } else if (typeof masked[key] === 'object') {
-      masked[key] = maskSensitiveData(masked[key]);
+      (masked as any)[key] = '***REDACTED***';
+    } else if (typeof (masked as any)[key] === 'object') {
+      (masked as any)[key] = maskSensitiveData((masked as any)[key]);
     }
   });
 
   return masked;
+}
+
+/**
+ * Map audit event types to database operations
+ */
+function mapEventToOperation(eventType: AuditEventType): 'INSERT' | 'UPDATE' | 'DELETE' {
+  if (eventType.includes('create') || eventType.includes('CREATE')) {
+    return 'INSERT';
+  } else if (eventType.includes('update') || eventType.includes('UPDATE')) {
+    return 'UPDATE';
+  } else if (eventType.includes('delete') || eventType.includes('DELETE')) {
+    return 'DELETE';
+  } else if (eventType.includes('view') || eventType.includes('VIEW')) {
+    return 'UPDATE'; // Treat view as update for logging purposes
+  } else {
+    return 'UPDATE'; // Default to UPDATE for other operations
+  }
 }
 
 /**
@@ -185,35 +202,40 @@ export async function auditLog(event: Partial<AuditEvent>): Promise<void> {
       resourceId: event.resourceId,
       action: event.action!,
       outcome: event.outcome || 'success',
-      details: event.details ? maskSensitiveData(event.details) : undefined,
+      details: event.details ? maskSensitiveData(event.details) as Record<string, string | number | boolean> : undefined,
       context: event.context!,
       errorCode: event.errorCode,
       errorMessage: event.errorMessage,
     };
 
-    // Create audit log entry
-    const logEntry: AuditLogEntry = {
-      event_type: auditEvent.eventType,
-      severity: auditEvent.severity,
-      user_id: auditEvent.userId,
-      user_role: auditEvent.userRole,
-      resource_type: auditEvent.resourceType,
-      resource_id: auditEvent.resourceId,
-      action: auditEvent.action,
-      outcome: auditEvent.outcome,
-      details: auditEvent.details,
-      error_code: auditEvent.errorCode,
-      error_message: auditEvent.errorMessage,
-      request_id: auditEvent.context.requestId,
-      ip_address: auditEvent.context.ip,
-      user_agent: auditEvent.context.userAgent,
-      path: auditEvent.context.path,
-      method: auditEvent.context.method,
-      timestamp: auditEvent.context.timestamp,
-      barangay_code: auditEvent.context.barangayCode,
-      city_code: auditEvent.context.cityCode,
-      province_code: auditEvent.context.provinceCode,
-      region_code: auditEvent.context.regionCode,
+    // Create audit log entry matching the actual database schema
+    // Generate a valid UUID if resourceId is not provided or not a UUID
+    let recordId = '00000000-0000-0000-0000-000000000000';
+    if (auditEvent.resourceId) {
+      // Check if it's a valid UUID format
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (uuidRegex.test(auditEvent.resourceId)) {
+        recordId = auditEvent.resourceId;
+      } else {
+        // If it's not a UUID, create a deterministic UUID from the string
+        recordId = crypto.randomUUID();
+      }
+    }
+
+    const logEntry = {
+      table_name: auditEvent.resourceType || 'unknown',
+      record_id: recordId,
+      operation: mapEventToOperation(auditEvent.eventType),
+      old_values: null, // Can be enhanced later if needed
+      new_values: auditEvent.details || null,
+      user_id: auditEvent.userId || null,
+      barangay_code: auditEvent.context.barangayCode || null,
+      city_municipality_code: auditEvent.context.cityCode || null,
+      province_code: auditEvent.context.provinceCode || null,
+      region_code: auditEvent.context.regionCode || null,
+      ip_address: auditEvent.context.ip || null,
+      user_agent: auditEvent.context.userAgent || null,
+      session_id: auditEvent.context.requestId || null,
     };
 
     // Insert into system_audit_logs table
@@ -362,7 +384,7 @@ export async function auditError(
     outcome: 'failure',
     details: {
       errorName: error.name,
-      errorStack: error.stack?.split('\n').slice(0, 5), // First 5 lines only
+      errorStack: error.stack?.split('\n').slice(0, 5).join('\n') || 'No stack trace available', // First 5 lines only
     },
     context,
     errorCode,

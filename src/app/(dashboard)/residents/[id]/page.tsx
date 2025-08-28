@@ -63,7 +63,7 @@ function ResidentDetailContent() {
 
         const responseData = await response.json();
 
-        const { resident: residentData, household: householdData } = responseData;
+        const { resident: residentData, household: householdData } = responseData.data;
 
         if (!residentData) {
           setError('No data returned for resident');
@@ -534,6 +534,10 @@ function ResidentDetailContent() {
         is_migrant: formData.is_migrant,
       };
 
+      console.log('🔧 Frontend - Making PUT request to:', `/api/residents/${residentId}`);
+      console.log('🔧 Frontend - Method: PUT');
+      console.log('🔧 Frontend - Update payload keys:', Object.keys(updatePayload));
+      
       const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
         body: JSON.stringify(updatePayload),

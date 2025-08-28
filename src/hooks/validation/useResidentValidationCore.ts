@@ -9,6 +9,8 @@
 
 import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 
+import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
+import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
 import { VALIDATION_DEBOUNCE_MS } from '@/lib/constants/resident-form-defaults';
 import { ResidentFormSchema } from '@/lib/validation';
 import {
@@ -27,8 +29,6 @@ import {
 } from '@/services/resident-mapper';
 import type { ResidentFormData } from '@/types';
 
-import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
-import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
 
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
@@ -51,9 +51,9 @@ export interface ResidentValidationOptions {
  * Return type for resident validation hook
  */
 export interface UseResidentValidationCoreReturn
-  extends UseGenericValidationReturn<ResidentFormData> {
+  extends Omit<UseGenericValidationReturn<ResidentFormData>, 'validateForm' | 'validateField'> {
   /** Validate entire form */
-  validateForm: (formData: ResidentFormData) => ValidationResult;
+  validateForm: (formData: ResidentFormData) => Promise<ValidationResult<ResidentFormData>>;
   /** Validate specific field */
   validateField: (fieldName: string, value: unknown) => FieldValidationResult;
   /** Check if field should be validated */
@@ -134,22 +134,26 @@ export function useResidentValidationCore(
    * Validate entire form with cross-field validation
    */
   const validateForm = useCallback(
-    (formData: ResidentFormData): ValidationResult => {
+    async (formData: ResidentFormData): Promise<ValidationResult<ResidentFormData>> => {
       // Basic form validation
-      const basicValidation = genericValidation.validateForm(formData);
+      const basicValidation = await genericValidation.validateForm(formData);
 
       // Cross-field validation
       const crossFieldErrors = crossFieldValidation.validateCrossFields(formData);
 
-      // Combine errors
-      const allErrors = {
+      // Convert errors to ValidationError array format
+      const errorArray = Object.entries({
         ...basicValidation.errors,
         ...crossFieldErrors,
-      };
+      }).map(([field, message]) => ({
+        field,
+        message: String(message),
+      }));
 
       return {
-        isValid: Object.keys(allErrors).length === 0,
-        errors: allErrors,
+        isValid: errorArray.length === 0,
+        errors: errorArray,
+        data: formData,
       };
     },
     [genericValidation, crossFieldValidation]
@@ -170,7 +174,19 @@ export function useResidentValidationCore(
    */
   const validateSectionFields = useCallback(
     (formData: ResidentFormData, section: keyof typeof REQUIRED_FIELDS): ValidationResult => {
-      return validateFormSection(formData, section);
+      const sectionValidation = validateFormSection(formData, section);
+      
+      // Convert Record<string, string> errors to ValidationError[] format
+      const errorArray = Object.entries(sectionValidation.errors).map(([field, message]) => ({
+        field,
+        message,
+      }));
+
+      return {
+        isValid: sectionValidation.isValid,
+        errors: errorArray,
+        data: formData,
+      };
     },
     []
   );
@@ -295,7 +311,7 @@ export function useResidentValidationCore(
  * Create resident form validator with custom error messages
  */
 function createResidentFormValidator(customErrorMessages: Record<string, string> = {}) {
-  return (formData: ResidentFormData): ValidationResult => {
+  return (formData: ResidentFormData): ValidationResult<ResidentFormData> => {
     const errors: Record<string, string> = {};
 
     try {
@@ -324,9 +340,16 @@ function createResidentFormValidator(customErrorMessages: Record<string, string>
       }
     });
 
+    // Convert Record<string, string> to ValidationError[] format
+    const errorArray = Object.entries(errors).map(([field, message]) => ({
+      field,
+      message,
+    }));
+
     return {
-      isValid: Object.keys(errors).length === 0,
-      errors,
+      isValid: errorArray.length === 0,
+      errors: errorArray,
+      data: formData,
     };
   };
 }

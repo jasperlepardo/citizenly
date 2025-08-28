@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { CommandMenuItem } from '@/types/components/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 // Safe router hook that works in both Next.js and Storybook environments
 function useSafeRouter() {
@@ -54,7 +54,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
     const scored = items
       .map(item => {
         let score = 0;
-        const label = item.label.toLowerCase();
+        const label = item.label?.toLowerCase() || '';
         const description = item.description?.toLowerCase() || '';
         const keywords = item.keywords?.join(' ').toLowerCase() || '';
 

@@ -26,7 +26,7 @@ import {
 } from '@/lib/command-menu/api-utils';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
 import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
-import type { CommandMenuItem } from '@/types/components/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 interface UseCommandMenuWithApiProps {
   maxResults?: number;
@@ -54,11 +54,12 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
       const recent = await getRecentApiItems();
       const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
         id: `recent-${item.id}`,
-        label: item.title,
-        description: item.description,
+        title: item.title,
+        subtitle: item.description,
         group: 'Recent',
-        href: item.href,
-        keywords: item.title.toLowerCase().split(' '),
+        data: item.href,
+        score: 0,
+        type: 'navigation' as const,
         recent: true,
       }));
       setRecentItems(recentMenuItems);
@@ -102,34 +103,34 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           enhancedItem.onClick = () => handleBackupData();
           break;
         case 'action-add-resident':
-          enhancedItem.onClick = () => handleQuickAction(createResident);
+          enhancedItem.onClick = () => handleQuickAction(async () => createResident());
           break;
         case 'action-create-household':
-          enhancedItem.onClick = () => handleQuickAction(createHousehold);
+          enhancedItem.onClick = () => handleQuickAction(async () => createHousehold());
           break;
         case 'search-seniors':
-          enhancedItem.onClick = () => handleQuickAction(findSeniorCitizens);
+          enhancedItem.onClick = () => handleQuickAction(async () => findSeniorCitizens());
           break;
         case 'search-pwd':
-          enhancedItem.onClick = () => handleQuickAction(findPWDs);
+          enhancedItem.onClick = () => handleQuickAction(async () => findPWDs());
           break;
         case 'search-solo-parents':
-          enhancedItem.onClick = () => handleQuickAction(findSoloParents);
+          enhancedItem.onClick = () => handleQuickAction(async () => findSoloParents());
           break;
         case 'cert-barangay-clearance':
-          enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('clearance'));
+          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('clearance'));
           break;
         case 'cert-residency':
-          enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('residency'));
+          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('residency'));
           break;
         case 'cert-indigency':
-          enhancedItem.onClick = () => handleQuickAction(() => generateCertificate('indigency'));
+          enhancedItem.onClick = () => handleQuickAction(async () => generateCertificate('indigency'));
           break;
         case 'report-population':
-          enhancedItem.onClick = () => handleQuickAction(() => generateReport('population'));
+          enhancedItem.onClick = () => handleQuickAction(async () => generateReport('population'));
           break;
         case 'report-households-summary':
-          enhancedItem.onClick = () => handleQuickAction(() => generateReport('households'));
+          enhancedItem.onClick = () => handleQuickAction(async () => generateReport('households'));
           break;
       }
 
@@ -156,9 +157,14 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
         trackCommandMenuSearch(searchQuery, apiResults.length);
         const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
           id: `search-${result.id}`,
+          title: result.title,
+          subtitle: result.description,
+          data: result.href,
+          score: 0,
+          type: 'navigation' as const,
+          group: 'Search Results',
           label: result.title,
           description: result.description,
-          group: 'Search Results',
           href: result.href,
           keywords: [result.title.toLowerCase(), result.type],
           icon:
@@ -196,7 +202,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
       const query = searchQuery.toLowerCase();
       const matchingStaticItems = staticMenuItems.filter(
         item =>
-          item.label.toLowerCase().includes(query) ||
+          item.label?.toLowerCase().includes(query) ||
           item.description?.toLowerCase().includes(query) ||
           item.keywords?.some(keyword => keyword.includes(query))
       );
@@ -340,7 +346,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
         if (item.href) {
           trackNavigation(
             originalId,
-            item.label,
+            item.label || item.title || 'Unknown',
             item.description || '',
             type as 'resident' | 'household',
             item.href
@@ -349,11 +355,11 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
         }
       } else if (item.onClick) {
         // Track action execution
-        trackAction(item.id, item.label, item.description || '');
+        trackAction(item.id, item.label || item.title || 'Unknown', item.description || '');
         trackCommandMenuAction(item.id, 'click_action');
       } else if (item.href) {
         // Track navigation
-        trackAction(item.id, item.label, `Navigated to ${item.label}`);
+        trackAction(item.id, item.label || item.title || 'Unknown', `Navigated to ${item.label || item.title || 'Unknown'}`);
         trackCommandMenuNavigation(item.id, 'navigation', item.href);
       }
 

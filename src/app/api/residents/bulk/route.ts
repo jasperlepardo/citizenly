@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { UserProfile } from '@/types/api';
 
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Use admin client for bulk operations
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin
@@ -120,7 +121,7 @@ export async function POST(request: NextRequest) {
             is_active: false,
             updated_at: new Date().toISOString(),
             updated_by: user.id,
-          } as Record<string, any>)
+          } as any)
           .in('id', resident_ids);
 
         if (deleteError) {
@@ -139,7 +140,7 @@ export async function POST(request: NextRequest) {
             is_active: true,
             updated_at: new Date().toISOString(),
             updated_by: user.id,
-          })
+          } as any)
           .in('id', resident_ids);
 
         if (activateError) {
@@ -158,7 +159,7 @@ export async function POST(request: NextRequest) {
             is_active: false,
             updated_at: new Date().toISOString(),
             updated_by: user.id,
-          } as Record<string, any>)
+          } as any)
           .in('id', resident_ids);
 
         if (deactivateError) {
@@ -187,7 +188,7 @@ export async function POST(request: NextRequest) {
 
         const { error: sectoralError } = await supabaseAdmin
           .from('resident_sectoral_info')
-          .upsert(sectoralUpdates, {
+          .upsert(sectoralUpdates as any, {
             onConflict: 'resident_id',
             ignoreDuplicates: false,
           });

@@ -6,11 +6,11 @@
 import type { LogContext, LogLevel } from '@/types/errors';
 
 
-const LOG_LEVELS: LogLevel = {
-  DEBUG: 'debug',
-  INFO: 'info',
-  WARN: 'warn',
-  ERROR: 'error',
+const LOG_LEVELS = {
+  DEBUG: 'debug' as const,
+  INFO: 'info' as const,
+  WARN: 'warn' as const,
+  ERROR: 'error' as const,
 };
 
 class ClientLogger {

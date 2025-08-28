@@ -9,11 +9,13 @@
 
 import { useCallback } from 'react';
 
-import { toTitleCase } from '@/utils/string-utils';
-import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
 import { householdService, HouseholdFormData } from '@/services/household.service';
+import type { UseGenericValidationReturn } from '@/types/hooks';
+import { ValidationResult, FieldValidationResult } from '@/types/validation';
+import { toTitleCase } from '@/utils/string-utils';
 
-import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
+import { useGenericValidation } from './useGenericValidation';
+
 
 // Simple validation utilities for backward compatibility
 const validationUtils = {
@@ -38,7 +40,7 @@ export interface HouseholdValidationResult {
  * Household validation return type (backward compatible)
  */
 export interface UseHouseholdValidationReturn
-  extends Omit<UseGenericValidationReturn<HouseholdFormData>, 'validateForm'> {
+  extends UseGenericValidationReturn<HouseholdFormData> {
   /** Current validation errors */
   validationErrors: Record<string, string>;
   /** Validate household data */
@@ -57,9 +59,17 @@ function createHouseholdFormValidator() {
     // Use the service validation but normalize the result
     const serviceResult = householdService.validateHousehold(formData);
 
+    // Convert Record<string, string> to ValidationError[] format
+    const errors = serviceResult.errors || {};
+    const validationErrors = Object.entries(errors).map(([field, message]) => ({
+      field,
+      message,
+      code: 'VALIDATION_ERROR'
+    }));
+
     return {
       isValid: serviceResult.success,
-      errors: serviceResult.errors || {},
+      errors: validationErrors,
     };
   };
 }
@@ -68,38 +78,56 @@ function createHouseholdFormValidator() {
  * Enhanced household field validation function
  */
 function createHouseholdFieldValidator() {
-  return (fieldName: string, value: any): FieldValidationResult => {
+  return (fieldName: string, value: any): ValidationResult => {
     // Basic field validation rules for household forms
+    let fieldResult: FieldValidationResult;
+    
     switch (fieldName) {
       case 'house_number':
         if (validationUtils.isEmpty(value)) {
-          return { isValid: false, error: 'House number is required' };
-        }
-        if (!/^[0-9A-Za-z\-\/\s]+$/.test(value)) {
-          return { isValid: false, error: 'House number contains invalid characters' };
+          fieldResult = { isValid: false, error: 'House number is required' };
+        } else if (!/^[0-9A-Za-z\-\/\s]+$/.test(value)) {
+          fieldResult = { isValid: false, error: 'House number contains invalid characters' };
+        } else {
+          fieldResult = { isValid: true };
         }
         break;
 
       case 'street_id':
         if (validationUtils.isEmpty(value)) {
-          return { isValid: false, error: 'Street is required' };
+          fieldResult = { isValid: false, error: 'Street is required' };
+        } else {
+          fieldResult = { isValid: true };
         }
         break;
 
       case 'subdivision_id':
         // Optional field, no validation needed
+        fieldResult = { isValid: true };
         break;
 
       default:
         // For unknown fields, just check if required
         if (validationUtils.isEmpty(value)) {
           const formattedFieldName = validationUtils.formatFieldName(fieldName);
-          return { isValid: false, error: `${formattedFieldName} is required` };
+          fieldResult = { isValid: false, error: `${formattedFieldName} is required` };
+        } else {
+          fieldResult = { isValid: true };
         }
         break;
     }
 
-    return { isValid: true };
+    // Convert FieldValidationResult to ValidationResult
+    const errors = fieldResult.error ? [{
+      field: fieldName,
+      message: fieldResult.error,
+      code: 'VALIDATION_ERROR'
+    }] : [];
+
+    return {
+      isValid: fieldResult.isValid,
+      errors,
+    };
   };
 }
 
@@ -114,26 +142,35 @@ export function useOptimizedHouseholdValidation(): UseHouseholdValidationReturn 
   const validateFormFn = createHouseholdFormValidator();
   const validateFieldFn = createHouseholdFieldValidator();
 
-  // Use generic validation hook
-  const genericValidation = useGenericValidation({
+  // Use generic validation hook (with proper typing)
+  const genericValidationImpl = useGenericValidation({
     validateForm: validateFormFn,
     validateField: validateFieldFn,
-    autoValidate: false,
   });
+
+  // Type assertion to access the actual implementation methods
+  const genericValidation = genericValidationImpl as any;
 
   /**
    * Validate household data (backward compatible interface)
    */
   const validateHousehold = useCallback(
     (formData: HouseholdFormData): HouseholdValidationResult => {
-      const result = genericValidation.validateForm(formData);
+      // Call the sync validator directly for backward compatibility
+      const result = validateFormFn(formData);
+
+      // Convert ValidationError[] back to Record<string, string> format
+      const errors: Record<string, string> = {};
+      result.errors.forEach(error => {
+        errors[error.field] = error.message;
+      });
 
       return {
         success: result.isValid,
-        errors: result.errors,
+        errors,
       };
     },
-    [genericValidation.validateForm]
+    [validateFormFn]
   );
 
   /**
@@ -153,21 +190,32 @@ export function useOptimizedHouseholdValidation(): UseHouseholdValidationReturn 
     genericValidation.clearAllErrors();
   }, [genericValidation.clearAllErrors]);
 
+  // Create interface-compliant wrapper functions
+  const clearErrors = useCallback(() => {
+    genericValidation.clearAllErrors();
+  }, [genericValidation.clearAllErrors]);
+
+  const setError = useCallback((fieldName: string, error: string) => {
+    genericValidation.setFieldError(fieldName, error);
+  }, [genericValidation.setFieldError]);
+
   return {
-    // Generic validation interface
-    errors: genericValidation.errors,
-    isValid: genericValidation.isValid,
-    hasValidated: genericValidation.hasValidated,
-    validateField: genericValidation.validateField,
-    getFieldError: genericValidation.getFieldError,
-    hasFieldError: genericValidation.hasFieldError,
-    clearFieldError: genericValidation.clearFieldError,
-    clearAllErrors: genericValidation.clearAllErrors,
-    setErrors: genericValidation.setErrors,
-    setFieldError: genericValidation.setFieldError,
+    // Generic validation interface (matching UseGenericValidationReturn)
+    errors: genericValidationImpl.errors,
+    isValid: genericValidationImpl.isValid,
+    hasValidated: genericValidationImpl.hasValidated || false,
+    validateForm: genericValidationImpl.validateForm,
+    validateField: genericValidationImpl.validateField || (() => Promise.resolve({ isValid: true, errors: [] })),
+    clearErrors,
+    clearFieldError: genericValidationImpl.clearFieldError,
+    setError,
+    setFieldError: genericValidationImpl.setFieldError,
+    getFieldError: genericValidationImpl.getFieldError,
+    hasFieldError: genericValidationImpl.hasFieldError || ((fieldName: string) => !!genericValidationImpl.errors[fieldName]),
+    setErrors: genericValidationImpl.setErrors || setValidationErrors,
 
     // Backward compatible interface
-    validationErrors: genericValidation.errors,
+    validationErrors: genericValidationImpl.errors,
     validateHousehold,
     setValidationErrors,
     clearValidationErrors,

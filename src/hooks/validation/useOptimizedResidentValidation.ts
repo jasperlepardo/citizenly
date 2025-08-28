@@ -15,9 +15,6 @@
 
 import { useCallback } from 'react';
 
-import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
-import type { ResidentFormData } from '@/types';
-
 import {
   useResidentAsyncValidation,
   type UseResidentAsyncValidationReturn,
@@ -26,6 +23,9 @@ import {
   useResidentCrossFieldValidation,
   type UseResidentCrossFieldValidationReturn,
 } from '@/hooks/utilities/useResidentCrossFieldValidation';
+import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
+import type { ResidentFormData } from '@/types';
+
 
 import {
   useResidentValidationCore,
@@ -45,11 +45,21 @@ export interface UseResidentFormValidationReturn
     Omit<UseResidentCrossFieldValidationReturn, 'validateCrossFields'>,
     Omit<UseResidentAsyncValidationReturn, 'validateFieldAsync'>,
     UseResidentValidationProgressReturn {
+  /** Current validation errors */
+  errors: Record<string, string>;
+  /** Whether form is currently valid */
+  isValid: boolean;
+  /** Set field-specific validation error */
+  setFieldError: (fieldName: string, error: string) => void;
+  /** Clear specific field error */
+  clearFieldError: (fieldName: string) => void;
+  /** Get field-specific validation error */
+  getFieldError: (fieldName: string) => string | undefined;
   /** Enhanced form validation with cross-field rules */
-  validateForm: (formData: ResidentFormData) => {
+  validateForm: (formData: ResidentFormData) => Promise<{
     isValid: boolean;
     errors: Record<string, string>;
-  };
+  }>;
   /** Validate field asynchronously */
   validateFieldAsync: (
     fieldName: string,
@@ -83,16 +93,24 @@ export function useOptimizedResidentValidation(
    * Enhanced form validation with cross-field rules
    */
   const validateForm = useCallback(
-    (formData: ResidentFormData) => {
+    async (formData: ResidentFormData) => {
       // Core validation
-      const coreResult = coreValidation.validateForm(formData);
+      const coreResult = await coreValidation.validateForm(formData);
 
       // Cross-field validation
       const crossFieldErrors = crossFieldValidation.validateCrossFields(formData);
 
+      // Convert core validation errors from ValidationError[] to Record<string, string>
+      const coreErrors: Record<string, string> = {};
+      if (Array.isArray(coreResult.errors)) {
+        coreResult.errors.forEach(error => {
+          coreErrors[error.field] = error.message;
+        });
+      }
+
       // Combine all errors
       const allErrors = {
-        ...coreResult.errors,
+        ...coreErrors,
         ...crossFieldErrors,
         ...asyncValidation.asyncValidationErrors,
       };

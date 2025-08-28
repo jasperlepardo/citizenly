@@ -9,7 +9,7 @@ export async function POST(_request: NextRequest) {
   try {
     console.warn('🔄 Processing pending notifications...');
 
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get pending notifications with proper typing
     const { data: notifications, error } = await supabaseAdmin
@@ -77,7 +77,7 @@ export async function POST(_request: NextRequest) {
 
         const { error: updateNotifError } = await supabaseAdmin
           .from('user_notifications')
-          .update(updateData as Record<string, any>)
+          .update(updateData as any)
           .eq('id', notif.id);
         if (updateNotifError) {
           console.error(`❌ Failed to update notification ${notif.id} status:`, updateNotifError);
@@ -104,7 +104,7 @@ export async function POST(_request: NextRequest) {
             retry_count: notif.retry_count + 1,
             error_message: errorMsg,
             scheduled_for: new Date(Date.now() + (notif.retry_count + 1) * 60000).toISOString(),
-          } as Record<string, any>)
+          } as any)
           .eq('id', notif.id);
         if (retryUpdateError) {
           console.error(`❌ Failed to bump retry_count for ${notif.id}:`, retryUpdateError);
@@ -195,7 +195,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
 // GET endpoint to check notification status
 export async function GET() {
   try {
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
     const { data: stats, error } = await supabaseAdmin
       .from('user_notifications')
       .select('status, notification_type')

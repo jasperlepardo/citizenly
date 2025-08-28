@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
-import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
 import {
   PersonalInformationForm,
   ContactInformationForm,
@@ -114,16 +113,11 @@ export function ResidentForm({
       birthdate: '',
       birth_place_name: '',
       birth_place_code: '',
-      birth_place_level: '',
       philsys_card_number: '',
-      philsys_last4: '',
       education_attainment: '', // No database default
       is_graduate: false, // Will be set from defaults
       employment_status: '', // No database default
-      employment_code: '',
-      employment_name: '',
       occupation_code: '',
-      psoc_level: 0,
       occupation_title: '',
 
       // Contact Information - database field names
@@ -166,9 +160,7 @@ export function ResidentForm({
       previous_province_code: '',
       previous_region_code: '',
       length_of_stay_previous_months: 0,
-      reason_for_leaving: '',
       date_of_transfer: '',
-      reason_for_transferring: '',
       duration_of_stay_current_months: 0,
       is_intending_to_return: false,
     };
@@ -355,6 +347,8 @@ export function ResidentForm({
       handleHouseholdSearch(''); // Load initial household data
     }
   }, [userProfile?.barangay_code, handleHouseholdSearch]);
+  
+
 
   // Handle form field changes
   const handleFieldChange = (
@@ -362,6 +356,8 @@ export function ResidentForm({
     value: string | number | boolean | null
   ) => {
     const fieldKey = String(field);
+    
+
 
     // Handle household batch update to avoid race condition
     if (fieldKey === '__household_batch__' && value && typeof value === 'object') {
@@ -414,6 +410,7 @@ export function ResidentForm({
 
 
     setFormData(newFormData);
+    
 
     // Notify parent component of changes
     if (onChange) {
@@ -512,7 +509,7 @@ export function ResidentForm({
           is_person_with_disability: filteredFormData.is_person_with_disability,
         });
         
-        await onSubmit(filteredFormData);
+        onSubmit(filteredFormData);
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -656,16 +653,14 @@ export function ResidentForm({
           <MigrationInformation
             mode={mode}
             value={{
-              previous_barangay_code: formData.previous_barangay_code,
-              previous_city_municipality_code: formData.previous_city_municipality_code,
-              previous_province_code: formData.previous_province_code,
-              previous_region_code: formData.previous_region_code,
-              length_of_stay_previous_months: formData.length_of_stay_previous_months,
-              reason_for_leaving: formData.reason_for_leaving,
-              date_of_transfer: formData.date_of_transfer,
-              reason_for_transferring: formData.reason_for_transferring,
-              duration_of_stay_current_months: formData.duration_of_stay_current_months,
-              is_intending_to_return: formData.is_intending_to_return,
+              previous_barangay_code: formData.previous_barangay_code || undefined,
+              previous_city_municipality_code: formData.previous_city_municipality_code || undefined,
+              previous_province_code: formData.previous_province_code || undefined,
+              previous_region_code: formData.previous_region_code || undefined,
+              length_of_stay_previous_months: formData.length_of_stay_previous_months || undefined,
+              reason_for_migration: formData.reason_for_migration || undefined,
+              date_of_transfer: formData.date_of_transfer || undefined,
+              migration_type: formData.migration_type || undefined,
             }}
             onChange={migrationData => {
               handleFieldChange(
@@ -685,7 +680,7 @@ export function ResidentForm({
                 'length_of_stay_previous_months',
                 migrationData.length_of_stay_previous_months || 0
               );
-              handleFieldChange('reason_for_leaving', migrationData.reason_for_leaving || '');
+              handleFieldChange('reason_for_migration', migrationData.reason_for_migration || '');
               handleFieldChange('date_of_transfer', migrationData.date_of_transfer || '');
               handleFieldChange(
                 'reason_for_transferring',

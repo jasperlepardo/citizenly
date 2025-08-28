@@ -23,6 +23,9 @@ import type {
   UseGenericValidationReturn,
 } from '@/types/hooks';
 
+// Re-export for backward compatibility
+export type { UseGenericValidationReturn };
+
 /**
  * Generic validation hook
  *
@@ -37,16 +40,41 @@ export function useGenericValidation<T>(
   // Use validation state management
   const validationState = useValidationState(config);
 
-  // Create form validation executor
-  const validateForm = createFormValidationExecutor(validateFormFn, validationState.setErrors);
+  // Create form validation executor (wrapping sync functions to return Promise)
+  const validateForm = async (data: T): Promise<ValidationResult<T>> => {
+    const result = await Promise.resolve(validateFormFn(data));
+    return result;
+  };
 
   // Create field validation executor if field validator provided
   const validateField = validateFieldFn
-    ? createFieldValidationExecutor(
-        validateFieldFn,
-        validationState.setFieldError,
-        validationState.clearFieldError
-      )
+    ? async (fieldName: string, value: any, formData?: any): Promise<ValidationResult<any>> => {
+        const result = await Promise.resolve(validateFieldFn(fieldName, value, formData));
+        
+        // Handle different return types from validateField function
+        if (typeof result === 'string') {
+          // Field validator returns string error or null
+          return {
+            isValid: result === null,
+            errors: result ? [{ field: fieldName, message: result }] : [],
+            data: value
+          };
+        } else if (result && typeof result === 'object' && 'isValid' in result) {
+          // Field validator returns FieldValidationResult
+          return {
+            isValid: result.isValid,
+            errors: result.error ? [{ field: fieldName, message: result.error }] : [],
+            data: result.sanitizedValue || value
+          };
+        }
+        
+        // Fallback - assume valid
+        return {
+          isValid: true,
+          errors: [],
+          data: value
+        };
+      }
     : undefined;
 
   return {
@@ -54,11 +82,12 @@ export function useGenericValidation<T>(
     isValid: validationState.isValid,
     hasValidated: validationState.hasValidated,
     validateForm,
-    validateField,
+    validateField: validateField || (async () => ({ isValid: true, errors: [], data: undefined })),
     getFieldError: validationState.getFieldError,
     hasFieldError: validationState.hasFieldError,
     clearFieldError: validationState.clearFieldError,
-    clearAllErrors: validationState.clearErrors,
+    clearErrors: validationState.clearErrors,
+    setError: validationState.setFieldError,
     setErrors: validationState.setErrors,
     setFieldError: validationState.setFieldError,
   };

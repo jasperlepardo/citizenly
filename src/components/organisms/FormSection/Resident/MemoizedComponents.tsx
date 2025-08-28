@@ -6,6 +6,7 @@
  */
 
 import React, { memo, useMemo, useCallback } from 'react';
+
 import { FIELD_LABELS, DEFAULT_VALUES } from '@/constants/resident-form';
 
 // Memoized field validation error display

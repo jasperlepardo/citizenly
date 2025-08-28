@@ -8,10 +8,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
-import { supabase, logger } from '@/lib';
-
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
+import { supabase, logger } from '@/lib';
 
 /**
  * Dashboard statistics interface

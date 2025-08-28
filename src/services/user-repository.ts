@@ -7,8 +7,6 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-
-import { BaseRepository } from './base-repository';
 import type { QueryOptions, RepositoryResult } from '@/types/services';
 
 // Types moved to src/types/services.ts for consolidation
@@ -18,9 +16,14 @@ import type {
   UserSecurityData,
 } from '@/types/services';
 
+import { BaseRepository } from './base-repository';
+
+// Export types for re-export in services/index.ts
+export type { UserData, UserSearchOptions, UserSecurityData };
+
 export class UserRepository extends BaseRepository<UserData> {
   constructor(context?: ValidationContext) {
-    super('users', context);
+    super('auth_user_profiles', context);
   }
 
   /**
@@ -38,10 +41,7 @@ export class UserRepository extends BaseRepository<UserData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'User data validation failed',
-            details: validationResult.errors.reduce((acc, error, index) => ({
-              ...acc,
-              [`error_${index}`]: error.message
-            }), {} as Record<string, any>),
+            details: validationResult.errors as Record<string, any>,
           },
         };
       }
@@ -59,7 +59,7 @@ export class UserRepository extends BaseRepository<UserData> {
         };
       }
 
-      return await this.create(validationResult.data || data);
+      return await this.create(data);
     } catch (error) {
       return {
         success: false,
@@ -107,10 +107,7 @@ export class UserRepository extends BaseRepository<UserData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'User data validation failed',
-            details: validationResult.errors.reduce((acc, error, index) => ({
-              ...acc,
-              [`error_${index}`]: error.message
-            }), {} as Record<string, any>),
+            details: validationResult.errors as Record<string, any>,
           },
         };
       }
@@ -172,10 +169,10 @@ export class UserRepository extends BaseRepository<UserData> {
 
         // Last login date filters
         if (options.last_login_before) {
-          query = query.lt('last_login_at', options.last_login_before);
+          query = query.lt('last_login', options.last_login_before);
         }
         if (options.last_login_after) {
-          query = query.gt('last_login_at', options.last_login_after);
+          query = query.gt('last_login', options.last_login_after);
         }
 
         // Apply other filters
@@ -295,7 +292,7 @@ export class UserRepository extends BaseRepository<UserData> {
       if (success) {
         // Reset login attempts on successful login
         updateData.login_attempts = 0;
-        updateData.last_login_at = new Date().toISOString();
+        updateData.last_login = new Date().toISOString();
         updateData.locked_until = undefined;
       } else {
         // Increment login attempts on failed login
@@ -363,9 +360,9 @@ export class UserRepository extends BaseRepository<UserData> {
         return supabase
           .from(this.tableName)
           .select('*')
-          .or(`lastLoginAt.is.null,lastLoginAt.lt.${cutoffDate.toISOString()}`)
+          .or(`last_login.is.null,last_login.lt.${cutoffDate.toISOString()}`)
           .eq('is_active', true)
-          .order('lastLoginAt', { ascending: true, nullsFirst: true });
+          .order('last_login', { ascending: true, nullsFirst: true });
       };
 
       return await this.executeQuery(queryBuilder, 'GET_INACTIVE_USERS');

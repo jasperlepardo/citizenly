@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { InputField } from '@/components';
 import type { FormMode } from '@/types';
@@ -25,12 +25,12 @@ export function ContactDetails({
   errors,
   className = '',
 }: ContactDetailsProps) {
-  const handleChange = (field: keyof ContactDetailsData, fieldValue: string) => {
+  const handleChange = useCallback((field: keyof ContactDetailsData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
     });
-  };
+  }, [value, onChange]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -48,6 +48,7 @@ export function ContactDetails({
           errorMessage={errors.email}
           mode={mode}
           inputProps={{
+            name: 'email',
             type: 'email',
             value: value.email,
             onChange: e => handleChange('email', e.target.value),
@@ -62,6 +63,7 @@ export function ContactDetails({
           errorMessage={errors.telephone_number}
           mode={mode}
           inputProps={{
+            name: 'telephone_number',
             type: 'tel',
             value: value.telephone_number,
             onChange: e => handleChange('telephone_number', e.target.value),
@@ -76,6 +78,7 @@ export function ContactDetails({
           errorMessage={errors.mobile_number}
           mode={mode}
           inputProps={{
+            name: 'mobile_number',
             type: 'tel',
             value: value.mobile_number,
             onChange: e => handleChange('mobile_number', e.target.value),

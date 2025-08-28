@@ -598,6 +598,7 @@ export interface AddressHierarchyQueryResult {
   barangay_code: string;
   barangay_name: string;
   city_code: string;
+  city_municipality_code: string;
   city_name: string;
   city_type: string;
   province_code: string | null;

@@ -29,7 +29,6 @@
 
 import { ReactNode } from 'react';
 
-import { ResidentFormData } from './forms';
 import type { AddressInfo } from './addresses';
 import type { 
   ResidentRecord, 
@@ -42,6 +41,7 @@ import type {
   ReligionEnum,
   EthnicityEnum,
 } from './database';
+import { ResidentFormData } from './forms';
 
 // =============================================================================
 // DATABASE ENUMS AND TYPES

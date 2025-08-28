@@ -9,11 +9,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
+import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { searchData, trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
 import { trackSearch } from '@/lib/data';
-
-import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
+import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 /**
  * Search options
@@ -113,10 +112,12 @@ export function useCommandMenuSearch(
           // Convert API results to menu items
           const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
             id: `search-${result.id}`,
-            label: result.title,
-            description: result.description,
+            title: result.title,
+            subtitle: result.description,
             group: 'Search Results',
-            href: result.href,
+            data: result.href,
+            score: 0,
+            type: 'navigation' as const,
             keywords: [result.title.toLowerCase(), result.type],
             icon: getIconForType(result.type),
           }));

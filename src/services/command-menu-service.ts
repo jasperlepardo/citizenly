@@ -3,10 +3,13 @@
  * Consolidated command menu functionality following coding standards
  */
 
-import { supabase } from '../lib/supabase';
-import { createLogger } from '../lib/config/environment';
-import { cacheService } from './cache-service';
 import type { CommandMenuSearchResult as SearchResult, CommandMenuExportOptions as ExportOptions } from '@/types/services';
+
+import { createLogger } from '../lib/config/environment';
+import { supabase } from '../lib/supabase';
+
+import { cacheService } from './cache-service';
+
 
 const logger = createLogger('CommandMenuService');
 

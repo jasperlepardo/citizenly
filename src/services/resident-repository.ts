@@ -7,15 +7,17 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { validateResidentData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import { ResidentRecord } from '@/types/database';
-
-import { BaseRepository } from './base-repository';
-import type { RepositoryResult } from '@/types/services';
 import type {
   ResidentData,
-  ResidentSearchOptions,
-  ResidentRepositoryResult
+  ResidentSearchOptions
 } from '@/types/repositories';
+import type { RepositoryResult } from '@/types/services';
+import type { ValidationError } from '@/types/validation';
+
+import { BaseRepository } from './base-repository';
+
+// Export types for re-export in services/index.ts
+export type { ResidentSearchOptions };
 
 export class ResidentRepository extends BaseRepository<ResidentData> {
   constructor(context?: ValidationContext) {
@@ -37,15 +39,17 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: validationResult.errors.reduce((acc, error, index) => ({
-              ...acc,
-              [`error_${index}`]: error.message
-            }), {} as Record<string, any>),
+            details: Array.isArray(validationResult.errors) 
+              ? validationResult.errors.reduce((acc: Record<string, string>, error: ValidationError, index: number) => ({
+                  ...acc,
+                  [`error_${index}`]: error.message
+                }), {} as Record<string, string>)
+              : validationResult.errors,
           },
         };
       }
 
-      return await this.create(validationResult.data || data);
+      return await this.create(data);
     } catch (error) {
       return {
         success: false,
@@ -78,10 +82,12 @@ export class ResidentRepository extends BaseRepository<ResidentData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Resident data validation failed',
-            details: validationResult.errors.reduce((acc, error, index) => ({
-              ...acc,
-              [`error_${index}`]: error.message
-            }), {} as Record<string, any>),
+            details: Array.isArray(validationResult.errors) 
+              ? validationResult.errors.reduce((acc: Record<string, string>, error: ValidationError, index: number) => ({
+                  ...acc,
+                  [`error_${index}`]: error.message
+                }), {} as Record<string, string>)
+              : validationResult.errors,
           },
         };
       }

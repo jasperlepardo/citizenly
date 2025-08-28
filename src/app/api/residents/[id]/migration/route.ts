@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { z } from 'zod';
+
+import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { UserProfile, ResidentWithHousehold } from '@/types/api';
 
 // Migration information validation schema
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin
@@ -152,7 +153,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin
@@ -212,7 +213,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       // Update existing record
       const { data: updatedMigration, error: updateError } = await supabaseAdmin
         .from('resident_migrant_info')
-        .update(updateData as Record<string, any>)
+        .update(updateData as any)
         .eq('resident_id', residentId)
         .select()
         .single();
@@ -239,7 +240,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
       const { data: newMigration, error: insertError } = await supabaseAdmin
         .from('resident_migrant_info')
-        .insert(insertData as Record<string, any>)
+        .insert(insertData as any)
         .select()
         .single();
 
@@ -294,7 +295,7 @@ export async function DELETE(
     }
 
     // Use service role client to bypass RLS
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get user profile to verify barangay access
     const profileResult = await supabaseAdmin

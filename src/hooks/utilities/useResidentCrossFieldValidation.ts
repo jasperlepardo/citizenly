@@ -24,11 +24,11 @@ interface CrossFieldValidationRule {
  */
 const crossFieldValidationRules: CrossFieldValidationRule[] = [
   {
-    fields: ['employment_status', 'occupation_title'],
+    fields: ['employment_status', 'occupation_code'],
     validate: (data: ResidentFormData) => {
       const errors: Record<string, string> = {};
-      if (data.employment_status === 'employed' && !data.occupation_title) {
-        errors.occupation_title = 'Occupation title is required when employed';
+      if (data.employment_status === 'employed' && !data.occupation_code) {
+        errors.occupation_code = 'Occupation code is required when employed';
       }
       return errors;
     },
