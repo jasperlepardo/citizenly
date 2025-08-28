@@ -44,6 +44,7 @@ export interface ValidationResult<T = any> {
   errors: ValidationError[];
   data?: T;
   warnings?: string[];
+  success?: boolean; // Backward compatibility alias for isValid
 }
 
 /**

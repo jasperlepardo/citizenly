@@ -337,8 +337,12 @@ export function sanitizeFormData(formData: Record<string, any>): Record<string, 
         case 'province_code':
         case 'city_municipality_code':
         case 'barangay_code':
-        case 'household_code':
           sanitized[key] = sanitizeBarangayCode(value);
+          break;
+          
+        case 'household_code':
+          // Household codes have format like 042114014-0000-0001-0001, preserve dashes
+          sanitized[key] = sanitizeInput(value);
           break;
           
         default:

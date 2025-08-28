@@ -164,7 +164,7 @@ export function mapToDbFields<T extends Record<string, unknown>>(
   const result = {} as T;
   for (const [formKey, dbKey] of Object.entries(fieldMap)) {
     if (data[formKey] !== undefined) {
-      result[dbKey] = data[formKey];
+      (result as any)[dbKey] = data[formKey];
     }
   }
   return result as T;

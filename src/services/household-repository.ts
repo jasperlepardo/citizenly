@@ -8,13 +8,18 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { HouseholdRecord } from '@/types';
-
-import { BaseRepository } from './base-repository';
 import type {
   HouseholdData,
   HouseholdSearchOptions,
   HouseholdRepositoryResult
 } from '@/types/repositories';
+import type { RepositoryResult } from '@/types/services';
+
+import { BaseRepository } from './base-repository';
+
+
+// Export types for re-export in services/index.ts
+export type { HouseholdData, HouseholdSearchOptions };
 
 export class HouseholdRepository extends BaseRepository<HouseholdData> {
   constructor(context?: ValidationContext) {
@@ -36,7 +41,12 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Household data validation failed',
-            details: validationResult.errors,
+            details: Array.isArray(validationResult.errors) 
+              ? validationResult.errors.reduce((acc: Record<string, string>, err: any) => {
+                  acc[err.field || 'general'] = err.message || String(err);
+                  return acc;
+                }, {})
+              : validationResult.errors,
           },
         };
       }
@@ -54,7 +64,7 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
         };
       }
 
-      return await this.create(validationResult.data || data);
+      return await this.create(data);
     } catch (error) {
       return {
         success: false,
@@ -102,7 +112,12 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'Household data validation failed',
-            details: validationResult.errors,
+            details: Array.isArray(validationResult.errors) 
+              ? validationResult.errors.reduce((acc: Record<string, string>, err: any) => {
+                  acc[err.field || 'general'] = err.message || String(err);
+                  return acc;
+                }, {})
+              : validationResult.errors,
           },
         };
       }

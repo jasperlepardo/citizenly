@@ -21,10 +21,10 @@ export type {
   ValidationState,
   FieldSize,
   FormSubmissionState,
-} from './forms';
+} from '@/types/forms';
 
 // Database types
-export * from './database';
+export * from '@/types/database';
 
 // Domain types - use namespace import to avoid conflicts
 // import * as ResidentTypes from './resident';

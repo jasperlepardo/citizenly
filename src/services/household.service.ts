@@ -12,7 +12,6 @@ const logger = createLogger('HouseholdService');
 
 // Import database and consolidated types
 import { HouseholdRecord } from '@/types';
-import type { ValidationError } from '@/types/validation';
 import type {
   HouseholdFormData,
   UserAddressDetailed as UserAddress,
@@ -20,6 +19,7 @@ import type {
   CreateHouseholdResponse,
   HouseholdValidationResult
 } from '@/types/services';
+import type { ValidationError } from '@/types/validation';
 
 // Re-export types for backward compatibility
 export type {

@@ -23,6 +23,46 @@
  */
 
 // =============================================================================
+// COMMON API ROUTE INTERFACES
+// =============================================================================
+
+/**
+ * Standard user profile interface for API routes
+ */
+export interface UserProfile {
+  barangay_code: string;
+}
+
+/**
+ * Resident with household relationship for authorization
+ */
+export interface ResidentWithHousehold {
+  id: string;
+  households: { barangay_code: string };
+}
+
+/**
+ * Household record for API operations
+ */
+export interface HouseholdRecord {
+  barangay_code: string;
+  code: string;
+  [key: string]: any;
+}
+
+/**
+ * PSOC (Philippine Standard Occupational Classification) record
+ */
+export interface PSocRecord {
+  code?: string;
+  title?: string;
+  occupation_code?: string;
+  occupation_title?: string;
+  full_hierarchy?: string;
+  [key: string]: any;
+}
+
+// =============================================================================
 // GENERIC API RESPONSE TYPES
 // =============================================================================
 

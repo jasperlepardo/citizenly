@@ -168,6 +168,10 @@ export * from './constants';
 
 // Database types
 export type {
+  // Core Record Types
+  ResidentRecord,
+  HouseholdRecord,
+  
   // Geographic Types
   PSGCRegion,
   PSGCProvince,
@@ -294,7 +298,6 @@ export type {
   IncomeClassEnum,
   
   // Household Interfaces
-  HouseholdRecord,
   HouseholdData,
   HouseholdHead,
   HouseholdWithMembersResult,

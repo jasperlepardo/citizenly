@@ -6,10 +6,6 @@ export { CommandMenuEmpty } from './CommandMenuEmpty';
 export { useCommandMenu } from '@/hooks/ui/useCommandMenu';
 
 export type {
-  CommandMenuItem as CommandMenuItemType,
-  CommandMenuGroup as CommandMenuGroupType,
-  CommandMenuProps,
-  CommandMenuContextValue,
-  CommandMenuVariant,
-  CommandMenuSize,
-} from '@/types/components/command-menu';
+  CommandMenuSearchResult as CommandMenuItemType,
+  CommandMenuHookResult as CommandMenuProps,
+} from '@/types';

@@ -4,6 +4,7 @@
  */
 
 import type { AgeGroupData, PopulationStats, TooltipData } from '@/types/charts';
+
 import { calculateAge, getAgeGroup } from './date-utils';
 
 export interface PieSliceData {

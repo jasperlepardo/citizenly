@@ -20,10 +20,19 @@ function createValidationResult(
   warnings: Record<string, string> = {},
   data?: any
 ): ValidationResult {
+  // Convert errors from Record<string, string> to ValidationError[]
+  const validationErrors = Object.entries(errors).map(([field, message]) => ({
+    field,
+    message,
+  }));
+  
+  // Convert warnings from Record<string, string> to string[]
+  const warningList = Object.values(warnings);
+  
   return {
     isValid,
-    errors,
-    warnings,
+    errors: validationErrors,
+    warnings: warningList.length > 0 ? warningList : undefined,
     data,
   };
 }
@@ -47,19 +56,11 @@ export function createFormValidator<T extends Record<string, any>>(
 
       for (const validator of validatorArray) {
         try {
-          const result: FieldValidationResult = await validator(fieldValue, context);
+          const result = await validator(fieldValue, fieldName, data);
 
-          if (!result.isValid && result.error) {
-            errors[fieldName] = result.error;
+          if (result !== null) {
+            errors[fieldName] = result;
             break; // Stop at first error for this field
-          }
-
-          if (result.warning) {
-            warnings[fieldName] = result.warning;
-          }
-
-          if (result.sanitizedValue !== undefined) {
-            sanitizedData[fieldName] = result.sanitizedValue;
           }
         } catch (error) {
           errors[fieldName] = 'Validation error occurred';
@@ -75,11 +76,17 @@ export function createFormValidator<T extends Record<string, any>>(
           const crossResult = crossValidator(data, context);
 
           if (!crossResult.isValid) {
-            Object.assign(errors, crossResult.errors);
+            // Convert ValidationError[] back to Record<string, string> for internal processing
+            const errorRecord = crossResult.errors.reduce((acc, err) => {
+              acc[err.field] = err.message;
+              return acc;
+            }, {} as Record<string, string>);
+            Object.assign(errors, errorRecord);
           }
 
-          if (crossResult.warnings) {
-            Object.assign(warnings, crossResult.warnings);
+          if (crossResult.warnings && crossResult.warnings.length > 0) {
+            // For cross-field warnings, we'll add them to the form level
+            warnings['_form'] = crossResult.warnings.join('; ');
           }
         } catch (error) {
           errors['_form'] = 'Cross-field validation error occurred';
@@ -93,7 +100,7 @@ export function createFormValidator<T extends Record<string, any>>(
     return createValidationResult(
       isValid,
       errors,
-      Object.keys(warnings).length > 0 ? warnings : undefined,
+      warnings,
       isValid ? sanitizedData : undefined
     );
   };
@@ -113,34 +120,31 @@ export function createFieldValidator(rules: {
   custom?: FieldValidator;
   customMessage?: string;
 }): FieldValidator {
-  return async (value, context) => {
+  return async (value, fieldName, formData) => {
     // Required validation
     if (rules.required) {
       if (value === null || value === undefined || value === '') {
-        return {
-          isValid: false,
-          error: rules.customMessage || 'This field is required',
-        };
+        return rules.customMessage || 'This field is required';
       }
     }
 
     // Skip other validations if value is empty and not required
     if (!rules.required && (value === null || value === undefined || value === '')) {
-      return { isValid: true };
+      return null;
     }
 
     // Type validations
     switch (rules.type) {
       case 'string':
         if (typeof value !== 'string') {
-          return { isValid: false, error: 'Must be a string' };
+          return 'Must be a string';
         }
         break;
 
       case 'number':
         const numValue = Number(value);
         if (isNaN(numValue)) {
-          return { isValid: false, error: 'Must be a valid number' };
+          return 'Must be a valid number';
         }
         value = numValue;
         break;
@@ -148,7 +152,7 @@ export function createFieldValidator(rules: {
       case 'email':
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(String(value))) {
-          return { isValid: false, error: 'Must be a valid email address' };
+          return 'Must be a valid email address';
         }
         break;
 
@@ -156,14 +160,14 @@ export function createFieldValidator(rules: {
         const phonePattern = /^(\+63|63|09)\d{9}$/;
         const cleanedPhone = String(value).replace(/\D/g, '');
         if (!phonePattern.test(cleanedPhone)) {
-          return { isValid: false, error: 'Must be a valid Philippine phone number' };
+          return 'Must be a valid Philippine phone number';
         }
         break;
 
       case 'date':
         const dateValue = new Date(String(value));
         if (isNaN(dateValue.getTime())) {
-          return { isValid: false, error: 'Must be a valid date' };
+          return 'Must be a valid date';
         }
         break;
 
@@ -171,7 +175,7 @@ export function createFieldValidator(rules: {
         try {
           new URL(String(value));
         } catch {
-          return { isValid: false, error: 'Must be a valid URL' };
+          return 'Must be a valid URL';
         }
         break;
     }
@@ -179,51 +183,36 @@ export function createFieldValidator(rules: {
     // Length validations for strings
     if (typeof value === 'string') {
       if (rules.minLength !== undefined && value.length < rules.minLength) {
-        return {
-          isValid: false,
-          error: `Must be at least ${rules.minLength} characters long`,
-        };
+        return `Must be at least ${rules.minLength} characters long`;
       }
 
       if (rules.maxLength !== undefined && value.length > rules.maxLength) {
-        return {
-          isValid: false,
-          error: `Must not exceed ${rules.maxLength} characters`,
-        };
+        return `Must not exceed ${rules.maxLength} characters`;
       }
     }
 
     // Range validations for numbers
     if (typeof value === 'number') {
       if (rules.min !== undefined && value < rules.min) {
-        return {
-          isValid: false,
-          error: `Must be at least ${rules.min}`,
-        };
+        return `Must be at least ${rules.min}`;
       }
 
       if (rules.max !== undefined && value > rules.max) {
-        return {
-          isValid: false,
-          error: `Must not exceed ${rules.max}`,
-        };
+        return `Must not exceed ${rules.max}`;
       }
     }
 
     // Pattern validation
     if (rules.pattern && !rules.pattern.test(String(value))) {
-      return {
-        isValid: false,
-        error: rules.customMessage || 'Invalid format',
-      };
+      return rules.customMessage || 'Invalid format';
     }
 
     // Custom validation
     if (rules.custom) {
-      return await rules.custom(value, context);
+      return await rules.custom(value, fieldName, formData);
     }
 
-    return { isValid: true };
+    return null;
   };
 }
 

@@ -22,5 +22,5 @@ export * from './utils';
 // Providers - React context providers
 export * from '../providers/components';
 
-// Types - Shared component interfaces and types
-export * from '../types/components';
+// Types - Shared component interfaces and types (commented out to avoid duplicate exports)
+// export * from '../types/components';

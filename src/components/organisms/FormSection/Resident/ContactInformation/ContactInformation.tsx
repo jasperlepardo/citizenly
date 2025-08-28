@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import type { FormMode } from '@/types';
 
@@ -34,9 +34,9 @@ export function ContactInformationForm({
 }: ContactInformationFormProps) {
   // Map form data to ContactDetails component props
   const contactDetailsValue: ContactDetailsData = {
-    email: formData.email || '',
-    telephone_number: formData.telephone_number || '',
-    mobile_number: formData.mobile_number || '',
+    email: formData.email ?? '',
+    telephone_number: formData.telephone_number ?? '',
+    mobile_number: formData.mobile_number ?? '',
   };
 
   // Map form data to HouseholdInformation component props
@@ -46,18 +46,22 @@ export function ContactInformationForm({
   };
 
   // Handle changes from ContactDetails component
-  const handleContactDetailsChange = (value: ContactDetailsData) => {
+  const handleContactDetailsChange = useCallback((value: ContactDetailsData) => {
+    // Only update the fields that actually changed
+    // Compare with current formData to determine what changed
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      const currentValue = formData[field as keyof typeof formData];
+      if (currentValue !== fieldValue) {
+        onChange(field as keyof typeof value, fieldValue);
+      }
     });
-  };
+  }, [onChange, formData]);
 
   // Handle changes from HouseholdInformation component
-  const handleHouseholdInfoChange = (value: HouseholdInformationData) => {
-    Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
-    });
-  };
+  const handleHouseholdInfoChange = useCallback((value: HouseholdInformationData) => {
+    // Call onChange with a special marker to indicate this is a household batch update
+    onChange('__household_batch__', value as any);
+  }, [onChange]);
 
   return (
     <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">

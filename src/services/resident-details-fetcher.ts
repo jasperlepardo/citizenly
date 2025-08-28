@@ -25,16 +25,19 @@ export const fetchAddressInfo = async (barangayCode: string): Promise<AddressInf
     // Try address hierarchy view first (most efficient)
     const { data: addressViewData, error: viewError } = await supabase
       .from('psgc_address_hierarchy')
-      .select('barangay_name, city_municipality_name, province_name, region_name, full_address')
+      .select('barangay_name, barangay_code, city_municipality_name, city_municipality_code, province_name, region_name, region_code, full_address')
       .eq('barangay_code', barangayCode)
       .single();
 
     if (addressViewData && !viewError) {
       return {
         barangay_name: addressViewData.barangay_name,
+        barangay_code: addressViewData.barangay_code || barangayCode,
         city_municipality_name: addressViewData.city_municipality_name,
+        city_municipality_code: addressViewData.city_municipality_code || '',
         province_name: addressViewData.province_name,
         region_name: addressViewData.region_name,
+        region_code: addressViewData.region_code || '',
         full_address: addressViewData.full_address,
       };
     }
@@ -64,12 +67,18 @@ const fetchAddressFromJoinedTables = async (
       .select(
         `
         name,
+        code,
         psgc_cities_municipalities(
           name,
+          code,
           is_independent,
           psgc_provinces(
             name,
-            psgc_regions(name)
+            code,
+            psgc_regions(
+              name,
+              code
+            )
           )
         )
       `
@@ -96,9 +105,12 @@ const fetchAddressFromJoinedTables = async (
 
     return {
       barangay_name: data.name,
+      barangay_code: data.code,
       city_municipality_name: city?.name,
+      city_municipality_code: city?.code || '',
       province_name: !(city as any)?.is_independent ? province?.name : undefined,
       region_name: region?.name,
+      region_code: region?.code || '',
       full_address: addressParts.join(', '),
     };
   } catch (error) {

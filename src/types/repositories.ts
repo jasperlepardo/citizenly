@@ -20,12 +20,14 @@ export type ResidentData = ResidentRecord;
  */
 export interface HouseholdData {
   id?: string;
+  code: string;
   household_head_first_name: string;
   household_head_last_name: string;
   household_head_middle_name?: string;
   household_type: string;
   tenure_status: string;
   barangay_code: string;
+  no_of_household_members?: number;
   created_at?: string;
   updated_at?: string;
 }

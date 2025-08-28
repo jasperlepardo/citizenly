@@ -9,7 +9,7 @@ export async function POST(_request: NextRequest) {
   try {
     console.warn('🔄 Processing pending notifications...');
 
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
 
     // Get pending notifications with proper typing
     const { data: notifications, error } = await supabaseAdmin
@@ -195,7 +195,7 @@ async function sendWelcomeSMS(notification: NotificationRecord): Promise<boolean
 // GET endpoint to check notification status
 export async function GET() {
   try {
-    const supabaseAdmin = createAdminSupabaseClient();
+    const supabaseAdmin = createAdminSupabaseClient() as any;
     const { data: stats, error } = await supabaseAdmin
       .from('user_notifications')
       .select('status, notification_type')

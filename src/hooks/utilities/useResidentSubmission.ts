@@ -60,8 +60,8 @@ export function useResidentSubmission(
   const submitForm = useCallback(
     async (formData: Partial<ResidentEditFormData>, validationResult: ValidationResult) => {
       if (!validationResult.success) {
-        const firstError = Object.values(validationResult.errors)[0];
-        setSubmissionError(firstError || 'Form validation failed');
+        const firstError = validationResult.errors[0];
+        setSubmissionError(firstError?.message || 'Form validation failed');
         return;
       }
 

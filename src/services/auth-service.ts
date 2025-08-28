@@ -4,6 +4,7 @@
  */
 
 import type { User, Session, AuthError } from '@supabase/supabase-js';
+
 import { createLogger } from '../lib/config/environment';
 import { supabase } from '../lib/supabase';
 

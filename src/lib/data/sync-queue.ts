@@ -4,10 +4,10 @@
  */
 
 import { ErrorCode, ErrorSeverity } from '@/types/errors';
+import type { SyncResult } from '@/types/utilities';
 import { createAppError } from '@/utils/error-utils';
 
 import { offlineStorage } from './offline-storage';
-import type { SyncResult } from '@/types/utilities';
 
 
 export class SyncQueue {

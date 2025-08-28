@@ -319,7 +319,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 showShortcuts={true}
                 showRecentSection={true}
                 size="md"
-                items={[]}
               />
             </div>
 

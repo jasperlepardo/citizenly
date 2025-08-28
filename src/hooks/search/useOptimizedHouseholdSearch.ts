@@ -21,7 +21,7 @@ import { useGenericSearch } from './useGenericSearch';
 export interface HouseholdSearchResult {
   id: string;
   code: string;
-  head_name: string;
+  name: string;
   address: string;
   house_number?: string;
   geo_streets?: Array<{ name: string }>;
@@ -67,7 +67,7 @@ const processHouseholdsData = (householdsData: any[]): HouseholdSearchResult[] =
   return householdsData.map(household => ({
     id: household.id || household.code,
     code: household.code,
-    head_name: household.name || `Household ${household.code}`,
+    name: household.name || `Household ${household.code}`,
     address:
       household.address ||
       searchFormatters.formatAddress([
@@ -117,16 +117,15 @@ export function useOptimizedHouseholdSearch({
       currentOffset: number = 0,
       append: boolean = false
     ): Promise<HouseholdSearchResult[]> => {
-      // Check for essential user profile but allow API to handle authentication
-      if (!userProfile?.barangay_code) {
-        console.warn('Household search: Missing user profile barangay_code', {
-          hasUserProfile: !!userProfile,
-          hasBarangayCode: !!userProfile?.barangay_code,
-        });
-        setAllResults([]);
-        setHasMore(false);
-        setTotalCount(0);
-        return [];
+      
+      // Get fresh session from Supabase first
+      const { data: { session: freshSession } } = await supabase.auth.getSession();
+      const hasValidAuth = !!(freshSession?.access_token || session?.access_token);
+      
+      // Check authentication requirements
+      if (!hasValidAuth) {
+        console.warn('Authentication required for household search');
+        throw new Error('Authentication required. Please sign in to search households.');
       }
 
       // Check cache first (only for initial search)
@@ -151,12 +150,26 @@ export function useOptimizedHouseholdSearch({
           searchParams.set('search', query.trim());
         }
 
-        // Let the API handle authentication through its middleware
-        // The withAuth middleware handles session validation server-side
+        // Get current session for authentication - always get fresh from Supabase
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        const token = currentSession?.access_token || session?.access_token;
+        
+        console.log('Auth check:', {
+          hasCurrentSession: !!currentSession,
+          hasToken: !!token,
+          tokenLength: token?.length || 0,
+        });
+        
+        
+        if (!token) {
+          throw new Error('Authentication required. Please sign in.');
+        }
+
         const response = await fetch(`/api/households?${searchParams}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -211,6 +224,7 @@ export function useOptimizedHouseholdSearch({
     },
     [
       userProfile?.barangay_code,
+      session?.access_token,
       enableCache,
       getCachedResult,
       setCachedResult,

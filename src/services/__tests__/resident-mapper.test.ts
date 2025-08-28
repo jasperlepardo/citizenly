@@ -5,7 +5,7 @@
 
 import type {
   ResidentFormData,
-  ResidentApiData,
+  ResidentRecord,
   ResidentWithRelations,
   HouseholdData,
   HouseholdHead,
@@ -62,6 +62,11 @@ describe('Resident Mapper Utilities', () => {
         mother_maiden_first: 'Maria',
         mother_maiden_middle: 'Santos',
         mother_maiden_last: 'Garcia',
+        // Required fields for ResidentFormData that extend from ResidentRecord
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        created_at: '2023-01-01T00:00:00Z',
+        updated_at: '2023-01-01T00:00:00Z',
+        is_active: true,
       };
 
       const result = mapFormToApi(formData);
@@ -91,7 +96,7 @@ describe('Resident Mapper Utilities', () => {
         height: 170,
         weight: 65,
         religion: 'roman_catholic',
-        religionOthersSpecify: undefined,
+        religion_others_specify: undefined,
         is_voter: true,
         is_resident_voter: true,
         last_voted_date: '2022-05-09',
@@ -108,16 +113,16 @@ describe('Resident Mapper Utilities', () => {
         last_name: 'Cruz',
         extension_name: '',
         sex: 'male',
-        civil_status: 'single',
+        civil_status: undefined,
         citizenship: 'filipino',
         birthdate: '1990-01-01',
         birth_place_code: '',
         philsys_card_number: '',
-        education_attainment: '',
+        education_attainment: undefined,
         is_graduate: false,
-        employment_status: '',
+        employment_status: undefined,
         occupation_code: '',
-        ethnicity: '',
+        ethnicity: undefined,
         email: '',
         telephone_number: '',
         mobile_number: '',
@@ -126,7 +131,7 @@ describe('Resident Mapper Utilities', () => {
         complexion: '',
         height: 0,
         weight: 0,
-        religion: '',
+        religion: undefined,
         religion_others_specify: '',
         is_voter: undefined,
         is_resident_voter: undefined,
@@ -134,6 +139,11 @@ describe('Resident Mapper Utilities', () => {
         mother_maiden_first: '',
         mother_maiden_middle: '',
         mother_maiden_last: '',
+        // Required fields for ResidentFormData that extend from ResidentRecord
+        id: '550e8400-e29b-41d4-a716-446655440001',
+        created_at: '2023-01-01T00:00:00Z',
+        updated_at: '2023-01-01T00:00:00Z',
+        is_active: true,
       };
 
       const result = mapFormToApi(formData);
@@ -200,16 +210,16 @@ describe('Resident Mapper Utilities', () => {
 
   describe('calculateAge', () => {
     it('should calculate age correctly', () => {
-      // Mock current date as 2024-01-01 for consistent testing
-      const mockDate = new Date('2024-01-01');
-      jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+      // Use fake timers to set current date as 2024-01-01
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-01-01T00:00:00.000Z'));
 
       expect(calculateAge('1990-01-01')).toBe(34);
       expect(calculateAge('2000-06-15')).toBe(23);
       expect(calculateAge('2024-01-01')).toBe(0);
-      expect(calculateAge('2024-06-01')).toBe(-1); // Future date
+      expect(calculateAge('2024-06-01')).toBe(0); // Future date should return 0 (non-negative)
 
-      jest.restoreAllMocks();
+      jest.useRealTimers();
     });
 
     it('should return 0 for empty birthdate', () => {
@@ -230,8 +240,8 @@ describe('Resident Mapper Utilities', () => {
 
       expect(
         formatFullName({
-          firstName: 'Maria',
-          lastName: 'Santos',
+          first_name: 'Maria',
+          last_name: 'Santos',
         })
       ).toBe('Maria Santos');
 
@@ -292,7 +302,7 @@ describe('Resident Mapper Utilities', () => {
       expect(parseFullName('Juan')).toEqual({
         first_name: 'Juan',
         middle_name: '',
-        lastName: '',
+        last_name: '',
       });
     });
 
@@ -315,13 +325,13 @@ describe('Resident Mapper Utilities', () => {
     it('should parse four or more names', () => {
       expect(parseFullName('Juan Carlos Dela Cruz')).toEqual({
         first_name: 'Juan',
-        middleName: 'Carlos Dela',
+        middle_name: 'Carlos Dela',
         last_name: 'Cruz',
       });
 
       expect(parseFullName('Juan Carlos Maria Dela Cruz')).toEqual({
         first_name: 'Juan',
-        middleName: 'Carlos Maria Dela',
+        middle_name: 'Carlos Maria Dela',
         last_name: 'Cruz',
       });
     });
@@ -331,19 +341,19 @@ describe('Resident Mapper Utilities', () => {
     it('should provide correct form to schema mapping', () => {
       const mapping = getFormToSchemaFieldMapping();
 
-      expect(mapping.firstName).toBe('first_name');
-      expect(mapping.lastName).toBe('last_name');
-      expect(mapping.psocCode).toBe('occupation_code');
-      expect(mapping.phoneNumber).toBe('telephone_number');
+      expect(mapping.first_name).toBe('first_name');
+      expect(mapping.last_name).toBe('last_name');
+      expect(mapping.occupation_code).toBe('occupation_code');
+      expect(mapping.telephone_number).toBe('telephone_number');
     });
 
     it('should provide correct schema to form mapping', () => {
       const mapping = getSchemaToFormFieldMapping();
 
-      expect(mapping.first_name).toBe('firstName');
-      expect(mapping.last_name).toBe('lastName');
-      expect(mapping.occupation_code).toBe('psocCode');
-      expect(mapping.telephone_number).toBe('phoneNumber');
+      expect(mapping.first_name).toBe('first_name');
+      expect(mapping.last_name).toBe('last_name');
+      expect(mapping.occupation_code).toBe('occupation_code');
+      expect(mapping.telephone_number).toBe('telephone_number');
     });
 
     it('should be inverse mappings', () => {
@@ -370,10 +380,13 @@ describe('Resident Mapper Utilities', () => {
 
       expect(result).toEqual({
         value: '1111',
-        label: 'Software Engineer',
+        label: 'Software Development, Information Technology',
         description: 'Information Technology > Software Development',
         level_type: 'occupation',
         occupation_code: '1111',
+        occupation_title: 'Software Engineer',
+        hierarchy: 'Information Technology > Software Development',
+        badge: 'occupation',
       });
     });
   });

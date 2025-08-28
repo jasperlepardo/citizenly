@@ -9,12 +9,12 @@
 
 import { useCallback } from 'react';
 
-import type { ResidentFormData as ResidentEditFormData } from '@/types';
-
 import {
   useResidentSubmission,
   UseResidentSubmissionOptions,
 } from '@/hooks/utilities/useResidentSubmission';
+import type { ResidentFormData as ResidentEditFormData } from '@/types';
+
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 
 import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';

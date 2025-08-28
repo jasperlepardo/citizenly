@@ -334,7 +334,7 @@ function HouseholdsContent() {
                   </div>
                   <div className="p-2">
                     <div className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400">
-                      {new Date(household.created_at).toLocaleDateString()}
+                      {household.created_at ? new Date(household.created_at).toLocaleDateString() : 'N/A'}
                     </div>
                   </div>
                 </div>

@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/lib';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/lib/command-menu/analytics-utils';
-import type { CommandMenuItem, CommandMenuProps } from '@/types/components/command-menu';
+import type { CommandMenuSearchResult as CommandMenuItem, CommandMenuHookResult as CommandMenuProps } from '@/types';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
@@ -28,9 +28,13 @@ const inlineCommandMenuVariants = cva(
   }
 );
 
-interface InlineCommandMenuProps
-  extends Omit<CommandMenuProps, 'isOpen' | 'onClose'>,
-    VariantProps<typeof inlineCommandMenuVariants> {
+interface InlineCommandMenuProps extends VariantProps<typeof inlineCommandMenuVariants> {
+  placeholder?: string;
+  emptyStateText?: string;
+  maxResults?: number;
+  showShortcuts?: boolean;
+  showRecentSection?: boolean;
+  className?: string;
   onFocus?: () => void;
   onBlur?: () => void;
 }

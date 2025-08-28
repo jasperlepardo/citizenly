@@ -6,7 +6,7 @@
  */
 
 // Explicit exports to prevent circular dependencies
-export type { FormMode } from '../types/forms';
+export type { FormMode } from '@/types/forms';
 
 // Form handlers and utilities
 export {

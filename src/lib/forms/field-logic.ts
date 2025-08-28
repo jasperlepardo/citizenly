@@ -5,7 +5,7 @@
  * Contains field state logic, validation rules, and data transformation utilities.
  */
 
-import type { FormMode } from '../types/forms';
+import type { FormMode } from '@/types/forms';
 
 /**
  * Helper function to determine if a field should be readonly

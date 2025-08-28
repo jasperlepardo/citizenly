@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { databaseService } from '@/services/database-service';
+import { PSocRecord } from '@/types/api';
 
 export async function GET(request: NextRequest) {
   try {
@@ -30,7 +32,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 5));
 
       if (majorGroups) {
-        majorGroups.forEach(item => {
+        majorGroups.forEach((item: PSocRecord) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -51,7 +53,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (subMajorGroups) {
-        subMajorGroups.forEach(item => {
+        subMajorGroups.forEach((item: PSocRecord) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -72,7 +74,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (unitGroups) {
-        unitGroups.forEach(item => {
+        unitGroups.forEach((item: PSocRecord) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -93,7 +95,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (unitSubGroups) {
-        unitSubGroups.forEach(item => {
+        unitSubGroups.forEach((item: PSocRecord) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -114,7 +116,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 15));
 
       if (occupations) {
-        occupations.forEach(item => {
+        occupations.forEach((item: PSocRecord) => {
           allResults.push({
             code: item.occupation_code,
             title: item.occupation_title,
@@ -136,29 +138,36 @@ export async function GET(request: NextRequest) {
     }, [] as any[]);
 
     // Sort by level hierarchy (major_group -> occupation) and then by match score
-    const levelOrder = {
+    const levelOrder: Record<string, number> = {
       major_group: 1,
       sub_major_group: 2,
       unit_group: 3,
       unit_sub_group: 4,
       occupation: 5,
     };
-    uniqueResults.sort((a: any, b: any) => {
-      const levelDiff =
-        levelOrder[a.level as keyof typeof levelOrder] -
-        levelOrder[b.level as keyof typeof levelOrder];
-      if (levelDiff !== 0) return levelDiff;
-      return b.match_score - a.match_score;
-    });
 
-    const finalResults = uniqueResults.slice(0, Math.min(limit, 50));
+    const sortedResults = uniqueResults
+      .sort((a: any, b: any) => {
+        const levelDiff = (levelOrder[a.level] || 0) - (levelOrder[b.level] || 0);
+        if (levelDiff !== 0) return levelDiff;
+        return (a.match_score || 0) - (b.match_score || 0);
+      })
+      .slice(0, limit);
 
     return NextResponse.json({
-      data: finalResults,
-      count: finalResults.length,
+      data: sortedResults,
+      count: sortedResults.length,
+      total_found: uniqueResults.length,
     });
   } catch (error) {
-    console.error('PSOC search API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('PSOC search error:', error);
+    return NextResponse.json(
+      { 
+        error: 'Failed to search PSOC data',
+        data: [], 
+        count: 0 
+      },
+      { status: 500 }
+    );
   }
 }

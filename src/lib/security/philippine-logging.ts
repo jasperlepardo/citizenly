@@ -6,6 +6,7 @@
  */
 
 import crypto from 'crypto';
+
 import type { PhilippineLogContext, AuditLogContext, NPCLogContext } from '@/types/errors';
 
 // Philippine regulatory compliance constants

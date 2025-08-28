@@ -10,8 +10,8 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 import { ControlField } from '@/components';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
-import { calculateAge } from '@/utils/date-utils';
 import type { FormMode } from '@/types';
+import { calculateAge } from '@/utils/date-utils';
 
 // Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {

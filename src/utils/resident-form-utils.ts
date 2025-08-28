@@ -4,13 +4,8 @@
  */
 
 import { REQUIRED_FIELDS, FIELD_LABELS, DEFAULT_VALUES, VALIDATION_RULES } from '@/constants/resident-form';
-import { sanitizeFormData, sanitizeNameInput, validateNameInput } from '@/utils/input-sanitizer';
-import { ResidentFormData } from '@/types/forms';
 import { philippineCompliantLogger } from '@/lib/security/philippine-logging';
-import { calculateAge } from '@/utils/date-utils';
-import type { SimpleValidationResult as ValidationResult } from '@/types/validation';
-
-// Types moved to src/types/utilities.ts for consolidation
+import { ResidentFormData } from '@/types/forms';
 import type { 
   NameParts, 
   UnknownFormData,
@@ -18,6 +13,11 @@ import type {
   FormProcessingOptions,
   ProcessedFormResult 
 } from '@/types/utilities';
+import type { SimpleValidationResult as ValidationResult } from '@/types/validation';
+import { calculateAge } from '@/utils/date-utils';
+
+// Types moved to src/types/utilities.ts for consolidation
+import { sanitizeFormData, sanitizeNameInput, validateNameInput } from '@/utils/input-sanitizer';
 
 function isValidFormStructure(data: unknown): data is UnknownFormData {
   return data !== null && typeof data === 'object' && !Array.isArray(data);
@@ -61,6 +61,7 @@ export function transformFormData(formData: UnknownFormData): ResidentFormData {
   const sanitizedData = sanitizeFormData(formData as Record<string, any>);
   
   return {
+    id: sanitizedData.id || '',
     first_name: sanitizedData.first_name || '',
     middle_name: sanitizedData.middle_name || '',
     last_name: sanitizedData.last_name || '',
@@ -77,9 +78,7 @@ export function transformFormData(formData: UnknownFormData): ResidentFormData {
     mobile_number: sanitizedData.mobile_number || '',
     telephone_number: sanitizedData.telephone_number || '',
     philsys_card_number: sanitizedData.philsys_card_number || '',
-    province_code: sanitizedData.province_code || '',
-    city_municipality_code: sanitizedData.city_municipality_code || '',
-    barangay_code: sanitizedData.barangay_code || '',
+    birth_place_code: sanitizedData.birth_place_code || '',
     household_code: sanitizedData.household_code || '',
     mother_maiden_first: sanitizedData.mother_maiden_first || '',
     mother_maiden_middle: sanitizedData.mother_maiden_middle || '',
@@ -168,7 +167,8 @@ export function parseFullName(fullName: string, useSecureMode = true): NameParts
       error: error instanceof Error ? error.message : 'Unknown parsing error',
       useSecureMode,
       complianceFramework: 'RA_10173_BSP_808',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      complianceNote: 'Name parsing validation failed during form processing'
     });
     return { first_name: '', middleName: '', last_name: '' };
   }

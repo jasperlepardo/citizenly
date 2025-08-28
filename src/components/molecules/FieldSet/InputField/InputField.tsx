@@ -3,13 +3,13 @@
 import React from 'react';
 
 import { cn } from '@/lib';
+import type { FormMode } from '@/types';
 import {
   getFieldId,
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
 } from '@/utils/id-generators';
-import type { FormMode } from '@/types';
 
 import { Label, Input, HelperText, ReadOnly } from '../../../atoms/Field';
 
@@ -119,6 +119,7 @@ export const InputField = ({
               aria-describedby={ariaDescribedByString}
               {...inputProps}
             />
+            
           ) : React.isValidElement(children) ? (
             React.cloneElement(children as React.ReactElement<any>, {
               id: fieldId,

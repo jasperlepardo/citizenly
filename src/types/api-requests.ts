@@ -110,6 +110,7 @@ export interface WebhookVerification {
  * Consolidates from src/app/api/auth/create-profile/route.ts
  */
 export interface CreateProfileRequest {
+  id?: string; // Optional ID for backward compatibility
   userId: string;
   email: string;
   first_name: string;

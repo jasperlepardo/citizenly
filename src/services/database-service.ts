@@ -4,8 +4,9 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../lib/data/supabase';
+
 import { createLogger } from '../lib/config/environment';
+import type { Database } from '../lib/data/supabase';
 
 const logger = createLogger('DatabaseService');
 
@@ -135,7 +136,7 @@ export class DatabaseService {
     const startTime = Date.now();
     
     try {
-      const result = await client.rpc(functionName, params);
+      const result = await client.rpc(functionName, Object.keys(params).length > 0 ? params : undefined as any);
       
       const duration = Date.now() - startTime;
       logger.debug('RPC executed', { functionName, duration, hasError: !!result.error });

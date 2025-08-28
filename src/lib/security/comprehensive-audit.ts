@@ -194,9 +194,8 @@ export function generateSecurityReport(audit: ComprehensiveAuditResult): string 
  */
 export { 
   createSecureErrorResponse, 
-  validateEnvironmentVariables,
+  validateEnvironmentSecurity as validateEnvironmentVariables,
   sanitizeError,
-  securityHeaders as apiSecurityHeaders,
-  corsMiddleware as apiCorsMiddleware
+  securityHeaders as apiSecurityHeaders
 } from './api-security';
 export * from './security-audit';

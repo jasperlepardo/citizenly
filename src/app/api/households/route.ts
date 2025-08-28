@@ -202,7 +202,7 @@ export const POST = withSecurityHeaders(
         // Insert household
         const { data: newHousehold, error: insertError } = await supabaseAdmin
           .from('households')
-          .insert([insertData as any])
+          .insert([insertData] as any)
           .select('*')
           .single();
 
@@ -212,7 +212,7 @@ export const POST = withSecurityHeaders(
         }
 
         // Audit the creation
-        await auditDataOperation('create', 'household', newHousehold.id, context, {
+        await auditDataOperation('create', 'household', (newHousehold as any)?.id, context, {
           barangay_code: effectiveBarangayCode,
           householdCode: householdData.code,
         });

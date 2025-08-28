@@ -24,6 +24,7 @@ export type {
   ValidateFieldFunction,
 };
 import { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
+import type { UtilityValidationState as ValidationState } from '@/types/utilities';
 
 import { toTitleCase } from './string-utils';
 
@@ -31,7 +32,6 @@ import { toTitleCase } from './string-utils';
 // This eliminates duplication and ensures consistency
 
 // ValidationState moved to src/types/utilities.ts as UtilityValidationState
-import type { UtilityValidationState as ValidationState } from '@/types/utilities';
 
 /**
  * Create initial validation state
@@ -156,7 +156,15 @@ export function createFormValidationExecutor<T>(
       errors: result.errors || {},
     };
 
-    setErrors(normalizedResult.errors);
+    // Convert ValidationError[] to Record<string, string> if needed
+    const errorsForState = Array.isArray(normalizedResult.errors) 
+      ? normalizedResult.errors.reduce((acc: Record<string, string>, err: any) => {
+          acc[err.field || err.path || 'general'] = err.message || err.error || String(err);
+          return acc;
+        }, {})
+      : normalizedResult.errors;
+
+    setErrors(errorsForState);
 
     return normalizedResult;
   };

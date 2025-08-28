@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
-import { ReadOnly } from '@/components/atoms/Field/ReadOnly';
 import {
   PersonalInformationForm,
   ContactInformationForm,
@@ -114,16 +113,11 @@ export function ResidentForm({
       birthdate: '',
       birth_place_name: '',
       birth_place_code: '',
-      birth_place_level: '',
       philsys_card_number: '',
-      philsys_last4: '',
       education_attainment: '', // No database default
       is_graduate: false, // Will be set from defaults
       employment_status: '', // No database default
-      employment_code: '',
-      employment_name: '',
       occupation_code: '',
-      psoc_level: 0,
       occupation_title: '',
 
       // Contact Information - database field names
@@ -140,8 +134,8 @@ export function ResidentForm({
       ethnicity: '', // Nullable field - no default
       religion: '', // Nullable field - no default
       religion_others_specify: '',
-      is_voter: null, // Will be excluded from submission if section is hidden
-      is_resident_voter: null, // Will be excluded from submission if section is hidden
+      is_voter: false, // Default to false for boolean validation
+      is_resident_voter: false, // Default to false for boolean validation
       last_voted_date: '',
       mother_maiden_first: '',
       mother_maiden_middle: '',
@@ -166,9 +160,7 @@ export function ResidentForm({
       previous_province_code: '',
       previous_region_code: '',
       length_of_stay_previous_months: 0,
-      reason_for_leaving: '',
       date_of_transfer: '',
-      reason_for_transferring: '',
       duration_of_stay_current_months: 0,
       is_intending_to_return: false,
     };
@@ -355,6 +347,8 @@ export function ResidentForm({
       handleHouseholdSearch(''); // Load initial household data
     }
   }, [userProfile?.barangay_code, handleHouseholdSearch]);
+  
+
 
   // Handle form field changes
   const handleFieldChange = (
@@ -362,6 +356,41 @@ export function ResidentForm({
     value: string | number | boolean | null
   ) => {
     const fieldKey = String(field);
+    
+
+
+    // Handle household batch update to avoid race condition
+    if (fieldKey === '__household_batch__' && value && typeof value === 'object') {
+      const householdData = value as any;
+      
+      const updatedData: Partial<ResidentFormData> = {
+        household_code: householdData.household_code || '',
+        household_name: householdData.household_name || '',
+      };
+      
+      const newFormData = {
+        ...formData,
+        ...updatedData,
+      };
+
+      setFormData(newFormData);
+
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+
+      // Clear errors for both household fields
+      if (errors.household_code || errors.household_name) {
+        setErrors(prev => ({
+          ...prev,
+          household_code: '',
+          household_name: '',
+        }));
+      }
+      
+      return; // Exit early for batch update
+    }
 
     // Start with the basic field update
     let updatedData: Partial<ResidentFormData> = {
@@ -379,7 +408,9 @@ export function ResidentForm({
       ...updatedData,
     };
 
+
     setFormData(newFormData);
+    
 
     // Notify parent component of changes
     if (onChange) {
@@ -401,6 +432,7 @@ export function ResidentForm({
     setIsSubmitting(true);
 
     try {
+
       // Basic validation using database field names
       const newErrors: Record<string, string> = {};
 
@@ -408,12 +440,13 @@ export function ResidentForm({
       if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
       if (!formData.sex) newErrors.sex = 'Sex is required';
       if (!formData.birthdate) newErrors.birthdate = 'Birth date is required';
+      if (!formData.household_code || !formData.household_code.trim()) {
+        newErrors.household_code = 'Household assignment is required';
+      }
 
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         setIsSubmitting(false);
-        // Show validation error message
-        console.error('Validation errors:', newErrors);
         return;
       }
 
@@ -475,7 +508,8 @@ export function ResidentForm({
           is_solo_parent: filteredFormData.is_solo_parent,
           is_person_with_disability: filteredFormData.is_person_with_disability,
         });
-        await onSubmit(filteredFormData);
+        
+        onSubmit(filteredFormData);
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -535,6 +569,7 @@ export function ResidentForm({
             telephone_number: formData.telephone_number,
             mobile_number: formData.mobile_number,
             household_code: formData.household_code,
+            household_name: formData.household_name,
           }}
           onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
             // Direct field mapping (no conversion needed as both use snake_case)
@@ -618,16 +653,14 @@ export function ResidentForm({
           <MigrationInformation
             mode={mode}
             value={{
-              previous_barangay_code: formData.previous_barangay_code,
-              previous_city_municipality_code: formData.previous_city_municipality_code,
-              previous_province_code: formData.previous_province_code,
-              previous_region_code: formData.previous_region_code,
-              length_of_stay_previous_months: formData.length_of_stay_previous_months,
-              reason_for_leaving: formData.reason_for_leaving,
-              date_of_transfer: formData.date_of_transfer,
-              reason_for_transferring: formData.reason_for_transferring,
-              duration_of_stay_current_months: formData.duration_of_stay_current_months,
-              is_intending_to_return: formData.is_intending_to_return,
+              previous_barangay_code: formData.previous_barangay_code || undefined,
+              previous_city_municipality_code: formData.previous_city_municipality_code || undefined,
+              previous_province_code: formData.previous_province_code || undefined,
+              previous_region_code: formData.previous_region_code || undefined,
+              length_of_stay_previous_months: formData.length_of_stay_previous_months || undefined,
+              reason_for_migration: formData.reason_for_migration || undefined,
+              date_of_transfer: formData.date_of_transfer || undefined,
+              migration_type: formData.migration_type || undefined,
             }}
             onChange={migrationData => {
               handleFieldChange(
@@ -647,7 +680,7 @@ export function ResidentForm({
                 'length_of_stay_previous_months',
                 migrationData.length_of_stay_previous_months || 0
               );
-              handleFieldChange('reason_for_leaving', migrationData.reason_for_leaving || '');
+              handleFieldChange('reason_for_migration', migrationData.reason_for_migration || '');
               handleFieldChange('date_of_transfer', migrationData.date_of_transfer || '');
               handleFieldChange(
                 'reason_for_transferring',

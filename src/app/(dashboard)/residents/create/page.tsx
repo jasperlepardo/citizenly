@@ -6,10 +6,11 @@ import React, { useState, useMemo, useCallback, memo } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { ResidentForm } from '@/components';
+import { RATE_LIMITS } from '@/constants/resident-form';
 import { useAuth } from '@/contexts';
-import { useCSRFToken } from '@/lib/auth';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
-import { ResidentFormData } from '@/types/forms';
+import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
+import { useCSRFToken } from '@/lib/auth';
 import { 
   philippineCompliantLogger, 
   auditLogger,
@@ -17,6 +18,12 @@ import {
   getClientIP,
   generateSecureSessionId 
 } from '@/lib/security/philippine-logging';
+import { ResidentFormData } from '@/types/forms';
+import { 
+  checkRateLimit,
+  clearRateLimit,
+  getRateLimitStatus
+} from '@/utils/input-sanitizer';
 import { 
   validateRequiredFields, 
   transformFormData, 
@@ -25,13 +32,6 @@ import {
   prepareFormSubmission,
  
 } from '@/utils/resident-form-utils';
-import { 
-  checkRateLimit,
-  clearRateLimit,
-  getRateLimitStatus
-} from '@/utils/input-sanitizer';
-import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
-import { RATE_LIMITS } from '@/constants/resident-form';
 
 export const dynamic = 'force-dynamic';
 

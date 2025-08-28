@@ -11,9 +11,9 @@ import { AuthDebug } from '@/components/molecules/AuthDebug';
 import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
 import { PWAStatus } from '@/components/molecules/PWAStatus';
 import { VersionTag } from '@/components/molecules/VersionTag';
+import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
 import LastVisitedTracker from '@/providers/components/LastVisitedTracker';
 import Providers from '@/providers/components/Providers';
-import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
 
 // Configure Montserrat font with Next.js font optimization
 const montserrat = Montserrat({

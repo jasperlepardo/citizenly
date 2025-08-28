@@ -14,10 +14,8 @@ import {
   extractPhilSysLast4,
   logSecurityOperation,
 } from '@/lib/security/crypto';
-import { validatePhilSysFormat } from '@/utils/sanitization-utils';
 import { validateResidentData } from '@/lib/validation';
 import type { ValidationResult as BaseValidationResult } from '@/lib/validation/types';
-import type { ValidationError } from '@/types/validation';
 
 // Import database types
 import { ResidentRecord } from '@/types/database';
@@ -32,6 +30,8 @@ import type {
   ServiceCreateResidentResponse as CreateResidentResponse,
   ResidentValidationResult,
 } from '@/types/services';
+import type { ValidationError } from '@/types/validation';
+import { validatePhilSysFormat } from '@/utils/sanitization-utils';
 
 /**
  * Resident Service Class
@@ -49,16 +49,16 @@ export class ResidentService {
       if (result.errors) {
         console.log('Validation errors detail:', JSON.stringify(result.errors, null, 2));
       }
-      if (result.warnings) {
-        console.log('Validation warnings detail:', JSON.stringify(result.warnings, null, 2));
-      }
 
       // Ensure the result matches our interface
-      if (!result.success) {
+      if (!result.isValid) {
         const errors = result.errors
           ? Array.isArray(result.errors)
             ? result.errors
-            : Object.entries(result.errors).map(([field, message]) => ({ field, message }))
+            : Object.entries(result.errors).map(([field, message]) => ({ 
+                field, 
+                message: String(message) 
+              }))
           : [{ field: 'general', message: 'Validation failed' }];
 
         // Filter out validation errors for fields that weren't submitted
@@ -265,6 +265,7 @@ export class ResidentService {
       logger.info('Creating resident with household assignment', {
         householdCode: formData.household_code,
       });
+
 
       // Insert resident into database
       const { data, error } = await supabase.from('residents').insert([residentData]).select();

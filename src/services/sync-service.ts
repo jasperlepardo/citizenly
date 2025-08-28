@@ -4,11 +4,13 @@
  * Consolidates lib/data/sync-queue.ts functionality
  */
 
-import { createLogger } from '../lib/config/environment';
-import { createAppError } from '@/utils/error-utils';
 import { ErrorCode, ErrorSeverity } from '@/types/errors';
-import { offlineStorage } from '../lib/data/offline-storage';
 import type { SyncResult } from '@/types/utilities';
+import { createAppError } from '@/utils/error-utils';
+
+import { createLogger } from '../lib/config/environment';
+import { offlineStorage } from '../lib/data/offline-storage';
+
 
 const logger = createLogger('SyncService');
 
@@ -106,7 +108,10 @@ export class SyncService {
         }
 
         try {
-          const result = await this.syncItem(item);
+          const result = await this.syncItem({
+            ...item,
+            id: String(item.id)
+          });
 
           if (result.success) {
             await offlineStorage.markSyncItemCompleted(item.id!);

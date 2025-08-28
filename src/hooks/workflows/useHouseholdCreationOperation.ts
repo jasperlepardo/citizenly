@@ -10,9 +10,9 @@
 import { useState, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
+import type { HouseholdFormData } from '@/hooks/utilities/useHouseholdForm';
 import { supabase, logger, logError } from '@/lib';
 
-import type { HouseholdFormData } from '@/hooks/utilities/useHouseholdForm';
 
 /**
  * Household database record structure

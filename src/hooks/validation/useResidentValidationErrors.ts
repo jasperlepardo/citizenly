@@ -11,6 +11,7 @@ import { useState, useCallback } from 'react';
 
 import { validateResidentData, ValidationResult } from '@/lib/validation';
 import type { ResidentFormData as ResidentEditFormData } from '@/types';
+import type { ValidationError } from '@/types/validation';
 
 /**
  * Return type for useResidentValidationErrors hook
@@ -93,9 +94,16 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
 
     setErrorsState(errors);
 
+    // Convert Record<string, string> to ValidationError[] format
+    const validationErrors: ValidationError[] = Object.entries(errors).map(([field, message]) => ({
+      field,
+      message,
+      code: 'VALIDATION_ERROR'
+    }));
+
     return {
       isValid: Object.keys(errors).length === 0,
-      errors,
+      errors: validationErrors,
     };
   }, []);
 

@@ -75,7 +75,7 @@ export function createLazyComponent<T extends ComponentType<Record<string, unkno
       }
     >
       <Suspense fallback={options.fallback || <LoadingSpinner />}>
-        <LazyComponent {...props} />
+        <LazyComponent {...(props as any)} />
       </Suspense>
     </ErrorBoundary>
   );

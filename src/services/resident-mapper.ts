@@ -6,7 +6,7 @@
 
 import {
   ResidentFormData,
-  ResidentApiData,
+  ResidentRecord,
   ResidentWithRelations,
   PsocOption,
   PsgcOption,
@@ -22,7 +22,7 @@ import { formatFullName, parseFullName } from '@/utils/string-utils';
  * Map form data (camelCase) to API format (snake_case for database)
  * This is the definitive mapping - no more inconsistencies!
  */
-export const mapFormToApi = (formData: ResidentFormData): ResidentApiData => {
+export const mapFormToApi = (formData: ResidentFormData): Omit<ResidentRecord, 'id' | 'created_at' | 'updated_at'> => {
   return {
     // Required fields
     first_name: formData.first_name,
@@ -82,6 +82,11 @@ export const mapFormToApi = (formData: ResidentFormData): ResidentApiData => {
  */
 export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentFormData => {
   return {
+    // Required database fields
+    id: resident.id,
+    created_at: resident.created_at,
+    updated_at: resident.updated_at,
+    is_active: resident.is_active,
     // Personal Information
     first_name: resident.first_name,
     middle_name: resident.middle_name || '',
@@ -94,11 +99,11 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     birthdate: resident.birthdate,
     birth_place_code: resident.birth_place_code || '',
     philsys_card_number: resident.philsys_card_number || '',
-    education_attainment: resident.education_attainment || '',
+    education_attainment: resident.education_attainment || undefined,
     is_graduate: resident.is_graduate || false,
-    employment_status: resident.employment_status || '',
+    employment_status: resident.employment_status || undefined,
     occupation_code: resident.occupation_code || '', // Maps to occupation_code in DB
-    ethnicity: resident.ethnicity || '',
+    ethnicity: resident.ethnicity || undefined,
 
     // Contact Information
     email: resident.email || '',
@@ -111,7 +116,7 @@ export const mapDatabaseToForm = (resident: ResidentWithRelations): ResidentForm
     complexion: resident.complexion || '',
     height: resident.height || 0,
     weight: resident.weight || 0,
-    religion: resident.religion || '',
+    religion: resident.religion || undefined,
     religion_others_specify: resident.religion_others_specify || '',
 
     // Voting Information

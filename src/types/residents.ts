@@ -29,16 +29,27 @@
 
 import { ReactNode } from 'react';
 
-import { ResidentFormData } from './forms';
 import type { AddressInfo } from './addresses';
-import type { ResidentRecord } from './database';
+import type { 
+  ResidentRecord, 
+  SexEnum,
+  CivilStatusEnum,
+  CitizenshipEnum,
+  EducationLevelEnum,
+  EmploymentStatusEnum,
+  BloodTypeEnum,
+  ReligionEnum,
+  EthnicityEnum,
+} from './database';
+import { ResidentFormData } from './forms';
 
 // =============================================================================
 // DATABASE ENUMS AND TYPES
 // =============================================================================
 
 // Import enums from database.ts
-import type {
+// Re-export database enums for backward compatibility
+export type {
   SexEnum,
   CivilStatusEnum,
   CitizenshipEnum,
@@ -200,6 +211,7 @@ export interface ContactInfoFormState {
   mobile_number: string;
   telephone_number: string;
   household_code: string;
+  household_name?: string; // Optional - display name of selected household
 }
 
 /**
@@ -224,18 +236,18 @@ export interface SectoralInfoFormState {
  * Migration Information section of resident form
  */
 export interface MigrationInfoFormState {
-  // Migration Information - matching database exactly
-  previous_barangay_code: string;
-  previous_city_municipality_code: string;
-  previous_province_code: string;
-  previous_region_code: string;
-  date_of_transfer: string;
-  reason_for_migration: string;
-  is_intending_to_return: boolean;
-  length_of_stay_previous_months: number;
-  duration_of_stay_current_months: number;
-  migration_type: string;
-  is_whole_family_migrated: boolean;
+  // Migration Information - matching database schema exactly
+  previous_barangay_code?: string | null; // VARCHAR(10), nullable in database
+  previous_city_municipality_code?: string | null; // VARCHAR(10), nullable in database
+  previous_province_code?: string | null; // VARCHAR(10), nullable in database  
+  previous_region_code?: string | null; // VARCHAR(10), nullable in database
+  date_of_transfer?: string | null; // DATE, nullable in database
+  reason_for_migration?: string | null; // TEXT, nullable in database
+  is_intending_to_return?: boolean | null; // BOOLEAN, nullable in database
+  length_of_stay_previous_months?: number | null; // INTEGER, nullable in database
+  duration_of_stay_current_months?: number | null; // INTEGER, nullable in database
+  migration_type?: string | null; // VARCHAR(50), nullable in database
+  is_whole_family_migrated?: boolean | null; // BOOLEAN, nullable in database
 }
 
 /**

@@ -4,6 +4,8 @@
  */
 
 import type { Session } from '@supabase/supabase-js';
+
+import { supabase } from '@/lib/data/supabase';
 import { ResidentWithRelations } from '@/types';
 
 /**
@@ -11,28 +13,29 @@ import { ResidentWithRelations } from '@/types';
  * Ensures all expected fields are present for form consumption
  */
 export const initializeResidentFields = (residentData: Partial<ResidentWithRelations>): ResidentWithRelations => {
-  return {
+  // Set required fields with defaults if missing
+  const baseData: ResidentWithRelations = {
+    id: residentData.id || '',
+    first_name: residentData.first_name || '',
+    last_name: residentData.last_name || '',
+    birthdate: residentData.birthdate || '',
+    sex: residentData.sex || 'male',
+    created_at: residentData.created_at || '',
+    updated_at: residentData.updated_at || '',
+    is_active: residentData.is_active ?? true,
+    is_graduate: residentData.is_graduate ?? false,
     ...residentData,
     telephone_number: residentData.telephone_number || '',
     philsys_card_number: residentData.philsys_card_number || '',
-    workplace: residentData.workplace || '',
-    height_cm: residentData.height_cm || undefined,
-    weight_kg: residentData.weight_kg || undefined,
+    height: residentData.height || null,
+    weight: residentData.weight || null,
     complexion: residentData.complexion || '',
-    mother_first_name: residentData.mother_first_name || '',
-    mother_middle_name: residentData.mother_middle_name || '',
-    mother_maiden_last_name: residentData.mother_maiden_last_name || '',
-    migration_info: residentData.migration_info || {
-      is_migrant: false,
-      migration_type: null,
-      previous_address: '',
-      previous_country: '',
-      migration_reason: null,
-      migration_date: null,
-      documentation_status: null,
-      is_returning_resident: false,
-    },
+    mother_maiden_first: residentData.mother_maiden_first || '',
+    mother_maiden_middle: residentData.mother_maiden_middle || '',
+    mother_maiden_last: residentData.mother_maiden_last || '',
   };
+
+  return baseData;
 };
 
 /**
@@ -59,7 +62,7 @@ export const getComputedFieldTooltip = (field: keyof ResidentWithRelations): str
 export const getAuthSession = async () => {
   const {
     data: { session },
-  } = await import('@/lib/data/supabase').then(m => m.supabase.auth.getSession());
+  } = await supabase.auth.getSession();
   if (!session?.access_token) {
     throw new Error('No valid session found');
   }

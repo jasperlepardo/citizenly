@@ -31,7 +31,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
     const scored = items
       .map(item => {
         let score = 0;
-        const label = item.label.toLowerCase();
+        const label = item.label?.toLowerCase() || '';
         const description = item.description?.toLowerCase() || '';
         const keywords = item.keywords?.join(' ').toLowerCase() || '';
 

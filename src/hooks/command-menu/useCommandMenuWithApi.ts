@@ -100,7 +100,7 @@ export function useCommandMenuWithApi({
       const query = search.searchQuery.toLowerCase();
       const matchingStaticItems = staticMenuItems.filter(
         item =>
-          item.label.toLowerCase().includes(query) ||
+          item.label?.toLowerCase().includes(query) ||
           item.description?.toLowerCase().includes(query) ||
           item.keywords?.some(keyword => keyword.includes(query))
       );

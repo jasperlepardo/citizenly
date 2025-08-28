@@ -105,7 +105,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 id={inputId}
                 name={name}
                 type={effectiveType}
-                value={value}
+                value={value || ''}
+                {...props}
                 className="font-montserrat w-full border-0 bg-transparent text-base leading-5 font-normal text-gray-600 shadow-none ring-0 outline-0 placeholder:text-gray-500 focus:border-0 focus:shadow-none focus:ring-0 focus:outline-0 dark:text-gray-300 dark:placeholder:text-gray-400"
                 style={{
                   border: 'none',
@@ -115,7 +116,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 }}
                 disabled={disabled}
                 aria-invalid={error ? 'true' : 'false'}
-                {...props}
               />
             </div>
           </div>
@@ -208,9 +208,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </div>
         </div>
-
-        {/* Hidden input for form submission */}
-        <input type="hidden" name={name} value={value || ''} />
       </div>
     );
   }

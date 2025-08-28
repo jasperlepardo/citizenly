@@ -3,13 +3,13 @@
 import React from 'react';
 
 import { cn } from '@/lib';
+import type { FormMode } from '@/types';
 import {
   getFieldId,
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
 } from '@/utils/id-generators';
-import type { FormMode } from '@/types';
 
 import { Label, HelperText, ReadOnly } from '../../../atoms/Field';
 import { Select, SelectProps } from '../../../atoms/Field/Select';
