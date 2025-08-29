@@ -10,7 +10,6 @@ import React from 'react';
 // import SubdivisionSelector from '../SubdivisionSelector/SubdivisionSelector';
 import type { HouseholdModalFormData as HouseholdFormData } from '@/types/components';
 
-
 interface HouseholdAddressFormProps {
   formData: HouseholdFormData;
   errors: Partial<Record<keyof HouseholdFormData, string>>;

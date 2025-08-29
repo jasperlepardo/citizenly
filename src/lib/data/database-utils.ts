@@ -3,12 +3,12 @@
  * High-level functions to interact with the complete PSGC geographic data
  */
 
-import type { 
+import type {
   PSGCRegion,
   PSGCProvince,
   PSGCCityMunicipality,
   PSGCBarangay,
-  AddressHierarchyQueryResult as AddressHierarchy
+  AddressHierarchyQueryResult as AddressHierarchy,
 } from '../../types/database';
 import { supabase } from '../supabase';
 
@@ -17,7 +17,10 @@ import { supabase } from '../supabase';
 // Create simplified types for database query results
 export type Region = Pick<PSGCRegion, 'code' | 'name'>;
 export type Province = Pick<PSGCProvince, 'code' | 'name' | 'region_code'>;
-export type City = Pick<PSGCCityMunicipality, 'code' | 'name' | 'type' | 'province_code' | 'is_independent'>;
+export type City = Pick<
+  PSGCCityMunicipality,
+  'code' | 'name' | 'type' | 'province_code' | 'is_independent'
+>;
 export type Barangay = Pick<PSGCBarangay, 'code' | 'name' | 'city_municipality_code'>;
 
 // Re-export address hierarchy type
@@ -163,43 +166,40 @@ export async function searchAddresses(
     const error = result.error;
 
     // Transform the flattened API response to match AddressHierarchy interface
-    const results: AddressHierarchy[] = (data || []).map((item: {
-      region_code?: string;
-      region_name?: string;
-      province_code?: string;
-      province_name?: string;
-      city_code?: string;
-      city_name?: string;
-      city_type?: string;
-      barangay_code?: string;
-      barangay_name?: string;
-      code?: string;
-      name?: string;
-      full_address?: string;
-    }) => {
-      return {
-        region_code: item.region_code || '',
-        region_name: item.region_name || '',
-        province_code: item.province_code || null,
-        province_name: item.province_name || null,
-        city_code: item.city_code || '',
-        city_municipality_code: item.city_code || '',
-        city_name: item.city_name || '',
-        city_type: item.city_type || '',
-        barangay_code: item.code || item.barangay_code || '',
-        barangay_name: item.name || item.barangay_name || '',
-        full_address:
-          item.full_address ||
-          [
-            item.name || item.barangay_name,
-            item.city_name,
-            item.province_name,
-            item.region_name,
-          ]
-            .filter(Boolean)
-            .join(', '),
-      };
-    });
+    const results: AddressHierarchy[] = (data || []).map(
+      (item: {
+        region_code?: string;
+        region_name?: string;
+        province_code?: string;
+        province_name?: string;
+        city_code?: string;
+        city_name?: string;
+        city_type?: string;
+        barangay_code?: string;
+        barangay_name?: string;
+        code?: string;
+        name?: string;
+        full_address?: string;
+      }) => {
+        return {
+          region_code: item.region_code || '',
+          region_name: item.region_name || '',
+          province_code: item.province_code || null,
+          province_name: item.province_name || null,
+          city_code: item.city_code || '',
+          city_municipality_code: item.city_code || '',
+          city_name: item.city_name || '',
+          city_type: item.city_type || '',
+          barangay_code: item.code || item.barangay_code || '',
+          barangay_name: item.name || item.barangay_name || '',
+          full_address:
+            item.full_address ||
+            [item.name || item.barangay_name, item.city_name, item.province_name, item.region_name]
+              .filter(Boolean)
+              .join(', '),
+        };
+      }
+    );
 
     return results;
   } catch (error) {

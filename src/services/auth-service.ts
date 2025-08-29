@@ -215,9 +215,13 @@ export class AuthService {
    */
   isAdmin(profile: UserProfile | null): boolean {
     if (!profile?.is_active) return false;
-    return ['super_admin', 'region_admin', 'province_admin', 'city_admin', 'barangay_admin'].includes(
-      profile.role_name
-    );
+    return [
+      'super_admin',
+      'region_admin',
+      'province_admin',
+      'city_admin',
+      'barangay_admin',
+    ].includes(profile.role_name);
   }
 
   /**

@@ -347,8 +347,6 @@ export function ResidentForm({
       handleHouseholdSearch(''); // Load initial household data
     }
   }, [userProfile?.barangay_code, handleHouseholdSearch]);
-  
-
 
   // Handle form field changes
   const handleFieldChange = (
@@ -356,18 +354,16 @@ export function ResidentForm({
     value: string | number | boolean | null
   ) => {
     const fieldKey = String(field);
-    
-
 
     // Handle household batch update to avoid race condition
     if (fieldKey === '__household_batch__' && value && typeof value === 'object') {
       const householdData = value as any;
-      
+
       const updatedData: Partial<ResidentFormData> = {
         household_code: householdData.household_code || '',
         household_name: householdData.household_name || '',
       };
-      
+
       const newFormData = {
         ...formData,
         ...updatedData,
@@ -388,7 +384,7 @@ export function ResidentForm({
           household_name: '',
         }));
       }
-      
+
       return; // Exit early for batch update
     }
 
@@ -408,9 +404,7 @@ export function ResidentForm({
       ...updatedData,
     };
 
-
     setFormData(newFormData);
-    
 
     // Notify parent component of changes
     if (onChange) {
@@ -432,7 +426,6 @@ export function ResidentForm({
     setIsSubmitting(true);
 
     try {
-
       // Basic validation using database field names
       const newErrors: Record<string, string> = {};
 
@@ -508,7 +501,7 @@ export function ResidentForm({
           is_solo_parent: filteredFormData.is_solo_parent,
           is_person_with_disability: filteredFormData.is_person_with_disability,
         });
-        
+
         onSubmit(filteredFormData);
       }
     } catch (error) {
@@ -654,7 +647,8 @@ export function ResidentForm({
             mode={mode}
             value={{
               previous_barangay_code: formData.previous_barangay_code || undefined,
-              previous_city_municipality_code: formData.previous_city_municipality_code || undefined,
+              previous_city_municipality_code:
+                formData.previous_city_municipality_code || undefined,
               previous_province_code: formData.previous_province_code || undefined,
               previous_region_code: formData.previous_region_code || undefined,
               length_of_stay_previous_months: formData.length_of_stay_previous_months || undefined,

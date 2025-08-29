@@ -13,7 +13,6 @@ import { useAuth } from '@/contexts';
 import type { HouseholdFormData } from '@/hooks/utilities/useHouseholdForm';
 import { supabase, logger, logError } from '@/lib';
 
-
 /**
  * Household database record structure
  */

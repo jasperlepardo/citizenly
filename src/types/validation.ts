@@ -1,18 +1,18 @@
 /**
  * Validation Types - Comprehensive Form Validation Framework
- * 
+ *
  * @fileoverview Complete validation type system for the Citizenly RBI application.
  * Provides type-safe validation patterns for forms, API requests, and data processing
  * with support for synchronous, asynchronous, and schema-based validation.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * @example Basic Field Validation
  * ```typescript
  * import { ValidationResult, FieldValidator } from '@/types/validation';
- * 
+ *
  * const validateEmail: FieldValidator<string> = (value) => {
  *   if (!value.includes('@')) return 'Invalid email format';
  *   return null;

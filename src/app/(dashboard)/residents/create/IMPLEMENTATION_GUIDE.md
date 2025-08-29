@@ -1,4 +1,5 @@
 # 🚀 IMPLEMENTATION GUIDE
+
 ## Residents Create Module - Audit Recommendations
 
 **Version**: 1.0  
@@ -17,15 +18,19 @@ This implementation guide provides step-by-step instructions to address the crit
 ## 🎯 **IMPLEMENTATION PHASES**
 
 ### **Phase 1: Critical Security Fixes** (Week 1)
+
 **Objective**: Eliminate security vulnerabilities that pose immediate risk
 
 ### **Phase 2: Performance Optimization** (Week 2)
+
 **Objective**: Improve application performance and user experience
 
 ### **Phase 3: Code Quality Enhancement** (Week 3)
+
 **Objective**: Improve maintainability and reduce technical debt
 
 ### **Phase 4: Testing Excellence** (Week 4)
+
 **Objective**: Comprehensive test coverage and quality assurance
 
 ---
@@ -35,6 +40,7 @@ This implementation guide provides step-by-step instructions to address the crit
 ### **Day 1-2: Remove Console Log Security Issues**
 
 #### **Step 1.1: Create Secure Logging Service**
+
 ```bash
 # Create directory structure
 mkdir -p src/lib/security
@@ -42,6 +48,7 @@ mkdir -p src/lib/logging
 ```
 
 **File: `src/lib/security/secure-logger.ts`**
+
 ```typescript
 /**
  * Secure logging service that prevents PII exposure
@@ -60,10 +67,22 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 class SecureLogger {
   private sensitiveFields = new Set([
-    'first_name', 'last_name', 'middle_name', 'extension_name',
-    'birthdate', 'mobile_number', 'telephone_number', 'email',
-    'philsys_card_number', 'mother_maiden_first', 'mother_maiden_middle',
-    'mother_maiden_last', 'address', 'password', 'token', 'secret'
+    'first_name',
+    'last_name',
+    'middle_name',
+    'extension_name',
+    'birthdate',
+    'mobile_number',
+    'telephone_number',
+    'email',
+    'philsys_card_number',
+    'mother_maiden_first',
+    'mother_maiden_middle',
+    'mother_maiden_last',
+    'address',
+    'password',
+    'token',
+    'secret',
   ]);
 
   debug(message: string, context?: LogContext): void {
@@ -90,7 +109,7 @@ class SecureLogger {
       level,
       message,
       ...sanitizedContext,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     if (process.env.NODE_ENV === 'development') {
@@ -104,7 +123,7 @@ class SecureLogger {
     if (!context) return undefined;
 
     const sanitized = { ...context };
-    
+
     // Remove sensitive fields
     this.sensitiveFields.forEach(field => {
       if (field in sanitized) {
@@ -128,9 +147,9 @@ class SecureLogger {
       /^\d{4}-\d{4}-\d{4}$/, // PhilSys format
       /^[\w\.-]+@[\w\.-]+\.\w+$/, // Email
       /^\+?[\d\s\-\(\)]{10,}$/, // Phone number
-      /^\d{4}-\d{2}-\d{2}$/ // Date format
+      /^\d{4}-\d{2}-\d{2}$/, // Date format
     ];
-    
+
     return piiPatterns.some(pattern => pattern.test(value));
   }
 
@@ -153,6 +172,7 @@ export const logger = new SecureLogger();
 ```
 
 #### **Step 1.2: Replace Console Logs in page.tsx**
+
 ```typescript
 // UPDATE: src/app/(dashboard)/residents/create/page.tsx
 
@@ -173,21 +193,21 @@ import { logger } from '@/lib/security/secure-logger';
 // In onSuccess callback:
 logger.info('Resident created successfully', {
   userId: user?.id,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 
 // In onError callback:
 logger.error('Resident creation failed', {
   userId: user?.id,
   error: typeof error === 'string' ? error : 'Unknown error',
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 
 // In handleSubmit (replace form data logging):
 logger.debug('Form submission initiated', {
   userId: user?.id,
   fieldCount: Object.keys(formData).length,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 
 // For validation errors:
@@ -195,7 +215,7 @@ if (!result?.success && validationErrors) {
   logger.warn('Form validation failed', {
     userId: user?.id,
     errorCount: Object.keys(validationErrors).length,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 ```
@@ -203,7 +223,9 @@ if (!result?.success && validationErrors) {
 ### **Day 3-4: Implement URL Parameter Sanitization**
 
 #### **Step 1.3: Create Input Sanitization Service**
+
 **File: `src/lib/security/input-sanitizer.ts`**
+
 ```typescript
 import DOMPurify from 'isomorphic-dompurify';
 
@@ -240,9 +262,9 @@ export class InputSanitizer {
       }
 
       // Step 5: DOMPurify sanitization
-      return DOMPurify.sanitize(cleaned, { 
-        ALLOWED_TAGS: [], 
-        ALLOWED_ATTR: [] 
+      return DOMPurify.sanitize(cleaned, {
+        ALLOWED_TAGS: [],
+        ALLOWED_ATTR: [],
       });
     } catch (error) {
       // Log security incident
@@ -271,7 +293,7 @@ export class InputSanitizer {
       return DOMPurify.sanitize(cleaned, {
         ALLOWED_TAGS: [],
         ALLOWED_ATTR: [],
-        KEEP_CONTENT: true
+        KEEP_CONTENT: true,
       });
     } catch (error) {
       console.warn('Input sanitization failed:', error.message);
@@ -285,7 +307,7 @@ export class InputSanitizer {
   static validateURL(url: string, allowedPaths: string[] = []): boolean {
     try {
       const urlObj = new URL(url, window.location.origin);
-      
+
       // Only allow same origin
       if (urlObj.origin !== window.location.origin) {
         return false;
@@ -314,13 +336,16 @@ export { SecurityError };
 ```
 
 #### **Step 1.4: Install Required Dependencies**
+
 ```bash
 npm install isomorphic-dompurify
 npm install --save-dev @types/dompurify
 ```
 
 #### **Step 1.5: Update parseFullName Function**
+
 **File: `src/utils/resident-form-utils.ts`**
+
 ```typescript
 import { SecurityError } from '@/lib/security/input-sanitizer';
 
@@ -334,11 +359,7 @@ export function parseFullNameSecurely(fullName: string): NameParts {
     throw new SecurityError('Invalid name characters');
   }
 
-  const nameParts = fullName
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 5); // Limit parts to prevent abuse
+  const nameParts = fullName.trim().split(/\s+/).filter(Boolean).slice(0, 5); // Limit parts to prevent abuse
 
   // Validate each part
   nameParts.forEach(part => {
@@ -358,7 +379,7 @@ export function parseFullNameSecurely(fullName: string): NameParts {
       return {
         first_name: nameParts[0],
         middleName: nameParts.slice(1, -1).join(' '),
-        last_name: nameParts[nameParts.length - 1]
+        last_name: nameParts[nameParts.length - 1],
       };
   }
 }
@@ -371,6 +392,7 @@ interface NameParts {
 ```
 
 #### **Step 1.6: Update page.tsx with Secure URL Handling**
+
 ```typescript
 // UPDATE: Initial data parsing in page.tsx
 import { InputSanitizer } from '@/lib/security/input-sanitizer';
@@ -379,12 +401,8 @@ import { parseFullNameSecurely } from '@/utils/resident-form-utils';
 // Replace the existing initialData useMemo:
 const initialData = useMemo(() => {
   try {
-    const suggestedName = InputSanitizer.sanitizeName(
-      searchParams.get('suggested_name')
-    );
-    const suggestedId = InputSanitizer.sanitizeGeneralInput(
-      searchParams.get('suggested_id')
-    );
+    const suggestedName = InputSanitizer.sanitizeName(searchParams.get('suggested_name'));
+    const suggestedId = InputSanitizer.sanitizeGeneralInput(searchParams.get('suggested_id'));
 
     if (!suggestedName && !suggestedId) {
       return undefined;
@@ -402,9 +420,9 @@ const initialData = useMemo(() => {
     logger.warn('URL parameter sanitization failed', {
       userId: user?.id,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     return undefined; // Fail securely
   }
 }, [searchParams]);
@@ -422,35 +440,42 @@ const suggestedName = useMemo(() => {
 ### **Day 5: Add Server-Side Validation**
 
 #### **Step 1.7: Install Validation Dependencies**
+
 ```bash
 npm install zod
 npm install --save-dev @types/zod
 ```
 
 #### **Step 1.8: Create Server Validation Service**
+
 **File: `src/lib/validation/server-validation.ts`**
+
 ```typescript
 import { z } from 'zod';
 
 // Define comprehensive validation schema
 const ResidentFormSchema = z.object({
-  first_name: z.string()
+  first_name: z
+    .string()
     .min(1, 'First name is required')
     .max(50, 'First name must be less than 50 characters')
     .regex(/^[a-zA-Z\s\-'\.]+$/, 'First name contains invalid characters'),
-    
-  last_name: z.string()
+
+  last_name: z
+    .string()
     .min(1, 'Last name is required')
     .max(50, 'Last name must be less than 50 characters')
     .regex(/^[a-zA-Z\s\-'\.]+$/, 'Last name contains invalid characters'),
-    
-  middle_name: z.string()
+
+  middle_name: z
+    .string()
     .max(50, 'Middle name must be less than 50 characters')
     .regex(/^[a-zA-Z\s\-'\.]*$/, 'Middle name contains invalid characters')
     .optional()
     .or(z.literal('')),
-    
-  birthdate: z.string()
+
+  birthdate: z
+    .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid birthdate format')
     .refine(date => {
       const birthDate = new Date(date);
@@ -458,29 +483,29 @@ const ResidentFormSchema = z.object({
       const age = now.getFullYear() - birthDate.getFullYear();
       return age >= 0 && age <= 150;
     }, 'Invalid birthdate'),
-    
+
   sex: z.enum(['male', 'female'], {
-    errorMap: () => ({ message: 'Sex must be either male or female' })
+    errorMap: () => ({ message: 'Sex must be either male or female' }),
   }),
-    
-  household_code: z.string()
+
+  household_code: z
+    .string()
     .min(1, 'Household code is required')
     .regex(/^[A-Z0-9\-]+$/, 'Invalid household code format'),
-    
-  email: z.string()
-    .email('Invalid email format')
-    .optional()
-    .or(z.literal('')),
-    
-  mobile_number: z.string()
+
+  email: z.string().email('Invalid email format').optional().or(z.literal('')),
+
+  mobile_number: z
+    .string()
     .regex(/^(\+63|0)[0-9]{10}$/, 'Invalid mobile number format')
     .optional()
     .or(z.literal('')),
-    
-  philsys_card_number: z.string()
+
+  philsys_card_number: z
+    .string()
     .regex(/^\d{4}-\d{4}-\d{4}$/, 'Invalid PhilSys card number format')
     .optional()
-    .or(z.literal(''))
+    .or(z.literal('')),
 });
 
 export interface ValidationContext {
@@ -499,52 +524,53 @@ export async function validateResidentDataOnServer(
   formData: unknown,
   context: ValidationContext
 ): Promise<ValidationResult> {
-  
   try {
     // Parse and validate with Zod
     const validatedData = ResidentFormSchema.parse(formData);
-    
+
     // Additional business logic validations
     const businessValidations = await Promise.all([
       validateUniquePhilSys(validatedData.philsys_card_number, context.barangayCode),
       validateHouseholdExists(validatedData.household_code, context.barangayCode),
-      checkDuplicateResident(validatedData, context.barangayCode)
+      checkDuplicateResident(validatedData, context.barangayCode),
     ]);
-    
+
     const failures = businessValidations.filter(result => !result.isValid);
     if (failures.length > 0) {
       return {
         isValid: false,
-        errors: failures.reduce((acc, failure) => ({ ...acc, ...failure.errors }), {})
+        errors: failures.reduce((acc, failure) => ({ ...acc, ...failure.errors }), {}),
       };
     }
-    
+
     return { isValid: true, data: validatedData };
-    
   } catch (error) {
     if (error instanceof z.ZodError) {
       return {
         isValid: false,
-        errors: error.errors.reduce((acc, err) => ({
-          ...acc,
-          [err.path.join('.')]: err.message
-        }), {})
+        errors: error.errors.reduce(
+          (acc, err) => ({
+            ...acc,
+            [err.path.join('.')]: err.message,
+          }),
+          {}
+        ),
       };
     }
-    
+
     throw error;
   }
 }
 
 async function validateUniquePhilSys(
-  philsysNumber: string | undefined, 
+  philsysNumber: string | undefined,
   barangayCode: string
 ): Promise<ValidationResult> {
   if (!philsysNumber) return { isValid: true };
-  
+
   // This would typically query your database
   // Implementation depends on your data layer
-  
+
   return { isValid: true };
 }
 
@@ -554,27 +580,28 @@ async function validateHouseholdExists(
 ): Promise<ValidationResult> {
   // This would typically query your database
   // Implementation depends on your data layer
-  
+
   return { isValid: true };
 }
 
-async function checkDuplicateResident(
-  data: any,
-  barangayCode: string
-): Promise<ValidationResult> {
+async function checkDuplicateResident(data: any, barangayCode: string): Promise<ValidationResult> {
   // This would typically query your database for duplicates
   // Implementation depends on your data layer
-  
+
   return { isValid: true };
 }
 ```
 
 #### **Step 1.9: Update useResidentOperations Hook**
+
 ```typescript
 // UPDATE: src/hooks/crud/useResidentOperations.ts
 // Add server-side validation call before submission
 
-import { validateResidentDataOnServer, ValidationContext } from '@/lib/validation/server-validation';
+import {
+  validateResidentDataOnServer,
+  ValidationContext,
+} from '@/lib/validation/server-validation';
 
 export function useResidentOperations(options: UseResidentOperationsOptions = {}) {
   // ... existing code ...
@@ -594,16 +621,16 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
         const validationContext: ValidationContext = {
           userId: user?.id || '',
           barangayCode,
-          csrfToken: getCSRFToken()
+          csrfToken: getCSRFToken(),
         };
 
         const serverValidation = await validateResidentDataOnServer(formData, validationContext);
-        
+
         if (!serverValidation.isValid) {
           setValidationErrors(serverValidation.errors || {});
           return {
             success: false,
-            validationErrors: serverValidation.errors
+            validationErrors: serverValidation.errors,
           };
         }
 
@@ -612,11 +639,10 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
           formData: serverValidation.data,
           userAddress: userProfile?.address,
           barangayCode,
-          csrfToken: getCSRFToken()
+          csrfToken: getCSRFToken(),
         });
 
         // ... rest of existing code
-        
       } catch (error) {
         // ... existing error handling
       } finally {
@@ -633,6 +659,7 @@ export function useResidentOperations(options: UseResidentOperationsOptions = {}
 ### **Weekend: Enable Skipped Tests**
 
 #### **Step 1.10: Fix Skipped Tests**
+
 ```typescript
 // UPDATE: src/app/(dashboard)/residents/create/page.test.tsx
 
@@ -653,7 +680,7 @@ describe('Form Submission', () => { // Remove .skip
   it('should handle successful form submission', async () => {
     // Update test implementation
     const user = userEvent.setup();
-    
+
     // Mock ResidentForm to provide test data
     const MockResidentForm = jest.requireMock('@/components').ResidentForm;
     MockResidentForm.mockImplementation(({ onSubmit }: any) => (
@@ -697,7 +724,9 @@ describe('Form Submission', () => { // Remove .skip
 ### **Day 8-9: Implement Memoization**
 
 #### **Step 2.1: Create Form Transformer Hook**
+
 **File: `src/utils/form-transformer.ts`**
+
 ```typescript
 import { useMemo } from 'react';
 import { DEFAULT_VALUES } from '@/constants/resident-form';
@@ -716,48 +745,63 @@ export const useFormTransformer = (formData: any) => {
       sex: formData.sex as 'male' | 'female',
       civil_status: formData.civil_status || DEFAULT_VALUES.CIVIL_STATUS,
       citizenship: formData.citizenship || DEFAULT_VALUES.CITIZENSHIP,
-      
+
       // Education & Employment
       education_attainment: formData.education_attainment || '',
       is_graduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
       occupation_code: formData.occupation_code || '',
       employment_status: formData.employment_status || DEFAULT_VALUES.EMPLOYMENT_STATUS,
-      
+
       // Contact Information
       email: formData.email || '',
       mobile_number: formData.mobile_number || '',
       telephone_number: formData.telephone_number || '',
       philsys_card_number: formData.philsys_card_number || '',
-      
+
       // Location Information
       region_code: formData.region_code || '',
       province_code: formData.province_code || '',
       city_municipality_code: formData.city_municipality_code || '',
       barangay_code: formData.barangay_code || '',
       household_code: formData.household_code || '',
-      
+
       // Additional fields
-      ...extractAdditionalFields(formData)
+      ...extractAdditionalFields(formData),
     };
   }, [formData]);
 };
 
 function extractAdditionalFields(formData: any): Record<string, any> {
   const knownFields = new Set([
-    'first_name', 'middle_name', 'last_name', 'extension_name', 'birthdate', 'sex',
-    'civil_status', 'citizenship', 'education_attainment', 'is_graduate',
-    'occupation_code', 'employment_status', 'email', 'mobile_number',
-    'telephone_number', 'philsys_card_number', 'region_code', 'province_code',
-    'city_municipality_code', 'barangay_code', 'household_code'
+    'first_name',
+    'middle_name',
+    'last_name',
+    'extension_name',
+    'birthdate',
+    'sex',
+    'civil_status',
+    'citizenship',
+    'education_attainment',
+    'is_graduate',
+    'occupation_code',
+    'employment_status',
+    'email',
+    'mobile_number',
+    'telephone_number',
+    'philsys_card_number',
+    'region_code',
+    'province_code',
+    'city_municipality_code',
+    'barangay_code',
+    'household_code',
   ]);
-  
-  return Object.fromEntries(
-    Object.entries(formData).filter(([key]) => !knownFields.has(key))
-  );
+
+  return Object.fromEntries(Object.entries(formData).filter(([key]) => !knownFields.has(key)));
 }
 ```
 
 #### **Step 2.2: Update page.tsx with Memoization**
+
 ```typescript
 // UPDATE: handleSubmit in page.tsx
 import { useFormTransformer } from '@/utils/form-transformer';
@@ -765,7 +809,7 @@ import { useFormTransformer } from '@/utils/form-transformer';
 const handleSubmit = async (formData: any) => {
   // Use memoized transformer
   const transformedData = useFormTransformer(formData);
-  
+
   // Validation with proper typing
   const validation = validateRequiredFields(formData);
   if (!validation.isValid) {
@@ -781,7 +825,7 @@ const handleSubmit = async (formData: any) => {
 const initialData = useMemo(() => {
   const suggestedName = searchParams.get('suggested_name');
   const suggestedId = searchParams.get('suggested_id');
-  
+
   if (!suggestedName && !suggestedId) return undefined;
 
   try {
@@ -792,20 +836,21 @@ const initialData = useMemo(() => {
   } catch (error) {
     logger.warn('URL parameter parsing failed', {
       userId: user?.id,
-      error: error.message
+      error: error.message,
     });
   }
-  
+
   return undefined;
 }, [
   searchParams.get('suggested_name'), // Specific parameter
-  searchParams.get('suggested_id')    // Specific parameter
+  searchParams.get('suggested_id'), // Specific parameter
 ]); // More specific dependencies
 ```
 
 ### **Day 10-11: Bundle Optimization**
 
 #### **Step 2.3: Implement Lazy Loading**
+
 ```typescript
 // UPDATE: page.tsx with lazy loading
 import { lazy, Suspense } from 'react';
@@ -842,7 +887,7 @@ export default function CreateResidentPage() {
           Complete the form to register a new resident in the system
         </p>
       </div>
-      
+
       {/* Lazy loaded form */}
       <Suspense fallback={<FormSkeleton />}>
         <CreateResidentForm />
@@ -853,13 +898,14 @@ export default function CreateResidentPage() {
 ```
 
 #### **Step 2.4: Dynamic Imports for Heavy Dependencies**
+
 ```typescript
 // UPDATE: handleSubmit with dynamic imports
 const handleSubmit = async (formData: ResidentFormData): Promise<void> => {
   try {
     // Lazy load toast for better initial bundle size
     const { toast } = await import('react-hot-toast');
-    
+
     const validation = validateRequiredFields(formData);
     if (!validation.isValid) {
       toast.error(validation.errors._form);
@@ -883,6 +929,7 @@ const handleSubmit = async (formData: ResidentFormData): Promise<void> => {
 ```
 
 #### **Step 2.5: Bundle Analysis Setup**
+
 ```bash
 # Install bundle analyzer
 npm install --save-dev @next/bundle-analyzer
@@ -907,7 +954,9 @@ module.exports = withBundleAnalyzer({
 ### **Day 12: Memory Optimization**
 
 #### **Step 2.6: Implement Object Pool Pattern**
+
 **File: `src/utils/object-pool.ts`**
+
 ```typescript
 class FormDataPool {
   private pool: any[] = [];
@@ -961,17 +1010,19 @@ export const formDataPool = new FormDataPool();
 ### **Day 15-16: Constants and Configuration**
 
 #### **Step 3.1: Create Constants Files**
+
 **File: `src/constants/resident-form.ts`**
+
 ```typescript
 export const REQUIRED_FIELDS = [
   'first_name',
-  'last_name', 
+  'last_name',
   'birthdate',
   'sex',
-  'household_code'
+  'household_code',
 ] as const;
 
-export type RequiredField = typeof REQUIRED_FIELDS[number];
+export type RequiredField = (typeof REQUIRED_FIELDS)[number];
 
 export const FIELD_LABELS: Record<string, string> = {
   first_name: 'First Name',
@@ -994,14 +1045,14 @@ export const FIELD_LABELS: Record<string, string> = {
   region_code: 'Region Code',
   province_code: 'Province Code',
   city_municipality_code: 'City/Municipality Code',
-  barangay_code: 'Barangay Code'
+  barangay_code: 'Barangay Code',
 };
 
 export const DEFAULT_VALUES = {
   CIVIL_STATUS: 'single',
   CITIZENSHIP: 'filipino',
   EMPLOYMENT_STATUS: 'not_in_labor_force',
-  RELIGION: 'roman_catholic'
+  RELIGION: 'roman_catholic',
 } as const;
 
 export const VALIDATION_RULES = {
@@ -1011,23 +1062,30 @@ export const VALIDATION_RULES = {
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PHILSYS_REGEX: /^\d{4}-\d{4}-\d{4}$/,
   NAME_PATTERN: /^[a-zA-Z\s\-'\.]+$/,
-  HOUSEHOLD_CODE_PATTERN: /^[A-Z0-9\-]+$/
+  HOUSEHOLD_CODE_PATTERN: /^[A-Z0-9\-]+$/,
 };
 
 export const FORM_CONFIGURATION = {
   MAX_SUBMISSION_ATTEMPTS: 5,
   RATE_LIMIT_WINDOW_MS: 15 * 60 * 1000, // 15 minutes
   DEBOUNCE_DELAY_MS: 300,
-  AUTO_SAVE_DELAY_MS: 2000
+  AUTO_SAVE_DELAY_MS: 2000,
 };
 ```
 
 ### **Day 17-18: Business Logic Extraction**
 
 #### **Step 3.2: Create Utility Functions**
+
 **File: `src/utils/resident-form-utils.ts`**
+
 ```typescript
-import { REQUIRED_FIELDS, FIELD_LABELS, DEFAULT_VALUES, VALIDATION_RULES } from '@/constants/resident-form';
+import {
+  REQUIRED_FIELDS,
+  FIELD_LABELS,
+  DEFAULT_VALUES,
+  VALIDATION_RULES,
+} from '@/constants/resident-form';
 import { SecurityError } from '@/lib/security/input-sanitizer';
 
 export interface ValidationResult {
@@ -1065,17 +1123,17 @@ export function validateRequiredFields(formData: any): ValidationResult {
     const value = formData[field];
     return !value || (typeof value === 'string' && value.trim() === '');
   });
-  
+
   if (missingFields.length === 0) {
     return { isValid: true, errors: {} };
   }
-  
+
   const missingLabels = missingFields.map(field => FIELD_LABELS[field] || field);
   return {
     isValid: false,
     errors: {
-      _form: `Please fill in required fields: ${missingLabels.join(', ')}`
-    }
+      _form: `Please fill in required fields: ${missingLabels.join(', ')}`,
+    },
   };
 }
 
@@ -1090,44 +1148,53 @@ export function transformFormData(formData: any): ResidentFormData {
     sex: formData.sex as 'male' | 'female',
     civil_status: formData.civil_status || DEFAULT_VALUES.CIVIL_STATUS,
     citizenship: formData.citizenship || DEFAULT_VALUES.CITIZENSHIP,
-    
+
     // Education & Employment
     education_attainment: formData.education_attainment || '',
     is_graduate: formData.is_graduate !== undefined ? formData.is_graduate : false,
     occupation_code: formData.occupation_code || '',
     employment_status: formData.employment_status || DEFAULT_VALUES.EMPLOYMENT_STATUS,
-    
+
     // Contact Information
     email: formData.email || '',
     mobile_number: formData.mobile_number || '',
     telephone_number: formData.telephone_number || '',
     philsys_card_number: formData.philsys_card_number || '',
-    
+
     // Location Information
     region_code: formData.region_code || '',
     province_code: formData.province_code || '',
     city_municipality_code: formData.city_municipality_code || '',
     barangay_code: formData.barangay_code || '',
     household_code: formData.household_code || '',
-    
+
     // Additional fields
-    ...extractAdditionalFields(formData)
+    ...extractAdditionalFields(formData),
   };
 }
 
 function extractAdditionalFields(formData: any): Record<string, any> {
   const knownFields = new Set([
     ...REQUIRED_FIELDS,
-    'middle_name', 'extension_name', 'civil_status', 'citizenship',
-    'education_attainment', 'is_graduate', 'occupation_code', 'employment_status',
-    'email', 'mobile_number', 'telephone_number', 'philsys_card_number',
-    'region_code', 'province_code', 'city_municipality_code', 
-    'barangay_code'
+    'middle_name',
+    'extension_name',
+    'civil_status',
+    'citizenship',
+    'education_attainment',
+    'is_graduate',
+    'occupation_code',
+    'employment_status',
+    'email',
+    'mobile_number',
+    'telephone_number',
+    'philsys_card_number',
+    'region_code',
+    'province_code',
+    'city_municipality_code',
+    'barangay_code',
   ]);
-  
-  return Object.fromEntries(
-    Object.entries(formData).filter(([key]) => !knownFields.has(key))
-  );
+
+  return Object.fromEntries(Object.entries(formData).filter(([key]) => !knownFields.has(key)));
 }
 
 export function parseFullNameSecurely(fullName: string): NameParts {
@@ -1144,11 +1211,7 @@ export function parseFullNameSecurely(fullName: string): NameParts {
     throw new SecurityError('Invalid name characters');
   }
 
-  const nameParts = fullName
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 5); // Limit parts
+  const nameParts = fullName.trim().split(/\s+/).filter(Boolean).slice(0, 5); // Limit parts
 
   // Validate each part
   nameParts.forEach(part => {
@@ -1168,7 +1231,7 @@ export function parseFullNameSecurely(fullName: string): NameParts {
       return {
         first_name: nameParts[0],
         middleName: nameParts.slice(1, -1).join(' '),
-        last_name: nameParts[nameParts.length - 1]
+        last_name: nameParts[nameParts.length - 1],
       };
   }
 }
@@ -1183,7 +1246,9 @@ interface NameParts {
 ### **Day 19: Type Safety Improvements**
 
 #### **Step 3.3: Create Comprehensive Type Definitions**
+
 **File: `src/types/resident-form-types.ts`**
+
 ```typescript
 import { REQUIRED_FIELDS } from '@/constants/resident-form';
 
@@ -1245,18 +1310,19 @@ export interface InitialFormData {
 ```
 
 #### **Step 3.4: Update page.tsx with Strong Typing**
+
 ```typescript
 // UPDATE: page.tsx with proper types
-import type { 
-  FormSubmissionData, 
-  FormValidationErrors, 
+import type {
+  FormSubmissionData,
+  FormValidationErrors,
   FormSubmissionResult,
-  InitialFormData
+  InitialFormData,
 } from '@/types/resident-form-types';
 
 function CreateResidentForm() {
   const [validationErrors, setValidationErrors] = useState<FormValidationErrors>({});
-  
+
   const handleSubmit = async (formData: FormSubmissionData): Promise<void> => {
     // Properly typed validation
     const clientValidation = validateRequiredFields(formData);
@@ -1278,7 +1344,7 @@ function CreateResidentForm() {
 
   const handleSubmissionSuccess = (result: FormSubmissionResult): void => {
     toast.success('Resident created successfully!');
-    
+
     const residentId = result.data?.resident?.id;
     if (residentId) {
       router.push(`/residents/${residentId}`);
@@ -1290,11 +1356,11 @@ function CreateResidentForm() {
   const handleSubmissionError = (error: unknown): void => {
     const errorMessage = error instanceof Error ? error.message : 'Failed to create resident';
     toast.error(errorMessage);
-    
+
     logger.error('Form submission error', {
       userId: user?.id,
       error: errorMessage,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   };
 
@@ -1314,7 +1380,9 @@ function CreateResidentForm() {
 ### **Day 22-23: Security Testing**
 
 #### **Step 4.1: Create Security Test Suite**
+
 **File: `src/app/(dashboard)/residents/create/__tests__/security.test.tsx`**
+
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -1340,9 +1408,9 @@ describe('Security Tests', () => {
         })
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-      
+
       expect(() => render(<CreateResidentPage />)).not.toThrow();
-      
+
       // Should not render script content
       expect(screen.queryByText('<script>')).not.toBeInTheDocument();
       expect(screen.queryByText('alert("XSS")')).not.toBeInTheDocument();
@@ -1356,7 +1424,7 @@ describe('Security Tests', () => {
         })
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-      
+
       expect(() => render(<CreateResidentPage />)).not.toThrow();
     });
 
@@ -1369,7 +1437,7 @@ describe('Security Tests', () => {
         })
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-      
+
       expect(() => render(<CreateResidentPage />)).not.toThrow();
     });
 
@@ -1382,9 +1450,9 @@ describe('Security Tests', () => {
         })
       };
       (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-      
+
       render(<CreateResidentPage />);
-      
+
       // Should not show malformed name
       expect(screen.queryByText('John<>Doe')).not.toBeInTheDocument();
     });
@@ -1392,18 +1460,18 @@ describe('Security Tests', () => {
 
   describe('Console Log Security', () => {
     let consoleSpy: jest.SpyInstance;
-    
+
     beforeEach(() => {
       consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     });
-    
+
     afterEach(() => {
       consoleSpy.mockRestore();
     });
 
     it('should not log sensitive form data to console', async () => {
       const user = userEvent.setup();
-      
+
       // Mock form with sensitive data
       const MockResidentForm = jest.requireMock('@/components').ResidentForm;
       MockResidentForm.mockImplementation(({ onSubmit }: any) => (
@@ -1436,7 +1504,7 @@ describe('Security Tests', () => {
   describe('Input Validation Bypass Prevention', () => {
     it('should validate required fields even if client validation is bypassed', async () => {
       const user = userEvent.setup();
-      
+
       // Mock form that bypasses client validation
       const MockResidentForm = jest.requireMock('@/components').ResidentForm;
       MockResidentForm.mockImplementation(({ onSubmit }: any) => (
@@ -1460,7 +1528,9 @@ describe('Security Tests', () => {
 ### **Day 24-25: Performance Testing**
 
 #### **Step 4.2: Create Performance Test Suite**
+
 **File: `src/app/(dashboard)/residents/create/__tests__/performance.test.tsx`**
+
 ```typescript
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
@@ -1475,14 +1545,14 @@ describe('Performance Tests', () => {
   describe('Render Performance', () => {
     it('should render within acceptable time limit', async () => {
       const startTime = performance.now();
-      
+
       await act(async () => {
         render(<CreateResidentPage />);
       });
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Should render in less than 100ms
       expect(renderTime).toBeLessThan(100);
     });
@@ -1496,29 +1566,29 @@ describe('Performance Tests', () => {
       };
 
       const startTime = performance.now();
-      
+
       await act(async () => {
         render(<CreateResidentPage />);
       });
-      
+
       const endTime = performance.now();
       expect(endTime - startTime).toBeLessThan(150);
     });
 
     it('should not cause memory leaks on unmount', () => {
       const { unmount } = render(<CreateResidentPage />);
-      
+
       const initialMemory = (performance as any).memory?.usedJSHeapSize;
-      
+
       unmount();
-      
+
       // Force garbage collection if available
       if (global.gc) {
         global.gc();
       }
-      
+
       const finalMemory = (performance as any).memory?.usedJSHeapSize;
-      
+
       if (initialMemory && finalMemory) {
         const memoryIncrease = finalMemory - initialMemory;
         expect(memoryIncrease).toBeLessThan(1000000); // 1MB limit
@@ -1536,14 +1606,14 @@ describe('Performance Tests', () => {
       };
 
       const startTime = performance.now();
-      
+
       // Test transformation function directly
       const { transformFormData } = require('@/utils/resident-form-utils');
       const result = transformFormData(largeFormData);
-      
+
       const endTime = performance.now();
       const transformTime = endTime - startTime;
-      
+
       expect(transformTime).toBeLessThan(10);
       expect(result).toBeDefined();
     });
@@ -1558,13 +1628,13 @@ describe('Performance Tests', () => {
       };
 
       const startTime = performance.now();
-      
+
       const { validateRequiredFields } = require('@/utils/resident-form-utils');
       const result = validateRequiredFields(formData);
-      
+
       const endTime = performance.now();
       const validationTime = endTime - startTime;
-      
+
       expect(validationTime).toBeLessThan(5);
       expect(result.isValid).toBe(true);
     });
@@ -1575,12 +1645,14 @@ describe('Performance Tests', () => {
 ### **Day 26: Accessibility Testing**
 
 #### **Step 4.3: Enhanced Accessibility Test Suite**
+
 ```bash
 # Install accessibility testing tools
 npm install --save-dev jest-axe @testing-library/jest-dom
 ```
 
 **File: `src/app/(dashboard)/residents/create/__tests__/accessibility.test.tsx`**
+
 ```typescript
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -1599,7 +1671,7 @@ describe('Accessibility Tests', () => {
 
     it('should have proper heading hierarchy', () => {
       render(<CreateResidentPage />);
-      
+
       const h1 = screen.getByRole('heading', { level: 1 });
       expect(h1).toHaveTextContent('Add New Resident');
       expect(h1).toBeVisible();
@@ -1607,7 +1679,7 @@ describe('Accessibility Tests', () => {
 
     it('should have accessible navigation', () => {
       render(<CreateResidentPage />);
-      
+
       const backLink = screen.getByRole('link', { name: /back/i });
       expect(backLink).toHaveAttribute('href', '/residents');
       expect(backLink).toBeVisible();
@@ -1618,11 +1690,11 @@ describe('Accessibility Tests', () => {
     it('should support tab navigation through interactive elements', async () => {
       const user = userEvent.setup();
       render(<CreateResidentPage />);
-      
+
       const backButton = screen.getByRole('link', { name: /back/i });
       backButton.focus();
       expect(document.activeElement).toBe(backButton);
-      
+
       // Tab to next interactive element
       await user.tab();
       expect(document.activeElement).toBeInTheDocument();
@@ -1632,7 +1704,7 @@ describe('Accessibility Tests', () => {
     it('should have proper focus management', async () => {
       const user = userEvent.setup();
       render(<CreateResidentPage />);
-      
+
       // Focus should be manageable via keyboard
       await user.tab();
       expect(document.activeElement).toBeVisible();
@@ -1642,7 +1714,7 @@ describe('Accessibility Tests', () => {
   describe('Screen Reader Support', () => {
     it('should have proper ARIA labels', () => {
       render(<CreateResidentPage />);
-      
+
       // Check for landmark roles
       const main = screen.getByRole('main');
       expect(main).toBeInTheDocument();
@@ -1660,7 +1732,7 @@ describe('Accessibility Tests', () => {
       });
 
       render(<CreateResidentPage />);
-      
+
       // Error should be announced to screen readers
       const errorAlert = screen.getByRole('alert');
       expect(errorAlert).toHaveTextContent('First name is required');
@@ -1668,17 +1740,17 @@ describe('Accessibility Tests', () => {
 
     it('should have descriptive labels for form elements', () => {
       render(<CreateResidentPage />);
-      
+
       // All interactive elements should have accessible names
       const form = screen.getByTestId('resident-form');
       const interactiveElements = form.querySelectorAll('button, input, select, textarea');
-      
+
       interactiveElements.forEach(element => {
         // Should have either aria-label, aria-labelledby, or associated label
         const hasAriaLabel = element.hasAttribute('aria-label');
         const hasAriaLabelledBy = element.hasAttribute('aria-labelledby');
         const hasLabel = form.querySelector(`label[for="${element.id}"]`);
-        
+
         expect(hasAriaLabel || hasAriaLabelledBy || hasLabel).toBeTruthy();
       });
     });
@@ -1687,10 +1759,10 @@ describe('Accessibility Tests', () => {
   describe('Color and Contrast', () => {
     it('should have sufficient color contrast for text elements', () => {
       render(<CreateResidentPage />);
-      
+
       const heading = screen.getByRole('heading', { name: 'Add New Resident' });
       const computedStyle = window.getComputedStyle(heading);
-      
+
       // Basic check - proper CSS classes should be applied
       expect(heading).toHaveClass('text-gray-600');
     });
@@ -1707,11 +1779,11 @@ describe('Accessibility Tests', () => {
       });
 
       render(<CreateResidentPage />);
-      
+
       // Error should have text and not rely only on color
       const errorMessage = screen.getByText('First name is required');
       expect(errorMessage).toBeVisible();
-      
+
       // Should have error icon or other visual indicator
       const errorIcon = screen.getByRole('img', { hidden: true });
       expect(errorIcon).toBeInTheDocument();
@@ -1725,6 +1797,7 @@ describe('Accessibility Tests', () => {
 ## 📊 **QUALITY ASSURANCE CHECKLIST**
 
 ### **Pre-Implementation Checklist**
+
 - [ ] Code review completed
 - [ ] Security audit completed
 - [ ] Performance benchmarks established
@@ -1734,6 +1807,7 @@ describe('Accessibility Tests', () => {
 ### **Implementation Phase Checklist**
 
 #### **Phase 1: Security**
+
 - [ ] All console.log statements removed
 - [ ] Secure logging service implemented
 - [ ] URL parameter sanitization deployed
@@ -1742,6 +1816,7 @@ describe('Accessibility Tests', () => {
 - [ ] Security headers configured
 
 #### **Phase 2: Performance**
+
 - [ ] Memoization implemented
 - [ ] Bundle optimization completed
 - [ ] Lazy loading active
@@ -1749,6 +1824,7 @@ describe('Accessibility Tests', () => {
 - [ ] Performance benchmarks met
 
 #### **Phase 3: Code Quality**
+
 - [ ] Constants extracted
 - [ ] Business logic separated
 - [ ] Type safety improved
@@ -1756,6 +1832,7 @@ describe('Accessibility Tests', () => {
 - [ ] Code duplication eliminated
 
 #### **Phase 4: Testing**
+
 - [ ] All skipped tests enabled
 - [ ] Security test suite complete
 - [ ] Performance tests implemented
@@ -1763,6 +1840,7 @@ describe('Accessibility Tests', () => {
 - [ ] End-to-end tests updated
 
 ### **Post-Implementation Checklist**
+
 - [ ] Performance monitoring deployed
 - [ ] Security monitoring active
 - [ ] Error tracking configured
@@ -1774,24 +1852,28 @@ describe('Accessibility Tests', () => {
 ## 🎯 **SUCCESS METRICS**
 
 ### **Security Metrics**
+
 - [ ] **Zero** console.log statements with PII
 - [ ] **Zero** XSS vulnerabilities
 - [ ] **100%** server-side validation coverage
 - [ ] **Zero** critical security findings
 
 ### **Performance Metrics**
+
 - [ ] **<100ms** initial render time
 - [ ] **<60KB** JavaScript bundle size
 - [ ] **50%** reduction in unnecessary re-renders
 - [ ] **Zero** memory leaks detected
 
 ### **Code Quality Metrics**
+
 - [ ] **>90%** type safety coverage
 - [ ] **<5%** code duplication
 - [ ] **<10** cyclomatic complexity
 - [ ] **Zero** magic numbers/strings
 
 ### **Testing Metrics**
+
 - [ ] **>95%** test coverage
 - [ ] **Zero** skipped critical tests
 - [ ] **100%** accessibility compliance
@@ -1802,18 +1884,21 @@ describe('Accessibility Tests', () => {
 ## 🔄 **MAINTENANCE PLAN**
 
 ### **Weekly Tasks**
+
 - Monitor security logs for unusual activity
 - Review performance metrics
 - Update dependency security scans
 - Check test coverage reports
 
 ### **Monthly Tasks**
+
 - Security penetration testing
 - Performance benchmarking
 - Code quality assessment
 - Accessibility audit
 
 ### **Quarterly Tasks**
+
 - Full security review
 - Performance optimization review
 - Code refactoring assessment
@@ -1824,6 +1909,6 @@ describe('Accessibility Tests', () => {
 **Implementation Owner**: Development Team Lead  
 **Security Review**: Security Team  
 **Performance Review**: DevOps Team  
-**Quality Assurance**: QA Team Lead  
+**Quality Assurance**: QA Team Lead
 
 **Next Review Date**: 4 weeks from implementation start

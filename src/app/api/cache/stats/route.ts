@@ -42,7 +42,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       ]);
 
     // Helper to safely get stats from settled promises
-    const getStatsValue = (result: PromiseSettledResult<unknown>, defaultValue: Record<string, unknown> = {}) => {
+    const getStatsValue = (
+      result: PromiseSettledResult<unknown>,
+      defaultValue: Record<string, unknown> = {}
+    ) => {
       return result.status === 'fulfilled' ? result.value : defaultValue;
     };
 

@@ -23,7 +23,7 @@ export class DatabaseService {
    */
   private createSupabaseClient(useServiceRole = false): SupabaseClient<Database> {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    
+
     if (!supabaseUrl) {
       throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
     }
@@ -88,9 +88,9 @@ export class DatabaseService {
 
       return { healthy: true };
     } catch (error) {
-      return { 
-        healthy: false, 
-        error: error instanceof Error ? error.message : 'Unknown error'
+      return {
+        healthy: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -105,21 +105,21 @@ export class DatabaseService {
   ): Promise<{ data: T | null; error: any }> {
     const client = this.getClient(useAdmin);
     const startTime = Date.now();
-    
+
     try {
       const result = await queryFn(client);
-      
+
       const duration = Date.now() - startTime;
       logger.debug('Query executed', { context, duration, hasError: !!result.error });
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('Query execution failed', { context, duration, error });
-      
+
       return {
         data: null,
-        error: error instanceof Error ? error : new Error('Unknown query error')
+        error: error instanceof Error ? error : new Error('Unknown query error'),
       };
     }
   }
@@ -134,21 +134,24 @@ export class DatabaseService {
   ): Promise<{ data: T | null; error: any }> {
     const client = this.getClient(useAdmin);
     const startTime = Date.now();
-    
+
     try {
-      const result = await client.rpc(functionName, Object.keys(params).length > 0 ? params : undefined as any);
-      
+      const result = await client.rpc(
+        functionName,
+        Object.keys(params).length > 0 ? params : (undefined as any)
+      );
+
       const duration = Date.now() - startTime;
       logger.debug('RPC executed', { functionName, duration, hasError: !!result.error });
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
       logger.error('RPC execution failed', { functionName, duration, error });
-      
+
       return {
         data: null,
-        error: error instanceof Error ? error : new Error('Unknown RPC error')
+        error: error instanceof Error ? error : new Error('Unknown RPC error'),
       };
     }
   }

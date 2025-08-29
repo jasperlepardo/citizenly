@@ -1,23 +1,23 @@
 /**
  * Resident Types - Database-Aligned TypeScript Interfaces
- * 
+ *
  * @fileoverview Consolidated resident-related TypeScript interfaces that exactly match
  * the database schema defined in database/schema.sql. All interfaces are 100% compliant
  * with PostgreSQL constraints and DILG RBI requirements.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
- * 
+ *
  * Database Tables Covered:
  * - residents (main resident data)
- * - resident_sectoral_info (sectoral classifications)  
+ * - resident_sectoral_info (sectoral classifications)
  * - resident_migrant_info (migration history)
- * 
+ *
  * @example Basic Usage
  * ```typescript
  * import { ResidentRecord, PersonalInfoFormState } from '@/types/residents';
  * import { SEX_OPTIONS } from '@/constants/resident-form-options';
- * 
+ *
  * const resident: ResidentRecord = {
  *   id: 'uuid-here',
  *   first_name: 'Juan',
@@ -30,8 +30,8 @@
 import { ReactNode } from 'react';
 
 import type { AddressInfo } from './addresses';
-import type { 
-  ResidentRecord, 
+import type {
+  ResidentRecord,
   SexEnum,
   CivilStatusEnum,
   CitizenshipEnum,
@@ -66,7 +66,6 @@ export type {
 // CORE RESIDENT INTERFACES
 // =============================================================================
 
-
 // ResidentDatabaseRecord and ResidentApiData removed - use ResidentRecord from './database' directly
 
 // =============================================================================
@@ -75,10 +74,10 @@ export type {
 
 /**
  * Sectoral information interface matching resident_sectoral_info table exactly (15 fields)
- * 
+ *
  * @description Maps to `resident_sectoral_info` table in PostgreSQL database.
  * Contains boolean flags for various sectoral classifications used in RBI reporting.
- * 
+ *
  * @example
  * ```typescript
  * const sectoralInfo: ResidentSectoralInfo = {
@@ -108,10 +107,10 @@ export interface ResidentSectoralInfo {
 
 /**
  * Migration information interface matching resident_migrant_info table exactly (15 fields)
- * 
+ *
  * @description Maps to `resident_migrant_info` table in PostgreSQL database.
  * Tracks migration history and patterns for demographic analysis.
- * 
+ *
  * @example
  * ```typescript
  * const migrantInfo: ResidentMigrantInfo = {
@@ -149,15 +148,15 @@ export interface ResidentMigrantInfo {
 
 /**
  * Personal Information section of resident form
- * 
+ *
  * @description Form state interface for personal information fields.
  * Includes validation-friendly string unions and database constraint annotations.
- * 
+ *
  * @example
  * ```typescript
  * const personalInfo: PersonalInfoFormState = {
  *   first_name: 'Maria',
- *   middle_name: 'Santos', 
+ *   middle_name: 'Santos',
  *   last_name: 'Garcia',
  *   sex: 'female',
  *   civil_status: 'single',
@@ -185,7 +184,7 @@ export interface PersonalInfoFormState {
   employment_status: EmploymentStatusEnum | '';
   occupation_code: string; // Database: VARCHAR(10) - nullable
   occupation_title: string;
-  
+
   // Physical Personal Details
   blood_type: BloodTypeEnum | '';
   complexion: string;
@@ -239,7 +238,7 @@ export interface MigrationInfoFormState {
   // Migration Information - matching database schema exactly
   previous_barangay_code?: string | null; // VARCHAR(10), nullable in database
   previous_city_municipality_code?: string | null; // VARCHAR(10), nullable in database
-  previous_province_code?: string | null; // VARCHAR(10), nullable in database  
+  previous_province_code?: string | null; // VARCHAR(10), nullable in database
   previous_region_code?: string | null; // VARCHAR(10), nullable in database
   date_of_transfer?: string | null; // DATE, nullable in database
   reason_for_migration?: string | null; // TEXT, nullable in database
@@ -253,12 +252,11 @@ export interface MigrationInfoFormState {
 /**
  * Combined form state interface for the ResidentForm component
  */
-export interface ResidentFormState extends 
-  PersonalInfoFormState,
-  ContactInfoFormState,
-  SectoralInfoFormState,
-  MigrationInfoFormState {
-}
+export interface ResidentFormState
+  extends PersonalInfoFormState,
+    ContactInfoFormState,
+    SectoralInfoFormState,
+    MigrationInfoFormState {}
 
 // =============================================================================
 // RELATED DATA INTERFACES
@@ -267,10 +265,7 @@ export interface ResidentFormState extends
 // Note: Household-related interfaces moved to households.ts
 // Note: PSGC and PSOC interfaces moved to database.ts as canonical source
 
-import type {
-  ServiceRawPsocData,
-  ServiceRawPsgcData
-} from './services';
+import type { ServiceRawPsocData, ServiceRawPsgcData } from './services';
 
 // Backward compatibility aliases for resident form usage
 export type PsocData = ServiceRawPsocData;
@@ -296,7 +291,6 @@ export interface PsgcOption {
   full_hierarchy?: string;
   code: string;
 }
-
 
 // =============================================================================
 // EXTENDED AND COMPOSITE INTERFACES

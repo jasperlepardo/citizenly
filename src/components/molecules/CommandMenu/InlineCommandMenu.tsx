@@ -6,7 +6,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/lib';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/lib/command-menu/analytics-utils';
-import type { CommandMenuSearchResult as CommandMenuItem, CommandMenuHookResult as CommandMenuProps } from '@/types';
+import type {
+  CommandMenuSearchResult as CommandMenuItem,
+  CommandMenuHookResult as CommandMenuProps,
+} from '@/types';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';

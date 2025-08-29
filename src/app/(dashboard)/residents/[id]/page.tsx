@@ -185,7 +185,6 @@ function ResidentDetailContent() {
         await loadAddressInfo(residentData);
         await loadOccupationInfo(residentData);
 
-
         // Initialize missing fields for comprehensive form
         const initializedResident = {
           ...residentData,
@@ -227,7 +226,6 @@ function ResidentDetailContent() {
 
     loadResidentDetails();
   }, [residentId]);
-
 
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status
@@ -440,12 +438,12 @@ function ResidentDetailContent() {
         is_migrant: formData.is_migrant,
       };
 
-      logger.debug('Making PUT request', { 
+      logger.debug('Making PUT request', {
         url: `/api/residents/${residentId}`,
         method: 'PUT',
-        payloadKeys: Object.keys(updatePayload)
+        payloadKeys: Object.keys(updatePayload),
       });
-      
+
       const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
         body: JSON.stringify(updatePayload),
@@ -749,7 +747,7 @@ function ResidentDetailContent() {
                     role="button"
                     tabIndex={0}
                     onClick={() => setShowDeleteConfirm(false)}
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                       if (e.key === 'Escape' || e.key === 'Enter') {
                         setShowDeleteConfirm(false);
                       }

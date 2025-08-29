@@ -98,7 +98,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
     const validationErrors: ValidationError[] = Object.entries(errors).map(([field, message]) => ({
       field,
       message,
-      code: 'VALIDATION_ERROR'
+      code: 'VALIDATION_ERROR',
     }));
 
     return {

@@ -13,15 +13,11 @@ export async function safeInsert<T = any>(
   table: string,
   data: Record<string, any> | Record<string, any>[]
 ): Promise<{ data: T | null; error: any }> {
-  const result = await (client as any)
-    .from(table)
-    .insert(data)
-    .select()
-    .single();
-  
+  const result = await (client as any).from(table).insert(data).select().single();
+
   return {
     data: result.data,
-    error: result.error
+    error: result.error,
   };
 }
 
@@ -35,16 +31,16 @@ export async function safeUpdate<T = any>(
   filters: Record<string, any>
 ): Promise<{ data: T | null; error: any }> {
   let query = (client as any).from(table).update(data);
-  
+
   Object.entries(filters).forEach(([key, value]) => {
     query = query.eq(key, value);
   });
-  
+
   const result = await query.select().single();
-  
+
   return {
     data: result.data,
-    error: result.error
+    error: result.error,
   };
 }
 
@@ -58,15 +54,15 @@ export async function safeSelect<T = any>(
   filters: Record<string, any> = {}
 ): Promise<{ data: T | null; error: any }> {
   let query = (client as any).from(table).select(selectFields);
-  
+
   Object.entries(filters).forEach(([key, value]) => {
     query = query.eq(key, value);
   });
-  
+
   const result = await query.single();
-  
+
   return {
     data: result.data,
-    error: result.error
+    error: result.error,
   };
 }

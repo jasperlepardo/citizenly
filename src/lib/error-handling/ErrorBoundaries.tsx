@@ -45,7 +45,9 @@ export function handleErrorBoundaryError(
  * Check if error boundary should retry
  */
 export function shouldRetryError(error: Error, retryCount: number, maxRetries: number): boolean {
-  return retryCount < maxRetries && (error.name === 'NetworkError' || error.name === 'TimeoutError');
+  return (
+    retryCount < maxRetries && (error.name === 'NetworkError' || error.name === 'TimeoutError')
+  );
 }
 
 /**

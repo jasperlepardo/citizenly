@@ -87,4 +87,13 @@ export default [
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  
+  // Relax rules for test files
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      'no-script-url': 'off',
+    },
+  },
 ];

@@ -54,25 +54,25 @@ jest.mock('@/lib/security/philippine-logging', () => ({
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
+    error: jest.fn(),
   },
   auditLogger: {
-    info: jest.fn()
+    info: jest.fn(),
   },
   npcComplianceLogger: {
-    info: jest.fn()
+    info: jest.fn(),
   },
   getClientIP: jest.fn(() => '127.0.0.1'),
-  generateSecureSessionId: jest.fn(() => 'mock-session-id')
+  generateSecureSessionId: jest.fn(() => 'mock-session-id'),
 }));
 
 jest.mock('@/utils/resident-form-utils', () => ({
   validateRequiredFields: jest.fn(() => ({ isValid: true, errors: {} })),
-  transformFormData: jest.fn((data) => data),
-  parseFullName: jest.fn((name) => ({
+  transformFormData: jest.fn(data => data),
+  parseFullName: jest.fn(name => ({
     first_name: name.split(' ')[0] || '',
     middleName: name.split(' ')[1] || '',
-    last_name: name.split(' ')[2] || name.split(' ')[1] || ''
+    last_name: name.split(' ')[2] || name.split(' ')[1] || '',
   })),
   validateFormData: jest.fn(() => ({ isValid: true, errors: {} })),
   prepareFormSubmission: jest.fn((formData, userId, sessionId, barangayCode) => ({
@@ -84,34 +84,34 @@ jest.mock('@/utils/resident-form-utils', () => ({
       timestamp: new Date().toISOString(),
       fieldCount: Object.keys(formData).length,
       hasPhilSys: false,
-      hasVoterData: false
-    }
+      hasVoterData: false,
+    },
   })),
   generateFormSummary: jest.fn(() => ({
     hasPersonalInfo: true,
-    fieldCount: 4
-  }))
+    fieldCount: 4,
+  })),
 }));
 
 jest.mock('@/utils/input-sanitizer', () => ({
-  sanitizeInput: jest.fn((input) => input || ''),
-  sanitizeNameInput: jest.fn((input) => input || ''),
-  checkRateLimit: jest.fn(() => true)
+  sanitizeInput: jest.fn(input => input || ''),
+  sanitizeNameInput: jest.fn(input => input || ''),
+  checkRateLimit: jest.fn(() => true),
 }));
 
 jest.mock('@/lib/auth', () => ({
   useCSRFToken: jest.fn(() => ({
-    getToken: jest.fn(() => 'mock-csrf-token')
-  }))
+    getToken: jest.fn(() => 'mock-csrf-token'),
+  })),
 }));
 
 jest.mock('@/constants/resident-form', () => ({
   RATE_LIMITS: {
     FORM_SUBMISSION: {
       MAX_ATTEMPTS: 5,
-      WINDOW_MS: 300000
-    }
-  }
+      WINDOW_MS: 300000,
+    },
+  },
 }));
 
 jest.mock('react-hot-toast', () => ({
@@ -123,7 +123,8 @@ jest.mock('react-hot-toast', () => ({
 
 // Mock the service and hooks
 const mockCreateResident = jest.fn();
-const mockUseResidentOperations = require('@/hooks/crud/useResidentOperations').useResidentOperations as jest.Mock;
+const mockUseResidentOperations = (require('@/hooks/crud/useResidentOperations') as any)
+  .useResidentOperations as jest.Mock;
 
 describe('Create New Resident - Complete Flow', () => {
   const mockRouter = {

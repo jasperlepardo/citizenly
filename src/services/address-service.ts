@@ -58,7 +58,7 @@ export class AddressService {
     subdivisionId?: string;
   }): Promise<AddressLabels> {
     const cacheKey = `address-labels:${JSON.stringify(addressData)}`;
-    
+
     return await cacheService.getOrSet(
       cacheKey,
       async () => {
@@ -161,7 +161,7 @@ export class AddressService {
       },
       {
         ttl: 300000, // 5 minutes
-        tags: [CacheTags.ADDRESSES]
+        tags: [CacheTags.ADDRESSES],
       }
     );
   }
@@ -258,7 +258,7 @@ export class AddressService {
     if (!householdHeadId) return undefined;
 
     const cacheKey = `household-head:${householdHeadId}`;
-    
+
     return await cacheService.getOrSet(
       cacheKey,
       async () => {
@@ -287,7 +287,7 @@ export class AddressService {
       },
       {
         ttl: 300000, // 5 minutes
-        tags: [CacheTags.RESIDENTS, CacheTags.HOUSEHOLDS]
+        tags: [CacheTags.RESIDENTS, CacheTags.HOUSEHOLDS],
       }
     );
   }
@@ -297,14 +297,14 @@ export class AddressService {
    */
   formatFullAddress(address: Partial<CompleteAddress>): string {
     if (!address) return '';
-    
+
     const parts = [
       address.barangay_name,
       address.city_municipality_name,
       address.province_name,
       address.region_name,
     ].filter(Boolean);
-    
+
     return parts.join(', ') || '';
   }
 
@@ -313,12 +313,12 @@ export class AddressService {
    */
   formatBarangayName(name: string): string {
     if (!name) return '';
-    
+
     // Add "Barangay" prefix if not already present
     if (name.toLowerCase().startsWith('barangay ')) {
       return name;
     }
-    
+
     return `Barangay ${name}`;
   }
 
@@ -327,17 +327,17 @@ export class AddressService {
    */
   formatCityName(name: string, type: string): string {
     if (!name) return '';
-    
+
     const cityType = type?.toLowerCase();
-    
+
     if (cityType === 'city' && !name.toLowerCase().includes('city')) {
       return `${name} City`;
     }
-    
+
     if (cityType === 'municipality' && !name.toLowerCase().includes('municipality')) {
       return `Municipality of ${name}`;
     }
-    
+
     return name;
   }
 
@@ -346,14 +346,14 @@ export class AddressService {
    */
   isValidPsgcCode(code: string, level?: 'region' | 'province' | 'city' | 'barangay'): boolean {
     if (!code) return false;
-    
+
     const digitsOnly = code.replace(/\D/g, '');
     const detectedLevel = this.getPsgcLevel(code);
-    
+
     if (level && detectedLevel !== level) {
       return false;
     }
-    
+
     return detectedLevel !== 'unknown';
   }
 
@@ -362,15 +362,20 @@ export class AddressService {
    */
   getPsgcLevel(code: string): 'region' | 'province' | 'city' | 'barangay' | 'unknown' {
     if (!code) return 'unknown';
-    
+
     const length = code.replace(/\D/g, '').length;
-    
+
     switch (length) {
-      case 2: return 'region';
-      case 4: return 'province';
-      case 6: return 'city';
-      case 9: return 'barangay';
-      default: return 'unknown';
+      case 2:
+        return 'region';
+      case 4:
+        return 'province';
+      case 6:
+        return 'city';
+      case 9:
+        return 'barangay';
+      default:
+        return 'unknown';
     }
   }
 
@@ -385,12 +390,12 @@ export class AddressService {
     if (!barangayCode || barangayCode.length < 9) {
       return { regionCode: '', provinceCode: '', cityCode: '' };
     }
-    
+
     const digits = barangayCode.replace(/\D/g, '');
-    
+
     return {
       regionCode: digits.substring(0, 2),
-      provinceCode: digits.substring(0, 4), 
+      provinceCode: digits.substring(0, 4),
       cityCode: digits.substring(0, 6),
     };
   }
@@ -400,7 +405,7 @@ export class AddressService {
    */
   isMetroManilaAddress(address: Partial<CompleteAddress>): boolean {
     if (!address.region_code) return false;
-    
+
     // NCR (National Capital Region) code
     return address.region_code === '13' || address.region_code === '130000000';
   }

@@ -30,7 +30,7 @@ const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
   city_municipality_code: 'psgc',
   barangay_code: 'psgc',
   height: 'numeric',
-  weight: 'numeric'
+  weight: 'numeric',
 } as const;
 
 /**
@@ -39,12 +39,12 @@ const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
  */
 export function sanitizeInput(input: string | null, options: SanitizationOptions = {}): string {
   if (!input) return '';
-  
+
   // Early length check to avoid unnecessary processing
   if (options.maxLength && input.length > options.maxLength * 2) {
     input = input.substring(0, options.maxLength * 2);
   }
-  
+
   let result: string;
 
   // Remove potentially dangerous characters and scripts
@@ -56,39 +56,39 @@ export function sanitizeInput(input: string | null, options: SanitizationOptions
     .replace(/data:/gi, '')
     .replace(/vbscript:/gi, '')
     .replace(/expression\s*\(/gi, '');
-  
+
   // Apply options
   if (options.normalizeUnicode !== false) {
     result = result.normalize('NFC');
   }
-  
+
   if (options.trim !== false) {
     result = result.trim();
   }
-  
+
   if (options.removeHtml !== false) {
     result = result.replace(/<[^>]*>/g, '');
   }
-  
+
   if (options.removeScripts !== false) {
     result = result
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/javascript:/gi, '')
       .replace(/on\w+\s*=/gi, '');
   }
-  
+
   if (options.allowedChars && options.allowedChars instanceof RegExp) {
     result = result.replace(new RegExp(`[^${options.allowedChars.source}]`, 'g'), '');
   }
-  
+
   if (options.maxLength && result.length > options.maxLength) {
     result = result.substring(0, options.maxLength);
   }
-  
+
   // Use DOMPurify for additional sanitization
-  return DOMPurify.sanitize(result, { 
-    ALLOWED_TAGS: [], 
-    ALLOWED_ATTR: [] 
+  return DOMPurify.sanitize(result, {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
   }).trim();
 }
 
@@ -124,7 +124,7 @@ export function sanitizeHtml(html: string): string {
 }
 
 /**
- * Sanitize name input for Philippine names 
+ * Sanitize name input for Philippine names
  * Supports Filipino naming patterns, Spanish influences, and indigenous names
  * Database constraint: VARCHAR(100)
  */
@@ -132,7 +132,7 @@ export function sanitizeName(name: string): string {
   if (!name || typeof name !== 'string') {
     return '';
   }
-  
+
   return sanitizeInput(name, {
     allowedChars: /[a-zA-ZÀ-ÿñÑ\s\-'.]/,
     maxLength: 100,
@@ -160,15 +160,15 @@ export function sanitizePhilSysNumber(input: string | null): string {
   if (!input || typeof input !== 'string') {
     return '';
   }
-  
+
   // Remove all non-digits and format properly
   const digitsOnly = input.replace(/\D/g, '');
-  
+
   // Validate length (PhilSys is 12 digits, not 16!)
   if (digitsOnly.length !== 12) {
     return '';
   }
-  
+
   // Format as XXXX-XXXX-XXXX (14 characters with dashes)
   return `${digitsOnly.substring(0, 4)}-${digitsOnly.substring(4, 8)}-${digitsOnly.substring(8, 12)}`;
 }
@@ -189,7 +189,7 @@ export function sanitizePhone(input: string | null): string {
   if (!input || typeof input !== 'string') {
     return '';
   }
-  
+
   return sanitizeInput(input, {
     allowedChars: /[0-9+\-\s()]/,
     maxLength: 20,
@@ -203,10 +203,10 @@ export function sanitizePhone(input: string | null): string {
  */
 export function sanitizeMobileNumber(input: string | null): string {
   if (!input) return '';
-  
+
   // Remove all non-digits
   const digitsOnly = input.replace(/\D/g, '');
-  
+
   // Handle different Philippine mobile number formats
   if (digitsOnly.startsWith('63')) {
     // +63 format
@@ -218,7 +218,7 @@ export function sanitizeMobileNumber(input: string | null): string {
     // xxx format - add +63
     return `+63${digitsOnly}`;
   }
-  
+
   return input.trim();
 }
 
@@ -238,7 +238,7 @@ export function sanitizeEmail(email: string | null): string {
   if (!email || typeof email !== 'string') {
     return '';
   }
-  
+
   return sanitizeInput(email.toLowerCase(), {
     allowedChars: /[a-zA-Z0-9@._-]/,
     maxLength: 254, // RFC 5321 limit
@@ -261,7 +261,7 @@ export function validateEmailFormat(email: string): boolean {
  */
 export function sanitizeBarangayCode(input: string | null): string {
   if (!input) return '';
-  
+
   // Barangay codes are typically 9-10 digit numbers
   const digitsOnly = input.replace(/\D/g, '');
   return digitsOnly.substring(0, 10);
@@ -282,7 +282,7 @@ export function sanitizeSearchQuery(query: string): string {
   if (!query || typeof query !== 'string') {
     return '';
   }
-  
+
   return sanitizeInput(query, {
     allowedChars: /[a-zA-Z0-9À-ÿñÑ\s\-'.]/,
     maxLength: 100,
@@ -322,31 +322,31 @@ export function sanitizeByType(
     case 'text':
       result = sanitizeInput(input, options);
       break;
-    
+
     case 'name':
       result = sanitizeName(input);
       break;
-    
+
     case 'email':
       result = sanitizeEmail(input);
       break;
-    
+
     case 'mobile':
       result = sanitizeMobileNumber(input);
       break;
-    
+
     case 'philsys':
       result = sanitizePhilSysNumber(input);
       break;
-    
+
     case 'psgc':
       result = sanitizeBarangayCode(input);
       break;
-    
+
     case 'numeric':
       result = input.replace(/[^\d]/g, '');
       break;
-    
+
     default:
       result = sanitizeInput(input, options);
   }
@@ -378,7 +378,7 @@ export function sanitizeObjectByFieldTypes(
   const sanitized: Record<string, any> = {};
 
   // Use cached field types for performance
-  const fieldTypes = fieldTypeMap 
+  const fieldTypes = fieldTypeMap
     ? { ...DEFAULT_FIELD_TYPE_MAPPING, ...fieldTypeMap }
     : DEFAULT_FIELD_TYPE_MAPPING;
 
@@ -434,19 +434,19 @@ const submissionAttempts = new Map<string, { count: number; lastAttempt: number 
 export function checkRateLimit(identifier: string, maxAttempts = 5, windowMs = 300000): boolean {
   const now = Date.now();
   const attempts = submissionAttempts.get(identifier);
-  
+
   if (!attempts || now - attempts.lastAttempt > windowMs) {
     submissionAttempts.set(identifier, { count: 1, lastAttempt: now });
     return true;
   }
-  
+
   if (attempts.count >= maxAttempts) {
     return false;
   }
-  
+
   attempts.count++;
   attempts.lastAttempt = now;
   submissionAttempts.set(identifier, attempts);
-  
+
   return true;
 }

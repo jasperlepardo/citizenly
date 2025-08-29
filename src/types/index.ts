@@ -13,7 +13,7 @@
 // Validation types
 export * from './validation';
 
-// Address types  
+// Address types
 export * from './addresses';
 
 // Service types
@@ -41,7 +41,7 @@ export type {
 // Repository types
 export * from './repositories';
 
-// API request types  
+// API request types
 export * from './api-requests';
 
 // Export specific API request types for clarity
@@ -99,7 +99,7 @@ export type {
   CommandMenuHookResult,
 } from './hooks';
 
-// Component types  
+// Component types
 export type {
   BaseComponentProps,
   ComponentWithChildren,
@@ -156,7 +156,7 @@ export type {
 // Error handling types
 export * from './errors';
 
-// Chart and visualization types  
+// Chart and visualization types
 export * from './charts';
 
 // Application constants
@@ -171,7 +171,7 @@ export type {
   // Core Record Types
   ResidentRecord,
   HouseholdRecord,
-  
+
   // Geographic Types
   PSGCRegion,
   PSGCProvince,
@@ -179,8 +179,8 @@ export type {
   PSGCBarangay,
   GeoSubdivision,
   GeoStreet,
-  
-  // PSOC Types  
+
+  // PSOC Types
   PsocMajorGroup,
   PsocSubMajorGroup,
   PsocMinorGroup,
@@ -188,15 +188,15 @@ export type {
   PsocUnitSubGroup,
   PsocPositionTitle,
   PsocOccupationCrossReference,
-  
+
   // Relationship Types
   HouseholdMember,
   ResidentRelationship,
-  
+
   // System Types
   SystemDashboardSummary,
   SystemSchemaVersion,
-  
+
   // Query Result Types
   AddressHierarchyQueryResult,
   GeographicHierarchyResult,
@@ -254,7 +254,7 @@ export type {
 
 // Resident types
 export type {
-  // Core interfaces  
+  // Core interfaces
   PersonalInfoFormState,
   ContactInfoFormState,
   ResidentSectoralInfo,
@@ -280,10 +280,8 @@ export type {
   SectoralContext,
 } from './residents';
 
-// Address types are in addresses.ts  
-export type {
-  AddressInfo,
-} from './addresses';
+// Address types are in addresses.ts
+export type { AddressInfo } from './addresses';
 
 // Note: Resident option constants are available from @/constants/resident-form-options
 // They are not re-exported here to maintain clean type separation
@@ -296,7 +294,7 @@ export type {
   HouseholdUnitEnum,
   FamilyPositionEnum,
   IncomeClassEnum,
-  
+
   // Household Interfaces
   HouseholdData,
   HouseholdHead,

@@ -182,18 +182,18 @@ export const SECURITY_CONFIG = {
   // Session configurations
   SESSION_TIMEOUT: 8 * 60 * 60 * 1000, // 8 hours
   IDLE_TIMEOUT: 30 * 60 * 1000, // 30 minutes
-  
+
   // Token configurations
   ACCESS_TOKEN_TTL: 15 * 60, // 15 minutes
   REFRESH_TOKEN_TTL: 7 * 24 * 60 * 60, // 7 days
-  
+
   // Password configurations
   PASSWORD_MIN_LENGTH: 8,
   PASSWORD_REQUIRE_UPPERCASE: true,
   PASSWORD_REQUIRE_LOWERCASE: true,
   PASSWORD_REQUIRE_NUMBER: true,
   PASSWORD_REQUIRE_SPECIAL: true,
-  
+
   // Account lockout
   MAX_LOGIN_ATTEMPTS: 5,
   LOCKOUT_DURATION: 15 * 60 * 1000, // 15 minutes
@@ -215,16 +215,16 @@ export const FORM_VALIDATION = {
   MAX_PHONE_LENGTH: 20,
   MAX_ADDRESS_LENGTH: 500,
   MAX_NOTES_LENGTH: 1000,
-  
+
   // Philippine specific
   PHILSYS_ID_LENGTH: 12,
   VOTER_ID_LENGTH: 18,
-  
+
   // Regex patterns
   EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PHONE_PATTERN: /^(\+63|0)?[0-9]{10,11}$/,
   PHILSYS_PATTERN: /^\d{4}-\d{4}-\d{4}$/,
-  
+
   // Age limits
   MIN_AGE: 0,
   MAX_AGE: 150,
@@ -244,9 +244,7 @@ export const FORM_FIELDS = {
       'civil_status',
       'citizenship',
     ],
-    CONTACT_INFO: [
-      'barangay_code',
-    ],
+    CONTACT_INFO: ['barangay_code'],
     HOUSEHOLD_INFO: [
       'household_head_first_name',
       'household_head_last_name',
@@ -254,20 +252,10 @@ export const FORM_FIELDS = {
       'family_position',
     ],
   },
-  
+
   OPTIONAL: {
-    PERSONAL_INFO: [
-      'middle_name',
-      'name_suffix',
-      'religion',
-      'ethnicity',
-      'philsys_id',
-    ],
-    CONTACT_INFO: [
-      'phone',
-      'email',
-      'street_address',
-    ],
+    PERSONAL_INFO: ['middle_name', 'name_suffix', 'religion', 'ethnicity', 'philsys_id'],
+    CONTACT_INFO: ['phone', 'email', 'street_address'],
   },
 } as const;
 
@@ -282,7 +270,7 @@ export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 20,
   MAX_PAGE_SIZE: 100,
   MOBILE_PAGE_SIZE: 10,
-  
+
   // Specific contexts
   SEARCH_RESULTS: 15,
   TABLE_ROWS: 25,
@@ -298,7 +286,7 @@ export const UI_DELAYS = {
   LOADING_SPINNER_MIN: 200,
   TOAST_DURATION: 5000,
   MODAL_ANIMATION: 200,
-  
+
   // Progressive loading
   SKELETON_MIN_TIME: 300,
   LAZY_LOAD_DELAY: 100,
@@ -326,21 +314,16 @@ export const FILE_UPLOAD = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
   MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
   MAX_DOCUMENT_SIZE: 25 * 1024 * 1024, // 25MB
-  
-  ALLOWED_IMAGE_TYPES: [
-    'image/jpeg',
-    'image/jpg',
-    'image/png',
-    'image/webp',
-  ],
-  
+
+  ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+
   ALLOWED_DOCUMENT_TYPES: [
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'text/plain',
   ],
-  
+
   // File name constraints
   MAX_FILENAME_LENGTH: 255,
   ALLOWED_FILENAME_CHARS: /^[a-zA-Z0-9._-]+$/,
@@ -357,13 +340,28 @@ export const PHILIPPINES = {
   COUNTRY_CODE: 'PH',
   CURRENCY: 'PHP',
   TIMEZONE: 'Asia/Manila',
-  
+
   // Region codes
   REGIONS: [
-    'NCR', 'CAR', 'I', 'II', 'III', 'IV-A', 'IV-B',
-    'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'ARMM'
+    'NCR',
+    'CAR',
+    'I',
+    'II',
+    'III',
+    'IV-A',
+    'IV-B',
+    'V',
+    'VI',
+    'VII',
+    'VIII',
+    'IX',
+    'X',
+    'XI',
+    'XII',
+    'XIII',
+    'ARMM',
   ],
-  
+
   // Administrative levels
   ADMIN_LEVELS: {
     REGION: 1,
@@ -386,22 +384,22 @@ export const VALIDATION_RULES = {
   ERROR_CLASS: 'error',
   SUCCESS_CLASS: 'success',
   WARNING_CLASS: 'warning',
-  
+
   // Date constraints
   MIN_BIRTH_YEAR: 1900,
   MAX_BIRTH_YEAR: new Date().getFullYear(),
   DATE_FORMAT: 'YYYY-MM-DD',
   DISPLAY_DATE_FORMAT: 'MMM DD, YYYY',
-  
+
   // Name validation
   NAME_MIN_LENGTH: 1,
   NAME_MAX_LENGTH: 100,
   NAME_PATTERN: /^[a-zA-ZñÑ\s\-\.\']+$/,
-  
+
   // Address validation
   ADDRESS_MAX_LENGTH: 500,
   STREET_MAX_LENGTH: 200,
-  
+
   // Philippine specific validation
   BARANGAY_CODE_LENGTH: 9,
   CITY_CODE_LENGTH: 6,
@@ -423,18 +421,18 @@ export const SECURITY = {
   PASSWORD_REQUIRE_LOWERCASE: true,
   PASSWORD_REQUIRE_NUMBERS: true,
   PASSWORD_REQUIRE_SYMBOLS: false,
-  
+
   // Session management
   SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 hours
   REMEMBER_ME_DURATION: 30 * 24 * 60 * 60 * 1000, // 30 days
-  
+
   // CSRF protection
   CSRF_TOKEN_LENGTH: 32,
   CSRF_HEADER_NAME: 'X-CSRF-Token',
-  
+
   // Content Security Policy
   CSP_REPORT_URI: '/api/security/csp-report',
-  
+
   // Rate limiting keys
   RATE_LIMIT_HEADERS: {
     LIMIT: 'X-RateLimit-Limit',
@@ -457,14 +455,14 @@ export const NOTIFICATIONS = {
     WARNING: 'warning',
     INFO: 'info',
   },
-  
+
   DURATIONS: {
     SHORT: 3000, // 3 seconds
     MEDIUM: 5000, // 5 seconds
     LONG: 8000, // 8 seconds
     PERSISTENT: 0, // Manual dismiss only
   },
-  
+
   POSITIONS: {
     TOP_RIGHT: 'top-right',
     TOP_LEFT: 'top-left',
@@ -473,7 +471,7 @@ export const NOTIFICATIONS = {
     TOP_CENTER: 'top-center',
     BOTTOM_CENTER: 'bottom-center',
   },
-  
+
   MAX_VISIBLE: 5,
   ANIMATION_DURATION: 300,
 } as const;

@@ -214,8 +214,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Prepare a typed, sanitized payload (block immutable fields)
-    const { code: _code, barangay_code: _brgy, created_at: _created, updated_at: _prevUpdated, ...rest } =
-      (updateData as Record<string, any>) ?? {};
+    const {
+      code: _code,
+      barangay_code: _brgy,
+      created_at: _created,
+      updated_at: _prevUpdated,
+      ...rest
+    } = (updateData as Record<string, any>) ?? {};
     const updateResult = await supabaseAdmin
       .from('households')
       .update({

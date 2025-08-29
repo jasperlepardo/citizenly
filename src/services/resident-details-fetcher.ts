@@ -25,7 +25,9 @@ export const fetchAddressInfo = async (barangayCode: string): Promise<AddressInf
     // Try address hierarchy view first (most efficient)
     const { data: addressViewData, error: viewError } = await supabase
       .from('psgc_address_hierarchy')
-      .select('barangay_name, barangay_code, city_municipality_name, city_municipality_code, province_name, region_name, region_code, full_address')
+      .select(
+        'barangay_name, barangay_code, city_municipality_name, city_municipality_code, province_name, region_name, region_code, full_address'
+      )
       .eq('barangay_code', barangayCode)
       .single();
 

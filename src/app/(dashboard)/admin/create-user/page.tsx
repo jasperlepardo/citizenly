@@ -44,7 +44,9 @@ function CreateUserContent() {
   const [success, setSuccess] = useState(false);
 
   // Barangay search state
-  const [barangayOptions, setBarangayOptions] = useState<{ value: string; label: string; description: string }[]>([]);
+  const [barangayOptions, setBarangayOptions] = useState<
+    { value: string; label: string; description: string }[]
+  >([]);
   const [barangayLoading, setBarangayLoading] = useState(false);
 
   interface CreatedUser {
@@ -68,12 +70,22 @@ function CreateUserContent() {
       );
       if (response.ok) {
         const data = await response.json();
-        const formattedOptions = (data.data || []).map((item: { barangay_code?: string; code?: string; barangay_name?: string; name?: string; full_address?: string; city_name?: string; province_name?: string }) => ({
-          value: item.barangay_code || item.code,
-          label: item.barangay_name || item.name,
-          description:
-            item.full_address || `${item.name} - ${item.city_name}, ${item.province_name}`,
-        }));
+        const formattedOptions = (data.data || []).map(
+          (item: {
+            barangay_code?: string;
+            code?: string;
+            barangay_name?: string;
+            name?: string;
+            full_address?: string;
+            city_name?: string;
+            province_name?: string;
+          }) => ({
+            value: item.barangay_code || item.code,
+            label: item.barangay_name || item.name,
+            description:
+              item.full_address || `${item.name} - ${item.city_name}, ${item.province_name}`,
+          })
+        );
         setBarangayOptions(formattedOptions);
       } else {
         setBarangayOptions([]);

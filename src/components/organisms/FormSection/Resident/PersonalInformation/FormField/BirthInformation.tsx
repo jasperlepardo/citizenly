@@ -103,7 +103,7 @@ export function BirthInformation({
         });
       }
     }
-    
+
     return allOptions;
   }, [psgcOptions, value.birth_place_code, value.birth_place_name]);
 

@@ -3,11 +3,11 @@
  *
  * @description Pure business logic for transforming raw data into chart-ready formats.
  * Contains data transformation utilities separated from UI components.
- * 
+ *
  * @deprecated Chart types have been moved to @/types/charts.
  * This file now re-exports types for backwards compatibility.
  * Please update imports to use the new location directly.
- * 
+ *
  * @see {@link @/types/charts} - New location for chart types
  */
 

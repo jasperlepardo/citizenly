@@ -3,7 +3,11 @@
  * Reusable field-level validation functions
  */
 
-import type { FieldValidator, FieldValidationResult, ValidationContext } from '../../types/validation';
+import type {
+  FieldValidator,
+  FieldValidationResult,
+  ValidationContext,
+} from '../../types/validation';
 
 // Note: FieldValidationResult interface is still exported from types for backward compatibility
 // but these validators now return string | null per the updated FieldValidator type signature
@@ -48,7 +52,9 @@ export const validatePhilippineMobile: FieldValidator<string> = (mobile, fieldNa
   const cleaned = mobile.replace(/\D/g, '');
   const isValid = /^09\d{9}$/.test(cleaned) || /^639\d{9}$/.test(cleaned);
 
-  return isValid ? null : 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX)';
+  return isValid
+    ? null
+    : 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX)';
 };
 
 /**

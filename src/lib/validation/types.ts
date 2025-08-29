@@ -20,5 +20,5 @@ export type {
   ZodValidationResult,
   BaseValidationConfig,
   ValidateFormFunction,
-  ValidateFieldFunction
+  ValidateFieldFunction,
 } from '../../types/validation';

@@ -68,7 +68,7 @@ export function validateRequired(value: any, fieldName: string): ValidationError
     return {
       field: fieldName,
       message: `${fieldName} is required`,
-      code: 'REQUIRED'
+      code: 'REQUIRED',
     };
   }
   return null;
@@ -78,9 +78,9 @@ export function validateRequired(value: any, fieldName: string): ValidationError
  * Validate field length
  */
 export function validateLength(
-  value: string, 
-  fieldName: string, 
-  min?: number, 
+  value: string,
+  fieldName: string,
+  min?: number,
   max?: number
 ): ValidationError | null {
   if (!value) return null;
@@ -89,7 +89,7 @@ export function validateLength(
     return {
       field: fieldName,
       message: `${fieldName} must be at least ${min} characters`,
-      code: 'MIN_LENGTH'
+      code: 'MIN_LENGTH',
     };
   }
 
@@ -97,7 +97,7 @@ export function validateLength(
     return {
       field: fieldName,
       message: `${fieldName} must not exceed ${max} characters`,
-      code: 'MAX_LENGTH'
+      code: 'MAX_LENGTH',
     };
   }
 
@@ -108,9 +108,9 @@ export function validateLength(
  * Validate numeric range
  */
 export function validateRange(
-  value: number, 
-  fieldName: string, 
-  min?: number, 
+  value: number,
+  fieldName: string,
+  min?: number,
   max?: number
 ): ValidationError | null {
   if (value === null || value === undefined) return null;
@@ -119,7 +119,7 @@ export function validateRange(
     return {
       field: fieldName,
       message: `${fieldName} must be at least ${min}`,
-      code: 'MIN_VALUE'
+      code: 'MIN_VALUE',
     };
   }
 
@@ -127,7 +127,7 @@ export function validateRange(
     return {
       field: fieldName,
       message: `${fieldName} must not exceed ${max}`,
-      code: 'MAX_VALUE'
+      code: 'MAX_VALUE',
     };
   }
 
@@ -137,10 +137,7 @@ export function validateRange(
 /**
  * Validate date format and range
  */
-export function validateDate(
-  dateString: string, 
-  fieldName: string
-): ValidationError | null {
+export function validateDate(dateString: string, fieldName: string): ValidationError | null {
   if (!dateString) return null;
 
   const date = new Date(dateString);
@@ -148,7 +145,7 @@ export function validateDate(
     return {
       field: fieldName,
       message: `${fieldName} must be a valid date`,
-      code: 'INVALID_DATE'
+      code: 'INVALID_DATE',
     };
   }
 
@@ -161,7 +158,7 @@ export function validateDate(
     return {
       field: fieldName,
       message: `${fieldName} must be between ${minYear} and ${maxYear}`,
-      code: 'DATE_RANGE'
+      code: 'DATE_RANGE',
     };
   }
 
@@ -182,6 +179,8 @@ export function createValidationError(
 /**
  * Combine multiple validation results
  */
-export function combineValidationResults(...results: (ValidationError | null)[]): ValidationError[] {
+export function combineValidationResults(
+  ...results: (ValidationError | null)[]
+): ValidationError[] {
   return results.filter((result): result is ValidationError => result !== null);
 }

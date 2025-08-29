@@ -1,18 +1,18 @@
 /**
  * API Types - RESTful API Interface Collection
- * 
+ *
  * @fileoverview Comprehensive TypeScript interfaces for standardized API communication
  * in the Citizenly RBI system. Provides consistent request/response patterns for all
  * REST endpoints with proper error handling and Supabase integration.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * @example Standard API Response Usage
  * ```typescript
  * import { ApiResponse, ApiSuccessResponse } from '@/types/api';
- * 
+ *
  * const response: ApiResponse<ResidentRecord[]> = {
  *   success: true,
  *   data: residents,

@@ -1,21 +1,21 @@
 /**
  * Database Types - Canonical PostgreSQL Schema Interface Collection
- * 
+ *
  * @fileoverview Comprehensive TypeScript interfaces that provide 100% compliant mapping
  * to the PostgreSQL database schema defined in database/schema.sql. This serves as the
  * single source of truth for all database operations in the Citizenly RBI system.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * Database Schema Coverage (100% Complete):
  * - 13 Core Tables: residents, households, auth_*, psgc_*, psoc_*, geo_*, system_*
  * - 13 Enum Types: All PostgreSQL ENUMs with 100% value matching
  * - 42,046+ PSGC Barangays: Complete Philippine geographic hierarchy
  * - 1,634+ Cities/Municipalities: Full PSGC city coverage
  * - 5-Level PSOC Hierarchy: Complete Philippine occupation classification
- * 
+ *
  * Key Features:
  * - 100% PostgreSQL constraint compliance (NOT NULL, FOREIGN KEY, CHECK)
  * - Full DILG RBI specification alignment for Philippine LGU systems
@@ -23,11 +23,11 @@
  * - Comprehensive PSOC occupational classification system
  * - Multi-level authentication and authorization support
  * - Proper nullable field handling with exact database mapping
- * 
+ *
  * @example Basic Database Record Usage
  * ```typescript
  * import { ResidentRecord, HouseholdRecord } from '@/types/database';
- * 
+ *
  * const resident: ResidentRecord = {
  *   id: '550e8400-e29b-41d4-a716-446655440000',
  *   first_name: 'Juan',
@@ -39,11 +39,11 @@
  *   // ... other required fields
  * };
  * ```
- * 
+ *
  * @example PSGC Geographic Hierarchy
  * ```typescript
  * import { PSGCRegion, PSGCProvince, PSGCCityMunicipality, PSGCBarangay } from '@/types/database';
- * 
+ *
  * // National Capital Region example
  * const region: PSGCRegion = {
  *   code: '13',
@@ -53,11 +53,11 @@
  *   updated_at: '2025-01-01T00:00:00Z'
  * };
  * ```
- * 
+ *
  * @example Enum Usage with Database Compliance
  * ```typescript
  * import { SexEnum, CivilStatusEnum, EmploymentStatusEnum } from '@/types/database';
- * 
+ *
  * // All enum values exactly match database schema
  * const sex: SexEnum = 'male'; // matches CREATE TYPE sex_enum
  * const status: CivilStatusEnum = 'married'; // matches CREATE TYPE civil_status_enum
@@ -78,7 +78,7 @@ export type { ValidationError } from './validation';
  * PSGC Region record interface - exactly matching psgc_regions table
  * @description Philippine region data structure per PSGC (Philippine Standard Geographic Code).
  * Represents the highest level in the 4-tier Philippine geographic hierarchy.
- * 
+ *
  * @example National Capital Region
  * ```typescript
  * const ncrRegion: PSGCRegion = {
@@ -133,44 +133,141 @@ export interface PSGCBarangay {
 
 // Personal Information Enums
 export type SexEnum = 'male' | 'female';
-export type CivilStatusEnum = 'single' | 'married' | 'divorced' | 'separated' | 'widowed' | 'others';
+export type CivilStatusEnum =
+  | 'single'
+  | 'married'
+  | 'divorced'
+  | 'separated'
+  | 'widowed'
+  | 'others';
 export type CitizenshipEnum = 'filipino' | 'dual_citizen' | 'foreigner';
 
 // Education & Employment Enums
-export type EducationLevelEnum = 'elementary' | 'high_school' | 'college' | 'post_graduate' | 'vocational';
-export type EmploymentStatusEnum = 
-  | 'employed' | 'unemployed' | 'underemployed' | 'self_employed' 
-  | 'student' | 'retired' | 'homemaker' | 'unable_to_work' 
-  | 'looking_for_work' | 'not_in_labor_force';
+export type EducationLevelEnum =
+  | 'elementary'
+  | 'high_school'
+  | 'college'
+  | 'post_graduate'
+  | 'vocational';
+export type EmploymentStatusEnum =
+  | 'employed'
+  | 'unemployed'
+  | 'underemployed'
+  | 'self_employed'
+  | 'student'
+  | 'retired'
+  | 'homemaker'
+  | 'unable_to_work'
+  | 'looking_for_work'
+  | 'not_in_labor_force';
 
 // Health & Identity Enums
 export type BloodTypeEnum = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-export type ReligionEnum = 
-  | 'roman_catholic' | 'islam' | 'iglesia_ni_cristo' | 'christian' 
-  | 'aglipayan_church' | 'seventh_day_adventist' | 'bible_baptist_church' 
-  | 'jehovahs_witnesses' | 'church_of_jesus_christ_latter_day_saints' 
-  | 'united_church_of_christ_philippines' | 'others';
+export type ReligionEnum =
+  | 'roman_catholic'
+  | 'islam'
+  | 'iglesia_ni_cristo'
+  | 'christian'
+  | 'aglipayan_church'
+  | 'seventh_day_adventist'
+  | 'bible_baptist_church'
+  | 'jehovahs_witnesses'
+  | 'church_of_jesus_christ_latter_day_saints'
+  | 'united_church_of_christ_philippines'
+  | 'others';
 
-export type EthnicityEnum = 
-  | 'tagalog' | 'cebuano' | 'ilocano' | 'bisaya' | 'hiligaynon' | 'bikolano' 
-  | 'waray' | 'kapampangan' | 'pangasinense' | 'maranao' | 'maguindanao' 
-  | 'tausug' | 'yakan' | 'samal' | 'badjao' | 'aeta' | 'agta' | 'ati' 
-  | 'batak' | 'bukidnon' | 'gaddang' | 'higaonon' | 'ibaloi' | 'ifugao' 
-  | 'igorot' | 'ilongot' | 'isneg' | 'ivatan' | 'kalinga' | 'kankanaey' 
-  | 'mangyan' | 'mansaka' | 'palawan' | 'subanen' | 'tboli' | 'teduray' 
-  | 'tumandok' | 'chinese' | 'others';
+export type EthnicityEnum =
+  | 'tagalog'
+  | 'cebuano'
+  | 'ilocano'
+  | 'bisaya'
+  | 'hiligaynon'
+  | 'bikolano'
+  | 'waray'
+  | 'kapampangan'
+  | 'pangasinense'
+  | 'maranao'
+  | 'maguindanao'
+  | 'tausug'
+  | 'yakan'
+  | 'samal'
+  | 'badjao'
+  | 'aeta'
+  | 'agta'
+  | 'ati'
+  | 'batak'
+  | 'bukidnon'
+  | 'gaddang'
+  | 'higaonon'
+  | 'ibaloi'
+  | 'ifugao'
+  | 'igorot'
+  | 'ilongot'
+  | 'isneg'
+  | 'ivatan'
+  | 'kalinga'
+  | 'kankanaey'
+  | 'mangyan'
+  | 'mansaka'
+  | 'palawan'
+  | 'subanen'
+  | 'tboli'
+  | 'teduray'
+  | 'tumandok'
+  | 'chinese'
+  | 'others';
 
 // Household Enums
-export type HouseholdTypeEnum = 'nuclear' | 'single_parent' | 'extended' | 'childless' | 'one_person' | 'non_family' | 'other';
-export type TenureStatusEnum = 'owned' | 'owned_with_mortgage' | 'rented' | 'occupied_for_free' | 'occupied_without_consent' | 'others';
-export type HouseholdUnitEnum = 'single_house' | 'duplex' | 'apartment' | 'townhouse' | 'condominium' | 'boarding_house' | 'institutional' | 'makeshift' | 'others';
-export type FamilyPositionEnum = 
-  | 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather'
-  | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' 
-  | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
-export type IncomeClassEnum = 
-  | 'rich' | 'high_income' | 'upper_middle_income' | 'middle_class' 
-  | 'lower_middle_class' | 'low_income' | 'poor' | 'not_determined';
+export type HouseholdTypeEnum =
+  | 'nuclear'
+  | 'single_parent'
+  | 'extended'
+  | 'childless'
+  | 'one_person'
+  | 'non_family'
+  | 'other';
+export type TenureStatusEnum =
+  | 'owned'
+  | 'owned_with_mortgage'
+  | 'rented'
+  | 'occupied_for_free'
+  | 'occupied_without_consent'
+  | 'others';
+export type HouseholdUnitEnum =
+  | 'single_house'
+  | 'duplex'
+  | 'apartment'
+  | 'townhouse'
+  | 'condominium'
+  | 'boarding_house'
+  | 'institutional'
+  | 'makeshift'
+  | 'others';
+export type FamilyPositionEnum =
+  | 'father'
+  | 'mother'
+  | 'son'
+  | 'daughter'
+  | 'grandmother'
+  | 'grandfather'
+  | 'father_in_law'
+  | 'mother_in_law'
+  | 'brother_in_law'
+  | 'sister_in_law'
+  | 'spouse'
+  | 'sibling'
+  | 'guardian'
+  | 'ward'
+  | 'other';
+export type IncomeClassEnum =
+  | 'rich'
+  | 'high_income'
+  | 'upper_middle_income'
+  | 'middle_class'
+  | 'lower_middle_class'
+  | 'low_income'
+  | 'poor'
+  | 'not_determined';
 
 // =============================================================================
 // NOTE: These enums match database/schema.sql exactly
@@ -218,7 +315,7 @@ export interface GeoStreet {
  * PSOC occupation classification system interfaces
  * @description Philippine Standard Occupational Classification (PSOC) provides a 5-level
  * hierarchical structure for categorizing occupations: Major → Sub-Major → Minor → Unit → Unit Sub-Groups
- * 
+ *
  * Hierarchy Structure:
  * 1. Major Groups (1-digit codes): 10 broad occupational categories
  * 2. Sub-Major Groups (2-digit codes): ~40 detailed occupational groups
@@ -290,7 +387,22 @@ export interface HouseholdMember {
   id: string;
   household_code: string;
   resident_id: string;
-  family_position: 'father' | 'mother' | 'son' | 'daughter' | 'grandmother' | 'grandfather' | 'father_in_law' | 'mother_in_law' | 'brother_in_law' | 'sister_in_law' | 'spouse' | 'sibling' | 'guardian' | 'ward' | 'other';
+  family_position:
+    | 'father'
+    | 'mother'
+    | 'son'
+    | 'daughter'
+    | 'grandmother'
+    | 'grandfather'
+    | 'father_in_law'
+    | 'mother_in_law'
+    | 'brother_in_law'
+    | 'sister_in_law'
+    | 'spouse'
+    | 'sibling'
+    | 'guardian'
+    | 'ward'
+    | 'other';
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -431,7 +543,7 @@ export interface AuthBarangayAccountRecord {
  * Household record interface - exactly matching households table (27 fields)
  * @description Core household data structure for the RBI system. Represents a single
  * household unit with complete geographic addressing and demographic classifications.
- * 
+ *
  * @example Basic Household Record
  * ```typescript
  * const household: HouseholdRecord = {
@@ -502,7 +614,7 @@ export interface HouseholdRecord {
  * Resident record interface - exactly matching residents table (38 fields)
  * @description Core resident data structure for the RBI system. Represents a single
  * individual with complete personal, demographic, and household membership information.
- * 
+ *
  * @example Basic Resident Record
  * ```typescript
  * const resident: ResidentRecord = {
@@ -530,7 +642,7 @@ export interface ResidentRecord {
   id: string; // UUID PRIMARY KEY
   philsys_card_number?: string | null; // VARCHAR(20)
 
-  // Personal details  
+  // Personal details
   first_name: string; // VARCHAR(100) NOT NULL
   middle_name?: string | null; // VARCHAR(100)
   last_name: string; // VARCHAR(100) NOT NULL
@@ -665,7 +777,6 @@ export interface SupabaseQueryResponse<T> {
 // =============================================================================
 // VALIDATION ERROR TYPES
 // =============================================================================
-
 
 // =============================================================================
 // API REQUEST CONTEXT TYPES

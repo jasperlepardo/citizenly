@@ -108,13 +108,20 @@ export function classifyError(error: unknown): ErrorCode {
   if (isNetworkError(error)) {
     const status = 'status' in error ? error.status : 0;
     switch (status) {
-      case 400: return ErrorCode.BAD_REQUEST;
-      case 401: return ErrorCode.UNAUTHORIZED;
-      case 403: return ErrorCode.FORBIDDEN;
-      case 404: return ErrorCode.NOT_FOUND;
-      case 429: return ErrorCode.RATE_LIMITED;
-      case 500: return ErrorCode.INTERNAL_SERVER_ERROR;
-      default: return ErrorCode.NETWORK_ERROR;
+      case 400:
+        return ErrorCode.BAD_REQUEST;
+      case 401:
+        return ErrorCode.UNAUTHORIZED;
+      case 403:
+        return ErrorCode.FORBIDDEN;
+      case 404:
+        return ErrorCode.NOT_FOUND;
+      case 429:
+        return ErrorCode.RATE_LIMITED;
+      case 500:
+        return ErrorCode.INTERNAL_SERVER_ERROR;
+      default:
+        return ErrorCode.NETWORK_ERROR;
     }
   }
 
@@ -147,7 +154,12 @@ export function createErrorLogContext(
     userId,
     timestamp: new Date(),
     userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-    environment: process.env.NODE_ENV === 'production' ? 'production' as const : process.env.VERCEL_ENV === 'staging' ? 'staging' as const : 'development' as const,
+    environment:
+      process.env.NODE_ENV === 'production'
+        ? ('production' as const)
+        : process.env.VERCEL_ENV === 'staging'
+          ? ('staging' as const)
+          : ('development' as const),
     ...additionalContext,
   } as ErrorLogContext;
 }
@@ -166,7 +178,12 @@ export function logError(error: unknown, context: Partial<ErrorLogContext> = {})
     userId: context.userId,
     timestamp: new Date(),
     userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-    environment: process.env.NODE_ENV === 'production' ? 'production' as const : process.env.VERCEL_ENV === 'staging' ? 'staging' as const : 'development' as const,
+    environment:
+      process.env.NODE_ENV === 'production'
+        ? ('production' as const)
+        : process.env.VERCEL_ENV === 'staging'
+          ? ('staging' as const)
+          : ('development' as const),
     ...context,
   };
 
@@ -253,10 +270,16 @@ export function createValidationError(
 /**
  * Create a network error
  */
-export async function createNetworkError(response: Response, message?: string): Promise<NetworkError> {
+export async function createNetworkError(
+  response: Response,
+  message?: string
+): Promise<NetworkError> {
   const error = new Error(message || `Network error: ${response.status}`) as NetworkError;
   error.status = response.status;
-  error.response = { data: await response.text(), headers: Object.fromEntries(response.headers.entries()) };
+  error.response = {
+    data: await response.text(),
+    headers: Object.fromEntries(response.headers.entries()),
+  };
   return error;
 }
 
@@ -264,10 +287,13 @@ export async function createNetworkError(response: Response, message?: string): 
  * Format validation errors for client display
  */
 export function formatValidationErrors(errors: ValidationError[]): Record<string, string> {
-  return errors.reduce((formatted, error) => {
-    formatted[error.field] = error.message;
-    return formatted;
-  }, {} as Record<string, string>);
+  return errors.reduce(
+    (formatted, error) => {
+      formatted[error.field] = error.message;
+      return formatted;
+    },
+    {} as Record<string, string>
+  );
 }
 
 /**
@@ -275,16 +301,16 @@ export function formatValidationErrors(errors: ValidationError[]): Record<string
  */
 export function extractErrorMessage(error: unknown): string {
   const message = getErrorMessage(error);
-  
+
   // Don't expose sensitive technical details to client
   if (message.toLowerCase().includes('internal server error')) {
     return 'A server error occurred. Please try again later.';
   }
-  
+
   if (message.toLowerCase().includes('database')) {
     return 'A data processing error occurred. Please try again.';
   }
-  
+
   return message;
 }
 

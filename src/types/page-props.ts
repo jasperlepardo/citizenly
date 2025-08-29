@@ -241,7 +241,7 @@ export interface ReportResident {
 
 /**
  * Household interface for reports
- * Consolidates from report components  
+ * Consolidates from report components
  */
 export interface ReportHousehold {
   id: string;

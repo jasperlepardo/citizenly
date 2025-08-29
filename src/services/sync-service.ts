@@ -11,7 +11,6 @@ import { createAppError } from '@/utils/error-utils';
 import { createLogger } from '../lib/config/environment';
 import { offlineStorage } from '../lib/data/offline-storage';
 
-
 const logger = createLogger('SyncService');
 
 export interface SyncQueueItem {
@@ -87,7 +86,7 @@ export class SyncService {
 
     try {
       const pendingItems = await offlineStorage.getPendingSyncItems();
-      
+
       if (pendingItems.length === 0) {
         logger.debug('No pending sync items');
         return;
@@ -101,7 +100,7 @@ export class SyncService {
           logger.warn(`Max retries exceeded for sync item ${item.id}`, {
             action: item.action,
             type: item.type,
-            retryCount: item.retryCount
+            retryCount: item.retryCount,
           });
           failed++;
           continue;
@@ -110,7 +109,7 @@ export class SyncService {
         try {
           const result = await this.syncItem({
             ...item,
-            id: String(item.id)
+            id: String(item.id),
           });
 
           if (result.success) {
@@ -135,7 +134,7 @@ export class SyncService {
       logger.info('Sync queue processing completed', {
         processed,
         failed,
-        total: pendingItems.length
+        total: pendingItems.length,
       });
     } catch (error) {
       logger.error('Error processing sync queue:', error);
@@ -367,7 +366,7 @@ export class SyncService {
    */
   cleanup(): void {
     if (typeof window === 'undefined') return;
-    
+
     window.removeEventListener('online', () => this.processQueue());
     window.removeEventListener('offline', () => {});
     this.eventListenersSetup = false;
@@ -376,11 +375,7 @@ export class SyncService {
   /**
    * Configure sync settings
    */
-  configure(options: {
-    maxRetries?: number;
-    retryDelay?: number;
-    syncDelay?: number;
-  }): void {
+  configure(options: { maxRetries?: number; retryDelay?: number; syncDelay?: number }): void {
     if (options.maxRetries !== undefined) {
       this.maxRetries = options.maxRetries;
     }

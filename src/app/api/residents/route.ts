@@ -86,7 +86,8 @@ export const GET = withSecurityHeaders(
              )`,
             { count: 'planned' } // Use 'planned' instead of 'exact' for better performance
           )
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(limit + 1); // Fetch one extra to check for more pages
 
         // Apply geographic filtering based on user's access level through households
         // All residents must have households, and filtering is done based on household location

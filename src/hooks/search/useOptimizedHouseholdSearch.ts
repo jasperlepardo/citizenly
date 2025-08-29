@@ -117,11 +117,12 @@ export function useOptimizedHouseholdSearch({
       currentOffset: number = 0,
       append: boolean = false
     ): Promise<HouseholdSearchResult[]> => {
-      
       // Get fresh session from Supabase first
-      const { data: { session: freshSession } } = await supabase.auth.getSession();
+      const {
+        data: { session: freshSession },
+      } = await supabase.auth.getSession();
       const hasValidAuth = !!(freshSession?.access_token || session?.access_token);
-      
+
       // Check authentication requirements
       if (!hasValidAuth) {
         console.warn('Authentication required for household search');
@@ -151,16 +152,17 @@ export function useOptimizedHouseholdSearch({
         }
 
         // Get current session for authentication - always get fresh from Supabase
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
         const token = currentSession?.access_token || session?.access_token;
-        
+
         console.log('Auth check:', {
           hasCurrentSession: !!currentSession,
           hasToken: !!token,
           tokenLength: token?.length || 0,
         });
-        
-        
+
         if (!token) {
           throw new Error('Authentication required. Please sign in.');
         }
@@ -209,7 +211,7 @@ export function useOptimizedHouseholdSearch({
         }
       } catch (error) {
         console.error('Household search API error:', error);
-        
+
         // Handle authentication errors specifically
         if (error instanceof Error && error.message.includes('401')) {
           // Clear any cached authentication state that might be stale
@@ -218,7 +220,7 @@ export function useOptimizedHouseholdSearch({
           setTotalCount(0);
           throw new Error('Authentication required. Please sign in to search households.');
         }
-        
+
         throw new Error('Unable to search households. Please try again.');
       }
     },

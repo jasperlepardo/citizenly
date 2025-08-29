@@ -1,10 +1,10 @@
 /**
  * Hook Types - React Hooks Interface Collection
- * 
+ *
  * @fileoverview Consolidated TypeScript interfaces for custom React hooks
  * in the Citizenly RBI system. Provides type-safe patterns for state management,
  * data fetching, validation, and form handling hooks.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
@@ -13,11 +13,11 @@
 import type { ComponentType } from 'react';
 
 import type { FormMode } from './forms';
-import type { 
-  ValidationResult, 
+import type {
+  ValidationResult,
   FieldValidationConfig,
   ValidationFunction,
-  FieldValidationResult
+  FieldValidationResult,
 } from './validation';
 
 // =============================================================================
@@ -29,7 +29,11 @@ import type {
  */
 export interface UseGenericValidationOptions<T> extends FieldValidationConfig {
   validateForm: (data: T) => ValidationResult<T> | Promise<ValidationResult<T>>;
-  validateField?: (fieldName: string, value: any, formData?: T) => string | null | FieldValidationResult;
+  validateField?: (
+    fieldName: string,
+    value: any,
+    formData?: T
+  ) => string | null | FieldValidationResult;
 }
 
 /**
@@ -490,9 +494,7 @@ export interface HookFormSubmissionProps<T> {
 export interface HookFormSubmissionReturn<T> {
   isSubmitting: boolean;
   isOptimisticallyUpdated: boolean;
-  handleSubmit: (
-    formData: T
-  ) => Promise<{ success: boolean; errors?: Record<string, string> }>;
+  handleSubmit: (formData: T) => Promise<{ success: boolean; errors?: Record<string, string> }>;
 }
 
 /**

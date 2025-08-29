@@ -12,7 +12,9 @@ import { ResidentWithRelations } from '@/types';
  * Initialize missing fields in resident data with default values
  * Ensures all expected fields are present for form consumption
  */
-export const initializeResidentFields = (residentData: Partial<ResidentWithRelations>): ResidentWithRelations => {
+export const initializeResidentFields = (
+  residentData: Partial<ResidentWithRelations>
+): ResidentWithRelations => {
   // Set required fields with defaults if missing
   const baseData: ResidentWithRelations = {
     id: residentData.id || '',

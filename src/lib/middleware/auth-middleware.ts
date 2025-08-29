@@ -30,11 +30,11 @@ export interface AuthResult {
  */
 export function extractToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
   }
-  
+
   return authHeader.split(' ')[1];
 }
 
@@ -43,7 +43,7 @@ export function extractToken(request: NextRequest): string | null {
  */
 export async function authenticateUser(request: NextRequest): Promise<AuthResult> {
   const token = extractToken(request);
-  
+
   if (!token) {
     return {
       success: false,
@@ -55,7 +55,10 @@ export async function authenticateUser(request: NextRequest): Promise<AuthResult
   try {
     // Verify token with public client
     const supabase = createPublicSupabaseClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
       return {
@@ -69,14 +72,16 @@ export async function authenticateUser(request: NextRequest): Promise<AuthResult
     const supabaseAdmin = createAdminSupabaseClient();
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .select(`
+      .select(
+        `
         barangay_code,
         city_municipality_code,
         province_code,
         region_code,
         role_id,
         auth_roles!inner(name)
-      `)
+      `
+      )
       .eq('id', user.id)
       .single();
 
@@ -182,7 +187,7 @@ export function withAuth(
 ) {
   return async (request: NextRequest, context: any): Promise<NextResponse> => {
     const authResult = await authenticateUser(request);
-    
+
     if (!authResult.success || !authResult.user) {
       return authResult.response || createSecureErrorResponse('Authentication failed', 401);
     }

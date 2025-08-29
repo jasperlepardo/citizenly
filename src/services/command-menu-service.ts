@@ -3,13 +3,15 @@
  * Consolidated command menu functionality following coding standards
  */
 
-import type { CommandMenuSearchResult as SearchResult, CommandMenuExportOptions as ExportOptions } from '@/types/services';
+import type {
+  CommandMenuSearchResult as SearchResult,
+  CommandMenuExportOptions as ExportOptions,
+} from '@/types/services';
 
 import { createLogger } from '../lib/config/environment';
 import { supabase } from '../lib/supabase';
 
 import { cacheService } from './cache-service';
-
 
 const logger = createLogger('CommandMenuService');
 
@@ -63,7 +65,7 @@ export class CommandMenuService {
       // Cache the results with TTL and tags
       cacheService.set(cacheKey, results, {
         ttl: this.SEARCH_CACHE_TTL,
-        tags: ['search', 'residents', 'households']
+        tags: ['search', 'residents', 'households'],
       });
 
       return results;
@@ -116,7 +118,7 @@ export class CommandMenuService {
     try {
       const cacheKey = 'recent-items';
       const cached = cacheService.get<SearchResult[]>(cacheKey);
-      
+
       if (cached !== null) {
         return cached;
       }
@@ -136,16 +138,16 @@ export class CommandMenuService {
   async addRecentItem(item: SearchResult): Promise<void> {
     try {
       const recentItems = await this.getRecentItems();
-      
+
       // Remove if already exists
       const filtered = recentItems.filter(recent => recent.id !== item.id);
-      
+
       // Add to beginning and limit to 10
       const updated = [item, ...filtered].slice(0, 10);
-      
+
       cacheService.set('recent-items', updated, {
         ttl: 24 * 60 * 60 * 1000, // 24 hours
-        tags: ['recent', 'user-activity']
+        tags: ['recent', 'user-activity'],
       });
     } catch (error) {
       logger.error('Add recent item error:', error);

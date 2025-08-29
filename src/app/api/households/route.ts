@@ -200,8 +200,9 @@ export const POST = withSecurityHeaders(
         };
 
         // Insert household
-        const { data: newHousehold, error: insertError } = await (supabaseAdmin
-          .from('households') as any)
+        const { data: newHousehold, error: insertError } = await (
+          supabaseAdmin.from('households') as any
+        )
           .insert([insertData])
           .select('*')
           .single();

@@ -4,7 +4,10 @@
  */
 
 import { logger } from '@/lib';
-import type { CommandMenuAnalyticsEvent as ImportedCommandMenuAnalyticsEvent, CommandMenuPerformanceMetrics } from '@/types/services';
+import type {
+  CommandMenuAnalyticsEvent as ImportedCommandMenuAnalyticsEvent,
+  CommandMenuPerformanceMetrics,
+} from '@/types/services';
 
 // Analytics event types
 export interface CommandMenuAnalyticsEvent {
@@ -14,7 +17,6 @@ export interface CommandMenuAnalyticsEvent {
   sessionId?: string;
   data: Record<string, any>;
 }
-
 
 // In-memory analytics store (would be replaced with proper analytics service in production)
 class CommandMenuAnalytics {
@@ -243,7 +245,10 @@ class CommandMenuAnalytics {
   }
 
   // Health check for monitoring
-  getHealthStatus(): { status: 'healthy' | 'warning' | 'critical'; metrics: CommandMenuPerformanceMetrics } {
+  getHealthStatus(): {
+    status: 'healthy' | 'warning' | 'critical';
+    metrics: CommandMenuPerformanceMetrics;
+  } {
     const metrics = this.getMetrics();
     let status: 'healthy' | 'warning' | 'critical' = 'healthy';
 

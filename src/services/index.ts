@@ -83,10 +83,35 @@ export const createRepositories = (context?: ValidationContext) => ({
 
 // CONSOLIDATED SERVICES - Clean centralized service layer
 // All duplicate directories removed, legacy code cleaned up
-export { authService, AuthService, type UserProfile, type UserRole, type RegistrationData } from './auth-service';
-export { cacheService, CacheService, cached, CacheKeys, CacheTags, setupCacheCleanup } from './cache-service';
+export {
+  authService,
+  AuthService,
+  type UserProfile,
+  type UserRole,
+  type RegistrationData,
+} from './auth-service';
+export {
+  cacheService,
+  CacheService,
+  cached,
+  CacheKeys,
+  CacheTags,
+  setupCacheCleanup,
+} from './cache-service';
 export { commandMenuService, CommandMenuService } from './command-menu-service';
 export { databaseService, DatabaseService } from './database-service';
-export { addressService, AddressService, type AddressLabels, type HouseholdTypeLabels, type CompleteAddress } from './address-service';
-export { securityAuditService, SecurityAuditService, type SecurityAuditLog, type ThreatDetectionEvent, AuditEventType } from './security-audit-service';
+export {
+  addressService,
+  AddressService,
+  type AddressLabels,
+  type HouseholdTypeLabels,
+  type CompleteAddress,
+} from './address-service';
+export {
+  securityAuditService,
+  SecurityAuditService,
+  type SecurityAuditLog,
+  type ThreatDetectionEvent,
+  AuditEventType,
+} from './security-audit-service';
 export { syncService, SyncService, type SyncQueueItem, type SyncStatus } from './sync-service';

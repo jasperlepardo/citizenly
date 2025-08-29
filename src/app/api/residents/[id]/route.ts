@@ -123,32 +123,32 @@ export const GET = withSecurityHeaders(
           throw new Error('Resident not found or access denied');
         }
 
-    // Get sectoral info separately to avoid join issues
-    const { data: sectoralInfoArray, error: sectoralError } = await supabaseAdmin
-      .from('resident_sectoral_info')
-      .select('*')
-      .eq('resident_id', residentId);
+        // Get sectoral info separately to avoid join issues
+        const { data: sectoralInfoArray, error: sectoralError } = await supabaseAdmin
+          .from('resident_sectoral_info')
+          .select('*')
+          .eq('resident_id', residentId);
 
-    // Handle the array result - take first record if exists
-    const sectoralInfo =
-      sectoralInfoArray && sectoralInfoArray.length > 0 ? sectoralInfoArray[0] : null;
+        // Handle the array result - take first record if exists
+        const sectoralInfo =
+          sectoralInfoArray && sectoralInfoArray.length > 0 ? sectoralInfoArray[0] : null;
 
-    // Extract household info and merge with resident data
-    const { households, ...residentData } = residentWithHousehold;
+        // Extract household info and merge with resident data
+        const { households, ...residentData } = residentWithHousehold;
 
-    const resident = {
-      ...residentData,
-      ...(sectoralInfo || {}),
-    };
-    const household = households;
+        const resident = {
+          ...residentData,
+          ...(sectoralInfo || {}),
+        };
+        const household = households;
 
-    // Get geographic information
-    let geoInfo = {};
-    try {
-      const { data: barangayData } = await supabaseAdmin
-        .from('psgc_barangays')
-        .select(
-          `
+        // Get geographic information
+        let geoInfo = {};
+        try {
+          const { data: barangayData } = await supabaseAdmin
+            .from('psgc_barangays')
+            .select(
+              `
           code,
           name,
           psgc_cities_municipalities!inner(
@@ -165,49 +165,49 @@ export const GET = withSecurityHeaders(
             )
           )
           `
-        )
-        .eq('code', household.barangay_code)
-        .single();
+            )
+            .eq('code', household.barangay_code)
+            .single();
 
-      if (barangayData) {
-        const cityMunData = barangayData.psgc_cities_municipalities as any;
-        const province = cityMunData.psgc_provinces;
-        const region = province.psgc_regions;
+          if (barangayData) {
+            const cityMunData = barangayData.psgc_cities_municipalities as any;
+            const province = cityMunData.psgc_provinces;
+            const region = province.psgc_regions;
 
-        geoInfo = {
-          barangay_info: {
-            code: barangayData.code,
-            name: barangayData.name,
-          },
-          city_municipality_info: {
-            code: cityMunData.code,
-            name: cityMunData.name,
-            type: cityMunData.type,
-          },
-          province_info: {
-            code: province.code,
-            name: province.name,
-          },
-          region_info: {
-            code: region.code,
-            name: region.name,
-          },
-        };
-      }
-    } catch (geoError) {
-      console.warn('Geographic info load failed:', geoError);
-    }
+            geoInfo = {
+              barangay_info: {
+                code: barangayData.code,
+                name: barangayData.name,
+              },
+              city_municipality_info: {
+                code: cityMunData.code,
+                name: cityMunData.name,
+                type: cityMunData.type,
+              },
+              province_info: {
+                code: province.code,
+                name: province.name,
+              },
+              region_info: {
+                code: region.code,
+                name: region.name,
+              },
+            };
+          }
+        } catch (geoError) {
+          console.warn('Geographic info load failed:', geoError);
+        }
 
-    // Get birth place information if birth_place_code exists
-    let birthPlaceInfo = {};
-    if (resident.birth_place_code) {
-      try {
-        // Resolve from PSGC tables directly with hierarchical formatting
-        // Try barangay first (most specific)
-        const { data: barangayData } = await supabaseAdmin
-          .from('psgc_barangays')
-          .select(
-            `
+        // Get birth place information if birth_place_code exists
+        let birthPlaceInfo = {};
+        if (resident.birth_place_code) {
+          try {
+            // Resolve from PSGC tables directly with hierarchical formatting
+            // Try barangay first (most specific)
+            const { data: barangayData } = await supabaseAdmin
+              .from('psgc_barangays')
+              .select(
+                `
             code,
             name,
             psgc_cities_municipalities!inner(
@@ -216,128 +216,128 @@ export const GET = withSecurityHeaders(
               psgc_provinces!inner(name)
             )
           `
-          )
-          .eq('code', resident.birth_place_code)
-          .maybeSingle();
+              )
+              .eq('code', resident.birth_place_code)
+              .maybeSingle();
 
-        if (barangayData) {
-          const city = barangayData.psgc_cities_municipalities as any;
-          const province = city.psgc_provinces;
-          birthPlaceInfo = {
-            birth_place_info: {
-              code: barangayData.code,
-              name: `${city.name}, ${province.name}`,
-              level: 'barangay',
-            },
-          };
-        } else {
-          // Try city/municipality
-          const { data: cityData } = await supabaseAdmin
-            .from('psgc_cities_municipalities')
-            .select(
-              `
+            if (barangayData) {
+              const city = barangayData.psgc_cities_municipalities as any;
+              const province = city.psgc_provinces;
+              birthPlaceInfo = {
+                birth_place_info: {
+                  code: barangayData.code,
+                  name: `${city.name}, ${province.name}`,
+                  level: 'barangay',
+                },
+              };
+            } else {
+              // Try city/municipality
+              const { data: cityData } = await supabaseAdmin
+                .from('psgc_cities_municipalities')
+                .select(
+                  `
               code,
               name,
               type,
               psgc_provinces!inner(name)
             `
-            )
-            .eq('code', resident.birth_place_code)
-            .maybeSingle();
-
-          if (cityData) {
-            const province = cityData.psgc_provinces as any;
-            birthPlaceInfo = {
-              birth_place_info: {
-                code: cityData.code,
-                name: `${cityData.name}, ${province.name}`,
-                level: 'city_municipality',
-                type: cityData.type, // Include the actual type (city or municipality)
-              },
-            };
-          } else {
-            // Try province
-            const { data: provinceData } = await supabaseAdmin
-              .from('psgc_provinces')
-              .select('code, name')
-              .eq('code', resident.birth_place_code)
-              .maybeSingle();
-
-            if (provinceData) {
-              birthPlaceInfo = {
-                birth_place_info: {
-                  code: provinceData.code,
-                  name: provinceData.name,
-                  level: 'province',
-                },
-              };
-            } else {
-              // Try region (least specific)
-              const { data: regionData } = await supabaseAdmin
-                .from('psgc_regions')
-                .select('code, name')
+                )
                 .eq('code', resident.birth_place_code)
                 .maybeSingle();
 
-              if (regionData) {
+              if (cityData) {
+                const province = cityData.psgc_provinces as any;
                 birthPlaceInfo = {
                   birth_place_info: {
-                    code: regionData.code,
-                    name: regionData.name,
-                    level: 'region',
+                    code: cityData.code,
+                    name: `${cityData.name}, ${province.name}`,
+                    level: 'city_municipality',
+                    type: cityData.type, // Include the actual type (city or municipality)
                   },
                 };
               } else {
-                // All fallbacks failed
-                console.warn('Could not resolve birth place:', resident.birth_place_code);
+                // Try province
+                const { data: provinceData } = await supabaseAdmin
+                  .from('psgc_provinces')
+                  .select('code, name')
+                  .eq('code', resident.birth_place_code)
+                  .maybeSingle();
+
+                if (provinceData) {
+                  birthPlaceInfo = {
+                    birth_place_info: {
+                      code: provinceData.code,
+                      name: provinceData.name,
+                      level: 'province',
+                    },
+                  };
+                } else {
+                  // Try region (least specific)
+                  const { data: regionData } = await supabaseAdmin
+                    .from('psgc_regions')
+                    .select('code, name')
+                    .eq('code', resident.birth_place_code)
+                    .maybeSingle();
+
+                  if (regionData) {
+                    birthPlaceInfo = {
+                      birth_place_info: {
+                        code: regionData.code,
+                        name: regionData.name,
+                        level: 'region',
+                      },
+                    };
+                  } else {
+                    // All fallbacks failed
+                    console.warn('Could not resolve birth place:', resident.birth_place_code);
+                  }
+                }
               }
             }
+          } catch (birthPlaceError) {
+            console.warn('Birth place info load failed:', birthPlaceError);
           }
         }
-      } catch (birthPlaceError) {
-        console.warn('Birth place info load failed:', birthPlaceError);
-      }
-    }
 
-    // Get occupation title and hierarchy if occupation_code exists
-    let occupationInfo = {};
-    if (resident.occupation_code) {
-      try {
-        const { data: psocData } = await supabaseAdmin
-          .from('psoc_unified_search')
-          .select(
-            'psoc_code, occupation_title, display_text, psoc_level, level_name, parent_code, parent_title'
-          )
-          .eq('psoc_code', resident.occupation_code)
-          .maybeSingle();
+        // Get occupation title and hierarchy if occupation_code exists
+        let occupationInfo = {};
+        if (resident.occupation_code) {
+          try {
+            const { data: psocData } = await supabaseAdmin
+              .from('psoc_unified_search')
+              .select(
+                'psoc_code, occupation_title, display_text, psoc_level, level_name, parent_code, parent_title'
+              )
+              .eq('psoc_code', resident.occupation_code)
+              .maybeSingle();
 
-        if (psocData) {
-          // Build the complete hierarchy from bottom to top
-          const hierarchyParts = [];
+            if (psocData) {
+              // Build the complete hierarchy from bottom to top
+              const hierarchyParts = [];
 
-          // Start with the occupation title
-          hierarchyParts.push(psocData.occupation_title);
+              // Start with the occupation title
+              hierarchyParts.push(psocData.occupation_title);
 
-          // Add parent if it exists (Level 3)
-          if (psocData.parent_title) {
-            hierarchyParts.push(psocData.parent_title);
+              // Add parent if it exists (Level 3)
+              if (psocData.parent_title) {
+                hierarchyParts.push(psocData.parent_title);
+              }
+
+              // For a complete hierarchy, we could traverse up further, but
+              // showing occupation + immediate parent is usually sufficient
+              // Full format: "Graphic And Multimedia Designers › Architects, Planners, Surveyors And Designers"
+              const hierarchy = hierarchyParts.join(' › ');
+
+              occupationInfo = {
+                occupation_title: hierarchy,
+                occupation_code_display: psocData.psoc_code, // Keep the code for reference
+                occupation_level: psocData.level_name, // e.g., "Unit Group"
+              };
+            }
+          } catch (occupationError) {
+            console.warn('Occupation info load failed:', occupationError);
           }
-
-          // For a complete hierarchy, we could traverse up further, but
-          // showing occupation + immediate parent is usually sufficient
-          // Full format: "Graphic And Multimedia Designers › Architects, Planners, Surveyors And Designers"
-          const hierarchy = hierarchyParts.join(' › ');
-
-          occupationInfo = {
-            occupation_title: hierarchy,
-            occupation_code_display: psocData.psoc_code, // Keep the code for reference
-            occupation_level: psocData.level_name, // e.g., "Unit Group"
-          };
         }
-      } catch (occupationError) {
-        console.warn('Occupation info load failed:', occupationError);
-      }
-    }
 
         // Audit the data access
         await auditDataOperation('view', 'resident', residentId, context, {
@@ -571,78 +571,82 @@ export const PUT = withSecurityHeaders(
           throw updateError;
         }
 
-    // Update sectoral information if any sectoral fields were provided
-    if (Object.keys(sectoralData).length > 0) {
-      // Check if sectoral record exists
-      const { data: existingSectoral, error: checkError } = await supabaseAdmin
-        .from('resident_sectoral_info')
-        .select('resident_id')
-        .eq('resident_id', residentId)
-        .maybeSingle(); // Use maybeSingle instead of single to avoid error when no record exists
+        // Update sectoral information if any sectoral fields were provided
+        if (Object.keys(sectoralData).length > 0) {
+          // Check if sectoral record exists
+          const { data: existingSectoral, error: checkError } = await supabaseAdmin
+            .from('resident_sectoral_info')
+            .select('resident_id')
+            .eq('resident_id', residentId)
+            .maybeSingle(); // Use maybeSingle instead of single to avoid error when no record exists
 
-      // Log the check result for debugging
-      console.log('Sectoral record check:', {
-        exists: !!existingSectoral,
-        residentId,
-        checkError: checkError?.message,
-      });
-
-      if (existingSectoral) {
-        // Update existing sectoral record
-        const { data: updatedData, error: sectoralUpdateError } = await supabaseAdmin
-          .from('resident_sectoral_info')
-          .update({
-            ...sectoralData,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('resident_id', residentId)
-          .select();
-
-        if (sectoralUpdateError) {
-          console.error('Sectoral update error:', {
-            errorMessage: sectoralUpdateError.message,
-            errorCode: sectoralUpdateError.code,
-            data: sectoralData,
+          // Log the check result for debugging
+          console.log('Sectoral record check:', {
+            exists: !!existingSectoral,
             residentId,
+            checkError: checkError?.message,
           });
-          throw new Error(`Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}`);
+
+          if (existingSectoral) {
+            // Update existing sectoral record
+            const { data: updatedData, error: sectoralUpdateError } = await supabaseAdmin
+              .from('resident_sectoral_info')
+              .update({
+                ...sectoralData,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('resident_id', residentId)
+              .select();
+
+            if (sectoralUpdateError) {
+              console.error('Sectoral update error:', {
+                errorMessage: sectoralUpdateError.message,
+                errorCode: sectoralUpdateError.code,
+                data: sectoralData,
+                residentId,
+              });
+              throw new Error(
+                `Failed to update sectoral information: ${sectoralUpdateError.message || 'Unknown error'}`
+              );
+            }
+
+            console.log('Successfully updated sectoral data:', updatedData);
+          } else {
+            // Create new sectoral record (table doesn't have created_by/updated_by columns)
+            const sectoralInsertData = {
+              resident_id: residentId,
+              ...sectoralData,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            };
+
+            console.log(
+              'Attempting to insert sectoral data:',
+              JSON.stringify(sectoralInsertData, null, 2)
+            );
+
+            const { data: insertedData, error: sectoralInsertError } = await supabaseAdmin
+              .from('resident_sectoral_info')
+              .insert(sectoralInsertData)
+              .select();
+
+            if (sectoralInsertError) {
+              console.error('Sectoral insert error details:', {
+                errorMessage: sectoralInsertError.message,
+                errorCode: sectoralInsertError.code,
+                errorDetails: sectoralInsertError.details,
+                errorHint: sectoralInsertError.hint,
+                data: sectoralInsertData,
+                residentId,
+              });
+              throw new Error(
+                `Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`
+              );
+            }
+
+            console.log('Successfully inserted sectoral data:', insertedData);
+          }
         }
-
-        console.log('Successfully updated sectoral data:', updatedData);
-      } else {
-        // Create new sectoral record (table doesn't have created_by/updated_by columns)
-        const sectoralInsertData = {
-          resident_id: residentId,
-          ...sectoralData,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-
-        console.log(
-          'Attempting to insert sectoral data:',
-          JSON.stringify(sectoralInsertData, null, 2)
-        );
-
-        const { data: insertedData, error: sectoralInsertError } = await supabaseAdmin
-          .from('resident_sectoral_info')
-          .insert(sectoralInsertData)
-          .select();
-
-        if (sectoralInsertError) {
-          console.error('Sectoral insert error details:', {
-            errorMessage: sectoralInsertError.message,
-            errorCode: sectoralInsertError.code,
-            errorDetails: sectoralInsertError.details,
-            errorHint: sectoralInsertError.hint,
-            data: sectoralInsertData,
-            residentId,
-          });
-          throw new Error(`Failed to create sectoral information: ${sectoralInsertError.message || 'Unknown error'}`);
-        }
-
-        console.log('Successfully inserted sectoral data:', insertedData);
-      }
-    }
 
         if (!updatedResident) {
           throw new Error('Resident not found or access denied');

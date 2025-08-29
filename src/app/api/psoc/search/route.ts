@@ -160,10 +160,10 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('PSOC search error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to search PSOC data',
-        data: [], 
-        count: 0 
+        data: [],
+        count: 0,
       },
       { status: 500 }
     );

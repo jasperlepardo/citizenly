@@ -6,7 +6,6 @@ import type { CivilStatusData } from '@/types/charts';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
 
-
 interface CivilStatusPieChartProps {
   data: CivilStatusData;
   title?: string;

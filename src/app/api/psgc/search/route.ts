@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
     // Use anon key with proper RLS for geographic data
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
+
     if (!supabaseUrl || !supabaseAnonKey) {
       return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
     }
-    
+
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     const rawQuery = query.trim().toLowerCase();

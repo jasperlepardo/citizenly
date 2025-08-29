@@ -57,7 +57,6 @@ export default function SectoralClassifications({
   mode = 'create',
   disabled = false,
 }: SectoralClassificationsProps) {
-
   // Calculate the expected sectoral flags based on context
   const calculatedFlags = useMemo(() => {
     const age = context.age || (context.birthdate ? calculateAge(context.birthdate) : 0);
@@ -91,20 +90,20 @@ export default function SectoralClassifications({
   useEffect(() => {
     // Create a unique key for the current calculated flags
     const updateKey = JSON.stringify(calculatedFlags);
-    
+
     // Only update if this is a new set of calculated flags
     if (lastUpdateRef.current !== updateKey) {
       lastUpdateRef.current = updateKey;
-      
+
       // Check if any calculated value differs from current value
-      const needsUpdate = 
+      const needsUpdate =
         value.is_labor_force_employed !== calculatedFlags.is_labor_force_employed ||
         value.is_unemployed !== calculatedFlags.is_unemployed ||
         value.is_out_of_school_children !== calculatedFlags.is_out_of_school_children ||
         value.is_out_of_school_youth !== calculatedFlags.is_out_of_school_youth ||
         value.is_senior_citizen !== calculatedFlags.is_senior_citizen ||
         value.is_indigenous_people !== calculatedFlags.is_indigenous_people;
-      
+
       if (needsUpdate) {
         const updatedSectoral = {
           ...value,
@@ -194,9 +193,7 @@ export default function SectoralClassifications({
               checked: value.is_labor_force_employed,
               disabled: true,
               size: 'md',
-              description: value.is_labor_force_employed
-                ? 'Currently employed'
-                : 'Not employed',
+              description: value.is_labor_force_employed ? 'Currently employed' : 'Not employed',
             }}
           />
           <ControlField
@@ -248,9 +245,7 @@ export default function SectoralClassifications({
               checked: value.is_senior_citizen,
               disabled: true,
               size: 'md',
-              description: value.is_senior_citizen
-                ? '60+ years old'
-                : 'Below 60 years old',
+              description: value.is_senior_citizen ? '60+ years old' : 'Below 60 years old',
             }}
           />
           <ControlField

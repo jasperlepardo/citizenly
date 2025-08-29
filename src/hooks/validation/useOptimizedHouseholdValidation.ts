@@ -16,7 +16,6 @@ import { toTitleCase } from '@/utils/string-utils';
 
 import { useGenericValidation } from './useGenericValidation';
 
-
 // Simple validation utilities for backward compatibility
 const validationUtils = {
   isEmpty: (value: any): boolean => {
@@ -64,7 +63,7 @@ function createHouseholdFormValidator() {
     const validationErrors = Object.entries(errors).map(([field, message]) => ({
       field,
       message,
-      code: 'VALIDATION_ERROR'
+      code: 'VALIDATION_ERROR',
     }));
 
     return {
@@ -81,7 +80,7 @@ function createHouseholdFieldValidator() {
   return (fieldName: string, value: any): ValidationResult => {
     // Basic field validation rules for household forms
     let fieldResult: FieldValidationResult;
-    
+
     switch (fieldName) {
       case 'house_number':
         if (validationUtils.isEmpty(value)) {
@@ -118,11 +117,15 @@ function createHouseholdFieldValidator() {
     }
 
     // Convert FieldValidationResult to ValidationResult
-    const errors = fieldResult.error ? [{
-      field: fieldName,
-      message: fieldResult.error,
-      code: 'VALIDATION_ERROR'
-    }] : [];
+    const errors = fieldResult.error
+      ? [
+          {
+            field: fieldName,
+            message: fieldResult.error,
+            code: 'VALIDATION_ERROR',
+          },
+        ]
+      : [];
 
     return {
       isValid: fieldResult.isValid,
@@ -195,9 +198,12 @@ export function useOptimizedHouseholdValidation(): UseHouseholdValidationReturn 
     genericValidation.clearAllErrors();
   }, [genericValidation.clearAllErrors]);
 
-  const setError = useCallback((fieldName: string, error: string) => {
-    genericValidation.setFieldError(fieldName, error);
-  }, [genericValidation.setFieldError]);
+  const setError = useCallback(
+    (fieldName: string, error: string) => {
+      genericValidation.setFieldError(fieldName, error);
+    },
+    [genericValidation.setFieldError]
+  );
 
   return {
     // Generic validation interface (matching UseGenericValidationReturn)
@@ -205,13 +211,16 @@ export function useOptimizedHouseholdValidation(): UseHouseholdValidationReturn 
     isValid: genericValidationImpl.isValid,
     hasValidated: genericValidationImpl.hasValidated || false,
     validateForm: genericValidationImpl.validateForm,
-    validateField: genericValidationImpl.validateField || (() => Promise.resolve({ isValid: true, errors: [] })),
+    validateField:
+      genericValidationImpl.validateField || (() => Promise.resolve({ isValid: true, errors: [] })),
     clearErrors,
     clearFieldError: genericValidationImpl.clearFieldError,
     setError,
     setFieldError: genericValidationImpl.setFieldError,
     getFieldError: genericValidationImpl.getFieldError,
-    hasFieldError: genericValidationImpl.hasFieldError || ((fieldName: string) => !!genericValidationImpl.errors[fieldName]),
+    hasFieldError:
+      genericValidationImpl.hasFieldError ||
+      ((fieldName: string) => !!genericValidationImpl.errors[fieldName]),
     setErrors: genericValidationImpl.setErrors || setValidationErrors,
 
     // Backward compatible interface

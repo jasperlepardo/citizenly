@@ -1,10 +1,10 @@
 /**
  * Component Types - React Component Interface Collection
- * 
+ *
  * @fileoverview Consolidated component prop interfaces and common patterns
  * for the Citizenly RBI React component library. Provides consistent typing
  * patterns across all UI components with accessibility and testing support.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
@@ -43,13 +43,13 @@ export type ComponentSize = 'sm' | 'md' | 'lg' | 'xl';
 /**
  * Component color variants
  */
-export type ComponentVariant = 
-  | 'default' 
-  | 'primary' 
-  | 'secondary' 
-  | 'destructive' 
-  | 'outline' 
-  | 'ghost' 
+export type ComponentVariant =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | 'ghost'
   | 'link';
 
 // =============================================================================
@@ -101,9 +101,9 @@ export interface FormFieldProps extends BaseComponentProps {
 /**
  * Input field props
  */
-export interface InputProps extends 
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
-  FormFieldProps {
+export interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
+    FormFieldProps {
   /** Size variant */
   size?: ComponentSize;
   /** Input type */
@@ -815,18 +815,18 @@ export type CommandMenuSize = 'sm' | 'md' | 'lg';
  * Typography variant types
  * Consolidates from src/lib/ui/typography.ts
  */
-export type TypographyVariant = 
-  | 'h1' 
-  | 'h2' 
-  | 'h3' 
-  | 'h4' 
-  | 'h5' 
-  | 'h6' 
-  | 'body' 
-  | 'small' 
-  | 'caption' 
-  | 'overline' 
-  | 'link' 
+export type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'body'
+  | 'small'
+  | 'caption'
+  | 'overline'
+  | 'link'
   | 'code';
 
 /**

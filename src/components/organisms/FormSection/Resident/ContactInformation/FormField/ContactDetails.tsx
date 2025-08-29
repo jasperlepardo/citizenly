@@ -25,12 +25,15 @@ export function ContactDetails({
   errors,
   className = '',
 }: ContactDetailsProps) {
-  const handleChange = useCallback((field: keyof ContactDetailsData, fieldValue: string) => {
-    onChange({
-      ...value,
-      [field]: fieldValue,
-    });
-  }, [value, onChange]);
+  const handleChange = useCallback(
+    (field: keyof ContactDetailsData, fieldValue: string) => {
+      onChange({
+        ...value,
+        [field]: fieldValue,
+      });
+    },
+    [value, onChange]
+  );
 
   return (
     <div className={`space-y-4 ${className}`}>

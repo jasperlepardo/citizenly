@@ -1,7 +1,7 @@
 // Atomic Design System - Component Exports
 // Following Brad Frost's Atomic Design methodology
 
-// Design Tokens - Foundation of the design system  
+// Design Tokens - Foundation of the design system
 export * from '../design-system/tokens';
 
 // Atoms - Basic UI building blocks

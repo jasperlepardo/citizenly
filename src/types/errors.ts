@@ -1,10 +1,10 @@
 /**
  * Error Types - Application Error Handling Framework
- * 
+ *
  * @fileoverview Comprehensive error handling TypeScript interfaces for the Citizenly RBI system.
  * Provides structured error types, severity levels, and error boundary patterns for robust
  * application error management and user experience.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
@@ -123,7 +123,7 @@ export interface NetworkError extends AppError {
   statusText?: string;
   url?: string;
   method?: string;
-  response?: { data?: unknown; headers?: Record<string, string>; };
+  response?: { data?: unknown; headers?: Record<string, string> };
 }
 
 /**
@@ -149,7 +149,7 @@ export enum ErrorCode {
   SERVER_ERROR = 'SERVER_ERROR',
   BAD_REQUEST = 'BAD_REQUEST',
   NOT_FOUND = 'NOT_FOUND',
-  RATE_LIMITED = 'RATE_LIMITED', 
+  RATE_LIMITED = 'RATE_LIMITED',
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
 
   // Form errors

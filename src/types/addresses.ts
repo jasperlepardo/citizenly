@@ -1,50 +1,50 @@
 /**
  * Address Types - Database-Aligned Geographic Interface Collection
- * 
+ *
  * @fileoverview Comprehensive address-related TypeScript interfaces that provide
  * 100% compliant integration with PSGC (Philippine Standard Geographic Code) database
  * schema and geographic hierarchy management for the Citizenly RBI system.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * Database Tables Covered:
  * - psgc_regions (Philippine regions - 17 regions)
- * - psgc_provinces (Provincial subdivisions - 81 provinces)  
+ * - psgc_provinces (Provincial subdivisions - 81 provinces)
  * - psgc_cities_municipalities (Cities and municipalities - 1,634 total)
  * - psgc_barangays (Barangay subdivisions - 42,046 total)
  * - geo_streets (Street-level addressing - variable count)
  * - geo_subdivisions (Sub-barangay areas - variable count)
- * 
+ *
  * Key Features:
  * - 100% PSGC database schema compliance
  * - Philippine geographic hierarchy support (Region > Province > City > Barangay)
- * - Address validation and standardization interfaces  
+ * - Address validation and standardization interfaces
  * - Form input and display formatting utilities
  * - Search and lookup optimization types
  * - Independent city support (HUCs - Highly Urbanized Cities)
- * 
+ *
  * @example Basic Address Information
  * ```typescript
  * import { AddressInfo, AddressHierarchy } from '@/types/addresses';
  * import { PSGCBarangay } from '@/types/database';
- * 
+ *
  * const addressInfo: AddressInfo = {
  *   barangay_name: 'Poblacion',
  *   barangay_code: '1234567890',
- *   city_municipality_name: 'Makati City', 
+ *   city_municipality_name: 'Makati City',
  *   city_municipality_code: '1374000000',
  *   region_name: 'National Capital Region',
  *   region_code: '13',
  *   full_address: 'Poblacion, Makati City, NCR'
  * };
  * ```
- * 
+ *
  * @example Address Search with Hierarchy
  * ```typescript
  * import { AddressSearchParams, AddressSearchResult } from '@/types/addresses';
- * 
+ *
  * const searchParams: AddressSearchParams = {
  *   query: 'Makati',
  *   region_code: '13',
@@ -52,11 +52,11 @@
  *   limit: 10
  * };
  * ```
- * 
+ *
  * @example Form Address Input
  * ```typescript
  * import { AddressFormData, AddressSelectionState } from '@/types/addresses';
- * 
+ *
  * const formData: AddressFormData = {
  *   house_number: '123',
  *   street_name: 'Ayala Avenue',
@@ -76,7 +76,7 @@
  * Standard address information interface
  * @description Comprehensive address data structure for resident and household records.
  * Consolidates AddressInfo variations from multiple files into a canonical format.
- * 
+ *
  * @example Makati City Address
  * ```typescript
  * const address: AddressInfo = {
@@ -92,16 +92,16 @@
  *   zip_code: '1200'
  * };
  * ```
- * 
+ *
  * @example Independent City (No Province)
  * ```typescript
  * const independentCity: AddressInfo = {
  *   barangay_name: 'Ermita',
- *   barangay_code: '1375600001', 
+ *   barangay_code: '1375600001',
  *   city_municipality_name: 'Manila City',
  *   city_municipality_code: '1375600000',
  *   // province_name: undefined (independent city)
- *   // province_code: undefined (independent city) 
+ *   // province_code: undefined (independent city)
  *   region_name: 'National Capital Region',
  *   region_code: '13',
  *   full_address: 'Ermita, Manila City, NCR',
@@ -126,7 +126,7 @@ export interface AddressInfo {
  * Address hierarchy for display purposes
  * @description Structured hierarchical representation of Philippine geographic divisions.
  * Shows the nested relationship of address components for UI rendering and navigation.
- * 
+ *
  * @example NCR Address Hierarchy
  * ```typescript
  * const hierarchy: AddressHierarchy = {
@@ -150,7 +150,7 @@ export interface AddressInfo {
  *   }
  * };
  * ```
- * 
+ *
  * @example Independent City (No Province)
  * ```typescript
  * const independentHierarchy: AddressHierarchy = {
@@ -386,7 +386,7 @@ export interface AddressValidationError {
  */
 import type {
   PSGCRegion,
-  PSGCProvince, 
+  PSGCProvince,
   PSGCCityMunicipality,
   PSGCBarangay,
   AddressHierarchyQueryResult,
@@ -416,7 +416,7 @@ export interface BarangayWithJoins extends PSGCBarangay {
   // Additional computed fields for search results
   full_hierarchy?: string; // "Region > Province > City > Barangay"
   match_score?: number; // Search relevance score (0-1)
-  
+
   // Geographic context (use flat structure instead of deep nesting)
   region_code?: string;
   region_name?: string;

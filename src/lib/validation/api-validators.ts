@@ -12,26 +12,35 @@ export const paginationSchema = z.object({
 });
 
 export const psgcCodeSchema = z.object({
-  code: z.string().min(2).max(12).regex(/^\d+$/, 'PSGC code must contain only digits')
+  code: z
+    .string()
+    .min(2)
+    .max(12)
+    .regex(/^\d+$/, 'PSGC code must contain only digits')
     .refine(code => [2, 4, 6, 9, 10, 12].includes(code.length), {
       message: 'PSGC code must be 2, 4, 6, 9, 10, or 12 digits long',
     }),
 });
 
-export const searchQuerySchema = z.object({
-  q: z.string().min(1).max(100).optional(),
-  query: z.string().min(1).max(100).optional(),
-  search: z.string().min(1).max(100).optional(),
-}).refine(data => data.q || data.query || data.search, {
-  message: 'At least one search parameter is required',
-});
+export const searchQuerySchema = z
+  .object({
+    q: z.string().min(1).max(100).optional(),
+    query: z.string().min(1).max(100).optional(),
+    search: z.string().min(1).max(100).optional(),
+  })
+  .refine(data => data.q || data.query || data.search, {
+    message: 'At least one search parameter is required',
+  });
 
 export const subdivisionIdSchema = z.object({
-  subdivision_id: z.string().optional().transform(val => {
-    if (!val) return undefined;
-    const num = Number(val);
-    return Number.isNaN(num) ? undefined : num;
-  }),
+  subdivision_id: z
+    .string()
+    .optional()
+    .transform(val => {
+      if (!val) return undefined;
+      const num = Number(val);
+      return Number.isNaN(num) ? undefined : num;
+    }),
 });
 
 // Validation helper functions
@@ -51,7 +60,7 @@ export function validatePsgcCode(searchParams: URLSearchParams) {
 export function validateSearchQuery(searchParams: URLSearchParams) {
   return searchQuerySchema.safeParse({
     q: searchParams.get('q'),
-    query: searchParams.get('query'), 
+    query: searchParams.get('query'),
     search: searchParams.get('search'),
   });
 }
@@ -70,11 +79,17 @@ export const bulkOperationSchema = z.object({
 });
 
 export const regionCodeSchema = z.object({
-  region: z.string().regex(/^\d{2}$/, 'Region code must be 2 digits').optional(),
+  region: z
+    .string()
+    .regex(/^\d{2}$/, 'Region code must be 2 digits')
+    .optional(),
 });
 
 export const cityCodeSchema = z.object({
-  city: z.string().regex(/^\d{6}$/, 'City code must be 6 digits').optional(),
+  city: z
+    .string()
+    .regex(/^\d{6}$/, 'City code must be 6 digits')
+    .optional(),
 });
 
 export const barangayCodeSchema = z.object({
@@ -85,12 +100,15 @@ export const barangayCodeSchema = z.object({
 export function createValidationErrorResponse(errors: z.ZodIssue[]) {
   return {
     error: 'Validation failed',
-    validationErrors: errors.reduce((acc, issue) => {
-      const path = issue.path.join('.');
-      if (!acc[path]) acc[path] = [];
-      acc[path].push(issue.message);
-      return acc;
-    }, {} as Record<string, string[]>),
+    validationErrors: errors.reduce(
+      (acc, issue) => {
+        const path = issue.path.join('.');
+        if (!acc[path]) acc[path] = [];
+        acc[path].push(issue.message);
+        return acc;
+      },
+      {} as Record<string, string[]>
+    ),
   };
 }
 

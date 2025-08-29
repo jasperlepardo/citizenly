@@ -286,9 +286,7 @@ export type MaybePromise<T> = T | Promise<T>;
 /**
  * Promise result type
  */
-export type PromiseResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: Error };
+export type PromiseResult<T> = { success: true; data: T } | { success: false; error: Error };
 
 // =============================================================================
 // GENERIC UTILITY FUNCTIONS TYPES
@@ -391,7 +389,7 @@ export interface UtilityValidationState {
  * Sanitization types for input processing
  * Consolidates from src/utils/input-sanitizer.ts
  */
-export type SanitizationType = 
+export type SanitizationType =
   | 'text'
   | 'name'
   | 'email'

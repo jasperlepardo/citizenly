@@ -17,9 +17,9 @@ export const securityHeaders = {
 // Rate limiting configuration by endpoint type
 export const rateLimits = {
   search: { requests: 100, window: 60 }, // 100 requests per minute
-  create: { requests: 10, window: 60 },  // 10 creates per minute
-  update: { requests: 20, window: 60 },  // 20 updates per minute
-  delete: { requests: 5, window: 60 },   // 5 deletes per minute
+  create: { requests: 10, window: 60 }, // 10 creates per minute
+  update: { requests: 20, window: 60 }, // 20 updates per minute
+  delete: { requests: 5, window: 60 }, // 5 deletes per minute
 } as const;
 
 /**
@@ -37,31 +37,34 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
  */
 export function validateEnvironmentSecurity(): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
-  
+
   // Check for production-specific security requirements
   if (process.env.NODE_ENV === 'production') {
-    if (!process.env.SUPABASE_WEBHOOK_SECRET || process.env.SUPABASE_WEBHOOK_SECRET === 'dev-webhook-secret') {
+    if (
+      !process.env.SUPABASE_WEBHOOK_SECRET ||
+      process.env.SUPABASE_WEBHOOK_SECRET === 'dev-webhook-secret'
+    ) {
       errors.push('Production webhook secret not configured');
     }
-    
+
     if (!process.env.CSRF_SECRET || process.env.CSRF_SECRET.length < 32) {
       errors.push('CSRF secret not properly configured');
     }
   }
-  
+
   // Check for required environment variables
   const required = [
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY',
     'SUPABASE_SERVICE_ROLE_KEY',
   ];
-  
+
   required.forEach(key => {
     if (!process.env[key]) {
       errors.push(`Missing required environment variable: ${key}`);
     }
   });
-  
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -77,7 +80,7 @@ export function sanitizeError(error: unknown): string {
     if (process.env.NODE_ENV === 'development') {
       return error.message;
     }
-    
+
     // Map known errors to safe messages
     const safeErrors = {
       'duplicate key value': 'Resource already exists',
@@ -85,16 +88,16 @@ export function sanitizeError(error: unknown): string {
       'not null violation': 'Required field missing',
       'invalid input syntax': 'Invalid data format',
     };
-    
+
     for (const [pattern, safeMessage] of Object.entries(safeErrors)) {
       if (error.message.toLowerCase().includes(pattern)) {
         return safeMessage;
       }
     }
-    
+
     return 'An error occurred';
   }
-  
+
   return 'Unknown error';
 }
 
@@ -113,7 +116,7 @@ export function createSecureErrorResponse(
     },
     { status }
   );
-  
+
   return addSecurityHeaders(response);
 }
 
@@ -127,6 +130,6 @@ export function validateOrigin(request: NextRequest): boolean {
     'http://localhost:3000',
     'http://127.0.0.1:3000',
   ].filter(Boolean);
-  
+
   return !origin || allowedOrigins.includes(origin);
 }

@@ -353,7 +353,10 @@ export function createAdminSupabaseClient() {
 /**
  * Apply geographic filtering based on user's access level
  */
-export function applyGeographicFilter<T>(query: T & { eq: (column: string, value: string) => T }, user: NonNullable<AuthResult['user']>): T {
+export function applyGeographicFilter<T>(
+  query: T & { eq: (column: string, value: string) => T },
+  user: NonNullable<AuthResult['user']>
+): T {
   const accessLevel = getAccessLevel(user.role);
 
   switch (accessLevel) {

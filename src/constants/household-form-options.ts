@@ -1,24 +1,24 @@
 /**
  * Household Form Options - Static Option Arrays
- * 
+ *
  * @fileoverview Static option arrays for household form dropdowns and selections.
  * All options are synchronized with database enum values in database/schema.sql
  * to ensure data integrity and consistency across the application.
- * 
+ *
  * @version 3.0.0
  * @since 2025-01-01
  * @author Citizenly Development Team
- * 
+ *
  * Database Enums Covered:
  * - HouseholdTypeEnum (7 values)
- * - TenureStatusEnum (6 values) 
+ * - TenureStatusEnum (6 values)
  * - HouseholdUnitEnum (9 values)
  * - IncomeClassEnum (8 values based on PSO standards)
- * 
+ *
  * @example Usage in Forms
  * ```typescript
  * import { HOUSEHOLD_TYPE_OPTIONS } from '@/constants/household-form-options';
- * 
+ *
  * <Select options={HOUSEHOLD_TYPE_OPTIONS} />
  * ```
  */
@@ -49,7 +49,7 @@ export const HOUSEHOLD_TYPE_OPTIONS: OptionType[] = [
 ];
 
 /**
- * Tenure status classification options  
+ * Tenure status classification options
  * @description Housing tenure security classifications
  * @see database/schema.sql - tenure_status_enum
  */
@@ -65,7 +65,7 @@ export const TENURE_STATUS_OPTIONS: OptionType[] = [
 /**
  * Household unit type options
  * @description Physical housing structure classifications
- * @see database/schema.sql - household_unit_enum  
+ * @see database/schema.sql - household_unit_enum
  */
 export const HOUSEHOLD_UNIT_OPTIONS: OptionType[] = [
   { value: 'single_house', label: 'Single House' },

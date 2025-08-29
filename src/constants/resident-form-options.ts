@@ -1,16 +1,16 @@
 /**
  * Resident Form Options Constants
- * 
+ *
  * @fileoverview Static option arrays for resident form dropdowns and selections.
  * All options are synchronized with database enum values to ensure data integrity.
- * 
+ *
  * @version 1.0.0
  * @since 2025-01-01
- * 
+ *
  * @example
  * ```typescript
  * import { SEX_OPTIONS, CIVIL_STATUS_OPTIONS } from '@/constants/resident-form-options';
- * 
+ *
  * // Use in form components
  * <Select options={SEX_OPTIONS} />
  * <Select options={CIVIL_STATUS_OPTIONS} />

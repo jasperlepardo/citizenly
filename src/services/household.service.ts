@@ -17,7 +17,7 @@ import type {
   UserAddressDetailed as UserAddress,
   CreateHouseholdRequest,
   CreateHouseholdResponse,
-  HouseholdValidationResult
+  HouseholdValidationResult,
 } from '@/types/services';
 import type { ValidationError } from '@/types/validation';
 
@@ -27,7 +27,7 @@ export type {
   UserAddress,
   CreateHouseholdRequest,
   CreateHouseholdResponse,
-  HouseholdValidationResult
+  HouseholdValidationResult,
 };
 
 /**

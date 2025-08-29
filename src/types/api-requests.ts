@@ -49,14 +49,16 @@ export interface LogEntry {
   level: 'debug' | 'info' | 'warn' | 'error' | string;
   message: string;
   timestamp: string;
-  context?: {
-    component?: string;
-    action?: string;
-    data?: Record<string, unknown>;
-    error?: Error;
-    userId?: string;
-    sessionId?: string;
-  } | string;
+  context?:
+    | {
+        component?: string;
+        action?: string;
+        data?: Record<string, unknown>;
+        error?: Error;
+        userId?: string;
+        sessionId?: string;
+      }
+    | string;
   userId?: string;
   requestId?: string;
   sessionId?: string;
