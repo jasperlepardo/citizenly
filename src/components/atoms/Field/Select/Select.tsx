@@ -8,8 +8,9 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-import { Input } from '../Input';
 import { createDropdownKeyHandler } from '@/lib/keyboardUtils';
+
+import { Input } from '../Input';
 
 import { Option } from './Option';
 

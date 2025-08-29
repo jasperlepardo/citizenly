@@ -4,9 +4,10 @@
  * Consolidates lib/utilities/address-lookup.ts functionality
  */
 
-import { createLogger } from '../lib/config/environment';
 import { supabase } from '@/lib/data/supabase';
 import type { AddressLabels, HouseholdTypeLabels, CompleteAddress } from '@/types/addresses';
+
+import { createLogger } from '../lib/config/environment';
 
 import { cacheService, CacheKeys, CacheTags } from './cacheService';
 

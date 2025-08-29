@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+
 import type { AddressHierarchyInfo } from '@/types/addresses';
 
 interface HouseholdLocationInfoProps {

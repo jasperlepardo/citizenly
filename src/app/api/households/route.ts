@@ -7,6 +7,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib';
+import { RequestContext, Role } from '@/lib/api/types';
 import { auditDataOperation } from '@/lib/authentication/auditUtils';
 import {
   createPaginatedResponse,
@@ -17,7 +18,6 @@ import {
   withNextRequestErrorHandling,
   withSecurityHeaders,
 } from '@/lib/authentication/responseUtils';
-import { RequestContext, Role } from '@/lib/api/types';
 import { createHouseholdSchema } from '@/lib/authentication/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import type { AuthenticatedUser } from '@/types/auth';

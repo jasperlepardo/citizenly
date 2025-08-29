@@ -7,8 +7,8 @@
 
 import React from 'react';
 
-import { logError, getErrorMessage } from '@/utils/errorUtils';
 import { createWrappedComponent } from '@/lib/hocUtils';
+import { logError, getErrorMessage } from '@/utils/errorUtils';
 
 import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from './error-types';
 

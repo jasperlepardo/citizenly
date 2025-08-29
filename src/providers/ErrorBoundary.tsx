@@ -2,8 +2,8 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import { logError } from '@/lib/logging';
 import { createWrappedComponent } from '@/lib/hocUtils';
+import { logError } from '@/lib/logging';
 
 interface Props {
   children: ReactNode;
