@@ -1,7 +1,7 @@
 // Re-export consolidated form types for backward compatibility
 export type {
   FormMode,
-  ExtendedHouseholdFormData,
+  HouseholdFormData,
   HouseholdDetailsData,
   FormSectionPropsGeneric as FormSectionProps,
   FieldConfig,
