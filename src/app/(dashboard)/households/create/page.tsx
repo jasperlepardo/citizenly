@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useMemo } from 'react';
 
-import { NewHouseholdForm } from '@/components';
+import { HouseholdForm } from '@/components';
 
 export const dynamic = 'force-dynamic';
 
@@ -106,7 +106,7 @@ export default function CreateHouseholdPage() {
       </div>
 
       {/* Household Form */}
-      <NewHouseholdForm initialData={initialData} />
+      <HouseholdForm initialData={initialData} />
     </div>
   );
 }

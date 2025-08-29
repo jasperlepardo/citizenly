@@ -3,27 +3,11 @@
  * Consolidated geographic data utilities aligned with database schema
  */
 
-export interface AddressLabels {
-  regionLabel?: string;
-  provinceLabel?: string;
-  cityLabel?: string;
-  barangayLabel?: string;
-  streetLabel?: string;
-  subdivisionLabel?: string;
-}
+import type { CompleteAddress } from '@/types/addresses';
 
-export interface CompleteAddress {
-  region_code: string | null;
-  region_name: string;
-  province_code: string | null;
-  province_name: string | null;
-  city_municipality_code: string | null;
-  city_municipality_name: string;
-  city_municipality_type: string;
-  barangay_code: string;
-  barangay_name: string;
-  full_address: string;
-}
+// CompleteAddress interface moved to @/types/addresses - removed duplicate
+// AddressComponent was identical to CompleteAddress - using CompleteAddress type alias
+export type AddressComponent = CompleteAddress;
 
 /**
  * Format complete address from components

@@ -4,25 +4,16 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-
-interface PerformanceMetrics {
-  path: string;
-  method: string;
-  duration: number;
-  timestamp: number;
-  statusCode: number;
-  userAgent?: string;
-  ip?: string;
-}
+import type { RequestPerformanceMetrics } from '@/types/performance';
 
 // In-memory performance store (use proper metrics service in production)
-const performanceStore: PerformanceMetrics[] = [];
+const performanceStore: RequestPerformanceMetrics[] = [];
 const MAX_STORED_METRICS = 1000;
 
 /**
  * Record performance metrics
  */
-function recordMetrics(metrics: PerformanceMetrics): void {
+function recordMetrics(metrics: RequestPerformanceMetrics): void {
   performanceStore.push(metrics);
 
   // Keep only recent metrics
@@ -48,7 +39,7 @@ export function getPerformanceStats(): {
   totalRequests: number;
   averageResponseTime: number;
   slowRequests: number;
-  recentMetrics: PerformanceMetrics[];
+  recentMetrics: RequestPerformanceMetrics[];
 } {
   const now = Date.now();
   const recentMetrics = performanceStore.filter(m => now - m.timestamp < 60 * 60 * 1000); // Last hour
@@ -112,7 +103,7 @@ export function withPerformanceMonitoring(
     const duration = Date.now() - startTime;
 
     // Record metrics
-    const metrics: PerformanceMetrics = {
+    const metrics: RequestPerformanceMetrics = {
       path,
       method: request.method,
       duration,

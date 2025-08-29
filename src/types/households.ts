@@ -85,30 +85,28 @@ import { ReactNode } from 'react';
 // HOUSEHOLD ENUM TYPES (Re-exported from database.ts)
 // =============================================================================
 
-// Re-export enums from database.ts for backwards compatibility
-export type {
-  HouseholdTypeEnum,
-  TenureStatusEnum,
-  HouseholdUnitEnum,
-  FamilyPositionEnum,
-  IncomeClassEnum,
-} from './database';
-
-// Import enums for internal usage
+// Import enums and types from database.ts
 import type {
   HouseholdTypeEnum,
   TenureStatusEnum,
   HouseholdUnitEnum,
   FamilyPositionEnum,
   IncomeClassEnum,
+  HouseholdRecord as DatabaseHouseholdRecord,
 } from './database';
+
+// Re-export enums for backwards compatibility
+export type {
+  HouseholdTypeEnum,
+  TenureStatusEnum,
+  HouseholdUnitEnum,
+  FamilyPositionEnum,
+  IncomeClassEnum,
+};
 
 // =============================================================================
 // CORE HOUSEHOLD INTERFACES
 // =============================================================================
-
-// Import the canonical database record type
-import type { HouseholdRecord as DatabaseHouseholdRecord } from './database';
 
 /**
  * Canonical household record interface - re-exported from database.ts
@@ -206,9 +204,31 @@ export interface HouseholdWithMembersResult {
 // =============================================================================
 
 /**
- * Household form data interface - re-export from forms.ts for backward compatibility
+ * Household member with resident details interface
+ * Used in components that display household member information
  */
-export type { HouseholdFormData } from '@/types/forms';
+export interface HouseholdMemberWithResident {
+  id: string;
+  first_name: string;
+  middle_name?: string;
+  last_name: string;
+  extension_name?: string;
+  birthdate: string;
+  sex: 'male' | 'female';
+  civil_status?: string;
+  relationship_to_head?: string;
+  mobile_number?: string;
+  email?: string;
+  education_attainment?: string;
+  employment_status?: string;
+  occupation_title?: string;
+  is_head?: boolean;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  household_code?: string;
+  barangay_code?: string;
+}
 
 /**
  * Household option for select components

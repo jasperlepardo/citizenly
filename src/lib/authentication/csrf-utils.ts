@@ -1,4 +1,5 @@
 import { randomBytes, createHash, timingSafeEqual } from 'crypto';
+import type { CSRFToken } from '@/types/auth';
 
 /**
  * CSRF Protection Implementation
@@ -26,12 +27,6 @@ const TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 // Helper function to convert base64 to URL-safe base64
 function toBase64Url(str: string): string {
   return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-}
-
-export interface CSRFToken {
-  token: string;
-  timestamp: number;
-  signature: string;
 }
 
 /**

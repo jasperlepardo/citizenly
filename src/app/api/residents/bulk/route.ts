@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import { UserProfile } from '@/types/api';
+import type { AuthUserProfile } from '@/types/auth';
 
 // Bulk operations validation schema
 const bulkOperationSchema = z.object({
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {

@@ -1,52 +1,18 @@
 /**
  * Authentication Service
  * Consolidated authentication functionality following coding standards
+ * Schema-aligned with database/schema.sql
  */
 
 import type { User, Session, AuthError } from '@supabase/supabase-js';
 
 import { createLogger } from '../lib/config/environment';
 import { supabase } from '../lib/supabase';
+import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/auth';
 
 const logger = createLogger('AuthService');
 
-// User role types
-export type UserRole =
-  | 'super_admin'
-  | 'region_admin'
-  | 'province_admin'
-  | 'city_admin'
-  | 'barangay_admin'
-  | 'barangay_user'
-  | 'read_only';
-
-// User profile interface
-export interface UserProfile {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  mobile_number?: string;
-  role_name: UserRole;
-  barangay_code?: string;
-  city_municipality_code?: string;
-  province_code?: string;
-  region_code?: string;
-  is_active: boolean;
-  email_verified: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-// Registration data interface
-export interface RegistrationData {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  mobile_number?: string;
-  barangay_code: string;
-}
+// Use SignupRequest directly from centralized types
 
 /**
  * Authentication Service Class
@@ -56,7 +22,7 @@ export class AuthService {
   /**
    * Register a new user with profile creation
    */
-  async registerUser(data: RegistrationData) {
+  async registerUser(data: SignupRequest) {
     try {
       logger.debug('Starting user registration for:', data.email);
 
@@ -68,7 +34,7 @@ export class AuthService {
           data: {
             first_name: data.first_name,
             last_name: data.last_name,
-            mobile_number: data.mobile_number,
+            phone: data.phone,
             barangay_code: data.barangay_code,
           },
         },
@@ -145,7 +111,7 @@ export class AuthService {
   /**
    * Get current user profile
    */
-  async getUserProfile(userId?: string): Promise<UserProfile | null> {
+  async getUserProfile(userId?: string): Promise<AuthUserProfile | null> {
     try {
       const id = userId || (await supabase.auth.getUser()).data.user?.id;
       if (!id) return null;
@@ -173,7 +139,7 @@ export class AuthService {
   /**
    * Update user profile
    */
-  async updateUserProfile(updates: Partial<UserProfile>) {
+  async updateUserProfile(updates: Partial<AuthUserProfile>) {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Not authenticated');
@@ -182,7 +148,7 @@ export class AuthService {
       const allowedUpdates = {
         first_name: updates.first_name,
         last_name: updates.last_name,
-        mobile_number: updates.mobile_number,
+        phone: updates.phone,
         updated_at: new Date().toISOString(),
       };
 
@@ -206,31 +172,31 @@ export class AuthService {
   /**
    * Check if user has specific role
    */
-  hasRole(profile: UserProfile | null, role: UserRole): boolean {
-    return profile?.role_name === role && profile.is_active;
+  hasRole(profile: AuthUserProfile | null, role: UserRole): boolean {
+    return profile?.role?.name === role && (profile?.is_active ?? false);
   }
 
   /**
    * Check if user has admin privileges
    */
-  isAdmin(profile: UserProfile | null): boolean {
-    if (!profile?.is_active) return false;
+  isAdmin(profile: AuthUserProfile | null): boolean {
+    if (!profile || !(profile.is_active ?? false)) return false;
     return [
       'super_admin',
       'region_admin',
       'province_admin',
       'city_admin',
       'barangay_admin',
-    ].includes(profile.role_name);
+    ].includes(profile.role?.name || '');
   }
 
   /**
    * Check if user can access specific barangay
    */
-  canAccessBarangay(profile: UserProfile | null, barangayCode: string): boolean {
-    if (!profile?.is_active) return false;
+  canAccessBarangay(profile: AuthUserProfile | null, barangayCode: string): boolean {
+    if (!profile || !(profile.is_active ?? false)) return false;
 
-    switch (profile.role_name) {
+    switch (profile.role?.name) {
       case 'super_admin':
         return true;
       case 'barangay_admin':

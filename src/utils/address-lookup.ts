@@ -1,21 +1,5 @@
 import { supabase } from '@/lib';
-
-export interface AddressLabels {
-  regionLabel?: string;
-  provinceLabel?: string;
-  cityLabel?: string;
-  barangayLabel?: string;
-  streetLabel?: string;
-  subdivisionLabel?: string;
-}
-
-export interface HouseholdTypeLabels {
-  householdTypeLabel?: string;
-  tenureStatusLabel?: string;
-  householdUnitLabel?: string;
-  householdHeadPositionLabel?: string;
-  householdHeadLabel?: string;
-}
+import type { AddressLabels, HouseholdTypeLabels } from '@/types/addresses';
 
 /**
  * Lookup address labels from their codes/IDs

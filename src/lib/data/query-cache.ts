@@ -3,6 +3,7 @@
  *
  * @description In-memory caching for frequently accessed database queries to improve performance.
  * Reduces database load and improves response times for common operations.
+ * Schema-aligned with consolidated cache types.
  *
  * @features:
  * - TTL-based cache expiration
@@ -12,25 +13,12 @@
  */
 
 import { logger } from '@/lib';
-
-interface CacheEntry<T = unknown> {
-  data: T;
-  timestamp: number;
-  ttl: number;
-  tags: string[];
-  key: string;
-}
-
-interface CacheStats {
-  hits: number;
-  misses: number;
-  size: number;
-  memoryUsage: number;
-}
+import type { CacheEntry, CacheStats, CacheKeyPatterns, CacheTags } from '@/types/cache';
+import { createInitialCacheStats } from '@/types/cache';
 
 class QueryCache {
   private cache = new Map<string, CacheEntry>();
-  private stats: CacheStats = { hits: 0, misses: 0, size: 0, memoryUsage: 0 };
+  private stats: CacheStats = createInitialCacheStats();
   private maxSize: number = 1000; // Maximum number of entries
   private defaultTTL: number = 5 * 60 * 1000; // 5 minutes
 
@@ -67,11 +55,11 @@ class QueryCache {
     }
 
     const entry: CacheEntry<T> = {
+      key,
       data,
       timestamp: Date.now(),
       ttl: options.ttl || this.defaultTTL,
       tags: options.tags || [],
-      key,
     };
 
     this.cache.set(key, entry);
@@ -227,35 +215,8 @@ export function cached<TArgs extends readonly unknown[], TResult>(
   };
 }
 
-/**
- * Common cache key generators
- */
-export const CacheKeys = {
-  regions: () => 'regions:all',
-  provinces: (regionCode?: string) => `provinces:${regionCode || 'all'}`,
-  cities: (provinceCode?: string) => `cities:${provinceCode || 'all'}`,
-  barangays: (cityCode?: string) => `barangays:${cityCode || 'all'}`,
-  resident: (id: string) => `resident:${id}`,
-  residents: (filters: Record<string, string | number | boolean>) =>
-    `residents:${JSON.stringify(filters)}`,
-  household: (id: string) => `household:${id}`,
-  households: (filters: Record<string, string | number | boolean>) =>
-    `households:${JSON.stringify(filters)}`,
-  dashboardStats: (barangayCode: string) => `dashboard:stats:${barangayCode}`,
-  userProfile: (userId: string) => `user:profile:${userId}`,
-};
-
-/**
- * Common cache tags for invalidation
- */
-export const CacheTags = {
-  RESIDENTS: 'residents',
-  HOUSEHOLDS: 'households',
-  ADDRESSES: 'addresses',
-  USERS: 'users',
-  DASHBOARD: 'dashboard',
-  PROFILE: 'profile',
-};
+// Export consolidated cache keys and tags from centralized types
+export { CacheKeyPatterns as CacheKeys, CacheTags } from '@/types/cache';
 
 /**
  * Cache warming utilities
@@ -280,10 +241,9 @@ export const CacheWarming = {
   /**
    * Warm up user-specific cache
    */
-  async warmUserCache(userId: string, barangayCode?: string) {
+  async warmUserCache(_userId: string, barangayCode?: string) {
     if (barangayCode) {
       // Pre-cache dashboard stats
-      const statsKey = CacheKeys.dashboardStats(barangayCode);
       // Implementation would fetch and cache dashboard stats
     }
   },

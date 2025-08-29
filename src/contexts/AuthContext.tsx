@@ -4,49 +4,7 @@ import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 import { supabase } from '@/lib';
-import type { AuthRole } from '@/types/auth';
-
-// User profile types - EXACTLY matching auth_user_profiles table (23 fields)
-export interface UserProfile {
-  // Core identification fields
-  id: string;
-  first_name: string;
-  middle_name?: string | null;
-  last_name: string;
-  email: string;
-  phone?: string | null;
-
-  // Role and access control
-  role_id: string;
-
-  // Geographic assignment
-  barangay_code?: string | null;
-  city_municipality_code?: string | null;
-  province_code?: string | null;
-  region_code?: string | null;
-
-  // Status and activity
-  is_active: boolean;
-  last_login?: string | null;
-
-  // Email verification
-  email_verified: boolean;
-  email_verified_at?: string | null;
-
-  // Welcome email tracking
-  welcome_email_sent: boolean;
-  welcome_email_sent_at?: string | null;
-
-  // Onboarding tracking
-  onboarding_completed: boolean;
-  onboarding_completed_at?: string | null;
-
-  // Audit fields
-  created_by?: string | null;
-  updated_by?: string | null;
-  created_at: string;
-  updated_at: string;
-}
+import type { AuthRole, AuthUserProfile } from '@/types/auth';
 
 // Use consolidated AuthRole type with permissions extension
 export interface Role extends Pick<AuthRole, 'id' | 'name'> {
@@ -59,7 +17,7 @@ interface AuthContextType {
   // Authentication state
   session: Session | null;
   user: User | null;
-  userProfile: UserProfile | null;
+  userProfile: AuthUserProfile | null;
   role: Role | null;
 
   // Loading states
@@ -89,12 +47,12 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
   const [loading, setLoading] = useState(true);
 
   // Profile state
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<AuthUserProfile | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileCache, setProfileCache] = useState<
-    Map<string, { profile: UserProfile; role: Role; timestamp: number }>
+    Map<string, { profile: AuthUserProfile; role: Role; timestamp: number }>
   >(new Map());
   const [lastProfileLoad, setLastProfileLoad] = useState<number>(0);
 
@@ -210,7 +168,7 @@ export function AuthProvider({ children }: { readonly children: React.ReactNode 
           console.log('Profile role_id:', profileData?.role_id);
 
           // Map the database fields to our interface, using defaults for missing fields
-          const profile: UserProfile = {
+          const profile: AuthUserProfile = {
             id: profileData.id || userId,
             email: profileData.email || '',
             first_name: profileData.first_name || '',

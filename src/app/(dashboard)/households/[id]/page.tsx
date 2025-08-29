@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import HouseholdForm, {
   HouseholdFormData,
   HouseholdFormMode,
-} from '@/components/templates/Form/Household/NewHouseholdForm';
+} from '@/components/templates/Form/Household/HouseholdForm';
 import { useAuth } from '@/contexts';
 import { supabase, logger, logError } from '@/lib';
 import {
@@ -15,39 +15,15 @@ import {
   lookupHouseholdTypeLabels,
   lookupHouseholdHeadLabel,
 } from '@/utils/address-lookup';
-
-interface Household {
-  id: string;
-  code: string;
-  name?: string;
-  house_number?: string;
-  barangay_code: string;
-  created_at: string;
-  household_head_id?: string;
-  street_id?: string;
-  subdivision_id?: string;
-}
-
-interface HouseholdMember {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-  civil_status: string;
-  relationship_to_head?: string;
-  mobile_number: string;
-  email?: string;
-}
+import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
 
 function HouseholdDetailContent() {
   const { user, loading: authLoading } = useAuth();
   const params = useParams();
   const router = useRouter();
   const householdCode = params.id as string;
-  const [household, setHousehold] = useState<Household | null>(null);
-  const [members, setMembers] = useState<HouseholdMember[]>([]);
+  const [household, setHousehold] = useState<HouseholdRecord | null>(null);
+  const [members, setMembers] = useState<HouseholdMemberWithResident[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<HouseholdFormMode>('view');
@@ -89,48 +65,33 @@ function HouseholdDetailContent() {
         // Setting household data from query result
         setHousehold(householdData);
 
-        // Transform household data to form data format
+        // Use household data directly as it already matches schema
         const formData: HouseholdFormData = {
-          houseNumber: householdData.house_number || '',
-          streetId: householdData.street_id || '',
-          subdivisionId: householdData.subdivision_id || '',
-          barangayCode: householdData.barangay_code || '',
-          cityMunicipalityCode: householdData.city_municipality_code || '',
-          provinceCode: householdData.province_code || '',
-          regionCode: householdData.region_code || '',
-          noOfFamilies: householdData.no_of_families || 1,
-          noOfHouseholdMembers: householdData.no_of_household_members || 0,
-          noOfMigrants: householdData.no_of_migrants || 0,
-          householdType: householdData.household_type || '',
-          tenureStatus: householdData.tenure_status || '',
-          tenureOthersSpecify: householdData.tenure_others_specify || '',
-          householdUnit: householdData.household_unit || '',
-          householdName: householdData.name || '',
-          monthlyIncome: householdData.monthly_income || 0,
-          householdHeadId: householdData.household_head_id || '',
-          householdHeadPosition: householdData.household_head_position || '',
-          code: householdData.code,
-          isActive: householdData.is_active,
+          ...householdData,
+          // Ensure form-specific fields have defaults
+          isEditing: false,
+          isDirty: false,
+          lastModified: new Date().toISOString(),
         };
         setHouseholdFormData(formData);
 
         // Lookup labels for display in view mode
         const [addressLookup, householdTypeLookup, householdHeadLookup] = await Promise.all([
           lookupAddressLabels({
-            regionCode: formData.regionCode,
-            provinceCode: formData.provinceCode,
-            cityMunicipalityCode: formData.cityMunicipalityCode,
-            barangayCode: formData.barangayCode,
-            streetId: formData.streetId,
-            subdivisionId: formData.subdivisionId,
+            regionCode: formData.region_code || undefined,
+            provinceCode: formData.province_code || undefined,
+            cityMunicipalityCode: formData.city_municipality_code || undefined,
+            barangayCode: formData.barangay_code || undefined,
+            streetId: formData.street_id || undefined,
+            subdivisionId: formData.subdivision_id || undefined,
           }),
           lookupHouseholdTypeLabels({
-            householdType: formData.householdType,
-            tenureStatus: formData.tenureStatus,
-            householdUnit: formData.householdUnit,
-            householdHeadPosition: formData.householdHeadPosition,
+            householdType: formData.household_type || undefined,
+            tenureStatus: formData.tenure_status || undefined,
+            householdUnit: formData.household_unit || undefined,
+            householdHeadPosition: formData.household_head_position || undefined,
           }),
-          lookupHouseholdHeadLabel(formData.householdHeadId),
+          lookupHouseholdHeadLabel(formData.household_head_id || undefined),
         ]);
 
         setAddressLabels(addressLookup as Record<string, unknown>);
@@ -166,8 +127,8 @@ function HouseholdDetailContent() {
   const handleFormSubmit = async (formData: HouseholdFormData) => {
     // The form handles the database operations
     // After successful save, reload the household data
-    if (household?.id) {
-      const updatedHousehold = { ...household, ...formData, id: household.id };
+    if (household?.code) {
+      const updatedHousehold = { ...household, ...formData };
       setHousehold(updatedHousehold);
       setHouseholdFormData(formData);
     }
@@ -297,7 +258,9 @@ function HouseholdDetailContent() {
                 </h1>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {members.length} member{members.length !== 1 ? 's' : ''} • Created{' '}
-                  {new Date(household.created_at).toLocaleDateString()}
+                  {household.created_at
+                    ? new Date(household.created_at).toLocaleDateString()
+                    : 'N/A'}
                 </p>
               </div>
             </div>
@@ -335,7 +298,7 @@ function HouseholdDetailContent() {
             <HouseholdForm
               mode={formMode}
               initialData={householdFormData}
-              householdId={household.id}
+              householdId={household.code}
               onSubmit={handleFormSubmit}
               onModeChange={handleModeChange}
               onCancel={() => router.push('/households')}
@@ -344,7 +307,7 @@ function HouseholdDetailContent() {
                 formMode === 'view'
                   ? {
                       addressLabels,
-                      householdTypeLabels,
+                      household_typeLabels: householdTypeLabels,
                       householdHeadLabel,
                     }
                   : undefined

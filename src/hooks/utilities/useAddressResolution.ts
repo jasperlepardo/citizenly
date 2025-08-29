@@ -11,33 +11,20 @@ import { useState, useCallback, useEffect } from 'react';
 
 import { useAuth } from '@/contexts';
 import { supabase, logger } from '@/lib';
-
-/**
- * Address hierarchy information for display purposes
- */
-export interface AddressDisplayInfo {
-  /** Region name */
-  region: string;
-  /** Province name */
-  province: string;
-  /** City/Municipality name with type */
-  cityMunicipality: string;
-  /** Barangay name */
-  barangay: string;
-}
+import type { AddressHierarchyInfo } from '@/types/addresses';
 
 /**
  * Return type for useAddressResolution hook
  */
 export interface UseAddressResolutionReturn {
   /** Resolved address information for display */
-  addressDisplayInfo: AddressDisplayInfo;
+  addressDisplayInfo: AddressHierarchyInfo;
   /** Whether address resolution is in progress */
   isLoading: boolean;
   /** Error message if resolution fails */
   error: string | null;
   /** Manually trigger address resolution */
-  loadAddressDisplayInfo: (barangayCode: string) => Promise<void>;
+  loadAddressHierarchyInfo: (barangayCode: string) => Promise<void>;
   /** Reset address display info */
   resetAddressInfo: () => void;
 }
@@ -45,7 +32,7 @@ export interface UseAddressResolutionReturn {
 /**
  * Default loading state
  */
-const LOADING_ADDRESS_INFO: AddressDisplayInfo = {
+const LOADING_ADDRESS_INFO: AddressHierarchyInfo = {
   region: 'Loading...',
   province: 'Loading...',
   cityMunicipality: 'Loading...',
@@ -55,7 +42,7 @@ const LOADING_ADDRESS_INFO: AddressDisplayInfo = {
 /**
  * Default error state
  */
-const ERROR_ADDRESS_INFO: AddressDisplayInfo = {
+const ERROR_ADDRESS_INFO: AddressHierarchyInfo = {
   region: 'Region information not available',
   province: 'Province information not available',
   cityMunicipality: 'City/Municipality information not available',
@@ -70,8 +57,8 @@ const ERROR_ADDRESS_INFO: AddressDisplayInfo = {
  */
 export function useAddressResolution(): UseAddressResolutionReturn {
   const { userProfile } = useAuth();
-  const [addressDisplayInfo, setAddressDisplayInfo] =
-    useState<AddressDisplayInfo>(LOADING_ADDRESS_INFO);
+  const [addressDisplayInfo, setAddressHierarchyInfo] =
+    useState<AddressHierarchyInfo>(LOADING_ADDRESS_INFO);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,7 +66,7 @@ export function useAddressResolution(): UseAddressResolutionReturn {
    * Resolves barangay information
    */
   const resolveBarangayInfo = useCallback(
-    async (barangayCode: string, addressInfo: AddressDisplayInfo) => {
+    async (barangayCode: string, addressInfo: AddressHierarchyInfo) => {
       const { data: barangayData, error: barangayError } = await supabase
         .from('psgc_barangays')
         .select('name, city_municipality_code')
@@ -104,31 +91,34 @@ export function useAddressResolution(): UseAddressResolutionReturn {
   /**
    * Resolves city/municipality information
    */
-  const resolveCityInfo = useCallback(async (cityCode: string, addressInfo: AddressDisplayInfo) => {
-    const { data: cityData, error: cityError } = await supabase
-      .from('psgc_cities_municipalities')
-      .select('name, type, province_code')
-      .eq('code', cityCode)
-      .single();
+  const resolveCityInfo = useCallback(
+    async (cityCode: string, addressInfo: AddressHierarchyInfo) => {
+      const { data: cityData, error: cityError } = await supabase
+        .from('psgc_cities_municipalities')
+        .select('name, type, province_code')
+        .eq('code', cityCode)
+        .single();
 
-    if (cityError) {
-      logger.warn('City/Municipality not found', { cityCode, error: cityError.message });
+      if (cityError) {
+        logger.warn('City/Municipality not found', { cityCode, error: cityError.message });
+        return null;
+      }
+
+      if (cityData) {
+        addressInfo.cityMunicipality = `${cityData.name} (${cityData.type})`;
+        return cityData.province_code;
+      }
+
       return null;
-    }
-
-    if (cityData) {
-      addressInfo.cityMunicipality = `${cityData.name} (${cityData.type})`;
-      return cityData.province_code;
-    }
-
-    return null;
-  }, []);
+    },
+    []
+  );
 
   /**
    * Resolves province information
    */
   const resolveProvinceInfo = useCallback(
-    async (provinceCode: string, addressInfo: AddressDisplayInfo) => {
+    async (provinceCode: string, addressInfo: AddressHierarchyInfo) => {
       const { data: provinceData, error: provinceError } = await supabase
         .from('psgc_provinces')
         .select('name, region_code')
@@ -154,7 +144,7 @@ export function useAddressResolution(): UseAddressResolutionReturn {
    * Resolves region information
    */
   const resolveRegionInfo = useCallback(
-    async (regionCode: string, addressInfo: AddressDisplayInfo) => {
+    async (regionCode: string, addressInfo: AddressHierarchyInfo) => {
       const { data: regionData, error: regionError } = await supabase
         .from('psgc_regions')
         .select('name')
@@ -176,11 +166,11 @@ export function useAddressResolution(): UseAddressResolutionReturn {
   /**
    * Loads and resolves complete address hierarchy for display
    */
-  const loadAddressDisplayInfo = useCallback(
+  const loadAddressHierarchyInfo = useCallback(
     async (barangayCode: string) => {
       if (!barangayCode) {
         logger.warn('No barangay code provided for address resolution');
-        setAddressDisplayInfo(ERROR_ADDRESS_INFO);
+        setAddressHierarchyInfo(ERROR_ADDRESS_INFO);
         return;
       }
 
@@ -190,7 +180,7 @@ export function useAddressResolution(): UseAddressResolutionReturn {
       try {
         logger.debug('Loading address display info', { barangayCode });
 
-        const addressInfo: AddressDisplayInfo = { ...ERROR_ADDRESS_INFO };
+        const addressInfo: AddressHierarchyInfo = { ...ERROR_ADDRESS_INFO };
         addressInfo.barangay = `Barangay ${barangayCode}`;
 
         // Sequential resolution with early exit on errors
@@ -205,13 +195,13 @@ export function useAddressResolution(): UseAddressResolutionReturn {
           }
         }
 
-        setAddressDisplayInfo(addressInfo);
+        setAddressHierarchyInfo(addressInfo);
         logger.debug('Address resolution completed', { addressInfo });
       } catch (error) {
         const errorMessage = 'Failed to resolve address information';
         logger.error(errorMessage, { error, barangayCode });
         setError(errorMessage);
-        setAddressDisplayInfo(ERROR_ADDRESS_INFO);
+        setAddressHierarchyInfo(ERROR_ADDRESS_INFO);
       } finally {
         setIsLoading(false);
       }
@@ -223,7 +213,7 @@ export function useAddressResolution(): UseAddressResolutionReturn {
    * Reset address display info to initial state
    */
   const resetAddressInfo = useCallback(() => {
-    setAddressDisplayInfo(LOADING_ADDRESS_INFO);
+    setAddressHierarchyInfo(LOADING_ADDRESS_INFO);
     setError(null);
     setIsLoading(false);
   }, []);
@@ -233,15 +223,15 @@ export function useAddressResolution(): UseAddressResolutionReturn {
    */
   useEffect(() => {
     if (userProfile?.barangay_code) {
-      loadAddressDisplayInfo(userProfile.barangay_code);
+      loadAddressHierarchyInfo(userProfile.barangay_code);
     }
-  }, [userProfile?.barangay_code, loadAddressDisplayInfo]);
+  }, [userProfile?.barangay_code, loadAddressHierarchyInfo]);
 
   return {
     addressDisplayInfo,
     isLoading,
     error,
-    loadAddressDisplayInfo,
+    loadAddressHierarchyInfo,
     resetAddressInfo,
   };
 }

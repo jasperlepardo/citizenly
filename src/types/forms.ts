@@ -42,7 +42,6 @@
  */
 
 import { ReactNode } from 'react';
-export type { ValidationError } from './validation';
 
 // =============================================================================
 // BASE FORM FIELD INTERFACES

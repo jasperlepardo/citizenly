@@ -3,37 +3,13 @@
  * Interfaces for managing family relationships and household memberships
  */
 
+import type { HouseholdMember } from '@/types/database';
+
 // =============================================================================
-// HOUSEHOLD MEMBERS TABLE
+// HOUSEHOLD MEMBERS TABLE (using canonical type from database.ts)
 // =============================================================================
 
-/**
- * Household member interface matching household_members table exactly (7 fields)
- */
-export interface HouseholdMember {
-  id: string; // UUID PRIMARY KEY DEFAULT uuid_generate_v4()
-  household_code: string; // VARCHAR(50) NOT NULL REFERENCES households(code)
-  resident_id: string; // UUID NOT NULL REFERENCES residents(id)
-  family_position:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other'; // family_position_enum NOT NULL DEFAULT 'other'
-  is_active?: boolean | null; // BOOLEAN DEFAULT true (nullable in database)
-  created_at?: string | null; // TIMESTAMPTZ DEFAULT NOW() (nullable in database)
-  updated_at?: string | null; // TIMESTAMPTZ DEFAULT NOW() (nullable in database)
-}
+// HouseholdMember interface is imported from @/types/database (canonical source)
 
 // =============================================================================
 // RESIDENT RELATIONSHIPS TABLE

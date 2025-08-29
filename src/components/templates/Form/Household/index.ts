@@ -1,2 +1,2 @@
-export { default as NewHouseholdForm } from './NewHouseholdForm';
-export type { HouseholdFormData } from './NewHouseholdForm';
+export { default as HouseholdForm } from './HouseholdForm';
+export type { HouseholdFormData } from './HouseholdForm';

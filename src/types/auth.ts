@@ -482,17 +482,9 @@ export type UserRole =
   | 'barangay_user'
   | 'read_only';
 
-/**
- * User profile interface for auth service compatibility
- * @deprecated Use AuthUserProfile instead - extends AuthUserProfileRecord from database.ts
- */
-export type UserProfile = AuthUserProfile;
+// REMOVED: Legacy UserProfile alias - use AuthUserProfile directly
 
-/**
- * Registration data interface for auth service compatibility
- * @deprecated Use SignupRequest instead for consistent registration handling
- */
-export type RegistrationData = SignupRequest;
+// REMOVED: Legacy RegistrationData alias - use SignupRequest directly
 
 /**
  * Role-based permission mapping
@@ -639,24 +631,25 @@ export interface RequestContext {
 }
 
 // =============================================================================
-// VALIDATION DATA TYPES
+// SECURITY TOKEN TYPES
 // =============================================================================
 
 /**
- * User registration validation data
- * @deprecated Use RegistrationData instead (which points to SignupRequest)
- * @deprecated This is a duplicate alias - will be removed in future cleanup
+ * CSRF Token structure
+ * Used for Cross-Site Request Forgery protection
  */
-export type UserRegistrationData = RegistrationData;
+export interface CSRFToken {
+  token: string;
+  timestamp: number;
+  signature: string;
+}
 
-/**
- * Login validation data
- * @deprecated Use LoginRequest instead for consistent login handling
- */
-export type LoginData = LoginRequest;
+// =============================================================================
+// VALIDATION DATA TYPES
+// =============================================================================
 
-/**
- * Password change validation data
- * @deprecated Use PasswordUpdateRequest instead for consistent password handling
- */
-export type PasswordChangeData = PasswordUpdateRequest;
+// REMOVED: Legacy UserRegistrationData alias - use SignupRequest directly
+
+// REMOVED: Legacy LoginData alias - use LoginRequest directly
+
+// REMOVED: Legacy PasswordChangeData alias - use PasswordUpdateRequest directly

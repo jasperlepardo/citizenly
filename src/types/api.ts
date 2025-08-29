@@ -26,12 +26,7 @@
 // COMMON API ROUTE INTERFACES
 // =============================================================================
 
-/**
- * Standard user profile interface for API routes
- */
-export interface UserProfile {
-  barangay_code: string;
-}
+// Note: AuthUserProfile is now imported directly by API files from @/types/auth
 
 /**
  * Resident with household relationship for authorization

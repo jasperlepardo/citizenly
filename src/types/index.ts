@@ -16,6 +16,12 @@ export * from './validation';
 // Address types
 export * from './addresses';
 
+// Performance types
+export * from './performance';
+
+// Form types (includes HouseholdFormData)
+export * from './forms';
+
 // Service types
 export * from './services';
 
@@ -28,9 +34,7 @@ export type {
   UserRepositoryData,
   UserRepositorySearchOptions,
   UserSecurityData,
-  CSRFToken,
   CommandMenuExportOptions,
-  CommandMenuPerformanceMetrics,
   CommandMenuAnalyticsEvent,
   ServiceRawPsocData,
   ServiceRawPsgcData,
@@ -202,7 +206,6 @@ export type {
   GeographicHierarchyResult,
   GeographicHierarchySingleResult,
   SupabaseQueryResponse,
-  ValidationError,
   RequestMetadata,
   AuditLogEntry,
   DashboardStats,
@@ -299,7 +302,6 @@ export type {
   HouseholdData,
   HouseholdHead,
   HouseholdWithMembersResult,
-  HouseholdFormData,
   HouseholdOption,
   HouseholdSearchParams,
   HouseholdApiResponse,

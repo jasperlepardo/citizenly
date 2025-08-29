@@ -3,6 +3,8 @@
  * Consolidated prop interfaces from page components
  */
 
+// Household types imported as needed in components
+
 // =============================================================================
 // DASHBOARD PAGE TYPES
 // =============================================================================
@@ -95,53 +97,7 @@ export interface HouseholdDetailPageProps {
   };
 }
 
-/**
- * Household member interface for detail pages
- * Consolidates from household detail page components
- */
-export interface HouseholdMember {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  sex: 'male' | 'female';
-  birthdate: string;
-  relationship_to_head?: string;
-  is_head: boolean;
-  education_attainment?: string;
-  employment_status?: string;
-  is_active: boolean;
-  created_at: string;
-}
-
-/**
- * Household interface for detail pages
- * Consolidates from household detail page components
- */
-export interface Household {
-  id: string;
-  code: string;
-  street_name?: string;
-  subdivision_name?: string;
-  household_number?: string;
-  barangay_code: string;
-  head_resident_id?: string;
-  household_type?: string;
-  tenure_status?: string;
-  monthly_income?: number;
-  income_class?: string;
-  no_of_families?: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  members?: HouseholdMember[];
-  address_info?: {
-    barangay_name: string;
-    city_municipality_name: string;
-    province_name?: string;
-    region_name: string;
-  };
-}
+// Types imported from households.ts at top of file
 
 // =============================================================================
 // ADMIN PAGE TYPES

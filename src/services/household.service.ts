@@ -12,8 +12,8 @@ const logger = createLogger('HouseholdService');
 
 // Import database and consolidated types
 import { HouseholdRecord } from '@/types';
+import type { HouseholdFormData } from '@/types/forms';
 import type {
-  HouseholdFormData,
   UserAddressDetailed as UserAddress,
   CreateHouseholdRequest,
   CreateHouseholdResponse,
@@ -63,16 +63,32 @@ export class HouseholdService {
       }
 
       // Validate numeric fields if provided
-      if (formData.no_of_families !== undefined && formData.no_of_families < 0) {
+      if (
+        formData.no_of_families !== undefined &&
+        formData.no_of_families !== null &&
+        formData.no_of_families < 0
+      ) {
         errors.no_of_families = 'Number of families cannot be negative';
       }
-      if (formData.no_of_household_members !== undefined && formData.no_of_household_members < 0) {
+      if (
+        formData.no_of_household_members !== undefined &&
+        formData.no_of_household_members !== null &&
+        formData.no_of_household_members < 0
+      ) {
         errors.no_of_household_members = 'Number of household members cannot be negative';
       }
-      if (formData.no_of_migrants !== undefined && formData.no_of_migrants < 0) {
+      if (
+        formData.no_of_migrants !== undefined &&
+        formData.no_of_migrants !== null &&
+        formData.no_of_migrants < 0
+      ) {
         errors.no_of_migrants = 'Number of migrants cannot be negative';
       }
-      if (formData.monthly_income !== undefined && formData.monthly_income < 0) {
+      if (
+        formData.monthly_income !== undefined &&
+        formData.monthly_income !== null &&
+        formData.monthly_income < 0
+      ) {
         errors.monthly_income = 'Monthly income cannot be negative';
       }
 

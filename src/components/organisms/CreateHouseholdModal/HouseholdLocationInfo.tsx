@@ -4,16 +4,10 @@
  */
 
 import React from 'react';
-
-interface AddressDisplayInfo {
-  region: string;
-  province: string;
-  cityMunicipality: string;
-  barangay: string;
-}
+import type { AddressHierarchyInfo } from '@/types/addresses';
 
 interface HouseholdLocationInfoProps {
-  addressDisplayInfo: AddressDisplayInfo;
+  addressDisplayInfo: AddressHierarchyInfo;
   barangayCode?: string;
 }
 

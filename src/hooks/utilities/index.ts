@@ -26,7 +26,7 @@ export { usePreloadOnHover } from './usePreloadOnHover';
 export { useUserBarangay } from './useUserBarangay';
 export { useAddressResolution } from './useAddressResolution';
 export { useHouseholdCodeGeneration } from './useHouseholdCodeGeneration';
-export { useHouseholdForm } from './useHouseholdForm';
+// useHouseholdForm removed - redundant with canonical HouseholdForm component
 export { useMigrationInformation } from './useMigrationInformation';
 
 // Form utilities

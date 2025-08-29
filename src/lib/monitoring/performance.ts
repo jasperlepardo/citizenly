@@ -6,17 +6,10 @@
 import { clientLogger } from '@/lib/logging/client-logger';
 
 import { startSentryTransaction } from './sentry-config';
-
-interface PerformanceMetrics {
-  name: string;
-  startTime: number;
-  endTime?: number;
-  duration?: number;
-  metadata?: Record<string, any>;
-}
+import type { GenericPerformanceMetrics } from '@/types/performance';
 
 class PerformanceMonitor {
-  private metrics: Map<string, PerformanceMetrics> = new Map();
+  private metrics: Map<string, GenericPerformanceMetrics> = new Map();
   private isProduction = process.env.NODE_ENV === 'production';
 
   /**
@@ -66,7 +59,7 @@ class PerformanceMonitor {
     const endTime = performance.now();
     const duration = endTime - metric.startTime;
 
-    const completedMetric: PerformanceMetrics = {
+    const completedMetric: GenericPerformanceMetrics = {
       ...metric,
       endTime,
       duration,
@@ -109,7 +102,7 @@ class PerformanceMonitor {
   /**
    * Get all recorded metrics
    */
-  getMetrics(): PerformanceMetrics[] {
+  getMetrics(): GenericPerformanceMetrics[] {
     return Array.from(this.metrics.values());
   }
 

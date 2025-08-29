@@ -1,28 +1,15 @@
 /**
  * Redis Client Configuration
  * Centralized caching solution using Redis or in-memory fallback
+ * Schema-aligned with consolidated cache types
  */
 
 import { createLogger, isProduction, isDevelopment } from '@/lib/config/environment';
+import type { CacheEntry, CacheClient, CacheStats } from '@/types/cache';
 
 const logger = createLogger('RedisClient');
 
-interface CacheEntry<T = unknown> {
-  data: T;
-  timestamp: number;
-  ttl: number;
-}
-
-interface CacheClient {
-  get<T = unknown>(key: string): Promise<T | null>;
-  set<T>(key: string, value: T, ttlSeconds?: number): Promise<boolean>;
-  del(key: string): Promise<boolean>;
-  flush(): Promise<boolean>;
-  keys(pattern: string): Promise<string[]>;
-  exists(key: string): Promise<boolean>;
-  expire(key: string, ttlSeconds: number): Promise<boolean>;
-  getStats(): Promise<{ hits: number; misses: number; keys: number; memoryUsage?: number }>;
-}
+// CacheClient interface now imported from @/types/cache
 
 /**
  * In-memory cache implementation for development and fallback
@@ -31,7 +18,7 @@ class InMemoryCache implements CacheClient {
   private cache = new Map<string, CacheEntry>();
   private stats = { hits: 0, misses: 0 };
   private maxSize = 1000;
-  private defaultTTL = 300; // 5 minutes
+  private defaultTTL = 300; // 5 minutes in seconds
 
   async get<T = any>(key: string): Promise<T | null> {
     const entry = this.cache.get(key);
@@ -52,17 +39,21 @@ class InMemoryCache implements CacheClient {
     return entry.data as T;
   }
 
-  async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
+  async set<T>(key: string, value: T, options?: { ttl?: number }): Promise<boolean> {
     try {
+      const ttlMs = (options?.ttl || this.defaultTTL) * 1000;
+
       // Clean cache if at capacity
       if (this.cache.size >= this.maxSize) {
         this.cleanup();
       }
 
       this.cache.set(key, {
+        key,
         data: value,
         timestamp: Date.now(),
-        ttl: ttlSeconds,
+        ttl: ttlMs,
+        tags: [],
       });
 
       return true;
@@ -92,7 +83,7 @@ class InMemoryCache implements CacheClient {
     if (!entry) return false;
 
     // Check if expired
-    if (Date.now() - entry.timestamp > entry.ttl * 1000) {
+    if (Date.now() - entry.timestamp > entry.ttl) {
       this.cache.delete(key);
       return false;
     }
@@ -109,11 +100,14 @@ class InMemoryCache implements CacheClient {
     return true;
   }
 
-  async getStats() {
+  async getStats(): Promise<CacheStats> {
+    const total = this.stats.hits + this.stats.misses;
     return {
-      ...this.stats,
-      keys: this.cache.size,
+      hits: this.stats.hits,
+      misses: this.stats.misses,
+      size: this.cache.size,
       memoryUsage: this.estimateMemoryUsage(),
+      hitRatio: total > 0 ? this.stats.hits / total : 0,
     };
   }
 
@@ -123,7 +117,7 @@ class InMemoryCache implements CacheClient {
 
     // Remove expired entries first
     this.cache.forEach((entry, key) => {
-      if (now - entry.timestamp > entry.ttl * 1000) {
+      if (now - entry.timestamp > entry.ttl) {
         expiredKeys.push(key);
       }
     });
@@ -164,17 +158,17 @@ class InMemoryCache implements CacheClient {
  * Currently disabled - using in-memory cache
  */
 class RedisCache implements CacheClient {
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T = any>(_key: string): Promise<T | null> {
     // Disabled - fallback to null
     return null;
   }
 
-  async set<T>(key: string, value: T, ttlSeconds = 300): Promise<boolean> {
+  async set<T>(_key: string, _value: T, _options?: { ttl?: number }): Promise<boolean> {
     // Disabled - fallback to false
     return false;
   }
 
-  async del(key: string): Promise<boolean> {
+  async del(_key: string): Promise<boolean> {
     return false;
   }
 
@@ -182,20 +176,20 @@ class RedisCache implements CacheClient {
     return false;
   }
 
-  async keys(pattern: string): Promise<string[]> {
+  async keys(_pattern: string): Promise<string[]> {
     return [];
   }
 
-  async exists(key: string): Promise<boolean> {
+  async exists(_key: string): Promise<boolean> {
     return false;
   }
 
-  async expire(key: string, ttlSeconds: number): Promise<boolean> {
+  async expire(_key: string, _ttlSeconds: number): Promise<boolean> {
     return false;
   }
 
-  async getStats() {
-    return { hits: 0, misses: 0, keys: 0 };
+  async getStats(): Promise<CacheStats> {
+    return { hits: 0, misses: 0, size: 0, memoryUsage: 0, hitRatio: 0 };
   }
 }
 
@@ -244,7 +238,7 @@ export class CacheManager {
    */
   async set<T>(key: string, value: T, ttlSeconds = this.defaultTTL): Promise<boolean> {
     const prefixedKey = this.keyPrefix + key;
-    return await this.client.set(prefixedKey, value, ttlSeconds);
+    return await this.client.set(prefixedKey, value, { ttl: ttlSeconds });
   }
 
   /**

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import { UserProfile, ResidentWithHousehold } from '@/types/api';
+import type { AuthUserProfile } from '@/types/auth';
+import type { ResidentWithHousehold } from '@/types/api';
 
 // Migration information validation schema
 const migrationInfoSchema = z.object({
@@ -56,7 +57,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
@@ -162,7 +163,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
@@ -304,7 +305,7 @@ export async function DELETE(
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {

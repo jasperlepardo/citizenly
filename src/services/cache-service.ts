@@ -1,25 +1,14 @@
 /**
  * Cache Service
  * Consolidated caching functionality following coding standards
+ * Schema-aligned with consolidated cache types
  */
 
 import { createLogger } from '../lib/config/environment';
+import type { CacheEntry, CacheStats } from '@/types/cache';
+import { createInitialCacheStats } from '@/types/cache';
 
 const logger = createLogger('CacheService');
-
-interface CacheEntry<T = unknown> {
-  data: T;
-  timestamp: number;
-  ttl: number;
-  tags: string[];
-}
-
-interface CacheStats {
-  hits: number;
-  misses: number;
-  size: number;
-  memoryUsage: number;
-}
 
 /**
  * Cache Service Class
@@ -27,7 +16,7 @@ interface CacheStats {
  */
 export class CacheService {
   private cache = new Map<string, CacheEntry>();
-  private stats: CacheStats = { hits: 0, misses: 0, size: 0, memoryUsage: 0 };
+  private stats: CacheStats = createInitialCacheStats();
   private maxSize: number = 1000;
   private defaultTTL: number = 5 * 60 * 1000; // 5 minutes
   private keyPrefix = 'rbi:';
@@ -68,6 +57,7 @@ export class CacheService {
     }
 
     const entry: CacheEntry<T> = {
+      key: prefixedKey,
       data,
       timestamp: Date.now(),
       ttl: options.ttl || this.defaultTTL,
@@ -263,35 +253,8 @@ export function cached<TArgs extends readonly unknown[], TResult>(
   };
 }
 
-/**
- * Common cache keys for consistency
- */
-export const CacheKeys = {
-  regions: () => 'regions:all',
-  provinces: (regionCode?: string) => `provinces:${regionCode || 'all'}`,
-  cities: (provinceCode?: string) => `cities:${provinceCode || 'all'}`,
-  barangays: (cityCode?: string) => `barangays:${cityCode || 'all'}`,
-  resident: (id: string) => `resident:${id}`,
-  residents: (filters: Record<string, string | number | boolean>) =>
-    `residents:${JSON.stringify(filters)}`,
-  household: (id: string) => `household:${id}`,
-  households: (filters: Record<string, string | number | boolean>) =>
-    `households:${JSON.stringify(filters)}`,
-  dashboardStats: (barangayCode: string) => `dashboard:stats:${barangayCode}`,
-  userProfile: (userId: string) => `user:profile:${userId}`,
-};
-
-/**
- * Common cache tags for invalidation
- */
-export const CacheTags = {
-  RESIDENTS: 'residents',
-  HOUSEHOLDS: 'households',
-  ADDRESSES: 'addresses',
-  USERS: 'users',
-  DASHBOARD: 'dashboard',
-  PROFILE: 'profile',
-};
+// Export consolidated cache keys and tags from centralized types
+export { CacheKeyPatterns as CacheKeys, CacheTags } from '@/types/cache';
 
 // Export singleton instance
 export const cacheService = new CacheService();

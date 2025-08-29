@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import { UserProfile, HouseholdRecord } from '@/types/api';
+import type { AuthUserProfile } from '@/types/auth';
+import type { HouseholdRecord } from '@/types/api';
 import type { Database } from '@/lib/data/supabase';
 
 type DbHouseholdUpdate = Database['public']['Tables']['households']['Update'];
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {
@@ -203,7 +204,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
-    const userProfile = profileResult.data as UserProfile | null;
+    const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
     if (profileError || !userProfile?.barangay_code) {

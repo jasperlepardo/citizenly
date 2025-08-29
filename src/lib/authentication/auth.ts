@@ -1,52 +1,16 @@
 /**
  * Production-Ready Authentication System
  * Secure authentication utilities for the RBI System
+ * Schema-aligned with database/schema.sql
  */
 
 import type { User, Session, AuthError } from '@supabase/supabase-js';
 
 import { createLogger } from '../config/environment';
 import { supabase } from '../supabase';
+import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/auth';
 
 const logger = createLogger('Auth');
-
-// User role types
-export type UserRole =
-  | 'super_admin'
-  | 'region_admin'
-  | 'province_admin'
-  | 'city_admin'
-  | 'barangay_admin'
-  | 'barangay_user'
-  | 'read_only';
-
-// User profile interface
-export interface UserProfile {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  mobile_number?: string;
-  role_name: UserRole;
-  barangay_code?: string;
-  city_municipality_code?: string;
-  province_code?: string;
-  region_code?: string;
-  is_active: boolean;
-  email_verified: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-// Registration data interface
-export interface RegistrationData {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  mobile_number?: string;
-  barangay_code: string;
-}
 
 // =============================================================================
 // AUTHENTICATION FUNCTIONS
@@ -55,7 +19,7 @@ export interface RegistrationData {
 /**
  * Register a new user with profile creation
  */
-export const registerUser = async (data: RegistrationData) => {
+export const registerUser = async (data: SignupRequest) => {
   try {
     logger.debug('Starting user registration for:', data.email);
 
@@ -67,7 +31,7 @@ export const registerUser = async (data: RegistrationData) => {
         data: {
           first_name: data.first_name,
           last_name: data.last_name,
-          mobile_number: data.mobile_number,
+          phone: data.phone,
           barangay_code: data.barangay_code,
         },
       },
@@ -145,7 +109,7 @@ export const signOutUser = async () => {
 /**
  * Get current user profile
  */
-export const getUserProfile = async (userId?: string): Promise<UserProfile | null> => {
+export const getUserProfile = async (userId?: string): Promise<AuthUserProfile | null> => {
   try {
     const id = userId || (await supabase.auth.getUser()).data.user?.id;
     if (!id) return null;
@@ -174,7 +138,7 @@ export const getUserProfile = async (userId?: string): Promise<UserProfile | nul
 /**
  * Update user profile
  */
-export const updateUserProfile = async (updates: Partial<UserProfile>) => {
+export const updateUserProfile = async (updates: Partial<AuthUserProfile>) => {
   try {
     const { data: user } = await supabase.auth.getUser();
     if (!user.user) throw new Error('Not authenticated');
@@ -183,7 +147,7 @@ export const updateUserProfile = async (updates: Partial<UserProfile>) => {
     const allowedUpdates = {
       first_name: updates.first_name,
       last_name: updates.last_name,
-      mobile_number: updates.mobile_number,
+      phone: updates.phone,
       updated_at: new Date().toISOString(),
     };
 
@@ -244,27 +208,30 @@ export const updatePassword = async (newPassword: string) => {
 /**
  * Check if user has specific role
  */
-export const hasRole = (profile: UserProfile | null, role: UserRole): boolean => {
-  return profile?.role_name === role && profile.is_active;
+export const hasRole = (profile: AuthUserProfile | null, role: UserRole): boolean => {
+  return profile?.role?.name === role && (profile?.is_active ?? false);
 };
 
 /**
  * Check if user has admin privileges
  */
-export const isAdmin = (profile: UserProfile | null): boolean => {
-  if (!profile?.is_active) return false;
+export const isAdmin = (profile: AuthUserProfile | null): boolean => {
+  if (!profile || !(profile.is_active ?? false)) return false;
   return ['super_admin', 'region_admin', 'province_admin', 'city_admin', 'barangay_admin'].includes(
-    profile.role_name
+    profile.role?.name || ''
   );
 };
 
 /**
  * Check if user can access specific barangay
  */
-export const canAccessBarangay = (profile: UserProfile | null, barangayCode: string): boolean => {
-  if (!profile?.is_active) return false;
+export const canAccessBarangay = (
+  profile: AuthUserProfile | null,
+  barangayCode: string
+): boolean => {
+  if (!profile || !(profile.is_active ?? false)) return false;
 
-  switch (profile.role_name) {
+  switch (profile.role?.name) {
     case 'super_admin':
       return true;
     case 'barangay_admin':

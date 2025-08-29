@@ -6,45 +6,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
 import { supabase, logError } from '@/lib';
+import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
 
 export const dynamic = 'force-dynamic';
 
-interface Resident {
-  id: string;
-  first_name: string;
-  middle_name?: string;
-  last_name: string;
-  extension_name?: string;
-  birthdate: string;
-  sex: 'male' | 'female';
-  civil_status?: string;
+interface Resident extends HouseholdMemberWithResident {
   citizenship?: string;
-  occupation_title?: string;
   place_of_birth?: string;
   household_id?: string;
-  household_code?: string;
-  barangay_code: string;
-}
-
-interface Household {
-  id: string;
-  code: string;
-  household_number?: string;
-  house_number?: string;
-  street_name?: string;
-  subdivision?: string;
-  zip_code?: string;
-  barangay_code: string;
-  total_members?: number;
-  household_head_id?: string;
-  created_at: string;
-  head_resident?: {
-    id: string;
-    first_name: string;
-    middle_name?: string;
-    last_name: string;
-    extension_name?: string;
-  };
 }
 
 interface AddressInfo {
@@ -61,7 +30,7 @@ function RBIFormContent() {
   const searchParams = useSearchParams();
   const {} = useAuth();
   const [resident, setResident] = useState<Resident | null>(null);
-  const [, setHousehold] = useState<Household | null>(null);
+  const [, setHousehold] = useState<HouseholdRecord | null>(null);
   const [, setAddressInfo] = useState<AddressInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

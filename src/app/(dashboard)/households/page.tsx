@@ -4,7 +4,8 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 
 import { Button } from '@/components';
-import { useHouseholds, type Household } from '@/hooks/crud/useHouseholds';
+import { useHouseholds } from '@/hooks/crud/useHouseholds';
+import type { HouseholdWithMembersResult } from '@/types/households';
 
 function HouseholdsContent() {
   const [localSearchTerm, setLocalSearchTerm] = useState('');
@@ -44,42 +45,15 @@ function HouseholdsContent() {
     return [person.first_name, person.middle_name, person.last_name].filter(Boolean).join(' ');
   };
 
-  const formatAddress = (household: Household) => {
+  const formatAddress = (household: HouseholdWithMembersResult) => {
     const parts = [household.house_number, household.address].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : 'No address';
   };
 
-  const formatFullAddress = (household: Household) => {
+  const formatFullAddress = (household: HouseholdWithMembersResult) => {
     const localAddress = formatAddress(household);
-    const geoParts = [];
-
-    if (household.barangay_info?.name) {
-      geoParts.push(`Brgy. ${household.barangay_info.name}`);
-    }
-
-    if (household.city_municipality_info?.name && household.city_municipality_info?.type) {
-      geoParts.push(
-        `${household.city_municipality_info.name} (${household.city_municipality_info.type})`
-      );
-    }
-
-    if (household.province_info?.name) {
-      geoParts.push(household.province_info.name);
-    }
-
-    if (household.region_info?.name) {
-      geoParts.push(household.region_info.name);
-    }
-
-    if (localAddress === 'No address' && geoParts.length === 0) {
-      return 'Address not available';
-    }
-
-    if (localAddress === 'No address') {
-      return geoParts.join(', ');
-    }
-
-    return geoParts.length > 0 ? `${localAddress}, ${geoParts.join(', ')}` : localAddress;
+    // Use available address field or construct basic address
+    return household.address || localAddress || 'Address not available';
   };
 
   return (
@@ -303,7 +277,7 @@ function HouseholdsContent() {
                   </div>
                   <div className="p-2">
                     <div className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400">
-                      {formatFullName(household.head_resident)}
+                      {household.head_name || 'No head assigned'}
                     </div>
                   </div>
                   <div className="p-2">

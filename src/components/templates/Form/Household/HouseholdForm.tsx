@@ -19,37 +19,9 @@ import { geographicService } from '@/services/geographic.service';
 
 // Import molecules and atoms
 
-export interface HouseholdFormData {
-  // Location and Demographics
-  houseNumber: string;
-  streetId: string;
-  subdivisionId: string;
-  barangayCode: string;
-  cityMunicipalityCode: string;
-  provinceCode: string;
-  regionCode: string;
-  noOfFamilies: number;
-  noOfHouseholdMembers: number;
-  noOfMigrants: number;
+import { HouseholdFormData } from '@/types/forms';
 
-  // Household Details
-  householdType: string;
-  tenureStatus: string;
-  tenureOthersSpecify: string;
-  householdUnit: string;
-  householdName: string;
-  monthlyIncome: number;
-  householdHeadId: string;
-  householdHeadPosition: string;
-
-  // Auto-generated/derived fields
-  code?: string;
-  address?: string;
-  zipCode?: string;
-  incomeClass?: string;
-  isActive?: boolean;
-}
-
+export type { HouseholdFormData };
 export type HouseholdFormMode = 'create' | 'view' | 'edit';
 
 interface HouseholdFormProps {
@@ -62,7 +34,7 @@ interface HouseholdFormProps {
   // View mode options for displaying labels
   viewModeOptions?: {
     addressLabels?: any;
-    householdTypeLabels?: any;
+    household_typeLabels?: any;
     householdHeadLabel?: string;
   };
 }
@@ -95,10 +67,10 @@ export default function HouseholdForm({
   const testAutoFill = () => {
     console.log('🧪 TEST AUTO-FILL triggered');
     console.log('🧪 Current form data codes:', {
-      regionCode: formData.regionCode,
-      provinceCode: formData.provinceCode,
-      cityCode: formData.cityMunicipalityCode,
-      barangayCode: formData.barangayCode,
+      region_code: formData.region_code,
+      province_code: formData.province_code,
+      cityCode: formData.city_municipality_code,
+      barangay_code: formData.barangay_code,
     });
     console.log('🧪 Available options:', {
       regions: regionOptions.length,
@@ -132,10 +104,10 @@ export default function HouseholdForm({
 
     setFormData(prev => ({
       ...prev,
-      regionCode: '04', // CALABARZON
-      provinceCode: '0421', // Cavite
-      cityMunicipalityCode: '042114', // Dasmariñas
-      barangayCode: '042114014', // Sample barangay
+      region_code: '04', // CALABARZON
+      province_code: '0421', // Cavite
+      city_municipality_code: '042114', // Dasmariñas
+      barangay_code: '042114014', // Sample barangay
     }));
 
     setAutoFillStatus('success');
@@ -143,32 +115,43 @@ export default function HouseholdForm({
     alert('✅ Test auto-fill completed! Check the form fields.');
   };
 
-  const [formData, setFormData] = useState<HouseholdFormData>({
+  const [formData, setFormData] = useState<HouseholdFormData>(() => ({
+    // Required fields with defaults
+    code: '',
+    barangay_code: '',
+    city_municipality_code: '',
+    region_code: '',
+    house_number: '',
+    street_id: '',
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+
     // Location and Demographics
-    houseNumber: '',
-    streetId: '',
-    subdivisionId: '',
-    barangayCode: '',
-    cityMunicipalityCode: '',
-    provinceCode: '',
-    regionCode: '',
-    noOfFamilies: 1,
-    noOfHouseholdMembers: 0,
-    noOfMigrants: 0,
+    subdivision_id: null,
+    province_code: null,
+    zip_code: null,
+    no_of_families: 1,
+    no_of_household_members: 0,
+    no_of_migrants: 0,
 
     // Household Details
-    householdType: '',
-    tenureStatus: '',
-    tenureOthersSpecify: '',
-    householdUnit: '',
-    householdName: '',
-    monthlyIncome: 0,
-    householdHeadId: '',
-    householdHeadPosition: '',
+    name: null,
+    address: null,
+    household_type: null,
+    tenure_status: null,
+    tenure_others_specify: null,
+    household_unit: null,
+    monthly_income: null,
+    income_class: null,
+    household_head_id: null,
+    household_head_position: null,
+    created_by: null,
+    updated_by: null,
 
     // Merge initial data if provided
     ...initialData,
-  });
+  }));
 
   // User's assigned barangay address (auto-populated)
   const { address: userAddress, loading: loadingAddress } = useUserBarangay();
@@ -183,37 +166,37 @@ export default function HouseholdForm({
   });
 
   // Load provinces when we have a region (either from form data or user selection)
-  const shouldLoadProvinces = formData.regionCode || userAddress?.region_code;
+  const shouldLoadProvinces = formData.region_code || userAddress?.region_code;
 
   const { data: provinceOptions = [], isLoading: provincesLoading } = useQuery({
     queryKey: [
       'addresses',
       'provinces',
-      shouldLoadProvinces ? formData.regionCode || userAddress?.region_code : '',
+      shouldLoadProvinces ? formData.region_code || userAddress?.region_code : '',
     ],
     queryFn: async () => {
-      const regionCode = formData.regionCode || userAddress?.region_code;
-      if (!regionCode) return [];
-      return await geographicService.getProvincesByRegion(regionCode);
+      const region_code = formData.region_code || userAddress?.region_code;
+      if (!region_code) return [];
+      return await geographicService.getProvincesByRegion(region_code);
     },
     enabled: !!shouldLoadProvinces,
     staleTime: 10 * 60 * 1000,
   });
 
   // Load cities when we have a province
-  const shouldLoadCities = formData.provinceCode || userAddress?.province_code;
+  const shouldLoadCities = formData.province_code || userAddress?.province_code;
 
   const { data: cityOptions = [], isLoading: citiesLoading } = useQuery({
     queryKey: [
       'addresses',
       'cities',
-      shouldLoadCities ? formData.provinceCode || userAddress?.province_code : '',
+      shouldLoadCities ? formData.province_code || userAddress?.province_code : '',
     ],
     queryFn: async () => {
-      const provinceCode = formData.provinceCode || userAddress?.province_code;
-      if (!provinceCode) return [];
-      const cityOptions = await geographicService.getCitiesByProvince(provinceCode);
-      console.log('🏙️ Cities loaded:', cityOptions.length, 'cities for province:', provinceCode);
+      const province_code = formData.province_code || userAddress?.province_code;
+      if (!province_code) return [];
+      const cityOptions = await geographicService.getCitiesByProvince(province_code);
+      console.log('🏙️ Cities loaded:', cityOptions.length, 'cities for province:', province_code);
       return cityOptions;
     },
     enabled: !!shouldLoadCities,
@@ -221,18 +204,19 @@ export default function HouseholdForm({
   });
 
   // Load barangays when we have a city
-  const shouldLoadBarangays = formData.cityMunicipalityCode || userAddress?.city_municipality_code;
+  const shouldLoadBarangays =
+    formData.city_municipality_code || userAddress?.city_municipality_code;
 
   const { data: barangayOptions = [], isLoading: barangaysLoading } = useQuery({
     queryKey: [
       'addresses',
       'barangays',
       shouldLoadBarangays
-        ? formData.cityMunicipalityCode || userAddress?.city_municipality_code
+        ? formData.city_municipality_code || userAddress?.city_municipality_code
         : '',
     ],
     queryFn: async () => {
-      const cityCode = formData.cityMunicipalityCode || userAddress?.city_municipality_code;
+      const cityCode = formData.city_municipality_code || userAddress?.city_municipality_code;
       if (!cityCode) return [];
       return await geographicService.getBarangaysByCity(cityCode);
     },
@@ -246,17 +230,17 @@ export default function HouseholdForm({
       console.log('🔄 Auto-fill check started');
 
       // Only attempt once per form session (unless it was unsuccessful)
-      if (autoFillAttempted && formData.regionCode && formData.barangayCode) {
+      if (autoFillAttempted && formData.region_code && formData.barangay_code) {
         console.log('⏭️ Auto-fill already completed successfully, skipping');
         return;
       }
 
       // Skip if form already has location data
       if (
-        formData.regionCode ||
-        formData.provinceCode ||
-        formData.cityMunicipalityCode ||
-        formData.barangayCode
+        formData.region_code ||
+        formData.province_code ||
+        formData.city_municipality_code ||
+        formData.barangay_code
       ) {
         console.log('⏭️ Form already has location data, skipping auto-fill');
         setAutoFillAttempted(true);
@@ -380,10 +364,10 @@ export default function HouseholdForm({
     regionsLoading,
     regionOptions,
     autoFillAttempted,
-    formData.regionCode,
-    formData.provinceCode,
-    formData.cityMunicipalityCode,
-    formData.barangayCode,
+    formData.region_code,
+    formData.province_code,
+    formData.city_municipality_code,
+    formData.barangay_code,
   ]);
 
   // Household code will be generated by the database
@@ -406,45 +390,45 @@ export default function HouseholdForm({
   };
 
   // Location change handlers for cascade and auto-fill
-  const handleRegionChange = (regionCode: string) => {
+  const handleRegionChange = (region_code: string) => {
     setFormData(prev => ({
       ...prev,
-      regionCode,
-      provinceCode: '',
-      cityMunicipalityCode: '',
-      barangayCode: '',
-      subdivisionId: '',
-      streetId: '',
+      region_code,
+      province_code: '',
+      city_municipality_code: '',
+      barangay_code: '',
+      subdivision_id: '',
+      street_id: '',
     }));
   };
 
-  const handleProvinceChange = (provinceCode: string) => {
+  const handleProvinceChange = (province_code: string) => {
     setFormData(prev => ({
       ...prev,
-      provinceCode,
-      cityMunicipalityCode: '',
-      barangayCode: '',
-      subdivisionId: '',
-      streetId: '',
+      province_code,
+      city_municipality_code: '',
+      barangay_code: '',
+      subdivision_id: '',
+      street_id: '',
     }));
   };
 
   const handleCityChange = (cityCode: string) => {
     setFormData(prev => ({
       ...prev,
-      cityMunicipalityCode: cityCode,
-      barangayCode: '',
-      subdivisionId: '',
-      streetId: '',
+      city_municipality_code: cityCode,
+      barangay_code: '',
+      subdivision_id: '',
+      street_id: '',
     }));
   };
 
-  const handleBarangayChange = (barangayCode: string) => {
+  const handleBarangayChange = (barangay_code: string) => {
     setFormData(prev => ({
       ...prev,
-      barangayCode,
-      subdivisionId: '',
-      streetId: '',
+      barangay_code,
+      subdivision_id: '',
+      street_id: '',
     }));
   };
 
@@ -453,28 +437,28 @@ export default function HouseholdForm({
 
     try {
       // Location and Demographics validation
-      if (!formData.houseNumber?.trim()) newErrors.houseNumber = 'House number is required';
-      if (!formData.streetId?.trim()) newErrors.streetId = 'Street name is required';
-      if (!formData.barangayCode) newErrors.barangayCode = 'Barangay is required';
-      if (!formData.cityMunicipalityCode)
-        newErrors.cityMunicipalityCode = 'City/Municipality is required';
-      if (!formData.provinceCode) newErrors.provinceCode = 'Province is required';
-      if (!formData.regionCode) newErrors.regionCode = 'Region is required';
-      if (formData.noOfFamilies < 1)
-        newErrors.noOfFamilies = 'Number of families must be at least 1';
-      if (formData.noOfHouseholdMembers < 0)
-        newErrors.noOfHouseholdMembers = 'Number of household members cannot be negative';
+      if (!formData.house_number?.trim()) newErrors.house_number = 'House number is required';
+      if (!formData.street_id?.trim()) newErrors.street_id = 'Street name is required';
+      if (!formData.barangay_code) newErrors.barangay_code = 'Barangay is required';
+      if (!formData.city_municipality_code)
+        newErrors.city_municipality_code = 'City/Municipality is required';
+      if (!formData.province_code) newErrors.province_code = 'Province is required';
+      if (!formData.region_code) newErrors.region_code = 'Region is required';
+      if ((formData.no_of_families ?? 0) < 1)
+        newErrors.no_of_families = 'Number of families must be at least 1';
+      if ((formData.no_of_household_members ?? 0) < 0)
+        newErrors.no_of_household_members = 'Number of household members cannot be negative';
 
       // Household Details validation
-      if (!formData.householdType) newErrors.householdType = 'Household type is required';
-      if (!formData.tenureStatus) newErrors.tenureStatus = 'Tenure status is required';
-      if (formData.tenureStatus === 'others' && !formData.tenureOthersSpecify?.trim()) {
-        newErrors.tenureOthersSpecify = 'Please specify tenure status';
+      if (!formData.household_type) newErrors.household_type = 'Household type is required';
+      if (!formData.tenure_status) newErrors.tenure_status = 'Tenure status is required';
+      if (formData.tenure_status === 'others' && !formData.tenure_others_specify?.trim()) {
+        newErrors.tenure_others_specify = 'Please specify tenure status';
       }
-      if (!formData.householdUnit) newErrors.householdUnit = 'Household unit is required';
-      if (!formData.householdName?.trim()) newErrors.householdName = 'Household name is required';
-      if (!formData.householdHeadPosition)
-        newErrors.householdHeadPosition = 'Head position is required';
+      if (!formData.household_unit) newErrors.household_unit = 'Household unit is required';
+      if (!formData.name?.trim()) newErrors.name = 'Household name is required';
+      if (!formData.household_head_position)
+        newErrors.household_head_position = 'Head position is required';
 
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
@@ -499,8 +483,8 @@ export default function HouseholdForm({
     try {
       const action = mode === 'create' ? 'Creating' : 'Updating';
       logger.info(`${action} household`, {
-        householdName: formData.householdName,
-        barangayCode: formData.barangayCode,
+        name: formData.name,
+        barangay_code: formData.barangay_code,
         householdId,
       });
 
@@ -511,24 +495,24 @@ export default function HouseholdForm({
         const { data, error } = await supabase
           .from('households')
           .insert({
-            name: formData.householdName,
-            house_number: formData.houseNumber,
-            street_id: formData.streetId || null,
-            subdivision_id: formData.subdivisionId || null,
-            barangay_code: formData.barangayCode,
-            city_municipality_code: formData.cityMunicipalityCode,
-            province_code: formData.provinceCode,
-            region_code: formData.regionCode,
-            no_of_families: formData.noOfFamilies,
-            no_of_household_members: formData.noOfHouseholdMembers,
-            no_of_migrants: formData.noOfMigrants,
-            household_type: formData.householdType,
-            tenure_status: formData.tenureStatus,
-            tenure_others_specify: formData.tenureOthersSpecify || null,
-            household_unit: formData.householdUnit,
-            monthly_income: formData.monthlyIncome || null,
-            household_head_id: formData.householdHeadId || null,
-            household_head_position: formData.householdHeadPosition,
+            name: formData.name,
+            house_number: formData.house_number,
+            street_id: formData.street_id || null,
+            subdivision_id: formData.subdivision_id || null,
+            barangay_code: formData.barangay_code,
+            city_municipality_code: formData.city_municipality_code,
+            province_code: formData.province_code,
+            region_code: formData.region_code,
+            no_of_families: formData.no_of_families,
+            no_of_household_members: formData.no_of_household_members,
+            no_of_migrants: formData.no_of_migrants,
+            household_type: formData.household_type,
+            tenure_status: formData.tenure_status,
+            tenure_others_specify: formData.tenure_others_specify || null,
+            household_unit: formData.household_unit,
+            monthly_income: formData.monthly_income || null,
+            household_head_id: formData.household_head_id || null,
+            household_head_position: formData.household_head_position,
           })
           .select()
           .single();
@@ -542,24 +526,24 @@ export default function HouseholdForm({
         const { data, error } = await supabase
           .from('households')
           .update({
-            name: formData.householdName,
-            house_number: formData.houseNumber,
-            street_id: formData.streetId || null,
-            subdivision_id: formData.subdivisionId || null,
-            barangay_code: formData.barangayCode,
-            city_municipality_code: formData.cityMunicipalityCode,
-            province_code: formData.provinceCode,
-            region_code: formData.regionCode,
-            no_of_families: formData.noOfFamilies,
-            no_of_household_members: formData.noOfHouseholdMembers,
-            no_of_migrants: formData.noOfMigrants,
-            household_type: formData.householdType,
-            tenure_status: formData.tenureStatus,
-            tenure_others_specify: formData.tenureOthersSpecify || null,
-            household_unit: formData.householdUnit,
-            monthly_income: formData.monthlyIncome || null,
-            household_head_id: formData.householdHeadId || null,
-            household_head_position: formData.householdHeadPosition,
+            name: formData.name,
+            house_number: formData.house_number,
+            street_id: formData.street_id || null,
+            subdivision_id: formData.subdivision_id || null,
+            barangay_code: formData.barangay_code,
+            city_municipality_code: formData.city_municipality_code,
+            province_code: formData.province_code,
+            region_code: formData.region_code,
+            no_of_families: formData.no_of_families,
+            no_of_household_members: formData.no_of_household_members,
+            no_of_migrants: formData.no_of_migrants,
+            household_type: formData.household_type,
+            tenure_status: formData.tenure_status,
+            tenure_others_specify: formData.tenure_others_specify || null,
+            household_unit: formData.household_unit,
+            monthly_income: formData.monthly_income || null,
+            household_head_id: formData.household_head_id || null,
+            household_head_position: formData.household_head_position,
             updated_at: new Date().toISOString(),
           })
           .eq('id', householdId)
@@ -689,16 +673,28 @@ export default function HouseholdForm({
         {/* Section 1: Location & Demographics */}
         <LocationAndDemographicsForm
           mode={mode}
-          formData={formData}
+          formData={{
+            // Map new snake_case to old camelCase for compatibility
+            houseNumber: formData.house_number || '',
+            streetId: formData.street_id || '',
+            subdivisionId: formData.subdivision_id || '',
+            barangayCode: formData.barangay_code || '',
+            cityMunicipalityCode: formData.city_municipality_code || '',
+            provinceCode: formData.province_code || '',
+            regionCode: formData.region_code || '',
+            noOfFamilies: formData.no_of_families || 1,
+            noOfHouseholdMembers: formData.no_of_household_members || 0,
+            noOfMigrants: formData.no_of_migrants || 0,
+          }}
           onChange={handleInputChange}
           errors={errors}
           regionOptions={
             mode === 'view' && viewModeOptions?.addressLabels
-              ? formData.regionCode
+              ? formData.region_code
                 ? [
                     {
-                      value: formData.regionCode,
-                      label: viewModeOptions.addressLabels.regionLabel || formData.regionCode,
+                      value: formData.region_code,
+                      label: viewModeOptions.addressLabels.regionLabel || formData.region_code,
                     },
                   ]
                 : []
@@ -706,11 +702,11 @@ export default function HouseholdForm({
           }
           provinceOptions={
             mode === 'view' && viewModeOptions?.addressLabels
-              ? formData.provinceCode
+              ? formData.province_code
                 ? [
                     {
-                      value: formData.provinceCode,
-                      label: viewModeOptions.addressLabels.provinceLabel || formData.provinceCode,
+                      value: formData.province_code,
+                      label: viewModeOptions.addressLabels.provinceLabel || formData.province_code,
                     },
                   ]
                 : []
@@ -718,12 +714,12 @@ export default function HouseholdForm({
           }
           cityOptions={
             mode === 'view' && viewModeOptions?.addressLabels
-              ? formData.cityMunicipalityCode
+              ? formData.city_municipality_code
                 ? [
                     {
-                      value: formData.cityMunicipalityCode,
+                      value: formData.city_municipality_code,
                       label:
-                        viewModeOptions.addressLabels.cityLabel || formData.cityMunicipalityCode,
+                        viewModeOptions.addressLabels.cityLabel || formData.city_municipality_code,
                     },
                   ]
                 : []
@@ -731,11 +727,11 @@ export default function HouseholdForm({
           }
           barangayOptions={
             mode === 'view' && viewModeOptions?.addressLabels
-              ? formData.barangayCode
+              ? formData.barangay_code
                 ? [
                     {
-                      value: formData.barangayCode,
-                      label: viewModeOptions.addressLabels.barangayLabel || formData.barangayCode,
+                      value: formData.barangay_code,
+                      label: viewModeOptions.addressLabels.barangayLabel || formData.barangay_code,
                     },
                   ]
                 : []
@@ -754,14 +750,24 @@ export default function HouseholdForm({
         {/* Section 2: Household Details */}
         <HouseholdDetailsForm
           mode={mode}
-          formData={formData}
+          formData={{
+            // Map new snake_case to old camelCase for compatibility
+            householdType: formData.household_type || '',
+            tenureStatus: formData.tenure_status || '',
+            tenureOthersSpecify: formData.tenure_others_specify || '',
+            householdUnit: formData.household_unit || '',
+            householdName: formData.name || '',
+            monthlyIncome: formData.monthly_income || 0,
+            householdHeadId: formData.household_head_id || '',
+            householdHeadPosition: formData.household_head_position || '',
+          }}
           onChange={handleInputChange}
           errors={errors}
           // Head of family options would be populated from residents
           householdHeadOptions={
             mode === 'view' && viewModeOptions?.householdHeadLabel
-              ? formData.householdHeadId
-                ? [{ value: formData.householdHeadId, label: viewModeOptions.householdHeadLabel }]
+              ? formData.household_head_id
+                ? [{ value: formData.household_head_id, label: viewModeOptions.householdHeadLabel }]
                 : []
               : []
           }

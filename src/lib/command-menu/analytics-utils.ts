@@ -4,10 +4,7 @@
  */
 
 import { logger } from '@/lib';
-import type {
-  CommandMenuAnalyticsEvent as ImportedCommandMenuAnalyticsEvent,
-  CommandMenuPerformanceMetrics,
-} from '@/types/services';
+import type { CommandMenuPerformanceMetrics } from '@/types/performance';
 
 // Analytics event types
 export interface CommandMenuAnalyticsEvent {

@@ -123,7 +123,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { validateInput } from '@/lib/validation';
 
 // 4. Types (separate from implementation)
-import type { User, UserProfile } from '@/types/auth';
+import type { User, AuthUserProfile } from '@/types/auth';
 import type { FormEvent, ChangeEvent } from 'react';
 ```
 

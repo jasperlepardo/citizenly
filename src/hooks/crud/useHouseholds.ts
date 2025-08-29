@@ -8,45 +8,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
-
-// Import the properly typed interface
-import { HouseholdRecord } from '@/types';
-
-interface Household extends HouseholdRecord {
-  // Additional computed/joined fields for display
-  head_resident?: {
-    id: string;
-    first_name: string;
-    middle_name?: string;
-    last_name: string;
-  };
-  member_count?: number;
-  // Geographic information for display
-  region_info?: {
-    code: string;
-    name: string;
-  };
-  province_info?: {
-    code: string;
-    name: string;
-  };
-  city_municipality_info?: {
-    code: string;
-    name: string;
-    type: string;
-  };
-  barangay_info?: {
-    code: string;
-    name: string;
-  };
-}
+import { HouseholdWithMembersResult } from '@/types/households';
 
 interface HouseholdsParams {
   searchTerm?: string;
 }
 
 interface HouseholdsResponse {
-  data: Household[];
+  data: HouseholdWithMembersResult[];
   total: number;
 }
 
@@ -123,4 +92,4 @@ export function useHouseholds(params: HouseholdsParams = {}) {
   };
 }
 
-export type { Household, HouseholdsParams, HouseholdsResponse };
+export type { HouseholdsParams, HouseholdsResponse };

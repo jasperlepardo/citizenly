@@ -10,7 +10,6 @@ export {
   useRequireAuth,
   useRequireRole,
   useRequirePermission,
-  type UserProfile,
   type Role,
 } from './AuthContext';
 

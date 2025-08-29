@@ -195,13 +195,70 @@ export interface AddressHierarchy {
 
 /**
  * Address display information
- * Formatted address for UI display
+ * Formatted address strings for UI display
  */
 export interface AddressDisplayInfo {
   short: string; // "Brgy Name, City"
   medium: string; // "Brgy Name, City, Province"
   full: string; // "Brgy Name, City, Province, Region"
   hierarchical: string; // "Region > Province > City > Barangay"
+}
+
+/**
+ * Structured address hierarchy information
+ * Used for displaying individual address components
+ */
+export interface AddressHierarchyInfo {
+  /** Region name */
+  region: string;
+  /** Province name */
+  province: string;
+  /** City/Municipality name with type */
+  cityMunicipality: string;
+  /** Barangay name */
+  barangay: string;
+}
+
+/**
+ * Address labels for lookup and display
+ * Human-readable names for address components
+ */
+export interface AddressLabels {
+  regionLabel?: string;
+  provinceLabel?: string;
+  cityLabel?: string;
+  barangayLabel?: string;
+  streetLabel?: string;
+  subdivisionLabel?: string;
+}
+
+/**
+ * Household type labels for lookup and display
+ * Human-readable names for household components
+ */
+export interface HouseholdTypeLabels {
+  householdTypeLabel?: string;
+  tenureStatusLabel?: string;
+  householdUnitLabel?: string;
+  householdHeadPositionLabel?: string;
+  householdHeadLabel?: string;
+}
+
+/**
+ * Complete address information
+ * Full geographic hierarchy with codes and names
+ */
+export interface CompleteAddress {
+  region_code: string | null;
+  region_name: string;
+  province_code: string | null;
+  province_name: string | null;
+  city_municipality_code: string | null;
+  city_municipality_name: string;
+  city_municipality_type: string;
+  barangay_code: string;
+  barangay_name: string;
+  full_address: string;
 }
 
 /**

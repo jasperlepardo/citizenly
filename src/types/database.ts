@@ -65,9 +65,6 @@
  * ```
  */
 
-// Import consolidated validation types
-export type { ValidationError } from './validation';
-
 // Note: Authentication types moved to auth.ts
 
 // =============================================================================

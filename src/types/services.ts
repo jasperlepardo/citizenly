@@ -3,6 +3,8 @@
  * Consolidated service layer interfaces and types
  */
 
+import type { HouseholdFormData } from '@/types/forms';
+
 // =============================================================================
 // REPOSITORY TYPES
 // =============================================================================
@@ -191,37 +193,19 @@ export interface FamilyInformationData {
 // CACHE TYPES
 // =============================================================================
 
-/**
- * Cache configuration
- */
-export interface CacheConfig {
-  ttl: number; // Time to live in seconds
-  maxSize?: number; // Maximum cache size
-  namespace?: string; // Cache namespace
-}
-
-/**
- * Cache entry
- */
-export interface CacheEntry<T = any> {
-  key: string;
-  value: T;
-  timestamp: number;
-  ttl: number;
-  hits: number;
-}
-
-/**
- * Cache statistics
- */
-export interface CacheStats {
-  hits: number;
-  misses: number;
-  size: number;
-  hitRate: number;
-  oldestEntry?: number;
-  newestEntry?: number;
-}
+// Import consolidated cache types from centralized location
+export type {
+  CacheEntry,
+  CacheStats,
+  CacheConfig,
+  CacheSetOptions,
+  CacheClient,
+  CacheDecoratorOptions,
+  CacheInvalidationOptions,
+  CacheWarmingOptions,
+  CacheOperationResult,
+  CacheError,
+} from '@/types/cache';
 
 // =============================================================================
 // AUTHENTICATION SERVICE TYPES
@@ -260,17 +244,6 @@ export interface AnalyticsEvent {
   userId?: string;
   timestamp: number;
   sessionId?: string;
-}
-
-/**
- * Performance metrics
- */
-export interface PerformanceMetrics {
-  loadTime: number;
-  firstPaint: number;
-  firstContentfulPaint: number;
-  domInteractive: number;
-  domComplete: number;
 }
 
 /**
@@ -350,92 +323,8 @@ export interface RetryConfig {
 }
 
 // =============================================================================
-// HOUSEHOLD SERVICE TYPES (from services/household.service.ts)
+// HOUSEHOLD SERVICE TYPES (using canonical types from @/types/forms)
 // =============================================================================
-
-/**
- * Household form data - aligned with exact database structure (27 fields)
- */
-export interface HouseholdFormData {
-  // Primary identification
-  code: string;
-  name?: string;
-  address?: string;
-
-  // Location details
-  house_number: string;
-  street_id: string; // UUID reference to geo_streets
-  subdivision_id?: string; // UUID reference to geo_subdivisions
-  barangay_code: string;
-  city_municipality_code: string;
-  province_code?: string;
-  region_code: string;
-  zip_code?: string;
-
-  // Household metrics
-  no_of_families?: number;
-  no_of_household_members?: number;
-  no_of_migrants?: number;
-
-  // Household classifications (enums)
-  household_type?:
-    | 'nuclear'
-    | 'single_parent'
-    | 'extended'
-    | 'childless'
-    | 'one_person'
-    | 'non_family'
-    | 'other';
-  tenure_status?:
-    | 'owned'
-    | 'owned_with_mortgage'
-    | 'rented'
-    | 'occupied_for_free'
-    | 'occupied_without_consent'
-    | 'others';
-  tenure_others_specify?: string;
-  household_unit?:
-    | 'single_house'
-    | 'duplex'
-    | 'apartment'
-    | 'townhouse'
-    | 'condominium'
-    | 'boarding_house'
-    | 'institutional'
-    | 'makeshift'
-    | 'others';
-
-  // Economic information
-  monthly_income?: number;
-  income_class?:
-    | 'rich'
-    | 'high_income'
-    | 'upper_middle_income'
-    | 'middle_class'
-    | 'lower_middle_class'
-    | 'low_income'
-    | 'poor'
-    | 'not_determined';
-
-  // Head of household
-  household_head_id?: string; // UUID reference to residents
-  household_head_position?:
-    | 'father'
-    | 'mother'
-    | 'son'
-    | 'daughter'
-    | 'grandmother'
-    | 'grandfather'
-    | 'father_in_law'
-    | 'mother_in_law'
-    | 'brother_in_law'
-    | 'sister_in_law'
-    | 'spouse'
-    | 'sibling'
-    | 'guardian'
-    | 'ward'
-    | 'other';
-}
 
 /**
  * User address information (duplicated from addresses.ts, but more detailed)
@@ -631,16 +520,6 @@ export interface UserSecurityData {
 }
 
 /**
- * CSRF Token interface for security
- * Consolidates from src/services/auth/csrf.ts and csrf-utils.ts
- */
-export interface CSRFToken {
-  token: string;
-  timestamp: number;
-  signature: string;
-}
-
-/**
  * Command menu search result
  * Consolidates from src/services/command-menu/api-utils.ts
  */
@@ -660,17 +539,6 @@ export interface CommandMenuExportOptions {
   type: 'residents' | 'households';
   format: 'csv' | 'xlsx';
   filters?: Record<string, any>;
-}
-
-/**
- * Analytics performance metrics
- * Consolidates from src/services/command-menu/analytics-utils.ts
- */
-export interface CommandMenuPerformanceMetrics {
-  searchLatency: number;
-  cacheHitRate: number;
-  errorRate: number;
-  usageFrequency: number;
 }
 
 /**

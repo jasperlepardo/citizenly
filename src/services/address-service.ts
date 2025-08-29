@@ -6,40 +6,11 @@
 
 import { createLogger } from '../lib/config/environment';
 import { supabase } from '../lib/supabase';
+import type { AddressLabels, HouseholdTypeLabels, CompleteAddress } from '@/types/addresses';
 
 import { cacheService, CacheKeys, CacheTags } from './cache-service';
 
 const logger = createLogger('AddressService');
-
-export interface AddressLabels {
-  regionLabel?: string;
-  provinceLabel?: string;
-  cityLabel?: string;
-  barangayLabel?: string;
-  streetLabel?: string;
-  subdivisionLabel?: string;
-}
-
-export interface HouseholdTypeLabels {
-  householdTypeLabel?: string;
-  tenureStatusLabel?: string;
-  householdUnitLabel?: string;
-  householdHeadPositionLabel?: string;
-  householdHeadLabel?: string;
-}
-
-export interface CompleteAddress {
-  region_code: string | null;
-  region_name: string;
-  province_code: string | null;
-  province_name: string | null;
-  city_municipality_code: string | null;
-  city_municipality_name: string;
-  city_municipality_type: string;
-  barangay_code: string;
-  barangay_name: string;
-  full_address: string;
-}
 
 /**
  * Address Service Class

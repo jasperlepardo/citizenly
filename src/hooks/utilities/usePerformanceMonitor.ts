@@ -11,19 +11,11 @@ import { useRef, useEffect, useCallback } from 'react';
 
 import { useLogger } from './useLogger';
 
+import type { HookPerformanceMetrics as PerformanceMetrics } from '@/types/performance';
+
 /**
- * Performance metrics interface
+ * Performance metrics interface - imported from @/types/performance
  */
-export interface PerformanceMetrics {
-  /** Number of renders */
-  renderCount: number;
-  /** Average render time in ms */
-  averageRenderTime: number;
-  /** Last render time in ms */
-  lastRenderTime: number;
-  /** Whether this hook is causing excessive re-renders */
-  isExcessiveRenders: boolean;
-}
 
 /**
  * Performance monitor options
