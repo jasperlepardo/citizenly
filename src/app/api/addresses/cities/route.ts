@@ -1,13 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createAdminSupabaseClient } from '@/lib';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createAdminSupabaseClient() as any;
     const { searchParams } = new URL(request.url);
     const provinceCode = searchParams.get('province');
 
@@ -31,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     // Transform data to match SelectField format
     const options =
-      cities?.map(city => ({
+      cities?.map((city: any) => ({
         value: city.code,
         label: city.name,
         province_code: city.province_code,

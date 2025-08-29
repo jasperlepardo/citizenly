@@ -1,13 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createAdminSupabaseClient } from '@/lib';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createAdminSupabaseClient() as any;
+
     // Get regions data
     const { data: regions, error: regionsError } = await supabase
       .from('psgc_regions')
@@ -21,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     // Transform data to match SelectField format
     const options =
-      regions?.map(region => ({
+      regions?.map((region: any) => ({
         value: region.code,
         label: region.name,
       })) || [];

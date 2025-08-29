@@ -1,10 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createAdminSupabaseClient } from '@/lib';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -13,6 +9,8 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search');
 
   try {
+    const supabase = createAdminSupabaseClient() as any;
+
     let query = supabase
       .from('geo_streets')
       .select(
@@ -54,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     // Transform data to match SelectField format
     const options =
-      streets?.map(street => ({
+      streets?.map((street: any) => ({
         value: street.id,
         label: street.name,
         subdivision_id: street.subdivision_id,

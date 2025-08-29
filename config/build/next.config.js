@@ -1,10 +1,14 @@
+// Allow turning PWA on/off to isolate build issues
+const isPWAEnabled = process.env.ENABLE_PWA === 'true';
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const withPWA = require('@ducanh2912/next-pwa').default({
   dest: 'public',
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
-  disable: process.env.NODE_ENV === 'development',
+  // Disable PWA unless explicitly enabled to avoid build failures
+  disable: process.env.NODE_ENV !== 'production' || !isPWAEnabled,
   workboxOptions: {
     disableDevLogs: true,
     skipWaiting: true,
@@ -128,7 +132,8 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV !== 'development',
   },
   experimental: {
-    optimizePackageImports: ['@heroicons/react'],
+    // Keep empty until packages using it are installed
+    optimizePackageImports: [],
   },
 
   // Suppress specific React warnings in development
@@ -211,4 +216,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withPWA(nextConfig);
+module.exports = isPWAEnabled ? withPWA(nextConfig) : nextConfig;
