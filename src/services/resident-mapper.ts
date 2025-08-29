@@ -18,8 +18,8 @@ import type {
   ServiceRawPsocData as RawPsocData,
   ServiceRawPsgcData as RawPsgcData,
 } from '@/types/services';
-import { calculateAge } from '@/utils/date-utils';
-import { formatFullName, parseFullName } from '@/utils/string-utils';
+import { calculateAge } from '@/utils/dateUtils';
+import { formatFullName, parseFullName } from '@/utils/stringUtils';
 
 /**
  * Map form data (camelCase) to API format (snake_case for database)

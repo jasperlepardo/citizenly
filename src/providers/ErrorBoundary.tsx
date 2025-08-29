@@ -2,7 +2,8 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import { logError } from '@/lib';
+import { logError } from '@/lib/logging';
+import { createWrappedComponent } from '@/lib/hocUtils';
 
 interface Props {
   children: ReactNode;
@@ -261,13 +262,12 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   errorBoundaryProps?: Omit<Props, 'children'>
 ) {
-  const WrappedComponent = (props: P) => (
-    <ErrorBoundary {...errorBoundaryProps}>
-      <Component {...props} />
-    </ErrorBoundary>
+  return createWrappedComponent(
+    Component,
+    ErrorBoundary,
+    'withErrorBoundary',
+    errorBoundaryProps
   );
-
-  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-
-  return WrappedComponent;
 }
+
+export default ErrorBoundary;

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
 import { InputField, SelectField } from '@/components';
+import { useGenericFormSubmission } from '@/hooks/utilities';
+import { createFieldChangeHandler } from '@/lib/form-utils';
 import { supabase, logger, logError } from '@/lib';
 
 export const dynamic = 'force-dynamic';
@@ -38,7 +40,6 @@ function CreateUserContent() {
     role_id: '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [roles, setRoles] = useState<Role[]>([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -154,79 +155,13 @@ function CreateUserContent() {
     }
   };
 
-  const handleChange = (field: keyof CreateUserFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  // Use consolidated form handler - eliminates 7 lines of duplicate code
+  const handleChange = createFieldChangeHandler<CreateUserFormData>(setFormData, setErrors);
 
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    // Confirm password validation
-    if (!formData.confirm_password) {
-      newErrors.confirm_password = 'Please confirm the password';
-    } else if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'Passwords do not match';
-    }
-
-    // Name validation
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'First name is required';
-    }
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'Last name is required';
-    }
-
-    // Mobile number validation
-    if (!formData.mobile_number.trim()) {
-      newErrors.mobile_number = 'Mobile number is required';
-    } else if (!/^(09|\+639)\d{9}$/.test(formData.mobile_number.replace(/\s+/g, ''))) {
-      newErrors.mobile_number = 'Please enter a valid Philippine mobile number';
-    }
-
-    // Barangay validation
-    if (!formData.barangay_code) {
-      newErrors.barangay_code = 'Please select a barangay';
-    }
-
-    // Role validation
-    if (!formData.role_id) {
-      newErrors.role_id = 'Please select a role';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    try {
+  // Use consolidated form submission hook
+  const { isSubmitting, handleSubmit } = useGenericFormSubmission<CreateUserFormData>({
+    onSubmit: async (data) => {
       logger.info('Starting user account creation process');
-
-      logger.debug('Creating user via admin API');
 
       // Use API endpoint instead of direct inserts
       const {
@@ -234,17 +169,16 @@ function CreateUserContent() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        setErrors({ general: 'Authentication required. Please log in again.' });
-        return;
+        throw new Error('Authentication required. Please log in again.');
       }
 
       const adminUserData = {
-        email: formData.email,
-        password: formData.password,
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        barangay_code: formData.barangay_code,
-        role_id: formData.role_id,
+        email: data.email,
+        password: data.password,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        barangay_code: data.barangay_code,
+        role_id: data.role_id,
       };
 
       const response = await fetch('/api/admin/users', {
@@ -259,38 +193,81 @@ function CreateUserContent() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.error || `HTTP ${response.status}: ${response.statusText}`;
-
         logError(new Error(errorMessage), 'ADMIN_USER_CREATION');
-        setErrors({ general: 'Failed to create user: ' + errorMessage });
-        return;
+        throw new Error('Failed to create user: ' + errorMessage);
       }
 
       const { user: createdUser } = await response.json();
       logger.info('User created successfully via API', { userId: createdUser.id });
 
-      // Barangay account creation is handled by the API
-
       // Success!
       setCreatedUser({
-        email: formData.email,
-        name: `${formData.first_name} ${formData.last_name}`,
-        role: roles.find(r => r.id === formData.role_id)?.name || 'resident',
+        email: data.email,
+        name: `${data.first_name} ${data.last_name}`,
+        role: roles.find(r => r.id === data.role_id)?.name || 'resident',
       });
+    },
+    validate: (data) => {
+      const newErrors: Record<string, string> = {};
+
+      // Email validation
+      if (!data.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+
+      // Password validation
+      if (!data.password) {
+        newErrors.password = 'Password is required';
+      } else if (data.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      }
+
+      // Confirm password validation
+      if (!data.confirm_password) {
+        newErrors.confirm_password = 'Please confirm the password';
+      } else if (data.password !== data.confirm_password) {
+        newErrors.confirm_password = 'Passwords do not match';
+      }
+
+      // Name validation
+      if (!data.first_name.trim()) {
+        newErrors.first_name = 'First name is required';
+      }
+      if (!data.last_name.trim()) {
+        newErrors.last_name = 'Last name is required';
+      }
+
+      // Mobile number validation
+      if (!data.mobile_number.trim()) {
+        newErrors.mobile_number = 'Mobile number is required';
+      } else if (!/^(09|\+639)\d{9}$/.test(data.mobile_number.replace(/\s+/g, ''))) {
+        newErrors.mobile_number = 'Please enter a valid Philippine mobile number';
+      }
+
+      // Barangay validation
+      if (!data.barangay_code) {
+        newErrors.barangay_code = 'Please select a barangay';
+      }
+
+      // Role validation
+      if (!data.role_id) {
+        newErrors.role_id = 'Please select a role';
+      }
+
+      return {
+        isValid: Object.keys(newErrors).length === 0,
+        errors: newErrors,
+      };
+    },
+    onSuccess: () => {
       setSuccess(true);
-    } catch (error) {
-      logError(
-        error instanceof Error ? error : new Error('Unknown user creation error'),
-        'USER_CREATION'
-      );
-      setErrors({
-        general:
-          'An unexpected error occurred: ' +
-          (error instanceof Error ? error.message : String(error)),
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+    onError: (error) => {
+      setErrors({ general: error.message });
+    },
+  });
 
   const resetForm = () => {
     setFormData({
@@ -392,7 +369,7 @@ function CreateUserContent() {
 
       <div className="mx-auto w-full max-w-2xl">
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
             {/* General Error */}
             {errors.general && (
               <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-700 dark:bg-red-900/20">

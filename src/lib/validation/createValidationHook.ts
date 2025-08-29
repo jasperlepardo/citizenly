@@ -266,5 +266,4 @@ export const useEmailValidation = createValidationHook(CommonSchemas.email);
 export const usePhoneValidation = createValidationHook(CommonSchemas.phone);
 export const useRequiredValidation = createValidationHook(CommonSchemas.required);
 
-// Export for backward compatibility
-export default createValidationHook;
+// createValidationHook is already exported as 'export function' above

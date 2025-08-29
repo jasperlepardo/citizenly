@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 
 import { InputField, Button } from '@/components';
 import { useAuth } from '@/contexts';
+import { useGenericFormSubmission } from '@/hooks/utilities';
+import { createFieldChangeHandler } from '@/lib/form-utils';
+import type { LoginFormData } from '@/types/auth';
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -16,75 +19,63 @@ export default function LoginForm({
   redirectTo = '/dashboard',
   className = '',
 }: LoginFormProps) {
-  const { signIn, loading } = useAuth();
-  const [formData, setFormData] = useState({
+  const { signIn } = useAuth();
+  const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
+    rememberMe: false,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  // Use consolidated form handler - eliminates 7 lines of duplicate code
+  const handleChange = createFieldChangeHandler<LoginFormData>(setFormData, setErrors);
 
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const { error } = await signIn(formData.email, formData.password);
-
+  // Use consolidated form submission hook
+  const { isSubmitting, handleSubmit } = useGenericFormSubmission<LoginFormData>({
+    onSubmit: async (data) => {
+      const { error } = await signIn(data.email, data.password);
+      
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          setErrors({ general: 'Invalid email or password. Please try again.' });
+          throw new Error('Invalid email or password. Please try again.');
         } else if (error.message.includes('Email not confirmed')) {
-          setErrors({ general: 'Please check your email and click the confirmation link.' });
+          throw new Error('Please check your email and click the confirmation link.');
         } else {
-          setErrors({ general: error.message || 'Login failed. Please try again.' });
-        }
-      } else {
-        // Success - redirect or call onSuccess
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          window.location.href = redirectTo;
+          throw new Error(error.message || 'Login failed. Please try again.');
         }
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setErrors({ general: 'An unexpected error occurred. Please try again.' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+    validate: (data) => {
+      const newErrors: Record<string, string> = {};
+
+      if (!data.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+
+      if (!data.password) {
+        newErrors.password = 'Password is required';
+      } else if (data.password.length < 6) {
+        newErrors.password = 'Password must be at least 6 characters';
+      }
+
+      return {
+        isValid: Object.keys(newErrors).length === 0,
+        errors: newErrors,
+      };
+    },
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        window.location.href = redirectTo;
+      }
+    },
+    onError: (error) => {
+      setErrors({ general: error.message });
+    },
+  });
 
   return (
     <div className={`mx-auto w-full max-w-md ${className}`}>
@@ -98,7 +89,7 @@ export default function LoginForm({
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
           {/* General Error */}
           {errors.general && (
             <div className="rounded-lg border border-red-300 bg-red-50 p-4">
@@ -176,7 +167,7 @@ export default function LoginForm({
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={isSubmitting || loading}
+            disabled={isSubmitting}
             loading={isSubmitting}
             variant="primary"
             size="regular"

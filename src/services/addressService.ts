@@ -5,10 +5,10 @@
  */
 
 import { createLogger } from '../lib/config/environment';
-import { supabase } from '../lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 import type { AddressLabels, HouseholdTypeLabels, CompleteAddress } from '@/types/addresses';
 
-import { cacheService, CacheKeys, CacheTags } from './cache-service';
+import { cacheService, CacheKeys, CacheTags } from './cacheService';
 
 const logger = createLogger('AddressService');
 

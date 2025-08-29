@@ -140,8 +140,6 @@ export type ResidentFormData = { };
 export type { UserProfile, AuthContextType };
 ```
 
----
-
 ## ⚡ TypeScript Standards
 
 ### **Type Definitions**

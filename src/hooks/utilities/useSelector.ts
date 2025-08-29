@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 export interface UseSelectorOptions<T> {
   value: string;

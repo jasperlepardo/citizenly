@@ -4,6 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
 import { cn } from '@/lib';
+import { createSearchKeyHandler } from '@/lib/keyboardUtils';
 
 const searchBarVariants = cva(
   'relative flex w-full items-center transition-colors font-system focus-within:outline-hidden',
@@ -59,15 +60,21 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     },
     ref
   ) => {
+    const keyHandler = createSearchKeyHandler({
+      onSearch: (query) => onSearch?.(query),
+      onClear,
+      onEscape: () => {
+        // Focus handling for escape key
+        if (ref && 'current' in ref && ref.current) {
+          ref.current.blur();
+        }
+      },
+      currentValue: value?.toString() || '',
+      preventDefault: true
+    });
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        onSearch?.(e.currentTarget.value);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        e.currentTarget.blur();
-        onClear?.();
-      }
+      keyHandler(e);
       onKeyDown?.(e);
     };
 

@@ -13,7 +13,7 @@ export {
   preloadLazyComponent,
   LazyLoadingPresets,
   useLazyLoadOnIntersection,
-} from './lazy-components';
+} from './lazyComponents';
 
 // Use withLazyLoading from lazy-loading.tsx as primary implementation
 export { withLazyLoading, preloadComponents } from './lazy-loading';

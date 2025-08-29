@@ -11,7 +11,7 @@ export {
   truncate,
   sanitizeString,
   formatPhoneNumber,
-} from '@/utils/string-utils';
+} from '@/utils/stringUtils';
 
 // Data transformation utilities
 export {

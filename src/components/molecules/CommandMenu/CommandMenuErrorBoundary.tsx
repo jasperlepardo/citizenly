@@ -2,7 +2,8 @@
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
+import { createWrappedComponent } from '@/lib/hocUtils';
 
 interface CommandMenuErrorBoundaryState {
   hasError: boolean;
@@ -114,15 +115,10 @@ export function withCommandMenuErrorBoundary<T extends object>(
   Component: React.ComponentType<T>,
   fallback?: ReactNode
 ) {
-  const WrappedComponent = (props: T) => (
-    <CommandMenuErrorBoundary fallback={fallback}>
-      <Component {...props} />
-    </CommandMenuErrorBoundary>
+  return createWrappedComponent(
+    Component,
+    CommandMenuErrorBoundary,
+    'withCommandMenuErrorBoundary',
+    { fallback }
   );
-
-  WrappedComponent.displayName = `withCommandMenuErrorBoundary(${
-    Component.displayName || Component.name
-  })`;
-
-  return WrappedComponent;
 }

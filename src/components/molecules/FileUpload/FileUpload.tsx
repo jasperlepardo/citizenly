@@ -5,7 +5,7 @@ import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
 import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components';
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
 import { cn, formatFileSize } from '@/utils';
 

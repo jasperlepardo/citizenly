@@ -7,7 +7,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import { HouseholdWithMembersResult } from '@/types/households';
 
 interface HouseholdsParams {

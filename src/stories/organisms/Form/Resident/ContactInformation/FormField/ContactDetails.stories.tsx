@@ -1,6 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { ContactDetails, ContactDetailsData } from '@/components/organisms/ContactDetails';
+import { 
+  InteractiveStory, 
+  ProgressiveStory, 
+  ProgressiveStoryControls,
+  ValidationPatternStory,
+  ValidationPatternControls,
+  StoryControlButtons,
+  StoryValueDisplay,
+  createEmailValidator,
+  createPhoneValidator,
+  combineValidators,
+  createStoryParameters,
+  createEmptyFormData,
+  createSampleFormData
+} from '@/lib/storybookUtils';
 
 const meta = {
   title: 'Organisms/Form/Resident/ContactInformation/FormField/ContactDetails',
@@ -38,19 +53,22 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Default empty state
-const emptyData: ContactDetailsData = {
-  email: '',
-  phoneNumber: '',
-  mobileNumber: '',
-};
+// Default empty state using consolidated utility
+const emptyData: ContactDetailsData = createEmptyFormData<ContactDetailsData>(['email', 'phoneNumber', 'mobileNumber']);
 
-// Sample complete data
-const sampleData: ContactDetailsData = {
+// Sample complete data using consolidated utility
+const sampleData: ContactDetailsData = createSampleFormData<ContactDetailsData>({
   email: 'juan.delacruz@gmail.com',
   phoneNumber: '(02) 123-4567',
   mobileNumber: '+63 912 345 6789',
-};
+});
+
+// Consolidated validation rules
+const contactValidationRules = combineValidators(
+  createEmailValidator('email'),
+  createPhoneValidator('phoneNumber'),
+  createPhoneValidator('mobileNumber')
+);
 
 // Basic Examples
 export const Default: Story = {
@@ -234,167 +252,91 @@ export const BusinessContacts: Story = {
   },
 };
 
-// Interactive Examples
+// Interactive Examples using consolidated utility
 export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState<ContactDetailsData>(emptyData);
-    const [errors, setErrors] = useState<Record<string, string>>({});
+  render: () => (
+    <InteractiveStory
+      initialValue={emptyData}
+      sampleData={sampleData}
+      validationRules={contactValidationRules}
+    >
+      {(storyState) => (
+        <div className="space-y-6">
+          <ContactDetails 
+            value={storyState.value} 
+            onChange={storyState.onChange} 
+            errors={storyState.errors} 
+          />
 
-    const handleChange = (newValue: ContactDetailsData) => {
-      setValue(newValue);
+          <StoryControlButtons 
+            storyState={storyState} 
+            sampleData={sampleData} 
+          />
 
-      // Clear errors for fields that now have values
-      const newErrors = { ...errors };
-      Object.keys(newValue).forEach(key => {
-        const field = key as keyof ContactDetailsData;
-        if (newValue[field] && errors[field]) {
-          delete newErrors[field];
-        }
-      });
-      setErrors(newErrors);
-    };
-
-    const validateEmail = (email: string) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
-
-    const validatePhoneNumber = (phone: string) => {
-      const phoneRegex = /^[\+]?[\d\s\(\)\-]{7,}$/;
-      return phoneRegex.test(phone);
-    };
-
-    const validate = () => {
-      const newErrors: Record<string, string> = {};
-
-      if (value.email && !validateEmail(value.email)) {
-        newErrors.email = 'Please enter a valid email address';
-      }
-
-      if (value.phoneNumber && !validatePhoneNumber(value.phoneNumber)) {
-        newErrors.phoneNumber = 'Please enter a valid phone number';
-      }
-
-      if (value.mobileNumber && !validatePhoneNumber(value.mobileNumber)) {
-        newErrors.mobileNumber = 'Please enter a valid mobile number';
-      }
-
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-    const fillSampleData = () => {
-      setValue(sampleData);
-      setErrors({});
-    };
-
-    const reset = () => {
-      setValue(emptyData);
-      setErrors({});
-    };
-
-    return (
-      <div className="space-y-6">
-        <ContactDetails value={value} onChange={handleChange} errors={errors} />
-
-        <div className="flex space-x-4">
-          <button
-            onClick={validate}
-            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Validate
-          </button>
-          <button
-            onClick={fillSampleData}
-            className="rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-          >
-            Fill Sample
-          </button>
-          <button
-            onClick={reset}
-            className="rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
-          >
-            Reset
-          </button>
+          <StoryValueDisplay 
+            value={storyState.value} 
+            errors={storyState.errors} 
+          />
         </div>
-
-        <div className="rounded bg-gray-100 p-4">
-          <h4 className="font-medium">Current Values:</h4>
-          <pre className="mt-2 text-sm">{JSON.stringify(value, null, 2)}</pre>
-        </div>
-
-        {Object.keys(errors).length > 0 && (
-          <div className="rounded bg-red-100 p-4">
-            <h4 className="font-medium text-red-800">Validation Errors:</h4>
-            <pre className="mt-2 text-sm text-red-700">{JSON.stringify(errors, null, 2)}</pre>
-          </div>
-        )}
-      </div>
-    );
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Interactive form with real-time validation for contact details.',
-      },
-    },
-  },
+      )}
+    </InteractiveStory>
+  ),
+  parameters: createStoryParameters(
+    'Interactive Contact Details',
+    'Interactive form with real-time validation for contact details using consolidated utilities.'
+  ),
 };
 
-// Progressive Filling Example
+// Progressive Filling Example using consolidated utility
 export const ProgressiveFilling: Story = {
   render: () => {
-    const [step, setStep] = useState(0);
-
     const steps = [
-      { ...emptyData },
-      { ...emptyData, email: 'user@example.com' },
-      { ...emptyData, email: 'user@example.com', phoneNumber: '(02) 123-4567' },
+      { 
+        label: 'Empty Form', 
+        data: { ...emptyData },
+        description: 'Starting with empty form'
+      },
+      { 
+        label: 'Add Email', 
+        data: { ...emptyData, email: 'user@example.com' },
+        description: 'Email address added'
+      },
+      { 
+        label: 'Add Phone', 
+        data: { ...emptyData, email: 'user@example.com', phoneNumber: '(02) 123-4567' },
+        description: 'Phone number added'
+      },
       {
-        ...emptyData,
-        email: 'user@example.com',
-        phoneNumber: '(02) 123-4567',
-        mobileNumber: '+63 912 345 6789',
+        label: 'Add Mobile',
+        data: {
+          ...emptyData,
+          email: 'user@example.com',
+          phoneNumber: '(02) 123-4567',
+          mobileNumber: '+63 912 345 6789',
+        },
+        description: 'All contact details completed'
       },
     ];
 
-    const stepLabels = ['Empty Form', 'Add Email', 'Add Phone', 'Add Mobile'];
-
     return (
-      <div className="space-y-6">
-        <ContactDetails value={steps[step]} onChange={() => {}} errors={{}} />
-
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {stepLabels.map((label, index) => (
-              <button
-                key={index}
-                onClick={() => setStep(index)}
-                className={`rounded px-3 py-1 text-sm ${
-                  step === index
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {index}: {label}
-              </button>
-            ))}
+      <ProgressiveStory steps={steps}>
+        {({ currentData, currentStep, goToStep }) => (
+          <div className="space-y-6">
+            <ContactDetails value={currentData} onChange={() => {}} errors={{}} />
+            <ProgressiveStoryControls 
+              steps={steps} 
+              currentStep={currentStep} 
+              onStepChange={goToStep} 
+            />
           </div>
-
-          <div className="text-sm text-gray-600">
-            Step {step + 1} of {steps.length}: {stepLabels[step]}
-          </div>
-        </div>
-      </div>
+        )}
+      </ProgressiveStory>
     );
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Demonstration of progressive contact information entry.',
-      },
-    },
-  },
+  parameters: createStoryParameters(
+    'Progressive Contact Entry',
+    'Demonstration of progressive contact information entry using consolidated utilities.'
+  ),
 };
 
 // Validation Patterns Example

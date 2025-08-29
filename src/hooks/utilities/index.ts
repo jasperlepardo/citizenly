@@ -31,7 +31,8 @@ export { useMigrationInformation } from './useMigrationInformation';
 
 // Form utilities
 export { useFormSubmission } from './useFormSubmission';
+export { useGenericFormSubmission } from './useGenericFormSubmission';
 export { useResidentSubmission } from './useResidentSubmission';
 
 // Validation utilities
-export { createValidationHook } from './createValidationHook';
+export { createValidationHook } from '@/lib/validation/createValidationHook';

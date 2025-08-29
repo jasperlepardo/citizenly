@@ -1,36 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+/**
+ * Regions API Route
+ * Returns all Philippine regions in SelectField format
+ */
 
-import { createAdminSupabaseClient } from '@/lib';
+import { PSGCHandlers } from '@/lib/api/psgc-handlers';
 
-export async function GET(request: NextRequest) {
-  try {
-    const supabase = createAdminSupabaseClient() as any;
-
-    // Get regions data
-    const { data: regions, error: regionsError } = await supabase
-      .from('psgc_regions')
-      .select('code, name')
-      .order('name');
-
-    if (regionsError) {
-      console.error('Regions query error:', regionsError);
-      return NextResponse.json({ error: 'Failed to fetch regions' }, { status: 500 });
-    }
-
-    // Transform data to match SelectField format
-    const options =
-      regions?.map((region: any) => ({
-        value: region.code,
-        label: region.name,
-      })) || [];
-
-    return NextResponse.json({
-      success: true,
-      data: options,
-      count: options.length,
-    });
-  } catch (error) {
-    console.error('Regions API error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+// Use consolidated PSGC handler - eliminates 35 lines of duplicate code
+export const GET = PSGCHandlers.regions;

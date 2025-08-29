@@ -166,4 +166,4 @@ export const isSentryConfigured = (): boolean => {
   );
 };
 
-export default getSentryConfig;
+// getSentryConfig is already exported as 'export function' above

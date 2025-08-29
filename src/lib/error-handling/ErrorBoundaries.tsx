@@ -7,7 +7,8 @@
 
 import React from 'react';
 
-import { logError, getErrorMessage } from '@/utils/error-utils';
+import { logError, getErrorMessage } from '@/utils/errorUtils';
+import { createWrappedComponent } from '@/lib/hocUtils';
 
 import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from './error-types';
 
@@ -238,15 +239,11 @@ export function withErrorBoundary<P extends object>(
     logContext: { component: options.componentName || Component.displayName || Component.name },
   });
 
-  const WrappedComponent = (props: P) => (
-    <ErrorBoundary>
-      <Component {...props} />
-    </ErrorBoundary>
+  return createWrappedComponent(
+    Component,
+    ErrorBoundary,
+    'withErrorBoundary'
   );
-
-  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-
-  return WrappedComponent;
 }
 
 /**
@@ -284,3 +281,5 @@ export const errorBoundaryUtils = {
     });
   },
 };
+
+export default errorBoundaryUtils;

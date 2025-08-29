@@ -4,6 +4,8 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
 import { InputField, SelectField, Button } from '@/components';
+import { useGenericFormSubmission } from '@/hooks/utilities';
+import { createFieldChangeHandler } from '@/lib/form-utils';
 import { supabase, logger, logError } from '@/lib';
 // import { getErrorMessage } from '@/lib/auth-errors';
 
@@ -34,7 +36,6 @@ export default function SignupPage() {
   const [barangayLoading, setBarangayLoading] = useState(false);
   const [barangaySearchTerm, setBarangaySearchTerm] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
   const [_assignedRole, _setAssignedRole] = useState<string>('');
   const [submitStatus, setSubmitStatus] = useState<string>('');
@@ -86,136 +87,121 @@ export default function SignupPage() {
 
   // Barangay admin checking now handled by database trigger after email confirmation
 
-  const handleChange = (field: keyof SignupFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  // Use consolidated form handler - eliminates 7 lines of duplicate code
+  const handleChange = createFieldChangeHandler<SignupFormData>(setFormData, setErrors);
 
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+  // Use consolidated form submission hook
+  const { isSubmitting, handleSubmit } = useGenericFormSubmission<SignupFormData>({
+    onSubmit: async (data) => {
+      // Add timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        logger.error('Signup process timed out after 30 seconds');
+        throw new Error('Signup process timed out. Please try again.');
+      }, 30000); // 30 second timeout
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+      try {
+        // Step 1: Create auth user with metadata for post-confirmation processing
+        setSubmitStatus('Creating your account...');
+        
+        // Check if we're in development mode (disable emails to prevent bounces)
+        const isDevelopment = process.env.NODE_ENV === 'development';
 
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password =
-        'Password must contain at least one uppercase letter, one lowercase letter, and one number';
-    }
-
-    // Confirm password validation
-    if (!formData.confirm_password) {
-      newErrors.confirm_password = 'Please confirm your password';
-    } else if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'Passwords do not match';
-    }
-
-    // Name validation
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'First name is required';
-    }
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'Last name is required';
-    }
-
-    // Mobile number validation
-    if (!formData.mobile_number.trim()) {
-      newErrors.mobile_number = 'Mobile number is required';
-    } else if (!/^(09|\+639)\d{9}$/.test(formData.mobile_number.replace(/\s+/g, ''))) {
-      newErrors.mobile_number = 'Please enter a valid Philippine mobile number';
-    }
-
-    // Barangay validation
-    if (!formData.barangay_code) {
-      newErrors.barangay_code = 'Please select your barangay';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
-    // Add timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      logger.error('Signup process timed out after 30 seconds');
-      setIsSubmitting(false);
-      setErrors({ general: 'Signup process timed out. Please try again.' });
-    }, 30000); // 30 second timeout
-
-    try {
-      // Step 1: Create auth user with metadata for post-confirmation processing
-      setSubmitStatus('Creating your account...');
-      // Attempting signup with provided email
-
-      // Check if we're in development mode (disable emails to prevent bounces)
-      const isDevelopment = process.env.NODE_ENV === 'development';
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            phone: formData.mobile_number,
-            barangay_code: formData.barangay_code,
-            signup_step: 'awaiting_confirmation',
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email: data.email,
+          password: data.password,
+          options: {
+            data: {
+              first_name: data.first_name,
+              last_name: data.last_name,
+              phone: data.mobile_number,
+              barangay_code: data.barangay_code,
+              signup_step: 'awaiting_confirmation',
+            },
+            // In development, don't send confirmation emails
+            emailRedirectTo: isDevelopment ? undefined : `${window.location.origin}/auth/callback`,
           },
-          // In development, don't send confirmation emails
-          emailRedirectTo: isDevelopment ? undefined : `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      // Signup attempt completed, checking result status
-
-      if (authError || !authData.user) {
-        logger.error('Signup failed', {
-          error: authError?.message,
-          code: authError?.code,
-          status: authError?.status,
         });
-        throw new Error(authError?.message || 'Failed to create account');
+
+        if (authError || !authData.user) {
+          logger.error('Signup failed', {
+            error: authError?.message,
+            code: authError?.code,
+            status: authError?.status,
+          });
+          throw new Error(authError?.message || 'Failed to create account');
+        }
+
+        // Success
+        setSubmitStatus('Account created successfully!');
+        clearTimeout(timeoutId);
+      } catch (error) {
+        clearTimeout(timeoutId);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        logError(error instanceof Error ? error : new Error(errorMessage), 'SIGNUP_PROCESS');
+        throw error;
+      } finally {
+        setSubmitStatus('');
+      }
+    },
+    validate: (data) => {
+      const newErrors: Record<string, string> = {};
+
+      // Email validation
+      if (!data.email.trim()) {
+        newErrors.email = 'Email is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        newErrors.email = 'Please enter a valid email address';
       }
 
-      // Auth user created successfully, email confirmation required
+      // Password validation
+      if (!data.password) {
+        newErrors.password = 'Password is required';
+      } else if (data.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(data.password)) {
+        newErrors.password =
+          'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+      }
 
-      // Signup data is already stored in user metadata during supabase.auth.signUp()
-      // Database trigger will process this after email confirmation
+      // Confirm password validation
+      if (!data.confirm_password) {
+        newErrors.confirm_password = 'Please confirm your password';
+      } else if (data.password !== data.confirm_password) {
+        newErrors.confirm_password = 'Passwords do not match';
+      }
 
-      // Success
-      setSubmitStatus('Account created successfully!');
+      // Name validation
+      if (!data.first_name.trim()) {
+        newErrors.first_name = 'First name is required';
+      }
+      if (!data.last_name.trim()) {
+        newErrors.last_name = 'Last name is required';
+      }
+
+      // Mobile number validation
+      if (!data.mobile_number.trim()) {
+        newErrors.mobile_number = 'Mobile number is required';
+      } else if (!/^(09|\+639)\d{9}$/.test(data.mobile_number.replace(/\s+/g, ''))) {
+        newErrors.mobile_number = 'Please enter a valid Philippine mobile number';
+      }
+
+      // Barangay validation
+      if (!data.barangay_code) {
+        newErrors.barangay_code = 'Please select your barangay';
+      }
+
+      return {
+        isValid: Object.keys(newErrors).length === 0,
+        errors: newErrors,
+      };
+    },
+    onSuccess: () => {
       setStep('success');
-      // Role assignment handled by database trigger
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      setErrors({ general: errorMessage });
-
-      // Log error for debugging
-      logError(error instanceof Error ? error : new Error(errorMessage), 'SIGNUP_PROCESS');
-    } finally {
-      clearTimeout(timeoutId);
-      setIsSubmitting(false);
-      setSubmitStatus('');
-    }
-  };
+    },
+    onError: (error) => {
+      setErrors({ general: error.message });
+    },
+  });
 
   // Role assignment now handled by database trigger after email confirmation
 
@@ -312,7 +298,7 @@ export default function SignupPage() {
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
             {/* Status Message */}
             {isSubmitting && submitStatus && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">

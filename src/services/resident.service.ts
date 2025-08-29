@@ -5,7 +5,8 @@
  * Follows standardized service pattern
  */
 
-import { supabase, logError, dbLogger } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
+import { logError, dbLogger } from '@/lib/logging';
 import { createLogger } from '@/lib/config/environment';
 
 const logger = createLogger('ResidentService');

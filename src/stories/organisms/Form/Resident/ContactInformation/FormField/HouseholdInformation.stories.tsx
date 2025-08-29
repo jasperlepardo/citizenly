@@ -4,6 +4,14 @@ import {
   HouseholdInformation,
   HouseholdInformationData,
 } from '@/components/organisms/HouseholdInformation';
+import { 
+  InteractiveStory, 
+  StoryControlButtons,
+  StoryValueDisplay,
+  createStoryParameters,
+  createEmptyFormData,
+  createSampleFormData
+} from '@/lib/storybookUtils';
 
 const meta = {
   title: 'Organisms/Form/Resident/ContactInformation/FormField/HouseholdInformation',
@@ -261,11 +269,17 @@ export const HouseholdsWithAddresses: Story = {
   },
 };
 
-// Interactive Examples
+// Interactive Examples using consolidated utility
+const householdValidation = (data: HouseholdInformationData) => {
+  const errors: Record<string, string> = {};
+  if (!data.householdCode) {
+    errors.householdCode = 'Please select a household';
+  }
+  return errors;
+};
+
 export const Interactive: Story = {
   render: () => {
-    const [value, setValue] = useState<HouseholdInformationData>(emptyData);
-    const [errors, setErrors] = useState<Record<string, string>>({});
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -273,15 +287,6 @@ export const Interactive: Story = {
     const filteredHouseholds = sampleHouseholdOptions.filter(household =>
       household.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
-    const handleChange = (newValue: HouseholdInformationData) => {
-      setValue(newValue);
-
-      // Clear errors when a household is selected
-      if (newValue.householdCode && errors.householdCode) {
-        setErrors(prev => ({ ...prev, householdCode: '' }));
-      }
-    };
 
     const handleSearch = (query: string) => {
       setSearchTerm(query);
@@ -293,85 +298,85 @@ export const Interactive: Story = {
       }, 500);
     };
 
-    const validate = () => {
-      const newErrors: Record<string, string> = {};
-
-      if (!value.householdCode) {
-        newErrors.householdCode = 'Please select a household';
-      }
-
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-    const reset = () => {
-      setValue(emptyData);
-      setErrors({});
-      setSearchTerm('');
-    };
-
     return (
-      <div className="space-y-6">
-        <HouseholdInformation
-          value={value}
-          onChange={handleChange}
-          errors={errors}
-          onHouseholdSearch={handleSearch}
-          householdOptions={filteredHouseholds}
-          householdLoading={isLoading}
-        />
+      <InteractiveStory
+        initialValue={emptyData}
+        sampleData={sampleData}
+        validationRules={householdValidation}
+      >
+        {(storyState) => {
+          const handleChange = (newValue: HouseholdInformationData) => {
+            storyState.onChange(newValue);
+            // Clear search when selecting
+            if (newValue.householdCode) {
+              setSearchTerm('');
+            }
+          };
 
-        <div className="flex space-x-4">
-          <button
-            onClick={validate}
-            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Validate
-          </button>
-          <button
-            onClick={reset}
-            className="rounded-md bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
-          >
-            Reset
-          </button>
-        </div>
+          const customReset = () => {
+            storyState.reset();
+            setSearchTerm('');
+          };
 
-        <div className="space-y-4">
-          <div className="rounded bg-gray-100 p-4">
-            <h4 className="font-medium">Current State:</h4>
-            <div className="mt-2 space-y-1 text-sm">
-              <p>
-                <strong>Selected:</strong> {value.householdCode || 'None'}
-              </p>
-              <p>
-                <strong>Search Term:</strong> "{searchTerm}"
-              </p>
-              <p>
-                <strong>Available Options:</strong> {filteredHouseholds.length}
-              </p>
-              <p>
-                <strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}
-              </p>
+          return (
+            <div className="space-y-6">
+              <HouseholdInformation
+                value={storyState.value}
+                onChange={handleChange}
+                errors={storyState.errors}
+                onHouseholdSearch={handleSearch}
+                householdOptions={filteredHouseholds}
+                householdLoading={isLoading}
+              />
+
+              <StoryControlButtons 
+                storyState={storyState}
+                sampleData={sampleData}
+                controls={{
+                  customButtons: [
+                    {
+                      label: 'Reset + Clear Search',
+                      onClick: customReset,
+                      className: 'rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700'
+                    }
+                  ]
+                }}
+              />
+
+              <div className="space-y-4">
+                <div className="rounded bg-gray-100 p-4">
+                  <h4 className="font-medium">Current State:</h4>
+                  <div className="mt-2 space-y-1 text-sm">
+                    <p>
+                      <strong>Selected:</strong> {storyState.value.householdCode || 'None'}
+                    </p>
+                    <p>
+                      <strong>Search Term:</strong> "{searchTerm}"
+                    </p>
+                    <p>
+                      <strong>Available Options:</strong> {filteredHouseholds.length}
+                    </p>
+                    <p>
+                      <strong>Loading:</strong> {isLoading ? 'Yes' : 'No'}
+                    </p>
+                  </div>
+                </div>
+
+                <StoryValueDisplay 
+                  value={storyState.value} 
+                  errors={storyState.errors} 
+                />
+              </div>
             </div>
-          </div>
-
-          {Object.keys(errors).length > 0 && (
-            <div className="rounded bg-red-100 p-4">
-              <h4 className="font-medium text-red-800">Validation Errors:</h4>
-              <pre className="mt-2 text-sm text-red-700">{JSON.stringify(errors, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-      </div>
+          );
+        }}
+      </InteractiveStory>
     );
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Interactive household selection with search functionality and validation.',
-      },
-    },
-  },
+  parameters: createStoryParameters(
+    'Interactive Household Selection',
+    'Interactive household selection with search functionality and validation using consolidated utilities.'
+  ),
 };
 
 // Search Examples

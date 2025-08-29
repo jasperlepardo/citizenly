@@ -3,7 +3,7 @@
  * Monitors and detects security threats in real-time
  */
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 import { storeThreatDetectionEvent, ThreatDetectionEvent } from './audit-storage';
 

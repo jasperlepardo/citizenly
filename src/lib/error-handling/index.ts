@@ -18,7 +18,7 @@ export {
   sanitizeError,
   createValidationError,
   createNetworkError,
-} from '@/utils/error-utils';
+} from '@/utils/errorUtils';
 
 export {
   createErrorBoundaryState,

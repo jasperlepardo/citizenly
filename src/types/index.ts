@@ -10,6 +10,9 @@
 // NEW CONSOLIDATED TYPE EXPORTS
 // =============================================================================
 
+// Database types (core records)
+export * from './database';
+
 // Validation types
 export * from './validation';
 

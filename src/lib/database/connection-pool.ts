@@ -349,4 +349,4 @@ export const releasePooledConnection = (client: SupabaseClient) =>
 
 export const getConnectionPoolStats = () => connectionPool.getStats();
 
-export default connectionPool;
+// connectionPool is already exported as 'export const' above

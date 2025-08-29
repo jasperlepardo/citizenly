@@ -11,7 +11,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { ControlField } from '@/components';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 import type { FormMode } from '@/types';
-import { calculateAge } from '@/utils/date-utils';
+import { calculateAge } from '@/utils/dateUtils';
 
 // Sectoral Information Interface (matches database schema exactly)
 export interface SectoralInformation {
@@ -120,7 +120,7 @@ export default function SectoralClassifications({
   }, [calculatedFlags]); // Only depend on calculatedFlags
 
   // Calculate age from birthdate
-  // calculateAge imported from @/utils/date-utils above - removed duplicate function
+  // calculateAge imported from @/utils/dateUtils above - removed duplicate function
 
   // Check if person qualifies as out-of-school children (5-17 years old, not in school)
   function isOutOfSchoolChildren(age: number, education?: string): boolean {

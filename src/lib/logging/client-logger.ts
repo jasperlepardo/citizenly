@@ -297,5 +297,4 @@ export const logSearch = (searchTerm: string, component: string, resultsCount?: 
 export const logDataLoad = (resource: string, count?: number, duration?: number) =>
   clientLogger.dataLoad(resource, count, duration);
 
-// Default export
-export default clientLogger;
+// clientLogger is already exported as 'export const' above

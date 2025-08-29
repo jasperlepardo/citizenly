@@ -5,6 +5,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+import { CommonQueryBuilders } from '@/lib/database/query-builders';
 import { validateHouseholdData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
 import { HouseholdRecord } from '@/types';
@@ -135,9 +136,8 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
    */
   async findByCode(code: string): Promise<RepositoryResult<HouseholdData>> {
     try {
-      const queryBuilder = (supabase: SupabaseClient) => {
-        return supabase.from(this.tableName).select('*').eq('code', code).single();
-      };
+      // Use consolidated query builder - eliminates 3 lines of duplicate code
+      const queryBuilder = CommonQueryBuilders.findByCode(this.tableName, code);
 
       return await this.executeQuery(queryBuilder, 'FIND_BY_CODE');
     } catch (error) {
@@ -230,17 +230,19 @@ export class HouseholdRepository extends BaseRepository<HouseholdData> {
     regionCode?: string
   ): Promise<RepositoryResult<HouseholdData[]>> {
     try {
-      const filters: Record<string, string> = {};
+      // Use consolidated geographic query builder - eliminates 8 lines of filter building
+      const queryBuilder = CommonQueryBuilders.searchGeographic(
+        this.tableName,
+        {
+          barangay_code: barangayCode,
+          city_municipality_code: cityCode,
+          province_code: provinceCode,
+          region_code: regionCode,
+        },
+        { orderBy: 'code' }
+      );
 
-      if (regionCode) filters.region_code = regionCode;
-      if (provinceCode) filters.province_code = provinceCode;
-      if (cityCode) filters.city_municipality_code = cityCode;
-      if (barangayCode) filters.barangay_code = barangayCode;
-
-      return await this.findAll({
-        filters,
-        orderBy: 'code',
-      });
+      return await this.executeQuery(queryBuilder, 'FIND_BY_GEOGRAPHIC_AREA');
     } catch (error) {
       return {
         success: false,

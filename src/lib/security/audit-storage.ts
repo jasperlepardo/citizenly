@@ -5,7 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 import { ErrorCode as ApiErrorCode } from '../api/types';
 

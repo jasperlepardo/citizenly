@@ -10,7 +10,7 @@ import {
   MigrationInformation,
 } from '@/components/organisms/FormSection';
 import { useAuth } from '@/contexts';
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
 import type { FormMode } from '@/types';
 import { ResidentFormState } from '@/types/residents';

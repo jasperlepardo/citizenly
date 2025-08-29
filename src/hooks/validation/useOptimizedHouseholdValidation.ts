@@ -12,7 +12,7 @@ import { useCallback } from 'react';
 import { householdService, HouseholdFormData } from '@/services/household.service';
 import type { UseGenericValidationReturn } from '@/types/hooks';
 import { ValidationResult, FieldValidationResult } from '@/types/validation';
-import { toTitleCase } from '@/utils/string-utils';
+import { toTitleCase } from '@/utils/stringUtils';
 
 import { useGenericValidation } from './useGenericValidation';
 

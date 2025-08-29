@@ -14,7 +14,7 @@ import {
   lookupAddressLabels,
   lookupHouseholdTypeLabels,
   lookupHouseholdHeadLabel,
-} from '@/utils/address-lookup';
+} from '@/utils/addressLookup';
 import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
 
 function HouseholdDetailContent() {

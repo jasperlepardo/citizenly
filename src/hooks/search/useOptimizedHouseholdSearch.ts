@@ -10,7 +10,7 @@
 import { useCallback, useState } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import { useSearchCache, searchFormatters } from '@/utils/search-utilities';
 
 import { useGenericSearch } from './useGenericSearch';

@@ -14,7 +14,7 @@ import {
   type Resident,
   type AdvancedFilters,
 } from '@/hooks/crud/useResidents';
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
