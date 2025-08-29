@@ -4,7 +4,7 @@
  * Custom hook for fetching and caching residents data with React Query
  */
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib';
@@ -199,16 +199,16 @@ export function useResidents(params: ResidentsParams = {}) {
     queryKey: cacheKey,
     queryFn: () => fetchResidents(params),
     enabled: isEnabled,
-    staleTime: 0, // Force fresh data
-    gcTime: 0, // Don't cache
-    // Force refetch
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    // Don't use cached data
-    placeholderData: undefined,
-    // Network mode optimistic - use cache first
-    networkMode: 'always',
+    staleTime: 30 * 1000, // Consider data fresh for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    // Smart refetch strategy
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false, // Don't refetch on window focus to reduce load
+    refetchOnReconnect: 'always',
+    // Use stale data while revalidating for better UX
+    placeholderData: keepPreviousData,
+    // Network mode optimistic - use cache first, then network
+    networkMode: 'online',
     // Enhanced retry configuration
     retryConfig: {
       maxRetries: 3,
