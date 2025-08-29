@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { supabase } from '@/lib/data/supabase';
 import {
   isDevFeatureEnabled,
   getDevCredentials,
@@ -10,6 +9,7 @@ import {
   logDevModeWarning,
   validateDevEnvironment,
 } from '@/lib/config/dev-config';
+import { supabase } from '@/lib/data/supabase';
 
 interface DevLoginProps {
   onSuccess?: () => void;

@@ -4,9 +4,9 @@
  */
 
 import { clientLogger } from '@/lib/logging/client-logger';
+import type { GenericPerformanceMetrics } from '@/types/performance';
 
 import { startSentryTransaction } from './sentry-config';
-import type { GenericPerformanceMetrics } from '@/types/performance';
 
 class PerformanceMonitor {
   private metrics: Map<string, GenericPerformanceMetrics> = new Map();

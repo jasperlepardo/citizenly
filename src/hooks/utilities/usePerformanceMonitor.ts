@@ -9,9 +9,10 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
+import type { HookPerformanceMetrics as PerformanceMetrics } from '@/types/performance';
+
 import { useLogger } from './useLogger';
 
-import type { HookPerformanceMetrics as PerformanceMetrics } from '@/types/performance';
 
 /**
  * Performance metrics interface - imported from @/types/performance

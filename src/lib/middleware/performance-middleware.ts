@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import type { RequestPerformanceMetrics } from '@/types/performance';
 
 // In-memory performance store (use proper metrics service in production)

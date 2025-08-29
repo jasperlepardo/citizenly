@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import type { AuthUserProfile } from '@/types/auth';
-import type { HouseholdRecord } from '@/types/api';
 import type { Database } from '@/lib/data/supabase';
+import type { HouseholdRecord } from '@/types/api';
+import type { AuthUserProfile } from '@/types/auth';
 
 type DbHouseholdUpdate = Database['public']['Tables']['households']['Update'];
 

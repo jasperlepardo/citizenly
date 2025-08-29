@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
+
 
 import {
   trackCommandMenuSearch,
@@ -27,6 +27,7 @@ import {
 } from '@/lib/command-menu/api-utils';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
 import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 interface UseCommandMenuWithApiProps {

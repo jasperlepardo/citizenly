@@ -7,8 +7,8 @@
 
 import React, { Component, ReactNode } from 'react';
 
-import { clientLogger } from '@/lib/logging/client-logger';
 import { createWrappedComponent } from '@/lib/hocUtils';
+import { clientLogger } from '@/lib/logging/client-logger';
 import type { ErrorBoundaryProviderProps, ErrorFallbackProps } from '@/types/components';
 import type { ErrorBoundaryState } from '@/types/errors';
 

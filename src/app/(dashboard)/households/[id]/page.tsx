@@ -10,12 +10,12 @@ import HouseholdForm, {
 } from '@/components/templates/Form/Household/HouseholdForm';
 import { useAuth } from '@/contexts';
 import { supabase, logger, logError } from '@/lib';
+import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
 import {
   lookupAddressLabels,
   lookupHouseholdTypeLabels,
   lookupHouseholdHeadLabel,
 } from '@/utils/addressLookup';
-import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
 
 function HouseholdDetailContent() {
   const { user, loading: authLoading } = useAuth();

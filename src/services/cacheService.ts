@@ -4,9 +4,10 @@
  * Schema-aligned with consolidated cache types
  */
 
-import { createLogger } from '../lib/config/environment';
 import type { CacheEntry, CacheStats } from '@/types/cache';
 import { createInitialCacheStats } from '@/types/cache';
+
+import { createLogger } from '../lib/config/environment';
 
 const logger = createLogger('CacheService');
 
