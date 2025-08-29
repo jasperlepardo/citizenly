@@ -7,7 +7,7 @@
  * Replaces the original useSearch hook with cleaner implementation.
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
 import {
@@ -15,7 +15,6 @@ import {
   SearchState,
   SearchFunction,
   createSearchState,
-  createSearchUtilities,
 } from '@/utils/search-utilities';
 
 /**
@@ -89,13 +88,29 @@ export function useGenericSearch<T>(
     [searchFn, minQueryLength, onError]
   );
 
-  // Create search utilities
-  const { clearSearch, refresh, setQuery } = createSearchUtilities(state, setState, executeSearch);
+  // Create memoized search utilities to prevent infinite loops
+  const setQuery = useCallback((newQuery: string) => {
+    setState(prev => ({ ...prev, query: newQuery }));
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      query: '',
+      results: [],
+      error: null,
+    }));
+  }, []);
+
+  const refresh = useCallback(() => {
+    executeSearch(state.query);
+  }, [executeSearch, state.query]);
 
   // Execute search when debounced query changes
   useEffect(() => {
     executeSearch(debouncedQuery);
-  }, [debouncedQuery]); // Remove executeSearch from dependencies to prevent infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery]); // executeSearch intentionally excluded to prevent infinite loop
 
   return {
     query: state.query,
