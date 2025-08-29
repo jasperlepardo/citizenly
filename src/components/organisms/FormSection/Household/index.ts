@@ -1,7 +1,7 @@
 // Types
 export type {
   FormMode,
-  ExtendedHouseholdFormData,
+  HouseholdFormData,
   HouseholdDetailsData,
   FormSectionProps,
   FieldConfig,

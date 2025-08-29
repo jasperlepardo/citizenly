@@ -1,17 +1,20 @@
+'use client';
+
 import React, { useState, useCallback } from 'react';
 
+import type { HouseholdFormData, FormMode } from '@/types/forms';
+
 import { HouseholdDetailsForm } from './HouseholdDetails';
-import { ExtendedHouseholdFormData, FormMode } from './types';
 
 export interface HouseholdFormProps {
   /** Initial form data */
-  initialData?: Partial<ExtendedHouseholdFormData>;
+  initialData?: Partial<HouseholdFormData>;
   /** Form mode - determines if fields are editable */
   mode?: FormMode;
   /** Called when form data changes */
-  onDataChange?: (data: ExtendedHouseholdFormData) => void;
+  onDataChange?: (data: HouseholdFormData) => void;
   /** Called when form is submitted */
-  onSubmit?: (data: ExtendedHouseholdFormData) => void | Promise<void>;
+  onSubmit?: (data: HouseholdFormData) => void | Promise<void>;
   /** Validation errors */
   errors?: Record<string, string>;
   /** Loading state */
@@ -39,7 +42,7 @@ export function HouseholdForm({
   showActions = true,
 }: HouseholdFormProps) {
   // Initialize form data with defaults
-  const [formData, setFormData] = useState<ExtendedHouseholdFormData>({
+  const [formData, setFormData] = useState<HouseholdFormData>({
     // Default values for required fields
     code: '',
     house_number: '',
