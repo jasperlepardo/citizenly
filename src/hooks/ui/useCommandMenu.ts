@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
 
 // Safe router hook that works in both Next.js and Storybook environments
 function useSafeRouter() {
@@ -84,39 +85,28 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
     setSelectedIndex(0);
   }, [filteredItems]);
 
-  // Keyboard shortcuts
+  // Global keyboard shortcut for opening command menu
+  useCommandMenuShortcut(() => setIsOpen(true), true);
+
+  // Command menu navigation when open
   useEffect(() => {
+    if (!isOpen) return;
+
+    const handleMenuKeyDown = createDropdownKeyHandler({
+      isOpen: true,
+      selectedIndex,
+      itemCount: filteredItems.length,
+      onClose: close,
+      onSelect: (index: number) => {
+        if (filteredItems[index]) {
+          executeCommand(filteredItems[index]);
+        }
+      },
+      onNavigate: setSelectedIndex
+    });
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Global shortcut to open command menu
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-        event.preventDefault();
-        setIsOpen(true);
-        return;
-      }
-
-      // Menu is not open, ignore other shortcuts
-      if (!isOpen) return;
-
-      switch (event.key) {
-        case 'Escape':
-          event.preventDefault();
-          close();
-          break;
-        case 'ArrowDown':
-          event.preventDefault();
-          setSelectedIndex(prev => (prev >= filteredItems.length - 1 ? 0 : prev + 1));
-          break;
-        case 'ArrowUp':
-          event.preventDefault();
-          setSelectedIndex(prev => (prev <= 0 ? filteredItems.length - 1 : prev - 1));
-          break;
-        case 'Enter':
-          event.preventDefault();
-          if (filteredItems[selectedIndex]) {
-            executeCommand(filteredItems[selectedIndex]);
-          }
-          break;
-      }
+      handleMenuKeyDown(event);
     };
 
     document.addEventListener('keydown', handleKeyDown);

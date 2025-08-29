@@ -302,5 +302,3 @@ export class CacheManager {
 
 // Export cache manager instance
 export const cacheManager = new CacheManager(cacheClient);
-
-export default cacheManager;

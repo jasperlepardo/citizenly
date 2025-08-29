@@ -9,7 +9,7 @@
 
 import { useCallback } from 'react';
 
-import { logError } from '@/utils/error-utils';
+import { logError } from '@/utils/errorUtils';
 
 /**
  * Return type for field error handler hook

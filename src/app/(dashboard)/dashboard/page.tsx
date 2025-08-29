@@ -13,7 +13,7 @@ import {
 } from '@/components';
 import { useAuth } from '@/contexts';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 function DashboardContent() {
   const { userProfile, profileLoading } = useAuth();

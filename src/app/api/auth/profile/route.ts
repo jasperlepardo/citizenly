@@ -8,7 +8,7 @@ import {
   createNotFoundResponse,
   handleDatabaseError,
   handleUnexpectedError,
-} from '@/lib/api/responseUtils';
+} from '@/lib/authentication/responseUtils';
 
 /**
  * GET API Handler for auth/profile

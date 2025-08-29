@@ -9,6 +9,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { Input } from '../Input';
+import { createDropdownKeyHandler } from '@/lib/keyboardUtils';
 
 import { Option } from './Option';
 
@@ -339,72 +340,54 @@ export default function Select({
     }, 300);
   };
 
-  // Handle keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Handle Escape key regardless of dropdown state
-    if (e.key === 'Escape') {
-      e.preventDefault();
+  // Handle keyboard navigation using consolidated utility
+  const handleKeyDown = createDropdownKeyHandler({
+    isOpen: showDropdown,
+    selectedIndex: focusedIndex,
+    itemCount: filteredOptions.length,
+    onOpen: () => {
+      // Reset just selected flag to allow dropdown to show
+      setJustSelected(false);
+
+      if (onSearch) {
+        // For API-driven selects, show dropdown immediately without triggering API call
+        setShowDropdown(true);
+        setDropdownPosition(calculateDropdownPosition());
+      } else {
+        // Show all options when opening dropdown via keyboard for static data
+        setFilteredOptions(normalizedOptions);
+        setShowDropdown(true);
+        setDropdownPosition(calculateDropdownPosition());
+
+        // Highlight and scroll to the currently selected item
+        if (selectedOption) {
+          const selectedIndex = normalizedOptions.findIndex(
+            opt => opt.value === selectedOption.value
+          );
+          setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
+        } else {
+          setFocusedIndex(0);
+        }
+      }
+    },
+    onClose: () => {
       setShowDropdown(false);
       setFocusedIndex(-1);
       inputRef.current?.blur();
-      return;
-    }
-
-    // Handle Enter key - select focused option or close dropdown
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (showDropdown && focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
-        handleOptionSelect(filteredOptions[focusedIndex]);
+    },
+    onSelect: (index: number) => {
+      if (index >= 0 && index < filteredOptions.length) {
+        handleOptionSelect(filteredOptions[index]);
       } else if (showDropdown) {
         // If dropdown is open but no option focused, just close it
         setShowDropdown(false);
         setFocusedIndex(-1);
       }
-      return;
+    },
+    onNavigate: (index: number) => {
+      setFocusedIndex(index);
     }
-
-    if (!showDropdown || filteredOptions.length === 0) {
-      if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !showDropdown) {
-        e.preventDefault();
-        // Reset just selected flag to allow dropdown to show
-        setJustSelected(false);
-
-        if (onSearch) {
-          // For API-driven selects, show dropdown immediately without triggering API call
-          setShowDropdown(true);
-          setDropdownPosition(calculateDropdownPosition());
-        } else {
-          // Show all options when opening dropdown via keyboard for static data
-          setFilteredOptions(normalizedOptions);
-          setShowDropdown(true);
-          setDropdownPosition(calculateDropdownPosition());
-
-          // Highlight and scroll to the currently selected item
-          if (selectedOption) {
-            const selectedIndex = normalizedOptions.findIndex(
-              opt => opt.value === selectedOption.value
-            );
-            setFocusedIndex(selectedIndex >= 0 ? selectedIndex : 0);
-          } else {
-            setFocusedIndex(0);
-          }
-        }
-        return;
-      }
-      return;
-    }
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setFocusedIndex(prev => (prev + 1) % filteredOptions.length);
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setFocusedIndex(prev => (prev <= 0 ? filteredOptions.length - 1 : prev - 1));
-        break;
-    }
-  };
+  });
 
   // Handle option selection from dropdown
   const handleOptionSelect = (option: SelectOption) => {

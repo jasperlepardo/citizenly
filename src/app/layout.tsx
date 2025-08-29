@@ -13,7 +13,7 @@ import { PWAStatus } from '@/components/molecules/PWAStatus';
 import { VersionTag } from '@/components/molecules/VersionTag';
 import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
 import LastVisitedTracker from '@/providers/components/LastVisitedTracker';
-import Providers from '@/providers/components/Providers';
+import Providers from '@/providers/components/providers';
 
 // Configure Montserrat font with Next.js font optimization
 const montserrat = Montserrat({

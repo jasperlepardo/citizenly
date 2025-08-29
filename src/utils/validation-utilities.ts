@@ -26,7 +26,7 @@ export type {
 import { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';
 import type { UtilityValidationState as ValidationState } from '@/types/utilities';
 
-import { toTitleCase } from './string-utils';
+import { toTitleCase } from './stringUtils';
 
 // All types are now imported from the centralized validation types
 // This eliminates duplication and ensures consistency

@@ -14,7 +14,7 @@ import {
   logger,
   logError,
 } from '@/lib';
-import { auditDataOperation } from '@/lib/api/auditUtils';
+import { auditDataOperation } from '@/lib/authentication/auditUtils';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -23,9 +23,9 @@ import {
   applySearchFilter,
   withNextRequestErrorHandling,
   withSecurityHeaders,
-} from '@/lib/api/responseUtils';
+} from '@/lib/authentication/responseUtils';
 import { RequestContext, Role } from '@/lib/api/types';
-import { createResidentSchema } from '@/lib/api/validationUtils';
+import { createResidentSchema } from '@/lib/authentication/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
 import { ResidentFormData } from '@/types';
 import type { AuthenticatedUser } from '@/types/auth';

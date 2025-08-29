@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 import type {
   WebVitalsPerformanceMetric as PerformanceMetric,
   ResourceTiming,

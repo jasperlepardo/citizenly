@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 // Types
 interface User {
@@ -340,3 +340,5 @@ export function useUI() {
   const { sidebarOpen, mobileMenuOpen, toggleSidebar, toggleMobileMenu } = useApp();
   return { sidebarOpen, mobileMenuOpen, toggleSidebar, toggleMobileMenu };
 }
+
+export default AppProvider;

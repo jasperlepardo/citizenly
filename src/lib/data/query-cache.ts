@@ -12,7 +12,7 @@
  * - Query deduplication
  */
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 import type { CacheEntry, CacheStats, CacheKeyPatterns, CacheTags } from '@/types/cache';
 import { createInitialCacheStats } from '@/types/cache';
 

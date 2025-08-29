@@ -386,4 +386,4 @@ export function withResponseCache(config?: CacheConfig) {
   };
 }
 
-export default responseCache;
+// responseCache is already exported as 'export const' above

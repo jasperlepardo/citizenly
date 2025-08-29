@@ -258,4 +258,4 @@ export const trackApiCall = (method: string, endpoint: string, metadata?: Record
 export const trackDataLoad = (resource: string, metadata?: Record<string, any>) =>
   performanceMonitor.trackDataLoad(resource, metadata);
 
-export default performanceMonitor;
+// performanceMonitor is already exported as 'export const' above

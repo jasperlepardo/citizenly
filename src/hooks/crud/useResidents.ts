@@ -7,7 +7,7 @@
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 // Import the properly typed ResidentRecord

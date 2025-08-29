@@ -5,7 +5,7 @@
 
 import { ErrorCode, ErrorSeverity } from '@/types/errors';
 
-import { createAppError } from './error-utils';
+import { createAppError } from './errorUtils';
 
 /**
  * Debounce function execution

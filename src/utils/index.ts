@@ -12,7 +12,7 @@ export {
   truncateText,
   sanitizeString,
   formatPhoneNumber,
-} from './string-utils';
+} from './stringUtils';
 
 // Re-export validation functions from validation library (backward compatibility)
 export { isValidEmail, isValidPhilippineMobile } from '@/lib/validation/utilities';

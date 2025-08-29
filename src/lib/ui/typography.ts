@@ -64,4 +64,4 @@ export const typographyPresets = {
   successText: `${typography.bodySmall} text-green-600`,
 } as const;
 
-export default typography;
+// typography is already exported as 'export const' above

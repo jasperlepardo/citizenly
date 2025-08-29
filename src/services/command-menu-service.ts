@@ -9,9 +9,9 @@ import type {
 } from '@/types/services';
 
 import { createLogger } from '../lib/config/environment';
-import { supabase } from '../lib/supabase';
+import { supabase } from '@/lib/data/supabase';
 
-import { cacheService } from './cache-service';
+import { cacheService } from './cacheService';
 
 const logger = createLogger('CommandMenuService');
 

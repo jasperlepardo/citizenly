@@ -620,4 +620,4 @@ class DatabaseQueryOptimizer {
 // Export singleton instance
 export const queryOptimizer = new DatabaseQueryOptimizer();
 
-export default queryOptimizer;
+// queryOptimizer is already exported as 'export const' above

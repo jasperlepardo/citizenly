@@ -3,7 +3,7 @@
  * Production-ready tracking for command menu usage and performance
  */
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 import type { CommandMenuPerformanceMetrics } from '@/types/performance';
 
 // Analytics event types

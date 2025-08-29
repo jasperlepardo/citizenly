@@ -1,4 +1,4 @@
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import type { AddressLabels, HouseholdTypeLabels } from '@/types/addresses';
 
 /**

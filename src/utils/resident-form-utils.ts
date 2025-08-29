@@ -19,7 +19,7 @@ import type {
   ProcessedFormResult,
 } from '@/types/utilities';
 import type { SimpleValidationResult as ValidationResult } from '@/types/validation';
-import { calculateAge } from '@/utils/date-utils';
+import { calculateAge } from '@/utils/dateUtils';
 
 // Types moved to src/types/utilities.ts for consolidation
 import { sanitizeFormData, sanitizeNameInput, validateNameInput } from '@/utils/input-sanitizer';

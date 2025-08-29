@@ -8,6 +8,7 @@
 import React, { Component, ReactNode } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
+import { createWrappedComponent } from '@/lib/hocUtils';
 import type { ErrorBoundaryProviderProps, ErrorFallbackProps } from '@/types/components';
 import type { ErrorBoundaryState } from '@/types/errors';
 
@@ -174,13 +175,12 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   options?: Partial<ErrorBoundaryProviderProps>
 ) {
-  const WrappedComponent = (props: P) => (
-    <ErrorBoundaryProvider {...options}>
-      <Component {...props} />
-    </ErrorBoundaryProvider>
+  return createWrappedComponent(
+    Component,
+    ErrorBoundaryProvider,
+    'withErrorBoundary',
+    options
   );
-
-  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-
-  return WrappedComponent;
 }
+
+export default ErrorBoundaryProvider;

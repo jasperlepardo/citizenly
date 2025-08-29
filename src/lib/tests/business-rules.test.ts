@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { calculateAge } from '@/utils/date-utils';
+import { calculateAge } from '@/utils/dateUtils';
 
 import {
   isOutOfSchoolChildren,

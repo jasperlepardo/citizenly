@@ -5,7 +5,7 @@
 
 import { ErrorCode, ErrorSeverity } from '@/types/errors';
 import type { SyncResult } from '@/types/utilities';
-import { createAppError } from '@/utils/error-utils';
+import { createAppError } from '@/utils/errorUtils';
 
 import { offlineStorage } from './offline-storage';
 

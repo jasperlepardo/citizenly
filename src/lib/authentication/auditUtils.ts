@@ -5,7 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 import type { SecurityAuditLogEntry as AuditLogEntry } from '@/types/errors';
 
 import { RequestContext, ErrorCode } from './types';

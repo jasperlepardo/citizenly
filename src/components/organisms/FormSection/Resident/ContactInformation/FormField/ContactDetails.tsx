@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { InputField } from '@/components';
+import { createComponentFieldChangeHandler } from '@/lib/form-utils';
 import type { FormMode } from '@/types';
 
 export interface ContactDetailsData {
@@ -25,13 +26,9 @@ export function ContactDetails({
   errors,
   className = '',
 }: ContactDetailsProps) {
+  // Use consolidated component field handler - eliminates 8 lines of duplicate code
   const handleChange = useCallback(
-    (field: keyof ContactDetailsData, fieldValue: string) => {
-      onChange({
-        ...value,
-        [field]: fieldValue,
-      });
-    },
+    createComponentFieldChangeHandler<ContactDetailsData>(value, onChange),
     [value, onChange]
   );
 

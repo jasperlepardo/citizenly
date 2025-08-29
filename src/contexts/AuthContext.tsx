@@ -3,7 +3,7 @@
 import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import type { AuthRole, AuthUserProfile } from '@/types/auth';
 
 // Use consolidated AuthRole type with permissions extension

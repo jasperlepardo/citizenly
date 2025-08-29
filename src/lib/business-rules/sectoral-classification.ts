@@ -5,7 +5,7 @@
  */
 
 import { SectoralInformation, SectoralContext } from '@/types';
-import { calculateAge } from '@/utils/date-utils';
+import { calculateAge } from '@/utils/dateUtils';
 
 // Employment statuses for auto-calculation (aligned with database enum)
 export const EMPLOYED_STATUSES = ['employed', 'self_employed'];
@@ -53,7 +53,7 @@ export const INDIGENOUS_ETHNICITIES = [
 /**
  * Calculate age from birthdate
  */
-// calculateAge imported from @/utils/date-utils above - removed duplicate
+// calculateAge imported from @/utils/dateUtils above - removed duplicate
 
 /**
  * Check if person qualifies as out-of-school children (5-17 years old, not in school)

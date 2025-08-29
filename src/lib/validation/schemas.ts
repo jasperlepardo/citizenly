@@ -38,6 +38,26 @@ function createValidationResult(
 }
 
 /**
+ * Consolidated validateField helper function
+ * Eliminates duplicate code across all validation schemas
+ */
+async function validateField(
+  errors: Record<string, string>,
+  fieldName: string,
+  value: any,
+  validators: any[],
+  data?: any
+): Promise<void> {
+  for (const validator of validators) {
+    const result = await validator(value, fieldName, data);
+    if (result !== null) {
+      errors[fieldName] = result;
+      break;
+    }
+  }
+}
+
+/**
  * Resident data validation schema
  */
 export async function residentSchema(
@@ -46,85 +66,74 @@ export async function residentSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('first_name', data.first_name, [validateRequired, validateName]);
-  await validateField('last_name', data.last_name, [validateRequired, validateName]);
-  await validateField('birthdate', data.birthdate, [validateRequired, validateDate]);
-  await validateField('sex', data.sex, [validateRequired]);
+  await validateField(errors, 'first_name', data.first_name, [validateRequired, validateName], data);
+  await validateField(errors, 'last_name', data.last_name, [validateRequired, validateName], data);
+  await validateField(errors, 'birthdate', data.birthdate, [validateRequired, validateDate], data);
+  await validateField(errors, 'sex', data.sex, [validateRequired], data);
 
   // Validate optional fields
   if (data.middle_name !== undefined) {
-    await validateField('middle_name', data.middle_name, [validateName]);
+    await validateField(errors, 'middle_name', data.middle_name, [validateName], data);
   }
   if (data.extension_name !== undefined) {
-    await validateField('extension_name', data.extension_name, [validateName]);
+    await validateField(errors, 'extension_name', data.extension_name, [validateName], data);
   }
   if (data.email !== undefined) {
-    await validateField('email', data.email, [validateEmail]);
+    await validateField(errors, 'email', data.email, [validateEmail], data);
   }
   if (data.mobile_number !== undefined) {
-    await validateField('mobile_number', data.mobile_number, [validatePhilippineMobile]);
+    await validateField(errors, 'mobile_number', data.mobile_number, [validatePhilippineMobile], data);
   }
   if (data.telephone_number !== undefined) {
-    await validateField('telephone_number', data.telephone_number, [validateLength(0, 20)]);
+    await validateField(errors, 'telephone_number', data.telephone_number, [validateLength(0, 20)], data);
   }
   if (data.civil_status !== undefined) {
-    await validateField('civil_status', data.civil_status, [validateLength(0, 50)]);
+    await validateField(errors, 'civil_status', data.civil_status, [validateLength(0, 50)], data);
   }
   if (data.citizenship !== undefined) {
-    await validateField('citizenship', data.citizenship, [validateLength(0, 50)]);
+    await validateField(errors, 'citizenship', data.citizenship, [validateLength(0, 50)], data);
   }
   if (data.blood_type !== undefined) {
-    await validateField('blood_type', data.blood_type, [validateLength(0, 10)]);
+    await validateField(errors, 'blood_type', data.blood_type, [validateLength(0, 10)], data);
   }
   if (data.ethnicity !== undefined) {
-    await validateField('ethnicity', data.ethnicity, [validateLength(0, 50)]);
+    await validateField(errors, 'ethnicity', data.ethnicity, [validateLength(0, 50)], data);
   }
   if (data.religion !== undefined) {
-    await validateField('religion', data.religion, [validateLength(0, 50)]);
+    await validateField(errors, 'religion', data.religion, [validateLength(0, 50)], data);
   }
   if (data.religion_others_specify !== undefined) {
-    await validateField('religion_others_specify', data.religion_others_specify, [
+    await validateField(errors, 'religion_others_specify', data.religion_others_specify, [
       validateLength(0, 100),
-    ]);
+    ], data);
   }
   if (data.height !== undefined) {
-    await validateField('height', data.height, [validateRange(50, 300)]);
+    await validateField(errors, 'height', data.height, [validateRange(50, 300)], data);
   }
   if (data.weight !== undefined) {
-    await validateField('weight', data.weight, [validateRange(10, 500)]);
+    await validateField(errors, 'weight', data.weight, [validateRange(10, 500)], data);
   }
   if (data.complexion !== undefined) {
-    await validateField('complexion', data.complexion, [validateLength(0, 50)]);
+    await validateField(errors, 'complexion', data.complexion, [validateLength(0, 50)], data);
   }
   if (data.birth_place_code !== undefined) {
-    await validateField('birth_place_code', data.birth_place_code, [validateLength(0, 20)]);
+    await validateField(errors, 'birth_place_code', data.birth_place_code, [validateLength(0, 20)], data);
   }
   if (data.philsys_card_number !== undefined) {
-    await validateField('philsys_card_number', data.philsys_card_number, [validatePhilSysNumber]);
+    await validateField(errors, 'philsys_card_number', data.philsys_card_number, [validatePhilSysNumber], data);
   }
   if (data.mother_maiden_first !== undefined) {
-    await validateField('mother_maiden_first', data.mother_maiden_first, [validateName]);
+    await validateField(errors, 'mother_maiden_first', data.mother_maiden_first, [validateName], data);
   }
   if (data.mother_maiden_middle !== undefined) {
-    await validateField('mother_maiden_middle', data.mother_maiden_middle, [validateName]);
+    await validateField(errors, 'mother_maiden_middle', data.mother_maiden_middle, [validateName], data);
   }
   if (data.mother_maiden_last !== undefined) {
-    await validateField('mother_maiden_last', data.mother_maiden_last, [validateName]);
+    await validateField(errors, 'mother_maiden_last', data.mother_maiden_last, [validateName], data);
   }
   if (data.education_attainment !== undefined) {
-    await validateField('education_attainment', data.education_attainment, [validateLength(0, 50)]);
+    await validateField(errors, 'education_attainment', data.education_attainment, [validateLength(0, 50)], data);
   }
   if (data.is_graduate !== undefined) {
     if (typeof data.is_graduate !== 'boolean') {
@@ -132,10 +141,10 @@ export async function residentSchema(
     }
   }
   if (data.employment_status !== undefined) {
-    await validateField('employment_status', data.employment_status, [validateLength(0, 50)]);
+    await validateField(errors, 'employment_status', data.employment_status, [validateLength(0, 50)], data);
   }
   if (data.occupation_code !== undefined) {
-    await validateField('occupation_code', data.occupation_code, [validateLength(0, 20)]);
+    await validateField(errors, 'occupation_code', data.occupation_code, [validateLength(0, 20)], data);
   }
   if (data.is_voter !== undefined) {
     if (typeof data.is_voter !== 'boolean') {
@@ -148,10 +157,10 @@ export async function residentSchema(
     }
   }
   if (data.last_voted_date !== undefined) {
-    await validateField('last_voted_date', data.last_voted_date, [validateDate]);
+    await validateField(errors, 'last_voted_date', data.last_voted_date, [validateDate], data);
   }
   if (data.household_code !== undefined) {
-    await validateField('household_code', data.household_code, [validateLength(0, 50)]);
+    await validateField(errors, 'household_code', data.household_code, [validateLength(0, 50)], data);
   }
 
   // Cross-field validations
@@ -174,39 +183,28 @@ export async function householdSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('code', data.code, [validateRequired, validateLength(1, 50)]);
-  await validateField('barangay_code', data.barangay_code, [
+  await validateField(errors, 'code', data.code, [validateRequired, validateLength(1, 50)], data);
+  await validateField(errors, 'barangay_code', data.barangay_code, [
     validateRequired,
     validateLength(1, 20),
-  ]);
+  ], data);
 
   // Validate optional fields
   if (data.name !== undefined) {
-    await validateField('name', data.name, [validateLength(0, 200)]);
+    await validateField(errors, 'name', data.name, [validateLength(0, 200)], data);
   }
   if (data.house_number !== undefined) {
-    await validateField('house_number', data.house_number, [validateLength(0, 50)]);
+    await validateField(errors, 'house_number', data.house_number, [validateLength(0, 50)], data);
   }
   if (data.street_id !== undefined) {
-    await validateField('street_id', data.street_id, [validateRequired]);
+    await validateField(errors, 'street_id', data.street_id, [validateRequired], data);
   }
   if (data.subdivision_id !== undefined) {
-    await validateField('subdivision_id', data.subdivision_id, [validateLength(0, 50)]);
+    await validateField(errors, 'subdivision_id', data.subdivision_id, [validateLength(0, 50)], data);
   }
   if (data.household_head_id !== undefined) {
-    await validateField('household_head_id', data.household_head_id, [validateLength(0, 50)]);
+    await validateField(errors, 'household_head_id', data.household_head_id, [validateLength(0, 50)], data);
   }
 
   return createValidationResult(Object.keys(errors).length === 0, errors);
@@ -221,26 +219,15 @@ export async function userSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('email', data.email, [validateRequired, validateEmail]);
-  await validateField('first_name', data.first_name, [validateRequired, validateName]);
-  await validateField('last_name', data.last_name, [validateRequired, validateName]);
-  await validateField('role', data.role, [validateRequired]);
+  await validateField(errors, 'email', data.email, [validateRequired, validateEmail], data);
+  await validateField(errors, 'first_name', data.first_name, [validateRequired, validateName], data);
+  await validateField(errors, 'last_name', data.last_name, [validateRequired, validateName], data);
+  await validateField(errors, 'role', data.role, [validateRequired], data);
 
   // Validate optional fields
   if (data.barangay_code !== undefined) {
-    await validateField('barangay_code', data.barangay_code, [validateLength(0, 20)]);
+    await validateField(errors, 'barangay_code', data.barangay_code, [validateLength(0, 20)], data);
   }
   if (data.is_active !== undefined) {
     if (typeof data.is_active !== 'boolean') {
@@ -260,20 +247,9 @@ export async function loginSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('email', data.email, [validateRequired, validateEmail]);
-  await validateField('password', data.password, [validateRequired, validateLength(1, 100)]);
+  await validateField(errors, 'email', data.email, [validateRequired, validateEmail], data);
+  await validateField(errors, 'password', data.password, [validateRequired, validateLength(1, 100)], data);
 
   return createValidationResult(Object.keys(errors).length === 0, errors);
 }
@@ -287,30 +263,19 @@ export async function passwordChangeSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('current_password', data.current_password, [
+  await validateField(errors, 'current_password', data.current_password, [
     validateRequired,
     validateLength(1, 100),
-  ]);
-  await validateField('new_password', data.new_password, [
+  ], data);
+  await validateField(errors, 'new_password', data.new_password, [
     validateRequired,
     validateLength(8, 100),
-  ]);
-  await validateField('confirm_password', data.confirm_password, [
+  ], data);
+  await validateField(errors, 'confirm_password', data.confirm_password, [
     validateRequired,
     validateLength(1, 100),
-  ]);
+  ], data);
 
   // Password complexity validation
   if (data.new_password) {
@@ -338,19 +303,8 @@ export async function searchQuerySchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('query', data.query, [validateRequired, validateLength(1, 100)]);
+  await validateField(errors, 'query', data.query, [validateRequired, validateLength(1, 100)], data);
 
   // Search query pattern validation
   if (data.query) {
@@ -367,10 +321,10 @@ export async function searchQuerySchema(
     }
   }
   if (data.page !== undefined) {
-    await validateField('page', data.page, [validateRange(1, 1000)]);
+    await validateField(errors, 'page', data.page, [validateRange(1, 1000)], data);
   }
   if (data.limit !== undefined) {
-    await validateField('limit', data.limit, [validateRange(1, 100)]);
+    await validateField(errors, 'limit', data.limit, [validateRange(1, 100)], data);
   }
 
   return createValidationResult(Object.keys(errors).length === 0, errors);
@@ -385,24 +339,13 @@ export async function fileUploadSchema(
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
-  // Helper function to validate a field
-  const validateField = async (fieldName: string, value: any, validators: any[]) => {
-    for (const validator of validators) {
-      const result = await validator(value, fieldName, data);
-      if (result !== null) {
-        errors[fieldName] = result;
-        break;
-      }
-    }
-  };
-
   // Validate required fields
-  await validateField('fileName', data.fileName, [validateRequired, validateLength(1, 255)]);
-  await validateField('fileSize', data.fileSize, [
+  await validateField(errors, 'fileName', data.fileName, [validateRequired, validateLength(1, 255)], data);
+  await validateField(errors, 'fileSize', data.fileSize, [
     validateRequired,
     validateRange(1, 5 * 1024 * 1024),
-  ]);
-  await validateField('fileType', data.fileType, [validateRequired]);
+  ], data);
+  await validateField(errors, 'fileType', data.fileType, [validateRequired], data);
 
   // File name pattern validation
   if (data.fileName) {

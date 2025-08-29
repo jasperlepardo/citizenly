@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { supabase } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
 import {
   isDevFeatureEnabled,
   getDevCredentials,

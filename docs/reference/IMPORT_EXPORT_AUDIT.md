@@ -1,0 +1,173 @@
+# Import/Export Audit
+
+Scope: src/utils, src/types, src/services, src/providers, src/lib, src/hooks
+
+## Summary
+- Files scanned: 285
+- Internal unresolved imports: 90
+- Dependency cycles detected: 0
+- Barrel re-export collisions: 0
+- Utilities/Services exporting default (discouraged): 9
+- Components missing default export (heuristic): 4
+- Imports with explicit .ts/.tsx/.js/.jsx extension: 0
+
+## Unresolved Internal Imports
+- src/utils/addressLookup.ts:1 -> @/lib
+- src/services/command-menu-service.ts:12 -> ../lib/supabase
+- src/services/addressService.ts:8 -> ../lib/supabase
+- src/services/authService.ts:10 -> ../lib/supabase
+- src/services/household-repository.ts:11 -> @/types
+- src/services/geographic.service.ts:7 -> @/lib
+- src/services/resident-details-fetcher.ts:6 -> @/lib
+- src/services/resident.service.ts:8 -> @/lib
+- src/services/resident.service.ts:17 -> @/lib/validation
+- src/services/household-fetcher.ts:6 -> @/lib
+- src/services/household-fetcher.ts:8 -> @/types
+- src/services/base-repository.ts:26 -> @/lib
+- src/services/household.service.ts:8 -> @/lib
+- src/services/household.service.ts:14 -> @/types
+- src/services/tests/household-fetcher.test.ts:6 -> @/types
+- src/providers/AppProvider.tsx:7 -> @/lib
+- src/providers/ErrorBoundary.tsx:5 -> @/lib
+- src/providers/components/LastVisitedTracker.tsx:3 -> @/hooks/utilities
+- src/providers/components/providers/Providers.tsx:3 -> @/contexts
+- src/providers/components/client-providers/ClientProviders.tsx:3 -> @/contexts
+- src/lib/ui/lazy-loading.tsx:10 -> @/components/atoms/Loading
+- src/lib/business-rules/resident-listing-helpers.ts:9 -> @/types
+- src/lib/business-rules/resident-detail-helpers.ts:9 -> @/types
+- src/lib/business-rules/sectoral-classification.ts:7 -> @/types
+- src/lib/business-rules/resident-helpers.ts:9 -> @/types
+- src/lib/security/threat-detection.ts:6 -> @/lib
+- src/lib/security/rate-limit.ts:1 -> @/lib
+- src/lib/security/audit-storage.ts:8 -> @/lib
+- src/lib/constants/resident-form-defaults.ts:1 -> @/types
+- src/lib/tests/utils.test.ts:1 -> ../core
+- src/lib/command-menu/analytics-utils.ts:6 -> @/lib
+- src/lib/command-menu/api-utils.ts:6 -> @/components
+- src/lib/api/psgc-handlers.ts:15 -> @/lib
+- src/lib/performance/performanceMonitor.ts:17 -> @/lib
+- src/lib/performance/performanceUtils.ts:1 -> @/lib
+- src/lib/data/database-utils.ts:13 -> ../supabase
+- src/lib/data/query-cache.ts:15 -> @/lib
+- src/lib/data/query-utils.ts:1 -> @/lib
+- src/lib/authentication/responseUtils.ts:8 -> ../logging
+- src/lib/authentication/authUtils.ts:10 -> @/lib
+- src/lib/authentication/auth.ts:10 -> ../supabase
+- src/lib/authentication/auditUtils.ts:8 -> @/lib
+- src/hooks/ui/useCommandMenuWithApi.ts:29 -> @/lib/data
+- src/hooks/ui/useCommandMenuWithApi.ts:30 -> @/types
+- src/hooks/ui/useCommandMenu.ts:5 -> @/types
+- src/hooks/workflows/useResidentFormState.ts:12 -> @/types
+- src/hooks/workflows/useHouseholdCreationService.ts:12 -> @/contexts
+- src/hooks/workflows/useHouseholdCreationService.ts:13 -> @/lib/auth
+- src/hooks/workflows/useResidentEditWorkflow.ts:16 -> @/types
+- src/hooks/search/useOptimizedHouseholdSearch.ts:12 -> @/contexts
+- src/hooks/search/useOptimizedHouseholdSearch.ts:13 -> @/lib
+- src/hooks/search/useFormSearches.ts:7 -> @/types
+- src/hooks/dashboard/useDashboardApi.ts:10 -> @/contexts
+- src/hooks/dashboard/useDashboardApi.ts:13 -> @/lib
+- src/hooks/utilities/useResidentSubmission.ts:13 -> @/lib/validation
+- src/hooks/utilities/useResidentSubmission.ts:14 -> @/types
+- src/hooks/utilities/useFormSubmission.ts:5 -> @/lib/forms
+- src/hooks/utilities/useFormSubmission.ts:6 -> @/types
+- src/hooks/utilities/useSelector.ts:5 -> @/lib
+- src/hooks/utilities/useHouseholdCodeGeneration.ts:12 -> @/contexts
+- src/hooks/utilities/useHouseholdCodeGeneration.ts:13 -> @/lib
+- src/hooks/utilities/useConnectionStatus.ts:12 -> @/lib/data
+- src/hooks/utilities/useResidentCrossFieldValidation.ts:12 -> @/types
+- src/hooks/utilities/useUserBarangay.ts:5 -> @/contexts
+- src/hooks/utilities/useUserBarangay.ts:6 -> @/lib/database
+- src/hooks/utilities/usePreloadOnHover.ts:24 -> @/lib
+- src/hooks/utilities/useAddressResolution.ts:12 -> @/contexts
+- src/hooks/utilities/useAddressResolution.ts:13 -> @/lib
+- src/hooks/utilities/tests/usePreloadOnHover.test.ts:26 -> @/lib
+- src/hooks/crud/useResidents.ts:9 -> @/contexts
+- src/hooks/crud/useResidents.ts:10 -> @/lib
+- src/hooks/crud/useHouseholds.ts:9 -> @/contexts
+- src/hooks/crud/useHouseholds.ts:10 -> @/lib
+- src/hooks/crud/useResidentOperations.ts:13 -> @/contexts
+- src/hooks/crud/useResidentOperations.ts:14 -> @/lib/auth
+- src/hooks/command-menu/useCommandMenuActions.ts:14 -> @/components
+- src/hooks/command-menu/useCommandMenuActions.ts:29 -> @/lib/data
+- src/hooks/command-menu/useCommandMenuRecents.ts:18 -> @/types
+- src/hooks/command-menu/useCommandMenuWithApi.ts:18 -> @/components
+- src/hooks/command-menu/useCommandMenuWithApi.ts:19 -> @/lib/command-menu
+- src/hooks/command-menu/useCommandMenuSearch.ts:13 -> @/lib/command-menu
+- src/hooks/command-menu/useCommandMenuSearch.ts:14 -> @/lib/data
+- src/hooks/command-menu/useCommandMenuSearch.ts:15 -> @/types
+- src/hooks/command-menu/useCommandMenu.ts:6 -> @/components
+- src/hooks/api/useGeographicData.ts:8 -> @/lib
+- src/hooks/validation/useResidentValidationErrors.ts:12 -> @/lib/validation
+- src/hooks/validation/useResidentValidationErrors.ts:13 -> @/types
+- src/hooks/validation/useOptimizedResidentValidation.ts:27 -> @/types
+- src/hooks/validation/useResidentValidationCore.ts:15 -> @/lib/validation
+- src/hooks/validation/useResidentValidationCore.ts:30 -> @/types
+
+## Default Exports in Utilities/Services (discouraged)
+- src/lib/caching/redis-client.ts
+- src/lib/caching/response-cache.ts
+- src/lib/database/connection-pool.ts
+- src/lib/database/query-optimizer.ts
+- src/lib/logging/client-logger.ts
+- src/lib/monitoring/performance.ts
+- src/lib/monitoring/sentry-config.ts
+- src/lib/ui/typography.ts
+- src/lib/validation/createValidationHook.ts
+
+## Components Missing Default Export (heuristic)
+- src/lib/error-handling/ErrorBoundaries.tsx
+- src/lib/monitoring/components/ErrorBoundaryProvider.tsx
+- src/providers/AppProvider.tsx
+- src/providers/ErrorBoundary.tsx
+
+## Files: Export Summary Samples (up to 50)
+- src/hooks/accessibility/index.ts | default: no | named: 0
+- src/hooks/accessibility/useFieldAccessibility.ts | default: no | named: 5
+- src/hooks/api/useGeographicData.ts | default: no | named: 2
+- src/hooks/command-menu/index.ts | default: no | named: 0
+- src/hooks/command-menu/useCommandMenu.ts | default: no | named: 1
+- src/hooks/command-menu/useCommandMenuActions.ts | default: yes | named: 2
+- src/hooks/command-menu/useCommandMenuRecents.ts | default: yes | named: 3
+- src/hooks/command-menu/useCommandMenuSearch.ts | default: yes | named: 4
+- src/hooks/command-menu/useCommandMenuWithApi.ts | default: yes | named: 3
+- src/hooks/crud/index.ts | default: no | named: 0
+- src/hooks/crud/useHouseholdCrud.ts | default: no | named: 4
+- src/hooks/crud/useHouseholds.ts | default: no | named: 1
+- src/hooks/crud/useResidentOperations.ts | default: no | named: 2
+- src/hooks/crud/useResidents.ts | default: no | named: 2
+- src/hooks/crud/useResilientQuery.ts | default: no | named: 2
+- src/hooks/dashboard/index.ts | default: no | named: 0
+- src/hooks/dashboard/useDashboard.ts | default: yes | named: 2
+- src/hooks/dashboard/useDashboardApi.ts | default: yes | named: 9
+- src/hooks/dashboard/useDashboardCalculations.ts | default: yes | named: 16
+- src/hooks/index.ts | default: no | named: 0
+- src/hooks/search/index.ts | default: no | named: 0
+- src/hooks/search/useFormSearches.ts | default: no | named: 1
+- src/hooks/search/useGenericPaginatedSearch.ts | default: no | named: 3
+- src/hooks/search/useGenericSearch.ts | default: no | named: 3
+- src/hooks/search/useOptimizedHouseholdSearch.ts | default: no | named: 5
+- src/hooks/search/usePsgcSearch.ts | default: yes | named: 4
+- src/hooks/search/useStreetsSearch.ts | default: no | named: 1
+- src/hooks/search/useSubdivisionsSearch.ts | default: no | named: 1
+- src/hooks/tests/useAsyncErrorBoundary.test.ts | default: no | named: 0
+- src/hooks/tests/useOptimizedResidentValidation.test.ts | default: no | named: 0
+- src/hooks/ui/useCommandMenu.ts | default: no | named: 1
+- src/hooks/ui/useCommandMenuWithApi.ts | default: no | named: 1
+- src/hooks/useURLParameters.ts | default: no | named: 4
+- src/hooks/utilities/index.ts | default: no | named: 0
+- src/hooks/utilities/tests/usePreloadOnHover.test.ts | default: no | named: 0
+- src/hooks/utilities/useAddressResolution.ts | default: no | named: 2
+- src/hooks/utilities/useAsyncErrorBoundary.ts | default: yes | named: 3
+- src/hooks/utilities/useAsyncUtils.ts | default: yes | named: 4
+- src/hooks/utilities/useConnectionStatus.ts | default: yes | named: 2
+- src/hooks/utilities/useDebounce.ts | default: no | named: 1
+- src/hooks/utilities/useFieldErrorHandler.ts | default: yes | named: 2
+- src/hooks/utilities/useFormSubmission.ts | default: no | named: 1
+- src/hooks/utilities/useGenericFormSubmission.ts | default: no | named: 3
+- src/hooks/utilities/useHouseholdCodeGeneration.ts | default: no | named: 2
+- src/hooks/utilities/useLastVisitedPage.ts | default: no | named: 1
+- src/hooks/utilities/useLogger.ts | default: no | named: 4
+- src/hooks/utilities/useMigrationInformation.ts | default: no | named: 2
+- src/hooks/utilities/usePerformanceMonitor.ts | default: yes | named: 4
+- src/hooks/utilities/usePersistedState.ts | default: no | named: 2
+- src/hooks/utilities/usePreloadOnHover.ts | default: no | named: 2
