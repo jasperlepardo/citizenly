@@ -229,7 +229,7 @@ function CreateResidentForm() {
     }
 
     return Object.keys(data).length > 0 ? data : undefined;
-  }, [suggestedName, suggestedId, user?.id]);
+  }, [suggestedId, user?.id]);
 
   return (
     <div className="p-6">

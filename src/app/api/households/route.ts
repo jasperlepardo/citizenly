@@ -7,7 +7,7 @@ import { NextRequest } from 'next/server';
 import { z } from 'zod';
 
 import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib';
-import { RequestContext, Role } from '@/lib/api/types';
+import { RequestContext } from '@/lib/api/types';
 import { auditDataOperation } from '@/lib/authentication/auditUtils';
 import {
   createPaginatedResponse,

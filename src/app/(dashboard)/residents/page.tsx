@@ -24,6 +24,10 @@ function ResidentsContent() {
     current: 1,
     pageSize: 20,
   });
+  const [confirmDelete, setConfirmDelete] = useState<{
+    resident: Resident;
+    isOpen: boolean;
+  }>({ resident: {} as Resident, isOpen: false });
 
   // Get filter field definitions
   const filterFields = useResidentFilterFields();
@@ -101,6 +105,38 @@ function ResidentsContent() {
     return age.toString();
   };
 
+  const handleDeleteConfirmation = (resident: Resident) => {
+    setConfirmDelete({ resident, isOpen: true });
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const response = await fetch(`/api/residents/${confirmDelete.resident.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+      });
+
+      if (response.ok) {
+        // Refresh the residents list
+        window.location.reload();
+        toast.success('Resident deleted successfully');
+      } else {
+        toast.error('Failed to delete resident');
+      }
+    } catch (error) {
+      logger.error('Delete error:', error);
+      toast.error('Error deleting resident');
+    } finally {
+      setConfirmDelete({ resident: {} as Resident, isOpen: false });
+    }
+  };
+
+  const handleDeleteCancelled = () => {
+    setConfirmDelete({ resident: {} as Resident, isOpen: false });
+  };
+
   // Define table columns
   const columns: TableColumn<Resident>[] = [
     {
@@ -168,32 +204,7 @@ function ResidentsContent() {
     {
       key: 'delete',
       label: 'Delete',
-      onClick: async (record: Resident) => {
-        if (
-          window.confirm(
-            `Are you sure you want to delete ${record.first_name} ${record.last_name}?`
-          )
-        ) {
-          try {
-            const response = await fetch(`/api/residents/${record.id}`, {
-              method: 'DELETE',
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-              },
-            });
-
-            if (response.ok) {
-              // Refresh the residents list
-              window.location.reload();
-            } else {
-              toast.error('Failed to delete resident');
-            }
-          } catch (error) {
-            logger.error('Delete error:', error);
-            toast.error('Error deleting resident');
-          }
-        }
-      },
+      onClick: (record: Resident) => handleDeleteConfirmation(record),
       variant: 'danger',
     },
   ];
@@ -360,6 +371,53 @@ function ResidentsContent() {
         }
         size="middle"
       />
+
+      {/* Delete Confirmation Modal */}
+      {confirmDelete.isOpen && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div className="max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+            <div className="mb-4 flex items-center">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-6 w-6 text-red-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                  Confirm Delete
+                </h3>
+              </div>
+            </div>
+            <div className="mb-6">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Are you sure you want to delete{' '}
+                <span className="font-medium">
+                  {confirmDelete.resident.first_name} {confirmDelete.resident.last_name}
+                </span>
+                ? This action cannot be undone.
+              </p>
+            </div>
+            <div className="flex justify-end space-x-3">
+              <Button variant="secondary" size="md" onClick={handleDeleteCancelled}>
+                Cancel
+              </Button>
+              <Button variant="danger" size="md" onClick={handleDeleteConfirmed}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

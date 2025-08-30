@@ -6,15 +6,8 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import {
-  withAuth,
-  applyGeographicFilter,
-  createAdminSupabaseClient,
-  getAccessLevel,
-  logger,
-  logError,
-} from '@/lib';
-import { RequestContext, Role } from '@/lib/api/types';
+import { withAuth, createAdminSupabaseClient, getAccessLevel, logger, logError } from '@/lib';
+import { RequestContext } from '@/lib/api/types';
 import { auditDataOperation } from '@/lib/authentication/auditUtils';
 import {
   createPaginatedResponse,
@@ -190,7 +183,7 @@ export const POST = withSecurityHeaders(
 
         // Parse and validate request body
         const body = await request.json();
-        console.log('🔧 POST /api/residents - Received CREATE request');
+        logger.debug('POST /api/residents - Received CREATE request');
         logger.debug('Received create resident request', {
           hasBody: !!body,
           bodyKeys: Object.keys(body),

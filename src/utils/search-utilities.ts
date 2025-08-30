@@ -5,15 +5,12 @@
  * Extracted from multiple search hooks to eliminate duplication.
  */
 
-import { useState, useEffect, useMemo } from 'react';
-
-import { useDebounce } from '@/hooks/utilities/useDebounce';
+import { useState, useMemo } from 'react';
 
 // Re-export consolidated search utility types
 export type {
   BaseSearchConfig,
   PaginatedSearchConfig,
-  PaginatedSearchResult,
   SearchState,
   PaginatedSearchState,
   SearchFunction,
@@ -26,7 +23,6 @@ import type {
   PaginatedSearchState,
   BaseSearchConfig,
   PaginatedSearchConfig,
-  PaginatedSearchResult,
   SearchFunction,
   PaginatedSearchFunction,
 } from '@/types/utilities';
