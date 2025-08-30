@@ -310,22 +310,30 @@ describe('Create New Resident - Complete Flow', () => {
 
       // Mock ResidentForm to return empty data
       const MockResidentForm = jest.requireMock('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel: _onCancel }: any) => (
-        <div data-testid="resident-form">
-          <button
-            onClick={() =>
-              onSubmit({
-                first_name: '', // Empty required field
-                last_name: '', // Empty required field
-                birthdate: '', // Empty required field
-                sex: '', // Empty required field
-              })
-            }
-          >
-            Submit
-          </button>
-        </div>
-      ));
+      MockResidentForm.mockImplementation(
+        ({
+          onSubmit,
+          onCancel: _onCancel,
+        }: {
+          onSubmit: (data: Record<string, unknown>) => void;
+          onCancel?: () => void;
+        }) => (
+          <div data-testid="resident-form">
+            <button
+              onClick={() =>
+                onSubmit({
+                  first_name: '', // Empty required field
+                  last_name: '', // Empty required field
+                  birthdate: '', // Empty required field
+                  sex: '', // Empty required field
+                })
+              }
+            >
+              Submit
+            </button>
+          </div>
+        )
+      );
 
       render(<CreateResidentPage />);
 

@@ -15,9 +15,9 @@ import { NextRequest } from 'next/server';
 import { createAdminSupabaseClient } from '@/lib';
 import {
   createSuccessResponse,
-  createErrorResponse,
   withNextRequestErrorHandling,
 } from '@/lib/authentication/responseUtils';
+import { sanitizeSearchInput } from '@/lib/authentication/validationUtils';
 
 // =============================================================================
 // TYPES
@@ -42,12 +42,31 @@ export interface PSGCQueryConfig {
 }
 
 /**
+ * Database entity interfaces
+ */
+type GeoSubdivision = {
+  id: string;
+  name: string;
+  type: string;
+  barangay_code: string;
+  is_active: boolean;
+};
+
+type GeoStreet = {
+  id: string;
+  name: string;
+  subdivision_id: string | null;
+  barangay_code: string;
+  is_active: boolean;
+};
+
+/**
  * Standard PSGC option format for SelectField components
  */
 export interface PSGCOption {
   value: string;
   label: string;
-  [key: string]: any; // Additional fields from the database
+  [key: string]: string | number | boolean | null; // Additional fields from the database
 }
 
 // =============================================================================
@@ -86,23 +105,36 @@ export function createPSGCHandler(config: PSGCQueryConfig) {
 
     // Transform data to standard SelectField format
     const options: PSGCOption[] =
-      data?.map((item: any) => {
+      data?.map((item: Record<string, unknown>) => {
         const option: PSGCOption = {
-          value: item.code,
-          label: item.name,
+          value: String(item.code || ''),
+          label: String(item.name || ''),
         };
 
         // Add additional fields dynamically (preserve all database fields)
         Object.keys(item).forEach(key => {
           if (!['code', 'name'].includes(key)) {
-            option[key] = item[key];
+            const value = item[key];
+            if (value !== undefined && value !== null) {
+              option[key] = value as string | number | boolean;
+            }
           }
         });
 
         return option;
       }) || [];
 
-    return createSuccessResponse(options, `${config.errorContext} retrieved successfully`);
+    const response = createSuccessResponse(
+      options,
+      `${config.errorContext} retrieved successfully`
+    );
+
+    // Add cache headers for static reference data
+    if (['Regions', 'Provinces'].includes(config.errorContext)) {
+      response.headers.set('Cache-Control', 's-maxage=86400, stale-while-revalidate=3600'); // Cache for 24 hours
+    }
+
+    return response;
   });
 }
 
@@ -186,9 +218,12 @@ export const PSGCHandlers = {
       query = query.eq('barangay_code', barangayCode);
     }
 
-    // Add search filter if provided
+    // Add search filter if provided (with sanitization)
     if (search && search.trim() !== '') {
-      query = query.ilike('name', `%${search.trim()}%`);
+      const sanitizedSearch = sanitizeSearchInput(search);
+      if (sanitizedSearch) {
+        query = query.ilike('name', `%${sanitizedSearch}%`);
+      }
     }
 
     const { data: subdivisions, error } = await query.limit(100);
@@ -199,8 +234,8 @@ export const PSGCHandlers = {
     }
 
     // Transform data to SelectField format
-    const options =
-      subdivisions?.map((subdivision: any) => ({
+    const options: PSGCOption[] =
+      subdivisions?.map((subdivision: GeoSubdivision) => ({
         value: subdivision.id,
         label: subdivision.name,
         barangay_code: subdivision.barangay_code,
@@ -238,9 +273,12 @@ export const PSGCHandlers = {
       query = query.eq('subdivision_id', subdivisionId);
     }
 
-    // Add search filter if provided
+    // Add search filter if provided (with sanitization)
     if (search && search.trim() !== '') {
-      query = query.ilike('name', `%${search.trim()}%`);
+      const sanitizedSearch = sanitizeSearchInput(search);
+      if (sanitizedSearch) {
+        query = query.ilike('name', `%${sanitizedSearch}%`);
+      }
     }
 
     const { data: streets, error } = await query.limit(100);
@@ -251,8 +289,8 @@ export const PSGCHandlers = {
     }
 
     // Transform data to SelectField format
-    const options =
-      streets?.map((street: any) => ({
+    const options: PSGCOption[] =
+      streets?.map((street: GeoStreet) => ({
         value: street.id,
         label: street.name,
         subdivision_id: street.subdivision_id,
@@ -286,7 +324,7 @@ export function createLegacyPSGCResponse(options: PSGCOption[]) {
  */
 export function createCustomPSGCHandler<T = PSGCOption>(
   config: PSGCQueryConfig,
-  transformer?: (data: any[]) => T[]
+  transformer?: (data: Record<string, unknown>[]) => T[]
 ) {
   return withNextRequestErrorHandling(async (request: NextRequest) => {
     const supabase = createAdminSupabaseClient();
@@ -316,16 +354,19 @@ export function createCustomPSGCHandler<T = PSGCOption>(
     // Apply custom transformation or default transformation
     const processedData = transformer
       ? transformer(data || [])
-      : data?.map((item: any) => {
+      : data?.map((item: Record<string, unknown>) => {
           const option: PSGCOption = {
-            value: item.code,
-            label: item.name,
+            value: String(item.code || ''),
+            label: String(item.name || ''),
           };
 
           // Add additional fields
           Object.keys(item).forEach(key => {
             if (!['code', 'name'].includes(key)) {
-              option[key] = item[key];
+              const value = item[key];
+              if (value !== undefined && value !== null) {
+                option[key] = value as string | number | boolean;
+              }
             }
           });
 
