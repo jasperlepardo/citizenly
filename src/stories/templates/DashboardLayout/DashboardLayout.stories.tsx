@@ -212,9 +212,9 @@ const MockDashboardContent = () => (
         <div>
           <h4 className="mb-2 font-semibold text-indigo-900">Welcome to Citizenly</h4>
           <p className="text-sm leading-relaxed text-indigo-700">
-            This dashboard provides an overview of your barangay's resident data and system status.
-            Use the navigation menu to access different modules for managing residents, households,
-            and generating reports.
+            This dashboard provides an overview of your barangay&apos;s resident data and system
+            status. Use the navigation menu to access different modules for managing residents,
+            households, and generating reports.
           </p>
         </div>
       </div>
@@ -667,7 +667,7 @@ export const EnvironmentIndicator: Story = {
               <p className="mt-1 text-sm text-gray-800 dark:text-gray-200">
                 The system automatically detects the environment and displays appropriate indicators
                 in the sidebar footer. This helps developers and testers quickly identify which
-                environment they're working in.
+                environment they&apos;re working in.
               </p>
             </div>
           </div>

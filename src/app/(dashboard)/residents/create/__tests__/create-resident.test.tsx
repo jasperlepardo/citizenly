@@ -538,8 +538,8 @@ describe('Create New Resident - Complete Flow', () => {
 
       // Should show validation errors
       expect(screen.getByText('There were errors with your submission')).toBeInTheDocument();
-      expect(screen.getByText('first_name: First name is required')).toBeInTheDocument();
-      expect(screen.getByText('sex: Sex is required')).toBeInTheDocument();
+      expect(screen.getByText('First name is required')).toBeInTheDocument();
+      expect(screen.getByText('Sex is required')).toBeInTheDocument();
     });
   });
 });

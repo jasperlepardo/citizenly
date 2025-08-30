@@ -142,7 +142,8 @@ export const Unauthenticated: Story = {
                 Sign In Required
               </h2>
               <p className="text-sm text-gray-800 dark:text-gray-200">
-                Click the "Sign In" link in the header to access the RBI Records Management System.
+                Click the &quot;Sign In&quot; link in the header to access the RBI Records
+                Management System.
               </p>
             </div>
           </div>
@@ -206,7 +207,7 @@ export const AdminUser: Story = {
               Admin Dashboard
             </h1>
             <p className="mb-4 text-gray-600 dark:text-gray-400">
-              Header showing admin user "Maria Santos" with full system access.
+              Header showing admin user &quot;Maria Santos&quot; with full system access.
             </p>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="rounded-lg border border-green-200 bg-green-50 p-6">

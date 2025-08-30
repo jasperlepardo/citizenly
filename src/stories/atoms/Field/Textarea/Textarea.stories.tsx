@@ -253,7 +253,7 @@ export const AsFieldSet: Story = {
           />
         </div>
         <div className="text-sm text-gray-600">
-          Current value: "{value}" (Length: {value.length})
+          Current value: &quot;{value}&quot; (Length: {value.length})
         </div>
       </div>
     );

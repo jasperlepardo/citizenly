@@ -251,7 +251,7 @@ export const AllowCustomInput: Story = {
           searchable={true}
         />
         <p className="text-sm text-gray-500">
-          Current value: "{value}" • Type custom values or select from list
+          Current value: &quot;{value}&quot; • Type custom values or select from list
         </p>
       </div>
     );
@@ -1103,8 +1103,8 @@ export const APIImplementationGuide: Story = {
 }`}
           </pre>
           <p className="mt-2 text-xs text-purple-600 dark:text-purple-400">
-            Note: Stories will show mock data if proxy isn't configured, demonstrating the same API
-            patterns.
+            Note: Stories will show mock data if proxy isn&apos;t configured, demonstrating the same
+            API patterns.
           </p>
         </div>
 

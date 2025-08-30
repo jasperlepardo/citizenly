@@ -324,7 +324,7 @@ export const SearchExample: Story = {
 
         {searchTerm && results.length === 0 && !isSearching && (
           <div className="mt-4 rounded-sm bg-gray-50 p-3 text-sm text-gray-500 dark:text-gray-500">
-            No results found for "{searchTerm}"
+            No results found for &quot;{searchTerm}&quot;
           </div>
         )}
       </div>
@@ -411,7 +411,7 @@ export const AccessibilityDemo: Story = {
             <li>
               • <kbd className="rounded bg-blue-100 px-1 py-0.5">Escape</kbd> to clear and blur
             </li>
-            <li>• Clear button is excluded from tab order (tabindex="-1")</li>
+            <li>• Clear button is excluded from tab order (tabindex=&quot;-1&quot;)</li>
             <li>• Proper ARIA labels for screen readers</li>
           </ul>
         </div>
@@ -423,7 +423,7 @@ export const AccessibilityDemo: Story = {
             onClear={() => setValue('')}
             onSearch={searchValue => {
               console.log('Search performed:', searchValue);
-              alert(`Searching for: "${searchValue}"`);
+              alert(`Searching for: &quot;${searchValue}&quot;`);
             }}
             placeholder="Try typing and pressing Enter..."
           />
