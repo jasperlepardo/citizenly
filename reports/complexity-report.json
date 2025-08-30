@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-08-30T01:10:52.669Z",
+  "timestamp": "2025-08-30T15:58:36.600Z",
   "configuration": {
     "maxComplexity": 15,
     "warnComplexity": 10
   },
   "healthScore": 97,
   "filesChecked": 666,
-  "functionsAnalyzed": 2358,
+  "functionsAnalyzed": 2359,
   "complexFunctions": [
     {
       "name": "if",
@@ -208,7 +208,7 @@
       "name": "switch",
       "complexity": 15,
       "file": "src/app/api/residents/route.ts",
-      "line": 100,
+      "line": 93,
       "severity": "warning"
     },
     {
@@ -409,7 +409,7 @@
     }
   ],
   "summary": {
-    "low": 2195,
+    "low": 2196,
     "moderate": 106,
     "high": 32,
     "veryHigh": 25
