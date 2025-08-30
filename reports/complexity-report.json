@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-08-30T00:56:43.063Z",
+  "timestamp": "2025-08-30T01:10:52.669Z",
   "configuration": {
     "maxComplexity": 15,
     "warnComplexity": 10
   },
   "healthScore": 97,
   "filesChecked": 666,
-  "functionsAnalyzed": 2354,
+  "functionsAnalyzed": 2358,
   "complexFunctions": [
     {
       "name": "if",
@@ -409,7 +409,7 @@
     }
   ],
   "summary": {
-    "low": 2191,
+    "low": 2195,
     "moderate": 106,
     "high": 32,
     "veryHigh": 25
