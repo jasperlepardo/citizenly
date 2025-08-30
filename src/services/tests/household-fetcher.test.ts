@@ -54,7 +54,7 @@ describe('Household Fetcher Optimization', () => {
       ];
 
       // Mock supabase response
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           in: () => Promise.resolve({ data: mockHeads, error: null }),
@@ -69,7 +69,7 @@ describe('Household Fetcher Optimization', () => {
     });
 
     it('should handle database errors gracefully', async () => {
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           in: () => Promise.resolve({ data: null, error: new Error('DB Error') }),
@@ -113,7 +113,7 @@ describe('Household Fetcher Optimization', () => {
       ];
 
       // Mock the batch fetch
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           in: () => Promise.resolve({ data: mockHeads, error: null }),
@@ -249,7 +249,7 @@ describe('Household Fetcher Optimization', () => {
         },
       ];
 
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           eq: () => ({
@@ -269,7 +269,7 @@ describe('Household Fetcher Optimization', () => {
     });
 
     it('should handle search errors gracefully', async () => {
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           eq: () => ({
@@ -305,7 +305,7 @@ describe('Household Fetcher Optimization', () => {
       }));
 
       let queryCount = 0;
-      const { supabase } = require('@/lib/supabase');
+      const { supabase } = jest.requireMock('@/lib/supabase');
       supabase.from.mockReturnValue({
         select: () => ({
           in: () => {

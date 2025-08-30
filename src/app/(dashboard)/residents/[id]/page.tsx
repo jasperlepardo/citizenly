@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
@@ -42,7 +42,7 @@ function ResidentDetailContent() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [, setCurrentFormData] = useState<ResidentFormState | null>(null);
 
-  const loadAddressInfo = async (residentData: Resident) => {
+  const loadAddressInfo = useCallback(async (residentData: Resident) => {
     try {
       logger.debug('Loading address information', { barangayCode: residentData.barangay_code });
 
@@ -72,7 +72,7 @@ function ResidentDetailContent() {
         error: addressError instanceof Error ? addressError.message : 'Unknown error',
       });
     }
-  };
+  }, []);
 
   const loadAddressFromIndividualTables = async (residentData: Resident) => {
     logger.debug('Address view not available, trying individual table queries');
@@ -225,7 +225,7 @@ function ResidentDetailContent() {
     };
 
     loadResidentDetails();
-  }, [residentId]);
+  }, [residentId, loadAddressInfo]);
 
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status

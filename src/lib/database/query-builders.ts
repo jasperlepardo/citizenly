@@ -99,11 +99,7 @@ export function createFindByFieldQueryBuilder(
   selectFields: string = '*'
 ): QueryBuilderFn {
   return (supabase: SupabaseClient) => {
-    return supabase
-      .from(tableName)
-      .select(selectFields)
-      .eq(field, value)
-      .single();
+    return supabase.from(tableName).select(selectFields).eq(field, value).single();
   };
 }
 
@@ -407,7 +403,7 @@ export function createTextSearchQueryBuilder(
       const searchConditions = searchFields
         .map(field => `${field}.ilike.${searchPattern}`)
         .join(',');
-      
+
       query = query.or(searchConditions);
     }
 
@@ -529,8 +525,7 @@ export const CommonQueryBuilders = {
   /**
    * Find by ID pattern (universal)
    */
-  findById: (tableName: string, id: string) =>
-    createFindByFieldQueryBuilder(tableName, 'id', id),
+  findById: (tableName: string, id: string) => createFindByFieldQueryBuilder(tableName, 'id', id),
 
   /**
    * Find by user ID pattern (common in profile repositories)

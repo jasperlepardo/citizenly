@@ -1,10 +1,10 @@
 /**
  * Higher-Order Component Utilities
- * 
+ *
  * @fileoverview Consolidated utilities for creating Higher-Order Components (HOCs).
  * Eliminates duplicate WrappedComponent patterns across the codebase and provides
  * standardized component wrapping with proper displayName handling.
- * 
+ *
  * @version 1.0.0
  * @since 2025-08-29
  * @author Citizenly Development Team
@@ -114,12 +114,10 @@ export function createErrorBoundaryHOC<T extends object>(
     Component: React.ComponentType<T>,
     additionalProps?: any
   ): React.ComponentType<T> {
-    return createWrappedComponent(
-      Component,
-      ErrorBoundaryComponent,
-      'withErrorBoundary',
-      { ...boundaryProps, ...additionalProps }
-    );
+    return createWrappedComponent(Component, ErrorBoundaryComponent, 'withErrorBoundary', {
+      ...boundaryProps,
+      ...additionalProps,
+    });
   };
 }
 
@@ -134,12 +132,10 @@ export function createLazyLoadingHOC(
     Component: React.ComponentType<T>,
     loadingMessage?: string
   ): React.ComponentType<T> {
-    return createWrappedComponent(
-      Component,
-      SuspenseWrapper,
-      'withLazyLoading',
-      { ...suspenseProps, loadingMessage }
-    );
+    return createWrappedComponent(Component, SuspenseWrapper, 'withLazyLoading', {
+      ...suspenseProps,
+      loadingMessage,
+    });
   };
 }
 
@@ -154,12 +150,10 @@ export function createMonitoringHOC(
     Component: React.ComponentType<T>,
     componentName?: string
   ): React.ComponentType<T> {
-    return createWrappedComponent(
-      Component,
-      MonitoringWrapper,
-      'withMonitoring',
-      { ...monitoringProps, componentName: componentName || Component.displayName || Component.name }
-    );
+    return createWrappedComponent(Component, MonitoringWrapper, 'withMonitoring', {
+      ...monitoringProps,
+      componentName: componentName || Component.displayName || Component.name,
+    });
   };
 }
 
@@ -229,10 +223,6 @@ export function legacyWrappedComponent<P extends object>(
   console.warn(
     'legacyWrappedComponent is deprecated. Use createWrappedComponent or createWrappedComponentWithRender instead.'
   );
-  
-  return createWrappedComponentWithRender(
-    Component,
-    (children) => wrapper(children),
-    displayName
-  );
+
+  return createWrappedComponentWithRender(Component, children => wrapper(children), displayName);
 }

@@ -1,9 +1,9 @@
 /**
  * Generic Form Submission Hook
- * 
+ *
  * @fileoverview A generic, reusable form submission hook that can work with any form type.
  * Provides standardized form submission patterns, loading states, and error handling.
- * 
+ *
  * @version 1.0.0
  * @since 2025-08-29
  * @author Citizenly Development Team

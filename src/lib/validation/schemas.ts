@@ -67,7 +67,13 @@ export async function residentSchema(
   const errors: Record<string, string> = {};
 
   // Validate required fields
-  await validateField(errors, 'first_name', data.first_name, [validateRequired, validateName], data);
+  await validateField(
+    errors,
+    'first_name',
+    data.first_name,
+    [validateRequired, validateName],
+    data
+  );
   await validateField(errors, 'last_name', data.last_name, [validateRequired, validateName], data);
   await validateField(errors, 'birthdate', data.birthdate, [validateRequired, validateDate], data);
   await validateField(errors, 'sex', data.sex, [validateRequired], data);
@@ -83,10 +89,22 @@ export async function residentSchema(
     await validateField(errors, 'email', data.email, [validateEmail], data);
   }
   if (data.mobile_number !== undefined) {
-    await validateField(errors, 'mobile_number', data.mobile_number, [validatePhilippineMobile], data);
+    await validateField(
+      errors,
+      'mobile_number',
+      data.mobile_number,
+      [validatePhilippineMobile],
+      data
+    );
   }
   if (data.telephone_number !== undefined) {
-    await validateField(errors, 'telephone_number', data.telephone_number, [validateLength(0, 20)], data);
+    await validateField(
+      errors,
+      'telephone_number',
+      data.telephone_number,
+      [validateLength(0, 20)],
+      data
+    );
   }
   if (data.civil_status !== undefined) {
     await validateField(errors, 'civil_status', data.civil_status, [validateLength(0, 50)], data);
@@ -104,9 +122,13 @@ export async function residentSchema(
     await validateField(errors, 'religion', data.religion, [validateLength(0, 50)], data);
   }
   if (data.religion_others_specify !== undefined) {
-    await validateField(errors, 'religion_others_specify', data.religion_others_specify, [
-      validateLength(0, 100),
-    ], data);
+    await validateField(
+      errors,
+      'religion_others_specify',
+      data.religion_others_specify,
+      [validateLength(0, 100)],
+      data
+    );
   }
   if (data.height !== undefined) {
     await validateField(errors, 'height', data.height, [validateRange(50, 300)], data);
@@ -118,22 +140,58 @@ export async function residentSchema(
     await validateField(errors, 'complexion', data.complexion, [validateLength(0, 50)], data);
   }
   if (data.birth_place_code !== undefined) {
-    await validateField(errors, 'birth_place_code', data.birth_place_code, [validateLength(0, 20)], data);
+    await validateField(
+      errors,
+      'birth_place_code',
+      data.birth_place_code,
+      [validateLength(0, 20)],
+      data
+    );
   }
   if (data.philsys_card_number !== undefined) {
-    await validateField(errors, 'philsys_card_number', data.philsys_card_number, [validatePhilSysNumber], data);
+    await validateField(
+      errors,
+      'philsys_card_number',
+      data.philsys_card_number,
+      [validatePhilSysNumber],
+      data
+    );
   }
   if (data.mother_maiden_first !== undefined) {
-    await validateField(errors, 'mother_maiden_first', data.mother_maiden_first, [validateName], data);
+    await validateField(
+      errors,
+      'mother_maiden_first',
+      data.mother_maiden_first,
+      [validateName],
+      data
+    );
   }
   if (data.mother_maiden_middle !== undefined) {
-    await validateField(errors, 'mother_maiden_middle', data.mother_maiden_middle, [validateName], data);
+    await validateField(
+      errors,
+      'mother_maiden_middle',
+      data.mother_maiden_middle,
+      [validateName],
+      data
+    );
   }
   if (data.mother_maiden_last !== undefined) {
-    await validateField(errors, 'mother_maiden_last', data.mother_maiden_last, [validateName], data);
+    await validateField(
+      errors,
+      'mother_maiden_last',
+      data.mother_maiden_last,
+      [validateName],
+      data
+    );
   }
   if (data.education_attainment !== undefined) {
-    await validateField(errors, 'education_attainment', data.education_attainment, [validateLength(0, 50)], data);
+    await validateField(
+      errors,
+      'education_attainment',
+      data.education_attainment,
+      [validateLength(0, 50)],
+      data
+    );
   }
   if (data.is_graduate !== undefined) {
     if (typeof data.is_graduate !== 'boolean') {
@@ -141,10 +199,22 @@ export async function residentSchema(
     }
   }
   if (data.employment_status !== undefined) {
-    await validateField(errors, 'employment_status', data.employment_status, [validateLength(0, 50)], data);
+    await validateField(
+      errors,
+      'employment_status',
+      data.employment_status,
+      [validateLength(0, 50)],
+      data
+    );
   }
   if (data.occupation_code !== undefined) {
-    await validateField(errors, 'occupation_code', data.occupation_code, [validateLength(0, 20)], data);
+    await validateField(
+      errors,
+      'occupation_code',
+      data.occupation_code,
+      [validateLength(0, 20)],
+      data
+    );
   }
   if (data.is_voter !== undefined) {
     if (typeof data.is_voter !== 'boolean') {
@@ -160,7 +230,13 @@ export async function residentSchema(
     await validateField(errors, 'last_voted_date', data.last_voted_date, [validateDate], data);
   }
   if (data.household_code !== undefined) {
-    await validateField(errors, 'household_code', data.household_code, [validateLength(0, 50)], data);
+    await validateField(
+      errors,
+      'household_code',
+      data.household_code,
+      [validateLength(0, 50)],
+      data
+    );
   }
 
   // Cross-field validations
@@ -185,10 +261,13 @@ export async function householdSchema(
 
   // Validate required fields
   await validateField(errors, 'code', data.code, [validateRequired, validateLength(1, 50)], data);
-  await validateField(errors, 'barangay_code', data.barangay_code, [
-    validateRequired,
-    validateLength(1, 20),
-  ], data);
+  await validateField(
+    errors,
+    'barangay_code',
+    data.barangay_code,
+    [validateRequired, validateLength(1, 20)],
+    data
+  );
 
   // Validate optional fields
   if (data.name !== undefined) {
@@ -201,10 +280,22 @@ export async function householdSchema(
     await validateField(errors, 'street_id', data.street_id, [validateRequired], data);
   }
   if (data.subdivision_id !== undefined) {
-    await validateField(errors, 'subdivision_id', data.subdivision_id, [validateLength(0, 50)], data);
+    await validateField(
+      errors,
+      'subdivision_id',
+      data.subdivision_id,
+      [validateLength(0, 50)],
+      data
+    );
   }
   if (data.household_head_id !== undefined) {
-    await validateField(errors, 'household_head_id', data.household_head_id, [validateLength(0, 50)], data);
+    await validateField(
+      errors,
+      'household_head_id',
+      data.household_head_id,
+      [validateLength(0, 50)],
+      data
+    );
   }
 
   return createValidationResult(Object.keys(errors).length === 0, errors);
@@ -221,7 +312,13 @@ export async function userSchema(
 
   // Validate required fields
   await validateField(errors, 'email', data.email, [validateRequired, validateEmail], data);
-  await validateField(errors, 'first_name', data.first_name, [validateRequired, validateName], data);
+  await validateField(
+    errors,
+    'first_name',
+    data.first_name,
+    [validateRequired, validateName],
+    data
+  );
   await validateField(errors, 'last_name', data.last_name, [validateRequired, validateName], data);
   await validateField(errors, 'role', data.role, [validateRequired], data);
 
@@ -249,7 +346,13 @@ export async function loginSchema(
 
   // Validate required fields
   await validateField(errors, 'email', data.email, [validateRequired, validateEmail], data);
-  await validateField(errors, 'password', data.password, [validateRequired, validateLength(1, 100)], data);
+  await validateField(
+    errors,
+    'password',
+    data.password,
+    [validateRequired, validateLength(1, 100)],
+    data
+  );
 
   return createValidationResult(Object.keys(errors).length === 0, errors);
 }
@@ -264,18 +367,27 @@ export async function passwordChangeSchema(
   const errors: Record<string, string> = {};
 
   // Validate required fields
-  await validateField(errors, 'current_password', data.current_password, [
-    validateRequired,
-    validateLength(1, 100),
-  ], data);
-  await validateField(errors, 'new_password', data.new_password, [
-    validateRequired,
-    validateLength(8, 100),
-  ], data);
-  await validateField(errors, 'confirm_password', data.confirm_password, [
-    validateRequired,
-    validateLength(1, 100),
-  ], data);
+  await validateField(
+    errors,
+    'current_password',
+    data.current_password,
+    [validateRequired, validateLength(1, 100)],
+    data
+  );
+  await validateField(
+    errors,
+    'new_password',
+    data.new_password,
+    [validateRequired, validateLength(8, 100)],
+    data
+  );
+  await validateField(
+    errors,
+    'confirm_password',
+    data.confirm_password,
+    [validateRequired, validateLength(1, 100)],
+    data
+  );
 
   // Password complexity validation
   if (data.new_password) {
@@ -304,7 +416,13 @@ export async function searchQuerySchema(
   const errors: Record<string, string> = {};
 
   // Validate required fields
-  await validateField(errors, 'query', data.query, [validateRequired, validateLength(1, 100)], data);
+  await validateField(
+    errors,
+    'query',
+    data.query,
+    [validateRequired, validateLength(1, 100)],
+    data
+  );
 
   // Search query pattern validation
   if (data.query) {
@@ -340,11 +458,20 @@ export async function fileUploadSchema(
   const errors: Record<string, string> = {};
 
   // Validate required fields
-  await validateField(errors, 'fileName', data.fileName, [validateRequired, validateLength(1, 255)], data);
-  await validateField(errors, 'fileSize', data.fileSize, [
-    validateRequired,
-    validateRange(1, 5 * 1024 * 1024),
-  ], data);
+  await validateField(
+    errors,
+    'fileName',
+    data.fileName,
+    [validateRequired, validateLength(1, 255)],
+    data
+  );
+  await validateField(
+    errors,
+    'fileSize',
+    data.fileSize,
+    [validateRequired, validateRange(1, 5 * 1024 * 1024)],
+    data
+  );
   await validateField(errors, 'fileType', data.fileType, [validateRequired], data);
 
   // File name pattern validation

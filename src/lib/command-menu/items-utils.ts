@@ -3,9 +3,8 @@ import * as React from 'react';
 import type { CommandMenuSearchResult } from '../../types/hooks';
 
 // Icon helper function - creates React components for SVG icons
-const createIcon =
-  (path: string) =>
-  ({ className }: { className?: string }) =>
+const createIcon = (path: string) => {
+  const IconComponent = ({ className }: { className?: string }) =>
     React.createElement(
       'svg',
       {
@@ -21,6 +20,10 @@ const createIcon =
         d: path,
       })
     );
+
+  IconComponent.displayName = 'CommandMenuIcon';
+  return IconComponent;
+};
 
 // Icons for command menu items
 export const Icons = {

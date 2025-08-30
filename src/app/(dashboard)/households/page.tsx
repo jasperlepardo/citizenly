@@ -36,15 +36,6 @@ function HouseholdsContent() {
     setSelectedAll(newSelected.size === households.length && households.length > 0);
   };
 
-  const formatFullName = (person?: {
-    first_name: string;
-    middle_name?: string;
-    last_name: string;
-  }) => {
-    if (!person) return 'No head assigned';
-    return [person.first_name, person.middle_name, person.last_name].filter(Boolean).join(' ');
-  };
-
   const formatAddress = (household: HouseholdWithMembersResult) => {
     const parts = [household.house_number, household.address].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : 'No address';
@@ -292,9 +283,8 @@ function HouseholdsContent() {
                   </div>
                   <div className="p-2">
                     <div className="font-montserrat text-base font-normal text-gray-600 dark:text-gray-400">
-                      {household.created_at &&
-                      !Number.isNaN(new Date(household.created_at as any).getTime())
-                        ? new Date(household.created_at as any).toLocaleDateString()
+                      {household.created_at && typeof household.created_at === 'string'
+                        ? new Date(household.created_at).toLocaleDateString()
                         : 'N/A'}
                     </div>
                   </div>

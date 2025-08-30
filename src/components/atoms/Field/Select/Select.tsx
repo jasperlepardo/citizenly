@@ -387,7 +387,7 @@ export default function Select({
     },
     onNavigate: (index: number) => {
       setFocusedIndex(index);
-    }
+    },
   });
 
   // Handle option selection from dropdown

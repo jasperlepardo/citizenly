@@ -9,67 +9,27 @@ import { useState, useEffect, useMemo } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
 
-/**
- * Base search configuration
- */
-export interface BaseSearchConfig {
-  debounceMs?: number;
-  minQueryLength?: number;
-  initialQuery?: string;
-  onError?: (error: Error) => void;
-}
+// Re-export consolidated search utility types
+export type {
+  BaseSearchConfig,
+  PaginatedSearchConfig,
+  PaginatedSearchResult,
+  SearchState,
+  PaginatedSearchState,
+  SearchFunction,
+  PaginatedSearchFunction,
+} from '@/types/utilities';
 
-/**
- * Paginated search configuration
- */
-export interface PaginatedSearchConfig extends BaseSearchConfig {
-  initialPageSize?: number;
-}
-
-/**
- * Search result with pagination
- */
-export interface PaginatedSearchResult<T> {
-  data: T[];
-  total: number;
-  hasMore: boolean;
-  page: number;
-  pageSize: number;
-}
-
-/**
- * Search state
- */
-export interface SearchState<T> {
-  query: string;
-  results: T[];
-  isLoading: boolean;
-  error: Error | null;
-}
-
-/**
- * Paginated search state
- */
-export interface PaginatedSearchState<T> extends SearchState<T> {
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
-
-/**
- * Search function types
- */
-export type SearchFunction<T> = (query: string) => Promise<T[]>;
-
-export type PaginatedSearchFunction<T, F = Record<string, unknown>> = (params: {
-  query: string;
-  page: number;
-  pageSize: number;
-  filters?: F;
-}) => Promise<PaginatedSearchResult<T>>;
+// Import for local usage
+import type {
+  SearchState,
+  PaginatedSearchState,
+  BaseSearchConfig,
+  PaginatedSearchConfig,
+  PaginatedSearchResult,
+  SearchFunction,
+  PaginatedSearchFunction,
+} from '@/types/utilities';
 
 /**
  * Create search state with default values

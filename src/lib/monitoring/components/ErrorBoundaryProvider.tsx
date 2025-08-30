@@ -175,12 +175,7 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   options?: Partial<ErrorBoundaryProviderProps>
 ) {
-  return createWrappedComponent(
-    Component,
-    ErrorBoundaryProvider,
-    'withErrorBoundary',
-    options
-  );
+  return createWrappedComponent(Component, ErrorBoundaryProvider, 'withErrorBoundary', options);
 }
 
 export default ErrorBoundaryProvider;

@@ -79,7 +79,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex
+      onNavigate: setSelectedIndex,
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {

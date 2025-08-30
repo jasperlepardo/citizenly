@@ -50,7 +50,7 @@ export function createFieldChangeHandler<T extends Record<string, any>>(
 ) {
   return (field: keyof T, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear field error when user starts typing
     if (setErrors) {
       setErrors(prev => ({ ...prev, [field as string]: '' }));
@@ -68,7 +68,7 @@ export function createEventChangeHandler<T extends Record<string, any>>(
 ) {
   return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    
+
     // Handle different input types
     let processedValue: any = value;
     if (type === 'checkbox') {
@@ -76,9 +76,9 @@ export function createEventChangeHandler<T extends Record<string, any>>(
     } else if (type === 'number') {
       processedValue = value === '' ? '' : Number(value);
     }
-    
+
     setFormData(prev => ({ ...prev, [name]: processedValue }));
-    
+
     // Clear field error when user starts typing
     if (setErrors) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -98,13 +98,13 @@ export function createCheckboxArrayHandler<T extends Record<string, any>>(
   return (checked: boolean, value: string) => {
     setFormData(prev => {
       const currentArray = (prev[field] as string[]) || [];
-      const newArray = checked 
+      const newArray = checked
         ? [...currentArray, value]
         : currentArray.filter(item => item !== value);
-      
+
       return { ...prev, [field]: newArray };
     });
-    
+
     // Clear field error when user makes selection
     if (setErrors) {
       setErrors(prev => ({ ...prev, [field as string]: '' }));
@@ -123,7 +123,7 @@ export function createToggleHandler<T extends Record<string, any>>(
 ) {
   return (checked: boolean) => {
     setFormData(prev => ({ ...prev, [field]: checked }));
-    
+
     // Clear field error when user makes selection
     if (setErrors) {
       setErrors(prev => ({ ...prev, [field as string]: '' }));
@@ -162,10 +162,10 @@ export function createNumericChangeHandler<T extends Record<string, any>>(
   } = {}
 ) {
   const { min, max, allowDecimals = true, setErrors } = options;
-  
+
   return (value: string | number) => {
     let numericValue: number | null = null;
-    
+
     if (typeof value === 'string') {
       if (value.trim() === '') {
         numericValue = null;
@@ -176,15 +176,15 @@ export function createNumericChangeHandler<T extends Record<string, any>>(
     } else {
       numericValue = value;
     }
-    
+
     // Apply constraints
     if (numericValue !== null) {
       if (min !== undefined && numericValue < min) numericValue = min;
       if (max !== undefined && numericValue > max) numericValue = max;
     }
-    
+
     setFormData(prev => ({ ...prev, [field]: numericValue }));
-    
+
     // Clear field error when user starts typing
     if (setErrors) {
       setErrors(prev => ({ ...prev, [field as string]: '' }));
@@ -213,7 +213,7 @@ export function createFormSubmitHandler<T extends Record<string, any>>(
     onError?: (error: any) => void
   ) => {
     e.preventDefault();
-    
+
     // Validate form if validator provided
     if (validator) {
       const validation = validator(formData);
@@ -222,16 +222,16 @@ export function createFormSubmitHandler<T extends Record<string, any>>(
         return;
       }
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       await onSubmit(formData);
       onSuccess?.();
     } catch (error) {
       console.error('Form submission error:', error);
       onError?.(error);
-      
+
       // Set general error if setErrors available
       if (setErrors) {
         setErrors({ general: 'An error occurred. Please try again.' });
@@ -296,7 +296,7 @@ export function createDebouncedChangeHandler<T extends Record<string, any>>(
   delay: number = 300
 ) {
   let timeoutId: NodeJS.Timeout;
-  
+
   return (field: keyof T, value: any) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
@@ -326,33 +326,23 @@ export const ValidationPatterns = {
  * Common validation functions
  */
 export const ValidationHelpers = {
-  required: (value: any, fieldName: string) => 
-    !value || (typeof value === 'string' && !value.trim()) 
-      ? `${fieldName} is required` 
-      : '',
-      
+  required: (value: any, fieldName: string) =>
+    !value || (typeof value === 'string' && !value.trim()) ? `${fieldName} is required` : '',
+
   minLength: (value: string, min: number, fieldName: string) =>
-    value && value.length < min 
-      ? `${fieldName} must be at least ${min} characters` 
-      : '',
-      
+    value && value.length < min ? `${fieldName} must be at least ${min} characters` : '',
+
   maxLength: (value: string, max: number, fieldName: string) =>
-    value && value.length > max 
-      ? `${fieldName} must not exceed ${max} characters` 
-      : '',
-      
+    value && value.length > max ? `${fieldName} must not exceed ${max} characters` : '',
+
   pattern: (value: string, pattern: RegExp, fieldName: string, message?: string) =>
-    value && !pattern.test(value) 
-      ? message || `${fieldName} format is invalid` 
-      : '',
-      
+    value && !pattern.test(value) ? message || `${fieldName} format is invalid` : '',
+
   email: (value: string) =>
-    value && !ValidationPatterns.email.test(value) 
-      ? 'Please enter a valid email address' 
-      : '',
-      
+    value && !ValidationPatterns.email.test(value) ? 'Please enter a valid email address' : '',
+
   philippineMobile: (value: string) =>
-    value && !ValidationPatterns.philippineMobile.test(value.replace(/\s+/g, '')) 
-      ? 'Please enter a valid Philippine mobile number' 
+    value && !ValidationPatterns.philippineMobile.test(value.replace(/\s+/g, ''))
+      ? 'Please enter a valid Philippine mobile number'
       : '',
 } as const;

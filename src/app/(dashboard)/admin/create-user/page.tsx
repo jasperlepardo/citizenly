@@ -160,7 +160,7 @@ function CreateUserContent() {
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<CreateUserFormData>({
-    onSubmit: async (data) => {
+    onSubmit: async data => {
       logger.info('Starting user account creation process');
 
       // Use API endpoint instead of direct inserts
@@ -207,7 +207,7 @@ function CreateUserContent() {
         role: roles.find(r => r.id === data.role_id)?.name || 'resident',
       });
     },
-    validate: (data) => {
+    validate: data => {
       const newErrors: Record<string, string> = {};
 
       // Email validation
@@ -264,7 +264,7 @@ function CreateUserContent() {
     onSuccess: () => {
       setSuccess(true);
     },
-    onError: (error) => {
+    onError: error => {
       setErrors({ general: error.message });
     },
   });
@@ -369,7 +369,7 @@ function CreateUserContent() {
 
       <div className="mx-auto w-full max-w-2xl">
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
-          <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
+          <form onSubmit={e => handleSubmit(e, formData)} className="space-y-6">
             {/* General Error */}
             {errors.general && (
               <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-700 dark:bg-red-900/20">

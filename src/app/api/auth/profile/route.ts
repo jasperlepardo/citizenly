@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { createAdminSupabaseClient } from '@/lib';
 import {
@@ -36,10 +36,14 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
 
     // Create regular client to verify user
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json({ error: 'Missing Supabase configuration' }, { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Verify the user token
     const {

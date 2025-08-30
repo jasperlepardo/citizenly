@@ -13,7 +13,6 @@ import type { HookPerformanceMetrics as PerformanceMetrics } from '@/types/perfo
 
 import { useLogger } from './useLogger';
 
-
 /**
  * Performance metrics interface - imported from @/types/performance
  */

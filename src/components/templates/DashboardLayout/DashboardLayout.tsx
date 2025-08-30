@@ -20,7 +20,7 @@ import SkipNavigation from '@/components/atoms/SkipNavigation';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { useAuth } from '@/contexts';
 import { logger, logError } from '@/lib';
-import { supabase } from '@/lib/supabase/supabase';
+import { supabase } from '@/lib/data/supabase';
 
 // User dropdown component with details (from original dashboard)
 function UserDropdown() {

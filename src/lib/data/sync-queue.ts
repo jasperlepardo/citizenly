@@ -91,7 +91,7 @@ export class SyncQueue {
 
     try {
       // Get auth token
-      const { supabase } = await import('@/lib/supabase');
+      const { supabase } = await import('@/lib/data/supabase');
       const {
         data: { session },
       } = await supabase.auth.getSession();

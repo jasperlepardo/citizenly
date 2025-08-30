@@ -206,7 +206,7 @@ function CreateResidentForm() {
         toast.error('An unexpected error occurred. Please try again.');
       }
     },
-    [user, userProfile, sessionId, createResident, getCSRFToken]
+    [user, userProfile, createResident, getCSRFToken]
   );
 
   const { suggestedName, suggestedId, isPreFilled } = useResidentFormURLParameters();
@@ -229,7 +229,7 @@ function CreateResidentForm() {
     }
 
     return Object.keys(data).length > 0 ? data : undefined;
-  }, [suggestedName, suggestedId, user?.id, sessionId]);
+  }, [suggestedName, suggestedId, user?.id]);
 
   return (
     <div className="p-6">
@@ -277,8 +277,9 @@ function CreateResidentForm() {
                 </div>
                 <div className="ml-3">
                   <p className="text-sm text-blue-700 dark:text-blue-300">
-                    <strong>Form pre-filled:</strong> The name fields have been populated with "
-                    {suggestedName}". You can edit these values as needed.
+                    <strong>Form pre-filled:</strong> The name fields have been populated with
+                    &quot;
+                    {suggestedName}&quot;. You can edit these values as needed.
                   </p>
                 </div>
               </div>

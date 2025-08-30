@@ -229,11 +229,6 @@ export type PaginatedData<T> = {
 export type EnvVar = string | undefined;
 
 /**
- * Required environment variable type
- */
-export type RequiredEnvVar = string;
-
-/**
  * Configuration object with validation
  */
 export type Config<T extends Record<string, any>> = {
@@ -551,3 +546,75 @@ export interface LayoutShiftEntry extends PerformanceEntry {
     };
   }>;
 }
+
+// =============================================================================
+// SEARCH UTILITY TYPES
+// =============================================================================
+
+/**
+ * Base search configuration
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export interface BaseSearchConfig {
+  debounceMs?: number;
+  minQueryLength?: number;
+  initialQuery?: string;
+  onError?: (error: Error) => void;
+}
+
+/**
+ * Paginated search configuration
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export interface PaginatedSearchConfig extends BaseSearchConfig {
+  initialPageSize?: number;
+}
+
+/**
+ * Search result with pagination
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export interface PaginatedSearchResult<T> {
+  data: T[];
+  total: number;
+  hasMore: boolean;
+  page: number;
+  pageSize: number;
+}
+
+/**
+ * Search state
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export interface SearchState<T> {
+  query: string;
+  results: T[];
+  isLoading: boolean;
+  error: Error | null;
+}
+
+/**
+ * Paginated search state
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export interface PaginatedSearchState<T> extends SearchState<T> {
+  pagination: {
+    current: number;
+    pageSize: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+/**
+ * Search function types
+ * Consolidated from src/utils/search-utilities.ts
+ */
+export type SearchFunction<T> = (query: string) => Promise<T[]>;
+
+export type PaginatedSearchFunction<T, F = Record<string, unknown>> = (params: {
+  query: string;
+  page: number;
+  pageSize: number;
+  filters?: F;
+}) => Promise<PaginatedSearchResult<T>>;

@@ -12,7 +12,7 @@ on:
   #   branches: [develop, 'feature/**', 'release/**', 'hotfix/**']
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 permissions:
@@ -87,7 +87,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
         continue-on-error: true
-        if: secrets.CODECOV_TOKEN != ''
+        if: secrets.CODECOV_TOKEN
         env:
           # IDE warning expected: Optional integration secret
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -198,7 +198,7 @@ jobs:
           # IDE warning expected: Optional integration secret
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         continue-on-error: true
-        if: secrets.SEMGREP_APP_TOKEN != ''
+        if: secrets.SEMGREP_APP_TOKEN
 
       - name: Run our custom security checks
         run: |
@@ -320,18 +320,18 @@ jobs:
           # IDE warning expected: Optional integration secret
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         continue-on-error: true
-        if: secrets.SONAR_TOKEN != ''
+        if: secrets.SONAR_TOKEN
         with:
           args: >
             -Dsonar.javascript.eslint.reportPaths=eslint-report.json
             -Dsonar.qualitygate.wait=true
-            -Dsonar.pullrequest.key=${{ github.event.number }}
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.pullrequest.branch=${{ github.head_ref }}
             -Dsonar.pullrequest.base=${{ github.base_ref }}
 
       - name: Comment SonarCloud Results
-        # IDE warning expected: ACT is a GitHub Actions environment variable
-        if: github.event_name == 'pull_request' && !env.ACT
+        # Only run on actual pull requests, not in local testing
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |

@@ -7,10 +7,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { validateUserData } from '@/lib/validation/schemas';
 import type { ValidationContext } from '@/lib/validation/types';
-import type { QueryOptions, RepositoryResult } from '@/types/services';
-
 // Types moved to src/types/services.ts for consolidation
 import type {
+  QueryOptions,
+  RepositoryResult,
   UserRepositoryData as UserData,
   UserRepositorySearchOptions as UserSearchOptions,
   UserSecurityData,

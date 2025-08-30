@@ -1,10 +1,10 @@
 /**
  * Consolidated Keyboard Event Handling Utilities
- * 
+ *
  * @fileoverview Eliminates duplicate handleKeyDown patterns across UI components.
  * Provides standardized keyboard interaction handlers for dropdowns, search,
  * and global shortcuts with proper event handling and accessibility support.
- * 
+ *
  * @version 1.0.0
  * @since 2025-08-29
  * @author Citizenly Development Team
@@ -102,7 +102,7 @@ export function createDropdownKeyHandler(options: DropdownKeyboardOptions): Keyb
       onClose,
       onSelect,
       onNavigate,
-      preventDefault = true
+      preventDefault = true,
     } = options;
 
     switch (event.key) {
@@ -156,13 +156,7 @@ export function createDropdownKeyHandler(options: DropdownKeyboardOptions): Keyb
  */
 export function createSearchKeyHandler(options: SearchKeyboardOptions): KeyboardEventHandler {
   return (event: KeyboardEvent | React.KeyboardEvent) => {
-    const {
-      onSearch,
-      onClear,
-      onEscape,
-      currentValue = '',
-      preventDefault = false
-    } = options;
+    const { onSearch, onClear, onEscape, currentValue = '', preventDefault = false } = options;
 
     switch (event.key) {
       case 'Enter':
@@ -226,10 +220,10 @@ export function useGlobalKeyboard(
 ) {
   const { enabled = true } = options;
 
-  const handleKeyDown = useCallback(
-    createGlobalShortcutHandler(combinations, options),
-    [combinations, options]
-  );
+  const handleKeyDown = useCallback(createGlobalShortcutHandler(combinations, options), [
+    combinations,
+    options,
+  ]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -247,19 +241,16 @@ export function useGlobalKeyboard(
  * Hook for command menu keyboard shortcuts
  * Standardized Cmd/Ctrl+K pattern with platform detection
  */
-export function useCommandMenuShortcut(
-  onToggle: () => void,
-  enabled: boolean = true
-) {
+export function useCommandMenuShortcut(onToggle: () => void, enabled: boolean = true) {
   const combinations = [
     {
       combination: { key: 'k', metaKey: true } as KeyCombination, // Mac: Cmd+K
-      handler: onToggle
+      handler: onToggle,
     },
     {
       combination: { key: 'k', ctrlKey: true } as KeyCombination, // Windows/Linux: Ctrl+K
-      handler: onToggle
-    }
+      handler: onToggle,
+    },
   ];
 
   useGlobalKeyboard(combinations, { enabled });
@@ -287,7 +278,7 @@ export function createAriaKeyHandler(
     onActivate,
     onEscape,
     allowEnterActivation = true,
-    allowSpaceActivation = true
+    allowSpaceActivation = true,
   } = options;
 
   return (event: KeyboardEvent | React.KeyboardEvent) => {
@@ -326,23 +317,21 @@ export function createAriaKeyHandler(
 export const COMMON_SHORTCUTS = {
   COMMAND_PALETTE: [
     { key: 'k', metaKey: true },
-    { key: 'k', ctrlKey: true }
+    { key: 'k', ctrlKey: true },
   ] as KeyCombination[],
 
   SEARCH: [
     { key: '/', ctrlKey: false, metaKey: false },
     { key: 'f', ctrlKey: true },
-    { key: 'f', metaKey: true }
+    { key: 'f', metaKey: true },
   ] as KeyCombination[],
 
-  ESCAPE: [
-    { key: 'Escape' }
-  ] as KeyCombination[],
+  ESCAPE: [{ key: 'Escape' }] as KeyCombination[],
 
   SAVE: [
     { key: 's', ctrlKey: true },
-    { key: 's', metaKey: true }
-  ] as KeyCombination[]
+    { key: 's', metaKey: true },
+  ] as KeyCombination[],
 } as const;
 
 // =============================================================================
@@ -370,5 +359,8 @@ export function isValidKeyboardTarget(event: KeyboardEvent | React.KeyboardEvent
 export const PLATFORM = {
   isMac: typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform),
   isWindows: typeof window !== 'undefined' && /Win/.test(navigator.platform),
-  modifierKey: typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'metaKey' : 'ctrlKey'
+  modifierKey:
+    typeof window !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
+      ? 'metaKey'
+      : 'ctrlKey',
 } as const;

@@ -13,10 +13,10 @@
 import { NextRequest } from 'next/server';
 
 import { createAdminSupabaseClient } from '@/lib';
-import { 
-  createSuccessResponse, 
-  createErrorResponse, 
-  withNextRequestErrorHandling 
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  withNextRequestErrorHandling,
 } from '@/lib/authentication/responseUtils';
 
 // =============================================================================
@@ -62,13 +62,13 @@ export function createPSGCHandler(config: PSGCQueryConfig) {
   return withNextRequestErrorHandling(async (request: NextRequest) => {
     const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
-    
+
     // Build base query
     let query = supabase
       .from(config.table)
       .select(config.selectFields)
       .order(config.orderField || 'name');
-    
+
     // Apply filter if configured
     if (config.filterField && config.filterParam) {
       const filterValue = searchParams.get(config.filterParam);
@@ -76,31 +76,32 @@ export function createPSGCHandler(config: PSGCQueryConfig) {
         query = query.eq(config.filterField, filterValue);
       }
     }
-    
+
     const { data, error } = await query;
-    
+
     if (error) {
       console.error(`${config.errorContext} query error:`, error);
       throw new Error(`Failed to fetch ${config.errorContext.toLowerCase()}`);
     }
-    
+
     // Transform data to standard SelectField format
-    const options: PSGCOption[] = data?.map((item: any) => {
-      const option: PSGCOption = {
-        value: item.code,
-        label: item.name,
-      };
-      
-      // Add additional fields dynamically (preserve all database fields)
-      Object.keys(item).forEach(key => {
-        if (!['code', 'name'].includes(key)) {
-          option[key] = item[key];
-        }
-      });
-      
-      return option;
-    }) || [];
-    
+    const options: PSGCOption[] =
+      data?.map((item: any) => {
+        const option: PSGCOption = {
+          value: item.code,
+          label: item.name,
+        };
+
+        // Add additional fields dynamically (preserve all database fields)
+        Object.keys(item).forEach(key => {
+          if (!['code', 'name'].includes(key)) {
+            option[key] = item[key];
+          }
+        });
+
+        return option;
+      }) || [];
+
     return createSuccessResponse(options, `${config.errorContext} retrieved successfully`);
   });
 }
@@ -198,12 +199,13 @@ export const PSGCHandlers = {
     }
 
     // Transform data to SelectField format
-    const options = subdivisions?.map((subdivision: any) => ({
-      value: subdivision.id,
-      label: subdivision.name,
-      barangay_code: subdivision.barangay_code,
-      type: subdivision.type,
-    })) || [];
+    const options =
+      subdivisions?.map((subdivision: any) => ({
+        value: subdivision.id,
+        label: subdivision.name,
+        barangay_code: subdivision.barangay_code,
+        type: subdivision.type,
+      })) || [];
 
     return createSuccessResponse(options, 'Subdivisions retrieved successfully');
   }),
@@ -249,12 +251,13 @@ export const PSGCHandlers = {
     }
 
     // Transform data to SelectField format
-    const options = streets?.map((street: any) => ({
-      value: street.id,
-      label: street.name,
-      subdivision_id: street.subdivision_id,
-      barangay_code: street.barangay_code,
-    })) || [];
+    const options =
+      streets?.map((street: any) => ({
+        value: street.id,
+        label: street.name,
+        subdivision_id: street.subdivision_id,
+        barangay_code: street.barangay_code,
+      })) || [];
 
     return createSuccessResponse(options, 'Streets retrieved successfully');
   }),
@@ -288,13 +291,13 @@ export function createCustomPSGCHandler<T = PSGCOption>(
   return withNextRequestErrorHandling(async (request: NextRequest) => {
     const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
-    
+
     // Build base query
     let query = supabase
       .from(config.table)
       .select(config.selectFields)
       .order(config.orderField || 'name');
-    
+
     // Apply filter if configured
     if (config.filterField && config.filterParam) {
       const filterValue = searchParams.get(config.filterParam);
@@ -302,33 +305,33 @@ export function createCustomPSGCHandler<T = PSGCOption>(
         query = query.eq(config.filterField, filterValue);
       }
     }
-    
+
     const { data, error } = await query;
-    
+
     if (error) {
       console.error(`${config.errorContext} query error:`, error);
       throw new Error(`Failed to fetch ${config.errorContext.toLowerCase()}`);
     }
-    
+
     // Apply custom transformation or default transformation
-    const processedData = transformer 
+    const processedData = transformer
       ? transformer(data || [])
       : data?.map((item: any) => {
           const option: PSGCOption = {
             value: item.code,
             label: item.name,
           };
-          
+
           // Add additional fields
           Object.keys(item).forEach(key => {
             if (!['code', 'name'].includes(key)) {
               option[key] = item[key];
             }
           });
-          
+
           return option;
         }) || [];
-    
+
     return createSuccessResponse(processedData, `${config.errorContext} retrieved successfully`);
   });
 }

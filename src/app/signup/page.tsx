@@ -92,7 +92,7 @@ export default function SignupPage() {
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<SignupFormData>({
-    onSubmit: async (data) => {
+    onSubmit: async data => {
       // Add timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
         logger.error('Signup process timed out after 30 seconds');
@@ -102,7 +102,7 @@ export default function SignupPage() {
       try {
         // Step 1: Create auth user with metadata for post-confirmation processing
         setSubmitStatus('Creating your account...');
-        
+
         // Check if we're in development mode (disable emails to prevent bounces)
         const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -143,7 +143,7 @@ export default function SignupPage() {
         setSubmitStatus('');
       }
     },
-    validate: (data) => {
+    validate: data => {
       const newErrors: Record<string, string> = {};
 
       // Email validation
@@ -198,7 +198,7 @@ export default function SignupPage() {
     onSuccess: () => {
       setStep('success');
     },
-    onError: (error) => {
+    onError: error => {
       setErrors({ general: error.message });
     },
   });
@@ -298,7 +298,7 @@ export default function SignupPage() {
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-md dark:border-gray-700 dark:bg-gray-800">
-          <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
+          <form onSubmit={e => handleSubmit(e, formData)} className="space-y-6">
             {/* Status Message */}
             {isSubmitting && submitStatus && (
               <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-900/20">

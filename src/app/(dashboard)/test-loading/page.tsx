@@ -6,8 +6,6 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-
 export default function TestLoadingPage() {
   // No loading state - page loads immediately to show the difference
 
@@ -45,7 +43,7 @@ export default function TestLoadingPage() {
         </div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center justify-between px-6 py-4">
+            <div key={`item-${i}`} className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center space-x-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
                   <span className="text-sm font-medium text-blue-600">{i + 1}</span>

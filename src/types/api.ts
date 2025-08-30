@@ -97,6 +97,58 @@ export interface ApiErrorResponse {
  */
 export type ApiResponse<T = any> = ApiSuccessResponse<T> | ApiErrorResponse;
 
+/**
+ * Alternative API response format (from authentication/types.ts)
+ * Used for standardized API responses following API Design Standards
+ */
+export interface StandardApiResponse<T> {
+  data: T;
+  message?: string;
+  metadata?: {
+    timestamp: string;
+    version: string;
+    requestId?: string;
+  };
+}
+
+/**
+ * Alternative paginated response format (from authentication/types.ts)
+ * Used for standardized paginated API responses
+ */
+export interface StandardPaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+  message?: string;
+  metadata?: {
+    timestamp: string;
+    version: string;
+    requestId?: string;
+  };
+}
+
+/**
+ * Alternative error response format (from authentication/types.ts)
+ * Used for detailed error responses with request tracking
+ */
+export interface StandardErrorResponse {
+  error: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown> | string[] | string;
+    field?: string;
+  };
+  timestamp: string;
+  path: string;
+  requestId?: string;
+}
+
 // =============================================================================
 // REQUEST TYPES
 // =============================================================================
@@ -108,6 +160,24 @@ export interface PaginationParams {
   page?: number;
   limit?: number;
   offset?: number;
+  cursor?: string;
+}
+
+/**
+ * Sort parameters for API requests
+ */
+export interface SortParams {
+  sort?: string;
+  order?: 'asc' | 'desc';
+}
+
+/**
+ * Filter parameters for API requests
+ */
+export interface FilterParams {
+  search?: string;
+  status?: string;
+  [key: string]: string | number | boolean | undefined;
 }
 
 /**
@@ -347,6 +417,46 @@ export interface HouseholdSearchParams extends SearchParams {
   maxIncome?: number;
   minMembers?: number;
   maxMembers?: number;
+}
+
+// =============================================================================
+// ERROR CODES AND VALIDATION TYPES
+// =============================================================================
+
+/**
+ * Standardized error codes for API responses
+ */
+export enum ErrorCode {
+  // Validation errors
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  REQUIRED_FIELD = 'REQUIRED_FIELD',
+  INVALID_FORMAT = 'INVALID_FORMAT',
+
+  // Authentication errors
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  TOKEN_EXPIRED = 'TOKEN_EXPIRED',
+  INVALID_TOKEN = 'INVALID_TOKEN',
+
+  // Authorization errors
+  FORBIDDEN = 'FORBIDDEN',
+  INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
+
+  // Resource errors
+  NOT_FOUND = 'NOT_FOUND',
+  ALREADY_EXISTS = 'ALREADY_EXISTS',
+  CONFLICT = 'CONFLICT',
+
+  // Server errors
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
+  DATABASE_ERROR = 'DATABASE_ERROR',
+  EXTERNAL_SERVICE_ERROR = 'EXTERNAL_SERVICE_ERROR',
+
+  // Rate limiting
+  RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
+
+  // Security
+  SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
+  CSRF_TOKEN_INVALID = 'CSRF_TOKEN_INVALID',
 }
 
 // =============================================================================

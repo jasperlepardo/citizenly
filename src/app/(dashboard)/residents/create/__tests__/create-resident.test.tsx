@@ -3,7 +3,7 @@
  * Tests the complete flow of creating a new resident
  */
 
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
@@ -123,8 +123,8 @@ jest.mock('react-hot-toast', () => ({
 
 // Mock the service and hooks
 const mockCreateResident = jest.fn();
-const mockUseResidentOperations = (require('@/hooks/crud/useResidentOperations') as any)
-  .useResidentOperations as jest.Mock;
+const { useResidentOperations } = jest.requireMock('@/hooks/crud/useResidentOperations');
+const mockUseResidentOperations = useResidentOperations as jest.Mock;
 
 describe('Create New Resident - Complete Flow', () => {
   const mockRouter = {
@@ -273,7 +273,6 @@ describe('Create New Resident - Complete Flow', () => {
 
   describe('Form Submission - Error Handling', () => {
     test('should handle validation errors and display them', async () => {
-      const user = userEvent.setup();
       const validationErrors = {
         first_name: 'First name is required',
         birthdate: 'Invalid birthdate',
@@ -311,7 +310,7 @@ describe('Create New Resident - Complete Flow', () => {
 
       // Mock ResidentForm to return empty data
       const MockResidentForm = jest.requireMock('@/components').ResidentForm;
-      MockResidentForm.mockImplementation(({ onSubmit, onCancel }: any) => (
+      MockResidentForm.mockImplementation(({ onSubmit, onCancel: _onCancel }: any) => (
         <div data-testid="resident-form">
           <button
             onClick={() =>
@@ -524,7 +523,6 @@ describe('Create New Resident - Complete Flow', () => {
     });
 
     test('should handle complete error workflow', async () => {
-      const user = userEvent.setup();
       const validationErrors = {
         first_name: 'First name is required',
         sex: 'Sex is required',

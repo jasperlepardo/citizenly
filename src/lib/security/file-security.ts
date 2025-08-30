@@ -25,6 +25,7 @@ const MALICIOUS_SIGNATURES = [
   // Script signatures
   Buffer.from('<?php', 'utf-8'),
   Buffer.from('<script', 'utf-8'),
+  // eslint-disable-next-line no-script-url
   Buffer.from('javascript:', 'utf-8'),
   // Shell script signatures
   Buffer.from('#!/bin/sh', 'utf-8'),

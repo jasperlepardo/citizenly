@@ -20,7 +20,10 @@ export default function SettingsLoading() {
         <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex space-x-8">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="mb-2 h-6 w-20 rounded bg-gray-200 dark:bg-gray-700"></div>
+              <div
+                key={`tab-${i}`}
+                className="mb-2 h-6 w-20 rounded bg-gray-200 dark:bg-gray-700"
+              ></div>
             ))}
           </nav>
         </div>
@@ -48,7 +51,7 @@ export default function SettingsLoading() {
                 <div className="grid grid-cols-3 gap-3">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div
-                      key={i}
+                      key={`theme-${i}`}
                       className="relative flex flex-col items-center rounded border border-gray-200 p-4 dark:border-gray-700"
                     >
                       <div className="mb-2 h-8 w-8 rounded-sm bg-gray-200 dark:bg-gray-700"></div>
@@ -61,7 +64,7 @@ export default function SettingsLoading() {
               {/* Form Grid */}
               <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
+                  <div key={`form-field-${i}`} className="space-y-2">
                     <div className="h-4 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
                     <div className="h-10 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
@@ -73,7 +76,7 @@ export default function SettingsLoading() {
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
-                  key={i}
+                  key={`setting-toggle-${i}`}
                   className="flex items-center justify-between rounded-sm border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-700"
                 >
                   <div>

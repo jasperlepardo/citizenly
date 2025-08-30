@@ -40,7 +40,7 @@ export default function DashboardLoading() {
               {/* Card content */}
               <div className="space-y-3">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="flex items-center space-x-4">
+                  <div key={`content-item-${i}`} className="flex items-center space-x-4">
                     <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                     <div className="flex-1 space-y-2">
                       <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
@@ -62,7 +62,7 @@ export default function DashboardLoading() {
               {/* Sidebar content */}
               <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="space-y-2">
+                  <div key={`sidebar-item-${i}`} className="space-y-2">
                     <div className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
                     <div className="h-3 w-2/3 rounded bg-gray-200 dark:bg-gray-700"></div>
                   </div>
@@ -78,7 +78,10 @@ export default function DashboardLoading() {
           <div className="border-b border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-700">
             <div className="grid grid-cols-5 gap-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-4 w-full rounded bg-gray-200 dark:bg-gray-600"></div>
+                <div
+                  key={`header-col-${i}`}
+                  className="h-4 w-full rounded bg-gray-200 dark:bg-gray-600"
+                ></div>
               ))}
             </div>
           </div>
@@ -86,10 +89,13 @@ export default function DashboardLoading() {
           {/* Table rows */}
           <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="px-6 py-4">
+              <div key={`table-row-${i}`} className="px-6 py-4">
                 <div className="grid grid-cols-5 items-center gap-4">
                   {Array.from({ length: 5 }).map((_, j) => (
-                    <div key={j} className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
+                    <div
+                      key={`cell-${i}-${j}`}
+                      className="h-4 w-full rounded bg-gray-200 dark:bg-gray-700"
+                    ></div>
                   ))}
                 </div>
               </div>

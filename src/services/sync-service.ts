@@ -13,22 +13,11 @@ import { offlineStorage } from '../lib/data/offline-storage';
 
 const logger = createLogger('SyncService');
 
-export interface SyncQueueItem {
-  id?: string;
-  action: 'CREATE' | 'UPDATE' | 'DELETE';
-  type: 'resident' | 'household' | 'user';
-  data: any;
-  timestamp: number;
-  retryCount: number;
-}
+// Re-export consolidated sync service types
+export type { SyncQueueItem, SyncStatus } from '@/types/services';
 
-export interface SyncStatus {
-  isProcessing: boolean;
-  pendingCount: number;
-  isOnline: boolean;
-  lastSyncAttempt?: number;
-  lastSuccessfulSync?: number;
-}
+// Import for local usage
+import type { SyncQueueItem, SyncStatus } from '@/types/services';
 
 /**
  * Sync Service Class

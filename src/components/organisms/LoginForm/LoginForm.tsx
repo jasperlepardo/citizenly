@@ -32,9 +32,9 @@ export default function LoginForm({
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<LoginFormData>({
-    onSubmit: async (data) => {
+    onSubmit: async data => {
       const { error } = await signIn(data.email, data.password);
-      
+
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
           throw new Error('Invalid email or password. Please try again.');
@@ -45,7 +45,7 @@ export default function LoginForm({
         }
       }
     },
-    validate: (data) => {
+    validate: data => {
       const newErrors: Record<string, string> = {};
 
       if (!data.email.trim()) {
@@ -72,7 +72,7 @@ export default function LoginForm({
         window.location.href = redirectTo;
       }
     },
-    onError: (error) => {
+    onError: error => {
       setErrors({ general: error.message });
     },
   });
@@ -89,7 +89,7 @@ export default function LoginForm({
           </p>
         </div>
 
-        <form onSubmit={(e) => handleSubmit(e, formData)} className="space-y-6">
+        <form onSubmit={e => handleSubmit(e, formData)} className="space-y-6">
           {/* General Error */}
           {errors.general && (
             <div className="rounded-lg border border-red-300 bg-red-50 p-4">

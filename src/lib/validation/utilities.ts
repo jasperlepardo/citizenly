@@ -385,21 +385,18 @@ export function createFormValidationExecutor<T>(
   validateFn: any,
   setErrors: (errors: Record<string, string>) => void
 ) {
-  return useCallback(
-    (formData: T): SimpleValidationResult => {
-      const result = validateFn(formData);
+  return (formData: T): SimpleValidationResult => {
+    const result = validateFn(formData);
 
-      const normalizedResult: SimpleValidationResult = {
-        isValid: result.isValid || result.success === true,
-        errors: result.errors || {},
-      };
+    const normalizedResult: SimpleValidationResult = {
+      isValid: result.isValid || result.success === true,
+      errors: result.errors || {},
+    };
 
-      setErrors(normalizedResult.errors);
+    setErrors(normalizedResult.errors);
 
-      return normalizedResult;
-    },
-    [validateFn, setErrors]
-  );
+    return normalizedResult;
+  };
 }
 
 /**
@@ -410,20 +407,17 @@ export function createFieldValidationExecutor(
   setFieldError: (field: string, error: string) => void,
   clearFieldError: (field: string) => void
 ) {
-  return useCallback(
-    (fieldName: string, value: any): FieldValidationResult => {
-      const result = validateFn(fieldName, value);
+  return (fieldName: string, value: any): FieldValidationResult => {
+    const result = validateFn(fieldName, value);
 
-      if (result.isValid) {
-        clearFieldError(fieldName);
-      } else if (result.error) {
-        setFieldError(fieldName, result.error);
-      }
+    if (result.isValid) {
+      clearFieldError(fieldName);
+    } else if (result.error) {
+      setFieldError(fieldName, result.error);
+    }
 
-      return result;
-    },
-    [validateFn, setFieldError, clearFieldError]
-  );
+    return result;
+  };
 }
 
 /**

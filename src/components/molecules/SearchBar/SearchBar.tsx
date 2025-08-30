@@ -61,7 +61,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     ref
   ) => {
     const keyHandler = createSearchKeyHandler({
-      onSearch: (query) => onSearch?.(query),
+      onSearch: query => onSearch?.(query),
       onClear,
       onEscape: () => {
         // Focus handling for escape key
@@ -70,7 +70,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
         }
       },
       currentValue: value?.toString() || '',
-      preventDefault: true
+      preventDefault: true,
     });
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

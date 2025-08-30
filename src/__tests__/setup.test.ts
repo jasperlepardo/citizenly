@@ -29,7 +29,7 @@ describe('Test Setup', () => {
   });
 
   it('should mock Supabase client', async () => {
-    const { supabase } = await import('@/lib/supabase');
+    const { supabase } = await import('@/lib/data/supabase');
     expect(supabase.auth.getUser).toBeDefined();
     expect(supabase.from).toBeDefined();
   });

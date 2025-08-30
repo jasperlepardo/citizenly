@@ -239,11 +239,7 @@ export function withErrorBoundary<P extends object>(
     logContext: { component: options.componentName || Component.displayName || Component.name },
   });
 
-  return createWrappedComponent(
-    Component,
-    ErrorBoundary,
-    'withErrorBoundary'
-  );
+  return createWrappedComponent(Component, ErrorBoundary, 'withErrorBoundary');
 }
 
 /**

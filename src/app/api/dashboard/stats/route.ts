@@ -1,9 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger, createErrorResponseObject, type ErrorCode } from '@/lib';
+import { logger, createErrorResponseObject } from '@/lib';
 import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
-import { getEnvironmentConfig, isProduction } from '@/lib/config/environment';
+import { isProduction } from '@/lib/config/environment';
 import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
 import { queryOptimizer } from '@/lib/database/query-optimizer';
 
@@ -62,7 +61,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
         createErrorResponseObject('AUTH_001', 'No authentication token provided'),
         { status: 401 }

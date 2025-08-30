@@ -6,12 +6,11 @@
 import { supabase, logger } from '@/lib';
 import type { AddressInfo } from '@/types/addresses';
 
-export interface PsocInfo {
-  code: string;
-  title: string;
-  hierarchy?: string;
-  level?: string;
-}
+// Re-export consolidated PSOC info type
+export type { PsocInfo } from '@/types/services';
+
+// Import for local usage
+import type { PsocInfo } from '@/types/services';
 
 // Consolidated type moved to src/types/addresses.ts
 

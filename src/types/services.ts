@@ -612,3 +612,47 @@ export interface ServiceDatabaseResponse {
     affectedRows?: number;
   };
 }
+
+// =============================================================================
+// SYNC SERVICE TYPES
+// =============================================================================
+
+/**
+ * Sync queue item for offline data synchronization
+ * Consolidated from src/services/sync-service.ts
+ */
+export interface SyncQueueItem {
+  id?: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  type: 'resident' | 'household' | 'user';
+  data: any;
+  timestamp: number;
+  retryCount: number;
+}
+
+/**
+ * Sync status information
+ * Consolidated from src/services/sync-service.ts
+ */
+export interface SyncStatus {
+  isProcessing: boolean;
+  pendingCount: number;
+  isOnline: boolean;
+  lastSyncAttempt?: number;
+  lastSuccessfulSync?: number;
+}
+
+// =============================================================================
+// RESIDENT DETAILS FETCHER TYPES
+// =============================================================================
+
+/**
+ * PSOC information for resident details
+ * Consolidated from src/services/resident-details-fetcher.ts
+ */
+export interface PsocInfo {
+  code: string;
+  title: string;
+  hierarchy?: string;
+  level?: string;
+}

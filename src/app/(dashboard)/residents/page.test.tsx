@@ -140,7 +140,7 @@ describe('ResidentsPage', () => {
     });
 
     // Mock supabase auth
-    const { supabase } = await import('@/lib/supabase');
+    const { supabase } = await import('@/lib/data/supabase');
     (supabase.auth.getSession as jest.Mock).mockResolvedValue({
       data: { session: mockSession },
     });

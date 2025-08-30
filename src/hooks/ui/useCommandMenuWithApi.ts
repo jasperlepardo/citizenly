@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 
-
 import {
   trackCommandMenuSearch,
   trackCommandMenuNavigation,
@@ -258,7 +257,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex
+      onNavigate: setSelectedIndex,
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {
