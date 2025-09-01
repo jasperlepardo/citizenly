@@ -1,18 +1,10 @@
-import { supabase, logError } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 
 /**
  * Database utility functions for optimized operations
  */
 
-export interface QuickStats {
-  barangay_code: string;
-  total_residents: number;
-  senior_citizens: number;
-  pwd_count: number;
-  registered_voters: number; // Uses is_voter column
-  ofw_count: number;
-  avg_age: number;
-}
+import type { QuickStats } from '@/types/shared/utilities';
 
 /**
  * Get barangay statistics from materialized view (fast cached data)

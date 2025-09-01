@@ -10,16 +10,13 @@ import {
   MigrationInformation,
 } from '@/components/organisms/FormSection';
 import { useAuth } from '@/contexts';
-import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
+import { isIndigenousPeople } from '@/services/domain/residents/sectoral-classification';
 import { supabase } from '@/lib/data/supabase';
 import type { FormMode } from '@/types';
-import { ResidentFormState } from '@/types/residents';
+import { ResidentFormData } from '@/types/domain/residents/forms';
 
 import { FormActions } from './components/FormActions';
 import { FormHeader } from './components/FormHeader';
-
-// Use the database-aligned ResidentFormState interface
-type ResidentFormData = ResidentFormState;
 
 interface ResidentFormProps {
   mode?: FormMode;

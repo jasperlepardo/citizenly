@@ -6,10 +6,10 @@
 
 import type { User, Session, AuthError } from '@supabase/supabase-js';
 
-import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/auth';
+import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/app/auth/auth';
 
 import { createLogger } from '../config/environment';
-import { supabase } from '../supabase';
+import { supabase } from '../data/supabase';
 
 const logger = createLogger('Auth');
 

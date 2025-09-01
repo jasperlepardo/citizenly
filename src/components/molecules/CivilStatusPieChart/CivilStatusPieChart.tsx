@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type { CivilStatusData } from '@/types/charts';
+import type { CivilStatusData } from '@/types/app/ui/charts';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
 

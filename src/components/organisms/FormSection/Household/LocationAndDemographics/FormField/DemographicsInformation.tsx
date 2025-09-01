@@ -2,18 +2,13 @@ import React from 'react';
 
 import { InputField } from '@/components';
 import type { FormMode } from '@/types';
-
-export interface DemographicsInformationData {
-  noOfFamilies: number;
-  noOfHouseholdMembers: number;
-  noOfMigrants: number;
-}
+import type { DemographicsInformationFormData } from '@/types/domain/households';
 
 export interface DemographicsInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: DemographicsInformationData;
-  onChange: (value: DemographicsInformationData) => void;
+  value: DemographicsInformationFormData;
+  onChange: (value: DemographicsInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -25,7 +20,7 @@ export function DemographicsInformation({
   errors,
   className = '',
 }: DemographicsInformationProps) {
-  const handleChange = (field: keyof DemographicsInformationData, fieldValue: number) => {
+  const handleChange = (field: keyof DemographicsInformationFormData, fieldValue: number) => {
     onChange({
       ...value,
       [field]: fieldValue,

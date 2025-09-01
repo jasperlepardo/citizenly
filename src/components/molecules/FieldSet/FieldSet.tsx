@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 import type { FormMode } from '@/types';
 
 import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';

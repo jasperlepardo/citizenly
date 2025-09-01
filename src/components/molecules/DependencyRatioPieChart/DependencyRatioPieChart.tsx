@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type { DependencyData } from '@/types/charts';
+import type { DependencyData } from '@/types/app/ui/charts';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
 

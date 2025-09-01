@@ -99,7 +99,7 @@ jest.mock('@/utils/input-sanitizer', () => ({
   checkRateLimit: jest.fn(() => true),
 }));
 
-jest.mock('@/lib/auth', () => ({
+jest.mock('@/lib/authentication', () => ({
   useCSRFToken: jest.fn(() => ({
     getToken: jest.fn(() => 'mock-csrf-token'),
   })),

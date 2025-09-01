@@ -7,7 +7,7 @@
 export { cacheClient, cacheManager, CacheManager } from './redis-client';
 
 // Response caching
-export { responseCache, ResponseCache, CachePresets, withResponseCache } from './response-cache';
+export { responseCache, ResponseCache, CachePresets, withResponseCache } from './responseCache';
 
 // Re-export types for convenience
-export type { CacheConfig } from './response-cache';
+export type { CacheConfig } from './responseCache';

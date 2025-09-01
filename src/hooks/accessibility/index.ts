@@ -4,8 +4,11 @@
  */
 
 export { useFieldAccessibility, useFieldGroupAccessibility } from './useFieldAccessibility';
+
+// Types are now exported from centralized @/types
 export type {
   FieldAccessibilityOptions,
   FieldAccessibilityIds,
   FieldAccessibilityProps,
-} from './useFieldAccessibility';
+  FieldGroupAccessibilityReturn,
+} from '@/types';

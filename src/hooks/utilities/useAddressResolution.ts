@@ -10,24 +10,11 @@
 import { useState, useCallback, useEffect } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase, logger } from '@/lib';
-import type { AddressHierarchyInfo } from '@/types/addresses';
-
-/**
- * Return type for useAddressResolution hook
- */
-export interface UseAddressResolutionReturn {
-  /** Resolved address information for display */
-  addressDisplayInfo: AddressHierarchyInfo;
-  /** Whether address resolution is in progress */
-  isLoading: boolean;
-  /** Error message if resolution fails */
-  error: string | null;
-  /** Manually trigger address resolution */
-  loadAddressHierarchyInfo: (barangayCode: string) => Promise<void>;
-  /** Reset address display info */
-  resetAddressInfo: () => void;
-}
+// REMOVED: @/lib barrel import - replace with specific module;
+import type { 
+  AddressHierarchyInfo,
+  UseAddressResolutionReturn,
+} from '@/types';
 
 /**
  * Default loading state

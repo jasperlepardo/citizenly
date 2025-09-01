@@ -11,7 +11,7 @@ export {
   truncate,
   sanitizeString,
   formatPhoneNumber,
-} from '@/utils/stringUtils';
+} from '@/utils/shared/stringUtils';
 
 // Data transformation utilities
 export {
@@ -24,7 +24,7 @@ export {
   formatDate,
   parseQueryString,
   buildQueryString,
-} from '@/utils/data-transformers';
+} from '@/utils/data/dataTransformers';
 
 // ID generation utilities
 export {
@@ -34,16 +34,16 @@ export {
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from '@/utils/id-generators';
+} from '@/utils/shared/idGenerators';
 
 // Async utilities
-export { debounce, throttle, sleep, retry } from '@/utils/async-utils';
+export { debounce, throttle, sleep, retry } from '@/utils/shared/asyncUtils';
 
 // CSS utilities
 export {
   cn,
   // mergeClassNames - REMOVED: Use `cn` instead
-} from '@/utils/css-utils';
+} from '@/utils/shared/cssUtils';
 
 // Business rules
 export {

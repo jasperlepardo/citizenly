@@ -2,10 +2,10 @@ import React from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet';
 
-import { HouseholdDetailsData } from '../../types';
+import { HouseholdFormData } from '../../types';
 
 export interface HouseholdStatisticsProps {
-  formData: HouseholdDetailsData;
+  formData: HouseholdFormData;
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors?: Record<string, string>;
   mode?: 'create' | 'view' | 'edit';

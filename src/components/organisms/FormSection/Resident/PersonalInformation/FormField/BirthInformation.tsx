@@ -2,19 +2,13 @@ import React, { useMemo } from 'react';
 
 import { InputField, SelectField } from '@/components';
 import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
-import type { FormMode } from '@/types';
-
-export interface BirthInformationData {
-  birthdate: string;
-  birth_place_name: string;
-  birth_place_code: string;
-}
+import type { FormMode, BirthInformationFormData } from '@/types';
 
 export interface BirthInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: BirthInformationData;
-  onChange: (value: BirthInformationData) => void;
+  value: BirthInformationFormData;
+  onChange: (value: BirthInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -37,7 +31,7 @@ export function BirthInformation({
     debounceMs: 300,
   });
 
-  const handleChange = (field: keyof BirthInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof BirthInformationFormData, fieldValue: any) => {
     onChange({
       ...value,
       [field]: fieldValue,

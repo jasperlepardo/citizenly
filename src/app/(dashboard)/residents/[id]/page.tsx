@@ -7,10 +7,13 @@ import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
 import { ResidentForm } from '@/components/templates/Form/Resident';
-import { supabase, logger, logError } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
+import { logger, logError } from '@/lib/logging';
 // Remove unused enum imports - using types instead
-import { fetchWithAuth } from '@/lib/utils/sessionUtils';
-import type { FormMode, ResidentWithRelations, SectoralInformation } from '@/types';
+import { fetchWithAuth } from '@/utils/auth/sessionManagement';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { ResidentWithRelations } from '@/types/domain/residents/core';
+import type { SectoralInformation } from '@/types/domain/residents/forms';
 import {
   CivilStatusEnum,
   CitizenshipEnum,
@@ -19,8 +22,8 @@ import {
   BloodTypeEnum,
   EthnicityEnum,
   ReligionEnum,
-} from '@/types';
-import type { ResidentFormState } from '@/types/residents';
+} from '@/types/infrastructure/database/database';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 // Tooltip component removed - not used in current implementation
 
@@ -40,7 +43,7 @@ function ResidentDetailContent() {
   const [formMode, setFormMode] = useState<FormMode>('view');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [, setCurrentFormData] = useState<ResidentFormState | null>(null);
+  const [, setCurrentFormData] = useState<ResidentFormData | null>(null);
 
   const loadAddressInfo = useCallback(async (residentData: Resident) => {
     try {
@@ -243,7 +246,7 @@ function ResidentDetailContent() {
     return updatedResident;
   };
 
-  const transformToFormState = (resident: Resident): ResidentFormState => {
+  const transformToFormState = (resident: Resident): ResidentFormData => {
     // Transform resident data to form state format
     // Processing basic resident fields for form
 
@@ -379,7 +382,7 @@ function ResidentDetailContent() {
   };
 
   // Handle form submission
-  const handleFormSubmit = async (formData: ResidentFormState) => {
+  const handleFormSubmit = async (formData: ResidentFormData) => {
     // Handle form submission with form data
     // Form includes migration status and other resident details
     // Processing form submission at current timestamp

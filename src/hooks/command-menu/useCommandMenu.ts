@@ -4,14 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
+import type { UseCommandMenuProps, UseCommandMenuReturn } from '@/types';
 
-interface UseCommandMenuProps {
-  items: CommandMenuItem[];
-  maxResults?: number;
-}
-
-export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) {
+export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps): UseCommandMenuReturn {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);

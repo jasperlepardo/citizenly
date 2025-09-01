@@ -12,34 +12,18 @@
 
 import { NextRequest } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
+import { createAdminSupabaseClient } from '@/lib/data/supabase';
 import {
   createSuccessResponse,
   withNextRequestErrorHandling,
-} from '@/lib/authentication/responseUtils';
-import { sanitizeSearchInput } from '@/lib/authentication/validationUtils';
+} from '@/utils/auth/apiResponseHandlers';
+import { sanitizeSearchInput } from '@/utils/validation/validationUtils';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-/**
- * PSGC query configuration
- */
-export interface PSGCQueryConfig {
-  /** Database table name */
-  table: string;
-  /** Fields to select from the table */
-  selectFields: string;
-  /** Field to filter by (optional) */
-  filterField?: string;
-  /** Query parameter name for filtering (optional) */
-  filterParam?: string;
-  /** Context name for error messages */
-  errorContext: string;
-  /** Order field (defaults to 'name') */
-  orderField?: string;
-}
+import type { PSGCQueryConfig, PSGCOption } from '@/types';
 
 /**
  * Database entity interfaces
@@ -60,14 +44,6 @@ type GeoStreet = {
   is_active: boolean;
 };
 
-/**
- * Standard PSGC option format for SelectField components
- */
-export interface PSGCOption {
-  value: string;
-  label: string;
-  [key: string]: string | number | boolean | null; // Additional fields from the database
-}
 
 // =============================================================================
 // CORE PSGC HANDLER

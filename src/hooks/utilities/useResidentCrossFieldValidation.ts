@@ -9,7 +9,10 @@
 
 import { useMemo } from 'react';
 
-import type { ResidentFormData } from '@/types';
+import type { 
+  ResidentFormData, 
+  UseResidentCrossFieldValidationReturn,
+} from '@/types';
 
 /**
  * Cross-field validation rule definition
@@ -71,17 +74,6 @@ const crossFieldValidationRules: CrossFieldValidationRule[] = [
   },
 ];
 
-/**
- * Return type for cross-field validation hook
- */
-export interface UseResidentCrossFieldValidationReturn {
-  /** Validate all cross-field rules for given data */
-  validateCrossFields: (data: ResidentFormData) => Record<string, string>;
-  /** Get fields affected by cross-field validation */
-  getCrossFieldDependencies: (fieldName: string) => string[];
-  /** Check if field has cross-field dependencies */
-  hasCrossFieldDependencies: (fieldName: string) => boolean;
-}
 
 /**
  * Hook for resident cross-field validation

@@ -14,29 +14,9 @@
 
 import React from 'react';
 
-// =============================================================================
-// TYPES
-// =============================================================================
-
-/**
- * Generic wrapper component props
- */
-export interface WrapperComponentProps {
-  children: React.ReactNode;
-}
-
-/**
- * HOC factory function type
- */
-export type HOCFactory<WrapperProps, ComponentProps> = (
-  Component: React.ComponentType<ComponentProps>,
-  ...args: any[]
-) => React.ComponentType<ComponentProps>;
-
-/**
- * Component wrapper function type
- */
-export type ComponentWrapper<T extends object> = (props: T) => React.ReactElement;
+import type {
+  WrapperComponentProps,
+} from '@/types';
 
 // =============================================================================
 // CONSOLIDATED HOC UTILITY

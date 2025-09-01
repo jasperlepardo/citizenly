@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import type { ResidentWithHousehold } from '@/types/api';
-import type { AuthUserProfile } from '@/types/auth';
+import type { HouseholdMemberWithResident } from '@/types/domain/households/households';
+import type { AuthUserProfile } from '@/types/app/auth/auth';
 
 // Migration information validation schema
 const migrationInfoSchema = z.object({
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
 
-    const resident = residentResult.data as ResidentWithHousehold | null;
+    const resident = residentResult.data as HouseholdMemberWithResident | null;
     const residentError = residentResult.error;
 
     if (residentError || !resident) {
@@ -186,7 +186,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
 
-    const resident = residentResult.data as ResidentWithHousehold | null;
+    const resident = residentResult.data as HouseholdMemberWithResident | null;
     const residentError = residentResult.error;
 
     if (residentError || !resident) {
@@ -328,7 +328,7 @@ export async function DELETE(
       .eq('households.barangay_code', userProfile.barangay_code)
       .single();
 
-    const resident = residentResult.data as ResidentWithHousehold | null;
+    const resident = residentResult.data as HouseholdMemberWithResident | null;
     const residentError = residentResult.error;
 
     if (residentError || !resident) {

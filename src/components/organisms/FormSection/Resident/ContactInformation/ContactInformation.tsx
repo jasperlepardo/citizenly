@@ -1,9 +1,13 @@
 import React, { useCallback } from 'react';
 
-import type { FormMode } from '@/types';
+import type {
+  FormMode,
+  ContactDetailsFormData,
+  HouseholdInformationFormData,
+} from '@/types';
 
-import { ContactDetails, ContactDetailsData } from './FormField/ContactDetails';
-import { HouseholdInformation, HouseholdInformationData } from './FormField/HouseholdInformation';
+import { ContactDetails } from './FormField/ContactDetails';
+import { HouseholdInformation } from './FormField/HouseholdInformation';
 
 export interface ContactInformationFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -33,21 +37,21 @@ export function ContactInformationForm({
   householdLoading = false,
 }: ContactInformationFormProps) {
   // Map form data to ContactDetails component props
-  const contactDetailsValue: ContactDetailsData = {
+  const contactDetailsValue: ContactDetailsFormData = {
     email: formData.email ?? '',
     telephone_number: formData.telephone_number ?? '',
     mobile_number: formData.mobile_number ?? '',
   };
 
   // Map form data to HouseholdInformation component props
-  const householdInfoValue: HouseholdInformationData = {
+  const householdInfoValue: HouseholdInformationFormData = {
     household_code: formData.household_code || '',
     household_name: formData.household_name || '',
   };
 
   // Handle changes from ContactDetails component
   const handleContactDetailsChange = useCallback(
-    (value: ContactDetailsData) => {
+    (value: ContactDetailsFormData) => {
       // Only update the fields that actually changed
       // Compare with current formData to determine what changed
       Object.entries(value).forEach(([field, fieldValue]) => {
@@ -62,7 +66,7 @@ export function ContactInformationForm({
 
   // Handle changes from HouseholdInformation component
   const handleHouseholdInfoChange = useCallback(
-    (value: HouseholdInformationData) => {
+    (value: HouseholdInformationFormData) => {
       // Call onChange with a special marker to indicate this is a household batch update
       onChange('__household_batch__', value as any);
     },

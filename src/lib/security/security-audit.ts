@@ -3,25 +3,7 @@
  * Comprehensive security checking for API routes
  */
 
-export interface SecurityIssue {
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  category:
-    | 'authentication'
-    | 'authorization'
-    | 'input_validation'
-    | 'information_disclosure'
-    | 'crypto'
-    | 'configuration';
-  description: string;
-  file?: string;
-  recommendation: string;
-}
-
-export interface SecurityAuditResult {
-  passed: boolean;
-  issues: SecurityIssue[];
-  score: number; // 0-100
-}
+import type { SecurityIssue, SecurityAuditResult } from '@/types/security';
 
 /**
  * Run comprehensive security audit

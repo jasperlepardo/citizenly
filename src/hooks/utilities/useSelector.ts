@@ -3,16 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { logger } from '@/lib/logging';
-
-export interface UseSelectorOptions<T> {
-  value: string;
-  onChange: (value: string) => void;
-  searchFn: (term: string) => Promise<T[]>;
-  loadSelectedFn?: (value: string) => Promise<T | null>;
-  debounceMs?: number;
-  minSearchLength?: number;
-  formatDisplayValue?: (item: T) => string;
-}
+import type { UseSelectorOptions, UseSelectorReturn } from '@/types';
 
 export function useSelector<T extends { value: string; label: string }>({
   value,
@@ -22,7 +13,7 @@ export function useSelector<T extends { value: string; label: string }>({
   debounceMs = 300,
   minSearchLength = 2,
   formatDisplayValue,
-}: UseSelectorOptions<T>) {
+}: UseSelectorOptions<T>): UseSelectorReturn<T> {
   const [searchTerm, setSearchTerm] = useState('');
   const [options, setOptions] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);

@@ -7,14 +7,16 @@
 
 // Main dashboard orchestrator
 export { useDashboard } from './useDashboard';
-export type { UseDashboardReturn } from './useDashboard';
 
 // Specialized dashboard hooks
 export { useDashboardApi } from './useDashboardApi';
 export { useDashboardCalculations } from './useDashboardCalculations';
 
-// Types from API module
+// Types are now exported from centralized @/types
 export type {
+  UseDashboardReturn,
+  UseDashboardApiReturn,
+  UseDashboardCalculationsReturn,
   DashboardStats,
   DependencyData,
   SexData,
@@ -22,7 +24,8 @@ export type {
   EmploymentStatusData,
   AgeGroup,
   DashboardResponse,
-} from './useDashboardApi';
-
-// Types from calculations module
-export type { ResidentData, UseDashboardCalculationsReturn } from './useDashboardCalculations';
+  ResidentData,
+  SectoralInfo,
+  DependencyRatioData,
+  SexDistributionData,
+} from '@/types';

@@ -9,50 +9,15 @@
 
 import { useCallback, useState } from 'react';
 
-import { useSearchCache, searchFormatters } from '@/utils/search-utilities';
+import { useSearchCache, searchFormatters } from '@/utils/search/search-utilities';
 
 import { useGenericSearch } from './useGenericSearch';
 
-/**
- * PSGC search result interface
- */
-export interface PsgcSearchResult {
-  code: string;
-  name: string;
-  level: 'region' | 'province' | 'city' | 'municipality' | 'barangay';
-  parent_code?: string;
-  full_address?: string;
-}
-
-/**
- * PSGC search options
- */
-export interface UsePsgcSearchOptions {
-  levels?: 'region' | 'province' | 'city' | 'municipality' | 'barangay' | 'all';
-  limit?: number;
-  parentCode?: string;
-  debounceMs?: number;
-  enableCache?: boolean;
-}
-
-/**
- * Return type for usePsgcSearch hook
- */
-export interface UsePsgcSearchReturn {
-  query: string;
-  setQuery: (query: string) => void;
-  options: PsgcSearchResult[];
-  isLoading: boolean;
-  error: Error | null;
-  clearSearch: () => void;
-  refresh: () => void;
-  searchByLevel: (level: string, query: string) => Promise<void>;
-  // Lazy loading support
-  hasMore: boolean;
-  loadMore: () => void;
-  isLoadingMore: boolean;
-  totalCount: number;
-}
+import type {
+  PsgcSearchResult,
+  UsePsgcSearchOptions,
+  UsePsgcSearchReturn,
+} from '@/types';
 
 /**
  * PSGC API implementation

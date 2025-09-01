@@ -10,12 +10,7 @@ import { createSecureErrorResponse } from '@/lib/security/api-security';
 // In-memory store for rate limiting (use Redis in production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
-export interface RateLimitConfig {
-  windowMs: number; // Time window in milliseconds
-  maxRequests: number; // Maximum requests per window
-  skipSuccessfulRequests?: boolean; // Don't count successful requests
-  skipFailedRequests?: boolean; // Don't count failed requests
-}
+import type { RateLimitConfig } from '@/types/security';
 
 // Default rate limit configurations by endpoint type
 export const rateLimitConfigs = {

@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
 import { Button, type ButtonProps } from '@/components/atoms/Button/Button';
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 import { TitleDescription } from '../TitleDescription';
 

@@ -1,6 +1,6 @@
 import { randomBytes, createHash, timingSafeEqual } from 'crypto';
 
-import type { CSRFToken } from '@/types/auth';
+import type { CSRFToken } from '@/types/app/auth/auth';
 
 /**
  * CSRF Protection Implementation

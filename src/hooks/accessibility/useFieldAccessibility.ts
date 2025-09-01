@@ -4,44 +4,8 @@
  */
 import { useMemo } from 'react';
 
-import { generateId } from '@/utils/id-generators';
-
-export interface FieldAccessibilityOptions {
-  /** Base identifier for the field */
-  baseId?: string;
-  /** Whether the field has an error */
-  hasError?: boolean;
-  /** Whether the field has helper text */
-  hasHelperText?: boolean;
-  /** Whether the field is required */
-  required?: boolean;
-  /** Custom label */
-  label?: string;
-}
-
-export interface FieldAccessibilityIds {
-  /** ID for the field input element */
-  field: string;
-  /** ID for the field label */
-  label: string;
-  /** ID for helper text */
-  helper: string;
-  /** ID for error message */
-  error: string;
-}
-
-export interface FieldAccessibilityProps {
-  /** Generated IDs for field elements */
-  ids: FieldAccessibilityIds;
-  /** aria-describedby attribute value */
-  ariaDescribedBy?: string;
-  /** aria-labelledby attribute value */
-  ariaLabelledBy: string;
-  /** aria-invalid attribute value */
-  ariaInvalid: boolean | 'false' | 'true';
-  /** aria-required attribute value */
-  ariaRequired: boolean | 'false' | 'true';
-}
+import { generateId } from '@/utils/shared/idGenerators';
+import type { FieldAccessibilityOptions, FieldAccessibilityProps, FieldGroupAccessibilityReturn } from '@/types';
 
 /**
  * Hook for standardizing field accessibility patterns
@@ -128,7 +92,7 @@ export function useFieldGroupAccessibility({
   baseId,
   hasError = false,
   required = false,
-}: Pick<FieldAccessibilityOptions, 'baseId' | 'hasError' | 'required'> = {}) {
+}: Pick<FieldAccessibilityOptions, 'baseId' | 'hasError' | 'required'> = {}): FieldGroupAccessibilityReturn {
   const ids = useMemo(() => {
     const groupId = baseId || generateId('fieldgroup');
     return {

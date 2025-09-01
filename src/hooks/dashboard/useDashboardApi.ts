@@ -10,128 +10,15 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts';
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
-import { supabase, logger } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
+import type {
+  DashboardResponse,
+  UseDashboardApiReturn
+} from '@/types';
 
-/**
- * Dashboard statistics interface
- */
-export interface DashboardStats {
-  residents: number;
-  households: number;
-  businesses: number;
-  certifications: number;
-  seniorCitizens: number;
-  employedResidents: number;
-}
+// Interfaces moved to centralized types
 
-/**
- * Age group interface
- */
-export interface AgeGroup {
-  ageRange: string;
-  male: number;
-  female: number;
-  malePercentage: number;
-  femalePercentage: number;
-}
-
-/**
- * Dependency data interface
- */
-export interface DependencyData {
-  youngDependents: number; // 0-14
-  workingAge: number; // 15-64
-  oldDependents: number; // 65+
-}
-
-/**
- * Sex distribution interface
- */
-export interface SexData {
-  male: number;
-  female: number;
-}
-
-/**
- * Civil status data interface
- */
-export interface CivilStatusData {
-  single: number;
-  married: number;
-  widowed: number;
-  divorced: number;
-  separated: number;
-  annulled: number;
-  registeredPartnership: number;
-  liveIn: number;
-}
-
-/**
- * Employment status data interface
- */
-export interface EmploymentStatusData {
-  employed: number;
-  unemployed: number;
-  selfEmployed: number;
-  student: number;
-  retired: number;
-  homemaker: number;
-  disabled: number;
-  other: number;
-}
-
-/**
- * Dashboard API response interface
- */
-export interface DashboardResponse {
-  stats: DashboardStats;
-  demographics: {
-    ageGroups: DependencyData;
-    sexDistribution: SexData;
-    civilStatus: {
-      single: number;
-      married: number;
-      widowed: number;
-      divorced: number;
-    };
-    employment: {
-      laborForce: number;
-      employed: number;
-      unemployed: number;
-    };
-    specialCategories: {
-      pwd: number;
-      soloParents: number;
-      ofw: number;
-      indigenous: number;
-      outOfSchoolChildren: number;
-      outOfSchoolYouth: number;
-      registeredSeniorCitizens: number;
-      migrants: number;
-    };
-  };
-  residentsData: {
-    birthdate: string;
-    sex: string;
-    civil_status: string;
-    employment_status: string;
-    is_labor_force_employed?: boolean;
-    resident_sectoral_info?: {
-      is_labor_force: boolean;
-      is_labor_force_employed: boolean;
-      is_unemployed: boolean;
-      is_overseas_filipino_worker: boolean;
-      is_person_with_disability: boolean;
-      is_out_of_school_children: boolean;
-      is_out_of_school_youth: boolean;
-      is_senior_citizen: boolean;
-      is_registered_senior_citizen: boolean;
-      is_solo_parent: boolean;
-      is_indigenous_people: boolean;
-      is_migrant: boolean;
-    }[];
-  }[];
-}
+// DashboardResponse interface moved to centralized types
 
 /**
  * API function to fetch dashboard data
@@ -162,17 +49,7 @@ export async function fetchDashboardStats(): Promise<DashboardResponse> {
   return response.json();
 }
 
-/**
- * Return type for dashboard API hook
- */
-export interface UseDashboardApiReturn {
-  data: DashboardResponse | undefined;
-  isLoading: boolean;
-  error: Error | null;
-  refetch: () => void;
-  isRefetching: boolean;
-  isFetching: boolean;
-}
+// UseDashboardApiReturn interface moved to centralized types
 
 /**
  * Hook for dashboard API operations

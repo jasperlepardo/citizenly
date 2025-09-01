@@ -10,44 +10,12 @@
 import { useState, useCallback } from 'react';
 
 import { householdService, HouseholdFormData } from '@/services/household.service';
+import type {
+  CrudOperationResult,
+  UseHouseholdCrudOptions,
+  UseHouseholdCrudReturn,
+} from '@/types';
 
-/**
- * CRUD operation result
- */
-export interface CrudOperationResult<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
-/**
- * Options for CRUD operations
- */
-export interface UseHouseholdCrudOptions {
-  onSuccess?: (data: any) => void;
-  onError?: (error: string) => void;
-}
-
-/**
- * Return type for useHouseholdCrud hook
- */
-export interface UseHouseholdCrudReturn {
-  /** Whether any operation is in progress */
-  isLoading: boolean;
-  /** Get household by ID */
-  getHousehold: (id: string) => Promise<CrudOperationResult>;
-  /** Get household by code */
-  getHouseholdByCode: (code: string) => Promise<CrudOperationResult>;
-  /** List households with pagination */
-  listHouseholds: (page?: number, limit?: number) => Promise<CrudOperationResult>;
-  /** Update household */
-  updateHousehold: (
-    id: string,
-    updates: Partial<HouseholdFormData>
-  ) => Promise<CrudOperationResult>;
-  /** Delete household */
-  deleteHousehold: (id: string) => Promise<CrudOperationResult>;
-}
 
 /**
  * Custom hook for household CRUD operations

@@ -5,12 +5,14 @@ import React from 'react';
 import {
   transformChartData,
   getChartTitle,
-  type ChartType,
-  type DependencyData,
-  type SexData,
-  type CivilStatusData,
-  type EmploymentStatusData,
-} from '@/lib/charts';
+} from '@/utils/reports/chartTransformers';
+import type {
+  ChartType,
+  DependencyData,
+  SexData,
+  CivilStatusData,
+  EmploymentStatusData,
+} from '@/types/app/ui/charts';
 
 import GenericPieChart from '../GenericPieChart/GenericPieChart';
 

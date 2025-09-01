@@ -19,44 +19,18 @@ import type { CommandMenuItemType as CommandMenuItem } from '@/components';
 import { getCommandMenuItems } from '@/lib/command-menu';
 
 import { useCommandMenu } from './useCommandMenu';
-import { useCommandMenuActions, type UseCommandMenuActionsReturn } from './useCommandMenuActions';
-import { useCommandMenuRecents, type UseCommandMenuRecentsReturn } from './useCommandMenuRecents';
-import { useCommandMenuSearch, type UseCommandMenuSearchReturn } from './useCommandMenuSearch';
+import { useCommandMenuActions } from './useCommandMenuActions';
+import { useCommandMenuRecents } from './useCommandMenuRecents';
+import { useCommandMenuSearch } from './useCommandMenuSearch';
+import type {
+  UseCommandMenuWithApiProps,
+  UseCommandMenuWithApiReturn,
+  UseCommandMenuSearchReturn,
+  UseCommandMenuRecentsReturn,
+  UseCommandMenuActionsReturn
+} from '@/types';
 
-/**
- * Options for command menu with API
- */
-export interface UseCommandMenuWithApiProps {
-  /** Maximum number of results */
-  maxResults?: number;
-}
-
-/**
- * Return type for command menu with API hook
- */
-export interface UseCommandMenuWithApiReturn
-  extends Pick<UseCommandMenuSearchReturn, 'searchQuery' | 'setSearchQuery' | 'isLoading'>,
-    Pick<UseCommandMenuRecentsReturn, 'handleClearRecentItems'>,
-    Pick<UseCommandMenuActionsReturn, 'executeCommand'> {
-  /** Menu open state */
-  isOpen: boolean;
-  /** Open menu */
-  open: () => void;
-  /** Close menu */
-  close: () => void;
-  /** Toggle menu */
-  toggle: () => void;
-  /** Filtered menu items */
-  filteredItems: CommandMenuItem[];
-  /** Selected index */
-  selectedIndex: number;
-  /** Set selected index */
-  setSelectedIndex: (index: number) => void;
-  /** Number of dynamic results */
-  dynamicResults: number;
-  /** Number of recent items */
-  recentItems: number;
-}
+// Interfaces moved to centralized types
 
 /**
  * Command menu with API integration hook (Refactored)

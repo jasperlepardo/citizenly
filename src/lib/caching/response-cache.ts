@@ -12,16 +12,7 @@ import { cacheManager } from './redis-client';
 
 const logger = createLogger('ResponseCache');
 
-export interface CacheConfig {
-  ttl: number;
-  tags?: string[];
-  varyBy?: string[];
-  conditions?: {
-    methods?: string[];
-    statusCodes?: number[];
-    contentTypes?: string[];
-  };
-}
+import type { ResponseCacheConfig as CacheConfig } from '@/types/shared/utilities';
 
 interface CachedResponse<T = unknown> {
   status: number;

@@ -3,7 +3,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 import { TitleDescription } from './TitleDescription';
 

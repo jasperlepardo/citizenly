@@ -10,15 +10,15 @@ import { RATE_LIMITS } from '@/constants/resident-form';
 import { useAuth } from '@/contexts';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
-import { useCSRFToken } from '@/lib/auth';
+import { useCSRFToken } from '@/lib/authentication';
 import {
   philippineCompliantLogger,
   auditLogger,
   npcComplianceLogger,
   generateSecureSessionId,
 } from '@/lib/security/philippine-logging';
-import { checkRateLimit, clearRateLimit, getRateLimitStatus } from '@/utils/input-sanitizer';
-import { validateFormData, prepareFormSubmission } from '@/utils/resident-form-utils';
+import { checkRateLimit, clearRateLimit, getRateLimitStatus } from '@/utils/auth/inputSanitizer';
+import { validateFormData, prepareFormSubmission } from '@/utils/residents/residentDataProcessing';
 
 export const dynamic = 'force-dynamic';
 

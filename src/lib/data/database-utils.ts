@@ -10,7 +10,7 @@ import type {
   PSGCBarangay,
   AddressHierarchyQueryResult as AddressHierarchy,
 } from '../../types/database';
-import { supabase } from '../supabase';
+import { supabase } from './supabase';
 
 // Import geographic types from centralized location
 

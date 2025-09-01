@@ -18,7 +18,7 @@ import { logger } from '@/lib/logging';
 import type {
   WebVitalsPerformanceMetric as PerformanceMetric,
   ResourceTiming,
-} from '@/types/utilities';
+} from '@/types/shared/utilities';
 
 // Performance thresholds based on Core Web Vitals
 export const PERFORMANCE_THRESHOLDS = {

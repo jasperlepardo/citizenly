@@ -6,13 +6,10 @@
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { sanitizeInput, sanitizeNameInput } from '@/utils/input-sanitizer';
+import { sanitizeInput, sanitizeNameInput } from '@/utils/auth/inputSanitizer';
+import type { URLParameterConfig } from '@/types';
 
-export interface URLParameterConfig {
-  key: string;
-  sanitizationType?: 'text' | 'name' | 'none';
-  defaultValue?: string;
-}
+// Interface moved to centralized types - URLParameterConfig is already exported from @/types
 
 /**
  * Hook for extracting and memoizing URL parameters with automatic sanitization

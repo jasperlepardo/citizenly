@@ -3,7 +3,7 @@
  * Replaces console.log with structured logging for development and production
  */
 
-import type { LogContext, LogLevel } from '@/types/errors';
+import type { LogContext, LogLevel } from '@/types/shared/errors/errors';
 
 const LOG_LEVELS = {
   DEBUG: 'debug' as const,

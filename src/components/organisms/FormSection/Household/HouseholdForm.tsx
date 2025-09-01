@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 
-import type { HouseholdFormData, FormMode } from '@/types/forms';
+import type { HouseholdFormData, FormMode } from '@/types/app/ui/forms';
 
 import { HouseholdDetailsForm } from './HouseholdDetails';
 

@@ -9,7 +9,7 @@
 
 import { useCallback, useRef, useEffect } from 'react';
 
-import { debounce, throttle, retry } from '@/utils/async-utils';
+import { debounce, throttle, retry } from '@/utils/shared/asyncUtils';
 
 /**
  * Hook for using debounced functions

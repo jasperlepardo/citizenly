@@ -10,41 +10,14 @@
 import { useState, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { useCSRFToken } from '@/lib/auth';
+import { useCSRFToken } from '@/lib/authentication';
 import { householdService, HouseholdFormData } from '@/services/household.service';
+import type {
+  HouseholdCreationResult,
+  UseHouseholdCreationServiceOptions,
+  UseHouseholdCreationServiceReturn,
+} from '@/types';
 
-/**
- * Creation operation result
- */
-export interface HouseholdCreationResult {
-  success: boolean;
-  data?: any;
-  error?: string;
-  validationErrors?: Record<string, string>;
-}
-
-/**
- * Options for household creation
- */
-export interface UseHouseholdCreationServiceOptions {
-  onSuccess?: (data: any) => void;
-  onError?: (error: string) => void;
-  onValidationError?: (errors: Record<string, string>) => void;
-}
-
-/**
- * Return type for useHouseholdCreationService hook
- */
-export interface UseHouseholdCreationServiceReturn {
-  /** Whether creation is in progress */
-  isCreating: boolean;
-  /** Create household using service */
-  createHousehold: (formData: HouseholdFormData) => Promise<HouseholdCreationResult>;
-  /** Generate household code */
-  generateHouseholdCode: () => string;
-  /** Reset creation state */
-  resetCreationState: () => void;
-}
 
 /**
  * Custom hook for household creation service operations

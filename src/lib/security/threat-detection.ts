@@ -7,29 +7,7 @@ import { logger } from '@/lib/logging';
 
 import { storeThreatDetectionEvent, ThreatDetectionEvent } from './audit-storage';
 
-export interface SecurityContext {
-  userId?: string;
-  sessionId?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  requestPath?: string;
-  timestamp: string;
-}
-
-export interface ThreatPattern {
-  name: string;
-  description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  detector: (context: SecurityContext, history: SecurityEvent[]) => boolean;
-  mitigation?: (context: SecurityContext) => Promise<void>;
-}
-
-export interface SecurityEvent {
-  type: string;
-  context: SecurityContext;
-  timestamp: string;
-  metadata?: Record<string, unknown>;
-}
+import type { SecurityContext, ThreatPattern, SecurityEvent } from '@/types/security';
 
 // In-memory cache for recent security events (in production, use Redis)
 const eventCache = new Map<string, SecurityEvent[]>();

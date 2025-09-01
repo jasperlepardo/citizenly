@@ -3,7 +3,7 @@
  * Provides offline-first data storage for PWA functionality
  */
 
-import type { OfflineStoredData as StoredData, PendingSyncItem } from '@/types/utilities';
+import type { OfflineStoredData as StoredData, PendingSyncItem } from '@/types/shared/utilities';
 
 export class OfflineStorage {
   private db: IDBDatabase | null = null;

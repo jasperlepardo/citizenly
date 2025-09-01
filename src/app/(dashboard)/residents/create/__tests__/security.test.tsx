@@ -101,7 +101,7 @@ jest.mock('@/hooks/crud/useResidentOperations', () => ({
   useResidentOperations: jest.fn(),
 }));
 
-jest.mock('@/lib/auth', () => ({
+jest.mock('@/lib/authentication', () => ({
   useCSRFToken: jest.fn(() => ({
     getToken: jest.fn(() => 'csrf-token-123'),
   })),

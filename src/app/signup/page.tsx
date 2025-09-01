@@ -5,8 +5,9 @@ import React, { useState, useEffect } from 'react';
 
 import { InputField, SelectField, Button } from '@/components';
 import { useGenericFormSubmission } from '@/hooks/utilities';
-import { supabase, logger, logError } from '@/lib';
-import { createFieldChangeHandler } from '@/lib/form-utils';
+import { supabase } from '@/lib/data/supabase';
+import { logger, logError } from '@/lib/logging';
+import { createFieldChangeHandler } from '@/utils/shared/formUtils';
 // import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {

@@ -21,4 +21,4 @@ export {
   renderCheckboxField,
   renderDateField,
   renderNumberField,
-} from '@/lib/forms/field-renderers';
+} from '@/components/forms/field-renderers';

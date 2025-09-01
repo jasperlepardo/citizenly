@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
-import type { CreateProfileRequest } from '@/types/api-requests';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import type { CreateProfileRequest } from '@/types/app/api/apiRequests';
 
-// CreateProfileRequest moved to src/types/api-requests.ts for consolidation
+// CreateProfileRequest moved to src/types/apiRequests.ts for consolidation
 
 /**
  * Fallback profile creation endpoint that bypasses strict user verification

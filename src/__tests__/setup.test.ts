@@ -21,7 +21,7 @@ describe('Test Setup', () => {
   });
 
   it('should mock database utilities', async () => {
-    const { getRegions } = await import('@/lib/database');
+    const { getRegions } = await import('@/lib/data/database-utils');
     return expect(getRegions()).resolves.toEqual([
       { code: '01', name: 'Region I (Ilocos Region)' },
       { code: '13', name: 'National Capital Region (NCR)' },

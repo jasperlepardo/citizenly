@@ -11,54 +11,15 @@ import { useCallback, useState } from 'react';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/data/supabase';
-import { useSearchCache, searchFormatters } from '@/utils/search-utilities';
+import { useSearchCache, searchFormatters } from '@/utils/search/search-utilities';
 
 import { useGenericSearch } from './useGenericSearch';
 
-/**
- * Household search result interface
- */
-export interface HouseholdSearchResult {
-  id: string;
-  code: string;
-  name: string;
-  address: string;
-  house_number?: string;
-  geo_streets?: Array<{ name: string }>;
-  geo_subdivisions?: Array<{ name: string }>;
-  head_resident?: {
-    first_name?: string;
-    middle_name?: string;
-    last_name?: string;
-  };
-}
-
-/**
- * Household search options
- */
-export interface UseHouseholdSearchOptions {
-  limit?: number;
-  debounceMs?: number;
-  enableCache?: boolean;
-}
-
-/**
- * Return type for useHouseholdSearch hook
- */
-export interface UseHouseholdSearchReturn {
-  query: string;
-  setQuery: (query: string) => void;
-  options: HouseholdSearchResult[];
-  isLoading: boolean;
-  error: Error | null;
-  clearSearch: () => void;
-  refresh: () => void;
-  // Lazy loading support
-  hasMore: boolean;
-  loadMore: () => void;
-  isLoadingMore: boolean;
-  totalCount: number;
-}
+import type {
+  HouseholdSearchResult,
+  UseHouseholdSearchOptions,
+  UseHouseholdSearchReturn,
+} from '@/types';
 
 /**
  * Process households data and add computed fields

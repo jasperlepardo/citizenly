@@ -10,68 +10,12 @@
 import { useState, useCallback, useRef } from 'react';
 
 import { useLogger } from './useLogger';
-
-/**
- * Retry strategy options
- */
-export interface RetryStrategy {
-  /** Maximum number of retry attempts */
-  maxAttempts: number;
-  /** Initial delay in milliseconds */
-  initialDelay: number;
-  /** Maximum delay in milliseconds */
-  maxDelay: number;
-  /** Exponential backoff multiplier */
-  backoffMultiplier: number;
-  /** Add jitter to prevent thundering herd */
-  enableJitter: boolean;
-  /** Custom condition to determine if error should be retried */
-  shouldRetry?: (error: Error, attempt: number) => boolean;
-}
-
-/**
- * Retry state interface
- */
-export interface RetryState {
-  /** Current attempt number (0 = initial attempt) */
-  attempt: number;
-  /** Whether retry is currently in progress */
-  isRetrying: boolean;
-  /** Last error encountered */
-  lastError: Error | null;
-  /** Next retry delay in milliseconds */
-  nextDelay: number;
-  /** Whether max attempts have been reached */
-  maxAttemptsReached: boolean;
-}
-
-/**
- * Retry logic hook options
- */
-export interface UseRetryLogicOptions extends Partial<RetryStrategy> {
-  /** Hook name for logging */
-  name?: string;
-  /** Called when operation succeeds after retry */
-  onSuccess?: (result: any, attempt: number) => void;
-  /** Called when operation fails (before retry) */
-  onError?: (error: Error, attempt: number) => void;
-  /** Called when max attempts reached */
-  onMaxAttemptsReached?: (error: Error) => void;
-}
-
-/**
- * Return type for retry logic hook
- */
-export interface UseRetryLogicReturn {
-  /** Current retry state */
-  state: RetryState;
-  /** Execute operation with retry logic */
-  execute: <T>(operation: () => Promise<T>) => Promise<T>;
-  /** Reset retry state */
-  reset: () => void;
-  /** Cancel any pending retry */
-  cancel: () => void;
-}
+import type {
+  RetryStrategy,
+  RetryState,
+  UseRetryLogicOptions,
+  UseRetryLogicReturn,
+} from '@/types';
 
 /**
  * Default retry strategy

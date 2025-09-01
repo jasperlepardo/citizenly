@@ -21,13 +21,15 @@ export type {
   ValidationState,
   FieldSize,
   FormSubmissionState,
-} from '@/types/forms';
+} from '@/types/app/ui/forms';
 
 // Database types
-export * from '@/types/database';
+export * from '@/types/infrastructure/database';
 
 // Domain types - use namespace import to avoid conflicts
 // import * as ResidentTypes from './resident';
 // export { ResidentTypes };
-export * from './resident-detail';
-export * from './resident-listing';
+// Resident types - direct exports from consolidated modules
+export type { Resident } from '@/types/domain/residents/core';
+export type { ResidentListItem } from '@/types/domain/residents/core';
+export type { ResidentsApiResponse } from '@/types/domain/residents/api';

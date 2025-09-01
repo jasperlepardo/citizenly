@@ -2,8 +2,7 @@
 export type {
   FormMode,
   HouseholdFormData,
-  HouseholdDetailsData,
   FormSectionPropsGeneric as FormSectionProps,
   FieldConfig,
   HouseholdFormProps,
-} from '@/types';
+} from '@/types/app/ui/forms';

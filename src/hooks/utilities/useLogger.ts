@@ -44,18 +44,7 @@ interface LoggerConfig {
   minLevel?: LogLevel;
 }
 
-/**
- * Logger return interface
- */
-export interface UseLoggerReturn {
-  debug: (message: string, data?: any) => void;
-  info: (message: string, data?: any) => void;
-  warn: (message: string, data?: any) => void;
-  error: (message: string, error?: Error | any, data?: any) => void;
-  critical: (message: string, error?: Error, data?: any) => void;
-  trackPerformance: (operation: string, duration: number) => void;
-  trackEvent: (event: string, properties?: Record<string, any>) => void;
-}
+import type { UseLoggerReturn } from '@/types';
 
 /**
  * Get current environment configuration

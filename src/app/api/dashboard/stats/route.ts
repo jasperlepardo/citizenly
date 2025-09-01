@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger, createErrorResponseObject } from '@/lib';
-import { withResponseCache, CachePresets } from '@/lib/caching/response-cache';
+// REMOVED: @/lib barrel import - replace with specific module;
+import { withResponseCache, CachePresets } from '@/lib/caching/responseCache';
 import { isProduction } from '@/lib/config/environment';
 import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
 import { queryOptimizer } from '@/lib/database/query-optimizer';

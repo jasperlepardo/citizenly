@@ -4,39 +4,9 @@ import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 import { supabase } from '@/lib/data/supabase';
-import type { AuthRole, AuthUserProfile } from '@/types/auth';
+import type { AuthUserProfile, Role, AuthContextType } from '@/types';
 
-// Use consolidated AuthRole type with permissions extension
-export interface Role extends Pick<AuthRole, 'id' | 'name'> {
-  permissions: Record<string, boolean | string>;
-}
-
-// Simplified for original schema - no barangay_accounts needed
-
-interface AuthContextType {
-  // Authentication state
-  session: Session | null;
-  user: User | null;
-  userProfile: AuthUserProfile | null;
-  role: Role | null;
-
-  // Loading states
-  loading: boolean;
-  profileLoading: boolean;
-  profileError: string | null;
-
-  // Methods
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
-  loadProfile: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-
-  // Helper methods
-  hasPermission: (permission: string) => boolean;
-  isInRole: (roleName: string) => boolean;
-  canAccessBarangay: (barangayCode: string) => boolean;
-  isBarangayAdmin: () => boolean;
-}
+// Interfaces moved to centralized types
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 // Safe router hook that works in both Next.js and Storybook environments

@@ -18,7 +18,7 @@ export {
   sanitizeError,
   createValidationError,
   createNetworkError,
-} from '@/utils/errorUtils';
+} from '@/utils/shared/errorUtils';
 
 export {
   createErrorBoundaryState,
@@ -41,6 +41,6 @@ export type {
   ErrorRecoveryStrategy,
   FieldError,
   NetworkError,
-} from './error-types';
+} from '../../types/shared/errors/errors';
 
-export { ErrorSeverity, ErrorCode } from './error-types';
+export { ErrorSeverity, ErrorCode } from '../../types/shared/errors/errors';

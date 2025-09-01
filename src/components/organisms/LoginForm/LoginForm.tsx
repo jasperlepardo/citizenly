@@ -5,8 +5,8 @@ import React, { useState } from 'react';
 import { InputField, Button } from '@/components';
 import { useAuth } from '@/contexts';
 import { useGenericFormSubmission } from '@/hooks/utilities';
-import { createFieldChangeHandler } from '@/lib/form-utils';
-import type { LoginFormData } from '@/types/auth';
+import { createFieldChangeHandler } from '@/utils/shared/formUtils';
+import type { LoginFormData } from '@/types/app/auth/auth';
 
 interface LoginFormProps {
   onSuccess?: () => void;

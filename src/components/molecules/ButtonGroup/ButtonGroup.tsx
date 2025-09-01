@@ -2,7 +2,7 @@
 
 import React, { forwardRef } from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 export interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   orientation?: 'horizontal' | 'vertical';

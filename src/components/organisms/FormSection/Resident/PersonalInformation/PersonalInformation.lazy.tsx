@@ -7,7 +7,7 @@
 import { lazy } from 'react';
 
 import { FormSkeleton } from '@/components/atoms/Loading';
-import { withLazyLoading } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 
 const PersonalInformationLazy = lazy(() =>
   import('./PersonalInformation').then(module => ({

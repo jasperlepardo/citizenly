@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/data/supabase';
-import { HouseholdWithMembersResult } from '@/types/households';
+import { HouseholdWithMembersResult } from '@/types/domain/households';
 
 interface HouseholdsParams {
   searchTerm?: string;

@@ -10,21 +10,8 @@
 import { useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase, logger } from '@/lib';
-
-/**
- * Return type for useHouseholdCodeGeneration hook
- */
-export interface UseHouseholdCodeGenerationReturn {
-  /** Generates a PSGC-compliant household code */
-  generateHouseholdCode: () => Promise<string>;
-  /** Derives geographic codes from barangay code */
-  deriveGeographicCodes: (barangayCode: string) => {
-    region_code: string;
-    province_code: string;
-    city_municipality_code: string;
-  } | null;
-}
+// REMOVED: @/lib barrel import - replace with specific module;
+import type { UseHouseholdCodeGenerationReturn } from '@/types';
 
 /**
  * Custom hook for household code generation

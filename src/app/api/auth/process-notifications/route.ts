@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
-import type { NotificationRecord } from '@/types/api-requests';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import type { NotificationRecord } from '@/types/app/api/apiRequests';
 
-// NotificationRecord moved to src/types/api-requests.ts for consolidation
+// NotificationRecord moved to src/types/apiRequests.ts for consolidation
 
 export async function POST(_request: NextRequest) {
   try {

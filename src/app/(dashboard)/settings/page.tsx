@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 
 import { Button, SelectField } from '@/components';
 import { useTheme } from '@/contexts';
-import { logger } from '@/lib';
+import { logger } from '@/lib/logging';
 
 export default function SettingsPage() {
   const { theme, actualTheme, setTheme } = useTheme();

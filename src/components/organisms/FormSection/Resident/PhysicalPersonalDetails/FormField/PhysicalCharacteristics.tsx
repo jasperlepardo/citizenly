@@ -6,25 +6,14 @@ import {
   ETHNICITY_OPTIONS_WITH_DEFAULT,
   RELIGION_OPTIONS_WITH_DEFAULT,
   CITIZENSHIP_OPTIONS_WITH_DEFAULT,
-} from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types';
-
-export interface PhysicalCharacteristicsData {
-  blood_type: string;
-  complexion: string;
-  height: string;
-  weight: string;
-  citizenship: string;
-  ethnicity: string;
-  religion: string;
-  religion_others_specify?: string;
-}
+} from '@/constants/resident-enums';
+import type { FormMode, PhysicalCharacteristicsFormData } from '@/types';
 
 export interface PhysicalCharacteristicsProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: PhysicalCharacteristicsData;
-  onChange: (value: PhysicalCharacteristicsData) => void;
+  value: PhysicalCharacteristicsFormData;
+  onChange: (value: PhysicalCharacteristicsFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -36,7 +25,7 @@ export function PhysicalCharacteristics({
   errors,
   className = '',
 }: PhysicalCharacteristicsProps) {
-  const handleChange = (field: keyof PhysicalCharacteristicsData, fieldValue: string) => {
+  const handleChange = (field: keyof PhysicalCharacteristicsFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
@@ -44,10 +33,10 @@ export function PhysicalCharacteristics({
   };
 
   // Use pre-defined options - blood_type and citizenship have database defaults, religion and ethnicity have "Select" options
-  const bloodTypeOptions = BLOOD_TYPE_OPTIONS_WITH_DEFAULT as any;
-  const ethnicityOptions = ETHNICITY_OPTIONS_WITH_DEFAULT as any;
-  const religionOptions = RELIGION_OPTIONS_WITH_DEFAULT as any;
-  const citizenshipOptions = CITIZENSHIP_OPTIONS_WITH_DEFAULT as any;
+  const bloodTypeOptions = BLOOD_TYPE_OPTIONS_WITH_DEFAULT;
+  const ethnicityOptions = ETHNICITY_OPTIONS_WITH_DEFAULT;
+  const religionOptions = RELIGION_OPTIONS_WITH_DEFAULT;
+  const citizenshipOptions = CITIZENSHIP_OPTIONS_WITH_DEFAULT;
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -69,7 +58,7 @@ export function PhysicalCharacteristics({
           mode={mode}
           selectProps={{
             placeholder: 'Select blood type...',
-            options: bloodTypeOptions,
+            options: bloodTypeOptions as any,
             value: value.blood_type,
             onSelect: option => handleChange('blood_type', option?.value || ''),
           }}
@@ -123,7 +112,7 @@ export function PhysicalCharacteristics({
           mode={mode}
           selectProps={{
             placeholder: 'Select citizenship...',
-            options: citizenshipOptions,
+            options: citizenshipOptions as any,
             value: value.citizenship || 'filipino',
             onSelect: option => handleChange('citizenship', option?.value || 'filipino'),
           }}
@@ -136,7 +125,7 @@ export function PhysicalCharacteristics({
           mode={mode}
           selectProps={{
             placeholder: 'Select ethnicity...',
-            options: ethnicityOptions,
+            options: ethnicityOptions as any,
             value: value.ethnicity,
             onSelect: option => handleChange('ethnicity', option?.value || ''),
           }}
@@ -149,7 +138,7 @@ export function PhysicalCharacteristics({
           mode={mode}
           selectProps={{
             placeholder: 'Select religion...',
-            options: religionOptions,
+            options: religionOptions as any,
             value: value.religion,
             onSelect: option => handleChange('religion', option?.value || ''),
           }}

@@ -30,7 +30,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import NextLink from 'next/link';
 import React, { forwardRef, AnchorHTMLAttributes } from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 // Link variants using pure Tailwind classes
 const linkVariants = cva(

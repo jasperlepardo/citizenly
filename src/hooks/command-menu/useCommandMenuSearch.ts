@@ -14,42 +14,11 @@ import { searchData, trackCommandMenuSearch, trackCommandMenuError } from '@/lib
 import { trackSearch } from '@/lib/data';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
-/**
- * Search options
- */
-export interface CommandMenuSearchOptions {
-  /** Maximum number of results */
-  maxResults?: number;
-  /** Debounce delay in milliseconds */
-  debounceDelay?: number;
-}
+import type { CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types';
 
-/**
- * Search result from API
- */
-export interface SearchResult {
-  id: string;
-  title: string;
-  description: string;
-  href: string;
-  type: 'resident' | 'household';
-}
+// Interfaces moved to centralized types
 
-/**
- * Return type for command menu search hook
- */
-export interface UseCommandMenuSearchReturn {
-  /** Current search query */
-  searchQuery: string;
-  /** Set search query */
-  setSearchQuery: (query: string) => void;
-  /** Search loading state */
-  isLoading: boolean;
-  /** Dynamic search results */
-  dynamicResults: CommandMenuItem[];
-  /** Clear search */
-  clearSearch: () => void;
-}
+// Interface moved to centralized types
 
 /**
  * Hook for command menu search functionality

@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 export interface ReadOnlyProps {
   /** The value to display */

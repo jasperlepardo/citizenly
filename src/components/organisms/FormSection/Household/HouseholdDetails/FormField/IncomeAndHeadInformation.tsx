@@ -1,19 +1,13 @@
 import React from 'react';
 
 import { InputField, SelectField } from '@/components';
-import type { FormMode } from '@/types';
-
-export interface IncomeAndHeadInformationData {
-  monthlyIncome: number;
-  householdHeadId: string;
-  householdHeadPosition: string;
-}
+import type { FormMode, IncomeAndHeadInformationFormData } from '@/types';
 
 export interface IncomeAndHeadInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: IncomeAndHeadInformationData;
-  onChange: (value: IncomeAndHeadInformationData) => void;
+  value: IncomeAndHeadInformationFormData;
+  onChange: (value: IncomeAndHeadInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
   // Head of family options (residents who can be heads)
@@ -50,14 +44,14 @@ export function IncomeAndHeadInformation({
   householdHeadOptions = [],
   householdHeadsLoading = false,
 }: IncomeAndHeadInformationProps) {
-  const handleChange = (field: keyof IncomeAndHeadInformationData, fieldValue: string | number) => {
+  const handleChange = (field: keyof IncomeAndHeadInformationFormData, fieldValue: string | number) => {
     onChange({
       ...value,
       [field]: fieldValue,
     });
   };
 
-  const handleSelectChange = (field: keyof IncomeAndHeadInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof IncomeAndHeadInformationFormData) => (option: any) => {
     handleChange(field, option?.value || '');
   };
 

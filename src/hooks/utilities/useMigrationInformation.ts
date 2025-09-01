@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import { MigrationInformationData } from '@/types/services';
+import { MigrationInformationData } from '@/types/infrastructure/services';
 
 import { usePsgcSearch, PsgcSearchResult } from '../search/usePsgcSearch';
 

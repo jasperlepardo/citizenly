@@ -13,8 +13,8 @@
  */
 
 import { logger } from '@/lib/logging';
-import type { CacheEntry, CacheStats, CacheKeyPatterns, CacheTags } from '@/types/cache';
-import { createInitialCacheStats } from '@/types/cache';
+import type { CacheEntry, CacheStats, CacheKeyPatterns, CacheTags } from '@/types/infrastructure/cache';
+import { createInitialCacheStats } from '@/types/infrastructure/cache';
 
 class QueryCache {
   private cache = new Map<string, CacheEntry>();
@@ -216,7 +216,7 @@ export function cached<TArgs extends readonly unknown[], TResult>(
 }
 
 // Export consolidated cache keys and tags from centralized types
-export { CacheKeyPatterns as CacheKeys, CacheTags } from '@/types/cache';
+export { CacheKeyPatterns as CacheKeys, CacheTags } from '@/types/infrastructure/cache';
 
 /**
  * Cache warming utilities

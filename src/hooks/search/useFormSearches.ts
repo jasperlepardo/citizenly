@@ -2,27 +2,9 @@
 
 import { useState, useCallback } from 'react';
 
-import { searchHouseholdsCached } from '@/services/household-fetcher';
-import { formatPsocOption, formatPsgcOption } from '@/services/resident-mapper';
-import { PsocOption, PsgcOption, HouseholdOption } from '@/types';
-
-interface UseFormSearchesReturn {
-  // PSOC search state
-  psocOptions: PsocOption[];
-  psocLoading: boolean;
-  handlePsocSearch: (query: string) => Promise<void>;
-
-  // PSGC search state
-  psgcOptions: PsgcOption[];
-  psgcLoading: boolean;
-  handlePsgcSearch: (query: string) => Promise<void>;
-  setPsgcOptions: React.Dispatch<React.SetStateAction<PsgcOption[]>>;
-
-  // Household search state
-  householdOptions: HouseholdOption[];
-  householdLoading: boolean;
-  handleHouseholdSearch: (query: string) => Promise<void>;
-}
+import { searchHouseholdsCached } from '@/services/shared/data/household-fetcher';
+import { formatPsocOption, formatPsgcOption } from '@/services/shared/data/resident-mapper';
+import type { PsocOption, PsgcOption, HouseholdOption, UseFormSearchesReturn } from '@/types';
 
 export const useFormSearches = (userBarangayCode?: string): UseFormSearchesReturn => {
   // PSOC search state

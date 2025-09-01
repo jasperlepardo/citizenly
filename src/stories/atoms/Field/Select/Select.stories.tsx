@@ -7,7 +7,7 @@ import {
   CITIZENSHIP_OPTIONS,
   EDUCATION_LEVEL_OPTIONS,
   EMPLOYMENT_STATUS_OPTIONS,
-} from '@/lib/constants/resident-enums';
+} from '@/constants/resident-enums';
 import {
   withAuthenticatedSupabase,
   withUnauthenticatedSupabase,
@@ -36,7 +36,7 @@ Enhanced Select component that follows PSGCSelector patterns but works with stat
 ## Usage with Enums/Constants
 \`\`\`tsx
 import { Select } from '@/components/atoms/Field';
-import { SEX_OPTIONS } from '@/lib/constants/resident-enums';
+import { SEX_OPTIONS } from '@/constants/resident-enums';
 
 <Select
   enumData={SEX_OPTIONS}

@@ -3,8 +3,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
-import { cn } from '@/lib';
-import { createSearchKeyHandler } from '@/lib/keyboardUtils';
+import { cn } from '@/utils/shared/cssUtils';
+import { createSearchKeyHandler } from '@/utils/dom/keyboardUtils';
 
 const searchBarVariants = cva(
   'relative flex w-full items-center transition-colors font-system focus-within:outline-hidden',
@@ -114,7 +114,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
               ref={ref}
               type="text"
               className={cn(
-                'font-montserrat w-full bg-transparent font-normal text-gray-600 placeholder:text-gray-500 dark:text-gray-300 dark:text-gray-400',
+                'font-montserrat w-full bg-transparent font-normal text-gray-600 placeholder:text-gray-500 dark:text-gray-300',
                 // Remove ALL borders and focus states
                 'border-0 shadow-none ring-0 outline-0',
                 'focus:border-0 focus:shadow-none focus:ring-0 focus:outline-0',
@@ -123,7 +123,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
                 size === 'sm' && 'text-sm leading-4',
                 size === 'md' && 'text-base leading-5',
                 size === 'lg' && 'text-lg leading-6',
-                disabled && 'cursor-not-allowed text-gray-500 dark:text-gray-400 dark:text-gray-600'
+                disabled && 'cursor-not-allowed text-gray-500 dark:text-gray-400'
               )}
               style={{
                 border: 'none',
@@ -148,7 +148,7 @@ const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
             <button
               type="button"
               onClick={handleClear}
-              className="flex size-full items-center justify-center text-gray-600 transition-colors hover:text-gray-600 dark:text-gray-400 dark:text-gray-700 dark:hover:text-gray-300"
+              className="flex size-full items-center justify-center text-gray-600 transition-colors hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
               aria-label="Clear search"
               tabIndex={-1}
             >

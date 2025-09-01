@@ -3,20 +3,7 @@
  * Final security check for the entire API layer
  */
 
-export interface ComprehensiveAuditResult {
-  overallScore: number;
-  passed: boolean;
-  categories: {
-    authentication: { score: number; issues: string[] };
-    authorization: { score: number; issues: string[] };
-    inputValidation: { score: number; issues: string[] };
-    cryptography: { score: number; issues: string[] };
-    configuration: { score: number; issues: string[] };
-    informationDisclosure: { score: number; issues: string[] };
-    performance: { score: number; issues: string[] };
-  };
-  summary: string;
-}
+import type { ComprehensiveAuditResult } from '@/types/security';
 
 /**
  * Run comprehensive security audit

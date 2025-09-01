@@ -13,38 +13,9 @@
 
 import { useMemo } from 'react';
 
-import {
-  useDashboardApi,
-  type DashboardResponse,
-  type DashboardStats,
-  type AgeGroup,
-} from './useDashboardApi';
-import {
-  useDashboardCalculations,
-  type UseDashboardCalculationsReturn,
-} from './useDashboardCalculations';
-
-/**
- * Return type for dashboard hook
- */
-export interface UseDashboardReturn {
-  /** Raw dashboard data from API */
-  data: DashboardResponse | undefined;
-  /** Dashboard statistics */
-  stats: DashboardStats | undefined;
-  /** Loading state */
-  isLoading: boolean;
-  /** Error state */
-  error: Error | null;
-  /** Refetch function */
-  refetch: () => void;
-  /** Refetching state */
-  isRefetching: boolean;
-  /** Fetching state */
-  isFetching: boolean;
-  /** Processed calculations */
-  calculations: UseDashboardCalculationsReturn;
-}
+import { useDashboardApi } from './useDashboardApi';
+import { useDashboardCalculations } from './useDashboardCalculations';
+import type { UseDashboardReturn } from '@/types';
 
 /**
  * Dashboard hook (Refactored)
@@ -76,17 +47,8 @@ export function useDashboard(): UseDashboardReturn {
   };
 }
 
-// Re-export types and utilities for convenience
-export type {
-  DashboardStats,
-  AgeGroup,
-  DashboardResponse,
-  DependencyData,
-  SexData,
-  CivilStatusData,
-  EmploymentStatusData,
-} from './useDashboardApi';
-export type { ResidentData, UseDashboardCalculationsReturn } from './useDashboardCalculations';
+// Types are now exported from centralized @/types
+// Utility functions can still be imported from useDashboardCalculations
 export {
   calculateAge,
   getAgeGroup,

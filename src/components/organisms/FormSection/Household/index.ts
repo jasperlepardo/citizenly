@@ -2,7 +2,6 @@
 export type {
   FormMode,
   HouseholdFormData,
-  HouseholdDetailsData,
   FormSectionProps,
   FieldConfig,
   HouseholdFormProps,

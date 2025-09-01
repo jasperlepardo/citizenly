@@ -4,7 +4,7 @@
  */
 
 import { clientLogger } from '@/lib/logging/client-logger';
-import type { GenericPerformanceMetrics } from '@/types/performance';
+import type { GenericPerformanceMetrics } from '@/types/shared/utilities';
 
 import { startSentryTransaction } from './sentry-config';
 

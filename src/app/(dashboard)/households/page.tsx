@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 
 import { Button } from '@/components';
 import { useHouseholds } from '@/hooks/crud/useHouseholds';
-import type { HouseholdWithMembersResult } from '@/types/households';
+import type { HouseholdWithMembersResult } from '@/types/domain/households/households';
 
 function HouseholdsContent() {
   const [localSearchTerm, setLocalSearchTerm] = useState('');

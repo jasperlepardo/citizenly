@@ -9,37 +9,12 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
-import type { HookPerformanceMetrics as PerformanceMetrics } from '@/types/performance';
-
 import { useLogger } from './useLogger';
-
-/**
- * Performance metrics interface - imported from @/types/performance
- */
-
-/**
- * Performance monitor options
- */
-export interface UsePerformanceMonitorOptions {
-  /** Threshold for excessive renders (default: 10) */
-  excessiveRenderThreshold?: number;
-  /** Whether to log performance warnings (default: true) */
-  enableWarnings?: boolean;
-  /** Whether to track render timing (default: true) */
-  trackTiming?: boolean;
-}
-
-/**
- * Return type for performance monitor hook
- */
-export interface UsePerformanceMonitorReturn {
-  /** Current performance metrics */
-  metrics: PerformanceMetrics;
-  /** Reset performance counters */
-  reset: () => void;
-  /** Get performance report */
-  getReport: () => string;
-}
+import type { 
+  HookPerformanceMetrics as PerformanceMetrics,
+  UsePerformanceMonitorOptions,
+  UsePerformanceMonitorReturn,
+} from '@/types';
 
 /**
  * Hook for monitoring React hook performance

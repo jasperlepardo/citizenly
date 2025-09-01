@@ -9,33 +9,7 @@ import { logger } from '@/lib/logging';
 
 import { ErrorCode as ApiErrorCode } from '../api/types';
 
-export interface SecurityAuditLog {
-  id?: string;
-  operation: string;
-  user_id: string;
-  resource_type?: string;
-  resource_id?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  details: Record<string, unknown>;
-  ip_address?: string;
-  user_agent?: string;
-  session_id?: string;
-  timestamp: string;
-  success: boolean;
-  error_message?: string;
-}
-
-export interface ThreatDetectionEvent {
-  id?: string;
-  event_type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  source_ip: string;
-  user_id?: string;
-  details: Record<string, unknown>;
-  timestamp: string;
-  mitigated: boolean;
-  mitigation_action?: string;
-}
+import type { SecurityAuditLog, ThreatDetectionEvent } from '@/types/security';
 
 /**
  * Store security audit log in secure database

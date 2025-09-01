@@ -6,4 +6,4 @@ export type {
   CivilStatusData,
   EmploymentStatusData,
   ChartType,
-} from '@/lib/charts';
+} from '@/types/app/ui/charts';

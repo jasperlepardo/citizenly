@@ -4,63 +4,15 @@ import Link from 'next/link';
 import React, { useState, useMemo } from 'react';
 
 import { Button } from '@/components';
+import type { TableColumn, DataTableProps } from '@/types/app/ui/components';
 
-export interface TableColumn<T = any> {
-  key: string;
-  title: string;
-  dataIndex?: keyof T | ((record: T) => any);
-  render?: (value: any, record: T, index: number) => React.ReactNode;
-  sortable?: boolean;
-  filterable?: boolean;
-  width?: string | number;
-  align?: 'left' | 'center' | 'right';
-  fixed?: 'left' | 'right';
-}
+// Type aliases for union types
+type SortOrder = 'asc' | 'desc';
+type TableSize = 'small' | 'middle' | 'large';
+type TextAlign = 'left' | 'center' | 'right';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'secondary-outline';
 
-export interface TableAction<T = any> {
-  key: string;
-  label: string;
-  icon?: React.ReactNode;
-  onClick?: (record: T, index: number) => void;
-  href?: (record: T) => string;
-  visible?: (record: T) => boolean;
-  disabled?: (record: T) => boolean;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
-}
-
-export interface DataTableProps<T = any> {
-  data: T[];
-  columns: TableColumn<T>[];
-  actions?: TableAction<T>[];
-  loading?: boolean;
-  pagination?: {
-    current: number;
-    pageSize: number;
-    total: number;
-    onChange: (page: number, pageSize: number) => void;
-    showSizeChanger?: boolean;
-    pageSizeOptions?: string[];
-  };
-  selection?: {
-    selectedRowKeys: string[];
-    onChange: (selectedRowKeys: string[], selectedRows: T[]) => void;
-    getCheckboxProps?: (record: T) => { disabled?: boolean };
-  };
-  rowKey?: keyof T | ((record: T) => string);
-  onRow?: (
-    record: T,
-    index: number
-  ) => {
-    onClick?: () => void;
-    onDoubleClick?: () => void;
-    className?: string;
-  };
-  emptyText?: React.ReactNode;
-  className?: string;
-  size?: 'small' | 'middle' | 'large';
-}
-
-export default function DataTable<T extends Record<string, any>>({
+export default function DataTable<T extends Record<string, unknown>>({
   data,
   columns,
   actions = [],
@@ -74,7 +26,7 @@ export default function DataTable<T extends Record<string, any>>({
   size = 'middle',
 }: DataTableProps<T>) {
   const [sortField, setSortField] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   // Get row key
   const getRowKey = (record: T, index: number): string => {
@@ -87,10 +39,10 @@ export default function DataTable<T extends Record<string, any>>({
   // Handle sorting
   const handleSort = (columnKey: string) => {
     if (sortField === columnKey) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder((sortOrder === 'asc' ? 'desc' : 'asc') as SortOrder);
     } else {
       setSortField(columnKey);
-      setSortOrder('asc');
+      setSortOrder('asc' as SortOrder);
     }
   };
 
@@ -160,8 +112,8 @@ export default function DataTable<T extends Record<string, any>>({
   };
 
   // Get cell value
-  const getCellValue = (record: T, column: TableColumn<T>, index: number) => {
-    let value: any;
+  const getCellValue = (record: T, column: TableColumn<T>, index: number): React.ReactNode => {
+    let value: unknown;
 
     if (column.dataIndex) {
       if (typeof column.dataIndex === 'function') {
@@ -177,16 +129,25 @@ export default function DataTable<T extends Record<string, any>>({
       return column.render(value, record, index);
     }
 
-    return value;
+    // Convert value to ReactNode
+    if (value === null || value === undefined) {
+      return '-';
+    }
+    
+    if (typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    
+    return String(value);
   };
 
-  const sizeClasses = {
+  const sizeClasses: Record<TableSize, string> = {
     small: 'text-sm',
     middle: 'text-base',
     large: 'text-lg',
   };
 
-  const paddingClasses = {
+  const paddingClasses: Record<TableSize, string> = {
     small: 'px-3 py-2',
     middle: 'px-4 py-3',
     large: 'px-6 py-4',
@@ -200,7 +161,7 @@ export default function DataTable<T extends Record<string, any>>({
         <div className="flex items-center justify-center py-12">
           <div className="flex items-center space-x-2">
             <div className="size-6 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <span className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-600">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               Loading...
             </span>
           </div>
@@ -224,7 +185,7 @@ export default function DataTable<T extends Record<string, any>>({
                 <th className={`${paddingClasses[size]} w-12`}>
                   <input
                     type="checkbox"
-                    className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-600"
+                    className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
                     checked={
                       selection.selectedRowKeys.length === sortedData.length &&
                       sortedData.length > 0
@@ -252,7 +213,7 @@ export default function DataTable<T extends Record<string, any>>({
                           className={`size-3 ${
                             sortField === column.key && sortOrder === 'asc'
                               ? 'text-gray-600 dark:text-gray-400'
-                              : 'text-gray-500 dark:text-gray-400 dark:text-gray-600'
+                              : 'text-gray-500 dark:text-gray-400'
                           }`}
                           fill="currentColor"
                           viewBox="0 0 20 20"
@@ -282,7 +243,7 @@ export default function DataTable<T extends Record<string, any>>({
               <tr>
                 <td
                   colSpan={columns.length + (selection ? 1 : 0) + (actions.length > 0 ? 1 : 0)}
-                  className="px-6 py-12 text-center text-gray-600 dark:text-gray-400 dark:text-gray-600"
+                  className="px-6 py-12 text-center text-gray-600 dark:text-gray-400"
                 >
                   {emptyText}
                 </td>
@@ -305,7 +266,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td className={paddingClasses[size]}>
                         <input
                           type="checkbox"
-                          className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-600"
+                          className="size-4 rounded-sm border-gray-300 bg-white text-gray-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400"
                           checked={isSelected}
                           onChange={e => handleRowSelect(record, index, e.target.checked)}
                           disabled={selection.getCheckboxProps?.(record)?.disabled}
@@ -318,7 +279,7 @@ export default function DataTable<T extends Record<string, any>>({
                       <td
                         key={column.key}
                         className={`${paddingClasses[size]} ${sizeClasses[size]} text-gray-600 dark:text-gray-400`}
-                        style={{ textAlign: column.align || 'left' }}
+                        style={{ textAlign: (column.align || 'left') as TextAlign }}
                       >
                         {getCellValue(record, column, index)}
                       </td>
@@ -338,7 +299,7 @@ export default function DataTable<T extends Record<string, any>>({
                                   <Link
                                     key={action.key}
                                     href={action.href(record)}
-                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-200 dark:text-gray-400"
+                                    className="inline-flex items-center px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-200"
                                   >
                                     {action.icon && <span className="mr-1">{action.icon}</span>}
                                     {action.label}
@@ -350,7 +311,7 @@ export default function DataTable<T extends Record<string, any>>({
                                 <Button
                                   key={action.key}
                                   size="sm"
-                                  variant={action.variant || 'secondary-outline'}
+                                  variant={(action.variant || 'secondary-outline') as ButtonVariant}
                                   onClick={
                                     action.onClick
                                       ? () => action.onClick!(record, index)

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
-import type { CreateProfileRequest } from '@/types/api-requests';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import type { CreateProfileRequest } from '@/types/app/api/apiRequests';
 // Note: These imports are available for future error handling enhancements
 // import { getErrorMessage, getStatusCodeForError, DatabaseResponse } from '@/lib/auth-errors';
 
-// CreateProfileRequest moved to src/types/api-requests.ts for consolidation
+// CreateProfileRequest moved to src/types/apiRequests.ts for consolidation
 
 export async function POST(request: NextRequest) {
   try {

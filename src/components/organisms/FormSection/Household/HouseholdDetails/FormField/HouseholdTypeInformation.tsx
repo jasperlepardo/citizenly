@@ -1,21 +1,13 @@
 import React from 'react';
 
 import { InputField, SelectField } from '@/components';
-import type { FormMode } from '@/types';
-
-export interface HouseholdTypeInformationData {
-  householdType: string;
-  tenureStatus: string;
-  tenureOthersSpecify: string;
-  householdUnit: string;
-  householdName: string;
-}
+import type { FormMode, HouseholdTypeInformationFormData } from '@/types';
 
 export interface HouseholdTypeInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: HouseholdTypeInformationData;
-  onChange: (value: HouseholdTypeInformationData) => void;
+  value: HouseholdTypeInformationFormData;
+  onChange: (value: HouseholdTypeInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -64,14 +56,14 @@ export function HouseholdTypeInformation({
   errors,
   className = '',
 }: HouseholdTypeInformationProps) {
-  const handleChange = (field: keyof HouseholdTypeInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof HouseholdTypeInformationFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
     });
   };
 
-  const handleSelectChange = (field: keyof HouseholdTypeInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof HouseholdTypeInformationFormData) => (option: any) => {
     handleChange(field, option?.value || '');
   };
 

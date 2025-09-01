@@ -11,8 +11,8 @@ import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-import { VALIDATION_DEBOUNCE_MS } from '@/lib/constants/resident-form-defaults';
-import { ResidentFormSchema } from '@/lib/validation';
+import { VALIDATION_DEBOUNCE_MS } from '@/constants/resident-form-defaults';
+import { ResidentFormSchema } from '@/services/validation';
 import {
   validateField as validateFieldValue,
   validateFormSection,
@@ -20,63 +20,22 @@ import {
   REQUIRED_FIELDS,
   getRequiredFieldsForSection,
   createDebouncedValidator,
-} from '@/lib/validation/fieldLevelSchemas';
-import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
+} from '@/services/validation/fieldLevelSchemas';
+import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
 import {
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
   mapFormToApi,
-} from '@/services/resident-mapper';
-import type { ResidentFormData } from '@/types';
+} from '@/services/shared/data/resident-mapper';
+import type {
+  ResidentFormData,
+  ResidentValidationOptions,
+  UseResidentValidationCoreReturn,
+} from '@/types';
 
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
 
-/**
- * Validation options for resident form
- */
-export interface ResidentValidationOptions {
-  /** Enable real-time validation with debouncing */
-  enableRealTimeValidation?: boolean;
-  /** Custom debounce delay in milliseconds */
-  debounceDelay?: number;
-  /** Enable async validation for specific fields */
-  enableAsyncValidation?: boolean;
-  /** Custom error messages */
-  customErrorMessages?: Record<string, string>;
-}
-
-/**
- * Return type for resident validation hook
- */
-export interface UseResidentValidationCoreReturn
-  extends Omit<UseGenericValidationReturn<ResidentFormData>, 'validateForm' | 'validateField'> {
-  /** Validate entire form */
-  validateForm: (formData: ResidentFormData) => Promise<ValidationResult<ResidentFormData>>;
-  /** Validate specific field */
-  validateField: (fieldName: string, value: unknown) => FieldValidationResult;
-  /** Check if field should be validated */
-  shouldValidateField: (fieldName: string) => boolean;
-  /** Validate form section */
-  validateSectionFields: (
-    formData: ResidentFormData,
-    section: keyof typeof REQUIRED_FIELDS
-  ) => ValidationResult;
-  /** Get required fields for section */
-  getRequiredFieldsForSection: (section: keyof typeof REQUIRED_FIELDS) => string[];
-  /** Validate field with debouncing */
-  validateFieldDebounced: (fieldName: string, value: unknown) => void;
-  /** Get formatted error message for field */
-  getFormattedFieldError: (fieldName: string) => string | undefined;
-  /** Batch validate multiple fields */
-  batchValidateFields: (fields: Record<string, unknown>) => Record<string, string>;
-  /** Clear validation for specific section */
-  clearSectionErrors: (section: keyof typeof REQUIRED_FIELDS) => void;
-  /** Check if section is valid */
-  isSectionValid: (section: keyof typeof REQUIRED_FIELDS) => boolean;
-  /** Validation state */
-  isValidating: boolean;
-}
 
 /**
  * Core resident validation hook

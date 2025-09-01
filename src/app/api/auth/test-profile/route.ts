@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
-import type { ProfileTestResults as TestResults } from '@/types/api-requests';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import type { ProfileTestResults as TestResults } from '@/types/app/api/apiRequests';
 
 /**
  * Test endpoint to diagnose profile creation issues

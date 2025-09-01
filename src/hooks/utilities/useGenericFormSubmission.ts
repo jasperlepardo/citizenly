@@ -11,29 +11,10 @@
 
 import { useState, useCallback } from 'react';
 
-// =============================================================================
-// TYPES
-// =============================================================================
-
-export interface UseGenericFormSubmissionOptions<T> {
-  /** Function to call when form is submitted */
-  onSubmit: (data: T) => Promise<void>;
-  /** Optional validation function */
-  validate?: (data: T) => { isValid: boolean; errors: Record<string, string> };
-  /** Called on successful submission */
-  onSuccess?: () => void;
-  /** Called on submission error */
-  onError?: (error: any) => void;
-}
-
-export interface UseGenericFormSubmissionReturn<T> {
-  /** Whether the form is currently being submitted */
-  isSubmitting: boolean;
-  /** Form submission handler */
-  handleSubmit: (e: React.FormEvent, formData: T) => Promise<void>;
-  /** Manual submission function (without event) */
-  submit: (formData: T) => Promise<void>;
-}
+import type { 
+  UseGenericFormSubmissionOptions,
+  UseGenericFormSubmissionReturn,
+} from '@/types';
 
 // =============================================================================
 // HOOK IMPLEMENTATION
