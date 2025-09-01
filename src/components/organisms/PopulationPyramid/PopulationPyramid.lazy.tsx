@@ -7,7 +7,7 @@
 import { lazy } from 'react';
 
 import { LoadingFallback } from '@/components/atoms/Loading';
-import { withLazyLoading } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 
 const PopulationPyramidLazy = lazy(() => import('./PopulationPyramid'));
 

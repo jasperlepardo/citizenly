@@ -7,10 +7,10 @@
 
 import React from 'react';
 
-import { createWrappedComponent } from '@/lib/hocUtils';
-import { logError, getErrorMessage } from '@/utils/errorUtils';
+import { createWrappedComponent } from '@/utils/dom/hocUtils';
+import { logError, getErrorMessage } from '@/utils/shared/errorUtils';
 
-import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from './error-types';
+import type { ErrorBoundaryState, ErrorFallbackProps, ErrorLogContext } from '../../types/shared/errors/errors';
 
 /**
  * Create error boundary state from error
@@ -239,11 +239,7 @@ export function withErrorBoundary<P extends object>(
     logContext: { component: options.componentName || Component.displayName || Component.name },
   });
 
-  return createWrappedComponent(
-    Component,
-    ErrorBoundary,
-    'withErrorBoundary'
-  );
+  return createWrappedComponent(Component, ErrorBoundary, 'withErrorBoundary');
 }
 
 /**

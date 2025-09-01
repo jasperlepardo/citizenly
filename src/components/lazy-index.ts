@@ -27,8 +27,8 @@ export { LazyPersonalInformation as PersonalInformation } from './organisms/Form
 export { LazySectoralInfo as SectoralInfo } from './organisms/FormSection/Resident/SectoralInformation/SectoralInformation.lazy';
 
 // Utilities - Re-export from lib
-export { withLazyLoading, preloadComponents } from '@/lib';
-export type { PreloadComponentKey } from '@/lib';
+export { withLazyLoading, preloadComponents } from '@/lib/ui/lazy-loading';
+export type { PreloadComponentKey } from '@/lib/ui/lazy-loading';
 
 /**
  * Atomic Design Organization Benefits:

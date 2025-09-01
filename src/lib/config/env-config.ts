@@ -5,14 +5,7 @@
 
 export type Environment = 'development' | 'ci' | 'staging' | 'production';
 
-export interface EnvironmentConfig {
-  environment: Environment;
-  isCI: boolean;
-  isProduction: boolean;
-  isStaging: boolean;
-  isDevelopment: boolean;
-  qualityTier: 1 | 2 | 3 | 4;
-}
+import type { EnvironmentConfig } from '@/types/shared/utilities';
 
 /**
  * Detect current environment based on environment variables

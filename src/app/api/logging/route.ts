@@ -5,13 +5,13 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import { logger, createErrorResponseObject } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 import { isProduction, getEnvironment } from '@/lib/config/environment';
-import type { LogEntry } from '@/types/api-requests';
+import type { LogEntry } from '@/types/app/api/apiRequests';
 
 export const dynamic = 'force-dynamic';
 
-// LogEntry moved to src/types/api-requests.ts for consolidation
+// LogEntry moved to src/types/apiRequests.ts for consolidation
 
 // Rate limiting for logging endpoint
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute

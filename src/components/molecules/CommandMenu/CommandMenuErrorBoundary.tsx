@@ -2,7 +2,7 @@
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 
-import { createWrappedComponent } from '@/lib/hocUtils';
+import { createWrappedComponent } from '@/utils/dom/hocUtils';
 import { logger } from '@/lib/logging';
 
 interface CommandMenuErrorBoundaryState {

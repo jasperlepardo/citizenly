@@ -9,38 +9,7 @@
 
 import { useMemo } from 'react';
 
-import type { AgeGroup } from './useDashboardApi';
-
-/**
- * Sectoral information interface
- */
-export interface SectoralInfo {
-  is_labor_force: boolean;
-  is_labor_force_employed: boolean;
-  is_unemployed: boolean;
-  is_overseas_filipino_worker: boolean;
-  is_person_with_disability: boolean;
-  is_out_of_school_children: boolean;
-  is_out_of_school_youth: boolean;
-  is_senior_citizen: boolean;
-  is_registered_senior_citizen: boolean;
-  is_solo_parent: boolean;
-  is_indigenous_people: boolean;
-  is_migrant: boolean;
-}
-
-/**
- * Resident data for calculations with improved type safety
- */
-export interface ResidentData {
-  birthdate: string;
-  sex: 'male' | 'female' | string;
-  civil_status: 'single' | 'married' | 'widowed' | 'divorced' | 'separated' | 'annulled' | string;
-  employment_status: string;
-  is_labor_force_employed?: boolean;
-  household_code?: string;
-  resident_sectoral_info?: SectoralInfo[];
-}
+import type { ResidentData, UseDashboardCalculationsReturn, AgeGroup } from '@/types';
 
 /**
  * Age calculation utility
@@ -394,43 +363,7 @@ export const calculateEmploymentStatusDistribution = (
 /**
  * Return type for dashboard calculations hook
  */
-/**
- * Dependency ratio calculation results
- */
-export interface DependencyRatioData {
-  youngDependents: number;
-  workingAge: number;
-  oldDependents: number;
-  dependencyRatio: number;
-  youngDependencyRatio: number;
-  oldDependencyRatio: number;
-}
-
-/**
- * Sex distribution calculation results
- */
-export interface SexDistributionData {
-  male: number;
-  female: number;
-  total: number;
-  malePercentage: number;
-  femalePercentage: number;
-}
-
-export interface UseDashboardCalculationsReturn {
-  /** Processed population data for pyramid chart */
-  populationData: AgeGroup[];
-  /** Dependency ratio calculations */
-  dependencyData: DependencyRatioData;
-  /** Sex distribution calculations */
-  sexDistribution: SexDistributionData;
-  /** Civil status distribution calculations */
-  civilStatusData: CivilStatusCounts;
-  /** Employment status distribution calculations */
-  employmentData: EmploymentStatusCounts;
-  /** Total population count */
-  totalPopulation: number;
-}
+// Interfaces moved to centralized types - DependencyRatioData, SexDistributionData, UseDashboardCalculationsReturn
 
 /**
  * Hook for dashboard calculations

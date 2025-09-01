@@ -350,7 +350,7 @@ export const WithControls: Story = {
                   className="py-8 text-center text-gray-500 dark:text-gray-500"
                   style={{ gridColumn: '1 / -1' }}
                 >
-                  No contacts found matching "{searchTerm}"
+                  No contacts found matching &quot;{searchTerm}&quot;
                 </TableCell>
               </TableRow>
             )}

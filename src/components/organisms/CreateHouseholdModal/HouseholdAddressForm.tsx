@@ -8,7 +8,7 @@ import React from 'react';
 // TODO: Implement StreetSelector and SubdivisionSelector components
 // import StreetSelector from '../StreetSelector/StreetSelector';
 // import SubdivisionSelector from '../SubdivisionSelector/SubdivisionSelector';
-import type { HouseholdModalFormData as HouseholdFormData } from '@/types/components';
+import type { HouseholdModalFormData as HouseholdFormData } from '@/types/app/ui/components';
 
 interface HouseholdAddressFormProps {
   formData: HouseholdFormData;

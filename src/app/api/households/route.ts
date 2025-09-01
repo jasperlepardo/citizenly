@@ -6,9 +6,11 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
 
-import { withAuth, applyGeographicFilter, createAdminSupabaseClient } from '@/lib';
-import { RequestContext, Role } from '@/lib/api/types';
-import { auditDataOperation } from '@/lib/authentication/auditUtils';
+import { withAuth } from '@/lib/middleware/auth-middleware';
+import { applyGeographicFilter } from '@/lib/authentication/auth-helpers';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import { RequestContext } from '@/types/app/auth/auth';
+import { securityAuditService } from '@/services/domain/auth/securityAuditService';
 import {
   createPaginatedResponse,
   createCreatedResponse,
@@ -17,10 +19,10 @@ import {
   applySearchFilter,
   withNextRequestErrorHandling,
   withSecurityHeaders,
-} from '@/lib/authentication/responseUtils';
-import { createHouseholdSchema } from '@/lib/authentication/validationUtils';
+} from '@/utils/auth/apiResponseHandlers';
+import { createHouseholdSchema } from '@/utils/validation/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import type { AuthenticatedUser } from '@/types/auth';
+import type { AuthenticatedUser } from '@/types/app/auth/auth';
 
 // AuthenticatedUser type consolidated to src/types/auth.ts
 
@@ -109,11 +111,18 @@ export const GET = withSecurityHeaders(
         }
 
         // Audit the data access
-        await auditDataOperation('view', 'household', 'list', context, {
-          searchTerm: search || '',
-          resultCount: households?.length || 0,
-          totalCount: count || 0,
-        });
+        await securityAuditService.auditDataAccess(
+          'read',
+          'household',
+          'list',
+          context.user.id,
+          true,
+          {
+            searchTerm: search || '',
+            resultCount: households?.length || 0,
+            totalCount: count || 0,
+          }
+        );
 
         return createPaginatedResponse(
           households || [],
@@ -180,7 +189,7 @@ export const POST = withSecurityHeaders(
           street_id: null, // Will need to be looked up from streetName
           subdivision_id: null, // Will need to be looked up from subdivisionName
           barangay_code: effectiveBarangayCode,
-          city_municipality_code: householdData.city_municipality_code || user.cityCode || null,
+          city_municipality_code: householdData.city_municipality_code || user.cityMunicipalityCode || null,
           province_code: householdData.province_code || user.provinceCode || null,
           region_code: householdData.region_code || user.regionCode || null,
           zip_code: householdData.zip_code || null,
@@ -213,11 +222,12 @@ export const POST = withSecurityHeaders(
         }
 
         // Audit the creation
-        await auditDataOperation(
+        await securityAuditService.auditDataAccess(
           'create',
           'household',
           String((newHousehold as { id?: string })?.id ?? householdData.code),
-          context,
+          context.user.id,
+          true,
           {
             barangay_code: effectiveBarangayCode,
             householdCode: householdData.code,

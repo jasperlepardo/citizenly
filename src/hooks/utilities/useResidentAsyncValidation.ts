@@ -9,37 +9,14 @@
 
 import { useState, useCallback, useRef } from 'react';
 
-import { asyncValidationUtils } from '@/lib/validation/utilities';
+import { asyncValidationUtils } from '@/utils/validation/utilities';
 
 import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
-
-/**
- * Async validation options
- */
-export interface AsyncValidationOptions {
-  /** Debounce delay for async validation */
-  debounceDelay?: number;
-  /** Enable/disable async validation */
-  enabled?: boolean;
-}
-
-import type { HookAsyncValidationResult as AsyncValidationResult } from '@/types/hooks';
-
-/**
- * Return type for async validation hook
- */
-export interface UseResidentAsyncValidationReturn {
-  /** Validate field asynchronously */
-  validateFieldAsync: (fieldName: string, value: unknown) => Promise<AsyncValidationResult>;
-  /** Check if async validation is in progress */
-  isAsyncValidating: boolean;
-  /** Get async validation errors */
-  asyncValidationErrors: Record<string, string>;
-  /** Clear async validation errors */
-  clearAsyncValidationErrors: () => void;
-  /** Clear async validation error for specific field */
-  clearAsyncValidationError: (fieldName: string) => void;
-}
+import type { 
+  AsyncValidationOptions,
+  UseResidentAsyncValidationReturn,
+  HookAsyncValidationResult as AsyncValidationResult,
+} from '@/types';
 
 /**
  * Fields that support async validation

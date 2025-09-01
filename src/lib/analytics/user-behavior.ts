@@ -8,7 +8,7 @@ import type {
   UserBehaviorMetrics,
   PWAInstallCriteria,
   PersonalizedMessage,
-} from '@/types/components';
+} from '@/types/app/ui/components';
 
 // Re-export for backwards compatibility
 export type { UserBehaviorMetrics, PWAInstallCriteria, PersonalizedMessage };

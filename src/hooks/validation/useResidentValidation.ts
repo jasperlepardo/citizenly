@@ -9,7 +9,7 @@
 
 import { z } from 'zod';
 
-import { createValidationHook } from '@/lib/validation/createValidationHook';
+import { createValidationHook } from '@/hooks/validation/createValidationHook';
 
 /**
  * Comprehensive resident validation schema

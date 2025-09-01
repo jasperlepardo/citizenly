@@ -11,14 +11,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { useCSRFToken } from '@/lib/auth';
+import { useCSRFToken } from '@/lib/authentication';
 import { residentService } from '@/services/resident.service';
-import { ResidentFormData } from '@/types/forms';
+import { ResidentFormData } from '@/types/app/ui/forms';
+import type { UseResidentOperationsOptions } from '@/types';
 
-export interface UseResidentOperationsOptions {
-  onSuccess?: (data: any) => void;
-  onError?: (error: string) => void;
-}
 
 /**
  * Custom hook for resident operations

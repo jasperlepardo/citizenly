@@ -1,14 +1,17 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
+import type {
+  FormMode,
+  BasicInformationFormData,
+  BirthInformationFormData,
+  EducationInformationFormData,
+  EmploymentInformationFormData,
+} from '@/types';
 
-import { BasicInformation, BasicInformationData } from './FormField/BasicInformation';
-import { BirthInformation, BirthInformationData } from './FormField/BirthInformation';
-import { EducationInformation, EducationInformationData } from './FormField/EducationInformation';
-import {
-  EmploymentInformation,
-  EmploymentInformationData,
-} from './FormField/EmploymentInformation';
+import { BasicInformation } from './FormField/BasicInformation';
+import { BirthInformation } from './FormField/BirthInformation';
+import { EducationInformation } from './FormField/EducationInformation';
+import { EmploymentInformation } from './FormField/EmploymentInformation';
 import { PhilSysCardField } from './FormField/PhilSysCardField';
 
 export interface PersonalInformationFormProps {
@@ -61,7 +64,7 @@ export function PersonalInformationForm({
   psocLoading = false,
 }: PersonalInformationFormProps) {
   // Map form data to BasicInformation component props
-  const basicInfoValue: BasicInformationData = React.useMemo(
+  const basicInfoValue: BasicInformationFormData = React.useMemo(
     () => ({
       first_name: formData.first_name || '',
       middle_name: formData.middle_name || '',
@@ -82,9 +85,9 @@ export function PersonalInformationForm({
 
   // Handle changes from BasicInformation component
   const handleBasicInfoChange = React.useCallback(
-    (value: BasicInformationData) => {
+    (value: BasicInformationFormData) => {
       // Only update fields that have actually changed from current form data
-      const currentBasicInfo: BasicInformationData = {
+      const currentBasicInfo: BasicInformationFormData = {
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
         last_name: formData.last_name || '',
@@ -95,7 +98,7 @@ export function PersonalInformationForm({
       };
 
       Object.entries(value).forEach(([field, fieldValue]) => {
-        if (currentBasicInfo[field as keyof BasicInformationData] !== fieldValue) {
+        if (currentBasicInfo[field as keyof BasicInformationFormData] !== fieldValue) {
           onChange(field, fieldValue);
         }
       });
@@ -113,16 +116,16 @@ export function PersonalInformationForm({
 
   // Handle changes from BirthInformation component
   const handleBirthInfoChange = React.useCallback(
-    (value: BirthInformationData) => {
+    (value: BirthInformationFormData) => {
       // Only update fields that have actually changed from current form data
-      const currentBirthInfo: BirthInformationData = {
+      const currentBirthInfo: BirthInformationFormData = {
         birthdate: formData.birthdate || '',
         birth_place_name: formData.birth_place_name || '',
         birth_place_code: formData.birth_place_code || '',
       };
 
       Object.entries(value).forEach(([field, fieldValue]) => {
-        if (currentBirthInfo[field as keyof BirthInformationData] !== fieldValue) {
+        if (currentBirthInfo[field as keyof BirthInformationFormData] !== fieldValue) {
           onChange(field, fieldValue);
         }
       });
@@ -132,7 +135,7 @@ export function PersonalInformationForm({
 
   // Handle changes from EducationInformation component
   const handleEducationInfoChange = React.useCallback(
-    (value: EducationInformationData) => {
+    (value: EducationInformationFormData) => {
       // Only update fields that have actually changed from current form data
       const currentEducationInfo = {
         education_attainment: formData.education_attainment || '',
@@ -155,16 +158,16 @@ export function PersonalInformationForm({
 
   // Handle changes from EmploymentInformation component
   const handleEmploymentInfoChange = React.useCallback(
-    (value: EmploymentInformationData) => {
+    (value: EmploymentInformationFormData) => {
       // Only update fields that have actually changed from current form data
-      const currentEmploymentInfo: EmploymentInformationData = {
+      const currentEmploymentInfo: EmploymentInformationFormData = {
         employment_status: formData.employment_status || '',
         occupation_code: formData.occupation_code || '',
         occupation_title: formData.occupation_title || '',
       };
 
       Object.entries(value).forEach(([field, fieldValue]) => {
-        if (currentEmploymentInfo[field as keyof EmploymentInformationData] !== fieldValue) {
+        if (currentEmploymentInfo[field as keyof EmploymentInformationFormData] !== fieldValue) {
           onChange(field, fieldValue);
         }
       });

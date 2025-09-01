@@ -10,9 +10,12 @@
 import { useCallback } from 'react';
 
 import { householdService, HouseholdFormData } from '@/services/household.service';
-import type { UseGenericValidationReturn } from '@/types/hooks';
-import { ValidationResult, FieldValidationResult } from '@/types/validation';
-import { toTitleCase } from '@/utils/stringUtils';
+import type {
+  HouseholdValidationResult,
+  UseHouseholdValidationReturn,
+} from '@/types';
+import { ValidationResult, FieldValidationResult } from '@/types/shared/validation';
+import { toTitleCase } from '@/utils/shared/stringUtils';
 
 import { useGenericValidation } from './useGenericValidation';
 
@@ -27,28 +30,6 @@ const validationUtils = {
   },
 };
 
-/**
- * Household validation result (backward compatible)
- */
-export interface HouseholdValidationResult {
-  success: boolean;
-  errors?: Record<string, string>;
-}
-
-/**
- * Household validation return type (backward compatible)
- */
-export interface UseHouseholdValidationReturn
-  extends UseGenericValidationReturn<HouseholdFormData> {
-  /** Current validation errors */
-  validationErrors: Record<string, string>;
-  /** Validate household data */
-  validateHousehold: (formData: HouseholdFormData) => HouseholdValidationResult;
-  /** Set validation errors programmatically */
-  setValidationErrors: (errors: Record<string, string>) => void;
-  /** Clear all validation errors */
-  clearValidationErrors: () => void;
-}
 
 /**
  * Enhanced household form validation function

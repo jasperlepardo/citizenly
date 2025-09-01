@@ -9,48 +9,21 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-import type { ResidentFormData as ResidentEditFormData } from '@/types';
+import type { 
+  ResidentFormData,
+  UseResidentFormStateOptions,
+  UseResidentFormStateReturn,
+} from '@/types';
 
 /**
  * Default form data with proper typing
  */
-const DEFAULT_FORM_DATA: Partial<ResidentEditFormData> = {
+const DEFAULT_FORM_DATA: Partial<ResidentFormData> = {
   first_name: '',
   last_name: '',
   birthdate: '',
   sex: 'male',
 };
-/**
- * Form state options
- */
-export interface UseResidentFormStateOptions {
-  initialData?: Partial<ResidentEditFormData>;
-  autoSave?: boolean;
-  autoSaveKey?: string;
-}
-
-/**
- * Return type for useResidentFormState hook
- */
-export interface UseResidentFormStateReturn {
-  /** Current form data */
-  formData: Partial<ResidentEditFormData>;
-  /** Whether form has unsaved changes */
-  isDirty: boolean;
-  /** Update a single field */
-  updateField: <K extends keyof ResidentEditFormData>(
-    field: K,
-    value: ResidentEditFormData[K]
-  ) => void;
-  /** Update multiple fields at once */
-  updateFields: (fields: Partial<ResidentEditFormData>) => void;
-  /** Reset form to initial state */
-  resetForm: () => void;
-  /** Set form data programmatically */
-  setFormData: (data: Partial<ResidentEditFormData>) => void;
-  /** Clear auto-saved data */
-  clearAutoSave: () => void;
-}
 
 /**
  * Custom hook for resident form state management
@@ -59,14 +32,14 @@ export interface UseResidentFormStateReturn {
  * Provides clean separation between state management and validation/submission logic.
  */
 export function useResidentFormState(
-  options: UseResidentFormStateOptions = {}
-): UseResidentFormStateReturn {
+  options: UseResidentFormStateOptions<ResidentFormData> = {}
+): UseResidentFormStateReturn<ResidentFormData> {
   const { initialData = {}, autoSave = false, autoSaveKey = 'resident-form-draft' } = options;
 
   /**
    * Initialize form data with auto-save recovery
    */
-  const [formData, setFormDataState] = useState<Partial<ResidentEditFormData>>(() => {
+  const [formData, setFormDataState] = useState<Partial<ResidentFormData>>(() => {
     const merged = { ...DEFAULT_FORM_DATA, ...initialData };
 
     // Load from localStorage if autoSave is enabled and no initial data
@@ -104,7 +77,7 @@ export function useResidentFormState(
    * Update a single field
    */
   const updateField = useCallback(
-    <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => {
+    (field: string, value: any) => {
       setFormDataState(prev => ({
         ...prev,
         [field]: value,
@@ -117,7 +90,7 @@ export function useResidentFormState(
   /**
    * Update multiple fields at once
    */
-  const updateFields = useCallback((fields: Partial<ResidentEditFormData>) => {
+  const updateFields = useCallback((fields: Record<string, any>) => {
     setFormDataState(prev => ({
       ...prev,
       ...fields,
@@ -146,7 +119,7 @@ export function useResidentFormState(
   /**
    * Set form data programmatically
    */
-  const setFormData = useCallback((data: Partial<ResidentEditFormData>) => {
+  const setFormData = useCallback((data: Record<string, any>) => {
     setFormDataState(data);
     setIsDirty(true);
   }, []);

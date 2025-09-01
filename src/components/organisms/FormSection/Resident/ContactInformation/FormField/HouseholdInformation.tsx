@@ -2,18 +2,13 @@ import React from 'react';
 
 import { SelectField } from '@/components';
 import { useOptimizedHouseholdSearch } from '@/hooks/search/useOptimizedHouseholdSearch';
-import type { FormMode } from '@/types';
-
-export interface HouseholdInformationData {
-  household_code: string;
-  household_name: string;
-}
+import type { FormMode, HouseholdInformationFormData } from '@/types';
 
 export interface HouseholdInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: HouseholdInformationData;
-  onChange: (value: HouseholdInformationData) => void;
+  value: HouseholdInformationFormData;
+  onChange: (value: HouseholdInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
   // Optional external search functionality (HouseholdSelector has its own built-in search)
@@ -50,7 +45,7 @@ export function HouseholdInformation({
     setSearchQuery(''); // Trigger initial load with empty search
   }, [setSearchQuery]);
 
-  const handleChange = (field: keyof HouseholdInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof HouseholdInformationFormData, fieldValue: any) => {
     onChange({
       ...value,
       [field]: fieldValue,

@@ -9,51 +9,19 @@
 
 import { useCallback } from 'react';
 
-import {
-  useResidentSubmission,
+import { useResidentSubmission } from '@/hooks/utilities/useResidentSubmission';
+import type {
+  UseResidentFormStateOptions,
+  ResidentFormData,
   UseResidentSubmissionOptions,
-} from '@/hooks/utilities/useResidentSubmission';
-import type { ResidentFormData as ResidentEditFormData } from '@/types';
+  UseResidentEditWorkflowOptions,
+  UseResidentEditWorkflowReturn,
+} from '@/types';
 
 import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
 
-import { useResidentFormState, UseResidentFormStateOptions } from './useResidentFormState';
+import { useResidentFormState } from './useResidentFormState';
 
-/**
- * Workflow options combining all sub-hook options
- */
-export interface UseResidentEditWorkflowOptions
-  extends UseResidentFormStateOptions,
-    UseResidentSubmissionOptions {}
-
-/**
- * Return type for useResidentEditWorkflow hook
- */
-export interface UseResidentEditWorkflowReturn {
-  // Form state
-  formData: ReturnType<typeof useResidentFormState>['formData'];
-  isDirty: ReturnType<typeof useResidentFormState>['isDirty'];
-  updateField: ReturnType<typeof useResidentFormState>['updateField'];
-  updateFields: ReturnType<typeof useResidentFormState>['updateFields'];
-  resetForm: ReturnType<typeof useResidentFormState>['resetForm'];
-
-  // Validation errors
-  errors: ReturnType<typeof useResidentValidationErrors>['errors'];
-  isValid: ReturnType<typeof useResidentValidationErrors>['isValid'];
-  validateField: ReturnType<typeof useResidentValidationErrors>['validateField'];
-  getFieldError: ReturnType<typeof useResidentValidationErrors>['getFieldError'];
-  hasFieldError: ReturnType<typeof useResidentValidationErrors>['hasFieldError'];
-  clearFieldError: ReturnType<typeof useResidentValidationErrors>['clearFieldError'];
-
-  // Submission
-  isSubmitting: ReturnType<typeof useResidentSubmission>['isSubmitting'];
-  submissionError: ReturnType<typeof useResidentSubmission>['submissionError'];
-
-  // Workflow methods
-  validateForm: ReturnType<typeof useResidentValidationErrors>['validateForm'];
-  submitForm: () => Promise<void>;
-  resetWorkflow: () => void;
-}
 
 /**
  * Custom hook for complete resident edit workflow
@@ -113,7 +81,7 @@ export function useResidentEditWorkflow(
    * Enhanced field update with validation
    */
   const updateField = useCallback(
-    <K extends keyof ResidentEditFormData>(field: K, value: ResidentEditFormData[K]) => {
+    (field: string, value: any) => {
       stateHook.updateField(field, value);
 
       // Clear field error when user starts typing
@@ -128,13 +96,13 @@ export function useResidentEditWorkflow(
    * Enhanced field update with validation for multiple fields
    */
   const updateFields = useCallback(
-    (fields: Partial<ResidentEditFormData>) => {
+    (fields: Partial<ResidentFormData>) => {
       stateHook.updateFields(fields);
 
       // Clear errors for updated fields
       Object.keys(fields).forEach(field => {
-        if (validationHook.hasFieldError(field as keyof ResidentEditFormData)) {
-          validationHook.clearFieldError(field as keyof ResidentEditFormData);
+        if (validationHook.hasFieldError(field as keyof ResidentFormData)) {
+          validationHook.clearFieldError(field as keyof ResidentFormData);
         }
       });
     },
@@ -169,8 +137,8 @@ export function useResidentEditWorkflow(
     // Form state
     formData: stateHook.formData,
     isDirty: stateHook.isDirty,
-    updateField: stateHook.updateField,
-    updateFields: stateHook.updateFields,
+    updateField,
+    updateFields,
     resetForm: stateHook.resetForm,
 
     // Validation errors

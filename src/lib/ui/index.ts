@@ -19,11 +19,9 @@ export {
 export { withLazyLoading, preloadComponents } from './lazy-loading';
 
 // Charts (moved from charts/)
-export * from './chart-transformers';
+export * from '@/utils/reports/chartTransformers';
 
 // Graphics (moved from graphics/)
-export * from '@/utils/color-utils';
-export * from './pieChartMath';
 
 // Statistics (moved from statistics/)
 export {
@@ -33,6 +31,6 @@ export {
   calculateMaxPercentage,
   generateTooltipData,
   populationPyramidStats,
-} from '@/utils/chart-utils';
+} from '@/utils/reports/chartUtils';
 
-export type { AgeGroupData, PopulationStats, TooltipData } from '@/types/charts';
+export type { AgeGroupData, PopulationStats, TooltipData } from '@/types/app/ui/charts';

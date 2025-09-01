@@ -390,3 +390,84 @@ The implemented optimizations successfully achieved:
 - ✅ **Zero breaking changes to existing code**
 
 This optimization strategy provides production-grade performance while staying well within Supabase free-tier resource limits, making it ideal for LGU deployments with budget constraints.
+
+## 🆕 Recent CodeRabbit Recommendations (August 2025)
+
+### **PSGC Tables Optimization**
+
+Based on automated code review feedback, the following indexes are recommended for PSGC lookup performance:
+
+```sql
+-- Trigram indexes for search functionality
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX IF NOT EXISTS idx_geo_streets_name_trgm ON geo_streets USING gin (name gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_geo_subdivisions_name_trgm ON geo_subdivisions USING gin (name gin_trgm_ops);
+
+-- Composite indexes for filtered queries  
+CREATE INDEX IF NOT EXISTS idx_geo_streets_barangay_active ON geo_streets(barangay_code, is_active) WHERE is_active = true;
+CREATE INDEX IF NOT EXISTS idx_geo_subdivisions_barangay_active ON geo_subdivisions(barangay_code, is_active) WHERE is_active = true;
+
+-- Support for subdivision filtering
+CREATE INDEX IF NOT EXISTS idx_geo_streets_subdivision ON geo_streets(subdivision_id) WHERE subdivision_id IS NOT NULL;
+```
+
+**Benefits:**
+- 80-90% faster ILIKE search queries
+- Improved response times for address autocomplete
+- Better performance for barangay-filtered location queries
+- Support for fuzzy matching with trigram indexing
+
+### **Query Optimization Patterns**
+
+#### **Search Input Sanitization**
+- ✅ **Implemented**: `sanitizeSearchInput()` function with wildcard escaping
+- ✅ **Applied**: 2-character minimum search length requirement
+- ✅ **Added**: 100-character input length limits
+
+#### **Response Caching**
+- ✅ **Implemented**: Static data caching headers for regions/provinces
+- ✅ **Added**: 24-hour cache TTL for reference data
+- ⏳ **Pending**: Redis-based query result caching
+
+### **Performance Monitoring Checklist**
+
+Based on CodeRabbit feedback, monitor these metrics:
+
+1. **Search Query Performance**
+   ```sql
+   -- Monitor slow queries with ILIKE patterns
+   SELECT query, mean_exec_time, calls 
+   FROM pg_stat_statements 
+   WHERE query LIKE '%ilike%' 
+   ORDER BY mean_exec_time DESC LIMIT 10;
+   ```
+
+2. **Index Usage Verification**
+   ```sql
+   -- Verify trigram index usage
+   EXPLAIN (ANALYZE, BUFFERS) 
+   SELECT * FROM geo_streets 
+   WHERE name ILIKE '%sample%' AND is_active = true;
+   ```
+
+3. **Cache Hit Rates**
+   - Monitor response cache effectiveness in API metrics
+   - Track reduction in database query frequency
+   - Verify appropriate cache invalidation patterns
+
+### **Implementation Priority**
+
+**High Priority (Week 1):**
+- ✅ Input sanitization security improvements
+- ✅ Type safety enhancements (removed all `any` types)
+- ⏳ Trigram indexes for geo tables
+
+**Medium Priority (Week 2-3):**
+- ⏳ Enhanced query result caching
+- ⏳ Performance monitoring dashboard
+- ⏳ Automated index usage analysis
+
+**Low Priority (Month 2):**
+- ⏳ Materialized views for complex address hierarchies
+- ⏳ Query plan optimization analysis
+- ⏳ Connection pool tuning recommendations

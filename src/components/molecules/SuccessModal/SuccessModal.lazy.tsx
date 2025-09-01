@@ -6,7 +6,7 @@
 
 import { lazy } from 'react';
 
-import { withLazyLoading } from '@/lib';
+import { withLazyLoading } from '@/lib/ui/lazy-loading';
 
 const SuccessModalLazy = lazy(() =>
   import('./SuccessModal').then(module => ({

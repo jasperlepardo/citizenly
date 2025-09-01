@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import { Textarea } from '@/components/atoms/Textarea';
+import { Textarea } from '@/components/atoms/Field';
 
 const meta: Meta<typeof Textarea> = {
   title: 'Atoms/Field/Textarea',
@@ -253,7 +253,7 @@ export const AsFieldSet: Story = {
           />
         </div>
         <div className="text-sm text-gray-600">
-          Current value: "{value}" (Length: {value.length})
+          Current value: &quot;{value}&quot; (Length: {value.length})
         </div>
       </div>
     );

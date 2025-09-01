@@ -9,13 +9,13 @@
 
 import { useCallback } from 'react';
 
-import { ValidationResult, FieldValidationResult } from '@/lib/validation/types';
+import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
 import {
   useValidationState,
   createFormValidationExecutor,
   createFieldValidationExecutor,
-} from '@/lib/validation/utilities';
-import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/hooks';
+} from '@/utils/validation/utilities';
+import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/shared/hooks';
 
 // Re-export for backward compatibility
 export type { UseGenericValidationReturn };

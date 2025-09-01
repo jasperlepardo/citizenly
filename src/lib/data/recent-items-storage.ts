@@ -3,16 +3,7 @@
  * Manages recent search and navigation history in localStorage
  */
 
-export interface RecentItem {
-  id: string;
-  title: string;
-  description: string;
-  type: 'resident' | 'household' | 'search' | 'action';
-  href?: string;
-  action?: () => void;
-  timestamp: number;
-  searchQuery?: string; // Track what user searched for
-}
+import type { RecentItem } from '@/types/shared/utilities';
 
 const RECENT_ITEMS_KEY = 'command-menu-recent-items';
 const MAX_RECENT_ITEMS = 10;

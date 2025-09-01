@@ -1,116 +1,137 @@
 {
-  "timestamp": "2025-08-24T23:52:47.660Z",
+  "timestamp": "2025-08-30T16:12:53.024Z",
   "configuration": {
     "maxComplexity": 15,
     "warnComplexity": 10
   },
   "healthScore": 97,
-  "filesChecked": 613,
-  "functionsAnalyzed": 1905,
+  "filesChecked": 666,
+  "functionsAnalyzed": 2359,
   "complexFunctions": [
+    {
+      "name": "if",
+      "complexity": 35,
+      "file": "src/utils/input-sanitizer.ts",
+      "line": 310,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 33,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 108,
+      "severity": "error"
+    },
     {
       "name": "if",
       "complexity": 29,
       "file": "src/app/(dashboard)/admin/create-user/page.tsx",
-      "line": 295,
+      "line": 288,
       "severity": "error"
     },
     {
       "name": "map",
       "complexity": 27,
       "file": "src/hooks/command-menu/useCommandMenuActions.ts",
-      "line": 155,
+      "line": 167,
       "severity": "error"
     },
     {
       "name": "map",
       "complexity": 27,
       "file": "src/hooks/ui/useCommandMenuWithApi.ts",
-      "line": 71,
+      "line": 92,
+      "severity": "error"
+    },
+    {
+      "name": "loadAddressFromIndividualTables",
+      "complexity": 25,
+      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
+      "line": 77,
       "severity": "error"
     },
     {
       "name": "if",
       "complexity": 25,
-      "file": "src/components/templates/HouseholdForm/NewHouseholdForm.tsx",
-      "line": 466,
+      "file": "src/components/templates/Form/Household/HouseholdForm.tsx",
+      "line": 493,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 25,
+      "file": "src/utils/resident-form-utils.ts",
+      "line": 161,
       "severity": "error"
     },
     {
       "name": "CivilStatusPieChart",
       "complexity": 24,
       "file": "src/components/molecules/CivilStatusPieChart/CivilStatusPieChart.tsx",
-      "line": 23,
+      "line": 15,
       "severity": "error"
     },
     {
       "name": "CivilStatusPieChart",
       "complexity": 24,
       "file": "src/components/molecules/CivilStatusPieChart/CivilStatusPieChart.tsx",
-      "line": 23,
+      "line": 15,
       "severity": "error"
     },
     {
       "name": "EmploymentStatusPieChart",
       "complexity": 24,
       "file": "src/components/molecules/EmploymentStatusPieChart/EmploymentStatusPieChart.tsx",
-      "line": 23,
+      "line": 15,
       "severity": "error"
     },
     {
       "name": "EmploymentStatusPieChart",
       "complexity": 24,
       "file": "src/components/molecules/EmploymentStatusPieChart/EmploymentStatusPieChart.tsx",
-      "line": 23,
+      "line": 15,
       "severity": "error"
     },
     {
       "name": "if",
       "complexity": 23,
       "file": "src/app/signup/page.tsx",
-      "line": 232,
-      "severity": "error"
-    },
-    {
-      "name": "validateForm",
-      "complexity": 21,
-      "file": "src/app/signup/page.tsx",
-      "line": 98,
-      "severity": "error"
-    },
-    {
-      "name": "validateForm",
-      "complexity": 20,
-      "file": "src/app/(dashboard)/admin/create-user/page.tsx",
-      "line": 150,
+      "line": 211,
       "severity": "error"
     },
     {
       "name": "if",
       "complexity": 20,
       "file": "src/components/molecules/ButtonGroup/ButtonGroup.tsx",
-      "line": 29,
-      "severity": "error"
-    },
-    {
-      "name": "if",
-      "complexity": 19,
-      "file": "src/app/(dashboard)/households/[id]/page.tsx",
-      "line": 176,
+      "line": 30,
       "severity": "error"
     },
     {
       "name": "DependencyRatioPieChart",
       "complexity": 18,
       "file": "src/components/molecules/DependencyRatioPieChart/DependencyRatioPieChart.tsx",
-      "line": 18,
+      "line": 15,
       "severity": "error"
     },
     {
       "name": "DependencyRatioPieChart",
       "complexity": 18,
       "file": "src/components/molecules/DependencyRatioPieChart/DependencyRatioPieChart.tsx",
-      "line": 18,
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 18,
+      "file": "src/lib/validation/formValidators.ts",
+      "line": 135,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 18,
+      "file": "src/utils/resident-form-utils.ts",
+      "line": 373,
       "severity": "error"
     },
     {
@@ -151,29 +172,64 @@
     {
       "name": "switch",
       "complexity": 16,
-      "file": "src/lib/error-handling/error-utils.ts",
-      "line": 309,
+      "file": "src/utils/input-sanitizer.ts",
+      "line": 221,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 16,
+      "file": "src/utils/sanitization-utils.ts",
+      "line": 321,
       "severity": "error"
     },
     {
       "name": "switch",
       "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 93,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 432,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 757,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
       "file": "src/app/api/residents/route.ts",
-      "line": 133,
+      "line": 93,
       "severity": "warning"
     },
     {
       "name": "getEnvironmentStyles",
       "complexity": 15,
       "file": "src/components/molecules/VersionTag/VersionTag.tsx",
-      "line": 46,
+      "line": 48,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 15,
       "file": "src/lib/authentication/authUtils.ts",
-      "line": 357,
+      "line": 362,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/lib/database/query-optimizer.ts",
+      "line": 379,
       "severity": "warning"
     },
     {
@@ -184,24 +240,24 @@
       "severity": "warning"
     },
     {
-      "name": "if",
-      "complexity": 13,
-      "file": "src/app/(dashboard)/households/[id]/page.tsx",
-      "line": 192,
-      "severity": "warning"
-    },
-    {
-      "name": "getComputedFieldTooltip",
-      "complexity": 13,
-      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
-      "line": 522,
-      "severity": "warning"
-    },
-    {
       "name": "forEach",
-      "complexity": 13,
+      "complexity": 14,
       "file": "src/app/api/dashboard/stats/route.ts",
-      "line": 121,
+      "line": 221,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 14,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 161,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 14,
+      "file": "src/utils/errorUtils.ts",
+      "line": 110,
       "severity": "warning"
     },
     {
@@ -215,35 +271,42 @@
       "name": "if",
       "complexity": 13,
       "file": "src/hooks/utilities/useLogger.ts",
-      "line": 173,
+      "line": 175,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 13,
+      "file": "src/lib/performance/performanceMonitor.ts",
+      "line": 149,
       "severity": "warning"
     },
     {
       "name": "if",
       "complexity": 13,
       "file": "src/providers/AppProvider.tsx",
-      "line": 237,
+      "line": 238,
       "severity": "warning"
     },
     {
       "name": "validate",
       "complexity": 13,
       "file": "src/stories/organisms/Form/Resident/PhysicalPersonalDetails/FormField/PhysicalCharacteristics.stories.tsx",
-      "line": 395,
+      "line": 388,
       "severity": "warning"
     },
     {
       "name": "switch",
+      "complexity": 13,
+      "file": "src/utils/errorUtils.ts",
+      "line": 198,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
       "complexity": 12,
       "file": "src/app/(dashboard)/residents/[id]/page.tsx",
-      "line": 523,
-      "severity": "warning"
-    },
-    {
-      "name": "switch",
-      "complexity": 12,
-      "file": "src/app/api/auth/webhook/route.ts",
-      "line": 46,
+      "line": 466,
       "severity": "warning"
     },
     {
@@ -264,77 +327,91 @@
       "name": "HouseholdAddressForm",
       "complexity": 12,
       "file": "src/components/organisms/CreateHouseholdModal/HouseholdAddressForm.tsx",
-      "line": 24,
+      "line": 20,
       "severity": "warning"
     },
     {
       "name": "HouseholdAddressForm",
       "complexity": 12,
       "file": "src/components/organisms/CreateHouseholdModal/HouseholdAddressForm.tsx",
-      "line": 24,
+      "line": 20,
+      "severity": "warning"
+    },
+    {
+      "name": "FormHeaderComponent",
+      "complexity": 12,
+      "file": "src/components/templates/Form/Resident/components/FormHeader.tsx",
+      "line": 10,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 12,
-      "file": "src/lib/business-rules/resident-helpers.ts",
-      "line": 42,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 285,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 12,
+      "file": "src/services/resident-details-fetcher.ts",
+      "line": 33,
       "severity": "warning"
     },
     {
       "name": "getBMICategory",
       "complexity": 12,
       "file": "src/stories/organisms/Form/Resident/PhysicalPersonalDetails/FormField/PhysicalCharacteristics.stories.tsx",
-      "line": 519,
+      "line": 508,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 11,
+      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
+      "line": 490,
       "severity": "warning"
     },
     {
       "name": "getIntentClasses",
       "complexity": 11,
       "file": "src/components/molecules/StatisticsChart/StatisticsChart.tsx",
-      "line": 55,
+      "line": 50,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 11,
       "file": "src/hooks/utilities/useResidentAsyncValidation.ts",
-      "line": 111,
+      "line": 107,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 11,
-      "file": "src/lib/performance/performanceMonitor.ts",
-      "line": 160,
+      "file": "src/lib/database/query-optimizer.ts",
+      "line": 362,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 11,
       "file": "src/lib/performance/pwaPerformanceUtils.ts",
-      "line": 124,
+      "line": 106,
       "severity": "warning"
     },
     {
       "name": "switch",
       "complexity": 11,
       "file": "src/lib/ui/chart-transformers.ts",
-      "line": 247,
-      "severity": "warning"
-    },
-    {
-      "name": "switch",
-      "complexity": 11,
-      "file": "src/services/charts/chart-transformers.ts",
-      "line": 324,
+      "line": 232,
       "severity": "warning"
     }
   ],
   "summary": {
-    "low": 1776,
-    "moderate": 83,
-    "high": 25,
-    "veryHigh": 21
+    "low": 2196,
+    "moderate": 106,
+    "high": 32,
+    "veryHigh": 25
   }
 }

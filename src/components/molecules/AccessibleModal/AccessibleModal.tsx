@@ -8,8 +8,8 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { cn } from '@/lib';
-import { useFocusTrap, announceToScreenReader } from '@/lib/ui/accessibility';
+import { cn } from '@/utils/shared/cssUtils';
+import { useFocusTrap, announceToScreenReader } from '@/utils/ui/accessibility';
 
 interface AccessibleModalProps {
   isOpen: boolean;
@@ -113,7 +113,7 @@ export default function AccessibleModal({
           <div>
             <h2
               id="modal-title"
-              className="text-xl font-semibold text-gray-900 dark:text-black dark:text-white"
+              className="text-xl font-semibold text-gray-900 dark:gray-50"
             >
               {title}
             </h2>

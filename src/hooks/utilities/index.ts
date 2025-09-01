@@ -35,4 +35,4 @@ export { useGenericFormSubmission } from './useGenericFormSubmission';
 export { useResidentSubmission } from './useResidentSubmission';
 
 // Validation utilities
-export { createValidationHook } from '@/lib/validation/createValidationHook';
+export { createValidationHook } from '@/hooks/validation/createValidationHook';

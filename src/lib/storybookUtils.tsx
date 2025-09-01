@@ -1,10 +1,10 @@
 /**
  * Consolidated Storybook Story Utilities
- * 
+ *
  * @fileoverview Eliminates duplicate reset/validate patterns across Storybook stories.
  * Provides standardized interactive story components, validation patterns, and
  * progressive data filling utilities for consistent story development.
- * 
+ *
  * @version 1.0.0
  * @since 2025-08-29
  * @author Citizenly Development Team
@@ -106,15 +106,15 @@ export interface StoryControls {
  */
 export function createEmailValidator(fieldName: string = 'email'): ValidationFunction<any> {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+
   return (value: any) => {
     const errors: ValidationErrors = {};
     const email = value[fieldName];
-    
+
     if (email && !emailRegex.test(email)) {
       errors[fieldName] = 'Please enter a valid email address';
     }
-    
+
     return errors;
   };
 }
@@ -124,15 +124,15 @@ export function createEmailValidator(fieldName: string = 'email'): ValidationFun
  */
 export function createPhoneValidator(fieldName: string = 'phoneNumber'): ValidationFunction<any> {
   const phoneRegex = /^[\+]?[\d\s\(\)\-]{7,}$/;
-  
+
   return (value: any) => {
     const errors: ValidationErrors = {};
     const phone = value[fieldName];
-    
+
     if (phone && !phoneRegex.test(phone)) {
       errors[fieldName] = 'Please enter a valid phone number';
     }
-    
+
     return errors;
   };
 }
@@ -143,13 +143,13 @@ export function createPhoneValidator(fieldName: string = 'phoneNumber'): Validat
 export function createRequiredValidator(fieldNames: string[]): ValidationFunction<any> {
   return (value: any) => {
     const errors: ValidationErrors = {};
-    
+
     fieldNames.forEach(fieldName => {
       if (!value[fieldName] || (typeof value[fieldName] === 'string' && !value[fieldName].trim())) {
         errors[fieldName] = `${fieldName} is required`;
       }
     });
-    
+
     return errors;
   };
 }
@@ -162,12 +162,12 @@ export function combineValidators<T extends FormData>(
 ): ValidationFunction<T> {
   return (value: T) => {
     const combinedErrors: ValidationErrors = {};
-    
+
     validators.forEach(validator => {
       const errors = validator(value);
       Object.assign(combinedErrors, errors);
     });
-    
+
     return combinedErrors;
   };
 }
@@ -184,27 +184,30 @@ export function InteractiveStory<T extends FormData>({
   sampleData,
   validationRules,
   className = '',
-  children
+  children,
 }: InteractiveStoryProps<T>) {
   const [value, setValue] = useState<T>(initialValue);
   const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const onChange = useCallback((newValue: T) => {
-    setValue(newValue);
-    
-    // Clear errors for fields that now have values
-    const newErrors = { ...errors };
-    Object.keys(newValue).forEach(key => {
-      if (newValue[key] && errors[key]) {
-        delete newErrors[key];
-      }
-    });
-    setErrors(newErrors);
-  }, [errors]);
+  const onChange = useCallback(
+    (newValue: T) => {
+      setValue(newValue);
+
+      // Clear errors for fields that now have values
+      const newErrors = { ...errors };
+      Object.keys(newValue).forEach(key => {
+        if (newValue[key] && errors[key]) {
+          delete newErrors[key];
+        }
+      });
+      setErrors(newErrors);
+    },
+    [errors]
+  );
 
   const validate = useCallback(() => {
     if (!validationRules) return true;
-    
+
     const validationErrors = validationRules(value);
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
@@ -230,14 +233,10 @@ export function InteractiveStory<T extends FormData>({
     reset,
     fillSample,
     hasErrors: Object.keys(errors).length > 0,
-    isValid: Object.keys(errors).length === 0
+    isValid: Object.keys(errors).length === 0,
   };
 
-  return (
-    <div className={`interactive-story ${className}`}>
-      {children(storyState)}
-    </div>
-  );
+  return <div className={`interactive-story ${className}`}>{children(storyState)}</div>;
 }
 
 // =============================================================================
@@ -250,7 +249,7 @@ export function InteractiveStory<T extends FormData>({
 export function StoryControlButtons<T extends FormData>({
   storyState,
   controls = {},
-  sampleData
+  sampleData,
 }: {
   storyState: InteractiveStoryState<T>;
   controls?: StoryControls;
@@ -260,10 +259,15 @@ export function StoryControlButtons<T extends FormData>({
     showValidationButton = true,
     showResetButton = true,
     showSampleButton = !!sampleData,
-    customButtons = []
+    customButtons = [],
   } = controls;
 
-  if (!showValidationButton && !showResetButton && !showSampleButton && customButtons.length === 0) {
+  if (
+    !showValidationButton &&
+    !showResetButton &&
+    !showSampleButton &&
+    customButtons.length === 0
+  ) {
     return null;
   }
 
@@ -277,7 +281,7 @@ export function StoryControlButtons<T extends FormData>({
           Validate
         </button>
       )}
-      
+
       {showSampleButton && (
         <button
           onClick={storyState.fillSample}
@@ -286,7 +290,7 @@ export function StoryControlButtons<T extends FormData>({
           Fill Sample
         </button>
       )}
-      
+
       {showResetButton && (
         <button
           onClick={storyState.reset}
@@ -300,7 +304,9 @@ export function StoryControlButtons<T extends FormData>({
         <button
           key={index}
           onClick={button.onClick}
-          className={button.className || "rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700"}
+          className={
+            button.className || 'rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700'
+          }
         >
           {button.label}
         </button>
@@ -315,7 +321,7 @@ export function StoryControlButtons<T extends FormData>({
 export function StoryValueDisplay<T extends FormData>({
   value,
   errors,
-  title = "Current Values"
+  title = 'Current Values',
 }: {
   value: T;
   errors: ValidationErrors;
@@ -348,7 +354,7 @@ export function StoryValueDisplay<T extends FormData>({
 export function ProgressiveStory<T extends FormData>({
   steps,
   className = '',
-  children
+  children,
 }: {
   steps: ProgressiveStep<T>[];
   className?: string;
@@ -377,11 +383,14 @@ export function ProgressiveStory<T extends FormData>({
     }
   }, [currentStep]);
 
-  const goToStep = useCallback((index: number) => {
-    if (index >= 0 && index < steps.length) {
-      setCurrentStep(index);
-    }
-  }, [steps.length]);
+  const goToStep = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < steps.length) {
+        setCurrentStep(index);
+      }
+    },
+    [steps.length]
+  );
 
   const currentStepData = steps[currentStep];
 
@@ -395,7 +404,7 @@ export function ProgressiveStory<T extends FormData>({
         prevStep,
         goToStep,
         isFirstStep: currentStep === 0,
-        isLastStep: currentStep === steps.length - 1
+        isLastStep: currentStep === steps.length - 1,
       })}
     </div>
   );
@@ -407,7 +416,7 @@ export function ProgressiveStory<T extends FormData>({
 export function ProgressiveStoryControls({
   steps,
   currentStep,
-  onStepChange
+  onStepChange,
 }: {
   steps: ProgressiveStep<any>[];
   currentStep: number;
@@ -434,9 +443,7 @@ export function ProgressiveStoryControls({
       <div className="text-sm text-gray-600">
         Step {currentStep + 1} of {steps.length}: {steps[currentStep]?.label}
         {steps[currentStep]?.description && (
-          <div className="mt-1 text-xs text-gray-500">
-            {steps[currentStep].description}
-          </div>
+          <div className="mt-1 text-xs text-gray-500">{steps[currentStep].description}</div>
         )}
       </div>
     </div>
@@ -453,7 +460,7 @@ export function ProgressiveStoryControls({
 export function ValidationPatternStory<T extends FormData>({
   examples,
   className = '',
-  children
+  children,
 }: {
   examples: ValidationExample<T>[];
   className?: string;
@@ -479,11 +486,14 @@ export function ValidationPatternStory<T extends FormData>({
     }
   }, [currentExample]);
 
-  const goToExample = useCallback((index: number) => {
-    if (index >= 0 && index < examples.length) {
-      setCurrentExample(index);
-    }
-  }, [examples.length]);
+  const goToExample = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < examples.length) {
+        setCurrentExample(index);
+      }
+    },
+    [examples.length]
+  );
 
   return (
     <div className={`validation-pattern-story ${className}`}>
@@ -492,7 +502,7 @@ export function ValidationPatternStory<T extends FormData>({
         exampleIndex: currentExample,
         nextExample,
         prevExample,
-        goToExample
+        goToExample,
       })}
     </div>
   );
@@ -504,7 +514,7 @@ export function ValidationPatternStory<T extends FormData>({
 export function ValidationPatternControls({
   examples,
   currentExample,
-  onExampleChange
+  onExampleChange,
 }: {
   examples: ValidationExample<any>[];
   currentExample: number;
@@ -531,9 +541,7 @@ export function ValidationPatternControls({
       <div className="text-sm text-gray-600">
         Current: {examples[currentExample]?.label}
         {examples[currentExample]?.description && (
-          <div className="mt-1 text-xs text-gray-500">
-            {examples[currentExample].description}
-          </div>
+          <div className="mt-1 text-xs text-gray-500">{examples[currentExample].description}</div>
         )}
       </div>
     </div>
@@ -547,18 +555,14 @@ export function ValidationPatternControls({
 /**
  * Creates standardized story parameters for consistent documentation
  */
-export function createStoryParameters(
-  title: string,
-  description: string,
-  additionalParams?: any
-) {
+export function createStoryParameters(title: string, description: string, additionalParams?: any) {
   return {
     docs: {
       description: {
-        story: description
-      }
+        story: description,
+      },
     },
-    ...additionalParams
+    ...additionalParams,
   };
 }
 

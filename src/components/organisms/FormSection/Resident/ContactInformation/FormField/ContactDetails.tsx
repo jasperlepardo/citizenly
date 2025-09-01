@@ -1,20 +1,14 @@
 import React, { useCallback } from 'react';
 
 import { InputField } from '@/components';
-import { createComponentFieldChangeHandler } from '@/lib/form-utils';
-import type { FormMode } from '@/types';
-
-export interface ContactDetailsData {
-  email: string;
-  telephone_number: string;
-  mobile_number: string;
-}
+import { createComponentFieldChangeHandler } from '@/utils/shared/formUtils';
+import type { FormMode, ContactDetailsFormData } from '@/types';
 
 export interface ContactDetailsProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: ContactDetailsData;
-  onChange: (value: ContactDetailsData) => void;
+  value: ContactDetailsFormData;
+  onChange: (value: ContactDetailsFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -28,7 +22,7 @@ export function ContactDetails({
 }: ContactDetailsProps) {
   // Use consolidated component field handler - eliminates 8 lines of duplicate code
   const handleChange = useCallback(
-    createComponentFieldChangeHandler<ContactDetailsData>(value, onChange),
+    createComponentFieldChangeHandler<ContactDetailsFormData>(value, onChange),
     [value, onChange]
   );
 

@@ -2,30 +2,39 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 // Safe router hook that works in both Next.js and Storybook environments
 function useSafeRouter() {
+  // Mock router for Storybook/testing environments
+  const mockRouter = {
+    push: (href: string) => {
+      console.log('Navigation to:', href);
+      // In Storybook, we can use window.location or just log
+      if (typeof window !== 'undefined' && window.location) {
+        window.location.href = href;
+      }
+    },
+    replace: (href: string) => console.log('Replace with:', href),
+    back: () => console.log('Navigate back'),
+    forward: () => console.log('Navigate forward'),
+    refresh: () => console.log('Refresh page'),
+  };
+
+  // For Storybook/testing environments, return mock
+  if (typeof window === 'undefined' || !(window as any).next) {
+    return mockRouter;
+  }
+
   try {
     // Only import useRouter when we're in a Next.js environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { useRouter } = require('next/navigation');
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useRouter();
   } catch {
-    // Return a mock router for Storybook/testing environments
-    return {
-      push: (href: string) => {
-        console.log('Navigation to:', href);
-        // In Storybook, we can use window.location or just log
-        if (typeof window !== 'undefined' && window.location) {
-          window.location.href = href;
-        }
-      },
-      replace: (href: string) => console.log('Replace with:', href),
-      back: () => console.log('Navigate back'),
-      forward: () => console.log('Navigate forward'),
-      refresh: () => console.log('Refresh page'),
-    };
+    return mockRouter;
   }
 }
 
@@ -102,7 +111,7 @@ export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps) 
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex
+      onNavigate: setSelectedIndex,
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {

@@ -16,54 +16,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 // QUERY BUILDER TYPES
 // =============================================================================
 
-/**
- * Standard search options for repositories
- */
-export interface BaseSearchOptions {
-  /** Limit number of results */
-  limit?: number;
-  /** Offset for pagination */
-  offset?: number;
-  /** Field to order by */
-  orderBy?: string;
-  /** Order direction */
-  orderDirection?: 'asc' | 'desc';
-  /** Additional filters as key-value pairs */
-  filters?: Record<string, any>;
-}
-
-/**
- * Geographic filter options
- */
-export interface GeographicFilterOptions {
-  barangay_code?: string;
-  city_municipality_code?: string;
-  province_code?: string;
-  region_code?: string;
-}
-
-/**
- * Name search options for person entities
- */
-export interface NameSearchOptions {
-  first_name?: string;
-  middle_name?: string;
-  last_name?: string;
-  /** Full name search across all name fields */
-  name?: string;
-}
-
-/**
- * Date range filter options
- */
-export interface DateRangeOptions {
-  /** Start date (inclusive) */
-  startDate?: string;
-  /** End date (inclusive) */
-  endDate?: string;
-  /** Date field to filter on */
-  dateField?: string;
-}
+import type { BaseSearchOptions, GeographicFilterOptions, NameSearchOptions, DateRangeOptions } from '@/types/infrastructure/services';
 
 /**
  * Query builder function type
@@ -99,11 +52,7 @@ export function createFindByFieldQueryBuilder(
   selectFields: string = '*'
 ): QueryBuilderFn {
   return (supabase: SupabaseClient) => {
-    return supabase
-      .from(tableName)
-      .select(selectFields)
-      .eq(field, value)
-      .single();
+    return supabase.from(tableName).select(selectFields).eq(field, value).single();
   };
 }
 
@@ -407,7 +356,7 @@ export function createTextSearchQueryBuilder(
       const searchConditions = searchFields
         .map(field => `${field}.ilike.${searchPattern}`)
         .join(',');
-      
+
       query = query.or(searchConditions);
     }
 
@@ -529,8 +478,7 @@ export const CommonQueryBuilders = {
   /**
    * Find by ID pattern (universal)
    */
-  findById: (tableName: string, id: string) =>
-    createFindByFieldQueryBuilder(tableName, 'id', id),
+  findById: (tableName: string, id: string) => createFindByFieldQueryBuilder(tableName, 'id', id),
 
   /**
    * Find by user ID pattern (common in profile repositories)
@@ -576,12 +524,12 @@ export const CommonQueryBuilders = {
 /*
 // BEFORE (duplicate queryBuilder implementations):
 
-// In household-repository.ts
+// In householdRepository.ts
 const queryBuilder = (supabase: SupabaseClient) => {
   return supabase.from(this.tableName).select('*').eq('code', code).single();
 };
 
-// In resident-repository.ts  
+// In residentRepository.ts  
 const queryBuilder = (supabase: SupabaseClient) => {
   return supabase.from(this.tableName).select('*').eq('code', code).single();
 };

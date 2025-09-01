@@ -15,20 +15,8 @@ import {
   SearchState,
   SearchFunction,
   createSearchState,
-} from '@/utils/search-utilities';
-
-/**
- * Return type for useGenericSearch hook
- */
-export interface UseGenericSearchReturn<T> {
-  query: string;
-  setQuery: (query: string) => void;
-  results: T[];
-  isLoading: boolean;
-  error: Error | null;
-  clearSearch: () => void;
-  refresh: () => void;
-}
+} from '@/utils/search/search-utilities';
+import type { UseGenericSearchReturn } from '@/types';
 
 /**
  * Generic search hook for handling search state and operations

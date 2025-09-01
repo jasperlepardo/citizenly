@@ -3,9 +3,9 @@
  * Handles offline data synchronization when connection is restored
  */
 
-import { ErrorCode, ErrorSeverity } from '@/types/errors';
-import type { SyncResult } from '@/types/utilities';
-import { createAppError } from '@/utils/errorUtils';
+import { ErrorCode, ErrorSeverity } from '@/types/shared/errors/errors';
+import type { SyncResult } from '@/types/shared/utilities';
+import { createAppError } from '@/utils/shared/errorUtils';
 
 import { offlineStorage } from './offline-storage';
 
@@ -91,7 +91,7 @@ export class SyncQueue {
 
     try {
       // Get auth token
-      const { supabase } = await import('@/lib/supabase');
+      const { supabase } = await import('@/lib/data/supabase');
       const {
         data: { session },
       } = await supabase.auth.getSession();

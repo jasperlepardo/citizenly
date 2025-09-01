@@ -2,7 +2,7 @@
 
 import React, { Component, ReactNode } from 'react';
 
-import { createWrappedComponent } from '@/lib/hocUtils';
+import { createWrappedComponent } from '@/utils/dom/hocUtils';
 
 interface Props {
   children: ReactNode;
@@ -99,12 +99,9 @@ export function withFieldErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fieldName?: string
 ) {
-  return createWrappedComponent(
-    Component,
-    FieldErrorBoundary,
-    'withFieldErrorBoundary',
-    { fieldName }
-  );
+  return createWrappedComponent(Component, FieldErrorBoundary, 'withFieldErrorBoundary', {
+    fieldName,
+  });
 }
 
 // Hook moved to src/hooks/useFieldErrorHandler.ts

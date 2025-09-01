@@ -15,56 +15,17 @@
 
 import { useCallback } from 'react';
 
-import {
-  useResidentAsyncValidation,
-  type UseResidentAsyncValidationReturn,
-} from '@/hooks/utilities/useResidentAsyncValidation';
-import {
-  useResidentCrossFieldValidation,
-  type UseResidentCrossFieldValidationReturn,
-} from '@/hooks/utilities/useResidentCrossFieldValidation';
-import { REQUIRED_FIELDS } from '@/lib/validation/fieldLevelSchemas';
-import type { ResidentFormData } from '@/types';
+import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
+import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
+import type { 
+  ResidentFormData,
+  UseResidentFormValidationReturn,
+  ResidentValidationOptions,
+} from '@/types';
 
-import {
-  useResidentValidationCore,
-  type ResidentValidationOptions,
-  type UseResidentValidationCoreReturn,
-} from './useResidentValidationCore';
-import {
-  useResidentValidationProgress,
-  type UseResidentValidationProgressReturn,
-} from './useResidentValidationProgress';
+import { useResidentValidationCore } from './useResidentValidationCore';
+import { useResidentValidationProgress } from './useResidentValidationProgress';
 
-/**
- * Combined return type for the orchestrator hook
- */
-export interface UseResidentFormValidationReturn
-  extends Omit<UseResidentValidationCoreReturn, 'validateForm'>,
-    Omit<UseResidentCrossFieldValidationReturn, 'validateCrossFields'>,
-    Omit<UseResidentAsyncValidationReturn, 'validateFieldAsync'>,
-    UseResidentValidationProgressReturn {
-  /** Current validation errors */
-  errors: Record<string, string>;
-  /** Whether form is currently valid */
-  isValid: boolean;
-  /** Set field-specific validation error */
-  setFieldError: (fieldName: string, error: string) => void;
-  /** Clear specific field error */
-  clearFieldError: (fieldName: string) => void;
-  /** Get field-specific validation error */
-  getFieldError: (fieldName: string) => string | undefined;
-  /** Enhanced form validation with cross-field rules */
-  validateForm: (formData: ResidentFormData) => Promise<{
-    isValid: boolean;
-    errors: Record<string, string>;
-  }>;
-  /** Validate field asynchronously */
-  validateFieldAsync: (
-    fieldName: string,
-    value: unknown
-  ) => Promise<{ isValid: boolean; error?: string }>;
-}
 
 /**
  * Optimized resident form validation hook (Refactored)

@@ -395,7 +395,8 @@ export const SearchFunctionality: Story = {
         <div className="rounded-lg bg-blue-50 p-4">
           <h3 className="font-medium text-blue-900">Search Functionality Demo</h3>
           <p className="mt-1 text-sm text-blue-700">
-            Try searching for: "Santos", "HH-2024-001", "Maria", "Green Valley", etc.
+            Try searching for: &quot;Santos&quot;, &quot;HH-2024-001&quot;, &quot;Maria&quot;,
+            &quot;Green Valley&quot;, etc.
           </p>
         </div>
         <HouseholdsContent />

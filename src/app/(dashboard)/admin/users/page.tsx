@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components';
-import { supabase, logger, logError } from '@/lib';
+import { supabase } from '@/lib/data/supabase';
+import { logger, logError } from '@/lib/logging/secure-logger';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,37 +1,40 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
-
-import SectoralClassifications, {
-  SectoralInformation,
+import type { 
+  FormMode,
+  SectoralInformation, 
   SectoralContext,
-} from './FormField/SectoralClassifications';
+  ResidentFormData
+} from '@/types';
 
+import SectoralClassifications from './FormField/SectoralClassifications';
+
+/**
+ * Props for the SectoralInformationForm component
+ * 
+ * @description Handles sectoral classifications for residents with automatic
+ * calculations based on age, employment, and education data. Maps form field
+ * names to database schema (e.g., is_overseas_filipino → is_overseas_filipino_worker).
+ */
 export interface SectoralInformationFormProps {
-  /** Form mode - determines if field is editable or read-only */
+  /** 
+   * Form mode - determines if fields are editable or read-only
+   * @default 'create'
+   */
   mode?: FormMode;
-  formData: {
-    // Sectoral Information (snake_case matching database)
-    is_labor_force_employed?: boolean;
-    is_unemployed?: boolean;
-    is_overseas_filipino?: boolean;
-    is_person_with_disability?: boolean;
-    is_out_of_school_children?: boolean;
-    is_out_of_school_youth?: boolean;
-    is_senior_citizen?: boolean;
-    is_registered_senior_citizen?: boolean;
-    is_solo_parent?: boolean;
-    is_indigenous_people?: boolean;
-    is_migrant?: boolean;
-    // Context data for auto-calculation
-    birthdate?: string;
-    employment_status?: string;
-    education_attainment?: string;
-    civil_status?: string;
-    ethnicity?: string;
-  };
-  onChange: (field: string | number | symbol, value: string | number | boolean | null) => void;
-  errors: Record<string, string>;
+  
+  /**
+   * Form data containing sectoral flags and context fields for auto-calculation.
+   * Uses the complete resident form data which includes all needed fields.
+   */
+  formData: ResidentFormData;
+  
+  /**
+   * Callback when any sectoral field changes.
+   * @param field - The form field name (e.g., 'is_overseas_filipino')
+   * @param value - The new value for the field
+   */
+  onChange: (field: string, value: boolean | string | null) => void;
 }
 
 // Field mapping configuration (matches database schema exactly)
@@ -49,28 +52,52 @@ const SECTORAL_FIELD_MAPPING = [
   { formKey: 'is_migrant', dbKey: 'is_migrant' },
 ];
 
+/**
+ * Type-safe getter for sectoral field values
+ */
+const getSectoralFieldValue = (
+  data: ResidentFormData, 
+  key: string
+): boolean => {
+  const value = (data as unknown as Record<string, unknown>)[key];
+  return typeof value === 'boolean' ? value : false;
+};
+
+/**
+ * Type-safe setter for sectoral field values  
+ */
+const setSectoralFieldValue = (
+  value: SectoralInformation, 
+  key: string
+): boolean | string | null => {
+  const fieldValue = (value as unknown as Record<string, unknown>)[key];
+  return fieldValue as boolean | string | null;
+};
+
 export function SectoralInformationForm({
   mode = 'create',
   formData,
   onChange,
-  errors,
 }: SectoralInformationFormProps) {
   // Map form data to SectoralInfo component props using configuration
-  const sectoralValue: SectoralInformation = SECTORAL_FIELD_MAPPING.reduce(
-    (acc, field) => ({
-      ...acc,
-      [field.dbKey]: (formData as any)[field.formKey] || false,
-    }),
-    {} as SectoralInformation
+  const sectoralValue: SectoralInformation = React.useMemo(
+    () => SECTORAL_FIELD_MAPPING.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.dbKey]: getSectoralFieldValue(formData, field.formKey),
+      }),
+      {} as SectoralInformation
+    ),
+    [formData]
   );
 
-  // Context for auto-calculation
+  // Context for auto-calculation (form data already uses database field names)
   const sectoralContext: SectoralContext = React.useMemo(
     () => ({
       birthdate: formData.birthdate,
       employment_status: formData.employment_status,
-      highest_educational_attainment: formData.education_attainment,
-      marital_status: formData.civil_status,
+      education_attainment: formData.education_attainment,
+      civil_status: formData.civil_status,
       ethnicity: formData.ethnicity,
     }),
     [
@@ -86,7 +113,7 @@ export function SectoralInformationForm({
   const handleSectoralChange = React.useCallback(
     (value: SectoralInformation) => {
       SECTORAL_FIELD_MAPPING.forEach(field => {
-        onChange(field.formKey, (value as any)[field.dbKey]);
+        onChange(field.formKey, setSectoralFieldValue(value, field.dbKey));
       });
     },
     [onChange]

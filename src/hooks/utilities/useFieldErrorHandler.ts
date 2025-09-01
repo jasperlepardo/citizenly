@@ -9,15 +9,8 @@
 
 import { useCallback } from 'react';
 
-import { logError } from '@/utils/errorUtils';
-
-/**
- * Return type for field error handler hook
- */
-export interface UseFieldErrorHandlerReturn {
-  /** Handle field error */
-  handleFieldError: (error: Error, fieldName?: string) => void;
-}
+import { logError } from '@/utils/shared/errorUtils';
+import type { UseFieldErrorHandlerReturn } from '@/types';
 
 /**
  * Hook for functional error boundary behavior

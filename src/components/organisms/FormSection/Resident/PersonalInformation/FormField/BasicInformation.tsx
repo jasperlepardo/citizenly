@@ -5,25 +5,15 @@ import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import {
   SEX_OPTIONS_WITH_DEFAULT,
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT,
-} from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types';
-
-export interface BasicInformationData {
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  extension_name: string;
-  sex: 'male' | 'female' | '';
-  civil_status: string;
-  civil_status_others_specify?: string;
-}
+} from '@/constants/resident-enums';
+import type { FormMode, BasicInformationFormData } from '@/types';
 
 interface BasicInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: BasicInformationData;
-  onChange: (value: BasicInformationData) => void;
-  errors?: Partial<Record<keyof BasicInformationData, string>>;
+  value: BasicInformationFormData;
+  onChange: (value: BasicInformationFormData) => void;
+  errors?: Partial<Record<keyof BasicInformationFormData, string>>;
   className?: string;
 }
 
@@ -36,7 +26,7 @@ export function BasicInformation({
   errors = {},
   className = '',
 }: BasicInformationProps) {
-  const handleChange = (field: keyof BasicInformationData, newValue: string) => {
+  const handleChange = (field: keyof BasicInformationFormData, newValue: string) => {
     const updatedValue = {
       ...value,
       [field]: newValue,
@@ -44,7 +34,7 @@ export function BasicInformation({
     onChange(updatedValue);
   };
 
-  const handleSelectChange = (field: keyof BasicInformationData) => (option: any) => {
+  const handleSelectChange = (field: keyof BasicInformationFormData) => (option: any) => {
     handleChange(field, option?.value || '');
   };
 

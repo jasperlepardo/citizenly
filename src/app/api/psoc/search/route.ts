@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { databaseService } from '@/services/database-service';
-import { PSocRecord } from '@/types/api';
+import { databaseService } from '@/services/shared/data/databaseService';
+import type { PsocMajorGroup, PsocSubMajorGroup, PsocUnitGroup, PsocUnitSubGroup } from '@/types/infrastructure/database/database';
 
 export async function GET(request: NextRequest) {
   try {
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 5));
 
       if (majorGroups) {
-        majorGroups.forEach((item: PSocRecord) => {
+        majorGroups.forEach((item: PsocMajorGroup) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (subMajorGroups) {
-        subMajorGroups.forEach((item: PSocRecord) => {
+        subMajorGroups.forEach((item: PsocSubMajorGroup) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (unitGroups) {
-        unitGroups.forEach((item: PSocRecord) => {
+        unitGroups.forEach((item: PsocUnitGroup) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 10));
 
       if (unitSubGroups) {
-        unitSubGroups.forEach((item: PSocRecord) => {
+        unitSubGroups.forEach((item: PsocUnitSubGroup) => {
           allResults.push({
             code: item.code,
             title: item.title,
@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
         .limit(Math.min(limit, 15));
 
       if (occupations) {
-        occupations.forEach((item: PSocRecord) => {
+        occupations.forEach((item: any) => {
           allResults.push({
             code: item.occupation_code,
             title: item.occupation_title,

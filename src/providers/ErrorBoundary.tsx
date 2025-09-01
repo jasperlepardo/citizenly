@@ -2,7 +2,7 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import { createWrappedComponent } from '@/lib/hocUtils';
+import { createWrappedComponent } from '@/utils/dom/hocUtils';
 import { logError } from '@/lib/logging';
 
 interface Props {
@@ -183,7 +183,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="rounded bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700 dark:text-black dark:text-white"
+                className="rounded bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700 dark:bg-gray-400"
               >
                 Reload Page
               </button>
@@ -262,12 +262,7 @@ export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   errorBoundaryProps?: Omit<Props, 'children'>
 ) {
-  return createWrappedComponent(
-    Component,
-    ErrorBoundary,
-    'withErrorBoundary',
-    errorBoundaryProps
-  );
+  return createWrappedComponent(Component, ErrorBoundary, 'withErrorBoundary', errorBoundaryProps);
 }
 
 export default ErrorBoundary;

@@ -2,20 +2,40 @@ import React from 'react';
 
 import { InputField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import type { FormMode } from '@/types';
+import type { FormMode, VotingInformationFormData } from '@/types';
 
-export interface VotingInformationData {
-  is_voter: string; // 'yes' | 'no' (defaults to 'no')
-  is_resident_voter: string; // 'yes' | 'no' (defaults to 'no')
-  last_voted_date: string;
-}
-
+/**
+ * Props for the VotingInformation component
+ * 
+ * @description Handles voter registration status and voting history.
+ * Uses string-based form values that get converted to boolean for API.
+ */
 export interface VotingInformationProps {
-  /** Form mode - determines if field is editable or read-only */
+  /** 
+   * Form mode - determines if fields are editable or read-only
+   * @default 'create'
+   */
   mode?: FormMode;
-  value: VotingInformationData;
-  onChange: (value: VotingInformationData) => void;
+  
+  /**
+   * Current voting information data
+   */
+  value: VotingInformationFormData;
+  
+  /**
+   * Callback when voting information changes
+   * @param value - Updated voting information
+   */
+  onChange: (value: VotingInformationFormData) => void;
+  
+  /**
+   * Validation errors by field name
+   */
   errors: Record<string, string>;
+  
+  /**
+   * Additional CSS classes
+   */
   className?: string;
 }
 
@@ -26,7 +46,10 @@ export function VotingInformation({
   errors,
   className = '',
 }: VotingInformationProps) {
-  const handleChange = (field: keyof VotingInformationData, fieldValue: any) => {
+  /**
+   * Type-safe field change handler
+   */
+  const handleChange = (field: keyof VotingInformationFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,
@@ -117,7 +140,6 @@ export function VotingInformation({
             min: '1900',
             max: new Date().getFullYear().toString(),
             disabled: value.is_voter !== 'yes' && value.is_resident_voter !== 'yes',
-            error: errors.last_voted_date,
           }}
         />
       </div>

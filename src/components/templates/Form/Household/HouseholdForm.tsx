@@ -11,15 +11,15 @@ import {
 } from '@/components/organisms/FormSection/Household';
 import { useAuth } from '@/contexts';
 import { useUserBarangay } from '@/hooks/utilities';
-import { supabase, logger, logError } from '@/lib';
-import { useCSRFToken } from '@/lib/auth/csrf';
-import { geographicService } from '@/services/geographic.service';
+// REMOVED: @/lib barrel import - replace with specific module;
+import { useCSRFToken } from '@/lib/authentication/csrf';
+import { geographicService } from '@/services/domain/geography/geographic.service';
 
 // Import our new Form/Household components
 
 // Import molecules and atoms
 
-import { HouseholdFormData } from '@/types/forms';
+import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export type { HouseholdFormData };
 export type HouseholdFormMode = 'create' | 'view' | 'edit';

@@ -3,7 +3,7 @@
  * Enhanced React Query wrapper with retry mechanisms and error recovery
  */
 
-import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useQueries, UseQueryOptions } from '@tanstack/react-query';
 import { useCallback, useRef, useEffect } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
@@ -226,19 +226,121 @@ export function useResilientQueries<TData = unknown>(
   }
 ) {
   const { parallel = true, failFast = false } = options || {};
+  const queryClient = useQueryClient();
 
-  const results = queries.map((queryOptions, index) => {
-    return useResilientQuery({
+  // Transform queries to React Query format
+  const reactQueries = queries.map(query => {
+    const {
+      retryConfig = {},
+      performanceTracking = { enabled: true },
+      fallbackData,
+      errorNotification = { enabled: false },
+      queryFn,
+      queryKey,
+      ...queryOptions
+    } = query;
+
+    const finalRetryConfig = { ...DEFAULT_RETRY_CONFIG, ...retryConfig };
+
+    // Enhanced query function with performance tracking
+    const enhancedQueryFn = async (context: any) => {
+      const operationName =
+        performanceTracking.operationName ||
+        `query_${Array.isArray(queryKey) ? queryKey.join('_') : 'unknown'}`;
+
+      performanceMonitor.startMetric(operationName);
+
+      try {
+        const startTime = performance.now();
+        if (!queryFn || typeof queryFn !== 'function') {
+          throw new Error('Query function is required but not provided');
+        }
+
+        const result = await queryFn(context);
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+
+        performanceMonitor.endMetric(operationName);
+
+        clientLogger.info(`Query successful: ${operationName}`, {
+          action: 'query_success',
+          data: {
+            duration: Math.round(duration),
+            attempt: context.meta?.attempt || 1,
+          },
+        });
+
+        return result;
+      } catch (error) {
+        performanceMonitor.endMetric(operationName);
+
+        clientLogger.error(`Query failed: ${operationName}`, {
+          error: error instanceof Error ? error : new Error(String(error)),
+          action: 'query_error',
+          data: {
+            attempt: context.meta?.attempt || 1,
+          },
+        });
+
+        throw error;
+      }
+    };
+
+    return {
       ...queryOptions,
-      enabled: parallel
-        ? queryOptions.enabled
-        : ((queryOptions.enabled && (index === 0 || queries[index - 1])) as any),
-    });
+      queryKey,
+      queryFn: enhancedQueryFn,
+      retry: (failureCount: number, error: unknown) => {
+        if (failureCount >= finalRetryConfig.maxRetries) {
+          return false;
+        }
+
+        const shouldRetry = finalRetryConfig.retryCondition(error);
+        if (shouldRetry) {
+          finalRetryConfig.onRetry(error, failureCount + 1);
+        }
+
+        return shouldRetry;
+      },
+      retryDelay: finalRetryConfig.retryDelay,
+    };
+  });
+
+  // Use React Query's useQueries hook
+  const results = useQueries({
+    queries: reactQueries,
+    combine: results => {
+      return {
+        data: results.map(result => result.data),
+        isLoading: results.some(result => result.isLoading),
+        isError: failFast
+          ? results.some(result => result.isError)
+          : results.every(result => result.isError),
+        errors: results.map(result => result.error).filter(Boolean),
+        results: results.map((result, index) => ({
+          ...result,
+          retryManually: () => {
+            queryClient.invalidateQueries({ queryKey: queries[index].queryKey });
+          },
+          clearError: () => {
+            queryClient.setQueryData(queries[index].queryKey!, (oldData: any) => oldData);
+          },
+          getMetrics: () => ({
+            totalAttempts: 1,
+            successfulQueries: result.isSuccess ? 1 : 0,
+            failedQueries: result.isError ? 1 : 0,
+            averageResponseTime: 0,
+            successRate: result.isSuccess ? 100 : 0,
+            lastError: result.error,
+          }),
+        })),
+      };
+    },
   });
 
   // Aggregate metrics
   const aggregateMetrics = useCallback(() => {
-    return results.reduce(
+    return results.results.reduce(
       (acc, result) => {
         const metrics = result.getMetrics();
         return {
@@ -257,15 +359,12 @@ export function useResilientQueries<TData = unknown>(
         averageResponseTime: 0,
       }
     );
-  }, [results]);
+  }, [results.results]);
 
   return {
-    results,
-    isLoading: results.some(r => r.isLoading),
-    isError: failFast ? results.some(r => r.isError) : results.every(r => r.isError),
-    errors: results.map(r => r.error).filter(Boolean),
-    retryAll: () => results.forEach(r => r.retryManually()),
-    clearAllErrors: () => results.forEach(r => r.clearError()),
+    ...results,
+    retryAll: () => results.results.forEach(r => r.retryManually()),
+    clearAllErrors: () => results.results.forEach(r => r.clearError()),
     getAggregateMetrics: aggregateMetrics,
   };
 }

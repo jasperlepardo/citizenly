@@ -21,20 +21,8 @@
  * @since 1.0.0
  */
 
-import { preloadComponents } from '@/lib';
-
-/**
- * Return type for the usePreloadOnHover hook
- *
- * @interface UsePreloadOnHoverReturn
- */
-export interface UsePreloadOnHoverReturn {
-  /**
-   * Mouse enter event handler that triggers component preloading
-   * Apply this to the element that should trigger preloading on hover
-   */
-  readonly onMouseEnter: () => void;
-}
+// REMOVED: @/lib barrel import - replace with specific module;
+import type { UsePreloadOnHoverReturn } from '@/types';
 
 /**
  * Hook for preloading lazy components on hover interaction

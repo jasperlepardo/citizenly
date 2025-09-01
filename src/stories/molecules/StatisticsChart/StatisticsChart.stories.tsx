@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import StatisticsChart from '@/components/molecules/StatisticsChart';
-import type { DependencyData, SexData, CivilStatusData, EmploymentStatusData } from '@/lib/charts';
+import type { DependencyData, SexData, CivilStatusData, EmploymentStatusData } from '@/types/app/ui/charts';
 
 const meta: Meta<typeof StatisticsChart> = {
   title: 'Molecules/StatisticsChart',

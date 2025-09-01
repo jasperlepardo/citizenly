@@ -2,8 +2,8 @@ import React from 'react';
 
 import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types';
+import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/resident-enums';
+import type { FormMode, EducationInformationFormData } from '@/types';
 
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [
@@ -11,14 +11,9 @@ const GRADUATE_STATUS_OPTIONS = [
   { value: 'no', label: 'No, not graduated' },
 ];
 
-export interface EducationInformationData {
-  education_attainment: string;
-  is_graduate: string; // 'yes' | 'no' (defaults to 'yes')
-}
-
 export interface EducationInformationProps {
-  value: EducationInformationData;
-  onChange: (value: EducationInformationData) => void;
+  value: EducationInformationFormData;
+  onChange: (value: EducationInformationFormData) => void;
   errors: Record<string, string>;
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
@@ -32,7 +27,7 @@ export function EducationInformation({
   mode = 'create',
   className = '',
 }: EducationInformationProps) {
-  const handleChange = (field: keyof EducationInformationData, fieldValue: any) => {
+  const handleChange = (field: keyof EducationInformationFormData, fieldValue: any) => {
     const updatedValue = {
       ...value,
       [field]: fieldValue,

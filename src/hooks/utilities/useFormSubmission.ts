@@ -2,12 +2,12 @@
 
 import { useState, useCallback } from 'react';
 
-import { createFormSubmitHandler } from '@/lib/forms';
+import { createFormSubmitHandler } from '@/services/shared/forms';
 import type { ResidentFormData, FormMode } from '@/types';
 import type {
   HookFormSubmissionProps as UseFormSubmissionProps,
   HookFormSubmissionReturn as UseFormSubmissionReturn,
-} from '@/types/hooks';
+} from '@/types/shared/hooks';
 
 import { useResidentFormValidation } from '../validation/useOptimizedResidentValidation';
 

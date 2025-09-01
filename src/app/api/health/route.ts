@@ -11,11 +11,11 @@ import {
   validateEnvironment,
   getEnvironmentConfig,
 } from '@/lib/config/environment';
-import type { HealthCheckResult } from '@/types/api-requests';
+import type { HealthCheckResult } from '@/types/app/api/apiRequests';
 
 export const dynamic = 'force-dynamic';
 
-// HealthCheckResult moved to src/types/api-requests.ts
+// HealthCheckResult moved to src/types/apiRequests.ts
 
 /**
  * Basic health check endpoint

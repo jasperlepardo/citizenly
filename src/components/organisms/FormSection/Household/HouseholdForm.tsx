@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 
-import type { HouseholdFormData, FormMode } from '@/types/forms';
+import type { HouseholdFormData, FormMode } from '@/types/app/ui/forms';
 
 import { HouseholdDetailsForm } from './HouseholdDetails';
 
@@ -40,7 +40,7 @@ export function HouseholdForm({
   isLoading = false,
   className = '',
   showActions = true,
-}: HouseholdFormProps) {
+}: Readonly<HouseholdFormProps>) {
   // Initialize form data with defaults
   const [formData, setFormData] = useState<HouseholdFormData>({
     // Default values for required fields
@@ -92,7 +92,7 @@ export function HouseholdForm({
   const isCreating = mode === 'create';
 
   return (
-    <form onSubmit={handleSubmit} className={`mx-auto max-w-16 space-y-6 ${className}`}>
+    <form onSubmit={handleSubmit} className={`mx-auto max-w-4xl space-y-6 ${className}`}>
       {/* Form Header */}
       <div className="mb-4 text-center">
         <h1 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -141,16 +141,20 @@ export function HouseholdForm({
         <div className="flex justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-800">
           <button
             type="button"
-            className="rounded-md border border-zinc-200 bg-white px-4 py-2 text-zinc-900 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:bg-zinc-950 dark:text-zinc-100"
+            className="rounded-md border border-zinc-200 bg-white px-4 py-2 text-zinc-900 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-primary dark:text-blue-400-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-blue-600 transition-colors disabled:opacity-50"
+            className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
           >
-            {isLoading ? 'Saving...' : isCreating ? 'Create Household' : 'Update Household'}
+            {(() => {
+              if (isLoading) return 'Saving...';
+              if (isCreating) return 'Create Household';
+              return 'Update Household';
+            })()}
           </button>
         </div>
       )}

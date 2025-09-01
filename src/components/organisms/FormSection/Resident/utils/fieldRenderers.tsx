@@ -1,2 +1,2 @@
-// Re-export from the new location in src/lib/forms
-export * from '@/lib/forms/field-renderers';
+// Re-export from the new location in src/components/forms
+export * from '@/components/forms/field-renderers';

@@ -17,31 +17,10 @@ import {
 } from '@/lib/command-menu';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
-/**
- * Recent item from storage
- */
-export interface RecentItem {
-  id: string;
-  title: string;
-  description: string;
-  href: string;
-}
 
-/**
- * Return type for command menu recent items hook
- */
-export interface UseCommandMenuRecentsReturn {
-  /** Recent menu items */
-  recentItems: CommandMenuItem[];
-  /** Loading state */
-  isLoading: boolean;
-  /** Load recent items */
-  loadRecentItems: () => Promise<void>;
-  /** Clear all recent items */
-  handleClearRecentItems: () => Promise<void>;
-  /** Number of recent items */
-  recentItemsCount: number;
-}
+import type { UseCommandMenuRecentsReturn } from '@/types';
+
+// Interface moved to centralized types
 
 /**
  * Hook for command menu recent items management

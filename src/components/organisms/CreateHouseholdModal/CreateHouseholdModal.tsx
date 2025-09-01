@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase, logger, logError } from '@/lib';
-import type { HouseholdModalFormData as HouseholdFormData } from '@/types/components';
+// REMOVED: @/lib barrel import - replace with specific module;
+import type { HouseholdModalFormData as HouseholdFormData } from '@/types/app/ui/components';
 
 import { Button } from '../../atoms';
 import AccessibleModal from '../../molecules/AccessibleModal';

@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { RequestPerformanceMetrics } from '@/types/performance';
+import type { RequestPerformanceMetrics } from '@/types/shared/utilities';
 
 // In-memory performance store (use proper metrics service in production)
 const performanceStore: RequestPerformanceMetrics[] = [];

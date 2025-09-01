@@ -29,7 +29,7 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-1 rounded-sm text-base font-medium leading-5 transition-colors font-system focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed',
@@ -98,7 +98,7 @@ const buttonVariants = cva(
 
         // Ghost variants
         ghost:
-          'focus-visible:ring-secondary text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:text-gray-500 disabled:dark:text-gray-400 dark:text-gray-600 dark:text-gray-400',
+          'focus-visible:ring-secondary text-gray-600 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:text-gray-500 disabled:dark:text-gray-400',
       },
       size: {
         sm: 'h-8 px-3 text-sm',

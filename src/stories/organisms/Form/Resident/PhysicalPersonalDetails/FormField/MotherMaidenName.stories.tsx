@@ -363,7 +363,7 @@ export const Interactive: Story = {
 
         <div className="space-y-4">
           <div className="rounded bg-gray-100 p-4">
-            <h4 className="font-medium">Full Mother's Maiden Name:</h4>
+            <h4 className="font-medium">Full Mother&apos;s Maiden Name:</h4>
             <p className="mt-1 text-lg">{generateFullName()}</p>
           </div>
 
@@ -458,8 +458,8 @@ export const CulturalContext: Story = {
           <h4 className="font-medium">Cultural Context - Philippine Naming Conventions</h4>
           <div className="mt-2 space-y-2 text-sm">
             <p>
-              <strong>Purpose:</strong> Mother's maiden name is commonly used for identification and
-              verification in Philippine government documents.
+              <strong>Purpose:</strong> Mother&apos;s maiden name is commonly used for
+              identification and verification in Philippine government documents.
             </p>
             <p>
               <strong>Usage:</strong> Required in birth certificates, passports, and other official

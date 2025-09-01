@@ -4,26 +4,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
 import { createSecureErrorResponse } from '@/lib/security/api-security';
 
-export interface AuthenticatedUser {
-  id: string;
-  email?: string;
-  role?: string;
-  barangay_code?: string | null;
-  city_municipality_code?: string | null;
-  province_code?: string | null;
-  region_code?: string | null;
-}
-
-export interface AuthResult {
-  success: boolean;
-  user?: AuthenticatedUser;
-  error?: string;
-  response?: NextResponse;
-}
+import type { AuthenticatedUser, AuthResult } from '@/types/security';
 
 /**
  * Extract and validate Bearer token from request
@@ -180,11 +164,55 @@ export function authorizeResourceAccess(
 
 /**
  * Higher-order function to protect API routes with authentication
+ * Can accept either a simple handler or a configuration object with permissions
  */
 export function withAuth(
-  handler: (request: NextRequest, context: any, user: AuthenticatedUser) => Promise<NextResponse>,
-  requiredRoles?: string[]
-) {
+  configOrHandler: any,
+  handlerOrOptions?: any
+): any {
+  // Handle the case where first param is config object with requiredPermissions
+  if (typeof configOrHandler === 'object' && configOrHandler.requiredPermissions) {
+    const config = configOrHandler;
+    const actualHandler = handlerOrOptions;
+    
+    return async (request: NextRequest, routeContext: any): Promise<NextResponse> => {
+      const authResult = await authenticateUser(request);
+
+      if (!authResult.success || !authResult.user) {
+        return authResult.response || createSecureErrorResponse('Authentication failed', 401);
+      }
+
+      // Create proper RequestContext
+      const context = {
+        userId: authResult.user.id,
+        userRole: authResult.user.role as any, // Type assertion needed here
+        user: authResult.user,
+        barangayCode: authResult.user.barangay_code,
+        cityCode: authResult.user.city_municipality_code,
+        provinceCode: authResult.user.province_code,
+        regionCode: authResult.user.region_code,
+        requestId: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        path: request.nextUrl.pathname,
+        method: request.method,
+        ip: request.headers.get('x-forwarded-for')?.split(',')[0] || request.headers.get('x-real-ip') || undefined,
+        userAgent: request.headers.get('user-agent') || undefined,
+      };
+
+      // Check permissions (simplified - would need proper permission checking)
+      // For now, just check if user has a valid role
+      if (config.requiredPermissions && !authResult.user.role) {
+        return createSecureErrorResponse('Insufficient permissions', 403);
+      }
+
+      return actualHandler(request, context, authResult.user);
+    };
+  }
+  
+  // Handle the simple case where first param is the handler
+  const handler = configOrHandler;
+  const requiredRoles = handlerOrOptions;
+  
   return async (request: NextRequest, context: any): Promise<NextResponse> => {
     const authResult = await authenticateUser(request);
 

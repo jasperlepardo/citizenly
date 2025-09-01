@@ -5,7 +5,7 @@
  * security measures per BSP Circular 808 requirements.
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useSearchParams, useRouter } from 'next/navigation';
 
@@ -22,7 +22,7 @@ jest.mock('@/contexts/AuthContext', () => ({
 }));
 
 jest.mock('@/components', () => ({
-  ResidentForm: jest.fn(({ onSubmit, onCancel, initialData }) => (
+  ResidentForm: jest.fn(({ onSubmit, onCancel: _onCancel, initialData }) => (
     <div data-testid="resident-form">
       <form>
         <input data-testid="first-name-input" defaultValue={initialData?.first_name || ''} />
@@ -101,7 +101,7 @@ jest.mock('@/hooks/crud/useResidentOperations', () => ({
   useResidentOperations: jest.fn(),
 }));
 
-jest.mock('@/lib/auth', () => ({
+jest.mock('@/lib/authentication', () => ({
   useCSRFToken: jest.fn(() => ({
     getToken: jest.fn(() => 'csrf-token-123'),
   })),
@@ -128,13 +128,15 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
-    (require('@/contexts/AuthContext') as any).useAuth.mockReturnValue({
+    const { useAuth } = jest.requireMock('@/contexts/AuthContext');
+    useAuth.mockReturnValue({
       user: mockUser,
       userProfile: mockUserProfile,
       session: { access_token: 'token' },
     });
 
-    (require('@/hooks/crud/useResidentOperations') as any).useResidentOperations.mockReturnValue({
+    const { useResidentOperations } = jest.requireMock('@/hooks/crud/useResidentOperations');
+    useResidentOperations.mockReturnValue({
       createResident: mockCreateResident,
       isSubmitting: false,
       validationErrors: {},
@@ -228,7 +230,8 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
       };
 
       // Mock parseFullName to throw error for invalid input
-      (require('@/utils/resident-form-utils') as any).parseFullName.mockImplementation(() => {
+      const { parseFullName } = jest.requireMock('@/utils/resident-form-utils');
+      parseFullName.mockImplementation(() => {
         throw new Error('Invalid name format');
       });
 
@@ -320,7 +323,8 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Should show rate limiting error
       await waitFor(() => {
-        expect((require('react-hot-toast') as any).toast.error).toHaveBeenCalledWith(
+        const { toast } = jest.requireMock('react-hot-toast');
+        expect(toast.error).toHaveBeenCalledWith(
           'Too many submission attempts. Please wait before trying again.'
         );
       });
@@ -513,7 +517,8 @@ describe('Security Tests - Philippine Regulatory Compliance', () => {
 
       // Should show generic error, not expose internal details
       await waitFor(() => {
-        expect((require('react-hot-toast') as any).toast.error).toHaveBeenCalledWith(
+        const { toast } = jest.requireMock('react-hot-toast');
+        expect(toast.error).toHaveBeenCalledWith(
           expect.not.stringMatching(/192\.168\.1\.100|server|database/i)
         );
       });

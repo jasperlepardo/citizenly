@@ -10,18 +10,7 @@
 import { useState, useEffect } from 'react';
 
 import { syncQueue } from '@/lib/data';
-
-/**
- * Return type for connection status hook
- */
-export interface UseConnectionStatusReturn {
-  /** Whether the user is online */
-  isOnline: boolean;
-  /** Whether there are pending sync items */
-  syncPending: boolean;
-  /** Whether sync can be performed (online + pending) */
-  canSync: boolean;
-}
+import type { UseConnectionStatusReturn } from '@/types';
 
 /**
  * Hook for monitoring network connection and sync status

@@ -9,13 +9,13 @@ import HouseholdForm, {
   HouseholdFormMode,
 } from '@/components/templates/Form/Household/HouseholdForm';
 import { useAuth } from '@/contexts';
-import { supabase, logger, logError } from '@/lib';
-import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
+// REMOVED: @/lib barrel import - replace with specific module;
+import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/domain/households/households';
 import {
   lookupAddressLabels,
   lookupHouseholdTypeLabels,
   lookupHouseholdHeadLabel,
-} from '@/utils/addressLookup';
+} from '@/services/domain/geography/addressLookupService';
 
 function HouseholdDetailContent() {
   const { user, loading: authLoading } = useAuth();

@@ -5,9 +5,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createErrorResponseObject } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 import { cacheManager } from '@/lib/caching/redis-client';
-import { responseCache } from '@/lib/caching/response-cache';
+import { responseCache } from '@/lib/caching/responseCache';
 import { isProduction } from '@/lib/config/environment';
 import { getConnectionPoolStats } from '@/lib/database/connection-pool';
 import { queryOptimizer } from '@/lib/database/query-optimizer';

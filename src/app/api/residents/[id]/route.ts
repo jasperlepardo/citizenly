@@ -1,23 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { withAuth } from '@/lib/middleware/auth-middleware';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import { getAccessLevel } from '@/lib/authentication/auth-helpers';
+import { logger, logError } from '@/lib/logging';
 import {
-  withAuth,
-  createAdminSupabaseClient,
-  getAccessLevel,
-  logger,
-  logError,
-  auditDataOperation,
   createSuccessResponse,
   createValidationErrorResponse,
   withNextRequestErrorHandling,
   withSecurityHeaders,
-  createResidentSchema,
-} from '@/lib';
-import { RequestContext, Role } from '@/lib/authentication/types';
+} from '@/utils/auth/apiResponseHandlers';
+import { createResidentSchema } from '@/utils/validation/validationUtils';
 import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import { ResidentFormData } from '@/types';
-import type { AuthenticatedUser } from '@/types/auth';
+import { securityAuditService } from '@/services/domain/auth/securityAuditService';
+import { RequestContext, Role, ResidentFormData, AuthenticatedUser } from '@/types';
 
 export const GET = withSecurityHeaders(
   withAuth(
@@ -340,9 +337,16 @@ export const GET = withSecurityHeaders(
         }
 
         // Audit the data access
-        await auditDataOperation('view', 'resident', residentId, context, {
-          fullName: `${resident.first_name || ''} ${resident.last_name || ''}`,
-        });
+        await securityAuditService.auditDataAccess(
+          'read',
+          'resident',
+          residentId,
+          context.user.id,
+          true,
+          {
+            fullName: `${resident.first_name || ''} ${resident.last_name || ''}`,
+          }
+        );
 
         return createSuccessResponse(
           {
@@ -653,9 +657,16 @@ export const PUT = withSecurityHeaders(
         }
 
         // Audit the update
-        await auditDataOperation('update', 'resident', residentId, context, {
-          fullName: `${mainResidentData.first_name || ''} ${mainResidentData.last_name || ''}`,
-        });
+        await securityAuditService.auditDataAccess(
+          'update',
+          'resident',
+          residentId,
+          context.user.id,
+          true,
+          {
+            fullName: `${mainResidentData.first_name || ''} ${mainResidentData.last_name || ''}`,
+          }
+        );
 
         // Fetch the complete resident record with sectoral information for the response
         const { data: completeResident, error: fetchError } = await supabaseAdmin
@@ -788,9 +799,16 @@ export const DELETE = withSecurityHeaders(
         }
 
         // Audit the deletion before performing it
-        await auditDataOperation('delete', 'resident', residentId, context, {
-          fullName: `${existingResident.first_name} ${existingResident.last_name}`,
-        });
+        await securityAuditService.auditDataAccess(
+          'delete',
+          'resident',
+          residentId,
+          context.user.id,
+          true,
+          {
+            fullName: `${existingResident.first_name} ${existingResident.last_name}`,
+          }
+        );
 
         // Soft delete: Update is_active to false instead of hard delete
         const { error: softDeleteError } = await supabaseAdmin

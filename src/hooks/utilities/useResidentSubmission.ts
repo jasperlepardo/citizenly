@@ -10,34 +10,13 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useState, useCallback } from 'react';
 
-import { ValidationResult } from '@/lib/validation';
-import type { ResidentFormData as ResidentEditFormData } from '@/types';
+import type { ValidationResult } from '@/types/shared/validation/validation';
+import type {
+  ResidentFormData,
+  UseResidentSubmissionOptions,
+  UseResidentSubmissionReturn,
+} from '@/types';
 
-/**
- * Submission options
- */
-export interface UseResidentSubmissionOptions {
-  onSubmit?: (data: ResidentEditFormData) => Promise<void>;
-  onSuccess?: (data: ResidentEditFormData) => void;
-  onError?: (error: Error) => void;
-}
-
-/**
- * Return type for useResidentSubmission hook
- */
-export interface UseResidentSubmissionReturn {
-  /** Whether submission is in progress */
-  isSubmitting: boolean;
-  /** Last submission error */
-  submissionError: string | null;
-  /** Submit form data */
-  submitForm: (
-    formData: Partial<ResidentEditFormData>,
-    validationResult: ValidationResult
-  ) => Promise<void>;
-  /** Reset submission state */
-  resetSubmissionState: () => void;
-}
 
 /**
  * Custom hook for resident submission
@@ -58,7 +37,7 @@ export function useResidentSubmission(
    * Submit form data
    */
   const submitForm = useCallback(
-    async (formData: Partial<ResidentEditFormData>, validationResult: ValidationResult) => {
+    async (formData: Partial<ResidentFormData>, validationResult: ValidationResult) => {
       if (!validationResult.success) {
         const firstError = validationResult.errors[0];
         setSubmissionError(firstError?.message || 'Form validation failed');
@@ -74,7 +53,7 @@ export function useResidentSubmission(
       setSubmissionError(null);
 
       try {
-        await onSubmit(formData as ResidentEditFormData);
+        await onSubmit(formData as ResidentFormData);
 
         // Invalidate relevant queries on successful submission
         await queryClient.invalidateQueries({
@@ -83,7 +62,7 @@ export function useResidentSubmission(
 
         // Call success callback
         if (onSuccess) {
-          onSuccess(formData as ResidentEditFormData);
+          onSuccess(formData as ResidentFormData);
         }
       } catch (error) {
         const errorMessage =

@@ -2,16 +2,20 @@
  * @jest-environment node
  */
 
+// String utilities
 import {
-  // String utilities
   capitalize,
   toTitleCase,
   truncateText,
   sanitizeString,
-  isValidEmail,
-  isValidPhilippineMobile,
   formatPhoneNumber,
-  // Data transformation utilities
+} from '@/utils/shared/stringUtils';
+
+// Validation utilities
+import { isValidEmail, isValidPhilippineMobile } from '@/utils/validation/utilities';
+
+// Data transformation utilities
+import {
   isEmpty,
   deepClone,
   groupBy,
@@ -21,22 +25,21 @@ import {
   formatDate,
   parseQueryString,
   buildQueryString,
-  // ID generation utilities
+} from '@/utils/data/dataTransformers';
+
+// ID generation utilities
+import {
   generateId,
-  generateFieldId,
   getFieldId,
   getFieldIds,
   buildAriaDescribedBy,
-  buildAriaLabelledBy,
-  // Async utilities
-  debounce,
-  throttle,
-  sleep,
-  retry,
-  // CSS utilities
-  cn,
-  // mergeClassNames - REMOVED: Use `cn` instead
-} from '@/utils';
+} from '@/utils/shared/idGenerators';
+
+// Async utilities
+import { debounce, throttle, sleep, retry } from '@/utils/shared/asyncUtils';
+
+// CSS utilities
+import { cn } from '@/utils/shared/cssUtils';
 
 describe('Utilities - String Utils', () => {
   describe('capitalize', () => {

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { syncQueue, offlineStorage } from '@/lib/data';
-import { pwaPerformance } from '@/lib/performance/pwaPerformanceUtils';
+import { pwaPerformance } from '@/utils/performance/pwaPerformanceUtils';
 
 interface PWADevToolsProps {
   className?: string;

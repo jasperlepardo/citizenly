@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { supabase, logError } from '@/lib';
-import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/households';
+// REMOVED: @/lib barrel import - replace with specific module;
+import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/domain/households/households';
 
 export const dynamic = 'force-dynamic';
 

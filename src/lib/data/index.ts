@@ -22,11 +22,11 @@ export * from './sync-queue';
 export * from '../performance';
 
 // Repository pattern exports
-export { BaseRepository } from '@/services/base-repository';
-export type { QueryOptions, RepositoryError, RepositoryResult } from '@/types/services';
+export { BaseRepository } from '@/services/repositories/base-repository';
+export type { QueryOptions, RepositoryError, RepositoryResult } from '@/types/infrastructure/services';
 
 // Data types
 export type { ResidentRecord as ResidentData } from '@/types';
-export type { ResidentSearchOptions } from '@/services/resident-repository';
-export type { HouseholdData, HouseholdSearchOptions } from '@/services/household-repository';
-export type { UserData } from '@/services/user-repository';
+export type { ResidentSearchOptions } from '@/services/repositories/residentRepository';
+export type { HouseholdData, HouseholdSearchOptions } from '@/services/repositories/householdRepository';
+export type { UserData } from '@/services/repositories/userRepository';

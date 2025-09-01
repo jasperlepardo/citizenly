@@ -153,7 +153,7 @@ export const Interactive: Story = {
       <div className="space-y-4">
         <PhilSysCardField value={value} onChange={handleChange} error={error} required={true} />
         <div className="text-sm text-gray-600">
-          <p>Current value: "{value}"</p>
+          <p>Current value: &quot;{value}&quot;</p>
           <p>Valid format: XXXX-XXXX-XXXX (e.g., 1234-5678-9012)</p>
         </div>
       </div>

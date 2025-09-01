@@ -9,33 +9,14 @@
 
 import { useState, useCallback } from 'react';
 
-import { validateResidentData, ValidationResult } from '@/lib/validation';
-import type { ResidentFormData as ResidentEditFormData } from '@/types';
-import type { ValidationError } from '@/types/validation';
+import { validateResidentData } from '@/services/validation';
+import type { ValidationResult } from '@/types/shared/validation/validation';
+import type {
+  ResidentFormData,
+  UseResidentValidationErrorsReturn,
+} from '@/types';
+import type { ValidationError } from '@/types/shared/validation';
 
-/**
- * Return type for useResidentValidationErrors hook
- */
-export interface UseResidentValidationErrorsReturn {
-  /** Current validation errors */
-  errors: Record<string, string>;
-  /** Whether form is currently valid */
-  isValid: boolean;
-  /** Validate a single field */
-  validateField: (field: keyof ResidentEditFormData, value: any) => void;
-  /** Validate entire form */
-  validateForm: (formData: Partial<ResidentEditFormData>) => ValidationResult;
-  /** Get error for specific field */
-  getFieldError: (field: keyof ResidentEditFormData) => string | undefined;
-  /** Check if field has error */
-  hasFieldError: (field: keyof ResidentEditFormData) => boolean;
-  /** Clear error for specific field */
-  clearFieldError: (field: keyof ResidentEditFormData) => void;
-  /** Clear all errors */
-  clearAllErrors: () => void;
-  /** Set errors programmatically */
-  setErrors: (errors: Record<string, string>) => void;
-}
 
 /**
  * Custom hook for resident validation error management
@@ -54,7 +35,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
   /**
    * Validate a single field
    */
-  const validateField = useCallback((field: keyof ResidentEditFormData, value: any) => {
+  const validateField = useCallback((field: string, value: any) => {
     try {
       // Simple validation for production readiness
       const isValid = value || !['firstName', 'lastName', 'birthdate', 'sex'].includes(field);
@@ -81,13 +62,13 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
   /**
    * Validate entire form
    */
-  const validateForm = useCallback((formData: Partial<ResidentEditFormData>): ValidationResult => {
+  const validateForm = useCallback((formData: Partial<ResidentFormData>): ValidationResult => {
     // Simple validation for production readiness
     const errors: Record<string, string> = {};
     const requiredFields = ['firstName', 'lastName', 'birthdate', 'sex'];
 
     requiredFields.forEach(field => {
-      if (!formData[field as keyof ResidentEditFormData]) {
+      if (!formData[field as keyof ResidentFormData]) {
         errors[field] = `${field} is required`;
       }
     });
@@ -111,7 +92,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
    * Get error for specific field
    */
   const getFieldError = useCallback(
-    (field: keyof ResidentEditFormData): string | undefined => {
+    (field: string): string | undefined => {
       return errors[field];
     },
     [errors]
@@ -121,7 +102,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
    * Check if field has error
    */
   const hasFieldError = useCallback(
-    (field: keyof ResidentEditFormData): boolean => {
+    (field: string): boolean => {
       return Boolean(errors[field]);
     },
     [errors]
@@ -130,7 +111,7 @@ export function useResidentValidationErrors(): UseResidentValidationErrorsReturn
   /**
    * Clear error for specific field
    */
-  const clearFieldError = useCallback((field: keyof ResidentEditFormData) => {
+  const clearFieldError = useCallback((field: string) => {
     setErrorsState(prev => {
       const newErrors = { ...prev };
       delete newErrors[field];

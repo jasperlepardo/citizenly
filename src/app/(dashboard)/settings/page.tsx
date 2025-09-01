@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 
 import { Button, SelectField } from '@/components';
 import { useTheme } from '@/contexts';
+import { logger } from '@/lib/logging';
 
 export default function SettingsPage() {
   const { theme, actualTheme, setTheme } = useTheme();
@@ -57,8 +58,8 @@ export default function SettingsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`font-montserrat border-b-2 px-1 py-2 text-sm font-medium whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-gray-600 dark:text-gray-300 dark:text-gray-700'
-                    : 'border-transparent text-gray-600 hover:border-gray-200 hover:text-gray-600 dark:text-gray-300 dark:text-gray-400 dark:text-gray-700 dark:hover:border-gray-700 dark:hover:text-gray-300'
+                    ? 'border-blue-500 text-gray-600 dark:text-gray-300'
+                    : 'border-transparent text-gray-600 hover:border-gray-200 hover:text-gray-600 dark:text-gray-400 dark:hover:border-gray-700 dark:hover:text-gray-300'
                 }`}
               >
                 {tab.name}
@@ -89,7 +90,7 @@ export default function SettingsPage() {
                   <h4 className="font-montserrat mb-1 text-base font-medium text-gray-600 dark:text-gray-300">
                     Appearance
                   </h4>
-                  <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                  <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                     {theme === 'system'
                       ? `Following system preference (${actualTheme})`
                       : `Using ${theme} theme`}
@@ -122,7 +123,7 @@ export default function SettingsPage() {
                       </svg>
                     </div>
                     <span
-                      className={`font-montserrat text-sm font-medium ${theme === 'light' ? 'text-gray-700 dark:text-gray-200 dark:text-gray-800' : 'text-gray-600 dark:text-gray-400 dark:text-gray-600'}`}
+                      className={`font-montserrat text-sm font-medium ${theme === 'light' ? 'text-gray-700 dark:text-gray-200' : 'text-gray-600 dark:text-gray-400'}`}
                     >
                       Light
                     </span>
@@ -156,7 +157,7 @@ export default function SettingsPage() {
                       </svg>
                     </div>
                     <span
-                      className={`font-montserrat text-sm font-medium ${theme === 'dark' ? 'text-gray-700 dark:text-gray-200 dark:text-gray-800' : 'text-gray-600 dark:text-gray-400 dark:text-gray-600'}`}
+                      className={`font-montserrat text-sm font-medium ${theme === 'dark' ? 'text-gray-700 dark:text-gray-200' : 'text-gray-600 dark:text-gray-400'}`}
                     >
                       Dark
                     </span>
@@ -176,7 +177,7 @@ export default function SettingsPage() {
                   >
                     <div className="mb-2 flex size-8 items-center justify-center rounded-sm border border-gray-200 bg-linear-to-br from-white to-slate-800 dark:border-gray-700 dark:from-gray-800">
                       <svg
-                        className="size-4 text-gray-600 dark:text-gray-400 dark:text-gray-600"
+                        className="size-4 text-gray-600 dark:text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -190,7 +191,7 @@ export default function SettingsPage() {
                       </svg>
                     </div>
                     <span
-                      className={`font-montserrat text-sm font-medium ${theme === 'system' ? 'text-gray-700 dark:text-gray-200 dark:text-gray-800' : 'text-gray-600 dark:text-gray-400 dark:text-gray-600'}`}
+                      className={`font-montserrat text-sm font-medium ${theme === 'system' ? 'text-gray-700 dark:text-gray-200' : 'text-gray-600 dark:text-gray-400'}`}
                     >
                       System
                     </span>
@@ -220,7 +221,7 @@ export default function SettingsPage() {
                       { value: 'UTC', label: 'UTC (GMT+0)' },
                     ],
                     placeholder: 'Select timezone',
-                    onSelect: option => console.log('Timezone:', option),
+                    onSelect: option => logger.debug('Timezone selected:', option),
                   }}
                 />
                 <SelectField
@@ -231,7 +232,7 @@ export default function SettingsPage() {
                       { value: 'fil', label: 'Filipino' },
                     ],
                     placeholder: 'Select language',
-                    onSelect: option => console.log('Language:', option),
+                    onSelect: option => logger.debug('Language selected:', option),
                   }}
                 />
                 <SelectField
@@ -243,7 +244,7 @@ export default function SettingsPage() {
                       { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD' },
                     ],
                     placeholder: 'Select date format',
-                    onSelect: option => console.log('Date format:', option),
+                    onSelect: option => logger.debug('Date format selected:', option),
                   }}
                 />
               </div>
@@ -299,7 +300,7 @@ export default function SettingsPage() {
                           { value: 'never', label: 'Never' },
                         ],
                         placeholder: 'Select timeout',
-                        onSelect: option => console.log('Timeout:', option),
+                        onSelect: option => logger.debug('Timeout selected:', option),
                       }}
                     />
                   </div>
@@ -441,7 +442,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       Email Notifications
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Receive updates via email
                     </p>
                   </div>
@@ -465,7 +466,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       SMS Notifications
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Receive urgent alerts via SMS
                     </p>
                   </div>
@@ -487,7 +488,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       Push Notifications
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Browser push notifications
                     </p>
                   </div>
@@ -561,7 +562,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       Automatic Backup
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Daily database backups
                     </p>
                   </div>
@@ -588,7 +589,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       Maintenance Mode
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Temporarily disable public access
                     </p>
                   </div>
@@ -615,7 +616,7 @@ export default function SettingsPage() {
                     <h4 className="font-montserrat text-base font-medium text-gray-600 dark:text-gray-300">
                       Debug Mode
                     </h4>
-                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400 dark:text-gray-600">
+                    <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
                       Enable detailed error logging
                     </p>
                   </div>

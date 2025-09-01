@@ -46,7 +46,7 @@ export default function ResidentsLoading() {
         {/* Table Rows */}
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="px-6 py-4">
+            <div key={`resident-row-${i}`} className="px-6 py-4">
               <div className="grid grid-cols-6 items-center gap-4">
                 <div className="flex items-center space-x-3">
                   <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700"></div>

@@ -11,7 +11,7 @@ import { supabase } from '@/lib/data/supabase';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 // Import the properly typed ResidentRecord
-import { ResidentRecord } from '@/types/database';
+import { ResidentRecord } from '@/types/infrastructure/database';
 
 import { useResilientQuery } from './useResilientQuery';
 

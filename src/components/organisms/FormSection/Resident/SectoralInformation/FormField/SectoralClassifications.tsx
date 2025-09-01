@@ -9,34 +9,8 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
 import { ControlField } from '@/components';
-import { isIndigenousPeople } from '@/lib/business-rules/sectoral-classification';
-import type { FormMode } from '@/types';
-import { calculateAge } from '@/utils/dateUtils';
-
-// Sectoral Information Interface (matches database schema exactly)
-export interface SectoralInformation {
-  is_labor_force_employed: boolean; // Auto from employment_status
-  is_unemployed: boolean; // Auto from employment_status
-  is_overseas_filipino_worker: boolean; // Manual - Overseas Filipino Worker
-  is_person_with_disability: boolean; // Manual - Person with Disability
-  is_out_of_school_children: boolean; // Auto from age + education (5-17)
-  is_out_of_school_youth: boolean; // Auto from age + education + employment (18-30)
-  is_senior_citizen: boolean; // Auto from age (60+)
-  is_registered_senior_citizen: boolean; // Manual, conditional on is_senior_citizen
-  is_solo_parent: boolean; // Manual
-  is_indigenous_people: boolean; // Auto from ethnicity
-  is_migrant: boolean; // Manual
-}
-
-// Context data needed for auto-calculations
-export interface SectoralContext {
-  age?: number;
-  birthdate?: string;
-  employment_status?: string;
-  highest_educational_attainment?: string;
-  marital_status?: string;
-  ethnicity?: string;
-}
+import { calculateSectoralFlags } from '@/services/domain/residents/sectoral-classification';
+import type { FormMode, SectoralInformation, SectoralContext } from '@/types';
 
 interface SectoralClassificationsProps {
   readonly value: SectoralInformation;
@@ -45,10 +19,6 @@ interface SectoralClassificationsProps {
   readonly mode?: FormMode;
   readonly disabled?: boolean;
 }
-
-const EMPLOYED_STATUSES = ['employed', 'self_employed'];
-
-const UNEMPLOYED_STATUSES = ['unemployed', 'looking_for_work'];
 
 export default function SectoralClassifications({
   value,
@@ -59,29 +29,8 @@ export default function SectoralClassifications({
 }: SectoralClassificationsProps) {
   // Calculate the expected sectoral flags based on context
   const calculatedFlags = useMemo(() => {
-    const age = context.age || (context.birthdate ? calculateAge(context.birthdate) : 0);
-    const employment = context.employment_status || '';
-    const ethnicity = context.ethnicity || '';
-
-    return {
-      is_labor_force_employed: EMPLOYED_STATUSES.includes(employment),
-      is_unemployed: UNEMPLOYED_STATUSES.includes(employment),
-      is_out_of_school_children: isOutOfSchoolChildren(age, context.highest_educational_attainment),
-      is_out_of_school_youth: isOutOfSchoolYouth(
-        age,
-        context.highest_educational_attainment,
-        employment
-      ),
-      is_senior_citizen: age >= 60,
-      is_indigenous_people: isIndigenousPeople(ethnicity),
-    };
-  }, [
-    context.age,
-    context.birthdate,
-    context.employment_status,
-    context.highest_educational_attainment,
-    context.ethnicity,
-  ]);
+    return calculateSectoralFlags(context);
+  }, [context]);
 
   // Use a ref to track if we've already updated for these calculated flags
   const lastUpdateRef = useRef<string>('');
@@ -119,39 +68,7 @@ export default function SectoralClassifications({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calculatedFlags]); // Only depend on calculatedFlags
 
-  // Calculate age from birthdate
-  // calculateAge imported from @/utils/dateUtils above - removed duplicate function
-
-  // Check if person qualifies as out-of-school children (5-17 years old, not in school)
-  function isOutOfSchoolChildren(age: number, education?: string): boolean {
-    if (age < 5 || age > 17) return false;
-
-    // If still in elementary/high school, not out-of-school
-    const inSchoolEducation = [
-      'elementary_graduate',
-      'high_school_graduate',
-      'senior_high_graduate',
-    ];
-    return !inSchoolEducation.some(level => education?.includes(level));
-  }
-
-  // Check if person qualifies as out-of-school youth (18-30 years old, not in school, not employed)
-  function isOutOfSchoolYouth(age: number, education?: string, employment?: string): boolean {
-    if (age < 18 || age > 30) return false;
-
-    // Must not be in tertiary education
-    const inTertiaryEducation = [
-      'college_undergraduate',
-      'college_graduate',
-      'vocational_graduate',
-    ];
-    const isInSchool = inTertiaryEducation.some(level => education?.includes(level));
-
-    // Must not be employed
-    const isEmployed = EMPLOYED_STATUSES.includes(employment || '');
-
-    return !isInSchool && !isEmployed;
-  }
+  // Auto-calculation logic delegated to centralized business rules
 
   // Handle manual flag changes
   const handleFlagChange =

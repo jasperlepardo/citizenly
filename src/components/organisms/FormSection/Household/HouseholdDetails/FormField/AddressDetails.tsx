@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import { InputField, SelectField } from '@/components/molecules/FieldSet';
 import { useGeographicData } from '@/hooks/api/useGeographicData';
 
-import { HouseholdDetailsData } from '../../types';
+import { HouseholdFormData } from '../../types';
 
 export interface AddressDetailsProps {
-  formData: HouseholdDetailsData;
+  formData: HouseholdFormData;
   onChange: (field: string, value: string | number | boolean | null) => void;
   errors?: Record<string, string>;
   mode?: 'create' | 'view' | 'edit';

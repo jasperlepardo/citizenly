@@ -10,49 +10,16 @@
 import { useCallback } from 'react';
 
 import { HouseholdFormData } from '@/services/household.service';
+import type {
+  UseHouseholdOperationsWorkflowOptions,
+  UseHouseholdOperationsWorkflowReturn,
+  UseHouseholdCreationServiceOptions,
+} from '@/types';
 
 import { useHouseholdCrud, UseHouseholdCrudOptions } from '../crud/useHouseholdCrud';
 import { useHouseholdValidation } from '../validation/useOptimizedHouseholdValidation';
+import { useHouseholdCreationService } from './useHouseholdCreationService';
 
-import {
-  useHouseholdCreationService,
-  UseHouseholdCreationServiceOptions,
-} from './useHouseholdCreationService';
-
-/**
- * Workflow options combining all sub-hook options
- */
-export interface UseHouseholdOperationsWorkflowOptions
-  extends UseHouseholdCrudOptions,
-    UseHouseholdCreationServiceOptions {}
-
-/**
- * Return type for useHouseholdOperationsWorkflow hook
- */
-export interface UseHouseholdOperationsWorkflowReturn {
-  // CRUD operations
-  getHousehold: ReturnType<typeof useHouseholdCrud>['getHousehold'];
-  getHouseholdByCode: ReturnType<typeof useHouseholdCrud>['getHouseholdByCode'];
-  listHouseholds: ReturnType<typeof useHouseholdCrud>['listHouseholds'];
-  updateHousehold: ReturnType<typeof useHouseholdCrud>['updateHousehold'];
-  deleteHousehold: ReturnType<typeof useHouseholdCrud>['deleteHousehold'];
-
-  // Creation operations
-  createHousehold: ReturnType<typeof useHouseholdCreationService>['createHousehold'];
-  generateHouseholdCode: ReturnType<typeof useHouseholdCreationService>['generateHouseholdCode'];
-
-  // Validation
-  validateHousehold: ReturnType<typeof useHouseholdValidation>['validateHousehold'];
-  validationErrors: ReturnType<typeof useHouseholdValidation>['validationErrors'];
-  getFieldError: ReturnType<typeof useHouseholdValidation>['getFieldError'];
-  hasFieldError: ReturnType<typeof useHouseholdValidation>['hasFieldError'];
-  clearFieldError: ReturnType<typeof useHouseholdValidation>['clearFieldError'];
-  clearValidationErrors: ReturnType<typeof useHouseholdValidation>['clearValidationErrors'];
-
-  // State
-  isSubmitting: boolean;
-  isValid: ReturnType<typeof useHouseholdValidation>['isValid'];
-}
 
 /**
  * Custom hook for complete household operations workflow

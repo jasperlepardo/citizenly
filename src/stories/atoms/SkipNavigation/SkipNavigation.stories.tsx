@@ -125,8 +125,8 @@ export const CustomSkipTarget: Story = {
           targets the #custom-target element.
         </p>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          <strong>To test:</strong> Press Tab to see the "Skip to article content" link, then press
-          Enter to jump here.
+          <strong>To test:</strong> Press Tab to see the &quot;Skip to article content&quot; link,
+          then press Enter to jump here.
         </p>
       </article>
     </div>
@@ -293,8 +293,9 @@ export const AccessibilityDemo: Story = {
 
         <div className="prose max-w-none">
           <p className="mb-6 text-lg text-gray-600 dark:text-gray-400">
-            You've successfully used the skip link to bypass the navigation and jump directly to the
-            main content. This is essential for users who navigate with keyboards or screen readers.
+            You&apos;ve successfully used the skip link to bypass the navigation and jump directly
+            to the main content. This is essential for users who navigate with keyboards or screen
+            readers.
           </p>
 
           <h3 className="mb-4 text-xl font-semibold">Why Skip Links Matter</h3>

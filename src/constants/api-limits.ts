@@ -1,6 +1,6 @@
 /**
  * API Rate Limits and Configuration Constants
- * @deprecated This file is deprecated. Use consolidated constants from @/types/constants
+ * @deprecated This file is deprecated. Use consolidated constants from @/types/shared/constants
  */
 
 import {
@@ -12,7 +12,7 @@ import {
   RETRY_CONFIG,
   RESPONSE_LIMITS,
   SECURITY_CONFIG,
-} from '@/types/constants';
+} from '@/types/shared/constants';
 
 export {
   RATE_LIMITS,

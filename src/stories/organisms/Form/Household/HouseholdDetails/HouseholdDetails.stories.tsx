@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { HouseholdDetails } from '@/components/organisms/HouseholdDetails';
-import { HouseholdDetailsData } from '@/components/types';
+import { HouseholdFormData } from '@/components/types';
 
 const meta: Meta<typeof HouseholdDetails> = {
   title: 'Organisms/Form/Household/HouseholdDetails',
@@ -29,7 +29,7 @@ type Story = StoryObj<typeof HouseholdDetails>;
 
 // Interactive wrapper component for Storybook
 const InteractiveHouseholdDetails = (args: Story['args']) => {
-  const [formData, setFormData] = useState<HouseholdDetailsData>(args.formData);
+  const [formData, setFormData] = useState<HouseholdFormData>(args.formData);
 
   const handleChange = (field: string, value: string | number | boolean | null) => {
     setFormData(prev => ({

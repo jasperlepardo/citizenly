@@ -5,8 +5,8 @@
 
 import { NextResponse } from 'next/server';
 
-import { withSecurityHeaders } from '@/lib/authentication/responseUtils';
-import { getCommandMenuHealth } from '@/lib/command-menu/analytics-utils';
+import { withSecurityHeaders } from '@/utils/auth/apiResponseHandlers';
+import { getCommandMenuHealth } from '@/utils/command-menu/analytics-utils';
 
 // GET /api/health/command-menu - Health check for command menu system
 export const GET = withSecurityHeaders(async () => {

@@ -25,22 +25,14 @@ const MALICIOUS_SIGNATURES = [
   // Script signatures
   Buffer.from('<?php', 'utf-8'),
   Buffer.from('<script', 'utf-8'),
+  // eslint-disable-next-line no-script-url
   Buffer.from('javascript:', 'utf-8'),
   // Shell script signatures
   Buffer.from('#!/bin/sh', 'utf-8'),
   Buffer.from('#!/bin/bash', 'utf-8'),
 ];
 
-export interface FileValidationResult {
-  isValid: boolean;
-  errors: string[];
-  fileInfo?: {
-    name: string;
-    size: number;
-    type: string;
-    hash: string;
-  };
-}
+import type { FileValidationResult } from '@/types/security';
 
 /**
  * Validate file size

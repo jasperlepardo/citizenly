@@ -7,7 +7,7 @@
 import { lazy } from 'react';
 
 import { TableSkeleton } from '@/components/atoms/Loading';
-import { withLazyLoading } from '@/lib';
+// REMOVED: @/lib barrel import - replace with specific module;
 
 const DataTableLazy = lazy(() => import('./DataTable'));
 

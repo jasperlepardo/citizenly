@@ -32,7 +32,7 @@ export {
   usePhoneValidation,
   useRequiredValidation,
   CommonSchemas,
-} from '@/lib/validation/createValidationHook';
+} from '@/hooks/validation/createValidationHook';
 
 // Advanced validation hooks using validation factory
 export {
@@ -47,4 +47,4 @@ export type {
   ValidationResult,
   ValidationHookOptions,
   UseValidationReturn,
-} from '@/lib/validation/createValidationHook';
+} from '@/hooks/validation/createValidationHook';

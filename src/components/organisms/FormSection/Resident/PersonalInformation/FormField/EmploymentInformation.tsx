@@ -1,19 +1,12 @@
 import React from 'react';
 
 import { SelectField } from '@/components';
-import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/lib/constants/resident-enums';
-import type { FormMode } from '@/types';
-import { SelectOption } from '@/types';
-
-export interface EmploymentInformationData {
-  employment_status: string;
-  occupation_code: string;
-  occupation_title: string;
-}
+import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/constants/resident-enums';
+import type { FormMode, EmploymentInformationFormData, SelectOption } from '@/types';
 
 export interface EmploymentInformationProps {
-  value: EmploymentInformationData;
-  onChange: (value: EmploymentInformationData) => void;
+  value: EmploymentInformationFormData;
+  onChange: (value: EmploymentInformationFormData) => void;
   errors: Record<string, string>;
   // PSOC search functionality
   onPsocSearch?: (query: string) => void;
@@ -34,7 +27,7 @@ export function EmploymentInformation({
   mode = 'create',
   className = '',
 }: EmploymentInformationProps) {
-  const handleChange = (field: keyof EmploymentInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof EmploymentInformationFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,

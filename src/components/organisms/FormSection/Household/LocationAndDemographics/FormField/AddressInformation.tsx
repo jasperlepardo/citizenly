@@ -4,22 +4,13 @@ import { InputField, SelectField } from '@/components';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
 import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
 import type { FormMode } from '@/types';
-
-export interface AddressInformationData {
-  houseNumber: string;
-  streetId: string; // Changed from streetName to streetId (UUID)
-  subdivisionId: string; // Changed from subdivisionName to subdivisionId (UUID)
-  barangayCode: string;
-  cityMunicipalityCode: string;
-  provinceCode: string;
-  regionCode: string;
-}
+import type { AddressInformationFormData } from '@/types/domain/households';
 
 export interface AddressInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: AddressInformationData;
-  onChange: (value: AddressInformationData) => void;
+  value: AddressInformationFormData;
+  onChange: (value: AddressInformationFormData) => void;
   errors: Record<string, string>;
   className?: string;
   // Location options (streets and subdivisions will be fetched automatically)
@@ -71,7 +62,7 @@ export function AddressInformation({
     enabled: !!value.barangayCode,
   });
 
-  const handleChange = (field: keyof AddressInformationData, fieldValue: string) => {
+  const handleChange = (field: keyof AddressInformationFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,

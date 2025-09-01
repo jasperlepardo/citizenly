@@ -17,7 +17,7 @@ import {
   setupTimeTracking,
   type UserBehaviorMetrics,
 } from '@/lib/analytics/user-behavior';
-import { trackPWAEvents } from '@/lib/performance/pwaPerformanceUtils';
+import { trackPWAEvents } from '@/utils/performance/pwaPerformanceUtils';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;

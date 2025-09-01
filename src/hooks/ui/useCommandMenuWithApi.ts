@@ -4,13 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 
-
 import {
   trackCommandMenuSearch,
   trackCommandMenuNavigation,
   trackCommandMenuAction,
   trackCommandMenuError,
-} from '@/lib/command-menu/analytics-utils';
+} from '@/utils/command-menu/analytics-utils';
 import {
   searchData,
   exportData,
@@ -24,10 +23,10 @@ import {
   findSoloParents,
   generateCertificate,
   generateReport,
-} from '@/lib/command-menu/api-utils';
-import { getCommandMenuItems, getAllCommandMenuItems } from '@/lib/command-menu/items-utils';
+} from '@/utils/api/apiUtils';
+import { getCommandMenuItems, getAllCommandMenuItems } from '@/utils/command-menu/items-utils';
 import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/lib/keyboardUtils';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 interface UseCommandMenuWithApiProps {
@@ -258,7 +257,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
           executeCommand(filteredItems[index]);
         }
       },
-      onNavigate: setSelectedIndex
+      onNavigate: setSelectedIndex,
     });
 
     const handleKeyDown = (event: KeyboardEvent) => {

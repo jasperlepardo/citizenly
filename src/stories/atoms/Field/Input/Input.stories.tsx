@@ -378,7 +378,7 @@ export const Interactive: Story = {
           />
         </div>
         <div className="text-sm text-gray-600">
-          Value: "{value}" (Length: {value.length})
+          Value: &quot;{value}&quot; (Length: {value.length})
         </div>
       </div>
     );

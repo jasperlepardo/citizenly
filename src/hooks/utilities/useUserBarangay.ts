@@ -3,14 +3,8 @@
 import { useState, useEffect } from 'react';
 
 import { useAuth } from '@/contexts';
-import { getCompleteAddress, type AddressHierarchy } from '@/lib/database';
-
-export interface UserBarangayInfo {
-  barangayCode: string | null;
-  address: AddressHierarchy | null;
-  loading: boolean;
-  error: string | null;
-}
+import { getCompleteAddress, type AddressHierarchy } from '@/lib/data/database-utils';
+import type { UserBarangayInfo } from '@/types';
 
 /**
  * Hook to get the current user's primary barangay assignment and address hierarchy

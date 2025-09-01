@@ -1,19 +1,13 @@
 import React from 'react';
 
 import { InputField } from '@/components';
-import type { FormMode } from '@/types';
-
-export interface MotherMaidenNameData {
-  mother_maiden_first: string;
-  mother_maiden_middle: string;
-  mother_maiden_last: string;
-}
+import type { FormMode, MotherMaidenNameFormData } from '@/types';
 
 export interface MotherMaidenNameProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
-  value: MotherMaidenNameData;
-  onChange: (value: MotherMaidenNameData) => void;
+  value: MotherMaidenNameFormData;
+  onChange: (value: MotherMaidenNameFormData) => void;
   errors: Record<string, string>;
   className?: string;
 }
@@ -25,7 +19,7 @@ export function MotherMaidenName({
   errors,
   className = '',
 }: MotherMaidenNameProps) {
-  const handleChange = (field: keyof MotherMaidenNameData, fieldValue: string) => {
+  const handleChange = (field: keyof MotherMaidenNameFormData, fieldValue: string) => {
     onChange({
       ...value,
       [field]: fieldValue,

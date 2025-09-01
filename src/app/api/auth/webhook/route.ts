@@ -3,14 +3,14 @@ import crypto from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib';
-import type { WebhookPayload } from '@/types/api-requests';
-import { WebhookUserRecord } from '@/types/auth';
+import { createAdminSupabaseClient } from '@/lib/data/client-factory';
+import type { WebhookPayload } from '@/types/app/api/apiRequests';
+import { WebhookUserRecord } from '@/types/app/auth/auth';
 
 // Webhook secret for verifying Supabase webhook signatures
 const WEBHOOK_SECRET = process.env.SUPABASE_WEBHOOK_SECRET || 'dev-webhook-secret';
 
-// WebhookPayload moved to src/types/api-requests.ts for consolidation
+// WebhookPayload moved to src/types/apiRequests.ts for consolidation
 
 function isWebhookUserRecord(v: any): v is WebhookUserRecord {
   return (

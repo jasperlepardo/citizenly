@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-
-// CreateUserData moved to src/types/api-requests.ts for consolidation
-import type { CreateUserData } from '@/types/api-requests';
+import type { CreateUserData } from '@/types/app/api/apiRequests';
 
 export async function POST(request: NextRequest) {
   try {

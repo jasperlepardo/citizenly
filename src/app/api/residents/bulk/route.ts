@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createPublicSupabaseClient, createAdminSupabaseClient } from '@/lib/data/client-factory';
-import type { AuthUserProfile } from '@/types/auth';
+import type { AuthUserProfile } from '@/types/app/auth/auth';
 
 // Bulk operations validation schema
 const bulkOperationSchema = z.object({

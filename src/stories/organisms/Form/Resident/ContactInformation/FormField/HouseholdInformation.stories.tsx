@@ -4,13 +4,13 @@ import {
   HouseholdInformation,
   HouseholdInformationData,
 } from '@/components/organisms/HouseholdInformation';
-import { 
-  InteractiveStory, 
+import {
+  InteractiveStory,
   StoryControlButtons,
   StoryValueDisplay,
   createStoryParameters,
   createEmptyFormData,
-  createSampleFormData
+  createSampleFormData,
 } from '@/lib/storybookUtils';
 
 const meta = {
@@ -304,7 +304,7 @@ export const Interactive: Story = {
         sampleData={sampleData}
         validationRules={householdValidation}
       >
-        {(storyState) => {
+        {storyState => {
           const handleChange = (newValue: HouseholdInformationData) => {
             storyState.onChange(newValue);
             // Clear search when selecting
@@ -329,7 +329,7 @@ export const Interactive: Story = {
                 householdLoading={isLoading}
               />
 
-              <StoryControlButtons 
+              <StoryControlButtons
                 storyState={storyState}
                 sampleData={sampleData}
                 controls={{
@@ -337,9 +337,10 @@ export const Interactive: Story = {
                     {
                       label: 'Reset + Clear Search',
                       onClick: customReset,
-                      className: 'rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700'
-                    }
-                  ]
+                      className:
+                        'rounded-md bg-purple-600 px-4 py-2 text-white hover:bg-purple-700',
+                    },
+                  ],
                 }}
               />
 
@@ -351,7 +352,7 @@ export const Interactive: Story = {
                       <strong>Selected:</strong> {storyState.value.householdCode || 'None'}
                     </p>
                     <p>
-                      <strong>Search Term:</strong> "{searchTerm}"
+                      <strong>Search Term:</strong> &quot;{searchTerm}&quot;
                     </p>
                     <p>
                       <strong>Available Options:</strong> {filteredHouseholds.length}
@@ -362,10 +363,7 @@ export const Interactive: Story = {
                   </div>
                 </div>
 
-                <StoryValueDisplay 
-                  value={storyState.value} 
-                  errors={storyState.errors} 
-                />
+                <StoryValueDisplay value={storyState.value} errors={storyState.errors} />
               </div>
             </div>
           );
@@ -460,7 +458,7 @@ export const SearchScenarios: Story = {
                 <strong>Label:</strong> {currentData.label}
               </p>
               <p>
-                <strong>Search Term:</strong> "{currentData.searchTerm}"
+                <strong>Search Term:</strong> &quot;{currentData.searchTerm}&quot;
               </p>
               <p>
                 <strong>Results:</strong> {currentData.options.length} households

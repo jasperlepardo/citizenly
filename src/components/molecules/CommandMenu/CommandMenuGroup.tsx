@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types';
 
 import { CommandMenuItem } from './CommandMenuItem';

@@ -150,7 +150,7 @@ export const GeographicContextDemo: Story = {
     docs: {
       description: {
         story:
-          'Demonstrates how the modal shows different geographic contexts based on the user&rsquo;s barangay assignment.',
+          'Demonstrates how the modal shows different geographic contexts based on the user\u2019s barangay assignment.',
       },
     },
   },
@@ -277,8 +277,8 @@ export const FormValidationDemo: Story = {
             <div className="mt-4 rounded-sm border border-yellow-200 bg-yellow-50 p-4 text-left">
               <h4 className="mb-2 font-semibold text-yellow-800">Form Validation Demo</h4>
               <p className="text-sm text-yellow-700">
-                Try submitting the form without filling in the required "Street Name" field to see
-                validation in action.
+                Try submitting the form without filling in the required &quot;Street Name&quot;
+                field to see validation in action.
               </p>
             </div>
           </div>

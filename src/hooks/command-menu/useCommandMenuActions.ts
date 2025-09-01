@@ -28,21 +28,9 @@ import {
 } from '@/lib/command-menu';
 import { trackNavigation, trackAction } from '@/lib/data';
 
-/**
- * Return type for command menu actions hook
- */
-export interface UseCommandMenuActionsReturn {
-  /** Execute a command */
-  executeCommand: (item: CommandMenuItem) => void;
-  /** Handle export data action */
-  handleExportData: (type: 'residents' | 'households', format: 'csv' | 'xlsx') => Promise<void>;
-  /** Handle backup data action */
-  handleBackupData: () => Promise<void>;
-  /** Handle quick action */
-  handleQuickAction: (actionFn: () => Promise<string>) => Promise<void>;
-  /** Get enhanced menu items with actions */
-  getEnhancedMenuItems: (baseItems: CommandMenuItem[]) => CommandMenuItem[];
-}
+import type { UseCommandMenuActionsReturn } from '@/types';
+
+// Interface moved to centralized types
 
 /**
  * Hook for command menu actions and execution

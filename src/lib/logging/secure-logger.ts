@@ -3,7 +3,7 @@
  * Prevents sensitive data from being logged while maintaining debugging capability
  */
 
-import type { LogLevel, SecureLogEntry as LogEntry } from '@/types/errors';
+import type { LogLevel, SecureLogEntry as LogEntry } from '@/types/shared/errors/errors';
 
 // Sensitive field patterns to redact
 const SENSITIVE_PATTERNS = [

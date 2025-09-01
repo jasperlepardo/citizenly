@@ -9,56 +9,13 @@
 
 import { useMemo } from 'react';
 
-import { CRITICAL_VALIDATION_FIELDS } from '@/lib/constants/resident-form-defaults';
-import { REQUIRED_FIELDS, getRequiredFieldsForSection } from '@/lib/validation/fieldLevelSchemas';
-
-/**
- * Validation summary
- */
-export interface ValidationSummary {
-  totalErrors: number;
-  criticalErrors: number;
-  warnings: number;
-  totalFields: number;
-  validFields: number;
-  progressPercentage: number;
-}
-
-/**
- * Section validation status
- */
-export interface SectionValidationStatus {
-  section: keyof typeof REQUIRED_FIELDS;
-  isValid: boolean;
-  errorCount: number;
-  totalFields: number;
-  progressPercentage: number;
-}
-
-/**
- * Return type for validation progress hook
- */
-export interface UseResidentValidationProgressReturn {
-  /** Get comprehensive validation summary */
-  getValidationSummary: (errors: Record<string, string>) => ValidationSummary;
-  /** Get validation progress percentage */
-  getValidationProgress: (errors: Record<string, string>) => number;
-  /** Check if form has critical errors */
-  hasCriticalErrors: (errors: Record<string, string>) => boolean;
-  /** Get section validation status */
-  getSectionValidationStatus: (
-    section: keyof typeof REQUIRED_FIELDS,
-    errors: Record<string, string>
-  ) => SectionValidationStatus;
-  /** Get all section validation statuses */
-  getAllSectionStatuses: (errors: Record<string, string>) => SectionValidationStatus[];
-  /** Check if field is critical */
-  isFieldCritical: (fieldName: string) => boolean;
-  /** Get all required fields */
-  getAllRequiredFields: () => string[];
-  /** Check if field is required */
-  isFieldRequired: (fieldName: string) => boolean;
-}
+import { CRITICAL_VALIDATION_FIELDS } from '@/constants/resident-form-defaults';
+import { REQUIRED_FIELDS, getRequiredFieldsForSection } from '@/services/validation/fieldLevelSchemas';
+import type {
+  ValidationSummary,
+  SectionValidationStatus,
+  UseResidentValidationProgressReturn,
+} from '@/types';
 
 /**
  * Hook for resident validation progress tracking

@@ -7,7 +7,7 @@
 
 import crypto from 'crypto';
 
-import type { PhilippineLogContext, AuditLogContext, NPCLogContext } from '@/types/errors';
+import type { PhilippineLogContext, AuditLogContext, NPCLogContext } from '@/types/shared/errors/errors';
 
 // Philippine regulatory compliance constants
 const RA_10173_SENSITIVE_FIELDS = new Set([

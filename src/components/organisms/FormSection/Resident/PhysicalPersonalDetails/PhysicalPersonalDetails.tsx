@@ -1,13 +1,15 @@
 import React from 'react';
 
-import type { FormMode } from '@/types';
+import type {
+  FormMode,
+  MotherMaidenNameFormData,
+  PhysicalCharacteristicsFormData,
+  VotingInformationFormData,
+} from '@/types';
 
-import { MotherMaidenName, MotherMaidenNameData } from './FormField/MotherMaidenName';
-import {
-  PhysicalCharacteristics,
-  PhysicalCharacteristicsData,
-} from './FormField/PhysicalCharacteristics';
-import { VotingInformation, VotingInformationData } from './FormField/VotingInformation';
+import { MotherMaidenName } from './FormField/MotherMaidenName';
+import { PhysicalCharacteristics } from './FormField/PhysicalCharacteristics';
+import { VotingInformation } from './FormField/VotingInformation';
 
 export interface PhysicalPersonalDetailsFormProps {
   /** Form mode - determines if field is editable or read-only */
@@ -43,7 +45,7 @@ export function PhysicalPersonalDetailsForm({
   errors,
 }: PhysicalPersonalDetailsFormProps) {
   // Map form data to PhysicalCharacteristics component props
-  const physicalCharacteristicsValue: PhysicalCharacteristicsData = {
+  const physicalCharacteristicsValue: PhysicalCharacteristicsFormData = {
     blood_type: formData.blood_type || '',
     complexion: formData.complexion || '',
     height: formData.height || '',
@@ -55,28 +57,28 @@ export function PhysicalPersonalDetailsForm({
   };
 
   // Map form data to VotingInformation component props
-  const votingInfoValue: VotingInformationData = {
+  const votingInfoValue: VotingInformationFormData = {
     is_voter: formData.is_voter ? 'yes' : 'no',
     is_resident_voter: formData.is_resident_voter ? 'yes' : 'no',
     last_voted_date: formData.last_voted_date || '',
   };
 
   // Map form data to MotherMaidenName component props
-  const motherMaidenNameValue: MotherMaidenNameData = {
+  const motherMaidenNameValue: MotherMaidenNameFormData = {
     mother_maiden_first: formData.mother_maiden_first || '',
     mother_maiden_middle: formData.mother_maiden_middle || '',
     mother_maiden_last: formData.mother_maiden_last || '',
   };
 
   // Handle changes from PhysicalCharacteristics component
-  const handlePhysicalCharacteristicsChange = (value: PhysicalCharacteristicsData) => {
+  const handlePhysicalCharacteristicsChange = (value: PhysicalCharacteristicsFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
       onChange(field as keyof typeof value, fieldValue);
     });
   };
 
   // Handle changes from VotingInformation component
-  const handleVotingInfoChange = (value: VotingInformationData) => {
+  const handleVotingInfoChange = (value: VotingInformationFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
       if (field === 'is_voter' || field === 'is_resident_voter') {
         onChange(field as keyof typeof value, fieldValue === 'yes');
@@ -87,7 +89,7 @@ export function PhysicalPersonalDetailsForm({
   };
 
   // Handle changes from MotherMaidenName component
-  const handleMotherMaidenNameChange = (value: MotherMaidenNameData) => {
+  const handleMotherMaidenNameChange = (value: MotherMaidenNameFormData) => {
     Object.entries(value).forEach(([field, fieldValue]) => {
       onChange(field as keyof typeof value, fieldValue);
     });

@@ -20,43 +20,10 @@ interface ErrorBoundaryState {
   errorInfo: string | null;
 }
 
-/**
- * Error boundary options
- */
-export interface AsyncErrorBoundaryOptions {
-  /** Callback when error occurs */
-  onError?: (error: Error, errorInfo: string) => void;
-  /** Enable automatic error recovery */
-  enableRecovery?: boolean;
-  /** Recovery timeout in milliseconds */
-  recoveryTimeout?: number;
-  /** Maximum retry attempts */
-  maxRetries?: number;
-  /** Delay between retries in milliseconds */
-  retryDelay?: number;
-}
-
-/**
- * Return type for async error boundary hook
- */
-export interface UseAsyncErrorBoundaryReturn {
-  /** Current error boundary state */
-  errorState: ErrorBoundaryState;
-  /** Wrap async operation with error boundary */
-  wrapAsync: <T>(asyncFn: () => Promise<T>, context?: string) => () => Promise<T | null>;
-  /** Clear error state */
-  clearError: () => void;
-  /** Retry last failed operation */
-  retry: () => Promise<void>;
-  /** Check if operation can be retried */
-  canRetry: boolean;
-  /** Current retry count */
-  retryCount: number;
-  /** Current error (shorthand for errorState.error) */
-  error: Error | null;
-  /** Whether currently retrying */
-  isRetrying: boolean;
-}
+import type { 
+  AsyncErrorBoundaryOptions,
+  UseAsyncErrorBoundaryReturn,
+} from '@/types';
 
 /**
  * Hook for async error boundary functionality

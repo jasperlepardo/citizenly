@@ -6,10 +6,10 @@
 
 import type { User, Session, AuthError } from '@supabase/supabase-js';
 
-import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/auth';
+import type { AuthUserProfile, UserRole, SignupRequest } from '@/types/app/auth/auth';
 
 import { createLogger } from '../config/environment';
-import { supabase } from '../supabase/supabase';
+import { supabase } from '../data/supabase';
 
 const logger = createLogger('Auth');
 
@@ -257,6 +257,62 @@ export const getUserAccessibleBarangays = async () => {
     logger.error('Error getting accessible barangays:', error);
     return [];
   }
+};
+
+/**
+ * Get access level based on user role
+ */
+export const getAccessLevel = (role: string): 'national' | 'region' | 'province' | 'city' | 'barangay' => {
+  switch (role) {
+    case 'super_admin':
+      return 'national';
+    case 'region_admin':
+      return 'region';
+    case 'province_admin':
+      return 'province';
+    case 'city_admin':
+      return 'city';
+    case 'barangay_admin':
+    case 'barangay_user':
+      return 'barangay';
+    default:
+      return 'barangay'; // Default to most restrictive
+  }
+};
+
+/**
+ * Apply geographic filtering to a Supabase query based on user access level
+ */
+export const applyGeographicFilter = (query: any, user: any): any => {
+  const accessLevel = getAccessLevel(user.role);
+  
+  switch (accessLevel) {
+    case 'barangay':
+      if (user.barangay_code) {
+        return query.eq('barangay_code', user.barangay_code);
+      }
+      break;
+    case 'city':
+      if (user.city_municipality_code) {
+        return query.eq('city_municipality_code', user.city_municipality_code);
+      }
+      break;
+    case 'province':
+      if (user.province_code) {
+        return query.eq('province_code', user.province_code);
+      }
+      break;
+    case 'region':
+      if (user.region_code) {
+        return query.eq('region_code', user.region_code);
+      }
+      break;
+    case 'national':
+      // No filtering for national access
+      break;
+  }
+  
+  return query;
 };
 
 // =============================================================================

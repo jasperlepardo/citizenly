@@ -2,13 +2,13 @@
 
 import React from 'react';
 
-import { cn } from '@/lib';
+import { cn } from '@/utils/shared/cssUtils';
 import {
   getFieldId,
   getFieldIds,
   buildAriaDescribedBy,
   buildAriaLabelledBy,
-} from '@/utils/id-generators';
+} from '@/utils/shared/idGenerators';
 
 import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
 

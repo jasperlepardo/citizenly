@@ -17,31 +17,8 @@ import {
   createPaginatedSearchState,
   createPaginatedSearchExecutor,
   createPaginatedSearchUtilities,
-} from '@/utils/search-utilities';
-
-/**
- * Return type for useGenericPaginatedSearch hook
- */
-export interface UseGenericPaginatedSearchReturn<T, F = any> {
-  query: string;
-  setQuery: (query: string) => void;
-  results: T[];
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-    hasMore: boolean;
-  };
-  isLoading: boolean;
-  error: Error | null;
-  filters?: F;
-  setFilters: (filters: F) => void;
-  clearSearch: () => void;
-  refresh: () => void;
-  loadMore: () => void;
-  setPage: (page: number) => void;
-  setPageSize: (pageSize: number) => void;
-}
+} from '@/utils/search/search-utilities';
+import type { UseGenericPaginatedSearchReturn } from '@/types';
 
 /**
  * Generic paginated search hook

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { ContactDetails, ContactDetailsData } from '@/components/organisms/ContactDetails';
-import { 
-  InteractiveStory, 
-  ProgressiveStory, 
+import {
+  InteractiveStory,
+  ProgressiveStory,
   ProgressiveStoryControls,
   ValidationPatternStory,
   ValidationPatternControls,
@@ -14,7 +14,7 @@ import {
   combineValidators,
   createStoryParameters,
   createEmptyFormData,
-  createSampleFormData
+  createSampleFormData,
 } from '@/lib/storybookUtils';
 
 const meta = {
@@ -54,7 +54,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Default empty state using consolidated utility
-const emptyData: ContactDetailsData = createEmptyFormData<ContactDetailsData>(['email', 'phoneNumber', 'mobileNumber']);
+const emptyData: ContactDetailsData = createEmptyFormData<ContactDetailsData>([
+  'email',
+  'phoneNumber',
+  'mobileNumber',
+]);
 
 // Sample complete data using consolidated utility
 const sampleData: ContactDetailsData = createSampleFormData<ContactDetailsData>({
@@ -260,23 +264,17 @@ export const Interactive: Story = {
       sampleData={sampleData}
       validationRules={contactValidationRules}
     >
-      {(storyState) => (
+      {storyState => (
         <div className="space-y-6">
-          <ContactDetails 
-            value={storyState.value} 
-            onChange={storyState.onChange} 
-            errors={storyState.errors} 
+          <ContactDetails
+            value={storyState.value}
+            onChange={storyState.onChange}
+            errors={storyState.errors}
           />
 
-          <StoryControlButtons 
-            storyState={storyState} 
-            sampleData={sampleData} 
-          />
+          <StoryControlButtons storyState={storyState} sampleData={sampleData} />
 
-          <StoryValueDisplay 
-            value={storyState.value} 
-            errors={storyState.errors} 
-          />
+          <StoryValueDisplay value={storyState.value} errors={storyState.errors} />
         </div>
       )}
     </InteractiveStory>
@@ -291,20 +289,20 @@ export const Interactive: Story = {
 export const ProgressiveFilling: Story = {
   render: () => {
     const steps = [
-      { 
-        label: 'Empty Form', 
+      {
+        label: 'Empty Form',
         data: { ...emptyData },
-        description: 'Starting with empty form'
+        description: 'Starting with empty form',
       },
-      { 
-        label: 'Add Email', 
+      {
+        label: 'Add Email',
         data: { ...emptyData, email: 'user@example.com' },
-        description: 'Email address added'
+        description: 'Email address added',
       },
-      { 
-        label: 'Add Phone', 
+      {
+        label: 'Add Phone',
         data: { ...emptyData, email: 'user@example.com', phoneNumber: '(02) 123-4567' },
-        description: 'Phone number added'
+        description: 'Phone number added',
       },
       {
         label: 'Add Mobile',
@@ -314,7 +312,7 @@ export const ProgressiveFilling: Story = {
           phoneNumber: '(02) 123-4567',
           mobileNumber: '+63 912 345 6789',
         },
-        description: 'All contact details completed'
+        description: 'All contact details completed',
       },
     ];
 
@@ -323,10 +321,10 @@ export const ProgressiveFilling: Story = {
         {({ currentData, currentStep, goToStep }) => (
           <div className="space-y-6">
             <ContactDetails value={currentData} onChange={() => {}} errors={{}} />
-            <ProgressiveStoryControls 
-              steps={steps} 
-              currentStep={currentStep} 
-              onStepChange={goToStep} 
+            <ProgressiveStoryControls
+              steps={steps}
+              currentStep={currentStep}
+              onStepChange={goToStep}
             />
           </div>
         )}

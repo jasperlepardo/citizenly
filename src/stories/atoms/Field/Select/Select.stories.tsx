@@ -7,7 +7,7 @@ import {
   CITIZENSHIP_OPTIONS,
   EDUCATION_LEVEL_OPTIONS,
   EMPLOYMENT_STATUS_OPTIONS,
-} from '@/lib/constants/resident-enums';
+} from '@/constants/resident-enums';
 import {
   withAuthenticatedSupabase,
   withUnauthenticatedSupabase,
@@ -36,7 +36,7 @@ Enhanced Select component that follows PSGCSelector patterns but works with stat
 ## Usage with Enums/Constants
 \`\`\`tsx
 import { Select } from '@/components/atoms/Field';
-import { SEX_OPTIONS } from '@/lib/constants/resident-enums';
+import { SEX_OPTIONS } from '@/constants/resident-enums';
 
 <Select
   enumData={SEX_OPTIONS}
@@ -251,7 +251,7 @@ export const AllowCustomInput: Story = {
           searchable={true}
         />
         <p className="text-sm text-gray-500">
-          Current value: "{value}" • Type custom values or select from list
+          Current value: &quot;{value}&quot; • Type custom values or select from list
         </p>
       </div>
     );
@@ -1103,8 +1103,8 @@ export const APIImplementationGuide: Story = {
 }`}
           </pre>
           <p className="mt-2 text-xs text-purple-600 dark:text-purple-400">
-            Note: Stories will show mock data if proxy isn't configured, demonstrating the same API
-            patterns.
+            Note: Stories will show mock data if proxy isn&apos;t configured, demonstrating the same
+            API patterns.
           </p>
         </div>
 
