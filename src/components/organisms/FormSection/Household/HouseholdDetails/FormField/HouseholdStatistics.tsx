@@ -2,7 +2,7 @@ import React from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet';
 
-import { HouseholdFormData } from '../../types';
+import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export interface HouseholdStatisticsProps {
   formData: HouseholdFormData;

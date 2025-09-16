@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/utils/command-menu/analytics-utils';
 import type {
   CommandMenuSearchResult as CommandMenuItem,

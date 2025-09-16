@@ -2,8 +2,9 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-import { createWrappedComponent } from '@/utils/dom/hocUtils';
-import { logError } from '@/lib/logging';
+import { createWrappedComponent } from '@/utils/react/hocUtils';
+import { logError } from '@/lib/logging/client-logger';
+import { captureError, addSentryBreadcrumb } from '@/lib/monitoring/sentry-config';
 
 interface Props {
   children: ReactNode;
@@ -13,6 +14,7 @@ interface Props {
   resetOnPropsChange?: boolean;
   isolate?: boolean;
   level?: 'page' | 'section' | 'component';
+  enableReporting?: boolean;
 }
 
 interface State {
@@ -20,6 +22,7 @@ interface State {
   error: Error | null;
   errorInfo: ErrorInfo | null;
   errorCount: number;
+  errorId: string | null;
 }
 
 /**
@@ -43,27 +46,50 @@ export class ErrorBoundary extends Component<Props, State> {
       error: null,
       errorInfo: null,
       errorCount: 0,
+      errorId: null,
     };
   }
 
   static getDerivedStateFromError(error: Error): State {
+    const errorId = `ERR_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+    
     return {
       hasError: true,
       error,
       errorInfo: null,
       errorCount: 0,
+      errorId,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    const { onError, level = 'component' } = this.props;
+    const { onError, level = 'component', enableReporting = true } = this.props;
+    const { errorId } = this.state;
 
     // Log error with context
     logError(error, `ERROR_BOUNDARY_${level.toUpperCase()}`);
 
+    // Add breadcrumb for debugging
+    addSentryBreadcrumb(`Error boundary caught: ${error.message}`, 'error_boundary', 'error');
+
+    // Report to monitoring service
+    if (enableReporting && errorId) {
+      captureError(error, {
+        errorId,
+        componentStack: errorInfo.componentStack,
+        errorBoundary: true,
+        level,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     // Call custom error handler if provided
     if (onError) {
-      onError(error, errorInfo);
+      try {
+        onError(error, errorInfo);
+      } catch (handlerError) {
+        logError(handlerError instanceof Error ? handlerError : new Error(String(handlerError)), 'ERROR_BOUNDARY_HANDLER_ERROR');
+      }
     }
 
     // Update state with error details
@@ -119,16 +145,20 @@ export class ErrorBoundary extends Component<Props, State> {
       this.resetTimeoutId = null;
     }
 
+    // Add breadcrumb for reset
+    addSentryBreadcrumb('Error boundary reset', 'error_boundary', 'info');
+
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null,
       errorCount: 0,
+      errorId: null,
     });
   };
 
   render() {
-    const { hasError, error, errorInfo, errorCount } = this.state;
+    const { hasError, error, errorInfo, errorCount, errorId } = this.state;
     const { children, fallback, isolate = true, level = 'component' } = this.props;
 
     if (hasError && error) {
@@ -152,6 +182,9 @@ export class ErrorBoundary extends Component<Props, State> {
                     : 'Component Error'}
               </h2>
               <p className="text-red-600">{error.message}</p>
+              {errorId && (
+                <p className="mt-1 text-xs text-red-500">Error ID: {errorId}</p>
+              )}
             </div>
 
             <details className="mb-4">

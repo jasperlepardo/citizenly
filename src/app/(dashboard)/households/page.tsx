@@ -12,8 +12,17 @@ function HouseholdsContent() {
   const [selectedAll, setSelectedAll] = useState(false);
   const [selectedHouseholds, setSelectedHouseholds] = useState<Set<string>>(new Set());
 
-  const { households, total, isLoading } = useHouseholds({
+  const { households, total, isLoading, error } = useHouseholds({
     searchTerm: localSearchTerm,
+  });
+
+  // Debug logging
+  console.log('Households Debug:', { 
+    householdsCount: households?.length, 
+    total, 
+    isLoading, 
+    error: error?.message,
+    searchTerm: localSearchTerm 
   });
 
   const handleSelectAll = () => {
@@ -233,7 +242,10 @@ function HouseholdsContent() {
                 <div className="p-8 text-center">
                   <p className="text-gray-600 dark:text-gray-400">{noResultsMessage}</p>
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Households are created automatically when you add residents.
+                    Households are created automatically when you add residents with address information.
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    To get started, <a href="/residents/create" className="text-blue-600 hover:underline">add your first resident</a> or <a href="/households/create" className="text-blue-600 hover:underline">create a household manually</a>.
                   </p>
                 </div>
               );

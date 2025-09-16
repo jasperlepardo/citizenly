@@ -7,13 +7,14 @@ import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
 import { ResidentForm } from '@/components/templates/Form/Resident';
+import { FormSkeleton } from '@/components/atoms/Loading/FormSkeleton/FormSkeleton';
 import { supabase } from '@/lib/data/supabase';
-import { logger, logError } from '@/lib/logging';
+import { clientLogger, logError } from '@/lib/logging/client-logger';
 // Remove unused enum imports - using types instead
 import { fetchWithAuth } from '@/utils/auth/sessionManagement';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { ResidentWithRelations } from '@/types/domain/residents/core';
-import type { SectoralInformation } from '@/types/domain/residents/forms';
+import type { SectoralInformation, ResidentFormData } from '@/types/domain/residents/forms';
 import {
   CivilStatusEnum,
   CitizenshipEnum,
@@ -23,7 +24,6 @@ import {
   EthnicityEnum,
   ReligionEnum,
 } from '@/types/infrastructure/database/database';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 // Tooltip component removed - not used in current implementation
 
@@ -47,22 +47,23 @@ function ResidentDetailContent() {
 
   const loadAddressInfo = useCallback(async (residentData: Resident) => {
     try {
-      logger.debug('Loading address information', { barangayCode: residentData.barangay_code });
+      const barangayCode = residentData.barangay_code;
+      clientLogger.debug('Loading address information', { component: 'ResidentDetailsPage', action: 'load_address', data: { barangayCode } });
 
       const { data: addressViewData, error: viewError } = await supabase
         .from('psgc_address_hierarchy')
         .select('barangay_name, city_municipality_name, province_name, region_name, full_address')
-        .eq('barangay_code', residentData.barangay_code)
+        .eq('barangay_code', barangayCode)
         .single();
 
       if (addressViewData && !viewError) {
-        residentData.address_info = {
+        (residentData as any).address_info = {
           barangay_name: addressViewData.barangay_name,
           city_municipality_name: addressViewData.city_municipality_name,
           province_name: addressViewData.province_name,
           region_name: addressViewData.region_name,
           full_address: addressViewData.full_address,
-          barangay_code: residentData.barangay_code || '',
+          barangay_code: barangayCode || '',
           city_municipality_code: '',
           region_code: '',
         };
@@ -71,19 +72,20 @@ function ResidentDetailContent() {
 
       await loadAddressFromIndividualTables(residentData);
     } catch (addressError) {
-      logger.warn('Address data lookup failed', {
+      clientLogger.warn('Address data lookup failed', { component: 'ResidentDetailsPage', action: 'address_lookup_failed', data: {
         error: addressError instanceof Error ? addressError.message : 'Unknown error',
-      });
+      }});
     }
   }, []);
 
   const loadAddressFromIndividualTables = async (residentData: Resident) => {
-    logger.debug('Address view not available, trying individual table queries');
+    clientLogger.debug('Address view not available, trying individual table queries', { component: 'ResidentDetailsPage', action: 'fallback_address_query' });
 
+    const barangayCode = residentData.barangay_code;
     const { data: barangayData, error: barangayError } = await supabase
       .from('psgc_barangays')
       .select('name, city_municipality_code')
-      .eq('code', residentData.barangay_code)
+      .eq('code', barangayCode)
       .single();
 
     if (!barangayData || barangayError) return;
@@ -94,7 +96,7 @@ function ResidentDetailContent() {
       province_name: '',
       region_name: '',
       full_address: barangayData.name,
-      barangay_code: residentData.barangay_code || '',
+      barangay_code: barangayCode || '',
       city_municipality_code: barangayData.city_municipality_code,
       region_code: '',
     };
@@ -135,100 +137,244 @@ function ResidentDetailContent() {
   };
 
   const loadOccupationInfo = async (residentData: Resident) => {
-    if (!residentData.occupation_code) return;
+    console.log('🔍 Loading occupation info for resident:', residentData.id);
+    console.log('🔍 Occupation code:', residentData.occupation_code);
+
+    if (!residentData.occupation_code) {
+      console.log('⚠️ No occupation code found for resident');
+      return;
+    }
 
     try {
-      const { data: psocData } = await supabase
-        .from('occupation_codes')
-        .select('code, title, level')
-        .eq('code', residentData.occupation_code)
+      const { data: psocData, error } = await supabase
+        .from('psoc_occupation_search')
+        .select('occupation_code, occupation_title, level_type, occupation_description')
+        .eq('occupation_code', residentData.occupation_code)
         .single();
 
+      console.log('🔍 PSOC query result:', { psocData, error });
+
       if (psocData) {
-        residentData.psoc_info = psocData;
+        residentData.psoc_info = {
+          code: psocData.occupation_code,
+          title: psocData.occupation_title,
+          level: psocData.level_type,
+          description: psocData.occupation_description
+        };
+        console.log('✅ Occupation info loaded:', residentData.psoc_info);
+      } else {
+        console.log('⚠️ No PSOC data found for occupation code:', residentData.occupation_code);
       }
     } catch (psocError) {
-      logger.warn('PSOC data lookup failed', {
+      console.error('❌ PSOC data lookup failed:', psocError);
+      clientLogger.warn('PSOC data lookup failed', { component: 'ResidentDetailsPage', action: 'psoc_lookup_failed', data: {
         error: psocError instanceof Error ? psocError.message : 'Unknown error',
+      }});
+    }
+  };
+
+  const loadBirthPlaceInfo = async (residentData: Resident) => {
+    if (!residentData.birth_place_code) return;
+
+    try {
+      // Try different PSGC tables based on the code length/pattern
+      let birthPlaceData = null;
+      const code = residentData.birth_place_code;
+
+      // Try barangay first (most specific)
+      if (code.length >= 9) {
+        const { data } = await supabase
+          .from('psgc_barangays')
+          .select('name, code')
+          .eq('code', code)
+          .single();
+        
+        if (data) {
+          birthPlaceData = { name: data.name, level: 'barangay' };
+        }
+      }
+
+      // Try city/municipality if no barangay found
+      if (!birthPlaceData && code.length >= 6) {
+        const { data } = await supabase
+          .from('psgc_cities_municipalities')
+          .select('name, code')
+          .eq('code', code)
+          .single();
+        
+        if (data) {
+          birthPlaceData = { name: data.name, level: 'city_municipality' };
+        }
+      }
+
+      // Try province if no city found
+      if (!birthPlaceData && code.length >= 4) {
+        const { data } = await supabase
+          .from('psgc_provinces')
+          .select('name, code')
+          .eq('code', code)
+          .single();
+        
+        if (data) {
+          birthPlaceData = { name: data.name, level: 'province' };
+        }
+      }
+
+      // Try region if no province found
+      if (!birthPlaceData && code.length >= 2) {
+        const { data } = await supabase
+          .from('psgc_regions')
+          .select('name, code')
+          .eq('code', code)
+          .single();
+        
+        if (data) {
+          birthPlaceData = { name: data.name, level: 'region' };
+        }
+      }
+
+      if (birthPlaceData) {
+        residentData.birth_place_info = birthPlaceData;
+      }
+    } catch (birthPlaceError) {
+      clientLogger.warn('Birth place data lookup failed', { 
+        component: 'ResidentDetailsPage', 
+        action: 'birth_place_lookup_failed', 
+        data: {
+          error: birthPlaceError instanceof Error ? birthPlaceError.message : 'Unknown error',
+          birth_place_code: residentData.birth_place_code
+        }
       });
     }
   };
 
-  useEffect(() => {
-    const loadResidentDetails = async () => {
-      if (!residentId) return;
+  const loadSectoralInfo = async (residentData: Resident) => {
+    try {
+      const { data: sectoralData } = await supabase
+        .from('resident_sectoral_info')
+        .select('*')
+        .eq('resident_id', residentData.id)
+        .single();
 
-      try {
-        setLoading(true);
-
-        logger.debug('Loading resident details', { residentId });
-
-        const response = await fetchWithAuth(`/api/residents/${residentId}`);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          logger.error('API Error loading resident', errorData);
-          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const responseData = await response.json();
-        const { resident: residentData, household: householdData } = responseData.data;
-
-        if (!residentData) {
-          setError('No data returned for resident');
-          return;
-        }
-
-        logger.debug('Resident data loaded successfully via API', { residentId: residentData.id });
-
-        if (householdData) {
-          residentData.household = householdData;
-        }
-
-        await loadAddressInfo(residentData);
-        await loadOccupationInfo(residentData);
-
-        // Initialize missing fields for comprehensive form
-        const initializedResident = {
-          ...residentData,
-          telephone_number: residentData.telephone_number || '',
-          philsys_card_number: residentData.philsys_card_number || '',
-          workplace: residentData.workplace || '',
-          height_cm: residentData.height_cm || undefined,
-          weight_kg: residentData.weight_kg || undefined,
-          complexion: residentData.complexion || '',
-          mother_first_name: residentData.mother_first_name || '',
-          mother_middle_name: residentData.mother_middle_name || '',
-          mother_maiden_last_name: residentData.mother_maiden_last_name || '',
-          migration_info: residentData.migration_info || {
-            is_migrant: false,
-            migration_type: null,
-            previous_address: '',
-            previous_country: '',
-            migration_reason: null,
-            migration_date: null,
-            documentation_status: null,
-            is_returning_resident: false,
-          },
+      if (sectoralData) {
+        residentData.sectoral_info = {
+          is_labor_force_employed: sectoralData.is_labor_force_employed || false,
+          is_unemployed: sectoralData.is_unemployed || false,
+          is_overseas_filipino_worker: sectoralData.is_overseas_filipino_worker || false,
+          is_person_with_disability: sectoralData.is_person_with_disability || false,
+          is_out_of_school_children: sectoralData.is_out_of_school_children || false,
+          is_out_of_school_youth: sectoralData.is_out_of_school_youth || false,
+          is_senior_citizen: sectoralData.is_senior_citizen || false,
+          is_registered_senior_citizen: sectoralData.is_registered_senior_citizen || false,
+          is_solo_parent: sectoralData.is_solo_parent || false,
+          is_indigenous_people: sectoralData.is_indigenous_people || false,
+          is_migrant: sectoralData.is_migrant || false
         };
-
-        // Setting resident state with initialized data
-        setResident(initializedResident);
-        setEditedResident(updateComputedFields({ ...initializedResident }));
-      } catch (err) {
-        logError(
-          err instanceof Error ? err : new Error('Unknown error loading resident'),
-          'RESIDENT_LOAD'
-        );
-        setError('Failed to load resident details');
-      } finally {
-        // Setting loading to false after data load attempt
-        setLoading(false);
+      } else {
+        // Default to all false if no sectoral info exists
+        residentData.sectoral_info = {
+          is_labor_force_employed: false,
+          is_unemployed: false,
+          is_overseas_filipino_worker: false,
+          is_person_with_disability: false,
+          is_out_of_school_children: false,
+          is_out_of_school_youth: false,
+          is_senior_citizen: false,
+          is_registered_senior_citizen: false,
+          is_solo_parent: false,
+          is_indigenous_people: false,
+          is_migrant: false
+        };
       }
-    };
+    } catch (sectoralError) {
+      clientLogger.warn('Sectoral data lookup failed', {
+        component: 'ResidentDetailsPage',
+        action: 'sectoral_lookup_failed',
+        data: {
+          error: sectoralError instanceof Error ? sectoralError.message : 'Unknown error',
+          resident_id: residentData.id
+        }
+      });
+    }
+  };
 
-    loadResidentDetails();
+  const loadResidentDetails = useCallback(async () => {
+    if (!residentId) return;
+
+    try {
+      setLoading(true);
+
+      clientLogger.debug('Loading resident details', { component: 'ResidentDetailsPage', action: 'load_resident', data: { residentId } });
+
+      const response = await fetchWithAuth(`/api/residents/${residentId}`);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        clientLogger.error('API Error loading resident', { component: 'ResidentDetailsPage', action: 'load_error', data: errorData });
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const responseData = await response.json();
+      const { resident: residentData, household: householdData } = responseData.data;
+
+      if (!residentData) {
+        setError('No data returned for resident');
+        return;
+      }
+
+      clientLogger.debug('Resident data loaded successfully via API', { component: 'ResidentDetailsPage', action: 'resident_loaded', data: { residentId: residentData.id } });
+
+      if (householdData) {
+        residentData.household = householdData;
+      }
+
+      await loadAddressInfo(residentData);
+      await loadOccupationInfo(residentData);
+      await loadBirthPlaceInfo(residentData);
+      await loadSectoralInfo(residentData);
+
+      // Initialize missing fields for comprehensive form
+      const initializedResident = {
+        ...residentData,
+        telephone_number: residentData.telephone_number || '',
+        philsys_card_number: residentData.philsys_card_number || '',
+        workplace: residentData.workplace || '',
+        height_cm: residentData.height_cm || undefined,
+        weight_kg: residentData.weight_kg || undefined,
+        complexion: residentData.complexion || '',
+        mother_first_name: residentData.mother_first_name || '',
+        mother_middle_name: residentData.mother_middle_name || '',
+        mother_maiden_last_name: residentData.mother_maiden_last_name || '',
+        migration_info: residentData.migration_info || {
+          is_migrant: false,
+          migration_type: null,
+          previous_address: '',
+          previous_country: '',
+          migration_reason: null,
+          migration_date: null,
+          documentation_status: null,
+          is_returning_resident: false,
+        },
+      };
+
+      // Setting resident state with initialized data
+      setResident(initializedResident);
+      setEditedResident(updateComputedFields({ ...initializedResident }));
+    } catch (err) {
+      logError(
+        err instanceof Error ? err : new Error('Unknown error loading resident'),
+        'RESIDENT_LOAD'
+      );
+      setError('Failed to load resident details');
+    } finally {
+      // Setting loading to false after data load attempt
+      setLoading(false);
+    }
   }, [residentId, loadAddressInfo]);
+
+  useEffect(() => {
+    loadResidentDetails();
+  }, [loadResidentDetails]);
 
   const updateComputedFields = (updatedResident: Resident) => {
     // Update employment-related flags based on employment_status
@@ -250,6 +396,12 @@ function ResidentDetailContent() {
     // Transform resident data to form state format
     // Processing basic resident fields for form
 
+    // Safely handle the resident object and extract nested information
+    if (!resident) {
+      console.error('transformToFormState called with undefined resident');
+      throw new Error('Resident data is required for transformation');
+    }
+
     // Extract sectoral information from the nested object if it exists
     const residentWithNested = resident as Resident & {
       sectoral_info?: SectoralInformation;
@@ -258,10 +410,14 @@ function ResidentDetailContent() {
       resident_migrant_info?: Record<string, unknown>[];
       birth_place_info?: { name?: string; level?: string };
     };
-    const sectoralInfo =
-      residentWithNested.sectoral_info || residentWithNested.resident_sectoral_info?.[0] || null;
-    const migrantInfo =
-      residentWithNested.migrant_info || residentWithNested.resident_migrant_info?.[0] || null;
+    
+    // Safely extract sectoral and migrant info with proper null checking
+    const sectoralInfo = residentWithNested?.sectoral_info || 
+                        (residentWithNested?.resident_sectoral_info && residentWithNested.resident_sectoral_info[0]) || 
+                        null;
+    const migrantInfo = residentWithNested?.migrant_info || 
+                       (residentWithNested?.resident_migrant_info && residentWithNested.resident_migrant_info[0]) || 
+                       null;
 
     const formState = {
       // Personal Information
@@ -274,11 +430,9 @@ function ResidentDetailContent() {
       civil_status_others_specify: '', // Not in current Resident type
       citizenship: (resident.citizenship as CitizenshipEnum) || '',
       birthdate: resident.birthdate || '',
-      birth_place_name:
-        residentWithNested.birth_place_info?.name ||
-        (resident.birth_place_code ? `Loading ${resident.birth_place_code}...` : ''),
+      birth_place_name: (resident as any).birth_place_info?.name || '',
       birth_place_code: resident.birth_place_code || '',
-      birth_place_level: '' as '' | 'region' | 'province' | 'city_municipality' | 'barangay',
+      birth_place_level: ((resident as any).birth_place_info?.level || '') as '' | 'region' | 'province' | 'city_municipality' | 'barangay',
       philsys_card_number: resident.philsys_card_number || '',
       philsys_last4: resident.philsys_last4 || '',
       education_attainment: (resident.education_attainment as EducationLevelEnum) || '',
@@ -287,8 +441,8 @@ function ResidentDetailContent() {
       employment_code: '', // Not in current Resident type
       employment_name: '', // Not in current Resident type
       occupation_code: resident.occupation_code || '',
-      psoc_level: resident.psoc_level || 0,
-      occupation_title: resident.occupation_title || '',
+      psoc_level: (resident as any).psoc_info?.level || 0,
+      occupation_title: (resident as any).psoc_info?.title || '',
 
       // Contact Information
       email: resident.email || '',
@@ -296,7 +450,7 @@ function ResidentDetailContent() {
       mobile_number: resident.mobile_number || '',
       household_code: resident.household_code || '',
 
-      // Address hierarchy codes
+      // Address hierarchy codes (inherited from ResidentRecord)
       region_code: resident.region_code || '',
       province_code: resident.province_code || '',
       city_municipality_code: resident.city_municipality_code || '',
@@ -305,8 +459,8 @@ function ResidentDetailContent() {
       // Physical Personal Details
       blood_type: (resident.blood_type as BloodTypeEnum) || '',
       complexion: resident.complexion || '',
-      height: resident.height || 0,
-      weight: resident.weight || 0,
+      height: resident.height ? String(resident.height) : '',
+      weight: resident.weight ? String(resident.weight) : '',
       ethnicity: (resident.ethnicity as EthnicityEnum) || '',
       religion: (resident.religion as ReligionEnum) || '',
       religion_others_specify: '', // Not in current Resident type
@@ -373,7 +527,7 @@ function ResidentDetailContent() {
     } catch (err) {
       const error = err as Error;
       logError(error, 'RESIDENT_DELETE');
-      logger.error('Failed to delete resident', { error: error.message });
+      clientLogger.error('Failed to delete resident', { component: 'ResidentDetailsPage', action: 'delete_failed', data: { error: error.message } });
       toast.error(error.message || 'Failed to delete resident');
     } finally {
       setIsDeleting(false);
@@ -413,8 +567,8 @@ function ResidentDetailContent() {
         mobile_number: formData.mobile_number,
         telephone_number: formData.telephone_number,
         household_code: formData.household_code,
-        height: formData.height,
-        weight: formData.weight,
+        height: formData.height && !isNaN(Number(formData.height)) ? Number(formData.height) : null,
+        weight: formData.weight && !isNaN(Number(formData.weight)) ? Number(formData.weight) : null,
         complexion: formData.complexion,
         blood_type: formData.blood_type || null, // Convert empty string to null for enum
         ethnicity: formData.ethnicity || null,
@@ -422,30 +576,27 @@ function ResidentDetailContent() {
         religion_others_specify: formData.religion_others_specify,
         is_voter: formData.is_voter,
         is_resident_voter: formData.is_resident_voter,
-        last_voted_date: formData.last_voted_date || null,
+        last_voted_date: formData.last_voted_date && formData.last_voted_date.trim() !== '' ? formData.last_voted_date : null,
         mother_maiden_first: formData.mother_maiden_first,
         mother_maiden_middle: formData.mother_maiden_middle,
         mother_maiden_last: formData.mother_maiden_last,
 
-        // Sectoral information fields
-        is_labor_force_employed: formData.is_labor_force_employed,
-        is_unemployed: formData.is_unemployed,
-        is_overseas_filipino_worker: formData.is_overseas_filipino_worker,
-        is_person_with_disability: formData.is_person_with_disability,
-        is_out_of_school_children: formData.is_out_of_school_children,
-        is_out_of_school_youth: formData.is_out_of_school_youth,
-        is_senior_citizen: formData.is_senior_citizen,
-        is_registered_senior_citizen: formData.is_registered_senior_citizen,
-        is_solo_parent: formData.is_solo_parent,
-        is_indigenous_people: formData.is_indigenous_people,
-        is_migrant: formData.is_migrant,
+        // Note: Sectoral information fields are stored in the resident_sectoral_info table,
+        // not the main residents table, so they are excluded from this update payload.
+        // The repository layer should handle sectoral data separately.
       };
 
-      logger.debug('Making PUT request', {
+      clientLogger.debug('Making PUT request', { component: 'ResidentDetailsPage', action: 'update_request', data: {
         url: `/api/residents/${residentId}`,
         method: 'PUT',
         payloadKeys: Object.keys(updatePayload),
-      });
+      }});
+      
+      // Debug the specific fields we're concerned about
+      console.log('🔍 Update payload birth_place_code:', updatePayload.birth_place_code);
+      console.log('🔍 Update payload occupation_code:', updatePayload.occupation_code);
+      console.log('🔍 Form data birth_place_code:', formData.birth_place_code);
+      console.log('🔍 Form data occupation_code:', formData.occupation_code);
 
       const response = await fetchWithAuth(`/api/residents/${residentId}`, {
         method: 'PUT',
@@ -453,80 +604,54 @@ function ResidentDetailContent() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to update resident');
+        const errorText = await response.text().catch(() => '');
+        let errorData = {};
+        try {
+          errorData = errorText ? JSON.parse(errorText) : {};
+        } catch (e) {
+          errorData = { error: errorText || 'Failed to parse error response' };
+        }
+        
+        // Handle validation errors specially
+        if (errorData.error && errorData.error.code === 'VALIDATION_ERROR' && errorData.error.details?.validationErrors) {
+          const validationErrors = errorData.error.details.validationErrors;
+          const errorMessages = validationErrors.map((err: any) => `${err.field}: ${err.message}`).join(', ');
+          throw new Error(`Validation failed: ${errorMessages}`);
+        }
+        
+        const errorMessage = errorData.error?.message || errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+        console.log('🔥 API ERROR DEBUG:', { status: response.status, errorData, url: `/api/residents/${residentId}` });
+        throw new Error(errorMessage);
       }
 
-      const responseData = await response.json();
-      // Successfully received API response
-
-      const { resident: updatedResident } = responseData;
-      // Processing updated resident data from API
-
-      // Transform the nested sectoral data from the API response
-      let transformedResident = { ...updatedResident };
-
-      if (updatedResident?.resident_sectoral_info?.[0]) {
-        const sectoralInfo = updatedResident.resident_sectoral_info[0];
-        // Flattening sectoral information into main resident object
-
-        // Flatten sectoral information into the main resident object
-        transformedResident = {
-          ...transformedResident,
-          is_labor_force_employed: sectoralInfo.is_labor_force_employed,
-          is_unemployed: sectoralInfo.is_unemployed,
-          is_overseas_filipino_worker: sectoralInfo.is_overseas_filipino_worker,
-          is_person_with_disability: sectoralInfo.is_person_with_disability,
-          is_out_of_school_children: sectoralInfo.is_out_of_school_children,
-          is_out_of_school_youth: sectoralInfo.is_out_of_school_youth,
-          is_senior_citizen: sectoralInfo.is_senior_citizen,
-          is_registered_senior_citizen: sectoralInfo.is_registered_senior_citizen,
-          is_solo_parent: sectoralInfo.is_solo_parent,
-          is_indigenous_people: sectoralInfo.is_indigenous_people,
-          is_migrant: sectoralInfo.is_migrant,
-        };
-
-        // Remove the nested object to avoid duplication
-        delete transformedResident.resident_sectoral_info;
-      }
-
-      if (updatedResident?.resident_migrant_info?.[0]) {
-        const migrantInfo = updatedResident.resident_migrant_info[0];
-        // Flattening migrant information into main resident object
-
-        // Flatten migrant information into the main resident object
-        transformedResident = {
-          ...transformedResident,
-          previous_barangay_code: migrantInfo.previous_barangay_code,
-          previous_city_municipality_code: migrantInfo.previous_city_municipality_code,
-          previous_province_code: migrantInfo.previous_province_code,
-          previous_region_code: migrantInfo.previous_region_code,
-          length_of_stay_previous_months: migrantInfo.length_of_stay_previous_months,
-          reason_for_leaving: migrantInfo.reason_for_leaving,
-          date_of_transfer: migrantInfo.date_of_transfer,
-          reason_for_transferring: migrantInfo.reason_for_transferring,
-          duration_of_stay_current_months: migrantInfo.duration_of_stay_current_months,
-          is_intending_to_return: migrantInfo.is_intending_to_return,
-        };
-
-        // Remove the nested object to avoid duplication
-        delete transformedResident.resident_migrant_info;
-      }
-
-      // Setting transformed resident state with flattened data
-      // Migration status preserved in transformation
-
-      // Update local state and return to view mode
-      // Updating resident state with transformed data
-      setResident(transformedResident);
+      // Successfully updated! 
+      console.log('✅ Resident update API call successful');
+      
+      // Switch back to view mode and reload the fresh data from the API
       setFormMode('view');
-      setCurrentFormData(null); // Clear current form data after successful save
+      setCurrentFormData(null);
       toast.success('Resident updated successfully!');
+
+      // Reload the resident data to show the latest changes without page refresh
+      await loadResidentDetails();
     } catch (err) {
       const error = err as Error;
-      logError(error, 'RESIDENT_FORM_UPDATE');
-      logger.error('Failed to update resident', { error: error.message });
-      toast.error(`Failed to update resident: ${error.message}`);
+      const errorMessage = error.message || 'Unknown error';
+      const errorDetails = {
+        message: errorMessage,
+        stack: error.stack,
+        residentId,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('🔥 UPDATE ERROR DEBUG:', JSON.stringify(errorDetails, null, 2));
+      logError(errorMessage, 'RESIDENT_FORM_UPDATE');
+      clientLogger.error('Failed to update resident', { 
+        component: 'ResidentDetailsPage', 
+        action: 'update_failed', 
+        data: errorDetails
+      });
+      toast.error(`Failed to update resident: ${errorMessage}`);
     }
   };
 
@@ -534,14 +659,112 @@ function ResidentDetailContent() {
 
   if (loading) {
     return (
-      <div>
+      <div className="min-h-screen">
         <div className="p-6">
-          <div className="flex h-64 items-center justify-center">
-            <div className="text-center">
-              <div className="mx-auto size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-              <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-                Loading resident details...
-              </p>
+          {/* Header Skeleton */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-32 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+              <div>
+                <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                <div className="h-4 w-32 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Skeleton */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {/* Left Column - Form Sections Skeleton */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Form Header Skeleton */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="h-6 w-40 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                <div className="h-4 w-64 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+              </div>
+
+              {/* Personal Information Section */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="space-y-6">
+                  <div>
+                    <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                    <div className="h-4 w-96 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  </div>
+                  <FormSkeleton fieldCount={8} className="" />
+                </div>
+              </div>
+
+              {/* Contact Information Section */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="space-y-6">
+                  <div>
+                    <div className="h-6 w-44 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                    <div className="h-4 w-80 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  </div>
+                  <FormSkeleton fieldCount={4} className="" />
+                </div>
+              </div>
+
+              {/* Physical Details Section */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="space-y-6">
+                  <div>
+                    <div className="h-6 w-52 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                    <div className="h-4 w-72 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  </div>
+                  <FormSkeleton fieldCount={5} className="" />
+                </div>
+              </div>
+
+              {/* Sectoral Information Section */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="space-y-6">
+                  <div>
+                    <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                    <div className="h-4 w-88 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <div key={`sectoral-${i}`} className="space-y-2">
+                        <div className="h-4 w-32 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                        <div className="flex items-center space-x-2">
+                          <div className="h-4 w-4 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                          <div className="h-4 w-24 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Migration Information Section */}
+              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
+                <div className="space-y-6">
+                  <div>
+                    <div className="h-6 w-44 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
+                    <div className="h-4 w-76 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  </div>
+                  <FormSkeleton fieldCount={6} className="" />
+                </div>
+              </div>
+
+              {/* Form Actions Skeleton */}
+              <div className="flex gap-3 justify-end">
+                <div className="h-10 w-24 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                <div className="h-10 w-20 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Right Column - Sidebar Skeleton */}
+            <div className="space-y-6">
+              <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
+                <div className="h-5 w-24 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-4"></div>
+                <div className="space-y-3">
+                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -673,6 +896,8 @@ function ResidentDetailContent() {
                   onSubmit={handleFormSubmit}
                   onModeChange={undefined} // Hide FormHeader edit button
                   onChange={setCurrentFormData} // Track current form data changes
+                  hidePhysicalDetails={false} // Explicitly set to ensure consistency with create form
+                  hideSectoralInfo={false} // Explicitly set to ensure consistency with create form
                   key={`resident-form-${editedResident?.id}-${editedResident?.updated_at || Date.now()}`} // Force re-render when resident updates
                 />
               );
@@ -713,7 +938,7 @@ function ResidentDetailContent() {
                         });
                         formElement.dispatchEvent(submitEvent);
                       } else {
-                        logger.error('Form element not found for submission');
+                        clientLogger.error('Form element not found for submission', { component: 'ResidentDetailsPage', action: 'form_element_not_found' });
                         toast.error('Unable to submit form');
                       }
                     }

@@ -63,7 +63,7 @@ import {
   philippineCompliantLogger,
   auditLogger,
   npcComplianceLogger,
-} from '@/lib/security/philippine-logging';
+} from '@/lib/security/philippineLogging';
 import { hashPII, maskSensitiveData } from '@/lib/security/data-protection';
 
 // Remove all console.log statements immediately per NPC Circular 16-01
@@ -667,7 +667,7 @@ const handleSubmit = async (formData: ResidentFormData): Promise<void> => {
 #### **Implementation**
 
 ```typescript
-// CREATE: lib/security/rate-limiter.ts
+// CREATE: lib/security/rateLimiter.ts
 class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
   private readonly maxAttempts = 5;
@@ -726,7 +726,7 @@ import { ResidentForm } from '@/components';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { InputSanitizer } from '@/lib/security/input-sanitizer';
 import { logger } from '@/lib/security/secure-logger';
-import { formRateLimiter } from '@/lib/security/rate-limiter';
+import { formRateLimiter } from '@/lib/security/rateLimiter';
 import { validateRequiredFields, transformFormData, parseFullNameSecurely } from '@/utils/resident-form-utils';
 import { REQUIRED_FIELDS, FIELD_LABELS } from '@/constants/resident-form';
 import type { ResidentFormData, ValidationResult } from '@/types/resident-form-types';

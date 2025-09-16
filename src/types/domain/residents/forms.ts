@@ -5,7 +5,7 @@
  * These types handle the mapping between form fields and database schema.
  */
 
-import type { FormValidationError } from '../../shared/validation/validation';
+import type { FormValidationError } from '@/types/shared/validation/validation';
 
 /**
  * Personal Information section of resident form

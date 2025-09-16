@@ -2,15 +2,15 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import {
-  getFieldId,
-  getFieldIds,
-  buildAriaDescribedBy,
-  buildAriaLabelledBy,
-} from '@/utils/shared/idGenerators';
+// Simple inline utility (replacing deleted cssUtils)
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+// Simple inline ID utilities (replacing deleted idGenerators)
+const getFieldId = (name: string) => `field-${name}-${Math.random().toString(36).substring(2, 9)}`;
+const getFieldIds = (name: string) => ({ fieldId: getFieldId(name), helperId: `${getFieldId(name)}-helper`, errorId: `${getFieldId(name)}-error` });
+const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
+const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
+import { Label, ReadOnly, HelperText } from '@/components/atoms/Field';
 
 export interface ReadOnlyFieldProps {
   children?: React.ReactNode;

@@ -5,7 +5,7 @@ import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
 import {
   SEX_OPTIONS_WITH_DEFAULT,
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT,
-} from '@/constants/resident-enums';
+} from '@/constants/residentEnums';
 import type { FormMode, BasicInformationFormData } from '@/types';
 
 interface BasicInformationProps {

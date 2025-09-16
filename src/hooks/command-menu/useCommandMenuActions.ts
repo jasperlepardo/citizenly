@@ -23,10 +23,12 @@ import {
   findSoloParents,
   generateCertificate,
   generateReport,
+} from '@/utils/shared/apiUtils';
+import {
   trackCommandMenuNavigation,
   trackCommandMenuAction,
-} from '@/lib/command-menu';
-import { trackNavigation, trackAction } from '@/lib/data';
+} from '@/utils/command-menu/analytics-utils';
+import { trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
 
 import type { UseCommandMenuActionsReturn } from '@/types';
 

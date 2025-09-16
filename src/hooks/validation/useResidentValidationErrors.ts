@@ -9,7 +9,7 @@
 
 import { useState, useCallback } from 'react';
 
-import { validateResidentData } from '@/services/validation';
+import { validateResidentForm as validateResidentData } from '@/services/infrastructure/validation/residentSchema';
 import type { ValidationResult } from '@/types/shared/validation/validation';
 import type {
   ResidentFormData,

@@ -10,7 +10,7 @@ import {
   MigrationInformation,
 } from '@/components/organisms/FormSection';
 import { useAuth } from '@/contexts';
-import { isIndigenousPeople } from '@/services/domain/residents/sectoral-classification';
+import { isIndigenousPeople } from '@/services/domain/residents/residentClassification';
 import { supabase } from '@/lib/data/supabase';
 import type { FormMode } from '@/types';
 import { ResidentFormData } from '@/types/domain/residents/forms';
@@ -31,15 +31,21 @@ interface ResidentFormProps {
 
 // Helper function to get sectoral classifications based on ethnicity
 const getSectoralClassificationsByEthnicity = (ethnicity: string): Partial<ResidentFormData> => {
+  console.log('🔍 getSectoralClassificationsByEthnicity: Called with ethnicity:', ethnicity);
   const updates: Partial<ResidentFormData> = {};
 
   // Reset all sectoral classifications first (except manually set ones)
   updates.is_indigenous_people = false;
 
   // Indigenous peoples classification - automatically set to true
-  if (isIndigenousPeople(ethnicity)) {
+  const isIndigenous = isIndigenousPeople(ethnicity);
+  console.log('🔍 getSectoralClassificationsByEthnicity: isIndigenousPeople result:', isIndigenous);
+  if (isIndigenous) {
     updates.is_indigenous_people = true;
+    console.log('🔍 getSectoralClassificationsByEthnicity: Setting is_indigenous_people to true');
   }
+  
+  console.log('🔍 getSectoralClassificationsByEthnicity: Final updates:', updates);
 
   // Note: Other sectoral classifications could be auto-suggested based on ethnicity:
   // - is_migrant: Some communities are traditionally mobile (e.g., Badjao)
@@ -240,7 +246,10 @@ export function ResidentForm({
   }, []);
 
   const handlePsocSearch = useCallback(async (query: string) => {
+    console.log('🔍 ResidentForm: handlePsocSearch called with query:', query);
+
     if (!query || query.trim().length < 2) {
+      console.log('🔍 ResidentForm: Query too short, clearing options');
       setSearchOptions(prev => ({ ...prev, psoc: [] }));
       setSearchLoading(prev => ({ ...prev, psoc: false }));
       return;
@@ -256,26 +265,38 @@ export function ResidentForm({
         minLevel: 'major_group',
       });
 
+      console.log('🔍 ResidentForm: Making PSOC API call with params:', params.toString());
       const response = await fetch(`/api/psoc/search?${params}`);
+      console.log('🔍 ResidentForm: PSOC API response status:', response.status);
 
       if (response.ok) {
         const data = await response.json();
+        console.log('🔍 ResidentForm: PSOC API response data:', data);
+
         if (data.data && Array.isArray(data.data)) {
+          const mappedOptions = data.data.map((item: any) => ({
+            value: item.code,
+            label: item.title,
+            description: item.hierarchy,
+            level_type: item.level,
+            occupation_code: item.code,
+            occupation_title: item.title,
+          }));
+
+          console.log('🔍 ResidentForm: Mapped PSOC options:', mappedOptions);
+
           setSearchOptions(prev => ({
             ...prev,
-            psoc: data.data.map((item: any) => ({
-              value: item.code,
-              label: item.title,
-              description: item.hierarchy,
-              level_type: item.level,
-              occupation_code: item.code,
-              occupation_title: item.title,
-            })),
+            psoc: mappedOptions,
           }));
+        } else {
+          console.log('⚠️ ResidentForm: No data in PSOC API response');
         }
+      } else {
+        console.error('❌ ResidentForm: PSOC API returned error status:', response.status);
       }
     } catch (error) {
-      console.error('PSOC search error:', error);
+      console.error('❌ ResidentForm: PSOC search error:', error);
       setSearchOptions(prev => ({ ...prev, psoc: [] }));
     } finally {
       setSearchLoading(prev => ({ ...prev, psoc: false }));
@@ -351,6 +372,18 @@ export function ResidentForm({
     value: string | number | boolean | null
   ) => {
     const fieldKey = String(field);
+    
+    // Debug specific fields we're tracking
+    if (fieldKey === 'birth_place_code' || fieldKey === 'occupation_code' || fieldKey === 'ethnicity') {
+      console.log(`🔍 ResidentForm: handleFieldChange called for ${fieldKey}:`, value);
+      console.log(`🔍 ResidentForm: Current formData.${fieldKey}:`, formData[fieldKey as keyof ResidentFormData]);
+    }
+    
+    // Debug sectoral fields
+    if (fieldKey.startsWith('is_')) {
+      console.log(`🔍 ResidentForm: handleFieldChange called for sectoral field ${fieldKey}:`, value);
+      console.log(`🔍 ResidentForm: Current formData.${fieldKey}:`, formData[fieldKey as keyof ResidentFormData]);
+    }
 
     // Handle household batch update to avoid race condition
     if (fieldKey === '__household_batch__' && value && typeof value === 'object') {
@@ -385,15 +418,166 @@ export function ResidentForm({
       return; // Exit early for batch update
     }
 
+    // Handle physical characteristics batch update to avoid race condition
+    if (fieldKey === '__physical_characteristics_batch__' && value && typeof value === 'object') {
+      const physicalData = value as Record<string, string>;
+      
+      console.log('🔍 ResidentForm: Processing physical characteristics batch update:', physicalData);
+
+      let updatedData: Partial<ResidentFormData> = {
+        ...physicalData,
+      };
+
+      // Special handling for ethnicity within the batch
+      if (physicalData.ethnicity) {
+        console.log('🎯 ResidentForm: ETHNICITY IN BATCH:', physicalData.ethnicity);
+        const sectoralUpdates = getSectoralClassificationsByEthnicity(physicalData.ethnicity);
+        console.log('🎯 ResidentForm: Adding sectoral updates to batch:', sectoralUpdates);
+        updatedData = { ...updatedData, ...sectoralUpdates };
+      }
+
+      const newFormData = {
+        ...formData,
+        ...updatedData,
+      };
+
+      console.log('🎯 ResidentForm: BATCH UPDATE COMPLETE:', {
+        ethnicity: newFormData.ethnicity,
+        is_indigenous_people: newFormData.is_indigenous_people
+      });
+
+      setFormData(newFormData);
+
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+
+      return; // Exit early for batch update
+    }
+
+    // Handle employment occupation batch update to avoid race condition
+    if (fieldKey === '__employment_occupation_batch__' && value && typeof value === 'object') {
+      const occupationData = value as any;
+      
+      console.log('🔍 ResidentForm: Processing occupation batch update:', occupationData);
+
+      const updatedData: Partial<ResidentFormData> = {
+        occupation_code: occupationData.occupation_code || '',
+        occupation_title: occupationData.occupation_title || '',
+      };
+
+      const newFormData = {
+        ...formData,
+        ...updatedData,
+      };
+
+      console.log('🔍 ResidentForm: Updated form data with occupation:', {
+        occupation_code: newFormData.occupation_code,
+        occupation_title: newFormData.occupation_title,
+      });
+
+      setFormData(newFormData);
+
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+
+      // Clear errors for both occupation fields
+      if (errors.occupation_code || errors.occupation_title) {
+        setErrors(prev => ({
+          ...prev,
+          occupation_code: '',
+          occupation_title: '',
+        }));
+      }
+
+      return; // Exit early for batch update
+    }
+
+    // Handle sectoral batch update to avoid race condition
+    if (fieldKey === '__sectoral_batch__' && value && typeof value === 'object') {
+      const sectoralData = value as Record<string, boolean | string | null>;
+      
+      console.log('🔍 ResidentForm: Processing sectoral batch update:', sectoralData);
+
+      const updatedData: Partial<ResidentFormData> = { ...sectoralData };
+
+      const newFormData = {
+        ...formData,
+        ...updatedData,
+      };
+
+      console.log('🔍 ResidentForm: Updated form data with sectoral fields:', {
+        is_senior_citizen: newFormData.is_senior_citizen,
+        is_unemployed: newFormData.is_unemployed,
+        is_labor_force_employed: newFormData.is_labor_force_employed,
+      });
+
+      setFormData(newFormData);
+
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+
+      // Clear errors for sectoral fields
+      const sectoralFields = Object.keys(sectoralData);
+      const hasErrors = sectoralFields.some(field => errors[field]);
+      if (hasErrors) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          sectoralFields.forEach(field => {
+            newErrors[field] = '';
+          });
+          return newErrors;
+        });
+      }
+
+      return; // Exit early for batch update
+    }
+
     // Start with the basic field update
     let updatedData: Partial<ResidentFormData> = {
       [fieldKey]: value,
     };
 
     if (fieldKey === 'ethnicity' && typeof value === 'string') {
+      console.log('🎯 ResidentForm: ETHNICITY FIELD RECEIVED:', value);
+      if (value === 'badjao') {
+        console.log('🎯 ResidentForm: BADJAO DETECTED - PROCESSING AUTO-CALCULATION!');
+      }
+      
       // Auto-update sectoral classifications based on ethnicity
       const sectoralUpdates = getSectoralClassificationsByEthnicity(value);
+      console.log('🔍 ResidentForm: Adding sectoral updates to ethnicity change:', sectoralUpdates);
       updatedData = { ...updatedData, ...sectoralUpdates };
+      
+      // Create an atomic update that includes both ethnicity and sectoral changes
+      const atomicUpdate = {
+        ethnicity: value,
+        ...sectoralUpdates,
+      };
+      
+      console.log('🎯 ResidentForm: ATOMIC UPDATE OBJECT:', atomicUpdate);
+      
+      // Apply the atomic update to ensure proper state propagation
+      const newFormData = { ...formData, ...atomicUpdate };
+      console.log('🎯 ResidentForm: NEW FORM DATA AFTER ETHNICITY UPDATE:', {
+        ethnicity: newFormData.ethnicity,
+        is_indigenous_people: newFormData.is_indigenous_people
+      });
+      
+      setFormData(newFormData);
+      
+      // Notify parent component of changes
+      if (onChange) {
+        onChange(newFormData);
+      }
+      
+      console.log('🔍 ResidentForm: Applied atomic ethnicity update:', atomicUpdate);
+      return; // Exit early to avoid duplicate state update
     }
 
     const newFormData = {
@@ -444,6 +628,15 @@ export function ResidentForm({
       if (onSubmit) {
         // Create a filtered version of form data that excludes hidden fields
         const filteredFormData = { ...formData };
+        
+        // Clean up undefined values to prevent validation errors
+        Object.keys(filteredFormData).forEach(key => {
+          const value = filteredFormData[key as keyof ResidentFormData];
+          if (value === undefined || value === null) {
+            // Convert undefined/null to empty string for string fields
+            (filteredFormData as any)[key] = '';
+          }
+        });
 
         // Remove Physical & Personal Details fields if section is hidden
         if (hidePhysicalDetails) {
@@ -492,12 +685,12 @@ export function ResidentForm({
         }
 
         console.log('🚀 RESIDENTFORM: Calling onSubmit with data:');
-        console.log('🚀 RESIDENTFORM: is_migrant value:', filteredFormData.is_migrant);
-        console.log('🚀 RESIDENTFORM: sectoral fields in filtered data:', {
-          is_migrant: filteredFormData.is_migrant,
-          is_solo_parent: filteredFormData.is_solo_parent,
-          is_person_with_disability: filteredFormData.is_person_with_disability,
-        });
+        console.log('🚀 RESIDENTFORM: filteredFormData birth_place_code:', filteredFormData.birth_place_code);
+        console.log('🚀 RESIDENTFORM: filteredFormData occupation_code:', filteredFormData.occupation_code);
+        console.log('🚀 RESIDENTFORM: formData birth_place_code:', formData.birth_place_code);
+        console.log('🚀 RESIDENTFORM: formData occupation_code:', formData.occupation_code);
+        console.log('🚀 RESIDENTFORM: hidePhysicalDetails:', hidePhysicalDetails);
+        console.log('🚀 RESIDENTFORM: hideSectoralInfo:', hideSectoralInfo);
 
         onSubmit(filteredFormData);
       }
@@ -613,28 +806,8 @@ export function ResidentForm({
         {!hideSectoralInfo && (
           <SectoralInformationForm
             mode={mode}
-            formData={{
-              // Sectoral classifications (matching database schema)
-              is_labor_force_employed: formData.is_labor_force_employed,
-              is_unemployed: formData.is_unemployed,
-              is_overseas_filipino: formData.is_overseas_filipino_worker,
-              is_person_with_disability: formData.is_person_with_disability,
-              is_out_of_school_children: formData.is_out_of_school_children,
-              is_out_of_school_youth: formData.is_out_of_school_youth,
-              is_senior_citizen: formData.is_senior_citizen,
-              is_registered_senior_citizen: formData.is_registered_senior_citizen,
-              is_solo_parent: formData.is_solo_parent,
-              is_indigenous_people: formData.is_indigenous_people,
-              is_migrant: formData.is_migrant,
-              // Context data for auto-calculation
-              birthdate: formData.birthdate,
-              employment_status: formData.employment_status,
-              education_attainment: formData.education_attainment,
-              civil_status: formData.civil_status,
-              ethnicity: formData.ethnicity,
-            }}
+            formData={formData}
             onChange={handleFieldChange}
-            errors={errors}
           />
         )}
 

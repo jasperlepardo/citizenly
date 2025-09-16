@@ -9,8 +9,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cacheManager } from '@/lib/caching/redis-client';
 import { responseCache } from '@/lib/caching/responseCache';
 import { isProduction } from '@/lib/config/environment';
-import { getConnectionPoolStats } from '@/lib/database/connection-pool';
-import { queryOptimizer } from '@/lib/database/query-optimizer';
+import { getConnectionPoolStats } from '@/lib/database/connectionPool';
+import { queryOptimizer } from '@/lib/database/queryOptimizer';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (!isAuthorized) {
       return NextResponse.json(
-        createErrorResponseObject('AUTH_001', 'Unauthorized access to cache statistics'),
+        { error: 'AUTH_001', message: 'Unauthorized access to cache statistics' },
         { status: 401 }
       );
     }
@@ -135,7 +135,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     });
   } catch (error) {
     return NextResponse.json(
-      createErrorResponseObject('SERVER_001', 'Failed to retrieve cache statistics'),
+      { error: 'SERVER_001', message: 'Failed to retrieve cache statistics' },
       { status: 500 }
     );
   }
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!isAuthorized) {
       return NextResponse.json(
-        createErrorResponseObject('AUTH_001', 'Unauthorized cache management access'),
+        { error: 'AUTH_001', message: 'Unauthorized cache management access' },
         { status: 401 }
       );
     }
@@ -173,11 +173,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       case 'invalidate':
         if (!pattern) {
           return NextResponse.json(
-            createErrorResponseObject('DATA_001', 'Pattern required for invalidation'),
+            { error: 'DATA_001', message: 'Pattern required for invalidation' },
             { status: 400 }
           );
         }
-        const count = await responseCache.invalidate(pattern, tags);
+        const count = await responseCache.invalidate(pattern);
         result = {
           success: true,
           message: `Invalidated ${count} cache entries matching pattern: ${pattern}`,
@@ -190,7 +190,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         break;
 
       default:
-        return NextResponse.json(createErrorResponseObject('DATA_001', 'Invalid cache action'), {
+        return NextResponse.json({ error: 'DATA_001', message: 'Invalid cache action' }, {
           status: 400,
         });
     }
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
-      createErrorResponseObject('SERVER_001', 'Cache management operation failed'),
+      { error: 'SERVER_001', message: 'Cache management operation failed' },
       { status: 500 }
     );
   }

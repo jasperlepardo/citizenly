@@ -4,9 +4,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
 import { Button, type ButtonProps } from '@/components/atoms/Button/Button';
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 
-import { TitleDescription } from '../TitleDescription';
+import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 
 const radioVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',

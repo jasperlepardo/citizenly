@@ -130,6 +130,39 @@ export interface ResidentWithRelations extends ResidentRecord {
     head_of_household_id: string;
     members?: ResidentRecord[];
   };
+  
+  // Computed properties used in the application
+  address_info?: {
+    barangay_name?: string;
+    city_municipality_name?: string;
+    province_name?: string;
+    region_name?: string;
+    full_address?: string;
+    barangay_code?: string;
+    city_municipality_code?: string;
+    region_code?: string;
+  };
+  
+  psoc_info?: {
+    title?: string;
+    level?: number;
+  };
+  
+  // Employment computed fields
+  is_employed?: boolean;
+  is_unemployed?: boolean;
+  is_senior_citizen?: boolean;
+  
+  // Personal computed fields  
+  philsys_last4?: string;
+  psoc_level?: number;
+  occupation_title?: string;
+  
+  // Geographic fields (explicitly declared to ensure TypeScript visibility)
+  barangay_code: string;
+  city_municipality_code: string;  
+  province_code: string | null;
+  region_code: string;
 }
 
 /**

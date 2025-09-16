@@ -120,128 +120,17 @@ export interface PSGCOption {
   [key: string]: string | number | boolean | null; // Additional fields from the database
 }
 
-/**
- * Make all properties optional
- */
-export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+// Note: Generic utility types removed - unused and redundant with TypeScript built-ins
+// (PartialBy, RequireBy, OmitMultiple, PickMultiple, Nullable, DeepPartial, DeepReadonly)
 
-/**
- * Make specific properties required
- */
-export type RequireBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
+// Note: Function utility types removed - unused and redundant with TypeScript built-ins
+// (ReturnTypeOf, AsyncReturnType, ParametersOf, OptionalParameters)
 
-/**
- * Omit multiple properties
- */
-export type OmitMultiple<T, K extends keyof T> = Omit<T, K>;
+// Note: Array/Object utility types removed - unused and redundant
+// (ArrayElement, ValueOf, KeysOf, StringKeys, ObjectFromKeys)
 
-/**
- * Pick multiple properties
- */
-export type PickMultiple<T, K extends keyof T> = Pick<T, K>;
-
-/**
- * Make properties nullable
- */
-export type Nullable<T> = {
-  [P in keyof T]: T[P] | null;
-};
-
-/**
- * Deep partial
- */
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-/**
- * Deep readonly
- */
-export type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-};
-
-// =============================================================================
-// FUNCTION UTILITY TYPES
-// =============================================================================
-
-/**
- * Extract function return type
- */
-export type ReturnTypeOf<T extends (...args: any[]) => any> = ReturnType<T>;
-
-/**
- * Extract async function return type
- */
-export type AsyncReturnType<T extends (...args: any[]) => Promise<any>> = T extends (
-  ...args: any[]
-) => Promise<infer R>
-  ? R
-  : any;
-
-/**
- * Extract parameters type from function
- */
-export type ParametersOf<T extends (...args: any[]) => any> = Parameters<T>;
-
-/**
- * Make function parameters optional
- */
-export type OptionalParameters<T extends (...args: any[]) => any> = T extends (
-  ...args: infer P
-) => infer R
-  ? (...args: Partial<P>) => R
-  : never;
-
-// =============================================================================
-// ARRAY AND OBJECT UTILITY TYPES
-// =============================================================================
-
-/**
- * Get array element type
- */
-export type ArrayElement<T> = T extends (infer U)[] ? U : never;
-
-/**
- * Get object values type
- */
-export type ValueOf<T> = T[keyof T];
-
-/**
- * Get object keys as union type
- */
-export type KeysOf<T> = keyof T;
-
-/**
- * Make object keys literal strings
- */
-export type StringKeys<T> = Extract<keyof T, string>;
-
-/**
- * Create object type from array of strings
- */
-export type ObjectFromKeys<T extends readonly string[]> = {
-  [K in T[number]]: any;
-};
-
-// =============================================================================
-// CONDITIONAL UTILITY TYPES
-// =============================================================================
-
-/**
- * Check if type extends another type
- */
-export type Extends<T, U> = T extends U ? true : false;
-
-/**
- * If condition, return T, else return F
- */
-export type If<C extends boolean, T, F> = C extends true ? T : F;
-
-/**
- * Check if type is any
- */
-export type IsAny<T> = 0 extends 1 & T ? true : false;
+// Note: Conditional utility types removed - unused
+// (Extends, If, IsAny)
 
 /**
  * Check if type is never
@@ -257,20 +146,7 @@ export type IsUnknown<T> = IsAny<T> extends true ? false : unknown extends T ? t
 // BRAND TYPES
 // =============================================================================
 
-/**
- * Create a branded type
- */
-export type Brand<T, B> = T & { __brand: B };
-
-/**
- * Common branded types
- */
-export type UserId = Brand<string, 'UserId'>;
-export type ResidentId = Brand<string, 'ResidentId'>;
-export type HouseholdId = Brand<string, 'HouseholdId'>;
-export type BarangayCode = Brand<string, 'BarangayCode'>;
-export type Email = Brand<string, 'Email'>;
-export type PhoneNumber = Brand<string, 'PhoneNumber'>;
+// Note: Brand types removed - unused (Brand, UserId, ResidentId, HouseholdId, BarangayCode, Email, PhoneNumber)
 
 // =============================================================================
 // FORM AND INPUT UTILITY TYPES
@@ -352,30 +228,7 @@ export type Config<T extends Record<string, any>> = {
 // EVENT UTILITY TYPES
 // =============================================================================
 
-/**
- * Event handler type
- */
-export type EventHandler<T = any> = (event: T) => void;
-
-/**
- * Async event handler type
- */
-export type AsyncEventHandler<T = any> = (event: T) => Promise<void>;
-
-/**
- * Change event handler type
- */
-export type ChangeHandler<T = any> = (value: T) => void;
-
-/**
- * Click event handler type
- */
-export type ClickHandler = () => void;
-
-/**
- * Form submit handler type
- */
-export type SubmitHandler<T = any> = (data: T) => Promise<void> | void;
+// Note: Event handler types removed - unused (EventHandler, AsyncEventHandler, ChangeHandler, ClickHandler, SubmitHandler)
 
 // =============================================================================
 // PROMISE UTILITY TYPES

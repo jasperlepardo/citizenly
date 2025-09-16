@@ -10,8 +10,9 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
-import { searchData, trackCommandMenuSearch, trackCommandMenuError } from '@/lib/command-menu';
-import { trackSearch } from '@/lib/data';
+import { searchData } from '@/utils/shared/apiUtils';
+import { trackCommandMenuSearch, trackCommandMenuError } from '@/utils/command-menu/analytics-utils';
+import { trackSearch } from '@/lib/data/recent-items-storage';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 
 import type { CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types';

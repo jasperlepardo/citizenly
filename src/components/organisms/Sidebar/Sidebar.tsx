@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
-import Navigation, { type NavigationItem } from '../Navigation/Navigation';
+import Navigation, { type NavigationItem } from '@/components/organisms/Navigation/Navigation';
 // Icon component removed - using inline SVG or icon library instead
 
 // Sidebar variant styles using CVA

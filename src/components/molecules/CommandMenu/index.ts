@@ -8,4 +8,4 @@ export { useCommandMenu } from '@/hooks/ui/useCommandMenu';
 export type {
   CommandMenuSearchResult as CommandMenuItemType,
   CommandMenuHookResult as CommandMenuProps,
-} from '@/types';
+} from '@/types/shared/hooks/commandMenuHooks';

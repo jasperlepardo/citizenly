@@ -17,6 +17,9 @@ export function ErrorSuppressor() {
       // Store original console methods
       const originalError = console.error;
       const originalWarn = console.warn;
+      
+      // Store original error method globally for debugging
+      (window as any).__originalConsoleError__ = originalError;
 
       // Create separate suppression functions for error and warn
       const suppressKeyError = (...args: any[]) => {

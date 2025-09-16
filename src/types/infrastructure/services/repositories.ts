@@ -3,7 +3,7 @@
  * Consolidated repository interfaces and patterns
  */
 
-import type { ResidentRecord } from '../database/database';
+import type { ResidentRecord } from '@/types/infrastructure/database/database';
 
 // =============================================================================
 // BASE REPOSITORY TYPES

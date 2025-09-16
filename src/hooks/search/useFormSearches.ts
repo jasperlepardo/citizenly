@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from 'react';
 
-import { searchHouseholdsCached } from '@/services/shared/data/household-fetcher';
-import { formatPsocOption, formatPsgcOption } from '@/services/shared/data/resident-mapper';
+import { formatPsocOption, formatPsgcOption } from '@/services/domain/residents/residentMapper';
+import { container } from '@/services/container';
 import type { PsocOption, PsgcOption, HouseholdOption, UseFormSearchesReturn } from '@/types';
 
 export const useFormSearches = (userBarangayCode?: string): UseFormSearchesReturn => {
@@ -94,8 +94,24 @@ export const useFormSearches = (userBarangayCode?: string): UseFormSearchesRetur
 
       setHouseholdLoading(true);
       try {
-        const households = await searchHouseholdsCached(query, userBarangayCode);
-        setHouseholdOptions(households);
+        // Use HouseholdDomainService through container
+        const householdService = container.getHouseholdService();
+        const result = await householdService.findHouseholds({
+          barangayCode: userBarangayCode,
+          searchTerm: query,
+          limit: 20
+        });
+        
+        if (result.success) {
+          const households = result.data?.map(h => ({
+            value: h.code,
+            label: `${h.code} - ${h.house_number || 'No house number'}`,
+            data: h
+          })) || [];
+          setHouseholdOptions(households);
+        } else {
+          setHouseholdOptions([]);
+        }
       } catch (error) {
         // Error handled by setting empty options
         setHouseholdOptions([]);

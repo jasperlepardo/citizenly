@@ -5,7 +5,7 @@
  * in the Citizenly RBI system.
  */
 
-import type { ValidationResult } from '../validation/validation';
+import type { ValidationResult } from '@/types/shared/validation/validation';
 
 // =============================================================================
 // CRUD HOOK TYPES

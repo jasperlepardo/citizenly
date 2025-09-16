@@ -78,7 +78,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-medium">
-                {label.includes(',') ? (
+                {label && label.includes(',') ? (
                   <>
                     {label.split(',')[0]}
                     <span className="font-normal text-gray-500 dark:text-gray-400">
@@ -86,7 +86,7 @@ export const Option = forwardRef<HTMLDivElement, OptionProps>(
                     </span>
                   </>
                 ) : (
-                  label
+                  label || ''
                 )}
               </div>
             </div>

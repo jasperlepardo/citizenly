@@ -6,8 +6,8 @@
  */
 
 // PsgcSearchResult type removed - was not defined anywhere
-import type { PsocOption, PsgcOption } from '../../domain/residents/api';
-import type { HouseholdOption } from '../../domain/households/households';
+import type { PsocOption, PsgcOption } from '@/types/domain/residents/api';
+import type { HouseholdOption } from '@/types/domain/households/households';
 
 // =============================================================================
 // SEARCH HOOK TYPES

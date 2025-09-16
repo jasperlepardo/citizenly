@@ -9,7 +9,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 
 import { ControlField } from '@/components';
-import { calculateSectoralFlags } from '@/services/domain/residents/sectoral-classification';
+import { calculateSectoralFlags } from '@/services/domain/residents/residentClassification';
 import type { FormMode, SectoralInformation, SectoralContext } from '@/types';
 
 interface SectoralClassificationsProps {
@@ -27,24 +27,39 @@ export default function SectoralClassifications({
   mode = 'create',
   disabled = false,
 }: SectoralClassificationsProps) {
+  console.log('🔍 SectoralClassifications: Rendering with value:', value);
+  console.log('🔍 SectoralClassifications: Context:', context);
+  console.log('🔍 SectoralClassifications: Props check:', {
+    mode,
+    disabled,
+    hasOnChange: typeof onChange === 'function',
+    onChangeType: typeof onChange
+  });
+
+  // Special debug for indigenous people
+  console.log('🎯 SectoralClassifications: Indigenous People status:', {
+    current_value: value.is_indigenous_people,
+    context_ethnicity: context.ethnicity,
+    should_be_indigenous: context.ethnicity === 'badjao' ? 'YES' : 'NO'
+  });
+  
   // Calculate the expected sectoral flags based on context
   const calculatedFlags = useMemo(() => {
-    return calculateSectoralFlags(context);
+    const flags = calculateSectoralFlags(context);
+    console.log('🔍 SectoralClassifications: Calculated flags:', flags);
+    return flags;
   }, [context]);
 
   // Use a ref to track if we've already updated for these calculated flags
   const lastUpdateRef = useRef<string>('');
 
-  // Auto-update sectoral flags when calculated values change
+  // Auto-update sectoral flags in edit mode only
   useEffect(() => {
-    // Create a unique key for the current calculated flags
-    const updateKey = JSON.stringify(calculatedFlags);
+    // Only auto-update in edit mode when user is actively editing
+    if (mode === 'edit' && !disabled) {
+      console.log('🔍 SectoralClassifications: Auto-update checking - edit mode');
 
-    // Only update if this is a new set of calculated flags
-    if (lastUpdateRef.current !== updateKey) {
-      lastUpdateRef.current = updateKey;
-
-      // Check if any calculated value differs from current value
+      // Check if calculated values differ from current values
       const needsUpdate =
         value.is_labor_force_employed !== calculatedFlags.is_labor_force_employed ||
         value.is_unemployed !== calculatedFlags.is_unemployed ||
@@ -53,11 +68,14 @@ export default function SectoralClassifications({
         value.is_senior_citizen !== calculatedFlags.is_senior_citizen ||
         value.is_indigenous_people !== calculatedFlags.is_indigenous_people;
 
+      console.log('🔍 SectoralClassifications: needsUpdate:', needsUpdate);
+
       if (needsUpdate) {
+        console.log('🔍 SectoralClassifications: Auto-updating for edit mode');
         const updatedSectoral = {
           ...value,
           ...calculatedFlags,
-          // Reset registered senior citizen if no longer senior
+          // Keep registered senior citizen if still senior
           is_registered_senior_citizen: calculatedFlags.is_senior_citizen
             ? value.is_registered_senior_citizen
             : false,
@@ -65,8 +83,7 @@ export default function SectoralClassifications({
         onChange(updatedSectoral);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calculatedFlags]); // Only depend on calculatedFlags
+  }, [calculatedFlags, value, mode, disabled, onChange]);
 
   // Auto-calculation logic delegated to centralized business rules
 

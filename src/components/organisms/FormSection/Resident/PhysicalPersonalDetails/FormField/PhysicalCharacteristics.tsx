@@ -6,7 +6,7 @@ import {
   ETHNICITY_OPTIONS_WITH_DEFAULT,
   RELIGION_OPTIONS_WITH_DEFAULT,
   CITIZENSHIP_OPTIONS_WITH_DEFAULT,
-} from '@/constants/resident-enums';
+} from '@/constants/residentEnums';
 import type { FormMode, PhysicalCharacteristicsFormData } from '@/types';
 
 export interface PhysicalCharacteristicsProps {
@@ -26,10 +26,22 @@ export function PhysicalCharacteristics({
   className = '',
 }: PhysicalCharacteristicsProps) {
   const handleChange = (field: keyof PhysicalCharacteristicsFormData, fieldValue: string) => {
-    onChange({
+    console.log('🔍 PhysicalCharacteristics: handleChange called', { field, fieldValue });
+    
+    // Special debug for ethnicity changes
+    if (field === 'ethnicity') {
+      console.log('🎯 ETHNICITY SELECTION DETECTED:', fieldValue);
+      if (fieldValue === 'badjao') {
+        console.log('🎯 BADJAO SELECTED - This should trigger Indigenous People checkbox!');
+      }
+    }
+    
+    const updatedValue = {
       ...value,
       [field]: fieldValue,
-    });
+    };
+    console.log('🔍 PhysicalCharacteristics: calling onChange with', updatedValue);
+    onChange(updatedValue);
   };
 
   // Use pre-defined options - blood_type and citizenship have database defaults, religion and ethnicity have "Select" options

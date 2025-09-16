@@ -8,7 +8,7 @@ import {
   getDemoUserConfig,
   logDevModeWarning,
   validateDevEnvironment,
-} from '@/lib/config/dev-config';
+} from '@/lib/config/devConfig';
 import { supabase } from '@/lib/data/supabase';
 
 interface DevLoginProps {

@@ -10,7 +10,7 @@
 import { useState, useCallback } from 'react';
 
 import { useAuth } from '@/contexts';
-import { useCSRFToken } from '@/lib/authentication';
+import { useCSRFToken } from '@/lib/authentication/csrf';
 import { householdService, HouseholdFormData } from '@/services/household.service';
 import type {
   HouseholdCreationResult,

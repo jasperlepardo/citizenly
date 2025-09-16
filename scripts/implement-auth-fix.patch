@@ -1,0 +1,41 @@
+--- Fix API Repository Authentication ---
+
+File: /src/app/api/residents/[id]/route.ts
+
+BEFORE (line ~54):
+```typescript
+// Use clean architecture - delegate to domain service
+const residentService = container.getResidentService();
+const result = await residentService.getResidentById(residentId);
+```
+
+AFTER:
+```typescript
+// Create authenticated Supabase client from user token
+import { createPublicSupabaseClient } from '@/lib/data/client-factory';
+
+const token = extractToken(request);
+if (!token) {
+  return NextResponse.json({ error: 'Missing authentication token' }, { status: 401 });
+}
+
+const authenticatedSupabase = createPublicSupabaseClient();
+
+// Set the user's session on the client for RLS context
+await authenticatedSupabase.auth.setSession({
+  access_token: token,
+  refresh_token: user.refreshToken || ''
+});
+
+// Create repository with authenticated client
+const authenticatedRepository = new SupabaseResidentRepository(authenticatedSupabase);
+const residentService = new ResidentDomainService(authenticatedRepository);
+const result = await residentService.getResidentById(residentId);
+```
+
+ALSO ADD IMPORTS at top:
+```typescript
+import { SupabaseResidentRepository } from '@/services/infrastructure/repositories/SupabaseResidentRepository';
+import { ResidentDomainService } from '@/services/domain/residents/residentDomainService';
+import { extractToken } from '@/lib/middleware/authMiddleware';
+```

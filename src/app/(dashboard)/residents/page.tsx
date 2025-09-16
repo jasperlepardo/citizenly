@@ -5,6 +5,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { DataTable, SearchBar, Button } from '@/components';
+import { supabase } from '@/lib/data/supabase';
 import type { TableColumn, TableAction } from '@/components';
 import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
 import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
@@ -14,7 +15,7 @@ import {
   type Resident,
   type AdvancedFilters,
 } from '@/hooks/crud/useResidents';
-import { logger } from '@/lib/logging';
+import { clientLogger } from '@/lib/logging/client-logger';
 
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +44,7 @@ function ResidentsContent() {
     retryManually,
     clearError,
     errorDetails,
+    invalidateResidents,
   } = useResidents({
     page: pagination.current,
     pageSize: pagination.pageSize,
@@ -111,22 +113,33 @@ function ResidentsContent() {
 
   const handleDeleteConfirmed = async () => {
     try {
+      // Get auth token the same way useResidents does it
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      
+      if (!session?.access_token) {
+        toast.error('Authentication required - please log in again');
+        return;
+      }
+      
       const response = await fetch(`/api/residents/${confirmDelete.resident.id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
       if (response.ok) {
-        // Refresh the residents list
-        window.location.reload();
+        // Invalidate React Query cache to refresh data
+        invalidateResidents();
         toast.success('Resident deleted successfully');
       } else {
         toast.error('Failed to delete resident');
       }
     } catch (error) {
-      logger.error('Delete error:', error);
+      clientLogger.error('Delete error:', { component: 'ResidentsPage', action: 'delete_error', data: { error } });
       toast.error('Error deleting resident');
     } finally {
       setConfirmDelete({ resident: {} as Resident, isOpen: false });
@@ -169,7 +182,7 @@ function ResidentsContent() {
     {
       key: 'age',
       title: 'Age',
-      dataIndex: (record: Resident) => calculateAge(record.birthdate),
+      dataIndex: (record: Resident) => calculateAge(record.birthdate as string),
       sortable: true,
     },
     {
@@ -402,7 +415,7 @@ function ResidentsContent() {
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 Are you sure you want to delete{' '}
                 <span className="font-medium">
-                  {confirmDelete.resident.first_name} {confirmDelete.resident.last_name}
+                  {String(confirmDelete.resident.first_name)} {String(confirmDelete.resident.last_name)}
                 </span>
                 ? This action cannot be undone.
               </p>

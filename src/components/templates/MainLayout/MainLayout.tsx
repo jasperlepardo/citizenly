@@ -5,7 +5,7 @@
 
 import React from 'react';
 
-import { Header } from '../Header';
+import { Header } from '@/components/templates/Header';
 
 interface MainLayoutProps {
   children: React.ReactNode;

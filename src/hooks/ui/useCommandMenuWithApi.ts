@@ -23,9 +23,9 @@ import {
   findSoloParents,
   generateCertificate,
   generateReport,
-} from '@/utils/api/apiUtils';
+} from '@/utils/shared/apiUtils';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/utils/command-menu/items-utils';
-import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
+import { trackSearch, trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
 import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
 

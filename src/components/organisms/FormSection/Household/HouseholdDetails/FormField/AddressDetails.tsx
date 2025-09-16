@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { InputField, SelectField } from '@/components/molecules/FieldSet';
 import { useGeographicData } from '@/hooks/api/useGeographicData';
 
-import { HouseholdFormData } from '../../types';
+import { HouseholdFormData } from '@/types/app/ui/forms';
 
 export interface AddressDetailsProps {
   formData: HouseholdFormData;

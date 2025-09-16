@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { usePreloadOnHover } from '../usePreloadOnHover';
 
 // Mock the preloadComponents import
-vi.mock('@/lib/ui/lazy-loading', () => ({
+vi.mock('@/components/shared/lazy/lazyLoading', () => ({
   preloadComponents: {
     dataTable: vi.fn(),
     createHouseholdModal: vi.fn(),
@@ -23,7 +23,7 @@ vi.mock('@/lib/ui/lazy-loading', () => ({
 }));
 
 // Import after mocking to ensure mock is applied
-import { preloadComponents } from '@/lib/ui/lazy-loading';
+import { preloadComponents } from '@/components/shared/lazy/lazyLoading';
 
 describe('usePreloadOnHover', () => {
   beforeEach(() => {

@@ -16,41 +16,13 @@ import { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes, JSX } from 'react
 // COMMON COMPONENT PROPS
 // =============================================================================
 
-/**
- * Base component props that all components should support
- */
-export interface BaseComponentProps {
-  /** Additional CSS classes */
-  className?: string;
-  /** Unique identifier */
-  id?: string;
-  /** Data attributes for testing */
-  'data-testid'?: string;
-}
+// Note: BaseComponentProps removed - unused
 
-/**
- * Component with children
- */
-export interface ComponentWithChildren extends BaseComponentProps {
-  children?: ReactNode;
-}
+// Note: ComponentWithChildren removed - unused
 
-/**
- * Component size variants
- */
-export type ComponentSize = 'sm' | 'md' | 'lg' | 'xl';
+// Note: ComponentSize removed - unused
 
-/**
- * Component color variants
- */
-export type ComponentVariant =
-  | 'default'
-  | 'primary'
-  | 'secondary'
-  | 'destructive'
-  | 'outline'
-  | 'ghost'
-  | 'link';
+// Note: ComponentVariant removed - unused
 
 // =============================================================================
 // BUTTON COMPONENT TYPES
@@ -59,11 +31,17 @@ export type ComponentVariant =
 /**
  * Button component props
  */
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseComponentProps {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
   /** Visual style variant */
-  variant?: ComponentVariant;
+  variant?: 'default' | 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
   /** Size variant */
-  size?: ComponentSize;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Render as a different element */
   asChild?: boolean;
   /** Show loading spinner and disable button */
@@ -148,10 +126,20 @@ export interface DataTableProps<T = any> {
 // FORM COMPONENT TYPES
 // =============================================================================
 
+// Note: FormFieldProps removed - unused
+// Inline base props where needed
+
 /**
- * Form field base props
+ * Input field props
  */
-export interface FormFieldProps extends BaseComponentProps {
+export interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
   /** Field label */
   label?: string;
   /** Help text */
@@ -164,16 +152,8 @@ export interface FormFieldProps extends BaseComponentProps {
   disabled?: boolean;
   /** Field name for form submission */
   name?: string;
-}
-
-/**
- * Input field props
- */
-export interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>,
-    FormFieldProps {
   /** Size variant */
-  size?: ComponentSize;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Input type */
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
   /** Placeholder text */
@@ -187,7 +167,25 @@ export interface InputProps
 /**
  * Select field props
  */
-export interface SelectProps extends FormFieldProps {
+export interface SelectProps {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
+  /** Field label */
+  label?: string;
+  /** Help text */
+  description?: string;
+  /** Error message */
+  error?: string;
+  /** Whether field is required */
+  required?: boolean;
+  /** Whether field is disabled */
+  disabled?: boolean;
+  /** Field name for form submission */
+  name?: string;
   /** Select options */
   options: Array<{
     value: string | number;
@@ -209,7 +207,25 @@ export interface SelectProps extends FormFieldProps {
 /**
  * Checkbox props
  */
-export interface CheckboxProps extends FormFieldProps {
+export interface CheckboxProps {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
+  /** Field label */
+  label?: string;
+  /** Help text */
+  description?: string;
+  /** Error message */
+  error?: string;
+  /** Whether field is required */
+  required?: boolean;
+  /** Whether field is disabled */
+  disabled?: boolean;
+  /** Field name for form submission */
+  name?: string;
   /** Whether checkbox is checked */
   checked?: boolean;
   /** Change handler */
@@ -221,7 +237,25 @@ export interface CheckboxProps extends FormFieldProps {
 /**
  * Radio button props
  */
-export interface RadioProps extends FormFieldProps {
+export interface RadioProps {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
+  /** Field label */
+  label?: string;
+  /** Help text */
+  description?: string;
+  /** Error message */
+  error?: string;
+  /** Whether field is required */
+  required?: boolean;
+  /** Whether field is disabled */
+  disabled?: boolean;
+  /** Field name for form submission */
+  name?: string;
   /** Radio value */
   value: string | number;
   /** Whether radio is selected */
@@ -243,7 +277,7 @@ export interface CardProps extends ComponentWithChildren {
   /** Card variant */
   variant?: 'default' | 'outlined' | 'elevated';
   /** Padding size */
-  padding?: ComponentSize;
+  padding?: 'sm' | 'md' | 'lg' | 'xl';
   /** Whether card is interactive */
   interactive?: boolean;
   /** Click handler for interactive cards */
@@ -261,7 +295,7 @@ export interface ModalProps extends ComponentWithChildren {
   /** Modal title */
   title?: string;
   /** Modal size */
-  size?: ComponentSize | 'xs' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'xs' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | 'full';
   /** Whether to show close button */
   showCloseButton?: boolean;
   /** Whether clicking backdrop closes modal */
@@ -270,42 +304,13 @@ export interface ModalProps extends ComponentWithChildren {
   closeOnEscape?: boolean;
 }
 
-/**
- * Drawer component props
- */
-export interface DrawerProps extends ComponentWithChildren {
-  /** Whether drawer is open */
-  open: boolean;
-  /** Close handler */
-  onClose: () => void;
-  /** Drawer position */
-  position?: 'left' | 'right' | 'top' | 'bottom';
-  /** Drawer size */
-  size?: ComponentSize;
-}
+// Note: DrawerProps removed - unused
 
 // =============================================================================
 // DATA DISPLAY COMPONENT TYPES
 // =============================================================================
 
-/**
- * Simple table column definition
- * Alternative to TableColumn for simpler use cases
- */
-export interface SimpleTableColumn<T = any> {
-  /** Column key */
-  key: keyof T;
-  /** Column header */
-  header: string;
-  /** Cell renderer */
-  render?: (value: any, row: T) => ReactNode;
-  /** Column width */
-  width?: string | number;
-  /** Whether column is sortable */
-  sortable?: boolean;
-  /** Text alignment */
-  align?: 'left' | 'center' | 'right';
-}
+// Note: SimpleTableColumn removed - unused and redundant with TableColumn
 
 /**
  * Table component props
@@ -329,50 +334,13 @@ export interface TableProps<T = any> extends BaseComponentProps {
   onSelectionChange?: (selectedRows: T[]) => void;
 }
 
-/**
- * Pagination props
- */
-export interface PaginationProps extends BaseComponentProps {
-  /** Current page (1-based) */
-  currentPage: number;
-  /** Total number of pages */
-  totalPages: number;
-  /** Page change handler */
-  onPageChange: (page: number) => void;
-  /** Items per page */
-  pageSize?: number;
-  /** Page size change handler */
-  onPageSizeChange?: (pageSize: number) => void;
-  /** Show page size selector */
-  showPageSizeSelector?: boolean;
-  /** Available page sizes */
-  pageSizeOptions?: number[];
-}
+// Note: PaginationProps removed - unused
 
 // =============================================================================
 // FEEDBACK COMPONENT TYPES
 // =============================================================================
 
-/**
- * Alert severity levels
- */
-export type AlertSeverity = 'info' | 'success' | 'warning' | 'error';
-
-/**
- * Alert component props
- */
-export interface AlertProps extends ComponentWithChildren {
-  /** Alert severity */
-  severity?: AlertSeverity;
-  /** Alert title */
-  title?: string;
-  /** Whether alert is dismissible */
-  dismissible?: boolean;
-  /** Dismiss handler */
-  onDismiss?: () => void;
-  /** Alert icon */
-  icon?: ReactNode;
-}
+// Note: AlertSeverity and AlertProps removed - unused
 
 /**
  * Loading component props
@@ -381,92 +349,19 @@ export interface LoadingProps extends BaseComponentProps {
   /** Loading message */
   message?: string;
   /** Size variant */
-  size?: ComponentSize;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** Whether to show overlay */
   overlay?: boolean;
 }
 
-/**
- * Progress component props
- */
-export interface ProgressProps extends BaseComponentProps {
-  /** Progress value (0-100) */
-  value: number;
-  /** Maximum value */
-  max?: number;
-  /** Whether to show label */
-  showLabel?: boolean;
-  /** Custom label */
-  label?: string;
-  /** Progress color */
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-}
+// Note: ProgressProps removed - unused
 
 // =============================================================================
 // NAVIGATION COMPONENT TYPES
 // =============================================================================
 
-/**
- * Navigation item
- */
-export interface NavItem {
-  /** Item label */
-  label: string;
-  /** Item href */
-  href?: string;
-  /** Click handler */
-  onClick?: () => void;
-  /** Item icon */
-  icon?: ReactNode;
-  /** Whether item is active */
-  active?: boolean;
-  /** Whether item is disabled */
-  disabled?: boolean;
-  /** Child items */
-  children?: NavItem[];
-}
-
-/**
- * Breadcrumb item
- */
-export interface BreadcrumbItem {
-  /** Item label */
-  label: string;
-  /** Item href */
-  href?: string;
-  /** Click handler */
-  onClick?: () => void;
-}
-
-/**
- * Tab item
- */
-export interface TabItem {
-  /** Tab key */
-  key: string;
-  /** Tab label */
-  label: string;
-  /** Tab content */
-  content?: ReactNode;
-  /** Whether tab is disabled */
-  disabled?: boolean;
-  /** Tab icon */
-  icon?: ReactNode;
-}
-
-/**
- * Tabs component props
- */
-export interface TabsProps extends BaseComponentProps {
-  /** Tab items */
-  items: TabItem[];
-  /** Active tab key */
-  activeTab: string;
-  /** Tab change handler */
-  onTabChange: (tabKey: string) => void;
-  /** Tab orientation */
-  orientation?: 'horizontal' | 'vertical';
-}
+// Note: Navigation types removed - unused and replaced by component-specific interfaces
+// (NavItem, BreadcrumbItem, TabItem, TabsProps)
 
 // =============================================================================
 // FILE UPLOAD COMPONENT TYPES
@@ -475,7 +370,25 @@ export interface TabsProps extends BaseComponentProps {
 /**
  * File upload component props
  */
-export interface FileUploadProps extends FormFieldProps {
+export interface FileUploadProps {
+  /** Additional CSS classes */
+  className?: string;
+  /** Unique identifier */
+  id?: string;
+  /** Data attributes for testing */
+  'data-testid'?: string;
+  /** Field label */
+  label?: string;
+  /** Help text */
+  description?: string;
+  /** Error message */
+  error?: string;
+  /** Whether field is required */
+  required?: boolean;
+  /** Whether field is disabled */
+  disabled?: boolean;
+  /** Field name for form submission */
+  name?: string;
   dragText?: string;
   browseText?: string;
   acceptedFileTypes?: string;
@@ -487,15 +400,7 @@ export interface FileUploadProps extends FormFieldProps {
   multiple?: boolean;
 }
 
-/**
- * File preview interface
- */
-export interface FilePreview {
-  file: File;
-  url?: string;
-  isImage: boolean;
-  error?: string;
-}
+// Note: FilePreview removed - unused
 
 // =============================================================================
 // SEARCH COMPONENT TYPES
@@ -519,45 +424,30 @@ export interface SearchBarProps extends BaseComponentProps {
   debounceMs?: number;
 }
 
-/**
- * Search result item interface
- */
-export interface SearchResultItem<T = any> {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  data: T;
-  type: string;
-  score?: number;
-  highlighted?: string[];
-}
+// Note: SearchResultItem removed - unused
 
 // =============================================================================
 // BUTTON GROUP COMPONENT TYPES
 // =============================================================================
 
-/**
- * Button group option interface
- */
-export interface ButtonGroupOption<T = string> {
-  label: string;
-  value: T;
-  icon?: ReactNode;
-  disabled?: boolean;
-  tooltip?: string;
-}
+// Note: ButtonGroupOption removed - unused
 
 /**
  * Button group component props
  */
 export interface ButtonGroupProps<T = string> extends BaseComponentProps {
-  options: ButtonGroupOption<T>[];
+  options: Array<{
+    label: string;
+    value: T;
+    icon?: ReactNode;
+    disabled?: boolean;
+    tooltip?: string;
+  }>;
   value?: T | T[];
   onChange?: (value: T | T[]) => void;
   multiple?: boolean;
-  size?: ComponentSize;
-  variant?: ComponentVariant;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'default' | 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link';
   orientation?: 'horizontal' | 'vertical';
   fullWidth?: boolean;
   disabled?: boolean;
@@ -567,31 +457,7 @@ export interface ButtonGroupProps<T = string> extends BaseComponentProps {
 // DIALOG AND CONFIRMATION TYPES
 // =============================================================================
 
-/**
- * Dialog action interface
- */
-export interface DialogAction {
-  label: string;
-  onClick: () => void | Promise<void>;
-  variant?: ComponentVariant;
-  disabled?: boolean;
-  loading?: boolean;
-}
-
-/**
- * Confirmation dialog props
- */
-export interface ConfirmationDialogProps extends BaseComponentProps {
-  open: boolean;
-  onConfirm: () => void | Promise<void>;
-  onCancel: () => void;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: 'default' | 'destructive' | 'warning';
-  loading?: boolean;
-}
+// Note: DialogAction and ConfirmationDialogProps removed - unused
 
 // =============================================================================
 // FORM FIELD TYPES
@@ -654,17 +520,7 @@ export interface CommandMenuProps {
   showRecentSection?: boolean;
 }
 
-/**
- * Command menu context value interface
- */
-export interface CommandMenuContextValue {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
-  toggle: () => void;
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-}
+// Note: CommandMenuContextValue removed - unused
 
 // =============================================================================
 // MODAL FORM TYPES
@@ -701,21 +557,13 @@ export interface ErrorFallbackProps {
   resetError: () => void;
 }
 
-/**
- * Command menu context extended interface (continued from above)
- */
-export interface CommandMenuContextExtended extends CommandMenuContextValue {
-  filteredItems: CommandMenuItem[];
-  selectedIndex: number;
-  setSelectedIndex: (index: number) => void;
-  executeCommand: (item: CommandMenuItem) => void;
-}
+// Note: CommandMenuContextExtended removed - unused
 
 /**
  * Command menu variant types
  */
 export type CommandMenuVariant = 'default' | 'compact';
-export type CommandMenuSize = 'sm' | 'md' | 'lg';
+// Note: CommandMenuSize removed - unused
 
 // =============================================================================
 // UI LIBRARY TYPES (from src/lib/ui)
@@ -794,80 +642,5 @@ export interface PersonalizedMessage {
   description: string;
 }
 
-// =============================================================================
-// KEYBOARD INTERACTION TYPES (from src/lib/keyboardUtils.tsx)
-// =============================================================================
-
-/**
- * Base keyboard event handler type
- */
-export type KeyboardEventHandler = (event: KeyboardEvent | React.KeyboardEvent) => void;
-
-/**
- * Key combination configuration
- */
-export interface KeyCombination {
-  key: string;
-  ctrlKey?: boolean;
-  metaKey?: boolean;
-  shiftKey?: boolean;
-  altKey?: boolean;
-}
-
-/**
- * Dropdown navigation options
- */
-export interface DropdownKeyboardOptions {
-  isOpen: boolean;
-  selectedIndex: number;
-  itemCount: number;
-  onOpen?: () => void;
-  onClose?: () => void;
-  onSelect?: (index: number) => void;
-  onNavigate?: (index: number) => void;
-  preventDefault?: boolean;
-}
-
-/**
- * Search keyboard options
- */
-export interface SearchKeyboardOptions {
-  onSearch?: (query: string) => void;
-  onClear?: () => void;
-  onEscape?: () => void;
-  currentValue?: string;
-  preventDefault?: boolean;
-}
-
-/**
- * Global shortcut options
- */
-export interface GlobalShortcutOptions {
-  enabled?: boolean;
-  preventDefault?: boolean;
-  stopPropagation?: boolean;
-}
-
-// =============================================================================
-// HOC (Higher-Order Component) TYPES (from src/lib/hocUtils.tsx)
-// =============================================================================
-
-/**
- * Generic wrapper component props
- */
-export interface WrapperComponentProps {
-  children: React.ReactNode;
-}
-
-/**
- * HOC factory function type
- */
-export type HOCFactory<WrapperProps, ComponentProps> = (
-  Component: React.ComponentType<ComponentProps>,
-  ...args: any[]
-) => React.ComponentType<ComponentProps>;
-
-/**
- * Component wrapper function type
- */
-export type ComponentWrapper<T extends object> = (props: T) => React.ReactElement;
+// Note: Keyboard interaction types and HOC types removed due to being unused
+// If these are needed in the future, implement them as needed with actual usage

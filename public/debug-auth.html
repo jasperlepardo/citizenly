@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Debug</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Authentication Debug</h1>
+    <div id="output"></div>
+
+    <script>
+        const supabaseUrl = 'https://cdtcbelaimyftpxmzkjf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkdGNiZWxhaW15ZnRweG16a2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODg1OTIsImV4cCI6MjA3MDQ2NDU5Mn0.VGhrjkrEECW9m8U_aeQOZd9jT6hLFOF8ML3tWJNuOOE';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            output.innerHTML += `<p>${message}</p>`;
+            console.log(message);
+        }
+        
+        async function debugAuth() {
+            log('🔍 Checking current auth state...');
+            
+            // Check current session
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (error) {
+                log(`❌ Session error: ${error.message}`);
+                return;
+            }
+            
+            if (!session) {
+                log('❌ No session found - user needs to log in');
+                return;
+            }
+            
+            log(`✅ Session found for user: ${session.user.email}`);
+            log(`User ID: ${session.user.id}`);
+            
+            // Test profile API
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    log(`❌ Profile API error: ${response.status} - ${errorText}`);
+                    return;
+                }
+                
+                const profileData = await response.json();
+                log('✅ Profile API success!');
+                log(`Profile barangay_code: ${profileData.data?.profile?.barangay_code}`);
+                log(`Profile role: ${profileData.data?.role?.name}`);
+                
+                // Test residents API
+                const resResponse = await fetch('/api/residents?limit=3', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    }
+                });
+                
+                if (!resResponse.ok) {
+                    const errorText = await resResponse.text();
+                    log(`❌ Residents API error: ${resResponse.status} - ${errorText}`);
+                    return;
+                }
+                
+                const residentsData = await resResponse.json();
+                log(`✅ Residents API success! Found ${residentsData.data?.length || 0} residents`);
+                
+                if (residentsData.data?.length > 0) {
+                    log(`Sample resident: ${residentsData.data[0].first_name} ${residentsData.data[0].last_name}`);
+                }
+                
+            } catch (error) {
+                log(`❌ API test error: ${error.message}`);
+            }
+        }
+        
+        debugAuth();
+    </script>
+</body>
+</html>

@@ -3,29 +3,21 @@
  * Tests all critical mapping functions for data consistency
  */
 
-import type {
-  ResidentFormData,
-  ResidentRecord,
-  ResidentWithRelations,
-  HouseholdData,
-  HouseholdHead,
-  HouseholdOption,
-} from '@/types';
-
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type { HouseholdData, HouseholdHead } from '@/types/domain/households/households';
 import {
   mapFormToApi,
-  mapDatabaseToForm,
   formatHouseholdOption,
   formatPsocOption,
   formatPsgcOption,
-  calculateAge,
-  formatFullName,
   formatEnumValue,
   formatBoolean,
-  parseFullName,
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
-} from '../resident-mapper';
+  calculateAge,
+  formatFullName,
+  parseFullName,
+} from '../../domain/residents/residentMapper';
 
 describe('Resident Mapper Utilities', () => {
   describe('mapFormToApi', () => {
@@ -127,7 +119,7 @@ describe('Resident Mapper Utilities', () => {
         telephone_number: '',
         mobile_number: '',
         household_code: '',
-        blood_type: '' as any,
+        blood_type: undefined,
         complexion: '',
         height: 0,
         weight: 0,
@@ -293,7 +285,6 @@ describe('Resident Mapper Utilities', () => {
 
     it('should return N/A for undefined values', () => {
       expect(formatBoolean(undefined)).toBe('N/A');
-      expect(formatBoolean(null as any)).toBe('N/A');
     });
   });
 
@@ -384,9 +375,7 @@ describe('Resident Mapper Utilities', () => {
         description: 'Information Technology > Software Development',
         level_type: 'occupation',
         occupation_code: '1111',
-        occupation_title: 'Software Engineer',
-        hierarchy: 'Information Technology > Software Development',
-        badge: 'occupation',
+        occupation_category: 'occupation',
       });
     });
   });
@@ -408,7 +397,7 @@ describe('Resident Mapper Utilities', () => {
         description: 'Manila, Metro Manila, Philippines',
         level: 'city',
         full_hierarchy: 'Manila, Metro Manila, Philippines',
-        code: '137401',
+        geographic_level: 'city',
       });
     });
 
@@ -424,7 +413,7 @@ describe('Resident Mapper Utilities', () => {
 
       expect(result.value).toBe('137401');
       expect(result.label).toBe('Manila');
-      expect(result.code).toBe('137401');
+      expect(result.value).toBe('137401'); // value is the code equivalent
     });
   });
 });

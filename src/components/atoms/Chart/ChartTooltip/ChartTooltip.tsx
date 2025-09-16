@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 
 interface TooltipData {
   label: string;

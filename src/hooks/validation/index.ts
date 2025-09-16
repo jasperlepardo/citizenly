@@ -5,20 +5,17 @@
  * data validation, and input validation across the application.
  */
 
-// Core validation hooks
-// DEPRECATED: useGenericValidation - generic utility not currently used
-// export { useGenericValidation } from './useGenericValidation';
+// NEW: Unified validation hook (replaces 6+ validation hooks)
+export {
+  useUnifiedResidentValidation,
+  type UnifiedResidentValidationReturn,
+} from './useUnifiedResidentValidation';
+
+// LEGACY: Individual validation hooks (deprecated - use useUnifiedResidentValidation instead)
 export {
   useOptimizedResidentValidation,
   useResidentFormValidation,
 } from './useOptimizedResidentValidation';
-// DEPRECATED: useOptimizedHouseholdValidation - not currently used
-// export {
-//   useOptimizedHouseholdValidation,
-//   useHouseholdValidation
-// } from './useOptimizedHouseholdValidation';
-
-// Specialized resident validation hooks
 export { useResidentValidationCore } from './useResidentValidationCore';
 export { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
 export { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { InputField } from '@/components';
-import { createComponentFieldChangeHandler } from '@/utils/shared/formUtils';
+import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';
 import type { FormMode, ContactDetailsFormData } from '@/types';
 
 export interface ContactDetailsProps {
@@ -22,7 +22,7 @@ export function ContactDetails({
 }: ContactDetailsProps) {
   // Use consolidated component field handler - eliminates 8 lines of duplicate code
   const handleChange = useCallback(
-    createComponentFieldChangeHandler<ContactDetailsFormData>(value, onChange),
+    createFieldChangeHandler<ContactDetailsFormData>(value, onChange),
     [value, onChange]
   );
 

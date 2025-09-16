@@ -119,37 +119,15 @@ const mockAuthContext = {
   signOut: jest.fn(),
 };
 
-const mockDesignSystem = {
-  getColor: jest.fn().mockReturnValue('#3b82f6'),
-  getRBIColor: jest.fn().mockReturnValue('#059669'),
-  getSpacing: jest.fn().mockReturnValue('16px'),
-  getFontSize: jest.fn().mockReturnValue(['16px', { lineHeight: '24px' }]),
-  getButtonStyles: jest.fn().mockReturnValue({
-    backgroundColor: '#3b82f6',
-    color: '#ffffff',
-    padding: '10px 16px',
-    borderRadius: '6px',
-  }),
-  getSectoralBadgeColor: jest.fn().mockReturnValue({
-    backgroundColor: '#059669',
-    color: '#ffffff',
-    borderColor: '#059669',
-  }),
-  getHouseholdTypeStyle: jest.fn().mockReturnValue({
-    icon: '👪',
-    color: '#3b82f6',
-  }),
-};
 
 // Set up module mocks that will be used across tests
-jest.mock('@/lib/supabase', () => ({ supabase: mockSupabase }));
-jest.mock('@/lib/security/crypto', () => mockCrypto);
-jest.mock('@/lib/database', () => mockDatabase);
-jest.mock('@/contexts/AuthContext', () => ({
+jest.mock('../../src/lib/data/supabase', () => ({ supabase: mockSupabase }));
+jest.mock('../../src/lib/security/crypto', () => mockCrypto);
+jest.mock('../../src/lib/database/connection-pool', () => mockDatabase);
+jest.mock('../../src/contexts/AuthContext.tsx', () => ({
   useAuth: () => mockAuthContext,
   AuthProvider: ({ children }) => children,
 }));
-jest.mock('@/design-system', () => mockDesignSystem);
 
 // Global test utilities
 global.testUtils = {

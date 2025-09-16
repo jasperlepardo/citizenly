@@ -3,9 +3,9 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, InputHTMLAttributes } from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 
-import { TitleDescription } from '../TitleDescription';
+import { TitleDescription } from '@/components/atoms/Field/Control/TitleDescription';
 
 const checkboxVariants = cva(
   'relative inline-flex items-center cursor-pointer disabled:cursor-not-allowed',
@@ -112,9 +112,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             <div
               className={cn(
                 'pointer-events-none absolute inset-0 flex items-center justify-center',
-                size === 'sm' && 'h-4 w-4',
-                size === 'md' && 'h-5 w-5',
-                size === 'lg' && 'h-6 w-6'
+                {
+                  'h-4 w-4': size === 'sm',
+                  'h-5 w-5': size === 'md',
+                  'h-6 w-6': size === 'lg'
+                }
               )}
             >
               {indeterminate ? (

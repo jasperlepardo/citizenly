@@ -9,16 +9,14 @@ import HouseholdForm, {
   HouseholdFormMode,
 } from '@/components/templates/Form/Household/HouseholdForm';
 import { useAuth } from '@/contexts';
-// REMOVED: @/lib barrel import - replace with specific module;
+import { supabase } from '@/lib/data/supabase';
+import { logger, logError } from '@/lib/logging/secure-logger';
 import { HouseholdRecord, HouseholdMemberWithResident } from '@/types/domain/households/households';
-import {
-  lookupAddressLabels,
-  lookupHouseholdTypeLabels,
-  lookupHouseholdHeadLabel,
-} from '@/services/domain/geography/addressLookupService';
+import { lookupHouseholdTypeLabels } from '@/services/domain/geography/addressHelpers';
+import { SupabaseGeographicRepository } from '@/services/infrastructure/repositories/SupabaseGeographicRepository';
 
 function HouseholdDetailContent() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const params = useParams();
   const router = useRouter();
   const householdCode = params.id as string;
@@ -38,27 +36,79 @@ function HouseholdDetailContent() {
     // Load household details when params are available
 
     const loadHouseholdDetails = async () => {
+      // More stringent authentication checks
       if (!householdCode || authLoading || !user) {
-        // Wait for authentication and household code
         return;
       }
 
-      // Starting to load household details
+      // Ensure we have a valid session before making the query
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.debug('No valid session available, skipping household query');
+        return;
+      }
+
       try {
         setLoading(true);
+        console.log('Loading household details for code:', householdCode);
+        
+        // Debug: Check RLS functions
+        const { data: userAccessLevel, error: accessLevelError } = await supabase.rpc('user_access_level');
+        const { data: userBarangayCode, error: barangayCodeError } = await supabase.rpc('user_barangay_code');
+        console.log('Debug - User access level:', userAccessLevel, 'Error:', accessLevelError?.message);
+        console.log('Debug - User barangay code:', userBarangayCode, 'Error:', barangayCodeError?.message);
+        console.log('Debug - Target household barangay:', '042114014');
+        console.log('Debug - Codes match:', userBarangayCode === '042114014');
+        
+        // Test if we can query households without the specific household filter
+        const { data: allUserHouseholds, error: allHouseholdsError } = await supabase
+          .from('households')
+          .select('code, barangay_code')
+          .limit(5);
+        console.log('Debug - User can access households:', allUserHouseholds?.length || 0, 'Error:', allHouseholdsError?.message);
 
-        // Load household details - simplified query first
-        const { data: householdData, error: householdError } = await supabase
+        // Load household details - handle single record properly
+        const { data: householdResults, error: householdError } = await supabase
           .from('households')
           .select('*')
-          .eq('code', householdCode)
-          .single();
+          .eq('code', householdCode);
 
-        // Household query completed
-
+        let householdData = null;
+        
         if (householdError) {
-          logger.error('Household query failed', { householdError });
-          setError('Household not found');
+          // Handle query error
+          console.log('Household query error:', householdError);
+        } else if (!householdResults || householdResults.length === 0) {
+          // No household found with this code
+          console.log('No household found with code:', householdCode);
+          setError(`Household with code "${householdCode}" not found`);
+          return;
+        } else if (householdResults.length > 1) {
+          // Multiple households found (unexpected)
+          console.warn(`Multiple households found with code ${householdCode}:`, householdResults.length);
+          householdData = householdResults[0]; // Use the first one
+        } else {
+          // Exactly one household found
+          householdData = householdResults[0];
+        }
+          
+        console.log('Query completed:', { 
+          hasData: !!householdData, 
+          hasError: !!householdError
+        });
+
+        // Handle actual database errors (not "no results" which is handled above)
+        if (householdError) {
+          // Only log error if it's not an authentication-related issue
+          if (householdError.code !== 'PGRST301') {
+            console.error('Database error loading household:', householdError);
+            logger.error('Household database query failed', { 
+              error: householdError.message,
+              code: householdError.code,
+              household_code: householdCode
+            });
+          }
+          setError(`Database error: ${householdError.message || 'Unknown error'}`);
           return;
         }
 
@@ -76,8 +126,10 @@ function HouseholdDetailContent() {
         setHouseholdFormData(formData);
 
         // Lookup labels for display in view mode
-        const [addressLookup, householdTypeLookup, householdHeadLookup] = await Promise.all([
-          lookupAddressLabels({
+        const geographicRepository = new SupabaseGeographicRepository();
+        
+        const [addressLookupResult, householdTypeLookup] = await Promise.all([
+          geographicRepository.lookupAddressLabels({
             regionCode: formData.region_code || undefined,
             provinceCode: formData.province_code || undefined,
             cityMunicipalityCode: formData.city_municipality_code || undefined,
@@ -91,8 +143,18 @@ function HouseholdDetailContent() {
             householdUnit: formData.household_unit || undefined,
             householdHeadPosition: formData.household_head_position || undefined,
           }),
-          lookupHouseholdHeadLabel(formData.household_head_id || undefined),
         ]);
+
+        const addressLookup = addressLookupResult.success ? addressLookupResult.data : {};
+        const householdHeadLookup = '';
+
+        // Log if address lookup failed (for debugging database permission issues)
+        if (!addressLookupResult.success) {
+          logger.warn('Address lookup failed, using empty labels', { 
+            error: addressLookupResult.error,
+            householdCode 
+          });
+        }
 
         setAddressLabels(addressLookup as Record<string, unknown>);
         setHouseholdTypeLabels(householdTypeLookup as Record<string, unknown>);
@@ -106,16 +168,45 @@ function HouseholdDetailContent() {
           .order('birthdate', { ascending: true });
 
         if (membersError) {
-          logError(membersError, 'HOUSEHOLD_MEMBERS_ERROR');
-          logger.error('Failed to load household members', { householdCode });
+          // Only log non-authentication errors
+          if (membersError.code !== 'PGRST301') {
+            console.error('Members query failed - Raw error:', membersError);
+            console.error('Members query details:', {
+              message: membersError.message,
+              code: membersError.code,
+              details: membersError.details,
+              hint: membersError.hint,
+              householdCode,
+            });
+            logError(membersError, 'HOUSEHOLD_MEMBERS_ERROR');
+            logger.warn('Failed to load household members', { 
+              errorMessage: membersError.message,
+              errorCode: membersError.code,
+              household_code: householdCode
+            });
+          }
+          // Still set empty array to prevent UI issues
+          setMembers([]);
         } else {
           setMembers(membersData || []);
         }
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
-        logError(error, 'HOUSEHOLD_LOAD_ERROR');
-        logger.error('Failed to load household details', { householdCode });
-        setError('Failed to load household details');
+        
+        // Only log if it's not an authentication timeout or permission issue
+        if (!error.message.includes('No valid session') && !error.message.includes('JWT')) {
+          logError(error, 'HOUSEHOLD_LOAD_ERROR');
+          logger.error('Failed to load household details', { 
+            error: error.message,
+            stack: error.stack,
+            householdCode,
+            authLoading,
+            hasUser: !!user,
+            fullError: JSON.stringify(err, null, 2)
+          });
+        }
+        
+        setError(`Failed to load household details: ${error.message}`);
       } finally {
         setLoading(false);
       }

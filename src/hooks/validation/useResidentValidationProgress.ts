@@ -9,8 +9,8 @@
 
 import { useMemo } from 'react';
 
-import { CRITICAL_VALIDATION_FIELDS } from '@/constants/resident-form-defaults';
-import { REQUIRED_FIELDS, getRequiredFieldsForSection } from '@/services/validation/fieldLevelSchemas';
+import { CRITICAL_VALIDATION_FIELDS } from '@/constants/residentFormDefaults';
+import { REQUIRED_FIELDS, getRequiredFieldsForSection } from '@/services/infrastructure/validation/fieldValidators';
 import type {
   ValidationSummary,
   SectionValidationStatus,

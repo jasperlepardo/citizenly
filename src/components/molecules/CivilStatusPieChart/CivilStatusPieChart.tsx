@@ -4,7 +4,7 @@ import React from 'react';
 
 import type { CivilStatusData } from '@/types/app/ui/charts';
 
-import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 
 interface CivilStatusPieChartProps {
   data: CivilStatusData;

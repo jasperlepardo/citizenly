@@ -1011,7 +1011,7 @@ export const formDataPool = new FormDataPool();
 
 #### **Step 3.1: Create Constants Files**
 
-**File: `src/constants/resident-form.ts`**
+**File: `src/constants/residentForm`**
 
 ```typescript
 export const REQUIRED_FIELDS = [

@@ -2,7 +2,7 @@
 
 import React, { Component, ReactNode } from 'react';
 
-import { createWrappedComponent } from '@/utils/dom/hocUtils';
+import { createWrappedComponent } from '@/utils/react/hocUtils';
 
 interface Props {
   children: ReactNode;

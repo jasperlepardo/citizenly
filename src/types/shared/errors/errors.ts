@@ -264,7 +264,7 @@ export interface SecureLogEntry {
 
 /**
  * Philippine data privacy compliance logging context
- * Consolidates from src/lib/security/philippine-logging.ts
+ * Consolidates from src/lib/security/philippineLogging.ts
  */
 export interface PhilippineLogContext {
   userId?: string;
@@ -277,7 +277,7 @@ export interface PhilippineLogContext {
 
 /**
  * Audit log context for compliance
- * Consolidates from src/lib/security/philippine-logging.ts
+ * Consolidates from src/lib/security/philippineLogging.ts
  */
 export interface AuditLogContext {
   eventType: string;
@@ -294,7 +294,7 @@ export interface AuditLogContext {
 
 /**
  * National Privacy Commission logging context
- * Consolidates from src/lib/security/philippine-logging.ts
+ * Consolidates from src/lib/security/philippineLogging.ts
  */
 export interface NPCLogContext {
   dataCategory: string;

@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 
 import { UserProfile, Button } from '@/components';
 import { useAuth } from '@/contexts';
-import { logError } from '@/lib/logging';
+import { logError } from '@/lib/logging/client-logger';
 
 // Simple logout button component
 function LogoutButton() {

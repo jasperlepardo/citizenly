@@ -117,6 +117,8 @@ export function PersonalInformationForm({
   // Handle changes from BirthInformation component
   const handleBirthInfoChange = React.useCallback(
     (value: BirthInformationFormData) => {
+      console.log('🔍 PersonalInformationForm: handleBirthInfoChange called with:', value);
+      
       // Only update fields that have actually changed from current form data
       const currentBirthInfo: BirthInformationFormData = {
         birthdate: formData.birthdate || '',
@@ -124,8 +126,11 @@ export function PersonalInformationForm({
         birth_place_code: formData.birth_place_code || '',
       };
 
+      console.log('🔍 PersonalInformationForm: currentBirthInfo:', currentBirthInfo);
+
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentBirthInfo[field as keyof BirthInformationFormData] !== fieldValue) {
+          console.log(`🔍 PersonalInformationForm: Birth field changed - ${field}:`, fieldValue);
           onChange(field, fieldValue);
         }
       });
@@ -159,6 +164,8 @@ export function PersonalInformationForm({
   // Handle changes from EmploymentInformation component
   const handleEmploymentInfoChange = React.useCallback(
     (value: EmploymentInformationFormData) => {
+      console.log('🔍 PersonalInformationForm: handleEmploymentInfoChange called with:', value);
+      
       // Only update fields that have actually changed from current form data
       const currentEmploymentInfo: EmploymentInformationFormData = {
         employment_status: formData.employment_status || '',
@@ -166,10 +173,38 @@ export function PersonalInformationForm({
         occupation_title: formData.occupation_title || '',
       };
 
+      console.log('🔍 PersonalInformationForm: currentEmploymentInfo:', currentEmploymentInfo);
+
+      // Check if any fields have changed
+      const changedFields: Partial<EmploymentInformationFormData> = {};
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentEmploymentInfo[field as keyof EmploymentInformationFormData] !== fieldValue) {
-          onChange(field, fieldValue);
+          console.log(`🔍 PersonalInformationForm: Employment field changed - ${field}:`, fieldValue);
+          changedFields[field as keyof EmploymentInformationFormData] = fieldValue;
         }
+      });
+
+      // If occupation_code and occupation_title are both changing, update them together as a batch
+      if (changedFields.occupation_code !== undefined || changedFields.occupation_title !== undefined) {
+        console.log('🔍 PersonalInformationForm: Batch updating occupation fields:', {
+          occupation_code: changedFields.occupation_code ?? currentEmploymentInfo.occupation_code,
+          occupation_title: changedFields.occupation_title ?? currentEmploymentInfo.occupation_title
+        });
+        
+        // Use batch update for occupation fields to prevent race conditions
+        onChange('__employment_occupation_batch__', {
+          occupation_code: changedFields.occupation_code ?? currentEmploymentInfo.occupation_code,
+          occupation_title: changedFields.occupation_title ?? currentEmploymentInfo.occupation_title,
+        });
+        
+        // Remove occupation fields from individual updates
+        delete changedFields.occupation_code;
+        delete changedFields.occupation_title;
+      }
+
+      // Update remaining fields individually
+      Object.entries(changedFields).forEach(([field, fieldValue]) => {
+        onChange(field, fieldValue);
       });
     },
     [onChange, formData.employment_status, formData.occupation_code, formData.occupation_title]
@@ -217,6 +252,9 @@ export function PersonalInformationForm({
             )}
             onChange={handleBirthInfoChange}
             errors={errors}
+            onPsgcSearch={onPsgcSearch}
+            psgcOptions={psgcOptions}
+            psgcLoading={psgcLoading}
           />
 
           {/* Education Information */}

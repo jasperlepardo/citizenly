@@ -2,7 +2,8 @@ import React from 'react';
 
 import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/resident-enums';
+import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
+import { formatGraduateStatus } from '@/utils/shared/dateUtils';
 import type { FormMode, EducationInformationFormData } from '@/types';
 
 // Graduate status options
@@ -79,7 +80,7 @@ export function EducationInformation({
           label="Graduate Status"
           labelSize="sm"
           radioName="is_graduate"
-          radioValue={value.is_graduate}
+          radioValue={mode === 'view' ? formatGraduateStatus(value.is_graduate) : value.is_graduate}
           onRadioChange={(selectedValue: string) => handleChange('is_graduate', selectedValue)}
           errorMessage={errors.is_graduate}
           orientation="horizontal"

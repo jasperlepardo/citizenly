@@ -11,7 +11,8 @@ import { useCallback, useState } from 'react';
 
 import { useAuth } from '@/contexts';
 import { supabase } from '@/lib/data/supabase';
-import { useSearchCache, searchFormatters } from '@/utils/search/search-utilities';
+import { formatAddress } from '@/services/app/display/residentDisplayHelpers';
+import { container } from '@/services/container';
 
 import { useGenericSearch } from './useGenericSearch';
 
@@ -31,11 +32,11 @@ const processHouseholdsData = (householdsData: any[]): HouseholdSearchResult[] =
     name: household.name || `Household ${household.code}`,
     address:
       household.address ||
-      searchFormatters.formatAddress([
+      formatAddress(
         household.house_number,
-        household.geo_streets?.[0]?.name || '',
-        household.geo_subdivisions?.[0]?.name || '',
-      ]),
+        household.geo_streets?.[0]?.name,
+        household.geo_subdivisions?.[0]?.name
+      ),
     house_number: household.house_number,
     geo_streets: household.geo_streets,
     geo_subdivisions: household.geo_subdivisions,
@@ -63,11 +64,22 @@ export function useOptimizedHouseholdSearch({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Setup caching if enabled
-  const { getCachedResult, setCachedResult } = useSearchCache<HouseholdSearchResult>(
-    `households-${userProfile?.barangay_code || 'all'}`,
-    enableCache ? 100 : 0
-  );
+  // Setup caching using existing CacheService
+  const cacheService = container.getCacheService();
+  const cacheKeyPrefix = `households-${userProfile?.barangay_code || 'all'}`;
+  
+  const getCachedResult = useCallback((query: string): HouseholdSearchResult[] | null => {
+    return enableCache ? cacheService.get<HouseholdSearchResult[]>(`${cacheKeyPrefix}-${query}`) : null;
+  }, [cacheService, cacheKeyPrefix, enableCache]);
+  
+  const setCachedResult = useCallback((query: string, result: HouseholdSearchResult[]) => {
+    if (enableCache) {
+      cacheService.set(`${cacheKeyPrefix}-${query}`, result, {
+        ttl: 5 * 60 * 1000, // 5 minutes
+        tags: ['households', `barangay:${userProfile?.barangay_code || 'all'}`],
+      });
+    }
+  }, [cacheService, cacheKeyPrefix, enableCache, userProfile?.barangay_code]);
 
   /**
    * Household search function with pagination support

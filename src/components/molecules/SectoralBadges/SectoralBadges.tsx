@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type { SectoralInformation } from '@/types';
+import type { SectoralInformation } from '@/types/domain/residents/forms';
 
 interface SectoralBadgesProps {
   sectoral: SectoralInformation;

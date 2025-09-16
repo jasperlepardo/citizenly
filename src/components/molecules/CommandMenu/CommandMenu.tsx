@@ -5,11 +5,11 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { useEffect, useRef } from 'react';
 
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 import type {
   CommandMenuSearchResult as CommandMenuItem,
   CommandMenuHookResult as CommandMenuProps,
-} from '@/types';
+} from '../../../types/infrastructure/services/services';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuGroup } from './CommandMenuGroup';

@@ -2,8 +2,8 @@
 
 import React, { Component, ReactNode, ErrorInfo } from 'react';
 
-import { createWrappedComponent } from '@/utils/dom/hocUtils';
-import { logger } from '@/lib/logging';
+import { createWrappedComponent } from '@/utils/react/hocUtils';
+import { clientLogger } from '@/lib/logging/client-logger';
 
 interface CommandMenuErrorBoundaryState {
   hasError: boolean;
@@ -44,12 +44,12 @@ export class CommandMenuErrorBoundary extends Component<
     });
 
     // Log error securely
-    logger.error('Command menu error boundary caught error:', {
+    clientLogger.error('Command menu error boundary caught error:', { component: 'CommandMenuErrorBoundary', action: 'error_caught', data: {
       error: error.message,
       stack: error.stack,
       componentStack: errorInfo.componentStack,
       timestamp: Date.now(),
-    });
+    }});
 
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo);

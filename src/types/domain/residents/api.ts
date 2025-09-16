@@ -5,7 +5,7 @@
  * Follows REST conventions and database schema alignment.
  */
 
-import type { ResidentRecord } from '../../infrastructure/database/database';
+import type { ResidentRecord } from '@/types/infrastructure/database/database';
 import type { Resident, ResidentListItem } from './core';
 
 /**

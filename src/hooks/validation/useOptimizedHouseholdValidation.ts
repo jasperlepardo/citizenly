@@ -15,7 +15,8 @@ import type {
   UseHouseholdValidationReturn,
 } from '@/types';
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation';
-import { toTitleCase } from '@/utils/shared/stringUtils';
+// Simple inline utility (replacing deleted stringUtils)
+const toTitleCase = (str: string) => str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 
 import { useGenericValidation } from './useGenericValidation';
 

@@ -11,7 +11,7 @@
  *
  * @example Demographic Chart Data Usage
  * ```typescript
- * import { SexData, ChartConfiguration } from '@/types/app/ui/charts';
+ * import { SexData, ChartType } from '@/types/app/ui/charts';
  *
  * const sexDistribution: SexData = {
  *   male: 1250,
@@ -65,15 +65,7 @@ export type EmploymentStatusData = {
  */
 export type ChartType = 'dependency' | 'sex' | 'civilStatus' | 'employment';
 
-/**
- * Map chart types to their corresponding data types
- */
-export type ChartDataMap = {
-  dependency: DependencyData;
-  sex: SexData;
-  civilStatus: CivilStatusData;
-  employment: EmploymentStatusData;
-};
+// Note: ChartDataMap removed - unused
 
 /**
  * Pie slice data interface
@@ -104,67 +96,15 @@ export interface ChartDataPoint {
   metadata?: Record<string, any>;
 }
 
-/**
- * Chart configuration interface
- */
-export interface ChartConfig {
-  type: ChartType;
-  title?: string;
-  colors?: Record<string, string>;
-  showLegend?: boolean;
-  showLabels?: boolean;
-  showValues?: boolean;
-  showPercentages?: boolean;
-  width?: number;
-  height?: number;
-}
+// Note: ChartConfig removed - unused
 
-/**
- * Population pyramid data point
- */
-export interface PopulationPyramidDataPoint {
-  ageGroup: string;
-  male: number;
-  female: number;
-  malePercentage: number;
-  femalePercentage: number;
-}
+// Note: PopulationPyramidDataPoint removed - unused
 
-/**
- * Population pyramid configuration
- */
-export interface PopulationPyramidConfig {
-  data: PopulationPyramidDataPoint[];
-  width?: number;
-  height?: number;
-  colors?: {
-    male: string;
-    female: string;
-  };
-  showLabels?: boolean;
-  showValues?: boolean;
-}
+// Note: PopulationPyramidConfig removed - unused
 
-/**
- * Time series data point
- */
-export interface TimeSeriesDataPoint {
-  date: string;
-  value: number;
-  label?: string;
-}
+// Note: TimeSeriesDataPoint removed - unused
 
-/**
- * Time series chart configuration
- */
-export interface TimeSeriesConfig {
-  data: TimeSeriesDataPoint[];
-  xAxisLabel?: string;
-  yAxisLabel?: string;
-  color?: string;
-  showGrid?: boolean;
-  showPoints?: boolean;
-}
+// Note: TimeSeriesConfig removed - unused
 
 // =============================================================================
 // CHART CONSTANTS
@@ -229,20 +169,9 @@ export const CHART_SIZES = {
 // CHART UTILITY TYPES
 // =============================================================================
 
-/**
- * Chart render mode
- */
-export type ChartRenderMode = 'svg' | 'canvas' | 'webgl';
+// Note: ChartRenderMode removed - unused
 
-/**
- * Chart animation configuration
- */
-export interface ChartAnimation {
-  enabled: boolean;
-  duration?: number;
-  easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
-  delay?: number;
-}
+// Note: ChartAnimation removed - unused
 
 /**
  * Chart tooltip configuration
@@ -262,95 +191,25 @@ export interface ChartLegend {
   orientation?: 'horizontal' | 'vertical';
 }
 
-/**
- * Chart axis configuration
- */
-export interface ChartAxis {
-  label?: string;
-  showGrid?: boolean;
-  showTicks?: boolean;
-  tickFormat?: (value: number | string) => string;
-  domain?: [number, number];
-}
+// Note: ChartAxis removed - unused
 
-/**
- * Complete chart configuration
- */
-export interface AdvancedChartConfig extends ChartConfig {
-  renderMode?: ChartRenderMode;
-  animation?: ChartAnimation;
-  tooltip?: ChartTooltip;
-  legend?: ChartLegend;
-  xAxis?: ChartAxis;
-  yAxis?: ChartAxis;
-  responsive?: boolean;
-  maintainAspectRatio?: boolean;
-}
+// Note: AdvancedChartConfig removed - unused
 
 // =============================================================================
 // CHART DATA TRANSFORMERS
 // =============================================================================
 
-/**
- * Chart data transformation result
- */
-export interface ChartTransformResult<T = ChartDataPoint[]> {
-  data: T;
-  total: number;
-  isEmpty: boolean;
-  hasNegativeValues: boolean;
-  maxValue: number;
-  minValue: number;
-}
+// Note: ChartTransformResult removed - unused
 
-/**
- * Chart filter options
- */
-export interface ChartFilterOptions {
-  includeZeroValues?: boolean;
-  minValue?: number;
-  maxValue?: number;
-  sortBy?: 'label' | 'value' | 'percentage';
-  sortOrder?: 'asc' | 'desc';
-  limit?: number;
-}
+// Note: ChartFilterOptions removed - unused
 
 // =============================================================================
 // DASHBOARD CHART TYPES
 // =============================================================================
 
-/**
- * Dashboard widget chart type
- */
-export type DashboardChartType =
-  | 'pie'
-  | 'bar'
-  | 'line'
-  | 'area'
-  | 'donut'
-  | 'populationPyramid'
-  | 'gauge'
-  | 'metric';
+// Note: DashboardChartType removed - unused
 
-/**
- * Dashboard chart widget configuration
- */
-export interface DashboardChartWidget {
-  id: string;
-  type: DashboardChartType;
-  title: string;
-  subtitle?: string;
-  config: AdvancedChartConfig;
-  dataSource: string;
-  refreshInterval?: number;
-  size: 'small' | 'medium' | 'large' | 'xlarge';
-  position: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-}
+// Note: DashboardChartWidget removed - unused
 
 // =============================================================================
 // POPULATION STATISTICS TYPES (from services/statistics/population-pyramid.ts)

@@ -116,7 +116,7 @@ export async function logSecurityOperation(
 ): Promise<void> {
   try {
     // Import here to avoid circular dependencies
-    const { storeSecurityAuditLog } = await import('./audit-storage');
+    const { storeSecurityAuditLog } = await import('./auditStorage');
 
     const auditLog = {
       operation,

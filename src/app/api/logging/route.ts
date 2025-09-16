@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // REMOVED: @/lib barrel import - replace with specific module;
 import { isProduction, getEnvironment } from '@/lib/config/environment';
+import { logger } from '@/lib/logging/secure-logger';
 import type { LogEntry } from '@/types/app/api/apiRequests';
 
 export const dynamic = 'force-dynamic';
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!checkLogRateLimit(ip)) {
       return NextResponse.json(
-        createErrorResponseObject('RATE_001', 'Logging rate limit exceeded'),
+        { error: 'RATE_001', message: 'Logging rate limit exceeded' },
         { status: 429 }
       );
     }
@@ -56,7 +57,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate log entry structure
     if (!logEntry.timestamp || !logEntry.level || !logEntry.message) {
-      return NextResponse.json(createErrorResponseObject('DATA_001', 'Invalid log entry format'), {
+      return NextResponse.json({ error: 'DATA_001', message: 'Invalid log entry format' }, {
         status: 400,
       });
     }
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     console.error('Logging endpoint error:', error);
 
     return NextResponse.json(
-      createErrorResponseObject('SERVER_001', 'Failed to process log entry'),
+      { error: 'SERVER_001', message: 'Failed to process log entry' },
       { status: 500 }
     );
   }

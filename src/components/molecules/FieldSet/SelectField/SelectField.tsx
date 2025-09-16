@@ -2,17 +2,17 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import type { FormMode } from '@/types';
-import {
-  getFieldId,
-  getFieldIds,
-  buildAriaDescribedBy,
-  buildAriaLabelledBy,
-} from '@/utils/shared/idGenerators';
+// Simple inline utility (replacing deleted cssUtils)
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+import type { FormMode } from '@/types/app/ui/forms';
+// Simple inline ID utilities (replacing deleted idGenerators)
+const getFieldId = (name: string) => `field-${name}-${Math.random().toString(36).substring(2, 9)}`;
+const getFieldIds = (name: string) => ({ fieldId: getFieldId(name), helperId: `${getFieldId(name)}-helper`, errorId: `${getFieldId(name)}-error` });
+const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
+const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, HelperText, ReadOnly } from '../../../atoms/Field';
-import { Select, SelectProps } from '../../../atoms/Field/Select';
+import { Label, HelperText, ReadOnly } from '@/components/atoms/Field';
+import { Select, SelectProps } from '@/components/atoms/Field/Select';
 
 export interface SelectFieldProps {
   children?: React.ReactNode;
@@ -27,6 +27,8 @@ export interface SelectFieldProps {
   labelWidth?: 'sm' | 'md' | 'lg';
   htmlFor?: string;
   labelSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** Enable multiline display in view mode for long text */
+  multiline?: boolean;
   // Select component props (when used directly with Select)
   selectProps?: SelectProps;
   // Label component props
@@ -48,6 +50,7 @@ export const SelectField = ({
   labelWidth = 'md',
   htmlFor,
   labelSize = 'sm',
+  multiline = false,
   selectProps,
   labelProps,
 }: SelectFieldProps) => {
@@ -98,6 +101,7 @@ export const SelectField = ({
             selectProps ? (
               <ReadOnly
                 id={fieldId}
+                multiline={multiline}
                 value={(() => {
                   if (!selectProps.value) return '—';
                   // Find the matching option and return its label

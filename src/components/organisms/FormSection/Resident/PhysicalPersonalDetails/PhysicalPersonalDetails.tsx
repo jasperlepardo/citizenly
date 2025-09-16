@@ -72,9 +72,29 @@ export function PhysicalPersonalDetailsForm({
 
   // Handle changes from PhysicalCharacteristics component
   const handlePhysicalCharacteristicsChange = (value: PhysicalCharacteristicsFormData) => {
+    console.log('🔍 PhysicalPersonalDetails: handlePhysicalCharacteristicsChange called with', value);
+    
+    // Special debug for ethnicity
+    if (value.ethnicity) {
+      console.log('🎯 PhysicalPersonalDetails: ETHNICITY CHANGE DETECTED:', value.ethnicity);
+      if (value.ethnicity === 'badjao') {
+        console.log('🎯 PhysicalPersonalDetails: BADJAO FORWARDING TO RESIDENT FORM!');
+      }
+    }
+    
+    // Batch all changes together to prevent race conditions
+    const batchedUpdates: Record<string, string> = {};
+    
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      console.log('🔍 PhysicalPersonalDetails: batching field', { field, fieldValue });
+      batchedUpdates[field] = fieldValue;
     });
+    
+    // Send as a single batch update to prevent race conditions
+    console.log('🎯 PhysicalPersonalDetails: Sending batched update:', batchedUpdates);
+    
+    // Use a special batch key to signal ResidentForm to process all fields atomically
+    onChange('__physical_characteristics_batch__' as any, batchedUpdates as any);
   };
 
   // Handle changes from VotingInformation component

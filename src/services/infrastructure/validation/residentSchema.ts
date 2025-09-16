@@ -14,8 +14,7 @@ import {
   blood_typeSchema,
   religionSchema,
   ethnicitySchema,
-  income_classSchema,
-} from '@/services/validation/generated-schemas';
+} from './generatedSchemas';
 
 // Base schema for common validations
 const nameSchema = z.string().min(1, 'Required').max(100, 'Too long (max 100 characters)');
@@ -33,7 +32,10 @@ const phoneSchema = z
   .or(z.literal(''));
 
 // Email validation
-const emailSchema = z.string().email('Invalid email format').optional().or(z.literal(''));
+const emailSchema = z.string().regex(
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  'Invalid email format'
+).optional().or(z.literal(''));
 
 // Date validation
 const dateSchema = z.string().refine(
@@ -67,7 +69,7 @@ const philsysSchema = z
   .or(z.literal(''));
 
 // Number validations
-const positiveNumberSchema = z.number().positive('Must be greater than 0').optional();
+// const positiveNumberSchema = z.number().positive('Must be greater than 0').optional(); // Unused but kept for reference
 const heightSchema = z.number().min(50, 'Invalid height').max(300, 'Invalid height').optional();
 const weightSchema = z.number().min(1, 'Invalid weight').max(500, 'Invalid weight').optional();
 
@@ -99,8 +101,14 @@ export const ResidentFormSchema = z.object({
 
   // Address Information
   household_code: z.string().max(50, 'Too long').optional().or(z.literal('')),
-  street_id: z.string().uuid().optional().or(z.literal('')),
-  subdivision_id: z.string().uuid().optional().or(z.literal('')),
+  street_id: z.string().regex(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    'Invalid UUID format'
+  ).optional().or(z.literal('')),
+  subdivision_id: z.string().regex(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    'Invalid UUID format'
+  ).optional().or(z.literal('')),
   zip_code: z.string().max(10, 'Too long').optional().or(z.literal('')),
 
   // Education & Employment
@@ -140,10 +148,11 @@ export const ResidentFormSchema = z.object({
  */
 export type ResidentEditFormData = z.infer<typeof ResidentFormSchema>;
 
+import type { ValidationResult } from '@/types/shared/validation/validation';
+
 /**
  * Validation result type
  */
-import type { ValidationResult } from '@/types/shared/validation';
 
 /**
  * Validates resident form data
@@ -165,7 +174,7 @@ export function validateResidentForm(data: unknown): ValidationResult<ResidentEd
         field: err.path.join('.'),
         message: err.message,
         code: err.code,
-        value: err.path.reduce((obj: any, key) => obj?.[key], data)
+        value: err.path.reduce((obj: unknown, key) => (obj as Record<string, unknown>)?.[String(key)], data)
       }));
       return { 
         isValid: false,

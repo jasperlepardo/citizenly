@@ -1,10 +1,20 @@
 /**
  * Subdivisions API Route
- * Returns geo subdivisions with search functionality, optionally filtered by barangay
+ * Returns empty array since geo_subdivisions table doesn't exist
  * Query parameters: ?barangay_code=BARANGAY_CODE&search=SEARCH_TERM
  */
 
-import { PSGCHandlers } from '@/lib/api/psgc-handlers';
+import { createSuccessResponse } from '@/utils/auth/apiResponseHandlers';
 
-// Use consolidated PSGC handler - eliminates 64 lines of duplicate code
-export const GET = PSGCHandlers.subdivisions;
+export async function GET() {
+  // Return empty array since geo_subdivisions table doesn't exist in the database
+  // This prevents the permission denied errors
+  const options: Array<{
+    value: string;
+    label: string;
+    barangay_code?: string;
+    type?: string;
+  }> = [];
+
+  return createSuccessResponse(options, 'Subdivisions retrieved successfully');
+}

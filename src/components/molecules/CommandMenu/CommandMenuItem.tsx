@@ -3,8 +3,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types';
+import { cn } from '@/components/shared/utils';
+import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types/shared/hooks/commandMenuHooks';
 
 const commandMenuItemVariants = cva(
   'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',

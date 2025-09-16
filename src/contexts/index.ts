@@ -12,8 +12,8 @@ export {
   useRequirePermission,
 } from './AuthContext';
 
-// Role type is now exported from centralized @/types
-export type { Role, AuthContextType } from '@/types';
+// Role type is now exported from centralized types
+export type { Role } from '../types/app/auth/auth';
 
 // Theme context with hooks
 export { ThemeProvider, useTheme } from './ThemeContext';

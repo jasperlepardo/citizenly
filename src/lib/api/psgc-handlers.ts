@@ -12,12 +12,12 @@
 
 import { NextRequest } from 'next/server';
 
-import { createAdminSupabaseClient } from '@/lib/data/supabase';
+import { supabase } from '@/lib/data/supabase';
 import {
   createSuccessResponse,
   withNextRequestErrorHandling,
 } from '@/utils/auth/apiResponseHandlers';
-import { sanitizeSearchInput } from '@/utils/validation/validationUtils';
+import { sanitizeSearchInput } from '@/utils/shared/validationUtils';
 
 // =============================================================================
 // TYPES
@@ -55,7 +55,6 @@ type GeoStreet = {
  */
 export function createPSGCHandler(config: PSGCQueryConfig) {
   return withNextRequestErrorHandling(async (request: NextRequest) => {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
 
     // Build base query
@@ -178,7 +177,6 @@ export const PSGCHandlers = {
    * Query: ?barangay_code=BARANGAY_CODE&search=SEARCH_TERM
    */
   subdivisions: withNextRequestErrorHandling(async (request: NextRequest) => {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const barangayCode = searchParams.get('barangay_code');
     const search = searchParams.get('search');
@@ -227,7 +225,6 @@ export const PSGCHandlers = {
    * Query: ?barangay_code=BARANGAY_CODE&subdivision_id=SUBDIVISION_ID&search=SEARCH_TERM
    */
   streets: withNextRequestErrorHandling(async (request: NextRequest) => {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
     const barangayCode = searchParams.get('barangay_code');
     const subdivisionId = searchParams.get('subdivision_id');
@@ -303,7 +300,6 @@ export function createCustomPSGCHandler<T = PSGCOption>(
   transformer?: (data: Record<string, unknown>[]) => T[]
 ) {
   return withNextRequestErrorHandling(async (request: NextRequest) => {
-    const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(request.url);
 
     // Build base query
@@ -363,7 +359,7 @@ export function createCustomPSGCHandler<T = PSGCOption>(
 // src/app/api/addresses/regions/route.ts
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createAdminSupabaseClient() as any;
+    const client = supabase as any;
     const { data: regions, error: regionsError } = await supabase
       .from('psgc_regions')
       .select('code, name')

@@ -49,7 +49,7 @@ jest.mock('@/hooks/crud/useResidentOperations', () => ({
 }));
 
 // Mock security and validation modules
-jest.mock('@/lib/security/philippine-logging', () => ({
+jest.mock('@/lib/security/philippineLogging', () => ({
   philippineCompliantLogger: {
     debug: jest.fn(),
     info: jest.fn(),
@@ -105,7 +105,7 @@ jest.mock('@/lib/authentication', () => ({
   })),
 }));
 
-jest.mock('@/constants/resident-form', () => ({
+jest.mock('@/constants/residentForm', () => ({
   RATE_LIMITS: {
     FORM_SUBMISSION: {
       MAX_ATTEMPTS: 5,

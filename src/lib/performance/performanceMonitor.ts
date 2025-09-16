@@ -14,7 +14,7 @@
 
 import React from 'react';
 
-import { logger } from '@/lib/logging';
+import { clientLogger } from '@/lib/logging/client-logger';
 import type {
   WebVitalsPerformanceMetric as PerformanceMetric,
   ResourceTiming,
@@ -46,7 +46,7 @@ class PerformanceMonitor {
   private initialize(): void {
     // Check if browser supports the APIs we need
     if (!('performance' in window) || !('PerformanceObserver' in window)) {
-      logger.warn('Performance monitoring not supported in this browser');
+      clientLogger.warn('Performance monitoring not supported in this browser', { component: 'PerformanceMonitor', action: 'browser_not_supported' });
       this.isEnabled = false;
       return;
     }
@@ -77,7 +77,7 @@ class PerformanceMonitor {
         entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift'],
       });
     } catch (error) {
-      logger.error('Failed to setup Core Web Vitals observer', { error });
+      clientLogger.error('Failed to setup Core Web Vitals observer', { component: 'PerformanceMonitor', action: 'web_vitals_observer_failed', data: { error } });
     }
   }
 
@@ -96,7 +96,7 @@ class PerformanceMonitor {
 
       navObserver.observe({ entryTypes: ['navigation'] });
     } catch (error) {
-      logger.error('Failed to setup navigation observer', { error });
+      clientLogger.error('Failed to setup navigation observer', { component: 'PerformanceMonitor', action: 'navigation_observer_failed', data: { error } });
     }
   }
 
@@ -116,7 +116,7 @@ class PerformanceMonitor {
 
       resourceObserver.observe({ entryTypes: ['resource'] });
     } catch (error) {
-      logger.error('Failed to setup resource observer', { error });
+      clientLogger.error('Failed to setup resource observer', { component: 'PerformanceMonitor', action: 'resource_observer_failed', data: { error } });
     }
   }
 
@@ -136,7 +136,7 @@ class PerformanceMonitor {
       longTaskObserver.observe({ entryTypes: ['longtask'] });
     } catch (error) {
       // Long tasks may not be supported in all browsers
-      logger.debug('Long task monitoring not available', { error });
+      clientLogger.debug('Long task monitoring not available', { component: 'PerformanceMonitor', action: 'long_task_not_available', data: { error } });
     }
   }
 
@@ -197,11 +197,11 @@ class PerformanceMonitor {
   private handleLongTask(entry: PerformanceEntry): void {
     // Only log in development and only for very long tasks
     if (process.env.NODE_ENV === 'development' && entry.duration > 300) {
-      logger.warn('Long task detected', {
+      clientLogger.warn('Long task detected', { component: 'PerformanceMonitor', action: 'long_task_detected', data: {
         duration: entry.duration,
         startTime: entry.startTime,
         name: entry.name,
-      });
+      }});
     }
 
     // Long tasks over 50ms can affect user experience
@@ -268,11 +268,11 @@ class PerformanceMonitor {
 
     // Log poor performance metrics
     if (metric.rating === 'poor') {
-      logger.warn('Poor performance metric detected', {
+      clientLogger.warn('Poor performance metric detected', { component: 'PerformanceMonitor', action: 'poor_metric_detected', data: {
         metric: metric.name,
         value: metric.value,
         url: metric.url,
-      });
+      }});
     }
 
     // Send to analytics (in production)
@@ -296,13 +296,13 @@ class PerformanceMonitor {
     // Find slow resources
     const slowResources = resources.filter(r => r.duration > 1000);
     if (slowResources.length > 0) {
-      logger.warn('Slow resources detected', { slowResources });
+      clientLogger.warn('Slow resources detected', { component: 'PerformanceMonitor', action: 'slow_resources_detected', data: { slowResources } });
     }
 
     // Find large resources
     const largeResources = resources.filter(r => r.size > 500000); // 500KB
     if (largeResources.length > 0) {
-      logger.warn('Large resources detected', { largeResources });
+      clientLogger.warn('Large resources detected', { component: 'PerformanceMonitor', action: 'large_resources_detected', data: { largeResources } });
     }
   }
 
@@ -324,7 +324,7 @@ class PerformanceMonitor {
           headers: { 'Content-Type': 'application/json' },
           keepalive: true,
         }).catch(error => {
-          logger.error('Failed to send performance metric', { error });
+          clientLogger.error('Failed to send performance metric', { component: 'PerformanceMonitor', action: 'send_metric_failed', data: { error } });
         });
       }
     } catch (error) {

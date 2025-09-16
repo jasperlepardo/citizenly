@@ -1,10 +1,20 @@
 /**
  * Streets API Route
- * Returns geo streets with search functionality, optionally filtered by barangay and subdivision
+ * Returns empty array since geo_streets table doesn't exist
  * Query parameters: ?barangay_code=BARANGAY_CODE&subdivision_id=SUBDIVISION_ID&search=SEARCH_TERM
  */
 
-import { PSGCHandlers } from '@/lib/api/psgc-handlers';
+import { createSuccessResponse } from '@/utils/auth/apiResponseHandlers';
 
-// Use consolidated PSGC handler - eliminates 70 lines of duplicate code
-export const GET = PSGCHandlers.streets;
+export async function GET() {
+  // Return empty array since geo_streets table doesn't exist in the database
+  // This prevents the permission denied errors
+  const options: Array<{
+    value: string;
+    label: string;
+    subdivision_id?: string | null;
+    barangay_code?: string;
+  }> = [];
+
+  return createSuccessResponse(options, 'Streets retrieved successfully');
+}

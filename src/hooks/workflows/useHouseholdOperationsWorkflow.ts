@@ -16,8 +16,8 @@ import type {
   UseHouseholdCreationServiceOptions,
 } from '@/types';
 
-import { useHouseholdCrud, UseHouseholdCrudOptions } from '../crud/useHouseholdCrud';
-import { useHouseholdValidation } from '../validation/useOptimizedHouseholdValidation';
+import { useHouseholdCrud, UseHouseholdCrudOptions } from '@/hooks/crud/useHouseholdCrud';
+import { useHouseholdValidation } from '@/hooks/validation/useOptimizedHouseholdValidation';
 import { useHouseholdCreationService } from './useHouseholdCreationService';
 
 

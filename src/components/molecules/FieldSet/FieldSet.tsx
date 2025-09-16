@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import type { FormMode } from '@/types';
+import { cn } from '@/components/shared/utils';
+import type { FormMode } from '@/types/app/ui/forms';
 
-import { CheckboxGroup } from '../../atoms/Field/Control/Checkbox/Checkbox';
-import { RadioGroup } from '../../atoms/Field/Control/Radio/Radio';
-import { Label } from '../../atoms/Field/Label/Label';
+import { CheckboxGroup } from '@/components/atoms/Field/Control/Checkbox/Checkbox';
+import { RadioGroup } from '@/components/atoms/Field/Control/Radio/Radio';
+import { Label } from '@/components/atoms/Field/Label/Label';
 
 import { ControlGroup } from './ControlField/ControlField';
 import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';
@@ -69,10 +69,28 @@ export const ControlFieldSet = ({
   // Helper function to format values for display in view mode
   const formatDisplayValue = (value: string[] | string | undefined) => {
     if (!value) return '—';
+    
+    // Extract labels from children to show proper display values instead of raw values
+    const childLabels = new Map<string, string>();
+    React.Children.forEach(children, (child) => {
+      if (React.isValidElement(child)) {
+        const childValue = child.props.value;
+        const childLabel = child.props.label;
+        if (childValue && childLabel) {
+          childLabels.set(childValue, childLabel);
+        }
+      }
+    });
+    
     if (Array.isArray(value)) {
-      return value.length > 0 ? value.join(', ') : '—';
+      if (value.length === 0) return '—';
+      // Map checkbox values to their labels
+      const labels = value.map(val => childLabels.get(val) || val);
+      return labels.join(', ');
     }
-    return value || '—';
+    
+    // Map single radio value to its label
+    return childLabels.get(value) || value || '—';
   };
 
   // If in view mode, render as ReadOnlyField

@@ -4,21 +4,22 @@
  * Eliminates duplicate implementations and inconsistent mapping patterns
  */
 
-import { ResidentFormData } from '../../../types/app/ui/forms';
-import { ResidentRecord } from '../../../types/infrastructure/database/database';
-import { ResidentWithRelations } from '../../../types/domain/residents/core';
-import { PsocOption, PsgcOption } from '../../../types/domain/residents/api';
+import { ResidentFormData } from '@/types/domain/residents/forms';
+import { ResidentRecord } from '@/types/infrastructure/database/database';
+import { ResidentWithRelations } from '@/types/domain/residents/core';
+import { PsocOption, PsgcOption } from '@/types/domain/residents/api';
 import {
   HouseholdData,
   HouseholdHead,
   HouseholdOption,
-} from '../../../types/domain/households/households';
+} from '@/types/domain/households/households';
 import type {
   ServiceRawPsocData as RawPsocData,
   ServiceRawPsgcData as RawPsgcData,
-} from '../../../types/infrastructure/services/services';
-import { calculateAge } from '../../../utils/shared/dateUtils';
-import { formatFullName, parseFullName } from '../../../utils/shared/stringUtils';
+} from '@/types/infrastructure/services/services';
+import { calculateAge } from '@/utils/shared/dateUtils';
+import { formatFullName } from './residentHelpers';
+import { parseFullName } from '@/utils/residents/residentDataProcessing';
 
 /**
  * Map form data (camelCase) to API format (snake_case for database)

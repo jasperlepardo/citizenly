@@ -7,7 +7,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from '@/contexts';
-import { supabase } from '@/lib/data/supabase';
 import { HouseholdWithMembersResult } from '@/types/domain/households';
 
 interface HouseholdsParams {
@@ -19,17 +18,13 @@ interface HouseholdsResponse {
   total: number;
 }
 
-// API function to fetch households
-async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResponse> {
+// API function to fetch households  
+async function fetchHouseholds(params: HouseholdsParams, authSession?: any): Promise<HouseholdsResponse> {
   const { searchTerm = '' } = params;
 
-  // Get current session to pass auth token
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    throw new Error('No valid session found');
+  // Use the session passed from the hook
+  if (!authSession?.access_token) {
+    throw new Error('Authentication required. Please sign in to access households.');
   }
 
   // Build query parameters
@@ -42,7 +37,7 @@ async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResp
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${session.access_token}`,
+      Authorization: `Bearer ${authSession.access_token}`,
     },
   });
 
@@ -56,24 +51,22 @@ async function fetchHouseholds(params: HouseholdsParams): Promise<HouseholdsResp
 
 // Custom hook
 export function useHouseholds(params: HouseholdsParams = {}) {
-  const { user, userProfile } = useAuth();
+  const { userProfile, session } = useAuth();
   const queryClient = useQueryClient();
 
   const { searchTerm = '' } = params;
 
   const query = useQuery({
     queryKey: ['households', { searchTerm, barangayCode: userProfile?.barangay_code }],
-    queryFn: () => fetchHouseholds(params),
-    enabled: !!user && !!userProfile?.barangay_code,
-    staleTime: 30 * 60 * 1000, // 30 minutes - longer stale time
-    gcTime: 60 * 60 * 1000, // 1 hour - keep in cache longer
-    // Show cached data immediately, refetch in background only if stale
-    refetchOnMount: false,
+    queryFn: () => fetchHouseholds(params, session),
+    enabled: !!session?.access_token, // Only try when we have a valid session
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes  
+    refetchOnMount: true, // Always refetch on mount
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    // Use cached data immediately while fetching fresh data
-    placeholderData: previousData => previousData,
-    // Network mode optimistic - use cache first
+    refetchOnReconnect: true,
+    // Disable placeholder data to see actual loading states
+    retry: 1, // Only retry once on failure
     networkMode: 'always',
   });
 

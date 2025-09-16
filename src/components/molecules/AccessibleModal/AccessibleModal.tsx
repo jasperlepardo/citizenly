@@ -8,7 +8,7 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 import { useFocusTrap, announceToScreenReader } from '@/utils/ui/accessibility';
 
 interface AccessibleModalProps {

@@ -26,7 +26,7 @@
  * @example Basic Household Creation
  * ```typescript
  * import { HouseholdRecord, HouseholdFormData } from '@/types/domain/households';
- * import { HOUSEHOLD_TYPE_OPTIONS } from '@/constants/household-form-options';
+ * import { HOUSEHOLD_TYPE_OPTIONS } from '@/constants/household-formOptions';
  *
  * const household: HouseholdRecord = {
  *   code: 'BRG001-HH-2025-001',
@@ -315,15 +315,15 @@ export interface HouseholdTableAction {
 // =============================================================================
 
 // Form option constants moved to dedicated constants file for better organization
-// Import from: @/constants/household-form-options
-export type { OptionType } from '@/constants/household-form-options';
+// Import from: @/constants/household-formOptions
+export type { OptionType } from '../../../constants/householdFormOptions';
 export {
   HOUSEHOLD_TYPE_OPTIONS,
   TENURE_STATUS_OPTIONS,
   HOUSEHOLD_UNIT_OPTIONS,
   INCOME_CLASS_OPTIONS,
   HOUSEHOLD_FORM_OPTIONS,
-} from '@/constants/household-form-options';
+} from '../../../constants/householdFormOptions';
 
 // =============================================================================
 // VALIDATION AND ERROR INTERFACES

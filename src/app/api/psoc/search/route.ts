@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-import { databaseService } from '@/services/shared/data/databaseService';
 import type { PsocMajorGroup, PsocSubMajorGroup, PsocUnitGroup, PsocUnitSubGroup } from '@/types/infrastructure/database/database';
 
 export async function GET(request: NextRequest) {
@@ -15,19 +15,36 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ data: [], count: 0 });
     }
 
-    // Use public client for PSOC data search
-    const supabase = databaseService.getPublicClient();
+    // Create public client for PSOC data search
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json(
+        { error: 'Database configuration missing', data: [], count: 0 },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     const searchTerm = `%${query.trim()}%`;
     const allResults: any[] = [];
+    
+    // Check if the query looks like a code (numeric)
+    const isNumericCode = /^\d+$/.test(query.trim());
 
     // Search major groups if requested
     if (levels.includes('major_group')) {
-      const { data: majorGroups } = await supabase
-        .from('psoc_major_groups')
-        .select('*')
-        .ilike('title', searchTerm)
-        .limit(Math.min(limit, 5));
+      let majorGroupsQuery = supabase.from('psoc_major_groups').select('*');
+      
+      if (isNumericCode) {
+        majorGroupsQuery = majorGroupsQuery.eq('code', query.trim());
+      } else {
+        majorGroupsQuery = majorGroupsQuery.ilike('title', searchTerm);
+      }
+      
+      const { data: majorGroups } = await majorGroupsQuery.limit(Math.min(limit, 5));
 
       if (majorGroups) {
         majorGroups.forEach((item: PsocMajorGroup) => {
@@ -65,11 +82,15 @@ export async function GET(request: NextRequest) {
 
     // Search unit groups if requested
     if (levels.includes('unit_group')) {
-      const { data: unitGroups } = await supabase
-        .from('psoc_unit_groups')
-        .select('*')
-        .ilike('title', searchTerm)
-        .limit(Math.min(limit, 10));
+      let unitGroupsQuery = supabase.from('psoc_unit_groups').select('*');
+      
+      if (isNumericCode) {
+        unitGroupsQuery = unitGroupsQuery.eq('code', query.trim());
+      } else {
+        unitGroupsQuery = unitGroupsQuery.ilike('title', searchTerm);
+      }
+      
+      const { data: unitGroups } = await unitGroupsQuery.limit(Math.min(limit, 10));
 
       if (unitGroups) {
         unitGroups.forEach((item: PsocUnitGroup) => {
@@ -107,11 +128,15 @@ export async function GET(request: NextRequest) {
 
     // Search occupations if requested (most specific)
     if (levels.includes('occupation')) {
-      const { data: occupations } = await supabase
-        .from('psoc_occupation_search')
-        .select('*')
-        .ilike('occupation_title', searchTerm)
-        .limit(Math.min(limit, 15));
+      let occupationsQuery = supabase.from('psoc_occupation_search').select('*');
+      
+      if (isNumericCode) {
+        occupationsQuery = occupationsQuery.eq('occupation_code', query.trim());
+      } else {
+        occupationsQuery = occupationsQuery.ilike('occupation_title', searchTerm);
+      }
+      
+      const { data: occupations } = await occupationsQuery.limit(Math.min(limit, 15));
 
       if (occupations) {
         occupations.forEach((item: any) => {

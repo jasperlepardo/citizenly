@@ -79,27 +79,72 @@ export function SectoralInformationForm({
   formData,
   onChange,
 }: SectoralInformationFormProps) {
+  console.log('🔍 SectoralInformationForm: COMPONENT LOADING - Full formData keys:', Object.keys(formData || {}));
+  console.log('🔍 SectoralInformationForm: Received formData:', {
+    birthdate: formData.birthdate,
+    employment_status: formData.employment_status,
+    ethnicity: formData.ethnicity,
+    is_senior_citizen: formData.is_senior_citizen,
+    is_labor_force_employed: formData.is_labor_force_employed,
+    is_indigenous_people: formData.is_indigenous_people,
+  });
+  
+  // Special debug for ethnicity changes
+  if (formData.ethnicity) {
+    console.log('🎯 SectoralInformationForm: ETHNICITY DETECTED:', formData.ethnicity);
+    if (formData.ethnicity === 'badjao') {
+      console.log('🎯 SectoralInformationForm: BADJAO RECEIVED - is_indigenous_people should be true!');
+      console.log('🎯 SectoralInformationForm: Current is_indigenous_people value:', formData.is_indigenous_people);
+    }
+  }
+  
   // Map form data to SectoralInfo component props using configuration
   const sectoralValue: SectoralInformation = React.useMemo(
-    () => SECTORAL_FIELD_MAPPING.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.dbKey]: getSectoralFieldValue(formData, field.formKey),
-      }),
-      {} as SectoralInformation
-    ),
-    [formData]
+    () => {
+      const result = SECTORAL_FIELD_MAPPING.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.dbKey]: getSectoralFieldValue(formData, field.dbKey),
+        }),
+        {} as SectoralInformation
+      );
+      console.log('🔍 SectoralInformationForm: Computed sectoralValue:', result);
+      return result;
+    },
+    [
+      // Depend on specific sectoral fields instead of entire formData object
+      formData.is_labor_force_employed,
+      formData.is_unemployed,
+      formData.is_overseas_filipino_worker,
+      formData.is_person_with_disability,
+      formData.is_out_of_school_children,
+      formData.is_out_of_school_youth,
+      formData.is_senior_citizen,
+      formData.is_registered_senior_citizen,
+      formData.is_solo_parent,
+      formData.is_indigenous_people,
+      formData.is_migrant,
+      // Also depend on context fields that affect auto-calculation
+      formData.ethnicity,        // For indigenous people classification
+      formData.birthdate,        // For age-based calculations (senior citizen, out-of-school)
+      formData.employment_status, // For employment-based classifications  
+      formData.education_attainment, // For education-based classifications (out-of-school)
+    ]
   );
 
   // Context for auto-calculation (form data already uses database field names)
   const sectoralContext: SectoralContext = React.useMemo(
-    () => ({
-      birthdate: formData.birthdate,
-      employment_status: formData.employment_status,
-      education_attainment: formData.education_attainment,
-      civil_status: formData.civil_status,
-      ethnicity: formData.ethnicity,
-    }),
+    () => {
+      const context = {
+        birthdate: formData.birthdate,
+        employment_status: formData.employment_status,
+        education_attainment: formData.education_attainment,
+        civil_status: formData.civil_status,
+        ethnicity: formData.ethnicity,
+      };
+      console.log('🔍 SectoralInformationForm: Context created:', context);
+      return context;
+    },
     [
       formData.birthdate,
       formData.employment_status,
@@ -112,9 +157,15 @@ export function SectoralInformationForm({
   // Handle changes from SectoralInfo component using configuration
   const handleSectoralChange = React.useCallback(
     (value: SectoralInformation) => {
+      // Create a batch update object with all sectoral changes
+      const batchUpdate: Record<string, boolean | string | null> = {};
       SECTORAL_FIELD_MAPPING.forEach(field => {
-        onChange(field.formKey, setSectoralFieldValue(value, field.dbKey));
+        const fieldValue = setSectoralFieldValue(value, field.dbKey);
+        batchUpdate[field.dbKey] = fieldValue;
       });
+      
+      // Send all updates as a single batch to avoid race conditions
+      onChange('__sectoral_batch__', batchUpdate);
     },
     [onChange]
   );
