@@ -45,7 +45,7 @@ export function HouseholdStatistics({
         {/* Number of Families */}
         <InputField
           label="Number of Families"
-          helperText="Total families in this household"
+          helperText={mode === 'view' ? undefined : "Total families in this household"}
           errorMessage={errors?.no_of_families}
           inputProps={{
             name: 'no_of_families',
@@ -63,7 +63,7 @@ export function HouseholdStatistics({
         {/* Number of Household Members */}
         <InputField
           label="Household Members"
-          helperText="Total people living in household"
+          helperText={mode === 'view' ? undefined : "Total people living in household"}
           errorMessage={errors?.no_of_household_members}
           inputProps={{
             name: 'no_of_household_members',
@@ -81,7 +81,7 @@ export function HouseholdStatistics({
         {/* Number of Migrants */}
         <InputField
           label="Number of Migrants"
-          helperText="Household members who are migrants"
+          helperText={mode === 'view' ? undefined : "Household members who are migrants"}
           errorMessage={errors?.no_of_migrants}
           inputProps={{
             name: 'no_of_migrants',

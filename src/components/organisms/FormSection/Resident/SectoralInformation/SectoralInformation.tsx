@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { 
+import type {
   FormMode,
-  SectoralInformation, 
+  SectoralInformation,
   SectoralContext,
   ResidentFormData
 } from '@/types';
@@ -17,24 +17,30 @@ import SectoralClassifications from './FormField/SectoralClassifications';
  * names to database schema (e.g., is_overseas_filipino → is_overseas_filipino_worker).
  */
 export interface SectoralInformationFormProps {
-  /** 
+  /**
    * Form mode - determines if fields are editable or read-only
    * @default 'create'
    */
   mode?: FormMode;
-  
+
   /**
    * Form data containing sectoral flags and context fields for auto-calculation.
    * Uses the complete resident form data which includes all needed fields.
    */
   formData: ResidentFormData;
-  
+
   /**
    * Callback when any sectoral field changes.
    * @param field - The form field name (e.g., 'is_overseas_filipino')
    * @param value - The new value for the field
    */
   onChange: (field: string, value: boolean | string | null) => void;
+
+  // Loading states
+  loading?: boolean;
+  sectionLoadingStates?: {
+    sectoral_info?: boolean;
+  };
 }
 
 // Field mapping configuration (matches database schema exactly)
@@ -78,6 +84,8 @@ export function SectoralInformationForm({
   mode = 'create',
   formData,
   onChange,
+  loading = false,
+  sectionLoadingStates = {},
 }: SectoralInformationFormProps) {
   console.log('🔍 SectoralInformationForm: COMPONENT LOADING - Full formData keys:', Object.keys(formData || {}));
   console.log('🔍 SectoralInformationForm: Received formData:', {
@@ -170,6 +178,7 @@ export function SectoralInformationForm({
     [onChange]
   );
 
+
   return (
     <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
       <div className="space-y-6">
@@ -189,6 +198,19 @@ export function SectoralInformationForm({
           context={sectoralContext}
           mode={mode}
           disabled={mode === 'view'}
+          loadingStates={sectionLoadingStates?.sectoral_info ? {
+            is_labor_force_employed: true,
+            is_unemployed: true,
+            is_overseas_filipino_worker: true,
+            is_person_with_disability: true,
+            is_out_of_school_children: true,
+            is_out_of_school_youth: true,
+            is_senior_citizen: true,
+            is_registered_senior_citizen: true,
+            is_solo_parent: true,
+            is_indigenous_people: true,
+            is_migrant: true,
+          } : {}}
         />
       </div>
     </div>

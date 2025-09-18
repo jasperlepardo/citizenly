@@ -6,13 +6,18 @@ import React from 'react';
 const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 import type { FormMode } from '@/types/app/ui/forms';
 // Simple inline ID utilities (replacing deleted idGenerators)
-const getFieldId = (name: string) => `field-${name}-${Math.random().toString(36).substring(2, 9)}`;
-const getFieldIds = (name: string) => ({ fieldId: getFieldId(name), helperId: `${getFieldId(name)}-helper`, errorId: `${getFieldId(name)}-error` });
+const getFieldId = (base: string = 'control-field') => `field-${base.replace(/[^a-zA-Z0-9]/g, '-')}`;
+const getFieldIds = (fieldId: string) => ({
+  fieldId,
+  helperTextId: `${fieldId}-helper`,
+  errorId: `${fieldId}-error`
+});
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
 import { Label, HelperText, ReadOnly } from '@/components/atoms/Field';
 import { Control } from '@/components/atoms/Field/Control/Control';
+import { SkeletonInput } from '@/components/atoms/Skeleton';
 
 export interface ControlFieldProps {
   children?: React.ReactNode;
@@ -39,6 +44,8 @@ export interface ControlFieldProps {
     checked: string;
     unchecked: string;
   };
+  // Loading state
+  loading?: boolean;
 }
 
 export const ControlField = ({
@@ -56,18 +63,21 @@ export const ControlField = ({
   controlProps,
   labelProps,
   toggleText,
+  loading = false,
 }: ControlFieldProps) => {
   const isHorizontal = orientation === 'horizontal';
 
-  // Generate unique field ID using utility function
-  const fieldId = getFieldId(htmlFor, controlProps?.id, 'control-field');
-  const { labelId, helperTextId, errorId } = getFieldIds(fieldId);
+  // Generate deterministic field ID
+  const baseId = htmlFor || controlProps?.id || label?.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') || 'control-field';
+  const fieldId = getFieldId(baseId);
+  const { helperTextId, errorId } = getFieldIds(fieldId);
 
   // Use errorMessage as the control error if provided (errorMessage takes precedence)
   const controlError = errorMessage || controlProps?.errorMessage;
   const hasHelperText = helperText || errorMessage;
 
   // Build ARIA attributes for accessibility
+  const labelId = `${fieldId}-label`;
   const ariaLabelledBy = buildAriaLabelledBy(label ? labelId : undefined);
   const ariaDescribedBy = buildAriaDescribedBy(
     helperText ? helperTextId : undefined,
@@ -76,21 +86,49 @@ export const ControlField = ({
 
   const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
     const widthClasses = {
-      sm: 'w-32', // 128px
-      md: 'w-40', // 160px
-      lg: 'w-48', // 192px
+      sm: 'w-48', // 192px (increased from 128px)
+      md: 'w-56', // 224px (increased from 160px)
+      lg: 'w-64', // 256px (increased from 192px)
     };
     return widthClasses[width];
   };
 
+  // Show skeleton loading if loading is true
+  if (loading) {
+    return (
+      <div className={cn('w-full', isHorizontal ? 'flex items-start space-x-4' : '', className)}>
+        {/* Label */}
+        {label && (
+          <div
+            className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}
+          >
+            <Label size={labelSize}>{label}</Label>
+            {helperText && !isHorizontal && (
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{helperText}</p>
+            )}
+          </div>
+        )}
+
+        {/* Field Container */}
+        <div className={cn('flex-1', isHorizontal ? 'min-w-0' : 'flex flex-col')}>
+          {/* Skeleton Input */}
+          <SkeletonInput />
+          {helperText && isHorizontal && (
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{helperText}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={cn('w-full', isHorizontal && 'flex items-start space-x-4', className)}>
+    <div className={cn('w-full', isHorizontal ? 'flex items-start space-x-4' : '', className)}>
       {/* Label */}
       {label && (
         <div
           className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}
         >
-          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps}>
+          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps} id={labelId}>
             {label}
           </Label>
         </div>

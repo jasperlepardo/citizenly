@@ -367,46 +367,77 @@ export class ResidentDomainService {
   /**
    * Update sectoral information for an existing resident using authenticated client
    */
-  private async updateSectoralInfo(residentId: string, formData: ResidentFormData): Promise<void> {
+  private async updateSectoralInfo(residentId: string, formData: ResidentFormData & { sectoral_info?: any }): Promise<void> {
     if (!this.supabaseClient) {
       console.warn('No authenticated Supabase client available for sectoral info update');
       return;
     }
 
     try {
-      // Use the classification logic to determine sectoral flags
-      const classification = classifyResident(formData);
-
       console.log('🔍 ResidentDomainService: Updating sectoral info for resident:', residentId);
-      console.log('🔍 ResidentDomainService: Sectoral classification:', classification.sectoral);
+      console.log('🔍 ResidentDomainService: Form data sectoral_info:', formData.sectoral_info);
 
-      // Update sectoral information using authenticated client (upsert in case it doesn't exist)
-      const { error } = await this.supabaseClient
-        .from('resident_sectoral_info')
-        .upsert([{
-          resident_id: residentId,
-          is_labor_force_employed: classification.sectoral.is_labor_force_employed,
-          is_unemployed: classification.sectoral.is_unemployed,
-          is_out_of_school_children: classification.sectoral.is_out_of_school_children,
-          is_out_of_school_youth: classification.sectoral.is_out_of_school_youth,
-          is_senior_citizen: classification.sectoral.is_senior_citizen,
-          is_indigenous_people: classification.sectoral.is_indigenous_people,
-          is_migrant: classification.migration.is_migrant,
-          // Keep existing values for manual fields or set defaults
-          is_overseas_filipino_worker: formData.is_overseas_filipino_worker || false,
-          is_person_with_disability: formData.is_person_with_disability || false,
-          is_solo_parent: formData.is_solo_parent || false,
-          is_registered_senior_citizen: classification.sectoral.is_senior_citizen ?
-            (formData.is_registered_senior_citizen || false) : false,
-        }], {
-          onConflict: 'resident_id'
-        });
+      // Check if sectoral_info object is provided (manual update)
+      if (formData.sectoral_info) {
+        // Use manual sectoral information provided
+        const sectoralInfo = formData.sectoral_info;
+        console.log('🔍 ResidentDomainService: Using manual sectoral info:', sectoralInfo);
 
-      if (error) {
-        console.error('🚨 ResidentDomainService: Failed to update sectoral info:', error);
-        // Don't throw error - sectoral info failure shouldn't prevent resident update
+        const { error } = await this.supabaseClient
+          .from('resident_sectoral_info')
+          .upsert([{
+            resident_id: residentId,
+            is_labor_force_employed: sectoralInfo.is_labor_force_employed ?? false,
+            is_unemployed: sectoralInfo.is_unemployed ?? false,
+            is_overseas_filipino_worker: sectoralInfo.is_overseas_filipino_worker ?? false,
+            is_person_with_disability: sectoralInfo.is_person_with_disability ?? false,
+            is_out_of_school_children: sectoralInfo.is_out_of_school_children ?? false,
+            is_out_of_school_youth: sectoralInfo.is_out_of_school_youth ?? false,
+            is_senior_citizen: sectoralInfo.is_senior_citizen ?? false,
+            is_registered_senior_citizen: sectoralInfo.is_registered_senior_citizen ?? false,
+            is_solo_parent: sectoralInfo.is_solo_parent ?? false,
+            is_indigenous_people: sectoralInfo.is_indigenous_people ?? false,
+            is_migrant: sectoralInfo.is_migrant ?? false,
+          }], {
+            onConflict: 'resident_id'
+          });
+
+        if (error) {
+          console.error('🚨 ResidentDomainService: Failed to update manual sectoral info:', error);
+        } else {
+          console.log('✅ ResidentDomainService: Successfully updated manual sectoral info');
+        }
       } else {
-        console.log('✅ ResidentDomainService: Successfully updated sectoral info');
+        // Use the classification logic to determine sectoral flags (automatic)
+        const classification = classifyResident(formData);
+        console.log('🔍 ResidentDomainService: Sectoral classification:', classification.sectoral);
+
+        const { error } = await this.supabaseClient
+          .from('resident_sectoral_info')
+          .upsert([{
+            resident_id: residentId,
+            is_labor_force_employed: classification.sectoral.is_labor_force_employed,
+            is_unemployed: classification.sectoral.is_unemployed,
+            is_out_of_school_children: classification.sectoral.is_out_of_school_children,
+            is_out_of_school_youth: classification.sectoral.is_out_of_school_youth,
+            is_senior_citizen: classification.sectoral.is_senior_citizen,
+            is_indigenous_people: classification.sectoral.is_indigenous_people,
+            is_migrant: classification.migration.is_migrant,
+            // Keep existing values for manual fields or set defaults
+            is_overseas_filipino_worker: formData.is_overseas_filipino_worker || false,
+            is_person_with_disability: formData.is_person_with_disability || false,
+            is_solo_parent: formData.is_solo_parent || false,
+            is_registered_senior_citizen: classification.sectoral.is_senior_citizen ?
+              (formData.is_registered_senior_citizen || false) : false,
+          }], {
+            onConflict: 'resident_id'
+          });
+
+        if (error) {
+          console.error('🚨 ResidentDomainService: Failed to update automatic sectoral info:', error);
+        } else {
+          console.log('✅ ResidentDomainService: Successfully updated automatic sectoral info');
+        }
       }
     } catch (error) {
       console.error('🚨 ResidentDomainService: Unexpected error updating sectoral info:', error);

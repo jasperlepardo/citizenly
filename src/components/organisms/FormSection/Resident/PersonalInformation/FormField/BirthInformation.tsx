@@ -1,4 +1,6 @@
-import React, { useMemo } from 'react';
+'use client';
+
+import React, { useMemo, useEffect, useState } from 'react';
 
 import { InputField, SelectField } from '@/components';
 import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
@@ -16,6 +18,12 @@ export interface BirthInformationProps {
   onPsgcSearch?: (query: string) => void;
   psgcOptions?: any[];
   psgcLoading?: boolean;
+  // Individual field loading states
+  loadingStates?: {
+    birthdate?: boolean;
+    birth_place_name?: boolean;
+    birth_place_code?: boolean;
+  };
 }
 
 export function BirthInformation({
@@ -27,7 +35,10 @@ export function BirthInformation({
   onPsgcSearch: externalPsgcSearch,
   psgcOptions: externalPsgcOptions = [],
   psgcLoading: externalPsgcLoading = false,
+  loadingStates = {},
 }: Readonly<BirthInformationProps>) {
+  // State for resolved birth place name when only code is available
+  const [resolvedBirthPlaceName, setResolvedBirthPlaceName] = useState<string>('');
   // PSGC search hook for birth place
   const {
     options: psgcOptions,
@@ -46,7 +57,66 @@ export function BirthInformation({
 
   // State to track PSGC lookup loading
   const [isLookingUpPsgc, setIsLookingUpPsgc] = React.useState(false);
-  
+
+  // Lookup birth place name from code for view mode
+  useEffect(() => {
+    const shouldLookup = mode === 'view' && value.birth_place_code && (!value.birth_place_name || value.birth_place_name.trim() === '') && !resolvedBirthPlaceName;
+
+    console.log('🔍 BirthInformation: useEffect triggered with:', {
+      mode,
+      birth_place_code: value.birth_place_code,
+      birth_place_name: value.birth_place_name,
+      birth_place_name_length: value.birth_place_name?.length,
+      birth_place_name_trimmed: value.birth_place_name?.trim(),
+      resolvedBirthPlaceName,
+      shouldLookup
+    });
+
+    const lookupBirthPlace = async () => {
+      if (shouldLookup) {
+        try {
+          console.log('🔍 BirthInformation: Starting lookup for code:', value.birth_place_code);
+          const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(value.birth_place_code)}`);
+          console.log('🔍 BirthInformation: API response status:', response.status);
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('🔍 BirthInformation: API response data:', data);
+
+            if (data.data?.name) {
+              // Format the display name similar to search results
+              let displayName = data.data.name;
+              if (data.data.level === 'city' && data.data.province_name) {
+                displayName = `${data.data.name}, ${data.data.province_name}`;
+              } else if (data.data.level === 'barangay' && data.data.city_name && data.data.province_name) {
+                displayName = `${data.data.name}, ${data.data.city_name}, ${data.data.province_name}`;
+              }
+
+              console.log('🔍 BirthInformation: Setting resolved birth place name:', displayName);
+              setResolvedBirthPlaceName(displayName);
+            } else {
+              console.warn('🔍 BirthInformation: No name in response data:', data);
+            }
+          } else {
+            console.warn('🔍 BirthInformation: Failed to lookup birth place for code:', value.birth_place_code, 'Status:', response.status);
+          }
+        } catch (error) {
+          console.error('🔍 BirthInformation: Error looking up birth place:', error);
+        }
+      } else if (value.birth_place_name && value.birth_place_name.trim() !== '') {
+        // Use existing birth_place_name if available and not empty
+        console.log('🔍 BirthInformation: Using existing birth_place_name:', value.birth_place_name);
+        setResolvedBirthPlaceName(value.birth_place_name);
+      } else {
+        // Clear resolved name if no code or conditions not met
+        console.log('🔍 BirthInformation: Clearing resolved name, conditions not met');
+        setResolvedBirthPlaceName('');
+      }
+    };
+
+    lookupBirthPlace();
+  }, [mode, value.birth_place_code, value.birth_place_name]);
+
   // Auto-lookup complete birth place address when we have code but incomplete name
   React.useEffect(() => {
     if (value.birth_place_code && value.birth_place_name) {
@@ -108,15 +178,15 @@ export function BirthInformation({
   const birthPlaceOptions = useMemo(() => {
     console.log('🔍 BirthInformation: Creating birthPlaceOptions from effectivePsgcOptions:', effectivePsgcOptions);
     console.log('🔍 BirthInformation: First place object:', effectivePsgcOptions[0]);
-    const allOptions = effectivePsgcOptions
+    let allOptions = effectivePsgcOptions
       .filter(place => {
         // Check for both PSGC API format (name) and Select option format (label)
         const hasName = place && (place.name || place.label);
-        console.log('🔍 BirthInformation: Filter check -', { 
-          place: place?.code || place?.value, 
-          name: place?.name, 
+        console.log('🔍 BirthInformation: Filter check -', {
+          place: place?.code || place?.value,
+          name: place?.name,
           label: place?.label,
-          hasName 
+          hasName
         });
         return hasName;
       }) // Pre-filter to only places with valid names
@@ -196,12 +266,11 @@ export function BirthInformation({
       }); // No need for additional filter since we pre-filtered
 
     // Ensure current selected value is always in options for proper display in view mode
-    if (value.birth_place_code && value.birth_place_name) {
+    if (value.birth_place_code) {
       const exists = allOptions.some(opt => opt.value === value.birth_place_code);
       if (!exists) {
-        // Always use the actual birth_place_name from database as display label
-        // This prevents "Unknown City" fallback text from being used as search query
-        let displayLabel = value.birth_place_name;
+        // Use the resolved birth place name if available, otherwise fall back to stored name, or show code as fallback
+        let displayLabel = resolvedBirthPlaceName || value.birth_place_name || value.birth_place_code;
         const matchingOption = effectivePsgcOptions.find(opt => opt.code === value.birth_place_code);
         
         // Only enhance the label if we have complete data from search results
@@ -233,8 +302,15 @@ export function BirthInformation({
     console.log('🔍 BirthInformation: Final birthPlaceOptions:', allOptions);
     console.log('🔍 BirthInformation: Current value.birth_place_code:', value.birth_place_code);
     console.log('🔍 BirthInformation: Current value.birth_place_name:', value.birth_place_name);
+    console.log('🔍 BirthInformation: Current resolvedBirthPlaceName:', resolvedBirthPlaceName);
+    console.log('🔍 BirthInformation: Options count:', allOptions.length);
+
+    // Log if we found an option that matches the current birth_place_code
+    const matchingOption = allOptions.find(opt => opt.value === value.birth_place_code);
+    console.log('🔍 BirthInformation: Matching option for current code:', matchingOption);
+
     return allOptions;
-  }, [effectivePsgcOptions, value.birth_place_code, value.birth_place_name, effectivePsgcLoading]);
+  }, [effectivePsgcOptions, value.birth_place_code, value.birth_place_name, resolvedBirthPlaceName]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -245,13 +321,15 @@ export function BirthInformation({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2'}>
         <InputField
           mode={mode}
           label="Birth Date"
           required
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.birthdate}
+          loading={loadingStates.birthdate}
           inputProps={{
             type: 'date',
             value: mode === 'view' ? formatBirthdateWithAgeCompact(value.birthdate) : value.birthdate,
@@ -265,8 +343,10 @@ export function BirthInformation({
           label="Birth Place"
           required
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.birth_place_name}
-          helperText="Search for the place of birth"
+          helperText={mode === 'view' ? undefined : "Search for the place of birth"}
+          loading={loadingStates.birth_place_name || loadingStates.birth_place_code}
           selectProps={{
             placeholder: 'Search for birth place...',
             options: birthPlaceOptions,
@@ -277,7 +357,7 @@ export function BirthInformation({
               const newName = option?.label || '';
               console.log(`🔍 BirthInformation: Setting birth_place_code to: "${newCode}"`);
               console.log(`🔍 BirthInformation: Setting birth_place_name to: "${newName}"`);
-              
+
               // Update both fields in a single onChange call to prevent race conditions
               onChange({
                 ...value,

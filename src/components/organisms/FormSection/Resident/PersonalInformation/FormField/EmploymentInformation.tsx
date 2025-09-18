@@ -15,6 +15,13 @@ export interface EmploymentInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
   className?: string;
+  // Loading states
+  loading?: boolean;
+  loadingStates?: {
+    employment_status?: boolean;
+    occupation_code?: boolean;
+    occupation_title?: boolean;
+  };
 }
 
 export function EmploymentInformation({
@@ -26,6 +33,8 @@ export function EmploymentInformation({
   psocLoading = false,
   mode = 'create',
   className = '',
+  loading = false,
+  loadingStates = {},
 }: EmploymentInformationProps) {
   
   console.log('🔍 EmploymentInformation component rendered:', { value, mode });
@@ -102,7 +111,7 @@ export function EmploymentInformation({
     }
   }, [value.occupation_code, value.occupation_title, isLookingUpPsoc, onChange]);
   const handleChange = (field: keyof EmploymentInformationFormData, fieldValue: string) => {
-    console.log(`🔍 EmploymentInformation: handleChange called for ${field}:`, fieldValue);
+    console.log(`🔍 EmploymentInformation: handleChange called for ${String(field)}:`, fieldValue);
     const newValue = {
       ...value,
       [field]: fieldValue,
@@ -122,12 +131,14 @@ export function EmploymentInformation({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-6 sm:grid-cols-2'}>
         <SelectField
           label="Employment Status"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.employment_status}
           mode={mode}
+          loading={loading || loadingStates?.employment_status}
           selectProps={{
             placeholder: 'Select employment status...',
             options: EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY,
@@ -139,9 +150,12 @@ export function EmploymentInformation({
         <SelectField
           label="Occupation Name"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.occupation_title || errors.occupation_code}
           mode={mode}
           multiline={true}
+          loading={loading || loadingStates?.occupation_code}
+          optionsLoading={psocLoading || isLookingUpPsoc}
           selectProps={{
             placeholder: 'Search occupation from level 1-5...',
             options: (() => {

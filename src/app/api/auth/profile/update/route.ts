@@ -54,7 +54,9 @@ export async function PATCH(request: NextRequest) {
 
     // Validate required fields
     if (!barangay_code) {
-      return createValidationErrorResponse('Barangay code is required');
+      return createValidationErrorResponse([
+        { field: 'barangay_code', message: 'Barangay code is required' }
+      ]);
     }
 
     // Use service role client to bypass RLS for this specific update
@@ -68,11 +70,13 @@ export async function PATCH(request: NextRequest) {
       .single();
 
     if (barangayError || !barangayExists) {
-      return createValidationErrorResponse('Invalid barangay code');
+      return createValidationErrorResponse([
+        { field: 'barangay_code', message: 'Invalid barangay code' }
+      ]);
     }
 
     // Update the user profile
-    const updateData: any = {
+    const updateData: Record<string, any> = {
       barangay_code,
       updated_at: new Date().toISOString(),
     };
@@ -84,7 +88,7 @@ export async function PATCH(request: NextRequest) {
 
     const { data: profileData, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      .update(updateData)
+      .update(updateData as any)
       .eq('id', user.id)
       .select()
       .single();

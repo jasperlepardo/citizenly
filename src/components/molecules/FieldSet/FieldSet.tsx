@@ -8,6 +8,7 @@ import type { FormMode } from '@/types/app/ui/forms';
 import { CheckboxGroup } from '@/components/atoms/Field/Control/Checkbox/Checkbox';
 import { RadioGroup } from '@/components/atoms/Field/Control/Radio/Radio';
 import { Label } from '@/components/atoms/Field/Label/Label';
+import { SkeletonInput } from '@/components/atoms/Skeleton';
 
 import { ControlGroup } from './ControlField/ControlField';
 import { ReadOnlyField } from './ReadOnlyField/ReadOnlyField';
@@ -33,6 +34,10 @@ export interface ControlFieldSetProps {
   className?: string;
   /** Child components (Checkbox or Radio components) */
   children: React.ReactNode;
+
+  // Loading states
+  /** Loading state for skeleton display */
+  loading?: boolean;
 
   // Checkbox-specific props
   /** Selected values for checkboxes */
@@ -60,12 +65,51 @@ export const ControlFieldSet = ({
   spacing = 'md',
   className,
   children,
+  loading = false,
   checkboxValue,
   onCheckboxChange,
   radioValue,
   onRadioChange,
   radioName,
 }: ControlFieldSetProps) => {
+  // Debug logging for sex field
+  if (label?.includes('Sex')) {
+    console.log('🔍 ControlFieldSet Loading for', label, {
+      loading,
+      mode,
+      type
+    });
+  }
+
+  // Show skeleton loading if loading is true
+  if (loading) {
+    // Use horizontal orientation in view mode, otherwise use the specified orientation
+    const loadingOrientation = mode === 'view' ? 'horizontal' : orientation;
+    const isHorizontal = loadingOrientation === 'horizontal';
+
+    return (
+      <div className={cn('w-full', isHorizontal ? 'flex items-start space-x-4' : '', className)}>
+        {/* Label */}
+        {label && (
+          <div className={cn(isHorizontal ? 'w-56 shrink-0 pt-2' : 'mb-1')}>
+            <Label size={labelSize}>{label}</Label>
+            {description && !isHorizontal && (
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+            )}
+          </div>
+        )}
+
+        {/* Field Container */}
+        <div className={cn(isHorizontal ? 'flex-1 min-w-0' : '')}>
+          {/* Skeleton Input */}
+          <SkeletonInput />
+          {description && isHorizontal && (
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
   // Helper function to format values for display in view mode
   const formatDisplayValue = (value: string[] | string | undefined) => {
     if (!value) return '—';
@@ -74,8 +118,9 @@ export const ControlFieldSet = ({
     const childLabels = new Map<string, string>();
     React.Children.forEach(children, (child) => {
       if (React.isValidElement(child)) {
-        const childValue = child.props.value;
-        const childLabel = child.props.label;
+        const childProps = child.props as any;
+        const childValue = childProps.value;
+        const childLabel = childProps.label;
         if (childValue && childLabel) {
           childLabels.set(childValue, childLabel);
         }
@@ -102,6 +147,7 @@ export const ControlFieldSet = ({
         helperText={description}
         errorMessage={errorMessage}
         labelSize={labelSize}
+        orientation="horizontal"
         className={className}
         readOnlyProps={{
           value: formatDisplayValue(displayValue),

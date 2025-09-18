@@ -101,7 +101,7 @@ export default function Select({
   const lastSearchRef = useRef<string>('');
 
   // Generate unique IDs for the form elements
-  const inputId = id || `select-input-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = id || `select-field`;
 
   // Normalize and set options (for static data)
   useEffect(() => {

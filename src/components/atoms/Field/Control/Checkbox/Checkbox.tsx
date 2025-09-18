@@ -123,9 +123,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 <svg
                   className={cn(
                     'text-white dark:text-black',
-                    size === 'sm' && 'h-2 w-2',
-                    size === 'md' && 'h-3 w-3',
-                    size === 'lg' && 'h-4 w-4'
+                    {
+                      'h-2 w-2': size === 'sm',
+                      'h-3 w-3': size === 'md',
+                      'h-4 w-4': size === 'lg'
+                    }
                   )}
                   viewBox="0 0 24 24"
                   fill="none"
@@ -138,9 +140,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                 <svg
                   className={cn(
                     'text-white dark:text-black',
-                    size === 'sm' && 'h-2 w-2',
-                    size === 'md' && 'h-3 w-3',
-                    size === 'lg' && 'h-4 w-4'
+                    {
+                      'h-2 w-2': size === 'sm',
+                      'h-3 w-3': size === 'md',
+                      'h-4 w-4': size === 'lg'
+                    }
                   )}
                   viewBox="0 0 24 24"
                   fill="none"

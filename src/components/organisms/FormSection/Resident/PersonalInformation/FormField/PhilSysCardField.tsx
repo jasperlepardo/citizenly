@@ -11,6 +11,7 @@ export interface PhilSysCardFieldProps {
   error?: string;
   required?: boolean;
   className?: string;
+  loading?: boolean;
 }
 
 export function PhilSysCardField({
@@ -20,7 +21,8 @@ export function PhilSysCardField({
   error,
   required = false,
   className = '',
-}: PhilSysCardFieldProps) {
+  loading = false,
+}: Readonly<PhilSysCardFieldProps>) {
   return (
     <div className={className}>
       <InputField
@@ -28,7 +30,9 @@ export function PhilSysCardField({
         label="PhilSys Card Number"
         required={required}
         labelSize="sm"
+        orientation={mode === 'view' ? 'horizontal' : 'vertical'}
         errorMessage={error}
+        loading={loading}
         inputProps={{
           value: value,
           onChange: e => onChange(e.target.value),

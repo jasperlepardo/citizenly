@@ -260,21 +260,8 @@ export const createResidentSchema = z.object({
   is_intending_to_return: z.boolean().optional(),
 });
 
-// Update resident schema - excludes sectoral and migration fields that belong in separate tables
+// Update resident schema - includes sectoral fields for domain service processing
 export const updateResidentSchema = createResidentSchema.omit({
-  // Remove sectoral information fields (these belong in resident_sectoral_info table)
-  is_labor_force_employed: true,
-  is_unemployed: true,
-  is_overseas_filipino_worker: true,
-  is_person_with_disability: true,
-  is_out_of_school_children: true,
-  is_out_of_school_youth: true,
-  is_senior_citizen: true,
-  is_registered_senior_citizen: true,
-  is_solo_parent: true,
-  is_indigenous_people: true,
-  is_migrant: true,
-  
   // Remove migration information fields (these belong in resident_migrant_info table)
   previous_barangay_code: true,
   previous_city_municipality_code: true,
@@ -286,6 +273,21 @@ export const updateResidentSchema = createResidentSchema.omit({
   length_of_stay_previous_months: true,
   duration_of_stay_current_months: true,
   is_intending_to_return: true,
+}).extend({
+  // Allow sectoral_info object structure for manual sectoral classification updates
+  sectoral_info: z.object({
+    is_labor_force_employed: z.boolean().optional(),
+    is_unemployed: z.boolean().optional(),
+    is_overseas_filipino_worker: z.boolean().optional(),
+    is_person_with_disability: z.boolean().optional(),
+    is_out_of_school_children: z.boolean().optional(),
+    is_out_of_school_youth: z.boolean().optional(),
+    is_senior_citizen: z.boolean().optional(),
+    is_registered_senior_citizen: z.boolean().optional(),
+    is_solo_parent: z.boolean().optional(),
+    is_indigenous_people: z.boolean().optional(),
+    is_migrant: z.boolean().optional(),
+  }).optional(),
 });
 
 // Household validation schemas

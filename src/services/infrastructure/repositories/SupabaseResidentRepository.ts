@@ -184,38 +184,47 @@ export class SupabaseResidentRepository {
    */
   async findAll(options?: any): Promise<RepositoryResult<Resident[]>> {
     try {
-      
-      // Select residents with household information for geographic filtering
-      let query = this.supabase
-        .from('residents')
-        .select(`
-          *,
-          households!inner(
-            code,
-            barangay_code,
-            city_municipality_code,
-            province_code,
-            region_code,
-            house_number,
-            address
-          )
-        `, { count: 'exact' })
-        .eq('is_active', true); // Only show active residents
+      console.log('🔍 SupabaseResidentRepository: findAll called with options:', options);
+      const startTime = Date.now();
 
-      // Apply geographic filters through household relationship
-      if (options?.barangayCode) {
-        query = query.eq('households.barangay_code', options.barangayCode);
+      // Performance optimization: Use lighter JOIN and selective fields
+      const hasGeographicFilters = options?.barangayCode || options?.cityCode || options?.provinceCode || options?.regionCode;
+
+      let query;
+
+      if (hasGeographicFilters) {
+        // Use JOIN but optimize with selective fields and indexes
+        console.log('🔍 Using household JOIN for geographic filtering');
+        query = this.supabase
+          .from('residents')
+          .select(`
+            *,
+            households!inner(code, barangay_code)
+          `, { count: 'exact' })
+          .eq('is_active', true);
+
+        // Apply geographic filters through household relationship
+        if (options?.barangayCode) {
+          query = query.eq('households.barangay_code', options.barangayCode);
+        }
+        if (options?.cityCode) {
+          query = query.eq('households.city_municipality_code', options.cityCode);
+        }
+        if (options?.provinceCode) {
+          query = query.eq('households.province_code', options.provinceCode);
+        }
+        if (options?.regionCode) {
+          query = query.eq('households.region_code', options.regionCode);
+        }
+      } else {
+        // No geographic filters - simple query for better performance
+        console.log('🔍 Using simple query without geographic filters');
+        query = this.supabase
+          .from('residents')
+          .select('*', { count: 'exact' })
+          .eq('is_active', true);
       }
-      if (options?.cityCode) {
-        query = query.eq('households.city_municipality_code', options.cityCode);
-      }
-      if (options?.provinceCode) {
-        query = query.eq('households.province_code', options.provinceCode);
-      }
-      if (options?.regionCode) {
-        query = query.eq('households.region_code', options.regionCode);
-      }
-      
+
       // Apply search filters
       if (options?.searchTerm) {
         query = query.or(`first_name.ilike.%${options.searchTerm}%,last_name.ilike.%${options.searchTerm}%,email.ilike.%${options.searchTerm}%`);
@@ -223,7 +232,7 @@ export class SupabaseResidentRepository {
       if (options?.search) {
         query = query.or(`first_name.ilike.%${options.search}%,last_name.ilike.%${options.search}%,email.ilike.%${options.search}%`);
       }
-      
+
       // Apply pagination
       if (options?.limit) {
         query = query.limit(options.limit);
@@ -237,23 +246,33 @@ export class SupabaseResidentRepository {
         query = query.range(from, to);
       }
 
+      // Add ordering for consistent results
+      query = query.order('created_at', { ascending: false });
+
+      console.log('🔍 Executing query...');
       const { data: residents, error, count } = await query;
 
+      const duration = Date.now() - startTime;
+      console.log(`🔍 SupabaseResidentRepository: Query completed in ${duration}ms, found ${residents?.length || 0} residents, error:`, error);
+
       if (error) {
+        console.error('🚨 Database query error:', error);
         logger.error('Failed to find residents', error);
         return { success: false, error: error.message };
       }
 
-      return { 
-        success: true, 
-        data: residents || [], 
-        total: count || 0 
+      console.log('✅ Query successful, returning results');
+      return {
+        success: true,
+        data: residents || [],
+        total: count || 0
       };
     } catch (error) {
+      console.error('🚨 Unexpected error in findAll:', error);
       logger.error('Unexpected error finding residents', error);
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }

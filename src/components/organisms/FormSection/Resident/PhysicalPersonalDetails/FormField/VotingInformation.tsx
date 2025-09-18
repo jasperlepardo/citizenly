@@ -37,6 +37,13 @@ export interface VotingInformationProps {
    * Additional CSS classes
    */
   className?: string;
+
+  // Individual field loading states
+  loadingStates?: {
+    is_voter?: boolean;
+    is_resident_voter?: boolean;
+    last_voted_date?: boolean;
+  };
 }
 
 export function VotingInformation({
@@ -45,7 +52,8 @@ export function VotingInformation({
   onChange,
   errors,
   className = '',
-}: VotingInformationProps) {
+  loadingStates = {},
+}: Readonly<VotingInformationProps>) {
   /**
    * Type-safe field change handler
    */
@@ -72,7 +80,7 @@ export function VotingInformation({
       </div>
 
       {/* All Fields in One Grid */}
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
         <ControlFieldSet
           type="radio"
           label="Registered Voter?"
@@ -84,6 +92,7 @@ export function VotingInformation({
           orientation="horizontal"
           spacing="sm"
           mode={mode}
+          loading={loadingStates?.is_voter}
         >
           {VOTER_STATUS_OPTIONS.map(option => (
             <Radio
@@ -112,6 +121,7 @@ export function VotingInformation({
           orientation="horizontal"
           spacing="sm"
           mode={mode}
+          loading={loadingStates?.is_resident_voter}
         >
           {VOTER_STATUS_OPTIONS.map(option => (
             <Radio
@@ -130,8 +140,10 @@ export function VotingInformation({
         <InputField
           label="Last Voted Year"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.last_voted_date}
           mode={mode}
+          loading={loadingStates?.last_voted_date}
           inputProps={{
             type: 'number',
             value: value.last_voted_date,

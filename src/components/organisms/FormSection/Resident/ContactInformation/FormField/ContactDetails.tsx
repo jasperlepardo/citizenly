@@ -11,6 +11,13 @@ export interface ContactDetailsProps {
   onChange: (value: ContactDetailsFormData) => void;
   errors: Record<string, string>;
   className?: string;
+  // Loading states
+  loading?: boolean;
+  loadingStates?: {
+    email?: boolean;
+    telephone_number?: boolean;
+    mobile_number?: boolean;
+  };
 }
 
 export function ContactDetails({
@@ -19,6 +26,8 @@ export function ContactDetails({
   onChange,
   errors,
   className = '',
+  loading = false,
+  loadingStates = {},
 }: ContactDetailsProps) {
   // Use consolidated component field handler - eliminates 8 lines of duplicate code
   const handleChange = useCallback(
@@ -35,12 +44,14 @@ export function ContactDetails({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
         <InputField
           label="Email Address"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.email}
           mode={mode}
+          loading={loading || loadingStates?.email}
           inputProps={{
             name: 'email',
             type: 'email',
@@ -54,8 +65,10 @@ export function ContactDetails({
         <InputField
           label="Phone Number"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.telephone_number}
           mode={mode}
+          loading={loading || loadingStates?.telephone_number}
           inputProps={{
             name: 'telephone_number',
             type: 'tel',
@@ -69,8 +82,10 @@ export function ContactDetails({
         <InputField
           label="Mobile Number"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.mobile_number}
           mode={mode}
+          loading={loading || loadingStates?.mobile_number}
           inputProps={{
             name: 'mobile_number',
             type: 'tel',

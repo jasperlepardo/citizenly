@@ -28,7 +28,7 @@ export { LazySectoralInfo as SectoralInfo } from './organisms/FormSection/Reside
 
 // Utilities - Re-export from components/shared
 export { withLazyLoading, preloadComponents } from '@/components/shared/lazy/lazyLoading';
-export type { PreloadComponentKey } from '@/lib/ui/lazyLoading';
+export type { PreloadComponentKey } from '@/components/shared/lazy/lazyLoading';
 
 /**
  * Atomic Design Organization Benefits:

@@ -15,6 +15,17 @@ interface BasicInformationProps {
   onChange: (value: BasicInformationFormData) => void;
   errors?: Partial<Record<keyof BasicInformationFormData, string>>;
   className?: string;
+  // Loading states
+  loading?: boolean;
+  loadingStates?: {
+    first_name?: boolean;
+    middle_name?: boolean;
+    last_name?: boolean;
+    extension_name?: boolean;
+    sex?: boolean;
+    civil_status?: boolean;
+    civil_status_others_specify?: boolean;
+  };
 }
 
 // Use imported options with default empty values
@@ -25,7 +36,15 @@ export function BasicInformation({
   onChange,
   errors = {},
   className = '',
+  loading = false,
+  loadingStates = {},
 }: BasicInformationProps) {
+  console.log('🔍 BasicInformation Loading States:', {
+    loading,
+    loadingStates,
+    first_name_loading: loading || loadingStates?.first_name,
+    mode
+  });
   const handleChange = (field: keyof BasicInformationFormData, newValue: string) => {
     const updatedValue = {
       ...value,
@@ -59,20 +78,20 @@ export function BasicInformation({
       </div>
 
       {/* All Fields in One Grid */}
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
         {/* Name Fields - Combined in view mode */}
         {mode === 'view' ? (
-          <div className="col-span-full">
-            <InputField
-              mode={mode}
-              label="Full Name"
-              labelSize="sm"
-              inputProps={{
-                value: formatFullName(),
-                readOnly: true,
-              }}
-            />
-          </div>
+          <InputField
+            mode={mode}
+            label="Full Name"
+            labelSize="sm"
+            orientation="horizontal"
+            loading={loading || loadingStates?.first_name || loadingStates?.last_name}
+            inputProps={{
+              value: formatFullName(),
+              readOnly: true,
+            }}
+          />
         ) : (
           <>
             <InputField
@@ -81,6 +100,7 @@ export function BasicInformation({
               required
               labelSize="sm"
               errorMessage={errors.first_name}
+              loading={loading || loadingStates?.first_name}
               inputProps={{
                 value: value.first_name,
                 onChange: e => handleChange('first_name', e.target.value),
@@ -93,6 +113,7 @@ export function BasicInformation({
               mode={mode}
               label="Middle Name"
               labelSize="sm"
+              loading={loading || loadingStates?.middle_name}
               inputProps={{
                 value: value.middle_name,
                 onChange: e => handleChange('middle_name', e.target.value),
@@ -106,6 +127,7 @@ export function BasicInformation({
               required
               labelSize="sm"
               errorMessage={errors.last_name}
+              loading={loading || loadingStates?.last_name}
               inputProps={{
                 value: value.last_name,
                 onChange: e => handleChange('last_name', e.target.value),
@@ -118,6 +140,7 @@ export function BasicInformation({
               mode={mode}
               label="Extension Name"
               labelSize="sm"
+              loading={loading || loadingStates?.extension_name}
               inputProps={{
                 value: value.extension_name,
                 onChange: e => handleChange('extension_name', e.target.value),
@@ -137,6 +160,7 @@ export function BasicInformation({
           radioValue={value.sex}
           onRadioChange={(selectedValue: string) => handleChange('sex', selectedValue)}
           errorMessage={errors.sex}
+          loading={loading || loadingStates?.sex}
           orientation="horizontal"
           spacing="sm"
         >
@@ -159,7 +183,9 @@ export function BasicInformation({
           mode={mode}
           label="Civil Status"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.civil_status}
+          loading={loading || loadingStates?.civil_status}
           selectProps={{
             placeholder: 'Select civil status...',
             options: CIVIL_STATUS_OPTIONS_WITH_DEFAULT as any,
@@ -175,7 +201,9 @@ export function BasicInformation({
             label="Specify Civil Status"
             required
             labelSize="sm"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             errorMessage={errors.civil_status_others_specify}
+            loading={loading || loadingStates?.civil_status_others_specify}
             inputProps={{
               value: value.civil_status_others_specify || '',
               onChange: e => handleChange('civil_status_others_specify', e.target.value),

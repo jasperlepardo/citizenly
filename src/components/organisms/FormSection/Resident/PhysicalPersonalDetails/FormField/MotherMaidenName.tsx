@@ -10,6 +10,12 @@ export interface MotherMaidenNameProps {
   onChange: (value: MotherMaidenNameFormData) => void;
   errors: Record<string, string>;
   className?: string;
+  // Individual field loading states
+  loadingStates?: {
+    mother_maiden_first?: boolean;
+    mother_maiden_middle?: boolean;
+    mother_maiden_last?: boolean;
+  };
 }
 
 export function MotherMaidenName({
@@ -18,7 +24,8 @@ export function MotherMaidenName({
   onChange,
   errors,
   className = '',
-}: MotherMaidenNameProps) {
+  loadingStates = {},
+}: Readonly<MotherMaidenNameProps>) {
   const handleChange = (field: keyof MotherMaidenNameFormData, fieldValue: string) => {
     onChange({
       ...value,
@@ -47,19 +54,19 @@ export function MotherMaidenName({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
         {mode === 'view' ? (
-          <div className="col-span-full">
-            <InputField
-              label="Mother's Full Maiden Name"
-              labelSize="sm"
-              mode={mode}
-              inputProps={{
-                value: formatFullMaidenName(),
-                readOnly: true,
-              }}
-            />
-          </div>
+          <InputField
+            label="Mother's Full Maiden Name"
+            labelSize="sm"
+            orientation="horizontal"
+            mode={mode}
+            loading={loadingStates?.mother_maiden_first || loadingStates?.mother_maiden_middle || loadingStates?.mother_maiden_last}
+            inputProps={{
+              value: formatFullMaidenName(),
+              readOnly: true,
+            }}
+          />
         ) : (
           <>
             <InputField
@@ -67,6 +74,7 @@ export function MotherMaidenName({
               labelSize="sm"
               errorMessage={errors.mother_maiden_first}
               mode={mode}
+              loading={loadingStates?.mother_maiden_first}
               inputProps={{
                 value: value.mother_maiden_first,
                 onChange: e => handleChange('mother_maiden_first', e.target.value),
@@ -80,6 +88,7 @@ export function MotherMaidenName({
               labelSize="sm"
               errorMessage={errors.mother_maiden_middle}
               mode={mode}
+              loading={loadingStates?.mother_maiden_middle}
               inputProps={{
                 value: value.mother_maiden_middle,
                 onChange: e => handleChange('mother_maiden_middle', e.target.value),
@@ -93,6 +102,7 @@ export function MotherMaidenName({
               labelSize="sm"
               errorMessage={errors.mother_maiden_last}
               mode={mode}
+              loading={loadingStates?.mother_maiden_last}
               inputProps={{
                 value: value.mother_maiden_last,
                 onChange: e => handleChange('mother_maiden_last', e.target.value),

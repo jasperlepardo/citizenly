@@ -12,14 +12,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const resolvedParams = await params;
     const householdCode = resolvedParams.id;
 
+    console.log('🔍 Household API: GET request for code:', householdCode);
+    console.log('🔍 Household API: Request URL:', request.url);
+    console.log('🔍 Household API: Request method:', request.method);
+
     // Get auth header from the request
     const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('🔍 Household API: No auth header found');
       return NextResponse.json({ error: 'Unauthorized - No auth token' }, { status: 401 });
     }
 
     const token = authHeader.split(' ')[1];
+    console.log('🔍 Household API: Token found, length:', token.length);
 
     // Create regular client to verify user
     const supabase = createPublicSupabaseClient();
@@ -30,7 +36,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       error: authError,
     } = await supabase.auth.getUser(token);
 
+    console.log('🔍 Household API: Auth check:', {
+      hasUser: !!user,
+      userId: user?.id,
+      authError: authError?.message
+    });
+
     if (authError || !user) {
+      console.log('🔍 Household API: Auth failed:', authError?.message);
       return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
     }
 
@@ -44,6 +57,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       .eq('id', user.id)
       .single();
 
+    console.log('🔍 Household API: Profile result:', {
+      hasProfile: !!profileResult.data,
+      barangayCode: profileResult.data?.barangay_code,
+      profileError: profileResult.error?.message
+    });
+
     const userProfile = profileResult.data as AuthUserProfile | null;
     const profileError = profileResult.error;
 
@@ -54,34 +73,115 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       );
     }
 
-    // Get household data with head resident info using correct foreign key reference
-    const householdResult = await supabaseAdmin
+    // Get household data with head resident info first (without potentially problematic joins)
+    console.log('🔍 Household API: About to query households table with:', {
+      householdCode,
+      userBarangayCode: userProfile.barangay_code
+    });
+
+    // First try with head_resident JOIN - this might be causing the 404
+    let householdResult = await supabaseAdmin
       .from('households')
-      .select(
-        `
-        *,
-        head_resident:residents!household_head_id(
-          id,
-          first_name,
-          middle_name,
-          last_name,
-          email,
-          mobile_number,
-          sex,
-          birthdate,
-          civil_status
-        )
-        `
-      )
+      .select('*')
       .eq('code', householdCode)
       .eq('barangay_code', userProfile.barangay_code)
       .single();
+
+    // If successful, try to add head resident info separately
+    if (!householdResult.error && householdResult.data && householdResult.data.household_head_id) {
+      try {
+        console.log('🔍 Household API: Fetching head resident info for household_head_id:', householdResult.data.household_head_id);
+        const headResidentResult = await supabaseAdmin
+          .from('residents')
+          .select('id, first_name, middle_name, last_name, email, mobile_number, sex, birthdate, civil_status')
+          .eq('id', householdResult.data.household_head_id)
+          .single();
+
+        if (!headResidentResult.error && headResidentResult.data) {
+          (householdResult.data as any).head_resident = headResidentResult.data;
+          console.log('🔍 Household API: Successfully added head resident info');
+        } else {
+          console.log('🔍 Household API: Head resident not found:', headResidentResult.error?.message);
+          (householdResult.data as any).head_resident = null;
+        }
+      } catch (error) {
+        console.warn('🔍 Household API: Failed to fetch head resident:', error);
+        (householdResult.data as any).head_resident = null;
+      }
+    } else {
+      console.log('🔍 Household API: No household_head_id found, skipping head resident lookup');
+    }
+
+    console.log('🔍 Household API: Initial query result:', {
+      success: !householdResult.error,
+      error: householdResult.error?.message,
+      errorCode: householdResult.error?.code,
+      dataExists: !!householdResult.data,
+      householdCode: householdResult.data?.code,
+      householdBarangay: householdResult.data?.barangay_code
+    });
+
+    // If successful, try to enrich with street and subdivision data
+    if (!householdResult.error && householdResult.data) {
+      try {
+        // Try to get street name if street_id exists
+        if (householdResult.data.street_id) {
+          const streetResult = await supabaseAdmin
+            .from('geo_streets')
+            .select('id, name')
+            .eq('id', householdResult.data.street_id)
+            .single();
+
+          if (!streetResult.error && streetResult.data) {
+            (householdResult.data as any).street = streetResult.data;
+          }
+        }
+
+        // Try to get subdivision name if subdivision_id exists
+        if (householdResult.data.subdivision_id) {
+          const subdivisionResult = await supabaseAdmin
+            .from('geo_subdivisions')
+            .select('id, name')
+            .eq('id', householdResult.data.subdivision_id)
+            .single();
+
+          if (!subdivisionResult.error && subdivisionResult.data) {
+            (householdResult.data as any).subdivision = subdivisionResult.data;
+          }
+        }
+      } catch (enrichmentError) {
+        console.warn('🔍 Household API: Failed to enrich with street/subdivision data:', enrichmentError);
+        // Continue without enrichment - basic household data is still available
+      }
+    }
 
     const household = householdResult.data as HouseholdRecord | null;
     const householdError = householdResult.error;
 
     if (householdError || !household) {
-      return NextResponse.json({ error: 'Household not found or access denied' }, { status: 404 });
+      // Additional diagnostic: Check if household exists without barangay filter
+      console.log('🔍 Household API: Main query failed, checking if household exists at all...');
+      const diagnosticResult = await supabaseAdmin
+        .from('households')
+        .select('code, barangay_code, name')
+        .eq('code', householdCode)
+        .single();
+
+      console.log('🔍 Household API: Diagnostic query result:', {
+        found: !diagnosticResult.error,
+        error: diagnosticResult.error?.message,
+        data: diagnosticResult.data
+      });
+
+      return NextResponse.json({
+        error: 'Household not found or access denied',
+        debug: {
+          householdCode,
+          userBarangayCode: userProfile.barangay_code,
+          householdExists: !diagnosticResult.error,
+          householdBarangayCode: diagnosticResult.data?.barangay_code
+        }
+      }, { status: 404 });
     }
 
     // Get all household members
@@ -152,12 +252,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       console.warn('Geographic info load failed:', geoError);
     }
 
+    const householdWithInfo = {
+      ...household,
+      ...geoInfo,
+      member_count: members?.length || 0,
+    };
+
     return NextResponse.json({
-      household: {
-        ...household,
-        ...geoInfo,
-        member_count: members?.length || 0,
-      },
+      success: true,
+      data: householdWithInfo,     // For consistency
+      household: householdWithInfo, // For backward compatibility
       members: members || [],
     });
   } catch (error) {

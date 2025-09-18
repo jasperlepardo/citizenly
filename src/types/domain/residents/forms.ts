@@ -48,10 +48,19 @@ export interface ContactInfoFormState {
   mobile_number?: string | null;
   telephone_number?: string | null;
   email?: string | null;
-  
+
   // Household Information
   household_code?: string | null;
   household_name?: string | null; // UI display field - maps to households.name
+}
+
+/**
+ * Household Information subset for form components
+ * Used by HouseholdInformation component
+ */
+export interface HouseholdInformationFormData {
+  household_code: string;
+  household_name?: string;
 }
 
 /**

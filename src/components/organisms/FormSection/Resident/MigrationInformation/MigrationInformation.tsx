@@ -66,14 +66,15 @@ export function MigrationInformation({
         </div>
 
         {/* Migration Timeline */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <div className="col-span-4">
+        <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-4 md:grid-cols-4'}>
+          <div className={mode === 'view' ? '' : 'col-span-4'}>
             <SelectField
               label="Previous Barangay"
               required
               labelSize="sm"
+              orientation={mode === 'view' ? 'horizontal' : 'vertical'}
               errorMessage={errors.previous_barangay_code}
-              helperText="Search for the previous barangay"
+              helperText={mode === 'view' ? undefined : "Search for the previous barangay"}
               mode={mode}
               selectProps={{
                 placeholder: 'Search for previous barangay...',
@@ -193,6 +194,7 @@ export function MigrationInformation({
           <InputField
             label="Length of Stay in Previous Location (months)"
             labelSize="sm"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             errorMessage={errors.length_of_stay_previous_months}
             mode={mode}
             inputProps={{
@@ -211,6 +213,7 @@ export function MigrationInformation({
           <InputField
             label="Reason for Leaving Previous Location"
             labelSize="sm"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             errorMessage={errors.reason_for_leaving}
             mode={mode}
             inputProps={{
@@ -223,6 +226,7 @@ export function MigrationInformation({
           <InputField
             label="Date of Transfer"
             labelSize="sm"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             errorMessage={errors.date_of_transfer}
             mode={mode}
             inputProps={{
@@ -234,6 +238,7 @@ export function MigrationInformation({
 
           <InputField
             label="Reason for Transferring Here"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             labelSize="sm"
             errorMessage={errors.reason_for_transferring}
             mode={mode}

@@ -197,7 +197,7 @@ function CreateResidentForm() {
           processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
           legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
           dataSubjectCount: 1,
-          sensitiveDataProcessed: auditInfo?.hasPhilSys || false,
+          sensitiveDataProcessed: Boolean(transformedData?.philsys_card_number),
           consentStatus: 'OBTAINED',
           timestamp: auditInfo?.timestamp || new Date().toISOString(),
           npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER,

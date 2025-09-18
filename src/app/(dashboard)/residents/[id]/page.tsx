@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 
 // SectoralBadges import removed - not currently used in this component
 import { ResidentForm } from '@/components/templates/Form/Resident';
-import { FormSkeleton } from '@/components/atoms/Loading/FormSkeleton/FormSkeleton';
+import { useFieldLoading } from '@/hooks/utilities/useFieldLoading';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger, logError } from '@/lib/logging/client-logger';
 // Remove unused enum imports - using types instead
@@ -43,9 +43,23 @@ function ResidentDetailContent() {
   const [formMode, setFormMode] = useState<FormMode>('view');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [, setCurrentFormData] = useState<ResidentFormData | null>(null);
+  // Removed setCurrentFormData to prevent infinite re-render loops
+
+  // Progressive loading states for different data sections
+  const {
+    loadingStates: sectionLoadingStates,
+    setFieldLoading: setSectionLoading,
+  } = useFieldLoading({
+    basic_info: true,
+    address_info: true,
+    contact_info: true,
+    education_info: true,
+    employment_info: true,
+    sectoral_info: true,
+  });
 
   const loadAddressInfo = useCallback(async (residentData: Resident) => {
+    setSectionLoading('address_info', true);
     try {
       const barangayCode = residentData.barangay_code;
       clientLogger.debug('Loading address information', { component: 'ResidentDetailsPage', action: 'load_address', data: { barangayCode } });
@@ -75,8 +89,10 @@ function ResidentDetailContent() {
       clientLogger.warn('Address data lookup failed', { component: 'ResidentDetailsPage', action: 'address_lookup_failed', data: {
         error: addressError instanceof Error ? addressError.message : 'Unknown error',
       }});
+    } finally {
+      setSectionLoading('address_info', false);
     }
-  }, []);
+  }, [setSectionLoading]);
 
   const loadAddressFromIndividualTables = async (residentData: Resident) => {
     clientLogger.debug('Address view not available, trying individual table queries', { component: 'ResidentDetailsPage', action: 'fallback_address_query' });
@@ -156,10 +172,8 @@ function ResidentDetailContent() {
 
       if (psocData) {
         residentData.psoc_info = {
-          code: psocData.occupation_code,
           title: psocData.occupation_title,
-          level: psocData.level_type,
-          description: psocData.occupation_description
+          level: psocData.level_type
         };
         console.log('✅ Occupation info loaded:', residentData.psoc_info);
       } else {
@@ -174,8 +188,9 @@ function ResidentDetailContent() {
   };
 
   const loadBirthPlaceInfo = async (residentData: Resident) => {
-    if (!residentData.birth_place_code) return;
-
+    if (!residentData.birth_place_code) {
+      return;
+    }
     try {
       // Try different PSGC tables based on the code length/pattern
       let birthPlaceData = null;
@@ -234,12 +249,13 @@ function ResidentDetailContent() {
       }
 
       if (birthPlaceData) {
-        residentData.birth_place_info = birthPlaceData;
+        // Store birth place data for display purposes
+        // TODO: Add birth_place_info to type definition if needed
       }
     } catch (birthPlaceError) {
-      clientLogger.warn('Birth place data lookup failed', { 
-        component: 'ResidentDetailsPage', 
-        action: 'birth_place_lookup_failed', 
+      clientLogger.warn('Birth place data lookup failed', {
+        component: 'ResidentDetailsPage',
+        action: 'birth_place_lookup_failed',
         data: {
           error: birthPlaceError instanceof Error ? birthPlaceError.message : 'Unknown error',
           birth_place_code: residentData.birth_place_code
@@ -249,6 +265,7 @@ function ResidentDetailContent() {
   };
 
   const loadSectoralInfo = async (residentData: Resident) => {
+    setSectionLoading('sectoral_info', true);
     try {
       const { data: sectoralData } = await supabase
         .from('resident_sectoral_info')
@@ -258,6 +275,7 @@ function ResidentDetailContent() {
 
       if (sectoralData) {
         residentData.sectoral_info = {
+          resident_id: residentData.id,
           is_labor_force_employed: sectoralData.is_labor_force_employed || false,
           is_unemployed: sectoralData.is_unemployed || false,
           is_overseas_filipino_worker: sectoralData.is_overseas_filipino_worker || false,
@@ -273,6 +291,7 @@ function ResidentDetailContent() {
       } else {
         // Default to all false if no sectoral info exists
         residentData.sectoral_info = {
+          resident_id: residentData.id,
           is_labor_force_employed: false,
           is_unemployed: false,
           is_overseas_filipino_worker: false,
@@ -295,6 +314,8 @@ function ResidentDetailContent() {
           resident_id: residentData.id
         }
       });
+    } finally {
+      setSectionLoading('sectoral_info', false);
     }
   };
 
@@ -358,6 +379,11 @@ function ResidentDetailContent() {
       };
 
       // Setting resident state with initialized data
+      console.log('🔍 Setting resident data:', {
+        first_name: initializedResident.first_name,
+        last_name: initializedResident.last_name,
+        id: initializedResident.id
+      });
       setResident(initializedResident);
       setEditedResident(updateComputedFields({ ...initializedResident }));
     } catch (err) {
@@ -369,6 +395,10 @@ function ResidentDetailContent() {
     } finally {
       // Setting loading to false after data load attempt
       setLoading(false);
+      setSectionLoading('basic_info', false);
+      setSectionLoading('contact_info', false);
+      setSectionLoading('education_info', false);
+      setSectionLoading('employment_info', false);
     }
   }, [residentId, loadAddressInfo]);
 
@@ -581,9 +611,20 @@ function ResidentDetailContent() {
         mother_maiden_middle: formData.mother_maiden_middle,
         mother_maiden_last: formData.mother_maiden_last,
 
-        // Note: Sectoral information fields are stored in the resident_sectoral_info table,
-        // not the main residents table, so they are excluded from this update payload.
-        // The repository layer should handle sectoral data separately.
+        // Sectoral information fields - included for repository layer to handle
+        sectoral_info: {
+          is_labor_force_employed: formData.is_labor_force_employed,
+          is_unemployed: formData.is_unemployed,
+          is_overseas_filipino_worker: formData.is_overseas_filipino_worker,
+          is_person_with_disability: formData.is_person_with_disability,
+          is_out_of_school_children: formData.is_out_of_school_children,
+          is_out_of_school_youth: formData.is_out_of_school_youth,
+          is_senior_citizen: formData.is_senior_citizen,
+          is_registered_senior_citizen: formData.is_registered_senior_citizen,
+          is_solo_parent: formData.is_solo_parent,
+          is_indigenous_people: formData.is_indigenous_people,
+          is_migrant: formData.is_migrant,
+        }
       };
 
       clientLogger.debug('Making PUT request', { component: 'ResidentDetailsPage', action: 'update_request', data: {
@@ -613,13 +654,13 @@ function ResidentDetailContent() {
         }
         
         // Handle validation errors specially
-        if (errorData.error && errorData.error.code === 'VALIDATION_ERROR' && errorData.error.details?.validationErrors) {
-          const validationErrors = errorData.error.details.validationErrors;
+        if ((errorData as any).error && (errorData as any).error.code === 'VALIDATION_ERROR' && (errorData as any).error.details?.validationErrors) {
+          const validationErrors = (errorData as any).error.details.validationErrors;
           const errorMessages = validationErrors.map((err: any) => `${err.field}: ${err.message}`).join(', ');
           throw new Error(`Validation failed: ${errorMessages}`);
         }
-        
-        const errorMessage = errorData.error?.message || errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+
+        const errorMessage = (errorData as any).error?.message || (errorData as any).error || (errorData as any).message || `HTTP ${response.status}: ${response.statusText}`;
         console.log('🔥 API ERROR DEBUG:', { status: response.status, errorData, url: `/api/residents/${residentId}` });
         throw new Error(errorMessage);
       }
@@ -629,7 +670,7 @@ function ResidentDetailContent() {
       
       // Switch back to view mode and reload the fresh data from the API
       setFormMode('view');
-      setCurrentFormData(null);
+      // Removed setCurrentFormData to prevent infinite re-render loops
       toast.success('Resident updated successfully!');
 
       // Reload the resident data to show the latest changes without page refresh
@@ -657,122 +698,8 @@ function ResidentDetailContent() {
 
   // Removed unused renderEditableField function
 
-  if (loading) {
-    return (
-      <div className="min-h-screen">
-        <div className="p-6">
-          {/* Header Skeleton */}
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-32 rounded-md bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-              <div>
-                <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                <div className="h-4 w-32 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-              </div>
-            </div>
-          </div>
 
-          {/* Main Content Skeleton */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Left Column - Form Sections Skeleton */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Form Header Skeleton */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="h-6 w-40 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                <div className="h-4 w-64 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-              </div>
-
-              {/* Personal Information Section */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="space-y-6">
-                  <div>
-                    <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                    <div className="h-4 w-96 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  </div>
-                  <FormSkeleton fieldCount={8} className="" />
-                </div>
-              </div>
-
-              {/* Contact Information Section */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="space-y-6">
-                  <div>
-                    <div className="h-6 w-44 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                    <div className="h-4 w-80 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  </div>
-                  <FormSkeleton fieldCount={4} className="" />
-                </div>
-              </div>
-
-              {/* Physical Details Section */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="space-y-6">
-                  <div>
-                    <div className="h-6 w-52 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                    <div className="h-4 w-72 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  </div>
-                  <FormSkeleton fieldCount={5} className="" />
-                </div>
-              </div>
-
-              {/* Sectoral Information Section */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="space-y-6">
-                  <div>
-                    <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                    <div className="h-4 w-88 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <div key={`sectoral-${i}`} className="space-y-2">
-                        <div className="h-4 w-32 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-                        <div className="flex items-center space-x-2">
-                          <div className="h-4 w-4 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                          <div className="h-4 w-24 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Migration Information Section */}
-              <div className="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-6 shadow-xs">
-                <div className="space-y-6">
-                  <div>
-                    <div className="h-6 w-44 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-2"></div>
-                    <div className="h-4 w-76 rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  </div>
-                  <FormSkeleton fieldCount={6} className="" />
-                </div>
-              </div>
-
-              {/* Form Actions Skeleton */}
-              <div className="flex gap-3 justify-end">
-                <div className="h-10 w-24 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-                <div className="h-10 w-20 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
-              </div>
-            </div>
-
-            {/* Right Column - Sidebar Skeleton */}
-            <div className="space-y-6">
-              <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
-                <div className="h-5 w-24 rounded bg-gray-200 dark:bg-gray-700 animate-pulse mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                  <div className="h-10 w-full rounded bg-gray-100 dark:bg-gray-600 animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !resident) {
+  if (error) {
     // Rendering error state - no resident data available
     return (
       <div>
@@ -834,18 +761,7 @@ function ResidentDetailContent() {
           >
             <Link
               href="/residents"
-              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                borderRadius: '6px',
-                border: '1px solid #e5e7eb',
-                backgroundColor: 'white',
-                padding: '8px 12px',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#4b5563',
-              }}
+              className="inline-flex items-center rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-xs hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
             >
               <svg
                 className="mr-2 size-4"
@@ -865,19 +781,80 @@ function ResidentDetailContent() {
             </Link>
             <div>
               <h1
-                className="text-xl font-semibold text-gray-900"
+                className="text-xl font-semibold text-gray-900 dark:text-gray-100"
                 style={{
                   fontSize: '20px',
                   fontWeight: '600',
-                  color: '#111827',
                   marginBottom: '4px',
                 }}
               >
-                {resident.first_name} {resident.last_name}
+                {resident ? `${resident.first_name} ${resident.last_name}` : (
+                  <div className="h-6 w-48 rounded bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                )}
               </h1>
-              <p className="text-sm text-gray-600" style={{ fontSize: '14px', color: '#6b7280' }}>
+              <p className="text-sm text-gray-600 dark:text-gray-400" style={{ fontSize: '14px' }}>
                 Resident Details
               </p>
+              {/* Sectoral Information Tags */}
+              {resident?.sectoral_info && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {resident.sectoral_info.is_labor_force_employed && (
+                    <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">
+                      Labor Force Employed
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_unemployed && (
+                    <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800 dark:bg-red-900/20 dark:text-red-400">
+                      Unemployed
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_overseas_filipino_worker && (
+                    <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
+                      OFW
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_person_with_disability && (
+                    <span className="inline-flex items-center rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800 dark:bg-purple-900/20 dark:text-purple-400">
+                      PWD
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_out_of_school_children && (
+                    <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">
+                      Out of School Children
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_out_of_school_youth && (
+                    <span className="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">
+                      Out of School Youth
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_senior_citizen && (
+                    <span className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                      Senior Citizen
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_registered_senior_citizen && (
+                    <span className="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+                      Registered Senior Citizen
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_solo_parent && (
+                    <span className="inline-flex items-center rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-800 dark:bg-pink-900/20 dark:text-pink-400">
+                      Solo Parent
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_indigenous_people && (
+                    <span className="inline-flex items-center rounded-full bg-teal-100 px-3 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/20 dark:text-teal-400">
+                      Indigenous People
+                    </span>
+                  )}
+                  {resident.sectoral_info.is_migrant && (
+                    <span className="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
+                      Migrant
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -887,18 +864,38 @@ function ResidentDetailContent() {
           <div className="lg:col-span-2">
             {/* ResidentForm Template */}
             {(() => {
-              const formData = editedResident ? transformToFormState(editedResident) : undefined;
-              // Form data includes resident details and current mode
+              // Always provide formData for form structure, but use loading states for individual fields
+              const formData = resident ? transformToFormState(editedResident || resident) : {};
+              // Show form with loading states when data is not available or still loading
+              const initialLoadingStates = (loading || !resident) ? {
+                basic_info: true,
+                address_info: true,
+                birth_place_info: true,
+                sectoral_info: true,
+                employment_info: true,
+                education_info: true,
+                contact_info: true,
+              } : sectionLoadingStates;
+
+              console.log('🔍 Resident Form Loading States:', {
+                loading,
+                resident: !!resident,
+                basic_info: initialLoadingStates.basic_info,
+                initialLoadingStates
+              });
+
               return (
                 <ResidentForm
                   mode={formMode}
                   initialData={formData}
                   onSubmit={handleFormSubmit}
                   onModeChange={undefined} // Hide FormHeader edit button
-                  onChange={setCurrentFormData} // Track current form data changes
+                  // onChange={setCurrentFormData} // Removed to prevent infinite re-render loops
                   hidePhysicalDetails={false} // Explicitly set to ensure consistency with create form
                   hideSectoralInfo={false} // Explicitly set to ensure consistency with create form
-                  key={`resident-form-${editedResident?.id}-${editedResident?.updated_at || Date.now()}`} // Force re-render when resident updates
+                  loading={false} // Form data is loaded, but sections may still be loading
+                  sectionLoadingStates={initialLoadingStates}
+                  key={`resident-form-${(editedResident || resident)?.id}-${(editedResident || resident)?.updated_at || Date.now()}`} // Force re-render when resident updates
                 />
               );
             })()}

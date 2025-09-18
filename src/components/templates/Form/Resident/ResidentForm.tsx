@@ -10,6 +10,7 @@ import {
   MigrationInformation,
 } from '@/components/organisms/FormSection';
 import { useAuth } from '@/contexts';
+import { useFieldLoading } from '@/hooks/utilities/useFieldLoading';
 import { isIndigenousPeople } from '@/services/domain/residents/residentClassification';
 import { supabase } from '@/lib/data/supabase';
 import type { FormMode } from '@/types';
@@ -27,6 +28,15 @@ interface ResidentFormProps {
   hidePhysicalDetails?: boolean;
   hideSectoralInfo?: boolean;
   onChange?: (data: ResidentFormData) => void;
+  // Progressive loading states from parent component
+  loading?: boolean;
+  sectionLoadingStates?: {
+    basic_info?: boolean;
+    address_info?: boolean;
+    birth_place_info?: boolean;
+    sectoral_info?: boolean;
+    contact_info?: boolean;
+  };
 }
 
 // Helper function to get sectoral classifications based on ethnicity
@@ -84,6 +94,8 @@ export function ResidentForm({
   hidePhysicalDetails = false,
   hideSectoralInfo = false,
   onChange,
+  loading: externalLoading = false,
+  sectionLoadingStates = {},
 }: ResidentFormProps) {
   // Auth context
   const { userProfile } = useAuth();
@@ -189,18 +201,19 @@ export function ResidentForm({
     // Merge with initialData - initialData takes precedence over defaults
     const finalFormData = initialData ? { ...formWithDefaults, ...initialData } : formWithDefaults;
 
-    // Notify parent of initial data (use setTimeout to avoid state update during render)
-    if (onChange) {
-      setTimeout(() => {
-        onChange(finalFormData);
-      }, 0);
-    }
+    // Don't automatically notify parent of initial data to avoid infinite loops
+    // The parent should use initialData or handle changes via handleFieldChange
 
     return finalFormData;
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Field-level loading states for granular user feedback
+  const {
+    getFieldLoading
+  } = useFieldLoading();
 
   // Production-ready stable search handlers
   const handlePsgcSearch = useCallback(async (query: string) => {
@@ -741,6 +754,32 @@ export function ResidentForm({
           psocOptions={searchOptions.psoc}
           psgcLoading={searchLoading.psgc}
           psocLoading={searchLoading.psoc}
+          loading={isSubmitting || sectionLoadingStates?.basic_info}
+          loadingStates={{
+            first_name: getFieldLoading('first_name') || sectionLoadingStates?.basic_info,
+            middle_name: getFieldLoading('middle_name') || sectionLoadingStates?.basic_info,
+            last_name: getFieldLoading('last_name') || sectionLoadingStates?.basic_info,
+            extension_name: getFieldLoading('extension_name') || sectionLoadingStates?.basic_info,
+            sex: getFieldLoading('sex') || sectionLoadingStates?.basic_info,
+            civil_status: getFieldLoading('civil_status') || sectionLoadingStates?.basic_info,
+            civil_status_others_specify: getFieldLoading('civil_status_others_specify') || sectionLoadingStates?.basic_info,
+            citizenship: getFieldLoading('citizenship') || sectionLoadingStates?.basic_info,
+            birthdate: getFieldLoading('birthdate') || sectionLoadingStates?.birth_place_info,
+            birth_place_name: getFieldLoading('birth_place_name') || sectionLoadingStates?.birth_place_info,
+            birth_place_code: getFieldLoading('birth_place_code') || sectionLoadingStates?.birth_place_info,
+            philsys_card_number: getFieldLoading('philsys_card_number') || sectionLoadingStates?.basic_info,
+            education_attainment: getFieldLoading('education_attainment') || sectionLoadingStates?.basic_info,
+            is_graduate: getFieldLoading('is_graduate') || sectionLoadingStates?.basic_info,
+            employment_status: getFieldLoading('employment_status') || sectionLoadingStates?.basic_info,
+            occupation_code: getFieldLoading('occupation_code') || sectionLoadingStates?.basic_info,
+            occupation_title: getFieldLoading('occupation_title') || sectionLoadingStates?.basic_info,
+          }}
+          sectionLoadingStates={{
+            basic_info: sectionLoadingStates?.basic_info,
+            birth_place_info: sectionLoadingStates?.birth_place_info,
+            employment_info: false, // Employment data loads with main form
+            education_info: false, // Education data loads with main form
+          }}
         />
 
         {/* Contact Information Section */}
@@ -748,11 +787,11 @@ export function ResidentForm({
           mode={mode}
           formData={{
             // Direct snake_case properties (matching database schema)
-            email: formData.email,
-            telephone_number: formData.telephone_number,
-            mobile_number: formData.mobile_number,
-            household_code: formData.household_code,
-            household_name: formData.household_name,
+            email: formData.email || '',
+            telephone_number: formData.telephone_number || '',
+            mobile_number: formData.mobile_number || '',
+            household_code: formData.household_code || '',
+            household_name: formData.household_name || '',
           }}
           onChange={(field: string | number | symbol, value: string | number | boolean | null) => {
             // Direct field mapping (no conversion needed as both use snake_case)
@@ -763,6 +802,13 @@ export function ResidentForm({
           onHouseholdSearch={handleHouseholdSearch}
           householdOptions={searchOptions.household}
           householdLoading={searchLoading.household}
+          loadingStates={{
+            email: sectionLoadingStates?.contact_info,
+            telephone_number: sectionLoadingStates?.contact_info,
+            mobile_number: sectionLoadingStates?.contact_info,
+            household_code: sectionLoadingStates?.contact_info,
+            household_name: sectionLoadingStates?.contact_info,
+          }}
         />
 
         {/* Physical Personal Details Section - Hidden in basic create mode */}
@@ -771,19 +817,19 @@ export function ResidentForm({
             mode={mode}
             formData={{
               // Direct snake_case properties (matching database schema)
-              blood_type: formData.blood_type,
-              complexion: formData.complexion,
+              blood_type: formData.blood_type || '',
+              complexion: formData.complexion || '',
               height: formData.height ? formData.height.toString() : '',
               weight: formData.weight ? formData.weight.toString() : '',
-              ethnicity: formData.ethnicity,
-              religion: formData.religion,
-              religion_others_specify: formData.religion_others_specify,
-              is_voter: formData.is_voter,
-              is_resident_voter: formData.is_resident_voter,
-              last_voted_date: formData.last_voted_date,
-              mother_maiden_first: formData.mother_maiden_first,
-              mother_maiden_middle: formData.mother_maiden_middle,
-              mother_maiden_last: formData.mother_maiden_last,
+              ethnicity: formData.ethnicity || '',
+              religion: formData.religion || '',
+              religion_others_specify: formData.religion_others_specify || '',
+              is_voter: formData.is_voter ?? false,
+              is_resident_voter: formData.is_resident_voter ?? false,
+              last_voted_date: formData.last_voted_date || '',
+              mother_maiden_first: formData.mother_maiden_first || '',
+              mother_maiden_middle: formData.mother_maiden_middle || '',
+              mother_maiden_last: formData.mother_maiden_last || '',
             }}
             onChange={(
               field: string | number | symbol,
@@ -799,6 +845,21 @@ export function ResidentForm({
               handleFieldChange(fieldName, convertedValue);
             }}
             errors={errors}
+            loadingStates={{
+              blood_type: sectionLoadingStates?.basic_info,
+              complexion: sectionLoadingStates?.basic_info,
+              height: sectionLoadingStates?.basic_info,
+              weight: sectionLoadingStates?.basic_info,
+              citizenship: sectionLoadingStates?.basic_info,
+              ethnicity: sectionLoadingStates?.basic_info,
+              religion: sectionLoadingStates?.basic_info,
+              is_voter: sectionLoadingStates?.basic_info,
+              is_resident_voter: sectionLoadingStates?.basic_info,
+              last_voted_date: sectionLoadingStates?.basic_info,
+              mother_maiden_first: sectionLoadingStates?.basic_info,
+              mother_maiden_middle: sectionLoadingStates?.basic_info,
+              mother_maiden_last: sectionLoadingStates?.basic_info,
+            }}
           />
         )}
 
@@ -808,6 +869,10 @@ export function ResidentForm({
             mode={mode}
             formData={formData}
             onChange={handleFieldChange}
+            loading={isSubmitting}
+            sectionLoadingStates={{
+              sectoral_info: sectionLoadingStates?.sectoral_info,
+            }}
           />
         )}
 

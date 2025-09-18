@@ -7,5 +7,4 @@ export {
 export {
   HouseholdInformation,
   type HouseholdInformationProps,
-  type HouseholdInformationData,
 } from './FormField/HouseholdInformation';

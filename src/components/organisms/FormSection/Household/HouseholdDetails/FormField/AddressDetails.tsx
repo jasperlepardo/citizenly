@@ -73,7 +73,7 @@ export function AddressDetails({
         <InputField
           label="House Number"
           required
-          helperText="Enter the house number or unit identifier"
+          helperText={mode === 'view' ? undefined : "Enter the house number or unit identifier"}
           errorMessage={errors?.house_number}
           inputProps={{
             name: 'house_number',
@@ -89,7 +89,7 @@ export function AddressDetails({
         {/* ZIP Code */}
         <InputField
           label="ZIP Code"
-          helperText="4-digit postal code"
+          helperText={mode === 'view' ? undefined : "4-digit postal code"}
           errorMessage={errors?.zip_code}
           inputProps={{
             name: 'zip_code',
@@ -107,7 +107,7 @@ export function AddressDetails({
       {/* Subdivision (Optional) */}
       <SelectField
         label="Subdivision (Optional)"
-        helperText="Choose subdivision if the household is located within one"
+        helperText={mode === 'view' ? undefined : "Choose subdivision if the household is located within one"}
         errorMessage={errors?.subdivision_id}
         selectProps={{
           name: 'subdivision_id',
@@ -124,7 +124,7 @@ export function AddressDetails({
       <SelectField
         label="Street"
         required
-        helperText="Choose the street where the household is located"
+        helperText={mode === 'view' ? undefined : "Choose the street where the household is located"}
         errorMessage={errors?.street_id}
         selectProps={{
           name: 'street_id',

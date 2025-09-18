@@ -18,6 +18,19 @@ interface SectoralClassificationsProps {
   readonly context: SectoralContext;
   readonly mode?: FormMode;
   readonly disabled?: boolean;
+  readonly loadingStates?: {
+    is_labor_force_employed?: boolean;
+    is_unemployed?: boolean;
+    is_overseas_filipino_worker?: boolean;
+    is_person_with_disability?: boolean;
+    is_out_of_school_children?: boolean;
+    is_out_of_school_youth?: boolean;
+    is_senior_citizen?: boolean;
+    is_registered_senior_citizen?: boolean;
+    is_solo_parent?: boolean;
+    is_indigenous_people?: boolean;
+    is_migrant?: boolean;
+  };
 }
 
 export default function SectoralClassifications({
@@ -26,6 +39,7 @@ export default function SectoralClassifications({
   context,
   mode = 'create',
   disabled = false,
+  loadingStates = {},
 }: SectoralClassificationsProps) {
   console.log('🔍 SectoralClassifications: Rendering with value:', value);
   console.log('🔍 SectoralClassifications: Context:', context);
@@ -117,11 +131,13 @@ export default function SectoralClassifications({
             education data
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-4 md:grid-cols-2'}>
           <ControlField
             label="Labor Force Employed"
-            helperText="Currently employed (employed, self-employed)"
+            helperText={mode === 'view' ? undefined : "Currently employed (employed, self-employed)"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_labor_force_employed}
             controlProps={{
               type: 'checkbox',
               checked: value.is_labor_force_employed,
@@ -132,8 +148,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Unemployed"
-            helperText="Unemployed but looking for work"
+            helperText={mode === 'view' ? undefined : "Unemployed but looking for work"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_unemployed}
             controlProps={{
               type: 'checkbox',
               checked: value.is_unemployed,
@@ -144,8 +162,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Out-of-School Children"
-            helperText="Ages 5-17, not attending school"
+            helperText={mode === 'view' ? undefined : "Ages 5-17, not attending school"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_out_of_school_children}
             controlProps={{
               type: 'checkbox',
               checked: value.is_out_of_school_children,
@@ -158,8 +178,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Out-of-School Youth"
-            helperText="Ages 18-30, not in school/employed"
+            helperText={mode === 'view' ? undefined : "Ages 18-30, not in school/employed"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_out_of_school_youth}
             controlProps={{
               type: 'checkbox',
               checked: value.is_out_of_school_youth,
@@ -172,8 +194,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Senior Citizen"
-            helperText="Age 60 and above"
+            helperText={mode === 'view' ? undefined : "Age 60 and above"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_senior_citizen}
             controlProps={{
               type: 'checkbox',
               checked: value.is_senior_citizen,
@@ -184,8 +208,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Indigenous People"
-            helperText="Based on ethnicity selection"
+            helperText={mode === 'view' ? undefined : "Based on ethnicity selection"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_indigenous_people}
             controlProps={{
               type: 'checkbox',
               checked: value.is_indigenous_people,
@@ -209,11 +235,13 @@ export default function SectoralClassifications({
             Classifications that require manual verification or input
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-4 md:grid-cols-2'}>
           <ControlField
             label="Overseas Filipino Worker (OFW)"
-            helperText="Currently working abroad"
+            helperText={mode === 'view' ? undefined : "Currently working abroad"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_overseas_filipino_worker}
             controlProps={{
               type: 'checkbox',
               checked: value.is_overseas_filipino_worker,
@@ -225,8 +253,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Person with Disability (PWD)"
-            helperText="Has physical, mental, or sensory disability"
+            helperText={mode === 'view' ? undefined : "Has physical, mental, or sensory disability"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_person_with_disability}
             controlProps={{
               type: 'checkbox',
               checked: value.is_person_with_disability,
@@ -238,8 +268,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Solo Parent"
-            helperText="Single parent raising children alone"
+            helperText={mode === 'view' ? undefined : "Single parent raising children alone"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_solo_parent}
             controlProps={{
               type: 'checkbox',
               checked: value.is_solo_parent,
@@ -251,8 +283,10 @@ export default function SectoralClassifications({
           />
           <ControlField
             label="Migrant"
-            helperText="Recently moved to this barangay"
+            helperText={mode === 'view' ? undefined : "Recently moved to this barangay"}
             mode={mode}
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+            loading={loadingStates.is_migrant}
             controlProps={{
               type: 'checkbox',
               checked: value.is_migrant,
@@ -266,8 +300,10 @@ export default function SectoralClassifications({
           {value.is_senior_citizen && (
             <ControlField
               label="Registered Senior Citizen"
-              helperText="Officially registered with OSCA"
+              helperText={mode === 'view' ? undefined : "Officially registered with OSCA"}
               mode={mode}
+              orientation={mode === 'view' ? 'horizontal' : 'vertical'}
+              loading={loadingStates.is_registered_senior_citizen}
               controlProps={{
                 type: 'checkbox',
                 checked: value.is_registered_senior_citizen,

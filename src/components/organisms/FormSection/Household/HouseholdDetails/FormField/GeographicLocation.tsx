@@ -118,7 +118,7 @@ export function GeographicLocation({
         <SelectField
           label="Region"
           required
-          helperText="Choose the administrative region"
+          helperText={mode === 'view' ? undefined : "Choose the administrative region"}
           errorMessage={errors?.region_code}
           selectProps={{
             name: 'region_code',
@@ -134,7 +134,7 @@ export function GeographicLocation({
         {/* Province */}
         <SelectField
           label="Province"
-          helperText="Choose the province (if applicable)"
+          helperText={mode === 'view' ? undefined : "Choose the province (if applicable)"}
           errorMessage={errors?.province_code}
           selectProps={{
             name: 'province_code',
@@ -160,7 +160,7 @@ export function GeographicLocation({
         <SelectField
           label="City/Municipality"
           required
-          helperText="Choose the city or municipality"
+          helperText={mode === 'view' ? undefined : "Choose the city or municipality"}
           errorMessage={errors?.city_municipality_code}
           selectProps={{
             name: 'city_municipality_code',
@@ -180,7 +180,7 @@ export function GeographicLocation({
         <SelectField
           label="Barangay"
           required
-          helperText="Choose the barangay"
+          helperText={mode === 'view' ? undefined : "Choose the barangay"}
           errorMessage={errors?.barangay_code}
           selectProps={{
             name: 'barangay_code',

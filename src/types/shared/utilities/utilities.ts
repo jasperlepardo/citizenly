@@ -138,6 +138,11 @@ export interface PSGCOption {
 export type IsNever<T> = [T] extends [never] ? true : false;
 
 /**
+ * Check if type is any
+ */
+export type IsAny<T> = 0 extends 1 & T ? true : false;
+
+/**
  * Check if type is unknown
  */
 export type IsUnknown<T> = IsAny<T> extends true ? false : unknown extends T ? true : false;
@@ -320,19 +325,25 @@ export interface FormProcessingOptions {
  * Consolidates from src/utils/resident-form-utils.ts
  */
 export interface ProcessedFormResult {
-  transformedData: any; // ResidentFormData type
-  auditInfo?: {
+  success: boolean;
+  errors: Record<string, string>;
+  data: any; // ResidentFormData type
+  processingTime?: number;
+  auditTrail?: {
+    action: string;
     userId: string;
     sessionId: string;
     barangayCode: string;
     timestamp: string;
-    fieldCount: number;
-    hasPhilSys: boolean;
-  };
-  securityValidation?: {
-    sanitized: boolean;
-    flaggedFields: string[];
-    riskScore: number;
+    success: boolean;
+    dataProcessed?: number;
+    processingTime?: number;
+    compliance?: {
+      ra10173: boolean;
+      dataPrivacyCompliant: boolean;
+      auditTrailGenerated: boolean;
+    };
+    error?: string;
   };
 }
 

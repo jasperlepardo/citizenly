@@ -7,8 +7,7 @@ import React, { useEffect, useRef } from 'react';
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
 import { cn } from '@/components/shared/utils';
 import type {
-  CommandMenuSearchResult as CommandMenuItem,
-  CommandMenuHookResult as CommandMenuProps,
+  CommandMenuSearchResult,
 } from '../../../types/infrastructure/services/services';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
@@ -31,7 +30,7 @@ const commandMenuVariants = cva(
 );
 
 interface CommandMenuComponentProps extends VariantProps<typeof commandMenuVariants> {
-  items?: CommandMenuItem[]; // Made optional since we get items from API
+  items?: CommandMenuSearchResult[]; // Made optional since we get items from API
   placeholder?: string;
   emptyStateText?: string;
   maxResults?: number;
@@ -72,7 +71,7 @@ export function CommandMenu({
 
   // Group items by category
   const groupedItems = React.useMemo(() => {
-    const groups = new Map<string, CommandMenuItem[]>();
+    const groups = new Map<string, CommandMenuSearchResult[]>();
 
     // If showing recent section and no search query, separate recent items
     if (showRecentSection && !searchQuery.trim()) {
