@@ -29,7 +29,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React, { forwardRef, ButtonHTMLAttributes } from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
+// Simple inline utility (replacing deleted cssUtils)
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-1 rounded-sm text-base font-medium leading-5 transition-colors font-system focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed',

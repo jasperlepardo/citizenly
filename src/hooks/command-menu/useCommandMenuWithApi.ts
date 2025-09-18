@@ -16,7 +16,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { getCommandMenuItems } from '@/lib/command-menu';
+import { getCommandMenuItems } from '@/utils/command-menu/items-utils';
 
 import { useCommandMenu } from './useCommandMenu';
 import { useCommandMenuActions } from './useCommandMenuActions';

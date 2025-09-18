@@ -50,7 +50,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const [showPassword, setShowPassword] = useState(false);
 
     // Generate unique IDs for the form elements
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = id || `input-field`;
 
     const hasValue = value !== undefined && value !== '';
     const showClearButton = !suppressActions && (clearable || dismissible) && hasValue;

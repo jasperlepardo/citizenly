@@ -66,7 +66,10 @@ export function validateSearchQuery(searchParams: URLSearchParams) {
 }
 
 // Additional validation schemas
-export const uuidSchema = z.string().uuid('Invalid UUID format');
+export const uuidSchema = z.string().regex(
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  'Invalid UUID format'
+);
 
 export const residentIdSchema = z.object({
   id: uuidSchema,
@@ -97,7 +100,7 @@ export const barangayCodeSchema = z.object({
 });
 
 // Generic validation error response
-export function createValidationErrorResponse(errors: z.ZodIssue[]) {
+export function createValidationErrorResponse(errors: z.ZodError['issues']) {
   return {
     error: 'Validation failed',
     validationErrors: errors.reduce(

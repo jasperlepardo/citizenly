@@ -9,7 +9,7 @@
 
 import { useCallback, useState } from 'react';
 
-import { useSearchCache, searchFormatters } from '@/utils/search/search-utilities';
+import { container } from '@/services/container';
 
 import { useGenericSearch } from './useGenericSearch';
 
@@ -66,11 +66,22 @@ export function usePsgcSearch({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Setup caching if enabled
-  const { getCachedResult, setCachedResult } = useSearchCache<PsgcSearchResult>(
-    `psgc-${levels}-${parentCode || 'all'}`,
-    enableCache ? 100 : 0
-  );
+  // Setup caching using existing CacheService
+  const cacheService = container.getCacheService();
+  const cacheKeyPrefix = `psgc-${levels}-${parentCode || 'all'}`;
+  
+  const getCachedResult = useCallback((query: string): PsgcSearchResult[] | null => {
+    return enableCache ? cacheService.get<PsgcSearchResult[]>(`${cacheKeyPrefix}-${query}`) : null;
+  }, [cacheService, cacheKeyPrefix, enableCache]);
+  
+  const setCachedResult = useCallback((query: string, result: PsgcSearchResult[]) => {
+    if (enableCache) {
+      cacheService.set(`${cacheKeyPrefix}-${query}`, result, {
+        ttl: 5 * 60 * 1000, // 5 minutes
+        tags: ['psgc', `level:${levels}`, `parent:${parentCode || 'all'}`],
+      });
+    }
+  }, [cacheService, cacheKeyPrefix, enableCache, levels, parentCode]);
 
   /**
    * PSGC search function with pagination support
@@ -109,6 +120,13 @@ export function usePsgcSearch({
 
         const data = await response.json();
         const results = data.data || [];
+        
+        // Debug log the received data structure
+        console.log('🔍 usePsgcSearch: Received response data:', {
+          totalResults: results.length,
+          sampleResults: results.slice(0, 2),
+          query: query
+        });
 
         // Update pagination state
         setTotalCount(data.totalCount || 0);

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { 
+import type {
   FormMode,
-  SectoralInformation, 
+  SectoralInformation,
   SectoralContext,
   ResidentFormData
 } from '@/types';
@@ -17,24 +17,30 @@ import SectoralClassifications from './FormField/SectoralClassifications';
  * names to database schema (e.g., is_overseas_filipino → is_overseas_filipino_worker).
  */
 export interface SectoralInformationFormProps {
-  /** 
+  /**
    * Form mode - determines if fields are editable or read-only
    * @default 'create'
    */
   mode?: FormMode;
-  
+
   /**
    * Form data containing sectoral flags and context fields for auto-calculation.
    * Uses the complete resident form data which includes all needed fields.
    */
   formData: ResidentFormData;
-  
+
   /**
    * Callback when any sectoral field changes.
    * @param field - The form field name (e.g., 'is_overseas_filipino')
    * @param value - The new value for the field
    */
   onChange: (field: string, value: boolean | string | null) => void;
+
+  // Loading states
+  loading?: boolean;
+  sectionLoadingStates?: {
+    sectoral_info?: boolean;
+  };
 }
 
 // Field mapping configuration (matches database schema exactly)
@@ -78,28 +84,75 @@ export function SectoralInformationForm({
   mode = 'create',
   formData,
   onChange,
+  loading = false,
+  sectionLoadingStates = {},
 }: SectoralInformationFormProps) {
+  console.log('🔍 SectoralInformationForm: COMPONENT LOADING - Full formData keys:', Object.keys(formData || {}));
+  console.log('🔍 SectoralInformationForm: Received formData:', {
+    birthdate: formData.birthdate,
+    employment_status: formData.employment_status,
+    ethnicity: formData.ethnicity,
+    is_senior_citizen: formData.is_senior_citizen,
+    is_labor_force_employed: formData.is_labor_force_employed,
+    is_indigenous_people: formData.is_indigenous_people,
+  });
+  
+  // Special debug for ethnicity changes
+  if (formData.ethnicity) {
+    console.log('🎯 SectoralInformationForm: ETHNICITY DETECTED:', formData.ethnicity);
+    if (formData.ethnicity === 'badjao') {
+      console.log('🎯 SectoralInformationForm: BADJAO RECEIVED - is_indigenous_people should be true!');
+      console.log('🎯 SectoralInformationForm: Current is_indigenous_people value:', formData.is_indigenous_people);
+    }
+  }
+  
   // Map form data to SectoralInfo component props using configuration
   const sectoralValue: SectoralInformation = React.useMemo(
-    () => SECTORAL_FIELD_MAPPING.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.dbKey]: getSectoralFieldValue(formData, field.formKey),
-      }),
-      {} as SectoralInformation
-    ),
-    [formData]
+    () => {
+      const result = SECTORAL_FIELD_MAPPING.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.dbKey]: getSectoralFieldValue(formData, field.dbKey),
+        }),
+        {} as SectoralInformation
+      );
+      console.log('🔍 SectoralInformationForm: Computed sectoralValue:', result);
+      return result;
+    },
+    [
+      // Depend on specific sectoral fields instead of entire formData object
+      formData.is_labor_force_employed,
+      formData.is_unemployed,
+      formData.is_overseas_filipino_worker,
+      formData.is_person_with_disability,
+      formData.is_out_of_school_children,
+      formData.is_out_of_school_youth,
+      formData.is_senior_citizen,
+      formData.is_registered_senior_citizen,
+      formData.is_solo_parent,
+      formData.is_indigenous_people,
+      formData.is_migrant,
+      // Also depend on context fields that affect auto-calculation
+      formData.ethnicity,        // For indigenous people classification
+      formData.birthdate,        // For age-based calculations (senior citizen, out-of-school)
+      formData.employment_status, // For employment-based classifications  
+      formData.education_attainment, // For education-based classifications (out-of-school)
+    ]
   );
 
   // Context for auto-calculation (form data already uses database field names)
   const sectoralContext: SectoralContext = React.useMemo(
-    () => ({
-      birthdate: formData.birthdate,
-      employment_status: formData.employment_status,
-      education_attainment: formData.education_attainment,
-      civil_status: formData.civil_status,
-      ethnicity: formData.ethnicity,
-    }),
+    () => {
+      const context = {
+        birthdate: formData.birthdate,
+        employment_status: formData.employment_status,
+        education_attainment: formData.education_attainment,
+        civil_status: formData.civil_status,
+        ethnicity: formData.ethnicity,
+      };
+      console.log('🔍 SectoralInformationForm: Context created:', context);
+      return context;
+    },
     [
       formData.birthdate,
       formData.employment_status,
@@ -112,12 +165,19 @@ export function SectoralInformationForm({
   // Handle changes from SectoralInfo component using configuration
   const handleSectoralChange = React.useCallback(
     (value: SectoralInformation) => {
+      // Create a batch update object with all sectoral changes
+      const batchUpdate: Record<string, boolean | string | null> = {};
       SECTORAL_FIELD_MAPPING.forEach(field => {
-        onChange(field.formKey, setSectoralFieldValue(value, field.dbKey));
+        const fieldValue = setSectoralFieldValue(value, field.dbKey);
+        batchUpdate[field.dbKey] = fieldValue;
       });
+      
+      // Send all updates as a single batch to avoid race conditions
+      onChange('__sectoral_batch__', batchUpdate);
     },
     [onChange]
   );
+
 
   return (
     <div className="rounded-lg border border-gray-300 bg-white p-6 shadow-xs dark:border-gray-600 dark:bg-gray-800">
@@ -138,6 +198,19 @@ export function SectoralInformationForm({
           context={sectoralContext}
           mode={mode}
           disabled={mode === 'view'}
+          loadingStates={sectionLoadingStates?.sectoral_info ? {
+            is_labor_force_employed: true,
+            is_unemployed: true,
+            is_overseas_filipino_worker: true,
+            is_person_with_disability: true,
+            is_out_of_school_children: true,
+            is_out_of_school_youth: true,
+            is_senior_citizen: true,
+            is_registered_senior_citizen: true,
+            is_solo_parent: true,
+            is_indigenous_people: true,
+            is_migrant: true,
+          } : {}}
         />
       </div>
     </div>

@@ -7,14 +7,9 @@
  * Provides a clean, reusable interface for form and field validation.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
-import {
-  useValidationState,
-  createFormValidationExecutor,
-  createFieldValidationExecutor,
-} from '@/utils/validation/utilities';
 import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/shared/hooks';
 
 // Re-export for backward compatibility
@@ -31,12 +26,74 @@ export function useGenericValidation<T>(
 ): UseGenericValidationReturn<T> {
   const { validateForm: validateFormFn, validateField: validateFieldFn, ...config } = options;
 
-  // Use validation state management
-  const validationState = useValidationState(config);
+  // Inline validation state management (avoiding missing utilities)
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isValid, setIsValid] = useState(true);
+  const [hasValidated, setHasValidated] = useState(false);
+
+  const getFieldError = useCallback((fieldName: string) => {
+    return errors[fieldName] || null;
+  }, [errors]);
+
+  const hasFieldError = useCallback((fieldName: string) => {
+    return Boolean(errors[fieldName]);
+  }, [errors]);
+
+  const clearFieldError = useCallback((fieldName: string) => {
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[fieldName];
+      setIsValid(Object.keys(newErrors).length === 0);
+      return newErrors;
+    });
+  }, []);
+
+  const clearErrors = useCallback(() => {
+    setErrors({});
+    setIsValid(true);
+    setHasValidated(false);
+  }, []);
+
+  const setFieldError = useCallback((fieldName: string, error: string) => {
+    setErrors(prev => ({ ...prev, [fieldName]: error }));
+    setIsValid(false);
+  }, []);
+
+  const setErrorsHandler = useCallback((newErrors: Record<string, string>) => {
+    setErrors(newErrors);
+    setIsValid(Object.keys(newErrors).length === 0);
+  }, []);
+
+  const validationState = {
+    errors,
+    isValid,
+    hasValidated,
+    getFieldError,
+    hasFieldError,
+    clearFieldError,
+    clearErrors,
+    setFieldError,
+    setErrors: setErrorsHandler,
+  };
 
   // Create form validation executor (wrapping sync functions to return Promise)
   const validateForm = async (data: T): Promise<ValidationResult<T>> => {
+    setHasValidated(true);
     const result = await Promise.resolve(validateFormFn(data));
+    
+    // Update validation state based on result
+    if (result.errors && result.errors.length > 0) {
+      const errorMap: Record<string, string> = {};
+      result.errors.forEach(error => {
+        errorMap[error.field] = error.message;
+      });
+      setErrors(errorMap);
+      setIsValid(false);
+    } else {
+      setErrors({});
+      setIsValid(true);
+    }
+    
     return result;
   };
 

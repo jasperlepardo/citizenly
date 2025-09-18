@@ -4,10 +4,9 @@
  * Schema-aligned with consolidated cache types
  */
 
-import type { CacheEntry, CacheStats } from '../../../types/infrastructure/cache/cache';
-import { createInitialCacheStats } from '../../../types/infrastructure/cache/cache';
-
-import { createLogger } from '../../../lib/config/environment';
+import { createLogger } from '@/lib/config/environment';
+import type { CacheEntry, CacheStats } from '@/types/infrastructure/cache/cache';
+import { createInitialCacheStats } from '@/types/infrastructure/cache/cache';
 
 const logger = createLogger('CacheService');
 
@@ -16,11 +15,11 @@ const logger = createLogger('CacheService');
  * Consolidated in-memory caching with TTL and tag-based invalidation
  */
 export class CacheService {
-  private cache = new Map<string, CacheEntry>();
+  private readonly cache = new Map<string, CacheEntry>();
   private stats: CacheStats = createInitialCacheStats();
-  private maxSize: number = 1000;
-  private defaultTTL: number = 5 * 60 * 1000; // 5 minutes
-  private keyPrefix = 'rbi:';
+  private readonly maxSize: number = 1000;
+  private readonly defaultTTL: number = 5 * 60 * 1000; // 5 minutes
+  private readonly keyPrefix = 'rbi:';
 
   /**
    * Get cached data
@@ -142,7 +141,7 @@ export class CacheService {
    */
   clear(): void {
     this.cache.clear();
-    this.stats = { hits: 0, misses: 0, size: 0, memoryUsage: 0 };
+    this.stats = createInitialCacheStats();
   }
 
   /**
@@ -248,7 +247,8 @@ export function cached<TArgs extends readonly unknown[], TResult>(
 
       return result;
     } catch (error) {
-      // Don't cache errors
+      // Don't cache errors, just re-throw
+      logger.debug('Cache function execution failed', { key, error });
       throw error;
     }
   };
@@ -257,8 +257,8 @@ export function cached<TArgs extends readonly unknown[], TResult>(
 // Export consolidated cache keys and tags from centralized types
 export { CacheKeyPatterns as CacheKeys, CacheTags } from '../../../types/infrastructure/cache/cache';
 
-// Export singleton instance
-export const cacheService = new CacheService();
+// Note: CacheService is now managed by the service container
+// Import from container: container.getCacheService()
 
 // Setup cache cleanup interval
 let cleanupInterval: NodeJS.Timeout | null = null;

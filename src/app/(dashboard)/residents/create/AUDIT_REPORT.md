@@ -535,7 +535,7 @@ import {
   createSecureLogger,
   auditLogger,
   DataPrivacyCompliantLogger,
-} from '@/lib/security/philippine-logging';
+} from '@/lib/security/philippineLogging';
 
 // For development (with data masking per NPC guidelines):
 if (process.env.NODE_ENV === 'development') {
@@ -909,7 +909,7 @@ export const formDataPool = new FormDataPool();
 **File Structure**:
 
 ```typescript
-// CREATE: constants/resident-form.ts
+// CREATE: constants/residentForm
 export const REQUIRED_FIELDS = [
   'first_name',
   'last_name',

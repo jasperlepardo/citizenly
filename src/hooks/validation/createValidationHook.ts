@@ -219,7 +219,7 @@ export function createValidationHook<T>(
  * Common validation schemas for reuse
  */
 export const CommonSchemas = {
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email(),
   phone: z.string().regex(/^\+?[\d\s-()]+$/, 'Please enter a valid phone number'),
   required: z.string().min(1, 'This field is required'),
   optionalString: z.string().optional(),

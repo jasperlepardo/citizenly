@@ -11,7 +11,7 @@ import {
   createStoryParameters,
   createEmptyFormData,
   createSampleFormData,
-} from '@/lib/storybookUtils';
+} from '@/components/shared/storybook/storybookUtils';
 
 const meta = {
   title: 'Organisms/Form/Resident/ContactInformation/FormField/HouseholdInformation',

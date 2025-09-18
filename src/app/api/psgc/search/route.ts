@@ -488,6 +488,20 @@ export async function GET(request: NextRequest) {
     const endIndex = Math.min(startIndex + limit, totalCount, startIndex + 100); // Cap at 100 per request
     const data = uniqueResults.slice(startIndex, endIndex);
 
+    // Debug log the response data structure to identify the issue
+    console.log('🔍 PSGC API: Returning response with sample data:', {
+      sampleData: data.slice(0, 2), // First 2 items to see structure
+      totalCount,
+      queryUsed: rawQuery,
+      firstItemDetail: data[0] ? {
+        code: data[0].code,
+        name: data[0].name,
+        nameType: typeof data[0].name,
+        nameLength: data[0].name ? data[0].name.length : 0,
+        level: data[0].level
+      } : null
+    });
+
     return NextResponse.json({
       data: data,
       count: data.length,

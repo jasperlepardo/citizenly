@@ -3,11 +3,15 @@
  * Reusable field-level validation functions
  */
 
-import type {
-  FieldValidator,
-  FieldValidationResult,
-  ValidationContext,
-} from '../../types/validation';
+import { z } from 'zod';
+
+import {
+  isValidPhilSysCardNumber,
+  isValidMobileNumber,
+  isValidBirthdate,
+} from '@/services/domain/residents/formRules';
+
+import type { FieldValidator } from '@/types/shared/validation/validation';
 
 // Note: FieldValidationResult interface is still exported from types for backward compatibility
 // but these validators now return string | null per the updated FieldValidator type signature
@@ -15,7 +19,7 @@ import type {
 /**
  * Required field validator
  */
-export const validateRequired: FieldValidator = (value, fieldName, formData) => {
+export const validateRequired: FieldValidator = (value, _fieldName, _formData) => {
   if (value === null || value === undefined || value === '') {
     return 'This field is required';
   }
@@ -30,7 +34,7 @@ export const validateRequired: FieldValidator = (value, fieldName, formData) => 
 /**
  * Email validator
  */
-export const validateEmail: FieldValidator<string> = (email, fieldName, formData) => {
+export const validateEmail: FieldValidator<string> = (email, _fieldName, _formData) => {
   if (!email) {
     return null; // Allow empty for optional fields
   }
@@ -44,7 +48,7 @@ export const validateEmail: FieldValidator<string> = (email, fieldName, formData
 /**
  * Philippine mobile number validator
  */
-export const validatePhilippineMobile: FieldValidator<string> = (mobile, fieldName, formData) => {
+export const validatePhilippineMobile: FieldValidator<string> = (mobile, _fieldName, _formData) => {
   if (!mobile) {
     return null; // Allow empty for optional fields
   }
@@ -60,7 +64,7 @@ export const validatePhilippineMobile: FieldValidator<string> = (mobile, fieldNa
 /**
  * PhilSys number validator
  */
-export const validatePhilSysNumber: FieldValidator<string> = (philsys, fieldName, formData) => {
+export const validatePhilSysNumber: FieldValidator<string> = (philsys, _fieldName, _formData) => {
   if (!philsys) {
     return null; // Allow empty for optional fields
   }
@@ -75,12 +79,12 @@ export const validatePhilSysNumber: FieldValidator<string> = (philsys, fieldName
 /**
  * Name validator (letters, spaces, hyphens, apostrophes, periods)
  */
-export const validateName: FieldValidator<string> = (name, fieldName, formData) => {
+export const validateName: FieldValidator<string> = (name, _fieldName, _formData) => {
   if (!name) {
     return null; // Allow empty for optional fields
   }
 
-  const namePattern = /^[a-zA-Z\s\-'\.]*$/;
+  const namePattern = /^[a-zA-Z\s\-'.]*$/;
   const isValid = namePattern.test(name) && name.trim().length > 0;
 
   if (!isValid) {
@@ -97,7 +101,7 @@ export const validateName: FieldValidator<string> = (name, fieldName, formData) 
 /**
  * Age validator
  */
-export const validateAge: FieldValidator<number> = (age, fieldName, formData) => {
+export const validateAge: FieldValidator<number> = (age, _fieldName, _formData) => {
   if (age === null || age === undefined) {
     return null; // Allow empty for optional fields
   }
@@ -125,7 +129,7 @@ export function validateLength(
   maxLength?: number,
   customMessage?: string
 ): FieldValidator<string> {
-  return (value, fieldName, formData) => {
+  return (value, _fieldName, _formData) => {
     if (!value) {
       return null; // Allow empty for optional fields
     }
@@ -148,7 +152,7 @@ export function validateLength(
  * Pattern validator factory
  */
 export function validatePattern(pattern: RegExp, errorMessage: string): FieldValidator<string> {
-  return (value, fieldName, formData) => {
+  return (value, _fieldName, _formData) => {
     if (!value) {
       return null; // Allow empty for optional fields
     }
@@ -166,7 +170,7 @@ export function validateRange(
   max?: number,
   customMessage?: string
 ): FieldValidator<number> {
-  return (value, fieldName, formData) => {
+  return (value, _fieldName, _formData) => {
     if (value === null || value === undefined) {
       return null; // Allow empty for optional fields
     }
@@ -190,7 +194,7 @@ export function validateRange(
 /**
  * Date validator
  */
-export const validateDate: FieldValidator<string | Date> = (date, fieldName, formData) => {
+export const validateDate: FieldValidator<string | Date> = (date, _fieldName, _formData) => {
   if (!date) {
     return null; // Allow empty for optional fields
   }
@@ -212,7 +216,7 @@ export const validateDate: FieldValidator<string | Date> = (date, fieldName, for
 /**
  * URL validator
  */
-export const validateUrl: FieldValidator<string> = (url, fieldName, formData) => {
+export const validateUrl: FieldValidator<string> = (url, _fieldName, _formData) => {
   if (!url) {
     return null; // Allow empty for optional fields
   }
@@ -244,10 +248,10 @@ export function composeValidators<T>(...validators: FieldValidator<T>[]): FieldV
  * Conditional validator
  */
 export function conditionalValidator<T>(
-  condition: (value: T, fieldName?: string, formData?: Record<string, any>) => boolean,
+  condition: (value: T, fieldName: string, formData: Record<string, unknown>) => boolean,
   validator: FieldValidator<T>
 ): FieldValidator<T> {
-  return (value, fieldName, formData) => {
+  return (value: T, fieldName: string, formData: Record<string, unknown>) => {
     if (!condition(value, fieldName, formData)) {
       return null; // Skip validation if condition not met
     }
@@ -259,10 +263,10 @@ export function conditionalValidator<T>(
  * Async validator wrapper
  */
 export function createAsyncValidator<T>(
-  asyncFn: (value: T, fieldName?: string, formData?: Record<string, any>) => Promise<boolean>,
+  asyncFn: (value: T, fieldName: string, formData: Record<string, unknown>) => Promise<boolean>,
   errorMessage: string
 ): FieldValidator<T> {
-  return async (value, fieldName, formData) => {
+  return async (value: T, fieldName: string, formData: Record<string, unknown>) => {
     if (!value) {
       return null; // Allow empty for optional fields
     }
@@ -271,7 +275,190 @@ export function createAsyncValidator<T>(
       const isValid = await asyncFn(value, fieldName, formData);
       return isValid ? null : errorMessage;
     } catch (error) {
+      // Log error for debugging while providing user-friendly message
+      console.error('Async validation error:', error);
       return 'Validation failed';
     }
   };
 }
+
+// ===== Form Section Management (from fieldLevelSchemas.ts) =====
+
+// Zod-based validators for schema validation
+export const phoneNumberValidator = z.string().refine(isValidMobileNumber, {
+  message: 'Please enter a valid Philippine mobile number (09XXXXXXXXX or +639XXXXXXXXX)',
+});
+
+export const philsysCardValidator = z.string().refine(isValidPhilSysCardNumber, {
+  message: 'PhilSys card number must be 12 digits',
+});
+
+export const birthdateValidator = z.string().refine(isValidBirthdate, {
+  message: 'Please enter a valid birthdate',
+});
+
+export const emailValidator = z.string().regex(
+  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+  'Please enter a valid email address'
+);
+
+// Name validators
+export const nameValidator = z
+  .string()
+  .min(1, 'This field is required')
+  .max(100, 'Name cannot exceed 100 characters')
+  .regex(
+    /^[a-zA-Z\s\-'.]*$/,
+    'Name can only contain letters, spaces, hyphens, apostrophes, and periods'
+  );
+
+export const requiredNameValidator = nameValidator.min(1, 'This field is required');
+
+// Numeric validators
+export const positiveNumberValidator = z
+  .number()
+  .positive('Must be a positive number')
+  .max(999999, 'Value is too large');
+
+export const heightValidator = z
+  .number()
+  .min(50, 'Height must be at least 50 cm')
+  .max(300, 'Height cannot exceed 300 cm');
+
+export const weightValidator = z
+  .number()
+  .min(1, 'Weight must be at least 1 kg')
+  .max(500, 'Weight cannot exceed 500 kg');
+
+export const ageValidator = z
+  .number()
+  .min(0, 'Age cannot be negative')
+  .max(150, 'Age cannot exceed 150 years');
+
+// Selection validators
+export const sexValidator = z.enum(['male', 'female'], {
+  message: 'Please select a valid sex',
+});
+
+export const requiredSelectValidator = z.string().min(1, 'Please make a selection');
+
+// Field validation mapping for better maintainability
+const FIELD_VALIDATORS: Record<string, { validator: z.ZodSchema; optional?: boolean; transform?: (value: unknown) => unknown }> = {
+  firstName: { validator: requiredNameValidator },
+  lastName: { validator: requiredNameValidator },
+  middleName: { validator: nameValidator, optional: true },
+  extensionName: { validator: nameValidator, optional: true },
+  sex: { validator: sexValidator },
+  birthdate: { validator: birthdateValidator },
+  email: { validator: emailValidator, optional: true },
+  mobileNumber: { validator: phoneNumberValidator, optional: true },
+  philsysCardNumber: { validator: philsysCardValidator, optional: true },
+  height: { validator: heightValidator, optional: true, transform: Number },
+  weight: { validator: weightValidator, optional: true, transform: Number },
+  civilStatus: { validator: requiredSelectValidator },
+  citizenship: { validator: requiredSelectValidator },
+  educationAttainment: { validator: requiredSelectValidator },
+  employmentStatus: { validator: requiredSelectValidator },
+};
+
+// Field-specific validation functions
+export const validateFieldByName = (
+  fieldName: string,
+  value: unknown
+): { isValid: boolean; error?: string } => {
+  try {
+    const fieldConfig = FIELD_VALIDATORS[fieldName];
+    
+    if (fieldConfig) {
+      // Skip validation for optional empty fields
+      if (fieldConfig.optional && (!value || value === '')) {
+        return { isValid: true };
+      }
+      
+      // Transform value if needed
+      const finalValue = fieldConfig.transform ? fieldConfig.transform(value) : value;
+      
+      // Validate with the configured validator
+      fieldConfig.validator.parse(finalValue);
+    } else if (value === null || value === undefined || value === '') {
+      // Default validation for unknown fields
+      return { isValid: false, error: 'This field is required' };
+    }
+
+    return { isValid: true };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { isValid: false, error: error.issues[0]?.message || 'Invalid value' };
+    }
+    return { isValid: false, error: 'Validation error' };
+  }
+};
+
+// Batch validation for multiple fields
+export const validateFields = (
+  data: Record<string, unknown>,
+  fieldNames: string[]
+): Record<string, string> => {
+  const errors: Record<string, string> = {};
+
+  fieldNames.forEach(fieldName => {
+    const value = data[fieldName];
+    const result = validateFieldByName(fieldName, value);
+
+    if (!result.isValid && result.error) {
+      errors[fieldName] = result.error;
+    }
+  });
+
+  return errors;
+};
+
+// Required fields by form section
+export const REQUIRED_FIELDS = {
+  basicInformation: ['firstName', 'lastName', 'sex', 'civilStatus'],
+  birthInformation: ['birthdate'],
+  contactInformation: ['mobileNumber'],
+  physicalDetails: [],
+  sectoralInformation: [],
+  migrationInformation: [],
+} as const;
+
+// Get required fields for a section
+export const getRequiredFieldsForSection = (section: keyof typeof REQUIRED_FIELDS): string[] => {
+  return [...(REQUIRED_FIELDS[section] || [])];
+};
+
+// Validate a complete form section
+export const validateFormSection = (
+  data: Record<string, unknown>,
+  section: keyof typeof REQUIRED_FIELDS
+): { isValid: boolean; errors: Record<string, string> } => {
+  const requiredFields = getRequiredFieldsForSection(section);
+  const errors = validateFields(data, requiredFields);
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+};
+
+// Real-time validation with debouncing
+export const createDebouncedValidator = (
+  fieldName: string,
+  onValidation: (isValid: boolean, error?: string) => void,
+  delay = 500
+) => {
+  let timeoutId: NodeJS.Timeout;
+
+  return (value: unknown) => {
+    clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
+      const result = validateFieldByName(fieldName, value);
+      onValidation(result.isValid, result.error);
+    }, delay);
+  };
+};
+
+// Backward compatibility export
+export const validateField = validateFieldByName;

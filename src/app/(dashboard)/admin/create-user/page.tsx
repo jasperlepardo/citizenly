@@ -6,8 +6,8 @@ import React, { useState, useEffect } from 'react';
 import { InputField, SelectField } from '@/components';
 import { useGenericFormSubmission } from '@/hooks/utilities';
 import { supabase } from '@/lib/data/supabase';
-import { logger, logError } from '@/lib/logging';
-import { createFieldChangeHandler } from '@/utils/shared/formUtils';
+import { clientLogger, logError } from '@/lib/logging/client-logger';
+// Note: createFieldChangeHandler removed - using inline form handling
 
 export const dynamic = 'force-dynamic';
 
@@ -157,12 +157,16 @@ function CreateUserContent() {
   };
 
   // Use consolidated form handler - eliminates 7 lines of duplicate code
-  const handleChange = createFieldChangeHandler<CreateUserFormData>(setFormData, setErrors);
+  // Inline form change handler
+  const handleChange = (field: keyof CreateUserFormData, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field as string]: '' }));
+  };
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<CreateUserFormData>({
-    onSubmit: async data => {
-      logger.info('Starting user account creation process');
+    onSubmit: async (data: CreateUserFormData) => {
+      clientLogger.info('Starting user account creation process', { component: 'CreateUserPage', action: 'user_creation_start' });
 
       // Use API endpoint instead of direct inserts
       const {
@@ -199,7 +203,7 @@ function CreateUserContent() {
       }
 
       const { user: createdUser } = await response.json();
-      logger.info('User created successfully via API', { userId: createdUser.id });
+      clientLogger.info('User created successfully via API', { component: 'CreateUserPage', action: 'user_created', data: { userId: createdUser.id } });
 
       // Success!
       setCreatedUser({
@@ -208,7 +212,7 @@ function CreateUserContent() {
         role: roles.find(r => r.id === data.role_id)?.name || 'resident',
       });
     },
-    validate: data => {
+    validate: (data: CreateUserFormData) => {
       const newErrors: Record<string, string> = {};
 
       // Email validation
@@ -265,7 +269,7 @@ function CreateUserContent() {
     onSuccess: () => {
       setSuccess(true);
     },
-    onError: error => {
+    onError: (error: Error) => {
       setErrors({ general: error.message });
     },
   });

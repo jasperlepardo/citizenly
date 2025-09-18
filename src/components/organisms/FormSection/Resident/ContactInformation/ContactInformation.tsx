@@ -25,6 +25,14 @@ export interface ContactInformationFormProps {
   onHouseholdSearch?: (query: string) => Promise<any>;
   householdOptions?: any[];
   householdLoading?: boolean;
+  // Individual field loading states
+  loadingStates?: {
+    email?: boolean;
+    telephone_number?: boolean;
+    mobile_number?: boolean;
+    household_code?: boolean;
+    household_name?: boolean;
+  };
 }
 
 export function ContactInformationForm({
@@ -35,7 +43,8 @@ export function ContactInformationForm({
   onHouseholdSearch,
   householdOptions = [],
   householdLoading = false,
-}: ContactInformationFormProps) {
+  loadingStates = {},
+}: Readonly<ContactInformationFormProps>) {
   // Map form data to ContactDetails component props
   const contactDetailsValue: ContactDetailsFormData = {
     email: formData.email ?? '',
@@ -92,6 +101,11 @@ export function ContactInformationForm({
             onChange={handleContactDetailsChange}
             errors={errors}
             mode={mode}
+            loadingStates={{
+              email: loadingStates?.email,
+              telephone_number: loadingStates?.telephone_number,
+              mobile_number: loadingStates?.mobile_number,
+            }}
           />
 
           {/* Household Information */}
@@ -103,6 +117,10 @@ export function ContactInformationForm({
             householdOptions={householdOptions}
             householdLoading={householdLoading}
             mode={mode}
+            loadingStates={{
+              household_code: loadingStates?.household_code,
+              household_name: loadingStates?.household_name,
+            }}
           />
         </div>
       </div>

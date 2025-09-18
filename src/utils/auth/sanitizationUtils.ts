@@ -7,31 +7,9 @@
 
 import DOMPurify from 'isomorphic-dompurify';
 
-import type { SanitizationType, SanitizationOptions } from '@/types/shared/utilities/utilities';
+import type { SanitizationOptions } from '@/types/shared/utilities/utilities';
 
-/**
- * Default field type mapping for intelligent sanitization
- * Aligned with database schema constraints
- */
-const DEFAULT_FIELD_TYPE_MAPPING: Readonly<Record<string, SanitizationType>> = {
-  first_name: 'name',
-  middle_name: 'name',
-  last_name: 'name',
-  extension_name: 'name',
-  mother_maiden_first: 'name',
-  mother_maiden_middle: 'name',
-  mother_maiden_last: 'name',
-  email: 'email',
-  mobile_number: 'mobile',
-  telephone_number: 'text',
-  philsys_card_number: 'philsys',
-  region_code: 'psgc',
-  province_code: 'psgc',
-  city_municipality_code: 'psgc',
-  barangay_code: 'psgc',
-  height: 'numeric',
-  weight: 'numeric',
-} as const;
+// Note: DEFAULT_FIELD_TYPE_MAPPING removed - unused
 
 /**
  * Sanitize general input to prevent XSS and injection attacks
@@ -92,36 +70,7 @@ export function sanitizeInput(input: string | null, options: SanitizationOptions
   }).trim();
 }
 
-/**
- * Sanitize HTML content while allowing safe tags
- */
-export function sanitizeHtml(html: string): string {
-  if (!html || typeof html !== 'string') {
-    return '';
-  }
-
-  // Remove dangerous patterns that could bypass DOMPurify
-  const dangerousPatterns = [
-    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-    /javascript:/gi,
-    /vbscript:/gi,
-    /on\w+\s*=/gi,
-    /data:/gi,
-    /expression\s*\(/gi,
-    /<iframe\b[^>]*>/gi,
-    /<object\b[^>]*>/gi,
-    /<embed\b[^>]*>/gi,
-    /<link\b[^>]*>/gi,
-    /<meta\b[^>]*>/gi,
-  ];
-
-  let sanitized = html;
-  dangerousPatterns.forEach(pattern => {
-    sanitized = sanitized.replace(pattern, '');
-  });
-
-  return sanitized.trim();
-}
+// Note: sanitizeHtml removed - unused
 
 /**
  * Sanitize name input for Philippine names
@@ -151,27 +100,7 @@ export function validateNameInput(name: string): boolean {
   return nameRegex.test(name) && name.trim().length > 0;
 }
 
-/**
- * Sanitize PhilSys card number format
- * CORRECT FORMAT: 12 digits formatted as XXXX-XXXX-XXXX
- * Database constraint: VARCHAR(20)
- */
-export function sanitizePhilSysNumber(input: string | null): string {
-  if (!input || typeof input !== 'string') {
-    return '';
-  }
-
-  // Remove all non-digits and format properly
-  const digitsOnly = input.replace(/\D/g, '');
-
-  // Validate length (PhilSys is 12 digits, not 16!)
-  if (digitsOnly.length !== 12) {
-    return '';
-  }
-
-  // Format as XXXX-XXXX-XXXX (14 characters with dashes)
-  return `${digitsOnly.substring(0, 4)}-${digitsOnly.substring(4, 8)}-${digitsOnly.substring(8, 12)}`;
-}
+// Note: sanitizePhilSysNumber removed - unused
 
 /**
  * Validate PhilSys card number format
@@ -182,45 +111,9 @@ export function validatePhilSysFormat(philsysNumber: string): boolean {
   return philsysRegex.test(philsysNumber);
 }
 
-/**
- * Sanitize mobile number for Philippine format
- */
-export function sanitizePhone(input: string | null): string {
-  if (!input || typeof input !== 'string') {
-    return '';
-  }
+// Note: sanitizePhone removed - unused
 
-  return sanitizeInput(input, {
-    allowedChars: /[0-9+\-\s()]/,
-    maxLength: 20,
-    normalizeUnicode: false,
-    removeHtml: true,
-  });
-}
-
-/**
- * Sanitize mobile number for Philippine format with proper formatting
- */
-export function sanitizeMobileNumber(input: string | null): string {
-  if (!input) return '';
-
-  // Remove all non-digits
-  const digitsOnly = input.replace(/\D/g, '');
-
-  // Handle different Philippine mobile number formats
-  if (digitsOnly.startsWith('63')) {
-    // +63 format
-    return `+${digitsOnly}`;
-  } else if (digitsOnly.startsWith('0')) {
-    // 0xxx format - convert to +63
-    return `+63${digitsOnly.substring(1)}`;
-  } else if (digitsOnly.length === 10) {
-    // xxx format - add +63
-    return `+63${digitsOnly}`;
-  }
-
-  return input.trim();
-}
+// Note: sanitizeMobileNumber removed - unused
 
 /**
  * Validate Philippine mobile number format
@@ -234,38 +127,11 @@ export function validatePhilippineMobile(mobile: string): boolean {
 /**
  * Sanitize email address
  */
-export function sanitizeEmail(email: string | null): string {
-  if (!email || typeof email !== 'string') {
-    return '';
-  }
+// Note: sanitizeEmail removed - unused
 
-  return sanitizeInput(email.toLowerCase(), {
-    allowedChars: /[a-zA-Z0-9@._-]/,
-    maxLength: 254, // RFC 5321 limit
-    normalizeUnicode: false,
-    removeHtml: true,
-  });
-}
+// Note: validateEmailFormat removed - unused
 
-/**
- * Validate email format
- */
-export function validateEmailFormat(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email) && email.length <= 254;
-}
-
-/**
- * Sanitize PSGC codes (barangay codes)
- * Barangay codes are typically 9-10 digit numbers
- */
-export function sanitizeBarangayCode(input: string | null): string {
-  if (!input) return '';
-
-  // Barangay codes are typically 9-10 digit numbers
-  const digitsOnly = input.replace(/\D/g, '');
-  return digitsOnly.substring(0, 10);
-}
+// Note: sanitizeBarangayCode removed - unused
 
 /**
  * Validate PSGC (Philippine Standard Geographic Code)
@@ -275,156 +141,13 @@ export function validatePSGC(code: string): boolean {
   return psgcRegex.test(code);
 }
 
-/**
- * Sanitize search query
- */
-export function sanitizeSearchQuery(query: string): string {
-  if (!query || typeof query !== 'string') {
-    return '';
-  }
+// Note: sanitizeSearchQuery removed - unused
 
-  return sanitizeInput(query, {
-    allowedChars: /[a-zA-Z0-9À-ÿ\s\-'.]/,
-    maxLength: 100,
-    normalizeUnicode: true,
-    trim: true,
-  });
-}
+// Note: sanitizeByType removed - unused
 
-/**
- * Generic sanitization function with configurable type-specific processing
- * CONSOLIDATED from multiple implementations
- */
-export function sanitizeByType(
-  input: string | null,
-  type: SanitizationType,
-  options: SanitizationOptions = {}
-): string {
-  // Handle null/empty inputs - early exit for performance
-  if (!input) {
-    return '';
-  }
+// Note: sanitizeObjectByFieldTypes removed - unused
 
-  // No sanitization - pass through for maximum performance
-  if (type === 'none') {
-    return input;
-  }
-
-  // Early length check to avoid unnecessary processing
-  if (options.maxLength && input.length > options.maxLength * 2) {
-    input = input.substring(0, options.maxLength * 2);
-  }
-
-  let result: string;
-
-  // Apply type-specific sanitization
-  switch (type) {
-    case 'text':
-      result = sanitizeInput(input, options);
-      break;
-
-    case 'name':
-      result = sanitizeName(input);
-      break;
-
-    case 'email':
-      result = sanitizeEmail(input);
-      break;
-
-    case 'mobile':
-      result = sanitizeMobileNumber(input);
-      break;
-
-    case 'philsys':
-      result = sanitizePhilSysNumber(input);
-      break;
-
-    case 'psgc':
-      result = sanitizeBarangayCode(input);
-      break;
-
-    case 'numeric':
-      result = input.replace(/[^\d]/g, '');
-      break;
-
-    default:
-      result = sanitizeInput(input, options);
-  }
-
-  // Apply additional options
-  if (options.maxLength && result.length > options.maxLength) {
-    result = result.substring(0, options.maxLength);
-  }
-
-  if (options.customPattern && !options.customPattern.test(result)) {
-    result = options.replacement || '';
-  }
-
-  return result;
-}
-
-/**
- * Enhanced sanitization function for objects with field-specific rules
- */
-export function sanitizeObjectByFieldTypes(
-  data: Record<string, any>,
-  fieldTypeMap?: Record<string, SanitizationType>
-): Record<string, any> {
-  // Early exit for empty objects
-  if (!data || Object.keys(data).length === 0) {
-    return {};
-  }
-
-  const sanitized: Record<string, any> = {};
-
-  // Use cached field types for performance
-  const fieldTypes = fieldTypeMap
-    ? { ...DEFAULT_FIELD_TYPE_MAPPING, ...fieldTypeMap }
-    : DEFAULT_FIELD_TYPE_MAPPING;
-
-  // Optimized iteration using for...in for better performance
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const value = data[key];
-      if (typeof value === 'string' && value.length > 0) {
-        const sanitizationType = fieldTypes[key] || 'text';
-        sanitized[key] = sanitizeByType(value, sanitizationType);
-      } else {
-        sanitized[key] = value;
-      }
-    }
-  }
-
-  return sanitized;
-}
-
-/**
- * Deep sanitize object (recursively sanitize all string values)
- */
-export function sanitizeObject<T extends Record<string, any>>(
-  obj: T,
-  options: SanitizationOptions = {}
-): T {
-  if (!obj || typeof obj !== 'object') {
-    return obj;
-  }
-
-  const sanitized = { ...obj };
-
-  for (const [key, value] of Object.entries(sanitized)) {
-    if (typeof value === 'string') {
-      (sanitized as any)[key] = sanitizeInput(value, options);
-    } else if (Array.isArray(value)) {
-      (sanitized as any)[key] = value.map(item =>
-        typeof item === 'string' ? sanitizeInput(item, options) : item
-      );
-    } else if (value && typeof value === 'object') {
-      (sanitized as any)[key] = sanitizeObject(value, options);
-    }
-  }
-
-  return sanitized;
-}
+// Note: sanitizeObject removed - unused
 
 /**
  * Rate limiting utility for form submissions
@@ -449,4 +172,45 @@ export function checkRateLimit(identifier: string, maxAttempts = 5, windowMs = 3
   submissionAttempts.set(identifier, attempts);
 
   return true;
+}
+
+/**
+ * Clear rate limit for a specific identifier (development/admin use)
+ */
+export function clearRateLimit(identifier: string): void {
+  submissionAttempts.delete(identifier);
+}
+
+/**
+ * Get current rate limit status for debugging
+ */
+export function getRateLimitStatus(identifier: string): {
+  hasAttempts: boolean;
+  count?: number;
+  lastAttempt?: Date;
+  remainingTime?: number;
+} {
+  const attempts = submissionAttempts.get(identifier);
+
+  if (!attempts) {
+    return { hasAttempts: false };
+  }
+
+  const now = Date.now();
+  const remainingTime = Math.max(0, 300000 - (now - attempts.lastAttempt));
+
+  return {
+    hasAttempts: true,
+    count: attempts.count,
+    lastAttempt: new Date(attempts.lastAttempt),
+    remainingTime,
+  };
+}
+
+/**
+ * Sanitize name input for Philippine names (supports Filipino naming patterns)
+ * Alias for sanitizeName to maintain compatibility
+ */
+export function sanitizeNameInput(input: string | null): string {
+  return sanitizeName(input || '');
 }

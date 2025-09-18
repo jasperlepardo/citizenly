@@ -13,7 +13,7 @@ import {
 } from '@/components';
 import { useAuth } from '@/contexts';
 import { useDashboard } from '@/hooks/dashboard/useDashboard';
-import { logger } from '@/lib/logging';
+import { clientLogger } from '@/lib/logging/client-logger';
 
 function DashboardContent() {
   const { userProfile, profileLoading } = useAuth();
@@ -181,7 +181,7 @@ function DashboardContent() {
         <PopulationPyramid
           data={populationData || []}
           onAgeGroupClick={ageGroup => {
-            logger.info('Age group selected', { ageGroup: ageGroup.ageRange });
+            clientLogger.info('Age group selected', { component: 'DashboardPage', action: 'age_group_selected', data: { ageGroup: ageGroup.ageRange } });
           }}
         />
       </div>

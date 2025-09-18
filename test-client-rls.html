@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client RLS Test</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Client RLS Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const { createClient } = supabase;
+        
+        const supabaseUrl = 'https://cdtcbelaimyftpxmzkjf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNkdGNiZWxhaW15ZnRweG16a2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4ODg1OTIsImV4cCI6MjA3MDQ2NDU5Mn0.VGhrjkrEECW9m8U_aeQOZd9jT6hLFOF8ML3tWJNuOOE';
+        
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+        
+        async function testRLS() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing RLS with authenticated user...</p>';
+            
+            try {
+                // Get current user session
+                const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+                
+                if (userError || !user) {
+                    results.innerHTML += '<p>❌ No authenticated user found. Please login first.</p>';
+                    return;
+                }
+                
+                results.innerHTML += `<p>✅ User authenticated: ${user.id}</p>`;
+                
+                // Test RLS functions
+                console.log('Testing RLS functions...');
+                
+                const { data: accessLevel, error: accessError } = await supabaseClient.rpc('user_access_level');
+                const { data: barangayCode, error: barangayError } = await supabaseClient.rpc('user_barangay_code');
+                
+                results.innerHTML += `<p>🔧 user_access_level(): ${JSON.stringify(accessLevel)} ${accessError ? 'Error: ' + accessError.message : ''}</p>`;
+                results.innerHTML += `<p>🔧 user_barangay_code(): ${barangayCode} ${barangayError ? 'Error: ' + barangayError.message : ''}</p>`;
+                
+                // Test household queries
+                console.log('Testing household queries...');
+                
+                // Test 1: Any households
+                const { data: anyHouseholds, error: anyError } = await supabaseClient
+                    .from('households')
+                    .select('code, barangay_code')
+                    .limit(3);
+                    
+                results.innerHTML += `<p>🏠 Any households: ${anyHouseholds?.length || 0} found ${anyError ? 'Error: ' + anyError.message : ''}</p>`;
+                if (anyHouseholds && anyHouseholds.length > 0) {
+                    anyHouseholds.forEach(h => {
+                        results.innerHTML += `<p>   - ${h.code} (${h.barangay_code})</p>`;
+                    });
+                }
+                
+                // Test 2: Target household
+                const { data: targetHousehold, error: targetError } = await supabaseClient
+                    .from('households')
+                    .select('code, barangay_code, created_by')
+                    .eq('code', '042114014-0000-0001-0001');
+                    
+                results.innerHTML += `<p>🎯 Target household: ${targetHousehold?.length || 0} found ${targetError ? 'Error: ' + targetError.message : ''}</p>`;
+                if (targetHousehold && targetHousehold.length > 0) {
+                    results.innerHTML += `<p>   - ${targetHousehold[0].code} (${targetHousehold[0].barangay_code}) by ${targetHousehold[0].created_by}</p>`;
+                }
+                
+                // Analysis
+                results.innerHTML += '<br><h3>Analysis:</h3>';
+                const shouldHaveAccess = accessLevel?.level === 'barangay' && barangayCode === '042114014';
+                const actuallyHasAccess = (targetHousehold?.length || 0) > 0;
+                
+                results.innerHTML += `<p>Should have access: ${shouldHaveAccess}</p>`;
+                results.innerHTML += `<p>Actually has access: ${actuallyHasAccess}</p>`;
+                results.innerHTML += `<p>RLS working correctly: ${shouldHaveAccess === actuallyHasAccess ? '✅' : '❌'}</p>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Test failed: ${error.message}</p>`;
+                console.error('RLS Test Error:', error);
+            }
+        }
+        
+        // Run test when page loads
+        testRLS();
+    </script>
+</body>
+</html>

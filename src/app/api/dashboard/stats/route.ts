@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 // REMOVED: @/lib barrel import - replace with specific module;
 import { withResponseCache, CachePresets } from '@/lib/caching/responseCache';
 import { isProduction } from '@/lib/config/environment';
-import { getPooledConnection, releasePooledConnection } from '@/lib/database/connection-pool';
-import { queryOptimizer } from '@/lib/database/query-optimizer';
+import { getPooledConnection, releasePooledConnection } from '@/lib/database/connectionPool';
+import { queryOptimizer } from '@/lib/database/queryOptimizer';
+import { logger } from '@/lib/logging/secure-logger';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -40,7 +41,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     if (isProduction()) {
       if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
         return NextResponse.json(
-          createErrorResponseObject('SERVER_001', 'Service configuration error'),
+          { error: 'SERVER_001', message: 'Service configuration error' },
           { status: 500 }
         );
       }
@@ -53,7 +54,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
 
     if (!checkRateLimit(userAgent, ip)) {
       return NextResponse.json(
-        createErrorResponseObject('RATE_001', 'Rate limit exceeded. Please try again later.'),
+        { error: 'RATE_001', message: 'Rate limit exceeded. Please try again later.' },
         { status: 429 }
       );
     }
@@ -63,7 +64,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
 
     if (!authHeader?.startsWith('Bearer ')) {
       return NextResponse.json(
-        createErrorResponseObject('AUTH_001', 'No authentication token provided'),
+        { error: 'AUTH_001', message: 'No authentication token provided' },
         { status: 401 }
       );
     }
@@ -81,7 +82,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
 
     if (authError || !user) {
       return NextResponse.json(
-        createErrorResponseObject('AUTH_002', 'Invalid or expired authentication token'),
+        { error: 'AUTH_002', message: 'Invalid or expired authentication token' },
         { status: 401 }
       );
     }
@@ -99,14 +100,14 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     if (profileError) {
       logger.error('Profile query error:', profileError);
       return NextResponse.json(
-        createErrorResponseObject('USER_001', 'User profile could not be retrieved'),
+        { error: 'USER_001', message: 'User profile could not be retrieved' },
         { status: 400 }
       );
     }
 
     if (!userProfile?.barangay_code) {
       return NextResponse.json(
-        createErrorResponseObject('USER_002', 'No barangay assignment found for user'),
+        { error: 'USER_002', message: 'No barangay assignment found for user' },
         { status: 400 }
       );
     }
@@ -127,7 +128,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     if (statsError) {
       logger.error('Dashboard stats query error:', statsError);
       return NextResponse.json(
-        createErrorResponseObject('DATA_002', 'Unable to retrieve dashboard statistics'),
+        { error: 'DATA_002', message: 'Unable to retrieve dashboard statistics' },
         { status: 500 }
       );
     }
@@ -196,7 +197,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
     if (residentsError) {
       logger.error('Residents query error:', residentsError);
       return NextResponse.json(
-        createErrorResponseObject('DATA_002', 'Unable to retrieve resident data'),
+        { error: 'DATA_002', message: 'Unable to retrieve resident data' },
         { status: 500 }
       );
     }
@@ -313,7 +314,7 @@ async function dashboardStatsHandler(request: NextRequest): Promise<NextResponse
   } catch (error) {
     logger.error('Dashboard stats API error:', error);
     return NextResponse.json(
-      createErrorResponseObject('SERVER_001', 'An unexpected error occurred'),
+      { error: 'SERVER_001', message: 'An unexpected error occurred' },
       { status: 500 }
     );
   }

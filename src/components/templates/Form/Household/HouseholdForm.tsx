@@ -12,8 +12,9 @@ import {
 import { useAuth } from '@/contexts';
 import { useUserBarangay } from '@/hooks/utilities';
 // REMOVED: @/lib barrel import - replace with specific module;
-import { useCSRFToken } from '@/lib/authentication/csrf';
-import { geographicService } from '@/services/domain/geography/geographic.service';
+import { container } from '@/services/container';
+import { logError } from '@/utils/shared/errorUtils';
+import { supabase } from '@/lib/data/supabase';
 
 // Import our new Form/Household components
 
@@ -50,8 +51,7 @@ export default function HouseholdForm({
 }: HouseholdFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { getToken: getCSRFToken } = useCSRFToken();
-  const { user, userProfile, session } = useAuth();
+  const { user, userProfile } = useAuth();
 
   const [errors, setErrors] = useState<Partial<Record<keyof HouseholdFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,57 +63,6 @@ export default function HouseholdForm({
     'idle'
   );
 
-  // Test function to manually trigger auto-fill with sample data
-  const testAutoFill = () => {
-    console.log('🧪 TEST AUTO-FILL triggered');
-    console.log('🧪 Current form data codes:', {
-      region_code: formData.region_code,
-      province_code: formData.province_code,
-      cityCode: formData.city_municipality_code,
-      barangay_code: formData.barangay_code,
-    });
-    console.log('🧪 Available options:', {
-      regions: regionOptions.length,
-      provinces: provinceOptions.length,
-      cities: cityOptions.length,
-      barangays: barangayOptions.length,
-    });
-    console.log('🧪 Cities loading state:', citiesLoading);
-    console.log('🧪 Should load cities:', shouldLoadCities);
-
-    if (regionOptions.length === 0) {
-      alert(
-        '❌ No regions loaded. Please wait for the page to load completely or check your connection.'
-      );
-      return;
-    }
-
-    // Find region 04 (CALABARZON)
-    const testRegion = regionOptions.find((r: any) => r.value === '04');
-    if (!testRegion) {
-      console.log(
-        '❌ Region 04 not found. Available regions:',
-        regionOptions.map((r: any) => `${r.value}:${r.label}`).slice(0, 5)
-      );
-      alert('❌ Region 04 (CALABARZON) not found in options');
-      return;
-    }
-
-    console.log('✅ Found region 04:', testRegion);
-    console.log('🧪 Setting form data...');
-
-    setFormData(prev => ({
-      ...prev,
-      region_code: '04', // CALABARZON
-      province_code: '0421', // Cavite
-      city_municipality_code: '042114', // Dasmariñas
-      barangay_code: '042114014', // Sample barangay
-    }));
-
-    setAutoFillStatus('success');
-    console.log('✅ Test auto-fill completed');
-    alert('✅ Test auto-fill completed! Check the form fields.');
-  };
 
   const [formData, setFormData] = useState<HouseholdFormData>(() => ({
     // Required fields with defaults
@@ -160,7 +109,10 @@ export default function HouseholdForm({
   const { data: regionOptions = [], isLoading: regionsLoading } = useQuery({
     queryKey: ['addresses', 'regions'],
     queryFn: async () => {
-      return await geographicService.getRegions();
+      const result = await container.getGeographicService().getRegions();
+      return result.success 
+        ? (result.data || []).map(region => ({ value: region.code, label: region.name }))
+        : [];
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -177,7 +129,10 @@ export default function HouseholdForm({
     queryFn: async () => {
       const region_code = formData.region_code || userAddress?.region_code;
       if (!region_code) return [];
-      return await geographicService.getProvincesByRegion(region_code);
+      const result = await container.getGeographicService().getProvinces(region_code);
+      return result.success 
+        ? (result.data || []).map(province => ({ value: province.code, label: province.name }))
+        : [];
     },
     enabled: !!shouldLoadProvinces,
     staleTime: 10 * 60 * 1000,
@@ -195,7 +150,10 @@ export default function HouseholdForm({
     queryFn: async () => {
       const province_code = formData.province_code || userAddress?.province_code;
       if (!province_code) return [];
-      const cityOptions = await geographicService.getCitiesByProvince(province_code);
+      const result = await container.getGeographicService().getCities(province_code);
+      const cityOptions = result.success 
+        ? (result.data || []).map(city => ({ value: city.code, label: city.name }))
+        : [];
       console.log('🏙️ Cities loaded:', cityOptions.length, 'cities for province:', province_code);
       return cityOptions;
     },
@@ -218,7 +176,10 @@ export default function HouseholdForm({
     queryFn: async () => {
       const cityCode = formData.city_municipality_code || userAddress?.city_municipality_code;
       if (!cityCode) return [];
-      return await geographicService.getBarangaysByCity(cityCode);
+      const result = await container.getGeographicService().getBarangays(cityCode);
+      return result.success 
+        ? (result.data || []).map(barangay => ({ value: barangay.code, label: barangay.name }))
+        : [];
     },
     enabled: !!shouldLoadBarangays,
     staleTime: 10 * 60 * 1000,
@@ -275,10 +236,10 @@ export default function HouseholdForm({
           console.log('🌐 Fetching address data from API for barangay:', userProfile.barangay_code);
 
           try {
-            const result = await geographicService.getGeographicHierarchy(
-              userProfile.barangay_code
-            );
-            addressData = result;
+            const result = await container.getGeographicService().buildCompleteAddress({
+              barangayCode: userProfile.barangay_code
+            });
+            addressData = result.success ? result.data : null;
             console.log('✅ Address data retrieved successfully');
           } catch (error) {
             console.error('❌ API fetch failed:', error);
@@ -463,7 +424,7 @@ export default function HouseholdForm({
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     } catch (error) {
-      logError(error as Error, 'VALIDATION_ERROR');
+      logError(error as Error, { operation: 'VALIDATION_ERROR' });
       return false;
     }
   };
@@ -482,7 +443,7 @@ export default function HouseholdForm({
 
     try {
       const action = mode === 'create' ? 'Creating' : 'Updating';
-      logger.info(`${action} household`, {
+      console.log(`${action} household`, {
         name: formData.name,
         barangay_code: formData.barangay_code,
         householdId,
@@ -554,7 +515,7 @@ export default function HouseholdForm({
         household = data;
       }
 
-      logger.info(`Household ${mode === 'create' ? 'created' : 'updated'} successfully`, {
+      console.log(`Household ${mode === 'create' ? 'created' : 'updated'} successfully`, {
         id: household.id,
         code: household.code,
       });
@@ -571,7 +532,7 @@ export default function HouseholdForm({
         onModeChange?.('view');
       }
     } catch (error) {
-      logError(error as Error, `HOUSEHOLD_${mode.toUpperCase()}_ERROR`);
+      logError(error as Error, { operation: `HOUSEHOLD_${mode.toUpperCase()}_ERROR` });
       setErrors({
         code: `Failed to ${mode === 'create' ? 'create' : 'update'} household. Please try again.`,
       });

@@ -6,7 +6,7 @@
  * - Vulnerability assessments
  */
 
-import { calculateAge } from '../../../utils/shared/dateUtils';
+import { calculateAge } from '@/utils/shared/dateUtils';
 
 // ============================================================================
 // SECTORAL CLASSIFICATION
@@ -24,6 +24,7 @@ export const INDIGENOUS_ETHNICITIES = [
   'maguindanao',
   'tausug',
   'sama',
+  'badjao', // Sama-Bajau indigenous sea nomads
   'yakan',
   'ibanag',
   'ivatan',
@@ -72,7 +73,8 @@ export const isSeniorCitizen = (age: number): boolean => {
 };
 
 export const isIndigenousPeople = (ethnicity: string): boolean => {
-  return INDIGENOUS_ETHNICITIES.includes(ethnicity.toLowerCase());
+  const lowerEthnicity = ethnicity.toLowerCase();
+  return INDIGENOUS_ETHNICITIES.includes(lowerEthnicity);
 };
 
 export const isOutOfSchoolChildren = (age: number, educationAttainment?: string): boolean => {
@@ -224,9 +226,9 @@ export interface ResidentClassification {
  * Main classification function combining sectoral and migration analysis
  */
 /**
- * Build sectoral classification for resident
+ * Calculate sectoral information flags based on resident data
  */
-const buildSectoralClassification = (
+const calculateSectoralInformation = (
   context: ResidentClassificationContext,
   age: number
 ): SectoralInformation => {
@@ -242,6 +244,19 @@ const buildSectoralClassification = (
     is_senior_citizen: isSeniorCitizen(age),
     is_indigenous_people: context.ethnicity ? isIndigenousPeople(context.ethnicity) : false,
   };
+};
+
+/**
+ * Calculate sectoral flags based on context (for form components)
+ */
+export const calculateSectoralFlags = (context: SectoralContext): SectoralInformation => {
+  // Use the consolidated calculateAge function for consistency
+  console.log('🔍 calculateSectoralFlags: Input context:', context);
+  const age = context.birthdate ? calculateAge(context.birthdate) : 0;
+  console.log('🔍 calculateSectoralFlags: Calculated age:', age);
+  const result = calculateSectoralInformation(context, age);
+  console.log('🔍 calculateSectoralFlags: Result:', result);
+  return result;
 };
 
 /**
@@ -371,7 +386,7 @@ const buildVulnerabilities = (
 export const classifyResident = (context: ResidentClassificationContext): ResidentClassification => {
   const age = context.birthdate ? calculateAge(context.birthdate) : 0;
   
-  const sectoral = buildSectoralClassification(context, age);
+  const sectoral = calculateSectoralInformation(context, age);
   const migrantStatus = isMigrant(context);
   const migration = buildMigrationClassification(context, migrantStatus);
   const vulnerabilities = buildVulnerabilities(context, age, sectoral, migration);

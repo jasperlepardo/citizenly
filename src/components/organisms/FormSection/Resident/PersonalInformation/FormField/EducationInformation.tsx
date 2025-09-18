@@ -2,7 +2,8 @@ import React from 'react';
 
 import { SelectField, ControlFieldSet } from '@/components';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/resident-enums';
+import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
+import { formatGraduateStatus } from '@/utils/shared/dateUtils';
 import type { FormMode, EducationInformationFormData } from '@/types';
 
 // Graduate status options
@@ -18,6 +19,11 @@ export interface EducationInformationProps {
   /** Form mode - determines if field is editable or read-only */
   mode?: FormMode;
   className?: string;
+  // Loading states
+  loadingStates?: {
+    education_attainment?: boolean;
+    is_graduate?: boolean;
+  };
 }
 
 export function EducationInformation({
@@ -26,6 +32,7 @@ export function EducationInformation({
   errors,
   mode = 'create',
   className = '',
+  loadingStates = {},
 }: EducationInformationProps) {
   const handleChange = (field: keyof EducationInformationFormData, fieldValue: any) => {
     const updatedValue = {
@@ -59,13 +66,15 @@ export function EducationInformation({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-6 sm:grid-cols-2'}>
         <SelectField
           label="Highest Educational Attainment"
           required
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.education_attainment}
           mode={mode}
+          loading={loadingStates.education_attainment}
           selectProps={{
             placeholder: 'Select education level...',
             options: EDUCATION_LEVEL_OPTIONS_WITH_EMPTY,
@@ -79,12 +88,13 @@ export function EducationInformation({
           label="Graduate Status"
           labelSize="sm"
           radioName="is_graduate"
-          radioValue={value.is_graduate}
+          radioValue={mode === 'view' ? formatGraduateStatus(value.is_graduate) : value.is_graduate}
           onRadioChange={(selectedValue: string) => handleChange('is_graduate', selectedValue)}
           errorMessage={errors.is_graduate}
           orientation="horizontal"
           spacing="sm"
           mode={value.education_attainment === 'post_graduate' ? 'view' : mode}
+          loading={loadingStates.is_graduate}
           // helperText={
           //   value.education_attainment === 'post_graduate'
           //     ? "Automatically set to 'Yes' for post-graduate education"

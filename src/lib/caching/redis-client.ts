@@ -5,7 +5,7 @@
  */
 
 import { createLogger, isProduction, isDevelopment } from '@/lib/config/environment';
-import type { CacheEntry, CacheClient, CacheStats } from '@/types/cache';
+import type { CacheEntry, CacheClient, CacheStats } from '@/types/infrastructure/cache/cache';
 
 const logger = createLogger('RedisClient');
 

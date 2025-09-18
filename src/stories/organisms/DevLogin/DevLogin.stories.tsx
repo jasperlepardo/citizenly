@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn, within, expect } from 'storybook/test';
 import DevLogin from '@/components/organisms/DevLogin';
 
-// Mock the dev-config module
+// Mock the devConfig module
 const mockIsDevFeatureEnabled = (enabled: boolean) => enabled;
 const mockGetDevCredentials = () => ({
   email: 'admin@demo.gov.ph',

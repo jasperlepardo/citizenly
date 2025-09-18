@@ -31,7 +31,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     ref
   ) => {
     // Generate unique IDs for the form elements
-    const textareaId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+    const textareaId = id || `textarea-field`;
 
     const currentLength = typeof value === 'string' ? value.length : 0;
     const isNearLimit = maxLength && currentLength > maxLength * 0.8;

@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from 'react';
 
-import { syncQueue } from '@/lib/data';
+import { syncQueue } from '@/lib/data/sync-queue';
 import type { UseConnectionStatusReturn } from '@/types';
 
 /**

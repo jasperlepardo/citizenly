@@ -6,7 +6,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { sanitizeInput, sanitizeNameInput } from '@/utils/auth/inputSanitizer';
+import { sanitizeInput, sanitizeNameInput } from '@/utils/auth/sanitizationUtils';
 import type { URLParameterConfig } from '@/types';
 
 // Interface moved to centralized types - URLParameterConfig is already exported from @/types

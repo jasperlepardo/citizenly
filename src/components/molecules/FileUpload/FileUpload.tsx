@@ -5,9 +5,9 @@ import React, { forwardRef, InputHTMLAttributes, useState, useRef } from 'react'
 import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components';
-import { logger } from '@/lib/logging';
-import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security';
-import { cn } from '@/utils/shared/cssUtils';
+import { clientLogger } from '@/lib/logging/client-logger';
+import { validateUploadedFile, logFileOperation, scanFileForViruses } from '@/lib/security/fileSecurity';
+import { cn } from '@/components/shared/utils';
 import { formatFileSize } from '@/utils/shared/fileUtils';
 
 const fileUploadVariants = cva(
@@ -154,7 +154,7 @@ const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(
 
       // Show errors if any
       if (errors.length > 0) {
-        logger.error('File upload validation errors', { errors, filesAttempted: fileArray.length });
+        clientLogger.error('File upload validation errors', { component: 'FileUpload', action: 'validation_error', data: { errors, filesAttempted: fileArray.length } });
         // You might want to show these errors in the UI
         toast.error(`File validation errors: ${errors.join(', ')}`);
       }

@@ -26,9 +26,9 @@ src/lib/
 │   ├── transformers.ts
 │   └── index.ts
 ├── constants/               # Application constants and enums
-│   ├── resident-enums.ts
-│   ├── form-options.ts
-│   └── generated-enums.ts
+│   ├── residentEnums.ts
+│   ├── formOptions.ts
+│   └── generatedEnums.ts
 ├── error-handling/          # Centralized error management
 │   ├── error-types.ts
 │   ├── error-utils.ts
@@ -68,7 +68,7 @@ src/lib/
 │   └── generated-schemas.ts
 └── __tests__/               # Test files
     ├── api-responses.test.ts
-    ├── rate-limit.test.ts
+    ├── rateLimit.test.ts
     └── utils.test.ts
 ```
 
@@ -118,8 +118,8 @@ Application-wide constants, enums, and configuration values.
 
 **Key Files:**
 
-- `resident-enums.ts` - Resident-related enumerations
-- `form-options.ts` - Form option definitions
+- `residentEnums.ts` - Resident-related enumerations
+- `formOptions.ts` - Form option definitions
 
 **Usage:**
 

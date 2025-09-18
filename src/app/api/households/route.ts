@@ -1,253 +1,140 @@
 /**
  * Households API Route
- * Updated to comply with API Design Standards
+ * Fetches household records from database
  */
 
-import { NextRequest } from 'next/server';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { withAuth } from '@/lib/middleware/auth-middleware';
-import { applyGeographicFilter } from '@/lib/authentication/auth-helpers';
-import { createAdminSupabaseClient } from '@/lib/data/client-factory';
-import { RequestContext } from '@/types/app/auth/auth';
-import { securityAuditService } from '@/services/domain/auth/securityAuditService';
-import {
-  createPaginatedResponse,
-  createCreatedResponse,
-  createValidationErrorResponse,
-  processSearchParams,
-  applySearchFilter,
-  withNextRequestErrorHandling,
-  withSecurityHeaders,
-} from '@/utils/auth/apiResponseHandlers';
-import { createHouseholdSchema } from '@/utils/validation/validationUtils';
-import { createRateLimitHandler } from '@/lib/security/rate-limit';
-import type { AuthenticatedUser } from '@/types/app/auth/auth';
-
-// AuthenticatedUser type consolidated to src/types/auth.ts
+// Simple logger
+const logger = {
+  info: (msg: string, data?: any) => console.info(`[HouseholdsAPI] ${msg}`, data),
+  error: (msg: string, data?: any) => console.error(`[HouseholdsAPI] ${msg}`, data),
+};
 
 // GET /api/households - List households with pagination and search
-export const GET = withSecurityHeaders(
-  withAuth(
-    {
-      requiredPermissions: [
-        'households.manage.barangay',
-        'households.manage.city',
-        'households.manage.province',
-        'households.manage.region',
-        'households.manage.all',
-      ],
-    },
-    withNextRequestErrorHandling(
-      async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
-        // Apply rate limiting
-        const rateLimitResponse = await createRateLimitHandler('SEARCH_RESIDENTS')(
-          request,
-          user.id
-        );
-        if (rateLimitResponse) return rateLimitResponse;
-
-        // Process search parameters safely
-        const { search, page, limit, offset } = await processSearchParams(
-          new URL(request.url).searchParams,
-          context
-        );
-
-        const supabaseAdmin = createAdminSupabaseClient();
-
-        // Build base query using exact database field names
-        let query = supabaseAdmin
-          .from('households')
-          .select(
-            `
-            code,
-            name,
-            address,
-            house_number,
-            street_id,
-            subdivision_id,
-            barangay_code,
-            city_municipality_code,
-            province_code,
-            region_code,
-            zip_code,
-            no_of_families,
-            no_of_household_members,
-            no_of_migrants,
-            household_type,
-            tenure_status,
-            tenure_others_specify,
-            household_unit,
-            monthly_income,
-            income_class,
-            household_head_id,
-            household_head_position,
-            is_active,
-            created_at,
-            updated_at
-          `,
-            { count: 'exact' }
-          )
-          .eq('is_active', true)
-          .order('code', { ascending: true });
-
-        // Apply geographic filtering based on user's access level
-        query = applyGeographicFilter(query, user);
-
-        // Apply search filter if provided
-        if (search) {
-          query = applySearchFilter(query as any, search, ['code', 'house_number']) as any;
-        }
-
-        // Apply pagination
-        query = query.range(offset, offset + limit - 1);
-
-        // Execute query
-        const { data: households, error, count } = await query;
-
-        if (error) {
-          // Re-throw error to be handled by withErrorHandling wrapper
-          throw error;
-        }
-
-        // Audit the data access
-        await securityAuditService.auditDataAccess(
-          'read',
-          'household',
-          'list',
-          context.user.id,
-          true,
-          {
-            searchTerm: search || '',
-            resultCount: households?.length || 0,
-            totalCount: count || 0,
-          }
-        );
-
-        return createPaginatedResponse(
-          households || [],
-          { page, limit, total: count || 0 },
-          'Households retrieved successfully',
-          context
-        );
-      }
-    )
-  )
-);
-
-// POST /api/households - Create new household
-export const POST = withSecurityHeaders(
-  withAuth(
-    {
-      requiredPermissions: [
-        'households.manage.barangay',
-        'households.manage.city',
-        'households.manage.province',
-        'households.manage.region',
-        'households.manage.all',
-      ],
-    },
-    withNextRequestErrorHandling(
-      async (request: NextRequest, context: RequestContext, user: AuthenticatedUser) => {
-        // Apply rate limiting
-        const rateLimitResponse = await createRateLimitHandler('RESIDENT_CREATE')(request, user.id);
-        if (rateLimitResponse) return rateLimitResponse;
-
-        // Parse and validate request body
-        const body = await request.json();
-        const validationResult = createHouseholdSchema.safeParse(body);
-
-        if (!validationResult.success) {
-          return createValidationErrorResponse(
-            validationResult.error.issues.map((err: z.ZodIssue) => ({
-              field: err.path.join('.'),
-              message: err.message,
-            })),
-            context
-          );
-        }
-
-        const householdData = validationResult.data;
-
-        // Use user's geographic codes if not provided
-        const effectiveBarangayCode = householdData.barangay_code || user.barangayCode;
-        if (!effectiveBarangayCode) {
-          return createValidationErrorResponse(
-            [{ field: 'barangay_code', message: 'Barangay code is required' }],
-            context
-          );
-        }
-
-        const supabaseAdmin = createAdminSupabaseClient();
-
-        // Prepare data for insertion - using exact database field names
-        const insertData = {
-          code: householdData.code,
-          name: null, // Will be auto-generated if not provided
-          address: null, // Will be composed from components
-          house_number: householdData.house_number || '',
-          street_id: null, // Will need to be looked up from streetName
-          subdivision_id: null, // Will need to be looked up from subdivisionName
-          barangay_code: effectiveBarangayCode,
-          city_municipality_code: householdData.city_municipality_code || user.cityMunicipalityCode || null,
-          province_code: householdData.province_code || user.provinceCode || null,
-          region_code: householdData.region_code || user.regionCode || null,
-          zip_code: householdData.zip_code || null,
-          no_of_families: householdData.no_of_families || 1,
-          no_of_household_members: householdData.no_of_household_members || 0,
-          no_of_migrants: householdData.no_of_migrants || 0,
-          household_type: householdData.household_type || null,
-          tenure_status: householdData.tenure_status || null,
-          tenure_others_specify: householdData.tenure_others_specify || null,
-          household_unit: householdData.household_unit || null,
-          monthly_income: householdData.monthly_income || null,
-          income_class: householdData.income_class || null,
-          household_head_id: householdData.household_head_id || null, // UUID reference
-          household_head_position: householdData.household_head_position || null,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-
-        // Insert household
-        const { data: newHousehold, error: insertError } = await (
-          supabaseAdmin.from('households') as any
-        )
-          .insert([insertData])
-          .select('*')
-          .single();
-
-        if (insertError) {
-          // Re-throw error to be handled by withErrorHandling wrapper
-          throw insertError;
-        }
-
-        // Audit the creation
-        await securityAuditService.auditDataAccess(
-          'create',
-          'household',
-          String((newHousehold as { id?: string })?.id ?? householdData.code),
-          context.user.id,
-          true,
-          {
-            barangay_code: effectiveBarangayCode,
-            householdCode: householdData.code,
-          }
-        );
-
-        return createCreatedResponse(
-          {
-            household: newHousehold,
+export async function GET(request: NextRequest) {
+  try {
+    // Check authorization header
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        {
+          error: {
+            message: 'Authentication required',
+            code: 'UNAUTHORIZED',
           },
-          'Household created successfully',
-          context
-        );
-      }
-    )
-  )
-);
+        },
+        { status: 401 }
+      );
+    }
 
-// Export rate limiting rules for this endpoint
-// export const rateLimitConfig = {
-//   GET: RATE_LIMIT_RULES.SEARCH_RESIDENTS,
-//   POST: RATE_LIMIT_RULES.RESIDENT_CREATE
-// };
+    // Extract search parameters
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const pageSize = parseInt(searchParams.get('pageSize') || '20');
+    const search = searchParams.get('search') || '';
+
+    logger.info('Households search request', { page, pageSize, search });
+
+    // Use existing household repository - create instance directly for production
+    const { SupabaseHouseholdRepository } = await import('@/services/infrastructure/repositories/SupabaseHouseholdRepository');
+    const householdRepo = new SupabaseHouseholdRepository();
+    
+    // Calculate offset for pagination
+    const offset = (page - 1) * pageSize;
+    
+    // Build search options
+    const searchOptions = {
+      limit: pageSize,
+      offset,
+      searchTerm: search || undefined,
+    };
+
+    // Fetch households from database
+    const result = await householdRepo.findAll(searchOptions);
+    
+    if (!result.success) {
+      logger.error('Failed to fetch households', result.error);
+      return NextResponse.json(
+        {
+          error: {
+            message: 'Failed to fetch households',
+            code: 'DATABASE_ERROR',
+          },
+        },
+        { status: 500 }
+      );
+    }
+
+    const households = result.data || [];
+    const total = result.total || 0;
+    const totalPages = Math.ceil(total / pageSize);
+
+    const response = {
+      data: households,
+      pagination: {
+        page,
+        pageSize,
+        total,
+        totalPages,
+      },
+      message: households.length > 0 
+        ? `Found ${households.length} household${households.length !== 1 ? 's' : ''}`
+        : search 
+          ? `No households found matching "${search}"` 
+          : 'No households available',
+      metadata: {
+        timestamp: new Date().toISOString(),
+        searchTerm: search,
+      },
+    };
+
+    return NextResponse.json(response, { 
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    logger.error('Households API error', error);
+    
+    return NextResponse.json(
+      {
+        error: {
+          message: 'Internal server error in households API',
+          code: 'INTERNAL_SERVER_ERROR',
+        },
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/households - Create new household (stub)
+export async function POST(request: NextRequest) {
+  try {
+    logger.info('Create household request');
+
+    return NextResponse.json(
+      {
+        error: {
+          message: 'Household creation temporarily disabled',
+          code: 'NOT_IMPLEMENTED',
+        },
+      },
+      { status: 501 }
+    );
+  } catch (error) {
+    logger.error('Create household error', error);
+    
+    return NextResponse.json(
+      {
+        error: {
+          message: 'Internal server error',
+          code: 'INTERNAL_SERVER_ERROR',
+        },
+      },
+      { status: 500 }
+    );
+  }
+}

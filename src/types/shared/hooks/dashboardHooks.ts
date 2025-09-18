@@ -152,7 +152,7 @@ export interface SectoralInfo {
  * Resident data for calculations interface
  * Consolidates from src/hooks/dashboard/useDashboardCalculations.ts
  */
-import type { SexEnum, CivilStatusEnum, EmploymentStatusEnum } from '../../infrastructure/database/database';
+import type { SexEnum, CivilStatusEnum, EmploymentStatusEnum } from '@/types/infrastructure/database/database';
 
 export interface ResidentData {
   birthdate: string;

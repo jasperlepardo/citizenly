@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
+// Simple inline utility (replacing deleted cssUtils)
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
 
 interface ChartTitleProps {
   readonly children: React.ReactNode;

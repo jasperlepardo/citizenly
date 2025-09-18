@@ -3,8 +3,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types';
+import { cn } from '@/components/shared/utils';
+import type { CommandMenuSearchResult } from '@/types/infrastructure/services/services';
 
 const commandMenuItemVariants = cva(
   'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors',
@@ -31,10 +31,10 @@ const commandMenuItemVariants = cva(
 interface CommandMenuItemProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>,
     VariantProps<typeof commandMenuItemVariants> {
-  item: CommandMenuItemType;
+  item: CommandMenuSearchResult;
   isSelected?: boolean;
   showShortcuts?: boolean;
-  onClick?: (item: CommandMenuItemType) => void;
+  onClick?: (item: CommandMenuSearchResult) => void;
 }
 
 const CommandMenuItem = React.forwardRef<HTMLButtonElement, CommandMenuItemProps>(

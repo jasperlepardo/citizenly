@@ -7,7 +7,8 @@ import type { AppError, ErrorLogContext, NetworkError } from '@/types/shared/err
 import { ErrorSeverity, ErrorCode } from '@/types/shared/errors/errors';
 import type { ValidationError } from '@/types/shared/validation/validation';
 
-import { generateId } from './idGenerators';
+// Simple ID generation inline (replacing deleted idGenerators)
+const generateId = (): string => Math.random().toString(36).substring(2, 15);
 
 /**
  * Get current environment

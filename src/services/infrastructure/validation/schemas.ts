@@ -3,25 +3,20 @@
  * Pre-built validation schemas for common data types
  */
 
-import type { LoginFormData, PasswordUpdateRequest } from '../../types/auth';
-import type { HouseholdData } from '../../types/households';
-import type { ResidentFormState } from '../../types/residents';
+import type { LoginFormData, PasswordUpdateRequest } from '@/types/app/auth/auth';
+import type { HouseholdData } from '@/types/domain/households/households';
 import type {
   SimpleValidationResult as ValidationResult,
   ValidationContext,
-} from '../../types/validation';
+  FieldValidator,
+} from '../../../types/shared/validation/validation';
 
 import {
   validateRequired,
   validateEmail,
-  validatePhilippineMobile,
-  validatePhilSysNumber,
   validateName,
-  validateAge,
   validateLength,
   validateRange,
-  validateDate,
-  composeValidators,
 } from './fieldValidators';
 
 /**
@@ -44,12 +39,12 @@ function createValidationResult(
 async function validateField(
   errors: Record<string, string>,
   fieldName: string,
-  value: any,
-  validators: any[],
-  data?: any
+  value: unknown,
+  validators: FieldValidator[],
+  data?: Record<string, unknown>
 ): Promise<void> {
   for (const validator of validators) {
-    const result = await validator(value, fieldName, data);
+    const result = await validator(value, fieldName, data || {});
     if (result !== null) {
       errors[fieldName] = result;
       break;
@@ -57,205 +52,13 @@ async function validateField(
   }
 }
 
-/**
- * Resident data validation schema
- */
-export async function residentSchema(
-  data: Partial<ResidentFormState>,
-  context?: ValidationContext
-): Promise<ValidationResult> {
-  const errors: Record<string, string> = {};
-
-  // Validate required fields
-  await validateField(
-    errors,
-    'first_name',
-    data.first_name,
-    [validateRequired, validateName],
-    data
-  );
-  await validateField(errors, 'last_name', data.last_name, [validateRequired, validateName], data);
-  await validateField(errors, 'birthdate', data.birthdate, [validateRequired, validateDate], data);
-  await validateField(errors, 'sex', data.sex, [validateRequired], data);
-
-  // Validate optional fields
-  if (data.middle_name !== undefined) {
-    await validateField(errors, 'middle_name', data.middle_name, [validateName], data);
-  }
-  if (data.extension_name !== undefined) {
-    await validateField(errors, 'extension_name', data.extension_name, [validateName], data);
-  }
-  if (data.email !== undefined) {
-    await validateField(errors, 'email', data.email, [validateEmail], data);
-  }
-  if (data.mobile_number !== undefined) {
-    await validateField(
-      errors,
-      'mobile_number',
-      data.mobile_number,
-      [validatePhilippineMobile],
-      data
-    );
-  }
-  if (data.telephone_number !== undefined) {
-    await validateField(
-      errors,
-      'telephone_number',
-      data.telephone_number,
-      [validateLength(0, 20)],
-      data
-    );
-  }
-  if (data.civil_status !== undefined) {
-    await validateField(errors, 'civil_status', data.civil_status, [validateLength(0, 50)], data);
-  }
-  if (data.citizenship !== undefined) {
-    await validateField(errors, 'citizenship', data.citizenship, [validateLength(0, 50)], data);
-  }
-  if (data.blood_type !== undefined) {
-    await validateField(errors, 'blood_type', data.blood_type, [validateLength(0, 10)], data);
-  }
-  if (data.ethnicity !== undefined) {
-    await validateField(errors, 'ethnicity', data.ethnicity, [validateLength(0, 50)], data);
-  }
-  if (data.religion !== undefined) {
-    await validateField(errors, 'religion', data.religion, [validateLength(0, 50)], data);
-  }
-  if (data.religion_others_specify !== undefined) {
-    await validateField(
-      errors,
-      'religion_others_specify',
-      data.religion_others_specify,
-      [validateLength(0, 100)],
-      data
-    );
-  }
-  if (data.height !== undefined) {
-    await validateField(errors, 'height', data.height, [validateRange(50, 300)], data);
-  }
-  if (data.weight !== undefined) {
-    await validateField(errors, 'weight', data.weight, [validateRange(10, 500)], data);
-  }
-  if (data.complexion !== undefined) {
-    await validateField(errors, 'complexion', data.complexion, [validateLength(0, 50)], data);
-  }
-  if (data.birth_place_code !== undefined) {
-    await validateField(
-      errors,
-      'birth_place_code',
-      data.birth_place_code,
-      [validateLength(0, 20)],
-      data
-    );
-  }
-  if (data.philsys_card_number !== undefined) {
-    await validateField(
-      errors,
-      'philsys_card_number',
-      data.philsys_card_number,
-      [validatePhilSysNumber],
-      data
-    );
-  }
-  if (data.mother_maiden_first !== undefined) {
-    await validateField(
-      errors,
-      'mother_maiden_first',
-      data.mother_maiden_first,
-      [validateName],
-      data
-    );
-  }
-  if (data.mother_maiden_middle !== undefined) {
-    await validateField(
-      errors,
-      'mother_maiden_middle',
-      data.mother_maiden_middle,
-      [validateName],
-      data
-    );
-  }
-  if (data.mother_maiden_last !== undefined) {
-    await validateField(
-      errors,
-      'mother_maiden_last',
-      data.mother_maiden_last,
-      [validateName],
-      data
-    );
-  }
-  if (data.education_attainment !== undefined) {
-    await validateField(
-      errors,
-      'education_attainment',
-      data.education_attainment,
-      [validateLength(0, 50)],
-      data
-    );
-  }
-  if (data.is_graduate !== undefined) {
-    if (typeof data.is_graduate !== 'boolean') {
-      errors['is_graduate'] = 'Must be true or false';
-    }
-  }
-  if (data.employment_status !== undefined) {
-    await validateField(
-      errors,
-      'employment_status',
-      data.employment_status,
-      [validateLength(0, 50)],
-      data
-    );
-  }
-  if (data.occupation_code !== undefined) {
-    await validateField(
-      errors,
-      'occupation_code',
-      data.occupation_code,
-      [validateLength(0, 20)],
-      data
-    );
-  }
-  if (data.is_voter !== undefined) {
-    if (typeof data.is_voter !== 'boolean') {
-      errors['is_voter'] = 'Must be true or false';
-    }
-  }
-  if (data.is_resident_voter !== undefined) {
-    if (typeof data.is_resident_voter !== 'boolean') {
-      errors['is_resident_voter'] = 'Must be true or false';
-    }
-  }
-  if (data.last_voted_date !== undefined) {
-    await validateField(errors, 'last_voted_date', data.last_voted_date, [validateDate], data);
-  }
-  if (data.household_code !== undefined) {
-    await validateField(
-      errors,
-      'household_code',
-      data.household_code,
-      [validateLength(0, 50)],
-      data
-    );
-  }
-
-  // Cross-field validations
-  if (data.philsys_card_number && !data.birth_place_code) {
-    errors['birth_place_code'] = 'Birth place code is required when PhilSys number is provided';
-  }
-  if (data.is_voter && !data.last_voted_date) {
-    errors['last_voted_date'] = 'Last voted date is required when voter status is true';
-  }
-
-  return createValidationResult(Object.keys(errors).length === 0, errors);
-}
 
 /**
  * Household data validation schema
  */
 export async function householdSchema(
   data: Partial<HouseholdData>,
-  context?: ValidationContext
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -305,8 +108,8 @@ export async function householdSchema(
  * User data validation schema
  */
 export async function userSchema(
-  data: Record<string, any>,
-  context?: ValidationContext
+  data: Record<string, unknown>,
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -340,7 +143,7 @@ export async function userSchema(
  */
 export async function loginSchema(
   data: Partial<LoginFormData>,
-  context?: ValidationContext
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -362,7 +165,7 @@ export async function loginSchema(
  */
 export async function passwordChangeSchema(
   data: Partial<PasswordUpdateRequest>,
-  context?: ValidationContext
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -411,7 +214,7 @@ export async function passwordChangeSchema(
  */
 export async function searchQuerySchema(
   data: { query?: string; filters?: Record<string, unknown>; page?: number; limit?: number },
-  context?: ValidationContext
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -453,7 +256,7 @@ export async function searchQuerySchema(
  */
 export async function fileUploadSchema(
   data: { fileName?: string; fileSize?: number; fileType?: string },
-  context?: ValidationContext
+  _context?: ValidationContext
 ): Promise<ValidationResult> {
   const errors: Record<string, string> = {};
 
@@ -493,15 +296,6 @@ export async function fileUploadSchema(
   return createValidationResult(Object.keys(errors).length === 0, errors);
 }
 
-/**
- * Validate resident data
- */
-export async function validateResidentData(
-  data: Partial<ResidentFormState>,
-  context?: ValidationContext
-): Promise<ValidationResult> {
-  return await residentSchema(data, context);
-}
 
 /**
  * Validate household data
@@ -517,7 +311,7 @@ export async function validateHouseholdData(
  * Validate user data
  */
 export async function validateUserData(
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   context?: ValidationContext
 ): Promise<ValidationResult> {
   return await userSchema(data, context);

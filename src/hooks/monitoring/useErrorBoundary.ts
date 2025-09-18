@@ -9,7 +9,7 @@ import { clientLogger } from '@/lib/logging/client-logger';
 import type { ErrorBoundaryState } from '@/types/shared/errors/errors';
 import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/shared/hooks';
 
-import { captureError, addSentryBreadcrumb } from '../sentry-config';
+import { captureError, addSentryBreadcrumb } from '@/hooks/sentry-config';
 
 // Extended error boundary state for hook usage
 interface HookErrorBoundaryState extends ErrorBoundaryState {

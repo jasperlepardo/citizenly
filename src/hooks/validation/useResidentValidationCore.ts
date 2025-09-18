@@ -11,8 +11,8 @@ import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-import { VALIDATION_DEBOUNCE_MS } from '@/constants/resident-form-defaults';
-import { ResidentFormSchema } from '@/services/validation';
+import { VALIDATION_DEBOUNCE_MS } from '@/constants/residentFormDefaults';
+import { ResidentFormSchema } from '@/services/infrastructure/validation/residentSchema';
 import {
   validateField as validateFieldValue,
   validateFormSection,
@@ -20,13 +20,13 @@ import {
   REQUIRED_FIELDS,
   getRequiredFieldsForSection,
   createDebouncedValidator,
-} from '@/services/validation/fieldLevelSchemas';
+} from '@/services/infrastructure/validation/fieldValidators';
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
 import {
   getFormToSchemaFieldMapping,
   getSchemaToFormFieldMapping,
   mapFormToApi,
-} from '@/services/shared/data/resident-mapper';
+} from '@/services/domain/residents/residentMapper';
 import type {
   ResidentFormData,
   ResidentValidationOptions,

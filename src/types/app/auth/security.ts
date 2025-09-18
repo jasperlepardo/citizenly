@@ -24,7 +24,7 @@ export interface SecurityAuditLog {
   user_id: string;
   resource_type?: string;
   resource_id?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: SecuritySeverity;
   details: Record<string, unknown>;
   ip_address?: string;
   user_agent?: string;
@@ -40,7 +40,7 @@ export interface SecurityAuditLog {
 export interface ThreatDetectionEvent {
   id?: string;
   event_type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: SecuritySeverity;
   source_ip: string;
   user_id?: string;
   details: Record<string, unknown>;
@@ -112,7 +112,7 @@ export interface SecurityContext {
 export interface ThreatPattern {
   name: string;
   description: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: SecuritySeverity;
   detector: (context: SecurityContext, history: SecurityEvent[]) => boolean;
   mitigation?: (context: SecurityContext) => Promise<void>;
 }
@@ -135,7 +135,7 @@ export interface SecurityEvent {
  * Security issue found during audit
  */
 export interface SecurityIssue {
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  severity: SecuritySeverity;
   category:
     | 'authentication'
     | 'authorization'

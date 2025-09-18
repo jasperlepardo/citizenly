@@ -3,14 +3,14 @@
  * Functions for command menu API interactions
  */
 
-import type { CommandMenuItemType as CommandMenuItem } from '@/components';
-import { commandMenuService } from '@/services/commandMenuService';
+import { container } from '@/services/container';
+import type { CommandMenuSearchResult } from '@/types/shared/hooks/commandMenuHooks';
 
 /**
  * Search data through the command menu service
  */
 export const searchData = async (query: string, limit = 10) => {
-  return commandMenuService.searchData(query, limit);
+  return container.getCommandMenuService().searchData(query, limit);
 };
 
 /**
@@ -26,19 +26,20 @@ export const exportData = async (options: {
     format: options.format as 'csv' | 'xlsx',
     filters: options.filters,
   };
-  return commandMenuService.exportData(exportOptions);
+  return container.getCommandMenuService().exportData(exportOptions);
 };
 
 /**
  * Get recent items from storage
  */
-export const getRecentItems = async (): Promise<CommandMenuItem[]> => {
-  const results = await commandMenuService.getRecentItems();
+export const getRecentItems = async (): Promise<CommandMenuSearchResult[]> => {
+  const results = await container.getCommandMenuService().getRecentItems();
   // Convert search results to command menu items
-  return results.map(item => ({
+  return results.map((item) => ({
     id: item.id,
     title: item.title,
     subtitle: item.description,
+    description: item.description,
     data: item,
     score: 1,
     type: item.type,
@@ -53,13 +54,13 @@ export const getRecentItems = async (): Promise<CommandMenuItem[]> => {
  * Clear recent items
  */
 export const clearRecentItems = async (): Promise<boolean> => {
-  return commandMenuService.clearRecentItems();
+  return container.getCommandMenuService().clearRecentItems();
 };
 
 /**
  * Quick action functions that return navigation URLs
  */
-const getNavigationActions = () => commandMenuService.getNavigationActions();
+const getNavigationActions = () => container.getCommandMenuService().getNavigationActions();
 
 export const createResident = () => getNavigationActions().createResident();
 export const createHousehold = () => getNavigationActions().createHousehold();
@@ -103,5 +104,5 @@ export const generateReport = (type: 'population' | 'households') => {
  * Backup data functionality
  */
 export const backupData = async (): Promise<boolean> => {
-  return commandMenuService.backupData();
+  return container.getCommandMenuService().backupData();
 };

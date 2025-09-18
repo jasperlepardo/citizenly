@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useConnectionStatus } from '@/hooks/utilities/useConnectionStatus';
-import { syncQueue } from '@/lib/data';
+import { syncQueue } from '@/lib/data/sync-queue';
 
 // Custom hook to handle client-side mounting
 function useIsClient() {

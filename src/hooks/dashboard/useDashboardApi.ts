@@ -10,7 +10,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/contexts';
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
-// REMOVED: @/lib barrel import - replace with specific module;
+import { logger } from '@/hooks/utilities/useLogger';
+import { supabase } from '@/lib/data/supabase';
 import type {
   DashboardResponse,
   UseDashboardApiReturn
@@ -83,21 +84,21 @@ export function useDashboardApi(): UseDashboardApiReturn {
     },
     onSuccess: (result, attempt) => {
       if (attempt > 0) {
-        logger.info('Dashboard API retry succeeded', {
+        logger.info('useDashboardApi', 'Dashboard API retry succeeded', {
           attempts: attempt + 1,
           operation: 'dashboard-fetch',
         });
       }
     },
     onError: (error, attempt) => {
-      logger.warn('Dashboard API retry attempt failed', {
+      logger.warn('useDashboardApi', 'Dashboard API retry attempt failed', {
         attempt: attempt + 1,
         error: error.message,
         operation: 'dashboard-fetch',
       });
     },
     onMaxAttemptsReached: error => {
-      logger.error('Dashboard API max retry attempts reached', {
+      logger.error('useDashboardApi', 'Dashboard API max retry attempts reached', {
         error: error.message,
         operation: 'dashboard-fetch',
         maxAttempts: RetryStrategies.standard.maxAttempts,
@@ -109,7 +110,7 @@ export function useDashboardApi(): UseDashboardApiReturn {
   const { wrapAsync, errorState } = useAsyncErrorBoundary({
     onError: (error, errorInfo) => {
       // Log critical dashboard errors for monitoring
-      logger.error('Dashboard API critical error', {
+      logger.error('useDashboardApi', 'Dashboard API critical error', {
         error: error.message,
         errorInfo,
         operation: 'dashboard-fetch',

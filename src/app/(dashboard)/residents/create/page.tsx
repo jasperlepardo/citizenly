@@ -6,18 +6,18 @@ import React, { useMemo, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { ResidentForm } from '@/components';
-import { RATE_LIMITS } from '@/constants/resident-form';
+import { RATE_LIMITS } from '@/constants/residentForm';
 import { useAuth } from '@/contexts';
 import { useResidentOperations } from '@/hooks/crud/useResidentOperations';
 import { useResidentFormURLParameters } from '@/hooks/useURLParameters';
-import { useCSRFToken } from '@/lib/authentication';
+import { useCSRFToken } from '@/lib/authentication/csrf';
 import {
   philippineCompliantLogger,
   auditLogger,
   npcComplianceLogger,
   generateSecureSessionId,
-} from '@/lib/security/philippine-logging';
-import { checkRateLimit, clearRateLimit, getRateLimitStatus } from '@/utils/auth/inputSanitizer';
+} from '@/lib/security/philippineLogging';
+import { checkRateLimit, clearRateLimit, getRateLimitStatus } from '@/utils/auth/sanitizationUtils';
 import { validateFormData, prepareFormSubmission } from '@/utils/residents/residentDataProcessing';
 
 export const dynamic = 'force-dynamic';
@@ -62,7 +62,7 @@ function CreateResidentForm() {
       toast.success('Resident created successfully!');
       router.push('/residents');
     },
-    onError: error => {
+    onError: (error: Error) => {
       auditLogger.info('Resident creation failed', {
         eventType: 'RESIDENT_CREATE_FAILED',
         userId: user?.id || 'anonymous',
@@ -73,7 +73,7 @@ function CreateResidentForm() {
         retentionPeriod: '7_YEARS',
       });
 
-      toast.error(error || 'Failed to create resident');
+      toast.error(error?.message || 'Failed to create resident');
     },
   });
 
@@ -132,7 +132,10 @@ function CreateResidentForm() {
           complianceNote: 'RA_10173_COMPLIANT_DEV_LOG',
         });
 
+        console.log('🔍 About to validate form data...');
         const validation = validateFormData(formData);
+        console.log('🔍 Validation result:', validation);
+        console.log('🔍 Validation errors:', validation.errors);
         if (!validation.isValid) {
           auditLogger.info('Form validation failed', {
             eventType: 'VALIDATION_FAILED',
@@ -148,19 +151,42 @@ function CreateResidentForm() {
           return;
         }
 
-        const { transformedData, auditInfo } = prepareFormSubmission(
+        console.log('🔍 About to prepare form submission...');
+        const prepareResult = prepareFormSubmission(
           formData,
           user?.id || 'anonymous',
           sessionId,
           userProfile?.barangay_code || ''
         );
+        console.log('🔍 prepareFormSubmission returned:', prepareResult);
+        console.log('🔍 prepareResult keys:', Object.keys(prepareResult || {}));
+        
+        if (!prepareResult || !prepareResult.success) {
+          console.error('❌ prepareFormSubmission failed:', prepareResult);
+          toast.error(prepareResult?.errors?._form || 'Failed to prepare form data for submission');
+          return;
+        }
+        
+        const { data: transformedData, auditTrail: auditInfo } = prepareResult;
+        console.log('🔍 After destructuring - transformedData:', transformedData);
+        console.log('🔍 transformedData birth_place_code:', transformedData?.birth_place_code);
+        console.log('🔍 transformedData occupation_code:', transformedData?.occupation_code);
+        console.log('🔍 After destructuring - auditInfo:', auditInfo);
+        
+        if (!transformedData) {
+          console.error('❌ No transformed data from prepareFormSubmission');
+          toast.error('Failed to process form data');
+          return;
+        }
+        
+        console.log('🔍 Form submission prepared successfully');
 
         auditLogger.info('Resident registration attempt', {
           eventType: 'RESIDENT_FORM_PROCESSING',
-          userId: auditInfo.userId,
+          userId: auditInfo?.userId || 'anonymous',
           action: 'CREATE_RESIDENT_ATTEMPT',
-          timestamp: auditInfo.timestamp,
-          sessionId: auditInfo.sessionId,
+          timestamp: auditInfo?.timestamp || new Date().toISOString(),
+          sessionId: auditInfo?.sessionId || 'unknown',
           barangayOfficial: user?.role === 'barangay_official',
           complianceFramework: 'RA_10173_BSP_808',
           retentionPeriod: '7_YEARS',
@@ -171,15 +197,28 @@ function CreateResidentForm() {
           processingPurpose: 'BARANGAY_RESIDENT_REGISTRATION',
           legalBasis: 'PERFORMANCE_OF_TASK_PUBLIC_INTEREST',
           dataSubjectCount: 1,
-          sensitiveDataProcessed: auditInfo.hasPhilSys,
+          sensitiveDataProcessed: Boolean(transformedData?.philsys_card_number),
           consentStatus: 'OBTAINED',
-          timestamp: auditInfo.timestamp,
+          timestamp: auditInfo?.timestamp || new Date().toISOString(),
           npcRegistrationRef: process.env.NPC_REGISTRATION_NUMBER,
         });
 
         // Get CSRF token separately
+        console.log('🔍 About to get CSRF token...');
         getCSRFToken();
+        console.log('🔍 About to call createResident...');
+        console.log('🔍 transformedData being passed to createResident:', transformedData);
+        console.log('🔍 transformedData key fields:', {
+          first_name: transformedData?.first_name,
+          last_name: transformedData?.last_name,
+          birthdate: transformedData?.birthdate,
+          sex: transformedData?.sex,
+          household_code: transformedData?.household_code,
+          birth_place_code: transformedData?.birth_place_code,
+          occupation_code: transformedData?.occupation_code,
+        });
         const result = await createResident(transformedData);
+        console.log('🔍 CreateResident result:', result);
 
         if (!result?.success) {
           auditLogger.info('Form submission processing completed', {
@@ -192,7 +231,8 @@ function CreateResidentForm() {
             retentionPeriod: '7_YEARS',
           });
         }
-      } catch {
+      } catch (error) {
+        console.error('HandleSubmit error:', error);
         auditLogger.info('Form submission error', {
           eventType: 'FORM_SUBMISSION_ERROR',
           userId: user?.id || 'anonymous',

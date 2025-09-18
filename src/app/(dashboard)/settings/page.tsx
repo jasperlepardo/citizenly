@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 
 import { Button, SelectField } from '@/components';
 import { useTheme } from '@/contexts';
-import { logger } from '@/lib/logging';
+import { clientLogger } from '@/lib/logging/client-logger';
 
 export default function SettingsPage() {
   const { theme, actualTheme, setTheme } = useTheme();
@@ -221,7 +221,7 @@ export default function SettingsPage() {
                       { value: 'UTC', label: 'UTC (GMT+0)' },
                     ],
                     placeholder: 'Select timezone',
-                    onSelect: option => logger.debug('Timezone selected:', option),
+                    onSelect: option => clientLogger.debug('Timezone selected:', { component: 'SettingsPage', action: 'timezone_selected', data: { option } }),
                   }}
                 />
                 <SelectField
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                       { value: 'fil', label: 'Filipino' },
                     ],
                     placeholder: 'Select language',
-                    onSelect: option => logger.debug('Language selected:', option),
+                    onSelect: option => clientLogger.debug('Language selected:', { component: 'SettingsPage', action: 'language_selected', data: { option } }),
                   }}
                 />
                 <SelectField
@@ -244,7 +244,7 @@ export default function SettingsPage() {
                       { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD' },
                     ],
                     placeholder: 'Select date format',
-                    onSelect: option => logger.debug('Date format selected:', option),
+                    onSelect: option => clientLogger.debug('Date format selected:', { component: 'SettingsPage', action: 'date_format_selected', data: { option } }),
                   }}
                 />
               </div>
@@ -300,7 +300,7 @@ export default function SettingsPage() {
                           { value: 'never', label: 'Never' },
                         ],
                         placeholder: 'Select timeout',
-                        onSelect: option => logger.debug('Timeout selected:', option),
+                        onSelect: option => clientLogger.debug('Timeout selected:', { component: 'SettingsPage', action: 'timeout_selected', data: { option } }),
                       }}
                     />
                   </div>

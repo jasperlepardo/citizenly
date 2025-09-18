@@ -2,15 +2,19 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import {
-  getFieldId,
-  getFieldIds,
-  buildAriaDescribedBy,
-  buildAriaLabelledBy,
-} from '@/utils/shared/idGenerators';
+// Simple inline utility (replacing deleted cssUtils)
+const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+// Simple inline ID utilities (replacing deleted idGenerators)
+const getFieldId = (base: string = 'readonly-field') => `field-${base.replace(/[^a-zA-Z0-9]/g, '-')}`;
+const getFieldIds = (fieldId: string) => ({
+  fieldId,
+  helperTextId: `${fieldId}-helper`,
+  errorId: `${fieldId}-error`
+});
+const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
+const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label, ReadOnly, HelperText } from '../../../atoms/Field';
+import { Label, ReadOnly, HelperText } from '@/components/atoms/Field';
 
 export interface ReadOnlyFieldProps {
   children?: React.ReactNode;
@@ -49,12 +53,14 @@ export const ReadOnlyField = ({
   const isHorizontal = orientation === 'horizontal';
 
   // Generate secure unique ID if not provided
-  const fieldId = getFieldId(htmlFor, readOnlyProps?.id, 'readonly-field');
-  const { labelId, helperTextId, errorId } = getFieldIds(fieldId);
+  const baseId = htmlFor || readOnlyProps?.id || label?.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') || 'readonly-field';
+  const fieldId = getFieldId(baseId);
+  const { helperTextId, errorId } = getFieldIds(fieldId);
 
   const hasHelperText = helperText || errorMessage;
 
   // Build ARIA attributes for accessibility
+  const labelId = `${fieldId}-label`;
   const ariaLabelledBy = buildAriaLabelledBy(label ? labelId : undefined);
   const ariaDescribedByString = buildAriaDescribedBy(
     helperText ? helperTextId : undefined,
@@ -63,9 +69,9 @@ export const ReadOnlyField = ({
 
   const getLabelWidthClass = (width: 'sm' | 'md' | 'lg') => {
     const widthClasses = {
-      sm: 'w-32', // 128px
-      md: 'w-40', // 160px
-      lg: 'w-48', // 192px
+      sm: 'w-48', // 192px (increased from 128px)
+      md: 'w-56', // 224px (increased from 160px)
+      lg: 'w-64', // 256px (increased from 192px)
     };
     return widthClasses[width];
   };
@@ -77,7 +83,7 @@ export const ReadOnlyField = ({
         <div
           className={cn(isHorizontal ? `${getLabelWidthClass(labelWidth)} shrink-0 pt-2` : 'mb-1')}
         >
-          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps}>
+          <Label htmlFor={fieldId} required={required} size={labelSize} {...labelProps} id={labelId}>
             {label}
           </Label>
         </div>

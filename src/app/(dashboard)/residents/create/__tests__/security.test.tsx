@@ -65,7 +65,7 @@ const mockNPCComplianceLogger = {
   info: jest.fn(),
 };
 
-jest.mock('@/lib/security/philippine-logging', () => ({
+jest.mock('@/lib/security/philippineLogging', () => ({
   philippineCompliantLogger: mockPhilippineCompliantLogger,
   auditLogger: mockAuditLogger,
   npcComplianceLogger: mockNPCComplianceLogger,
@@ -107,7 +107,7 @@ jest.mock('@/lib/authentication', () => ({
   })),
 }));
 
-jest.mock('@/constants/resident-form', () => ({
+jest.mock('@/constants/residentForm', () => ({
   RATE_LIMITS: {
     FORM_SUBMISSION: {
       MAX_ATTEMPTS: 5,

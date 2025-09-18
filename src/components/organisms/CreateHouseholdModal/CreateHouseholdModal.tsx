@@ -6,9 +6,9 @@ import { useAuth } from '@/contexts';
 // REMOVED: @/lib barrel import - replace with specific module;
 import type { HouseholdModalFormData as HouseholdFormData } from '@/types/app/ui/components';
 
-import { Button } from '../../atoms';
-import AccessibleModal from '../../molecules/AccessibleModal';
-import { SelectField } from '../../molecules/FieldSet/SelectField';
+import { Button } from '@/components/atoms';
+import AccessibleModal from '@/components/molecules/AccessibleModal';
+import { SelectField } from '@/components/molecules/FieldSet/SelectField';
 
 interface CreateHouseholdModalProps {
   isOpen: boolean;

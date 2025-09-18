@@ -19,7 +19,7 @@ import { Navigation } from '@/components';
 import SkipNavigation from '@/components/atoms/SkipNavigation';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
 import { useAuth } from '@/contexts';
-// REMOVED: @/lib barrel import - replace with specific module;
+import { logger } from '@/hooks/utilities/useLogger';
 import { supabase } from '@/lib/data/supabase';
 
 // User dropdown component with details (from original dashboard)
@@ -39,12 +39,12 @@ function UserDropdown() {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
-        logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
+        logger.debug('DashboardLayout', 'Cannot load barangay info - user not authenticated', { barangayCode });
         setBarangayInfo(`Barangay ${barangayCode}`);
         return;
       }
 
-      logger.debug('Loading barangay info', { barangayCode });
+      logger.debug('DashboardLayout', 'Loading barangay info', { barangayCode });
 
       // Use API endpoint to get full address hierarchy (avoids complex nested query issues)
       const response = await fetch(`/api/psgc/lookup?code=${encodeURIComponent(barangayCode)}`);
@@ -69,10 +69,10 @@ function UserDropdown() {
           error.message?.includes('unauthorized') ||
           error.code === '401'
         ) {
-          logger.debug('Cannot load barangay info - user not authenticated', { barangayCode });
+          logger.debug('DashboardLayout', 'Cannot load barangay info - user not authenticated', { barangayCode });
         } else {
           // Only log non-authentication related errors, and use debug level for less critical errors
-          logger.debug('Error loading barangay info', {
+          logger.debug('DashboardLayout', 'Error loading barangay info', {
             error: error.message,
             code: error.code,
             barangayCode,
@@ -90,14 +90,14 @@ function UserDropdown() {
         const provinceName = barangayData.province_name;
 
         const fullAddress = `${barangayName}, ${cityName} (${cityType}), ${provinceName}`;
-        logger.debug('Loaded barangay info from API', { address: fullAddress });
+        logger.debug('DashboardLayout', 'Loaded barangay info from API', { address: fullAddress });
         setBarangayInfo(fullAddress);
       } else {
         setBarangayInfo(`Barangay ${barangayCode}`);
       }
     } catch (error) {
       // Don't log critical errors for authentication-related issues in dashboard
-      logger.debug('Error loading barangay info (caught in catch)', {
+      logger.debug('DashboardLayout', 'Error loading barangay info (caught in catch)', {
         error: error instanceof Error ? error.message : String(error),
         barangayCode,
       });

@@ -23,11 +23,11 @@ import {
   findSoloParents,
   generateCertificate,
   generateReport,
-} from '@/utils/api/apiUtils';
+} from '@/utils/shared/apiUtils';
 import { getCommandMenuItems, getAllCommandMenuItems } from '@/utils/command-menu/items-utils';
-import { trackSearch, trackNavigation, trackAction } from '@/lib/data';
+import { trackSearch, trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
 import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types';
+import type { CommandMenuSearchResult } from '@/types/infrastructure/services/services';
 
 interface UseCommandMenuWithApiProps {
   maxResults?: number;
@@ -38,8 +38,8 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [dynamicResults, setDynamicResults] = useState<CommandMenuItem[]>([]);
-  const [recentItems, setRecentItems] = useState<CommandMenuItem[]>([]);
+  const [dynamicResults, setDynamicResults] = useState<CommandMenuSearchResult[]>([]);
+  const [recentItems, setRecentItems] = useState<CommandMenuSearchResult[]>([]);
 
   const router = useRouter();
 
@@ -53,7 +53,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   const loadRecentItems = async () => {
     try {
       const recent = await getRecentApiItems();
-      const recentMenuItems: CommandMenuItem[] = recent.map(item => ({
+      const recentMenuItems: CommandMenuSearchResult[] = recent.map(item => ({
         id: `recent-${item.id}`,
         title: item.title,
         subtitle: item.description,
@@ -159,7 +159,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
 
         // Track search analytics
         trackCommandMenuSearch(searchQuery, apiResults.length);
-        const dynamicMenuItems: CommandMenuItem[] = apiResults.map(result => ({
+        const dynamicMenuItems: CommandMenuSearchResult[] = apiResults.map(result => ({
           id: `search-${result.id}`,
           title: result.title,
           subtitle: result.description,
@@ -196,7 +196,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
 
   // Combine all items based on search state
   const allItems = useMemo(() => {
-    let items: CommandMenuItem[] = [];
+    let items: CommandMenuSearchResult[] = [];
 
     if (searchQuery.trim()) {
       // Show dynamic search results first, then filtered static items
@@ -331,7 +331,7 @@ export function useCommandMenuWithApi({ maxResults = 10 }: UseCommandMenuWithApi
   };
 
   const executeCommand = useCallback(
-    (item: CommandMenuItem) => {
+    (item: CommandMenuSearchResult) => {
       if (item.disabled) return;
 
       close();

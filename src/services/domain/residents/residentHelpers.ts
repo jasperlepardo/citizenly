@@ -1,12 +1,9 @@
 /**
- * Utility functions for resident data processing
- * Extracted from components for reusability and maintainability
+ * Pure utility functions for resident data processing
+ * Domain layer - no infrastructure dependencies
  */
 
-import type { Session } from '@supabase/supabase-js';
-
-import { supabase } from '../../../lib/data/supabase';
-import { ResidentWithRelations } from '../../../types/domain/residents/core';
+import { ResidentWithRelations } from '@/types/domain/residents/core';
 
 /**
  * Initialize missing fields in resident data with default values
@@ -58,35 +55,76 @@ export const getComputedFieldTooltip = (field: string): string => {
 };
 
 /**
- * Validate and get authentication session
- * Centralized auth validation for API calls
+ * Calculate age from birthdate (pure business logic)
  */
-export const getAuthSession = async () => {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  if (!session?.access_token) {
-    throw new Error('No valid session found');
+export const calculateAge = (birthdate: string): number => {
+  const birth = new Date(birthdate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
   }
-  return session;
+  return age;
 };
 
 /**
- * Fetch resident data from API with proper error handling
- * Centralized API call with consistent error handling
+ * Format full name from name components (pure business logic)
  */
-export const fetchResidentData = async (residentId: string, session: Session) => {
-  const response = await fetch(`/api/residents/${residentId}`, {
-    headers: {
-      Authorization: `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+export const formatFullName = (nameData: {
+  first_name?: string;
+  middle_name?: string;
+  last_name?: string;
+  extension_name?: string;
+}): string => {
+  const parts = [
+    nameData.first_name,
+    nameData.middle_name,
+    nameData.last_name,
+    nameData.extension_name
+  ].filter(Boolean);
+  return parts.join(' ');
+};
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-  }
+/**
+ * Validate PhilSys card number format (pure business logic)
+ */
+export const validatePhilSysFormat = (philsysNumber: string): boolean => {
+  const pattern = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
+  return pattern.test(philsysNumber);
+};
 
-  return response.json();
+/**
+ * Extract last 4 digits of PhilSys (pure business logic)
+ */
+export const extractPhilSysLast4 = (philsysNumber: string): string => {
+  return philsysNumber.replace(/-/g, '').slice(-4);
+};
+
+/**
+ * Determine sectoral classifications based on resident data (pure business logic)
+ */
+export const calculateSectoralFlags = (residentData: {
+  birthdate?: string;
+  employment_status?: string;
+  pwd_details?: any;
+  indigenous_group?: string;
+}): {
+  is_senior_citizen: boolean;
+  is_minor: boolean;
+  is_employed: boolean;
+  is_unemployed: boolean;
+  is_pwd: boolean;
+  is_indigenous: boolean;
+} => {
+  const age = residentData.birthdate ? calculateAge(residentData.birthdate) : 0;
+  
+  return {
+    is_senior_citizen: age >= 60,
+    is_minor: age < 18,
+    is_employed: ['employed', 'self-employed'].includes(residentData.employment_status || ''),
+    is_unemployed: residentData.employment_status === 'unemployed',
+    is_pwd: !!(residentData.pwd_details && Object.keys(residentData.pwd_details).length > 0),
+    is_indigenous: !!(residentData.indigenous_group && residentData.indigenous_group.trim().length > 0),
+  };
 };

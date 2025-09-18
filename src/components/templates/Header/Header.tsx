@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 
 import { UserProfile, Button } from '@/components';
 import { useAuth } from '@/contexts';
-import { logError } from '@/lib/logging';
+import { logError } from '@/lib/logging/client-logger';
 
 // Simple logout button component
 function LogoutButton() {
@@ -43,8 +43,8 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600">
-                <span className="font-display text-sm font-bold text-white dark:text-black">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-blue-600 dark:bg-blue-500">
+                <span className="font-display text-sm font-bold text-white">
                   RBI
                 </span>
               </div>

@@ -110,7 +110,7 @@ src/hooks/
 └── useURLParameters.ts               # URL parameter hooks (104 lines)
 
 src/lib/security/
-└── philippine-logging.ts             # Philippine-compliant logging
+└── philippineLogging.ts             # Philippine-compliant logging
 ```
 
 ### **Component Dependencies**

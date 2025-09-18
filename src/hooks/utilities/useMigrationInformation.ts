@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 import { MigrationInformationData } from '@/types/infrastructure/services';
 
-import { usePsgcSearch, PsgcSearchResult } from '../search/usePsgcSearch';
+import { usePsgcSearch, PsgcSearchResult } from '@/hooks/search/usePsgcSearch';
 
 export { type MigrationInformationData };
 

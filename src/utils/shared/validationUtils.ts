@@ -27,14 +27,7 @@ export const nameSchema = z
   .max(100, 'Name too long')
   .regex(/^[a-zA-Z\s\-.']+$/, 'Name contains invalid characters');
 
-export const passwordSchema = z
-  .string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(128, 'Password too long')
-  .regex(/[A-Z]/, 'Password must contain uppercase letter')
-  .regex(/[a-z]/, 'Password must contain lowercase letter')
-  .regex(/\d/, 'Password must contain number')
-  .regex(/[^A-Za-z0-9]/, 'Password must contain special character');
+// Note: passwordSchema removed - unused
 
 // Date validation
 export const dateSchema = z
@@ -47,21 +40,7 @@ export const dateSchema = z
     return parsedDate >= minDate && parsedDate <= maxDate;
   }, 'Date must be between 1900-01-01 and today');
 
-export const birthdateSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Birthdate must be in YYYY-MM-DD format')
-  .refine(date => {
-    const parsedDate = new Date(date);
-    const minDate = new Date('1900-01-01');
-    const maxDate = new Date();
-    return parsedDate >= minDate && parsedDate <= maxDate;
-  }, 'Birthdate must be between 1900-01-01 and today')
-  .refine(date => {
-    const today = new Date();
-    const birthDate = new Date(date);
-    const age = today.getFullYear() - birthDate.getFullYear();
-    return age >= 0 && age <= 150;
-  }, 'Age must be reasonable (0-150 years)');
+// Note: birthdateSchema removed - unused
 
 export const philsysSchema = z
   .string()
@@ -76,27 +55,16 @@ export const paginationSchema = z.object({
   cursor: z.string().optional(),
 });
 
-// Sort schema
-export const sortSchema = z.object({
-  sort: z.string().optional(),
-  order: z.enum(['asc', 'desc']).default('desc'),
-});
+// Note: sortSchema removed - unused
 
-// Search schema with SQL injection protection
-export const searchSchema = z.object({
-  search: z
-    .string()
-    .max(100, 'Search term too long')
-    .regex(/^[a-zA-Z0-9\s\-@_.]+$/, 'Search contains invalid characters')
-    .optional(),
-});
+// Note: searchSchema removed - unused
 
 // Resident validation schemas
 export const createResidentSchema = z.object({
   // Required fields (matching database schema)
   first_name: nameSchema,
   last_name: nameSchema,
-  birthdate: birthdateSchema,
+  birthdate: dateSchema,
   sex: z.enum(['male', 'female']),
 
   // Optional personal info (matching database schema)
@@ -115,53 +83,60 @@ export const createResidentSchema = z.object({
   civil_status_others_specify: z.string().max(200).optional().or(z.literal('')),
   citizenship: z.enum(['filipino', 'dual_citizen', 'foreigner']).default('filipino'),
   blood_type: z
-    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
-    .optional()
-    .or(z.literal('')),
-  ethnicity: z
-    .enum([
-      'tagalog',
-      'cebuano',
-      'ilocano',
-      'bisaya',
-      'hiligaynon',
-      'bikolano',
-      'waray',
-      'kapampangan',
-      'pangasinense',
-      'maranao',
-      'maguindanao',
-      'tausug',
-      'yakan',
-      'samal',
-      'badjao',
-      'aeta',
-      'agta',
-      'ati',
-      'batak',
-      'bukidnon',
-      'gaddang',
-      'higaonon',
-      'ibaloi',
-      'ifugao',
-      'igorot',
-      'ilongot',
-      'isneg',
-      'ivatan',
-      'kalinga',
-      'kankanaey',
-      'mangyan',
-      'mansaka',
-      'palawan',
-      'subanen',
-      'tboli',
-      'teduray',
-      'tumandok',
-      'chinese',
-      'others',
+    .union([
+      z.enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
+      z.null(),
+      z.undefined(),
     ])
-    .optional()
-    .or(z.literal('')),
+    .optional(),
+  ethnicity: z
+    .union([
+      z.enum([
+        'tagalog',
+        'cebuano',
+        'ilocano',
+        'bisaya',
+        'hiligaynon',
+        'bikolano',
+        'waray',
+        'kapampangan',
+        'pangasinense',
+        'maranao',
+        'maguindanao',
+        'tausug',
+        'yakan',
+        'samal',
+        'badjao',
+        'aeta',
+        'agta',
+        'ati',
+        'batak',
+        'bukidnon',
+        'gaddang',
+        'higaonon',
+        'ibaloi',
+        'ifugao',
+        'igorot',
+        'ilongot',
+        'isneg',
+        'ivatan',
+        'kalinga',
+        'kankanaey',
+        'mangyan',
+        'mansaka',
+        'palawan',
+        'subanen',
+        'tboli',
+        'teduray',
+        'tumandok',
+        'chinese',
+        'others',
+      ]),
+      z.literal(''),
+      z.null(),
+      z.undefined(),
+    ])
+    .optional(),
   religion: z
     .enum([
       'roman_catholic',
@@ -185,6 +160,7 @@ export const createResidentSchema = z.object({
       z.number().min(30).max(300), // Height in cm, reasonable range
       z.literal(0),
       z.null(),
+      z.undefined(),
     ])
     .optional(),
   weight: z
@@ -192,6 +168,7 @@ export const createResidentSchema = z.object({
       z.number().min(1).max(500), // Weight in kg, reasonable range
       z.literal(0),
       z.null(),
+      z.undefined(),
     ])
     .optional(),
   complexion: z.string().max(50).optional().or(z.literal('')),
@@ -203,15 +180,17 @@ export const createResidentSchema = z.object({
   philsys_card_number: philsysSchema,
 
   // Family information (allow empty strings, matching database schema)
-  mother_maiden_first: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
-  mother_maiden_middle: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
-  mother_maiden_last: z.union([z.string().max(100).min(1), z.literal('')]).optional(),
+  mother_maiden_first: z.union([z.string().max(100).min(1), z.literal(''), z.null(), z.undefined()]).optional(),
+  mother_maiden_middle: z.union([z.string().max(100).min(1), z.literal(''), z.null(), z.undefined()]).optional(),
+  mother_maiden_last: z.union([z.string().max(100).min(1), z.literal(''), z.null(), z.undefined()]).optional(),
 
   // Education and employment (aligned with database enum)
   education_attainment: z
     .union([
       z.enum(['elementary', 'high_school', 'college', 'post_graduate', 'vocational']),
       z.literal(''),
+      z.null(),
+      z.undefined(),
     ])
     .optional(),
   is_graduate: z.boolean().default(false),
@@ -230,15 +209,27 @@ export const createResidentSchema = z.object({
         'not_in_labor_force',
       ]),
       z.literal(''),
+      z.null(),
+      z.undefined(),
     ])
     .optional()
     .default('not_in_labor_force'),
-  occupation_code: z.string().max(10).optional().or(z.literal('')),
+  occupation_code: z.union([
+    z.string().max(10),
+    z.literal(''),
+    z.null(),
+    z.undefined(),
+  ]).optional(),
 
   // Voting information (matching database schema)
-  is_voter: z.union([z.boolean(), z.null()]).optional(),
-  is_resident_voter: z.union([z.boolean(), z.null()]).optional(),
-  last_voted_date: z.string().optional().or(z.literal('')),
+  is_voter: z.union([z.boolean(), z.null(), z.undefined()]).optional(),
+  is_resident_voter: z.union([z.boolean(), z.null(), z.undefined()]).optional(),
+  last_voted_date: z.union([
+    z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
+    z.literal(''),
+    z.null(),
+    z.undefined()
+  ]).optional(),
 
   // Household (matching database schema) - REQUIRED
   household_code: z.string().min(1, 'Household assignment is required').max(50),
@@ -269,7 +260,35 @@ export const createResidentSchema = z.object({
   is_intending_to_return: z.boolean().optional(),
 });
 
-export const updateResidentSchema = createResidentSchema.partial();
+// Update resident schema - includes sectoral fields for domain service processing
+export const updateResidentSchema = createResidentSchema.omit({
+  // Remove migration information fields (these belong in resident_migrant_info table)
+  previous_barangay_code: true,
+  previous_city_municipality_code: true,
+  previous_province_code: true,
+  previous_region_code: true,
+  date_of_transfer: true,
+  reason_for_leaving: true,
+  reason_for_transferring: true,
+  length_of_stay_previous_months: true,
+  duration_of_stay_current_months: true,
+  is_intending_to_return: true,
+}).extend({
+  // Allow sectoral_info object structure for manual sectoral classification updates
+  sectoral_info: z.object({
+    is_labor_force_employed: z.boolean().optional(),
+    is_unemployed: z.boolean().optional(),
+    is_overseas_filipino_worker: z.boolean().optional(),
+    is_person_with_disability: z.boolean().optional(),
+    is_out_of_school_children: z.boolean().optional(),
+    is_out_of_school_youth: z.boolean().optional(),
+    is_senior_citizen: z.boolean().optional(),
+    is_registered_senior_citizen: z.boolean().optional(),
+    is_solo_parent: z.boolean().optional(),
+    is_indigenous_people: z.boolean().optional(),
+    is_migrant: z.boolean().optional(),
+  }).optional(),
+});
 
 // Household validation schemas
 export const createHouseholdSchema = z.object({
@@ -365,20 +384,11 @@ export const createHouseholdSchema = z.object({
     .optional(),
 });
 
-export const updateHouseholdSchema = createHouseholdSchema.partial();
+// Note: updateHouseholdSchema removed - unused
 
-// User management schemas
-export const createUserSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  first_name: nameSchema,
-  last_name: nameSchema,
-  mobile_number: phoneSchema,
-  barangay_code: psgcCodeSchema,
-  role_id: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, 'Invalid UUID format'),
-});
+// Note: createUserSchema removed - unused
 
-export const updateUserSchema = createUserSchema.partial().omit({ password: true });
+// Note: updateUserSchema removed - unused
 
 // Authentication schemas
 export const loginSchema = z.object({
@@ -386,13 +396,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-export const signupSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  first_name: nameSchema,
-  last_name: nameSchema,
-  barangay_code: psgcCodeSchema,
-});
+// Note: signupSchema removed - unused
 
 // Geographic filter schemas
 export const geographicFilterSchema = z.object({
@@ -414,15 +418,7 @@ export const fileUploadSchema = z.object({
   purpose: z.enum(['profile_photo', 'document', 'import_data']),
 });
 
-/**
- * Format Zod validation errors
- */
-export function formatZodErrors(error: z.ZodError): Array<{ field: string; message: string }> {
-  return error.issues.map(err => ({
-    field: err.path.join('.'),
-    message: err.message,
-  }));
-}
+// Note: formatZodErrors removed - unused
 
 /**
  * Sanitize search input to prevent SQL injection
@@ -456,62 +452,9 @@ export function validatePagination(params: URLSearchParams): {
   };
 }
 
-/**
- * Validate and sanitize sort parameters
- */
-export function validateSort(
-  params: URLSearchParams,
-  allowedFields: string[]
-): {
-  field: string;
-  order: 'asc' | 'desc';
-} | null {
-  const sort = params.get('sort');
-  const order = (params.get('order') as 'asc' | 'desc') || 'desc';
+// Note: validateSort removed - unused
 
-  if (!sort || !allowedFields.includes(sort)) {
-    return null;
-  }
-
-  return { field: sort, order };
-}
-
-/**
- * Create a validation middleware for API routes
- */
-export function withValidation<T>(
-  schema: z.ZodSchema<T>,
-  handler: (request: Request, validatedData: T) => Promise<Response>
-) {
-  return async (request: Request): Promise<Response> => {
-    try {
-      const body = await request.json();
-      const validatedData = schema.parse(body);
-      return handler(request, validatedData);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const validationErrors = formatZodErrors(error);
-        return new Response(
-          JSON.stringify({
-            error: {
-              message: 'Invalid input data',
-              details: validationErrors,
-            },
-            timestamp: new Date().toISOString(),
-            path: new URL(request.url).pathname,
-          }),
-          {
-            status: 422,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        );
-      }
-
-      // Re-throw non-validation errors
-      throw error;
-    }
-  };
-}
+// Note: withValidation removed - unused
 
 /**
  * Type definitions for validated data
@@ -519,8 +462,8 @@ export function withValidation<T>(
 export type CreateResidentData = z.infer<typeof createResidentSchema>;
 export type UpdateResidentData = z.infer<typeof updateResidentSchema>;
 export type CreateHouseholdData = z.infer<typeof createHouseholdSchema>;
-export type UpdateHouseholdData = z.infer<typeof updateHouseholdSchema>;
-export type CreateUserData = z.infer<typeof createUserSchema>;
-export type UpdateUserData = z.infer<typeof updateUserSchema>;
+// Note: UpdateHouseholdData removed - unused
+// Note: CreateUserData removed - unused
+// Note: UpdateUserData removed - unused
 export type LoginData = z.infer<typeof loginSchema>;
-export type SignupData = z.infer<typeof signupSchema>;
+// Note: SignupData removed - unused

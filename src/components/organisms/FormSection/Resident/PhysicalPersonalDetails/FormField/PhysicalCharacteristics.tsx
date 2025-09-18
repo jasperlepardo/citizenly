@@ -6,7 +6,7 @@ import {
   ETHNICITY_OPTIONS_WITH_DEFAULT,
   RELIGION_OPTIONS_WITH_DEFAULT,
   CITIZENSHIP_OPTIONS_WITH_DEFAULT,
-} from '@/constants/resident-enums';
+} from '@/constants/residentEnums';
 import type { FormMode, PhysicalCharacteristicsFormData } from '@/types';
 
 export interface PhysicalCharacteristicsProps {
@@ -16,6 +16,16 @@ export interface PhysicalCharacteristicsProps {
   onChange: (value: PhysicalCharacteristicsFormData) => void;
   errors: Record<string, string>;
   className?: string;
+  // Individual field loading states
+  loadingStates?: {
+    blood_type?: boolean;
+    complexion?: boolean;
+    height?: boolean;
+    weight?: boolean;
+    citizenship?: boolean;
+    ethnicity?: boolean;
+    religion?: boolean;
+  };
 }
 
 export function PhysicalCharacteristics({
@@ -24,12 +34,26 @@ export function PhysicalCharacteristics({
   onChange,
   errors,
   className = '',
-}: PhysicalCharacteristicsProps) {
+  loadingStates = {},
+}: Readonly<PhysicalCharacteristicsProps>) {
+
   const handleChange = (field: keyof PhysicalCharacteristicsFormData, fieldValue: string) => {
-    onChange({
+    console.log('🔍 PhysicalCharacteristics: handleChange called', { field, fieldValue });
+    
+    // Special debug for ethnicity changes
+    if (field === 'ethnicity') {
+      console.log('🎯 ETHNICITY SELECTION DETECTED:', fieldValue);
+      if (fieldValue === 'badjao') {
+        console.log('🎯 BADJAO SELECTED - This should trigger Indigenous People checkbox!');
+      }
+    }
+    
+    const updatedValue = {
       ...value,
       [field]: fieldValue,
-    });
+    };
+    console.log('🔍 PhysicalCharacteristics: calling onChange with', updatedValue);
+    onChange(updatedValue);
   };
 
   // Use pre-defined options - blood_type and citizenship have database defaults, religion and ethnicity have "Select" options
@@ -50,12 +74,14 @@ export function PhysicalCharacteristics({
       </div>
 
       {/* All Fields in One Grid */}
-      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className={mode === 'view' ? 'space-y-4' : 'grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4'}>
         <SelectField
           label="Blood Type"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.blood_type}
           mode={mode}
+          loading={loadingStates?.blood_type}
           selectProps={{
             placeholder: 'Select blood type...',
             options: bloodTypeOptions as any,
@@ -67,8 +93,10 @@ export function PhysicalCharacteristics({
         <InputField
           label="Complexion"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.complexion}
           mode={mode}
+          loading={loadingStates?.complexion}
           inputProps={{
             value: value.complexion,
             onChange: e => handleChange('complexion', e.target.value),
@@ -80,8 +108,10 @@ export function PhysicalCharacteristics({
         <InputField
           label="Height (cm)"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.height}
           mode={mode}
+          loading={loadingStates?.height}
           inputProps={{
             type: 'number',
             value: value.height,
@@ -94,8 +124,10 @@ export function PhysicalCharacteristics({
         <InputField
           label="Weight (kg)"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.weight}
           mode={mode}
+          loading={loadingStates?.weight}
           inputProps={{
             type: 'number',
             value: value.weight,
@@ -108,8 +140,10 @@ export function PhysicalCharacteristics({
         <SelectField
           label="Citizenship"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.citizenship}
           mode={mode}
+          loading={loadingStates?.citizenship}
           selectProps={{
             placeholder: 'Select citizenship...',
             options: citizenshipOptions as any,
@@ -121,8 +155,10 @@ export function PhysicalCharacteristics({
         <SelectField
           label="Ethnicity"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.ethnicity}
           mode={mode}
+          loading={loadingStates?.ethnicity}
           selectProps={{
             placeholder: 'Select ethnicity...',
             options: ethnicityOptions as any,
@@ -134,8 +170,10 @@ export function PhysicalCharacteristics({
         <SelectField
           label="Religion"
           labelSize="sm"
+          orientation={mode === 'view' ? 'horizontal' : 'vertical'}
           errorMessage={errors.religion}
           mode={mode}
+          loading={loadingStates?.religion}
           selectProps={{
             placeholder: 'Select religion...',
             options: religionOptions as any,
@@ -150,6 +188,7 @@ export function PhysicalCharacteristics({
             label="Specify Religion"
             required
             labelSize="sm"
+            orientation={mode === 'view' ? 'horizontal' : 'vertical'}
             errorMessage={errors.religion_others_specify}
             mode={mode}
             inputProps={{

@@ -117,6 +117,35 @@ export function formatBirthdateWithAge(birthdate: string | Date): string {
 }
 
 /**
+ * Format birthdate with leading zeros and age in compact format
+ * Example: "January 01, 2001 (Age 23)"
+ */
+export function formatBirthdateWithAgeCompact(birthdate: string | Date): string {
+  if (!birthdate) return '-';
+
+  try {
+    const dateObj = typeof birthdate === 'string' ? new Date(birthdate) : birthdate;
+    
+    if (isNaN(dateObj.getTime())) {
+      return '-';
+    }
+
+    const age = calculateAge(birthdate);
+    
+    // Format with leading zeros for day
+    const formattedDate = new Intl.DateTimeFormat('en-PH', {
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit',
+    }).format(dateObj);
+
+    return `${formattedDate} (Age ${age})`;
+  } catch {
+    return '-';
+  }
+}
+
+/**
  * Check if date is valid
  */
 export function isValidDate(date: string | Date): boolean {
@@ -181,5 +210,33 @@ export function yearsBetween(startDate: string | Date, endDate: string | Date): 
     return diffYears;
   } catch {
     return 0;
+  }
+}
+
+/**
+ * Format graduate status for display
+ * Converts "yes"/"no" to readable text
+ */
+export function formatGraduateStatus(isGraduate: string | boolean): string {
+  if (!isGraduate) return '-';
+  
+  // Handle boolean values
+  if (typeof isGraduate === 'boolean') {
+    return isGraduate ? 'Graduate' : 'Not Graduate';
+  }
+  
+  // Handle string values
+  const status = isGraduate.toLowerCase().trim();
+  switch (status) {
+    case 'yes':
+    case 'true':
+    case '1':
+      return 'Graduate';
+    case 'no':
+    case 'false':
+    case '0':
+      return 'Not Graduate';
+    default:
+      return '-';
   }
 }

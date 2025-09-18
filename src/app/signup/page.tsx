@@ -6,8 +6,8 @@ import React, { useState, useEffect } from 'react';
 import { InputField, SelectField, Button } from '@/components';
 import { useGenericFormSubmission } from '@/hooks/utilities';
 import { supabase } from '@/lib/data/supabase';
-import { logger, logError } from '@/lib/logging';
-import { createFieldChangeHandler } from '@/utils/shared/formUtils';
+import { clientLogger, logError } from '@/lib/logging/client-logger';
+// Note: createFieldChangeHandler removed - using inline form handling
 // import { getErrorMessage } from '@/lib/auth-errors';
 
 interface SignupFormData {
@@ -88,15 +88,18 @@ export default function SignupPage() {
 
   // Barangay admin checking now handled by database trigger after email confirmation
 
-  // Use consolidated form handler - eliminates 7 lines of duplicate code
-  const handleChange = createFieldChangeHandler<SignupFormData>(setFormData, setErrors);
+  // Form handler
+  const handleChange = (field: keyof SignupFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    setErrors(prev => ({ ...prev, [field]: '' }));
+  };
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<SignupFormData>({
-    onSubmit: async data => {
+    onSubmit: async (data: SignupFormData) => {
       // Add timeout to prevent infinite loading
       const timeoutId = setTimeout(() => {
-        logger.error('Signup process timed out after 30 seconds');
+        clientLogger.error('Signup process timed out after 30 seconds', { component: 'SignupPage', action: 'timeout' });
         throw new Error('Signup process timed out. Please try again.');
       }, 30000); // 30 second timeout
 
@@ -124,11 +127,11 @@ export default function SignupPage() {
         });
 
         if (authError || !authData.user) {
-          logger.error('Signup failed', {
+          clientLogger.error('Signup failed', { component: 'SignupPage', action: 'signup_failed', data: {
             error: authError?.message,
             code: authError?.code,
             status: authError?.status,
-          });
+          }});
           throw new Error(authError?.message || 'Failed to create account');
         }
 
@@ -144,7 +147,7 @@ export default function SignupPage() {
         setSubmitStatus('');
       }
     },
-    validate: data => {
+    validate: (data: SignupFormData) => {
       const newErrors: Record<string, string> = {};
 
       // Email validation
@@ -199,7 +202,7 @@ export default function SignupPage() {
     onSuccess: () => {
       setStep('success');
     },
-    onError: error => {
+    onError: (error: Error) => {
       setErrors({ general: error.message });
     },
   });

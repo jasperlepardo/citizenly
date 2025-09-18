@@ -36,6 +36,22 @@ export interface PhysicalPersonalDetailsFormProps {
   };
   onChange: (field: string | number | symbol, value: string | number | boolean | null) => void;
   errors: Record<string, string>;
+  // Individual field loading states
+  loadingStates?: {
+    blood_type?: boolean;
+    complexion?: boolean;
+    height?: boolean;
+    weight?: boolean;
+    citizenship?: boolean;
+    ethnicity?: boolean;
+    religion?: boolean;
+    is_voter?: boolean;
+    is_resident_voter?: boolean;
+    last_voted_date?: boolean;
+    mother_maiden_first?: boolean;
+    mother_maiden_middle?: boolean;
+    mother_maiden_last?: boolean;
+  };
 }
 
 export function PhysicalPersonalDetailsForm({
@@ -43,7 +59,8 @@ export function PhysicalPersonalDetailsForm({
   formData,
   onChange,
   errors,
-}: PhysicalPersonalDetailsFormProps) {
+  loadingStates = {},
+}: Readonly<PhysicalPersonalDetailsFormProps>) {
   // Map form data to PhysicalCharacteristics component props
   const physicalCharacteristicsValue: PhysicalCharacteristicsFormData = {
     blood_type: formData.blood_type || '',
@@ -72,9 +89,29 @@ export function PhysicalPersonalDetailsForm({
 
   // Handle changes from PhysicalCharacteristics component
   const handlePhysicalCharacteristicsChange = (value: PhysicalCharacteristicsFormData) => {
+    console.log('🔍 PhysicalPersonalDetails: handlePhysicalCharacteristicsChange called with', value);
+    
+    // Special debug for ethnicity
+    if (value.ethnicity) {
+      console.log('🎯 PhysicalPersonalDetails: ETHNICITY CHANGE DETECTED:', value.ethnicity);
+      if (value.ethnicity === 'badjao') {
+        console.log('🎯 PhysicalPersonalDetails: BADJAO FORWARDING TO RESIDENT FORM!');
+      }
+    }
+    
+    // Batch all changes together to prevent race conditions
+    const batchedUpdates: Record<string, string> = {};
+    
     Object.entries(value).forEach(([field, fieldValue]) => {
-      onChange(field as keyof typeof value, fieldValue);
+      console.log('🔍 PhysicalPersonalDetails: batching field', { field, fieldValue });
+      batchedUpdates[field] = fieldValue;
     });
+    
+    // Send as a single batch update to prevent race conditions
+    console.log('🎯 PhysicalPersonalDetails: Sending batched update:', batchedUpdates);
+    
+    // Use a special batch key to signal ResidentForm to process all fields atomically
+    onChange('__physical_characteristics_batch__' as any, batchedUpdates as any);
   };
 
   // Handle changes from VotingInformation component
@@ -114,6 +151,15 @@ export function PhysicalPersonalDetailsForm({
             onChange={handlePhysicalCharacteristicsChange}
             errors={errors}
             mode={mode}
+            loadingStates={{
+              blood_type: loadingStates?.blood_type,
+              complexion: loadingStates?.complexion,
+              height: loadingStates?.height,
+              weight: loadingStates?.weight,
+              citizenship: loadingStates?.citizenship,
+              ethnicity: loadingStates?.ethnicity,
+              religion: loadingStates?.religion,
+            }}
           />
 
           {/* Voting Information */}
@@ -122,6 +168,11 @@ export function PhysicalPersonalDetailsForm({
             onChange={handleVotingInfoChange}
             errors={errors}
             mode={mode}
+            loadingStates={{
+              is_voter: loadingStates?.is_voter,
+              is_resident_voter: loadingStates?.is_resident_voter,
+              last_voted_date: loadingStates?.last_voted_date,
+            }}
           />
 
           {/* Mother's Maiden Name */}
@@ -130,6 +181,11 @@ export function PhysicalPersonalDetailsForm({
             onChange={handleMotherMaidenNameChange}
             errors={errors}
             mode={mode}
+            loadingStates={{
+              mother_maiden_first: loadingStates?.mother_maiden_first,
+              mother_maiden_middle: loadingStates?.mother_maiden_middle,
+              mother_maiden_last: loadingStates?.mother_maiden_last,
+            }}
           />
         </div>
       </div>

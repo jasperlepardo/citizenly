@@ -4,12 +4,11 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useCommandMenuWithApi } from '@/hooks/ui/useCommandMenuWithApi';
-import { cn } from '@/utils/shared/cssUtils';
+import { cn } from '@/components/shared/utils';
 import { trackCommandMenuError, trackWorkflowSuggestion } from '@/utils/command-menu/analytics-utils';
 import type {
-  CommandMenuSearchResult as CommandMenuItem,
-  CommandMenuHookResult as CommandMenuProps,
-} from '@/types';
+  CommandMenuSearchResult,
+} from '@/types/infrastructure/services/services';
 
 import { CommandMenuEmpty } from './CommandMenuEmpty';
 import { CommandMenuErrorBoundary } from './CommandMenuErrorBoundary';
@@ -143,7 +142,7 @@ export function InlineCommandMenu({
 
   // Group items by category
   const groupedItems = React.useMemo(() => {
-    const groups = new Map<string, CommandMenuItem[]>();
+    const groups = new Map<string, CommandMenuSearchResult[]>();
 
     // If showing recent section and no search query, separate recent items
     if (showRecentSection && !searchQuery.trim()) {

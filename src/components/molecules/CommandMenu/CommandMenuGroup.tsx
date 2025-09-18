@@ -2,18 +2,18 @@
 
 import React from 'react';
 
-import { cn } from '@/utils/shared/cssUtils';
-import type { CommandMenuSearchResult as CommandMenuItemType } from '@/types';
+import { cn } from '@/components/shared/utils';
+import type { CommandMenuSearchResult } from '@/types/infrastructure/services/services';
 
 import { CommandMenuItem } from './CommandMenuItem';
 
 interface CommandMenuGroupProps {
   label: string;
-  items: CommandMenuItemType[];
+  items: CommandMenuSearchResult[];
   selectedIndex: number;
   globalIndex: number;
   showShortcuts?: boolean;
-  onItemClick?: (item: CommandMenuItemType) => void;
+  onItemClick?: (item: CommandMenuSearchResult) => void;
   onClearGroup?: () => void;
   className?: string;
 }

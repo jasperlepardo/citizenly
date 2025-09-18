@@ -49,6 +49,34 @@ export interface PersonalInformationFormProps {
   psocOptions?: any[];
   psgcLoading?: boolean;
   psocLoading?: boolean;
+  // Loading states
+  loading?: boolean;
+  loadingStates?: {
+    first_name?: boolean;
+    middle_name?: boolean;
+    last_name?: boolean;
+    extension_name?: boolean;
+    sex?: boolean;
+    civil_status?: boolean;
+    civil_status_others_specify?: boolean;
+    citizenship?: boolean;
+    birthdate?: boolean;
+    birth_place_name?: boolean;
+    birth_place_code?: boolean;
+    philsys_card_number?: boolean;
+    education_attainment?: boolean;
+    is_graduate?: boolean;
+    employment_status?: boolean;
+    occupation_code?: boolean;
+    occupation_title?: boolean;
+  };
+  // Section-level loading states
+  sectionLoadingStates?: {
+    basic_info?: boolean;
+    birth_place_info?: boolean;
+    employment_info?: boolean;
+    education_info?: boolean;
+  };
 }
 
 export function PersonalInformationForm({
@@ -62,6 +90,9 @@ export function PersonalInformationForm({
   psocOptions = [],
   psgcLoading = false,
   psocLoading = false,
+  loading = false,
+  loadingStates = {},
+  sectionLoadingStates = {},
 }: PersonalInformationFormProps) {
   // Map form data to BasicInformation component props
   const basicInfoValue: BasicInformationFormData = React.useMemo(
@@ -117,6 +148,8 @@ export function PersonalInformationForm({
   // Handle changes from BirthInformation component
   const handleBirthInfoChange = React.useCallback(
     (value: BirthInformationFormData) => {
+      console.log('🔍 PersonalInformationForm: handleBirthInfoChange called with:', value);
+      
       // Only update fields that have actually changed from current form data
       const currentBirthInfo: BirthInformationFormData = {
         birthdate: formData.birthdate || '',
@@ -124,8 +157,11 @@ export function PersonalInformationForm({
         birth_place_code: formData.birth_place_code || '',
       };
 
+      console.log('🔍 PersonalInformationForm: currentBirthInfo:', currentBirthInfo);
+
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentBirthInfo[field as keyof BirthInformationFormData] !== fieldValue) {
+          console.log(`🔍 PersonalInformationForm: Birth field changed - ${field}:`, fieldValue);
           onChange(field, fieldValue);
         }
       });
@@ -159,6 +195,8 @@ export function PersonalInformationForm({
   // Handle changes from EmploymentInformation component
   const handleEmploymentInfoChange = React.useCallback(
     (value: EmploymentInformationFormData) => {
+      console.log('🔍 PersonalInformationForm: handleEmploymentInfoChange called with:', value);
+      
       // Only update fields that have actually changed from current form data
       const currentEmploymentInfo: EmploymentInformationFormData = {
         employment_status: formData.employment_status || '',
@@ -166,10 +204,38 @@ export function PersonalInformationForm({
         occupation_title: formData.occupation_title || '',
       };
 
+      console.log('🔍 PersonalInformationForm: currentEmploymentInfo:', currentEmploymentInfo);
+
+      // Check if any fields have changed
+      const changedFields: Partial<EmploymentInformationFormData> = {};
       Object.entries(value).forEach(([field, fieldValue]) => {
         if (currentEmploymentInfo[field as keyof EmploymentInformationFormData] !== fieldValue) {
-          onChange(field, fieldValue);
+          console.log(`🔍 PersonalInformationForm: Employment field changed - ${field}:`, fieldValue);
+          changedFields[field as keyof EmploymentInformationFormData] = fieldValue;
         }
+      });
+
+      // If occupation_code and occupation_title are both changing, update them together as a batch
+      if (changedFields.occupation_code !== undefined || changedFields.occupation_title !== undefined) {
+        console.log('🔍 PersonalInformationForm: Batch updating occupation fields:', {
+          occupation_code: changedFields.occupation_code ?? currentEmploymentInfo.occupation_code,
+          occupation_title: changedFields.occupation_title ?? currentEmploymentInfo.occupation_title
+        });
+        
+        // Use batch update for occupation fields to prevent race conditions
+        onChange('__employment_occupation_batch__', {
+          occupation_code: changedFields.occupation_code ?? currentEmploymentInfo.occupation_code,
+          occupation_title: changedFields.occupation_title ?? currentEmploymentInfo.occupation_title,
+        });
+        
+        // Remove occupation fields from individual updates
+        delete changedFields.occupation_code;
+        delete changedFields.occupation_title;
+      }
+
+      // Update remaining fields individually
+      Object.entries(changedFields).forEach(([field, fieldValue]) => {
+        onChange(field, fieldValue);
       });
     },
     [onChange, formData.employment_status, formData.occupation_code, formData.occupation_title]
@@ -194,6 +260,7 @@ export function PersonalInformationForm({
             value={formData.philsys_card_number || ''}
             onChange={value => onChange('philsys_card_number', value)}
             error={errors.philsys_card_number}
+            loading={loadingStates?.philsys_card_number || sectionLoadingStates?.basic_info}
           />
 
           {/* Basic Information Component - Names, Sex, Civil Status, Citizenship */}
@@ -202,21 +269,35 @@ export function PersonalInformationForm({
             value={basicInfoValue}
             onChange={handleBasicInfoChange}
             errors={errors}
+            loadingStates={{
+              first_name: loadingStates?.first_name || sectionLoadingStates?.basic_info,
+              middle_name: loadingStates?.middle_name || sectionLoadingStates?.basic_info,
+              last_name: loadingStates?.last_name || sectionLoadingStates?.basic_info,
+              extension_name: loadingStates?.extension_name || sectionLoadingStates?.basic_info,
+              sex: loadingStates?.sex || sectionLoadingStates?.basic_info,
+              civil_status: loadingStates?.civil_status || sectionLoadingStates?.basic_info,
+              civil_status_others_specify: loadingStates?.civil_status_others_specify || sectionLoadingStates?.basic_info,
+            }}
           />
 
           {/* Birth Information */}
           <BirthInformation
             mode={mode}
-            value={React.useMemo(
-              () => ({
-                birthdate: formData.birthdate || '',
-                birth_place_name: formData.birth_place_name || '',
-                birth_place_code: formData.birth_place_code || '',
-              }),
-              [formData.birthdate, formData.birth_place_name, formData.birth_place_code]
-            )}
+            value={{
+              birthdate: formData.birthdate || '',
+              birth_place_name: formData.birth_place_name || '',
+              birth_place_code: formData.birth_place_code || '',
+            }}
             onChange={handleBirthInfoChange}
             errors={errors}
+            onPsgcSearch={onPsgcSearch}
+            psgcOptions={psgcOptions}
+            psgcLoading={psgcLoading}
+            loadingStates={{
+              birthdate: loadingStates?.birthdate,
+              birth_place_name: loadingStates?.birth_place_name,
+              birth_place_code: loadingStates?.birth_place_code,
+            }}
           />
 
           {/* Education Information */}
@@ -231,6 +312,10 @@ export function PersonalInformationForm({
             )}
             onChange={handleEducationInfoChange}
             errors={errors}
+            loadingStates={{
+              education_attainment: loadingStates?.education_attainment || sectionLoadingStates?.education_info,
+              is_graduate: loadingStates?.is_graduate || sectionLoadingStates?.education_info,
+            }}
           />
 
           {/* Employment Information */}
@@ -249,6 +334,11 @@ export function PersonalInformationForm({
             onPsocSearch={onPsocSearch}
             psocOptions={psocOptions}
             psocLoading={psocLoading}
+            loadingStates={{
+              employment_status: loadingStates?.employment_status || sectionLoadingStates?.employment_info,
+              occupation_code: loadingStates?.occupation_code || sectionLoadingStates?.employment_info,
+              occupation_title: loadingStates?.occupation_title || sectionLoadingStates?.employment_info,
+            }}
           />
         </div>
       </div>

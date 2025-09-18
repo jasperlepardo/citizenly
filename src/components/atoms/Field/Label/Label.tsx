@@ -9,6 +9,8 @@ export interface LabelProps {
   secondaryText?: React.ReactNode;
   /** The ID of the form control this label is associated with */
   htmlFor?: string;
+  /** The ID of the label element itself */
+  id?: string;
   /** Whether the associated form field is required */
   required?: boolean;
   /** Whether to show the required indicator (*) */
@@ -56,6 +58,7 @@ export const Label: React.FC<LabelProps> = ({
   children,
   secondaryText,
   htmlFor,
+  id,
   required = false,
   showRequiredIndicator = true,
   className = '',
@@ -112,6 +115,7 @@ export const Label: React.FC<LabelProps> = ({
 
   return (
     <label
+      id={id}
       htmlFor={htmlFor}
       className={labelClasses}
       data-required={required}

@@ -18,7 +18,7 @@ import type {
   UseResidentEditWorkflowReturn,
 } from '@/types';
 
-import { useResidentValidationErrors } from '../validation/useResidentValidationErrors';
+import { useResidentValidationErrors } from '@/hooks/validation/useResidentValidationErrors';
 
 import { useResidentFormState } from './useResidentFormState';
 

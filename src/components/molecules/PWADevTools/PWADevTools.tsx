@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { syncQueue, offlineStorage } from '@/lib/data';
+import { syncQueue } from '@/lib/data/sync-queue';
+import { offlineStorage } from '@/lib/data/offline-storage';
 import { pwaPerformance } from '@/utils/performance/pwaPerformanceUtils';
 
 interface PWADevToolsProps {

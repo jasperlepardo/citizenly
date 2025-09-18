@@ -10,7 +10,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
 
-import { Input } from '../Input';
+import { Input } from '@/components/atoms/Field/Input';
 
 import { Option } from './Option';
 
@@ -101,7 +101,7 @@ export default function Select({
   const lastSearchRef = useRef<string>('');
 
   // Generate unique IDs for the form elements
-  const inputId = id || `select-input-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = id || `select-field`;
 
   // Normalize and set options (for static data)
   useEffect(() => {
@@ -122,10 +122,10 @@ export default function Select({
     if (onSearch) {
       // API-driven search with debounce
       const timer = setTimeout(() => {
-        if (inputValue.trim() && inputValue.length >= 2 && lastSearchRef.current !== inputValue) {
+        if (inputValue && inputValue.trim() && inputValue.length >= 2 && lastSearchRef.current !== inputValue) {
           lastSearchRef.current = inputValue;
           onSearch(inputValue);
-        } else if (!enumData && inputValue.trim().length < 2) {
+        } else if (!enumData && inputValue && inputValue.trim().length < 2) {
           setFilteredOptions([]);
         }
       }, 300);
@@ -186,7 +186,7 @@ export default function Select({
 
     // For typing behavior: only show when user has typed enough characters
     // BUT don't show if the inputValue exactly matches the selectedOption (means it's not user typing)
-    if (inputValue.trim().length > 0 && !(selectedOption && inputValue === selectedOption.label)) {
+    if (inputValue && inputValue.trim().length > 0 && !(selectedOption && inputValue === selectedOption.label)) {
       const shouldShow = onSearch
         ? true // For API search: always show when user is typing, let dropdown content handle the messaging
         : filteredOptions.length > 0; // For static data: only show if there are options
@@ -324,10 +324,25 @@ export default function Select({
   };
 
   // Handle input blur
-  const handleInputBlur = () => {
-    // Delay hiding dropdown to allow clicks on options
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    // Check if focus is moving to the dropdown
+    const relatedTarget = e.relatedTarget as Node | null;
+    const isMovingToDropdown = relatedTarget && dropdownRef.current?.contains(relatedTarget);
+    
+    // If focusing on dropdown, don't close it
+    if (isMovingToDropdown) {
+      return;
+    }
+    
+    // For Tab navigation or clicking outside, close immediately
+    if (!relatedTarget || !dropdownRef.current?.contains(relatedTarget)) {
+      setShowDropdown(false);
+      setFocusedIndex(-1);
+      return;
+    }
+    
+    // Fallback: delay hiding dropdown only for mouse interactions within component
     setTimeout(() => {
-      // More specific check: only hide if the active element is not within this component
       const activeElement = document.activeElement;
       const isWithinThisComponent =
         dropdownRef.current?.contains(activeElement) ||
@@ -338,7 +353,7 @@ export default function Select({
         setShowDropdown(false);
         setFocusedIndex(-1);
       }
-    }, 300);
+    }, 150); // Reduced timeout for better UX
   };
 
   // Handle keyboard navigation using consolidated utility

@@ -14,7 +14,7 @@ import type {
   EmploymentStatusData,
 } from '@/types/app/ui/charts';
 
-import GenericPieChart from '../GenericPieChart/GenericPieChart';
+import GenericPieChart from '@/components/molecules/GenericPieChart/GenericPieChart';
 
 interface BaseStatisticsChartProps {
   title?: string;

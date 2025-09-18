@@ -10,13 +10,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
-import {
+import type { 
   BaseSearchConfig,
   SearchState,
   SearchFunction,
-  createSearchState,
-} from '@/utils/search/search-utilities';
-import type { UseGenericSearchReturn } from '@/types';
+  UseGenericSearchReturn 
+} from '@/types';
 
 /**
  * Generic search hook for handling search state and operations
@@ -30,7 +29,12 @@ export function useGenericSearch<T>(
 ): UseGenericSearchReturn<T> {
   const { debounceMs = 300, initialQuery = '', minQueryLength = 0, onError } = config;
 
-  const [state, setState] = useState<SearchState<T>>(() => createSearchState<T>(initialQuery));
+  const [state, setState] = useState<SearchState<T>>(() => ({
+    query: initialQuery,
+    results: [],
+    isLoading: false,
+    error: null,
+  }));
 
   const debouncedQuery = useDebounce(state.query, debounceMs);
 

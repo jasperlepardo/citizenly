@@ -5,7 +5,7 @@
  * These types should be used in components, not in core data types.
  */
 
-import type { ResidentRecord } from '../../infrastructure/database/database';
+import type { ResidentRecord } from '@/types/infrastructure/database/database';
 
 /**
  * Table action configuration for resident rows

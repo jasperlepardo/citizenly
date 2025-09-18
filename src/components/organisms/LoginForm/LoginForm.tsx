@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { InputField, Button } from '@/components';
 import { useAuth } from '@/contexts';
 import { useGenericFormSubmission } from '@/hooks/utilities';
-import { createFieldChangeHandler } from '@/utils/shared/formUtils';
+import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';
 import type { LoginFormData } from '@/types/app/auth/auth';
 
 interface LoginFormProps {
@@ -28,7 +28,7 @@ export default function LoginForm({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Use consolidated form handler - eliminates 7 lines of duplicate code
-  const handleChange = createFieldChangeHandler<LoginFormData>(setFormData, setErrors);
+  const handleChange = createFieldChangeHandler<LoginFormData>(formData, setFormData);
 
   // Use consolidated form submission hook
   const { isSubmitting, handleSubmit } = useGenericFormSubmission<LoginFormData>({

@@ -1,5 +1,5 @@
 // Suppress Next.js warnings before anything else loads
-import '@/lib/utils/suppress-next-warnings';
+import '@/utils/shared/warnings/suppressNextWarnings';
 import ClientInit from './client-init';
 
 import type { Metadata } from 'next';
@@ -12,8 +12,8 @@ import { PWAInstallPrompt } from '@/components/molecules/PWAInstallPrompt';
 import { PWAStatus } from '@/components/molecules/PWAStatus';
 import { VersionTag } from '@/components/molecules/VersionTag';
 import { ErrorSuppressor } from '@/components/utils/ErrorSuppressor';
-import LastVisitedTracker from '@/providers/components/LastVisitedTracker';
-import Providers from '@/providers/components/providers';
+import LastVisitedTracker from '@/providers/LastVisitedTracker';
+import Providers from '@/providers/Providers';
 
 // Configure Montserrat font with Next.js font optimization
 const montserrat = Montserrat({

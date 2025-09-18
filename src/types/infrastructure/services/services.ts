@@ -3,6 +3,7 @@
  * Consolidated service layer interfaces and types
  */
 
+import React from 'react';
 import type { HouseholdFormData } from '@/types/app/ui/forms';
 
 // =============================================================================
@@ -551,15 +552,34 @@ export interface UserSecurityData {
 
 /**
  * Command menu search result
- * Consolidates from src/services/command-menu/api-utils.ts
+ * Consolidated interface for command menu items
+ * Generic type parameter T allows for typed data payload
  */
-export interface CommandMenuSearchResult {
+export interface CommandMenuSearchResult<T = any> {
   id: string;
   title: string;
-  description: string;
-  type: 'resident' | 'household';
-  href: string;
+  subtitle?: string;
+  description?: string;
+  type: 'resident' | 'household' | 'action' | 'navigation';
+  href?: string;
+  icon?: string | React.ComponentType<{ className?: string }>;
+  data: T;
+  score: number;
+  group?: string;
+  label?: string;
+  keywords?: string[];
+  recent?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  shortcut?: string[];
+  avatar?: string | { src: string; alt: string; fallback?: string };
 }
+
+/**
+ * @deprecated Use CommandMenuSearchResult instead
+ * This alias is kept for backward compatibility during migration
+ */
+export type CommandMenuItem<T = any> = CommandMenuSearchResult<T>;
 
 /**
  * Export options for command menu

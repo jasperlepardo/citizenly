@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-import { logger } from '@/lib/logging';
+import { clientLogger } from '@/lib/logging/client-logger';
 import type { UseSelectorOptions, UseSelectorReturn } from '@/types';
 
 export function useSelector<T extends { value: string; label: string }>({
@@ -33,7 +33,7 @@ export function useSelector<T extends { value: string; label: string }>({
         const results = await searchFn(search);
         setOptions(results);
       } catch (error) {
-        logger.error('Selector search error', { error });
+        clientLogger.error('Selector search error', { component: 'useSelector', action: 'search_error', data: { error } });
         setOptions([]);
       } finally {
         setLoading(false);

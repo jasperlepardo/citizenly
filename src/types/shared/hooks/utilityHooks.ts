@@ -6,200 +6,22 @@
  */
 
 // ComponentType import removed - was not being used
-import type { FormMode } from '../../app/ui/forms';
-import type { AddressHierarchyQueryResult } from '../../infrastructure/database/database';
-import type { HookPerformanceMetrics } from '../utilities/performance';
-import type { AddressHierarchyInfo } from '../../domain/addresses/addresses';
+import type { FormMode } from '@/types/app/ui/forms';
+import type { AddressHierarchyQueryResult } from '@/types/infrastructure/database/database';
+import type { HookPerformanceMetrics } from '@/types/shared/utilities/performance';
+import type { AddressHierarchyInfo } from '@/types/domain/addresses/addresses';
 
-// =============================================================================
-// FORM HOOK TYPES
-// =============================================================================
+// Note: Form hook types removed - unused (FormFieldState, FormState, UseFormOptions, UseFormReturn)
 
-/**
- * Form field state
- */
-export interface FormFieldState {
-  value: any;
-  error: string | null;
-  touched: boolean;
-  dirty: boolean;
-  validating: boolean;
-}
-
-/**
- * Form state
- */
-export interface FormState<T = Record<string, any>> {
-  values: T;
-  errors: Record<keyof T, string>;
-  touched: Record<keyof T, boolean>;
-  dirty: Record<keyof T, boolean>;
-  validating: boolean;
-  submitting: boolean;
-  isValid: boolean;
-}
-
-/**
- * Form hook options
- */
-export interface UseFormOptions<T> {
-  initialValues: T;
-  validationSchema?: any;
-  onSubmit?: (values: T) => Promise<void> | void;
-  validateOnChange?: boolean;
-  validateOnBlur?: boolean;
-}
-
-/**
- * Form hook return type
- */
-export interface UseFormReturn<T> {
-  /** Current form state */
-  state: FormState<T>;
-  /** Get field props for inputs */
-  getFieldProps: (name: keyof T) => {
-    value: any;
-    onChange: (value: any) => void;
-    onBlur: () => void;
-    error: string | null;
-  };
-  /** Set field value */
-  setFieldValue: (name: keyof T, value: any) => void;
-  /** Set field error */
-  setFieldError: (name: keyof T, error: string) => void;
-  /** Reset form */
-  reset: () => void;
-  /** Submit form */
-  submit: () => Promise<void>;
-  /** Validate form */
-  validate: () => Promise<boolean>;
-}
-
-// =============================================================================
-// SEARCH HOOK TYPES
-// =============================================================================
-
-/**
- * Search options
- */
-export interface SearchOptions {
-  query: string;
-  filters?: Record<string, any>;
-  sort?: { field: string; direction: 'asc' | 'desc' };
-  pagination?: { page: number; limit: number };
-  debounceMs?: number;
-}
-
-/**
- * Search results
- */
-export interface SearchResults<T> {
-  items: T[];
-  total: number;
-  page: number;
-  totalPages: number;
-  hasMore: boolean;
-}
-
-/**
- * Search hook return type
- */
-export interface UseSearchReturn<T> {
-  /** Search results */
-  results: SearchResults<T>;
-  /** Loading state */
-  loading: boolean;
-  /** Error state */
-  error: string | null;
-  /** Current search query */
-  query: string;
-  /** Execute search */
-  search: (options: SearchOptions) => Promise<void>;
-  /** Clear search */
-  clear: () => void;
-  /** Load more results */
-  loadMore: () => Promise<void>;
-}
+// Note: Search hook types removed - unused (SearchOptions, SearchResults, UseSearchReturn)
 
 // =============================================================================
 // UTILITY HOOK TYPES
 // =============================================================================
 
-/**
- * Local storage hook options
- */
-export interface UseLocalStorageOptions<T> {
-  defaultValue?: T;
-  serialize?: (value: T) => string;
-  deserialize?: (value: string) => T;
-}
-
-/**
- * Local storage hook return type
- */
-export interface UseLocalStorageReturn<T> {
-  value: T;
-  setValue: (value: T | ((prev: T) => T)) => void;
-  removeValue: () => void;
-}
-
-/**
- * Debounce hook options
- */
-export interface UseDebounceOptions {
-  delay: number;
-  leading?: boolean;
-  trailing?: boolean;
-}
-
-/**
- * API hook configuration
- */
-export interface UseApiConfig {
-  baseURL?: string;
-  headers?: Record<string, string>;
-  timeout?: number;
-  retry?: {
-    attempts: number;
-    delay: number;
-  };
-}
-
-/**
- * Permission check result
- */
-export interface PermissionCheckResult {
-  hasPermission: boolean;
-  loading: boolean;
-  error: string | null;
-}
-
-/**
- * User barangay data
- */
-export interface UserBarangayData {
-  barangayCode: string;
-  barangayName: string;
-  cityMunicipalityName: string;
-  provinceName: string;
-  regionName: string;
-}
-
-/**
- * Generic form hook result
- */
-export interface FormHookResult<T> {
-  data: T;
-  errors: Record<string, string>;
-  isValid: boolean;
-  isSubmitting: boolean;
-  isDirty: boolean;
-  reset: () => void;
-  submit: () => Promise<void>;
-  setValue: (field: keyof T, value: T[keyof T]) => void;
-  setError: (field: keyof T, error: string) => void;
-  clearError: (field: keyof T) => void;
-}
+// Note: Basic utility hook types removed - unused:
+// UseLocalStorageOptions, UseLocalStorageReturn, UseDebounceOptions, UseApiConfig,
+// PermissionCheckResult, UserBarangayData, FormHookResult
 
 // =============================================================================
 // URL PARAMETER HOOKS
@@ -214,21 +36,7 @@ export interface URLParameterConfig {
   defaultValue?: string;
 }
 
-/**
- * URL parameter hook result
- */
-export interface URLParametersResult {
-  [key: string]: string | null;
-}
-
-/**
- * Resident form URL parameters result
- */
-export interface ResidentFormURLParametersResult {
-  suggestedName: string | null;
-  suggestedId: string | null;
-  isPreFilled: boolean;
-}
+// Note: URLParametersResult and ResidentFormURLParametersResult removed - unused
 
 // =============================================================================
 // UTILITY HOOK TYPES (Hook-specific interfaces)

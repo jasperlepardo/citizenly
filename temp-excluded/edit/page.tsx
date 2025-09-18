@@ -7,7 +7,7 @@ import { DashboardLayout } from '@/components/templates';
 import { Button } from '@/components/atoms';
 // import { FormField, FormSection } from '@/components/molecules';
 import { useAuth } from '@/contexts/AuthContext';
-import { logger, logError } from '@/lib/logging';
+import { clientLogger, logError } from '@/lib/logging/client-logger';
 
 export const dynamic = 'force-dynamic';
 
