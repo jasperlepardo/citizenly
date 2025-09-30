@@ -1,8 +1,8 @@
 {
   "version": 2,
   "framework": "nextjs",
-  "installCommand": "npm ci",
-  "buildCommand": "./scripts/build/vercel-build.sh",
+  "installCommand": "npm ci && npm install -g typescript@5.9.2",
+  "buildCommand": "npm run build",
   "git": {
     "deploymentEnabled": {
       "main": true,
