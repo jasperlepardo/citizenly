@@ -1,6 +1,35 @@
-# Git Workflow Automation Scripts
+# Essential Production Scripts
 
-This directory contains automation scripts to streamline the Git workflow for feature development, following best practices for branching, committing, and pull request creation.
+This directory contains **23 essential scripts** for core development workflows and production operations. One-off migration scripts have been removed, but essential maintenance and analysis tools have been restored.
+
+## 📁 Organization
+
+### `git/` - Git Workflow Automation (5 scripts)
+Production-ready scripts for branching, committing, and pull request creation following best practices.
+
+### `build/` - Build & Performance (4 scripts)
+- `create-build-env.mjs` - Build environment setup
+- `prepare-storybook.js` - Storybook preparation  
+- `analyze-bundle.js` - Bundle size analysis and optimization recommendations
+- `track-bundle-size.js` - Bundle size tracking over time with budget violations
+
+### `docs/` - Documentation Tools (2 scripts)
+- `check-documentation.js` - JSDoc validation and completeness checking
+- `generate-docs.js` - API documentation generation from JSDoc comments
+
+### `security/` - Security Analysis (3 scripts)
+Automated dependency vulnerability scanning and security policy enforcement.
+
+### `quality/` - Code Quality (5 scripts)
+- `refresh-stats.js` - Quality metrics tracking
+- `setup-deployment.sh` - Deployment setup automation
+- `setup-secrets.sh` - Secret management
+- `check-complexity.js` - Cyclomatic complexity analysis 
+- `analyze-imports.js` - Import structure and circular dependency detection
+
+### **Root Level** - Core Utilities (2 scripts)
+- `generate-enums.ts` - Database enum generation
+- `validate-enums.ts` - Enum validation
 
 ## 🚀 Quick Start
 
@@ -28,16 +57,33 @@ npm run create-pr                                       # Create PR
 | `npm run git-status`    | Show current workflow status            | -                                                      |
 | `npm run git-cleanup`   | Clean up merged branches                | -                                                      |
 
+### Documentation & Quality Scripts
+
+| Command                     | Description                             | Example                                                |
+| --------------------------- | --------------------------------------- | ------------------------------------------------------ |
+| `npm run docs:check`        | Check JSDoc documentation completeness  | -                                                      |
+| `npm run docs:generate`     | Generate API documentation from JSDoc   | -                                                      |
+| `npm run bundle:analyze`    | Analyze bundle sizes and optimization   | -                                                      |
+| `npm run bundle:track`      | Track bundle size changes over time     | -                                                      |
+| `npm run quality:complexity`| Check code complexity and identify issues| -                                                      |
+| `npm run quality:imports`   | Analyze import patterns and circular deps| -                                                     |
+
 ### Direct Script Usage
 
 ```bash
 # Main workflow script
-./scripts/workflow.sh [command] [args...]
+./scripts/git/workflow.sh [command] [args...]
 
 # Individual scripts
-./scripts/create-feature.sh <name> [description]
-./scripts/commit.sh [type] [description]
-./scripts/create-pr.sh [base-branch]
+./scripts/git/create-feature.sh <name> [description]
+./scripts/git/commit.sh [type] [description]
+./scripts/git/create-pr.sh [base-branch]
+
+# Other categories
+./scripts/build/analyze-bundle.js
+./scripts/quality/check-complexity.js
+./scripts/security/check-security.sh
+./scripts/docs/check-documentation.js
 ```
 
 ## 🔄 Workflow Steps
@@ -105,12 +151,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## 🛠️ Individual Scripts
 
-### create-feature.sh
+### git/create-feature.sh
 
 Creates a new feature branch with proper setup.
 
 ```bash
-./scripts/create-feature.sh dark-mode "Add dark mode support"
+./scripts/git/create-feature.sh dark-mode "Add dark mode support"
 ```
 
 **Features:**
@@ -120,12 +166,12 @@ Creates a new feature branch with proper setup.
 - Sets up commit message template
 - Provides next steps guidance
 
-### commit.sh
+### git/commit.sh
 
 Smart commit with conventional format and file context.
 
 ```bash
-./scripts/commit.sh feat "Add login component"
+./scripts/git/commit.sh feat "Add login component"
 ```
 
 **Features:**
@@ -136,12 +182,12 @@ Smart commit with conventional format and file context.
 - Preview before committing
 - Optional push to remote
 
-### create-pr.sh
+### git/create-pr.sh
 
 Creates GitHub pull request with rich description.
 
 ```bash
-./scripts/create-pr.sh develop
+./scripts/git/create-pr.sh develop
 ```
 
 **Features:**
@@ -152,12 +198,12 @@ Creates GitHub pull request with rich description.
 - Creates test plan checklist
 - Opens in browser (optional)
 
-### workflow.sh
+### git/workflow.sh
 
 Main orchestration script combining all workflows.
 
 ```bash
-./scripts/workflow.sh complete user-auth "Add user authentication"
+./scripts/git/workflow.sh complete user-auth "Add user authentication"
 ```
 
 **Features:**

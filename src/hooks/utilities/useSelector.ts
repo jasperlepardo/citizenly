@@ -1,0 +1,103 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+import { clientLogger } from '@/lib/logging/client-logger';
+import type { UseSelectorOptions, UseSelectorReturn } from '@/types/shared/hooks/utilityHooks';
+
+export function useSelector<T extends { value: string; label: string }>({
+  value,
+  onChange,
+  searchFn,
+  loadSelectedFn,
+  debounceMs = 300,
+  minSearchLength = 2,
+  formatDisplayValue,
+}: UseSelectorOptions<T>): UseSelectorReturn<T> {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [options, setOptions] = useState<T[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<T | null>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const loadOptions = useCallback(
+    async (search: string) => {
+      if (search.length < minSearchLength) {
+        setOptions([]);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const results = await searchFn(search);
+        setOptions(results);
+      } catch (error) {
+        clientLogger.error('Selector search error', { component: 'useSelector', action: 'search_error', data: { error } });
+        setOptions([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [searchFn, minSearchLength]
+  );
+
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      loadOptions(searchTerm);
+    }, debounceMs);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [searchTerm, loadOptions, debounceMs]);
+
+  useEffect(() => {
+    if (value && !selectedOption && loadSelectedFn) {
+      loadSelectedFn(value).then((option: T | null) => {
+        if (option) {
+          setSelectedOption(option);
+          setSearchTerm(formatDisplayValue ? formatDisplayValue(option) : option.label);
+        }
+      });
+    }
+  }, [value, selectedOption, loadSelectedFn, formatDisplayValue]);
+
+  const handleSearchChange = useCallback(
+    (term: string) => {
+      setSearchTerm(term);
+
+      if (
+        selectedOption &&
+        term !== (formatDisplayValue ? formatDisplayValue(selectedOption) : selectedOption.label)
+      ) {
+        setSelectedOption(null);
+        onChange('');
+      }
+    },
+    [selectedOption, onChange, formatDisplayValue]
+  );
+
+  const handleOpenChange = useCallback((open: boolean) => {
+    setIsOpen(open);
+  }, []);
+
+  return {
+    searchTerm,
+    options,
+    loading,
+    isOpen,
+    selectedOption,
+    onSearchChange: handleSearchChange,
+    onOpenChange: handleOpenChange,
+    setSearchTerm,
+    setOptions,
+    setSelectedOption,
+  };
+}

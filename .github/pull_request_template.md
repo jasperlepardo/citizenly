@@ -1,19 +1,39 @@
-# Pull Request
+## PR Title Format
 
-## 📋 Description
+<!-- Ensure your PR title follows the naming convention: -->
+<!-- Feature/Fix: "feat: description" or "fix: description" -->
+<!-- Release to Staging: "Release: v1.2.0 - Sprint/Milestone Name" -->
+<!-- Release to Main: "Production Release: v1.2.0" -->
 
-Brief description of changes and why they're needed.
+## 📋 Summary
+
+Brief description of what this PR accomplishes.
 
 ## 🔧 Type of Change
 
-- [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
-- [ ] ✨ New feature (non-breaking change which adds functionality)
-- [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] 📝 Documentation update
-- [ ] 🎨 Style/formatting changes
-- [ ] ♻️ Code refactor
-- [ ] ⚡ Performance improvement
-- [ ] 🧪 Test changes
+<!-- Check the type of change your PR introduces: -->
+
+- [ ] 🆕 **Feature** - New functionality added
+- [ ] 🐛 **Bug Fix** - Existing functionality improved/fixed
+- [ ] 🔧 **Chore** - Maintenance, dependencies, or tooling
+- [ ] 📚 **Documentation** - Documentation updates
+- [ ] 🚀 **Release** - develop → staging or staging → main
+
+## 🎯 Target Branch Validation
+
+<!-- Confirm you're targeting the correct branch according to workflow rules: -->
+
+- [ ] ✅ **Feature/Fix/Chore → develop** (All feature branches must target develop)
+- [ ] ✅ **develop → staging** (Release to staging)
+- [ ] ✅ **staging → main** (Production release)
+
+## 📛 Naming Convention Check
+
+<!-- Confirm your branch and PR follow naming conventions: -->
+
+- [ ] ✅ Branch name follows format: `type/ticket-id-description` or `type/description`
+  - Examples: `feature/AUTH-123-user-login`, `fix/BUG-456-csrf-validation`, `chore/update-dependencies`
+- [ ] ✅ PR title follows conventional format based on type
 
 ## 🧪 Testing
 
@@ -63,12 +83,25 @@ Brief description of changes and why they're needed.
 - [ ] API changes are documented
 - [ ] README updated (if needed)
 
-## 🔄 Git Flow
+## 🔄 Git Flow & Workflow Compliance
 
-- [ ] Branch follows naming convention (`feature/`, `fix/`, `hotfix/`)
-- [ ] Commits follow conventional commit format
-- [ ] Branch is up to date with target branch
-- [ ] No merge conflicts
+- [ ] ✅ Branch follows strict naming convention: `type/ticket-id-description`
+- [ ] ✅ Commits follow conventional commit format: `type(scope): description`
+- [ ] ✅ Branch is up to date with target branch
+- [ ] ✅ No merge conflicts
+- [ ] ✅ Targets correct branch according to workflow rules:
+  - Feature/Fix branches → `develop` only
+  - Release branches → `develop` → `staging` → `main` (in sequence)
+
+## ⚠️ Workflow Rules Reminder
+
+<!-- These rules are STRICTLY enforced: -->
+
+- ❌ **FORBIDDEN**: Feature branches → staging or main (must go through develop)
+- ❌ **FORBIDDEN**: develop → main (must go through staging)
+- ❌ **FORBIDDEN**: Direct pushes to protected branches
+- ✅ **REQUIRED**: All status checks must pass before merging
+- ✅ **REQUIRED**: Proper review approvals based on target branch
 
 ## 🚀 Deployment
 

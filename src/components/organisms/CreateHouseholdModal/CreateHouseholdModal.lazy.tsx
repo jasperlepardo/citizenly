@@ -1,0 +1,15 @@
+/**
+ * Lazy-loaded Create Household Modal
+ *
+ * @description Lazy version of CreateHouseholdModal for code splitting
+ */
+
+import { lazy } from 'react';
+
+import { FormSkeleton } from '@/components/atoms/Loading/FormSkeleton/FormSkeleton';
+import { withLazyLoading } from '@/components/shared/lazy/lazyLoading';
+
+const CreateHouseholdModalLazy = lazy(() => import('./CreateHouseholdModal'));
+
+export const LazyCreateHouseholdModal = withLazyLoading(CreateHouseholdModalLazy, <FormSkeleton />);
+export default LazyCreateHouseholdModal;

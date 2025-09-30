@@ -1,0 +1,87 @@
+'use client';
+
+import Link from 'next/link';
+
+import { Button } from '@/components/atoms/Button/Button';
+
+export default function ReportsPage() {
+  const reportTypes = [
+    {
+      name: 'RBI Registration Data',
+      description: 'Records of Barangay Inhabitant form submissions and analytics',
+      icon: '📋',
+      status: 'Available',
+      link: '/reports/records-of-barangay-inhabitants-by-household',
+    },
+  ];
+
+  return (
+    <div className="p-6">
+      {/* Page Header */}
+      <div className="mb-6">
+        <div>
+          <h1 className="font-montserrat mb-0.5 text-xl font-semibold text-gray-600 dark:text-gray-300">
+            Reports & Analytics
+          </h1>
+          <p className="font-montserrat text-sm font-normal text-gray-600 dark:text-gray-400">
+            Generate and manage comprehensive reports and data analytics for your barangay
+          </p>
+        </div>
+      </div>
+
+      {/* Report Types Grid */}
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {reportTypes.map((report, index) => (
+          <div
+            key={index}
+            className={`rounded-lg border bg-white p-6 transition-shadow hover:shadow-md dark:bg-gray-800 ${
+              report.status === 'Available'
+                ? 'border-gray-200 hover:border-blue-300 dark:border-gray-700'
+                : 'border-gray-200 opacity-75 dark:border-gray-700'
+            }`}
+          >
+            <div className="mb-4 flex items-start justify-between">
+              <div className="text-2xl">{report.icon}</div>
+              <span
+                className={`rounded-full px-2 py-1 text-xs font-medium ${
+                  report.status === 'Available'
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-amber-100 text-amber-800'
+                }`}
+              >
+                {report.status}
+              </span>
+            </div>
+            <h3 className="font-montserrat mb-2 text-base font-semibold text-gray-600 dark:text-gray-300">
+              {report.name}
+            </h3>
+            <p className="font-montserrat mb-4 text-sm text-gray-600 dark:text-gray-400">
+              {report.description}
+            </p>
+            {report.link ? (
+              <Link href={report.link}>
+                <Button
+                  variant={report.status === 'Available' ? 'primary' : 'ghost'}
+                  size="sm"
+                  fullWidth
+                  disabled={report.status !== 'Available'}
+                >
+                  {report.status === 'Available' ? 'Access Now' : 'Coming Soon'}
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                variant={report.status === 'Available' ? 'primary' : 'ghost'}
+                size="sm"
+                fullWidth
+                disabled={report.status !== 'Available'}
+              >
+                {report.status === 'Available' ? 'Generate Report' : 'Coming Soon'}
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

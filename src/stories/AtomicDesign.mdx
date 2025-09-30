@@ -1,0 +1,102 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Design System/Atomic Design" />
+
+# Citizenly Design System
+
+## Atomic Design Methodology
+
+This design system is organized using **Atomic Design principles** created by Brad Frost. This methodology helps create consistent, reusable components by breaking them down into five distinct levels.
+
+### The Five Levels
+
+#### 🔬 **Atoms**
+The basic building blocks of our interface. These are the fundamental HTML elements like buttons, inputs, labels, and other basic components that can't be broken down any further without losing their meaning.
+
+**Examples:**
+- Button
+- Input
+- Checkbox
+- Radio
+- Loading components
+- Icon
+
+#### 🧪 **Molecules** 
+Simple groups of UI elements functioning together as a unit. Molecules combine atoms to form more complex, reusable components.
+
+**Examples:**
+- Search Bar (Input + Button)
+- Input Field (Label + Input + Error Message)
+- Form Field (Label + Input + Helper Text)
+- Stat Card (Text + Icon)
+
+#### 🦠 **Organisms**
+Complex UI components composed of groups of molecules and/or atoms and/or other organisms. These form distinct sections of an interface.
+
+**Examples:**
+- Header (Logo + Navigation + User Profile)
+- Login Form (Multiple Input Fields + Button)
+- Data Table (Search + Filters + Table)
+- Personal Information Form
+
+#### 📄 **Templates**
+Page-level objects that place components into a layout and articulate the design's underlying content structure. Templates focus on the page's structure rather than the page's final content.
+
+**Examples:**
+- Dashboard Layout
+- Main Layout (Header + Sidebar + Content)
+- Form Wizard Template
+- App Shell
+
+#### 📱 **Pages**
+Specific instances of templates that show what a UI looks like with real representative content in place. Pages are the highest level of fidelity.
+
+**Examples:**
+- Dashboard with real data
+- Resident Registration Page
+- Household Management Page
+
+## Benefits of This Approach
+
+### 🔄 **Consistency**
+Components are reused across the application, ensuring a consistent look and feel.
+
+### 🛠️ **Maintainability**
+Changes to base atoms propagate through the entire system, making updates efficient.
+
+### 📚 **Documentation**
+Each component level is well-documented with examples and usage guidelines.
+
+### 🧪 **Testability**
+Components can be tested in isolation and in various combinations.
+
+### 👥 **Collaboration**
+Designers and developers share a common language and understanding.
+
+## Using This Design System
+
+1. **Start with Atoms** - Use the basic building blocks for simple UI elements
+2. **Combine into Molecules** - Group related atoms for reusable components
+3. **Build Organisms** - Create complex sections using molecules and atoms
+4. **Layout with Templates** - Structure pages with consistent layouts
+5. **Populate Pages** - Add real content to templates
+
+## Component Organization
+
+```
+src/components/
+├── atoms/           # Basic building blocks
+├── molecules/       # Simple component groups
+├── organisms/       # Complex sections
+└── templates/       # Page layouts
+```
+
+Each component includes:
+- Implementation (`.tsx`)
+- Stories (`.stories.tsx`)
+- Tests (`.test.tsx`)
+- Documentation
+
+## Getting Started
+
+Explore each section in the sidebar to see the components in action and learn how to use them in your applications.

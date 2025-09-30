@@ -1,0 +1,184 @@
+-- =============================================================================
+-- FULL SCHEMA DEPLOYMENT SCRIPT
+-- Deploys complete RBI system schema in proper dependency order
+-- Version: 3.0.0 - Modular Architecture
+-- =============================================================================
+
+-- Set deployment environment
+\set ON_ERROR_STOP on
+\set VERBOSITY verbose
+
+-- Start transaction for atomic deployment
+BEGIN;
+
+-- Display deployment information
+SELECT 'Starting RBI System Database Deployment' as deployment_status, now() as started_at;
+
+-- =============================================================================
+-- LAYER 1: FOUNDATION (Extensions, Types, Basic Setup)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING FOUNDATION LAYER ==='
+\echo ''
+
+\i schema/01-foundation/extensions.sql
+\i schema/01-foundation/enums-types.sql  
+\i schema/01-foundation/init.sql
+
+-- =============================================================================
+-- LAYER 2: REFERENCE DATA (PSGC, PSOC)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING REFERENCE DATA LAYER ==='
+\echo ''
+
+\i schema/02-reference-data/psgc-geography.sql
+\i schema/02-reference-data/psoc-occupations.sql
+\i schema/02-reference-data/reference-indexes.sql
+
+-- =============================================================================
+-- LAYER 3: AUTHENTICATION (Auth System)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING AUTHENTICATION LAYER ==='
+\echo ''
+
+\i schema/03-authentication/auth-tables.sql
+\i schema/03-authentication/auth-functions.sql
+
+-- =============================================================================
+-- LAYER 4: GEOGRAPHY (Geographic Management)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING GEOGRAPHY LAYER ==='
+\echo ''
+
+\i schema/04-geography/geo-tables.sql
+\i schema/04-geography/geo-functions.sql
+\i schema/04-geography/geo-indexes.sql
+
+-- =============================================================================
+-- LAYER 5: CORE DATA (Households, Residents, Relationships)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING CORE DATA LAYER ==='
+\echo ''
+
+\i schema/05-core-data/households.sql
+\i schema/05-core-data/residents.sql
+\i schema/05-core-data/relationships.sql
+\i schema/05-core-data/core-indexes.sql
+
+-- =============================================================================
+-- LAYER 6: SUPPLEMENTARY DATA (Sectoral, Migration)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING SUPPLEMENTARY DATA LAYER ==='
+\echo ''
+
+\i schema/06-supplementary/sectoral-migration.sql
+\i schema/06-supplementary/supplementary-indexes.sql
+
+-- =============================================================================
+-- LAYER 7: SYSTEM (Audit, Dashboard, Schema Management)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING SYSTEM LAYER ==='
+\echo ''
+
+\i schema/07-system/system-tables.sql
+\i schema/07-system/system-functions.sql
+\i schema/07-system/system-indexes.sql
+
+-- =============================================================================
+-- LAYER 8: VIEWS (Data Access, Search, API Views)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING VIEWS LAYER ==='
+\echo ''
+
+\i schema/08-views/data-access-views.sql
+\i schema/08-views/search-views.sql
+\i schema/08-views/api-optimized-views.sql
+
+-- =============================================================================
+-- LAYER 9: FUNCTIONS (Utilities, Search, Triggers)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING FUNCTIONS LAYER ==='
+\echo ''
+
+\i schema/09-functions/utility-functions.sql
+\i schema/09-functions/search-functions.sql
+\i schema/09-functions/trigger-functions.sql
+
+-- =============================================================================
+-- LAYER 10: CONSTRAINTS (Foreign Keys, Checks, Unique)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING CONSTRAINTS LAYER ==='
+\echo ''
+
+\i schema/10-constraints/foreign-keys.sql
+\i schema/10-constraints/check-constraints.sql
+\i schema/10-constraints/unique-constraints.sql
+
+-- =============================================================================
+-- LAYER 11: SECURITY (RLS, Permissions, Access Control)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING SECURITY LAYER ==='
+\echo ''
+
+\i schema/11-security/rls-policies.sql
+\i schema/11-security/permissions.sql
+
+-- Note: Auth RLS policies deployed with auth layer for dependency reasons
+\i schema/03-authentication/auth-rls.sql
+
+\i schema/11-security/security-init.sql
+
+-- =============================================================================
+-- LAYER 12: DEPLOYMENT (Initial Data, Integration, Verification)
+-- =============================================================================
+
+\echo ''
+\echo '=== DEPLOYING FINAL DEPLOYMENT LAYER ==='
+\echo ''
+
+\i schema/12-deployment/initial-data.sql
+\i schema/12-deployment/supabase-integration.sql
+
+-- =============================================================================
+-- POST-DEPLOYMENT VERIFICATION
+-- =============================================================================
+
+\echo ''
+\echo '=== RUNNING POST-DEPLOYMENT VERIFICATION ==='
+\echo ''
+
+\i schema/12-deployment/deployment-verification.sql
+
+-- Display completion status
+SELECT 'RBI System Database Deployment Completed Successfully' as deployment_status, 
+       now() as completed_at,
+       (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public') as total_tables,
+       (SELECT COUNT(*) FROM information_schema.views WHERE table_schema = 'public') as total_views;
+
+-- Commit the transaction
+COMMIT;
+
+\echo ''
+\echo '=== DEPLOYMENT COMPLETED SUCCESSFULLY ==='
+\echo ''

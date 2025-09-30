@@ -1,0 +1,417 @@
+{
+  "timestamp": "2025-08-30T16:12:53.024Z",
+  "configuration": {
+    "maxComplexity": 15,
+    "warnComplexity": 10
+  },
+  "healthScore": 97,
+  "filesChecked": 666,
+  "functionsAnalyzed": 2359,
+  "complexFunctions": [
+    {
+      "name": "if",
+      "complexity": 35,
+      "file": "src/utils/input-sanitizer.ts",
+      "line": 310,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 33,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 108,
+      "severity": "error"
+    },
+    {
+      "name": "if",
+      "complexity": 29,
+      "file": "src/app/(dashboard)/admin/create-user/page.tsx",
+      "line": 288,
+      "severity": "error"
+    },
+    {
+      "name": "map",
+      "complexity": 27,
+      "file": "src/hooks/command-menu/useCommandMenuActions.ts",
+      "line": 167,
+      "severity": "error"
+    },
+    {
+      "name": "map",
+      "complexity": 27,
+      "file": "src/hooks/ui/useCommandMenuWithApi.ts",
+      "line": 92,
+      "severity": "error"
+    },
+    {
+      "name": "loadAddressFromIndividualTables",
+      "complexity": 25,
+      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
+      "line": 77,
+      "severity": "error"
+    },
+    {
+      "name": "if",
+      "complexity": 25,
+      "file": "src/components/templates/Form/Household/HouseholdForm.tsx",
+      "line": 493,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 25,
+      "file": "src/utils/resident-form-utils.ts",
+      "line": 161,
+      "severity": "error"
+    },
+    {
+      "name": "CivilStatusPieChart",
+      "complexity": 24,
+      "file": "src/components/molecules/CivilStatusPieChart/CivilStatusPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "CivilStatusPieChart",
+      "complexity": 24,
+      "file": "src/components/molecules/CivilStatusPieChart/CivilStatusPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "EmploymentStatusPieChart",
+      "complexity": 24,
+      "file": "src/components/molecules/EmploymentStatusPieChart/EmploymentStatusPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "EmploymentStatusPieChart",
+      "complexity": 24,
+      "file": "src/components/molecules/EmploymentStatusPieChart/EmploymentStatusPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "if",
+      "complexity": 23,
+      "file": "src/app/signup/page.tsx",
+      "line": 211,
+      "severity": "error"
+    },
+    {
+      "name": "if",
+      "complexity": 20,
+      "file": "src/components/molecules/ButtonGroup/ButtonGroup.tsx",
+      "line": 30,
+      "severity": "error"
+    },
+    {
+      "name": "DependencyRatioPieChart",
+      "complexity": 18,
+      "file": "src/components/molecules/DependencyRatioPieChart/DependencyRatioPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "DependencyRatioPieChart",
+      "complexity": 18,
+      "file": "src/components/molecules/DependencyRatioPieChart/DependencyRatioPieChart.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 18,
+      "file": "src/lib/validation/formValidators.ts",
+      "line": 135,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 18,
+      "file": "src/utils/resident-form-utils.ts",
+      "line": 373,
+      "severity": "error"
+    },
+    {
+      "name": "SkipNavigation",
+      "complexity": 17,
+      "file": "src/components/atoms/SkipNavigation/SkipNavigation.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "SkipNavigation",
+      "complexity": 17,
+      "file": "src/components/atoms/SkipNavigation/SkipNavigation.tsx",
+      "line": 15,
+      "severity": "error"
+    },
+    {
+      "name": "getHeadingStyle",
+      "complexity": 16,
+      "file": "src/design-system/utils.ts",
+      "line": 142,
+      "severity": "error"
+    },
+    {
+      "name": "getHeadingStyle",
+      "complexity": 16,
+      "file": "src/design-system/utils.ts",
+      "line": 142,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 16,
+      "file": "src/design-system/utils.ts",
+      "line": 386,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 16,
+      "file": "src/utils/input-sanitizer.ts",
+      "line": 221,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 16,
+      "file": "src/utils/sanitization-utils.ts",
+      "line": 321,
+      "severity": "error"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 93,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 432,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/[id]/route.ts",
+      "line": 757,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/app/api/residents/route.ts",
+      "line": 93,
+      "severity": "warning"
+    },
+    {
+      "name": "getEnvironmentStyles",
+      "complexity": 15,
+      "file": "src/components/molecules/VersionTag/VersionTag.tsx",
+      "line": 48,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/lib/authentication/authUtils.ts",
+      "line": 362,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/lib/database/query-optimizer.ts",
+      "line": 379,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 15,
+      "file": "src/lib/ui/accessibility.ts",
+      "line": 105,
+      "severity": "warning"
+    },
+    {
+      "name": "forEach",
+      "complexity": 14,
+      "file": "src/app/api/dashboard/stats/route.ts",
+      "line": 221,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 14,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 161,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 14,
+      "file": "src/utils/errorUtils.ts",
+      "line": 110,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 13,
+      "file": "src/components/organisms/CreateHouseholdModal/CreateHouseholdModal.tsx",
+      "line": 316,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 13,
+      "file": "src/hooks/utilities/useLogger.ts",
+      "line": 175,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 13,
+      "file": "src/lib/performance/performanceMonitor.ts",
+      "line": 149,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 13,
+      "file": "src/providers/AppProvider.tsx",
+      "line": 238,
+      "severity": "warning"
+    },
+    {
+      "name": "validate",
+      "complexity": 13,
+      "file": "src/stories/organisms/Form/Resident/PhysicalPersonalDetails/FormField/PhysicalCharacteristics.stories.tsx",
+      "line": 388,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 13,
+      "file": "src/utils/errorUtils.ts",
+      "line": 198,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 12,
+      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
+      "line": 466,
+      "severity": "warning"
+    },
+    {
+      "name": "SuccessModal",
+      "complexity": 12,
+      "file": "src/components/molecules/SuccessModal/SuccessModal.tsx",
+      "line": 12,
+      "severity": "warning"
+    },
+    {
+      "name": "SuccessModal",
+      "complexity": 12,
+      "file": "src/components/molecules/SuccessModal/SuccessModal.tsx",
+      "line": 12,
+      "severity": "warning"
+    },
+    {
+      "name": "HouseholdAddressForm",
+      "complexity": 12,
+      "file": "src/components/organisms/CreateHouseholdModal/HouseholdAddressForm.tsx",
+      "line": 20,
+      "severity": "warning"
+    },
+    {
+      "name": "HouseholdAddressForm",
+      "complexity": 12,
+      "file": "src/components/organisms/CreateHouseholdModal/HouseholdAddressForm.tsx",
+      "line": 20,
+      "severity": "warning"
+    },
+    {
+      "name": "FormHeaderComponent",
+      "complexity": 12,
+      "file": "src/components/templates/Form/Resident/components/FormHeader.tsx",
+      "line": 10,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 12,
+      "file": "src/lib/keyboardUtils.tsx",
+      "line": 285,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 12,
+      "file": "src/services/resident-details-fetcher.ts",
+      "line": 33,
+      "severity": "warning"
+    },
+    {
+      "name": "getBMICategory",
+      "complexity": 12,
+      "file": "src/stories/organisms/Form/Resident/PhysicalPersonalDetails/FormField/PhysicalCharacteristics.stories.tsx",
+      "line": 508,
+      "severity": "warning"
+    },
+    {
+      "name": "if",
+      "complexity": 11,
+      "file": "src/app/(dashboard)/residents/[id]/page.tsx",
+      "line": 490,
+      "severity": "warning"
+    },
+    {
+      "name": "getIntentClasses",
+      "complexity": 11,
+      "file": "src/components/molecules/StatisticsChart/StatisticsChart.tsx",
+      "line": 50,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 11,
+      "file": "src/hooks/utilities/useResidentAsyncValidation.ts",
+      "line": 107,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 11,
+      "file": "src/lib/database/query-optimizer.ts",
+      "line": 362,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 11,
+      "file": "src/lib/performance/pwaPerformanceUtils.ts",
+      "line": 106,
+      "severity": "warning"
+    },
+    {
+      "name": "switch",
+      "complexity": 11,
+      "file": "src/lib/ui/chart-transformers.ts",
+      "line": 232,
+      "severity": "warning"
+    }
+  ],
+  "summary": {
+    "low": 2196,
+    "moderate": 106,
+    "high": 32,
+    "veryHigh": 25
+  }
+}

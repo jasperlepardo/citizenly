@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(_request: NextRequest) {
+export function middleware(_request: NextRequest): NextResponse {
   const response = NextResponse.next();
 
   // Content Security Policy
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co https://vercel.live https://va.vercel-scripts.com;
-    style-src 'self' 'unsafe-inline';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.supabase.co https://vercel.live https://va.vercel-scripts.com https://kit.fontawesome.com;
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
     img-src 'self' blob: data: https://*.supabase.co;
-    font-src 'self';
+    font-src 'self' https://ka-f.fontawesome.com https://cdnjs.cloudflare.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
     block-all-mixed-content;
     upgrade-insecure-requests;
-    connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vercel.live;
+    connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vercel.live https://ka-f.fontawesome.com;
   `
     .replace(/\s{2,}/g, ' ')
     .trim();

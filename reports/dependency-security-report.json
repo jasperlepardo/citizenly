@@ -1,0 +1,172 @@
+{
+  "timestamp": "2025-08-12T23:47:35.470Z",
+  "audit": {
+    "success": true,
+    "vulnerabilities": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 49,
+        "dev": 2049,
+        "optional": 118,
+        "peer": 0,
+        "peerOptional": 0,
+        "total": 2135
+      }
+    }
+  },
+  "packageIssues": [
+    {
+      "severity": "low",
+      "message": "Consider pinning security-related package crypto-browserify",
+      "recommendation": "Use exact versions for cryptographic dependencies"
+    }
+  ],
+  "vulnerablePackages": [],
+  "dependencyConfusion": [
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: bcryptjs",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: clsx",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: dotenv",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: zod",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: @testing-library/jest-dom",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: @testing-library/react",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: @testing-library/user-event",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: @vitest/browser",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: @vitest/coverage-v8",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: ajv",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: autoprefixer",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: buffer",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: critters",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: husky",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: jscpd",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: madge",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: playwright",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: postcss",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: prettier",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: process",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: snyk",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: storybook",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: tailwindcss",
+      "recommendation": "Verify package authenticity and popularity"
+    },
+    {
+      "severity": "low",
+      "message": "Potentially suspicious package name: vitest",
+      "recommendation": "Verify package authenticity and popularity"
+    }
+  ],
+  "summary": {
+    "criticalVulns": 0,
+    "highVulns": 0,
+    "moderateVulns": 0,
+    "lowVulns": 0,
+    "totalIssues": 25
+  },
+  "recommendations": [
+    "Tighten version ranges in package.json",
+    "Pin versions for security-critical dependencies",
+    "Verify authenticity of packages with suspicious names",
+    "Run \"npm audit\" regularly as part of CI/CD pipeline",
+    "Consider using \"npm ci\" in production for reproducible builds",
+    "Enable GitHub Dependabot for automatic security updates",
+    "Use package-lock.json to ensure consistent dependency versions",
+    "Regularly update dependencies to latest stable versions"
+  ]
+}

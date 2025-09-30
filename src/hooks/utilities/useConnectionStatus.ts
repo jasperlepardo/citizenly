@@ -1,0 +1,65 @@
+'use client';
+
+/**
+ * Connection Status Hook
+ *
+ * @description Hook for monitoring network connection and sync status.
+ * Extracted from ConnectionStatus component for better maintainability.
+ */
+
+import { useState, useEffect } from 'react';
+
+import { syncQueue } from '@/lib/data/sync-queue';
+
+// Temporary types for connection status
+type ConnectionStatus = 'online' | 'offline';
+type UseConnectionStatusReturn = {
+  status: ConnectionStatus;
+  isOnline: boolean;
+  syncPending: boolean;
+  canSync: boolean;
+};
+
+/**
+ * Hook for monitoring network connection and sync status
+ */
+export function useConnectionStatus(): UseConnectionStatusReturn {
+  const [isOnline, setIsOnline] = useState(true); // Default to online for SSR
+  const [syncPending, setSyncPending] = useState(false);
+
+  useEffect(() => {
+    // Set initial online status on client
+    setIsOnline(navigator.onLine);
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Check for pending sync items
+    const checkPendingSync = async () => {
+      const status = await syncQueue.getStatus();
+      setSyncPending(status.pendingCount > 0);
+    };
+
+    checkPendingSync();
+    const interval = setInterval(checkPendingSync, 10000); // Check every 10 seconds
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      clearInterval(interval);
+    };
+  }, []);
+
+  return {
+    status: isOnline ? 'online' : 'offline',
+    isOnline,
+    syncPending,
+    canSync: isOnline && syncPending,
+  };
+}
+
+// Export for backward compatibility
+export default useConnectionStatus;

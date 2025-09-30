@@ -177,6 +177,7 @@ $RECYCLE.BIN/
 # Logs
 logs
 *.log
+dev.log
 
 # Database
 *.db
@@ -186,6 +187,8 @@ logs
 # Backup files
 *.bak
 *.backup
+backups/
+temp-excluded/
 
 # Temporary files
 *.tmp
@@ -204,6 +207,11 @@ frontend/.env.production.local
 
 # Storybook
 storybook-static/
+public/storybook-static/
+
+# PWA auto-generated files
+public/sw.js
+public/workbox-*.js
 
 # Test artifacts
 coverage/
@@ -211,9 +219,17 @@ coverage/
 test-results/
 playwright-report/
 
+# Temporary scripts and deployment files
+check-*.js
+deploy-*.js
+deploy-*.sql
+corrected-*.sql
+
 # Build artifacts
 dist/
 build/
+!scripts/build/
+!config/build/
 *.tsbuildinfo
 
 # Package manager lockfiles (keep package-lock.json but ignore others)
@@ -229,3 +245,9 @@ database/sample\ data/psgc/psgc_barangays.csv
 database/sample\ data/psgc/psgc_cities_municipalities.csv
 *storybook.log
 .vercel
+.env.vercel.development
+.env.vercel.import
+
+# Vercel environment files
+.env.vercel.production
+.env.vercel.preview

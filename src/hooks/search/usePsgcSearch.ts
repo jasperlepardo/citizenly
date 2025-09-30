@@ -1,0 +1,259 @@
+'use client';
+
+/**
+ * Optimized PSGC Search Hook
+ *
+ * @description Refactored PSGC search hook using common utilities.
+ * Maintains the same API while using shared search patterns.
+ */
+
+import { useCallback, useState } from 'react';
+
+import { container } from '@/services/container';
+import type { PsgcOption } from '@/types/domain/residents/api';
+import type {
+  UsePsgcSearchOptions,
+  UsePsgcSearchReturn,
+} from '@/types/shared/hooks/searchHooks';
+
+import { useGenericSearch } from './useGenericSearch';
+
+
+/**
+ * PSGC API implementation
+ */
+const psgcApi = {
+  async searchLocations(params: {
+    query: string;
+    levels: string;
+    limit: number;
+    parentCode?: string;
+  }): Promise<PsgcOption[]> {
+    const searchParams = new URLSearchParams({
+      q: params.query,
+      limit: params.limit.toString(),
+      ...(params.parentCode && { parentCode: params.parentCode }),
+      ...(params.levels !== 'all' && { levels: params.levels }),
+    });
+
+    const response = await fetch(`/api/psgc/search?${searchParams}`);
+    if (!response.ok) {
+      throw new Error('Failed to search PSGC locations');
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  },
+};
+
+/**
+ * PSGC search hook
+ *
+ * @description Provides search functionality for Philippine Standard Geographic Code (PSGC)
+ * locations with caching, debouncing, and level filtering.
+ */
+export function usePsgcSearch({
+  levels = 'barangay',
+  limit = 50,
+  parentCode,
+  debounceMs = 300,
+  enableCache = true,
+}: UsePsgcSearchOptions = {}): UsePsgcSearchReturn {
+  // Additional state for lazy loading
+  const [offset, setOffset] = useState(0);
+  const [allResults, setAllResults] = useState<PsgcOption[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Setup caching using existing CacheService
+  const cacheService = container.getCacheService();
+  const cacheKeyPrefix = `psgc-${levels}-${parentCode || 'all'}`;
+  
+  const getCachedResult = useCallback((query: string): PsgcOption[] | null => {
+    return enableCache ? cacheService.get<PsgcOption[]>(`${cacheKeyPrefix}-${query}`) : null;
+  }, [cacheService, cacheKeyPrefix, enableCache]);
+  
+  const setCachedResult = useCallback((query: string, result: PsgcOption[]) => {
+    if (enableCache) {
+      cacheService.set(`${cacheKeyPrefix}-${query}`, result, {
+        ttl: 5 * 60 * 1000, // 5 minutes
+        tags: ['psgc', `level:${levels}`, `parent:${parentCode || 'all'}`],
+      });
+    }
+  }, [cacheService, cacheKeyPrefix, enableCache, levels, parentCode]);
+
+  /**
+   * PSGC search function with pagination support
+   */
+  const searchFunction = useCallback(
+    async (
+      query: string,
+      currentOffset: number = 0,
+      append: boolean = false
+    ): Promise<PsgcOption[]> => {
+      if (!query.trim()) {
+        setAllResults([]);
+        setHasMore(false);
+        setTotalCount(0);
+        return [];
+      }
+
+      // Check cache first (only for initial search)
+      if (enableCache && currentOffset === 0) {
+        const cached = getCachedResult(query);
+        if (cached) {
+          setAllResults(cached);
+          setHasMore(false); // Cached results don't have pagination info
+          setTotalCount(cached.length);
+          return cached;
+        }
+      }
+
+      try {
+        const response = await fetch(
+          `/api/psgc/search?q=${encodeURIComponent(query.trim())}&levels=${levels}&limit=${limit}&offset=${currentOffset}&parentCode=${parentCode || ''}`
+        );
+        if (!response.ok) {
+          throw new Error('Failed to search PSGC locations');
+        }
+
+        const data = await response.json();
+        const results = data.data || [];
+        
+        // Debug log the received data structure
+        console.log('🔍 usePsgcSearch: Received response data:', {
+          totalResults: results.length,
+          sampleResults: results.slice(0, 2),
+          query: query
+        });
+
+        // Update pagination state
+        setTotalCount(data.totalCount || 0);
+        setHasMore(data.hasMore || false);
+
+        if (append) {
+          // Use functional update to avoid stale closure
+          setAllResults(currentAllResults => {
+            const newAllResults = [...currentAllResults, ...results];
+            return newAllResults;
+          });
+          // Return the new combined results for immediate use
+          return results; // Return just the new results, not the combined array
+        } else {
+          // Replace results (initial search)
+          setAllResults(results);
+
+          // Cache initial results
+          if (enableCache) {
+            setCachedResult(query, results);
+          }
+
+          return results;
+        }
+      } catch (error) {
+        throw new Error('Failed to search PSGC locations');
+      }
+    },
+    [levels, limit, parentCode, enableCache, getCachedResult, setCachedResult]
+  ); // Remove allResults from dependencies
+
+  // Use generic search hook with modified search function
+  const {
+    query,
+    setQuery: originalSetQuery,
+    results: options,
+    isLoading,
+    error,
+    clearSearch: originalClearSearch,
+    refresh,
+  } = useGenericSearch(q => searchFunction(q, 0, false), {
+    debounceMs,
+    minQueryLength: 2,
+    onError: error => {},
+  });
+
+  // Enhanced setQuery that resets pagination
+  const setQuery = useCallback(
+    (newQuery: string) => {
+      setOffset(0);
+      setAllResults([]);
+      setHasMore(false);
+      originalSetQuery(newQuery);
+    },
+    [originalSetQuery]
+  );
+
+  // Enhanced clear search
+  const clearSearch = useCallback(() => {
+    setOffset(0);
+    setAllResults([]);
+    setHasMore(false);
+    setTotalCount(0);
+    originalClearSearch();
+  }, [originalClearSearch]);
+
+  // Load more function for lazy loading
+  const loadMore = useCallback(async () => {
+    if (!hasMore || isLoadingMore || !query.trim()) return;
+
+    setIsLoadingMore(true);
+
+    // Use functional update to get current length without dependency
+    let currentOffset = 0;
+    setAllResults(currentResults => {
+      currentOffset = currentResults.length;
+      return currentResults; // No change, just get the length
+    });
+
+    setOffset(currentOffset);
+
+    try {
+      await searchFunction(query, currentOffset, true);
+    } catch (error) {
+      console.error('Failed to load more results:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [hasMore, isLoadingMore, query, searchFunction]);
+
+  /**
+   * Search by specific level
+   */
+  const searchByLevel = useCallback(
+    async (level: string, searchQuery: string): Promise<void> => {
+      try {
+        await psgcApi.searchLocations({
+          query: searchQuery.trim(),
+          levels: level,
+          limit,
+          parentCode,
+        });
+
+        // Update query to trigger re-render with new results
+        setQuery(searchQuery);
+      } catch (error) {
+        throw error;
+      }
+    },
+    [limit, parentCode, setQuery]
+  );
+
+  return {
+    query,
+    setQuery,
+    options: allResults.length > 0 ? allResults : options, // Use allResults when available for pagination
+    isLoading,
+    error,
+    clearSearch,
+    refresh,
+    searchByLevel,
+    hasMore,
+    loadMore,
+    isLoadingMore,
+    totalCount,
+  };
+}
+
+// Export as default
+export default usePsgcSearch;

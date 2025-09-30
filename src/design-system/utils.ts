@@ -16,17 +16,17 @@ import { designTokens } from './tokens';
  */
 export function getColor(colorPath: string): string {
   const keys = colorPath.split('.');
-  let current: any = designTokens.colors;
+  let current: unknown = designTokens.colors;
 
   for (const key of keys) {
-    if (current[key] === undefined) {
+    if (!current || typeof current !== 'object' || !(key in current)) {
       console.warn(`Color token '${colorPath}' not found. Using fallback.`);
       return designTokens.colors.neutral[500];
     }
-    current = current[key];
+    current = (current as Record<string, unknown>)[key];
   }
 
-  return current;
+  return current as string;
 }
 
 /**
@@ -335,7 +335,7 @@ export function getFocusRing(
  * @param styles - Component styles object
  * @returns Validation results with suggestions
  */
-export function validateDesignTokenUsage(styles: Record<string, any>) {
+export function validateDesignTokenUsage(styles: Record<string, unknown>) {
   const warnings: string[] = [];
   const suggestions: string[] = [];
 
@@ -379,9 +379,9 @@ export function validateDesignTokenUsage(styles: Record<string, any>) {
  */
 export function getSectoralBadgeColor(
   classification: string,
-  variant: 'solid' | 'outline' | 'subtle' = 'solid'
+  variant: 'solid' | 'outline-solid' | 'subtle' = 'solid'
 ) {
-  const baseColor = getRBIColor(classification as any);
+  const baseColor = getRBIColor(classification as Parameters<typeof getRBIColor>[0]);
 
   switch (variant) {
     case 'solid':
@@ -390,7 +390,7 @@ export function getSectoralBadgeColor(
         color: designTokens.colors.neutral[50],
         borderColor: baseColor,
       };
-    case 'outline':
+    case 'outline-solid':
       return {
         backgroundColor: 'transparent',
         color: baseColor,

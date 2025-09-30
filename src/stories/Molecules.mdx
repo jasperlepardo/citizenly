@@ -1,0 +1,198 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Molecules/Overview" />
+
+# Molecules
+
+## Simple Groups of UI Elements
+
+Molecules are simple groups of UI elements functioning together as a unit. They combine atoms to form more complex, reusable components that have their own properties and serve a specific purpose.
+
+## Characteristics of Molecules
+
+### 🧪 **Composed of Atoms**
+- Built by combining two or more atoms
+- Create meaningful functionality through combination
+- More complex than atoms but still relatively simple
+
+### 🎯 **Focused Purpose**
+- Serve a specific, well-defined function
+- Handle a particular user interaction or display pattern
+- Maintain single responsibility principle
+
+### 🔄 **Reusable Across Contexts**
+- Can be used in different parts of the application
+- Flexible enough to adapt to various use cases
+- Maintain consistent behavior and appearance
+
+## Molecules in This System
+
+### Form Components
+- **InputField** - Label, input, and error message combined
+- **SelectField** - Label, select dropdown, and validation
+- **FieldSet** - Generic wrapper for form controls
+- **DropdownSelect** - Enhanced select with search and validation
+- **PhilSysNumberInput** - Specialized input for Philippine system numbers
+
+### Data Visualization
+- **StatCard** - Icon, label, and value display
+- **StatsCard** - Enhanced statistics with trends
+- **GenericPieChart** - Reusable pie chart component
+- **CivilStatusPieChart** - Civil status data visualization
+- **SexDistributionPieChart** - Gender distribution chart
+- **EmploymentStatusPieChart** - Employment data visualization
+- **DependencyRatioPieChart** - Age dependency ratios
+
+### Interactive Components
+- **SearchBar** - Search input with icon and actions
+- **ButtonGroup** - Related buttons grouped together
+- **FileUpload** - File selection with drag-and-drop
+- **ThemeToggle** - Light/dark mode switcher
+
+## Design Principles
+
+### 🔗 **Purposeful Composition**
+Each molecule exists to solve a specific user need by thoughtfully combining atoms.
+
+### 📊 **Self-Contained Logic**
+Molecules handle their own internal state and behavior while exposing a clean API.
+
+### 🎨 **Consistent Patterns**
+Similar molecules follow consistent patterns for layout, spacing, and interaction.
+
+### 📱 **Responsive Design**
+Molecules adapt their layout and behavior for different screen sizes.
+
+## Usage Guidelines
+
+### ✅ **Do:**
+- Combine atoms that naturally work together
+- Keep molecules focused on a single responsibility
+- Make molecules configurable through props
+- Include proper validation and error handling
+- Maintain consistent spacing and alignment
+
+### ❌ **Don't:**
+- Create molecules that are too complex (consider organisms instead)
+- Duplicate atom functionality within molecules
+- Hard-code business logic specific to one use case
+- Break established design patterns
+
+## Example Usage
+
+```tsx
+// ✅ Good: Using a molecule for related functionality
+<InputField
+  label="Email Address"
+  type="email"
+  value={email}
+  onChange={setEmail}
+  errorMessage={emailError}
+  helperText="We'll never share your email"
+/>
+
+// ✅ Good: Configurable molecule for different contexts
+<StatCard
+  icon={<UserIcon />}
+  label="Total Residents"
+  value={1250}
+  trend={+12}
+  variant="success"
+/>
+
+// ✅ Good: Molecule handling complex interaction
+<SearchBar
+  placeholder="Search residents..."
+  onSearch={handleSearch}
+  filters={availableFilters}
+  showAdvanced={true}
+/>
+
+// ❌ Bad: Too simple (should be atoms instead)
+<div className="button-wrapper">
+  <Button>Click me</Button>
+</div>
+
+// ❌ Bad: Too complex (should be an organism)
+<ComplexForm>
+  <InputField />
+  <SelectField />
+  <FileUpload />
+  <SubmissionStatus />
+  <ValidationSummary />
+  <ActionButtons />
+</ComplexForm>
+```
+
+## State Management
+
+Molecules typically handle:
+- **Local UI state** (input values, validation, open/closed states)
+- **User interactions** (clicks, typing, selections)
+- **Internal calculations** (formatting, validation logic)
+
+They communicate with parent components through:
+- **Callback props** for user actions
+- **Value/onChange patterns** for controlled components
+- **Event handlers** for specific interactions
+
+## Testing Molecules
+
+Each molecule should be tested for:
+- **Integration** - Atoms work together correctly
+- **User Interactions** - All interactive elements respond properly
+- **State Management** - Internal state updates correctly
+- **Props API** - All configuration options work
+- **Error Handling** - Validation and error states display correctly
+- **Responsive Behavior** - Layout adapts to different screen sizes
+
+## Common Patterns
+
+### Form Molecules
+```tsx
+interface FormMoleculeProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  errorMessage?: string;
+  helperText?: string;
+  required?: boolean;
+  disabled?: boolean;
+}
+```
+
+### Display Molecules
+```tsx
+interface DisplayMoleculeProps {
+  title: string;
+  value: string | number;
+  icon?: React.ReactNode;
+  variant?: 'default' | 'success' | 'warning' | 'error';
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+### Interactive Molecules
+```tsx
+interface InteractiveMoleculeProps {
+  onAction: (data: ActionData) => void;
+  disabled?: boolean;
+  loading?: boolean;
+  children?: React.ReactNode;
+}
+```
+
+## Contributing
+
+When creating new molecules:
+
+1. **Identify the pattern** - What atoms naturally work together?
+2. **Define the purpose** - What specific user need does this address?
+3. **Design the API** - What props are needed for flexibility?
+4. **Handle edge cases** - Loading, error, and empty states
+5. **Add accessibility** - Proper labels and keyboard navigation
+6. **Write comprehensive stories** - Show all variants and states
+7. **Test thoroughly** - Unit and integration tests
+8. **Document usage** - Clear examples and guidelines
+
+Remember: Molecules should feel natural and serve a clear purpose by combining atoms in meaningful ways.

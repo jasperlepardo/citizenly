@@ -2,11 +2,32 @@
 
 ## Complete Digital Solution for Philippine Barangay Resident Management
 
+<!-- Build trigger: 2025-08-08 -->
+
 ---
 
 ## 🎯 **Project Overview**
 
 The **Records of Barangay Inhabitant (RBI) System** is a comprehensive digital solution designed to modernize resident data management for Philippine barangays. Built with modern web technologies and optimized for both free-tier MVP and enterprise-level implementations.
+
+### 🛡️ **Quality Assurance System**
+
+This project includes a **comprehensive 4-tier quality assurance system** that ensures code quality and production safety:
+
+- **🟢 Tier 1 (Development)**: Fast validation for immediate feedback (~15-30s)
+- **🟡 Tier 2 (CI/CD)**: Comprehensive validation with security scanning (~2-5min)
+- **🟠 Tier 3 (Staging)**: Enhanced testing with e2e and accessibility (~5-15min)
+- **🔴 Tier 4 (Production)**: Critical security and performance validation (~3-10min)
+
+**Quick Commands:**
+
+```bash
+npm run check        # Auto-detects environment and runs appropriate validation
+npm run env:check    # Check environment detection
+npm run tier1:dev    # Development validation
+```
+
+📋 **[→ View Complete Quality System Documentation](QUALITY_SYSTEM_README.md)**
 
 ### **Key Benefits:**
 
@@ -367,4 +388,6 @@ The RBI System uses a three-tier design approach:
 **Documentation**: Complete with step-by-step guides  
 **Support**: Comprehensive resources and quality assurance
 
-Transform your barangay's resident management with the RBI System - from manual processes to digital efficiency in weeks, not months.# Trigger deployment
+Transform your barangay's resident management with the RBI System - from manual processes to digital efficiency in weeks, not months.
+
+**Test custom domain**: Verify dev.citizenly.co deployment.

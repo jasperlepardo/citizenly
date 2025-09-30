@@ -60,8 +60,8 @@ text - rbi - migrant; // Indigo for migrant status
 
 ```tsx
 // Tailwind classes (recommended)
-<div className="bg-primary-500 text-neutral-50">
-<button className="bg-success-600 hover:bg-success-700">
+<div className="bg-blue-500 text-gray-50">
+<button className="bg-green-600 hover:bg-green-700">
 <span className="text-rbi-labor-force">Employed</span>
 
 // Utility functions
@@ -95,9 +95,9 @@ const styles = {
 
 ```tsx
 // Tailwind classes
-<h1 className="text-4xl font-bold text-neutral-800">
-<p className="text-base leading-6 text-neutral-700">
-<span className="text-xs text-neutral-500">
+<h1 className="text-4xl font-bold text-gray-800">
+<p className="text-base leading-6 text-gray-700">
+<span className="text-xs text-gray-500">
 
 // Utility functions
 const headingStyle = getHeadingStyle(1); // Returns complete H1 config
@@ -136,7 +136,7 @@ Consistent shadow system for elevation and focus states:
 
 | Token                  | Usage                             |
 | ---------------------- | --------------------------------- |
-| `shadow-sm`            | Subtle cards, input borders       |
+| `shadow-xs`            | Subtle cards, input borders       |
 | `shadow-md`            | **Default cards**, dropdown menus |
 | `shadow-lg`            | Modal overlays, important cards   |
 | `shadow-xl`            | Major modals, toast notifications |
@@ -176,7 +176,7 @@ import { getSectoralBadgeColor } from '@/design-system';
 
 // Get badge colors for sectoral groups
 const laborForceBadge = getSectoralBadgeColor('laborForce', 'solid');
-const seniorBadge = getSectoralBadgeColor('seniorCitizen', 'outline');
+const seniorBadge = getSectoralBadgeColor('seniorCitizen', 'outline-solid');
 const youthBadge = getSectoralBadgeColor('youth', 'subtle');
 ```
 
@@ -227,7 +227,7 @@ All tokens work seamlessly with Tailwind's responsive prefixes:
 ```tsx
 <div className="p-2 md:p-4 lg:p-6">           // Responsive padding
 <h1 className="text-2xl md:text-4xl">         // Responsive typography
-<div className="bg-primary-500 md:bg-primary-600"> // Responsive colors
+<div className="bg-blue-500 md:bg-blue-600"> // Responsive colors
 ```
 
 ## 🎯 Best Practices
@@ -268,24 +268,24 @@ function ResidentCard({ resident }) {
   const badgeColor = getSectoralBadgeColor(resident.classification, 'subtle');
 
   return (
-    <div className="bg-neutral-0 p-6 rounded-lg shadow-md border border-neutral-200">
-      <div className="flex items-start justify-between mb-4">
-        <h3 className="text-lg font-semibold text-neutral-800">{resident.name}</h3>
-        <span className="px-2 py-1 text-xs font-medium rounded" style={badgeColor}>
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+      <div className="mb-4 flex items-start justify-between">
+        <h3 className="text-lg font-semibold text-gray-800">{resident.name}</h3>
+        <span className="rounded px-2 py-1 text-xs font-medium" style={badgeColor}>
           {resident.classification}
         </span>
       </div>
 
-      <div className="space-y-2 text-sm text-neutral-600">
+      <div className="space-y-2 text-sm text-gray-600">
         <div>Age: {resident.age}</div>
         <div>Household: {resident.householdCode}</div>
       </div>
 
       <div className="mt-4 flex gap-2">
-        <button className="bg-primary-500 hover:bg-primary-600 text-neutral-50 px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+        <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-gray-50 transition-colors hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden">
           View Details
         </button>
-        <button className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+        <button className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200">
           Edit
         </button>
       </div>

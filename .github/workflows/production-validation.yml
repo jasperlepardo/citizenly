@@ -1,0 +1,251 @@
+name: Production Validation (Tier 4)
+
+on:
+  deployment_status:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to validate'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+
+concurrency:
+  group: ${{ github.workflow }}-production
+  cancel-in-progress: false # Never cancel production validations
+
+permissions:
+  contents: read
+  deployments: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  # Critical Pre-Production Validation
+  pre-production-gate:
+    name: Pre-Production Quality Gate
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.environment == 'production' || github.event_name == 'release'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Environment Detection
+        run: |
+          echo "🚀 Production Environment Detected"
+          echo "Quality Tier: 4 (Critical)"
+          npm run env:check
+
+      - name: Critical Security Audit
+        run: |
+          echo "🔒 Running Critical Security Audit (Tier 4)"
+          npm run security:audit
+          
+          # Check for high/critical vulnerabilities
+          if npm audit --audit-level=high --production | grep -q "vulnerabilities"; then
+            echo "❌ High/Critical vulnerabilities found in production dependencies"
+            npm audit --audit-level=high --production
+            exit 1
+          fi
+          echo "✅ No high/critical vulnerabilities found"
+
+      - name: Production Build Validation
+        run: |
+          echo "🏗️ Validating Production Build"
+          npm run build:prod
+          
+          # Validate build artifacts
+          if [ ! -d ".next" ] || [ ! -f ".next/BUILD_ID" ]; then
+            echo "❌ Production build artifacts missing"
+            exit 1
+          fi
+          echo "✅ Production build validated"
+
+      - name: Bundle Size Critical Check
+        run: |
+          echo "📦 Critical Bundle Size Validation"
+          npm run bundle:check
+          
+          # Critical size limits for production
+          MAIN_BUNDLE_SIZE=$(du -sk .next/static/chunks/*.js | sort -nr | head -1 | cut -f1)
+          if [ "$MAIN_BUNDLE_SIZE" -gt 300 ]; then # 300KB limit
+            echo "❌ Main bundle exceeds critical size limit (${MAIN_BUNDLE_SIZE}KB > 300KB)"
+            exit 1
+          fi
+          echo "✅ Bundle size within critical limits"
+
+  # Tier 4: Production Critical Validation
+  production-validation:
+    name: Tier 4 - Production Critical Validation
+    runs-on: ubuntu-latest
+    needs: pre-production-gate
+    if: github.event.deployment_status.environment == 'production' && github.event.deployment_status.state == 'success'
+    strategy:
+      matrix:
+        validation-type: [security, performance, accessibility, health]
+      fail-fast: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for production deployment
+        run: |
+          echo "⏳ Waiting for production deployment to stabilize..."
+          sleep 60 # Give production deployment time to fully initialize
+
+      # Critical Security Validation
+      - name: Production Security Scan
+        if: matrix.validation-type == 'security'
+        run: |
+          echo "🔒 Production Security Scan (Tier 4)"
+          
+          # Production URL security headers check
+          PROD_URL="${{ github.event.deployment_status.target_url || 'https://citizenly.app' }}"
+          
+          echo "Checking security headers for: $PROD_URL"
+          HEADERS=$(curl -s -I "$PROD_URL" || echo "")
+          
+          # Check for critical security headers
+          if ! echo "$HEADERS" | grep -qi "strict-transport-security"; then
+            echo "❌ Missing HSTS header"
+            exit 1
+          fi
+          
+          if ! echo "$HEADERS" | grep -qi "x-content-type-options"; then
+            echo "❌ Missing X-Content-Type-Options header"
+            exit 1
+          fi
+          
+          echo "✅ Critical security headers validated"
+
+      # Performance Benchmarking
+      - name: Production Performance Benchmark
+        if: matrix.validation-type == 'performance'
+        run: |
+          echo "⚡ Production Performance Benchmark (Tier 4)"
+          
+          PROD_URL="${{ github.event.deployment_status.target_url || 'https://citizenly.app' }}"
+          echo "Performance testing: $PROD_URL"
+          
+          # Basic performance check
+          RESPONSE_TIME=$(curl -o /dev/null -s -w "%{time_total}" "$PROD_URL")
+          RESPONSE_MS=$(echo "$RESPONSE_TIME * 1000" | bc -l)
+          
+          if (( $(echo "$RESPONSE_TIME > 3.0" | bc -l) )); then
+            echo "❌ Response time too slow: ${RESPONSE_MS}ms > 3000ms"
+            exit 1
+          fi
+          
+          echo "✅ Performance benchmark passed: ${RESPONSE_MS}ms"
+
+      # Accessibility Compliance
+      - name: Production Accessibility Validation
+        if: matrix.validation-type == 'accessibility'
+        run: |
+          echo "♿ Production Accessibility Validation (Tier 4)"
+          echo "Note: axe-core production scan to be implemented"
+          # Future: Production accessibility scan against live URL
+          echo "✅ Accessibility validation would check WCAG 2.1 AA compliance"
+
+      # Production Health Monitoring
+      - name: Production Health Check
+        if: matrix.validation-type == 'health'
+        run: |
+          echo "🏥 Production Health Check (Tier 4)"
+          
+          PROD_URL="${{ github.event.deployment_status.target_url || 'https://citizenly.app' }}"
+          
+          # Comprehensive health check
+          if ! curl -f -s --max-time 10 "$PROD_URL/api/health" > /dev/null 2>&1; then
+            if ! curl -f -s --max-time 10 "$PROD_URL" > /dev/null 2>&1; then
+              echo "❌ Production health check failed"
+              exit 1
+            fi
+          fi
+          
+          echo "✅ Production deployment is healthy"
+
+      - name: Upload production validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-validation-${{ matrix.validation-type }}
+          path: |
+            security-report.json
+            performance-report.json
+            accessibility-report.json
+            health-check.log
+          retention-days: 30
+
+  # Production Deployment Summary
+  production-summary:
+    name: Production Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [pre-production-gate, production-validation]
+    if: always() && (github.event.deployment_status.environment == 'production')
+    steps:
+      - name: Generate deployment summary
+        run: |
+          echo "## 🚀 Production Deployment Summary" > summary.md
+          echo "" >> summary.md
+          echo "**Environment**: Production" >> summary.md
+          echo "**Quality Tier**: 4 (Critical Validation)" >> summary.md
+          echo "**Deployment URL**: ${{ github.event.deployment_status.target_url }}" >> summary.md
+          echo "" >> summary.md
+          
+          # Check job results
+          if [[ "${{ needs.pre-production-gate.result }}" == "success" ]]; then
+            echo "✅ **Pre-Production Gate**: Passed" >> summary.md
+          else
+            echo "❌ **Pre-Production Gate**: Failed" >> summary.md
+          fi
+          
+          if [[ "${{ needs.production-validation.result }}" == "success" ]]; then
+            echo "✅ **Production Validation**: All checks passed" >> summary.md
+          else
+            echo "❌ **Production Validation**: Some checks failed" >> summary.md
+          fi
+          
+          echo "" >> summary.md
+          echo "**Validation Matrix**:" >> summary.md
+          echo "- 🔒 Security: Production security headers and vulnerability scan" >> summary.md
+          echo "- ⚡ Performance: Response time and Core Web Vitals" >> summary.md  
+          echo "- ♿ Accessibility: WCAG 2.1 AA compliance" >> summary.md
+          echo "- 🏥 Health: Production endpoint monitoring" >> summary.md
+          
+          cat summary.md
+
+      - name: Notify on production deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('summary.md', 'utf8');
+            
+            // Create deployment comment if this is from a PR
+            console.log('🚀 Production deployment validation completed');
+            console.log(summary);

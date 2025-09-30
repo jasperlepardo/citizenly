@@ -1,0 +1,124 @@
+{
+  "timestamp": "2025-08-12T23:55:31.721Z",
+  "sourceAnalysis": {
+    "total": 2184,
+    "fileCount": 365,
+    "byExtension": {
+      ".ts": 398,
+      ".tsx": 1722,
+      ".js": 0,
+      ".css": 18,
+      ".md": 10,
+      ".sql": 7,
+      ".mdx": 29
+    },
+    "byDirectory": {
+      "__tests__": 14,
+      "app": 248,
+      "components": 1582,
+      "contexts": 22,
+      "design-system": 49,
+      "hooks": 7,
+      "lib": 204,
+      ".": 2,
+      "providers": 18,
+      "stories": 29,
+      "tests": 7,
+      "types": 2
+    },
+    "largestFiles": [
+      {
+        "path": "components/tokens/Colors/Colors.stories.tsx",
+        "size": 43,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/templates/HouseholdFormWizard/HouseholdFormWizard.tsx",
+        "size": 33,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/templates/ResidentFormWizard/ResidentFormWizard.stories.tsx",
+        "size": 33,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/tokens/Shadows/Shadows.stories.tsx",
+        "size": 33,
+        "extension": ".tsx"
+      },
+      {
+        "path": "app/settings/page.tsx",
+        "size": 31,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/organisms/AddressSelector/AddressSelector.stories.tsx",
+        "size": 29,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/templates/HouseholdFormWizard/HouseholdFormWizard.stories.tsx",
+        "size": 29,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/templates/DashboardLayout/DashboardLayout.stories.tsx",
+        "size": 28,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/tokens/Layout/Layout.stories.tsx",
+        "size": 27,
+        "extension": ".tsx"
+      },
+      {
+        "path": "components/tokens/Shadows/Shadows.tsx",
+        "size": 24,
+        "extension": ".tsx"
+      }
+    ]
+  },
+  "bundleEstimates": {
+    "jsBundle": 1696,
+    "cssBundle": 16,
+    "staticAssets": 0,
+    "total": 1712
+  },
+  "opportunities": [
+    {
+      "type": "heavy_directories",
+      "severity": "low",
+      "directories": [
+        [
+          "components",
+          1582
+        ],
+        [
+          "app",
+          248
+        ],
+        [
+          "lib",
+          204
+        ]
+      ],
+      "recommendation": "Review directory structure for potential lazy loading"
+    }
+  ],
+  "summary": {
+    "sourceFiles": 365,
+    "sourceSize": 2184,
+    "estimatedBundleSize": 1712,
+    "optimizationOpportunities": 1
+  },
+  "recommendations": [
+    "Large estimated bundle size - consider implementing code splitting",
+    "Large JavaScript bundle - review for tree shaking opportunities",
+    "Large components directory - implement lazy loading for heavy components",
+    "Many React components - consider component lazy loading and code splitting",
+    "Set up webpack-bundle-analyzer for detailed bundle analysis",
+    "Implement bundle size monitoring in CI/CD pipeline",
+    "Consider using dynamic imports for route-based code splitting"
+  ]
+}
