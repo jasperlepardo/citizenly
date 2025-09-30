@@ -12,8 +12,6 @@ import { useCallback } from 'react';
 
 import { useHouseholdCrud, UseHouseholdCrudOptions } from '@/hooks/crud/useHouseholdCrud';
 import { useHouseholdValidation } from '@/hooks/validation/useOptimizedHouseholdValidation';
-
-
 import type { HouseholdFormData } from '@/types/app/ui/forms';
 import type {
   UseHouseholdOperationsWorkflowOptions,

@@ -13,10 +13,11 @@
 
 import { useMemo } from 'react';
 
+import type { UseDashboardReturn } from '@/types/app/dashboard/dashboard';
+
 import { useDashboardApi } from './useDashboardApi';
 import { useDashboardCalculations } from './useDashboardCalculations';
 
-import type { UseDashboardReturn } from '@/types/app/dashboard/dashboard';
 
 /**
  * Dashboard hook (Refactored)

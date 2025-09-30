@@ -14,14 +14,14 @@ const getFieldIds = (fieldId: string) => ({
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
-import { Label } from '@/components/atoms/Field/Label/Label';
 import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
+import { Label } from '@/components/atoms/Field/Label/Label';
 import { ReadOnly } from '@/components/atoms/Field/ReadOnly/ReadOnly';
 import Select from '@/components/atoms/Field/Select/Select';
-import type { SelectProps } from '@/types/app/ui/select';
 import { SkeletonInput } from '@/components/atoms/Skeleton/SkeletonVariants';
 import { Spinner } from '@/components/atoms/Spinner/Spinner';
 import type { FormMode } from '@/types/app/ui/forms';
+import type { SelectProps } from '@/types/app/ui/select';
 
 export interface SelectFieldProps {
   children?: React.ReactNode;

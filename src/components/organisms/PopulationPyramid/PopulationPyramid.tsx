@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import type { AgeGroup } from '@/types/shared/hooks/dashboardHooks';
 
 interface PopulationPyramidProps {

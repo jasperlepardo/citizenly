@@ -2,7 +2,6 @@ import React from 'react';
 
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { EMPLOYMENT_STATUS_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { EmploymentInformationFormData } from '@/types/domain/residents/forms';
 import type { SelectOption } from '@/utils/ui/selectUtils';

@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect } from 'react';
+
 import type { SelectOption } from '@/utils/ui/selectUtils';
 
 export interface UseSelectDropdownProps {

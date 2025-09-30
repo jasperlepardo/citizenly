@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { getCompleteAddress, type AddressHierarchy } from '@/lib/data/database-utils';
-
 import type { UserBarangayInfo } from '@/types/shared/hooks/utilityHooks';
 
 /**

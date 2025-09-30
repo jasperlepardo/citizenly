@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { DemographicsInformationFormData } from '@/types/domain/households/forms';
 

@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types/shared/hooks/commandMenuHooks';
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { trackNavigation, trackAction } from '@/lib/data/recent-items-storage';
+import type { CommandMenuSearchResult as CommandMenuItem , UseCommandMenuActionsReturn } from '@/types/shared/hooks/commandMenuHooks';
 import {
   trackCommandMenuNavigation,
   trackCommandMenuAction,
@@ -30,7 +30,6 @@ import {
   generateReport,
 } from '@/utils/shared/apiUtils';
 
-import type { UseCommandMenuActionsReturn } from '@/types/shared/hooks/commandMenuHooks';
 
 // Interface moved to centralized types
 

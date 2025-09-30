@@ -4,6 +4,7 @@
  */
 
 import { useState, useRef } from 'react';
+
 import type { SelectOption } from '@/utils/ui/selectUtils';
 
 export interface UseSelectStateProps {

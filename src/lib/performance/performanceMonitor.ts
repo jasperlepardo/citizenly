@@ -15,7 +15,6 @@
 import React from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-
 import type {
   WebVitalsPerformanceMetric as PerformanceMetric,
   ResourceTiming,

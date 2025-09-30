@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 
 import { Button } from '@/components/atoms/Button/Button';
-import { LocationAndDemographicsForm } from '@/components/organisms/FormSection/Household/LocationAndDemographics/LocationAndDemographics';
 import { HouseholdDetailsForm } from '@/components/organisms/FormSection/Household/HouseholdDetails/HouseholdDetails';
+import { LocationAndDemographicsForm } from '@/components/organisms/FormSection/Household/LocationAndDemographics/LocationAndDemographics';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserBarangay } from '@/hooks/utilities';
 // REMOVED: @/lib barrel import - replace with specific module;

@@ -4,11 +4,11 @@
  */
 
 import { ErrorCode, ErrorSeverity } from '@/types/shared/errors/errors';
+import type { SyncResult } from '@/types/shared/utilities/utilities';
 import { createAppError } from '@/utils/shared/errorUtils';
 
 import { offlineStorage } from './offline-storage';
 
-import type { SyncResult } from '@/types/shared/utilities/utilities';
 
 export class SyncQueue {
   private isProcessing = false;

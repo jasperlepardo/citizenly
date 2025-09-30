@@ -13,7 +13,6 @@
  */
 
 import { logger } from '@/lib/logging/secure-logger';
-
 import type { CacheEntry, CacheStats, CacheKeyPatterns, CacheTags } from '@/types/infrastructure/cache/cache';
 import { createInitialCacheStats } from '@/types/infrastructure/cache/cache';
 

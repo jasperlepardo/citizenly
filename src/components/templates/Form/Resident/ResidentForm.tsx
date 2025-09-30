@@ -2,21 +2,21 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 
-import { PersonalInformationForm } from '@/components/organisms/FormSection/Resident/PersonalInformation/PersonalInformation';
 import { ContactInformationForm } from '@/components/organisms/FormSection/Resident/ContactInformation/ContactInformation';
+import { MigrationInformation } from '@/components/organisms/FormSection/Resident/MigrationInformation/MigrationInformation';
+import { PersonalInformationForm } from '@/components/organisms/FormSection/Resident/PersonalInformation/PersonalInformation';
 import { PhysicalPersonalDetailsForm } from '@/components/organisms/FormSection/Resident/PhysicalPersonalDetails/PhysicalPersonalDetails';
 import { SectoralInformationForm } from '@/components/organisms/FormSection/Resident/SectoralInformation/SectoralInformation';
-import { MigrationInformation } from '@/components/organisms/FormSection/Resident/MigrationInformation/MigrationInformation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFieldLoading } from '@/hooks/utilities/useFieldLoading';
 import { supabase } from '@/lib/data/supabase';
 import { isIndigenousPeople } from '@/services/domain/residents/residentClassification';
+import type { FormMode } from '@/types/app/ui/forms';
 import { ResidentFormData, SectoralInformation } from '@/types/domain/residents/forms';
 
 import { FormActions } from './components/FormActions';
 import { FormHeader } from './components/FormHeader';
 
-import type { FormMode } from '@/types/app/ui/forms';
 
 interface ResidentFormProps {
   mode?: FormMode;
@@ -442,7 +442,7 @@ export function ResidentForm({
       
       console.log('🔍 ResidentForm: Processing physical characteristics batch update:', physicalData);
 
-      let updatedData: Partial<ResidentFormData> = {
+      const updatedData: Partial<ResidentFormData> = {
         ...physicalData,
       };
 

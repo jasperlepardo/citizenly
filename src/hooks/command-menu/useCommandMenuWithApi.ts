@@ -15,7 +15,13 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import type { CommandMenuSearchResult as CommandMenuItem } from '@/types/shared/hooks/commandMenuHooks';
+import type { CommandMenuSearchResult as CommandMenuItem ,
+  UseCommandMenuWithApiProps,
+  UseCommandMenuWithApiReturn,
+  UseCommandMenuSearchReturn,
+  UseCommandMenuRecentsReturn,
+  UseCommandMenuActionsReturn
+} from '@/types/shared/hooks/commandMenuHooks';
 import { getCommandMenuItems } from '@/utils/command-menu/items-utils';
 
 import { useCommandMenu } from './useCommandMenu';
@@ -23,13 +29,6 @@ import { useCommandMenuActions } from './useCommandMenuActions';
 import { useCommandMenuRecents } from './useCommandMenuRecents';
 import { useCommandMenuSearch } from './useCommandMenuSearch';
 
-import type {
-  UseCommandMenuWithApiProps,
-  UseCommandMenuWithApiReturn,
-  UseCommandMenuSearchReturn,
-  UseCommandMenuRecentsReturn,
-  UseCommandMenuActionsReturn
-} from '@/types/shared/hooks/commandMenuHooks';
 
 // Interfaces moved to centralized types
 

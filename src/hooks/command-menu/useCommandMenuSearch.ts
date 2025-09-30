@@ -11,10 +11,10 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { trackSearch } from '@/lib/data/recent-items-storage';
+import type { CommandMenuSearchResult as CommandMenuItem , CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types/shared/hooks/commandMenuHooks';
 import { trackCommandMenuSearch, trackCommandMenuError } from '@/utils/command-menu/analytics-utils';
 import { searchData } from '@/utils/shared/apiUtils';
 
-import type { CommandMenuSearchResult as CommandMenuItem , CommandMenuSearchOptions, UseCommandMenuSearchReturn } from '@/types/shared/hooks/commandMenuHooks';
 
 
 // Interfaces moved to centralized types

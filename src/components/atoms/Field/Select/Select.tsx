@@ -23,9 +23,14 @@
 import React, { useEffect, useCallback, useMemo, memo } from 'react';
 
 // Types
+import { Input } from '@/components/atoms/Field/Input/Input';
+import { useSelectDropdown } from '@/hooks/ui/useSelectDropdown';
+import { useSelectKeyboard } from '@/hooks/ui/useSelectKeyboard';
+import { useSelectState } from '@/hooks/ui/useSelectState';
 import type { SelectProps } from '@/types/app/ui/select';
 
 // Utilities
+import { renderLoadMoreSection, renderEmptyState } from '@/utils/ui/selectRenderUtils';
 import {
   normalizeOptions,
   filterStaticOptions,
@@ -35,15 +40,11 @@ import {
   handleDropdownToggle,
   type SelectOption,
 } from '@/utils/ui/selectUtils';
-import { renderLoadMoreSection, renderEmptyState } from '@/utils/ui/selectRenderUtils';
 
 // Hooks
-import { useSelectState } from '@/hooks/ui/useSelectState';
-import { useSelectDropdown } from '@/hooks/ui/useSelectDropdown';
-import { useSelectKeyboard } from '@/hooks/ui/useSelectKeyboard';
 
 // Components
-import { Input } from '@/components/atoms/Field/Input/Input';
+
 import { Option } from './Option/Option';
 
 const SelectComponent: React.FC<SelectProps> = ({

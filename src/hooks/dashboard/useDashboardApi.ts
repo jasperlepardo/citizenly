@@ -12,7 +12,6 @@ import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
 import { logger } from '@/hooks/utilities/useLogger';
 import { useRetryLogic, RetryStrategies } from '@/hooks/utilities/useRetryLogic';
 import { supabase } from '@/lib/data/supabase';
-
 import type {
   DashboardResponse,
   UseDashboardApiReturn

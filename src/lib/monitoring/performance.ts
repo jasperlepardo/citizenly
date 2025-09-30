@@ -4,10 +4,10 @@
  */
 
 import { clientLogger } from '@/lib/logging/client-logger';
+import type { PerformanceMetric } from '@/types/shared/utilities/utilities';
 
 import { startSentryTransaction } from './sentry-config';
 
-import type { PerformanceMetric } from '@/types/shared/utilities/utilities';
 
 
 class PerformanceMonitor {

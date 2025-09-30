@@ -10,14 +10,14 @@
 import { useCallback, useState } from 'react';
 
 import { container } from '@/services/container';
-
-import { useGenericSearch } from './useGenericSearch';
-
+import type { PsgcOption } from '@/types/domain/residents/api';
 import type {
   UsePsgcSearchOptions,
   UsePsgcSearchReturn,
 } from '@/types/shared/hooks/searchHooks';
-import type { PsgcOption } from '@/types/domain/residents/api';
+
+import { useGenericSearch } from './useGenericSearch';
+
 
 /**
  * PSGC API implementation

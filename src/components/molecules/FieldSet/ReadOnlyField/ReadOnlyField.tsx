@@ -14,9 +14,9 @@ const getFieldIds = (fieldId: string) => ({
 const buildAriaDescribedBy = (helperId?: string, errorId?: string) => [helperId, errorId].filter(Boolean).join(' ') || undefined;
 const buildAriaLabelledBy = (labelId?: string) => labelId;
 
+import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
 import { Label } from '@/components/atoms/Field/Label/Label';
 import { ReadOnly } from '@/components/atoms/Field/ReadOnly/ReadOnly';
-import { HelperText } from '@/components/atoms/Field/HelperText/HelperText';
 
 export interface ReadOnlyFieldProps {
   children?: React.ReactNode;

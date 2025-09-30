@@ -10,13 +10,14 @@
 import { useState, useCallback, useRef } from 'react';
 
 
-import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
-
 import type {
   AsyncValidationOptions,
   UseResidentAsyncValidationReturn,
   HookAsyncValidationResult as AsyncValidationResult,
 } from '@/types/shared/hooks/utilityHooks';
+
+import { useAsyncErrorBoundary } from './useAsyncErrorBoundary';
+
 // TODO: Find actual validation utilities module
 // import { asyncValidationUtils } from '@/utils/validation/utilities';
 

@@ -9,9 +9,9 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { classifyResident } from '@/services/domain/residents/residentClassification';
 import { SupabaseHouseholdRepository } from '@/services/infrastructure/repositories/SupabaseHouseholdRepository';
 import type { HouseholdData } from '@/types/domain/households/households';
+import type { IResidentRepository } from '@/types/domain/repositories';
 import type { Resident } from '@/types/domain/residents/core';
 import type { ResidentFormData } from '@/types/domain/residents/forms';
-import type { IResidentRepository } from '@/types/domain/repositories';
 import type { RepositoryResult } from '@/types/infrastructure/services/repositories';
 import type { ValidationResult } from '@/types/shared/validation/validation';
 

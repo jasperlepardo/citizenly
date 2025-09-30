@@ -15,9 +15,9 @@ function useIsClient() {
 import Link from 'next/link';
 import { Toaster } from 'react-hot-toast';
 
-import Navigation from '@/components/organisms/Navigation/Navigation';
 import SkipNavigation from '@/components/atoms/SkipNavigation/SkipNavigation';
 import { InlineCommandMenu } from '@/components/molecules/CommandMenu/InlineCommandMenu';
+import Navigation from '@/components/organisms/Navigation/Navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/hooks/utilities/useLogger';
 import { supabase } from '@/lib/data/supabase';

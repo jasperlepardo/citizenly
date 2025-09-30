@@ -1,9 +1,10 @@
 import React from 'react';
 
-import SectoralClassifications from './FormField/SectoralClassifications';
 
 import type { FormMode } from '@/types/app/ui/forms';
 import type { ResidentFormData, SectoralInformation } from '@/types/domain/residents/forms';
+
+import SectoralClassifications from './FormField/SectoralClassifications';
 
 
 /**

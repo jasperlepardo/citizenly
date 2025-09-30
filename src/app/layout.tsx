@@ -6,9 +6,9 @@ import type { Metadata } from 'next';
 import { Montserrat } from 'next/font/google';
 
 import './globals.css';
+import AuthDebug from '@/components/molecules/AuthDebug/AuthDebug';
 import ConnectionStatus from '@/components/molecules/ConnectionStatus/ConnectionStatus';
 import PWADevTools from '@/components/molecules/PWADevTools/PWADevTools';
-import AuthDebug from '@/components/molecules/AuthDebug/AuthDebug';
 import PWAInstallPrompt from '@/components/molecules/PWAInstallPrompt/PWAInstallPrompt';
 import PWAStatus from '@/components/molecules/PWAStatus/PWAStatus';
 import { VersionTag } from '@/components/molecules/VersionTag/VersionTag';

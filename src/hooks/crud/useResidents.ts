@@ -11,9 +11,10 @@ import { supabase } from '@/lib/data/supabase';
 import { clientLogger } from '@/lib/logging/client-logger';
 
 // Import the properly typed ResidentRecord
+import { ResidentRecord } from '@/types/infrastructure/database/database';
+
 import { useResilientQuery } from './useResilientQuery';
 
-import { ResidentRecord } from '@/types/infrastructure/database/database';
 
 
 interface Resident extends Omit<ResidentRecord, 'sex'> {

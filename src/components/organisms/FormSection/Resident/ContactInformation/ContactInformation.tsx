@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react';
 
 
-import { ContactDetails } from './FormField/ContactDetails';
-import { HouseholdInformation } from './FormField/HouseholdInformation';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type {
   ContactDetailsFormData,
   HouseholdInformationFormData,
 } from '@/types/domain/residents/forms';
+
+import { ContactDetails } from './FormField/ContactDetails';
+import { HouseholdInformation } from './FormField/HouseholdInformation';
+
 
 export interface ContactInformationFormProps {
   /** Form mode - determines if field is editable or read-only */

@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
-import type { SelectOption } from '@/utils/ui/selectUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useStreetsSearch } from '@/hooks/search/useStreetsSearch';
 import { useSubdivisionsSearch } from '@/hooks/search/useSubdivisionsSearch';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { AddressInformationFormData } from '@/types/domain/households/forms';
+import type { SelectOption } from '@/utils/ui/selectUtils';
 
 export interface AddressInformationProps {
   /** Form mode - determines if field is editable or read-only */

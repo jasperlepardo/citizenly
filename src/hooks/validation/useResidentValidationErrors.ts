@@ -10,13 +10,12 @@
 import { useState, useCallback } from 'react';
 
 import { validateResidentForm as validateResidentData } from '@/services/infrastructure/validation/residentSchema';
-import type { ValidationResult } from '@/types/shared/validation/validation';
-
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 import type {
   UseResidentValidationErrorsReturn,
 } from '@/types/shared/hooks/utilityHooks';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
-import type { ValidationError } from '@/types/shared/validation/validation';
+import type { ValidationResult , ValidationError } from '@/types/shared/validation/validation';
+
 
 
 /**

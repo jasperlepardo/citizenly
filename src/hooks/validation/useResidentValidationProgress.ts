@@ -11,7 +11,6 @@ import { useMemo, useState, useCallback } from 'react';
 
 import { CRITICAL_VALIDATION_FIELDS } from '@/constants/residentFormDefaults';
 import { REQUIRED_FIELDS, getRequiredFieldsForSection } from '@/services/infrastructure/validation/fieldValidators';
-
 import type {
   ValidationSummary,
   SectionValidationStatus,

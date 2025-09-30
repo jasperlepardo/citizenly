@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
-import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import { Radio } from '@/components/atoms/Field/Control/Radio/Radio';
-
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { VotingInformationFormData } from '@/types/domain/residents/forms';
 

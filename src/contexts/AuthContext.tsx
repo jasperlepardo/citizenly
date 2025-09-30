@@ -4,7 +4,6 @@ import type { User, Session } from '@supabase/supabase-js';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 import { supabase } from '@/lib/data/supabase';
-
 import type { AuthUserProfile, UserRole } from '@/types/app/auth/auth';
 import type { AuthContextType, Role } from '@/types/app/ui/contexts';
 

@@ -8,8 +8,8 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 
-import UserProfile from '@/components/organisms/UserProfile/UserProfile';
 import { Button } from '@/components/atoms/Button/Button';
+import UserProfile from '@/components/organisms/UserProfile/UserProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { logError } from '@/lib/logging/client-logger';
 

@@ -5,10 +5,9 @@ import React, { useMemo, useEffect, useState } from 'react';
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
-import { formatBirthdateWithAgeCompact } from '@/utils/shared/dateUtils';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { BirthInformationFormData } from '@/types/domain/residents/forms';
+import { formatBirthdateWithAgeCompact } from '@/utils/shared/dateUtils';
 
 export interface BirthInformationProps {
   /** Form mode - determines if field is editable or read-only */

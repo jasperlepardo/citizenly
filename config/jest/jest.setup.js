@@ -123,7 +123,7 @@ const mockAuthContext = {
 // Set up module mocks that will be used across tests
 jest.mock('../../src/lib/data/supabase', () => ({ supabase: mockSupabase }));
 jest.mock('../../src/lib/security/crypto', () => mockCrypto);
-jest.mock('../../src/lib/database/connection-pool', () => mockDatabase);
+// Note: connection-pool module was removed - mock removed
 jest.mock('../../src/contexts/AuthContext.tsx', () => ({
   useAuth: () => mockAuthContext,
   AuthProvider: ({ children }) => children,

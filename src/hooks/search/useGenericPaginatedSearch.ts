@@ -10,7 +10,6 @@
 import { useState, useEffect , useCallback } from 'react';
 
 import { useDebounce } from '@/hooks/utilities/useDebounce';
-
 import type {
   PaginatedSearchConfig,
   PaginatedSearchState,

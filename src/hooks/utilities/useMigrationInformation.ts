@@ -3,8 +3,8 @@
 import { useState, useCallback, useEffect } from 'react';
 
 import { usePsgcSearch } from '@/hooks/search/usePsgcSearch';
-import { MigrationInformationData } from '@/types/infrastructure/services/services';
 import type { PsgcOption } from '@/types/domain/residents/api';
+import { MigrationInformationData } from '@/types/infrastructure/services/services';
 
 
 export { type MigrationInformationData };

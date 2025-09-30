@@ -4,12 +4,11 @@ import Link from 'next/link';
 import React, { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import DataTable from '@/components/organisms/DataTable/DataTable';
-import type { TableColumn, TableAction } from '@/types/app/ui/components';
-import { SearchBar } from '@/components/molecules/SearchBar/SearchBar';
 import { Button } from '@/components/atoms/Button/Button';
 import { AdvancedFilters as AdvancedFiltersComponent } from '@/components/molecules/AdvancedFilters/AdvancedFilters';
 import { ErrorRecovery } from '@/components/molecules/ErrorBoundary/ErrorRecovery';
+import { SearchBar } from '@/components/molecules/SearchBar/SearchBar';
+import DataTable from '@/components/organisms/DataTable/DataTable';
 import {
   useResidents,
   useResidentFilterFields,
@@ -18,6 +17,7 @@ import {
 } from '@/hooks/crud/useResidents';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger } from '@/lib/logging/client-logger';
+import type { TableColumn, TableAction } from '@/types/app/ui/components';
 
 function ResidentsContent() {
   const [searchTerm, setSearchTerm] = useState('');

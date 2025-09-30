@@ -2,10 +2,9 @@ import React from 'react';
 
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
 import { EDUCATION_LEVEL_OPTIONS_WITH_EMPTY } from '@/constants/residentEnums';
-import { formatGraduateStatus } from '@/utils/shared/dateUtils';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { EducationInformationFormData } from '@/types/domain/residents/forms';
+import { formatGraduateStatus } from '@/utils/shared/dateUtils';
 
 // Graduate status options
 const GRADUATE_STATUS_OPTIONS = [

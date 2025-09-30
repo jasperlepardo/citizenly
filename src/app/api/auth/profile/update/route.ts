@@ -88,7 +88,7 @@ export async function PATCH(request: NextRequest) {
 
     const { data: profileData, error: profileError } = await supabaseAdmin
       .from('auth_user_profiles')
-      // @ts-ignore - Supabase typing issue with dynamic update object
+      // @ts-expect-error - Supabase typing issue with dynamic update object
       .update(updateData)
       .eq('id', user.id)
       .select()

@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 
+import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
-import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import {
   useMigrationInformation,
   MigrationInformationData,
 } from '@/hooks/utilities/useMigrationInformation';
-
 import type { FormMode } from '@/types/app/ui/forms';
 
 export type { MigrationInformationData };

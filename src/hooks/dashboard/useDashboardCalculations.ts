@@ -9,8 +9,8 @@
 
 import { useMemo } from 'react';
 
-import type { ResidentData, AgeGroup } from '@/types/shared/hooks/dashboardHooks';
 import type { UseDashboardCalculationsReturn } from '@/types/app/dashboard/dashboard';
+import type { ResidentData, AgeGroup } from '@/types/shared/hooks/dashboardHooks';
 
 /**
  * Age calculation utility

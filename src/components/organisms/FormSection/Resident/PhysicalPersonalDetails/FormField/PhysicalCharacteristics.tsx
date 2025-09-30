@@ -8,7 +8,6 @@ import {
   RELIGION_OPTIONS_WITH_DEFAULT,
   CITIZENSHIP_OPTIONS_WITH_DEFAULT,
 } from '@/constants/residentEnums';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { PhysicalCharacteristicsFormData } from '@/types/domain/residents/forms';
 

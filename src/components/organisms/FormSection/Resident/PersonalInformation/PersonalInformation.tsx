@@ -1,12 +1,6 @@
 import React from 'react';
 
 
-import { BasicInformation } from './FormField/BasicInformation';
-import { BirthInformation } from './FormField/BirthInformation';
-import { EducationInformation } from './FormField/EducationInformation';
-import { EmploymentInformation } from './FormField/EmploymentInformation';
-import { PhilSysCardField } from './FormField/PhilSysCardField';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type {
   BasicInformationFormData,
@@ -14,6 +8,13 @@ import type {
   EducationInformationFormData,
   EmploymentInformationFormData,
 } from '@/types/domain/residents/forms';
+
+import { BasicInformation } from './FormField/BasicInformation';
+import { BirthInformation } from './FormField/BirthInformation';
+import { EducationInformation } from './FormField/EducationInformation';
+import { EmploymentInformation } from './FormField/EmploymentInformation';
+import { PhilSysCardField } from './FormField/PhilSysCardField';
+
 
 export interface PersonalInformationFormProps {
   /** Form mode - determines if field is editable or read-only */

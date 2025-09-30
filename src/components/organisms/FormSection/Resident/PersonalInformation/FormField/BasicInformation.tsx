@@ -6,7 +6,6 @@ import {
   SEX_OPTIONS_WITH_DEFAULT,
   CIVIL_STATUS_OPTIONS_WITH_DEFAULT,
 } from '@/constants/residentEnums';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { BasicInformationFormData } from '@/types/domain/residents/forms';
 

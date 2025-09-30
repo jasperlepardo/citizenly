@@ -4,10 +4,10 @@
  */
 
 import { logger } from '@/lib/logging/secure-logger';
+import type { SecurityContext, ThreatPattern, SecurityEvent, ThreatDetectionEvent } from '@/types/app/auth/security';
 
 import { storeThreatDetectionEvent } from './auditStorage';
 
-import type { SecurityContext, ThreatPattern, SecurityEvent, ThreatDetectionEvent } from '@/types/app/auth/security';
 
 // In-memory cache for recent security events (in production, use Redis)
 const eventCache = new Map<string, SecurityEvent[]>();

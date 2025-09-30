@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { ContactDetailsFormData } from '@/types/domain/residents/forms';
 

@@ -3,13 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
-
 import type {
   UseCommandMenuProps,
   UseCommandMenuReturn,
   CommandMenuSearchResult
 } from '@/types/shared/hooks/commandMenuHooks';
+import { useCommandMenuShortcut, createDropdownKeyHandler } from '@/utils/dom/keyboardUtils';
+
 
 export function useCommandMenu({ items, maxResults = 10 }: UseCommandMenuProps): UseCommandMenuReturn {
   const [isOpen, setIsOpen] = useState(false);

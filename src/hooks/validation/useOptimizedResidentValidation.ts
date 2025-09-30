@@ -17,12 +17,11 @@ import { useCallback } from 'react';
 
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
-
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 import { useResidentValidationCore } from './useResidentValidationCore';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
 
-import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 // TEMP: Missing validation types - use any for now
 type UseResidentFormValidationReturn = any;

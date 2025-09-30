@@ -20,7 +20,6 @@ import { CRITICAL_VALIDATION_FIELDS } from '@/constants/residentFormDefaults';
 import { useResidentAsyncValidation } from '@/hooks/utilities/useResidentAsyncValidation';
 import { useResidentCrossFieldValidation } from '@/hooks/utilities/useResidentCrossFieldValidation';
 import { REQUIRED_FIELDS } from '@/services/infrastructure/validation/fieldValidators';
-
 import type {
   ResidentFormData,
   ResidentValidationOptions,

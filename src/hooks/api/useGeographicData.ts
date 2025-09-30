@@ -6,7 +6,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
 import { supabase } from '@/lib/data/supabase';
-
 import type { GeographicOption } from '@/types/shared/hooks/apiHooks';
 
 // Interface moved to centralized types

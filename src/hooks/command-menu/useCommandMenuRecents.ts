@@ -11,12 +11,12 @@ import { useState, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { useAsyncErrorBoundary } from '@/hooks/utilities/useAsyncErrorBoundary';
+import type { CommandMenuSearchResult as CommandMenuItem , UseCommandMenuRecentsReturn } from '@/types/shared/hooks/commandMenuHooks';
 import {
   getRecentItems,
   clearRecentItems,
 } from '@/utils/shared/apiUtils';
 
-import type { CommandMenuSearchResult as CommandMenuItem , UseCommandMenuRecentsReturn } from '@/types/shared/hooks/commandMenuHooks';
 
 
 

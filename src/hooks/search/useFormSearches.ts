@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 
 import { container } from '@/services/container';
 import { formatPsocOption, formatPsgcOption } from '@/services/domain/residents/residentMapper';
-
 import type { PsocOption, PsgcOption, HouseholdOption, UseFormSearchesReturn } from '@/types/shared/hooks/searchHooks';
 
 export const useFormSearches = (userBarangayCode?: string): UseFormSearchesReturn => {

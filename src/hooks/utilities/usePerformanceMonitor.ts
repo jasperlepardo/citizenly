@@ -9,13 +9,14 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 
-import { useLogger } from './useLogger';
-
 import type {
   HookPerformanceMetrics,
   UsePerformanceMonitorOptions,
   UsePerformanceMonitorReturn,
 } from '@/types/shared/hooks/utilityHooks';
+
+import { useLogger } from './useLogger';
+
 
 /**
  * Hook for monitoring React hook performance

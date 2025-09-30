@@ -49,7 +49,7 @@ export interface SelectLoadingConfig {
   loadingMore?: boolean;
 }
 
-export interface SelectProps extends Readonly<{
+export type SelectProps = Readonly<{
   // Core props
   value?: string;
   onSelect: (option: SelectOption | null) => void;
@@ -79,7 +79,7 @@ export interface SelectProps extends Readonly<{
   onLoadMore?: () => void;
   loadingMore?: boolean;
   infiniteScroll?: boolean;
-}> {}
+}>;
 
 export interface SelectState {
   inputValue: string;
@@ -113,7 +113,7 @@ export interface SelectHandlers {
   handleDropdownIconClick: () => void;
 }
 
-export interface OptionProps extends Readonly<{
+export type OptionProps = Readonly<{
   /** Unique identifier for the option */
   id?: string;
   /** Whether this option is currently selected */
@@ -140,4 +140,4 @@ export interface OptionProps extends Readonly<{
   className?: string;
   /** Custom children to override default rendering */
   children?: React.ReactNode;
-}> {}
+}>;

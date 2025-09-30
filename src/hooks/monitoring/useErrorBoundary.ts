@@ -6,10 +6,9 @@
 import { useCallback, useState } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-import type { ErrorBoundaryState } from '@/types/shared/errors/errors';
-
 import { captureError, addSentryBreadcrumb } from '@/lib/monitoring/sentry-config';
-import type { UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/shared/errors/errors';
+import type { ErrorBoundaryState , UseErrorBoundaryOptions, ErrorBoundaryReturn } from '@/types/shared/errors/errors';
+
 
 
 // Extended error boundary state for hook usage

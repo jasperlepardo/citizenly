@@ -6,7 +6,6 @@ import { useResidentFormValidation } from '@/hooks/validation/useOptimizedReside
 import { createFormSubmitHandler } from '@/services/app/forms/formHandlers';
 import type { FormMode } from '@/types/app/ui/forms';
 import type { ResidentFormData } from '@/types/domain/residents/forms';
-
 import type {
   HookFormSubmissionProps as UseFormSubmissionProps,
   HookFormSubmissionReturn as UseFormSubmissionReturn,

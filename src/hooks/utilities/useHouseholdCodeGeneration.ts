@@ -10,8 +10,8 @@
 import { useCallback } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { clientLogger as logger } from '@/lib/logging/client-logger';
 import { supabase } from '@/lib/data/supabase';
+import { clientLogger as logger } from '@/lib/logging/client-logger';
 
 // REMOVED: @/lib barrel import - replace with specific module;
 import type { UseHouseholdCodeGenerationReturn } from '@/types/shared/hooks/utilityHooks';

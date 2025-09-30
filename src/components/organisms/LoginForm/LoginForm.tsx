@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 
-import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { Button } from '@/components/atoms/Button/Button';
+import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGenericFormSubmission } from '@/hooks/utilities';
 import { createFieldChangeHandler } from '@/services/app/forms/formHandlers';

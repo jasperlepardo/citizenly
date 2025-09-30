@@ -11,16 +11,16 @@ import { useCallback } from 'react';
 
 import { useResidentSubmission } from '@/hooks/utilities/useResidentSubmission';
 import { useResidentValidationErrors } from '@/hooks/validation/useResidentValidationErrors';
-
-import { useResidentFormState } from './useResidentFormState';
-
+import type { ResidentFormData } from '@/types/domain/residents/forms';
 import type {
   UseResidentFormStateOptions,
   UseResidentSubmissionOptions,
   UseResidentEditWorkflowOptions,
   UseResidentEditWorkflowReturn,
 } from '@/types/shared/hooks/utilityHooks';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
+
+import { useResidentFormState } from './useResidentFormState';
+
 
 
 /**

@@ -21,9 +21,9 @@
  * @since 1.0.0
  */
 
-import type { UsePreloadOnHoverReturn } from '@/types/shared/hooks/utilityHooks';
 import { preloadComponents } from '@/components/shared/lazy/lazyLoading';
 import type { PreloadComponentKey } from '@/components/shared/lazy/lazyLoading';
+import type { UsePreloadOnHoverReturn } from '@/types/shared/hooks/utilityHooks';
 
 /**
  * Hook for preloading lazy components on hover interaction

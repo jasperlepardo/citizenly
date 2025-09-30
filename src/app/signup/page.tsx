@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 
+import { Button } from '@/components/atoms/Button/Button';
 import { InputField } from '@/components/molecules/FieldSet/InputField/InputField';
 import { SelectField } from '@/components/molecules/FieldSet/SelectField/SelectField';
-import { Button } from '@/components/atoms/Button/Button';
 import { useGenericFormSubmission } from '@/hooks/utilities';
 import { supabase } from '@/lib/data/supabase';
 import { clientLogger, logError } from '@/lib/logging/client-logger';

@@ -13,14 +13,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/data/supabase';
 import { formatAddress } from '@/services/app/display/residentDisplayHelpers';
 import { container } from '@/services/container';
-
-import { useGenericSearch } from './useGenericSearch';
-
 import type {
   HouseholdSearchResult,
   UseHouseholdSearchOptions,
   UseHouseholdSearchReturn,
 } from '@/types/shared/hooks/searchHooks';
+
+import { useGenericSearch } from './useGenericSearch';
+
 
 /**
  * Process households data and add computed fields

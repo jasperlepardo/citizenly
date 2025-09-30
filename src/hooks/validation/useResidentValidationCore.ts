@@ -26,16 +26,16 @@ import {
   createDebouncedValidator,
 } from '@/services/infrastructure/validation/fieldValidators';
 import { ResidentFormSchema } from '@/services/infrastructure/validation/residentSchema';
+import type { ResidentFormData } from '@/types/domain/residents/forms';
+import type {
+  ResidentValidationOptions,
+  UseResidentValidationCoreReturn,
+} from '@/types/shared/hooks/utilityHooks';
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
 
 import { useGenericValidation, UseGenericValidationReturn } from './useGenericValidation';
 import { useResidentValidationProgress } from './useResidentValidationProgress';
 
-import type {
-  ResidentValidationOptions,
-  UseResidentValidationCoreReturn,
-} from '@/types/shared/hooks/utilityHooks';
-import type { ResidentFormData } from '@/types/domain/residents/forms';
 
 
 

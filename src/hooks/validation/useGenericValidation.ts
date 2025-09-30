@@ -10,7 +10,6 @@
 import { useCallback, useState } from 'react';
 
 import { ValidationResult, FieldValidationResult } from '@/types/shared/validation/validation';
-
 import type { UseGenericValidationOptions, UseGenericValidationReturn } from '@/types/shared/validation/validation';
 
 // Re-export for backward compatibility

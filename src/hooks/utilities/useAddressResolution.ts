@@ -12,7 +12,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/data/supabase';
 import { logger } from '@/lib/logging/secure-logger';
-
 import type { AddressHierarchyInfo } from '@/types/domain/addresses/addresses';
 import type { UseAddressResolutionReturn } from '@/types/shared/hooks/utilityHooks';
 

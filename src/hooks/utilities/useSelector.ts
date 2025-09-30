@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-
 import type { UseSelectorOptions, UseSelectorReturn } from '@/types/shared/hooks/utilityHooks';
 
 export function useSelector<T extends { value: string; label: string }>({

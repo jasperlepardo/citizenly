@@ -9,14 +9,15 @@
 
 import { useState, useCallback, useRef } from 'react';
 
-import { useLogger } from './useLogger';
-
 import type {
   RetryStrategy,
   RetryState,
   UseRetryLogicOptions,
   UseRetryLogicReturn,
 } from '@/types/shared/hooks/utilityHooks';
+
+import { useLogger } from './useLogger';
+
 
 /**
  * Default retry strategy

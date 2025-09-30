@@ -6,7 +6,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 
 import { clientLogger } from '@/lib/logging/client-logger';
-
 import { performanceMonitor } from '@/lib/performance/performanceMonitor';
 import type { UsePerformanceTrackingOptions, PerformanceTrackingReturn } from '@/types/shared/utilities/performance';
 

@@ -17,11 +17,11 @@ import { GeographicDomainService } from './domain/geography/geographicDomainServ
 import { HouseholdDomainService } from './domain/households/householdDomainService';
 import { ResidentDomainService } from './domain/residents/residentDomainService';
 import { SecurityDomainService } from './domain/security/securityDomainService';
+import { SecurityAuditRepository } from './infrastructure/repositories/SecurityAuditRepository';
 import { SupabaseAuthRepository } from './infrastructure/repositories/SupabaseAuthRepository';
 import { SupabaseGeographicRepository } from './infrastructure/repositories/SupabaseGeographicRepository';
 import { SupabaseHouseholdRepository } from './infrastructure/repositories/SupabaseHouseholdRepository';
 import { SupabaseResidentRepository } from './infrastructure/repositories/SupabaseResidentRepository';
-import { SecurityAuditRepository } from './infrastructure/repositories/SecurityAuditRepository';
 import { CommandMenuService } from './infrastructure/ui/commandMenuService';
 import { CacheService } from './shared/cache/cacheService';
 import { SyncService } from './shared/sync/syncService';

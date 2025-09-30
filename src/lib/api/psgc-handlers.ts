@@ -13,6 +13,7 @@
 import { NextRequest } from 'next/server';
 
 import { supabase } from '@/lib/data/supabase';
+import type { PSGCQueryConfig, PSGCOption } from '@/types/shared/utilities/utilities';
 import {
   createSuccessResponse,
   withNextRequestErrorHandling,
@@ -23,7 +24,6 @@ import { sanitizeSearchInput } from '@/utils/shared/validationUtils';
 // TYPES
 // =============================================================================
 
-import type { PSGCQueryConfig, PSGCOption } from '@/types/shared/utilities/utilities';
 
 /**
  * Database entity interfaces

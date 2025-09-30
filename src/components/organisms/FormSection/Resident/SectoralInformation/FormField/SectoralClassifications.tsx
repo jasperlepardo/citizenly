@@ -10,7 +10,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 import { ControlField } from '@/components/molecules/FieldSet/ControlField/ControlField';
 import { calculateSectoralFlags } from '@/services/domain/residents/residentClassification';
-
 import type { FormMode } from '@/types/app/ui/forms';
 import type { SectoralInformation } from '@/types/domain/residents/forms';
 

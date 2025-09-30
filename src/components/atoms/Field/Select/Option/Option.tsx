@@ -1,6 +1,7 @@
 'use client';
 
 import React, { forwardRef, useCallback, useMemo } from 'react';
+
 import type { OptionProps } from '@/types/app/ui/select';
 import { parseOptionLabel, getOptionClassName } from '@/utils/ui/optionUtils';
 
