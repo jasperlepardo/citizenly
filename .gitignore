@@ -245,3 +245,9 @@ database/sample\ data/psgc/psgc_barangays.csv
 database/sample\ data/psgc/psgc_cities_municipalities.csv
 *storybook.log
 .vercel
+.env.vercel.development
+.env.vercel.import
+
+# Vercel environment files
+.env.vercel.production
+.env.vercel.preview

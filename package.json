@@ -75,7 +75,7 @@
     "deploy:test": "./scripts/quality/setup-deployment.sh test",
     "deploy:storybook": "npm run build-storybook && echo 'Storybook built - deploy via GitHub Actions or Netlify CLI'",
     "setup-secrets": "./scripts/quality/setup-secrets.sh",
-    "prepare": "husky",
+    "prepare": "node -e \"if (process.env.CI !== 'true' && process.env.VERCEL !== '1') { require('child_process').execSync('husky', { stdio: 'inherit' }) }\"",
     "env:check": "node -e \"console.log('✅ Environment check passed'); console.log('Node:', process.version); console.log('Platform:', process.platform);\"",
     "_comment_tiers": "=== ENVIRONMENT-BASED QUALITY TIERS ===",
     "tier1:dev": "npm run dev:check && npm run dev:test",
