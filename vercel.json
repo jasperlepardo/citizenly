@@ -1,8 +1,9 @@
 {
   "version": 2,
-  "framework": "nextjs",
-  "installCommand": "npm ci && npm install -g typescript@5.9.2",
   "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
   "git": {
     "deploymentEnabled": {
       "main": true,
